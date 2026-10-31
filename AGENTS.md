@@ -18,9 +18,10 @@
 4. **Orchestrix Cirúrgica por Bloco:**
    * Nunca carregue ferramentas ou MCPs desnecessários para a tarefa atual.
    * Execute cada nó em contexto estéril; leia apenas o artefato de entrada e produza o artefato de saída contratado.
-5. **TDD Estrito:**
+5. **TDD Estrito & Recompilação Fresca:**
    * O teste unitário deve falhar antes de qualquer implementação de código de produção (Red-Green-Refactor).
    * Garanta que todos os testes passem com código limpo e sem warnings.
+   * **Recompilação Obrigatória Pós-Ticket:** Ao finalizar qualquer ticket com alteração em Go, execute obrigatoriamente a recompilação: `go build -o bin/legoloop.exe ./cmd/legoloop` para que o binário no PATH permaneça sempre atualizado.
 6. **Idioma:** SEMPRE utilize o idioma Português do Brasil (PT-BR) em documentações, planos, especificações e respostas.
 
 ---
