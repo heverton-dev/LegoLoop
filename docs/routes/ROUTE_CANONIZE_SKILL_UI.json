@@ -1,0 +1,108 @@
+{
+  "name": "route-canonize-skill-ui",
+  "version": "1.0.0",
+  "plan_ref": "docs/plans/PLAN_CANONIZE_SKILL_UI.md",
+  "spec_ref": "docs/specs/SPEC_CANONIZE_SKILL_UI.md",
+  "intent_ref": "docs/intents/INTENT_CANONIZE_SKILL_UI.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 2
+  },
+  "nodes": [
+    {
+      "id": "TICK-CANONUI-01",
+      "nature": "nano",
+      "execution_mode": "parallel",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "target_file": "C:/Users/trcnologia/.gemini/config/skills/aidd-legoloop-mega-pipeline/SKILL.md"
+      },
+      "output": {
+        "artifact": "SKILL.md",
+        "gate": "has_pattern(SKILL.md, '(?i)/canonize')"
+      }
+    },
+    {
+      "id": "TICK-CANONUI-02",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "server_source": "internal/studio/server.go",
+        "canon_source": "internal/canon/linker.go"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/canon_api_test.go",
+          "internal/studio/canon_handlers.go"
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-CANONUI-03",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-CANONUI-02"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "app_js": "internal/studio/static/app.js",
+        "index_html": "internal/studio/static/index.html",
+        "style_css": "internal/studio/static/style.css"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js",
+          "internal/studio/static/index.html",
+          "internal/studio/static/style.css"
+        ],
+        "gate": "has_no_inner_html() && line_count('internal/studio/static/app.js') > 100"
+      }
+    },
+    {
+      "id": "TICK-CANONUI-04",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-CANONUI-01", "TICK-CANONUI-03"],
+      "routing": {
+        "mode": "manual",
+        "model": "script/local"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "test_command": "go test ./...",
+        "build_command": "go build -o bin/legoloop.exe ./cmd/legoloop"
+      },
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "exit_code == 0"
+      }
+    }
+  ]
+}
