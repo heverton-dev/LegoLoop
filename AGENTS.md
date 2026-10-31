@@ -23,7 +23,10 @@
    * O teste unitário deve falhar antes de qualquer implementação de código de produção (Red-Green-Refactor).
    * Garanta que todos os testes passem com código limpo e sem warnings.
    * **Recompilação Obrigatória Pós-Ticket:** Ao finalizar qualquer ticket com alteração em Go, execute obrigatoriamente a recompilação: `go build -o bin/legoloop.exe ./cmd/legoloop` para que o binário no PATH permaneça sempre atualizado.
-6. **Idioma:** SEMPRE utilize o idioma Português do Brasil (PT-BR) em documentações, planos, especificações e respostas.
+6. **Padronização ISO de Artefatos:**
+   * TODOS os artefatos gerados em `docs/` (`intents/`, `specs/`, `plans/`, `routes/`, `reports/`, `sessions/`) DEVEM obrigatoriamente utilizar o prefixo de data no formato ISO: `YYYY-MM-DD_<NOME>.<ext>`.
+   * Isso garante ordenação cronológica natural e busca imediata no SO.
+7. **Idioma:** SEMPRE utilize o idioma Português do Brasil (PT-BR) em documentações, planos, especificações e respostas.
 
 ---
 
@@ -32,7 +35,7 @@
 * **Validar conformidade e testes:** `go test ./...` ou `npm test`
 * **Registrar histórico de sessão:** `faz-session --id <CONVERSATION_ID> --format all`
 * **Consultar Intenções:** [docs/intents/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents)
-* **Consultar a Spec Master:** [docs/specs/SPEC.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/SPEC.md)
-* **Consultar o Plano de Tickets:** [docs/plans/PLAN.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/PLAN.md)
+* **Consultar a Spec Master:** [docs/specs/2026-10-30_SPEC_MASTER.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/2026-10-30_SPEC_MASTER.md)
+* **Consultar o Plano de Tickets:** [docs/plans/2026-10-30_PLAN_MASTER.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/2026-10-30_PLAN_MASTER.md)
 * **Consultar Mapas de Rota:** [docs/routes/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/routes)
 * **Consultar Relatórios:** [docs/reports/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports)
