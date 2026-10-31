@@ -1401,9 +1401,91 @@ async function boot() {
   $("btn-materialize").addEventListener("click", (e) => withBusy(e.currentTarget, materialize));
   $("btn-route").addEventListener("click", (e) => withBusy(e.currentTarget, traceRoute));
   $("btn-close-issues").addEventListener("click", () => { $("issues").hidden = true; });
+  initVaultModal();
   updateEmpty();
   await pollItems();
   setInterval(() => { if (document.visibilityState === "visible") pollItems().catch(() => {}); }, POLL_MS);
+}
+
+function initVaultModal() {
+  const btnVault = $("btn-vault");
+  const modal = $("modal-vault");
+  if (!btnVault || !modal) return;
+
+  const btnClose = $("btn-modal-vault-close");
+  const btnScan = $("btn-vault-scan");
+  const btnApply = $("btn-vault-apply");
+  const pathDisplay = $("vault-path-display");
+  const drivesDisplay = $("vault-drives-display");
+  const panel = $("vault-results-panel");
+  const summary = $("vault-results-summary");
+
+  btnVault.addEventListener("click", async () => {
+    try {
+      const res = await fetch("/api/canonize/status");
+      if (res.ok) {
+        const data = await res.json();
+        pathDisplay.textContent = data.vault || "~/.aidd/canonical";
+        drivesDisplay.textContent = (data.drives || []).join(", ") || "C:";
+      }
+      btnApply.disabled = true;
+      panel.hidden = true;
+      modal.showModal();
+    } catch (e) {
+      toast("Erro ao obter status do cofre: " + e.message, true);
+    }
+  });
+
+  btnClose?.addEventListener("click", () => modal.close());
+
+  btnScan?.addEventListener("click", async () => {
+    try {
+      btnScan.disabled = true;
+      btnScan.textContent = "Auditando...";
+      const res = await fetch("/api/canonize/plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}"
+      });
+      if (!res.ok) throw new Error("Falha no dry-run");
+      const plan = await res.json();
+      summary.textContent = `Arquivos escaneados: ${plan.files_scanned} | Grupos duplicados: ${plan.groups.length} | Economia estimada: ${Math.round(plan.saved_bytes / 1024)} KB`;
+      panel.hidden = false;
+      btnApply.disabled = plan.groups.length === 0;
+    } catch (e) {
+      toast("Erro ao auditar cofre: " + e.message, true);
+    } finally {
+      btnScan.disabled = false;
+      btnScan.textContent = "Auditar Desduplicação (Dry-Run)";
+    }
+  });
+
+  btnApply?.addEventListener("click", async () => {
+    const ok = await confirmDialog({
+      title: "Desduplicar Sistema Operacional?",
+      message: "Arquivos redundantes serão substituídos por hardlinks canônicos no cofre.",
+      confirmLabel: "Aplicar Desduplicação",
+      danger: true,
+    });
+    if (!ok) return;
+    try {
+      btnApply.disabled = true;
+      btnApply.textContent = "Aplicando links...";
+      const res = await fetch("/api/canonize/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apply: true })
+      });
+      if (!res.ok) throw new Error("Falha ao aplicar canonização");
+      const result = await res.json();
+      summary.textContent = `Desduplicação concluída! Links criados: ${result.linked} | Economia real: ${Math.round(result.saved_bytes / 1024)} KB`;
+      toast(`Cofre atualizado: ${result.linked} links criados.`);
+    } catch (e) {
+      toast("Erro ao aplicar canonização: " + e.message, true);
+    } finally {
+      btnApply.textContent = "Aplicar Desduplicação Global";
+    }
+  });
 }
 
 boot().catch((err) => toast(`Não foi possível iniciar o Studio: ${err.message}`, true));

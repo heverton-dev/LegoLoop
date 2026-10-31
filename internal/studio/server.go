@@ -70,6 +70,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/assets", s.handleAssets)
 	mux.HandleFunc("GET /api/assets/{kind}", s.handleAssetsKind)
 	mux.HandleFunc("POST /api/assets/rescan", s.handleAssetsRescan)
+	mux.HandleFunc("GET /api/canonize/status", s.handleCanonizeStatus)
 	mux.HandleFunc("POST /api/canonize/plan", s.handleCanonizePlan)
 	mux.HandleFunc("POST /api/canonize/apply", s.handleCanonizeApply)
 	mux.HandleFunc("GET /api/blocks", s.handleBlocks)

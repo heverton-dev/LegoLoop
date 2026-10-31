@@ -34,6 +34,7 @@
       <button id="btn-route" class="btn" type="button">Traçar rota</button>
     </div>
     <div class="topbar__actions">
+      <button id="btn-vault" class="btn" type="button" title="Gerenciar Cofre Canônico e Volumes do SO">🗄️ Cofre Canônico</button>
       <button id="btn-validate" class="btn" type="button">Validar</button>
       <button id="btn-materialize" class="btn btn--primary" type="button">Materializar Esteira</button>
     </div>
@@ -224,6 +225,33 @@
         </div>
         <div id="modal-translation-status" class="translation-status" hidden></div>
         <pre class="source-view"><code id="modal-source-code"></code></pre>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Modal do Cofre Canônico & Volumes -->
+  <dialog id="modal-vault" class="modal-item" aria-labelledby="modal-vault-title">
+    <div class="modal-item-header">
+      <div class="modal-title-group">
+        <h3 id="modal-vault-title" class="modal-title">Cofre Canônico & Desduplicação do SO</h3>
+        <span class="modal-badge badge--canon">SSOT Global</span>
+      </div>
+      <div class="modal-header-actions">
+        <button id="btn-modal-vault-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+    <div class="modal-item-body modal-vault-content">
+      <div class="vault-info-card">
+        <p><strong>Cofre Central:</strong> <span id="vault-path-display">...</span></p>
+        <p><strong>Drives Detectados:</strong> <span id="vault-drives-display">...</span></p>
+      </div>
+      <div class="vault-actions-area">
+        <button id="btn-vault-scan" class="btn btn--primary" type="button">Auditar Desduplicação (Dry-Run)</button>
+        <button id="btn-vault-apply" class="btn btn--danger" type="button" disabled>Aplicar Desduplicação Global</button>
+      </div>
+      <div id="vault-results-panel" class="vault-results-panel" hidden>
+        <p id="vault-results-summary"></p>
+        <div id="vault-groups-list" class="vault-groups-list"></div>
       </div>
     </div>
   </dialog>

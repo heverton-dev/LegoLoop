@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strconv"
 	"strings"
@@ -281,6 +282,50 @@ func (s *Server) buildPlan(ctx context.Context) (canon.Plan, canonPlanResponse, 
 		}
 	}
 	return plan, resp, nil
+}
+
+type canonStatusResponse struct {
+	Vault  string   `json:"vault"`
+	Roots  []string `json:"roots"`
+	Drives []string `json:"drives"`
+}
+
+func (s *Server) handleCanonizeStatus(w http.ResponseWriter, r *http.Request) {
+	if s.Assets == nil {
+		errNoInventory(w)
+		return
+	}
+	vault, err := s.vault()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "falha ao determinar o cofre")
+		return
+	}
+	roots := s.canonRoots()
+	var dispRoots []string
+	for _, root := range roots {
+		dispRoots = append(dispRoots, s.displayPath(root))
+	}
+	writeJSON(w, http.StatusOK, canonStatusResponse{
+		Vault:  s.displayPath(vault),
+		Roots:  dispRoots,
+		Drives: availableDrives(),
+	})
+}
+
+func availableDrives() []string {
+	var drives []string
+	if runtime.GOOS == "windows" {
+		for c := 'A'; c <= 'Z'; c++ {
+			d := string(c) + ":\\"
+			if _, err := os.Stat(d); err == nil {
+				drives = append(drives, string(c)+":")
+			}
+		}
+	}
+	if len(drives) == 0 {
+		drives = []string{"/"}
+	}
+	return drives
 }
 
 func (s *Server) handleCanonizePlan(w http.ResponseWriter, r *http.Request) {
