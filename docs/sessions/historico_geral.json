@@ -1,0 +1,20 @@
+{
+  "atualizado_em": "2026-10-31T22:35:45Z",
+  "total_projetos": 1,
+  "total_sessoes": 1,
+  "total_turnos": 43,
+  "total_tokens_input": 7014146,
+  "total_tokens_output": 462292,
+  "projetos": [
+    {
+      "projeto": "LegoLoop",
+      "pasta": "LegoLoop",
+      "total_sessoes": 1,
+      "total_turnos": 43,
+      "total_tokens_input": 7014146,
+      "total_tokens_thinking": 41099,
+      "total_tokens_output": 462292,
+      "ultima_atualizacao": "2026-10-31T22:35:45Z"
+    }
+  ]
+}
