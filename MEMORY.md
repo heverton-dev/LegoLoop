@@ -215,6 +215,7 @@
   - **Resgate Histórico Concluído:** Sessão longa anterior (`c012709b`, 43 turnos) extraída via `faz-session` e preservada em `docs/sessions/`.
   - **`PATH` do Windows Configurado:** Binário `legoloop` injetado no PATH do usuário com regra inviolável de recompilação pós-ticket no `AGENTS.md`.
   - **Canonização Sob Demanda Concluída:** Comando `/canonize` adicionado na skill mestre e modal visual do Cofre Canônico integrado na barra do Studio com rotas `/api/canonize/status`, dry-run e apply em 1 clique (100% testes verdes).
+  - **Padronização ISO Universal de Artefatos:** Todos os 32 arquivos em `docs/` renomeados via `git mv` para `YYYY-MM-DD_<NOME>` com ordenação cronológica natural e reindexação no grafo semântico (3.030 nós, 10.554 arestas).
 
 ## Próximos Passos Imediatos
 1. **Executar teste pontual de fluxo no LegoLoop Studio** (`legoloop studio --addr 127.0.0.1:7878`).
