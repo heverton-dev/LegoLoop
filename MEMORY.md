@@ -213,7 +213,8 @@
   - **Blindagem Canônica do Workspace Concluída:** Grafo semântico indexado no `codebase-memory-mcp` (2.652 nós, 10.121 arestas), [AGENTS.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/AGENTS.md) atualizado com Rule 10 e banimento estrito de polling em background tasks.
   - **Canonização Global do SO Concluída (`legoloop canonize -apply`):** 7.806 cópias redundantes de skills eliminadas em `~/.gemini`, `~/.claude` e `~/.agents`, consolidadas em 2.627 arquivos canônicos únicos no cofre `~/.aidd/canonical` com hardlinks transparentes (29,97 MB liberados).
   - **Resgate Histórico Concluído:** Sessão longa anterior (`c012709b`, 43 turnos) extraída via `faz-session` e preservada em `docs/sessions/`.
+  - **`PATH` do Windows Configurado:** Binário `legoloop` injetado no PATH do usuário com regra inviolável de recompilação pós-ticket no `AGENTS.md`.
+  - **Canonização Sob Demanda Concluída:** Comando `/canonize` adicionado na skill mestre e modal visual do Cofre Canônico integrado na barra do Studio com rotas `/api/canonize/status`, dry-run e apply em 1 clique (100% testes verdes).
 
 ## Próximos Passos Imediatos
-1. **Adicionar `legoloop` ao PATH do Windows** (para invocação global em qualquer terminal).
-2. **Executar teste pontual de fluxo no LegoLoop Studio** (`legoloop studio --addr 127.0.0.1:7878`).
+1. **Executar teste pontual de fluxo no LegoLoop Studio** (`legoloop studio --addr 127.0.0.1:7878`).
