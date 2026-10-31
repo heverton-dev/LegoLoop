@@ -2,15 +2,15 @@
 
 > **Total de Projetos Monitorados:** 1  
 > **Total de Sessões Arquivadas:** 1  
-> **Total de Turnos Interativos:** 43  
-> **Tokens Globais Consumidos:** Input: 7.014.146 | Output: 462.292  
-> **Última Atualização Geral:** 31/10/2026 19:35:45
+> **Total de Turnos Interativos:** 44  
+> **Tokens Globais Consumidos:** Input: 3.063.233 | Output: 107.359  
+> **Última Atualização Geral:** 31/10/2026 20:45:17
 
 ## 📁 Resumo Consolidado por Projeto
 
 | Projeto | Sessões | Turnos | Tokens (Input / Output) | Última Atividade | Índice do Projeto |
 | :--- | :---: | :---: | :--- | :--- | :--- |
-| **LegoLoop** | 1 | 43 | 7.014.146 / 462.292 | 2026-10-31 | [`Ver Sessões (1)`](LegoLoop/INDICE_PROJETO.md) |
+| **LegoLoop** | 1 | 44 | 3.063.233 / 107.359 | 2026-10-31 | [`Ver Sessões (1)`](LegoLoop/INDICE_PROJETO.md) |
 
 ---
 
@@ -18,4 +18,4 @@
 
 | Data | Projeto | ID Sessão | Turnos | Tokens In / Out | Objetivo / Primeiro Prompt | Arquivo |
 | :--- | :--- | :--- | :---: | :--- | :--- | :--- |
-| 31/10/2026 | **LegoLoop** | `c012709b` | 43 | 7.014.146 / 462.292 | pode rodar a aplicaçao para eu auditar? | [`c012709b...`](LegoLoop/31102026_c012709b-e00a-4dcd-98eb-5c1aa83a623b.md) |
+| 31/10/2026 | **LegoLoop** | `57bead38` | 44 | 3.063.233 / 107.359 | Vamos lá dando sequência. Nós utilizamos a nossa skill de roteamento,  | [`57bead38...`](LegoLoop/31102026_57bead38-1f8d-4a96-b68c-e932e4088c51.md) |

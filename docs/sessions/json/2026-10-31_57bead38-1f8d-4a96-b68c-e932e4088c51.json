@@ -1,0 +1,24 @@
+{
+  "projeto": "LegoLoop",
+  "atualizado_em": "2026-10-31T23:45:17Z",
+  "total_sessoes": 1,
+  "total_turnos": 44,
+  "total_tokens_input": 3063233,
+  "total_tokens_thinking": 9559,
+  "total_tokens_output": 107359,
+  "sessoes": [
+    {
+      "id_sessao": "57bead38-1f8d-4a96-b68c-e932e4088c51",
+      "data": "31/10/2026",
+      "atualizado_em": "2026-10-31T23:45:17Z",
+      "turnos": 44,
+      "tokens_input": 3063233,
+      "tokens_thinking": 9559,
+      "tokens_output": 107359,
+      "primeiro_prompt": "Vamos lá dando sequência. Nós utilizamos a nossa skill de roteamento, certo? De roteamento, nosso mega pipeline. Eu preciso entender se ele foi criado, se está tudo certo, se está pronto para uso. Está tudo certo, pronto para uso.",
+      "arquivo_md": "31102026_57bead38-1f8d-4a96-b68c-e932e4088c51.md",
+      "arquivo_json": "31102026_57bead38-1f8d-4a96-b68c-e932e4088c51.json",
+      "arquivo": "31102026_57bead38-1f8d-4a96-b68c-e932e4088c51.md"
+    }
+  ]
+}
