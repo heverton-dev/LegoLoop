@@ -209,8 +209,11 @@
 - **31/10/2026** — 🧭 Status da Skill do Mega Pipeline Orquestrador:
   - **Especificações Arquiteturais Concluídas:** Gravadas e commitadas em `docs/specs/` (`SPEC_LOOPING_ENGINEERING.md`, `SPEC_ORCHESTRIX_PROVIDER_AWARE.md`, `SPEC_ORCHESTRIX_UNIVERSAL_MODELS.md`, `SPEC_ROTEAMENTO_CANONIZACAO.md`).
   - **Materialização Concluída:** Criada a skill canônica [SKILL.md](file:///C:/Users/trcnologia/.gemini/config/skills/aidd-legoloop-mega-pipeline/SKILL.md) em `~/.gemini/config/skills/aidd-legoloop-mega-pipeline/` e sincronizada via Junction em `~/.gemini/antigravity-cli/skills/`.
-  - **Reorganização Estrutural do Repositório:** Raiz limpa e padronizada com subdiretórios canônicos sob `docs/` (`plans/`, `specs/`, `prompts/`, `secoes/`, `examples/`). 100% dos testes do Go passando.
+  - **Reorganização Estrutural do Repositório:** Raiz limpa e padronizada com subdiretórios canônicos sob `docs/` (`intents/`, `specs/`, `plans/`, `reports/`, `prompts/`, `sessions/json/`, `sessions/markdown/`, `examples/`). 100% dos testes do Go passando.
+  - **Blindagem Canônica do Workspace Concluída:** Grafo semântico indexado no `codebase-memory-mcp` (2.652 nós, 10.121 arestas), [AGENTS.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/AGENTS.md) atualizado com Rule 10 e banimento estrito de polling em background tasks.
+  - **Canonização Global do SO Concluída (`legoloop canonize -apply`):** 7.806 cópias redundantes de skills eliminadas em `~/.gemini`, `~/.claude` e `~/.agents`, consolidadas em 2.627 arquivos canônicos únicos no cofre `~/.aidd/canonical` com hardlinks transparentes (29,97 MB liberados).
+  - **Resgate Histórico Concluído:** Sessão longa anterior (`c012709b`, 43 turnos) extraída via `faz-session` e preservada em `docs/sessions/`.
 
 ## Próximos Passos Imediatos
-1. **Comitar a nova estrutura canônica de pastas e o histórico atualizado no Git**.
-2. **Executar um caso de teste pontual da esteira do Mega Pipeline** no LegoLoop Studio (`legoloop studio --addr 127.0.0.1:7878`).
+1. **Adicionar `legoloop` ao PATH do Windows** (para invocação global em qualquer terminal).
+2. **Executar teste pontual de fluxo no LegoLoop Studio** (`legoloop studio --addr 127.0.0.1:7878`).
