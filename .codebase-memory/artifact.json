@@ -1,0 +1,11 @@
+{
+    "schema_version": 2,
+    "commit": "e328bf2b5583ff3471c0546ca8084bd4e722a7b5",
+    "indexed_at": "2026-10-31T22:26:09Z",
+    "project": "LegoLoop",
+    "nodes": 2652,
+    "edges": 10121,
+    "original_size": 8716288,
+    "compressed_size": 2061807,
+    "compression_level": 9
+}
