@@ -1,0 +1,10 @@
+- [ ] Sistema permite cadastro de tutor com CPF, nome, telefone WhatsApp e vinculação de mínimo 1 pet
+- [ ] Recepcionista consegue agendar consulta selecionando pet, veterinário, data e horário em calendário interativo
+- [ ] Sistema dispara automaticamente 2 notificações WhatsApp (24h e 2h antes) para cada agendamento confirmado
+- [ ] Mensagem de lembrete contém link de confirmação único que atualiza status do agendamento para "Confirmado" quando clicado
+- [ ] Veterinário acessa prontuário do pet durante consulta e registra anamnese, diagnóstico, prescrição e peso em até 3 cliques
+- [ ] Sistema exibe histórico completo de consultas de um pet ordenado por data decrescente com acesso aos prontuários anteriores
+- [ ] Tutor com perfil "Tutor" visualiza somente dados dos próprios pets e não tem acesso a prontuários de outros animais
+- [ ] Sistema permite upload de mínimo 1 arquivo de exame (PDF ou imagem) vinculado ao pet e exibe na ficha clínica
+- [ ] Painel de controle diário lista todos os agendamentos do dia com status (Agendado/Confirmado/Realizado) e permite filtro por veterinário
+- [ ] Sistema funciona responsivamente em navegador mobile (largura 375px) permitindo visualização de agenda e cadastro de consultas

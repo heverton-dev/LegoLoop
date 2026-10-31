@@ -1,0 +1,18 @@
+{
+  "name": "e2e-9router-vps", "version": "1.0.0",
+  "nodes": [
+    {"id": "n1_interview", "type": "skill", "ref": "skills/interview", "timeout_sec": 300,
+     "routing": {"mode": "auto", "combo": "code-fast"}, "inputs": {"idea": "var.idea"},
+     "output": {"artifact": "BRIEFING.md", "gate": "file_exists('BRIEFING.md') && word_count('BRIEFING.md') > 100"}},
+    {"id": "n2a_spec", "type": "skill", "ref": "skills/aidd-spec", "depends_on": ["n1_interview"], "timeout_sec": 400,
+     "routing": {"mode": "suggested", "model": "code-pro", "fallback": "mimo:default"},
+     "inputs": {"briefing": "file('BRIEFING.md')"},
+     "output": {"artifact": "SPEC.md", "gate": "has_acceptance_criteria('SPEC.md')"}},
+    {"id": "n2b_riscos", "type": "skill", "ref": "skills/riscos", "depends_on": ["n1_interview"], "timeout_sec": 300,
+     "routing": {"mode": "manual", "model": "code-free"}, "inputs": {"briefing": "file('BRIEFING.md')"},
+     "output": {"artifact": "RISCOS.md", "gate": "has_pattern('RISCOS.md', '(?i)mitiga') && line_count('RISCOS.md') >= 6"}},
+    {"id": "n3_check", "type": "script", "depends_on": ["n2a_spec"], "timeout_sec": 30,
+     "command": ["findstr", "/c:- [ ]", "SPEC.md"], "routing": {"mode": "manual", "model": "none"},
+     "output": {"artifact": "CHECKLIST.txt", "gate": "exit_code == 0 && line_count('CHECKLIST.txt') >= 5"}}
+  ]
+}

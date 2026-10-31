@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LegoLoop Inventário</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="ui.js" defer></script>
+  <script src="search.js" defer></script>
+  <script src="inventory.js" defer></script>
+</head>
+<body class="page-inventory">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">LegoLoop Studio</span>
+    </div>
+    <nav class="topnav" aria-label="Páginas">
+      <a class="topnav__link" href="/">Canvas</a>
+      <a class="topnav__link is-current" href="/inventario" aria-current="page">Inventário</a>
+    </nav>
+    <div class="topbar__actions">
+      <span id="scanned" class="topbar__meta" aria-live="polite"></span>
+      <button id="btn-rescan" class="btn" type="button">Re-varrer</button>
+    </div>
+  </header>
+
+  <main class="inv-workspace">
+    <aside class="inv-tabs" aria-label="Categorias do inventário">
+      <h2 class="panel__title">Categorias</h2>
+      <div id="tabs" class="tabs" role="tablist" aria-orientation="vertical"></div>
+    </aside>
+
+    <section class="inv-main" aria-label="Itens da categoria">
+      <div class="inv-toolbar">
+        <input id="search" class="input inv-search" type="search" placeholder="Buscar por nome, descrição ou origem" autocomplete="off" spellcheck="false" aria-label="Buscar no inventário">
+        <label class="inv-toggle" title="Consolida peças idênticas (mesmo hash) em um único registro com suas origens">
+          <input type="checkbox" id="chk-group" checked>
+          <span>Agrupar cópias</span>
+        </label>
+        <div class="inv-pagesize-wrapper">
+          <label for="sel-pagesize">Por pág:</label>
+          <select id="sel-pagesize" class="input inv-pagesize">
+            <option value="25" selected>25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <span id="result-count" class="inv-count" aria-live="polite"></span>
+      </div>
+      <div id="list" class="inv-list" role="tabpanel"></div>
+      <div id="empty" class="empty empty--inline" hidden>
+        <p id="empty-title" class="empty__title"></p>
+        <p id="empty-text" class="empty__text"></p>
+      </div>
+      <div class="inv-pagination" id="pagination"></div>
+    </section>
+
+    <aside class="inv-canon" aria-label="Canonização">
+      <h2 class="panel__title">Canonizar</h2>
+      <p class="panel__hint">Unifica arquivos <strong>idênticos</strong> (mesmo SHA-256) em um cofre central e deixa links no lugar. Nada é apagado sem backup e qualquer falha restaura o original.</p>
+      <ul class="canon__limits">
+        <li>Variantes diferentes nunca são sobrescritas.</li>
+        <li>Sem permissão de symlink (Windows sem administrador) usa hardlink, só no mesmo volume.</li>
+        <li>Repositórios git são ignorados.</li>
+      </ul>
+      <div class="canon__actions">
+        <button id="btn-simulate" class="btn" type="button">Simular</button>
+        <button id="btn-apply" class="btn btn--primary" type="button" disabled>Aplicar</button>
+      </div>
+      <div id="canon-result" class="canon__result" aria-live="polite"></div>
+    </aside>
+  </main>
+
+  <dialog id="modal-item" class="dialog modal-item">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h3 id="modal-item-name" class="modal-title"></h3>
+        <div id="modal-item-badges" class="modal-badges"></div>
+      </div>
+      <div class="modal-actions-top">
+        <button id="btn-modal-canonize" class="btn btn--primary btn--sm" type="button" title="Canonizar esta peça no cofre central">Canonizar Peça</button>
+        <button id="btn-modal-reveal" class="btn btn--sm" type="button" title="Abrir pasta física no Windows Explorer">📁 Abrir no Explorer</button>
+        <button id="btn-modal-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+    <div class="modal-subtabs" role="tablist">
+      <button class="modal-tab is-active" data-tab="overview" type="button">Visão Geral</button>
+      <button class="modal-tab" data-tab="compat" type="button">Peças Compatíveis</button>
+      <button class="modal-tab" data-tab="occurrences" type="button">Ocorrências no SO</button>
+      <button class="modal-tab" data-tab="source" type="button">Código / Fonte</button>
+    </div>
+    <div class="modal-body">
+      <!-- Aba 1: Visão Geral com Diagrama IPO -->
+      <div id="tab-overview" class="modal-panel is-active">
+        <div class="ipo-container">
+          <h4 class="prop-title">Fluxo IPO (Input ➔ Processamento ➔ Output)</h4>
+          <div class="ipo-flow">
+            <div class="ipo-box ipo-in">
+              <span class="ipo-label">ENTRADA (INPUT)</span>
+              <div id="modal-ipo-in" class="ipo-content"></div>
+            </div>
+            <span class="ipo-arrow">➔</span>
+            <div class="ipo-box ipo-proc">
+              <span class="ipo-label">PROCESSAMENTO</span>
+              <div id="modal-ipo-proc" class="ipo-content"></div>
+            </div>
+            <span class="ipo-arrow">➔</span>
+            <div class="ipo-box ipo-out">
+              <span class="ipo-label">SAÍDA (OUTPUT)</span>
+              <div id="modal-ipo-out" class="ipo-content"></div>
+            </div>
+          </div>
+        </div>
+        <div class="prop-group">
+          <h4 class="prop-title">Artefatos e Entregáveis</h4>
+          <div id="modal-prop-artifacts" class="modal-badges"></div>
+        </div>
+        <div class="prop-group">
+          <h4 class="prop-title">O que é</h4>
+          <p id="modal-prop-what" class="prop-text"></p>
+        </div>
+        <div class="prop-group">
+          <h4 class="prop-title">O que faz</h4>
+          <p id="modal-prop-does" class="prop-text"></p>
+        </div>
+        <div class="prop-group">
+          <h4 class="prop-title">O que entrega</h4>
+          <p id="modal-prop-delivers" class="prop-text"></p>
+        </div>
+      </div>
+
+      <!-- Aba 2: Peças Compatíveis com Filtros e Paginação -->
+      <div id="tab-compat" class="modal-panel">
+        <div class="compat-filters" id="compat-filters">
+          <button class="btn btn--sm compat-filter is-active" data-cat="all" type="button">Todas</button>
+          <button class="btn btn--sm compat-filter" data-cat="skill" type="button">Skills</button>
+          <button class="btn btn--sm compat-filter" data-cat="mcp" type="button">MCPs</button>
+          <button class="btn btn--sm compat-filter" data-cat="script" type="button">Scripts</button>
+          <button class="btn btn--sm compat-filter" data-cat="hook" type="button">Hooks</button>
+          <button class="btn btn--sm compat-filter" data-cat="gate" type="button">Gates</button>
+        </div>
+        <div id="modal-compat-list" class="compat-list">
+          <p class="panel__hint">Calculando conexões ontológicas no grafo...</p>
+        </div>
+        <div id="modal-compat-pagination" class="compat-pagination"></div>
+      </div>
+
+      <!-- Aba 3: Ocorrências no SO -->
+      <div id="tab-occurrences" class="modal-panel">
+        <div id="modal-occurrences-list" class="occurrences-list"></div>
+      </div>
+
+      <!-- Aba 4: Código / Conteúdo -->
+      <div id="tab-source" class="modal-panel">
+        <div class="source-actions">
+          <span id="modal-source-path" class="source-path"></span>
+          <button id="btn-translate" class="btn btn--primary" type="button">Traduzir para PT-BR</button>
+        </div>
+        <div id="modal-translation-status" class="translation-status" hidden></div>
+        <pre class="source-view"><code id="modal-source-code"></code></pre>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <dialog id="dialog" class="dialog"></dialog>
+</body>
+</html>

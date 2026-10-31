@@ -1,0 +1,84 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "name": "nova-esteira",
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "n05_obscura",
+      "type": "skill",
+      "ref": "skills/obscura",
+      "routing": {
+        "mode": "suggested",
+        "model": "haiku",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "url": "var.url"
+      },
+      "output": {
+        "artifact": "PAGE_SNAPSHOT.md",
+        "gate": "file_exists('PAGE_SNAPSHOT.md')"
+      }
+    },
+    {
+      "id": "n06_rea",
+      "type": "skill",
+      "ref": "skills/aidd-rea",
+      "depends_on": [
+        "n05_obscura"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "n05_obscura": "file('PAGE_SNAPSHOT.md')"
+      },
+      "output": {
+        "artifact": "ESTRUTURA_REVERSA.json",
+        "gate": "file_exists('ESTRUTURA_REVERSA.json')"
+      }
+    },
+    {
+      "id": "n07_impeccable",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "n06_rea"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "n06_rea": "file('ESTRUTURA_REVERSA.json')"
+      },
+      "output": {
+        "artifact": "DESIGN.md",
+        "gate": "file_exists('DESIGN.md')"
+      }
+    },
+    {
+      "id": "n08_aiddspec",
+      "type": "skill",
+      "ref": "skills/aidd-spec",
+      "depends_on": [
+        "n07_impeccable"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "n07_impeccable": "file('DESIGN.md')"
+      },
+      "output": {
+        "artifact": "SPEC.md",
+        "gate": "has_binary_criteria('SPEC.md')"
+      }
+    }
+  ]
+}

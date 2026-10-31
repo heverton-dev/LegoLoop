@@ -1,0 +1,86 @@
+# Padrão-Ouro de Stack Tecnológica (Lei Inviolável #11)
+
+> **Origem:** definido durante a validação end-to-end real em
+> `C:\Users\trcnologia\Desktop\proj_ctt\planos-ctt-app` (Sistema de Gestão
+> Logística CTT). Esse projeto é a referência viva do padrão — em caso de
+> dúvida sobre uma camada não coberta aqui, inspecionar o código real lá,
+> nunca supor.
+>
+> **Escopo:** vale para TODOS os fluxos e ferramentas do ecossistema
+> (`aidd-pure`, `aidd-master`, `aidd-open`, `aidd-freedom`, e
+> qualquer nova ferramenta futura) e para TODAS as camadas de todo projeto
+> gerado ou evoluído.
+>
+> **Regra de exceção (única):** a stack abaixo só é substituída se o
+> **plano estruturado** (`PLANNER.json`/`PLANO-EXECUCAO-ESTRUTURADO.json`)
+> ou o **prompt do usuário** especificar outra stack de forma explícita
+> para aquela camada. Silêncio do usuário nunca é licença para usar outra
+> coisa — o padrão-ouro é sempre o default.
+
+## Stack por camada
+
+| Camada | Tecnologia obrigatória (default) | Evidência Canônica |
+|---|---|---|
+| **Frontend** | TanStack Start / TanStack Router + React + TypeScript + Tailwind CSS | `componentes/compartilhado/templates/frontend-tanstack/` — `package.json`, `AdminShell.tsx`, `MobileShell.tsx` |
+| **Backend** | Python puro, 100% determinístico onde possível | `src/core/server.py` |
+| **Database** | SQLite em modo WAL (alta concorrência) | `src/core/database.py`, `app.db` |
+| **API** | OpenAPI 3.1 nativo — Swagger Studio em `/api` | `src/core/openapi.py`, `/api` |
+| **Webhook** | Webhook Studio nativo em `/webhook` | `src/core/webhooks.py`, `/webhook` |
+| **MCP** | MCP Studio nativo em `/mcp` | `src/core/mcp_server.py`, `/mcp` |
+| **Documentação** | Guia/Documentação do Utilizador nativo em `/docs` | Quarteto Sine Qua Non (ver Lei #10 do `AGENTS.md` raiz) |
+
+O Frontend (TanStack/TS/Tailwind) é gerado a partir do OpenAPI da própria
+API (tipagem derivada dos contratos, zero divergência manual) com suporte nativo
+a PWA e Offline-First resiliente via fila local assinada com HMAC SHA-256.
+
+## Versões de referência (`frontend/package.json`)
+
+```json
+{
+  "dependencies": {
+    "@tanstack/react-router": "^1.81.0",
+    "@tanstack/react-query": "^5.59.0",
+    "@tanstack/start": "^1.81.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "tailwindcss": "^3.4.14",
+    "vite": "^5.4.10"
+  }
+}
+```
+
+## O que isso substitui
+
+O "Super-App" HTML gerado dinamicamente em Python puro
+(`generate_superapp_index_html()` em `compose_suite.py`, e o
+`templates/core/index.html` estático usado por `provision_project.py`)
+**não é o padrão-ouro** e não deve ser o frontend final entregue por
+nenhum fluxo. Ele só é aceitável como:
+
+- fallback interno enquanto uma camada de frontend real não foi gerada, ou
+- resultado final **apenas se o usuário pedir expressamente** um frontend
+  simples/embutido em vez de Next.js.
+
+## Achado real (17/09/2026 — validação E2E do Fluxo 01)
+
+Hoje, `aidd-pure` (Fase 5/6) e `aidd-master`
+(`provision_project.py`, `compose_suite.py`, `add_module.py`) geram o
+Super-App em Python como frontend **padrão** de todo projeto novo, e
+`export-frontend`/`nextjs_exporter.py` existem mas são um passo **manual
+separado**, nunca disparado automaticamente por `init`/`add-module`/
+`compose`. Isso viola esta lei. Pendência registrada para correção nos
+pipelines geradores (fora do escopo da sessão que documentou esta regra —
+ver `docs/teste-end-to-end/17-09-2026_relatorio-testes-triade-fluxos-1-2-3.md`).
+
+## Convenção Canônica de Nomenclatura Frontend (Next.js)
+
+Para facilitar a identificação determinística por agentes e ferramentas de auditoria, os arquivos da camada frontend Next.js devem adotar nomenclatura em `kebab-case` e sufixos padronizados por responsabilidade:
+
+- Componente de UI (React): `.component.tsx` (ex.: `metric-card.component.tsx`)
+- Página / Rota Next.js: `.page.tsx` ou padrão App Router `page.tsx`
+- Contexto de Estado React: `.context.tsx` (ex.: `auth.context.tsx`)
+- Custom Hook: `.hook.ts` (ex.: `use-produtos.hook.ts`)
+- Schema de Validação (Zod): `.schema.ts` (ex.: `produto-form.schema.ts`)

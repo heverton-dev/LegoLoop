@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LegoLoop Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="ui.js" defer></script>
+  <script src="search.js" defer></script>
+  <script src="virtual.js" defer></script>
+  <script src="palette.js" defer></script>
+  <script src="slots.js" defer></script>
+  <script src="inspector.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">LegoLoop Studio</span>
+    </div>
+    <nav class="topnav" aria-label="Páginas">
+      <a class="topnav__link is-current" href="/" aria-current="page">Canvas</a>
+      <a class="topnav__link" href="/inventario">Inventário</a>
+    </nav>
+    <label class="topfield">
+      <span class="topfield__label">Esteira</span>
+      <input id="pipeline-name" class="input" value="nova-esteira" maxlength="64" spellcheck="false" autocomplete="off">
+    </label>
+    <div class="route" role="group" aria-label="Rota ótima">
+      <select id="route-from" class="input" aria-label="Artefato de entrada"></select>
+      <span class="route__arrow" aria-hidden="true">→</span>
+      <select id="route-to" class="input" aria-label="Artefato objetivo"></select>
+      <button id="btn-route" class="btn" type="button">Traçar rota</button>
+    </div>
+    <div class="topbar__actions">
+      <button id="btn-validate" class="btn" type="button">Validar</button>
+      <button id="btn-materialize" class="btn btn--primary" type="button">Materializar Esteira</button>
+    </div>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <aside class="sidebar" id="sidebar" aria-label="Peças e inventário">
+      <div class="sidebar-header">
+        <span class="sidebar-header-title panel__title">Catálogo</span>
+        <button id="btn-toggle-sidebar" class="btn btn--ghost sidebar-collapse-btn" type="button" title="Recolher / Expandir barra lateral (Ctrl + B)">◂</button>
+      </div>
+      <div class="sidebar-collapsed-rail">PEÇAS & MODELOS</div>
+
+      <!-- Busca global unificada no topo da sidebar -->
+      <div class="sidebar-search-box">
+        <input id="palette-search" class="input sidebar-search" type="search" placeholder="Buscar peça ou modelo (/)" autocomplete="off" spellcheck="false" aria-label="Buscar peça ou modelo">
+      </div>
+
+      <!-- Menu Principal de Navegação (Tabs no Topo - Sem Rodapé!) -->
+      <nav class="sidebar-nav-tabs" aria-label="Menu principal do catálogo">
+        <button id="btn-toggle-palette" class="sidebar-tab is-active" type="button" aria-pressed="true">
+          <span class="sidebar-tab__title">Peças Disponíveis</span>
+          <span id="palette-total-badge" class="badge">0</span>
+        </button>
+        <button id="btn-toggle-models" class="sidebar-tab" type="button" aria-pressed="false">
+          <span class="sidebar-tab__title">Modelos Vivos</span>
+          <span id="models-total-badge" class="badge">0</span>
+        </button>
+      </nav>
+
+      <!-- Painel 1: Peças Disponíveis (Ocupa o espaço total restante) -->
+      <section class="palette-panel sidebar-content-view is-active" id="section-palette" aria-label="Peças">
+        <div id="palette-accordion-body" class="accordion-body-full">
+          <div id="palette-cats" class="cats" role="tablist" aria-label="Categorias de peças" hidden></div>
+          <p id="palette-hint" class="note" hidden></p>
+          <p id="palette-banner" class="palette-banner" role="status" hidden></p>
+          <div id="palette-treeview" class="treeview-container" role="tree" aria-label="Árvore de peças"></div>
+          <div id="palette-list" class="palette-list" role="listbox" aria-label="Peças disponíveis" hidden>
+            <div id="palette-spacer" class="palette-spacer">
+              <ul id="palette-rows" class="palette"></ul>
+            </div>
+            <div id="palette-empty" class="empty empty--inline" hidden>
+              <p id="palette-empty-title" class="empty__title"></p>
+              <p id="palette-empty-text" class="empty__text"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel 2: Modelos Vivos (Ocupa o espaço total restante quando ativo) -->
+      <section class="models-panel sidebar-content-view" id="section-models" aria-label="Modelos" hidden>
+        <div id="models-accordion-body" class="accordion-body-full">
+          <div id="models-treeview" class="treeview-container" role="tree" aria-label="Árvore de modelos por harness"></div>
+          <div id="inventory" class="inventory" aria-live="polite" hidden></div>
+        </div>
+      </section>
+    </aside>
+
+    <section class="stage" aria-label="Canvas da esteira">
+      <div id="canvas" class="canvas" tabindex="0">
+        <div id="canvas-surface" class="canvas-surface">
+          <svg id="edges" class="edges" aria-hidden="true"></svg>
+          <div id="nodes" class="nodes"></div>
+        </div>
+        <div id="empty" class="empty">
+          <p class="empty__title">Canvas vazio</p>
+          <p class="empty__text">Arraste um bloco da lateral ou trace uma rota ótima entre dois artefatos.</p>
+        </div>
+        <!-- Controles flutuantes de Zoom & Produtividade N8N -->
+        <div class="canvas-controls">
+          <button id="btn-undo" class="btn btn--icon" type="button" title="Desfazer (Ctrl + Z)">↩</button>
+          <button id="btn-redo" class="btn btn--icon" type="button" title="Refazer (Ctrl + Y)">↪</button>
+          <button id="btn-auto-layout" class="btn btn--icon" type="button" title="Organizar Esteira Automaticamente">✨</button>
+          <button id="btn-zoom-in" class="btn btn--icon" type="button" title="Zoom In (Ctrl + +)">+</button>
+          <button id="btn-zoom-fit" class="btn btn--icon" type="button" title="Ajustar à Tela (Ctrl + 0)">⛶</button>
+          <button id="btn-zoom-out" class="btn btn--icon" type="button" title="Zoom Out (Ctrl + -)">−</button>
+          <span id="zoom-level" class="zoom-level">100%</span>
+          <button id="btn-export-png" class="btn btn--icon" type="button" title="Exportar Imagem PNG">📸</button>
+        </div>
+      </div>
+      <div id="issues" class="issues" hidden>
+        <div class="issues__head">
+          <h2 class="panel__title">Problemas</h2>
+          <button id="btn-close-issues" class="btn btn--ghost" type="button" aria-label="Fechar problemas">Fechar</button>
+        </div>
+        <ul id="issues-list" class="issues__list"></ul>
+      </div>
+    </section>
+
+    <aside id="inspector" class="inspector" aria-label="Inspetor do nó">
+      <div class="inspector-header">
+        <h2 class="panel__title">Inspetor</h2>
+        <button id="btn-toggle-inspector" class="btn btn--ghost inspector-collapse-btn" type="button" title="Recolher / Expandir Inspetor">▸</button>
+      </div>
+      <div class="inspector-collapsed-rail">INSPETOR</div>
+      <div id="inspector-body" class="inspector__body">
+        <p class="panel__hint">Selecione um nó ou conexão para configurar.</p>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Modal Rico Enterprise de Peça (Compartilhado e Padrão Ouro) -->
+  <dialog id="modal-item" class="dialog modal-item">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h3 id="modal-item-name" class="modal-title"></h3>
+        <div id="modal-item-badges" class="modal-badges"></div>
+      </div>
+      <div class="modal-actions-top">
+        <button id="btn-modal-add-canvas" class="btn btn--primary btn--sm" type="button" title="Adicionar esta peça ao centro do Canvas">Adicionar ao Canvas</button>
+        <button id="btn-modal-canonize" class="btn btn--sm" type="button" title="Canonizar esta peça no cofre central">Canonizar</button>
+        <button id="btn-modal-reveal" class="btn btn--sm" type="button" title="Abrir pasta física no Windows Explorer">Abrir no Explorer</button>
+        <button id="btn-modal-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+    <div class="modal-subtabs" role="tablist">
+      <button class="modal-tab is-active" data-tab="overview" type="button">Visão Geral</button>
+      <button class="modal-tab" data-tab="compat" type="button">Peças Compatíveis</button>
+      <button class="modal-tab" data-tab="occurrences" type="button">Ocorrências no SO</button>
+      <button class="modal-tab" data-tab="source" type="button">Código / Fonte</button>
+    </div>
+    <div class="modal-body">
+      <!-- Aba 1: Visão Geral com Diagrama IPO -->
+      <div id="tab-overview" class="modal-panel is-active">
+        <div class="ipo-container">
+          <h4 class="prop-title">Fluxo IPO (Input ➔ Processamento ➔ Output)</h4>
+          <div class="ipo-flow">
+            <div class="ipo-box ipo-in">
+              <span class="ipo-label">ENTRADA (INPUT)</span>
+              <div id="modal-ipo-in" class="ipo-content"></div>
+            </div>
+            <span class="ipo-arrow">➔</span>
+            <div class="ipo-box ipo-proc">
+              <span class="ipo-label">PROCESSAMENTO</span>
+              <div id="modal-ipo-proc" class="ipo-content"></div>
+            </div>
+            <span class="ipo-arrow">➔</span>
+            <div class="ipo-box ipo-out">
+              <span class="ipo-label">SAÍDA (OUTPUT)</span>
+              <div id="modal-ipo-out" class="ipo-content"></div>
+            </div>
+          </div>
+        </div>
+        <div class="prop-group">
+          <h4 class="prop-title">Artefatos e Entregáveis</h4>
+          <div id="modal-prop-artifacts" class="modal-badges"></div>
+        </div>
+        <div class="prop-group">
+          <h4 class="prop-title">O que é</h4>
+          <p id="modal-prop-what" class="prop-text"></p>
+        </div>
+        <div class="prop-group">
+          <h4 class="prop-title">O que faz</h4>
+          <p id="modal-prop-does" class="prop-text"></p>
+        </div>
+        <div class="prop-group">
+          <h4 class="prop-title">O que entrega</h4>
+          <p id="modal-prop-delivers" class="prop-text"></p>
+        </div>
+      </div>
+
+      <!-- Aba 2: Peças Compatíveis com Filtros e Paginação -->
+      <div id="tab-compat" class="modal-panel">
+        <div class="compat-filters" id="compat-filters">
+          <button class="btn btn--sm compat-filter is-active" data-cat="all" type="button">Todas</button>
+          <button class="btn btn--sm compat-filter" data-cat="skill" type="button">Skills</button>
+          <button class="btn btn--sm compat-filter" data-cat="mcp" type="button">MCPs</button>
+          <button class="btn btn--sm compat-filter" data-cat="script" type="button">Scripts</button>
+          <button class="btn btn--sm compat-filter" data-cat="hook" type="button">Hooks</button>
+          <button class="btn btn--sm compat-filter" data-cat="gate" type="button">Gates</button>
+        </div>
+        <div id="modal-compat-list" class="compat-list">
+          <p class="panel__hint">Calculando conexões ontológicas no grafo...</p>
+        </div>
+        <div id="modal-compat-pagination" class="compat-pagination"></div>
+      </div>
+
+      <!-- Aba 3: Ocorrências no SO -->
+      <div id="tab-occurrences" class="modal-panel">
+        <div id="modal-occurrences-list" class="occurrences-list"></div>
+      </div>
+
+      <!-- Aba 4: Código / Conteúdo -->
+      <div id="tab-source" class="modal-panel">
+        <div class="source-actions">
+          <span id="modal-source-path" class="source-path"></span>
+          <button id="btn-translate" class="btn btn--primary" type="button">Traduzir para PT-BR</button>
+        </div>
+        <div id="modal-translation-status" class="translation-status" hidden></div>
+        <pre class="source-view"><code id="modal-source-code"></code></pre>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <dialog id="dialog" class="dialog"></dialog>
+</body>
+</html>

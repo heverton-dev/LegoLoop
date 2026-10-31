@@ -1,0 +1,93 @@
+# 🚀 LegoLoop — Plano v3 (Studio, Inventário, Triggers, Sub-loops, Execução)
+
+> **Spec:** [docs/specs/SPEC_STUDIO_V3.md](docs/specs/SPEC_STUDIO_V3.md)
+> **Método:** fatias verticais (tracer bullet) · TDD estrito (Red → Green) · critérios binários
+> **Gate de cada ticket:** `go test ./...` verde, staticcheck/errcheck/funclen limpos, cobertura do pacote ≥ 85%, zero stubs.
+
+## Mapa de épicos
+
+| Épico | Título | Depende de |
+|---|---|---|
+| EP-06 | Fundação de UI (scrollbar, Dialog, Toast, sem nativos) | — |
+| EP-07 | Contrato DAG v2 (trigger, slots, execution, subloop) | — |
+| EP-08 | Inventário completo + Canonizar na UI | EP-06 |
+| EP-09 | Peça: slots, sugestões, conexão/troca | EP-06, EP-07, EP-08 |
+| EP-10 | Acervo de loops + Sub-loops | EP-07 |
+| EP-11 | Triggers e Execução (Executar + Skill orquestradora) | EP-06, EP-07, EP-10 |
+| EP-12 | Templates, catálogo MCP e jornada | EP-08, EP-10 |
+
+## EP-06 — Fundação de UI
+
+- [x] **TICK-601 (Nano):** teste Go que falha se `static/` contiver `alert(`/`confirm(`/`prompt(`; hoje falha em `app.js:516`. *(R-UI-3)*
+- [x] **TICK-602 (Nano):** regra global de scrollbar (4px, thumb 50%, trilho transparente, `scrollbar-width`/`::-webkit-scrollbar`); teste de snapshot do CSS. *(R-UI-2)*
+- [x] **TICK-603 (Micro):** componente `Dialog` (confirmação, foco preso, `Esc`, `aria-live`) e troca do `window.confirm` da rota ótima. Blocked by: 601. *(R-UI-4)*
+- [x] **TICK-604 (Nano):** componente `Toast` e uso nos feedbacks (validar, materializar, erros). Blocked by: 601. *(R-UI-4)*
+
+## EP-07 — Contrato DAG v2
+
+- [x] **TICK-701 (Nano):** types `Trigger`, `Slots`, `Execution`; `node.type = subloop`. *(§3)*
+- [x] **TICK-702 (Nano):** validação de trigger: exatamente 1; cron de 5 campos; `file_change` sem `..`/link; `webhook`/`git_event` ⇒ "fase 2". Blocked by: 701. *(R-TRG-1..3)*
+- [x] **TICK-703 (Nano):** validação de `execution.mode` e regra "inline proibido em camada paralela com artefato sobreposto". Blocked by: 701. *(R-NODE-7)*
+- [x] **TICK-704 (Nano):** compatibilidade v1→v2 (v1 abre como `manual` com aviso). Blocked by: 701. *(§3)*
+- [x] **TICK-705 (Nano):** validação de slots (hooks/gates/scripts passam por SEC-01/03); nó `mcp` ⇒ erro explícito. Blocked by: 701. *(R-NODE-3, R-MCP-3)*
+
+## EP-08 — Inventário completo
+
+- [x] **TICK-801 (Micro):** índice de inventário por tipo (skill, mcp, script, hook, gate, binário, harness) com cache (caminho, mtime, tamanho, hash). *(R-INV-2)*
+- [x] **TICK-802 (Nano):** detector de harnesses/binários via `PATH` + diretórios conhecidos, versão sem executar código não confiável. Blocked by: 801. *(R-INV-4)*
+- [x] **TICK-803 (Nano):** coletor de hooks (global/projeto/scaffold/harness) com escopo; somente leitura. Blocked by: 801. *(R-INV-5)*
+- [x] **TICK-804 (Micro):** re-varredura incremental + vigia nas raízes conhecidas; novo ativo aparece sem ação. Blocked by: 801. *(R-INV-3)*
+- [x] **TICK-805 (Micro):** endpoint `/api/inventory/*` + rota `/inventario` com abas e busca. Blocked by: 801, 603. *(R-INV-1)*
+- [x] **TICK-806 (Micro):** Canonizar na UI: Simular → relatório → Aplicar com `Dialog`, texto dos limites (D8). Blocked by: 805, 603. *(R-INV-7)*
+
+## EP-09 — Peça: slots, sugestões, conexão
+
+- [x] **TICK-901 (Micro):** motor de sugestão determinístico (gates/scripts/hooks/vizinhos) por tipo de artefato; estado vazio explícito. Blocked by: 801, 705. *(R-NODE-2, R-NODE-6)*
+- [x] **TICK-902 (Micro):** UI do inspetor: 3 slots (gates, scripts, hooks; MCP é peça, não slot), painel "Sugeridos", campo de personalização; nenhum slot é obrigatório nem preenchido automaticamente. Blocked by: 901, 603. *(R-NODE-1..3, R-NODE-9)*
+- [x] **TICK-903 (Nano):** desconectar aresta (`Delete` / arrastar ponta). *(R-NODE-4)*
+- [x] **TICK-904 (Micro):** trocar peça preservando arestas compatíveis; incompatíveis marcadas e bloqueando materialização. Blocked by: 903. *(R-NODE-5)*
+- [x] **TICK-905 (Micro):** paleta virtualizada; teste com 5.000 itens ≤ 100 nós no DOM. Blocked by: 601. *(R-UI-1)*
+- [x] **TICK-907 (Micro):** categorias da paleta (Todas, Skills, MCPs, Loops, Scripts, Hooks, Gates) com contadores, estado vazio e agrupamento em `Todas`. Blocked by: 905. *(R-UI-6)*
+- [x] **TICK-908 (Micro):** busca da paleta (sem acento/caixa, nome+id+descrição, ≤ 100 ms com 5.000 itens, `Esc` limpa, `/` foca). Blocked by: 907. *(R-UI-7)*
+- [x] **TICK-909 (Micro):** soltar hook/gate sobre o nó preenche o slot (hook pergunta pre/post pelo `Dialog`); soltar no canvas vazio é recusado com Toast. Blocked by: 907, 902. *(R-UI-6)*
+- [x] **TICK-910 (Nano):** laterais fixas com rolagem vertical interna, cabeçalho da paleta fixo, página sem scroll próprio; teste de layout no navegador. Blocked by: 602. *(R-UI-8)*
+- [x] **TICK-906 (Nano):** seletor `inline`/`isolated` no inspetor com aviso da regra de paralelismo. Blocked by: 703. *(R-NODE-7)*
+
+## EP-10 — Acervo e Sub-loops
+
+- [x] **TICK-1001 (Micro):** armazenamento do acervo (`.loop.json`): salvar/listar/abrir/duplicar/remover. Blocked by: 701. *(R-LOOP-1)*
+- [x] **TICK-1002 (Nano):** derivação de portas do sub-loop a partir do artefato final. Blocked by: 1001. *(R-LOOP-2)*
+- [x] **TICK-1003 (Nano):** detecção de ciclo entre loops e profundidade ≤ 8. Blocked by: 1001. *(R-LOOP-3)*
+- [x] **TICK-1004 (Micro):** runner executa `subloop` isolado e estéril; relatório agrega tokens/modelos. Blocked by: 1002, 1003. *(R-LOOP-4)*
+- [x] **TICK-1005 (Micro):** UI do acervo + peça "Sub-loop" na paleta e nos vizinhos. Blocked by: 1001, 905.
+
+## EP-11 — Triggers e Execução
+
+- [ ] **TICK-1101 (Micro):** isolamento `isolated`: worktree se git, senão cópia temporária; só o artefato declarado volta. Blocked by: 703. *(R-NODE-8)*
+- [ ] **TICK-1102 (Micro):** agendador `cron`, vigia `file_change` (recusa artefato dentro do caminho vigiado), `loop_end`, `manual`. Blocked by: 702, 1004. *(R-TRG-2)*
+- [ ] **TICK-1103 (Micro):** endpoint de execução com SSE (progresso, tokens, modelo efetivo, failover, gates); segurança do Studio preservada. Blocked by: 1004. *(R-RUN-1, R-RUN-4)*
+- [ ] **TICK-1104 (Nano):** consentimento de scripts via `Dialog`; sem consentimento ⇒ falha clara. Blocked by: 1103, 603. *(R-RUN-2)*
+- [ ] **TICK-1105 (Micro):** botão **Executar** na UI com painel de progresso. Blocked by: 1103, 604.
+- [ ] **TICK-1106 (Micro):** **Materializar**: DAG + skill orquestradora (< 20 linhas) no cofre canônico + registro no acervo. Blocked by: 1001. *(R-RUN-3)*
+- [ ] **TICK-1107 (Micro):** runner executa os slots: gates de slot (todos precisam passar, além do gate de saída), scripts e hooks `pre`/`post` (consentimento como `--allow-scripts`, mesma sandbox dos nós `script`); ao concluir, remove de `unsupported` a recusa de `slots`, e junto com 1101 e 1004 a de `isolated` e `subloop`. Blocked by: 705, 1104. *(R-NODE-1, R-RUN-2)*
+
+## EP-12 — Templates, MCP e jornada
+
+- [ ] **TICK-1201 (Micro):** ≥ 3 templates embutidos validados + galeria na tela inicial. Blocked by: 701, 905. *(R-UI-5)*
+- [ ] **TICK-1202 (Micro):** catálogo MCP embutido (`embed`) + "Instalar" com origem e consentimento; não instala sozinho. Blocked by: 805. *(R-MCP-2)*
+- [ ] **TICK-1203 (Micro):** `legoloop forge` abre o Studio e dispara a primeira varredura; verificação ponta a ponta no navegador. Blocked by: 805.
+
+## Ordem sugerida (caminho crítico)
+
+`601→602→603→604` ∥ `701→702..705` → `801→805→806` → `901→902→903→904→905→907→908→909→910` → `1001→1004` → `1101→1103→1105→1106` → `1201→1203`.
+
+## Fase 2 (registrada)
+
+Triggers `webhook` e `git_event`; scaffold de projeto; cliente MCP real e instalação automática; registry público de MCPs.
+
+## Verificação final (antes de fechar)
+
+1. Suíte completa verde (Windows) e `-race` no Docker Linux.
+2. staticcheck, errcheck, govulncheck, funclen limpos.
+3. Auditoria de segurança dos novos endpoints (execução, hooks, vigia).
+4. Navegador: scrollbars 4px, nenhum diálogo nativo, jornada completa, E2E real com Ollama/9Router.
