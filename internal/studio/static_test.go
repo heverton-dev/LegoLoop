@@ -255,3 +255,26 @@ func TestVirtualWindowBoundsTheRenderedRows(t *testing.T) {
 		t.Errorf("casos de borda: %+v", r)
 	}
 }
+
+// TestInventoryScriptNoOrphanModalListeners assegura que inventory.js não contém referências
+// a métodos do modal legado que causam ReferenceError no boot.
+func TestInventoryScriptNoOrphanModalListeners(t *testing.T) {
+	js := readStatic(t, "inventory.js")
+
+	orphans := []string{
+		"translateActiveItem",
+		"switchModalTab",
+		`$("btn-modal-close")`,
+		`$("btn-translate")`,
+	}
+	for _, orphan := range orphans {
+		if strings.Contains(js, orphan) {
+			t.Errorf("inventory.js contém referência órfã do modal legado: %q", orphan)
+		}
+	}
+
+	if !strings.Contains(js, `$("modal-item")`) {
+		t.Error("inventory.js deve delegar para o Web Component <lego-item-modal>")
+	}
+}
+

@@ -348,13 +348,6 @@ async function boot() {
     renderList();
   });
 
-  // Modal subtabs
-  document.querySelectorAll(".modal-tab").forEach((btn) => {
-    btn.addEventListener("click", () => switchModalTab(btn.dataset.tab));
-  });
-  $("btn-modal-close").addEventListener("click", () => $("modal-item").close());
-  $("btn-translate").addEventListener("click", translateActiveItem);
-
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !e.target.closest("input, select, textarea")) { e.preventDefault(); $("search").focus(); }
   });
