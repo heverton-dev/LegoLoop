@@ -59,8 +59,9 @@
 > **Objetivo:** Permitir controle explícito do esforço cognitivo (`effort: "low" | "medium" | "high"`) nos nós, propagando aos executores de harness com comportamento no-op tolerante e telemetria nos Notes.  
 > **Modelo Recomendado:** `Claude 3.7 Sonnet` ou `Gemini 2.0 Pro` (`--effort high`)
 
-### 🔹 Micro-ticket TICK-02.1: Tipagem de `EffortLevel` e Validação no DAG
+### 🔹 Micro-ticket TICK-02.1: Tipagem de `EffortLevel` e Validação no DAG [CONCLUÍDO]
 * **Tipo:** Micro-ticket (Modelagem de Tipos)
+* **Status:** ✅ Concluído
 * **Arquivos Alvo:** [`internal/dag/types.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/dag/types.go), [`internal/dag/parse.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/dag/parse.go), [`internal/dag/dag_test.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/dag/dag_test.go)
 * **Rota:** `Claude 3.5 Sonnet` / `Gemini 2.0 Flash` (`--effort medium`)
 * **Entregáveis & Testes TDD:**
@@ -68,8 +69,9 @@
   2. Validador em `dag.Parse` que aceita vazio (omissão) ou valores canônicos, rejeitando strings desconhecidas.
   3. Testes unitários com casos válidos e de erro.
 
-### 🔹 Micro-ticket TICK-02.2: Injeção de Effort nos Harnesses da Orchestrix
+### 🔹 Micro-ticket TICK-02.2: Injeção de Effort nos Harnesses da Orchestrix [CONCLUÍDO]
 * **Tipo:** Micro-ticket (Integração de Executores)
+* **Status:** ✅ Concluído
 * **Arquivos Alvo:** [`internal/orchestrix/harness.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/orchestrix/harness.go), [`internal/orchestrix/orchestrix.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/orchestrix/orchestrix.go), [`internal/orchestrix/harness_test.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/orchestrix/harness_test.go)
 * **Rota:** `Claude 3.5 Sonnet` / `Gemini 2.0 Flash` (`--effort medium`)
 * **Entregáveis & Testes TDD:**
@@ -77,15 +79,16 @@
   2. Fallback gracioso: quando o harness/backend não aceita reasoning budget, registrar nota explicativa em `Result.Notes`.
   3. Testes TDD cobrindo despacho com `effort: "low"` e fallback.
 
-### 🔸 Nano-ticket TICK-02.3: Telemetria de Clamping no `NodeReport`
+### 🔸 Nano-ticket TICK-02.3: Telemetria de Clamping no `NodeReport` [CONCLUÍDO]
 * **Tipo:** Nano-ticket (Telemetria)
+* **Status:** ✅ Concluído
 * **Arquivos Alvo:** [`internal/runner/runner.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/runner/runner.go)
 * **Rota:** `Gemini 2.0 Flash-Lite` (`--effort low`)
 * **Entregáveis:**
   1. Assegurar que os `Notes` gerados pela Orchestrix são repassados integralmente ao `NodeReport`.
 
 ### 🛑 STOP-GATE DE AUDITORIA HUMANA — ÉPICO 02
-* [ ] Validação dos testes unitários de Effort Clamping.
+* [x] Validação dos testes unitários de Effort Clamping.
 * [ ] Aprovação do usuário para liberação do Épico 03.
 
 ---
