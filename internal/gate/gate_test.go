@@ -238,3 +238,58 @@ func TestSchemaValidBuiltin(t *testing.T) {
 	}
 }
 
+type mockPrompter struct {
+	answer bool
+	err    error
+	prompt string
+}
+
+func (m *mockPrompter) Prompt(msg string) (bool, error) {
+	m.prompt = msg
+	return m.answer, m.err
+}
+
+func TestInteractivePromptGate(t *testing.T) {
+	env := newEnv(t, map[string]string{"out.txt": "ok"}, 0)
+
+	// 1. Sem prompter configurado -> deve falhar
+	e, err := Compile("interactive('Aprovar deploy?')")
+	if err != nil {
+		t.Fatalf("Compile falhou: %v", err)
+	}
+	if _, err := e.Eval(env); err == nil {
+		t.Fatal("esperava erro ao avaliar interactive sem prompter")
+	}
+
+	// 2. Com prompter retornando true
+	pTrue := &mockPrompter{answer: true}
+	env.Prompter = pTrue
+	ok, err := e.Eval(env)
+	if err != nil || !ok {
+		t.Fatalf("Eval com prompter true falhou: got=%v, err=%v", ok, err)
+	}
+	if pTrue.prompt != "Aprovar deploy?" {
+		t.Fatalf("mensagem do prompt inesperada: %q", pTrue.prompt)
+	}
+
+	// 3. Com prompter retornando false
+	pFalse := &mockPrompter{answer: false}
+	env.Prompter = pFalse
+	ok, err = e.Eval(env)
+	if err != nil || ok {
+		t.Fatalf("Eval com prompter false deveria retornar false: got=%v, err=%v", ok, err)
+	}
+
+	// 4. Teste com alias prompt(...)
+	eAlias, err := Compile("prompt('Continuar?')")
+	if err != nil {
+		t.Fatalf("Compile(prompt) falhou: %v", err)
+	}
+	env.Prompter = pTrue
+	ok, err = eAlias.Eval(env)
+	if err != nil || !ok {
+		t.Fatalf("Eval com alias prompt falhou: got=%v, err=%v", ok, err)
+	}
+}
+
+

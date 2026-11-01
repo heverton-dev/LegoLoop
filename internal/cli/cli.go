@@ -22,6 +22,7 @@ const Version = "0.1.0"
 
 // Deps injeta saídas, descoberta de provedores e sinal de prontidão do Studio.
 type Deps struct {
+	Stdin    io.Reader
 	Stdout   io.Writer
 	Stderr   io.Writer
 	Discover func(context.Context) provider.Inventory

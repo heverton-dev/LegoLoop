@@ -18,6 +18,8 @@ var docs = map[string]Doc{
 	"has_binary_criteria":     {Signature: "has_binary_criteria(caminho)", Description: "Verdadeiro se o arquivo tem checklist de critérios binários (- [ ] item)."},
 	"has_acceptance_criteria": {Signature: "has_acceptance_criteria(caminho)", Description: "Verdadeiro se o arquivo tem uma seção de critérios de aceitação."},
 	"schema_valid":            {Signature: "schema_valid(schema, alvo)", Description: "Verdadeiro se o arquivo JSON no caminho alvo cumpre o JSON Schema informado."},
+	"interactive":             {Signature: "interactive(pergunta)", Description: "Pausa a execução e solicita confirmação humana (Stop-Gate interativo)."},
+	"prompt":                  {Signature: "prompt(pergunta)", Description: "Alias de interactive(pergunta) para Stop-Gates humanos."},
 }
 
 // Catalog lista os gates embutidos em ordem alfabética.

@@ -41,6 +41,8 @@ func builtins() map[string]builtin {
 		"has_binary_criteria":     {[]valKind{kStr}, kBool, matchFile(checklistRe)},
 		"has_acceptance_criteria": {[]valKind{kStr}, kBool, hasAcceptance},
 		"schema_valid":            {[]valKind{kStr, kStr}, kBool, schemaValid},
+		"interactive":             {[]valKind{kStr}, kBool, interactivePrompt},
+		"prompt":                  {[]valKind{kStr}, kBool, interactivePrompt},
 	}
 }
 
@@ -69,6 +71,9 @@ func newCall(name string, args []node) (node, error) {
 
 // compileCallLiterals valida caminhos e regex literais já na compilação.
 func compileCallLiterals(c callNode) (node, error) {
+	if c.name == "interactive" || c.name == "prompt" {
+		return c, nil
+	}
 	if lit, ok := c.args[0].(litNode); ok && !filepath.IsLocal(lit.v.s) {
 		return nil, fmt.Errorf("gate: caminho %q fora do workdir", lit.v.s)
 	}
@@ -186,4 +191,16 @@ func schemaValid(env Env, args []value, _ *regexp.Regexp) (value, error) {
 	}
 	return value{kind: kBool, b: ValidateJSONSchema(schemaData, targetData)}, nil
 }
+
+func interactivePrompt(env Env, args []value, _ *regexp.Regexp) (value, error) {
+	if env.Prompter == nil {
+		return value{kind: kBool, b: false}, errors.New("gate: interactive exige prompter configurado")
+	}
+	ok, err := env.Prompter.Prompt(args[0].s)
+	if err != nil {
+		return value{kind: kBool, b: false}, fmt.Errorf("gate: prompt falhou: %w", err)
+	}
+	return value{kind: kBool, b: ok}, nil
+}
+
 

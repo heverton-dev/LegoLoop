@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -13,6 +15,7 @@ import (
 	"legoloop/internal/assets"
 	"legoloop/internal/canon"
 	"legoloop/internal/dag"
+	"legoloop/internal/gate"
 	"legoloop/internal/graph"
 	"legoloop/internal/orchestrix"
 	"legoloop/internal/provider"
@@ -143,6 +146,8 @@ type runFlags struct {
 	vars            listFlag
 	asJSON          bool
 	allowScripts    bool
+	autoApprove     bool
+	nonInteractive  bool
 }
 
 func parseRunFlags(args []string, d Deps) (runFlags, error) {
@@ -155,7 +160,28 @@ func parseRunFlags(args []string, d Deps) (runFlags, error) {
 	fs.Var(&f.vars, "var", "variável chave=valor (repetível)")
 	fs.BoolVar(&f.asJSON, "json", false, "saída JSON")
 	fs.BoolVar(&f.allowScripts, "allow-scripts", false, "permite nós script (executam comandos locais)")
+	fs.BoolVar(&f.autoApprove, "yes", false, "aprova automaticamente Stop-Gates interativos")
+	fs.BoolVar(&f.autoApprove, "y", false, "alias de --yes")
+	fs.BoolVar(&f.nonInteractive, "non-interactive", false, "rejeita Stop-Gates interativos se requerer interação")
 	return f, fs.Parse(args)
+}
+
+type terminalPrompter struct {
+	reader *bufio.Reader
+	out    io.Writer
+}
+
+func (tp *terminalPrompter) Prompt(msg string) (bool, error) {
+	fmt.Fprintf(tp.out, "\n🛑 [STOP-GATE INTERATIVO] %s\nConfirmar execução? [S/n]: ", msg)
+	ans, err := tp.reader.ReadString('\n')
+	if err != nil && !errors.Is(err, io.EOF) {
+		return false, err
+	}
+	ans = strings.TrimSpace(strings.ToLower(ans))
+	if ans == "" || ans == "s" || ans == "sim" || ans == "y" || ans == "yes" || ans == "a" {
+		return true, nil
+	}
+	return false, nil
 }
 
 func parseVars(kvs []string) (map[string]string, error) {
@@ -189,7 +215,26 @@ func cmdRun(ctx context.Context, args []string, d Deps) int {
 		return fail(d, err)
 	}
 	ox.AllowScripts = f.allowScripts
-	rep, err := runner.Run(ctx, p, runner.Options{Workdir: f.workdir, Parallelism: f.parallel, DefaultTimeout: f.timeout, Executor: ox})
+
+	var prompter gate.Prompter
+	if !f.autoApprove && !f.nonInteractive {
+		in := d.Stdin
+		if in == nil {
+			in = os.Stdin
+		}
+		prompter = &terminalPrompter{reader: bufio.NewReader(in), out: d.Stdout}
+	}
+
+	rep, err := runner.Run(ctx, p, runner.Options{
+		Workdir:        f.workdir,
+		Parallelism:    f.parallel,
+		DefaultTimeout: f.timeout,
+		Executor:       ox,
+		AllowScripts:   f.allowScripts,
+		AutoApprove:    f.autoApprove,
+		NonInteractive: f.nonInteractive,
+		Prompter:       prompter,
+	})
 	if err != nil {
 		return fail(d, err)
 	}

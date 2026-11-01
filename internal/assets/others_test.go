@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"legoloop/internal/gate"
 )
 
 func TestScanScripts(t *testing.T) {
@@ -32,8 +34,8 @@ func TestScanScripts(t *testing.T) {
 func TestScanGatesFromBuiltins(t *testing.T) {
 	cfg, _, _ := testCfg(t)
 	items := scanKind(t, cfg, KindGate)
-	if len(items) != 6 {
-		t.Fatalf("gates = %d, quer 6", len(items))
+	if len(items) != len(gate.Catalog()) {
+		t.Fatalf("gates = %d, quer %d", len(items), len(gate.Catalog()))
 	}
 	g := mustFind(t, items, "file_exists")
 	if g.Scope != "builtin" || g.Meta["signature"] != "file_exists(caminho)" || g.Description == "" {

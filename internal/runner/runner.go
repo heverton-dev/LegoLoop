@@ -80,6 +80,9 @@ type Options struct {
 	DefaultTimeout time.Duration
 	Executor       Executor
 	AllowScripts   bool
+	AutoApprove    bool          // --yes: aprova automaticamente gates interativos
+	NonInteractive bool          // --non-interactive: rejeita se não houver TTY
+	Prompter       gate.Prompter // prompter para Stop-Gates interativos
 	OnNodeStart    func(nodeID string)
 	OnNodeFinish   func(nr NodeReport)
 }
@@ -283,7 +286,7 @@ func (r *run) nodeContext(parent context.Context, n dag.Node) (context.Context, 
 }
 
 func (r *run) evalGate(id string, exitCode int) (Status, string) {
-	ok, err := r.d.Gate(id).Eval(gate.Env{Root: r.root, ExitCode: exitCode})
+	ok, err := r.d.Gate(id).Eval(gate.Env{Root: r.root, ExitCode: exitCode, Prompter: r.prompter()})
 	if err != nil {
 		return StatusGateFailed, err.Error()
 	}
@@ -291,6 +294,26 @@ func (r *run) evalGate(id string, exitCode int) (Status, string) {
 		return StatusGateFailed, "gate não satisfeito: " + r.d.Gate(id).String()
 	}
 	return StatusPassed, ""
+}
+
+type autoPrompter struct{}
+
+func (autoPrompter) Prompt(string) (bool, error) { return true, nil }
+
+type nonIntPrompter struct{}
+
+func (nonIntPrompter) Prompt(string) (bool, error) {
+	return false, errors.New("gate interativo bloqueado em modo non-interactive")
+}
+
+func (r *run) prompter() gate.Prompter {
+	if r.opts.AutoApprove {
+		return autoPrompter{}
+	}
+	if r.opts.NonInteractive {
+		return nonIntPrompter{}
+	}
+	return r.opts.Prompter
 }
 
 func (r *run) evalSchema(n dag.Node, workdir string) (bool, string) {

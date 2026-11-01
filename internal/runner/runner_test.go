@@ -261,3 +261,131 @@ func TestRunnerSchemaEnforcement(t *testing.T) {
 	}
 }
 
+type runnerMockPrompter struct {
+	answer bool
+	prompt string
+}
+
+func (m *runnerMockPrompter) Prompt(msg string) (bool, error) {
+	m.prompt = msg
+	return m.answer, nil
+}
+
+func TestRunnerInteractiveGate(t *testing.T) {
+	dagSrc := `{
+		"name": "interactive-gate-test",
+		"nodes": [{
+			"id": "node_deploy",
+			"type": "script",
+			"command": ["go", "version"],
+			"routing": {"mode": "manual", "model": "test"},
+			"output": {
+				"artifact": "deploy.txt",
+				"gate": "interactive('Aprovar deploy em prod?') && exit_code == 0"
+			}
+		}]
+	}`
+	d, err := dag.Parse([]byte(dagSrc))
+	if err != nil {
+		t.Fatalf("Parse: %v", err)
+	}
+
+	workdir := t.TempDir()
+	exec := &schemaExec{payload: "deployed"}
+
+	// 1. AutoApprove = true (--yes)
+	repAuto, err := Run(context.Background(), d, Options{Workdir: workdir, Executor: exec, AutoApprove: true})
+	if err != nil {
+		t.Fatalf("Run auto-approve: %v", err)
+	}
+	if !repAuto.OK || repAuto.Nodes[0].Status != StatusPassed {
+		t.Fatalf("esperava StatusPassed com AutoApprove, obteve: %+v", repAuto.Nodes[0])
+	}
+
+	// 2. NonInteractive = true
+	repNonInt, err := Run(context.Background(), d, Options{Workdir: workdir, Executor: exec, NonInteractive: true})
+	if err != nil {
+		t.Fatalf("Run non-interactive: %v", err)
+	}
+	if repNonInt.OK || repNonInt.Nodes[0].Status != StatusGateFailed {
+		t.Fatalf("esperava StatusGateFailed em NonInteractive, obteve: %+v", repNonInt.Nodes[0])
+	}
+
+	// 3. Custom Prompter: Aprovado
+	pApprove := &runnerMockPrompter{answer: true}
+	repApprove, err := Run(context.Background(), d, Options{Workdir: workdir, Executor: exec, Prompter: pApprove})
+	if err != nil {
+		t.Fatalf("Run prompter approve: %v", err)
+	}
+	if !repApprove.OK || repApprove.Nodes[0].Status != StatusPassed {
+		t.Fatalf("esperava StatusPassed com Prompter aprovado, obteve: %+v", repApprove.Nodes[0])
+	}
+	if pApprove.prompt != "Aprovar deploy em prod?" {
+		t.Fatalf("mensagem do prompt inesperada: %q", pApprove.prompt)
+	}
+
+	// 4. Custom Prompter: Rejeitado
+	pReject := &runnerMockPrompter{answer: false}
+	repReject, err := Run(context.Background(), d, Options{Workdir: workdir, Executor: exec, Prompter: pReject})
+	if err != nil {
+		t.Fatalf("Run prompter reject: %v", err)
+	}
+	if repReject.OK || repReject.Nodes[0].Status != StatusGateFailed {
+		t.Fatalf("esperava StatusGateFailed com Prompter rejeitado, obteve: %+v", repReject.Nodes[0])
+	}
+}
+
+type blockingPrompter struct {
+	ctx          context.Context
+	promptCalled chan struct{}
+}
+
+func (b *blockingPrompter) Prompt(msg string) (bool, error) {
+	close(b.promptCalled)
+	<-b.ctx.Done()
+	return false, b.ctx.Err()
+}
+
+func TestInteractivePromptContextCancellation(t *testing.T) {
+	dagSrc := `{
+		"name": "interactive-cancel-test",
+		"nodes": [{
+			"id": "node_ask",
+			"type": "script",
+			"command": ["go", "version"],
+			"routing": {"mode": "manual", "model": "test"},
+			"output": {"artifact": "out.txt", "gate": "interactive('Pergunta?') && exit_code == 0"}
+		}]
+	}`
+	d, err := dag.Parse([]byte(dagSrc))
+	if err != nil {
+		t.Fatalf("Parse: %v", err)
+	}
+
+	workdir := t.TempDir()
+	exec := &schemaExec{payload: "ok"}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	bp := &blockingPrompter{ctx: ctx, promptCalled: make(chan struct{})}
+
+	done := make(chan Report, 1)
+	go func() {
+		rep, _ := Run(ctx, d, Options{Workdir: workdir, Executor: exec, Prompter: bp})
+		done <- rep
+	}()
+
+	<-bp.promptCalled
+	cancel()
+
+	select {
+	case rep := <-done:
+		if rep.OK {
+			t.Fatal("esperava pipeline reprovado após cancelamento")
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("runner travou durante cancelamento em prompt interativo")
+	}
+}
+
+
+

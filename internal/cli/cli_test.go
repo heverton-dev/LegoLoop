@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"legoloop/internal/gate"
 	"legoloop/internal/provider"
 )
 
@@ -253,7 +254,7 @@ func TestStudioWiresAssetInventory(t *testing.T) {
 		t.Fatal(err)
 	}
 	resp.Body.Close()
-	if body.Counts["skill"] != 1 || body.Counts["gate"] != 6 {
+	if body.Counts["skill"] != 1 || body.Counts["gate"] != len(gate.Catalog()) {
 		t.Errorf("counts = %v", body.Counts)
 	}
 	if code := stop(); code != 0 {
@@ -374,3 +375,54 @@ func TestForgeServesAndTriggersInitialScan(t *testing.T) {
 		t.Fatalf("saída do forge deve informar URL: %s", out.String())
 	}
 }
+
+func TestRunInteractiveFlags(t *testing.T) {
+	work := t.TempDir()
+	p := filepath.Join(work, "pipeline.dag.json")
+	dagJSON := `{
+		"name": "cli-interactive-test",
+		"nodes": [{
+			"id": "node_ask",
+			"type": "script",
+			"command": ["go", "version"],
+			"routing": {"mode": "manual", "model": "test"},
+			"output": {"artifact": "out.txt", "gate": "interactive('Aprovar acao?') && exit_code == 0"}
+		}]
+	}`
+	if err := os.WriteFile(p, []byte(dagJSON), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	// 1. --yes deve aprovar automaticamente
+	d1, _, _ := deps(t)
+	if code := run(t, d1, "run", p, "--workdir", work, "--allow-scripts", "--yes"); code != 0 {
+		t.Fatalf("--yes deveria aprovar, code=%d", code)
+	}
+
+	// 2. -y (alias) deve aprovar
+	d2, _, _ := deps(t)
+	if code := run(t, d2, "run", p, "--workdir", work, "--allow-scripts", "-y"); code != 0 {
+		t.Fatalf("-y deveria aprovar, code=%d", code)
+	}
+
+	// 3. --non-interactive deve rejeitar
+	d3, _, _ := deps(t)
+	if code := run(t, d3, "run", p, "--workdir", work, "--allow-scripts", "--non-interactive"); code != 1 {
+		t.Fatalf("--non-interactive deveria falhar com 1, code=%d", code)
+	}
+
+	// 4. Stdin com "s\n" deve aprovar
+	d4, out4, _ := deps(t)
+	d4.Stdin = strings.NewReader("s\n")
+	if code := run(t, d4, "run", p, "--workdir", work, "--allow-scripts"); code != 0 {
+		t.Fatalf("stdin 's' deveria aprovar, code=%d\nout: %s", code, out4.String())
+	}
+
+	// 5. Stdin com "n\n" deve rejeitar
+	d5, _, _ := deps(t)
+	d5.Stdin = strings.NewReader("n\n")
+	if code := run(t, d5, "run", p, "--workdir", work, "--allow-scripts"); code != 1 {
+		t.Fatalf("stdin 'n' deveria rejeitar com 1, code=%d", code)
+	}
+}
+

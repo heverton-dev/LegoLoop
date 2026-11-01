@@ -7,6 +7,8 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"legoloop/internal/gate"
 )
 
 func TestScanAggregatesSortsAndCounts(t *testing.T) {
@@ -20,7 +22,7 @@ func TestScanAggregatesSortsAndCounts(t *testing.T) {
 	if len(skills) != 2 || skills[0].Name != "alpha" || skills[1].Name != "zeta" {
 		t.Fatalf("skills fora de ordem: %+v", skills)
 	}
-	if snap.Counts[KindSkill] != 2 || snap.Counts[KindScript] != 1 || snap.Counts[KindGate] != 6 || snap.Counts[KindBinary] != 1 {
+	if snap.Counts[KindSkill] != 2 || snap.Counts[KindScript] != 1 || snap.Counts[KindGate] != len(gate.Catalog()) || snap.Counts[KindBinary] != 1 {
 		t.Errorf("counts = %v", snap.Counts)
 	}
 	for _, k := range Kinds() {

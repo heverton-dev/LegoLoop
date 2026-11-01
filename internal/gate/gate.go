@@ -6,11 +6,17 @@ import (
 	"strings"
 )
 
-// Env é o contexto de avaliação: arquivos confinados ao Root do workdir do nó
-// e o código de saída do executor.
+// Prompter solicita confirmação interativa para gates humanos (Stop-Gates).
+type Prompter interface {
+	Prompt(message string) (bool, error)
+}
+
+// Env é o contexto de avaliação: arquivos confinados ao Root do workdir do nó,
+// o código de saída do executor e o Prompter para Stop-Gates interativos.
 type Env struct {
 	Root     RootFS
 	ExitCode int
+	Prompter Prompter
 }
 
 // Expr é uma expressão de gate compilada e com tipos verificados.
