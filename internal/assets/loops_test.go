@@ -29,7 +29,7 @@ func TestScanLoops(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	scanner := assets.NewScanner(assets.Config{LoopsDir: loopsDir})
+	scanner := assets.NewScanner(assets.Config{Home: t.TempDir(), LoopsDir: loopsDir})
 	snap := scanner.Scan(context.Background())
 
 	loops := snap.Of(assets.KindLoop)

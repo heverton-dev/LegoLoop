@@ -140,7 +140,7 @@
 
 ### 🛑 STOP-GATE DE AUDITORIA HUMANA — ÉPICO 03
 * [x] Validação dos testes unitários de Interactive Gates.
-* [ ] Aprovação do usuário para liberação da Homologação.
+* [x] Aprovação do usuário para liberação da Homologação.
 
 ---
 
@@ -148,15 +148,17 @@
 > **Objetivo:** Testar a suíte completa de ponta a ponta, recompilar o binário canônico e emitir o relatório de conformidade.  
 > **Modelo Recomendado:** `Claude 3.5 Sonnet` ou `Gemini 2.0 Flash` (`--effort medium`)
 
-### 🔹 Micro-ticket TICK-04.1: Teste Integrado E2E do Harness Engineering
+### 🔹 Micro-ticket TICK-04.1: Teste Integrado E2E do Harness Engineering [CONCLUÍDO]
 * **Tipo:** Micro-ticket (Validação E2E)
+* **Status:** ✅ Concluído
 * **Arquivos Alvo:** [`internal/runner/harness_engineering_e2e_test.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/runner/harness_engineering_e2e_test.go)
 * **Rota:** `Claude 3.5 Sonnet` / `Gemini 2.0 Flash` (`--effort medium`)
 * **Entregáveis:**
   1. Pipeline completo executando com nó contendo `effort: "low"`, `output.schema` validando JSON e gate com `interactive(...)`.
 
-### 🔸 Nano-ticket TICK-04.2: Recompilação Obrigatória e Relatório Final
+### 🔸 Nano-ticket TICK-04.2: Recompilação Obrigatória e Relatório Final [CONCLUÍDO]
 * **Tipo:** Nano-ticket (Entrega & Auditoria)
+* **Status:** ✅ Concluído
 * **Arquivos Alvo:** [`bin/legoloop.exe`](file:///C:/Users/trcnologia/Desktop/LegoLoop/bin/legoloop.exe), [`docs/reports/2026-11-01_REPORT_HARNESS_ENGINEERING_GO.md`](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports/2026-11-01_REPORT_HARNESS_ENGINEERING_GO.md)
 * **Rota:** `Gemini 2.0 Flash-Lite` (`--effort low`)
 * **Entregáveis:**
@@ -164,6 +166,6 @@
   2. Relatório formal de homologação com telemetria e validação dos critérios G1 a G6.
 
 ### 🛑 STOP-GATE DE AUDITORIA HUMANA FINAL
-* [ ] Suíte 100% verde (`go test ./...`).
-* [ ] Binário atualizado no disco.
-* [ ] Relatório aprovado pelo usuário.
+* [x] Suíte 100% verde (`go test ./...`).
+* [x] Binário atualizado no disco.
+* [x] Relatório aprovado pelo usuário.

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"legoloop/internal/assets"
+	"legoloop/internal/gate"
 )
 
 // newAssetsServer liga o Studio a um inventário isolado (HOME, projeto e cofre temporários).
@@ -68,7 +69,7 @@ func TestAssetsSummaryCountsEveryTab(t *testing.T) {
 			t.Errorf("contagem de %q ausente: %v", k, b.Counts)
 		}
 	}
-	if b.Counts["skill"] != 1 || b.Counts["gate"] != 6 || b.Counts["model"] != 5 || b.Counts["loop"] != 0 || b.Version == 0 {
+	if b.Counts["skill"] != 1 || b.Counts["gate"] != len(gate.Catalog()) || b.Counts["model"] != 5 || b.Counts["loop"] != 0 || b.Version == 0 {
 		t.Errorf("contagens inesperadas: %+v", b)
 	}
 }
