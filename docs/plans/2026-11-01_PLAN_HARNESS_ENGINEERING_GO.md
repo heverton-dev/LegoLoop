@@ -89,7 +89,7 @@
 
 ### 🛑 STOP-GATE DE AUDITORIA HUMANA — ÉPICO 02
 * [x] Validação dos testes unitários de Effort Clamping.
-* [ ] Aprovação do usuário para liberação do Épico 03.
+* [x] Aprovação do usuário para liberação do Épico 03.
 
 ---
 
@@ -97,8 +97,9 @@
 > **Objetivo:** Permitir que gates peçam intervenção ou aprovação humana explícita antes do pipeline prosseguir, integrando interface Prompter no motor runner e flags no CLI.  
 > **Modelo Recomendado:** `Claude 3.7 Sonnet` ou `Gemini 2.0 Pro` (`--effort high`)
 
-### 🔹 Micro-ticket TICK-03.1: Interface `Prompter` e Builtin `interactive` na DSL
+### 🔹 Micro-ticket TICK-03.1: Interface `Prompter` e Builtin `interactive` na DSL [CONCLUÍDO]
 * **Tipo:** Micro-ticket (Extensão de DSL)
+* **Status:** ✅ Concluído
 * **Arquivos Alvo:** [`internal/gate/gate.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/gate/gate.go), [`internal/gate/builtins.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/gate/builtins.go), [`internal/gate/gate_test.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/gate/gate_test.go)
 * **Rota:** `Claude 3.5 Sonnet` / `Gemini 2.0 Flash` (`--effort medium`)
 * **Entregáveis & Testes TDD:**
@@ -107,8 +108,9 @@
   3. Builtin `interactive(msg)` e alias `prompt(msg)` chamando `env.Prompter`. Se `env.Prompter == nil`, retornar erro claro ou recusa segura.
   4. Testes TDD mockando o Prompter (retornando true, false ou erro).
 
-### 🔹 Micro-ticket TICK-03.2: Gerenciamento de Prompter e AutoApprove no Runner
+### 🔹 Micro-ticket TICK-03.2: Gerenciamento de Prompter e AutoApprove no Runner [CONCLUÍDO]
 * **Tipo:** Micro-ticket (Ciclo de Execução)
+* **Status:** ✅ Concluído
 * **Arquivos Alvo:** [`internal/runner/runner.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/runner/runner.go), [`internal/runner/runner_test.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/runner/runner_test.go)
 * **Rota:** `Claude 3.5 Sonnet` / `Gemini 2.0 Flash` (`--effort medium`)
 * **Entregáveis & Testes TDD:**
@@ -117,8 +119,9 @@
   3. Se o gate for rejeitado pelo usuário, marcar `StatusGateFailed` com `"rejeitado pelo operador"`.
   4. Testes TDD com aprovação, rejeição e auto-approve.
 
-### 🔹 Micro-ticket TICK-03.3: Suporte a Terminal Interativo e Flags no CLI
+### 🔹 Micro-ticket TICK-03.3: Suporte a Terminal Interativo e Flags no CLI [CONCLUÍDO]
 * **Tipo:** Micro-ticket (Interface CLI)
+* **Status:** ✅ Concluído
 * **Arquivos Alvo:** [`internal/cli/commands.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/cli/commands.go), [`internal/cli/cli_test.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/cli/cli_test.go)
 * **Rota:** `Claude 3.5 Sonnet` / `Gemini 2.0 Flash` (`--effort medium`)
 * **Entregáveis & Testes TDD:**
@@ -127,15 +130,16 @@
   3. Em ambiente `--non-interactive` sem `--yes`, falhar com aviso de bloqueio.
   4. Testes TDD simulando `Stdin` e flags.
 
-### 🔸 Nano-ticket TICK-03.4: Resiliência contra Context Cancellation
+### 🔸 Nano-ticket TICK-03.4: Resiliência contra Context Cancellation [CONCLUÍDO]
 * **Tipo:** Nano-ticket (Robustez)
+* **Status:** ✅ Concluído
 * **Arquivos Alvo:** [`internal/runner/runner.go`](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/runner/runner.go)
 * **Rota:** `Gemini 2.0 Flash-Lite` (`--effort low`)
 * **Entregáveis:**
   1. Se o contexto for cancelado (Ctrl+C ou timeout) durante a espera do prompter, encerrar imediatamente sem travar goroutine órfã.
 
 ### 🛑 STOP-GATE DE AUDITORIA HUMANA — ÉPICO 03
-* [ ] Validação dos testes unitários de Interactive Gates.
+* [x] Validação dos testes unitários de Interactive Gates.
 * [ ] Aprovação do usuário para liberação da Homologação.
 
 ---
