@@ -1,0 +1,31 @@
+{
+  "route_id": "EP23_SUBGRAFOS_DRILLDOWN_BREADCRUMBS",
+  "created_at": "2026-11-01T18:10:00Z",
+  "epic": 23,
+  "nodes": [
+    {
+      "ticket": "TICK-2301",
+      "name": "Estrutura HTML/CSS Breadcrumbs e Macro-Cards",
+      "target_files": ["internal/studio/static/index.html", "internal/studio/static/style.css"],
+      "gate": "go test -v -run TestCanvasPageWiring ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2302",
+      "name": "Mecânica de Drill-Down e Pilha de Navegação",
+      "target_files": ["internal/studio/static/app.js", "internal/studio/static/inspector.js"],
+      "gate": "go test -v -run TestCanvasEventWiring ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2303",
+      "name": "Blindagem Zero Emojis e Testes de Integridade",
+      "target_files": ["internal/studio/emojis_test.go", "internal/studio/static_test.go"],
+      "gate": "go test -v -run TestZeroEmojis ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2304",
+      "name": "Validação Global e Recompilação",
+      "target_files": ["bin/legoloop.exe"],
+      "gate": "go test ./... && go build -o bin/legoloop.exe ./cmd/legoloop"
+    }
+  ]
+}

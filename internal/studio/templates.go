@@ -22,9 +22,9 @@ func BuiltinTemplates() []Template {
 		{
 			ID:          "greenfield",
 			Name:        "Greenfield Development",
-			Description: "Esteira padrão de desenvolvimento do zero: Briefing ➔ Spec ➔ Tickets ➔ Implementação TDD.",
+			Description: "Esteira padrão de desenvolvimento do zero: Briefing -> Spec -> Tickets -> Implementação TDD.",
 			Category:    "Engenharia",
-			Icon:        "🌱",
+			Icon:        "plant",
 			Composition: Composition{
 				Name: "greenfield-esteira",
 				Nodes: []CompNode{
@@ -65,7 +65,7 @@ func BuiltinTemplates() []Template {
 			Name:        "Engenharia Reversa (REA Clone-to-Craft)",
 			Description: "Desconstrução e dissecação profunda de alvo web/nativo com tokens de design e reconstrução canônica.",
 			Category:    "Análise",
-			Icon:        "🔍",
+			Icon:        "search",
 			Composition: Composition{
 				Name: "rea-pipeline",
 				Nodes: []CompNode{
@@ -97,7 +97,7 @@ func BuiltinTemplates() []Template {
 			Name:        "Auditoria de Segurança & Hardening",
 			Description: "Verificação estrita de privilégios, varredura de segredos, checagem CSP e conformidade de portas.",
 			Category:    "Segurança",
-			Icon:        "🛡️",
+			Icon:        "shield",
 			Composition: Composition{
 				Name: "security-audit-esteira",
 				Nodes: []CompNode{
@@ -121,6 +121,66 @@ func BuiltinTemplates() []Template {
 				},
 				Edges: []CompEdge{
 					{From: "audit-scan", To: "audit-report"},
+				},
+			},
+		},
+		{
+			ID:          "mega-pipeline",
+			Name:        "Mega Pipeline AIDD (5 Sub-Loops)",
+			Description: "Esteira mestre com os 5 sub-loops canonicos: Concepcao -> Design -> Triade de Planejamento -> TDD -> Homologacao.",
+			Category:    "Orquestracao",
+			Icon:        "template",
+			Composition: Composition{
+				Name: "mega-pipeline-esteira",
+				Nodes: []CompNode{
+					{
+						ID:    "l1-concepcao",
+						Block: "aidd-grill",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "haiku",
+						},
+					},
+					{
+						ID:    "l2-design",
+						Block: "impeccable",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+					{
+						ID:    "l3-triade",
+						Block: "aidd-spec",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-pro",
+						},
+					},
+					{
+						ID:    "l4-tdd",
+						Block: "aidd-tdd",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "llama3.1:8b",
+						},
+					},
+					{
+						ID:    "l5-homologue",
+						Block: "aidd-spec",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+				},
+				Edges: []CompEdge{
+					{From: "l1-concepcao", To: "l2-design"},
+					{From: "l2-design", To: "l3-triade"},
+					{From: "l3-triade", To: "l4-tdd"},
+					{From: "l4-tdd", To: "l5-homologue"},
 				},
 			},
 		},

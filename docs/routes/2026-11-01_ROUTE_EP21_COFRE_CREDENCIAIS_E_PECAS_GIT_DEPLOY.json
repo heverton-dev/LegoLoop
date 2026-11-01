@@ -1,0 +1,43 @@
+{
+  "route_id": "EP21_COFRE_CREDENCIAIS_E_PECAS_GIT_DEPLOY",
+  "created_at": "2026-11-01T17:00:00Z",
+  "epic": 21,
+  "nodes": [
+    {
+      "ticket": "TICK-2101",
+      "name": "Motor Criptográfico Vault AES-256-GCM & Mascaramento",
+      "target_files": ["internal/vault/vault.go", "internal/vault/vault_test.go"],
+      "gate": "go test -v ./internal/vault/..."
+    },
+    {
+      "ticket": "TICK-2102",
+      "name": "Peça Ontológica env-vault",
+      "target_files": ["internal/graph/ontology.go", "internal/graph/graph_test.go"],
+      "gate": "go test -v ./internal/graph/..."
+    },
+    {
+      "ticket": "TICK-2103",
+      "name": "Peças Canônicas Git (commit, merge, tag)",
+      "target_files": ["internal/graph/ontology.go", "internal/graph/graph_test.go"],
+      "gate": "go test -v ./internal/graph/..."
+    },
+    {
+      "ticket": "TICK-2104",
+      "name": "Peças Canônicas Deploy (docker, vps, vercel)",
+      "target_files": ["internal/graph/ontology.go", "internal/graph/graph_test.go"],
+      "gate": "go test -v ./internal/graph/..."
+    },
+    {
+      "ticket": "TICK-2105",
+      "name": "Exposição no Studio Canvas",
+      "target_files": ["internal/studio/pieces.go", "internal/studio/pieces_test.go"],
+      "gate": "go test -v ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2106",
+      "name": "E2E & Recompilação de Binário",
+      "target_files": ["bin/legoloop.exe"],
+      "gate": "go test ./... && go build -o bin/legoloop.exe ./cmd/legoloop"
+    }
+  ]
+}

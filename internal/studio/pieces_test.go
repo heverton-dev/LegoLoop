@@ -487,5 +487,47 @@ func TestComposeWithTriggerPiece(t *testing.T) {
 	}
 }
 
+func TestSkillPieceOntologyPromotion(t *testing.T) {
+	s, home, _ := newAssetsServer(t)
+	writeFile(t, filepath.Join(home, ".claude", "skills", "spec-skill", "SKILL.md"), `---
+name: spec-skill
+description: Gerador de specs
+consumes: [Artifact:Briefing]
+produces: Artifact:Spec
+artifact: SPEC.md
+gate: file_exists('SPEC.md')
+---
+`)
+
+	items := listKind(t, s, "skill")
+	var skillID string
+	for _, it := range items {
+		if it.Name == "spec-skill" {
+			skillID = it.ID
+			break
+		}
+	}
+	if skillID == "" {
+		t.Fatalf("spec-skill não encontrada nos assets")
+	}
+
+	res := s.resolver(context.Background())
+	if _, ok := res.ByID(skillID); !ok {
+		t.Fatalf("res.ByID falhou para id %s", skillID)
+	}
+
+	info, errStr := resolvePiece(res, CompPiece{Kind: "skill", Ref: skillID})
+	if errStr != "" {
+		t.Fatalf("resolvePiece falhou: %s", errStr)
+	}
+
+	if info.Block == nil {
+		t.Fatalf("esperava que a peça fosse promovida a Block ontológico, mas Block == nil")
+	}
+	if len(info.Block.Consumes) == 0 || info.Block.Produces != graph.Spec {
+		t.Errorf("Block com portas ontológicas inválidas: %+v", info.Block)
+	}
+}
+
 
 

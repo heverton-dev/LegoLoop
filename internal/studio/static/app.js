@@ -37,6 +37,8 @@ const state = {
   selected: null,
   seq: 0,
   status: new Map(),
+  telemetry: new Map(),
+  navStack: [],
   badEdges: new Set(),
   swapping: null,
   gateDraft: null,
@@ -217,20 +219,45 @@ function removeNode(id) {
   updateEmpty();
 }
 
+function nodeCategoryClass(block) {
+  const k = block.kind || "";
+  if (k.startsWith("trigger_")) return "node--trigger";
+  if (k.startsWith("flow_")) return "node--control";
+  if (k === "mcp") return "node--mcp";
+  if (k === "subloop" || k === "loop") return "node--loop";
+  if (k === "script") return "node--script";
+  if (k === "hook") return "node--hook";
+  if (k === "gate") return "node--gate";
+  return "node--skill";
+}
+
 function nodeEl(node) {
   const block = blockOf(node);
   const isTrig = block.kind && block.kind.startsWith("trigger_");
-  const root = el("div", isTrig ? "node node--trigger" : "node");
+  const isSubloop = (node.piece && (node.piece.kind === "subloop" || node.piece.kind === "loop")) || (block.kind && (block.kind === "loop" || block.kind === "flow_loop"));
+  const catClass = nodeCategoryClass(block);
+  const root = el("div", `node ${catClass}${isSubloop ? " node--macro" : ""}`);
+  root.id = `node-${node.id}`;
   root.dataset.id = node.id;
   root.tabIndex = 0;
   root.setAttribute("role", "group");
   root.setAttribute("aria-label", `Nó ${block.label}`);
 
+  if (isSubloop) {
+    root.addEventListener("dblclick", (ev) => {
+      ev.stopPropagation();
+      enterSubloop(node.piece?.ref || block.id, block.label);
+    });
+  }
+
   const head = el("div", "node__head");
-  head.append(el("span", "node__title", isTrig ? `⚡ ${block.label}` : block.label), el("span", "node__id", node.id));
+  head.append(el("span", "node__title", isTrig ? `[Gatilho] ${block.label}` : block.label), el("span", "node__id", node.id));
+  if (isSubloop) {
+    head.append(el("span", "node__macro-hint", "Duplo clique para abrir"));
+  }
 
   const ports = el("div", "node__ports");
-  const inLabel = isTrig ? "⚡ Gatilho" : (block.consumes || []).map(shortType).join(" | ");
+  const inLabel = isTrig ? "[Gatilho]" : (block.consumes || []).map(shortType).join(" | ");
   ports.append(
     el("span", "node__port-label", inLabel),
     el("span", "node__port-label node__port-label--out", shortType(block.produces)),
@@ -263,6 +290,29 @@ function renderNode(node) {
   root.classList.toggle("is-fail", state.status.get(node.id) === "fail");
   root.classList.toggle("is-swapping", state.swapping === node.id);
   renderBadges(node, root.querySelector(".node__badges"));
+
+  // Telemetria por card em tempo real
+  let telemBox = root.querySelector(".node__telemetry");
+  const telemData = state.telemetry?.get(node.id);
+  if (telemData) {
+    if (!telemBox) {
+      telemBox = el("div", "node__telemetry");
+      root.append(telemBox);
+    }
+    const isRun = telemData.status === "running";
+    const isPass = telemData.status === "passed";
+    const statusCls = isRun ? "is-running" : isPass ? "is-passed" : "is-failed";
+    const statusText = isRun ? "RUN" : isPass ? "OK" : "FAIL";
+
+    const spanStatus = el("span", `node__telemetry-status ${statusCls}`, statusText);
+    const spanTime = el("span", "node__telemetry-time", telemData.duration_ms !== undefined ? `${telemData.duration_ms}ms` : "...");
+    const tokensTxt = telemData.tokens ? `In:${telemData.tokens.input} Out:${telemData.tokens.output}` : "";
+    const spanTokens = el("span", "node__telemetry-tokens", tokensTxt);
+
+    telemBox.replaceChildren(spanStatus, spanTime, spanTokens);
+  } else if (telemBox) {
+    telemBox.remove();
+  }
 }
 
 function pill(cls, text, title) {
@@ -295,6 +345,144 @@ function renderAllNodes() {
 function updateEmpty() {
   $("empty").hidden = state.nodes.size > 0;
 }
+
+// ---------- Sub-grafos em Mega-Pipelines (Drill-Down & Breadcrumbs) ----------
+
+function serializeCanvasSnapshot() {
+  return {
+    name: $("pipeline-name")?.value || "esteira",
+    nodes: Array.from(state.nodes.values()).map((n) => JSON.parse(JSON.stringify(n))),
+    edges: JSON.parse(JSON.stringify(state.edges)),
+    status: new Map(state.status),
+    telemetry: new Map(state.telemetry),
+  };
+}
+
+function restoreCanvasSnapshot(snap) {
+  if (!snap) return;
+  [...state.nodes.keys()].forEach(removeNode);
+
+  if ($("pipeline-name") && snap.name) {
+    $("pipeline-name").value = snap.name;
+  }
+
+  (snap.nodes || []).forEach((n) => {
+    state.nodes.set(n.id, n);
+    renderNode(n);
+  });
+
+  state.edges = snap.edges || [];
+  state.status = snap.status ? new Map(snap.status) : new Map();
+  state.telemetry = snap.telemetry ? new Map(snap.telemetry) : new Map();
+
+  renderAllNodes();
+  updateEmpty();
+}
+
+async function enterSubloop(subloopId, subloopLabel) {
+  if (!subloopId) return;
+  const currentSnap = serializeCanvasSnapshot();
+  currentSnap.label = currentSnap.name || "Principal";
+  state.navStack.push(currentSnap);
+
+  try {
+    const resp = await fetch(`/api/loops/${encodeURIComponent(subloopId)}`);
+    if (!resp.ok) {
+      toast("Não foi possível carregar o sub-grafo do acervo", true);
+      state.navStack.pop();
+      return;
+    }
+    const loopData = await resp.json();
+
+    [...state.nodes.keys()].forEach(removeNode);
+
+    if ($("pipeline-name")) {
+      $("pipeline-name").value = loopData.name || subloopId;
+    }
+
+    const nodeMap = new Map();
+    (loopData.nodes || []).forEach((n, i) => {
+      const added = addNode(n.block || n.id, 60 + i * (NODE_W + 80), 100 + (i % 2) * 40);
+      if (added) {
+        nodeMap.set(n.id, added.id);
+      }
+    });
+
+    (loopData.edges || []).forEach((e) => {
+      const fromId = nodeMap.get(e.from);
+      const toId = nodeMap.get(e.to);
+      if (fromId && toId) {
+        addEdge(fromId, toId);
+      }
+    });
+
+    renderBreadcrumbs();
+    autoLayout();
+    fitToScreen();
+    toast(`Sub-grafo aberto: ${subloopLabel || loopData.name || subloopId}`);
+  } catch (err) {
+    toast("Erro ao abrir sub-grafo: " + err.message, true);
+    state.navStack.pop();
+  }
+}
+
+function leaveSubloop(targetIndex) {
+  if (state.navStack.length === 0) return;
+  const idx = targetIndex !== undefined ? targetIndex : state.navStack.length - 1;
+  const targetSnap = state.navStack[idx];
+  state.navStack = state.navStack.slice(0, idx);
+
+  restoreCanvasSnapshot(targetSnap);
+  renderBreadcrumbs();
+  toast(`Retornou para: ${targetSnap.label}`);
+}
+
+function renderBreadcrumbs() {
+  const container = $("canvas-breadcrumbs");
+  const list = $("canvas-breadcrumbs-list");
+  if (!container || !list) return;
+
+  if (state.navStack.length === 0) {
+    container.hidden = true;
+    list.replaceChildren();
+    return;
+  }
+
+  container.hidden = false;
+  const items = [];
+
+  state.navStack.forEach((snap, idx) => {
+    const li = document.createElement("li");
+    li.className = "breadcrumb-item";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "breadcrumb-link";
+    btn.textContent = snap.label || `Nível ${idx}`;
+    btn.addEventListener("click", () => leaveSubloop(idx));
+
+    const sep = document.createElement("span");
+    sep.className = "breadcrumb-separator";
+    sep.textContent = "›";
+
+    li.append(btn, sep);
+    items.push(li);
+  });
+
+  const currentLi = document.createElement("li");
+  currentLi.className = "breadcrumb-item";
+  const currentSpan = document.createElement("span");
+  currentSpan.className = "breadcrumb-current";
+  currentSpan.textContent = $("pipeline-name")?.value || "Sub-grafo";
+  currentLi.append(currentSpan);
+  items.push(currentLi);
+
+  list.replaceChildren(...items);
+}
+
+// Expõe para o inspetor
+window.enterSubloop = enterSubloop;
+
 
 // ---------- Arestas ----------
 
@@ -377,7 +565,7 @@ function renderEdges() {
     txt.setAttribute("font-weight", "bold");
     txt.setAttribute("fill", "#fff");
     txt.setAttribute("pointer-events", "none");
-    txt.textContent = "✕";
+    txt.textContent = "x";
     btnDel.append(circ, txt);
     svg.append(btnDel);
 
@@ -722,8 +910,12 @@ function canvasPoint(ev) {
 function startNodeDrag(ev, node) {
   const start = canvasPoint(ev);
   const origin = { x: node.x, y: node.y };
-  const target = ev.target;
-  target.setPointerCapture(ev.pointerId);
+  const root = $(`node-${node.id}`) || document.querySelector(`.node[data-id="${CSS.escape(node.id)}"]`);
+  if (root) {
+    root.classList.add("is-dragging");
+    try { root.setPointerCapture(ev.pointerId); } catch (_) {}
+  }
+
   const move = (e) => {
     const p = canvasPoint(e);
     node.x = Math.max(8, origin.x + p.x - start.x);
@@ -732,11 +924,15 @@ function startNodeDrag(ev, node) {
     renderEdges();
   };
   const up = () => {
-    target.removeEventListener("pointermove", move);
-    target.removeEventListener("pointerup", up);
+    if (root) {
+      root.classList.remove("is-dragging");
+      try { root.releasePointerCapture(ev.pointerId); } catch (_) {}
+    }
+    window.removeEventListener("pointermove", move);
+    window.removeEventListener("pointerup", up);
   };
-  target.addEventListener("pointermove", move);
-  target.addEventListener("pointerup", up);
+  window.addEventListener("pointermove", move);
+  window.addEventListener("pointerup", up);
 }
 
 // trackLink desenha a curva temporária de uma conexão sendo arrastada a partir de fromId.
@@ -798,13 +994,21 @@ function onNodesPointerDown(ev) {
   const nodeRoot = ev.target.closest(".node");
   if (!nodeRoot || ev.button !== 0) return;
   const node = state.nodes.get(nodeRoot.dataset.id);
+  if (!node) return;
+
   if (ev.target.dataset.port === "out") {
     ev.preventDefault();
     startLink(ev, node.id);
     return;
   }
-  if (state.selected?.id !== node.id) select({ kind: "node", id: node.id });
-  if (ev.target.closest(".node__head")) {
+
+  // Seleciona o nó em qualquer clique não interativo
+  if (state.selected?.id !== node.id) {
+    select({ kind: "node", id: node.id });
+  }
+
+  // Inicia drag a menos que clicou em formulários, botões ou slots
+  if (!ev.target.closest("button, input, select, textarea, .slot-pill, .port")) {
     ev.preventDefault();
     startNodeDrag(ev, node);
   }
@@ -838,6 +1042,8 @@ function onKey(ev) {
   if (sel?.kind === "edge") {
     state.edges.splice(sel.id, 1);
     clearValidation();
+    renderEdges();
+    renderInspector();
   }
   if (sel) select(null);
 }
@@ -1261,8 +1467,12 @@ async function boot() {
       zoomBy(ev.deltaY < 0 ? 1.15 : 1 / 1.15, { x: ev.clientX - r.left, y: ev.clientY - r.top });
     } else {
       ev.preventDefault();
-      state.pan.x -= ev.deltaX;
-      state.pan.y -= ev.deltaY;
+      if (ev.shiftKey && ev.deltaX === 0) {
+        state.pan.x -= ev.deltaY;
+      } else {
+        state.pan.x -= ev.deltaX;
+        state.pan.y -= ev.deltaY;
+      }
       updateCanvasTransform();
     }
   }, { passive: false });
@@ -1272,6 +1482,10 @@ async function boot() {
     if (e.code === "Space" && !e.target.matches("input, textarea, select") && !state.spacePan) {
       state.spacePan = true;
       cv.classList.add("is-panning");
+    }
+    if ((e.ctrlKey || e.metaKey) && (e.key === "0" || e.code === "Digit0" || e.code === "Numpad0")) {
+      e.preventDefault();
+      fitToScreen();
     }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
       e.preventDefault();
@@ -1294,29 +1508,48 @@ async function boot() {
     }
   });
 
-  cv.addEventListener("pointerdown", (ev) => {
-    // Se clicou no botão de remoção de aresta, não inicia pan
-    if (ev.target.closest(".edge-del-group") || ev.target.classList?.contains("edge-btn-remove")) return;
-    const canPan = state.spacePan || ev.button === 1 || ev.target === cv || ev.target.id === "canvas-surface";
-    if (canPan) {
-      const startX = ev.clientX;
-      const startY = ev.clientY;
-      const initX = state.pan.x;
-      const initY = state.pan.y;
-      cv.classList.add("is-dragging");
-      const move = (e) => {
-        state.pan.x = initX + (e.clientX - startX);
-        state.pan.y = initY + (e.clientY - startY);
-        updateCanvasTransform();
-      };
-      const up = () => {
-        cv.classList.remove("is-dragging");
-        window.removeEventListener("pointermove", move);
-        window.removeEventListener("pointerup", up);
-      };
-      window.addEventListener("pointermove", move);
-      window.addEventListener("pointerup", up);
+  // Determina se um clique no canvas deve iniciar o pan 2D
+  function canPanCanvas(ev) {
+    if (ev.target.closest(".node, .canvas-controls, .issues, .edge-del-group, .edge-btn-remove, .slot-pill")) {
+      return false;
     }
+    if (state.spacePan || ev.button === 1) return true;
+    return ev.button === 0;
+  }
+
+  cv.addEventListener("pointerdown", (ev) => {
+    if (!canPanCanvas(ev)) return;
+    if (ev.button === 1 || state.spacePan) ev.preventDefault();
+
+    const startX = ev.clientX;
+    const startY = ev.clientY;
+    const initX = state.pan.x;
+    const initY = state.pan.y;
+    let moved = false;
+
+    cv.classList.add("is-dragging");
+    try { cv.setPointerCapture(ev.pointerId); } catch (_) {}
+    const move = (e) => {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
+      state.pan.x = initX + dx;
+      state.pan.y = initY + dy;
+      updateCanvasTransform();
+    };
+    const up = (e) => {
+      try { cv.releasePointerCapture(ev.pointerId); } catch (_) {}
+      cv.classList.remove("is-dragging");
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      if (!moved && ev.button === 0 && !state.spacePan) {
+        if (!ev.target.closest(".node, .edge, .canvas-controls")) {
+          select(null);
+        }
+      }
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
   });
 
   $("btn-zoom-in").addEventListener("click", () => zoomBy(1.2));
@@ -1344,6 +1577,7 @@ async function boot() {
   initVaultModal();
   initRunModal();
   initTemplatesModal();
+  initImportModal();
   updateEmpty();
   await pollItems();
   setInterval(() => { if (document.visibilityState === "visible") pollItems().catch(() => {}); }, POLL_MS);
@@ -1532,14 +1766,33 @@ function initRunModal() {
           if (!evData) continue;
 
           switch (evData.type) {
-            case "dag_start":
+            case "dag_start": {
               badge.textContent = "Executando...";
               badge.className = "modal-badge badge--running";
               appendLog(`[${new Date().toLocaleTimeString()}] Esteira "${evData.dag}" iniciada (${evData.nodes_total} nós).`);
+
+              const telemStatus = $("telemetry-global-status");
+              if (telemStatus) {
+                telemStatus.textContent = "Executando...";
+                telemStatus.className = "telemetry-value telemetry-status--running";
+              }
+              if ($("telemetry-global-duration")) $("telemetry-global-duration").textContent = "0.0s";
+              if ($("telemetry-global-tokens-in")) $("telemetry-global-tokens-in").textContent = "0";
+              if ($("telemetry-global-tokens-out")) $("telemetry-global-tokens-out").textContent = "0";
+              if ($("telemetry-global-cost")) $("telemetry-global-cost").textContent = "$0.000";
+
+              state.telemetry.clear();
+              renderAllNodes();
               break;
+            }
 
             case "node_start": {
               appendLog(`[${new Date().toLocaleTimeString()}] ▶ Nó "${evData.id}" em execução...`);
+
+              state.telemetry.set(evData.id, { status: "running" });
+              const targetNode = state.nodes.get(evData.id);
+              if (targetNode) renderNode(targetNode);
+
               let row = nodeRows.get(evData.id);
               if (!row) {
                 row = document.createElement("div");
@@ -1548,7 +1801,7 @@ function initRunModal() {
                 titleSpan.textContent = evData.id;
                 const statusSpan = document.createElement("span");
                 statusSpan.className = "node-run-status";
-                statusSpan.textContent = "⏳ Executando";
+                statusSpan.textContent = "[RUN] Executando";
                 row.appendChild(titleSpan);
                 row.appendChild(statusSpan);
                 timelineEl.appendChild(row);
@@ -1558,6 +1811,15 @@ function initRunModal() {
             }
 
             case "node_finish": {
+              state.telemetry.set(evData.id, {
+                status: evData.status,
+                duration_ms: evData.duration_ms,
+                tokens: evData.tokens,
+                model: evData.model,
+              });
+              const targetNode = state.nodes.get(evData.id);
+              if (targetNode) renderNode(targetNode);
+
               let row = nodeRows.get(evData.id);
               if (!row) {
                 row = document.createElement("div");
@@ -1574,10 +1836,10 @@ function initRunModal() {
               const statusSpan = row.querySelector(".node-run-status") || document.createElement("span");
               statusSpan.className = "node-run-status";
               const modelInfo = evData.model ? ` [${evData.model}]` : "";
-              statusSpan.textContent = `${isPass ? "✅ Passou" : "❌ Falhou"} (${evData.duration_ms}ms)${modelInfo}`;
+              statusSpan.textContent = `${isPass ? "[OK] Passou" : "[FALHA] Falhou"} (${evData.duration_ms}ms)${modelInfo}`;
               if (!row.contains(statusSpan)) row.appendChild(statusSpan);
 
-              appendLog(`[${new Date().toLocaleTimeString()}] ⏹ Nó "${evData.id}": ${evData.status} em ${evData.duration_ms}ms${modelInfo}`);
+              appendLog(`[${new Date().toLocaleTimeString()}] [No] "${evData.id}": ${evData.status} em ${evData.duration_ms}ms${modelInfo}`);
               if (evData.error) {
                 appendLog(`   └─ Erro: ${evData.error}`);
               }
@@ -1586,32 +1848,55 @@ function initRunModal() {
 
             case "dag_finish": {
               const ok = evData.ok;
-              badge.textContent = ok ? "Concluído" : "Interrompido";
+              badge.textContent = ok ? "Concluido" : "Interrompido";
               badge.className = "modal-badge " + (ok ? "badge--passed" : "badge--danger");
               if (evData.tokens) {
                 tokensTotalEl.textContent = String(evData.tokens.input + evData.tokens.output);
                 tokensInEl.textContent = String(evData.tokens.input);
                 tokensOutEl.textContent = String(evData.tokens.output);
               }
-              appendLog(`[${new Date().toLocaleTimeString()}] Execução finalizada: ${ok ? "SUCESSO" : "COM FALHAS"}`);
+
+              const telemStatus = $("telemetry-global-status");
+              if (telemStatus) {
+                telemStatus.textContent = ok ? "Sucesso" : "Falha";
+                telemStatus.className = "telemetry-value " + (ok ? "telemetry-status--passed" : "telemetry-status--failed");
+              }
+              if (evData.duration_ms !== undefined && $("telemetry-global-duration")) {
+                $("telemetry-global-duration").textContent = `${(evData.duration_ms / 1000).toFixed(1)}s`;
+              }
+              if (evData.tokens) {
+                if ($("telemetry-global-tokens-in")) $("telemetry-global-tokens-in").textContent = String(evData.tokens.input);
+                if ($("telemetry-global-tokens-out")) $("telemetry-global-tokens-out").textContent = String(evData.tokens.output);
+              }
+              if ($("telemetry-global-cost")) {
+                $("telemetry-global-cost").textContent = `$${(evData.cost_est || 0).toFixed(4)}`;
+              }
+
+              appendLog(`[${new Date().toLocaleTimeString()}] Execucao finalizada: ${ok ? "SUCESSO" : "COM FALHAS"}`);
               toast(ok ? "Esteira executada com sucesso!" : "Esteira finalizou com falhas.", !ok);
               break;
             }
 
-            case "dag_error":
+            case "dag_error": {
               badge.textContent = "Erro";
               badge.className = "modal-badge badge--danger";
+              const telemStatus = $("telemetry-global-status");
+              if (telemStatus) {
+                telemStatus.textContent = "Erro";
+                telemStatus.className = "telemetry-value telemetry-status--failed";
+              }
               appendLog(`[${new Date().toLocaleTimeString()}] Erro no DAG: ${evData.error}`);
               toast(evData.error, true);
               break;
+            }
           }
         }
       }
     } catch (e) {
-      badge.textContent = "Falha de Conexão";
+      badge.textContent = "Falha de Conexao";
       badge.className = "modal-badge badge--danger";
       appendLog(`[FALHA] ${e.message}`);
-      toast("Falha na execução: " + e.message, true);
+      toast("Falha na execucao: " + e.message, true);
     }
   }));
 }
@@ -1629,7 +1914,7 @@ function initTemplatesModal() {
   btnTemplates.addEventListener("click", async () => {
     try {
       const resp = await fetch("/api/templates");
-      if (!resp.ok) return toast("Não foi possível carregar os templates", true);
+      if (!resp.ok) return toast("Nao foi possivel carregar os templates", true);
       const data = await resp.json();
 
       grid.textContent = "";
@@ -1644,7 +1929,11 @@ function initTemplatesModal() {
 
         const icon = document.createElement("span");
         icon.className = "template-icon";
-        icon.textContent = tmpl.icon || "📦";
+        if (typeof createSvgIconNode === "function") {
+          icon.replaceChildren(createSvgIconNode(tmpl.icon || "package"));
+        } else {
+          icon.textContent = tmpl.name;
+        }
 
         const name = document.createElement("span");
         name.className = "template-name";
@@ -1713,5 +2002,62 @@ function initTemplatesModal() {
     }
   });
 }
+
+function initImportModal() {
+  const btnOpen = $("btn-import-github");
+  const modal = $("modal-import");
+  if (!btnOpen || !modal) return;
+
+  const btnClose = $("btn-modal-import-close");
+  const btnCancel = $("btn-import-cancel");
+  const form = $("form-import");
+  const inputUrl = $("import-url");
+  const inputName = $("import-name");
+  const btnSubmit = $("btn-import-submit");
+
+  const close = () => modal.close();
+  btnOpen.addEventListener("click", () => {
+    form?.reset();
+    modal.showModal();
+  });
+  btnClose?.addEventListener("click", close);
+  btnCancel?.addEventListener("click", close);
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const url = inputUrl?.value.trim();
+    const name = inputName?.value.trim();
+    if (!url) return;
+
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = "Clonando & Canonizando...";
+    }
+
+    try {
+      const resp = await fetch("/api/assets/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url, name }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        throw new Error(data.error || "Falha na importação");
+      }
+
+      toast(`Skill "${data.name}" importada e canonizada! SHA: ${String(data.sha256).slice(0, 8)}`);
+      modal.close();
+      await pollItems();
+    } catch (err) {
+      toast("Erro ao importar: " + err.message, true);
+    } finally {
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = "Importar & Canonizar";
+      }
+    }
+  });
+}
+
 
 boot().catch((err) => toast(`Não foi possível iniciar o Studio: ${err.message}`, true));

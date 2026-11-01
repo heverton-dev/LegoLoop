@@ -1,0 +1,131 @@
+{
+  "name": "route-ep20-inferencia-ontologica-e-human-gate",
+  "version": "1.0.0",
+  "date": "2026-11-01",
+  "intent_ref": "docs/intents/2026-11-01_INTENT_ONTOLOGIA_ASSETS_SO_E_MEGA_PIPELINE_TEMPLATES.md",
+  "spec_ref": "docs/specs/2026-11-01_SPEC_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md",
+  "plan_ref": "docs/plans/2026-11-01_PLAN_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 1,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "TICK-2001",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md#ca-201"
+      },
+      "output": {
+        "artifacts": [
+          "internal/assets/skills.go"
+        ],
+        "gate": "file_exists('internal/assets/skills.go') && has_pattern('internal/assets/skills.go', 'inferOntology')"
+      }
+    },
+    {
+      "id": "TICK-2002",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-2001"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md#ca-203"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/pieces.go"
+        ],
+        "gate": "file_exists('internal/studio/pieces.go') && has_pattern('internal/studio/pieces.go', 'Block')"
+      }
+    },
+    {
+      "id": "TICK-2003",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-2002"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md#ca-204"
+      },
+      "output": {
+        "artifacts": [
+          "internal/graph/ontology.go"
+        ],
+        "gate": "file_exists('internal/graph/ontology.go') && has_pattern('internal/graph/ontology.go', 'human-gate')"
+      }
+    },
+    {
+      "id": "TICK-2004",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-2003"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash-lite",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md#ca-205"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/templates.go"
+        ],
+        "gate": "file_exists('internal/studio/templates.go') && has_pattern('internal/studio/templates.go', 'mega-pipeline')"
+      }
+    },
+    {
+      "id": "STOP-GATE-EP20",
+      "nature": "control",
+      "execution_mode": "interactive_gate",
+      "depends_on": ["TICK-2004"],
+      "routing": {
+        "mode": "manual",
+        "model": "human-auditor",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/plans/2026-11-01_PLAN_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md#stop-gate-de-auditoria-humana--epico-20"
+      },
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "gate": "file_exists('bin/legoloop.exe')"
+      }
+    }
+  ]
+}

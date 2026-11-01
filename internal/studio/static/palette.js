@@ -71,7 +71,7 @@ function entryFromItem(cat, it) {
 
 function entryFromBlock(b) {
   const isTrig = b.kind && b.kind.startsWith("trigger_");
-  const isCtrl = b.kind && b.kind.startsWith("flow_");
+  const isCtrl = b.kind && (b.kind.startsWith("flow_") || b.kind.startsWith("security_") || b.kind.startsWith("vcs_") || b.kind.startsWith("deploy_"));
   let cat = "skill";
   let badge = "contrato";
   let desc = "";
@@ -84,8 +84,19 @@ function entryFromBlock(b) {
     desc = `Gatilho inicial → ${out || "pipeline"}`;
   } else if (isCtrl) {
     cat = "control";
-    badge = "fluxo";
-    desc = "Controle algorítmico de fluxo";
+    if (b.kind.startsWith("security_")) {
+      badge = "segurança";
+      desc = "Cofre e credenciais";
+    } else if (b.kind.startsWith("vcs_")) {
+      badge = "git";
+      desc = "Automação de versionamento";
+    } else if (b.kind.startsWith("deploy_")) {
+      badge = "deploy";
+      desc = "Entrega contínua e publicação";
+    } else {
+      badge = "fluxo";
+      desc = "Controle algorítmico de fluxo";
+    }
   } else {
     desc = `${ins} → ${out}`;
   }

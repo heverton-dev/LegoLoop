@@ -337,3 +337,20 @@ func TestHookDescriptionIsTruncatedForDisplay(t *testing.T) {
 		t.Errorf("descrição exibida tem %d runas: %q", n, b.Items[0].Description)
 	}
 }
+
+func TestAssetImportRejectsInvalidURL(t *testing.T) {
+	s, _, _ := newAssetsServer(t)
+
+	// URL não github
+	rec := do(t, s.Handler(), "POST", "/api/assets/import", `{"url":"https://evil.example.com/repo"}`)
+	if rec.Code != 400 {
+		t.Errorf("esperava status 400 para domínio não-github, obteve %d", rec.Code)
+	}
+
+	// URL vazia
+	recEmpty := do(t, s.Handler(), "POST", "/api/assets/import", `{"url":""}`)
+	if recEmpty.Code != 400 {
+		t.Errorf("esperava status 400 para url vazia, obteve %d", recEmpty.Code)
+	}
+}
+

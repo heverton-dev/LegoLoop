@@ -3,6 +3,7 @@ package cli
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -388,3 +389,54 @@ func serveStudio(ctx context.Context, srv *studio.Server, addr string, d Deps) i
 	}
 	return 0
 }
+
+// cmdImport importa uma skill de repositório GitHub para a pasta global e calcula SHA-256.
+func cmdImport(ctx context.Context, args []string, d Deps) int {
+	fs := newFlags("import", d)
+	name := fs.String("name", "", "nome customizado para a skill")
+	target := fs.String("target", "", "pasta destino (padrão: ~/.gemini/config ou cofre canônico)")
+	asJSON := fs.Bool("json", false, "saída em JSON")
+	if err := fs.Parse(args); err != nil {
+		return 2
+	}
+	remaining := fs.Args()
+	if len(remaining) == 0 {
+		fmt.Fprintln(d.Stderr, "erro: informe a URL do repositório/skill do GitHub")
+		return 2
+	}
+	rawURL := remaining[0]
+
+	destDir := *target
+	if destDir == "" {
+		home := d.Home
+		if home == "" {
+			home, _ = os.UserHomeDir()
+		}
+		if home != "" {
+			geminiConfig := filepath.Join(home, ".gemini", "config")
+			if fi, err := os.Stat(geminiConfig); err == nil && fi.IsDir() {
+				destDir = geminiConfig
+			} else {
+				destDir = filepath.Join(home, ".aidd", "canonical")
+			}
+		}
+	}
+
+	res, err := canon.ImportSkillFromURL(ctx, rawURL, *name, destDir)
+	if err != nil {
+		return fail(d, err)
+	}
+
+	if *asJSON {
+		data, _ := json.MarshalIndent(res, "", "  ")
+		fmt.Fprintln(d.Stdout, string(data))
+		return 0
+	}
+
+	fmt.Fprintf(d.Stdout, "Skill %q importada e canonizada com sucesso!\n", res.Name)
+	fmt.Fprintf(d.Stdout, "Destino: %s\n", res.TargetDir)
+	fmt.Fprintf(d.Stdout, "SHA-256: %s\n", res.SHA256)
+	fmt.Fprintf(d.Stdout, "Arquivos: %d\n", res.FilesCount)
+	return 0
+}
+

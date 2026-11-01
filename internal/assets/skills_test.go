@@ -109,3 +109,39 @@ func TestSkillSymlinkIsInventoriedWithoutLooping(t *testing.T) {
 		t.Errorf("ligada = %+v", it)
 	}
 }
+
+func TestSkillOntologyInference(t *testing.T) {
+	cfg, home, _ := testCfg(t)
+	root := filepath.Join(home, ".claude", "skills")
+
+	// 1. Skill com frontmatter explícito de contrato ontológico
+	write(t, filepath.Join(root, "explicit", "SKILL.md"), `---
+name: explicit
+description: Skill com contrato explícito
+consumes: [Artifact:Briefing]
+produces: Artifact:Spec
+artifact: SPEC.md
+gate: file_exists('SPEC.md')
+---
+`)
+
+	// 2. Skill canônica sem frontmatter que deve receber inferência heurística
+	write(t, filepath.Join(root, "aidd-legoloop-mega-pipeline", "SKILL.md"), `---
+name: aidd-legoloop-mega-pipeline
+description: Orquestrador Mestre do Mega Pipeline
+---
+`)
+
+	items := scanKind(t, cfg, KindSkill)
+
+	exp := mustFind(t, items, "explicit")
+	if exp.Meta["consumes"] != "Artifact:Briefing" || exp.Meta["produces"] != "Artifact:Spec" ||
+		exp.Meta["artifact"] != "SPEC.md" || exp.Meta["gate"] != "file_exists('SPEC.md')" {
+		t.Errorf("explicit metadata ontológica incorreta: %+v", exp.Meta)
+	}
+
+	mega := mustFind(t, items, "aidd-legoloop-mega-pipeline")
+	if mega.Meta["consumes"] == "" || mega.Meta["produces"] == "" || mega.Meta["artifact"] == "" || mega.Meta["gate"] == "" {
+		t.Errorf("aidd-legoloop-mega-pipeline não recebeu inferência ontológica: %+v", mega.Meta)
+	}
+}

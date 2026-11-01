@@ -74,9 +74,13 @@ func resolvePiece(res Resolver, p CompPiece) (nodeInfo, string) {
 		return nodeInfo{}, msg
 	}
 	art := p.Artifact
-	if art == "" && p.Kind == "subloop" {
-		if it, ok := res.ByID(p.Ref); ok && it.Meta != nil && it.Meta["artifact"] != "" {
-			art = it.Meta["artifact"]
+	if art == "" {
+		if info.Artifact != "" {
+			art = info.Artifact
+		} else if p.Kind == "subloop" {
+			if it, ok := res.ByID(p.Ref); ok && it.Meta != nil && it.Meta["artifact"] != "" {
+				art = it.Meta["artifact"]
+			}
 		}
 	}
 	if msg := artifactIssue(art); msg != "" {
@@ -84,12 +88,20 @@ func resolvePiece(res Resolver, p CompPiece) (nodeInfo, string) {
 	}
 	gateExpr := p.Gate
 	if gateExpr == "" {
-		gateExpr = fmt.Sprintf("file_exists('%s')", art)
+		if info.Gate != "" {
+			gateExpr = info.Gate
+		} else {
+			gateExpr = fmt.Sprintf("file_exists('%s')", art)
+		}
 	}
 	if _, err := gate.Compile(gateExpr); err != nil {
 		return nodeInfo{}, fmt.Sprintf("gate da peça inválido: %v", err)
 	}
 	info.Artifact, info.Gate = art, gateExpr
+	if info.Block != nil {
+		info.Block.Artifact = art
+		info.Block.Gate = gateExpr
+	}
 	return info, ""
 }
 
@@ -125,8 +137,52 @@ func skillPiece(res Resolver, ref string) (nodeInfo, string) {
 	if msg != "" {
 		return nodeInfo{}, msg
 	}
-	// o orchestrix resolve <cofre>/<ref>/SKILL.md: vale o nome da pasta, não o do frontmatter
-	return nodeInfo{Label: it.Name, Type: dag.TypeSkill, Ref: "skills/" + filepath.Base(filepath.Dir(it.Path))}, ""
+	info := nodeInfo{
+		Label: it.Name,
+		Type:  dag.TypeSkill,
+		Ref:   "skills/" + filepath.Base(filepath.Dir(it.Path)),
+	}
+
+	// Promoção ontológica se a skill possui metadados de contrato
+	if it.Meta != nil {
+		if art := it.Meta["artifact"]; art != "" {
+			info.Artifact = art
+		}
+		if g := it.Meta["gate"]; g != "" {
+			info.Gate = g
+		}
+
+		var consumes []graph.ArtifactType
+		if cons := it.Meta["consumes"]; cons != "" {
+			for _, c := range strings.Split(cons, ",") {
+				if t, err := graph.ParseArtifactType(strings.TrimSpace(c)); err == nil {
+					consumes = append(consumes, t)
+				}
+			}
+		}
+		var produces graph.ArtifactType
+		if prod := it.Meta["produces"]; prod != "" {
+			if t, err := graph.ParseArtifactType(strings.TrimSpace(prod)); err == nil {
+				produces = t
+			}
+		}
+
+		if len(consumes) > 0 || produces != "" {
+			info.Block = &graph.Block{
+				ID:             it.ID,
+				Label:          it.Name,
+				Ref:            info.Ref,
+				Kind:           "skill",
+				Consumes:       consumes,
+				Produces:       produces,
+				Artifact:       info.Artifact,
+				Gate:           info.Gate,
+				SuggestedModel: it.Meta["suggested_model"],
+			}
+		}
+	}
+
+	return info, ""
 }
 
 func scriptPiece(res Resolver, ref string) (nodeInfo, string) {

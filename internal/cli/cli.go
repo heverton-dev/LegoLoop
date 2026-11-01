@@ -49,6 +49,7 @@ Comandos:
   route      --from Artifact:X --to Artifact:Y  rota ótima no grafo semântico
   studio     [--addr 127.0.0.1:7878] [--project DIR]  abre o Looping Studio
   forge      [--addr 127.0.0.1:7878] [--project DIR]  abre o Studio e dispara primeira varredura
+  import     <github-url> [--name N] [--json]         importa e canoniza skill do GitHub
   version
 `
 
@@ -61,6 +62,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 	cmds := map[string]func(context.Context, []string, Deps) int{
 		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
+		"import": cmdImport,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

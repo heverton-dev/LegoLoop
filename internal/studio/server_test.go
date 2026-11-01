@@ -421,4 +421,26 @@ func TestLegoItemModalWebComponentDelivery(t *testing.T) {
 	if !foundGithubTrigger {
 		t.Fatalf("github-board-trigger não encontrado em /api/blocks com FullCatalog")
 	}
+
+	// 7. Validação das novas peças de Segurança, Git e Deploy em /api/blocks
+	expectedEp21 := map[string]string{
+		"env-vault":     "security_vault",
+		"git-commit":    "vcs_git_commit",
+		"deploy-docker": "deploy_docker",
+	}
+	for id, expectedKind := range expectedEp21 {
+		var found bool
+		for _, b := range blocksData.Blocks {
+			if b.ID == id {
+				found = true
+				if b.Kind != expectedKind {
+					t.Fatalf("bloco %s tem kind incorreto: got %s, want %s", id, b.Kind, expectedKind)
+				}
+				break
+			}
+		}
+		if !found {
+			t.Fatalf("bloco %s do Épico 21 não encontrado em /api/blocks", id)
+		}
+	}
 }

@@ -1,0 +1,199 @@
+{
+  "name": "route-canvas-restoration-zero-emojis-impeccable",
+  "version": "1.0.0",
+  "date": "2026-11-01",
+  "intent_ref": "docs/intents/2026-11-01_INTENT_ONTOLOGIA_ASSETS_SO_E_MEGA_PIPELINE_TEMPLATES.md",
+  "spec_ref": "docs/specs/2026-11-01_SPEC_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md",
+  "plan_ref": "docs/plans/2026-11-01_PLAN_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 1,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "TICK-1801",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md#ca-181"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js"
+        ],
+        "gate": "file_exists('internal/studio/static/app.js') && has_pattern('internal/studio/static/app.js', 'deltaX')"
+      }
+    },
+    {
+      "id": "TICK-1802",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-1801"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md#ca-184"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js"
+        ],
+        "gate": "file_exists('internal/studio/static/app.js') && has_pattern('internal/studio/static/app.js', 'startNodeDrag')"
+      }
+    },
+    {
+      "id": "TICK-1803",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-1802"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash-lite",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md#ca-186"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js"
+        ],
+        "gate": "file_exists('internal/studio/static/app.js') && has_pattern('internal/studio/static/app.js', 'Delete')"
+      }
+    },
+    {
+      "id": "STOP-GATE-EP18",
+      "nature": "control",
+      "execution_mode": "interactive_gate",
+      "depends_on": ["TICK-1803"],
+      "routing": {
+        "mode": "manual",
+        "model": "human-auditor",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/plans/2026-11-01_PLAN_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md#stop-gate-de-auditoria-humana--epico-18"
+      },
+      "output": {
+        "artifacts": [],
+        "gate": "human_approved('EPICO-18')"
+      }
+    },
+    {
+      "id": "TICK-1901",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["STOP-GATE-EP18"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md#ca-191"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/emojis_test.go"
+        ],
+        "gate": "file_exists('internal/studio/emojis_test.go')"
+      }
+    },
+    {
+      "id": "TICK-1902",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-1901"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md#ca-192"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/index.html",
+          "internal/studio/templates.go"
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-1903",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-1902"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md#ca-194"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/style.css"
+        ],
+        "gate": "file_exists('internal/studio/static/style.css') && has_pattern('internal/studio/static/style.css', 'node--trigger')"
+      }
+    },
+    {
+      "id": "STOP-GATE-EP19",
+      "nature": "control",
+      "execution_mode": "interactive_gate",
+      "depends_on": ["TICK-1903"],
+      "routing": {
+        "mode": "manual",
+        "model": "human-auditor",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/plans/2026-11-01_PLAN_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md#stop-gate-de-auditoria-humana--epico-19"
+      },
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "gate": "file_exists('bin/legoloop.exe')"
+      }
+    }
+  ]
+}

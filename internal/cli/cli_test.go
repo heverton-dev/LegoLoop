@@ -37,7 +37,7 @@ func TestHelpAndUnknown(t *testing.T) {
 	if code := run(t, d); code != 2 || !strings.Contains(errb.String(), "Uso:") {
 		t.Fatalf("sem args: code=%d", code)
 	}
-	if code := run(t, d, "help"); code != 0 || !strings.Contains(out.String(), "canonize") {
+	if code := run(t, d, "help"); code != 0 || !strings.Contains(out.String(), "canonize") || !strings.Contains(out.String(), "import") {
 		t.Fatalf("help: code=%d", code)
 	}
 	if code := run(t, d, "explodir"); code != 2 {
@@ -425,4 +425,26 @@ func TestRunInteractiveFlags(t *testing.T) {
 		t.Fatalf("stdin 'n' deveria rejeitar com 1, code=%d", code)
 	}
 }
+
+func TestImportCLIValidation(t *testing.T) {
+	d, _, errb := deps(t)
+
+	// Sem argumentos
+	if code := run(t, d, "import"); code != 2 {
+		t.Fatalf("import sem args: code=%d", code)
+	}
+	if !strings.Contains(errb.String(), "informe a URL") {
+		t.Fatalf("mensagem esperada no stderr: %s", errb.String())
+	}
+
+	// URL com domínio não-github
+	d2, _, errb2 := deps(t)
+	if code := run(t, d2, "import", "https://notgithub.com/skill"); code != 1 {
+		t.Fatalf("import com url inválida: code=%d", code)
+	}
+	if !strings.Contains(errb2.String(), "apenas URLs do github.com") {
+		t.Fatalf("mensagem esperada sobre github: %s", errb2.String())
+	}
+}
+
 

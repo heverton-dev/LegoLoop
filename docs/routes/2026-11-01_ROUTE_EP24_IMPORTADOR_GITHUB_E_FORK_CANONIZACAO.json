@@ -1,0 +1,37 @@
+{
+  "route_id": "EP24_IMPORTADOR_GITHUB_E_FORK_CANONIZACAO",
+  "created_at": "2026-11-01T18:20:00Z",
+  "epic": 24,
+  "nodes": [
+    {
+      "ticket": "TICK-2401",
+      "name": "Motor de Importação GitHub & SHA-256",
+      "target_files": ["internal/canon/importer.go", "internal/canon/importer_test.go"],
+      "gate": "go test -v -run TestImport ./internal/canon/..."
+    },
+    {
+      "ticket": "TICK-2402",
+      "name": "Endpoint de Importação Studio",
+      "target_files": ["internal/studio/assets_api.go", "internal/studio/assets_api_test.go"],
+      "gate": "go test -v -run TestAssetImport ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2403",
+      "name": "Endpoint de Fork Copy-on-Write",
+      "target_files": ["internal/studio/loops_api.go", "internal/studio/loops_api_test.go"],
+      "gate": "go test -v -run TestLoops ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2404",
+      "name": "Comando CLI legoloop import",
+      "target_files": ["internal/cli/commands.go", "internal/cli/cli_test.go"],
+      "gate": "go test -v -run TestCLI ./internal/cli/..."
+    },
+    {
+      "ticket": "TICK-2405",
+      "name": "UI no Studio e Recompilação Geral",
+      "target_files": ["bin/legoloop.exe"],
+      "gate": "go test ./... && go build -o bin/legoloop.exe ./cmd/legoloop"
+    }
+  ]
+}

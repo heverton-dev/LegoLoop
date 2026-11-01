@@ -464,3 +464,52 @@ func decodeStrict(w http.ResponseWriter, r *http.Request, dst any) bool {
 	}
 	return true
 }
+
+type assetImportRequest struct {
+	URL  string `json:"url"`
+	Name string `json:"name,omitempty"`
+}
+
+func (s *Server) handleAssetImport(w http.ResponseWriter, r *http.Request) {
+	if s.Assets == nil {
+		errNoInventory(w)
+		return
+	}
+	var req assetImportRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.URL == "" {
+		writeError(w, http.StatusBadRequest, "url do github é obrigatória")
+		return
+	}
+
+	targetDir := s.Vault
+	if targetDir == "" {
+		home := s.Home
+		if home == "" {
+			home, _ = os.UserHomeDir()
+		}
+		if home != "" {
+			geminiSkills := filepath.Join(home, ".gemini", "config")
+			if fi, err := os.Stat(geminiSkills); err == nil && fi.IsDir() {
+				targetDir = geminiSkills
+			} else {
+				targetDir = filepath.Join(home, ".aidd", "canonical")
+			}
+		}
+	}
+
+	res, err := canon.ImportSkillFromURL(r.Context(), req.URL, req.Name, targetDir)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "falha ao importar skill: "+err.Error())
+		return
+	}
+
+	s.Assets.Refresh(r.Context())
+	writeJSON(w, http.StatusOK, map[string]any{
+		"ok":          true,
+		"name":        res.Name,
+		"sha256":      res.SHA256,
+		"target_dir":  s.displayPath(res.TargetDir),
+		"files_count": res.FilesCount,
+	})
+}
+

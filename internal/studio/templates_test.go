@@ -30,6 +30,7 @@ func TestTemplatesEndpointReturnsAtLeastThreeValidTemplates(t *testing.T) {
 		"greenfield":          false,
 		"reverse-engineering": false,
 		"security-audit":      false,
+		"mega-pipeline":       false,
 	}
 
 	for _, tmpl := range res.Templates {

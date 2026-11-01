@@ -94,14 +94,24 @@ func (s *Server) handleRunDAG(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	dagStart := time.Now()
 	rep, err := runner.Run(r.Context(), d, opts)
+	dagDuration := time.Since(dagStart)
 	if err != nil {
-		sendSSE("dag_error", map[string]any{"error": err.Error()})
+		sendSSE("dag_error", map[string]any{
+			"error":       err.Error(),
+			"duration_ms": dagDuration.Milliseconds(),
+		})
 		return
 	}
 
+	// Estimativa média de custo base de tokens LLM (~$0.002/1k input, ~$0.008/1k output)
+	costEst := (float64(rep.Tokens.Input)*0.002 + float64(rep.Tokens.Output)*0.008) / 1000.0
+
 	sendSSE("dag_finish", map[string]any{
-		"ok":     rep.OK,
-		"tokens": rep.Tokens,
+		"ok":          rep.OK,
+		"tokens":      rep.Tokens,
+		"duration_ms": dagDuration.Milliseconds(),
+		"cost_est":    costEst,
 	})
 }

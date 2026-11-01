@@ -91,4 +91,19 @@ func TestRunAPISSEStreaming(t *testing.T) {
 	if firstEv["type"] != "node_start" && firstEv["type"] != "dag_start" {
 		t.Fatalf("evento inicial inválido: %v", firstEv)
 	}
+
+	var finishEv map[string]any
+	lastRaw := events[len(events)-1]
+	if err := json.Unmarshal([]byte(lastRaw), &finishEv); err != nil {
+		t.Fatalf("falha ao parsear último evento json: %v", err)
+	}
+	if finishEv["type"] != "dag_finish" {
+		t.Fatalf("esperava último evento dag_finish, obteve %v", finishEv["type"])
+	}
+	if _, ok := finishEv["duration_ms"]; !ok {
+		t.Fatalf("dag_finish deve conter duration_ms")
+	}
+	if _, ok := finishEv["cost_est"]; !ok {
+		t.Fatalf("dag_finish deve conter cost_est")
+	}
 }

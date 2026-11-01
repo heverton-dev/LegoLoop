@@ -104,13 +104,20 @@ func parseSkill(path string) []Item {
 	if _, err := io.Copy(io.MultiWriter(h, head), f); err != nil {
 		return nil
 	}
-	name, desc := parseFrontmatter(head.buf.Bytes())
+	name, desc, ont := parseFrontmatter(head.buf.Bytes())
 	if name == "" {
 		name = filepath.Base(filepath.Dir(path))
 	}
+	inferOntologyFallback(name, desc, ont)
+	meta := map[string]string{"sha256": hex.EncodeToString(h.Sum(nil))}
+	for k, v := range ont {
+		if v != "" {
+			meta[k] = v
+		}
+	}
 	return []Item{{
 		Kind: KindSkill, Name: name, Description: desc, Path: path,
-		Meta: map[string]string{"sha256": hex.EncodeToString(h.Sum(nil))},
+		Meta: meta,
 	}}
 }
 
@@ -127,12 +134,13 @@ func (b *headBuffer) Write(p []byte) (int, error) {
 	return len(p), nil
 }
 
-// parseFrontmatter extrai name e description do bloco YAML inicial (--- ... ---).
-func parseFrontmatter(data []byte) (name, desc string) {
+// parseFrontmatter extrai name, description e campos de contrato ontológico (--- ... ---).
+func parseFrontmatter(data []byte) (name, desc string, ont map[string]string) {
+	ont = make(map[string]string)
 	text := strings.ReplaceAll(strings.TrimPrefix(string(data), "\xef\xbb\xbf"), "\r\n", "\n")
 	lines := strings.Split(text, "\n")
 	if len(lines) == 0 || strings.TrimSpace(lines[0]) != "---" {
-		return "", ""
+		return "", "", ont
 	}
 	for i := 1; i < len(lines); i++ {
 		line := lines[i]
@@ -143,14 +151,72 @@ func parseFrontmatter(data []byte) (name, desc string) {
 		if !ok || strings.HasPrefix(line, " ") || strings.HasPrefix(line, "\t") {
 			continue
 		}
-		switch strings.TrimSpace(key) {
+		k := strings.TrimSpace(key)
+		switch k {
 		case "name":
 			name = limitRunes(unquote(val), maxNameRunes)
 		case "description":
 			desc, i = descriptionValue(lines, i, val)
+		case "consumes", "produces", "artifact", "gate", "suggested_model":
+			v := strings.TrimSpace(val)
+			v = strings.Trim(v, "[]")
+			ont[k] = unquote(v)
 		}
 	}
-	return name, desc
+	return name, desc, ont
+}
+
+// inferOntologyFallback preenche heurística ontológica para skills canônicas sem contrato explícito.
+func inferOntologyFallback(name, desc string, ont map[string]string) {
+	lower := strings.ToLower(name)
+	switch {
+	case strings.Contains(lower, "mega-pipeline") || strings.Contains(lower, "megapipeline"):
+		setDefault(ont, "consumes", "Artifact:Idea")
+		setDefault(ont, "produces", "Artifact:Audit")
+		setDefault(ont, "artifact", "MEGA_REPORT.md")
+		setDefault(ont, "gate", "file_exists('MEGA_REPORT.md')")
+	case strings.Contains(lower, "interview") || strings.Contains(lower, "grill") || strings.Contains(lower, "briefing"):
+		setDefault(ont, "consumes", "Artifact:Idea")
+		setDefault(ont, "produces", "Artifact:Briefing")
+		setDefault(ont, "artifact", "BRIEFING.md")
+		setDefault(ont, "gate", "file_exists('BRIEFING.md')")
+	case strings.Contains(lower, "spec"):
+		setDefault(ont, "consumes", "Artifact:Briefing")
+		setDefault(ont, "produces", "Artifact:Spec")
+		setDefault(ont, "artifact", "SPEC.md")
+		setDefault(ont, "gate", "file_exists('SPEC.md')")
+	case strings.Contains(lower, "ticket") || strings.Contains(lower, "plan"):
+		setDefault(ont, "consumes", "Artifact:Spec")
+		setDefault(ont, "produces", "Artifact:Spec")
+		setDefault(ont, "artifact", "PLAN.md")
+		setDefault(ont, "gate", "file_exists('PLAN.md')")
+	case strings.Contains(lower, "tdd") || strings.Contains(lower, "implementacao"):
+		setDefault(ont, "consumes", "Artifact:Spec")
+		setDefault(ont, "produces", "Artifact:Code")
+		setDefault(ont, "artifact", "CODE.patch")
+		setDefault(ont, "gate", "exit_code == 0")
+	case strings.Contains(lower, "homolog") || strings.Contains(lower, "audit"):
+		setDefault(ont, "consumes", "Artifact:Code")
+		setDefault(ont, "produces", "Artifact:Audit")
+		setDefault(ont, "artifact", "REPORT.md")
+		setDefault(ont, "gate", "file_exists('REPORT.md')")
+	case strings.Contains(lower, "rea") || strings.Contains(lower, "obscura"):
+		setDefault(ont, "consumes", "Artifact:URL")
+		setDefault(ont, "produces", "Artifact:ReverseStructure")
+		setDefault(ont, "artifact", "ESTRUTURA_REVERSA.json")
+		setDefault(ont, "gate", "file_exists('ESTRUTURA_REVERSA.json')")
+	case strings.Contains(lower, "impeccable"):
+		setDefault(ont, "consumes", "Artifact:ReverseStructure")
+		setDefault(ont, "produces", "Artifact:DesignTokens")
+		setDefault(ont, "artifact", "DESIGN.md")
+		setDefault(ont, "gate", "file_exists('DESIGN.md')")
+	}
+}
+
+func setDefault(m map[string]string, k, v string) {
+	if m[k] == "" {
+		m[k] = v
+	}
 }
 
 // descriptionValue lê a descrição simples ou em bloco (> | >- |-), devolvendo a última linha consumida.

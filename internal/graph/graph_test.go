@@ -176,3 +176,97 @@ func TestRouteMultiInputBlockIsConsistent(t *testing.T) {
 		t.Fatalf("rota inconsistente: %v", ids(p))
 	}
 }
+
+func TestHumanGateBlock(t *testing.T) {
+	controls := ControlBlocks()
+	var found *Block
+	for _, b := range controls {
+		if b.ID == "human-gate" {
+			found = &b
+			break
+		}
+	}
+	if found == nil {
+		t.Fatalf("bloco human-gate não encontrado em ControlBlocks()")
+	}
+	if found.Kind != "flow_human_gate" {
+		t.Errorf("Kind esperado flow_human_gate, obtido %s", found.Kind)
+	}
+	if len(found.Consumes) == 0 || found.Produces != Audit {
+		t.Errorf("human-gate deve produzir Audit, produz %v", found.Produces)
+	}
+}
+
+func TestVaultBlock(t *testing.T) {
+	controls := ControlBlocks()
+	var found *Block
+	for _, b := range controls {
+		if b.ID == "env-vault" {
+			found = &b
+			break
+		}
+	}
+	if found == nil {
+		t.Fatalf("bloco env-vault não encontrado em ControlBlocks()")
+	}
+	if found.Kind != "security_vault" {
+		t.Errorf("Kind esperado security_vault, obtido %s", found.Kind)
+	}
+	if found.Artifact != "VAULT_ENV.json" {
+		t.Errorf("Artifact esperado VAULT_ENV.json, obtido %s", found.Artifact)
+	}
+}
+
+func TestGitBlocks(t *testing.T) {
+	controls := ControlBlocks()
+	requiredGit := map[string]string{
+		"git-commit":      "vcs_git_commit",
+		"git-merge":       "vcs_git_merge",
+		"git-tag-release": "vcs_git_tag",
+	}
+
+	for id, expectedKind := range requiredGit {
+		var found *Block
+		for _, b := range controls {
+			if b.ID == id {
+				found = &b
+				break
+			}
+		}
+		if found == nil {
+			t.Fatalf("bloco %s não encontrado em ControlBlocks()", id)
+		}
+		if found.Kind != expectedKind {
+			t.Errorf("bloco %s: Kind esperado %s, obtido %s", id, expectedKind, found.Kind)
+		}
+	}
+}
+
+func TestDeployBlocks(t *testing.T) {
+	controls := ControlBlocks()
+	requiredDeploy := map[string]string{
+		"deploy-docker": "deploy_docker",
+		"deploy-vps":    "deploy_vps",
+		"deploy-vercel": "deploy_vercel",
+	}
+
+	for id, expectedKind := range requiredDeploy {
+		var found *Block
+		for _, b := range controls {
+			if b.ID == id {
+				found = &b
+				break
+			}
+		}
+		if found == nil {
+			t.Fatalf("bloco %s não encontrado em ControlBlocks()", id)
+		}
+		if found.Kind != expectedKind {
+			t.Errorf("bloco %s: Kind esperado %s, obtido %s", id, expectedKind, found.Kind)
+		}
+		if found.Produces != Audit {
+			t.Errorf("bloco %s deve produzir Audit, obtido %v", id, found.Produces)
+		}
+	}
+}
+

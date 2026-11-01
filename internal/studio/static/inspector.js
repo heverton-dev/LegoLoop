@@ -241,7 +241,7 @@ function renderNodePanel(body, node) {
 
   if (isTrig) {
     const children = [
-      kv("Gatilho Inicial", `⚡ ${block.label}`),
+      kv("Gatilho Inicial", `[Gatilho] ${block.label}`),
       ...triggerFields(node),
       kv("Handoff emitido", block.artifact),
       del,
@@ -258,6 +258,20 @@ function renderNodePanel(body, node) {
   state.gateDraft = null;
   const rerender = () => { clearValidation(); renderNode(node); renderInspector(); };
   const children = [kv(node.piece ? "Peça" : "Bloco", node.piece ? `${block.label} (${node.piece.kind})` : `${block.label} (${block.ref})`)];
+
+  const isSubloop = (node.piece && (node.piece.kind === "subloop" || node.piece.kind === "loop")) || (block.kind && (block.kind === "loop" || block.kind === "flow_loop"));
+  if (isSubloop) {
+    const drill = el("button", "btn btn--primary", "Abrir Sub-grafo (Drill-Down)");
+    drill.type = "button";
+    drill.style.marginBottom = "8px";
+    drill.addEventListener("click", () => {
+      if (typeof window.enterSubloop === "function") {
+        window.enterSubloop(node.piece?.ref || node.block || node.id, block.label);
+      }
+    });
+    children.push(drill);
+  }
+
   if (node.piece) {
     children.push(...pieceFields(node, sug));
   } else {

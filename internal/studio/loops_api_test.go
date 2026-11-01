@@ -90,4 +90,15 @@ func TestLoopsAPICRUD(t *testing.T) {
 	if rec.Code != http.StatusNotFound {
 		t.Fatalf("GET de loop deletado esperado 404, obteve %d", rec.Code)
 	}
+
+	// 8. Fork Copy-on-Write via /api/loops/{id}/fork
+	recFork := do(t, s.Handler(), "POST", "/api/loops/meu-loop/fork", `{"id":"meu-loop-fork","name":"Meu Loop Fork"}`)
+	if recFork.Code != http.StatusOK {
+		t.Fatalf("POST /api/loops/meu-loop/fork esperado 200, obteve %d: %s", recFork.Code, recFork.Body.String())
+	}
+	var forked loop.Loop
+	decode(t, recFork, &forked)
+	if forked.ID != "meu-loop-fork" {
+		t.Fatalf("ID forked incorreto: %s", forked.ID)
+	}
 }

@@ -1,0 +1,37 @@
+{
+  "route_id": "EP22_TELEMETRIA_TEMPO_REAL_CANVAS",
+  "created_at": "2026-11-01T17:50:00Z",
+  "epic": 22,
+  "nodes": [
+    {
+      "ticket": "TICK-2201",
+      "name": "Métricas Enriquecidas SSE Go",
+      "target_files": ["internal/studio/run_api.go", "internal/studio/run_api_test.go"],
+      "gate": "go test -v -run TestRunAPI ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2202",
+      "name": "Estrutura HTML/CSS do Header Global e Cards",
+      "target_files": ["internal/studio/static/index.html", "internal/studio/static/style.css"],
+      "gate": "go test -v -run TestStatic ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2203",
+      "name": "Lógica Frontend de Telemetria em Tempo Real",
+      "target_files": ["internal/studio/static/app.js", "internal/studio/static/icons.js"],
+      "gate": "go test -v -run TestCanvas ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2204",
+      "name": "Blindagem Zero Emojis e Validação de Interface",
+      "target_files": ["internal/studio/emojis_test.go", "internal/studio/ui_logic_test.go"],
+      "gate": "go test -v -run TestZeroEmojis ./internal/studio/..."
+    },
+    {
+      "ticket": "TICK-2205",
+      "name": "Validação Global e Recompilação",
+      "target_files": ["bin/legoloop.exe"],
+      "gate": "go test ./... && go build -o bin/legoloop.exe ./cmd/legoloop"
+    }
+  ]
+}
