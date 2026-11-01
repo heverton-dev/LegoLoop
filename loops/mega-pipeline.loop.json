@@ -1,0 +1,103 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "mega-pipeline-loop",
+  "name": "Mega Pipeline LegoLoop (5 Sub-Loops)",
+  "description": "Esteira mestre determinística com os 5 sub-loops canônicos: Concepção & Alinhamento -> Engenharia Reversa & Design Pass -> Tríade de Planejamento -> Construção TDD por Épico -> Homologação E2E & Fechamento.",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "l1-concepcao",
+      "type": "skill",
+      "ref": "skills/aidd-grill",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "haiku"
+      },
+      "output": {
+        "artifact": "docs/intents/INTENT.md",
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      }
+    },
+    {
+      "id": "l2-design",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "l1-concepcao"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast"
+      },
+      "inputs": {
+        "intencao": "file('docs/intents/INTENT.md')"
+      },
+      "output": {
+        "artifact": "DESIGN.md",
+        "gate": "file_exists('DESIGN.md')"
+      }
+    },
+    {
+      "id": "l3-triade",
+      "type": "skill",
+      "ref": "skills/aidd-spec",
+      "depends_on": [
+        "l2-design"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-pro"
+      },
+      "inputs": {
+        "design": "file('DESIGN.md')"
+      },
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      }
+    },
+    {
+      "id": "l4-tdd",
+      "type": "skill",
+      "ref": "skills/aidd-tdd",
+      "depends_on": [
+        "l3-triade"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "llama3.1:8b"
+      },
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/TDD_REPORT.md",
+        "gate": "file_exists('docs/reports/TDD_REPORT.md')"
+      }
+    },
+    {
+      "id": "l5-homologue",
+      "type": "skill",
+      "ref": "skills/aidd-homologue",
+      "depends_on": [
+        "l4-tdd"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast"
+      },
+      "inputs": {
+        "tdd": "file('docs/reports/TDD_REPORT.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/REPORT_FINAL.md",
+        "gate": "file_exists('docs/reports/REPORT_FINAL.md')"
+      }
+    }
+  ]
+}

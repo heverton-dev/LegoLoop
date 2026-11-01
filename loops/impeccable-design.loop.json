@@ -1,0 +1,122 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "impeccable-design-loop",
+  "name": "Pipeline de Design Impeccable (6 Sub-Loops)",
+  "description": "Pipeline mestre de UI/UX composto pelos 6 sub-loops modulares do Impeccable: Avaliar, Construir, Melhorar, Refinar, Corrigir e Iterar/Documentar.",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "subloop-avaliar",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "haiku"
+      },
+      "output": {
+        "artifact": "docs/reports/AUDITORIA_DESIGN.md",
+        "gate": "file_exists('docs/reports/AUDITORIA_DESIGN.md')"
+      }
+    },
+    {
+      "id": "subloop-construir",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-avaliar"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "haiku"
+      },
+      "inputs": {
+        "auditoria": "file('docs/reports/AUDITORIA_DESIGN.md')"
+      },
+      "output": {
+        "artifact": "docs/specs/DIRECAO_VISUAL.md",
+        "gate": "file_exists('docs/specs/DIRECAO_VISUAL.md')"
+      }
+    },
+    {
+      "id": "subloop-melhorar",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-construir"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast"
+      },
+      "inputs": {
+        "direcao": "file('docs/specs/DIRECAO_VISUAL.md')"
+      },
+      "output": {
+        "artifact": "src/styles/theme.css",
+        "gate": "file_exists('src/styles/theme.css')"
+      }
+    },
+    {
+      "id": "subloop-refinar",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-melhorar"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast"
+      },
+      "inputs": {
+        "tema": "file('src/styles/theme.css')"
+      },
+      "output": {
+        "artifact": "docs/reports/HARDENING_UI.md",
+        "gate": "file_exists('docs/reports/HARDENING_UI.md')"
+      }
+    },
+    {
+      "id": "subloop-corrigir",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-refinar"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast"
+      },
+      "inputs": {
+        "hardening": "file('docs/reports/HARDENING_UI.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/RESPONSIVE_VERIFICATION.md",
+        "gate": "file_exists('docs/reports/RESPONSIVE_VERIFICATION.md')"
+      }
+    },
+    {
+      "id": "subloop-iterar-documentar",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-corrigir"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast"
+      },
+      "inputs": {
+        "verificacao": "file('docs/reports/RESPONSIVE_VERIFICATION.md')"
+      },
+      "output": {
+        "artifact": "DESIGN.md",
+        "gate": "file_exists('DESIGN.md')"
+      }
+    }
+  ]
+}

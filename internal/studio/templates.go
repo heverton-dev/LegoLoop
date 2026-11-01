@@ -169,7 +169,7 @@ func BuiltinTemplates() []Template {
 					},
 					{
 						ID:    "l5-homologue",
-						Block: "aidd-spec",
+						Block: "code-review",
 						Routing: dag.RoutingConfig{
 							Mode:  dag.ModeAuto,
 							Combo: "code-fast",
@@ -181,6 +181,74 @@ func BuiltinTemplates() []Template {
 					{From: "l2-design", To: "l3-triade"},
 					{From: "l3-triade", To: "l4-tdd"},
 					{From: "l4-tdd", To: "l5-homologue"},
+				},
+			},
+		},
+		{
+			ID:          "impeccable-design",
+			Name:        "Pipeline de Design Impeccable (6 Sub-Loops)",
+			Description: "Esteira completa de UI/UX: Avaliar -> Construir -> Melhorar -> Refinar -> Corrigir -> Iterar & Documentar.",
+			Category:    "Design",
+			Icon:        "palette",
+			Composition: Composition{
+				Name: "impeccable-design-esteira",
+				Nodes: []CompNode{
+					{
+						ID:    "subloop-avaliar",
+						Block: "impeccable",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+					{
+						ID:    "subloop-construir",
+						Block: "impeccable",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "haiku",
+						},
+					},
+					{
+						ID:    "subloop-melhorar",
+						Block: "impeccable",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+					{
+						ID:    "subloop-refinar",
+						Block: "impeccable",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+					{
+						ID:    "subloop-corrigir",
+						Block: "impeccable",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+					{
+						ID:    "subloop-documentar",
+						Block: "impeccable",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+				},
+				Edges: []CompEdge{
+					{From: "subloop-avaliar", To: "subloop-construir"},
+					{From: "subloop-construir", To: "subloop-melhorar"},
+					{From: "subloop-melhorar", To: "subloop-refinar"},
+					{From: "subloop-refinar", To: "subloop-corrigir"},
+					{From: "subloop-corrigir", To: "subloop-documentar"},
 				},
 			},
 		},
