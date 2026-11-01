@@ -252,6 +252,75 @@ func BuiltinTemplates() []Template {
 				},
 			},
 		},
+		{
+			ID:          "matt-pocock",
+			Name:        "Pipeline Matt Pocock (6 Sub-Loops)",
+			Description: "Esteira de rigor de engenharia: Grilling & Dominio -> Especificacao -> Tickets em Grafo -> TDD Estrito -> Code Review 2 Eixos -> Retroalimentacao.",
+			Category:    "Engenharia",
+			Icon:        "git",
+			Composition: Composition{
+				Name: "matt-pocock-esteira",
+				Nodes: []CompNode{
+					{
+						ID:    "subloop-grill-dominio",
+						Block: "aidd-pocock",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "haiku",
+						},
+					},
+					{
+						ID:    "subloop-especificar",
+						Block: "aidd-pocock",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-pro",
+						},
+					},
+					{
+						ID:    "subloop-tickets-grafo",
+						Block: "aidd-pocock",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+					{
+						ID:    "subloop-tdd-construir",
+						Block: "aidd-pocock",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "qwen2.5-coder:7b",
+						},
+					},
+					{
+						ID:    "subloop-review-auditar",
+						Block: "aidd-pocock",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+					{
+						ID:    "subloop-retro-ambiente",
+						Block: "aidd-pocock",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+				},
+				Edges: []CompEdge{
+					{From: "subloop-grill-dominio", To: "subloop-especificar"},
+					{From: "subloop-especificar", To: "subloop-tickets-grafo"},
+					{From: "subloop-tickets-grafo", To: "subloop-tdd-construir"},
+					{From: "subloop-tdd-construir", To: "subloop-review-auditar"},
+					{From: "subloop-review-auditar", To: "subloop-retro-ambiente"},
+				},
+			},
+		},
 	}
 }
 

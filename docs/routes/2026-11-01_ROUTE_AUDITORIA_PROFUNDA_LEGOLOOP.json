@@ -1,0 +1,246 @@
+{
+  "name": "route-auditoria-profunda-legoloop",
+  "version": "1.0.0",
+  "date": "2026-11-01",
+  "intent_ref": "docs/intents/2026-11-01_INTENT_AUDITORIA_PROFUNDA_LEGOLOOP.md",
+  "spec_ref": "docs/specs/2026-11-01_SPEC_AUDITORIA_PROFUNDA_LEGOLOOP.md",
+  "plan_ref": "docs/plans/2026-11-01_PLAN_AUDITORIA_PROFUNDA_LEGOLOOP.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 1,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "AUD-01.1",
+      "epic": "EPIC-01",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "target_files": [
+          "internal/studio/static/index.html",
+          "internal/studio/static/app.js",
+          "internal/studio/static/inspector.js",
+          "internal/studio/static/palette.js",
+          "internal/studio/static/slots.js",
+          "internal/studio/static/components/lego-item-modal.js"
+        ]
+      },
+      "output": {
+        "artifacts": [
+          "scratch/auditoria_estatica_ui.json"
+        ],
+        "gate": "file_exists('scratch/auditoria_estatica_ui.json')"
+      }
+    },
+    {
+      "id": "AUD-01.2",
+      "epic": "EPIC-01",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["AUD-01.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "target_files": [
+          "internal/studio/server.go",
+          "internal/studio/assets_api.go",
+          "internal/studio/loops_api.go",
+          "internal/studio/run_api.go",
+          "internal/studio/pieces.go"
+        ]
+      },
+      "output": {
+        "artifacts": [
+          "scratch/auditoria_contratos_api.json"
+        ],
+        "gate": "file_exists('scratch/auditoria_contratos_api.json')"
+      }
+    },
+    {
+      "id": "AUD-02.1",
+      "epic": "EPIC-02",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["AUD-01.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": true
+      },
+      "inputs": {
+        "server_port": 7879,
+        "entrypoint": "http://127.0.0.1:7879"
+      },
+      "output": {
+        "artifacts": [
+          "scratch/auditoria_boot_logs.json"
+        ],
+        "gate": "file_exists('scratch/auditoria_boot_logs.json')"
+      }
+    },
+    {
+      "id": "AUD-02.2",
+      "epic": "EPIC-02",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["AUD-02.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": true
+      },
+      "inputs": {
+        "scope": "canvas_interactions"
+      },
+      "output": {
+        "artifacts": [
+          "scratch/auditoria_canvas_e2e.json"
+        ],
+        "gate": "file_exists('scratch/auditoria_canvas_e2e.json')"
+      }
+    },
+    {
+      "id": "AUD-02.3",
+      "epic": "EPIC-02",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["AUD-02.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": true
+      },
+      "inputs": {
+        "scope": "modals_inspector_buttons"
+      },
+      "output": {
+        "artifacts": [
+          "scratch/auditoria_modais_botoes.json"
+        ],
+        "gate": "file_exists('scratch/auditoria_modais_botoes.json')"
+      }
+    },
+    {
+      "id": "AUD-03.1",
+      "epic": "EPIC-03",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["AUD-02.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "commands": ["doctor", "validate", "run"]
+      },
+      "output": {
+        "artifacts": [
+          "scratch/auditoria_cli_core.json"
+        ],
+        "gate": "file_exists('scratch/auditoria_cli_core.json')"
+      }
+    },
+    {
+      "id": "AUD-03.2",
+      "epic": "EPIC-03",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["AUD-03.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "commands": ["canonize", "vault"]
+      },
+      "output": {
+        "artifacts": [
+          "scratch/auditoria_cli_canon.json"
+        ],
+        "gate": "file_exists('scratch/auditoria_cli_canon.json')"
+      }
+    },
+    {
+      "id": "AUD-04.1",
+      "epic": "EPIC-04",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["AUD-03.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "source_scratch_reports": "scratch/auditoria_*.json"
+      },
+      "output": {
+        "artifacts": [
+          "scratch/matriz_defeitos_consolidada.json"
+        ],
+        "gate": "file_exists('scratch/matriz_defeitos_consolidada.json')"
+      }
+    },
+    {
+      "id": "AUD-04.2",
+      "epic": "EPIC-04",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": ["AUD-04.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash_lite",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "consolidated_matrix": "scratch/matriz_defeitos_consolidada.json"
+      },
+      "output": {
+        "artifacts": [
+          "docs/reports/2026-11-01_REPORT_AUDITORIA_PROFUNDA.md"
+        ],
+        "gate": "file_exists('docs/reports/2026-11-01_REPORT_AUDITORIA_PROFUNDA.md')"
+      }
+    }
+  ]
+}
