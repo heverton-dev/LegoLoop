@@ -24,8 +24,7 @@ func guardDAG(t *testing.T, extra string) *dag.DAG {
 // um hook ou gate de slot descartado faria o usuário crer que a proteção rodou.
 func TestRunRefusesUnsupportedV2Features(t *testing.T) {
 	cases := map[string]string{
-		"slots":    `,"slots":{"hooks":{"pre":[["go","version"]]}}`,
-		"isolated": `,"execution":{"mode":"isolated"}`,
+		"slots": `,"slots":{"hooks":{"pre":[["go","version"]]}}`,
 	}
 	for name, extra := range cases {
 		ex := &fakeExec{}

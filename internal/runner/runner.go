@@ -117,8 +117,6 @@ func unsupported(d *dag.DAG) error {
 		switch {
 		case n.HasSlots():
 			return fmt.Errorf("runner: nó %q usa slots (gates, scripts ou hooks), que o runner ainda não executa", n.ID)
-		case n.EffectiveMode() == dag.ExecIsolated:
-			return fmt.Errorf("runner: nó %q usa execution.mode=isolated, que o runner ainda não executa", n.ID)
 		}
 	}
 	return nil
@@ -165,9 +163,28 @@ func (r *run) node(parent context.Context, id string) NodeReport {
 	ctx, cancel := r.nodeContext(parent, n)
 	defer cancel()
 	start := time.Now()
-	res, err := r.opts.Executor.Execute(ctx, n, r.opts.Workdir)
+
+	workdir := r.opts.Workdir
+	if n.EffectiveMode() == dag.ExecIsolated {
+		isoDir, cleanup, err := prepareIsolation(ctx, r.opts.Workdir, n)
+		if err != nil {
+			return NodeReport{ID: id, Status: StatusError, Error: "isolamento falhou: " + err.Error(), Duration: time.Since(start)}
+		}
+		defer cleanup()
+		workdir = isoDir
+	}
+
+	res, err := r.opts.Executor.Execute(ctx, n, workdir)
 	nr := NodeReport{ID: id, Duration: time.Since(start), ExitCode: res.ExitCode, Tokens: res.Tokens,
 		Model: res.Model, Notes: res.Notes}
+
+	if n.EffectiveMode() == dag.ExecIsolated && err == nil && res.ExitCode == 0 {
+		if promErr := promoteArtifact(workdir, r.opts.Workdir, n.Output.Artifact); promErr != nil {
+			nr.Status, nr.Error = StatusError, promErr.Error()
+			return nr
+		}
+	}
+
 	switch {
 	case err != nil && errors.Is(ctx.Err(), context.DeadlineExceeded) && parent.Err() == nil:
 		nr.Status, nr.Error = StatusTimeout, err.Error()
