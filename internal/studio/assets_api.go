@@ -16,6 +16,7 @@ import (
 
 	"legoloop/internal/assets"
 	"legoloop/internal/canon"
+	"legoloop/internal/loop"
 )
 
 // maxListItems limita cada resposta de lista; o total real vai em "total".
@@ -172,9 +173,11 @@ func (s *Server) itemsOf(ctx context.Context, kind string) ([]assets.Item, bool)
 
 func (s *Server) loopItems() []assets.Item {
 	out := []assets.Item{}
+	seen := map[string]bool{}
 	if store, err := s.loopStore(); err == nil {
 		list, _ := store.List()
 		for _, l := range list {
+			seen[l.ID] = true
 			out = append(out, assets.Item{
 				ID:          l.ID,
 				Kind:        assets.KindLoop,
@@ -188,6 +191,32 @@ func (s *Server) loopItems() []assets.Item {
 					"trigger":  l.TriggerType,
 				},
 			})
+		}
+	}
+	if s.ProjectDir != "" {
+		projLoops := filepath.Join(s.ProjectDir, "loops")
+		if pStore, err := loop.NewStore(projLoops); err == nil {
+			if list, err := pStore.List(); err == nil {
+				for _, l := range list {
+					if seen[l.ID] {
+						continue
+					}
+					seen[l.ID] = true
+					out = append(out, assets.Item{
+						ID:          l.ID,
+						Kind:        assets.KindLoop,
+						Name:        l.Name,
+						Description: l.Description,
+						Origin:      "project",
+						Scope:       "project",
+						Meta: map[string]string{
+							"nodes":    strconv.Itoa(l.NodesCount),
+							"artifact": l.FinalArtifact,
+							"trigger":  l.TriggerType,
+						},
+					})
+				}
+			}
 		}
 	}
 	return out

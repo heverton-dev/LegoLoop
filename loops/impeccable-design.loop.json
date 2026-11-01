@@ -1,6 +1,6 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
-  "id": "impeccable-design-loop",
+  "id": "impeccable-design",
   "name": "Pipeline de Design Impeccable (6 Sub-Loops)",
   "description": "Pipeline mestre de UI/UX composto pelos 6 sub-loops modulares do Impeccable: Avaliar, Construir, Melhorar, Refinar, Corrigir e Iterar/Documentar.",
   "version": "1.0.0",

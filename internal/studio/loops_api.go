@@ -40,6 +40,22 @@ func (s *Server) handleLoopsList(w http.ResponseWriter, r *http.Request) {
 	if list == nil {
 		list = []loop.Summary{}
 	}
+	seen := map[string]bool{}
+	for _, l := range list {
+		seen[l.ID] = true
+	}
+	if s.ProjectDir != "" {
+		if pStore, err := loop.NewStore(filepath.Join(s.ProjectDir, "loops")); err == nil {
+			if pList, err := pStore.List(); err == nil {
+				for _, l := range pList {
+					if !seen[l.ID] {
+						seen[l.ID] = true
+						list = append(list, l)
+					}
+				}
+			}
+		}
+	}
 	writeJSON(w, http.StatusOK, map[string]any{"loops": list})
 }
 
@@ -51,6 +67,14 @@ func (s *Server) handleLoopsGet(w http.ResponseWriter, r *http.Request) {
 	}
 	id := r.PathValue("id")
 	lp, err := store.Get(id)
+	if err != nil && s.ProjectDir != "" {
+		if pStore, pErr := loop.NewStore(filepath.Join(s.ProjectDir, "loops")); pErr == nil {
+			if pLoop, pGetErr := pStore.Get(id); pGetErr == nil {
+				lp = pLoop
+				err = nil
+			}
+		}
+	}
 	if err != nil {
 		if errors.Is(err, loop.ErrNotFound) || errors.Is(err, loop.ErrInvalidID) {
 			http.Error(w, "loop não encontrado", http.StatusNotFound)

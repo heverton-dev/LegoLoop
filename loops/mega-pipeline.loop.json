@@ -1,6 +1,6 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
-  "id": "mega-pipeline-loop",
+  "id": "mega-pipeline",
   "name": "Mega Pipeline LegoLoop (5 Sub-Loops)",
   "description": "Esteira mestre determinística com os 5 sub-loops canônicos: Concepção & Alinhamento -> Engenharia Reversa & Design Pass -> Tríade de Planejamento -> Construção TDD por Épico -> Homologação E2E & Fechamento.",
   "version": "1.0.0",
