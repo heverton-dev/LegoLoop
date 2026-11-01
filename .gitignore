@@ -14,6 +14,7 @@ bin/
 *.key
 
 # Testes, caches e temporários
+.worktrees/
 .playwright-mcp/
 scratch/
 tmp/
