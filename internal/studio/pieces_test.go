@@ -12,6 +12,7 @@ import (
 
 	"legoloop/internal/assets"
 	"legoloop/internal/dag"
+	"legoloop/internal/graph"
 	"legoloop/internal/loop"
 )
 
@@ -408,3 +409,23 @@ func TestComposeSubloopSuccess(t *testing.T) {
 		t.Fatalf("DAG gerado não contém nó subloop correto: %s", raw)
 	}
 }
+
+func TestBoardTriggerPiece(t *testing.T) {
+	s, _, _ := piecesFixture(t)
+	// Inicializa o index com FullCatalog para conter o bloco github-board-trigger
+	fullIdx, err := graph.NewIndex(graph.FullCatalog())
+	if err != nil {
+		t.Fatalf("falha ao criar index com FullCatalog: %v", err)
+	}
+	s.Index = fullIdx
+
+	body := comp([]string{nodeJSON("trig1", "github-board-trigger", "")}, "")
+	code, res, raw := post(t, s, "/api/validate", body)
+	if code != 200 || !res.OK {
+		t.Fatalf("esperava validação com sucesso do nó trigger: %d %s", code, raw)
+	}
+	if !strings.Contains(raw, `"artifact":"WAVE_PLAN.json"`) {
+		t.Fatalf("DAG gerada não contém artefato WAVE_PLAN.json esperado: %s", raw)
+	}
+}
+

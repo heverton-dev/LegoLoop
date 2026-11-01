@@ -1,0 +1,270 @@
+{
+  "name": "route-super-board-integration",
+  "version": "1.0.0",
+  "date": "2026-11-01",
+  "intent_ref": "docs/intents/2026-11-01_INTENT_SUPER_BOARD_INTEGRATION.md",
+  "spec_ref": "docs/specs/2026-11-01_SPEC_SUPER_BOARD_INTEGRATION.md",
+  "plan_ref": "docs/plans/2026-11-01_PLAN_SUPER_BOARD_INTEGRATION.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 2,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "TICK-SB-101",
+      "epic": "SB-01",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_SUPER_BOARD_INTEGRATION.md#3.1"
+      },
+      "output": {
+        "artifacts": [
+          "internal/board/types.go"
+        ],
+        "gate": "file_exists('internal/board/types.go') && has_pattern('internal/board/types.go', 'type Card struct')"
+      }
+    },
+    {
+      "id": "TICK-SB-102",
+      "epic": "SB-01",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-SB-101"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "types_source": "internal/board/types.go"
+      },
+      "output": {
+        "artifacts": [
+          "internal/board/guard.go",
+          "internal/board/guard_test.go"
+        ],
+        "gate": "cmd('go test ./internal/board -run TestTokenBucketGuard') == 0"
+      }
+    },
+    {
+      "id": "TICK-SB-103",
+      "epic": "SB-01",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-SB-102"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "guard_source": "internal/board/guard.go"
+      },
+      "output": {
+        "artifacts": [
+          "internal/board/client.go",
+          "internal/board/client_test.go"
+        ],
+        "gate": "cmd('go test ./internal/board/...') == 0"
+      }
+    },
+    {
+      "id": "TICK-SB-201",
+      "epic": "SB-02",
+      "nature": "nano",
+      "execution_mode": "parallel",
+      "depends_on": ["TICK-SB-101"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "types_source": "internal/board/types.go"
+      },
+      "output": {
+        "artifacts": [
+          "internal/wave/overlap.go",
+          "internal/wave/overlap_test.go"
+        ],
+        "gate": "cmd('go test ./internal/wave -run TestExtractAffectedFiles') == 0"
+      }
+    },
+    {
+      "id": "TICK-SB-202",
+      "epic": "SB-02",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-SB-201"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "overlap_source": "internal/wave/overlap.go"
+      },
+      "output": {
+        "artifacts": [
+          "internal/wave/planner.go",
+          "internal/wave/planner_test.go"
+        ],
+        "gate": "cmd('go test ./internal/wave/...') == 0"
+      }
+    },
+    {
+      "id": "TICK-SB-301",
+      "epic": "SB-03",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-SB-103", "TICK-SB-202"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "runner_iso": "internal/runner/isolated.go",
+        "board_types": "internal/board/types.go"
+      },
+      "output": {
+        "artifacts": [
+          "internal/runner/lifecycle.go",
+          "internal/runner/lifecycle_test.go"
+        ],
+        "gate": "cmd('go test ./internal/runner -run TestIssueLifecycleWorktree') == 0"
+      }
+    },
+    {
+      "id": "TICK-SB-302",
+      "epic": "SB-03",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-SB-301"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "gate_source": "internal/gate/builtins.go"
+      },
+      "output": {
+        "artifacts": [
+          "internal/gate/pr_gate.go",
+          "internal/gate/pr_gate_test.go"
+        ],
+        "gate": "cmd('go test ./internal/gate/...') == 0"
+      }
+    },
+    {
+      "id": "TICK-SB-401",
+      "epic": "SB-04",
+      "nature": "nano",
+      "execution_mode": "parallel",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "hooks_dir": "internal/assets/hooks.go"
+      },
+      "output": {
+        "artifacts": [
+          "internal/assets/hooks.go",
+          "internal/assets/hooks_test.go"
+        ],
+        "gate": "cmd('go test ./internal/assets -run TestHooks') == 0"
+      }
+    },
+    {
+      "id": "TICK-SB-402",
+      "epic": "SB-04",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-SB-103", "TICK-SB-202", "TICK-SB-401"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "pieces_source": "internal/studio/pieces.go"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/pieces.go",
+          "internal/studio/pieces_test.go"
+        ],
+        "gate": "cmd('go test ./internal/studio -run TestBoardTriggerPiece') == 0"
+      }
+    },
+    {
+      "id": "TICK-SB-FINAL",
+      "epic": "FINAL",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": [
+        "TICK-SB-103",
+        "TICK-SB-202",
+        "TICK-SB-302",
+        "TICK-SB-402"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "all_packages": "./..."
+      },
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "gate": "cmd('go test ./...') == 0 && cmd('go build -o bin/legoloop.exe ./cmd/legoloop') == 0"
+      }
+    }
+  ]
+}

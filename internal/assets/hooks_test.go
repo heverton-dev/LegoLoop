@@ -73,3 +73,33 @@ func TestRedact(t *testing.T) {
 		}
 	}
 }
+
+func TestGuardHooksRecognition(t *testing.T) {
+	cfg, home, project := testCfg(t)
+	guardSettings := `{
+  "hooks": {
+    "PreToolUse": [
+      {"matcher": "Bash", "hooks": [{"type": "command", "command": "python3 .claude/hooks/guard-delete-outside.py"}]},
+      {"matcher": "Bash", "hooks": [{"type": "command", "command": "python3 .claude/hooks/guard-worktree-path.py"}]}
+    ],
+    "PreCommit": [
+      {"hooks": [{"type": "command", "command": "python3 .claude/hooks/guard-secrets.py --key=sk-123456"}]},
+      {"hooks": [{"type": "command", "command": "python3 .claude/hooks/guard-protected-push.py"}]}
+    ]
+  }
+}`
+	write(t, filepath.Join(project, ".claude", "settings.json"), guardSettings)
+	_ = home
+	items := scanKind(t, cfg, KindHook)
+
+	preBash := mustFind(t, items, "PreToolUse:Bash")
+	if !strings.Contains(preBash.Command, "guard-delete-outside.py") {
+		t.Errorf("esperava comando guard-delete-outside.py preservado em Command, obteve %q", preBash.Command)
+	}
+
+	preCommit := mustFind(t, items, "PreCommit")
+	if strings.Contains(preCommit.Description, "sk-123456") {
+		t.Errorf("segredo não deveria vazar na descrição do hook: %q", preCommit.Description)
+	}
+}
+

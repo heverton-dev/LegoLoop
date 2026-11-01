@@ -61,6 +61,9 @@ func ControlBlocks() []Block {
 		{ID: "flow-merge", Label: "Merge / Barreira", Ref: "core/flow-merge", Kind: "flow_merge",
 			Consumes: []ArtifactType{Briefing, Spec, Code, Audit}, Produces: Code,
 			Artifact: "JOINED.json", Gate: "file_exists('JOINED.json')", Cost: 1},
+		{ID: "github-board-trigger", Label: "Trigger: GitHub Board Kanban", Ref: "core/trigger-github-board", Kind: "trigger_board",
+			Consumes: []ArtifactType{Idea}, Produces: Spec,
+			Artifact: "WAVE_PLAN.json", Gate: "file_exists('WAVE_PLAN.json')", Cost: 2, SuggestedModel: "flash"},
 	}
 }
 
