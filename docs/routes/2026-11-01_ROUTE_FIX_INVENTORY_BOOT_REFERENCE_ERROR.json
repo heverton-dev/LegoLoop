@@ -1,0 +1,88 @@
+{
+  "name": "route-fix-inventory-boot-reference-error",
+  "version": "1.0.0",
+  "date": "2026-11-01",
+  "intent_ref": "docs/intents/2026-11-01_INTENT_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md",
+  "spec_ref": "docs/specs/2026-11-01_SPEC_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md",
+  "plan_ref": "docs/plans/2026-11-01_PLAN_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 1,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "TICK-FIX-01.1",
+      "epic": "EP-01",
+      "nature": "micro",
+      "execution_mode": "tdd_red",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md#g3"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static_test.go"
+        ],
+        "gate": "has_pattern('internal/studio/static_test.go', 'TestInventoryScriptNoOrphanModalListeners') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-FIX-01.2",
+      "epic": "EP-01",
+      "nature": "nano",
+      "execution_mode": "tdd_green",
+      "depends_on": ["TICK-FIX-01.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash_lite",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md#g1"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/inventory.js"
+        ],
+        "gate": "!has_pattern('internal/studio/static/inventory.js', 'translateActiveItem') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-FIX-01.3",
+      "epic": "EP-01",
+      "nature": "nano",
+      "execution_mode": "homologate_and_report",
+      "depends_on": ["TICK-FIX-01.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash_lite",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md#g4"
+      },
+      "output": {
+        "artifacts": [
+          "docs/reports/2026-11-01_REPORT_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md"
+        ],
+        "gate": "file_exists('docs/reports/2026-11-01_REPORT_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md')"
+      }
+    }
+  ]
+}
