@@ -8,10 +8,12 @@ import (
 	"embed"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/fs"
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -87,6 +89,10 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/route", s.handleRoute)
 	mux.HandleFunc("POST /api/validate", s.handleValidate)
 	mux.HandleFunc("POST /api/materialize", s.handleMaterialize)
+	mux.HandleFunc("POST /api/run", s.handleRunDAG)
+	mux.HandleFunc("GET /api/templates", s.handleTemplates)
+	mux.HandleFunc("GET /api/mcps/catalog", s.handleMCPCatalog)
+	mux.HandleFunc("POST /api/mcps/install", s.handleMCPInstall)
 	return s.secure(mux)
 }
 
@@ -210,6 +216,49 @@ func (s *Server) handleMaterialize(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, "falha ao gravar "+PipelineFile)
 		return
 	}
+
+	// R-RUN-3: Grava a skill orquestradora (< 20 linhas) no cofre canônico
+	vault := s.Vault
+	if vault == "" {
+		home := s.Home
+		if home == "" {
+			home, _ = os.UserHomeDir()
+		}
+		if home != "" {
+			vault = filepath.Join(home, ".aidd", "canonical")
+		}
+	}
+	if vault != "" && d != nil {
+		skillDir := filepath.Join(vault, "skills", "loop-"+d.Name)
+		_ = os.MkdirAll(skillDir, 0o755)
+		skillPath := filepath.Join(skillDir, "SKILL.md")
+		skillContent := fmt.Sprintf(`---
+name: loop-%s
+description: Executa o loop LegoLoop %s
+---
+# Loop %s
+
+Execute esta esteira autônoma via LegoLoop:
+`+"```bash"+`
+legoloop run
+`+"```"+`
+`, d.Name, d.Name, d.Name)
+		_ = os.WriteFile(skillPath, []byte(skillContent), 0o644)
+	}
+
+	// R-RUN-3: Registra o loop no acervo se disponível
+	if s.Loops != nil && d != nil {
+		loopObj := &loop.Loop{
+			ID:          d.Name,
+			Name:        d.Name,
+			Description: d.Description,
+			Version:     d.Version,
+			Trigger:     d.Trigger,
+			Nodes:       d.Nodes,
+		}
+		_ = s.Loops.Save(loopObj)
+	}
+
 	res.Path = PipelineFile
 	res.DAG = s.maskDAG(res.DAG) // o arquivo gravado tem os caminhos reais; a resposta, não
 	writeJSON(w, http.StatusOK, res)

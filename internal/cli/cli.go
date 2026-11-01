@@ -47,6 +47,7 @@ Comandos:
              [--skills DIR] [--var chave=valor]... [--json]
   route      --from Artifact:X --to Artifact:Y  rota ótima no grafo semântico
   studio     [--addr 127.0.0.1:7878] [--project DIR]  abre o Looping Studio
+  forge      [--addr 127.0.0.1:7878] [--project DIR]  abre o Studio e dispara primeira varredura
   version
 `
 
@@ -58,7 +59,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 	}
 	cmds := map[string]func(context.Context, []string, Deps) int{
 		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
-		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio,
+		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

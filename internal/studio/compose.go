@@ -14,9 +14,10 @@ const maxCanvasNodes = 200
 
 // Composition é o estado do canvas enviado pelo navegador.
 type Composition struct {
-	Name  string     `json:"name"`
-	Nodes []CompNode `json:"nodes"`
-	Edges []CompEdge `json:"edges"`
+	Name    string       `json:"name"`
+	Trigger *dag.Trigger `json:"trigger,omitempty"`
+	Nodes   []CompNode   `json:"nodes"`
+	Edges   []CompEdge   `json:"edges"`
 }
 
 // CompNode é um nó posicionado no canvas: instancia um bloco do catálogo (Block, contrato tipado)
@@ -187,7 +188,10 @@ func buildDAG(c Composition, infos map[string]nodeInfo, slots map[string]*dag.Sl
 	for _, e := range c.Edges {
 		incoming[e.To] = append(incoming[e.To], e.From)
 	}
-	d := dag.DAG{Schema: "https://legoloop.dev/schemas/dag.v1.json", Name: c.Name, Version: "1.0.0"}
+	d := dag.DAG{Schema: "https://legoloop.dev/schemas/dag.v1.json", Name: c.Name, Version: "2.0.0", Trigger: c.Trigger}
+	if d.Trigger == nil {
+		d.Trigger = &dag.Trigger{Type: dag.TriggerManual}
+	}
 	for _, n := range c.Nodes {
 		info := infos[n.ID]
 		inputs := map[string]string{}

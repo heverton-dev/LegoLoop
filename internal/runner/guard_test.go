@@ -2,7 +2,6 @@ package runner
 
 import (
 	"context"
-	"strings"
 	"testing"
 
 	"legoloop/internal/dag"
@@ -20,20 +19,20 @@ func guardDAG(t *testing.T, extra string) *dag.DAG {
 	return d
 }
 
-// Recursos do contrato v2 que o runner ainda não executa NUNCA são ignorados em silêncio:
-// um hook ou gate de slot descartado faria o usuário crer que a proteção rodou.
-func TestRunRefusesUnsupportedV2Features(t *testing.T) {
+// Recursos do contrato v2 agora são todos executados pelo runner: slots, isolated e subloop (TICK-1107).
+func TestRunSupportsAllV2Features(t *testing.T) {
 	cases := map[string]string{
-		"slots": `,"slots":{"hooks":{"pre":[["go","version"]]}}`,
+		"slots":    `,"slots":{"gates":["exit_code == 0"]}`,
+		"isolated": `,"execution":{"mode":"isolated"}`,
 	}
 	for name, extra := range cases {
 		ex := &fakeExec{}
-		_, err := Run(context.Background(), guardDAG(t, extra), Options{Workdir: t.TempDir(), Executor: ex})
-		if err == nil || !strings.Contains(err.Error(), "a") || !strings.Contains(err.Error(), "ainda não") {
-			t.Errorf("%s: esperado recusa explícita, veio %v", name, err)
+		rep, err := Run(context.Background(), guardDAG(t, extra), Options{Workdir: t.TempDir(), Executor: ex, AllowScripts: true})
+		if err != nil || !rep.OK {
+			t.Errorf("%s: esperado sucesso de execução v2, veio err=%v rep=%+v", name, err, rep)
 		}
-		if len(ex.order) != 0 {
-			t.Errorf("%s: nada deve executar quando o DAG é recusado", name)
+		if len(ex.order) != 1 {
+			t.Errorf("%s: o nó deve executar", name)
 		}
 	}
 	sub, err := dag.Parse([]byte(`{"name":"g","version":"2.0.0","trigger":{"type":"manual"},"nodes":[{"id":"s",

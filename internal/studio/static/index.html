@@ -34,8 +34,10 @@
       <button id="btn-route" class="btn" type="button">Traçar rota</button>
     </div>
     <div class="topbar__actions">
+      <button id="btn-templates" class="btn" type="button" title="Galeria de Templates de Esteira">📋 Templates</button>
       <button id="btn-vault" class="btn" type="button" title="Gerenciar Cofre Canônico e Volumes do SO">🗄️ Cofre Canônico</button>
       <button id="btn-validate" class="btn" type="button">Validar</button>
+      <button id="btn-run" class="btn btn--success" type="button" title="Executar esteira com streaming SSE">▶️ Executar</button>
       <button id="btn-materialize" class="btn btn--primary" type="button">Materializar Esteira</button>
     </div>
   </header>
@@ -253,6 +255,50 @@
         <p id="vault-results-summary"></p>
         <div id="vault-groups-list" class="vault-groups-list"></div>
       </div>
+    </div>
+  </dialog>
+
+  <!-- Modal de Execução SSE em Tempo Real -->
+  <dialog id="modal-run" class="modal-item modal-run-item" aria-labelledby="modal-run-title">
+    <div class="modal-item-header">
+      <div class="modal-title-group">
+        <h3 id="modal-run-title" class="modal-title">⚡ Execução da Esteira</h3>
+        <span id="run-status-badge" class="modal-badge badge--ready">Pronto</span>
+      </div>
+      <div class="modal-header-actions">
+        <button id="btn-modal-run-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+    <div class="modal-item-body modal-run-content">
+      <div class="run-meta-card">
+        <p><strong>Esteira:</strong> <span id="run-pipeline-name">nova-esteira</span></p>
+        <p><strong>Tokens Totais:</strong> <span id="run-tokens-total">0</span> (In: <span id="run-tokens-in">0</span> | Out: <span id="run-tokens-out">0</span>)</p>
+      </div>
+      <div class="run-timeline-area">
+        <h4>Progresso dos Nós</h4>
+        <div id="run-nodes-timeline" class="run-nodes-timeline"></div>
+      </div>
+      <div class="run-logs-area">
+        <h4>Logs de Eventos</h4>
+        <pre id="run-logs-console" class="run-logs-console"></pre>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Modal da Galeria de Templates (R-UI-5) -->
+  <dialog id="modal-templates" class="modal-item modal-templates-item" aria-labelledby="modal-templates-title">
+    <div class="modal-item-header">
+      <div class="modal-title-group">
+        <h3 id="modal-templates-title" class="modal-title">Galeria de Templates Canônicos</h3>
+        <span class="modal-badge badge--ready">Prontos para Uso</span>
+      </div>
+      <div class="modal-header-actions">
+        <button id="btn-modal-templates-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+    <div class="modal-item-body modal-templates-content">
+      <p class="templates-intro">Selecione uma arquitetura pronta para carregar no Canvas:</p>
+      <div id="templates-grid" class="templates-grid"></div>
     </div>
   </dialog>
 

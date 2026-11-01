@@ -1402,6 +1402,8 @@ async function boot() {
   $("btn-route").addEventListener("click", (e) => withBusy(e.currentTarget, traceRoute));
   $("btn-close-issues").addEventListener("click", () => { $("issues").hidden = true; });
   initVaultModal();
+  initRunModal();
+  initTemplatesModal();
   updateEmpty();
   await pollItems();
   setInterval(() => { if (document.visibilityState === "visible") pollItems().catch(() => {}); }, POLL_MS);
@@ -1484,6 +1486,290 @@ function initVaultModal() {
       toast("Erro ao aplicar canonização: " + e.message, true);
     } finally {
       btnApply.textContent = "Aplicar Desduplicação Global";
+    }
+  });
+}
+
+function initRunModal() {
+  const btnRun = $("btn-run");
+  const modal = $("modal-run");
+  if (!btnRun || !modal) return;
+
+  const btnClose = $("btn-modal-run-close");
+  const badge = $("run-status-badge");
+  const nameEl = $("run-pipeline-name");
+  const tokensTotalEl = $("run-tokens-total");
+  const tokensInEl = $("run-tokens-in");
+  const tokensOutEl = $("run-tokens-out");
+  const timelineEl = $("run-nodes-timeline");
+  const consoleEl = $("run-logs-console");
+
+  btnClose?.addEventListener("click", () => modal.close());
+
+  btnRun.addEventListener("click", () => withBusy(btnRun, async () => {
+    if (state.nodes.size === 0) {
+      toast("O canvas está vazio. Adicione nós antes de executar.", true);
+      return;
+    }
+
+    const valid = await validate();
+    if (!valid) return;
+
+    const hasScripts = Array.from(state.nodes.values()).some((n) => n.kind === "script");
+    let allowScripts = false;
+    if (hasScripts) {
+      const agreed = await confirmDialog({
+        title: "Autorizar Execução de Scripts?",
+        message: "Esta esteira possui nós do tipo script que executarão comandos no sistema operacional. Você autoriza a execução?",
+        confirmLabel: "Autorizar e Executar",
+        danger: true,
+      });
+      if (!agreed) {
+        toast("Execução cancelada: scripts não autorizados.");
+        return;
+      }
+      allowScripts = true;
+    }
+
+    const dag = compileDAG();
+    nameEl.textContent = dag.name || "nova-esteira";
+    badge.textContent = "Iniciando...";
+    badge.className = "modal-badge badge--ready";
+    tokensTotalEl.textContent = "0";
+    tokensInEl.textContent = "0";
+    tokensOutEl.textContent = "0";
+    timelineEl.textContent = "";
+    consoleEl.textContent = "";
+
+    modal.showModal();
+
+    const appendLog = (msg) => {
+      consoleEl.textContent += (consoleEl.textContent ? "\n" : "") + msg;
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    };
+
+    appendLog(`[${new Date().toLocaleTimeString()}] Conectando ao motor de execução LegoLoop...`);
+
+    try {
+      const resp = await fetch("/api/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dag, allow_scripts: allowScripts }),
+      });
+
+      if (!resp.ok) {
+        const errJson = await resp.json().catch(() => ({ error: "Erro desconhecido" }));
+        badge.textContent = "Falha";
+        badge.className = "modal-badge badge--danger";
+        appendLog(`[ERRO HTTP ${resp.status}] ${errJson.error || "Falha na requisição"}`);
+        toast(errJson.error || "Falha na execução", true);
+        return;
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+      const nodeRows = new Map();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop() || "";
+
+        for (const block of parts) {
+          const lines = block.split("\n");
+          let evData = null;
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              try {
+                evData = JSON.parse(line.slice(6));
+              } catch (_) {}
+            }
+          }
+          if (!evData) continue;
+
+          switch (evData.type) {
+            case "dag_start":
+              badge.textContent = "Executando...";
+              badge.className = "modal-badge badge--running";
+              appendLog(`[${new Date().toLocaleTimeString()}] Esteira "${evData.dag}" iniciada (${evData.nodes_total} nós).`);
+              break;
+
+            case "node_start": {
+              appendLog(`[${new Date().toLocaleTimeString()}] ▶ Nó "${evData.id}" em execução...`);
+              let row = nodeRows.get(evData.id);
+              if (!row) {
+                row = document.createElement("div");
+                row.className = "run-node-row is-running";
+                const titleSpan = document.createElement("strong");
+                titleSpan.textContent = evData.id;
+                const statusSpan = document.createElement("span");
+                statusSpan.className = "node-run-status";
+                statusSpan.textContent = "⏳ Executando";
+                row.appendChild(titleSpan);
+                row.appendChild(statusSpan);
+                timelineEl.appendChild(row);
+                nodeRows.set(evData.id, row);
+              }
+              break;
+            }
+
+            case "node_finish": {
+              let row = nodeRows.get(evData.id);
+              if (!row) {
+                row = document.createElement("div");
+                row.className = "run-node-row";
+                const titleSpan = document.createElement("strong");
+                titleSpan.textContent = evData.id;
+                row.appendChild(titleSpan);
+                timelineEl.appendChild(row);
+                nodeRows.set(evData.id, row);
+              }
+
+              const isPass = evData.status === "passed";
+              row.className = "run-node-row " + (isPass ? "is-passed" : "is-failed");
+              const statusSpan = row.querySelector(".node-run-status") || document.createElement("span");
+              statusSpan.className = "node-run-status";
+              const modelInfo = evData.model ? ` [${evData.model}]` : "";
+              statusSpan.textContent = `${isPass ? "✅ Passou" : "❌ Falhou"} (${evData.duration_ms}ms)${modelInfo}`;
+              if (!row.contains(statusSpan)) row.appendChild(statusSpan);
+
+              appendLog(`[${new Date().toLocaleTimeString()}] ⏹ Nó "${evData.id}": ${evData.status} em ${evData.duration_ms}ms${modelInfo}`);
+              if (evData.error) {
+                appendLog(`   └─ Erro: ${evData.error}`);
+              }
+              break;
+            }
+
+            case "dag_finish": {
+              const ok = evData.ok;
+              badge.textContent = ok ? "Concluído" : "Interrompido";
+              badge.className = "modal-badge " + (ok ? "badge--passed" : "badge--danger");
+              if (evData.tokens) {
+                tokensTotalEl.textContent = String(evData.tokens.input + evData.tokens.output);
+                tokensInEl.textContent = String(evData.tokens.input);
+                tokensOutEl.textContent = String(evData.tokens.output);
+              }
+              appendLog(`[${new Date().toLocaleTimeString()}] Execução finalizada: ${ok ? "SUCESSO" : "COM FALHAS"}`);
+              toast(ok ? "Esteira executada com sucesso!" : "Esteira finalizou com falhas.", !ok);
+              break;
+            }
+
+            case "dag_error":
+              badge.textContent = "Erro";
+              badge.className = "modal-badge badge--danger";
+              appendLog(`[${new Date().toLocaleTimeString()}] Erro no DAG: ${evData.error}`);
+              toast(evData.error, true);
+              break;
+          }
+        }
+      }
+    } catch (e) {
+      badge.textContent = "Falha de Conexão";
+      badge.className = "modal-badge badge--danger";
+      appendLog(`[FALHA] ${e.message}`);
+      toast("Falha na execução: " + e.message, true);
+    }
+  }));
+}
+
+function initTemplatesModal() {
+  const btnTemplates = $("btn-templates");
+  const modal = $("modal-templates");
+  if (!btnTemplates || !modal) return;
+
+  const btnClose = $("btn-modal-templates-close");
+  const grid = $("templates-grid");
+
+  btnClose?.addEventListener("click", () => modal.close());
+
+  btnTemplates.addEventListener("click", async () => {
+    try {
+      const resp = await fetch("/api/templates");
+      if (!resp.ok) return toast("Não foi possível carregar os templates", true);
+      const data = await resp.json();
+
+      grid.textContent = "";
+
+      for (const tmpl of (data.templates || [])) {
+        const card = document.createElement("button");
+        card.className = "template-card";
+        card.type = "button";
+
+        const head = document.createElement("div");
+        head.className = "template-card-header";
+
+        const icon = document.createElement("span");
+        icon.className = "template-icon";
+        icon.textContent = tmpl.icon || "📦";
+
+        const name = document.createElement("span");
+        name.className = "template-name";
+        name.textContent = tmpl.name;
+
+        head.appendChild(icon);
+        head.appendChild(name);
+
+        const desc = document.createElement("p");
+        desc.className = "template-desc";
+        desc.textContent = tmpl.description;
+
+        const meta = document.createElement("span");
+        meta.className = "template-meta";
+        meta.textContent = `${tmpl.category} • ${tmpl.composition.nodes?.length || 0} nós`;
+
+        card.appendChild(head);
+        card.appendChild(desc);
+        card.appendChild(meta);
+
+        card.addEventListener("click", async () => {
+          if (state.nodes.size > 0) {
+            const confirmed = await confirmDialog({
+              title: "Substituir esteira pelo Template?",
+              message: `Os nós atuais serão removidos e substituídos pelo template "${tmpl.name}".`,
+              confirmLabel: "Carregar Template",
+              danger: true,
+            });
+            if (!confirmed) return;
+          }
+
+          [...state.nodes.keys()].forEach(removeNode);
+
+          if ($("pipeline-name")) {
+            $("pipeline-name").value = tmpl.composition.name || tmpl.id;
+          }
+
+          const nodeMap = new Map();
+          (tmpl.composition.nodes || []).forEach((n, i) => {
+            const added = addNode(n.block || n.id, 60 + i * (NODE_W + 80), 100 + (i % 2) * 40);
+            if (added) {
+              nodeMap.set(n.id, added.id);
+            }
+          });
+
+          (tmpl.composition.edges || []).forEach((e) => {
+            const fromId = nodeMap.get(e.from);
+            const toId = nodeMap.get(e.to);
+            if (fromId && toId) {
+              addEdge(fromId, toId);
+            }
+          });
+
+          modal.close();
+          autoLayout();
+          fitToScreen();
+          toast(`Template "${tmpl.name}" carregado com sucesso!`);
+        });
+
+        grid.appendChild(card);
+      }
+
+      modal.showModal();
+    } catch (err) {
+      toast("Erro ao carregar templates: " + err.message, true);
     }
   });
 }

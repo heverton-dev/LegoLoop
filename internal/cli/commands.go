@@ -293,6 +293,39 @@ func cmdStudio(ctx context.Context, args []string, d Deps) int {
 	return serveStudio(ctx, srv, *addr, d)
 }
 
+func cmdForge(ctx context.Context, args []string, d Deps) int {
+	fs := newFlags("forge", d)
+	addr := fs.String("addr", "127.0.0.1:7878", "endereço de escuta (somente loopback)")
+	project := fs.String("project", ".", "projeto onde pipeline.dag.json é gravado")
+	var canonRoots listFlag
+	fs.Var(&canonRoots, "canon-root", "raiz extra da canonização na interface (repetível)")
+	if err := fs.Parse(args); err != nil {
+		return 2
+	}
+	dir, err := filepath.Abs(*project)
+	if err != nil {
+		return fail(d, err)
+	}
+	if st, err := os.Stat(dir); err != nil || !st.IsDir() {
+		return fail(d, errors.New("--project deve ser um diretório existente"))
+	}
+	for _, r := range canonRoots {
+		if st, err := os.Stat(r); err != nil || !st.IsDir() {
+			return fail(d, fmt.Errorf("--canon-root %q deve ser um diretório existente", r))
+		}
+	}
+	idx, err := graph.NewIndex(graph.FullCatalog())
+	if err != nil {
+		return fail(d, err)
+	}
+	w := assets.NewWatcher(assets.NewScanner(assets.Config{Home: d.Home, Projects: []string{dir}, AutoDiscover: true}), assetScanInterval)
+	// TICK-1203: Dispara a primeira varredura antes de servir
+	w.Refresh(ctx)
+	w.Start(ctx)
+	srv := &studio.Server{Index: idx, ProjectDir: dir, Discover: d.discover, Assets: w, Home: d.Home, CanonRoots: canonRoots}
+	return serveStudio(ctx, srv, *addr, d)
+}
+
 func serveStudio(ctx context.Context, srv *studio.Server, addr string, d Deps) int {
 	ready := make(chan string, 1)
 	go func() {

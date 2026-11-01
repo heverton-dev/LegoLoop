@@ -5,7 +5,6 @@ package runner
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
 	"runtime"
 	"sync"
@@ -78,6 +77,9 @@ type Options struct {
 	Parallelism    int
 	DefaultTimeout time.Duration
 	Executor       Executor
+	AllowScripts   bool
+	OnNodeStart    func(nodeID string)
+	OnNodeFinish   func(nr NodeReport)
 }
 
 // Run executa o DAG. Retorna erro apenas para configuração inválida; falhas de nó
@@ -110,15 +112,8 @@ func Run(ctx context.Context, d *dag.DAG, opts Options) (Report, error) {
 	return rep, nil
 }
 
-// unsupported recusa, antes de executar qualquer nó, recursos do contrato v2 que o runner ainda
-// não implementa. Ignorá-los em silêncio faria o usuário crer que um hook ou gate rodou.
+// unsupported recusa, antes de executar qualquer nó, recursos do contrato que o runner ainda não implementa.
 func unsupported(d *dag.DAG) error {
-	for _, n := range d.Nodes {
-		switch {
-		case n.HasSlots():
-			return fmt.Errorf("runner: nó %q usa slots (gates, scripts ou hooks), que o runner ainda não executa", n.ID)
-		}
-	}
 	return nil
 }
 
@@ -159,28 +154,83 @@ func (r *run) layer(ctx context.Context, ids []string) []NodeReport {
 }
 
 func (r *run) node(parent context.Context, id string) NodeReport {
+	if r.opts.OnNodeStart != nil {
+		r.opts.OnNodeStart(id)
+	}
+
 	n := *r.d.Node(id)
 	ctx, cancel := r.nodeContext(parent, n)
 	defer cancel()
 	start := time.Now()
 
+	// Valida consentimento de scripts/hooks em slots (R-RUN-2)
+	if n.Slots != nil && (len(n.Slots.Hooks.Pre) > 0 || len(n.Slots.Scripts) > 0 || len(n.Slots.Hooks.Post) > 0) {
+		if !r.opts.AllowScripts {
+			nr := NodeReport{ID: id, Status: StatusError, Error: "execução de hooks/scripts em slots requer consentimento (--allow-scripts)", Duration: time.Since(start)}
+			if r.opts.OnNodeFinish != nil {
+				r.opts.OnNodeFinish(nr)
+			}
+			return nr
+		}
+	}
+
 	workdir := r.opts.Workdir
 	if n.EffectiveMode() == dag.ExecIsolated {
 		isoDir, cleanup, err := prepareIsolation(ctx, r.opts.Workdir, n)
 		if err != nil {
-			return NodeReport{ID: id, Status: StatusError, Error: "isolamento falhou: " + err.Error(), Duration: time.Since(start)}
+			nr := NodeReport{ID: id, Status: StatusError, Error: "isolamento falhou: " + err.Error(), Duration: time.Since(start)}
+			if r.opts.OnNodeFinish != nil {
+				r.opts.OnNodeFinish(nr)
+			}
+			return nr
 		}
 		defer cleanup()
 		workdir = isoDir
+	}
+
+	// Executa Hooks.Pre do slot
+	if n.Slots != nil && len(n.Slots.Hooks.Pre) > 0 {
+		if preErr := executeSlotCommands(ctx, n.Slots.Hooks.Pre, workdir); preErr != nil {
+			nr := NodeReport{ID: id, Status: StatusError, Error: "slot hook pre falhou: " + preErr.Error(), Duration: time.Since(start)}
+			if r.opts.OnNodeFinish != nil {
+				r.opts.OnNodeFinish(nr)
+			}
+			return nr
+		}
 	}
 
 	res, err := r.opts.Executor.Execute(ctx, n, workdir)
 	nr := NodeReport{ID: id, Duration: time.Since(start), ExitCode: res.ExitCode, Tokens: res.Tokens,
 		Model: res.Model, Notes: res.Notes}
 
+	// Executa Scripts e Hooks.Post do slot
+	if err == nil && res.ExitCode == 0 && n.Slots != nil {
+		if len(n.Slots.Scripts) > 0 {
+			if scrErr := executeSlotCommands(ctx, n.Slots.Scripts, workdir); scrErr != nil {
+				nr.Status, nr.Error = StatusError, "slot script falhou: "+scrErr.Error()
+				if r.opts.OnNodeFinish != nil {
+					r.opts.OnNodeFinish(nr)
+				}
+				return nr
+			}
+		}
+		if len(n.Slots.Hooks.Post) > 0 {
+			if postErr := executeSlotCommands(ctx, n.Slots.Hooks.Post, workdir); postErr != nil {
+				nr.Status, nr.Error = StatusError, "slot hook post falhou: "+postErr.Error()
+				if r.opts.OnNodeFinish != nil {
+					r.opts.OnNodeFinish(nr)
+				}
+				return nr
+			}
+		}
+	}
+
 	if n.EffectiveMode() == dag.ExecIsolated && err == nil && res.ExitCode == 0 {
 		if promErr := promoteArtifact(workdir, r.opts.Workdir, n.Output.Artifact); promErr != nil {
 			nr.Status, nr.Error = StatusError, promErr.Error()
+			if r.opts.OnNodeFinish != nil {
+				r.opts.OnNodeFinish(nr)
+			}
 			return nr
 		}
 	}
@@ -192,6 +242,18 @@ func (r *run) node(parent context.Context, id string) NodeReport {
 		nr.Status, nr.Error = StatusError, err.Error()
 	default:
 		nr.Status, nr.Error = r.evalGate(id, res.ExitCode)
+		if nr.Status == StatusPassed && n.Slots != nil && len(n.Slots.Gates) > 0 {
+			okSlot, slotMsg, slotErr := evalSlotGates(n.Slots, r.root, res.ExitCode)
+			if slotErr != nil {
+				nr.Status, nr.Error = StatusGateFailed, slotErr.Error()
+			} else if !okSlot {
+				nr.Status, nr.Error = StatusGateFailed, slotMsg
+			}
+		}
+	}
+
+	if r.opts.OnNodeFinish != nil {
+		r.opts.OnNodeFinish(nr)
 	}
 	return nr
 }

@@ -345,3 +345,31 @@ func TestCanonizeWarnsSkippedGitRoot(t *testing.T) {
 		t.Fatalf("raiz pulada sem aviso: %q", errb.String())
 	}
 }
+
+
+// TICK-1203: legoloop forge abre o Studio e dispara a primeira varredura.
+func TestForgeServesAndTriggersInitialScan(t *testing.T) {
+	d, out, _ := deps(t)
+	ready := make(chan string, 1)
+	d.Ready = ready
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	done := make(chan int, 1)
+	go func() { done <- Run(ctx, []string{"forge", "--addr", "127.0.0.1:0", "--project", t.TempDir()}, d) }()
+	var addr string
+	select {
+	case addr = <-ready:
+	case <-time.After(3 * time.Second):
+		t.Fatal("forge não subiu a tempo")
+	}
+	resp, err := http.Get("http://" + addr + "/api/blocks")
+	if err != nil || resp.StatusCode != 200 {
+		t.Fatalf("forge /api/blocks: err=%v status=%v", err, resp.StatusCode)
+	}
+	resp.Body.Close()
+	cancel()
+	<-done
+	if !strings.Contains(out.String(), "Looping Studio") && !strings.Contains(out.String(), "http://") {
+		t.Fatalf("saída do forge deve informar URL: %s", out.String())
+	}
+}
