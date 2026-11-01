@@ -1,0 +1,131 @@
+{
+  "name": "route-ep17-triggers-catalog-canvas",
+  "version": "1.0.0",
+  "date": "2026-11-01",
+  "intent_ref": "docs/intents/2026-11-01_INTENT_EP17_TRIGGERS_CATALOG_CANVAS.md",
+  "spec_ref": "docs/specs/2026-11-01_SPEC_EP17_TRIGGERS_CATALOG_CANVAS.md",
+  "plan_ref": "docs/plans/2026-11-01_PLAN_EP17_TRIGGERS_CATALOG_CANVAS.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 1,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "TICK-1701",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_EP17_TRIGGERS_CATALOG_CANVAS.md#ca-01"
+      },
+      "output": {
+        "artifacts": [
+          "internal/graph/ontology.go",
+          "internal/studio/pieces_test.go"
+        ],
+        "gate": "cmd('go test ./internal/graph ./internal/studio -run TestTrigger')"
+      }
+    },
+    {
+      "id": "TICK-1702",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-1701"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_EP17_TRIGGERS_CATALOG_CANVAS.md#ca-03"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/palette.js",
+          "internal/studio/static/style.css"
+        ],
+        "gate": "has_pattern('internal/studio/static/palette.js', 'trigger') && has_pattern('internal/studio/static/palette.js', 'PALETTE_ORDER = [\"trigger\"')"
+      }
+    },
+    {
+      "id": "TICK-1703",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-1702"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_EP17_TRIGGERS_CATALOG_CANVAS.md#ca-05"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js",
+          "internal/studio/static/style.css"
+        ],
+        "gate": "has_pattern('internal/studio/static/style.css', '.node--trigger')"
+      }
+    },
+    {
+      "id": "TICK-1704",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-1703"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_EP17_TRIGGERS_CATALOG_CANVAS.md#ca-07"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js",
+          "internal/studio/compose.go"
+        ],
+        "gate": "cmd('go test ./internal/studio -run TestCompose')"
+      }
+    },
+    {
+      "id": "TICK-1705",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-1704"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_EP17_TRIGGERS_CATALOG_CANVAS.md#ca-09"
+      },
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe",
+          "docs/reports/2026-11-01_REPORT_EP17_TRIGGERS_CATALOG_CANVAS.md"
+        ],
+        "gate": "cmd('go test ./...') && file_exists('bin/legoloop.exe')"
+      }
+    }
+  ]
+}

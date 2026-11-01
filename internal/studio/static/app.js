@@ -154,10 +154,34 @@ function register(node) {
 
 // ---------- Nós ----------
 
+function defaultTriggerConfig(kind) {
+  switch (kind) {
+    case "trigger_cron": return { type: "cron", cron: "0 * * * *" };
+    case "trigger_file_change": return { type: "file_change", path: "docs" };
+    case "trigger_loop_end": return { type: "loop_end", loop: "" };
+    case "trigger_board": return { type: "board", board: "backlog" };
+    default: return { type: "manual" };
+  }
+}
+
 function addNode(blockId, x, y) {
   const block = state.blocks.get(blockId);
   if (!block) return null;
+  const isTrig = block.kind && block.kind.startsWith("trigger_");
+  if (isTrig) {
+    for (const [id, n] of state.nodes.entries()) {
+      const b = blockOf(n);
+      if (b && b.kind && b.kind.startsWith("trigger_")) {
+        removeNode(id);
+        toast(`Gatilho substituído por ${block.label}.`);
+        break;
+      }
+    }
+  }
   const node = { ...baseNode(newNodeId(blockId), x, y), block: blockId, routing: defaultRouting(block) };
+  if (isTrig) {
+    node.triggerConfig = defaultTriggerConfig(block.kind);
+  }
   return register(node);
 }
 
@@ -195,29 +219,34 @@ function removeNode(id) {
 
 function nodeEl(node) {
   const block = blockOf(node);
-  const root = el("div", "node");
+  const isTrig = block.kind && block.kind.startsWith("trigger_");
+  const root = el("div", isTrig ? "node node--trigger" : "node");
   root.dataset.id = node.id;
   root.tabIndex = 0;
   root.setAttribute("role", "group");
   root.setAttribute("aria-label", `Nó ${block.label}`);
 
   const head = el("div", "node__head");
-  head.append(el("span", "node__title", block.label), el("span", "node__id", node.id));
+  head.append(el("span", "node__title", isTrig ? `⚡ ${block.label}` : block.label), el("span", "node__id", node.id));
 
   const ports = el("div", "node__ports");
+  const inLabel = isTrig ? "⚡ Gatilho" : (block.consumes || []).map(shortType).join(" | ");
   ports.append(
-    el("span", "node__port-label", block.consumes.map(shortType).join(" | ")),
+    el("span", "node__port-label", inLabel),
     el("span", "node__port-label node__port-label--out", shortType(block.produces)),
   );
 
   const portIn = el("span", "port port--in");
   portIn.dataset.port = "in";
-  portIn.title = `Entrada: ${block.consumes.map(shortType).join(", ")}`;
+  portIn.title = isTrig ? "Gatilho inicial (sem entrada)" : `Entrada: ${(block.consumes || []).map(shortType).join(", ")}`;
   const portOut = el("span", "port port--out");
   portOut.dataset.port = "out";
   portOut.title = `Saída: ${shortType(block.produces)} — arraste para conectar`;
 
-  root.append(head, ports, el("div", "node__badges"), portIn, portOut);
+  const children = [head, ports, el("div", "node__badges")];
+  if (!isTrig) children.push(portIn);
+  children.push(portOut);
+  root.append(...children);
   return root;
 }
 
@@ -879,8 +908,17 @@ function setupDropZone() {
 // ---------- Validação e materialização ----------
 
 function composition() {
+  let trig = undefined;
+  for (const n of state.nodes.values()) {
+    const b = blockOf(n);
+    if (b && b.kind && b.kind.startsWith("trigger_")) {
+      trig = n.triggerConfig || defaultTriggerConfig(b.kind);
+      break;
+    }
+  }
   return {
     name: $("pipeline-name").value.trim(),
+    trigger: trig,
     nodes: [...state.nodes.values()].map(compNode),
     edges: state.edges.map((e) => ({ from: e.from, to: e.to })),
   };

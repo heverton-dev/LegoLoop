@@ -429,3 +429,63 @@ func TestBoardTriggerPiece(t *testing.T) {
 	}
 }
 
+func TestTriggerBlocksCatalog(t *testing.T) {
+	trigs := graph.TriggerBlocks()
+	if len(trigs) < 5 {
+		t.Fatalf("esperava ao menos 5 blocos de trigger, obteve %d", len(trigs))
+	}
+	expectedIDs := map[string]bool{
+		"trigger-manual":       false,
+		"trigger-cron":         false,
+		"trigger-file-change":  false,
+		"trigger-loop-end":     false,
+		"github-board-trigger": false,
+	}
+	for _, b := range trigs {
+		if _, ok := expectedIDs[b.ID]; ok {
+			expectedIDs[b.ID] = true
+		}
+		if !strings.HasPrefix(b.Kind, "trigger_") {
+			t.Errorf("bloco trigger %q deve ter Kind iniciando com 'trigger_', obteve %q", b.ID, b.Kind)
+		}
+	}
+	for id, found := range expectedIDs {
+		if !found {
+			t.Errorf("trigger esperado %q não encontrado em TriggerBlocks()", id)
+		}
+	}
+
+	// Verifica se estão no FullCatalog
+	full := graph.FullCatalog()
+	foundInFull := 0
+	for _, b := range full {
+		if strings.HasPrefix(b.Kind, "trigger_") {
+			foundInFull++
+		}
+	}
+	if foundInFull < 5 {
+		t.Errorf("esperava ao menos 5 triggers no FullCatalog(), obteve %d", foundInFull)
+	}
+}
+
+func TestComposeWithTriggerPiece(t *testing.T) {
+	s, _, _ := piecesFixture(t)
+	fullIdx, err := graph.NewIndex(graph.FullCatalog())
+	if err != nil {
+		t.Fatalf("falha ao criar index: %v", err)
+	}
+	s.Index = fullIdx
+
+	// Teste com trigger-cron
+	body := comp([]string{nodeJSON("trigCron", "trigger-cron", "")}, "")
+	code, res, raw := post(t, s, "/api/validate", body)
+	if code != 200 || !res.OK {
+		t.Fatalf("esperava 200 OK na validação com trigger-cron: %d %s", code, raw)
+	}
+	if !strings.Contains(raw, `"trigger":{"type":"cron","cron":"0 * * * *"}`) {
+		t.Fatalf("esperava DAG com trigger cron compilado, obteve: %s", raw)
+	}
+}
+
+
+

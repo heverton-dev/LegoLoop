@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"slices"
 	"sort"
+	"strings"
 
 	"legoloop/internal/gate"
 )
@@ -47,7 +48,8 @@ func validateBlock(b Block) error {
 	if !blockIDRe.MatchString(b.ID) {
 		return fmt.Errorf("graph: id de bloco inválido %q", b.ID)
 	}
-	if b.Cost <= 0 || len(b.Consumes) == 0 {
+	isTrigger := strings.HasPrefix(b.Kind, "trigger_")
+	if b.Cost <= 0 || (len(b.Consumes) == 0 && !isTrigger) {
 		return fmt.Errorf("graph: bloco %q exige custo > 0 e ao menos uma entrada", b.ID)
 	}
 	for _, t := range append([]ArtifactType{b.Produces}, b.Consumes...) {

@@ -190,15 +190,70 @@ function renderEdgePanel(body, index) {
   );
 }
 
+function triggerFields(node) {
+  const block = blockOf(node);
+  const cfg = node.triggerConfig || defaultTriggerConfig(block.kind);
+  node.triggerConfig = cfg;
+  const out = [];
+
+  switch (block.kind) {
+    case "trigger_cron":
+      out.push(textField("Expressão Cron (5 campos)", cfg.cron || "0 * * * *", "ex: */15 * * * *", (v) => {
+        cfg.cron = v;
+        clearValidation();
+      }));
+      out.push(el("p", "note", "Define o agendamento formal (minuto, hora, dia, mês, dia da semana)."));
+      break;
+    case "trigger_file_change":
+      out.push(textField("Caminho monitorado (Path)", cfg.path || "docs", "ex: docs/intents", (v) => {
+        cfg.path = v;
+        clearValidation();
+      }));
+      out.push(el("p", "note", "Dispara a esteira sempre que arquivos no caminho sofrerem alteração."));
+      break;
+    case "trigger_loop_end":
+      out.push(textField("Loop anterior (Loop ID)", cfg.loop || "", "ex: pipeline-master", (v) => {
+        cfg.loop = v;
+        clearValidation();
+      }));
+      out.push(el("p", "note", "Dispara ao término com sucesso do loop especificado."));
+      break;
+    case "trigger_board":
+      out.push(textField("Coluna / Evento do Kanban", cfg.board || "backlog", "ex: ready", (v) => {
+        cfg.board = v;
+        clearValidation();
+      }));
+      out.push(el("p", "note", "Disparado por cartões prontos no GitHub Project Kanban."));
+      break;
+    default:
+      out.push(el("p", "note", "Disparo manual sob demanda (via botão Executar no Studio ou CLI legoloop run)."));
+      break;
+  }
+  return out;
+}
+
 function renderNodePanel(body, node) {
   const block = blockOf(node);
+  const isTrig = block.kind && block.kind.startsWith("trigger_");
+  const del = el("button", "btn btn--ghost", "Remover nó");
+  del.type = "button";
+  del.addEventListener("click", () => { removeNode(node.id); select(null); });
+
+  if (isTrig) {
+    const children = [
+      kv("Gatilho Inicial", `⚡ ${block.label}`),
+      ...triggerFields(node),
+      kv("Handoff emitido", block.artifact),
+      del,
+    ];
+    body.replaceChildren(...children);
+    return;
+  }
+
   const sug = ensureSuggestions(node);
   const swap = el("button", "btn", "Trocar peça");
   swap.type = "button";
   swap.addEventListener("click", () => startSwap(node));
-  const del = el("button", "btn btn--ghost", "Remover nó");
-  del.type = "button";
-  del.addEventListener("click", () => { removeNode(node.id); select(null); });
   const draft = state.gateDraft?.nodeId === node.id ? state.gateDraft.expr : "";
   state.gateDraft = null;
   const rerender = () => { clearValidation(); renderNode(node); renderInspector(); };

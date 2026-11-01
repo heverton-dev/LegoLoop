@@ -190,7 +190,26 @@ func buildDAG(c Composition, infos map[string]nodeInfo, slots map[string]*dag.Sl
 	}
 	d := dag.DAG{Schema: "https://legoloop.dev/schemas/dag.v1.json", Name: c.Name, Version: "2.0.0", Trigger: c.Trigger}
 	if d.Trigger == nil {
-		d.Trigger = &dag.Trigger{Type: dag.TriggerManual}
+		for _, n := range c.Nodes {
+			if info, ok := infos[n.ID]; ok && info.Block != nil {
+				switch info.Block.Kind {
+				case "trigger_cron":
+					d.Trigger = &dag.Trigger{Type: dag.TriggerCron, Cron: "0 * * * *"}
+				case "trigger_file_change":
+					d.Trigger = &dag.Trigger{Type: dag.TriggerFileChange, Path: "docs"}
+				case "trigger_loop_end":
+					d.Trigger = &dag.Trigger{Type: dag.TriggerLoopEnd, Loop: "upstream"}
+				case "trigger_manual", "trigger_board":
+					d.Trigger = &dag.Trigger{Type: dag.TriggerManual}
+				}
+				if d.Trigger != nil {
+					break
+				}
+			}
+		}
+		if d.Trigger == nil {
+			d.Trigger = &dag.Trigger{Type: dag.TriggerManual}
+		}
 	}
 	for _, n := range c.Nodes {
 		info := infos[n.ID]
@@ -199,7 +218,9 @@ func buildDAG(c Composition, infos map[string]nodeInfo, slots map[string]*dag.Sl
 			inputs[from] = "file('" + infos[from].Artifact + "')"
 		}
 		if len(inputs) == 0 {
-			inputs[info.rootInput()] = "var." + info.rootInput()
+			if info.Block == nil || len(info.Block.Consumes) > 0 {
+				inputs[info.rootInput()] = "var." + info.rootInput()
+			}
 		}
 		d.Nodes = append(d.Nodes, dag.Node{
 			ID: n.ID, Type: info.Type, Ref: info.Ref, Command: info.Command, DependsOn: incoming[n.ID],

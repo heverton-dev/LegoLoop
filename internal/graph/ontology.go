@@ -61,15 +61,34 @@ func ControlBlocks() []Block {
 		{ID: "flow-merge", Label: "Merge / Barreira", Ref: "core/flow-merge", Kind: "flow_merge",
 			Consumes: []ArtifactType{Briefing, Spec, Code, Audit}, Produces: Code,
 			Artifact: "JOINED.json", Gate: "file_exists('JOINED.json')", Cost: 1},
+	}
+}
+
+// TriggerBlocks retorna os gatilhos formais do contrato DAG v2 para o início de esteiras no Studio.
+func TriggerBlocks() []Block {
+	return []Block{
+		{ID: "trigger-manual", Label: "Disparo Manual", Ref: "core/trigger-manual", Kind: "trigger_manual",
+			Consumes: []ArtifactType{}, Produces: Idea,
+			Artifact: "TRIGGER_MANUAL.json", Gate: "file_exists('TRIGGER_MANUAL.json')", Cost: 1},
+		{ID: "trigger-cron", Label: "Agendador Cron", Ref: "core/trigger-cron", Kind: "trigger_cron",
+			Consumes: []ArtifactType{}, Produces: Idea,
+			Artifact: "TRIGGER_CRON.json", Gate: "file_exists('TRIGGER_CRON.json')", Cost: 1},
+		{ID: "trigger-file-change", Label: "Observador de Arquivo", Ref: "core/trigger-file-change", Kind: "trigger_file_change",
+			Consumes: []ArtifactType{}, Produces: Idea,
+			Artifact: "TRIGGER_FILE.json", Gate: "file_exists('TRIGGER_FILE.json')", Cost: 1},
+		{ID: "trigger-loop-end", Label: "Encadeamento de Loop", Ref: "core/trigger-loop-end", Kind: "trigger_loop_end",
+			Consumes: []ArtifactType{}, Produces: Idea,
+			Artifact: "TRIGGER_LOOP.json", Gate: "file_exists('TRIGGER_LOOP.json')", Cost: 1},
 		{ID: "github-board-trigger", Label: "Trigger: GitHub Board Kanban", Ref: "core/trigger-github-board", Kind: "trigger_board",
-			Consumes: []ArtifactType{Idea}, Produces: Spec,
+			Consumes: []ArtifactType{}, Produces: Spec,
 			Artifact: "WAVE_PLAN.json", Gate: "file_exists('WAVE_PLAN.json')", Cost: 2, SuggestedModel: "flash"},
 	}
 }
 
-// FullCatalog retorna o catálogo completo incluindo blocos AIDD e blocos estruturais.
+// FullCatalog retorna o catálogo completo incluindo blocos AIDD, blocos de controle e triggers.
 func FullCatalog() []Block {
-	return append(DefaultCatalog(), ControlBlocks()...)
+	res := append(DefaultCatalog(), ControlBlocks()...)
+	return append(res, TriggerBlocks()...)
 }
 
 // DefaultCatalog é o baú canônico de blocos do ecossistema AIDD (custo ≈ k tokens).

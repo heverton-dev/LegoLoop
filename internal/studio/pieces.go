@@ -40,7 +40,7 @@ func (n nodeInfo) generic() bool { return n.Block == nil }
 
 // rootInput nomeia a variável de entrada de um nó sem predecessores.
 func (n nodeInfo) rootInput() string {
-	if n.Block == nil {
+	if n.Block == nil || len(n.Block.Consumes) == 0 {
 		return "input"
 	}
 	switch n.Block.Consumes[0] {

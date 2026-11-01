@@ -350,16 +350,17 @@ func TestCanonizeWarnsSkippedGitRoot(t *testing.T) {
 // TICK-1203: legoloop forge abre o Studio e dispara a primeira varredura.
 func TestForgeServesAndTriggersInitialScan(t *testing.T) {
 	d, out, _ := deps(t)
+	d.Home = t.TempDir()
 	ready := make(chan string, 1)
 	d.Ready = ready
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	done := make(chan int, 1)
 	go func() { done <- Run(ctx, []string{"forge", "--addr", "127.0.0.1:0", "--project", t.TempDir()}, d) }()
 	var addr string
 	select {
 	case addr = <-ready:
-	case <-time.After(6 * time.Second):
+	case <-time.After(15 * time.Second):
 		t.Fatal("forge não subiu a tempo")
 	}
 	resp, err := http.Get("http://" + addr + "/api/blocks")

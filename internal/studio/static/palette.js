@@ -9,6 +9,7 @@ const PIECE_MIME = "application/x-legoloop-piece";
 
 const PALETTE_CATS = [
   { id: "all", label: "Todas" },
+  { id: "trigger", label: "Triggers" },
   { id: "control", label: "Controle" },
   { id: "skill", label: "Skills" },
   { id: "mcp", label: "MCPs" },
@@ -18,9 +19,10 @@ const PALETTE_CATS = [
   { id: "gate", label: "Gates" },
 ];
 
-const PALETTE_ORDER = ["control", "skill", "mcp", "loop", "script", "hook", "gate"];
+const PALETTE_ORDER = ["trigger", "control", "skill", "mcp", "loop", "script", "hook", "gate"];
 
 const PALETTE_EMPTY = {
+  trigger: "Nenhum trigger configurado.",
   skill: "Nenhuma skill encontrada nas pastas conhecidas dos harnesses.",
   mcp: "Nenhum servidor MCP configurado.",
   loop: "Nenhum loop salvo no acervo ainda.",
@@ -31,6 +33,7 @@ const PALETTE_EMPTY = {
 };
 
 const PALETTE_HINT = {
+  trigger: "Arraste ao canvas para iniciar o pipeline com este gatilho.",
   hook: "Arraste sobre uma peça para encaixar no slot de hooks.",
   gate: "Arraste sobre uma peça para encaixar como gate extra.",
   script: "Arraste ao canvas para criar uma peça, ou sobre uma peça para encaixar como script.",
@@ -55,26 +58,42 @@ function entryFromItem(cat, it) {
 }
 
 function entryFromBlock(b) {
+  const isTrig = b.kind && b.kind.startsWith("trigger_");
   const isCtrl = b.kind && b.kind.startsWith("flow_");
-  const cat = isCtrl ? "control" : "skill";
+  let cat = "skill";
+  let badge = "contrato";
+  let desc = "";
   const ins = (b.consumes || []).map((t) => String(t).replace("Artifact:", "")).join("|");
   const out = String(b.produces || "").replace("Artifact:", "");
+
+  if (isTrig) {
+    cat = "trigger";
+    badge = "gatilho";
+    desc = `Gatilho inicial → ${out || "pipeline"}`;
+  } else if (isCtrl) {
+    cat = "control";
+    badge = "fluxo";
+    desc = "Controle algorítmico de fluxo";
+  } else {
+    desc = `${ins} → ${out}`;
+  }
   return {
-    key: `block:${b.id}`, cat, kind: b.kind || "block", name: b.label, desc: isCtrl ? "Controle algorítmico de fluxo" : `${ins} → ${out}`,
-    badge: isCtrl ? "fluxo" : "contrato", blockId: b.id, origin: "catálogo", scope: "",
+    key: `block:${b.id}`, cat, kind: b.kind || "block", name: b.label, desc,
+    badge, blockId: b.id, origin: "catálogo", scope: "",
   };
 }
 
-// buildPaletteModel agrupa itens por SHA-256 e separa peças de controle.
+// buildPaletteModel agrupa itens por SHA-256 e separa peças de controle e triggers.
 function buildPaletteModel(blocks, inv) {
-  const model = { control: [], skill: [], mcp: [], loop: [], script: [], hook: [], gate: [] };
+  const model = { trigger: [], control: [], skill: [], mcp: [], loop: [], script: [], hook: [], gate: [] };
   const typed = new Set((blocks || []).map((b) => normName(skillKey(b.ref))));
   (blocks || []).map(entryFromBlock).forEach((b) => {
-    if (b.cat === "control") model.control.push(b);
+    if (b.cat === "trigger") model.trigger.push(b);
+    else if (b.cat === "control") model.control.push(b);
     else model.skill.push(b);
   });
   for (const cat of PALETTE_ORDER) {
-    if (cat === "control") continue;
+    if (cat === "trigger" || cat === "control") continue;
     const rawList = (inv && inv[cat]) || [];
     const groups = new Map();
     for (const it of rawList) {
@@ -177,6 +196,7 @@ function paletteRow(entry, handlers) {
 }
 
 const CAT_LABELS = {
+  trigger: "Triggers",
   control: "Controle",
   skill: "Skills",
   mcp: "MCPs",
@@ -187,6 +207,9 @@ const CAT_LABELS = {
 };
 
 const SVG_ICONS = {
+  trigger: [
+    ["polygon", { points: "13 2 3 14 12 14 11 22 21 10 12 10 13 2" }],
+  ],
   control: [
     ["path", { d: "M4 21v-7" }], ["path", { d: "M4 10V3" }],
     ["path", { d: "M12 21v-9" }], ["path", { d: "M12 8V3" }],
@@ -251,7 +274,7 @@ function createSvgIcon(name, cls) {
 
 // createPalette liga o modelo aos elementos da página. Suporta treeview e lista virtualizada.
 function createPalette(els, handlers) {
-  const st = { model: buildPaletteModel([], {}), cat: "all", query: "", flat: [], raf: 0, activeCategory: "control" };
+  const st = { model: buildPaletteModel([], {}), cat: "all", query: "", flat: [], raf: 0, activeCategory: "trigger" };
 
   function renderTreeview() {
     if (!els.treeview) return;

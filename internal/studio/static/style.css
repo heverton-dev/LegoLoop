@@ -379,6 +379,27 @@ button, input, select { font: inherit; color: inherit; }
 .node.is-selected { border-color: var(--accent); box-shadow: var(--shadow), 0 0 0 1px var(--accent); }
 .node.is-fail { border-color: var(--fail); }
 
+/* ---------- Estilo N8N para nós de Trigger / Início ---------- */
+.node.node--trigger {
+  border-color: #f59e0b;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.22);
+}
+.node.node--trigger.is-selected {
+  border-color: #fbbf24;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35), 0 0 0 1px #fbbf24;
+}
+.node.node--trigger .node__head {
+  background: rgba(245, 158, 11, 0.08);
+  border-bottom-color: rgba(245, 158, 11, 0.2);
+}
+.node.node--trigger .node__title {
+  color: #fbbf24;
+}
+.node.node--trigger .port--in {
+  display: none !important;
+}
+
+
 .node__head {
   display: flex; align-items: baseline; gap: var(--space-2);
   padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
