@@ -17,6 +17,7 @@ var docs = map[string]Doc{
 	"has_pattern":             {Signature: "has_pattern(caminho, regex)", Description: "Verdadeiro se o conteúdo do arquivo casa com a expressão regular."},
 	"has_binary_criteria":     {Signature: "has_binary_criteria(caminho)", Description: "Verdadeiro se o arquivo tem checklist de critérios binários (- [ ] item)."},
 	"has_acceptance_criteria": {Signature: "has_acceptance_criteria(caminho)", Description: "Verdadeiro se o arquivo tem uma seção de critérios de aceitação."},
+	"schema_valid":            {Signature: "schema_valid(schema, alvo)", Description: "Verdadeiro se o arquivo JSON no caminho alvo cumpre o JSON Schema informado."},
 }
 
 // Catalog lista os gates embutidos em ordem alfabética.

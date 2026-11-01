@@ -5,7 +5,9 @@ package runner
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 	"sync"
 	"time"
@@ -225,6 +227,17 @@ func (r *run) node(parent context.Context, id string) NodeReport {
 		}
 	}
 
+	// Schema Enforcement contratual (SPEC §2.1)
+	if n.Output.Schema != "" && err == nil && res.ExitCode == 0 {
+		if okSchema, schemaErr := r.evalSchema(n, workdir); !okSchema {
+			nr.Status, nr.Error = StatusGateFailed, schemaErr
+			if r.opts.OnNodeFinish != nil {
+				r.opts.OnNodeFinish(nr)
+			}
+			return nr
+		}
+	}
+
 	if n.EffectiveMode() == dag.ExecIsolated && err == nil && res.ExitCode == 0 {
 		if promErr := promoteArtifact(workdir, r.opts.Workdir, n.Output.Artifact); promErr != nil {
 			nr.Status, nr.Error = StatusError, promErr.Error()
@@ -279,3 +292,24 @@ func (r *run) evalGate(id string, exitCode int) (Status, string) {
 	}
 	return StatusPassed, ""
 }
+
+func (r *run) evalSchema(n dag.Node, workdir string) (bool, string) {
+	if n.Output.Schema == "" {
+		return true, ""
+	}
+	schemaPath := filepath.Join(r.opts.Workdir, filepath.FromSlash(n.Output.Schema))
+	schemaBytes, err := os.ReadFile(schemaPath)
+	if err != nil {
+		return false, fmt.Sprintf("schema enforcement falhou: erro ao ler schema %q: %v", n.Output.Schema, err)
+	}
+	artPath := filepath.Join(workdir, filepath.FromSlash(n.Output.Artifact))
+	artBytes, err := os.ReadFile(artPath)
+	if err != nil {
+		return false, fmt.Sprintf("schema enforcement falhou: erro ao ler artefato %q: %v", n.Output.Artifact, err)
+	}
+	if !gate.ValidateJSONSchema(schemaBytes, artBytes) {
+		return false, fmt.Sprintf("schema enforcement falhou: artefato %q não cumpre o schema %q", n.Output.Artifact, n.Output.Schema)
+	}
+	return true, ""
+}
+

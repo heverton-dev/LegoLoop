@@ -1,0 +1,344 @@
+{
+  "name": "route-harness-engineering-go",
+  "version": "1.0.0",
+  "date": "2026-11-01",
+  "intent_ref": "docs/intents/2026-11-01_INTENT_HARNESS_ENGINEERING_GO.md",
+  "spec_ref": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md",
+  "plan_ref": "docs/plans/2026-11-01_PLAN_HARNESS_ENGINEERING_GO.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 1,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "epic": "EP-01",
+      "nature": "micro",
+      "execution_mode": "tdd_red_green",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g1"
+      },
+      "output": {
+        "artifacts": [
+          "internal/dag/types.go",
+          "internal/dag/parse.go",
+          "internal/dag/dag_test.go"
+        ],
+        "gate": "has_pattern('internal/dag/types.go', 'Schema   string') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "epic": "EP-01",
+      "nature": "micro",
+      "execution_mode": "tdd_red_green",
+      "depends_on": ["TICK-01.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g2"
+      },
+      "output": {
+        "artifacts": [
+          "internal/gate/schema.go",
+          "internal/gate/builtins.go",
+          "internal/gate/catalog.go",
+          "internal/gate/gate_test.go"
+        ],
+        "gate": "has_pattern('internal/gate/builtins.go', 'schema_valid') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-01.3",
+      "epic": "EP-01",
+      "nature": "micro",
+      "execution_mode": "tdd_red_green",
+      "depends_on": ["TICK-01.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g3"
+      },
+      "output": {
+        "artifacts": [
+          "internal/runner/runner.go",
+          "internal/runner/runner_test.go"
+        ],
+        "gate": "has_pattern('internal/runner/runner.go', 'evalSchema') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-01.4",
+      "epic": "EP-01",
+      "nature": "nano",
+      "execution_mode": "refactor_clean",
+      "depends_on": ["TICK-01.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash_lite",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g3"
+      },
+      "output": {
+        "artifacts": [
+          "internal/gate/gate_test.go"
+        ],
+        "gate": "has_pattern('internal/gate/gate_test.go', 'empty_schema.json') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "epic": "EP-02",
+      "nature": "micro",
+      "execution_mode": "tdd_red_green",
+      "depends_on": ["TICK-01.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g4"
+      },
+      "output": {
+        "artifacts": [
+          "internal/dag/types.go",
+          "internal/dag/parse.go",
+          "internal/dag/dag_test.go"
+        ],
+        "gate": "has_pattern('internal/dag/types.go', 'EffortLevel') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "epic": "EP-02",
+      "nature": "micro",
+      "execution_mode": "tdd_red_green",
+      "depends_on": ["TICK-02.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g4"
+      },
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/harness.go",
+          "internal/orchestrix/orchestrix.go",
+          "internal/orchestrix/harness_test.go"
+        ],
+        "gate": "has_pattern('internal/orchestrix/harness.go', 'effort') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-02.3",
+      "epic": "EP-02",
+      "nature": "nano",
+      "execution_mode": "refactor_clean",
+      "depends_on": ["TICK-02.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash_lite",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g4"
+      },
+      "output": {
+        "artifacts": [
+          "internal/runner/runner.go"
+        ],
+        "gate": "has_pattern('internal/runner/runner.go', 'Notes') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "epic": "EP-03",
+      "nature": "micro",
+      "execution_mode": "tdd_red_green",
+      "depends_on": ["TICK-02.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g5"
+      },
+      "output": {
+        "artifacts": [
+          "internal/gate/gate.go",
+          "internal/gate/builtins.go",
+          "internal/gate/catalog.go",
+          "internal/gate/gate_test.go"
+        ],
+        "gate": "has_pattern('internal/gate/builtins.go', 'interactive') && has_pattern('internal/gate/gate.go', 'Prompter') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "epic": "EP-03",
+      "nature": "micro",
+      "execution_mode": "tdd_red_green",
+      "depends_on": ["TICK-03.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g5"
+      },
+      "output": {
+        "artifacts": [
+          "internal/runner/runner.go",
+          "internal/runner/runner_test.go"
+        ],
+        "gate": "has_pattern('internal/runner/runner.go', 'AutoApprove') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-03.3",
+      "epic": "EP-03",
+      "nature": "micro",
+      "execution_mode": "tdd_red_green",
+      "depends_on": ["TICK-03.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g5"
+      },
+      "output": {
+        "artifacts": [
+          "internal/cli/commands.go",
+          "internal/cli/cli_test.go"
+        ],
+        "gate": "has_pattern('internal/cli/commands.go', 'non-interactive') && exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-03.4",
+      "epic": "EP-03",
+      "nature": "nano",
+      "execution_mode": "refactor_clean",
+      "depends_on": ["TICK-03.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash_lite",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g5"
+      },
+      "output": {
+        "artifacts": [
+          "internal/runner/runner_test.go"
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-04.1",
+      "epic": "EP-04",
+      "nature": "micro",
+      "execution_mode": "e2e_integration",
+      "depends_on": ["TICK-03.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g6"
+      },
+      "output": {
+        "artifacts": [
+          "internal/runner/harness_engineering_e2e_test.go"
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-04.2",
+      "epic": "EP-04",
+      "nature": "nano",
+      "execution_mode": "compile_and_report",
+      "depends_on": ["TICK-04.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash_lite",
+        "effort": "low"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md#g6"
+      },
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe",
+          "docs/reports/2026-11-01_REPORT_HARNESS_ENGINEERING_GO.md"
+        ],
+        "gate": "file_exists('bin/legoloop.exe') && file_exists('docs/reports/2026-11-01_REPORT_HARNESS_ENGINEERING_GO.md')"
+      }
+    }
+  ]
+}

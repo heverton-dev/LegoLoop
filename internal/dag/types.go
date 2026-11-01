@@ -84,6 +84,7 @@ type RoutingConfig struct {
 // HandoffContract é a saída imutável do nó e sua condição de saída.
 type HandoffContract struct {
 	Artifact string `json:"artifact"`
+	Schema   string `json:"schema,omitempty"`
 	Gate     string `json:"gate"`
 }
 

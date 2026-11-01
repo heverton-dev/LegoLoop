@@ -182,3 +182,42 @@ func TestSecurityValidation(t *testing.T) {
 		t.Fatalf("comando absoluto deveria ser aceito: %v", err)
 	}
 }
+
+func TestHandoffSchemaContract(t *testing.T) {
+	valid := `{
+		"name": "schema-test",
+		"version": "1.0.0",
+		"nodes": [{
+			"id": "node_1",
+			"type": "script",
+			"command": ["go", "version"],
+			"routing": {"mode": "suggested", "model": "go"},
+			"output": {
+				"artifact": "out.json",
+				"schema": "schemas/output.schema.json",
+				"gate": "exit_code == 0"
+			}
+		}]
+	}`
+	d, err := Parse([]byte(valid))
+	if err != nil {
+		t.Fatalf("Parse com output.schema válido falhou: %v", err)
+	}
+	if d.Nodes[0].Output.Schema != "schemas/output.schema.json" {
+		t.Fatalf("schema não decodificado corretamente: %q", d.Nodes[0].Output.Schema)
+	}
+
+	invalidPaths := []string{
+		"../outside.json",
+		"C:/schema.json",
+		".git/schema.json",
+		"GIT~1/schema.json",
+	}
+	for _, p := range invalidPaths {
+		bad := strings.Replace(valid, "schemas/output.schema.json", p, 1)
+		if _, err := Parse([]byte(bad)); err == nil {
+			t.Errorf("deveria rejeitar schema inválido %q", p)
+		}
+	}
+}
+

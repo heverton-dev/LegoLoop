@@ -40,6 +40,7 @@ func builtins() map[string]builtin {
 		"has_pattern":             {[]valKind{kStr, kStr}, kBool, hasPattern},
 		"has_binary_criteria":     {[]valKind{kStr}, kBool, matchFile(checklistRe)},
 		"has_acceptance_criteria": {[]valKind{kStr}, kBool, hasAcceptance},
+		"schema_valid":            {[]valKind{kStr, kStr}, kBool, schemaValid},
 	}
 }
 
@@ -70,6 +71,11 @@ func newCall(name string, args []node) (node, error) {
 func compileCallLiterals(c callNode) (node, error) {
 	if lit, ok := c.args[0].(litNode); ok && !filepath.IsLocal(lit.v.s) {
 		return nil, fmt.Errorf("gate: caminho %q fora do workdir", lit.v.s)
+	}
+	if c.name == "schema_valid" {
+		if lit, ok := c.args[1].(litNode); ok && !filepath.IsLocal(lit.v.s) {
+			return nil, fmt.Errorf("gate: caminho %q fora do workdir", lit.v.s)
+		}
 	}
 	if c.name == "has_pattern" {
 		lit, ok := c.args[1].(litNode)
@@ -168,3 +174,16 @@ func hasAcceptance(env Env, args []value, _ *regexp.Regexp) (value, error) {
 	ok := acceptanceRe.Match(data) && checklistRe.Match(data)
 	return value{kind: kBool, b: ok}, nil
 }
+
+func schemaValid(env Env, args []value, _ *regexp.Regexp) (value, error) {
+	schemaData, err := readGateFile(env, args[0].s)
+	if err != nil {
+		return value{kind: kBool, b: false}, nil
+	}
+	targetData, err := readGateFile(env, args[1].s)
+	if err != nil {
+		return value{kind: kBool, b: false}, nil
+	}
+	return value{kind: kBool, b: ValidateJSONSchema(schemaData, targetData)}, nil
+}
+

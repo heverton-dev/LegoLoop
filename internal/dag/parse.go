@@ -151,6 +151,11 @@ func validateNode(n Node) error {
 	if err := validateArtifact(n.Output.Artifact); err != nil {
 		return err
 	}
+	if n.Output.Schema != "" {
+		if err := validatePath("schema", n.Output.Schema); err != nil {
+			return err
+		}
+	}
 	if err := validateExecution(n.Execution); err != nil {
 		return err
 	}

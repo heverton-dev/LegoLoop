@@ -195,3 +195,69 @@ func TestReportCarriesModelAndNotes(t *testing.T) {
 		}
 	}
 }
+
+type schemaExec struct {
+	payload string
+}
+
+func (s *schemaExec) Execute(ctx context.Context, n dag.Node, workdir string) (Result, error) {
+	p := filepath.Join(workdir, n.Output.Artifact)
+	if err := os.WriteFile(p, []byte(s.payload), 0o644); err != nil {
+		return Result{}, err
+	}
+	return Result{ExitCode: 0, Model: "test"}, nil
+}
+
+func TestRunnerSchemaEnforcement(t *testing.T) {
+	schemaJSON := `{"type":"object","required":["title","version"],"properties":{"title":{"type":"string"},"version":{"type":"number"}}}`
+	dagSrc := `{
+		"name": "schema-runner-test",
+		"nodes": [{
+			"id": "node_json",
+			"type": "script",
+			"command": ["go", "version"],
+			"routing": {"mode": "manual", "model": "test"},
+			"output": {
+				"artifact": "result.json",
+				"schema": "schema.json",
+				"gate": "exit_code == 0"
+			}
+		}]
+	}`
+	d, err := dag.Parse([]byte(dagSrc))
+	if err != nil {
+		t.Fatalf("Parse: %v", err)
+	}
+
+	// 1. Caso Válido
+	dirValid := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dirValid, "schema.json"), []byte(schemaJSON), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	execValid := &schemaExec{payload: `{"title": "LegoLoop", "version": 2.0}`}
+	repValid, err := Run(context.Background(), d, Options{Workdir: dirValid, Executor: execValid})
+	if err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	if !repValid.OK || repValid.Nodes[0].Status != StatusPassed {
+		t.Fatalf("esperava StatusPassed, obteve: %+v", repValid.Nodes[0])
+	}
+
+	// 2. Caso Inválido (propriedade ausente)
+	dirInvalid := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dirInvalid, "schema.json"), []byte(schemaJSON), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	execInvalid := &schemaExec{payload: `{"title": "LegoLoop"}`}
+	repInvalid, err := Run(context.Background(), d, Options{Workdir: dirInvalid, Executor: execInvalid})
+	if err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	if repInvalid.OK || repInvalid.Nodes[0].Status != StatusGateFailed {
+		t.Fatalf("esperava StatusGateFailed para schema inválido, obteve: %+v", repInvalid.Nodes[0])
+	}
+	if !strings.Contains(repInvalid.Nodes[0].Error, "schema enforcement") {
+		t.Fatalf("mensagem de erro deveria citar schema enforcement: %q", repInvalid.Nodes[0].Error)
+	}
+}
+
