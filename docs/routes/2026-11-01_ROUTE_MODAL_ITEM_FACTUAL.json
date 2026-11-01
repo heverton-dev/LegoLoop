@@ -1,0 +1,128 @@
+{
+  "name": "route-modal-item-factual",
+  "version": "1.0.0",
+  "date": "2026-11-01",
+  "intent_ref": "docs/intents/2026-11-01_INTENT_REFATORACAO_MODAL_ITEM.md",
+  "spec_ref": "docs/specs/2026-11-01_SPEC_MODAL_ITEM_FACTUAL.md",
+  "plan_ref": "docs/plans/2026-11-01_PLAN_MODAL_ITEM_FACTUAL.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 1,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "TICK-MODAL-01",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_MODAL_ITEM_FACTUAL.md#ca-01"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/palette.js"
+        ],
+        "gate": "has_pattern('internal/studio/static/palette.js', 'consumes') && has_pattern('internal/studio/static/palette.js', 'produces') && has_pattern('internal/studio/static/palette.js', 'artifact')"
+      }
+    },
+    {
+      "id": "TICK-MODAL-02",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-MODAL-01"],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_MODAL_ITEM_FACTUAL.md#ca-02"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/components/lego-item-modal.js",
+          "internal/studio/static/style.css"
+        ],
+        "gate": "has_pattern('internal/studio/static/components/lego-item-modal.js', 'auditedArtifact') && !has_pattern('internal/studio/static/components/lego-item-modal.js', 'Executa tarefas técnicas determinísticas')"
+      }
+    },
+    {
+      "id": "TICK-MODAL-03",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-MODAL-02"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_MODAL_ITEM_FACTUAL.md#ca-03"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/components/lego-item-modal.js"
+        ],
+        "gate": "has_pattern('internal/studio/static/components/lego-item-modal.js', 'predecessors') && has_pattern('internal/studio/static/components/lego-item-modal.js', 'substitutes') && has_pattern('internal/studio/static/components/lego-item-modal.js', 'successors')"
+      }
+    },
+    {
+      "id": "TICK-MODAL-04",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-MODAL-03"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_MODAL_ITEM_FACTUAL.md#ca-04"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/components/lego-item-modal.js"
+        ],
+        "gate": "has_pattern('internal/studio/static/components/lego-item-modal.js', 'Nativo do Core LegoLoop')"
+      }
+    },
+    {
+      "id": "TICK-MODAL-05",
+      "nature": "nano",
+      "execution_mode": "synchronous",
+      "depends_on": ["TICK-MODAL-04"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "spec_source": "docs/specs/2026-11-01_SPEC_MODAL_ITEM_FACTUAL.md#ca-05"
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/server_test.go",
+          "bin/legoloop.exe"
+        ],
+        "gate": "cmd('go test ./internal/studio -run TestLegoItemModal') && file_exists('bin/legoloop.exe')"
+      }
+    }
+  ]
+}

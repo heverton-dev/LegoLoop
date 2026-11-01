@@ -51,7 +51,19 @@ function entryFromItem(cat, it) {
   const meta = it.meta || {};
   const bits = [meta.signature, meta.transport, meta.host, it.scope, it.origin].filter(Boolean);
   const desc = cat === "hook" || cat === "gate" || cat === "skill" || cat === "loop" ? (it.description || bits.join(" · ")) : bits.join(" · ");
-  const e = { key: `${cat}:${it.id}`, cat, kind: cat, name: it.name, desc, itemId: it.id, origin: it.origin || "", scope: it.scope || "" };
+  const e = {
+    key: `${cat}:${it.id}`,
+    cat,
+    kind: it.kind || cat,
+    name: it.name,
+    desc,
+    itemId: it.id,
+    origin: it.origin || "",
+    scope: it.scope || "",
+    path: it.path || "",
+    meta,
+    raw: it,
+  };
   if (cat === "hook") e.event = meta.event || "";
   if (cat === "gate") e.gateName = it.name;
   return e;
@@ -78,8 +90,23 @@ function entryFromBlock(b) {
     desc = `${ins} → ${out}`;
   }
   return {
-    key: `block:${b.id}`, cat, kind: b.kind || "block", name: b.label, desc,
-    badge, blockId: b.id, origin: "catálogo", scope: "",
+    key: `block:${b.id}`,
+    cat,
+    kind: b.kind || "block",
+    name: b.label,
+    desc,
+    badge,
+    blockId: b.id,
+    origin: "catálogo",
+    scope: "",
+    ref: b.ref || "",
+    consumes: b.consumes || [],
+    produces: b.produces || "",
+    artifact: b.artifact || "",
+    gate: b.gate || "",
+    cost: b.cost || 0,
+    suggested_model: b.suggested_model || "",
+    raw: b,
   };
 }
 

@@ -1028,112 +1028,14 @@ function addEntryToCenter(entry) {
 let activeModalItem = null;
 
 async function openItemModal(it) {
-  const dlg = $("modal-item");
-  if (!dlg) return;
+  const modal = $("modal-item");
+  if (!modal) return;
   activeModalItem = it;
-
-  $("modal-item-name").textContent = it.name;
-  
-  const bList = $("modal-item-badges");
-  bList.replaceChildren(badge(it.kind || it.cat || "peça", "badge--accent"));
-  if (it.scope) bList.append(badge(it.scope));
-  if (it.origin) bList.append(badge(it.origin, "badge--muted"));
-  if (it.badge) bList.append(badge(it.badge, "badge--warn"));
-
-  // Botão Adicionar ao Canvas direto do Modal
-  const btnAdd = $("btn-modal-add-canvas");
-  if (btnAdd) {
-    btnAdd.onclick = () => {
-      dlg.close();
-      addEntryToCenter(it);
-    };
-  }
-
-  // Botão Canonizar
-  const btnCanon = $("btn-modal-canonize");
-  if (btnCanon) {
-    btnCanon.onclick = async () => {
-      btnCanon.disabled = true;
-      btnCanon.textContent = "Canonizando...";
-      const { ok, data } = await api("/api/canonize/piece", { sha256: it.sha256 || "" });
-      btnCanon.textContent = "Canonizar";
-      if (ok) toast(`Peça canonizada! ${data?.linked || 0} links criados.`);
-      else { btnCanon.disabled = false; toast(data?.error || "Falha na canonização.", true); }
-    };
-  }
-
-  // Botão Revelar
-  const btnReveal = $("btn-modal-reveal");
-  if (btnReveal) {
-    btnReveal.onclick = async () => {
-      if (!it.path) return toast("Caminho físico não disponível.", true);
-      const { ok } = await api("/api/assets/reveal", { path: it.path });
-      if (ok) toast("Pasta aberta no Windows Explorer.");
-      else toast("Não foi possível abrir o Explorer.", true);
-    };
-  }
-
-  // Fechar
-  const btnClose = $("btn-modal-close");
-  if (btnClose) btnClose.onclick = () => dlg.close();
-
-  // Sub-abas
-  document.querySelectorAll(".modal-tab").forEach((btn) => {
-    btn.onclick = () => {
-      const t = btn.dataset.tab;
-      document.querySelectorAll(".modal-tab").forEach((b) => b.classList.toggle("is-active", b === btn));
-      document.querySelectorAll(".modal-panel").forEach((p) => p.classList.toggle("is-active", p.id === `tab-${t}`));
-    };
+  modal.open(it, {
+    showCanvasAction: true,
+    onAddToCanvas: (entry) => addEntryToCenter(entry),
+    onCanonize: () => pollItems(),
   });
-
-  // Aba 1: IPO
-  const ipoIn = $("modal-ipo-in");
-  ipoIn.replaceChildren();
-  (it.consumes || ["Briefing / Requisitos"]).forEach((c) => ipoIn.append(badge(String(c).replace("Artifact:", ""), "badge--accent")));
-
-  const ipoProc = $("modal-ipo-proc");
-  ipoProc.replaceChildren(el("span", "ipo-desc", it.desc || it.description || "Processamento de código com isolamento e contrato."));
-
-  const ipoOut = $("modal-ipo-out");
-  ipoOut.replaceChildren();
-  (it.produces ? [it.produces] : ["Artifact:Report"]).forEach((p) => ipoOut.append(badge(String(p).replace("Artifact:", ""), "badge--accent")));
-
-  const artContainer = $("modal-prop-artifacts");
-  artContainer.replaceChildren(badge(it.produces || "Entrega Verificada", "badge--accent"));
-  if (it.badge) artContainer.append(badge(it.badge, "badge--muted"));
-
-  $("modal-prop-what").textContent = it.desc ? `Peça ${it.kind || it.cat}: ${it.desc}` : `Peça de software autônoma e executável: ${it.name}.`;
-  $("modal-prop-does").textContent = "Executa tarefas técnicas determinísticas com isolamento estrito de ambiente.";
-  $("modal-prop-delivers").textContent = it.produces ? `Produz artefato '${it.produces}'` : "Entrega artefato imutável e validação técnica.";
-
-  // Aba 3: Ocorrências
-  const occList = $("modal-occurrences-list");
-  occList.replaceChildren();
-  const occs = it.copies || [it];
-  occs.forEach((o) => {
-    const itemEl = el("div", "occurrence-item");
-    itemEl.append(el("span", "occurrence-path", o.path || "(catálogo nativo)"));
-    const metaEl = el("span", "occurrence-meta", `${o.scope || "global"} · ${o.origin || "sistema"}`);
-    const btnOpenFolder = el("button", "btn btn--sm occ-btn-open", "Abrir Pasta");
-    btnOpenFolder.onclick = async () => {
-      if (!o.path) return toast("Item do catálogo sem caminho físico.", true);
-      const { ok } = await api("/api/assets/reveal", { path: o.path });
-      if (ok) toast("Pasta aberta no Windows Explorer.");
-      else toast("Falha ao abrir Explorer.", true);
-    };
-    itemEl.append(metaEl, btnOpenFolder);
-    occList.append(itemEl);
-  });
-
-  // Aba 4: Código
-  $("modal-source-path").textContent = it.path || (it.origin ? `Origem: ${it.origin}` : "");
-  $("modal-source-code").textContent = it.desc || "// Código fonte ou instrução da peça";
-
-  // Reseta para aba 1
-  document.querySelectorAll(".modal-tab").forEach((b) => b.classList.toggle("is-active", b.dataset.tab === "overview"));
-  document.querySelectorAll(".modal-panel").forEach((p) => p.classList.toggle("is-active", p.id === "tab-overview"));
-
-  if (typeof dlg.showModal === "function") dlg.showModal();
 }
 
 // paletteClick: com a troca ativa substitui a peça; com nó selecionado e hook/gate, encaixa; senão adiciona ao centro.

@@ -310,3 +310,115 @@ func TestTrailingBraceRejected(t *testing.T) {
 		t.Fatalf("'}' extra aceito: %d", r.Code)
 	}
 }
+
+// SPEC-2026-11-01: Entrega e unificação do Web Component <lego-item-modal>.
+func TestLegoItemModalWebComponentDelivery(t *testing.T) {
+	s, _ := newServer(t)
+	h := s.Handler()
+
+	// 1. Script do Web Component entregue via HTTP
+	recJS := do(t, h, "GET", "/components/lego-item-modal.js", "")
+	if recJS.Code != 200 {
+		t.Fatalf("falha ao servir lego-item-modal.js: code %d", recJS.Code)
+	}
+	jsBody := recJS.Body.String()
+	if !strings.Contains(jsBody, "class LegoItemModal extends HTMLElement") {
+		t.Fatalf("lego-item-modal.js não contém definição da classe: %s", jsBody)
+	}
+	if !strings.Contains(jsBody, `customElements.define("lego-item-modal", LegoItemModal)`) {
+		t.Fatalf("lego-item-modal.js não registra o custom element")
+	}
+
+	// 2. Canvas index.html inclui o web component e não tem o dialog duplicado
+	recIndex := do(t, h, "GET", "/", "")
+	if recIndex.Code != 200 {
+		t.Fatalf("falha ao servir /: code %d", recIndex.Code)
+	}
+	idxBody := recIndex.Body.String()
+	if !strings.Contains(idxBody, "components/lego-item-modal.js") {
+		t.Fatalf("index.html não inclui script do web component")
+	}
+	if !strings.Contains(idxBody, `<lego-item-modal id="modal-item">`) {
+		t.Fatalf("index.html não instancia <lego-item-modal id=\"modal-item\">")
+	}
+	if strings.Contains(idxBody, `<dialog id="modal-item" class="dialog modal-item">`) {
+		t.Fatalf("index.html ainda contém dialog legado duplicado")
+	}
+
+	// 3. Inventário inventario.html inclui o web component e não tem o dialog duplicado
+	recInv := do(t, h, "GET", "/inventario", "")
+	if recInv.Code != 200 {
+		t.Fatalf("falha ao servir /inventario: code %d", recInv.Code)
+	}
+	invBody := recInv.Body.String()
+	if !strings.Contains(invBody, "components/lego-item-modal.js") {
+		t.Fatalf("inventario.html não inclui script do web component")
+	}
+	if !strings.Contains(invBody, `<lego-item-modal id="modal-item">`) {
+		t.Fatalf("inventario.html não instancia <lego-item-modal id=\"modal-item\">")
+	}
+	if strings.Contains(invBody, `<dialog id="modal-item" class="dialog modal-item">`) {
+		t.Fatalf("inventario.html ainda contém dialog legado duplicado")
+	}
+
+	// 4. Verificação de fidelidade de dados: zero frases estáticas mentirosas e presença de auditoria de Gate
+	if strings.Contains(jsBody, "Executa tarefas técnicas determinísticas com isolamento estrito de ambiente.") {
+		t.Fatalf("lego-item-modal.js ainda contém texto genérico hardcoded")
+	}
+	if !strings.Contains(jsBody, "_getAuditedArtifact") || !strings.Contains(jsBody, "gate-audit-card") {
+		t.Fatalf("lego-item-modal.js não implementa auditoria explícita de artefatos para Gates")
+	}
+	if !strings.Contains(jsBody, "triad-filters") || !strings.Contains(jsBody, "Substitutas (Swap)") {
+		t.Fatalf("lego-item-modal.js não implementa a tríade ontológica de compatibilidade")
+	}
+
+	// 5. Paleta preserva campos de contrato
+	recPal := do(t, h, "GET", "/palette.js", "")
+	if recPal.Code != 200 {
+		t.Fatalf("falha ao servir palette.js")
+	}
+	palBody := recPal.Body.String()
+	if !strings.Contains(palBody, "consumes: b.consumes") || !strings.Contains(palBody, "artifact: b.artifact") {
+		t.Fatalf("palette.js descarta campos de contrato do bloco")
+	}
+
+	// 6. API /api/blocks entrega blocos completos com contrato (usando FullCatalog)
+	fullIdx, err := graph.NewIndex(graph.FullCatalog())
+	if err != nil {
+		t.Fatalf("falha ao criar index FullCatalog: %v", err)
+	}
+	sFull := &Server{Index: fullIdx, Host: host}
+	recBlocks := do(t, sFull.Handler(), "GET", "/api/blocks", "")
+	if recBlocks.Code != 200 {
+		t.Fatalf("falha em /api/blocks")
+	}
+	var blocksData struct {
+		Blocks []struct {
+			ID       string   `json:"id"`
+			Kind     string   `json:"kind"`
+			Artifact string   `json:"artifact"`
+			Gate     string   `json:"gate"`
+			Consumes []string `json:"consumes"`
+			Produces string   `json:"produces"`
+		} `json:"blocks"`
+	}
+	decode(t, recBlocks, &blocksData)
+	var foundGithubTrigger bool
+	for _, b := range blocksData.Blocks {
+		if b.ID == "github-board-trigger" {
+			foundGithubTrigger = true
+			if b.Artifact != "WAVE_PLAN.json" {
+				t.Fatalf("artefato incorreto para github-board-trigger: %s", b.Artifact)
+			}
+			if b.Gate != "file_exists('WAVE_PLAN.json')" {
+				t.Fatalf("gate incorreto para github-board-trigger: %s", b.Gate)
+			}
+			if len(b.Consumes) != 0 {
+				t.Fatalf("gatilho não deve consumir nada, consumiu %v", b.Consumes)
+			}
+		}
+	}
+	if !foundGithubTrigger {
+		t.Fatalf("github-board-trigger não encontrado em /api/blocks com FullCatalog")
+	}
+}
