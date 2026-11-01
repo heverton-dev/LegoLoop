@@ -221,6 +221,11 @@ func validateRouting(r RoutingConfig) error {
 	default:
 		return fmt.Errorf("modo de roteamento desconhecido %q", r.Mode)
 	}
+	switch r.Effort {
+	case "", EffortLow, EffortMedium, EffortHigh:
+	default:
+		return fmt.Errorf("effort inválido %q (permitidos: low, medium, high)", r.Effort)
+	}
 	return nil
 }
 

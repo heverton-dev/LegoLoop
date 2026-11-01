@@ -103,7 +103,7 @@ func TestHarnessErrorsAreSurfaced(t *testing.T) {
 
 // agy só aceita o prompt como argumento: acima do limite seguro, recusa com clareza.
 func TestAgyPromptTooLong(t *testing.T) {
-	_, _, err := agyArgs("m", strings.Repeat("x", maxArgPromptBytes+1))
+	_, _, err := agyArgs("m", strings.Repeat("x", maxArgPromptBytes+1), "")
 	if err == nil || !strings.Contains(err.Error(), "excede") {
 		t.Fatalf("prompt gigante aceito: %v", err)
 	}
@@ -118,3 +118,28 @@ func TestHarnessParsersRejectEmptyOutput(t *testing.T) {
 		}
 	}
 }
+
+func TestHarnessEffortClamping(t *testing.T) {
+	o := harnessOrchestrix(t, "agy", "agy")
+	work := t.TempDir()
+	cfg := dag.RoutingConfig{Mode: dag.ModeManual, Model: "agy:gemini-3.8-flash-low", Effort: dag.EffortLow}
+	res, err := o.Execute(context.Background(), skillNode(cfg, nil), work)
+	if err != nil {
+		t.Fatalf("Execute com effort falhou: %v", err)
+	}
+	got := readArtifact(t, work)
+	if !strings.Contains(got, "--effort low") && !strings.Contains(got, "--effort=low") {
+		t.Errorf("saída do agy deveria conter flag de effort: %s", got)
+	}
+	hasEffortNote := false
+	for _, n := range res.Notes {
+		if strings.Contains(n, "effort low") || strings.Contains(n, "effort 'low'") {
+			hasEffortNote = true
+			break
+		}
+	}
+	if !hasEffortNote {
+		t.Errorf("res.Notes deveria registrar o esforço aplicado: %v", res.Notes)
+	}
+}
+

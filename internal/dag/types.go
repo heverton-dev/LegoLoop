@@ -73,12 +73,22 @@ type Trigger struct {
 	Loop string      `json:"loop,omitempty"`
 }
 
+// EffortLevel define o teto de raciocínio cognitivo do nó (Harness Engineering).
+type EffortLevel string
+
+const (
+	EffortLow    EffortLevel = "low"
+	EffortMedium EffortLevel = "medium"
+	EffortHigh   EffortLevel = "high"
+)
+
 // RoutingConfig descreve qual cérebro processa o nó.
 type RoutingConfig struct {
-	Mode     Mode   `json:"mode"`
-	Model    string `json:"model,omitempty"`
-	Fallback string `json:"fallback,omitempty"`
-	Combo    string `json:"combo,omitempty"`
+	Mode     Mode        `json:"mode"`
+	Model    string      `json:"model,omitempty"`
+	Effort   EffortLevel `json:"effort,omitempty"`
+	Fallback string      `json:"fallback,omitempty"`
+	Combo    string      `json:"combo,omitempty"`
 }
 
 // HandoffContract é a saída imutável do nó e sua condição de saída.

@@ -71,9 +71,13 @@ func (o *Orchestrix) runSkill(ctx context.Context, n dag.Node, workdir string) (
 	}
 	var errs []error
 	for _, rt := range routes {
-		text, tokens, err := o.dispatch(ctx, rt.src, rt.model, prompt)
+		text, tokens, err := o.dispatch(ctx, rt.src, rt.model, prompt, n.Routing.Effort)
 		if err == nil {
-			res := runner.Result{Tokens: tokens, Model: string(rt.src) + "/" + rt.model, Notes: errStrings(errs)}
+			notes := errStrings(errs)
+			if n.Routing.Effort != "" {
+				notes = append(notes, fmt.Sprintf("effort %s aplicado", n.Routing.Effort))
+			}
+			res := runner.Result{Tokens: tokens, Model: string(rt.src) + "/" + rt.model, Notes: notes}
 			return res, writeArtifact(root, n.Output.Artifact, []byte(text))
 		}
 		errs = append(errs, fmt.Errorf("via %s/%s: %w", rt.src, rt.model, err))
@@ -92,7 +96,7 @@ func errStrings(errs []error) []string {
 	return out
 }
 
-func (o *Orchestrix) dispatch(ctx context.Context, src provider.Source, model, prompt string) (string, runner.TokenUsage, error) {
+func (o *Orchestrix) dispatch(ctx context.Context, src provider.Source, model, prompt string, effort dag.EffortLevel) (string, runner.TokenUsage, error) {
 	switch src {
 	case provider.SourceRouter:
 		return o.callRouter(ctx, model, prompt)
@@ -101,7 +105,7 @@ func (o *Orchestrix) dispatch(ctx context.Context, src provider.Source, model, p
 	case provider.SourceClaudeCLI:
 		return o.callClaude(ctx, model, prompt)
 	default:
-		return o.callHarness(ctx, src, model, prompt)
+		return o.callHarness(ctx, src, model, prompt, effort)
 	}
 }
 

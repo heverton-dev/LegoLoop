@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"legoloop/internal/dag"
 	"legoloop/internal/provider"
 	"legoloop/internal/runner"
 )
@@ -26,7 +27,7 @@ const harnessTask = "Execute exatamente a tarefa descrita no arquivo anexado pro
 
 // harnessSpec descreve como um harness recebe o prompt e como sua saída é lida.
 type harnessSpec struct {
-	args  func(model, prompt string) ([]string, bool, error)
+	args  func(model, prompt string, effort dag.EffortLevel) ([]string, bool, error)
 	parse func(out []byte) (string, int, int, error)
 }
 
@@ -40,12 +41,12 @@ func harnessSpecs() map[provider.Source]harnessSpec {
 }
 
 // callHarness roda o harness num sandbox vazio (sem config do repositório) e lê a resposta.
-func (o *Orchestrix) callHarness(ctx context.Context, src provider.Source, model, prompt string) (string, runner.TokenUsage, error) {
+func (o *Orchestrix) callHarness(ctx context.Context, src provider.Source, model, prompt string, effort dag.EffortLevel) (string, runner.TokenUsage, error) {
 	spec, ok := harnessSpecs()[src]
 	if !ok {
 		return "", runner.TokenUsage{}, fmt.Errorf("executor desconhecido %q", src)
 	}
-	args, withFile, err := spec.args(harnessModel(model), prompt)
+	args, withFile, err := spec.args(harnessModel(model), prompt, effort)
 	if err != nil {
 		return "", runner.TokenUsage{}, err
 	}
@@ -89,22 +90,31 @@ func withModel(args []string, flag, model string) []string {
 	return append(args, flag, model)
 }
 
-func agyArgs(model, prompt string) ([]string, bool, error) {
+func agyArgs(model, prompt string, effort dag.EffortLevel) ([]string, bool, error) {
 	if len(prompt) > maxArgPromptBytes {
 		return nil, false, fmt.Errorf("prompt de %d bytes excede o limite de %d do agy (só aceita prompt por argumento)", len(prompt), maxArgPromptBytes)
 	}
 	args := []string{"-p=" + prompt, "--output-format", "json", "--disable-slash-commands"}
+	if effort != "" {
+		args = append(args, "--effort", string(effort))
+	}
 	return withModel(args, "--model", model), false, nil
 }
 
-func ompArgs(model, prompt string) ([]string, bool, error) {
+func ompArgs(model, prompt string, effort dag.EffortLevel) ([]string, bool, error) {
 	args := []string{"-p", "--no-session", "--no-tools", "--no-skills", "--no-rules", "--no-extensions", "--mode", "json"}
+	if effort != "" {
+		args = append(args, "--effort", string(effort))
+	}
 	return append(withModel(args, "--model", model), "@"+promptFile, harnessTask), true, nil
 }
 
 // opencodeArgs serve opencode e mimo (mimocode é um fork com a mesma CLI).
-func opencodeArgs(model, prompt string) ([]string, bool, error) {
+func opencodeArgs(model, prompt string, effort dag.EffortLevel) ([]string, bool, error) {
 	args := withModel([]string{"run", harnessTask, "--format", "json", "--pure"}, "-m", model)
+	if effort != "" {
+		args = append(args, "--effort", string(effort))
+	}
 	return append(args, "-f", promptFile), true, nil
 }
 

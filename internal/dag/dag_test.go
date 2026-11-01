@@ -221,3 +221,38 @@ func TestHandoffSchemaContract(t *testing.T) {
 	}
 }
 
+func TestRoutingEffortValidation(t *testing.T) {
+	template := `{
+		"name": "effort-test",
+		"version": "1.0.0",
+		"nodes": [{
+			"id": "node_1",
+			"type": "skill",
+			"ref": "skills/interview",
+			"routing": {"mode": "suggested", "model": "flash", "effort": "EFFORT_VALUE"},
+			"output": {"artifact": "out.md", "gate": "exit_code == 0"}
+		}]
+	}`
+
+	validEfforts := []EffortLevel{EffortLow, EffortMedium, EffortHigh}
+	for _, eff := range validEfforts {
+		src := strings.Replace(template, "EFFORT_VALUE", string(eff), 1)
+		d, err := Parse([]byte(src))
+		if err != nil {
+			t.Fatalf("Parse com effort %q falhou: %v", eff, err)
+		}
+		if d.Nodes[0].Routing.Effort != eff {
+			t.Fatalf("effort não decodificado corretamente: want %q, got %q", eff, d.Nodes[0].Routing.Effort)
+		}
+	}
+
+	invalidEfforts := []string{"extreme", "zero", "low_high", "123"}
+	for _, bad := range invalidEfforts {
+		src := strings.Replace(template, "EFFORT_VALUE", bad, 1)
+		if _, err := Parse([]byte(src)); err == nil {
+			t.Errorf("deveria rejeitar effort inválido %q", bad)
+		}
+	}
+}
+
+
