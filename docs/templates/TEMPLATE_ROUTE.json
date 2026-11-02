@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "route-template-exemplo",
+  "version": "1.0.0",
+  "date": "2026-11-02",
+  "session_id": "00000000-0000-0000-0000-000000000000",
+  "intent_ref": "docs/intents/YYYY-MM-DD_INTENT_NOME.md",
+  "spec_ref": "docs/specs/YYYY-MM-DD_SPEC_NOME.md",
+  "plan_ref": "docs/plans/YYYY-MM-DD_PLAN_NOME.md",
+  "execution_strategy": {
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "label": "Implementação da Unidade com Red-Green TDD",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/pkg/service.go"
+        ],
+        "spec_anchor": "docs/specs/YYYY-MM-DD_SPEC_NOME.md#secao-1",
+        "context_artifacts": []
+      },
+      "test_target": "internal/pkg/service_test.go:TestFeatureCore",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/pkg/service.go",
+          "internal/pkg/service_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v ./internal/pkg/..."
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "label": "Refatoração Crítica com Isolamento em Git Worktree",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "git_worktree",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": true
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 800
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude-code",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "9router",
+          "model": "code-pro"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": true,
+        "mcps_allowed": [
+          "codebase-memory-mcp:search_code"
+        ]
+      },
+      "inputs": {
+        "source_files": [
+          "internal/pkg/service.go"
+        ],
+        "spec_anchor": "docs/specs/YYYY-MM-DD_SPEC_NOME.md#refatoracao",
+        "context_artifacts": []
+      },
+      "test_target": "internal/pkg/service_test.go:TestRefactoredBehavior",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/pkg/service.go"
+        ],
+        "gate": "exit_code == 0 && go test -v ./internal/pkg/..."
+      }
+    },
+    {
+      "id": "TICK-01.3",
+      "label": "Dissecação Reversa via Subloop Especialista",
+      "nature": "macro",
+      "type": "subloop",
+      "ref": "docs/routes/2026-11-01_ROUTE_REA_DISSECTOR.json",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "ollama",
+          "model": "deepseek-coder:6.7b"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": true,
+        "mcps_allowed": [
+          "codebase-memory-mcp:search_code"
+        ]
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": [
+          "scratch/target_analysis.json"
+        ]
+      },
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "scratch/dissected_tokens.json"
+        ],
+        "gate": "file_exists('scratch/dissected_tokens.json')"
+      }
+    },
+    {
+      "id": "SG-01",
+      "label": "Stop-Gate de Lote (Homologação E2E & Recompilação Fresca)",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "gate": "go test ./... && go build -o bin/legoloop.exe ./cmd/legoloop"
+      }
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "estudio-canvas-frontend",
+  "version": "1.0.0",
+  "description": "Rota de execução estéril para correção de Front-End, Canvas e Modais do LegoLoop Studio",
+  "nodes": [
+    {
+      "id": "TICKET-1",
+      "name": "csp-security-headers",
+      "target_files": [
+        "internal/studio/security.go",
+        "internal/studio/security_test.go"
+      ],
+      "gate": "go test ./internal/studio/security_test.go"
+    },
+    {
+      "id": "TICKET-2",
+      "name": "canvas-scroll-pan-viewport",
+      "target_files": [
+        "internal/studio/static/style.css",
+        "internal/studio/static/app.js"
+      ],
+      "gate": "go test ./internal/studio/canvas_page_test.go"
+    },
+    {
+      "id": "TICKET-3",
+      "name": "card-toggle-lifecycle",
+      "target_files": [
+        "internal/studio/static/app.js",
+        "internal/studio/static/style.css"
+      ],
+      "gate": "go test ./internal/studio/ui_logic_test.go"
+    },
+    {
+      "id": "TICKET-4",
+      "name": "modals-ux-visibility",
+      "target_files": [
+        "internal/studio/static/app.js",
+        "internal/studio/static/style.css",
+        "internal/studio/static/index.html"
+      ],
+      "gate": "go test ./internal/studio/templates_test.go"
+    },
+    {
+      "id": "TICKET-5",
+      "name": "e2e-visual-homologation",
+      "target_files": [
+        "scratch/audit_studio_interactions.py"
+      ],
+      "gate": "go test ./internal/studio/..."
+    }
+  ]
+}

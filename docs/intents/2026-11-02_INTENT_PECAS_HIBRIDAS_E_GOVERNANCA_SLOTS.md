@@ -1,6 +1,6 @@
 # 🎯 INTENT: Taxonomia Completa de Peças Híbridas, Triggers e Governança de Slots Canônicos
 
-> **Status:** Proposta para Alinhamento Socrático (Revisão 2 — Taxonomia Exaustiva)  
+> **Status:** Aprovado pelo Usuário (Stop-Gate 01 Concluído)  
 > **Data:** 2026-11-02  
 > **Autor:** Antigravity AI + Usuário  
 > **Alvo:** `internal/assets/`, `internal/dag/`, `web/`, motor de execução e Looping Studio  
@@ -76,13 +76,15 @@ As peças canônicas do acervo do LegoLoop são **imutáveis (read-only)**. O us
 
 ---
 
-## 6. Questões para Validação Final com o Usuário
-1. **Comportamento do Nó de Gate Externo:** No grafo, o nó de Gate externo deve:
-   * *(A)* Funcionar como um **Stop-Gate binário** (se passar continua; se falhar pausa/bloqueia a esteira para intervenção humana).
-   * *(B)* Suportar **bifurcação condicional** (ex.: rota A se passar, rota B se reprovar).
-   * *(C)* Suportar ambas as modalidades.
-2. **Precedência do Override:** Você aprova que o `slots_override` declarado no nó do pipeline substitua e tenha prioridade absoluta sobre os slots embutidos na peça canônica?
+## 6. Decisões Consolidadas com o Usuário
+1. **Comportamento do Nó de Gate Externo:**
+   * **Opção (C) Adotada:** Suportar **ambas as modalidades**.
+     * **Modalidade 1 (Stop-Gate Binário):** Pausa para aprovação humana com validação binária (`PASS` prossegue, `FAIL` pausa/bloqueia).
+     * **Modalidade 2 (Bifurcação Condicional):** Roteia dinamicamente o fluxo para caminhos alternativos (`on_pass` ➔ Nó A, `on_fail` ➔ Nó B).
+2. **Precedência do Override & Uso Canônico:**
+   * **Padrão Nativo (Sem Override):** Se `slots_override` for nulo ou omitido no nó do DAG, o nó consome **100% da definição canônica original da peça** intacta, sem nenhuma alteração.
+   * **Com Override Explícito:** Somente quando o usuário declarar `slots_override` (ex.: `add_gates`, `remove_gates`, `add_scripts`), as modificações pontuais sobrepõem os slots canônicos especificamente para aquela instância.
 
 ---
 
-🛑 **Stop-Gate 01:** Aguardando aprovação do usuário sobre esta Intenção consolidada para avançar à **Fase 2 (SPEC + PLAN + ROUTE)** do Mega Pipeline.
+🛑 **Stop-Gate 01:** Concluído e Aprovado pelo Usuário. Autorizado avanço para a Tríade de Planejamento (SPEC + PLAN + ROUTE).

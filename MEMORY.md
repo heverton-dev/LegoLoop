@@ -217,5 +217,21 @@
   - **Canonização Sob Demanda Concluída:** Comando `/canonize` adicionado na skill mestre e modal visual do Cofre Canônico integrado na barra do Studio com rotas `/api/canonize/status`, dry-run e apply em 1 clique (100% testes verdes).
   - **Padronização ISO Universal de Artefatos:** Todos os 32 arquivos em `docs/` renomeados via `git mv` para `YYYY-MM-DD_<NOME>` com ordenação cronológica natural e reindexação no grafo semântico (3.030 nós, 10.554 arestas).
 
+- **01/11/2026** — 🛠️ Auditoria Profunda & Expansão de Engenharia de Harness:
+  - Implementação da especificação de Harness Engineering em Go (`internal/dag`, `internal/gate`).
+  - Criação de novas rotas de épicos (`EP17` a `EP24`): triggers, cofres de credenciais, telemetria em tempo real, subgrafos com drilldown breadcrumbs e importador GitHub/fork.
+  - Correção de bugs de inicialização do inventário (`FIX_INVENTORY_BOOT_REFERENCE_ERROR`) e refatoração do modal de itens.
+- **02/11/2026** — ⚡ Correções Full-Stack do Studio & Governança de Slots:
+  - Execução e validação da esteira de 10 correções do LegoLoop Studio (`ROUTE_ESTEIRA_CORRECOES_LEGOLOOP.json`): streaming SSE do Run Modal com AbortController, cabeçalhos de segurança CSP, eliminação de inline styles, undo/redo estrito com push de histórico, limites de Pan no canvas e debounce/abort em `/api/suggest`.
+  - Conclusão da taxonomia formal de Peças Híbridas (*Dual-Role*), Triggers raiz e governança de slots imutáveis com overrides (`SPEC_PECAS_HIBRIDAS_E_GOVERNANCA_SLOTS.md`).
+- **02/11/2026** — 📐 Fundação do Diretório Canônico de Templates (`docs/templates/`):
+  - Análise comparativa exaustiva de todos os 19 arquivos JSON em `docs/routes/` identificando 3 arquétipos e unificando inconsistências de nomenclatura (`depends_on`, `ref`, etc.).
+  - Criação do diretório [`docs/templates/`](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/templates) e materialização de [`TEMPLATE_ROUTE.json`](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/templates/TEMPLATE_ROUTE.json) com **Matriz Determinística Isomórfica** (todas as chaves presentes, valores nulos canônicos quando não aplicáveis).
+  - Separação formal das duas dimensões de isolamento: **Workspace Sandbox** (`local`, `git_worktree`, `tempdir`) e **Executor Dispatch** (`orchestrix_hermetic`, `local_process`, `subagent`).
+  - Fallback duplo de resiliência BDD cobrindo tanto modelo quanto harness (`routing.fallback: {"harness": "...", "model": "..."}`).
+  - Sincronização cumulativa factual de 19 sessões do projeto LegoLoop via `faz-session` e reindexação do grafo semântico no `codebase-memory-mcp` (6.347 nós, 15.410 arestas).
+
 ## Próximos Passos Imediatos
-1. **Executar teste pontual de fluxo no LegoLoop Studio** (`legoloop studio --addr 127.0.0.1:7878`).
+1. **Materializar `docs/templates/TEMPLATE_INTENT.md`** como o primeiro elo da cascata canônica.
+2. **Definir templates de `SPEC.md` e `PLAN.md`** para fechar a governança completa da esteira.
+3. **Consolidar os nós e subloops do Mega Pipeline** sobre a nova matriz de isolamento em 2 camadas.

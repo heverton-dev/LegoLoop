@@ -34,6 +34,7 @@
 
 * **Validar conformidade e testes:** `go test ./...` ou `npm test`
 * **Registrar histórico de sessão:** `faz-session --id <CONVERSATION_ID> --format all`
+* **Consultar Templates Canônicos (SSOT):** [docs/templates/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/templates)
 * **Consultar Intenções:** [docs/intents/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents)
 * **Consultar a Spec Master:** [docs/specs/2026-10-30_SPEC_MASTER.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/2026-10-30_SPEC_MASTER.md)
 * **Consultar o Plano de Tickets:** [docs/plans/2026-10-30_PLAN_MASTER.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/2026-10-30_PLAN_MASTER.md)
