@@ -98,7 +98,7 @@ func TestSecurityHeadersAndStatic(t *testing.T) {
 		h.Get("Access-Control-Allow-Origin") != "" {
 		t.Fatalf("cabeçalhos de segurança ausentes: %v", h)
 	}
-	for _, asset := range []string{"/app.js", "/style.css"} {
+	for _, asset := range []string{"/app.js", "/style.css", "/icons.js"} {
 		if r := do(t, s.Handler(), "GET", asset, ""); r.Code != 200 {
 			t.Errorf("%s: %d", asset, r.Code)
 		}

@@ -321,6 +321,85 @@ func BuiltinTemplates() []Template {
 				},
 			},
 		},
+		{
+			ID:          "addy-osmani",
+			Name:        "Addy Osmani Web Performance & Rigor Loop",
+			Description: "Esteira canônica de engenharia web focada em Web Vitals, TDD estrito, DevTools em runtime, auditoria 5 eixos e observabilidade.",
+			Category:    "performance",
+			Icon:        "trigger",
+			Composition: Composition{
+				Name: "addy-osmani-loop",
+				Nodes: []CompNode{
+					{
+						ID:    "subloop-alinhar-contexto",
+						Block: "aidd-osmani",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "haiku",
+						},
+					},
+					{
+						ID:    "subloop-especificar-restricoes",
+						Block: "aidd-osmani",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-pro",
+						},
+					},
+					{
+						ID:    "subloop-planejar-tickets",
+						Block: "aidd-osmani",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+					{
+						ID:    "subloop-construir-tdd",
+						Block: "aidd-osmani",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "qwen2.5-coder:7b",
+						},
+					},
+					{
+						ID:    "subloop-runtime-webperf",
+						Block: "aidd-osmani",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-pro",
+						},
+					},
+					{
+						ID:    "subloop-review-hardening",
+						Block: "aidd-osmani",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "haiku",
+						},
+					},
+					{
+						ID:    "subloop-observabilidade-ship",
+						Block: "aidd-osmani",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-pro",
+						},
+					},
+				},
+				Edges: []CompEdge{
+					{From: "subloop-alinhar-contexto", To: "subloop-especificar-restricoes"},
+					{From: "subloop-especificar-restricoes", To: "subloop-planejar-tickets"},
+					{From: "subloop-planejar-tickets", To: "subloop-construir-tdd"},
+					{From: "subloop-construir-tdd", To: "subloop-runtime-webperf"},
+					{From: "subloop-runtime-webperf", To: "subloop-review-hardening"},
+					{From: "subloop-review-hardening", To: "subloop-observabilidade-ship"},
+				},
+			},
+		},
 	}
 }
 

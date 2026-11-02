@@ -51,7 +51,7 @@ class LegoItemModal extends HTMLElement {
             <div id="modal-item-badges" class="modal-badges" aria-label="Metadados da peça"></div>
           </div>
           <div class="modal-actions-top">
-            <button id="btn-modal-add-canvas" class="btn btn--primary btn--sm" type="button" title="Adicionar esta peça ao centro do Canvas" style="display: none;">
+            <button id="btn-modal-add-canvas" class="btn btn--primary btn--sm" type="button" title="Adicionar esta peça ao centro do Canvas" hidden>
               ➕ Adicionar ao Canvas
             </button>
             <button id="btn-modal-canonize" class="btn btn--sm" type="button" title="Canonizar esta peça no cofre central">
@@ -131,7 +131,7 @@ class LegoItemModal extends HTMLElement {
             </div>
 
             <!-- Card Especial: Destaque de Auditoria para Gates -->
-            <div id="gate-audit-card" class="gate-audit-card" style="display: none;">
+            <div id="gate-audit-card" class="gate-audit-card" hidden>
               <div class="gate-audit-header">
                 <span class="gate-audit-icon">🛡️</span>
                 <div>
@@ -266,7 +266,7 @@ class LegoItemModal extends HTMLElement {
                 </div>
               </div>
 
-              <div class="sandbox-result-card" id="sandbox-result-card" style="display: none;">
+              <div class="sandbox-result-card" id="sandbox-result-card" hidden>
                 <div class="sandbox-result-header">
                   <h4 class="prop-title">Resultado da Simulação</h4>
                   <span id="sandbox-status-badge" class="badge badge--accent">PASS</span>
@@ -757,7 +757,10 @@ class LegoItemModal extends HTMLElement {
 
     // Gate acoplado
     const gateText = it.gate || it.meta?.gate || (family === "gate" ? (it.signature || it.name) : "Nenhum");
-    this.querySelector("#modal-prop-gate").innerHTML = `<code>${this._escapeHtml(gateText)}</code>`;
+    const gateProp = this.querySelector("#modal-prop-gate");
+    const codeGate = document.createElement("code");
+    codeGate.textContent = gateText;
+    gateProp.replaceChildren(codeGate);
 
     // Textos factuais
     this.querySelector("#modal-prop-what").textContent = what;
@@ -774,38 +777,42 @@ class LegoItemModal extends HTMLElement {
     const tbody = this.querySelector("#modal-schema-tbody");
     tbody.replaceChildren();
 
+    const makeRow = (badgeText, badgeClass, name, type, req) => {
+      const tr = document.createElement("tr");
+      const tdBadge = document.createElement("td");
+      const span = document.createElement("span");
+      span.className = `badge badge--sm ${badgeClass}`;
+      span.textContent = badgeText;
+      tdBadge.appendChild(span);
+
+      const tdName = document.createElement("td");
+      const codeName = document.createElement("code");
+      codeName.textContent = name;
+      tdName.appendChild(codeName);
+
+      const tdType = document.createElement("td");
+      const codeType = document.createElement("code");
+      codeType.textContent = type;
+      tdType.appendChild(codeType);
+
+      const tdReq = document.createElement("td");
+      tdReq.textContent = req;
+
+      tr.append(tdBadge, tdName, tdType, tdReq);
+      return tr;
+    };
+
     if (family === "trigger") {
-      const trIn = document.createElement("tr");
-      trIn.innerHTML = `
-        <td><span class="badge badge--sm badge--muted">Origem</span></td>
-        <td><code>Gatilho Externo / Evento</code></td>
-        <td><code>Event Trigger</code></td>
-        <td>Autônomo</td>
-      `;
-      tbody.append(trIn);
+      tbody.append(makeRow("Origem", "badge--muted", "Gatilho Externo / Evento", "Event Trigger", "Autônomo"));
     } else {
       const inList = it.consumes || (it.meta?.consumes ? [it.meta.consumes] : ["Briefing / Requisitos"]);
       inList.forEach((itemIn) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><span class="badge badge--sm badge--accent">Entrada</span></td>
-          <td><code>${this._escapeHtml(String(itemIn))}</code></td>
-          <td><code>Artifact (Markdown / JSON)</code></td>
-          <td>Obrigatório</td>
-        `;
-        tbody.append(tr);
+        tbody.append(makeRow("Entrada", "badge--accent", String(itemIn), "Artifact (Markdown / JSON)", "Obrigatório"));
       });
     }
 
     const outItem = it.artifact || it.produces || (family === "gate" ? "PASS / FAIL" : "Artifact:Report");
-    const trOut = document.createElement("tr");
-    trOut.innerHTML = `
-      <td><span class="badge badge--sm badge--warn">Saída</span></td>
-      <td><code>${this._escapeHtml(String(outItem))}</code></td>
-      <td><code>${family === "gate" ? "Boolean Verdict" : "Artifact Imutável"}</code></td>
-      <td>Garantido</td>
-    `;
-    tbody.append(trOut);
+    tbody.append(makeRow("Saída", "badge--warn", String(outItem), family === "gate" ? "Boolean Verdict" : "Artifact Imutável", "Garantido"));
 
     // Metadados técnicos
     const metaGrid = this.querySelector("#modal-schema-meta-grid");
@@ -827,7 +834,13 @@ class LegoItemModal extends HTMLElement {
     items.forEach((m) => {
       const div = document.createElement("div");
       div.className = "schema-meta-item";
-      div.innerHTML = `<span class="meta-label">${this._escapeHtml(m.label)}:</span> <span class="meta-value">${this._escapeHtml(m.value)}</span>`;
+      const lbl = document.createElement("span");
+      lbl.className = "meta-label";
+      lbl.textContent = m.label + ": ";
+      const val = document.createElement("span");
+      val.className = "meta-value";
+      val.textContent = m.value;
+      div.append(lbl, val);
       metaGrid.append(div);
     });
   }

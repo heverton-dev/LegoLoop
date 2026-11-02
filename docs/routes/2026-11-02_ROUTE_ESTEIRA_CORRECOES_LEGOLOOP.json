@@ -1,0 +1,202 @@
+{
+  "version": "1.0.0",
+  "name": "Esteira de Correção Full-Stack LegoLoop (Fase C)",
+  "session_id": "d4cfbcb7-ebf7-4f59-8d77-7c13903afc72",
+  "created_at": "2026-11-02T13:10:00-03:00",
+  "intent_file": "docs/intents/2026-11-02_INTENT_ESTEIRA_CORRECOES_LEGOLOOP.md",
+  "spec_file": "docs/specs/2026-11-02_SPEC_ESTEIRA_CORRECOES_LEGOLOOP.md",
+  "plan_file": "docs/plans/2026-11-02_PLAN_ESTEIRA_CORRECOES_LEGOLOOP.md",
+  "nodes": [
+    {
+      "id": "TICK-C01",
+      "name": "Execução & Streaming SSE",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-RUN-01", "BUG-RUN-02"],
+      "dependencies": [],
+      "routing": {
+        "mode": "sequential",
+        "model": "pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "target_files": ["internal/studio/static/app.js"],
+      "test_target": "internal/studio/static_test.go:TestValidateReturnsBoolean,TestRunModalUsesAbortController",
+      "output_artifact": "scratch/C01_run_sse.json"
+    },
+    {
+      "id": "TICK-C02",
+      "name": "Servidor HTTP Go & Rota icons.js",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-SRV-01"],
+      "dependencies": ["TICK-C01"],
+      "routing": {
+        "mode": "sequential",
+        "model": "flash",
+        "effort": "low",
+        "fallback": "pro"
+      },
+      "target_files": ["internal/studio/server.go"],
+      "test_target": "internal/studio/server_test.go:TestSecurityHeadersAndStatic",
+      "output_artifact": "scratch/C02_server_icons.json"
+    },
+    {
+      "id": "TICK-C03",
+      "name": "Segurança CSP & Web Component Modal",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-CSP-01"],
+      "dependencies": ["TICK-C02"],
+      "routing": {
+        "mode": "sequential",
+        "model": "pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "target_files": ["internal/studio/static/components/lego-item-modal.js"],
+      "test_target": "internal/studio/static_test.go:TestNoInlineStylesInComponents",
+      "output_artifact": "scratch/C03_csp_modal.json"
+    },
+    {
+      "id": "TICK-C04",
+      "name": "Undo/Redo & Cobertura de Mutações",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-UNDO-01", "BUG-UNDO-02"],
+      "dependencies": ["TICK-C03"],
+      "routing": {
+        "mode": "sequential",
+        "model": "pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "target_files": ["internal/studio/static/app.js"],
+      "test_target": "internal/studio/static_test.go:TestUndoRedoAppliesValidRenderFunction,TestMutationsPushHistoryState",
+      "output_artifact": "scratch/C04_undoredo.json"
+    },
+    {
+      "id": "SG-L01",
+      "name": "Stop-Gate Lote 01 (Bloqueadores & Segurança)",
+      "type": "stop_gate",
+      "status": "COMPLETED",
+      "dependencies": ["TICK-C01", "TICK-C02", "TICK-C03", "TICK-C04"]
+    },
+    {
+      "id": "TICK-C05",
+      "name": "Consistência de Diálogos & Templates Fallback",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-CONFIRM-01", "BUG-TMPL-01"],
+      "dependencies": ["SG-L01"],
+      "routing": {
+        "mode": "parallel",
+        "model": "flash",
+        "effort": "low",
+        "fallback": "pro"
+      },
+      "target_files": ["internal/studio/static/inventory.js", "internal/studio/static/app.js"],
+      "test_target": "internal/studio/static_test.go:TestConfirmDialogMessageParam,TestTemplatesFallback",
+      "output_artifact": "scratch/C05_confirm_templates.json"
+    },
+    {
+      "id": "TICK-C06",
+      "name": "Cofre Canônico (Vault UI & Reset State)",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-VAULT-01", "BUG-VAULT-03"],
+      "dependencies": ["SG-L01"],
+      "routing": {
+        "mode": "parallel",
+        "model": "pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "target_files": ["internal/studio/static/app.js"],
+      "test_target": "internal/studio/static_test.go:TestVaultRendersGroupsList,TestVaultApplyResetsDisabledInFinally",
+      "output_artifact": "scratch/C06_vault_ui.json"
+    },
+    {
+      "id": "TICK-C07",
+      "name": "Debounce & Cancelamento de Concorrência em /api/suggest",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-INSP-01"],
+      "dependencies": ["TICK-C05", "TICK-C06"],
+      "routing": {
+        "mode": "sequential",
+        "model": "pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "target_files": ["internal/studio/static/inspector.js"],
+      "test_target": "internal/studio/static_test.go:TestInspectorSuggestDebounceAndAbort",
+      "output_artifact": "scratch/C07_inspector_debounce.json"
+    },
+    {
+      "id": "TICK-C08",
+      "name": "Limites de Pan do Canvas & Cancelamento Escape de Conexão",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-CANVAS-02", "BUG-EDGE-01"],
+      "dependencies": ["TICK-C07"],
+      "routing": {
+        "mode": "parallel",
+        "model": "pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "target_files": ["internal/studio/static/app.js"],
+      "test_target": "internal/studio/static_test.go:TestCanvasPanClamping,TestEscapeCancelsLinking",
+      "output_artifact": "scratch/C08_canvas_edge.json"
+    },
+    {
+      "id": "TICK-C09",
+      "name": "Virtualização do Treeview & Refatoração de DOM do Modal",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-PALETTE-02", "BUG-ITEM-MODAL-01"],
+      "dependencies": ["TICK-C08"],
+      "routing": {
+        "mode": "sequential",
+        "model": "pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "target_files": ["internal/studio/static/palette.js", "internal/studio/static/components/lego-item-modal.js"],
+      "test_target": "internal/studio/static_test.go:TestPaletteTreeviewPerformance,TestItemModalDOMStructure",
+      "output_artifact": "scratch/C09_treeview_dom.json"
+    },
+    {
+      "id": "SG-L02",
+      "name": "Stop-Gate Lote 02 (Consistência & Performance)",
+      "type": "stop_gate",
+      "status": "COMPLETED",
+      "dependencies": ["TICK-C05", "TICK-C06", "TICK-C07", "TICK-C08", "TICK-C09"]
+    },
+    {
+      "id": "TICK-C10",
+      "name": "Ergonomia, Teclas de Atalho & Polimento Final",
+      "type": "unit_fix",
+      "status": "COMPLETED",
+      "defects": ["BUG-KEY-01", "BUG-KEY-02", "BUG-PALETTE-01", "BUG-CANVAS-03", "BUG-VAULT-02"],
+      "dependencies": ["SG-L02"],
+      "routing": {
+        "mode": "sequential",
+        "model": "pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "target_files": ["internal/studio/static/app.js"],
+      "test_target": "internal/studio/static_test.go:TestKeyboardShortcutsCtrlSEsc,TestPaletteDropCenterOffset,TestVault503ToastFeedback",
+      "output_artifact": "scratch/C10_shortcuts_ergonomics.json"
+    },
+    {
+      "id": "SG-C04",
+      "name": "Stop-Gate Final (Homologação E2E & Recompilação)",
+      "type": "stop_gate",
+      "status": "COMPLETED",
+      "dependencies": ["TICK-C10"]
+    }
+  ]
+}

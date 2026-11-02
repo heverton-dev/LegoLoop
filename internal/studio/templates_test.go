@@ -33,6 +33,7 @@ func TestTemplatesEndpointReturnsAtLeastThreeValidTemplates(t *testing.T) {
 		"mega-pipeline":       false,
 		"impeccable-design":   false,
 		"matt-pocock":         false,
+		"addy-osmani":         false,
 	}
 
 	for _, tmpl := range res.Templates {

@@ -66,12 +66,13 @@ function shortType(t) {
 
 // ---------- API ----------
 
-async function api(path, body) {
+async function api(path, body, signal) {
   const opts = body === undefined ? {} : {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
+  if (signal) opts.signal = signal;
   const res = await fetch(path, opts);
   const data = await res.json().catch(() => ({}));
   return { ok: res.ok, status: res.status, data };
@@ -146,6 +147,7 @@ function baseNode(id, x, y) {
 }
 
 function register(node) {
+  pushState();
   state.nodes.set(node.id, node);
   clearValidation();
   renderNode(node);
@@ -210,6 +212,7 @@ function addEntry(entry, x, y) {
 }
 
 function removeNode(id) {
+  pushState();
   state.nodes.delete(id);
   state.edges = state.edges.filter((e) => e.from !== id && e.to !== id);
   document.querySelector(`.node[data-id="${CSS.escape(id)}"]`)?.remove();
@@ -585,12 +588,14 @@ function addEdge(from, to) {
     toast(`${a.label} produz ${shortType(a.produces)}; ${b.label} não consome isso.`, true);
     return;
   }
+  pushState();
   state.edges.push({ from, to });
   clearValidation();
   renderEdges();
 }
 
 function disconnect(index) {
+  pushState();
   state.edges.splice(index, 1);
   clearValidation();
   select(null);
@@ -693,9 +698,13 @@ function addNeighbor(node, n) {
 
 // ---------- Interações de ponteiro ----------
 
+const MAX_PAN = 10000;
+
 function updateCanvasTransform() {
   const surface = $("canvas-surface");
   if (surface) {
+    state.pan.x = Math.max(-MAX_PAN, Math.min(MAX_PAN, state.pan.x));
+    state.pan.y = Math.max(-MAX_PAN, Math.min(MAX_PAN, state.pan.y));
     surface.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
     surface.style.transformOrigin = "0 0";
   }
@@ -781,7 +790,11 @@ function applySnapshot(snapStr) {
     state.nodes = new Map(snap.nodes);
     state.edges = snap.edges || [];
     state.nextId = snap.nextId || state.nextId;
-    renderAll();
+    document.querySelectorAll(".node").forEach((el) => {
+      const id = el.dataset.id;
+      if (!state.nodes.has(id)) el.remove();
+    });
+    renderAllNodes();
     updateEmpty();
   } catch (e) {
     console.error("Falha ao restaurar histórico:", e);
@@ -930,6 +943,9 @@ function startNodeDrag(ev, node) {
     }
     window.removeEventListener("pointermove", move);
     window.removeEventListener("pointerup", up);
+    if (node.x !== origin.x || node.y !== origin.y) {
+      pushState();
+    }
   };
   window.addEventListener("pointermove", move);
   window.addEventListener("pointerup", up);
@@ -952,15 +968,26 @@ function trackLink(ev, fromId, onDrop) {
     temp.classList.toggle("is-bad", Boolean(target) && !canConnect(fromId, target.dataset.id));
     temp.setAttribute("d", curve(portPoint(from, "out"), canvasPoint(e)));
   };
-  const up = (e) => {
+  const cleanup = () => {
     window.removeEventListener("pointermove", move);
     window.removeEventListener("pointerup", up);
+    window.removeEventListener("keydown", onKeyDown);
     temp.remove();
     canvas.classList.remove("is-linking");
+  };
+  const onKeyDown = (e) => {
+    if (e.key === "Escape") {
+      cleanup();
+      onDrop(null);
+    }
+  };
+  const up = (e) => {
+    cleanup();
     onDrop(nodeAt(e)?.dataset.id || null);
   };
   window.addEventListener("pointermove", move);
   window.addEventListener("pointerup", up);
+  window.addEventListener("keydown", onKeyDown);
   move(ev);
 }
 
@@ -1031,8 +1058,12 @@ function onEdgesClick(ev) {
 }
 
 function onKey(ev) {
-  if (ev.key === "Escape" && state.swapping) {
-    cancelSwap();
+  if (ev.key === "Escape") {
+    if (state.swapping) {
+      cancelSwap();
+    } else if (state.selected) {
+      select(null);
+    }
     return;
   }
   if (ev.target.closest("input, select, textarea")) return;
@@ -1094,7 +1125,7 @@ function setupDropZone() {
       if (edge) {
         state.edges.splice(idx, 1);
         const p = canvasPoint(e);
-        const newNode = addEntry(payload, p.x - NODE_W / 2, p.y - 20);
+        const newNode = addEntry(payload, p.x - NODE_W / 2, p.y - 50);
         if (newNode) {
           addEdge(edge.from, newNode.id);
           addEdge(newNode.id, edge.to);
@@ -1104,7 +1135,7 @@ function setupDropZone() {
       }
     }
     const p = canvasPoint(e);
-    addEntry(payload, p.x - NODE_W / 2, p.y - 20);
+    addEntry(payload, p.x - NODE_W / 2, p.y - 50);
   });
   canvas.addEventListener("pointerdown", (e) => {
     if (e.target === canvas || e.target.id === "edges" || e.target.id === "nodes") select(null);
@@ -1184,16 +1215,24 @@ async function withBusy(btn, fn) {
 
 async function validate() {
   const { ok, data } = await api("/api/validate", composition());
-  if (!ok) return toast(data.error || "Erro ao validar.", true);
+  if (!ok) {
+    toast(data.error || "Erro ao validar.", true);
+    return false;
+  }
   applyValidation(data);
-  return toast(data.ok ? "Esteira válida: todos os encaixes conferem." : `${data.issues.length} problema(s) encontrado(s).`, !data.ok);
+  toast(data.ok ? "Esteira válida: todos os encaixes conferem." : `${data.issues.length} problema(s) encontrado(s).`, !data.ok);
+  return Boolean(data.ok);
 }
 
 async function materialize() {
   const { ok, data } = await api("/api/materialize", composition());
   if (data.issues) applyValidation(data);
-  if (!ok) return toast(data.error || "Corrija os problemas antes de materializar.", true);
-  return toast(`Esteira materializada em ${data.path}.`);
+  if (!ok) {
+    toast(data.error || "Corrija os problemas antes de materializar.", true);
+    return false;
+  }
+  toast(`Esteira materializada em ${data.path}.`);
+  return true;
 }
 
 // ---------- Rota ótima ----------
@@ -1499,6 +1538,10 @@ async function boot() {
       e.preventDefault();
       toggleSidebar();
     }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+      e.preventDefault();
+      $("btn-materialize")?.click();
+    }
   });
 
   document.addEventListener("keyup", (e) => {
@@ -1552,8 +1595,20 @@ async function boot() {
     window.addEventListener("pointerup", up);
   });
 
-  $("btn-zoom-in").addEventListener("click", () => zoomBy(1.2));
-  $("btn-zoom-out").addEventListener("click", () => zoomBy(1 / 1.2));
+  const getZoomPivot = () => {
+    if (state.selected?.kind === "node") {
+      const n = state.nodes.get(state.selected.id);
+      if (n) {
+        return {
+          x: state.pan.x + (n.x + NODE_W / 2) * state.zoom,
+          y: state.pan.y + (n.y + 50) * state.zoom,
+        };
+      }
+    }
+    return null;
+  };
+  $("btn-zoom-in").addEventListener("click", () => zoomBy(1.2, getZoomPivot()));
+  $("btn-zoom-out").addEventListener("click", () => zoomBy(1 / 1.2, getZoomPivot()));
   $("btn-zoom-fit").addEventListener("click", () => fitToScreen());
   $("btn-undo")?.addEventListener("click", undo);
   $("btn-redo")?.addEventListener("click", redo);
@@ -1595,17 +1650,21 @@ function initVaultModal() {
   const drivesDisplay = $("vault-drives-display");
   const panel = $("vault-results-panel");
   const summary = $("vault-results-summary");
+  const groupsList = $("vault-groups-list");
 
   btnVault.addEventListener("click", async () => {
     try {
       const res = await fetch("/api/canonize/status");
-      if (res.ok) {
-        const data = await res.json();
-        pathDisplay.textContent = data.vault || "~/.aidd/canonical";
-        drivesDisplay.textContent = (data.drives || []).join(", ") || "C:";
+      if (!res.ok) {
+        toast("Status do cofre indisponível no momento (servidor respondeu HTTP " + res.status + ").", true);
+        return;
       }
+      const data = await res.json();
+      pathDisplay.textContent = data.vault || "~/.aidd/canonical";
+      drivesDisplay.textContent = (data.drives || []).join(", ") || "C:";
       btnApply.disabled = true;
       panel.hidden = true;
+      if (groupsList) groupsList.replaceChildren();
       modal.showModal();
     } catch (e) {
       toast("Erro ao obter status do cofre: " + e.message, true);
@@ -1626,6 +1685,25 @@ function initVaultModal() {
       if (!res.ok) throw new Error("Falha no dry-run");
       const plan = await res.json();
       summary.textContent = `Arquivos escaneados: ${plan.files_scanned} | Grupos duplicados: ${plan.groups.length} | Economia estimada: ${Math.round(plan.saved_bytes / 1024)} KB`;
+      
+      if (groupsList) {
+        groupsList.replaceChildren();
+        const maxDisplay = 20;
+        const groupsToShow = (plan.groups || []).slice(0, maxDisplay);
+        for (const g of groupsToShow) {
+          const item = el("div", "vault-group-item");
+          const canonLine = el("p", "vault-group-canonical", `Canônico: ${g.canonical}`);
+          const dupCount = el("span", "vault-group-badge", ` (${g.links?.length || 0} links)`);
+          canonLine.appendChild(dupCount);
+          item.appendChild(canonLine);
+          groupsList.appendChild(item);
+        }
+        if ((plan.groups || []).length > maxDisplay) {
+          const more = el("p", "vault-group-more", `... e mais ${plan.groups.length - maxDisplay} grupo(s)`);
+          groupsList.appendChild(more);
+        }
+      }
+
       panel.hidden = false;
       btnApply.disabled = plan.groups.length === 0;
     } catch (e) {
@@ -1656,8 +1734,10 @@ function initVaultModal() {
       const result = await res.json();
       summary.textContent = `Desduplicação concluída! Links criados: ${result.linked} | Economia real: ${Math.round(result.saved_bytes / 1024)} KB`;
       toast(`Cofre atualizado: ${result.linked} links criados.`);
+      btnApply.disabled = true;
     } catch (e) {
       toast("Erro ao aplicar canonização: " + e.message, true);
+      btnApply.disabled = false;
     } finally {
       btnApply.textContent = "Aplicar Desduplicação Global";
     }
@@ -1678,7 +1758,22 @@ function initRunModal() {
   const timelineEl = $("run-nodes-timeline");
   const consoleEl = $("run-logs-console");
 
-  btnClose?.addEventListener("click", () => modal.close());
+  let runAbortController = null;
+
+  const cancelRun = () => {
+    if (runAbortController) {
+      runAbortController.abort();
+      runAbortController = null;
+    }
+  };
+
+  btnClose?.addEventListener("click", () => {
+    cancelRun();
+    modal.close();
+  });
+  modal.addEventListener("cancel", () => {
+    cancelRun();
+  });
 
   btnRun.addEventListener("click", () => withBusy(btnRun, async () => {
     if (state.nodes.size === 0) {
@@ -1724,11 +1819,15 @@ function initRunModal() {
 
     appendLog(`[${new Date().toLocaleTimeString()}] Conectando ao motor de execução LegoLoop...`);
 
+    cancelRun();
+    runAbortController = new AbortController();
+
     try {
       const resp = await fetch("/api/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dag, allow_scripts: allowScripts }),
+        signal: runAbortController.signal,
       });
 
       if (!resp.ok) {
@@ -1893,10 +1992,18 @@ function initRunModal() {
         }
       }
     } catch (e) {
+      if (e.name === "AbortError") {
+        badge.textContent = "Cancelado";
+        badge.className = "modal-badge badge--ready";
+        appendLog(`[INFO] Execução cancelada pelo usuário.`);
+        return;
+      }
       badge.textContent = "Falha de Conexao";
       badge.className = "modal-badge badge--danger";
       appendLog(`[FALHA] ${e.message}`);
       toast("Falha na execucao: " + e.message, true);
+    } finally {
+      runAbortController = null;
     }
   }));
 }
@@ -1932,7 +2039,7 @@ function initTemplatesModal() {
         if (typeof createSvgIconNode === "function") {
           icon.replaceChildren(createSvgIconNode(tmpl.icon || "package"));
         } else {
-          icon.textContent = tmpl.name;
+          icon.textContent = "";
         }
 
         const name = document.createElement("span");

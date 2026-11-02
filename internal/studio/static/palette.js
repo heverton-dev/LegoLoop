@@ -367,7 +367,9 @@ function createPalette(els, handlers) {
         if (filtered.length === 0) {
           itemsList.append(paletteEl("p", "note", "Nenhum item nesta pasta."));
         } else {
-          for (const item of filtered) {
+          const limit = st.expandedLimits?.[cat] || 40;
+          const visibleSlice = filtered.slice(0, limit);
+          for (const item of visibleSlice) {
             const row = paletteEl("div", "treeview-item");
             row.draggable = true;
             row.tabIndex = 0;
@@ -417,6 +419,18 @@ function createPalette(els, handlers) {
             });
 
             itemsList.append(row);
+          }
+
+          if (filtered.length > limit) {
+            const moreBtn = paletteEl("button", "treeview-load-more", `Carregar mais (${filtered.length - limit} restantes)`);
+            moreBtn.type = "button";
+            moreBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (!st.expandedLimits) st.expandedLimits = {};
+              st.expandedLimits[cat] = limit + 40;
+              renderTreeview();
+            });
+            itemsList.append(moreBtn);
           }
         }
         groupEl.append(itemsList);

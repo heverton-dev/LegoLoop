@@ -1,0 +1,173 @@
+{
+  "name": "route-correcao-defeitos-legoloop",
+  "version": "1.0.0",
+  "date": "2026-11-02",
+  "intent_ref": "docs/intents/2026-11-02_INTENT_CORRECAO_DEFEITOS_LEGOLOOP.md",
+  "spec_ref": "docs/specs/2026-11-02_SPEC_CORRECAO_DEFEITOS_LEGOLOOP.md",
+  "plan_ref": "docs/plans/2026-11-02_PLAN_CORRECAO_DEFEITOS_LEGOLOOP.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "max_parallel_workers": 1,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "FIX-01.1",
+      "epic": "EPIC-01",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": { "mcps_required": false },
+      "inputs": {
+        "target_files": [
+          "internal/studio/server.go",
+          "internal/studio/static_test.go"
+        ]
+      },
+      "output": {
+        "artifacts": ["internal/studio/server.go"],
+        "gate": "file_exists('internal/studio/server.go')"
+      }
+    },
+    {
+      "id": "FIX-01.2",
+      "epic": "EPIC-01",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["FIX-01.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": { "mcps_required": false },
+      "inputs": {
+        "target_files": ["internal/studio/static/app.js"]
+      },
+      "output": {
+        "artifacts": ["internal/studio/static/app.js"],
+        "gate": "file_exists('internal/studio/static/app.js')"
+      }
+    },
+    {
+      "id": "FIX-01.3",
+      "epic": "EPIC-01",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["FIX-01.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": { "mcps_required": false },
+      "inputs": {
+        "target_files": [
+          "internal/studio/static/style.css",
+          "internal/studio/static/index.html",
+          "internal/studio/static/components/lego-item-modal.js"
+        ]
+      },
+      "output": {
+        "artifacts": ["internal/studio/static/style.css"],
+        "gate": "file_exists('internal/studio/static/style.css')"
+      }
+    },
+    {
+      "id": "FIX-01.4",
+      "epic": "EPIC-01",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["FIX-01.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": { "mcps_required": false },
+      "inputs": {
+        "target_files": ["internal/studio/static/app.js"]
+      },
+      "output": {
+        "artifacts": ["internal/studio/static/app.js"],
+        "gate": "file_exists('internal/studio/static/app.js')"
+      }
+    },
+    {
+      "id": "FIX-02.1",
+      "epic": "EPIC-02",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["FIX-01.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": { "mcps_required": false },
+      "inputs": {
+        "target_files": [
+          "internal/studio/static/app.js",
+          "internal/studio/static/index.html",
+          "internal/studio/static/inventario.html"
+        ]
+      },
+      "output": {
+        "artifacts": ["internal/studio/static/index.html"],
+        "gate": "file_exists('internal/studio/static/index.html')"
+      }
+    },
+    {
+      "id": "FIX-02.2",
+      "epic": "EPIC-02",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["FIX-02.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": { "mcps_required": false },
+      "inputs": {
+        "target_files": [
+          "internal/studio/assets_api.go",
+          "internal/studio/loops_api.go"
+        ]
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/assets_api.go",
+          "internal/studio/loops_api.go"
+        ],
+        "gate": "file_exists('internal/studio/assets_api.go')"
+      }
+    },
+    {
+      "id": "FIX-02.3",
+      "epic": "EPIC-02",
+      "nature": "micro",
+      "execution_mode": "synchronous",
+      "depends_on": ["FIX-02.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": { "mcps_required": false },
+      "inputs": {
+        "target_binary": "bin/legoloop.exe"
+      },
+      "output": {
+        "artifacts": ["bin/legoloop.exe"],
+        "gate": "file_exists('bin/legoloop.exe')"
+      }
+    }
+  ]
+}

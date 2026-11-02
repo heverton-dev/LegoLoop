@@ -142,28 +142,42 @@ function suggestionKey(node) {
   return node.piece ? `p:${node.piece.kind}:${node.piece.artifact}` : `b:${node.block}`;
 }
 
+let suggestDebounceTimer = null;
+let suggestAbortController = null;
+
 // ensureSuggestions devolve a sugestão em cache, ou null enquanto busca (e redesenha ao chegar).
 function ensureSuggestions(node) {
   const key = suggestionKey(node);
   if (state.suggest.has(key)) return state.suggest.get(key);
-  if (!state.suggestPending.has(key)) {
-    state.suggestPending.add(key);
-    fetchSuggestions(node).then((data) => {
+
+  if (suggestDebounceTimer) {
+    clearTimeout(suggestDebounceTimer);
+    suggestDebounceTimer = null;
+  }
+  if (suggestAbortController) {
+    suggestAbortController.abort();
+    suggestAbortController = null;
+  }
+
+  suggestDebounceTimer = setTimeout(() => {
+    suggestAbortController = new AbortController();
+    fetchSuggestions(node, suggestAbortController.signal).then((data) => {
       state.suggest.set(key, data);
       state.suggestPending.delete(key);
       const sel = state.selected;
       if (sel?.kind === "node" && state.nodes.get(sel.id) && suggestionKey(state.nodes.get(sel.id)) === key) renderInspector();
-    });
-  }
+    }).catch(() => {});
+  }, 150);
+
   return null;
 }
 
-async function fetchSuggestions(node) {
+async function fetchSuggestions(node, signal) {
   const q = node.piece
     ? `kind=${encodeURIComponent(node.piece.kind)}&artifact=${encodeURIComponent(node.piece.artifact)}`
     : `block=${encodeURIComponent(node.block)}`;
   try {
-    const { ok, data } = await api(`/api/suggest?${q}`);
+    const { ok, data } = await api(`/api/suggest?${q}`, undefined, signal);
     return ok ? data : EMPTY_SUGGEST;
   } catch {
     return EMPTY_SUGGEST;

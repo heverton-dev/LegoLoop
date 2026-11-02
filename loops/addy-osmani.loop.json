@@ -1,0 +1,142 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "addy-osmani",
+  "name": "Pipeline de Web Performance & Engenharia Addy Osmani (8 Sub-Loops)",
+  "description": "Pipeline canônico de engenharia e performance web baseado nas 25 skills e playbooks de Addy Osmani: Alinhamento & Contexto -> Especificação & Restrições (CONSTRAINTS.md) -> Decomposição Tracer-Bullet -> Construção TDD -> Runtime Real & Web Vitals -> Auditoria 5 Eixos & Hardening OWASP -> Observabilidade & Ship.",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "subloop-1-alinhar-contexto",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "haiku"
+      },
+      "output": {
+        "artifact": "docs/intents/INTENT.md",
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      }
+    },
+    {
+      "id": "subloop-2-especificar-restricoes",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-1-alinhar-contexto"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-pro"
+      },
+      "inputs": {
+        "intencao": "file('docs/intents/INTENT.md')"
+      },
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      }
+    },
+    {
+      "id": "subloop-3-planejar-tickets",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-2-especificar-restricoes"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast"
+      },
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "output": {
+        "artifact": "docs/plans/PLAN.md",
+        "gate": "file_exists('docs/plans/PLAN.md')"
+      }
+    },
+    {
+      "id": "subloop-4-construir-tdd",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-3-planejar-tickets"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "qwen2.5-coder:7b"
+      },
+      "inputs": {
+        "plano": "file('docs/plans/PLAN.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/TDD_REPORT.md",
+        "gate": "file_exists('docs/reports/TDD_REPORT.md')"
+      }
+    },
+    {
+      "id": "subloop-5-runtime-webperf",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-4-construir-tdd"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-pro"
+      },
+      "inputs": {
+        "tdd": "file('docs/reports/TDD_REPORT.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/PERF_REPORT.md",
+        "gate": "file_exists('docs/reports/PERF_REPORT.md')"
+      }
+    },
+    {
+      "id": "subloop-6-review-hardening",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-5-runtime-webperf"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "haiku"
+      },
+      "inputs": {
+        "perf": "file('docs/reports/PERF_REPORT.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/CODE_REVIEW.md",
+        "gate": "file_exists('docs/reports/CODE_REVIEW.md')"
+      }
+    },
+    {
+      "id": "subloop-7-observabilidade-ship",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-6-review-hardening"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-pro"
+      },
+      "inputs": {
+        "review": "file('docs/reports/CODE_REVIEW.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/SHIP_REPORT.md",
+        "gate": "file_exists('docs/reports/SHIP_REPORT.md')"
+      }
+    }
+  ]
+}

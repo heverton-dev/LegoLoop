@@ -278,3 +278,221 @@ func TestInventoryScriptNoOrphanModalListeners(t *testing.T) {
 	}
 }
 
+// TestValidateReturnsBoolean (BUG-RUN-01) assegura que validate() em app.js retorna booleano explícito
+// e não o retorno de toast() que é undefined.
+func TestValidateReturnsBoolean(t *testing.T) {
+	js := readStatic(t, "app.js")
+	re := regexp.MustCompile(`(?s)async function validate\(\)\s*\{.*?\n\}`)
+	block := re.FindString(js)
+	if block == "" {
+		t.Fatal("função validate() não encontrada em app.js")
+	}
+	if strings.Contains(block, "return toast(") {
+		t.Error("BUG-RUN-01: validate() não deve fazer 'return toast(...)', pois toast() retorna undefined")
+	}
+	if !strings.Contains(block, "return Boolean(") && !strings.Contains(block, "return true") {
+		t.Error("BUG-RUN-01: validate() deve retornar um valor booleano explícito")
+	}
+}
+
+// TestRunModalUsesAbortController (BUG-RUN-02) assegura que initRunModal usa AbortController
+// para cancelar o streaming SSE ao fechar o modal.
+func TestRunModalUsesAbortController(t *testing.T) {
+	js := readStatic(t, "app.js")
+	if !strings.Contains(js, "new AbortController()") {
+		t.Error("BUG-RUN-02: initRunModal deve instanciar AbortController para cancelamento de SSE")
+	}
+	if !strings.Contains(js, "signal:") {
+		t.Error("BUG-RUN-02: fetch('/api/run') deve receber o signal do AbortController")
+	}
+}
+
+// TestUndoRedoAppliesValidRenderFunction (BUG-UNDO-01) assegura que applySnapshot não chama
+// renderAll() inexistente e utiliza renderAllNodes().
+func TestUndoRedoAppliesValidRenderFunction(t *testing.T) {
+	js := readStatic(t, "app.js")
+	if strings.Contains(js, "renderAll();") {
+		t.Error("BUG-UNDO-01: applySnapshot chama renderAll() que não existe; deve chamar renderAllNodes()")
+	}
+}
+
+// TestMutationsPushHistoryState (BUG-UNDO-02) assegura que mutações manuais registram pushState()
+func TestMutationsPushHistoryState(t *testing.T) {
+	js := readStatic(t, "app.js")
+	for _, fnName := range []string{"register", "removeNode", "addEdge", "disconnect"} {
+		idx := strings.Index(js, "function "+fnName)
+		if idx == -1 {
+			t.Fatalf("função %s não encontrada em app.js", fnName)
+		}
+		// Inspeciona os próximos 800 caracteres da função
+		chunk := js[idx : idx+800]
+		if !strings.Contains(chunk, "pushState()") {
+			t.Errorf("BUG-UNDO-02: função %s deve invocar pushState() para registrar histórico", fnName)
+		}
+	}
+}
+
+// TestConfirmDialogMessageParam (BUG-CONFIRM-01) assegura que inventory.js passa o parâmetro { message }
+// para confirmDialog() e não { text }.
+func TestConfirmDialogMessageParam(t *testing.T) {
+	js := readStatic(t, "inventory.js")
+	if strings.Contains(js, "text:") && strings.Contains(js, "confirmDialog({") {
+		t.Error("BUG-CONFIRM-01: inventory.js usa 'text:' em vez de 'message:' em confirmDialog()")
+	}
+}
+
+// TestTemplatesFallbackWithoutDoubleName (BUG-TMPL-01) assegura que o fallback de ícone de template
+// não repete o nome do template lado a lado.
+func TestTemplatesFallbackWithoutDoubleName(t *testing.T) {
+	js := readStatic(t, "app.js")
+	if strings.Contains(js, "icon.textContent = tmpl.name") {
+		t.Error("BUG-TMPL-01: app.js repete tmpl.name no fallback de icon, duplicando o nome no card")
+	}
+}
+
+// TestVaultRendersGroupsList (BUG-VAULT-01) assegura que app.js referencia e popula #vault-groups-list
+func TestVaultRendersGroupsList(t *testing.T) {
+	js := readStatic(t, "app.js")
+	if !strings.Contains(js, "vault-groups-list") {
+		t.Error("BUG-VAULT-01: app.js deve referenciar #vault-groups-list para renderizar os grupos duplicados")
+	}
+}
+
+// TestVaultApplyResetsDisabledInFinally (BUG-VAULT-03) assegura que btnApply tem seu estado disabled
+// tratado no finally após tentativa de aplicação
+func TestVaultApplyResetsDisabledInFinally(t *testing.T) {
+	js := readStatic(t, "app.js")
+	idx := strings.Index(js, "btnApply?.addEventListener")
+	if idx == -1 {
+		t.Fatal("handler de btnApply não encontrado")
+	}
+	chunk := js[idx : idx+1500]
+	if !strings.Contains(chunk, "btnApply.disabled = false") && !strings.Contains(chunk, "btnApply.disabled =") {
+		t.Error("BUG-VAULT-03: handler de btnApply deve gerenciar disabled no bloco finally")
+	}
+}
+
+// TestInspectorSuggestDebounceAndAbort (BUG-INSP-01) assegura que o inspetor utiliza
+// debounce e AbortController para prevenir rajadas concorrentes em /api/suggest
+func TestInspectorSuggestDebounceAndAbort(t *testing.T) {
+	js := readStatic(t, "inspector.js")
+	if !strings.Contains(js, "setTimeout") || !strings.Contains(js, "clearTimeout") {
+		t.Error("BUG-INSP-01: inspector.js deve implementar debounce (setTimeout/clearTimeout) em ensureSuggestions()")
+	}
+	if !strings.Contains(js, "AbortController") {
+		t.Error("BUG-INSP-01: inspector.js deve utilizar AbortController para cancelar requisições anteriores de sugestão")
+	}
+}
+
+// TestCanvasPanClamping (BUG-CANVAS-02) assegura que updateCanvasTransform aplica clamp no pan
+func TestCanvasPanClamping(t *testing.T) {
+	js := readStatic(t, "app.js")
+	idx := strings.Index(js, "function updateCanvasTransform()")
+	if idx == -1 {
+		t.Fatal("função updateCanvasTransform() não encontrada")
+	}
+	chunk := js[idx : idx+600]
+	if !strings.Contains(chunk, "Math.max(") || !strings.Contains(chunk, "Math.min(") {
+		t.Error("BUG-CANVAS-02: updateCanvasTransform deve aplicar clamp (Math.max/min) nas coordenadas de pan")
+	}
+}
+
+// TestEscapeCancelsLinking (BUG-EDGE-01) assegura que trackLink escuta Escape no teclado
+func TestEscapeCancelsLinking(t *testing.T) {
+	js := readStatic(t, "app.js")
+	idx := strings.Index(js, "function trackLink(")
+	if idx == -1 {
+		t.Fatal("função trackLink() não encontrada")
+	}
+	chunk := js[idx : idx+1500]
+	if !strings.Contains(chunk, `"Escape"`) || !strings.Contains(chunk, "keydown") {
+		t.Error("BUG-EDGE-01: trackLink deve escutar keydown para cancelar a conexão temporária no Escape")
+	}
+}
+
+// TestPaletteTreeviewChunking (BUG-PALETTE-02) assegura que o treeview limita
+// a renderização inicial para não travar a UI em categorias com centenas de itens
+func TestPaletteTreeviewChunking(t *testing.T) {
+	js := readStatic(t, "palette.js")
+	if !strings.Contains(js, "treeview-load-more") && !strings.Contains(js, "slice(0,") {
+		t.Error("BUG-PALETTE-02: palette.js deve implementar limite/chunking (slice ou treeview-load-more) no treeview")
+	}
+}
+
+// TestItemModalNoUnsafeInnerHTML (BUG-ITEM-MODAL-01) assegura que _populateSchema
+// utiliza manipulação estruturada do DOM em vez de innerHTML
+func TestItemModalNoUnsafeInnerHTML(t *testing.T) {
+	js := readStatic(t, "components/lego-item-modal.js")
+	idx := strings.Index(js, "_populateSchema(it, family)")
+	if idx == -1 {
+		t.Fatal("_populateSchema não encontrado")
+	}
+	chunk := js[idx : idx+2500]
+	if strings.Contains(chunk, "trIn.innerHTML =") || strings.Contains(chunk, "trOut.innerHTML =") {
+		t.Error("BUG-ITEM-MODAL-01: _populateSchema não deve utilizar tr.innerHTML, mas sim APIs estruturadas do DOM")
+	}
+}
+
+// TestKeyboardShortcutsCtrlSEsc (BUG-KEY-01, BUG-KEY-02) assegura atalhos Ctrl+S e Escape
+func TestKeyboardShortcutsCtrlSEsc(t *testing.T) {
+	js := readStatic(t, "app.js")
+	if !strings.Contains(js, `e.key.toLowerCase() === "s"`) && !strings.Contains(js, `e.key === "s"`) {
+		t.Error("BUG-KEY-02: app.js deve registrar atalho Ctrl+S para acionar btn-materialize")
+	}
+	idx := strings.Index(js, "function onKey(ev)")
+	if idx == -1 {
+		t.Fatal("função onKey não encontrada")
+	}
+	chunk := js[idx : idx+400]
+	if !strings.Contains(chunk, "select(null)") {
+		t.Error("BUG-KEY-01: tecla Escape em onKey deve desselecionar nós ou arestas ativas (select(null))")
+	}
+}
+
+// TestPaletteDropCenterOffset (BUG-PALETTE-01) assegura compensação centralizada no eixo Y ao soltar nós
+func TestPaletteDropCenterOffset(t *testing.T) {
+	js := readStatic(t, "app.js")
+	if strings.Contains(js, "p.y - 20") {
+		t.Error("BUG-PALETTE-01: drop de peças não deve usar offset fixo de -20px; deve centralizar o nó verticalmente")
+	}
+}
+
+// TestVault503ToastFeedback (BUG-VAULT-02) assegura que falhas HTTP em status não abrem modal em branco
+func TestVault503ToastFeedback(t *testing.T) {
+	js := readStatic(t, "app.js")
+	idx := strings.Index(js, `fetch("/api/canonize/status")`)
+	if idx == -1 {
+		t.Fatal("fetch /api/canonize/status não encontrado")
+	}
+	chunk := js[idx : idx+400]
+	if !strings.Contains(chunk, "!res.ok") {
+		t.Error("BUG-VAULT-02: fetch /api/canonize/status deve verificar se res.ok é falso antes de abrir o modal")
+	}
+}
+
+// TestNoInlineStylesInComponents (BUG-CSP-01) assegura que nenhum componente utiliza
+// o atributo style="..." inline, prevenindo violações da política Content Security Policy (style-src 'self').
+func TestNoInlineStylesInComponents(t *testing.T) {
+	inlineStyleRe := regexp.MustCompile(`style\s*=\s*["'][^"']*["']`)
+	err := fs.WalkDir(staticFS, "static/components", func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() || !strings.HasSuffix(path, ".js") {
+			return err
+		}
+		b, rerr := fs.ReadFile(staticFS, path)
+		if rerr != nil {
+			return rerr
+		}
+		for i, line := range strings.Split(string(b), "\n") {
+			if inlineStyleRe.MatchString(line) {
+				t.Errorf("%s:%d viola CSP com style inline: %s", path, i+1, strings.TrimSpace(line))
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+
+

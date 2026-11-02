@@ -301,7 +301,7 @@ async function apply(btn) {
   if (!st.plan) return;
   const sure = await confirmDialog({
     title: "Aplicar Canonização",
-    text: "Substituir duplicatas por links no cofre canônico? O original tem backup e nada é apagado.",
+    message: "Substituir duplicatas por links no cofre canônico? O original tem backup e nada é apagado.",
     confirmLabel: "Aplicar",
     danger: true,
   });

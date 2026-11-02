@@ -1,0 +1,951 @@
+{
+  "name": "route-auditoria-exaustiva-legoloop-fase-b",
+  "version": "3.0.0",
+  "date": "2026-11-02",
+  "intent_ref": "docs/intents/2026-11-02_INTENT_AUDITORIA_EXAUSTIVA_LEGOLOOP.md",
+  "spec_ref": "docs/specs/2026-11-02_SPEC_AUDITORIA_EXAUSTIVA_LEGOLOOP.md",
+  "plan_ref": "docs/plans/2026-11-02_PLAN_AUDITORIA_EXAUSTIVA_LEGOLOOP.md",
+  "execution_strategy": {
+    "engine": "orchestrix_hermetic",
+    "subagents_allowed": false,
+    "tdd_enforced": true
+  },
+  "nodes": [
+    {
+      "id": "E01.1",
+      "label": "Canvas: Mapear Funções de Zoom",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/app.js"],
+        "search_terms": ["zoom", "wheel", "scale", "transform"]
+      },
+      "output": {
+        "artifact": "scratch/E01_1_zoom_map.json",
+        "gate": "has_keys(artifact, ['function','file','line'])"
+      }
+    },
+    {
+      "id": "E01.2",
+      "label": "Canvas: Mapear Funções de Pan e Limites",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:trace_path"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/app.js"],
+        "search_terms": ["pan", "mousedown", "clamp", "limit", "offset"]
+      },
+      "output": {
+        "artifact": "scratch/E01_2_pan_map.json",
+        "gate": "has_keys(artifact, ['function','file','line','has_clamp'])"
+      }
+    },
+    {
+      "id": "E01.3",
+      "label": "Canvas: Auditar Atalho Ctrl+0 / Bounding-box",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E01.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "artifact_in": "scratch/E01_1_zoom_map.json",
+        "search_terms": ["btn-zoom-fit", "zoom-fit", "bounding", "fitView"]
+      },
+      "output": {
+        "artifact": "scratch/E01_3_fit_analysis.json",
+        "gate": "field_present(artifact, 'zoom_fit_strategy')"
+      }
+    },
+    {
+      "id": "E01.4",
+      "label": "Canvas: Consolidar Achados E01",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E01.1", "E01.2", "E01.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "node"
+      },
+      "inputs": {
+        "artifacts_in": [
+          "scratch/E01_1_zoom_map.json",
+          "scratch/E01_2_pan_map.json",
+          "scratch/E01_3_fit_analysis.json"
+        ]
+      },
+      "output": {
+        "artifact": "scratch/audit_E01_canvas.json",
+        "gate": "exit_code == 0 && file_exists('scratch/audit_E01_canvas.json')"
+      }
+    },
+    {
+      "id": "E02.1",
+      "label": "Arestas: Rastrear Fluxo de Criação de Arestas",
+      "nature": "micro",
+      "execution_mode": "sequential",
+      "depends_on": ["E01.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:trace_path"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/app.js"],
+        "search_terms": ["startEdge", "dragEdge", "dropEdge", "mousedown port", "cable"]
+      },
+      "output": {
+        "artifact": "scratch/E02_1_edge_flow.json",
+        "gate": "has_keys(artifact, ['start_fn','drag_fn','drop_fn','phantom_edge_guard'])"
+      }
+    },
+    {
+      "id": "E02.2",
+      "label": "Arestas: Smoke Test com Obscura",
+      "nature": "nano",
+      "execution_mode": "parallel",
+      "depends_on": ["E01.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "obscura"
+      },
+      "inputs": {
+        "server_cmd": ".\\bin\\legoloop.exe studio",
+        "target_url": "http://localhost:8080"
+      },
+      "output": {
+        "artifact": "scratch/E02_2_smoke.png",
+        "gate": "file_exists('scratch/E02_2_smoke.png')"
+      }
+    },
+    {
+      "id": "E02.3",
+      "label": "Arestas: Interação Dinâmica Playwright",
+      "nature": "micro",
+      "execution_mode": "sequential",
+      "depends_on": ["E02.1", "E02.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["playwright"],
+        "runtime": "node"
+      },
+      "inputs": {
+        "server_url": "http://localhost:8080",
+        "artifact_in": "scratch/E02_1_edge_flow.json"
+      },
+      "output": {
+        "artifact": "scratch/E02_3_playwright_log.json",
+        "gate": "exit_code == 0 && has_keys(artifact, ['phantom_edge','escape_cancel','reconnect'])"
+      }
+    },
+    {
+      "id": "E02.4",
+      "label": "Arestas: Encerramento do Servidor e Consolidação",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E02.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "kill_cmd": "Stop-Process -Name legoloop -Force -ErrorAction SilentlyContinue",
+        "artifacts_in": ["scratch/E02_1_edge_flow.json", "scratch/E02_3_playwright_log.json"]
+      },
+      "output": {
+        "artifact": "scratch/audit_E02_conexoes.json",
+        "gate": "process_dead('legoloop') && file_exists('scratch/audit_E02_conexoes.json')"
+      }
+    },
+    {
+      "id": "E03.1",
+      "label": "Histórico: Estrutura da Pilha e Callers",
+      "nature": "micro",
+      "execution_mode": "sequential",
+      "depends_on": ["E02.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/app.js"],
+        "search_terms": ["history", "undo", "redo", "push", "snapshot"]
+      },
+      "output": {
+        "artifact": "scratch/E03_1_history_map.json",
+        "gate": "has_keys(artifact, ['stack_structure','mutations_tracked','limit'])"
+      }
+    },
+    {
+      "id": "E03.2",
+      "label": "Histórico: Análise de Mousemove vs Mouseup",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E03.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "artifact_in": "scratch/E03_1_history_map.json"
+      },
+      "output": {
+        "artifact": "scratch/E03_2_timing_analysis.json",
+        "gate": "field_present(artifact, 'snapshot_event')"
+      }
+    },
+    {
+      "id": "E03.3",
+      "label": "Histórico: Consolidar Achados E03",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E03.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "node"
+      },
+      "inputs": {
+        "artifacts_in": ["scratch/E03_1_history_map.json", "scratch/E03_2_timing_analysis.json"]
+      },
+      "output": {
+        "artifact": "scratch/audit_E03_undoredo.json",
+        "gate": "file_exists('scratch/audit_E03_undoredo.json')"
+      }
+    },
+    {
+      "id": "E04.1",
+      "label": "Teclas: Mapeamento Global e Guards",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E03.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/app.js", "internal/studio/static/ui.js"],
+        "search_terms": ["keydown", "addEventListener", "Delete", "Escape", "ctrlKey"]
+      },
+      "output": {
+        "artifact": "scratch/E04_1_keys_map.json",
+        "gate": "has_keys(artifact, ['input_guard','escape_targets','shortcuts'])"
+      }
+    },
+    {
+      "id": "E04.2",
+      "label": "Teclas: Testes Playwright (Delete, Escape, Ctrl+Z)",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E03.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["playwright"],
+        "runtime": "node"
+      },
+      "inputs": {
+        "server_url": "http://localhost:8080"
+      },
+      "output": {
+        "artifact": "scratch/E04_2_playwright_log.json",
+        "gate": "exit_code == 0 && has_keys(artifact, ['delete_in_input','escape_modal'])"
+      }
+    },
+    {
+      "id": "E04.3",
+      "label": "Teclas: Encerramento do Servidor e Consolidação",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E04.1", "E04.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "kill_cmd": "Stop-Process -Name legoloop -Force -ErrorAction SilentlyContinue",
+        "artifacts_in": ["scratch/E04_1_keys_map.json", "scratch/E04_2_playwright_log.json"]
+      },
+      "output": {
+        "artifact": "scratch/audit_E04_atalhos.json",
+        "gate": "process_dead('legoloop') && file_exists('scratch/audit_E04_atalhos.json')"
+      }
+    },
+    {
+      "id": "E05.1",
+      "label": "Paleta: Compensação de Offset de Drop",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E04.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:trace_path"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/palette.js", "internal/studio/static/app.js"],
+        "search_terms": ["dragend", "drop", "clientX", "getBoundingClientRect"]
+      },
+      "output": {
+        "artifact": "scratch/E05_1_offset_analysis.json",
+        "gate": "has_keys(artifact, ['formula','zoom_compensated','pan_compensated'])"
+      }
+    },
+    {
+      "id": "E05.2",
+      "label": "Paleta: Virtualização Concorrente",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E04.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:get_file_outline", "codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/virtual.js", "internal/studio/static/search.js"]
+      },
+      "output": {
+        "artifact": "scratch/E05_2_virtual_analysis.json",
+        "gate": "field_present(artifact, 'search_glitch_risk')"
+      }
+    },
+    {
+      "id": "E05.3",
+      "label": "Paleta: Validação E2E com Playwright",
+      "nature": "micro",
+      "execution_mode": "sequential",
+      "depends_on": ["E05.1", "E05.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["playwright"],
+        "runtime": "node"
+      },
+      "inputs": {
+        "server_url": "http://localhost:8080"
+      },
+      "output": {
+        "artifact": "scratch/E05_3_playwright_log.json",
+        "gate": "exit_code == 0 && file_exists('scratch/E05_3_playwright_log.json')"
+      }
+    },
+    {
+      "id": "E05.4",
+      "label": "Paleta: Encerramento do Servidor e Consolidação",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E05.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "kill_cmd": "Stop-Process -Name legoloop -Force -ErrorAction SilentlyContinue",
+        "artifacts_in": [
+          "scratch/E05_1_offset_analysis.json",
+          "scratch/E05_2_virtual_analysis.json",
+          "scratch/E05_3_playwright_log.json"
+        ]
+      },
+      "output": {
+        "artifact": "scratch/audit_E05_paleta.json",
+        "gate": "process_dead('legoloop') && file_exists('scratch/audit_E05_paleta.json')"
+      }
+    },
+    {
+      "id": "E06.1",
+      "label": "Inspetor: Mapeamento de Debounce e Reatividade",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E05.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:get_file_outline", "codebase-memory-mcp:search_code"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/inspector.js", "internal/studio/static/app.js"],
+        "search_terms": ["ensureSuggestions", "debounce", "updateCard", "routing"]
+      },
+      "output": {
+        "artifact": "scratch/E06_1_inspector_map.json",
+        "gate": "has_keys(artifact, ['debounce_status','card_sync'])"
+      }
+    },
+    {
+      "id": "E06.2",
+      "label": "Inspetor: Teste de Rajadas e Race Conditions",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E05.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["playwright"],
+        "runtime": "node"
+      },
+      "inputs": {
+        "server_url": "http://localhost:8080"
+      },
+      "output": {
+        "artifact": "scratch/E06_2_playwright_log.json",
+        "gate": "exit_code == 0 && field_present(artifact, 'requests_fired')"
+      }
+    },
+    {
+      "id": "E06.3",
+      "label": "Inspetor: Encerramento e Consolidação",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E06.1", "E06.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "kill_cmd": "Stop-Process -Name legoloop -Force -ErrorAction SilentlyContinue",
+        "artifacts_in": ["scratch/E06_1_inspector_map.json", "scratch/E06_2_playwright_log.json"]
+      },
+      "output": {
+        "artifact": "scratch/audit_E06_inspetor.json",
+        "gate": "process_dead('legoloop') && file_exists('scratch/audit_E06_inspetor.json')"
+      }
+    },
+    {
+      "id": "E07.1",
+      "label": "Inventário: Auditoria de Segurança innerHTML",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E06.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/components/lego-item-modal.js"],
+        "search_terms": ["innerHTML", "insertAdjacentHTML"]
+      },
+      "output": {
+        "artifact": "scratch/E07_1_modal_security.json",
+        "gate": "has_keys(artifact, ['injection_points','risk_level'])"
+      }
+    },
+    {
+      "id": "E07.2",
+      "label": "Inventário: Navegação e Pesquisa E2E",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E06.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["playwright"],
+        "runtime": "node"
+      },
+      "inputs": {
+        "server_url": "http://localhost:8080"
+      },
+      "output": {
+        "artifact": "scratch/E07_2_playwright_log.json",
+        "gate": "exit_code == 0 && has_keys(artifact, ['tabs_verified','accented_search'])"
+      }
+    },
+    {
+      "id": "E07.3",
+      "label": "Inventário: Encerramento e Consolidação",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E07.1", "E07.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "kill_cmd": "Stop-Process -Name legoloop -Force -ErrorAction SilentlyContinue",
+        "artifacts_in": ["scratch/E07_1_modal_security.json", "scratch/E07_2_playwright_log.json"]
+      },
+      "output": {
+        "artifact": "scratch/audit_E07_inventario.json",
+        "gate": "process_dead('legoloop') && file_exists('scratch/audit_E07_inventario.json')"
+      }
+    },
+    {
+      "id": "E08.1",
+      "label": "Templates: Duplicação de Nomes e Fallback",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E07.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/templates.go", "internal/studio/static/app.js"],
+        "search_terms": ["loadTemplate", "createSvgIconNode", "template name"]
+      },
+      "output": {
+        "artifact": "scratch/E08_1_templates_map.json",
+        "gate": "has_keys(artifact, ['cause_duplication','icon_fallback'])"
+      }
+    },
+    {
+      "id": "E08.2",
+      "label": "Templates: Teste E2E de Confirmação de Carga",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E07.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["playwright"],
+        "runtime": "node"
+      },
+      "inputs": {
+        "server_url": "http://localhost:8080"
+      },
+      "output": {
+        "artifact": "scratch/E08_2_playwright_log.json",
+        "gate": "exit_code == 0 && field_present(artifact, 'dialog_prompted')"
+      }
+    },
+    {
+      "id": "E08.3",
+      "label": "Templates: Encerramento e Consolidação",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E08.1", "E08.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "kill_cmd": "Stop-Process -Name legoloop -Force -ErrorAction SilentlyContinue",
+        "artifacts_in": ["scratch/E08_1_templates_map.json", "scratch/E08_2_playwright_log.json"]
+      },
+      "output": {
+        "artifact": "scratch/audit_E08_templates.json",
+        "gate": "process_dead('legoloop') && file_exists('scratch/audit_E08_templates.json')"
+      }
+    },
+    {
+      "id": "E09.1",
+      "label": "Run: Rastreamento do Botão Run e Validate",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E08.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:trace_path"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/static/app.js"],
+        "search_terms": ["btn-run", "validate", "fetch run"]
+      },
+      "output": {
+        "artifact": "scratch/E09_1_run_flow.json",
+        "gate": "has_keys(artifact, ['validate_callers','unhandled_return'])"
+      }
+    },
+    {
+      "id": "E09.2",
+      "label": "Run: Streaming de Logs no Backend",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E08.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:get_file_outline", "codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/run_api.go"]
+      },
+      "output": {
+        "artifact": "scratch/E09_2_stream_protocol.json",
+        "gate": "field_present(artifact, 'protocol_type')"
+      }
+    },
+    {
+      "id": "E09.3",
+      "label": "Run: Testes Playwright de Execução e Badges",
+      "nature": "micro",
+      "execution_mode": "sequential",
+      "depends_on": ["E09.1", "E09.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["playwright"],
+        "runtime": "node"
+      },
+      "inputs": {
+        "server_url": "http://localhost:8080"
+      },
+      "output": {
+        "artifact": "scratch/E09_3_playwright_log.json",
+        "gate": "exit_code == 0 && has_keys(artifact, ['badge_states','abort_handling'])"
+      }
+    },
+    {
+      "id": "E09.4",
+      "label": "Run: Encerramento e Consolidação",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E09.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "kill_cmd": "Stop-Process -Name legoloop -Force -ErrorAction SilentlyContinue",
+        "artifacts_in": ["scratch/E09_1_run_flow.json", "scratch/E09_3_playwright_log.json"]
+      },
+      "output": {
+        "artifact": "scratch/audit_E09_run.json",
+        "gate": "process_dead('legoloop') && file_exists('scratch/audit_E09_run.json')"
+      }
+    },
+    {
+      "id": "E10.1",
+      "label": "Vault: Mapeamento de Handlers e Null Assets",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E09.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["codebase-memory-mcp:search_code", "codebase-memory-mcp:get_code_snippet"]
+      },
+      "inputs": {
+        "graph_targets": ["internal/studio/assets_api.go"],
+        "search_terms": ["canonize", "plan", "apply", "Assets nil"]
+      },
+      "output": {
+        "artifact": "scratch/E10_1_vault_map.json",
+        "gate": "has_keys(artifact, ['handlers','status_code_on_nil'])"
+      }
+    },
+    {
+      "id": "E10.2",
+      "label": "Vault: Testes Playwright de Dry-Run e Apply",
+      "nature": "micro",
+      "execution_mode": "parallel",
+      "depends_on": ["E09.4"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": true,
+        "mcps": ["playwright"],
+        "runtime": "node"
+      },
+      "inputs": {
+        "server_url": "http://localhost:8080"
+      },
+      "output": {
+        "artifact": "scratch/E10_2_playwright_log.json",
+        "gate": "exit_code == 0 && field_present(artifact, 'ui_feedback_present')"
+      }
+    },
+    {
+      "id": "E10.3",
+      "label": "Vault: Encerramento e Consolidação",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E10.1", "E10.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "kill_cmd": "Stop-Process -Name legoloop -Force -ErrorAction SilentlyContinue",
+        "artifacts_in": ["scratch/E10_1_vault_map.json", "scratch/E10_2_playwright_log.json"]
+      },
+      "output": {
+        "artifact": "scratch/audit_E10_vault.json",
+        "gate": "process_dead('legoloop') && file_exists('scratch/audit_E10_vault.json')"
+      }
+    },
+    {
+      "id": "E11.1",
+      "label": "Síntese: Unificação e Deduplicação dos Achados",
+      "nature": "micro",
+      "execution_mode": "sequential",
+      "depends_on": ["E10.3"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "node"
+      },
+      "inputs": {
+        "artifacts_in": [
+          "scratch/audit_E01_canvas.json",
+          "scratch/audit_E02_conexoes.json",
+          "scratch/audit_E03_undoredo.json",
+          "scratch/audit_E04_atalhos.json",
+          "scratch/audit_E05_paleta.json",
+          "scratch/audit_E06_inspetor.json",
+          "scratch/audit_E07_inventario.json",
+          "scratch/audit_E08_templates.json",
+          "scratch/audit_E09_run.json",
+          "scratch/audit_E10_vault.json"
+        ]
+      },
+      "output": {
+        "artifact": "scratch/matriz_bugs_consolidada.json",
+        "gate": "file_exists('scratch/matriz_bugs_consolidada.json')"
+      }
+    },
+    {
+      "id": "E11.2",
+      "label": "Síntese: Emissão do Relatório Master Exaustivo",
+      "nature": "epic",
+      "execution_mode": "sequential",
+      "depends_on": ["E11.1"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "mcps_required": false
+      },
+      "inputs": {
+        "artifact_in": "scratch/matriz_bugs_consolidada.json"
+      },
+      "output": {
+        "artifact": "docs/reports/2026-11-02_REPORT_AUDITORIA_EXAUSTIVA.md",
+        "gate": "file_exists('docs/reports/2026-11-02_REPORT_AUDITORIA_EXAUSTIVA.md')"
+      }
+    },
+    {
+      "id": "E11.3",
+      "label": "Limpeza: Eliminação de Resíduos Temporários",
+      "nature": "nano",
+      "execution_mode": "sequential",
+      "depends_on": ["E11.2"],
+      "routing": {
+        "mode": "suggested",
+        "model": "9router/code-nano",
+        "effort": "low",
+        "fallback": "flash-lite"
+      },
+      "tooling": {
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "cleanup_patterns": ["scratch/E*.*", "scratch/audit_E*.*"]
+      },
+      "output": {
+        "artifact": "scratch/cleanup.log",
+        "gate": "exit_code == 0"
+      }
+    }
+  ]
+}
