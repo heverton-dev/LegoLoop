@@ -12,6 +12,7 @@ import (
 
 func TestPieceActions_FavoriteAndUpgrade(t *testing.T) {
 	s, _ := newServer(t)
+	s.Vault = t.TempDir()
 
 	mockLLM := &mockStudioLLM{
 		responses: []string{

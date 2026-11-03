@@ -23,6 +23,7 @@ import (
 	"legoloop/internal/loop"
 	"legoloop/internal/plangen"
 	"legoloop/internal/provider"
+	"legoloop/internal/reputation"
 	"legoloop/internal/specgen"
 )
 
@@ -61,6 +62,9 @@ type Server struct {
 	SpecGen *specgen.Generator
 	// PlanGen é o gerador híbrido de planos e rotas; se nil, inicializa sob demanda.
 	PlanGen *plangen.Generator
+
+	matrixOnce sync.Once
+	matrixReg  *reputation.RegistryMatrix
 
 	canonMu sync.Mutex
 

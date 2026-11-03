@@ -51,6 +51,7 @@ Comandos:
   forge      [--addr 127.0.0.1:7878] [--project DIR]  abre o Studio e dispara primeira varredura
   import     <github-url> [--name N] [--json]         importa e canoniza skill do GitHub
   upgrade    <arquivo> [--diagnose|--apply] [--json]  diagnóstica ou valida elevação para Padrão Ouro
+  matrix     [--kind K] [--tier T] [--min N] [--json] visualiza matriz de reputação das peças
   version
 `
 
@@ -63,7 +64,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 	cmds := map[string]func(context.Context, []string, Deps) int{
 		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
-		"import": cmdImport, "upgrade": cmdUpgrade,
+		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":
@@ -84,6 +85,10 @@ func Run(ctx context.Context, args []string, d Deps) int {
 
 func cmdUpgrade(_ context.Context, args []string, d Deps) int {
 	return RunUpgrade(d.Stdout, d.Stderr, args)
+}
+
+func cmdMatrix(_ context.Context, args []string, d Deps) int {
+	return RunMatrix(d.Stdout, d.Stderr, args)
 }
 
 func newFlags(name string, d Deps) *flag.FlagSet {

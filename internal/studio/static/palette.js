@@ -63,6 +63,10 @@ function entryFromItem(cat, it) {
     path: it.path || "",
     meta,
     raw: it,
+    score: meta.score || "",
+    tier: meta.tier || "",
+    badgeColor: meta.badge_color || "",
+    favorite: meta.favorite === "true",
   };
   if (cat === "hook") e.event = meta.event || "";
   if (cat === "gate") e.gateName = it.name;
@@ -290,6 +294,17 @@ const SVG_ICONS = {
   chevron: [
     ["polyline", { points: "6 9 12 15 18 9" }],
   ],
+  star: [
+    ["polygon", { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" }],
+  ],
+  upgrade: [
+    ["path", { d: "M12 19V5" }],
+    ["polyline", { points: "5 12 12 5 19 12" }],
+  ],
+  trash: [
+    ["polyline", { points: "3 6 5 6 21 6" }],
+    ["path", { d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" }],
+  ],
 };
 
 function createSvgIcon(name, cls) {
@@ -382,11 +397,107 @@ function createPalette(els, handlers) {
             main.append(itemIcon, itemName);
 
             const actions = paletteEl("div", "treeview-item-actions");
+
+            // 1. Badge Colorida de Tier / Matriz (Ouro, Prata, Bronze, Tóxica)
+            if (item.tier) {
+              const tierBadge = paletteEl("span", "treeview-tier-badge", item.tier.toUpperCase());
+              if (item.badgeColor) {
+                tierBadge.style.backgroundColor = item.badgeColor;
+                tierBadge.style.color = (item.tier === "ouro" || item.tier === "prata") ? "#0f172a" : "#ffffff";
+              }
+              tierBadge.title = `Score Matricial: ${item.score || "?"} (${item.tier})`;
+              actions.append(tierBadge);
+            }
+
             if (item.badge) {
               actions.append(paletteEl("span", "treeview-item-badge", item.badge));
             }
 
-            // Botão de Olho para Inspeção (Raio-X Rico sem adicionar ao canvas)
+            // 2. Botão Favoritar (Ícone SVG Canônico)
+            const btnFav = paletteEl("button", "btn-item-action btn-fav" + (item.favorite ? " is-favorited" : ""));
+            btnFav.type = "button";
+            btnFav.title = item.favorite ? "Desfavoritar peça" : "Favoritar como Padrão Canônico (SSOT)";
+            btnFav.append(createSvgIcon("star", "svg-icon--fav"));
+            btnFav.addEventListener("click", async (e) => {
+              e.stopPropagation();
+              try {
+                const res = await fetch(`/api/assets/${encodeURIComponent(item.kind)}/${encodeURIComponent(item.itemId || item.name)}/favorite`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: "{}"
+                });
+                if (res.ok) {
+                  const data = await res.json();
+                  item.favorite = data.favorited;
+                  btnFav.classList.toggle("is-favorited", data.favorited);
+                  btnFav.title = data.favorited ? "Desfavoritar peça" : "Favoritar como Padrão Canônico (SSOT)";
+                  if (typeof window.toast === "function") {
+                    window.toast(data.favorited ? `Peça "${item.name}" favoritada como SSOT!` : `Peça "${item.name}" desfavoritada.`);
+                  }
+                }
+              } catch (err) {
+                console.error("Falha ao favoritar:", err);
+              }
+            });
+            actions.append(btnFav);
+
+            // 3. Botão Elevar (Ícone SVG Canônico)
+            const btnUpgrade = paletteEl("button", "btn-item-action btn-upgrade");
+            btnUpgrade.type = "button";
+            btnUpgrade.title = "Elevar peça para Padrão Ouro (Entrevista + Tríade)";
+            btnUpgrade.append(createSvgIcon("upgrade", "svg-icon--upgrade"));
+            btnUpgrade.addEventListener("click", async (e) => {
+              e.stopPropagation();
+              try {
+                const res = await fetch(`/api/assets/${encodeURIComponent(item.kind)}/${encodeURIComponent(item.itemId || item.name)}/upgrade`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: "{}"
+                });
+                if (res.ok) {
+                  const data = await res.json();
+                  if (typeof window.toast === "function") {
+                    window.toast(`Elevação iniciada para "${item.name}"! Score atual: ${data.current_rating?.total_score}`);
+                  }
+                }
+              } catch (err) {
+                if (typeof window.toast === "function") {
+                  window.toast("Erro ao disparar elevação: " + err.message, true);
+                }
+              }
+            });
+            actions.append(btnUpgrade);
+
+            // 4. Botão Eliminar (Ícone SVG Canônico)
+            const btnDelete = paletteEl("button", "btn-item-action btn-delete");
+            btnDelete.type = "button";
+            btnDelete.title = "Eliminar peça profunda";
+            btnDelete.append(createSvgIcon("trash", "svg-icon--trash"));
+            btnDelete.addEventListener("click", async (e) => {
+              e.stopPropagation();
+              try {
+                const res = await fetch(`/api/assets/${encodeURIComponent(item.kind)}/${encodeURIComponent(item.itemId || item.name)}?mode=full`, {
+                  method: "DELETE"
+                });
+                if (res.ok) {
+                  row.remove();
+                  if (typeof window.toast === "function") {
+                    window.toast(`Peça "${item.name}" eliminada.`);
+                  }
+                } else {
+                  if (typeof window.toast === "function") {
+                    window.toast("Falha ao eliminar peça: " + (await res.text()), true);
+                  }
+                }
+              } catch (err) {
+                if (typeof window.toast === "function") {
+                  window.toast("Erro ao eliminar peça: " + err.message, true);
+                }
+              }
+            });
+            actions.append(btnDelete);
+
+            // 5. Botão de Olho para Inspeção (Raio-X Rico sem adicionar ao canvas)
             const btnEye = paletteEl("button", "btn-eye-view");
             btnEye.type = "button";
             btnEye.title = "Inspecionar peça (Raio-X detalhado)";

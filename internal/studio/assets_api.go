@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/fs"
 	"net/http"
 	"os"
@@ -17,6 +18,7 @@ import (
 	"legoloop/internal/assets"
 	"legoloop/internal/canon"
 	"legoloop/internal/loop"
+	"legoloop/internal/reputation"
 )
 
 // maxListItems limita cada resposta de lista; o total real vai em "total".
@@ -224,13 +226,90 @@ func (s *Server) loopItems() []assets.Item {
 
 // present devolve o item como o navegador pode vê-lo: sem caminho absoluto e com o comando de
 // hook mascarado e curto. O comando bruto (Command) nunca é serializado.
+// Também decora o item com a nota matricial de reputação e preferência de favoritos.
 func (s *Server) present(it assets.Item) assets.Item {
+	rawPath := it.Path
 	it.Path = s.displayPath(it.Path)
 	it.Description = s.maskPaths(it.Description)
 	if it.Kind == assets.KindHook {
 		it.Description = truncateRunes(it.Description, maxHookDisplay)
 	}
+
+	if it.Meta == nil {
+		it.Meta = make(map[string]string)
+	}
+
+	rating := s.getPieceRating(it, rawPath)
+	it.Meta["score"] = fmt.Sprintf("%.2f", rating.TotalScore)
+	it.Meta["tier"] = string(rating.Tier)
+	it.Meta["badge_color"] = rating.BadgeColor
+	if s.isFavorite(string(it.Kind), it.ID, it.Name) {
+		it.Meta["favorite"] = "true"
+	}
+
 	return it
+}
+
+func (s *Server) getRegistry() *reputation.RegistryMatrix {
+	s.matrixOnce.Do(func() {
+		p := reputation.DefaultRegistryPath(s.Home)
+		if reg, err := reputation.LoadRegistry(p); err == nil {
+			s.matrixReg = reg
+		}
+	})
+	return s.matrixReg
+}
+
+func (s *Server) getPieceRating(it assets.Item, rawPath string) reputation.PieceRating {
+	reg := s.getRegistry()
+	if reg != nil {
+		if it.ID != "" {
+			if r := reg.Find(it.ID); r != nil {
+				return *r
+			}
+		}
+		if it.Name != "" {
+			if r := reg.Find(it.Name); r != nil {
+				return *r
+			}
+		}
+		if rawPath != "" {
+			if r := reg.Find(rawPath); r != nil {
+				return *r
+			}
+		}
+	}
+	if rawPath != "" {
+		if r, err := reputation.ScoreFile(rawPath); err == nil {
+			return r
+		}
+	}
+	return reputation.PieceRating{
+		TotalScore: 0.50,
+		Tier:       reputation.TierBronze,
+		BadgeColor: "#F97316",
+	}
+}
+
+func (s *Server) isFavorite(kind, id, name string) bool {
+	vaultDir := s.Vault
+	if vaultDir == "" {
+		home := s.Home
+		if home == "" {
+			home, _ = os.UserHomeDir()
+		}
+		vaultDir = filepath.Join(home, ".aidd", "canonical")
+	}
+	favFile := filepath.Join(vaultDir, "favorites.json")
+	data, err := os.ReadFile(favFile)
+	if err != nil {
+		return false
+	}
+	var favs map[string]bool
+	if err := json.Unmarshal(data, &favs); err != nil {
+		return false
+	}
+	return favs[kind+":"+id] || favs[kind+":"+name]
 }
 
 // resolver devolve o inventário para resolver referências de peças e slots.
