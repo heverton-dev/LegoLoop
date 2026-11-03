@@ -50,6 +50,7 @@ Comandos:
   studio     [--addr 127.0.0.1:7878] [--project DIR]  abre o Looping Studio
   forge      [--addr 127.0.0.1:7878] [--project DIR]  abre o Studio e dispara primeira varredura
   import     <github-url> [--name N] [--json]         importa e canoniza skill do GitHub
+  upgrade    <arquivo> [--diagnose|--apply] [--json]  diagnóstica ou valida elevação para Padrão Ouro
   version
 `
 
@@ -62,7 +63,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 	cmds := map[string]func(context.Context, []string, Deps) int{
 		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
-		"import": cmdImport,
+		"import": cmdImport, "upgrade": cmdUpgrade,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":
@@ -79,6 +80,10 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		}
 		return cmd(ctx, args[1:], d)
 	}
+}
+
+func cmdUpgrade(_ context.Context, args []string, d Deps) int {
+	return RunUpgrade(d.Stdout, d.Stderr, args)
 }
 
 func newFlags(name string, d Deps) *flag.FlagSet {

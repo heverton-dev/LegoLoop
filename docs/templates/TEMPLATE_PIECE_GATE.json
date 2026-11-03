@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "gate-mecanico-padrao-ouro",
+  "version": "1.0.0",
+  "description": "Quality Gate Mecânico Binário Padrão Ouro (Score >= 0.85) com validação estrita no terminal",
+  "tier": "ouro",
+  "type": "mechanical_binary_gate",
+  "evaluation": {
+    "engine": "boolean_expression",
+    "expression": "exit_code == 0 && file_exists(output.artifact) && word_count(output.artifact) > 50 && has_no_stubs(output.artifact)",
+    "timeout_sec": 30
+  },
+  "command_fallback": {
+    "executable": "go",
+    "args": [
+      "test",
+      "-v",
+      "./internal/..."
+    ],
+    "expected_exit_code": 0
+  },
+  "on_failure": {
+    "action": "retry_or_block",
+    "max_retries": 3,
+    "notify_message": "O Gate Mecânico falhou na validação do artefato produzido. Verifique o log e tente novamente."
+  }
+}

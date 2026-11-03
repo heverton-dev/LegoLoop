@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "loop-modular-padrao-ouro",
+  "version": "1.0.0",
+  "description": "Sub-Loop Modular Reutilizável Padrão Ouro (Score >= 0.85) com grafo acíclico e isolamento estéril",
+  "tier": "ouro",
+  "trigger": {
+    "type": "manual_or_event",
+    "event": "file_change",
+    "pattern": "docs/specs/*.md"
+  },
+  "nodes": [
+    {
+      "id": "node_01_trigger",
+      "type": "trigger",
+      "label": "Gatilho de Entrada",
+      "outputs": {
+        "event_payload": "object"
+      }
+    },
+    {
+      "id": "node_02_transform",
+      "type": "piece",
+      "label": "Processamento em Contexto Estéril",
+      "piece_ref": "skills/spec-driven-development",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic"
+      },
+      "inputs": {
+        "spec_input": "node_01_trigger.event_payload"
+      },
+      "output": {
+        "artifact": "scratch/step_02_output.json",
+        "gate": "exit_code == 0 && file_exists('scratch/step_02_output.json')"
+      }
+    },
+    {
+      "id": "node_03_quality_gate",
+      "type": "stop_gate",
+      "label": "Stop-Gate Humano",
+      "condition": "human_approved == true"
+    }
+  ],
+  "edges": [
+    {
+      "from": "node_01_trigger",
+      "to": "node_02_transform"
+    },
+    {
+      "from": "node_02_transform",
+      "to": "node_03_quality_gate"
+    }
+  ],
+  "governance": {
+    "acyclic_verified": true,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "stash_changes"
+  }
+}
