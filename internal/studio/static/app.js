@@ -201,8 +201,30 @@ function addPiece(entry, x, y) {
   return register(node);
 }
 
+function hasTrigger() {
+  for (const n of state.nodes.values()) {
+    const b = blockOf(n);
+    if (b && b.kind && b.kind.startsWith("trigger_")) return true;
+  }
+  return false;
+}
+
+function isTriggerEntry(entry) {
+  if (entry.blockId) {
+    const block = state.blocks.get(entry.blockId);
+    return Boolean(block && block.kind && block.kind.startsWith("trigger_"));
+  }
+  if (entry.kind && entry.kind.startsWith("trigger_")) return true;
+  if (entry.cat === "trigger") return true;
+  return false;
+}
+
 // addEntry cria o nó de uma entrada da paleta (bloco tipado ou peça do inventário).
 function addEntry(entry, x, y) {
+  if (!hasTrigger() && !isTriggerEntry(entry)) {
+    toast("Todo loop precisa começar com um Gatilho. Arraste uma peça de Trigger primeiro.", true);
+    return null;
+  }
   if (entry.kind === "block" || entry.blockId) return addNode(entry.blockId, x, y);
   if (!PIECE_KIND[entry.cat]) {
     toast("Hooks e gates encaixam sobre uma peça. Solte sobre um nó ou selecione um e dê duplo clique.", true);
@@ -1619,8 +1641,20 @@ async function boot() {
   $("btn-toggle-palette").addEventListener("click", () => toggleAccordion("palette"));
   $("btn-toggle-models").addEventListener("click", () => toggleAccordion("models"));
 
-  $("pipeline-name").addEventListener("input", (e) => {
-    e.target.value = toKebabCase(e.target.value);
+  $("pipeline-name").addEventListener("blur", (e) => {
+    const raw = e.target.value.trim();
+    if (raw) {
+      e.target.value = toKebabCase(raw);
+    } else {
+      e.target.value = "unnamed-loop";
+    }
+  });
+
+  $("pipeline-name").addEventListener("change", (e) => {
+    const raw = e.target.value.trim();
+    if (raw) {
+      e.target.value = toKebabCase(raw);
+    }
   });
 
 

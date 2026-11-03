@@ -19,8 +19,10 @@ import (
 
 	"legoloop/internal/assets"
 	"legoloop/internal/graph"
+	"legoloop/internal/interview"
 	"legoloop/internal/loop"
 	"legoloop/internal/provider"
+	"legoloop/internal/specgen"
 )
 
 //go:embed static
@@ -51,6 +53,11 @@ type Server struct {
 	Loops *loop.Store
 	// CanonRoots são raízes extras da canonização, definidas pelo operador. O cliente nunca envia caminhos.
 	CanonRoots []string
+
+	// Interview é o motor socrático do Addy Osmani; se nil, inicializa sob demanda.
+	Interview *interview.Engine
+	// SpecGen é o gerador híbrido de especificações técnicas; se nil, inicializa sob demanda.
+	SpecGen *specgen.Generator
 
 	canonMu sync.Mutex
 
@@ -95,6 +102,10 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/templates", s.handleTemplates)
 	mux.HandleFunc("GET /api/mcps/catalog", s.handleMCPCatalog)
 	mux.HandleFunc("POST /api/mcps/install", s.handleMCPInstall)
+	mux.HandleFunc("POST /api/interview/start", s.handleInterviewStart)
+	mux.HandleFunc("POST /api/interview/message", s.handleInterviewMessage)
+	mux.HandleFunc("POST /api/interview/finalize", s.handleInterviewFinalize)
+	mux.HandleFunc("POST /api/spec/generate", s.handleSpecGenerate)
 	return s.secure(mux)
 }
 

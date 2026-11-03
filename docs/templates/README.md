@@ -25,7 +25,29 @@ O arquivo [`TEMPLATE_INTENT.md`](file:///C:/Users/trcnologia/Desktop/LegoLoop/do
 
 ---
 
-## 2. Contrato do `TEMPLATE_ROUTE.json`
+## 2. Contrato do `TEMPLATE_SPEC.md`
+
+O arquivo [`TEMPLATE_SPEC.md`](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/templates/TEMPLATE_SPEC.md) formaliza a especificação técnica de engenharia:
+* **Fronteiras Arquiteturais:** Desenho das fronteiras do sistema e diagramação de fluxo em Mermaid.
+* **Contratos de Dados Formais:** Tipagem estrita de structs Go, JSON Schemas e contratos de I/O por épico.
+* **Critérios Binários BDD (`AC-XX`):** Cada critério é estruturado em formato *Dado/Quando/Então*, com asserções binárias verificáveis mecanicamente.
+* **Critério de Done Global:** Regra inegociável de conclusão (100% dos critérios binários validados no terminal).
+* **Stop-Gate 02:** Bloqueio obrigatório aguardando aprovação humana antes de gerar `PLAN.md` e `ROUTE.json`.
+
+---
+
+## 3. Contrato do `TEMPLATE_PLAN.md`
+
+O arquivo [`TEMPLATE_PLAN.md`](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/templates/TEMPLATE_PLAN.md) é o espelho legível do grafo executável de tickets:
+* **Mapeamento 1:1:** Cada linha e ticket corresponde exatamente a um nó em `TEMPLATE_ROUTE.json`.
+* **Isolamento de Duas Camadas:** Explicitado por ticket (`workspace` e `executor`).
+* **Roteamento Cognitivo & Esforço:** Atribuição do modelo ideal (`code-pro`, `code-fast`, `code-nano`) com nível de *effort* (`high`, `medium`, `low`) e contingência de *fallback*.
+* **TDD Estrito:** Declaração explícita de `inputs.source_files`, `test_target` e `mechanical gate`.
+* **Stop-Gates por Épico:** Parada mandatória entre cada lote de tickets para auditoria humana de evidências.
+
+---
+
+## 4. Contrato do `TEMPLATE_ROUTE.json`
 
 O arquivo [`TEMPLATE_ROUTE.json`](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/templates/TEMPLATE_ROUTE.json) define a **Matriz Determinística Canônica** para rotas de execução autônoma no LegoLoop.
 
@@ -40,7 +62,7 @@ O arquivo [`TEMPLATE_ROUTE.json`](file:///C:/Users/trcnologia/Desktop/LegoLoop/d
 
 ---
 
-## 2. As Duas Camadas de Isolamento (`node.isolation`)
+## 5. As Duas Camadas de Isolamento (`node.isolation`)
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
@@ -63,7 +85,7 @@ O arquivo [`TEMPLATE_ROUTE.json`](file:///C:/Users/trcnologia/Desktop/LegoLoop/d
 
 ---
 
-## 3. Dicionário de Campos da Matriz Canônica
+## 6. Dicionário de Campos da Matriz Canônica
 
 | Campo | Tipo | Valores Válidos / Formato | Descrição |
 | :--- | :--- | :--- | :--- |
