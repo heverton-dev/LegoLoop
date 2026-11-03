@@ -21,6 +21,7 @@ import (
 	"legoloop/internal/graph"
 	"legoloop/internal/interview"
 	"legoloop/internal/loop"
+	"legoloop/internal/plangen"
 	"legoloop/internal/provider"
 	"legoloop/internal/specgen"
 )
@@ -58,6 +59,8 @@ type Server struct {
 	Interview *interview.Engine
 	// SpecGen é o gerador híbrido de especificações técnicas; se nil, inicializa sob demanda.
 	SpecGen *specgen.Generator
+	// PlanGen é o gerador híbrido de planos e rotas; se nil, inicializa sob demanda.
+	PlanGen *plangen.Generator
 
 	canonMu sync.Mutex
 
@@ -106,6 +109,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/interview/message", s.handleInterviewMessage)
 	mux.HandleFunc("POST /api/interview/finalize", s.handleInterviewFinalize)
 	mux.HandleFunc("POST /api/spec/generate", s.handleSpecGenerate)
+	mux.HandleFunc("POST /api/plan/generate", s.handlePlanGenerate)
 	return s.secure(mux)
 }
 
