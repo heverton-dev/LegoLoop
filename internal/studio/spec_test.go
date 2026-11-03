@@ -25,24 +25,27 @@ func TestStudioSpecAPI_Endpoint(t *testing.T) {
 
 	validSpecMD := `# 📋 SPEC: API de Pagamento
 
-## 1. Visão Geral & Arquitetura da Solução
-Descrição técnica.
+## 1. Premissas Técnicas Assumidas
+Premissa 1
 
-## 2. Contratos de Dados & Schemas Formais
-Schemas JSON.
+## 2. Fronteiras de Ação & Regras de Governança
+Sempre TDD
 
-## 3. Critérios Binários de Aceite por Nó
+## 3. Visão Geral, Arquitetura & Costuras de Teste
+Costura em payment.go
+
+## 4. Contratos de Dados & Schemas Formais
+Schemas JSON
+
+## 5. Critérios Binários de Aceite por Nó
 ### E01 — Pagamento
 * [ ] AC-E01.1: Validação do payload
   * **Dado que:** Payload correto
   * **Quando:** Disparar request
   * **Então:** exit_code == 0
 
-## 4. Requisitos Não Funcionais & Restrições Inegociáveis
-Zero stubs.
-
-## 5. Critério de Conclusão Global
-Concluído.
+## 6. Comandos Operacionais & Critério de Conclusão Global
+go test ./...
 
 ---
 🛑 STOP-GATE 02 DE AUDITORIA HUMANA: Aprovado.

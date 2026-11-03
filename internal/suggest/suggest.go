@@ -13,6 +13,7 @@ import (
 	"legoloop/internal/assets"
 	"legoloop/internal/dag"
 	"legoloop/internal/graph"
+	"legoloop/internal/reputation"
 )
 
 const (
@@ -42,10 +43,11 @@ type Gate struct {
 
 // Neighbor é uma peça sugerida para ligar depois desta.
 type Neighbor struct {
-	Kind      string `json:"kind"` // block | mcp
-	ID        string `json:"id"`
-	Name      string `json:"name"`
-	Installed bool   `json:"installed"`
+	Kind      string                  `json:"kind"` // block | mcp
+	ID        string                  `json:"id"`
+	Name      string                  `json:"name"`
+	Installed bool                    `json:"installed"`
+	Rating    *reputation.PieceRating `json:"rating,omitempty"`
 }
 
 // Result agrupa as sugestões. Todas as listas são vazias (nunca nil) quando não há o que sugerir.
@@ -196,12 +198,30 @@ func neighborSuggestions(ctx Context, idx *graph.Index, snap assets.Snapshot) []
 	}
 	typed := []Neighbor{}
 	for _, b := range blocks {
-		typed = append(typed, Neighbor{Kind: "block", ID: b.ID, Name: b.Label,
-			Installed: installed[strings.ToLower(path.Base(b.Ref))]})
+		isInst := installed[strings.ToLower(path.Base(b.Ref))]
+		rating := reputation.ScorePiece(b.Ref, b.Label, b.Gate, 1, 1)
+		typed = append(typed, Neighbor{
+			Kind:      "block",
+			ID:        b.ID,
+			Name:      b.Label,
+			Installed: isInst,
+			Rating:    &rating,
+		})
 	}
 	sort.SliceStable(typed, func(i, j int) bool {
 		if typed[i].Installed != typed[j].Installed {
 			return typed[i].Installed
+		}
+		// Desempate por Score de Reputação (maior score primeiro)
+		scoreI, scoreJ := 0.0, 0.0
+		if typed[i].Rating != nil {
+			scoreI = typed[i].Rating.TotalScore
+		}
+		if typed[j].Rating != nil {
+			scoreJ = typed[j].Rating.TotalScore
+		}
+		if scoreI != scoreJ {
+			return scoreI > scoreJ
 		}
 		return strings.ToLower(typed[i].Name) < strings.ToLower(typed[j].Name)
 	})

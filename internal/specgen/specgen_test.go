@@ -27,13 +27,20 @@ func TestSpecGenerator_Success(t *testing.T) {
 > **Data:** 2026-11-02
 > **Referência da Intenção:** docs/intents/2026-11-02_INTENT_TESTES.md
 
-## 1. Visão Geral & Arquitetura da Solução
-Pipeline determinístico de testes em Go.
+## 1. Premissas Técnicas Assumidas (Addy Osmani)
+- 1. Go 1.23+ com testes nativos
 
-## 2. Contratos de Dados & Schemas Formais
-Structs e I/O de teste.
+## 2. Fronteiras de Ação & Regras de Governança (Boundaries — Addy Osmani)
+- Sempre: TDD estrito
+- Nunca: Zero stubs
 
-## 3. Critérios Binários de Aceite por Nó (BDD)
+## 3. Visão Geral, Arquitetura & Costuras de Teste (Test Seams — Pocock)
+Costura primária em internal/service/engine.go
+
+## 4. Contratos de Dados & Schemas Formais
+Structs Go.
+
+## 5. Critérios Binários de Aceite por Nó (BDD)
 ### E01 — Testes
 * [ ] AC-E01.1: Validação de suíte Go
   * **Dado que:** Arquivos em internal/
@@ -44,11 +51,8 @@ Structs e I/O de teste.
   * **Quando:** Executar golangci-lint
   * **Então:** exit_code == 0
 
-## 4. Requisitos Não Funcionais & Restrições Inegociáveis
-Zero stubs.
-
-## 5. Critério de Conclusão Global (Done Definition)
-100% dos testes passando.
+## 6. Comandos Operacionais & Critério de Conclusão Global (Addy Osmani)
+- Test: go test ./...
 
 ---
 🛑 STOP-GATE 02 DE AUDITORIA HUMANA: Aguardando aprovação explícita para gerar PLAN e ROUTE.

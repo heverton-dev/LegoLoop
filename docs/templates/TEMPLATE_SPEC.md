@@ -3,17 +3,45 @@
 > **Status:** [Proposta para Revisão | Aprovado pelo Usuário]  
 > **Data:** YYYY-MM-DD  
 > **Versão:** 1.0.0  
-> **Autor:** Antigravity AI + Usuário  
+> **Autor:** Antigravity AI + Usuário (Fusão Addy Osmani + Pocock + AIDD-Spec)  
 > **Referência da Intenção:** [docs/intents/YYYY-MM-DD_INTENT_NOME.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents/YYYY-MM-DD_INTENT_NOME.md)  
 > **Alvo Primário:** [Ex: internal/dag, internal/studio, cmd/legoloop]  
 
 ---
 
-## 1. Visão Geral & Arquitetura da Solução
+## 1. Premissas Técnicas Assumidas (Addy Osmani)
 
-[Descrição técnica de alto nível. Explique as fronteiras do sistema, componentes envolvidos, fluxo de dados e decisões fundamentais de design.]
+> [!IMPORTANT]
+> A IA lista abaixo todas as premissas técnicas adotadas para evitar decisões silenciosas. Alerte no Stop-Gate 02 caso alguma premissa esteja incorreta:
+1. [Premissa 1 — Ex: O runtime padrão é Go 1.23+ com tipos nativos e zero dependências externas pesadas]
+2. [Premissa 2 — Ex: O armazenamento persiste em arquivos locais do SO sem dependência de banco de dados externo]
+3. [Premissa 3 — Ex: O protocolo de comunicação é HTTP REST loopback protegido contra DNS rebinding e CSRF]
 
-### Diagrama de Fronteiras / Arquitetura (Mermaid)
+---
+
+## 2. Fronteiras de Ação & Regras de Governança (Boundaries — Addy Osmani)
+
+O pipeline e os agentes devem respeitar estritamente o sistema de fronteiras em 3 níveis:
+* **Sempre Fazer:**
+  * Desenvolver via TDD estrito (teste unitário falhando antes do código de produção).
+  * Manter funções pequenas, enxutas e de responsabilidade única (< 35 linhas).
+  * Validar rigorosamente todos os inputs e decodificações de JSON.
+* **Perguntar Antes:**
+  * Adicionar qualquer nova dependência externa no `go.mod`.
+  * Alterar schemas persistidos no disco que possam quebrar retrocompatibilidade.
+  * Modificar regras globais no `AGENTS.md`.
+* **Nunca Fazer:**
+  * Criar funções vazias com `TODO`, `pass`, `// implementar depois` ou mocks simulados (Lei #1: Zero Stubs).
+  * Commitar arquivos temporários, segredos ou variáveis de ambiente no git.
+  * Ignorar testes falhando ou quebrar a suíte global de testes.
+
+---
+
+## 3. Visão Geral, Arquitetura & Costuras de Teste (Test Seams — Pocock)
+
+[Descrição técnica de alto nível da solução e fronteiras arquiteturais.]
+
+### Diagrama de Fronteiras (Mermaid)
 
 ```mermaid
 flowchart TD
@@ -21,11 +49,11 @@ flowchart TD
         In1["Artefato de Entrada / Requisito"]
     end
 
-    subgraph Processamento ["Núcleo / Engine"]
+    subgraph Nucleo ["Núcleo / Engine"]
         M1["Módulo A"] --> M2["Módulo B"]
     end
 
-    subgraph Saida ["Camada de Saída / Persistência"]
+    subgraph Saida ["Camada de Saída"]
         Out1["Artefato de Saída / Disco"]
     end
 
@@ -33,14 +61,13 @@ flowchart TD
     M2 --> Out1
 ```
 
+### Costuras de Teste (Test Seams — Pocock)
+* **Costura Primária (Highest Seam):** [Nome da interface ou função pública exata onde a suíte de testes baterá para validar o comportamento fim a fim].
+* **Justificativa:** [Por que esta costura única minimiza o acoplamento interno e evita testes frágeis].
+
 ---
 
-## 2. Contratos de Dados & Schemas Formais
-
-> [!IMPORTANT]
-> Todos os tipos, structs e schemas JSON devem ser estritamente tipados e compatíveis com a linguagem alvo. Zero inferências dinâmicas não documentadas.
-
-### 2.1 Tipagem Go / JSON Schema
+## 4. Contratos de Dados & Schemas Formais
 
 ```go
 // Exemplo de tipagem do contrato formal
@@ -54,19 +81,12 @@ type ContratoExemplo struct {
 }
 ```
 
-### 2.2 Insumos & Produtos por Épico
-
-| Épico ID | Nome do Épico | Artefatos Consumidos (Inputs) | Artefatos Produzidos (Outputs) |
-|---|---|---|---|
-| **E01** | [Nome do Épico 01] | `[caminho/arquivo]` | `[caminho/arquivo]` |
-| **E02** | [Nome do Épico 02] | `[caminho/arquivo]` | `[caminho/arquivo]` |
-
 ---
 
-## 3. Critérios Binários de Aceite por Nó / Ticket (BDD)
+## 5. Critérios Binários de Aceite por Nó / Ticket (BDD)
 
 > [!NOTE]
-> Cada critério `AC-XX` deve ser mecanicamente verificável via teste unitário, asserção ou comando de terminal (`exit code == 0`). Evite critérios subjetivos como "deve ser rápido" ou "deve ser bonito".
+> Cada critério `AC-XX` deve ser mecanicamente verificável via teste unitário, asserção ou comando de terminal (`exit code == 0`).
 
 ### Épico 01 — [Nome do Épico 01]
 
@@ -88,25 +108,22 @@ type ContratoExemplo struct {
 
 ---
 
-## 4. Requisitos Não Funcionais & Restrições Inegociáveis
+## 6. Comandos Operacionais & Critério de Conclusão Global (Addy Osmani)
 
-1. **Zero Stubs:** Todas as funções devem possuir implementação real e testada (sem `TODO`, `pass` ou mocks vazios).
-2. **Cobertura & TDD:** Toda nova unidade de código deve possuir teste unitário falhando previamente (Red ➔ Green).
-3. **Isolamento de Execução:** Execuções de tarefas devem respeitar os modos de isolamento estéril contratados.
-4. **Economia de Recursos & Performance:** Execuções pontuais de scripts ou transformações devem rodar com teto de timeout explícito.
+### Comandos de Verificação Mecânica
+* **Build:** `go build -o bin/legoloop.exe ./cmd/legoloop`
+* **Test:** `go test -v ./...`
+* **Lint:** `golangci-lint run ./...`
 
----
-
-## 5. Critério de Conclusão Global (Done Definition)
-
-A especificação técnica é considerada **100% ATENDIDA E CONCLUÍDA** quando:
+### Critério de Done Global
+A especificação técnica é considerada **100% CONCLUÍDA** quando:
 - [ ] 100% dos critérios binários `AC-E{N}.{M}` estiverem marcados como atendidos (`[x]`).
-- [ ] Todos os testes automatizados da suíte passarem sem erros (`go test ./...` ou equivalente).
-- [ ] O binário da aplicação for recompilado com sucesso: `go build -o bin/legoloop.exe ./cmd/legoloop`.
-- [ ] Zero resíduos de arquivos temporários órfãos em diretórios não autorizados.
+- [ ] O comando de **Test** passar com exit code 0.
+- [ ] O comando de **Build** recompilar com sucesso o binário `bin/legoloop.exe`.
+- [ ] Zero arquivos temporários ou órfãos residuais.
 
 ---
 
 🛑 **STOP-GATE 02 DE AUDITORIA HUMANA:**  
-*A SPEC técnica acima descreve com precisão a arquitetura, contratos e critérios binários necessários?*  
+*As premissas assumidas, as fronteiras (boundaries), os contratos e os critérios binários acima atendem à sua expectativa?*  
 *Somente após a aprovação explícita do usuário, deve-se gerar o PLAN (`TEMPLATE_PLAN.md`) e a ROUTE (`TEMPLATE_ROUTE.json`).*

@@ -36,9 +36,9 @@ type SpecResult struct {
 	RawMarkdown string   `json:"raw_markdown"`
 }
 
-// PromptCanônico da AIDD-Spec adaptado para Peça Híbrida com Grafo
-const PromptSpecSystem = `Você é o Engenheiro Especialista em Especificações Formais do LegoLoop (AIDD-Spec).
-Sua missão é transformar um documento de INTENÇÃO e o GRAFO de código existente em uma ESPECIFICAÇÃO TÉCNICA FORMAL e AUDITÁVEL com critérios binários BDD.
+// PromptCanônico da SPEC: Fusão Addy Osmani (Premissas/Boundaries) + Pocock (Test Seams) + AIDD-Spec (BDD)
+const PromptSpecSystem = `Você é o Arquiteto de Especificações Formais do LegoLoop (fusão Addy Osmani + Matt Pocock + AIDD-Spec).
+Sua missão é transformar um documento de INTENÇÃO e o GRAFO de código existente em uma ESPECIFICAÇÃO TÉCNICA DE ENGENHARIA AUDITÁVEL.
 
 ESTRUTURA OBRIGATÓRIA DA SPEC (NÃO altere os títulos dos cabeçalhos):
 # 📋 SPEC: [Tema da Especificação]
@@ -47,26 +47,33 @@ ESTRUTURA OBRIGATÓRIA DA SPEC (NÃO altere os títulos dos cabeçalhos):
 > **Data:** %s
 > **Referência da Intenção:** %s
 
-## 1. Visão Geral & Arquitetura da Solução
-[Descrição técnica da solução e fronteiras arquiteturais com diagrama Mermaid]
+## 1. Premissas Técnicas Assumidas (Addy Osmani)
+[Liste explicitamente 3 a 5 premissas técnicas adotadas para não tomar decisões silenciosas]
 
-## 2. Contratos de Dados & Schemas Formais
-[Definição formal de tipos/structs Go e contratos JSON/REST]
+## 2. Fronteiras de Ação & Regras de Governança (Boundaries — Addy Osmani)
+* **Sempre Fazer:** [TDD estrito, funções pequenas < 35 linhas, validação rigorosa]
+* **Perguntar Antes:** [Novas dependências, alterações de schemas persistidos]
+* **Nunca Fazer:** [Zero stubs, zero mocks vazios, nunca commitar credenciais]
 
-## 3. Critérios Binários de Aceite por Nó (BDD)
-[Para cada épico mapeado, defina critérios AC-E{N}.{M} estritamente no formato Dado/Quando/Então]
+## 3. Visão Geral, Arquitetura & Costuras de Teste (Test Seams — Pocock)
+[Descrição técnica com diagrama Mermaid e a identificação da costura primária mais alta para os testes baterem]
+
+## 4. Contratos de Dados & Schemas Formais
+[Tipagem estrita de structs Go e contratos JSON/REST]
+
+## 5. Critérios Binários de Aceite por Nó (BDD)
+[Para cada épico, liste os critérios AC-E{N}.{M} estritamente no formato Dado/Quando/Então]
 Exemplo:
 ### E01 — Fundação
 * [ ] AC-E01.1: [Título do Critério]
-  * **Dado que:** [Estado inicial]
+  * **Dado que:** [Estado inicial / fixtures]
   * **Quando:** [Ação disparada]
   * **Então:** [Comando com exit_code == 0 ou asserção binária]
 
-## 4. Requisitos Não Funcionais & Restrições Inegociáveis
-[Zero stubs, TDD estrito, limites de tokens e isolamento de execução]
-
-## 5. Critério de Conclusão Global (Done Definition)
-> A demanda é concluída quando 100%% dos critérios AC-E{N}.{M} estiverem [x] e a suíte go test passar com exit code 0.
+## 6. Comandos Operacionais & Critério de Conclusão Global (Addy Osmani)
+* **Build:** go build -o bin/legoloop.exe ./cmd/legoloop
+* **Test:** go test -v ./...
+* **Lint:** golangci-lint run ./...
 
 ---
 🛑 STOP-GATE 02 DE AUDITORIA HUMANA: Aguardando aprovação explícita para gerar PLAN e ROUTE.
@@ -129,14 +136,15 @@ Atenção: Garanta que todas as structs propostas sejam compatíveis com a arqui
 	}, nil
 }
 
-// validateSpecMarkdown assegura a integridade das 5 seções obrigatórias e extrai critérios AC-XX.
+// validateSpecMarkdown assegura a integridade das 6 seções obrigatórias e extrai critérios AC-XX.
 func validateSpecMarkdown(content string) ([]string, error) {
 	requiredHeadings := []string{
-		"1. Visão Geral & Arquitetura da Solução",
-		"2. Contratos de Dados & Schemas Formais",
-		"3. Critérios Binários de Aceite por Nó",
-		"4. Requisitos Não Funcionais & Restrições Inegociáveis",
-		"5. Critério de Conclusão Global",
+		"1. Premissas Técnicas Assumidas",
+		"2. Fronteiras de Ação & Regras de Governança",
+		"3. Visão Geral, Arquitetura & Costuras de Teste",
+		"4. Contratos de Dados & Schemas Formais",
+		"5. Critérios Binários de Aceite por Nó",
+		"6. Comandos Operacionais & Critério de Conclusão Global",
 		"STOP-GATE 02",
 	}
 
