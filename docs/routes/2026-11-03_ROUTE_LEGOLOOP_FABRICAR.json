@@ -1,0 +1,1744 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.0.0",
+  "name": "route-legoloop-fabricar",
+  "version": "2.0.0",
+  "date": "2026-11-03",
+  "session_id": "1da38997-8926-43dc-a9c7-4c885fc12303",
+  "intent_ref": "docs/intents/2026-11-03_INTENT_LEGOLOOP_FABRICAR.md",
+  "spec_ref": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md",
+  "plan_ref": "docs/plans/2026-11-03_PLAN_LEGOLOOP_FABRICAR.md",
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "label": "Nome canônico: NormalizeProcessName, ErrInvalidName e doc dos pacotes",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 3500
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/name.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/fabricar/name_test.go:TestNormalizeProcessName",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/name.go",
+          "internal/fabricar/name_test.go",
+          "internal/fabricar/doc.go",
+          "internal/canon/doc.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestNormalizeProcessName",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "test",
+            "-run=^$",
+            "-fuzz=FuzzNormalizeProcessName",
+            "-fuzztime=20s",
+            "./internal/fabricar/"
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/...",
+            "./internal/canon/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/name.go') && file_exists('internal/fabricar/name_test.go') && file_exists('internal/fabricar/doc.go') && file_exists('internal/canon/doc.go')"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "label": "Descoberta de unidades: DiscoverDrives, ParseMounts e DriveProbe",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 3500
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/drives.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": "internal/fabricar/drives_test.go:TestDiscoverDrives",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/drives.go",
+          "internal/fabricar/drives_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^(TestDiscoverDrives|TestParseMounts)",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/drives.go') && file_exists('internal/fabricar/drives_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.3",
+      "label": "Scanner seguro: ScanStorageLocations, Untrusted e limites",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 6000
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/scanner.go",
+          "internal/assets/scanner.go",
+          "internal/canon/hasher.go",
+          "internal/reputation"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E01.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.5",
+      "test_target": "internal/fabricar/scanner_test.go:TestScanStorageLocations",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/scanner.go",
+          "internal/fabricar/pieces.go",
+          "internal/fabricar/scanner_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestScanStorageLocations",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/scanner.go') && file_exists('internal/fabricar/pieces.go') && file_exists('internal/fabricar/scanner_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.4",
+      "label": "Materialização atômica: Materialize, FS injetável, Force e DryRun",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 5000
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/materialize.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E01.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.4",
+      "test_target": "internal/fabricar/materialize_test.go:TestMaterialize",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/materialize.go",
+          "internal/fabricar/materialize_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestMaterialize",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/materialize.go') && file_exists('internal/fabricar/materialize_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.5",
+      "label": "Construtor determinístico do plangen: plangen.Render (PLAN e ROUTE sem LLM)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 4000
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/plangen/plangen.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/plangen/render_test.go:TestRender",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/plangen/plangen.go",
+          "internal/plangen/render_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestRender",
+            "./internal/plangen/..."
+          ],
+          [
+            "go",
+            "test",
+            "./internal/plangen/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/plangen/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/plangen"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/plangen/plangen.go') && file_exists('internal/plangen/render_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.6",
+      "label": "Emissores tripartidos: SKILL.md, .loop.json e .dag.json",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 6000
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.4"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/emit_skill.go",
+          "internal/fabricar/emit_loop.go",
+          "internal/fabricar/emit_dag.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/fabricar/emit_test.go:TestEmit",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/emit_skill.go",
+          "internal/fabricar/emit_loop.go",
+          "internal/fabricar/emit_dag.go",
+          "internal/fabricar/emit_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestEmit",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/emit_skill.go') && file_exists('internal/fabricar/emit_loop.go') && file_exists('internal/fabricar/emit_dag.go') && file_exists('internal/fabricar/emit_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.7",
+      "label": "Pedido e camadas 1 e 3: Request.Validate, Clarifier e ArchitectMerger",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 4500
+      },
+      "depends_on": [
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/request.go",
+          "internal/fabricar/clarifier.go",
+          "internal/fabricar/merger.go",
+          "internal/interview/session.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/fabricar/pipeline_test.go:TestArchitectMerger",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/request.go",
+          "internal/fabricar/clarifier.go",
+          "internal/fabricar/merger.go",
+          "internal/fabricar/pipeline_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^(TestRequestValidate|TestClarifier|TestArchitectMerger)",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/request.go') && file_exists('internal/fabricar/clarifier.go') && file_exists('internal/fabricar/merger.go') && file_exists('internal/fabricar/pipeline_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.8",
+      "label": "Orquestrador fino: Fabricar ponta a ponta, determinístico e hermético",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 7000
+      },
+      "depends_on": [
+        "TICK-01.5",
+        "TICK-01.6",
+        "TICK-01.7"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/engine.go",
+          "internal/fabricar/triad.go",
+          "internal/fabricar/template.go",
+          "internal/specgen/specgen.go",
+          "internal/plangen/plangen.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/fabricar/engine_test.go:TestFabricar",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/engine.go",
+          "internal/fabricar/triad.go",
+          "internal/fabricar/template.go",
+          "internal/fabricar/engine_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestFabricar",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "test",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/engine.go') && file_exists('internal/fabricar/triad.go') && file_exists('internal/fabricar/template.go') && file_exists('internal/fabricar/engine_test.go')"
+      }
+    },
+    {
+      "id": "SG-E01",
+      "label": "Stop-Gate Humano do Épico 01",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.8"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Épico 01 (núcleo Go) aprovado? Autoriza iniciar o Épico 02 (CLI)?')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "label": "CLI legoloop fabricar em modo autônomo (--yes, --json, --dry-run)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 5000
+      },
+      "depends_on": [
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fabricar.go",
+          "internal/cli/commands.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/cli/fabricar_test.go:TestRunFabricar",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/fabricar.go",
+          "internal/cli/fabricar_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestRunFabricar",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/cli/fabricar.go') && file_exists('internal/cli/fabricar_test.go')"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "label": "CLI legoloop fabricar em modo interativo (bufio, [s/N])",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 4500
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fabricar_interactive.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": "internal/cli/fabricar_interactive_test.go:TestRunFabricarInteractive",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/fabricar_interactive.go",
+          "internal/cli/fabricar_interactive_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestRunFabricarInteractive",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/cli/fabricar_interactive.go') && file_exists('internal/cli/fabricar_interactive_test.go')"
+      }
+    },
+    {
+      "id": "TICK-02.3",
+      "label": "Registro no dispatcher e legado canonize intacto",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 2500
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/cli.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E02.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.3",
+      "test_target": "internal/cli/dispatch_fabricar_test.go:TestDispatchFabricar",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/cli.go",
+          "internal/cli/dispatch_fabricar_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestDispatchFabricar",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "test",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "test",
+            "./internal/canon/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/cli/cli.go') && file_exists('internal/cli/dispatch_fabricar_test.go')"
+      }
+    },
+    {
+      "id": "TICK-02.4",
+      "label": "Skill legoloop-fabricar para o Chat (SKILL.md com stop-gate)",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "depends_on": [
+        "TICK-02.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "skills/legoloop-fabricar/SKILL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E02.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.4",
+      "test_target": "internal/cli/skill_fabricar_test.go:TestFabricarSkill",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "skills/legoloop-fabricar/SKILL.md",
+          "internal/cli/skill_fabricar_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestFabricarSkill",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('skills/legoloop-fabricar/SKILL.md') && file_exists('internal/cli/skill_fabricar_test.go')"
+      }
+    },
+    {
+      "id": "SG-E02",
+      "label": "Stop-Gate Humano do Épico 02",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-02.4"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Épico 02 (CLI e skill) aprovado? Autoriza iniciar o Épico 03 (Studio)?')"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "label": "API POST /api/fabricar/run: contrato e segurança",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 4500
+      },
+      "depends_on": [
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/fabricar_api.go",
+          "internal/studio/server.go",
+          "internal/studio/canon_piece.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E03.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.3",
+      "test_target": "internal/studio/fabricar_api_test.go:TestHandleFabricarRun",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/fabricar_api.go",
+          "internal/studio/fabricar_api_test.go",
+          "internal/studio/server.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestHandleFabricarRun",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "test",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/studio/fabricar_api.go') && file_exists('internal/studio/fabricar_api_test.go') && file_exists('internal/studio/server.go')"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "label": "API de fabricação: exclusão mútua, falha limpa e catálogo atualizado",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 4000
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/fabricar_api.go",
+          "internal/studio/loops_api.go",
+          "internal/studio/assets_api.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": "internal/studio/fabricar_catalog_test.go:TestFabricarRunCatalog",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/fabricar_api.go",
+          "internal/studio/fabricar_catalog_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestFabricarRun",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "test",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/studio/fabricar_api.go') && file_exists('internal/studio/fabricar_catalog_test.go')"
+      }
+    },
+    {
+      "id": "TICK-03.3",
+      "label": "Modal + Novo Processo com seletor de modelo (HTML, CSS e JS)",
+      "nature": "micro",
+      "type": "ui_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 4000
+      },
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/static/index.html",
+          "internal/studio/static/style.css",
+          "internal/studio/static/app.js"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/studio/fabricar_modal_test.go:TestFabricarModalStatic",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/static/index.html",
+          "internal/studio/static/style.css",
+          "internal/studio/static/app.js",
+          "internal/studio/fabricar_modal_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestFabricarModalStatic",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "test",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/index.html') && file_exists('internal/studio/static/style.css') && file_exists('internal/studio/static/app.js') && file_exists('internal/studio/fabricar_modal_test.go')"
+      }
+    },
+    {
+      "id": "TICK-03.4",
+      "label": "Plotagem automática no Canvas, Inspetor e barra lateral de Loops",
+      "nature": "micro",
+      "type": "ui_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 4500
+      },
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/static/app.js",
+          "internal/studio/static/inspector.js",
+          "internal/studio/static/palette.js"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": "internal/studio/fabricar_plot_test.go:TestFabricarPlotModel",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js",
+          "internal/studio/static/inspector.js",
+          "internal/studio/fabricar_plot_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-run",
+            "^TestFabricarPlotModel",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "test",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/studio/..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/app.js') && file_exists('internal/studio/static/inspector.js') && file_exists('internal/studio/fabricar_plot_test.go')"
+      }
+    },
+    {
+      "id": "SG-E03",
+      "label": "Stop-Gate Humano do Épico 03 (homologação visual)",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-03.4"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Épico 03 aprovado? O modal (abrir, nomear, escolher modelo, entrevistar, plotar) foi homologado no navegador?')"
+      }
+    },
+    {
+      "id": "TICK-04.1",
+      "label": "Homologação mecânica final: regressão, estática, binário e smoke hermético",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 480,
+      "token_budget": {
+        "max_output_tokens": 400
+      },
+      "depends_on": [
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./..."
+          ],
+          [
+            "go",
+            "vet",
+            "./..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "git",
+            "diff",
+            "--exit-code",
+            "--",
+            "go.mod",
+            "go.sum"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ],
+          [
+            "go",
+            "install",
+            "./cmd/legoloop"
+          ],
+          [
+            "bin/legoloop.exe",
+            "fabricar",
+            "teste-smoke",
+            "--yes",
+            "--dry-run",
+            "--vault",
+            "scratch/smoke-fabricar/vault",
+            "--docs",
+            "scratch/smoke-fabricar/docs"
+          ],
+          [
+            "bin/legoloop.exe",
+            "fabricar",
+            "teste-smoke",
+            "--yes",
+            "--vault",
+            "scratch/smoke-fabricar/vault",
+            "--docs",
+            "scratch/smoke-fabricar/docs"
+          ],
+          [
+            "bin/legoloop.exe",
+            "validate",
+            "scratch/smoke-fabricar/vault/loops/legoloop-teste-smoke.dag.json"
+          ],
+          [
+            "powershell",
+            "-NoProfile",
+            "-Command",
+            "Remove-Item -Recurse -Force scratch/smoke-fabricar"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      }
+    },
+    {
+      "id": "TICK-04.2",
+      "label": "Relatório formal e registro da sessão",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "depends_on": [
+        "TICK-04.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/reports/2026-11-03_REPORT_LEGOLOOP_FABRICAR.md"
+        ],
+        "verify": [
+          [
+            "faz-session",
+            "--id",
+            "1da38997-8926-43dc-a9c7-4c885fc12303",
+            "--format",
+            "all"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/reports/2026-11-03_REPORT_LEGOLOOP_FABRICAR.md') && has_pattern('docs/reports/2026-11-03_REPORT_LEGOLOOP_FABRICAR.md', 'Homologação visual')"
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "label": "Stop-Gate Final: encerramento da demanda",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-04.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Demanda `fabricar` concluída? Relatório e evidências aprovados?')"
+      }
+    }
+  ]
+}

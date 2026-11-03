@@ -1,60 +1,56 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "name": "loop-modular-padrao-ouro",
-  "version": "1.0.0",
-  "description": "Sub-Loop Modular Reutilizável Padrão Ouro (Score >= 0.85) com grafo acíclico e isolamento estéril",
-  "tier": "ouro",
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "exemplo-loop-spec-plano",
+  "name": "exemplo-loop-spec-plano",
+  "description": "Loop modular de exemplo: transforma uma INTENT aprovada em SPEC com critérios binários e em PLAN, com Stop-Gate humano antes do BUILD.",
+  "version": "2.0.0",
   "trigger": {
-    "type": "manual_or_event",
-    "event": "file_change",
-    "pattern": "docs/specs/*.md"
+    "type": "manual"
   },
   "nodes": [
     {
-      "id": "node_01_trigger",
-      "type": "trigger",
-      "label": "Gatilho de Entrada",
-      "outputs": {
-        "event_payload": "object"
-      }
-    },
-    {
-      "id": "node_02_transform",
-      "type": "piece",
-      "label": "Processamento em Contexto Estéril",
-      "piece_ref": "skills/spec-driven-development",
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic"
+      "id": "n01_spec",
+      "type": "skill",
+      "ref": "skills/aidd-spec",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "code-fast"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
       },
       "inputs": {
-        "spec_input": "node_01_trigger.event_payload"
+        "intent": "file('INTENT.md')"
       },
       "output": {
-        "artifact": "scratch/step_02_output.json",
-        "gate": "exit_code == 0 && file_exists('scratch/step_02_output.json')"
+        "artifact": "SPEC.md",
+        "gate": "file_exists('SPEC.md') && has_binary_criteria('SPEC.md') && has_acceptance_criteria('SPEC.md')"
       }
     },
     {
-      "id": "node_03_quality_gate",
-      "type": "stop_gate",
-      "label": "Stop-Gate Humano",
-      "condition": "human_approved == true"
+      "id": "n02_plano",
+      "type": "skill",
+      "ref": "skills/aidd-tickets",
+      "depends_on": [
+        "n01_spec"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "timeout_sec": 600,
+      "inputs": {
+        "n01_spec": "file('SPEC.md')"
+      },
+      "output": {
+        "artifact": "PLAN.md",
+        "gate": "file_exists('PLAN.md') && has_binary_criteria('PLAN.md') && prompt('Aprova o PLAN.md para iniciar o BUILD?')"
+      }
     }
-  ],
-  "edges": [
-    {
-      "from": "node_01_trigger",
-      "to": "node_02_transform"
-    },
-    {
-      "from": "node_02_transform",
-      "to": "node_03_quality_gate"
-    }
-  ],
-  "governance": {
-    "acyclic_verified": true,
-    "max_parallel_workers": 2,
-    "rollback_on_failure": "stash_changes"
-  }
+  ]
 }

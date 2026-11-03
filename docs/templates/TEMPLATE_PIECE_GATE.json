@@ -1,27 +1,55 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "name": "gate-mecanico-padrao-ouro",
-  "version": "1.0.0",
-  "description": "Quality Gate Mecânico Binário Padrão Ouro (Score >= 0.85) com validação estrita no terminal",
-  "tier": "ouro",
-  "type": "mechanical_binary_gate",
-  "evaluation": {
-    "engine": "boolean_expression",
-    "expression": "exit_code == 0 && file_exists(output.artifact) && word_count(output.artifact) > 50 && has_no_stubs(output.artifact)",
-    "timeout_sec": 30
-  },
-  "command_fallback": {
-    "executable": "go",
-    "args": [
-      "test",
-      "-v",
-      "./internal/..."
-    ],
-    "expected_exit_code": 0
-  },
+  "$schema": "https://legoloop.dev/schemas/gate-recipe.v1.json",
+  "template_version": "2.0.0",
+  "name": "{{nome-da-receita-de-gate}}",
+  "description": "Receitas de gate binário. Cada expression compila no DSL de internal/gate e pode ser colada em output.gate de um nó DAG ou ROUTE, ou em slots.gates.",
+  "recipes": [
+    {
+      "id": "mechanical",
+      "kind": "mechanical",
+      "description": "Passa quando o comando de verificação sai com código 0.",
+      "verify": [
+        ["go", "test", "./..."]
+      ],
+      "expression": "exit_code == 0",
+      "timeout_sec": 120
+    },
+    {
+      "id": "artifact-quality",
+      "kind": "artifact",
+      "description": "O artefato existe, tem corpo mínimo e nenhum marcador de pendência.",
+      "verify": [],
+      "expression": "file_exists('{{ARTEFATO}}') && word_count('{{ARTEFATO}}') > 50 && !has_pattern('{{ARTEFATO}}', '(?i)\\b(TODO|FIXME|TBD)\\b')",
+      "timeout_sec": 30
+    },
+    {
+      "id": "spec-contract",
+      "kind": "artifact",
+      "description": "A especificação tem checklist de critérios binários e seção de critérios de aceitação.",
+      "verify": [],
+      "expression": "has_binary_criteria('{{SPEC}}') && has_acceptance_criteria('{{SPEC}}')",
+      "timeout_sec": 30
+    },
+    {
+      "id": "schema-contract",
+      "kind": "schema",
+      "description": "O artefato JSON cumpre o JSON Schema informado.",
+      "verify": [],
+      "expression": "schema_valid('{{SCHEMA}}', '{{ARTEFATO_JSON}}')",
+      "timeout_sec": 30
+    },
+    {
+      "id": "human-stop-gate",
+      "kind": "human",
+      "description": "Pausa a execução e exige aprovação humana explícita.",
+      "verify": [],
+      "expression": "prompt('{{PERGUNTA_AO_HUMANO}}')",
+      "timeout_sec": 0
+    }
+  ],
   "on_failure": {
-    "action": "retry_or_block",
-    "max_retries": 3,
-    "notify_message": "O Gate Mecânico falhou na validação do artefato produzido. Verifique o log e tente novamente."
+    "action": "block",
+    "max_retries": 0,
+    "notify_message": "O gate falhou: o artefato ou o comando não cumpriu o contrato. Corrija a causa e reexecute o nó."
   }
 }

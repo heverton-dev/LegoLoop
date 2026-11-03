@@ -59,12 +59,12 @@ func TestPlanGenerator_Success(t *testing.T) {
 	}
 
 	t1 := res.Tickets[0]
-	if t1.ID != "TICKET-E01.1" || t1.Nature != "micro" || !t1.HumanGateAfter {
+	if t1.ID != "TICK-01.1" || t1.Nature != "micro" || !t1.HumanGateAfter {
 		t.Errorf("ticket 1 incorreto: %+v", t1)
 	}
 
 	t2 := res.Tickets[1]
-	if t2.ID != "TICKET-E01.2" || t2.Nature != "nano" || t2.HumanGateAfter {
+	if t2.ID != "TICK-01.2" || t2.Nature != "nano" || t2.HumanGateAfter {
 		t.Errorf("ticket 2 incorreto (nano não deve ter gate em nível micro): %+v", t2)
 	}
 
@@ -89,8 +89,8 @@ func TestPlanGenerator_Success(t *testing.T) {
 	}
 
 	nodes, ok := routeMap["nodes"].([]any)
-	if !ok || len(nodes) != 3 { // TICK-1 + Stop-Gate Humano do TICK-1 + TICK-2
-		t.Fatalf("esperava 3 nós na rota (incluindo o stop-gate injetado), obteve %d", len(nodes))
+	if !ok || len(nodes) != 4 { // TICK-01.1 + Stop-Gate do TICK-01.1 + TICK-01.2 + SG-FINAL
+		t.Fatalf("esperava 4 nós na rota (tickets, stop-gate injetado e SG-FINAL), obteve %d", len(nodes))
 	}
 }
 
@@ -122,8 +122,8 @@ func TestPlanGenerator_AutonomousMode(t *testing.T) {
 	_ = json.Unmarshal(routeBytes, &routeMap)
 	nodes := routeMap["nodes"].([]any)
 
-	// No modo autônomo, nenhum Stop-Gate intermediário deve ser injetado
-	if len(nodes) != 1 {
-		t.Fatalf("modo autônomo não deve injetar gates intermediários, obteve %d nós", len(nodes))
+	// No modo autônomo, só o SG-FINAL (homologação mecânica) entra: nenhum Stop-Gate humano intermediário
+	if len(nodes) != 2 {
+		t.Fatalf("modo autônomo deve ter só o ticket e o SG-FINAL, obteve %d nós", len(nodes))
 	}
 }

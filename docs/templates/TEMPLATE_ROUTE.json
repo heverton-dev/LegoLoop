@@ -1,13 +1,15 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "name": "route-template-exemplo",
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.0.0",
+  "name": "{{ROUTE_NAME}}",
   "version": "1.0.0",
-  "date": "2026-11-02",
+  "date": "{{DATA}}",
   "session_id": "00000000-0000-0000-0000-000000000000",
-  "intent_ref": "docs/intents/YYYY-MM-DD_INTENT_NOME.md",
-  "spec_ref": "docs/specs/YYYY-MM-DD_SPEC_NOME.md",
-  "plan_ref": "docs/plans/YYYY-MM-DD_PLAN_NOME.md",
+  "intent_ref": "docs/intents/{{DATA}}_INTENT_{{NOME}}.md",
+  "spec_ref": "docs/specs/{{DATA}}_SPEC_{{NOME}}.md",
+  "plan_ref": "docs/plans/{{DATA}}_PLAN_{{NOME}}.md",
   "execution_strategy": {
+    "supervision_level": "micro",
     "default_isolation": {
       "workspace": "local",
       "executor": "orchestrix_hermetic",
@@ -15,7 +17,7 @@
     },
     "max_parallel_workers": 2,
     "tdd_enforced": true,
-    "default_timeout_sec": 300,
+    "default_timeout_sec": 180,
     "rollback_on_failure": "abort_pipeline"
   },
   "nodes": [
@@ -56,9 +58,10 @@
         "source_files": [
           "internal/pkg/service.go"
         ],
-        "spec_anchor": "docs/specs/YYYY-MM-DD_SPEC_NOME.md#secao-1",
+        "spec_anchor": "docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E01.1",
         "context_artifacts": []
       },
+      "spec_ref": "AC-E01.1",
       "test_target": "internal/pkg/service_test.go:TestFeatureCore",
       "defects": [],
       "rollback_strategy": "stash_changes",
@@ -67,69 +70,122 @@
           "internal/pkg/service.go",
           "internal/pkg/service_test.go"
         ],
-        "gate": "exit_code == 0 && go test -v ./internal/pkg/..."
+        "verify": [
+          ["go", "test", "-v", "./internal/pkg/..."]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/pkg/service.go') && file_exists('internal/pkg/service_test.go')"
       }
     },
     {
       "id": "TICK-01.2",
-      "label": "Refatoração Crítica com Isolamento em Git Worktree",
-      "nature": "micro",
+      "label": "Verificação Estática da Unidade",
+      "nature": "nano",
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
       "isolation": {
-        "workspace": "git_worktree",
+        "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": true
+        "subagents_allowed": false
       },
-      "timeout_sec": 240,
+      "timeout_sec": 180,
       "token_budget": {
-        "max_output_tokens": 800
+        "max_output_tokens": 300
       },
       "depends_on": [
         "TICK-01.1"
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "claude-code",
-        "model": "sonnet",
-        "effort": "high",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
         "fallback": {
-          "harness": "9router",
-          "model": "code-pro"
+          "harness": "antigravity",
+          "model": "flash"
         }
       },
       "tooling": {
         "runtime": "powershell",
-        "mcps_required": true,
-        "mcps_allowed": [
-          "codebase-memory-mcp:search_code"
-        ]
+        "mcps_required": false,
+        "mcps_allowed": []
       },
       "inputs": {
         "source_files": [
           "internal/pkg/service.go"
         ],
-        "spec_anchor": "docs/specs/YYYY-MM-DD_SPEC_NOME.md#refatoracao",
+        "spec_anchor": "docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E01.2",
         "context_artifacts": []
       },
-      "test_target": "internal/pkg/service_test.go:TestRefactoredBehavior",
+      "spec_ref": "AC-E01.2",
+      "test_target": null,
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
           "internal/pkg/service.go"
         ],
-        "gate": "exit_code == 0 && go test -v ./internal/pkg/..."
+        "verify": [
+          ["go", "vet", "./internal/pkg/..."]
+        ],
+        "gate": "exit_code == 0"
       }
     },
     {
-      "id": "TICK-01.3",
-      "label": "Dissecação Reversa via Subloop Especialista",
+      "id": "SG-E01",
+      "label": "Stop-Gate Humano do Épico 01",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "label": "Dissecação via Subloop Especialista",
       "nature": "macro",
       "type": "subloop",
-      "ref": "docs/routes/2026-11-01_ROUTE_REA_DISSECTOR.json",
+      "ref": "exemplo-subloop",
       "status": "PENDING",
       "execution_mode": "sequential",
       "isolation": {
@@ -142,7 +198,7 @@
         "max_output_tokens": 1200
       },
       "depends_on": [
-        "TICK-01.2"
+        "SG-E01"
       ],
       "routing": {
         "mode": "suggested",
@@ -163,24 +219,26 @@
       },
       "inputs": {
         "source_files": [],
-        "spec_anchor": null,
+        "spec_anchor": "docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E02.1",
         "context_artifacts": [
           "scratch/target_analysis.json"
         ]
       },
+      "spec_ref": "AC-E02.1",
       "test_target": null,
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "scratch/dissected_tokens.json"
+          "scratch/subloop_output.json"
         ],
-        "gate": "file_exists('scratch/dissected_tokens.json')"
+        "verify": [],
+        "gate": "file_exists('scratch/subloop_output.json')"
       }
     },
     {
-      "id": "SG-01",
-      "label": "Stop-Gate de Lote (Homologação E2E & Recompilação Fresca)",
+      "id": "SG-FINAL",
+      "label": "Homologação Final (Regressão Global & Recompilação Fresca)",
       "nature": "nano",
       "type": "stop_gate",
       "ref": null,
@@ -193,12 +251,10 @@
       },
       "timeout_sec": 180,
       "token_budget": {
-        "max_output_tokens": 300
+        "max_output_tokens": 0
       },
       "depends_on": [
-        "TICK-01.1",
-        "TICK-01.2",
-        "TICK-01.3"
+        "TICK-02.1"
       ],
       "routing": {
         "mode": "manual",
@@ -219,6 +275,7 @@
         "spec_anchor": null,
         "context_artifacts": []
       },
+      "spec_ref": null,
       "test_target": null,
       "defects": [],
       "rollback_strategy": "abort_pipeline",
@@ -226,7 +283,12 @@
         "artifacts": [
           "bin/legoloop.exe"
         ],
-        "gate": "go test ./... && go build -o bin/legoloop.exe ./cmd/legoloop"
+        "verify": [
+          ["go", "test", "./..."],
+          ["go", "vet", "./..."],
+          ["go", "build", "-o", "bin/legoloop.exe", "./cmd/legoloop"]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
       }
     }
   ]

@@ -1,20 +1,16 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "name": "hook-padrao-ouro",
-  "version": "1.0.0",
-  "description": "Hook determinístico com fail-safe e sanitização de credenciais",
-  "tier": "ouro",
-  "event": "pre_tool_call",
-  "execution": {
-    "mode": "synchronous_fail_safe",
-    "timeout_ms": 3000,
-    "command": "powershell -NoProfile -File ./scripts/sanitize_payload.ps1"
-  },
-  "security": {
-    "redact_env_vars": true,
-    "block_on_secret_leak": true
-  },
-  "conditions": {
-    "file_pattern": "**/*.go"
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"$CLAUDE_PROJECT_DIR/.claude/scripts/guard-secrets.ps1\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }

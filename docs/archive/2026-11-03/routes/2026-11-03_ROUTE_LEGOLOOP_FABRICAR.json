@@ -1,0 +1,361 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "route-legoloop-fabricar",
+  "version": "1.0.0",
+  "date": "2026-11-03",
+  "session_id": "1da38997-8926-43dc-a9c7-4c885fc12303",
+  "intent_ref": "docs/intents/2026-11-03_INTENT_LEGOLOOP_CANONIZER.md",
+  "spec_ref": "docs/specs/2026-11-03_SPEC_LEGOLOOP_CANONIZER_V2.md",
+  "plan_ref": "docs/plans/2026-11-03_PLAN_LEGOLOOP_FABRICAR.md",
+  "execution_strategy": {
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "nodes": [
+    {
+      "id": "FAB-E01.1",
+      "label": "Sanitização de Nome com Prefixo legoloop- e Limite de 64 chars",
+      "nature": "micro",
+      "type": "unit_task",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 120,
+      "token_budget": {
+        "max_output_tokens": 800
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/canonizer/name.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_CANONIZER_V2.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "test_target": "internal/canonizer/name_test.go:TestNormalizeProcessName",
+      "output": {
+        "artifacts": [
+          "internal/canonizer/name.go",
+          "internal/canonizer/name_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestNormalizeProcessName ./internal/canonizer/..."
+      }
+    },
+    {
+      "id": "FAB-E01.2",
+      "label": "Scanner Multi-Drive com Timeout e Detecção Agnóstica a SO",
+      "nature": "micro",
+      "type": "unit_task",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "depends_on": ["FAB-E01.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/canonizer/scanner.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_CANONIZER_V2.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "test_target": "internal/canonizer/scanner_test.go:TestDiscoverDrives",
+      "output": {
+        "artifacts": [
+          "internal/canonizer/scanner.go",
+          "internal/canonizer/scanner_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestDiscoverDrives ./internal/canonizer/..."
+      }
+    },
+    {
+      "id": "FAB-E01.3",
+      "label": "Orquestrador Fino e Geração Tripartida",
+      "nature": "micro",
+      "type": "unit_task",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 240,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "depends_on": ["FAB-E01.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/canonizer/engine.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_CANONIZER_V2.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "test_target": "internal/canonizer/engine_test.go:TestCanonizePipeline",
+      "output": {
+        "artifacts": [
+          "internal/canonizer/engine.go",
+          "internal/canonizer/engine_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestCanonizePipeline ./internal/canonizer/..."
+      }
+    },
+    {
+      "id": "FAB-E02.1",
+      "label": "Implementação do Subcomando CLI legoloop fabricar",
+      "nature": "micro",
+      "type": "unit_task",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 1200
+      },
+      "depends_on": ["FAB-E01.3"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fabricar.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_CANONIZER_V2.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "test_target": "internal/cli/fabricar_test.go:TestRunFabricar",
+      "output": {
+        "artifacts": [
+          "internal/cli/fabricar.go",
+          "internal/cli/fabricar_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestRunFabricar ./internal/cli/..."
+      }
+    },
+    {
+      "id": "FAB-E02.2",
+      "label": "Registro no Dispatcher Central e Skill para o Chat",
+      "nature": "nano",
+      "type": "unit_task",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 90,
+      "token_budget": {
+        "max_output_tokens": 500
+      },
+      "depends_on": ["FAB-E02.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/cli.go",
+          "skills/legoloop-fabricar/SKILL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_CANONIZER_V2.md#AC-E02.4",
+        "context_artifacts": []
+      },
+      "output": {
+        "artifacts": [
+          "internal/cli/cli.go",
+          "skills/legoloop-fabricar/SKILL.md"
+        ],
+        "gate": "exit_code == 0 && go test -v ./internal/cli/..."
+      }
+    },
+    {
+      "id": "FAB-E03.1",
+      "label": "Endpoint HTTP POST /api/canonizer/run",
+      "nature": "micro",
+      "type": "unit_task",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "depends_on": ["FAB-E02.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/canonizer_api.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_CANONIZER_V2.md#AC-E03.3",
+        "context_artifacts": []
+      },
+      "test_target": "internal/studio/canonizer_api_test.go:TestHandleCanonizerRun",
+      "output": {
+        "artifacts": [
+          "internal/studio/canonizer_api.go",
+          "internal/studio/canonizer_api_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestHandleCanonizerRun ./internal/studio/..."
+      }
+    },
+    {
+      "id": "FAB-E03.2",
+      "label": "Modal Novo Processo e Plotagem Automática no Canvas",
+      "nature": "micro",
+      "type": "ui_task",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 1200
+      },
+      "depends_on": ["FAB-E03.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/static/app.js",
+          "internal/studio/static/index.html",
+          "internal/studio/static/style.css"
+        ],
+        "spec_anchor": "docs/specs/2026-11-03_SPEC_LEGOLOOP_CANONIZER_V2.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js",
+          "internal/studio/static/index.html",
+          "internal/studio/static/style.css"
+        ],
+        "gate": "exit_code == 0 && go test -v -run \"TestZeroEmojisInFrontendAndTemplates|TestNoNativeDialogs\" ./internal/studio/..."
+      }
+    }
+  ]
+}

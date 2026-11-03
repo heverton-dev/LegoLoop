@@ -1,61 +1,13 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "name": "mcp-servidor-padrao-ouro",
-  "version": "1.0.0",
-  "description": "Servidor MCP Padrão Ouro (Score >= 0.85) com contratos tipados e transporte seguro",
-  "protocol_version": "2024-11-05",
-  "tier": "ouro",
-  "transport": {
-    "type": "stdio",
-    "command": "node",
-    "args": [
-      "./build/index.js"
-    ],
-    "env": {
-      "NODE_ENV": "production"
-    },
-    "timeout_ms": 15000
-  },
-  "capabilities": {
-    "tools": {
-      "listChanged": false
-    },
-    "resources": {
-      "subscribe": false,
-      "listChanged": false
-    }
-  },
-  "tools": [
-    {
-      "name": "executar_acao_deterministica",
-      "description": "Executa uma operação atômica e retorna o resultado estruturado em JSON sem efeitos colaterais silenciosos.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "alvo": {
-            "type": "string",
-            "description": "Caminho relativo do arquivo ou recurso alvo"
-          },
-          "modo": {
-            "type": "string",
-            "enum": [
-              "analise",
-              "transformacao",
-              "validacao"
-            ],
-            "description": "Modo de execução da ferramenta"
-          }
-        },
-        "required": [
-          "alvo",
-          "modo"
-        ],
-        "additionalProperties": false
+  "mcpServers": {
+    "{{nome-do-servidor}}": {
+      "command": "node",
+      "args": [
+        "./build/index.js"
+      ],
+      "env": {
+        "SERVICE_TOKEN": "${SERVICE_TOKEN}"
       }
     }
-  ],
-  "security": {
-    "isolated_process": true,
-    "redact_credentials": true
   }
 }

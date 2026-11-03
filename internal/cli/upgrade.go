@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"legoloop/internal/reputation"
@@ -81,7 +82,7 @@ func RunUpgrade(stdout, stderr io.Writer, args []string) int {
 			for _, g := range gaps {
 				fmt.Fprintf(stdout, "  - %s\n", g)
 			}
-			fmt.Fprintln(stdout, "\n💡 Recomendação: Aplique o template correspondente em docs/templates/ para elevar a peça.")
+			fmt.Fprintf(stdout, "\n💡 Recomendação: Aplique %s para elevar a peça.\n", templateHint(targetPath))
 		} else {
 			fmt.Fprintln(stdout, "🏆 PARABÉNS: Esta peça já atinge o Padrão Ouro de engenharia!")
 		}
@@ -99,4 +100,33 @@ func RunUpgrade(stdout, stderr io.Writer, args []string) int {
 	}
 
 	return 0
+}
+
+// templateHint aponta o template canônico (docs/templates) que corresponde ao tipo da peça.
+func templateHint(path string) string {
+	const dir = "docs/templates/"
+	name := strings.ToLower(filepath.Base(path))
+	switch ext := filepath.Ext(name); {
+	case strings.HasSuffix(name, ".loop.json"):
+		return dir + "TEMPLATE_PIECE_LOOP.json"
+	case ext == ".md":
+		return dir + "TEMPLATE_PIECE_SKILL.md"
+	case slices.Contains([]string{".ps1", ".sh", ".bash", ".py", ".js", ".mjs", ".cjs", ".bat", ".cmd"}, ext):
+		return dir + "TEMPLATE_PIECE_SCRIPT.ps1"
+	case ext == ".json":
+		return jsonTemplateHint(name, dir)
+	}
+	return dir + "README.md (escolha o template do tipo da peça)"
+}
+
+func jsonTemplateHint(name, dir string) string {
+	switch {
+	case strings.Contains(name, "mcp"):
+		return dir + "TEMPLATE_PIECE_MCP.json"
+	case strings.Contains(name, "hook") || strings.Contains(name, "settings"):
+		return dir + "TEMPLATE_PIECE_HOOK.json"
+	case strings.Contains(name, "gate"):
+		return dir + "TEMPLATE_PIECE_GATE.json"
+	}
+	return dir + "TEMPLATE_PIECE_{GATE,HOOK,LOOP,MCP}.json (conforme o tipo)"
 }

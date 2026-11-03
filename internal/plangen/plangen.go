@@ -2,7 +2,6 @@ package plangen
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -26,16 +25,16 @@ const (
 
 // Ticket representa uma unidade de trabalho atômica e verticalmente fatiada (Addy Osmani).
 type Ticket struct {
-	ID             string   `json:"id"`              // TICK-01.1
-	Title          string   `json:"title"`           // Descrição imperativa
-	EpicID         string   `json:"epic_id"`         // E01
-	Nature         string   `json:"nature"`          // nano | micro
-	ExecutionMode  string   `json:"execution_mode"`  // tdd_red_green | sequential | parallel
-	DependsOn      []string `json:"depends_on"`      // IDs predecessores
-	TargetFiles    []string `json:"target_files"`    // Arquivos tocados
-	SpecCriteria   []string `json:"spec_criteria"`   // AC-E01.1
-	ValidationCmd  string   `json:"validation_cmd"`  // Comando mecânico de teste
-	HumanGateAfter bool     `json:"human_gate_after"`// Se há parada após este ticket
+	ID             string   `json:"id"`               // TICK-01.1
+	Title          string   `json:"title"`            // Descrição imperativa
+	EpicID         string   `json:"epic_id"`          // E01
+	Nature         string   `json:"nature"`           // nano | micro
+	ExecutionMode  string   `json:"execution_mode"`   // tdd_red_green | sequential | parallel
+	DependsOn      []string `json:"depends_on"`       // IDs predecessores
+	TargetFiles    []string `json:"target_files"`     // Arquivos tocados
+	SpecCriteria   []string `json:"spec_criteria"`    // AC-E01.1
+	ValidationCmd  string   `json:"validation_cmd"`   // Comando mecânico de teste
+	HumanGateAfter bool     `json:"human_gate_after"` // Se há parada após este ticket
 }
 
 // PlanResult consolida os artefatos de planejamento gerados.
@@ -46,11 +45,21 @@ type PlanResult struct {
 	RouteJSONPath    string           `json:"route_json_path"`
 	Tickets          []Ticket         `json:"tickets"`
 	RawPlan          string           `json:"raw_plan"`
+	Warnings         []string         `json:"warnings,omitempty"`
 }
 
 // Generator orquestra a decomposição socrática em tarefas fatiadas verticalmente.
 type Generator struct {
 	llm interview.LLMClient
+	// Now fornece a data dos documentos; nil usa time.Now. Injetável para geração determinística.
+	Now func() time.Time
+}
+
+func (g *Generator) now() time.Time {
+	if g.Now != nil {
+		return g.Now()
+	}
+	return time.Now()
 }
 
 // NewGenerator inicializa o gerador de planos.
@@ -58,23 +67,27 @@ func NewGenerator(llm interview.LLMClient) *Generator {
 	return &Generator{llm: llm}
 }
 
-// PromptPlanSystem adaptado de Addy Osmani (planning-and-task-breakdown) para PT-BR
+// PromptPlanSystem adaptado de Addy Osmani (planning-and-task-breakdown) para PT-BR.
+// O PLAN.md e o ROUTE.json são montados pelo motor a partir dos tickets, seguindo TEMPLATE_PLAN.md e
+// TEMPLATE_ROUTE.json (docs/templates); o modelo só decompõe, no formato abaixo.
 const PromptPlanSystem = `Você é o Arquiteto de Planejamento e Decomposição de Tarefas do LegoLoop (método Addy Osmani).
 Sua missão é transformar a ESPECIFICAÇÃO TÉCNICA em um PLANO DE AÇÃO ATÔMICO com FATIAMENTO VERTICAL (Vertical Slicing) estrito.
 
 REGRAS INVIOLÁVEIS DO ADDY OSMANI:
 1. FATIAMENTO VERTICAL: Cada ticket deve entregar uma funcionalidade ponta a ponta e testável (contrato + teste falhando + implementação + validação). NUNCA crie tickets de "só criar arquivos vazios", "só tipos" ou "só testes".
-2. GRAFO DE DEPENDÊNCIAS: Ordene os tickets bottom-up (fundações e modelos primeiro, endpoints/lógica depois, interfaces por último).
+2. GRAFO DE DEPENDÊNCIAS: Ordene os tickets bottom-up (fundações e modelos primeiro, endpoints/lógica depois, interfaces por último). Dependências só podem citar tickets que você criou.
 3. COBERTURA TOTAL: Todo critério AC-XX da SPEC DEVE ser coberto por pelo menos um ticket.
 4. VERIFICAÇÃO TRIPLA: Todo ticket deve ter um comando de teste/linter automatizado verificável (exit code == 0).
+5. COMANDOS SEM SHELL: o Comando de Validação é executado como argv, sem shell. Use um comando simples ou vários encadeados com "&&". NÃO use pipe, redirecionamento, aspas, glob nem variáveis. Use somente comandos que existem no repositório (go test, go vet, go build, gofmt).
+6. IDs no formato TICK-{NN}.{M}, com NN o número do épico com dois dígitos (ex.: TICK-01.1, TICK-02.3).
 
 FORMATO ESTRUTURADO DE CADA TICKET:
-### [TICKET-E{N}.{M}] {Título Imperativo}
-- **Épico:** E{N}
+### [TICK-{NN}.{M}] {Título Imperativo}
+- **Épico:** E{NN}
 - **Natureza:** micro | nano
 - **Modo:** tdd_red_green | sequential | parallel
 - **Dependências:** [nenhuma | TICK-XX.X]
-- **Arquivos Afetados:** {caminhos dos arquivos separados por vírgula}
+- **Arquivos Afetados:** {caminhos relativos ao projeto, separados por vírgula}
 - **Critérios Atendidos:** {AC-E{N}.{M}}
 - **Comando de Validação:** {ex: go test -v ./internal/pkg/...}
 `
@@ -84,96 +97,159 @@ func (g *Generator) Generate(ctx context.Context, baseDir, specPath string, leve
 	if level == "" {
 		level = SupervisionEpic
 	}
-
 	specBytes, err := os.ReadFile(specPath)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao ler spec: %w", err)
 	}
-
-	userPrompt := fmt.Sprintf(`Gere o Plano de Execução do Addy Osmani para a seguinte SPEC:
-
-%s
-
-Decomponha todos os critérios AC-XX em tickets verticais sequenciados logicamente por dependências.`, string(specBytes))
-
-	messages := []interview.Message{
-		{Role: "system", Content: PromptPlanSystem},
-		{Role: "user", Content: userPrompt},
-	}
-
-	rawMarkdown, err := g.llm.Chat(ctx, messages)
+	raw, err := g.llm.Chat(ctx, planMessages(string(specBytes)))
 	if err != nil {
 		return nil, fmt.Errorf("falha ao invocar LLM para planejamento: %w", err)
 	}
-
-	tickets, err := parseTickets(rawMarkdown, level)
+	tickets, err := parseTickets(raw, level)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao interpretar tickets gerados: %w", err)
 	}
 	if len(tickets) == 0 {
 		return nil, errors.New("nenhum ticket foi identificado no plano gerado")
 	}
-
-	baseName := filepath.Base(specPath)
-	planFileName := strings.Replace(baseName, "SPEC", "PLAN", 1)
-	routeFileName := strings.Replace(baseName, "SPEC", "ROUTE", 1)
-	routeFileName = strings.Replace(routeFileName, ".md", ".json", 1)
-
-	plansDir := filepath.Join(baseDir, "docs", "plans")
-	routesDir := filepath.Join(baseDir, "docs", "routes")
-	_ = os.MkdirAll(plansDir, 0755)
-	_ = os.MkdirAll(routesDir, 0755)
-
-	planPath := filepath.Join(plansDir, planFileName)
-	routePath := filepath.Join(routesDir, routeFileName)
-
-	// Materializar PLAN.md
-	planMD := buildPlanMarkdown(planFileName, specPath, routePath, level, tickets, rawMarkdown)
-	if err := os.WriteFile(planPath, []byte(planMD), 0644); err != nil {
-		return nil, fmt.Errorf("falha ao gravar plan.md: %w", err)
+	res, err := materialize(baseDir, specPath, string(specBytes), level, tickets, g.now())
+	if err != nil {
+		return nil, err
 	}
+	res.RawPlan = raw
+	return res, nil
+}
 
-	// Materializar ROUTE.json
-	routeJSON, err := buildRouteJSON(routeFileName, specPath, planPath, level, tickets)
+// Render monta o PLAN.md e o ROUTE.json a partir de tickets já prontos, sem LLM, com a data vinda de now.
+// É o mesmo caminho de Generate depois da interpretação dos tickets: a saída é idêntica e determinística.
+// Os tickets do chamador não são alterados; a saída traz IDs, épicos e dependências canônicos.
+func Render(baseDir, specPath string, tickets []Ticket, level SupervisionLevel, now time.Time) (*PlanResult, error) {
+	if level == "" {
+		level = SupervisionEpic
+	}
+	specBytes, err := os.ReadFile(specPath)
+	if err != nil {
+		return nil, fmt.Errorf("falha ao ler spec: %w", err)
+	}
+	norm, err := normalizeTickets(tickets, level)
+	if err != nil {
+		return nil, err
+	}
+	return materialize(baseDir, specPath, string(specBytes), level, norm, now)
+}
+
+// normalizeTickets copia os tickets, canoniza IDs, épicos e dependências, aplica os padrões e recalcula os gates do nível.
+func normalizeTickets(in []Ticket, level SupervisionLevel) ([]Ticket, error) {
+	if len(in) == 0 {
+		return nil, errors.New("nenhum ticket informado")
+	}
+	seen := map[string]bool{}
+	out := make([]Ticket, len(in))
+	for i, t := range in {
+		t.ID = canonID(t.ID)
+		if t.ID == "" || seen[t.ID] {
+			return nil, fmt.Errorf("ticket sem ID ou duplicado: %q", t.ID)
+		}
+		seen[t.ID] = true
+		out[i] = completeTicket(t, level)
+	}
+	return out, nil
+}
+
+func completeTicket(t Ticket, level SupervisionLevel) Ticket {
+	t.EpicID = canonEpic(t.EpicID, t.ID)
+	if t.Nature != "nano" {
+		t.Nature = "micro"
+	}
+	if t.ExecutionMode == "" {
+		t.ExecutionMode = "tdd_red_green"
+	}
+	if t.ValidationCmd == "" {
+		t.ValidationCmd = "go test ./..."
+	}
+	deps := make([]string, len(t.DependsOn))
+	for i, d := range t.DependsOn {
+		deps[i] = canonID(d)
+	}
+	t.DependsOn = deps
+	t.HumanGateAfter = gateAfter(level, t.Nature)
+	return t
+}
+
+func planMessages(spec string) []interview.Message {
+	user := fmt.Sprintf(`Gere o Plano de Execução do Addy Osmani para a seguinte SPEC:
+
+%s
+
+Decomponha todos os critérios AC-XX em tickets verticais sequenciados logicamente por dependências.`, spec)
+	return []interview.Message{
+		{Role: "system", Content: PromptPlanSystem},
+		{Role: "user", Content: user},
+	}
+}
+
+// materialize monta a rota e o plano a partir da mesma lista de nós e grava os dois arquivos.
+func materialize(baseDir, specPath, specText string, level SupervisionLevel, tickets []Ticket, now time.Time) (*PlanResult, error) {
+	ps, err := newPathSet(baseDir, specPath)
+	if err != nil {
+		return nil, err
+	}
+	meta := newMeta(ps, specText, now.Format("2006-01-02"), level)
+	warnings := resolveDeps(tickets)
+	nodes, err := buildNodes(tickets, meta)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao construir route.json: %w", err)
 	}
-	if err := os.WriteFile(routePath, routeJSON, 0644); err != nil {
+	routeJSON, err := newRouteDoc(meta, nodes).marshal()
+	if err != nil {
+		return nil, fmt.Errorf("falha ao construir route.json: %w", err)
+	}
+	if err := os.WriteFile(ps.planPath, []byte(renderPlan(meta, nodes)), 0644); err != nil {
+		return nil, fmt.Errorf("falha ao gravar plan.md: %w", err)
+	}
+	if err := os.WriteFile(ps.routePath, routeJSON, 0644); err != nil {
 		return nil, fmt.Errorf("falha ao gravar route.json: %w", err)
 	}
-
 	return &PlanResult{
-		Theme:            planFileName,
-		SupervisionLevel: level,
-		PlanMarkdownPath: planPath,
-		RouteJSONPath:    routePath,
-		Tickets:          tickets,
-		RawPlan:          rawMarkdown,
+		Theme: filepath.Base(ps.planPath), SupervisionLevel: level, PlanMarkdownPath: ps.planPath,
+		RouteJSONPath: ps.routePath, Tickets: tickets,
+		Warnings: append(warnings, uncovered(tickets, meta.SpecCriteria)...),
 	}, nil
 }
 
-func parseTickets(content string, level SupervisionLevel) ([]Ticket, error) {
-	lines := strings.Split(content, "\n")
-	type rawBlock struct {
-		id    string
-		title string
-		lines []string
+// newPathSet deriva os nomes de PLAN e ROUTE do nome da SPEC e cria docs/plans e docs/routes.
+func newPathSet(baseDir, specPath string) (pathSet, error) {
+	base := filepath.Base(specPath)
+	planName := strings.Replace(base, "SPEC", "PLAN", 1)
+	routeName := strings.Replace(strings.Replace(base, "SPEC", "ROUTE", 1), ".md", ".json", 1)
+	plansDir, routesDir := filepath.Join(baseDir, "docs", "plans"), filepath.Join(baseDir, "docs", "routes")
+	for _, d := range []string{plansDir, routesDir} {
+		if err := os.MkdirAll(d, 0755); err != nil {
+			return pathSet{}, fmt.Errorf("falha ao criar %s: %w", d, err)
+		}
 	}
+	return pathSet{baseDir: baseDir, specPath: specPath,
+		planPath: filepath.Join(plansDir, planName), routePath: filepath.Join(routesDir, routeName)}, nil
+}
 
+var ticketHeaderRe = regexp.MustCompile(`(?i)^###\s*\[(TICK(?:ET)?-[A-Za-z0-9_.-]+)\]\s*(.*)`)
+
+type rawBlock struct {
+	id    string
+	title string
+	lines []string
+}
+
+// splitBlocks agrupa as linhas por cabeçalho de ticket.
+func splitBlocks(content string) []rawBlock {
 	var blocks []rawBlock
-	reHeader := regexp.MustCompile(`(?i)^###\s*\[(TICKET-[A-Za-z0-9_.-]+)\]\s*(.*)`)
-
 	var cur *rawBlock
-	for _, l := range lines {
-		trimmed := strings.TrimSpace(l)
-		if m := reHeader.FindStringSubmatch(trimmed); len(m) > 2 {
+	for l := range strings.SplitSeq(content, "\n") {
+		if m := ticketHeaderRe.FindStringSubmatch(strings.TrimSpace(l)); len(m) > 2 {
 			if cur != nil {
 				blocks = append(blocks, *cur)
 			}
-			cur = &rawBlock{
-				id:    strings.TrimSpace(m[1]),
-				title: strings.TrimSpace(m[2]),
-			}
+			cur = &rawBlock{id: strings.TrimSpace(m[1]), title: strings.TrimSpace(m[2])}
 			continue
 		}
 		if cur != nil {
@@ -183,218 +259,78 @@ func parseTickets(content string, level SupervisionLevel) ([]Ticket, error) {
 	if cur != nil {
 		blocks = append(blocks, *cur)
 	}
+	return blocks
+}
 
-	var tickets []Ticket
-	reField := func(blockLines []string, name string) string {
-		re := regexp.MustCompile(`(?i)^\s*-\s*\*\*` + name + `:\*\*\s*(.*)`)
-		for _, bl := range blockLines {
-			if m := re.FindStringSubmatch(bl); len(m) > 1 {
-				return strings.TrimSpace(m[1])
-			}
+func blockField(lines []string, name string) string {
+	re := regexp.MustCompile(`(?i)^\s*-\s*\*\*` + name + `:\*\*\s*(.*)`)
+	for _, l := range lines {
+		if m := re.FindStringSubmatch(l); len(m) > 1 {
+			return strings.TrimSpace(m[1])
 		}
-		return ""
 	}
+	return ""
+}
 
-	for _, b := range blocks {
-		epicID := reField(b.lines, "Épico")
-		if epicID == "" {
-			epicID = "E01"
+// splitList separa por vírgula, tira crases e descarta vazios.
+func splitList(raw string) []string {
+	var out []string
+	for p := range strings.SplitSeq(raw, ",") {
+		if c := strings.Trim(strings.TrimSpace(p), "`"); c != "" {
+			out = append(out, c)
 		}
-		nature := strings.ToLower(reField(b.lines, "Natureza"))
+	}
+	return out
+}
+
+func parseDeps(raw string) []string {
+	if raw == "" || strings.Contains(strings.ToLower(raw), "nenhuma") {
+		return nil
+	}
+	var deps []string
+	for _, d := range splitList(raw) {
+		deps = append(deps, canonID(d))
+	}
+	return deps
+}
+
+func gateAfter(level SupervisionLevel, nature string) bool {
+	switch level {
+	case SupervisionNano:
+		return true
+	case SupervisionMicro:
+		return nature == "micro"
+	}
+	return false
+}
+
+func parseTickets(content string, level SupervisionLevel) ([]Ticket, error) {
+	var tickets []Ticket
+	seen := map[string]bool{}
+	for _, b := range splitBlocks(content) {
+		id := canonID(b.id)
+		if seen[id] {
+			return nil, fmt.Errorf("ticket duplicado: %s", id)
+		}
+		seen[id] = true
+		nature := strings.ToLower(blockField(b.lines, "Natureza"))
 		if nature != "nano" {
 			nature = "micro"
 		}
-		mode := strings.ToLower(reField(b.lines, "Modo"))
+		mode := strings.ToLower(blockField(b.lines, "Modo"))
 		if mode == "" {
 			mode = "tdd_red_green"
 		}
-
-		depRaw := reField(b.lines, "Dependências")
-		var deps []string
-		if depRaw != "" && !strings.Contains(strings.ToLower(depRaw), "nenhuma") {
-			for _, d := range strings.Split(depRaw, ",") {
-				dClean := strings.TrimSpace(d)
-				if dClean != "" {
-					deps = append(deps, dClean)
-				}
-			}
-		}
-
-		filesRaw := reField(b.lines, "Arquivos Afetados")
-		var targetFiles []string
-		for _, f := range strings.Split(filesRaw, ",") {
-			fClean := strings.Trim(strings.TrimSpace(f), "`")
-			if fClean != "" {
-				targetFiles = append(targetFiles, fClean)
-			}
-		}
-
-		critRaw := reField(b.lines, "Critérios Atendidos")
-		var criteria []string
-		for _, c := range strings.Split(critRaw, ",") {
-			cClean := strings.Trim(strings.TrimSpace(c), "`")
-			if cClean != "" {
-				criteria = append(criteria, cClean)
-			}
-		}
-
-		valCmd := reField(b.lines, "Comando de Validação")
+		valCmd := blockField(b.lines, "Comando de Validação")
 		if valCmd == "" {
 			valCmd = "go test ./..."
 		}
-
-		gateAfter := false
-		switch level {
-		case SupervisionNano:
-			gateAfter = true
-		case SupervisionMicro:
-			if nature == "micro" {
-				gateAfter = true
-			}
-		case SupervisionEpic, SupervisionAutonomous:
-			gateAfter = false
-		}
-
 		tickets = append(tickets, Ticket{
-			ID:             b.id,
-			Title:          b.title,
-			EpicID:         epicID,
-			Nature:         nature,
-			ExecutionMode:  mode,
-			DependsOn:      deps,
-			TargetFiles:    targetFiles,
-			SpecCriteria:   criteria,
-			ValidationCmd:  valCmd,
-			HumanGateAfter: gateAfter,
+			ID: id, Title: b.title, EpicID: canonEpic(blockField(b.lines, "Épico"), id), Nature: nature, ExecutionMode: mode,
+			DependsOn: parseDeps(blockField(b.lines, "Dependências")), TargetFiles: splitList(blockField(b.lines, "Arquivos Afetados")),
+			SpecCriteria: splitList(blockField(b.lines, "Critérios Atendidos")), ValidationCmd: valCmd,
+			HumanGateAfter: gateAfter(level, nature),
 		})
 	}
-
 	return tickets, nil
-}
-
-func buildPlanMarkdown(fileName, specPath, routePath string, level SupervisionLevel, tickets []Ticket, rawPlan string) string {
-	today := time.Now().Format("2006-01-02")
-	return fmt.Sprintf(`# 🗺️ PLAN: %s
-
-> **Status:** Proposta para Revisão Humana  
-> **Data:** %s  
-> **Referência da Spec:** %s  
-> **Espelho Executável JSON:** %s  
-> **Modo de Supervisão Humana:** %s  
-
----
-
-## 1. Estratégia de Execução & Human-in-the-Loop
-
-* **Modo de Supervisão:** %s
-* **Isolamento Padrão:** Workspace: local | Executor: orchestrix_hermetic (Zero Context Bloat)
-* **TDD Estrito:** Obrigatório (Red ➔ Green ➔ Refactor)
-* **Limite de Workers:** 2
-
----
-
-## 2. Decomposição Estruturada de Tickets (Addy Osmani)
-
-%s
-
----
-
-🛑 **STOP-GATE 03 DE AUDITORIA HUMANA:**  
-*Plano de execução fatiado com %d tickets. Deseja aprovar o plano e liberar a execução autônoma do BUILD?*
-`, fileName, today, filepath.ToSlash(specPath), filepath.ToSlash(routePath), string(level), string(level), rawPlan, len(tickets))
-}
-
-func buildRouteJSON(name, specPath, planPath string, level SupervisionLevel, tickets []Ticket) ([]byte, error) {
-	type RouteNode struct {
-		ID            string   `json:"id"`
-		Label         string   `json:"label"`
-		Nature        string   `json:"nature"`
-		Type          string   `json:"type"`
-		ExecutionMode string   `json:"execution_mode"`
-		DependsOn     []string `json:"depends_on"`
-		Isolation     map[string]any `json:"isolation"`
-		Routing       map[string]any `json:"routing"`
-		Inputs        map[string]any `json:"inputs"`
-		Output        map[string]any `json:"output"`
-	}
-
-	var nodes []RouteNode
-	for _, t := range tickets {
-		effort := "medium"
-		model := "code-fast"
-		if t.Nature == "nano" {
-			effort = "low"
-			model = "code-nano"
-		}
-
-		nodes = append(nodes, RouteNode{
-			ID:            t.ID,
-			Label:         t.Title,
-			Nature:        t.Nature,
-			Type:          "unit_task",
-			ExecutionMode: t.ExecutionMode,
-			DependsOn:     t.DependsOn,
-			Isolation: map[string]any{
-				"workspace":         "local",
-				"executor":          "orchestrix_hermetic",
-				"subagents_allowed": false,
-			},
-			Routing: map[string]any{
-				"mode":    "suggested",
-				"harness": "9router",
-				"model":   model,
-				"effort":  effort,
-				"fallback": map[string]string{
-					"harness": "antigravity",
-					"model":   "flash",
-				},
-			},
-			Inputs: map[string]any{
-				"source_files": t.TargetFiles,
-				"spec_ref":     t.SpecCriteria,
-			},
-			Output: map[string]any{
-				"artifacts": t.TargetFiles,
-				"gate":      "exit_code == 0 && " + t.ValidationCmd,
-			},
-		})
-
-		// Se há stop-gate humano após este ticket
-		if t.HumanGateAfter {
-			nodes = append(nodes, RouteNode{
-				ID:            "SG-" + t.ID,
-				Label:         "Stop-Gate Humano pós " + t.ID,
-				Nature:        "nano",
-				Type:          "stop_gate",
-				ExecutionMode: "sequential",
-				DependsOn:     []string{t.ID},
-				Isolation: map[string]any{
-					"workspace":         "local",
-					"executor":          "local_process",
-					"subagents_allowed": false,
-				},
-				Routing: map[string]any{"mode": "manual", "model": "human/operator"},
-				Inputs:  map[string]any{},
-				Output: map[string]any{
-					"gate": "human_approved == true",
-				},
-			})
-		}
-	}
-
-	routeObj := map[string]any{
-		"name":               name,
-		"version":            "1.0.0",
-		"date":               time.Now().Format("2006-01-02"),
-		"spec_ref":           filepath.ToSlash(specPath),
-		"plan_ref":           filepath.ToSlash(planPath),
-		"execution_strategy": map[string]any{
-			"supervision_level":    string(level),
-			"max_parallel_workers": 2,
-			"tdd_enforced":         true,
-		},
-		"nodes": nodes,
-	}
-
-	return json.MarshalIndent(routeObj, "", "  ")
 }

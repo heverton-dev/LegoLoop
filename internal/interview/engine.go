@@ -135,95 +135,34 @@ func (e *Engine) MaterializeIntent(sessionID, baseDir, fileName string) (string,
 		return "", errors.New("impossível materializar: espelho socrático ainda não consolidado")
 	}
 
-	if fileName == "" {
-		datePrefix := time.Now().Format("2006-01-02")
-		safeTheme := sanitizeFileName(sess.Theme)
-		fileName = fmt.Sprintf("%s_INTENT_%s.md", datePrefix, safeTheme)
-	}
-
-	intentsDir := filepath.Join(baseDir, "docs", "intents")
-	if err := os.MkdirAll(intentsDir, 0755); err != nil {
-		// Caso o baseDir seja um diretório temporário plano de teste
-		intentsDir = baseDir
-	}
-
-	filePath := filepath.Join(intentsDir, fileName)
-
-	constraintsList := ""
-	for _, c := range sess.Mirror.Constraints {
-		constraintsList += fmt.Sprintf("  * %s\n", c)
-	}
-	if constraintsList == "" {
-		constraintsList = "  * Nenhuma restrição crítica adicional\n"
-	}
-
-	outOfScopeList := ""
-	for _, o := range sess.Mirror.OutOfScope {
-		outOfScopeList += fmt.Sprintf("  * %s\n", o)
-	}
-	if outOfScopeList == "" {
-		outOfScopeList = "  * Ajustes fora do escopo funcional delimitado\n"
-	}
-
-	content := fmt.Sprintf(`# 🎯 INTENT: %s
-
-> **Status:** Aprovado pelo Usuário  
-> **Data:** %s  
-> **Autor:** Antigravity AI + Usuário (via Entrevista Socrática Addy Osmani)  
-> **Confiança Final:** %d%%  
-> **Sessão:** %s  
-
----
-
-## 1. Contexto & Dor Original
-%s
-
-## 2. Espelho Socrático Canônico (Addy Osmani)
-
-* **Resultado Esperado:** %s
-* **Quem se Beneficia:** %s
-* **Por que Agora:** %s
-* **Critério de Sucesso:** %s
-* **Restrições Inegociáveis:**
-%s
-* **Fora de Escopo:**
-%s
-
----
-
-## 3. Épicos Preliminares Mapeados
-
-| ID | Nome do Épico | Descrição / Entregável |
-|---|---|---|
-| **E01** | Fundação e Arquitetura | Estruturação de contratos, schemas e infraestrutura base |
-| **E02** | Implementação e Integração | Lógica de negócio, endpoints e gates de validação |
-
----
-
-🛑 **STOP-GATE 01 DE AUDITORIA HUMANA:**  
-*Intenção consolidada com %d%% de certeza factual.*  
-*Aprovado este documento, o fluxo avança para a geração da SPEC técnica.*
-`,
-		sess.Theme,
-		time.Now().Format("2006-01-02"),
-		sess.Confidence,
-		sess.ID,
-		sess.Theme,
-		sess.Mirror.Outcome,
-		sess.Mirror.User,
-		sess.Mirror.WhyNow,
-		sess.Mirror.Success,
-		constraintsList,
-		outOfScopeList,
-		sess.Confidence,
-	)
-
+	date := time.Now().Format("2006-01-02")
+	filePath, fileName := intentTarget(baseDir, fileName, sess.Theme, date)
+	content := RenderIntent(IntentView{
+		Theme:      sess.Theme,
+		Date:       date,
+		SessionID:  sess.ID,
+		Confidence: sess.Confidence,
+		Mirror:     sess.Mirror,
+		SpecRel:    SpecRelFor(fileName, sess.Theme, date),
+	})
 	if err := os.WriteFile(filePath, []byte(content), 0644); err != nil {
 		return "", fmt.Errorf("falha ao gravar artefato de intenção: %w", err)
 	}
 
 	sess.ArtifactPath = filePath
 	return filePath, nil
+}
+
+// intentTarget resolve o nome do arquivo (gerando um a partir do tema e da data) e a pasta docs/intents.
+func intentTarget(baseDir, fileName, theme, date string) (path, name string) {
+	if fileName == "" {
+		fileName = fmt.Sprintf("%s_INTENT_%s.md", date, sanitizeFileName(theme))
+	}
+	dir := filepath.Join(baseDir, "docs", "intents")
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		dir = baseDir // baseDir plano (diretório temporário de teste)
+	}
+	return filepath.Join(dir, fileName), fileName
 }
 
 var (
