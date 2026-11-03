@@ -439,4 +439,3 @@ func cmdImport(ctx context.Context, args []string, d Deps) int {
 	fmt.Fprintf(d.Stdout, "Arquivos: %d\n", res.FilesCount)
 	return 0
 }
-

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"legoloop/internal/interview"
+	"legoloop/internal/provider"
 )
 
 type interviewStartReq struct {
@@ -28,7 +29,7 @@ func (s *Server) getInterviewEngine(ctx context.Context) *interview.Engine {
 	}
 	inv := s.inventory(ctx)
 	routerURL := inv.RouterURL
-	client := interview.NewRouterClient(routerURL, "", "code-pro")
+	client := interview.NewRouterClient(routerURL, provider.TrustedRouterKey(routerURL), "code-pro")
 	s.Interview = interview.NewEngine(client)
 	return s.Interview
 }

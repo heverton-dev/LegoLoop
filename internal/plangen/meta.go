@@ -24,7 +24,7 @@ var (
 	specThemeRe  = regexp.MustCompile(`(?m)^# 📋 SPEC:\s*(.+?)\s*$`)
 	intentRefRe  = regexp.MustCompile(`Referência da Intenção:\*\*\s*(?:\[([^\]]+)\]|(\S+))`)
 	epicNameRe   = regexp.MustCompile(`(?m)^#{2,4}\s*(?:Épico\s+|E)?(\d+)\s*[—–-]\s*(.+?)\s*$`)
-	specACRe     = regexp.MustCompile(`(?i)\*\s*\[\s*\]\s*(AC-[A-Za-z0-9_.-]+)`)
+	specACRe     = regexp.MustCompile(`(?i)\*\s*\[\s*\]\s*[\x60*]*(AC-[A-Za-z0-9_.-]+)`)
 	firstNumbers = regexp.MustCompile(`\d+`)
 )
 

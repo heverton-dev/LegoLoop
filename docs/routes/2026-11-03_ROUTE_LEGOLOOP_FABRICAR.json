@@ -724,7 +724,7 @@
       "nature": "nano",
       "type": "stop_gate",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -771,7 +771,7 @@
       "nature": "micro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -848,7 +848,7 @@
       "nature": "micro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -924,7 +924,7 @@
       "nature": "nano",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -1010,7 +1010,7 @@
       "nature": "nano",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -1086,7 +1086,7 @@
       "nature": "nano",
       "type": "stop_gate",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -1133,7 +1133,7 @@
       "nature": "micro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -1217,7 +1217,7 @@
       "nature": "micro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -1300,7 +1300,7 @@
       "nature": "micro",
       "type": "ui_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -1385,7 +1385,7 @@
       "nature": "micro",
       "type": "ui_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -1469,7 +1469,7 @@
       "nature": "nano",
       "type": "stop_gate",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -1516,7 +1516,7 @@
       "nature": "nano",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -1639,7 +1639,7 @@
       "nature": "nano",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -1699,7 +1699,7 @@
       "nature": "nano",
       "type": "stop_gate",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",

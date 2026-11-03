@@ -202,5 +202,3 @@ func interactivePrompt(env Env, args []value, _ *regexp.Regexp) (value, error) {
 	}
 	return value{kind: kBool, b: ok}, nil
 }
-
-

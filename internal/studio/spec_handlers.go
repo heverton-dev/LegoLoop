@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"legoloop/internal/interview"
+	"legoloop/internal/provider"
 	"legoloop/internal/specgen"
 )
 
@@ -17,7 +18,7 @@ func (s *Server) getSpecGenerator() *specgen.Generator {
 		return s.SpecGen
 	}
 	inv := s.inventory(nil)
-	client := interview.NewRouterClient(inv.RouterURL, "", "code-pro")
+	client := interview.NewRouterClient(inv.RouterURL, provider.TrustedRouterKey(inv.RouterURL), "code-pro")
 	s.SpecGen = specgen.NewGenerator(client, s.Index)
 	return s.SpecGen
 }

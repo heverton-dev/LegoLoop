@@ -142,4 +142,3 @@ func TestHarnessEffortClamping(t *testing.T) {
 		t.Errorf("res.Notes deveria registrar o esforço aplicado: %v", res.Notes)
 	}
 }
-

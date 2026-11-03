@@ -93,7 +93,6 @@ func TestRunIsolatedPromotesOnlyDeclaredArtifact(t *testing.T) {
 	}
 }
 
-
 func TestRunIsolatedWithGitWorktree(t *testing.T) {
 	// Cria um diretório temporário configurado como repositório Git
 	repoDir := t.TempDir()

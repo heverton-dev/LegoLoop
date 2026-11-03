@@ -291,5 +291,3 @@ func TestInteractivePromptGate(t *testing.T) {
 		t.Fatalf("Eval com alias prompt falhou: got=%v, err=%v", ok, err)
 	}
 }
-
-

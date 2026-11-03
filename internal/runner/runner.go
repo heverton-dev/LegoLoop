@@ -335,4 +335,3 @@ func (r *run) evalSchema(n dag.Node, workdir string) (bool, string) {
 	}
 	return true, ""
 }
-

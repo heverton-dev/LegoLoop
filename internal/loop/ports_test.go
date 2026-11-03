@@ -74,8 +74,8 @@ func TestDerivePortsCustomGenericLoop(t *testing.T) {
 		Trigger: &dag.Trigger{Type: dag.TriggerManual},
 		Nodes: []dag.Node{
 			{
-				ID:   "n1",
-				Type: dag.TypeScript,
+				ID:      "n1",
+				Type:    dag.TypeScript,
 				Command: []string{"python", "process.py"},
 				Routing: dag.RoutingConfig{
 					Mode:  dag.ModeManual,

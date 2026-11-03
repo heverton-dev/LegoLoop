@@ -45,6 +45,7 @@ const state = {
   suggest: new Map(),
   suggestPending: new Set(),
   palette: null,
+  process: null,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -1667,6 +1668,7 @@ async function boot() {
   initRunModal();
   initTemplatesModal();
   initImportModal();
+  initFabricarModal();
   updateEmpty();
   await pollItems();
   setInterval(() => { if (document.visibilityState === "visible") pollItems().catch(() => {}); }, POLL_MS);
@@ -2202,3 +2204,176 @@ function initImportModal() {
 
 
 boot().catch((err) => toast(`Não foi possível iniciar o Studio: ${err.message}`, true));
+
+// ---------- Modal "Novo Processo" (fábrica) ----------
+// A lógica pura está em fabricar.js. Aqui só o DOM e as chamadas à API; erros aparecem no próprio modal.
+
+function fabricarElements() {
+  const ids = ["modal-fabricar", "fabricar-name", "fabricar-category", "fabricar-model", "fabricar-start", "fabricar-skip",
+    "fabricar-interview", "fabricar-confidence", "fabricar-question", "fabricar-guess", "fabricar-answer",
+    "fabricar-send", "fabricar-run", "fabricar-status", "fabricar-error", "fabricar-overwrite"];
+  const ui = {};
+  for (const id of ids) ui[id.replace("fabricar-", "").replace("modal-fabricar", "modal")] = $(id);
+  return ui;
+}
+
+function fabricarShowError(ui, msg, canOverwrite = false) {
+  ui.error.textContent = msg;
+  ui.error.hidden = !msg;
+  ui.overwrite.hidden = !canOverwrite;
+}
+
+function fabricarShowStatus(ui, msg) {
+  ui.status.textContent = msg;
+  ui.status.hidden = !msg;
+}
+
+function fabricarFillModels(ui) {
+  const opts = fabricarModelOptions((state.inv && state.inv.models) || []);
+  ui.model.replaceChildren(...opts.map((o) => {
+    const opt = document.createElement("option");
+    opt.value = o.id;
+    opt.textContent = o.label;
+    opt.disabled = o.disabled;
+    return opt;
+  }));
+  ui.model.value = fabricarDefaultModel(opts);
+  ui.start.disabled = ui.skip.disabled = !ui.model.value;
+  if (!ui.model.value) fabricarShowError(ui, "Nenhum modelo do 9Router disponível. Rode legoloop doctor.");
+}
+
+function fabricarForm(ui) {
+  return { name: ui.name.value, category: ui.category.value, model: ui.model.value };
+}
+
+function fabricarReset(ui, flow) {
+  flow.sessionId = "";
+  flow.turn = null;
+  ui.interview.hidden = true;
+  ui.name.value = "";
+  fabricarShowError(ui, "");
+  fabricarShowStatus(ui, "");
+  fabricarFillModels(ui);
+}
+
+function fabricarShowTurn(ui, flow, turn) {
+  flow.turn = turn;
+  ui.interview.hidden = false;
+  ui.confidence.textContent = `Confiança da entrevista: ${turn.confidence || 0}%`;
+  const done = fabricarInterviewDone(turn);
+  ui.question.textContent = done ? "Entrevista concluída. Pode fabricar o processo." : (turn.question || "");
+  ui.guess.hidden = done || !turn.guess;
+  ui.guess.textContent = turn.guess ? `Aceitar o palpite: ${turn.guess}` : "";
+  ui.answer.value = "";
+  ui.answer.hidden = ui.send.hidden = done;
+}
+
+async function fabricarStart(ui, flow) {
+  fabricarShowError(ui, "");
+  const bad = fabricarNameError(ui.name.value);
+  if (bad) return fabricarShowError(ui, bad);
+  fabricarShowStatus(ui, "Iniciando a entrevista...");
+  const res = await api("/api/interview/start", { idea: ui.name.value.trim() });
+  fabricarShowStatus(ui, "");
+  if (!res.ok || !res.data.session) return fabricarShowError(ui, fabricarErrorMessage(res.status, res.data));
+  flow.sessionId = res.data.session.id;
+  fabricarShowTurn(ui, flow, res.data.turn);
+}
+
+async function fabricarAnswer(ui, flow, answer) {
+  const text = String(answer || "").trim();
+  if (!flow.sessionId || !text) return fabricarShowError(ui, "Escreva uma resposta.");
+  fabricarShowError(ui, "");
+  fabricarShowStatus(ui, "Processando a resposta...");
+  const res = await api("/api/interview/message", { session_id: flow.sessionId, answer: text });
+  fabricarShowStatus(ui, "");
+  if (!res.ok || !res.data.turn) return fabricarShowError(ui, fabricarErrorMessage(res.status, res.data));
+  fabricarShowTurn(ui, flow, res.data.turn);
+}
+
+async function fabricarRun(ui, flow, opts = {}) {
+  flow.lastRun = { skipInterview: !!opts.skipInterview };
+  fabricarShowError(ui, "");
+  const bad = fabricarNameError(ui.name.value);
+  if (bad) return fabricarShowError(ui, bad);
+  fabricarShowStatus(ui, "Fabricando o processo. Isso pode levar alguns minutos...");
+  let res;
+  try {
+    const turn = opts.skipInterview ? null : flow.turn;
+    res = await api("/api/fabricar/run", fabricarPayload(fabricarForm(ui), turn, opts.force));
+  } catch (e) {
+    res = { ok: false, status: 0, data: null };
+  }
+  fabricarShowStatus(ui, "");
+  if (!res.ok) return fabricarShowError(ui, fabricarErrorMessage(res.status, res.data), fabricarCanOverwrite(res.status, res.data));
+  ui.modal.close();
+  toast(`Processo ${res.data.canonical_name} criado.`);
+  await pollItems();
+  await fabricarPlot(res.data);
+}
+
+// Busca o loop gerado e o planta no Canvas; o Inspetor abre com a Tríade e a peça nova já está em Loops.
+async function fabricarPlot(result) {
+  if (fabricarNeedsReplaceConfirm(state.nodes.size)) {
+    const ok = await confirmDialog({
+      title: "Substituir a esteira do Canvas?",
+      message: `O Canvas tem ${state.nodes.size} nó(s). Plotar "${result.canonical_name}" substitui essa esteira (Ctrl+Z desfaz).`,
+      confirmLabel: "Substituir", danger: true,
+    });
+    if (!ok) {
+      toast(`Processo ${result.canonical_name} criado. Abra-o em Loops para vê-lo no Canvas.`);
+      return;
+    }
+  }
+  const res = await api(`/api/loops/${encodeURIComponent(result.canonical_name)}`);
+  const model = fabricarPlotModel(result, res.ok ? res.data : null);
+  fabricarApplyPlot(model);
+  if (!state.items.loop.some((i) => i.name === model.loopEntry.name)) {
+    toast("O processo foi criado, mas ainda não apareceu em Loops. Atualize o inventário.", true);
+  }
+}
+
+function fabricarApplyPlot(model) {
+  pushState();
+  [...state.nodes.keys()].forEach(removeNode);
+  if ($("pipeline-name")) $("pipeline-name").value = model.name;
+  model.nodes.forEach((n) => {
+    const node = { ...baseNode(n.id, n.x, n.y), label: n.label, piece: n.piece, routing: n.routing };
+    state.nodes.set(node.id, node);
+    renderNode(node);
+  });
+  state.edges = model.edges;
+  state.process = model.inspector;
+  clearValidation();
+  renderAllNodes();
+  renderEdges();
+  updateEmpty();
+  select({ kind: "process", id: model.name });
+}
+
+// Sobrescrever é destrutivo: confirma antes. O servidor guarda o original como .legoloop-bak.
+async function fabricarOverwrite(ui, flow) {
+  const ok = await confirmDialog({
+    title: "Sobrescrever o processo existente?",
+    message: "O processo atual será substituído. O original fica guardado como .legoloop-bak ao lado de cada arquivo.",
+    confirmLabel: "Sobrescrever", danger: true,
+  });
+  if (ok) await fabricarRun(ui, flow, { ...flow.lastRun, force: true });
+}
+
+function initFabricarModal() {
+  const open = $("btn-novo-processo");
+  const ui = fabricarElements();
+  if (!open || !ui.modal) return;
+  const flow = { sessionId: "", turn: null };
+  const busy = (btn, fn) => btn.addEventListener("click", () => withBusy(btn, fn));
+  open.addEventListener("click", () => { fabricarReset(ui, flow); ui.modal.showModal(); ui.name.focus(); });
+  $("btn-modal-fabricar-close")?.addEventListener("click", () => ui.modal.close());
+  busy(ui.start, () => fabricarStart(ui, flow));
+  busy(ui.skip, () => fabricarRun(ui, flow, { skipInterview: true }));
+  busy(ui.overwrite, () => fabricarOverwrite(ui, flow));
+  busy(ui.send, () => fabricarAnswer(ui, flow, ui.answer.value));
+  busy(ui.guess, () => fabricarAnswer(ui, flow, flow.turn && flow.turn.guess));
+  busy(ui.run, () => fabricarRun(ui, flow));
+  ui.answer.addEventListener("keydown", (e) => { if (e.key === "Enter") ui.send.click(); });
+}

@@ -6,6 +6,7 @@ import (
 
 	"legoloop/internal/interview"
 	"legoloop/internal/plangen"
+	"legoloop/internal/provider"
 )
 
 type planGenerateReq struct {
@@ -18,7 +19,7 @@ func (s *Server) getPlanGenerator() *plangen.Generator {
 		return s.PlanGen
 	}
 	inv := s.inventory(nil)
-	client := interview.NewRouterClient(inv.RouterURL, "", "code-pro")
+	client := interview.NewRouterClient(inv.RouterURL, provider.TrustedRouterKey(inv.RouterURL), "code-pro")
 	s.PlanGen = plangen.NewGenerator(client)
 	return s.PlanGen
 }

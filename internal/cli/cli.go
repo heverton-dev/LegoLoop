@@ -29,6 +29,8 @@ type Deps struct {
 	Ready    chan<- string
 	// Home substitui o diretório do usuário no inventário de ativos (vazio = HOME real; usado em testes).
 	Home string
+	// Fabricar injeta LLM, scanner e relógio do comando fabricar (nil = ambiente real; usado em testes).
+	Fabricar *FabricarDeps
 }
 
 func (d Deps) discover(ctx context.Context) provider.Inventory {
@@ -52,6 +54,7 @@ Comandos:
   import     <github-url> [--name N] [--json]         importa e canoniza skill do GitHub
   upgrade    <arquivo> [--diagnose|--apply] [--json]  diagnóstica ou valida elevação para Padrão Ouro
   matrix     [--kind K] [--tier T] [--min N] [--json] visualiza matriz de reputação das peças
+  fabricar   "<nome>" [--yes] [--goal T] [--model M] [--dry-run] [--json]  cria um processo novo (skill, loop, dag e docs)
   version
 `
 
@@ -64,7 +67,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 	cmds := map[string]func(context.Context, []string, Deps) int{
 		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
-		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix,
+		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

@@ -620,4 +620,3 @@ func (s *Server) handleAssetImport(w http.ResponseWriter, r *http.Request) {
 		"files_count": res.FilesCount,
 	})
 }
-

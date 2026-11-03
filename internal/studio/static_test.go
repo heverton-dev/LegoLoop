@@ -130,7 +130,7 @@ func TestInventoryPageWiring(t *testing.T) {
 
 // Todo texto vindo da API entra no DOM via textContent: innerHTML é proibido nos scripts.
 func TestNoInnerHTMLInScripts(t *testing.T) {
-	for _, f := range []string{"app.js", "ui.js", "inventory.js", "search.js", "virtual.js", "palette.js", "slots.js"} {
+	for _, f := range []string{"app.js", "ui.js", "inventory.js", "search.js", "virtual.js", "palette.js", "slots.js", "fabricar.js"} {
 		for i, line := range strings.Split(readStatic(t, f), "\n") {
 			if strings.HasPrefix(strings.TrimSpace(line), "//") {
 				continue // comentários podem citar a regra
@@ -493,6 +493,3 @@ func TestNoInlineStylesInComponents(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
-
-

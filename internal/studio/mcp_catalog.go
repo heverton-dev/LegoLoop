@@ -11,12 +11,12 @@ import (
 
 // MCPCatalogEntry descreve um MCP do catálogo embutido no LegoLoop (R-MCP-2).
 type MCPCatalogEntry struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Origin      string `json:"origin"`
-	Command     string `json:"command"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Origin      string   `json:"origin"`
+	Command     string   `json:"command"`
 	Args        []string `json:"args,omitempty"`
-	Installed   bool   `json:"installed"`
+	Installed   bool     `json:"installed"`
 }
 
 var builtinMCPCatalog = []MCPCatalogEntry{

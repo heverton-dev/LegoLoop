@@ -13,6 +13,7 @@
   <script src="slots.js" defer></script>
   <script src="inspector.js" defer></script>
   <script src="components/lego-item-modal.js" defer></script>
+  <script src="fabricar.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -36,6 +37,7 @@
       <button id="btn-route" class="btn" type="button">Traçar rota</button>
     </div>
     <div class="topbar__actions">
+      <button id="btn-novo-processo" class="btn btn--primary" type="button" title="Cria um processo novo: skill, loop e DAG">+ Novo Processo</button>
       <button id="btn-templates" class="btn" type="button" title="Galeria de Templates de Esteira"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Templates</button>
       <button id="btn-vault" class="btn" type="button" title="Gerenciar Cofre Canônico e Volumes do SO"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="7" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="17"/></svg> Cofre Canônico</button>
       <button id="btn-validate" class="btn" type="button">Validar</button>
@@ -176,6 +178,57 @@
 
   <!-- Modal Rico Enterprise de Peça (Web Component Canônico) -->
   <lego-item-modal id="modal-item"></lego-item-modal>
+
+  <!-- Modal de Fabricação de Processo: nome, modelo (cérebro), entrevista e criação -->
+  <dialog id="modal-fabricar" class="modal-item modal-fabricar" aria-labelledby="modal-fabricar-title">
+    <div class="modal-item-header">
+      <div class="modal-title-group">
+        <h3 id="modal-fabricar-title" class="modal-title">Novo Processo</h3>
+        <span class="modal-badge badge--canon">Fábrica</span>
+      </div>
+      <div class="modal-header-actions">
+        <button id="btn-modal-fabricar-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">&times;</button>
+      </div>
+    </div>
+    <div class="modal-item-body fabricar-body">
+      <div class="fabricar-form">
+        <div class="field">
+          <label for="fabricar-name" class="fabricar-label">Nome do processo</label>
+          <input id="fabricar-name" class="input" placeholder="extrator de audio" maxlength="120" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="fabricar-category" class="fabricar-label">Categoria</label>
+          <select id="fabricar-category" class="input">
+            <option value="build">Construir</option>
+            <option value="reverse">Engenharia reversa</option>
+            <option value="web">Web</option>
+            <option value="mobile">Mobile</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fabricar-model" class="fabricar-label">Modelo que conduz a fabricação</label>
+          <select id="fabricar-model" class="input"></select>
+        </div>
+        <div class="fabricar-actions">
+          <button id="fabricar-start" class="btn btn--primary" type="button">Iniciar Entrevista</button>
+          <button id="fabricar-skip" class="btn" type="button" title="Usa o nome como objetivo, sem entrevista">Fabricar sem entrevista</button>
+        </div>
+      </div>
+      <div id="fabricar-interview" class="fabricar-interview" hidden>
+        <p id="fabricar-confidence" class="fabricar-confidence"></p>
+        <p id="fabricar-question" class="fabricar-question"></p>
+        <button id="fabricar-guess" class="btn btn--ghost" type="button" hidden></button>
+        <div class="fabricar-answer-row">
+          <input id="fabricar-answer" class="input" placeholder="Sua resposta" autocomplete="off">
+          <button id="fabricar-send" class="btn" type="button">Responder</button>
+        </div>
+        <button id="fabricar-run" class="btn btn--primary" type="button">Fabricar processo</button>
+      </div>
+      <p id="fabricar-status" class="fabricar-status" role="status" hidden></p>
+      <p id="fabricar-error" class="fabricar-error" role="alert" hidden></p>
+      <button id="fabricar-overwrite" class="btn btn--danger fabricar-overwrite" type="button" hidden>Sobrescrever o processo existente</button>
+    </div>
+  </dialog>
 
   <!-- Modal do Cofre Canônico & Volumes -->
   <dialog id="modal-vault" class="modal-item" aria-labelledby="modal-vault-title">

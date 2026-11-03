@@ -386,6 +386,3 @@ func TestInteractivePromptContextCancellation(t *testing.T) {
 		t.Fatal("runner travou durante cancelamento em prompt interativo")
 	}
 }
-
-
-

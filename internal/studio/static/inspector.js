@@ -301,10 +301,22 @@ function renderNodePanel(body, node) {
   body.replaceChildren(...children);
 }
 
+// Painel do processo recém-fabricado: a Tríade e os três meios, com os caminhos já mascarados pelo servidor.
+function renderProcessPanel(body, proc) {
+  const children = [
+    el("h3", "panel__title", proc.title),
+    el("p", "panel__hint", "Processo fabricado: Tríade de governança e os três meios de execução."),
+    ...proc.rows.map((r) => kv(r.label, r.value)),
+    ...proc.notes.map((n) => el("p", "panel__hint", "Aviso: " + n)),
+  ];
+  body.replaceChildren(...children);
+}
+
 function renderInspector() {
   const body = $("inspector-body");
   const sel = state.selected;
   $("inspector").classList.toggle("is-open", Boolean(sel));
+  if (sel?.kind === "process" && state.process) return renderProcessPanel(body, state.process);
   if (sel?.kind === "edge") return renderEdgePanel(body, sel.id);
   if (!sel || sel.kind !== "node" || !state.nodes.has(sel.id)) {
     body.replaceChildren(el("p", "panel__hint", "Selecione um nó para configurar roteamento, execução e slots."));

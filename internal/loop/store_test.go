@@ -256,4 +256,3 @@ func TestStoreListIgnoresNonLoopFilesAndCorruptFiles(t *testing.T) {
 		t.Fatalf("esperava apenas 1 loop válido, obteve %+v", list)
 	}
 }
-

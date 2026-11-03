@@ -48,14 +48,14 @@ type PieceRating struct {
 
 // Autores e sementes de renome com score base de proveniência conhecido.
 var knownAuthors = map[string]float64{
-	"addy osmani":  1.0,
-	"matt pocock":  1.0,
-	"jesse powers": 0.95,
-	"lauren tan":   0.95,
-	"dan north":    0.95,
-	"kent beck":    1.0,
+	"addy osmani":   1.0,
+	"matt pocock":   1.0,
+	"jesse powers":  0.95,
+	"lauren tan":    0.95,
+	"dan north":     0.95,
+	"kent beck":     1.0,
 	"martin fowler": 1.0,
-	"ecc":          0.90,
+	"ecc":           0.90,
 }
 
 var (

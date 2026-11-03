@@ -224,7 +224,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 ### Épico 02 — Subcomando CLI `legoloop fabricar` e skill do Chat (`internal/cli`, `skills/`)
 
 #### Ticket `TICK-02.1` — CLI legoloop fabricar em modo autônomo (--yes, --json, --dry-run)
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["SG-E01"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `sonnet` · Effort `medium` · Fallback Harness `antigravity` · Modelo `flash`
@@ -242,7 +242,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 * **Escopo:** `Deps` injeta `Stdout`, `Stderr`, `Stdin` e `Home`. `legoloop fabricar "extrator de audio" --yes` imprime `[1/5]` a `[5/5]`, cria `legoloop-extrator-de-audio` e sai com 0 listando os caminhos; `--json` imprime o `Result`; nome inválido => exit 2; modelo fora do inventário ou `ErrExists` => exit 1 sem gravar. Flags: `--yes --goal --model --category --vault --docs --force --dry-run --trust-removable --link-harness`. Um teste chama `cmdValidate` sobre o `.dag.json` gerado e exige exit 0.
 
 #### Ticket `TICK-02.2` — CLI legoloop fabricar em modo interativo (bufio, [s/N])
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `sonnet` · Effort `medium` · Fallback Harness `antigravity` · Modelo `flash`
@@ -260,7 +260,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 * **Escopo:** Sem `--yes`: opções numeradas via `bufio` sobre `Stdin` (sem biblioteca externa), afunila até confiança ≥ 95% ou 12 turnos, lista os drives detectados para confirmar ou desmarcar e mostra o resumo dos caminhos antes de pedir `[s/N]`. Entrada inválida reapresenta a pergunta até 3 vezes e aborta; EOF ou `N` => exit 1 sem gravar nada.
 
 #### Ticket `TICK-02.3` — Registro no dispatcher e legado canonize intacto
-* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.2"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `sonnet` · Effort `medium` · Fallback Harness `antigravity` · Modelo `flash`
@@ -280,7 +280,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 * **Escopo:** Registra `fabricar` no mapa de comandos e no `help`. Como `fabricar` é comando próprio, o `canonize --root/--dry-run/--apply/--workers` legado não é tocado e não há despacho por flags. Prova: `legoloop fabricar --help` lista as flags, `canonize` continua exigindo `--root`, e as suítes existentes de `internal/cli` e `internal/canon` (CA-CANON-01 a 06) seguem verdes sem alteração.
 
 #### Ticket `TICK-02.4` — Skill legoloop-fabricar para o Chat (SKILL.md com stop-gate)
-* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.3"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `flash` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`
@@ -311,7 +311,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 ### Épico 03 — Interface Web & Canvas no Studio (`internal/studio`)
 
 #### Ticket `TICK-03.1` — API POST /api/fabricar/run: contrato e segurança
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["SG-E02"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `sonnet` · Effort `medium` · Fallback Harness `antigravity` · Modelo `flash`
@@ -330,7 +330,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 * **Escopo:** Campo `Fabricar` no `studio.Server` (padrão de `Interview`) e rota registrada atrás do middleware `secure`. Prova via `httptest`: `GET` => 405; origem cruzada ou Host inválido rejeitados; nome inválido => 400 com `ErrInvalidName`; existente => 409; nome com `../` não grava nada fora do cofre; sucesso devolve `Result` com `Content-Type: application/json`. Rota distinta de `/api/canonize/*`, que segue sendo a desduplicação.
 
 #### Ticket `TICK-03.2` — API de fabricação: exclusão mútua, falha limpa e catálogo atualizado
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-03.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `sonnet` · Effort `medium` · Fallback Harness `antigravity` · Modelo `flash`
@@ -349,7 +349,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 * **Escopo:** Segue `handleCanonizePiece`: `TryLock` (409 se já houver execução), `context.WithoutCancel` com timeout. Falha de LLM devolve 5xx sem artefatos parciais. Após o sucesso o handler aciona `Assets.Refresh`, e `GET /api/loops` lista `legoloop-<slug>` e `GET /api/assets/skill` lista a skill gerada, sem reiniciar o servidor.
 
 #### Ticket `TICK-03.3` — Modal + Novo Processo com seletor de modelo (HTML, CSS e JS)
-* **Nature:** `micro` | **Tipo:** `ui_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `ui_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-03.2"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `sonnet` · Effort `medium` · Fallback Harness `antigravity` · Modelo `flash`
@@ -368,7 +368,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 * **Escopo:** O teste novo falha primeiro: o HTML tem os ids `btn-novo-processo`, `modal-fabricar`, `fabricar-name`, `fabricar-model` e `fabricar-start`; sem `alert(`, `confirm(`, `prompt(`, script inline nem emoji; CSP `default-src 'self'` inalterada. O dropdown lê `GET /api/inventory`; "Iniciar Entrevista" reutiliza `/api/interview/*`; erros aparecem no próprio modal. A suíte completa do pacote cobre `TestZeroEmojisInFrontendAndTemplates`, `TestNoNativeDialogs` e a CSP (a V1 só rodava os dois primeiros e passava sem implementar nada).
 
 #### Ticket `TICK-03.4` — Plotagem automática no Canvas, Inspetor e barra lateral de Loops
-* **Nature:** `micro` | **Tipo:** `ui_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `ui_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-03.3"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `sonnet` · Effort `medium` · Fallback Harness `antigravity` · Modelo `flash`
@@ -401,7 +401,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 
 Tickets de verificação, sem código novo. Cada comando é um argv, sem shell.
 #### Ticket `TICK-04.1` — Homologação mecânica final: regressão, estática, binário e smoke hermético
-* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PASSED`
 * **Dependências:** `["SG-E03"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `flash` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`
@@ -426,7 +426,7 @@ Tickets de verificação, sem código novo. Cada comando é um argv, sem shell.
 * **Escopo:** Tudo hermético: o smoke grava só em `scratch/smoke-fabricar` (ignorado pelo git) e o cofre real `~/.aidd` não é tocado; a última etapa remove o diretório. `gofmt -l .` não tem como falhar por exit code, então é item obrigatório do `SG-FINAL`. `go test -race` só roda onde houver CGO (obrigatório no CI Linux).
 
 #### Ticket `TICK-04.2` — Relatório formal e registro da sessão
-* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PASSED`
 * **Dependências:** `["TICK-04.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `antigravity` · Modelo `flash` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`

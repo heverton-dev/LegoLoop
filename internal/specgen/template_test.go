@@ -154,3 +154,25 @@ func TestSpecGenerator_AllowsGoTemplateSyntaxInBody(t *testing.T) {
 		t.Fatalf("sintaxe de template Go no corpo não é placeholder: %v", err)
 	}
 }
+
+// O TEMPLATE_SPEC escreve o ID entre crases (* [ ] `AC-E01.1`: **Título**), e é assim que os LLMs o reproduzem.
+// O validador exigia o ID colado ao colchete e recusava a SPEC correta (falha só vista com um LLM real).
+func TestSpecGenerator_AcceptsCriteriaInTheTemplateFormat(t *testing.T) {
+	cases := map[string]string{
+		"crases":   "* [ ] `AC-E01.1`: **Caminho feliz**",
+		"negrito":  "* [ ] **AC-E01.1**: Caminho feliz",
+		"sem nada": "* [ ] AC-E01.1: Caminho feliz",
+	}
+	for name, line := range cases {
+		t.Run(name, func(t *testing.T) {
+			body := strings.Replace(bodyOK, "* [ ] AC-E01.1: Caminho feliz", line, 1)
+			res, err := generate(t, &capturingLLM{output: body}, "# INTENT")
+			if err != nil {
+				t.Fatalf("a SPEC no formato do template foi recusada: %v", err)
+			}
+			if len(res.Criteria) != 1 || res.Criteria[0] != "AC-E01.1" {
+				t.Errorf("o ID extraído não pode carregar crases ou asteriscos: %v", res.Criteria)
+			}
+		})
+	}
+}

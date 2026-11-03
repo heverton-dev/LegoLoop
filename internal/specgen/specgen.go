@@ -71,6 +71,10 @@ func SystemPrompt(today, intentRef string) string {
 }
 
 // Generate consome o caminho do INTENT, consulta o grafo e gera a SPEC.
+// ErrContract: a SPEC devolvida pelo LLM não segue o contrato do template. Diferente de falha de transporte,
+// vale tentar de novo com o motivo da rejeição.
+var ErrContract = errors.New("especificação gerada violou o contrato")
+
 func (g *Generator) Generate(ctx context.Context, baseDir, intentPath string) (*SpecResult, error) {
 	intentContent, err := os.ReadFile(intentPath)
 	if err != nil {
@@ -83,12 +87,12 @@ func (g *Generator) Generate(ctx context.Context, baseDir, intentPath string) (*
 	}
 	criteria, err := validateSpecMarkdown(rawMarkdown)
 	if err != nil {
-		return nil, fmt.Errorf("especificação gerada violou o contrato: %w", err)
+		return nil, fmt.Errorf("%w: %w", ErrContract, err)
 	}
 	specsDir, specFileName := specLocation(baseDir, intentPath, today)
 	doc, err := stampHeader(rawMarkdown, newHeader(today, intentPath, specsDir, string(intentContent)))
 	if err != nil {
-		return nil, fmt.Errorf("especificação gerada violou o contrato: %w", err)
+		return nil, fmt.Errorf("%w: %w", ErrContract, err)
 	}
 	specFilePath := filepath.Join(specsDir, specFileName)
 	if err := os.WriteFile(specFilePath, []byte(doc), 0644); err != nil {
@@ -206,7 +210,7 @@ func validateSpecMarkdown(content string) ([]string, error) {
 		return nil, fmt.Errorf("a SPEC deixou placeholder sem preencher: %s", m)
 	}
 
-	reAC := regexp.MustCompile(`(?i)\*\s*\[\s*\]\s*(AC-[A-Za-z0-9_.-]+)`)
+	reAC := regexp.MustCompile(`(?i)\*\s*\[\s*\]\s*[\x60*]*(AC-[A-Za-z0-9_.-]+)`)
 	matches := reAC.FindAllStringSubmatch(content, -1)
 	if len(matches) == 0 {
 		return nil, errors.New("a SPEC não contém nenhum critério binário de aceite 'AC-XX'")

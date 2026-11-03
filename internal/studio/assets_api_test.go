@@ -353,4 +353,3 @@ func TestAssetImportRejectsInvalidURL(t *testing.T) {
 		t.Errorf("esperava status 400 para url vazia, obteve %d", recEmpty.Code)
 	}
 }
-

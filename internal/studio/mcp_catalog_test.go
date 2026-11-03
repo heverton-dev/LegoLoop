@@ -45,7 +45,6 @@ func TestMCPInstallRequiresConsent(t *testing.T) {
 	}
 }
 
-
 func TestMCPInstallWithConsentCreatesConfig(t *testing.T) {
 	s, _ := newServer(t)
 	h := s.Handler()

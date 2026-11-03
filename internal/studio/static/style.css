@@ -2123,3 +2123,60 @@ lego-item-modal {
 
 
 
+
+/* Modal de fabricação de processo */
+.modal-fabricar {
+  height: auto;
+  max-height: min(680px, 90vh);
+}
+.fabricar-body {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  overflow-y: auto;
+}
+.fabricar-form,
+.fabricar-interview {
+  display: grid;
+  gap: var(--space-3);
+}
+.fabricar-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.fabricar-actions,
+.fabricar-answer-row {
+  display: flex;
+  gap: var(--space-2);
+}
+.fabricar-answer-row .input {
+  flex: 1;
+}
+.fabricar-interview {
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-3);
+}
+.fabricar-confidence {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+}
+.fabricar-question {
+  font-weight: 500;
+  margin: 0;
+}
+.fabricar-status {
+  color: var(--text-muted);
+  margin: 0;
+}
+.fabricar-error {
+  color: var(--danger, #e5484d);
+  margin: 0;
+}
+.fabricar-interview[hidden],
+.fabricar-status[hidden],
+.fabricar-overwrite[hidden],
+.fabricar-error[hidden] {
+  display: none;
+}

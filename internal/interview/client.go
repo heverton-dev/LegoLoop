@@ -44,6 +44,7 @@ func (c *RouterLLMClient) Chat(ctx context.Context, messages []Message) (string,
 		"model":       c.Model,
 		"messages":    messages,
 		"temperature": 0.3,
+		"stream":      false, // o 9Router transmite em SSE por padrão; este cliente só decodifica JSON
 	}
 
 	data, err := json.Marshal(reqBody)

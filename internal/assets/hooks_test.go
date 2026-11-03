@@ -102,4 +102,3 @@ func TestGuardHooksRecognition(t *testing.T) {
 		t.Errorf("segredo não deveria vazar na descrição do hook: %q", preCommit.Description)
 	}
 }
-

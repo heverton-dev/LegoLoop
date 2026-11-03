@@ -40,10 +40,10 @@ func TestClient_FetchReadyCards_Success(t *testing.T) {
 	defer server.Close()
 
 	client := board.NewClient(board.ClientConfig{
-		BaseURL:   server.URL,
-		Token:     "test-token",
-		Guard:     board.NewTokenBucketGuard(100),
-		HTTPCli:   server.Client(),
+		BaseURL: server.URL,
+		Token:   "test-token",
+		Guard:   board.NewTokenBucketGuard(100),
+		HTTPCli: server.Client(),
 	})
 
 	cards, err := client.FetchReadyCards(context.Background())

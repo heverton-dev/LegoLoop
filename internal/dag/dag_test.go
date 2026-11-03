@@ -254,5 +254,3 @@ func TestRoutingEffortValidation(t *testing.T) {
 		}
 	}
 }
-
-

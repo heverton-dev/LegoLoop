@@ -62,11 +62,14 @@ type Server struct {
 	SpecGen *specgen.Generator
 	// PlanGen é o gerador híbrido de planos e rotas; se nil, inicializa sob demanda.
 	PlanGen *plangen.Generator
+	// Fabricar cria processos novos (POST /api/fabricar/run); nil usa a fábrica real com o 9Router do inventário.
+	Fabricar FabricarFunc
 
 	matrixOnce sync.Once
 	matrixReg  *reputation.RegistryMatrix
 
-	canonMu sync.Mutex
+	canonMu    sync.Mutex
+	fabricarMu sync.Mutex
 
 	invMu   sync.Mutex
 	inv     provider.Inventory
@@ -78,7 +81,7 @@ func (s *Server) Handler() http.Handler {
 	static, _ := fs.Sub(staticFS, "static")
 	mux := http.NewServeMux()
 	files := http.FileServerFS(static)
-	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /style.css", "GET /components/"} {
+	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /style.css", "GET /components/"} {
 		mux.Handle(p, files)
 	}
 	mux.HandleFunc("GET /inventario", handlePage("inventario.html"))
@@ -102,6 +105,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/assets/reveal", s.handleAssetReveal)
 	mux.HandleFunc("POST /api/assets/import", s.handleAssetImport)
 	mux.HandleFunc("POST /api/canonize/piece", s.handleCanonizePiece)
+	mux.HandleFunc("POST /api/fabricar/run", s.handleFabricarRun)
 	mux.HandleFunc("POST /api/assets/{kind}/{id}/favorite", s.handlePieceFavorite)
 	mux.HandleFunc("POST /api/assets/{kind}/{id}/upgrade", s.handlePieceUpgrade)
 	mux.HandleFunc("DELETE /api/assets/{kind}/{id}", s.handlePieceDelete)

@@ -528,6 +528,3 @@ gate: file_exists('SPEC.md')
 		t.Errorf("Block com portas ontológicas inválidas: %+v", info.Block)
 	}
 }
-
-
-

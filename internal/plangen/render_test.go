@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -150,4 +151,32 @@ func parseRoute(t *testing.T, raw string) map[string]any {
 		t.Fatalf("ROUTE inválido: %v", err)
 	}
 	return m
+}
+
+// Mesmo formato do template: o ID do critério vem entre crases. Sem reconhecê-lo, o aviso de critério sem
+// ticket nunca disparava para SPECs reais.
+func TestRender_RecognizesCriteriaInTheTemplateFormat(t *testing.T) {
+	base := t.TempDir()
+	dir := filepath.Join(base, "docs", "specs")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	spec := filepath.Join(dir, "2026-11-03_SPEC_SERVICO.md")
+	body := strings.ReplaceAll(specBody, "* [ ] AC-", "* [ ] `AC-")
+	body = regexp.MustCompile("`AC-([A-Za-z0-9_.-]+):").ReplaceAllString(body, "`AC-$1`:")
+	if body == specBody || !strings.Contains(body, "`AC-") {
+		t.Skip("a SPEC de teste não usa a lista de critérios esperada")
+	}
+	if err := os.WriteFile(spec, []byte(body), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	tickets := []plangen.Ticket{{ID: "TICK-01.1", Title: "Primeiro", EpicID: "E01", Nature: "micro", ExecutionMode: "sequential",
+		TargetFiles: []string{"a.go"}, ValidationCmd: "go test ./...", SpecCriteria: []string{"AC-E01.1"}}}
+	res, err := plangen.Render(base, spec, tickets, plangen.SupervisionEpic, fixedNow)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(strings.Join(res.Warnings, "\n"), "AC-E01.2") {
+		t.Errorf("os critérios entre crases devem ser reconhecidos (o AC-E01.2 não tem ticket): %v", res.Warnings)
+	}
 }

@@ -24,6 +24,26 @@ type Deps struct {
 	Ask         AskFunc             // modo interativo: entrega as perguntas ao usuário
 	In          io.Reader           // modo interativo sem Ask: lê as respostas daqui
 	Out         io.Writer           // idem: escreve as perguntas aqui
+	Progress    ProgressFunc        // opcional: avisa o início de cada uma das Layers camadas
+	Confirm     ConfirmFunc         // opcional: última palavra do usuário, com todos os caminhos, antes de gravar
+}
+
+// ConfirmFunc recebe os caminhos que serão gravados e devolve true para prosseguir. Não é chamada no dry-run.
+type ConfirmFunc func(paths []string) (bool, error)
+
+// ErrAborted: o usuário recusou a gravação; nada foi escrito.
+var ErrAborted = errors.New("fabricar: cancelado pelo usuário")
+
+// Layers é o número de camadas que Fabricar percorre: Clarificação, Varredura, Fusão, Tríade e Template.
+const Layers = 5
+
+// ProgressFunc recebe o número da camada (1..Layers) e o seu nome, antes de ela começar.
+type ProgressFunc func(layer int, name string)
+
+func (d Deps) progress(layer int, name string) {
+	if d.Progress != nil {
+		d.Progress(layer, name)
+	}
 }
 
 // Result representa a entrega canônica da fábrica de processos. Sucesso é err == nil.
@@ -94,6 +114,7 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if err := preflight(deps, name, req.Force); err != nil {
 		return nil, err
 	}
+	deps.progress(1, "Clarificação")
 	clar, err := NewClarifier(deps.LLM).Clarify(ctx, req, deps.Ask)
 	if err != nil {
 		return nil, err
@@ -123,6 +144,7 @@ func preflight(d Deps, name string, force bool) error {
 
 // curate é a Camada 2 (varredura) e a Camada 3 (fusão).
 func curate(ctx context.Context, req Request, d Deps) (ScanResult, Merged, error) {
+	d.progress(2, "Varredura")
 	roots, skipped := req.TargetDrives, []SkippedRoot(nil)
 	if len(roots) == 0 {
 		roots, skipped = SystemRoots(ctx)
@@ -132,6 +154,7 @@ func curate(ctx context.Context, req Request, d Deps) (ScanResult, Merged, error
 		return scan, Merged{}, err
 	}
 	scan.Skipped = append(skipped, scan.Skipped...)
+	d.progress(3, "Fusão")
 	return scan, ArchitectMerge(scan.Pieces, MergeOptions{TrustRemovable: req.TrustRemovable}), nil
 }
 
@@ -151,12 +174,17 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	slug := strings.TrimPrefix(name, namePrefix)
 	ps := ProcessSpec{Name: name, Description: clar.Mirror.Outcome, Goal: clar.Mirror.Outcome, Model: req.ModelChoice, Produces: producesFor(req.Category), Steps: m.Steps}
 	dagPath := filepath.Join(d.Roots.Vault, "loops", name+".dag.json")
+	d.progress(4, "Tríade")
 	tri, err := buildTriad(ctx, d.LLM, clar, ps, dagPath, now)
 	if err != nil {
 		return nil, err
 	}
+	d.progress(5, "Template e gravação")
 	files, err := plannedFiles(d.Roots, ps, tri, now)
 	if err != nil {
+		return nil, err
+	}
+	if err := d.confirm(req, files); err != nil {
 		return nil, err
 	}
 	art, err := Materialize(ctx, MaterializePlan{Name: name, Roots: d.Roots, Files: files, Force: req.Force, DryRun: req.DryRun}, d.FS)
@@ -168,6 +196,25 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	art.SkillLinks = links
 	return &Result{CanonicalName: name, Slug: slug, CreatedAt: now, Artifacts: art, CuratedPieces: m.Used,
 		SkippedRoots: scan.Skipped, Warnings: append(warns, lwarns...)}, nil
+}
+
+// confirm pede a última confirmação antes de gravar. O dry-run não grava e por isso não pergunta.
+func (d Deps) confirm(req Request, files []PlannedFile) error {
+	if d.Confirm == nil || req.DryRun {
+		return nil
+	}
+	paths := make([]string, len(files))
+	for i, f := range files {
+		paths[i] = f.Path
+	}
+	ok, err := d.Confirm(paths)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return ErrAborted
+	}
+	return nil
 }
 
 // plannedFiles monta a lista final de arquivos: os três meios no cofre e a governança em docs/.

@@ -10,7 +10,6 @@ import (
 
 	"legoloop/internal/interview"
 	"legoloop/internal/plangen"
-	"legoloop/internal/specgen"
 )
 
 type namedFile struct {
@@ -35,9 +34,7 @@ func buildTriad(ctx context.Context, llm interview.LLMClient, clar Clarification
 	if err != nil {
 		return triadFiles{}, err
 	}
-	gen := specgen.NewGenerator(llm, nil)
-	gen.Now = func() time.Time { return now }
-	spec, err := gen.Generate(ctx, stage, intentPath)
+	spec, err := generateSpec(ctx, llm, stage, intentPath, now)
 	if err != nil {
 		return triadFiles{}, err
 	}

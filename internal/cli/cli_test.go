@@ -347,7 +347,6 @@ func TestCanonizeWarnsSkippedGitRoot(t *testing.T) {
 	}
 }
 
-
 // TICK-1203: legoloop forge abre o Studio e dispara a primeira varredura.
 func TestForgeServesAndTriggersInitialScan(t *testing.T) {
 	d, out, _ := deps(t)
@@ -446,5 +445,3 @@ func TestImportCLIValidation(t *testing.T) {
 		t.Fatalf("mensagem esperada sobre github: %s", errb2.String())
 	}
 }
-
-
