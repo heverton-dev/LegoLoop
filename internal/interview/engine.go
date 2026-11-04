@@ -34,12 +34,9 @@ func (e *Engine) Start(ctx context.Context, initialIdea string) (*Session, *Turn
 	if strings.TrimSpace(initialIdea) == "" {
 		return nil, nil, errors.New("a ideia inicial não pode ser vazia")
 	}
-
-	sessionID := fmt.Sprintf("intv_%d", time.Now().UnixNano())
 	now := time.Now()
-
 	sess := &Session{
-		ID:         sessionID,
+		ID:         fmt.Sprintf("intv_%d", now.UnixNano()),
 		CreatedAt:  now,
 		UpdatedAt:  now,
 		Status:     StatusInProgress,
@@ -51,27 +48,13 @@ func (e *Engine) Start(ctx context.Context, initialIdea string) (*Session, *Turn
 			{Role: "user", Content: fmt.Sprintf("Minha ideia inicial é: %s", initialIdea)},
 		},
 	}
-
-	rawResp, err := e.llm.Chat(ctx, sess.Messages)
+	turn, err := e.exchange(ctx, sess)
 	if err != nil {
-		return nil, nil, fmt.Errorf("falha ao invocar LLM: %w", err)
+		return nil, nil, err
 	}
-
-	sess.Messages = append(sess.Messages, Message{Role: "assistant", Content: rawResp})
-	turn := ParseTurnResult(rawResp)
-	turn.SessionID = sessionID
-
-	sess.Confidence = turn.Confidence
-	sess.Hypothesis = turn.Hypothesis
-	if turn.Status == StatusCompleted {
-		sess.Status = StatusCompleted
-		sess.Mirror = turn.Mirror
-	}
-
 	e.mu.Lock()
-	e.sessions[sessionID] = sess
+	e.sessions[sess.ID] = sess
 	e.mu.Unlock()
-
 	return sess, turn, nil
 }
 
@@ -80,38 +63,36 @@ func (e *Engine) Step(ctx context.Context, sessionID, answer string) (*TurnResul
 	if strings.TrimSpace(answer) == "" {
 		return nil, errors.New("a resposta não pode ser vazia")
 	}
-
 	e.mu.Lock()
 	sess, exists := e.sessions[sessionID]
 	e.mu.Unlock()
-
 	if !exists {
 		return nil, fmt.Errorf("sessão %s não encontrada", sessionID)
 	}
 	if sess.Status == StatusCompleted {
 		return nil, errors.New("esta entrevista já foi finalizada")
 	}
-
 	sess.Messages = append(sess.Messages, Message{Role: "user", Content: answer})
 	sess.Turns++
 	sess.UpdatedAt = time.Now()
+	return e.exchange(ctx, sess)
+}
 
+// exchange envia as mensagens ao cérebro, registra a resposta e atualiza a sessão com o turno lido.
+func (e *Engine) exchange(ctx context.Context, sess *Session) (*TurnResult, error) {
 	rawResp, err := e.llm.Chat(ctx, sess.Messages)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao invocar LLM: %w", err)
 	}
-
 	sess.Messages = append(sess.Messages, Message{Role: "assistant", Content: rawResp})
 	turn := ParseTurnResult(rawResp)
-	turn.SessionID = sessionID
-
+	turn.SessionID = sess.ID
 	sess.Confidence = turn.Confidence
 	sess.Hypothesis = turn.Hypothesis
 	if turn.Status == StatusCompleted {
 		sess.Status = StatusCompleted
 		sess.Mirror = turn.Mirror
 	}
-
 	return turn, nil
 }
 
@@ -180,6 +161,23 @@ var (
 	reOutOfScope  = regexp.MustCompile(`(?i)- Fora de Escopo:\s*([^\n]+)`)
 )
 
+// capture devolve o primeiro grupo de re em raw, sem espaços nas pontas, e se houve casamento.
+func capture(re *regexp.Regexp, raw string) (string, bool) {
+	if m := re.FindStringSubmatch(raw); len(m) > 1 {
+		return strings.TrimSpace(m[1]), true
+	}
+	return "", false
+}
+
+// splitItems separa uma lista escrita em uma linha, com itens separados por vírgula.
+func splitItems(s string) []string {
+	var out []string
+	for _, item := range strings.Split(s, ",") {
+		out = append(out, strings.TrimSpace(item))
+	}
+	return out
+}
+
 // ParseTurnResult extrai os campos estruturados da resposta em linguagem natural da LLM.
 func ParseTurnResult(raw string) *TurnResult {
 	turn := &TurnResult{
@@ -187,58 +185,47 @@ func ParseTurnResult(raw string) *TurnResult {
 		RawResponse: raw,
 		Confidence:  50,
 	}
-
-	if m := reHypothesis.FindStringSubmatch(raw); len(m) > 1 {
-		turn.Hypothesis = strings.TrimSpace(m[1])
-	}
-	if m := reConfidence.FindStringSubmatch(raw); len(m) > 1 {
-		if val, err := strconv.Atoi(m[1]); err == nil {
+	turn.Hypothesis, _ = capture(reHypothesis, raw)
+	if s, ok := capture(reConfidence, raw); ok {
+		if val, err := strconv.Atoi(s); err == nil {
 			turn.Confidence = val
 		}
 	}
-	if m := reQuestion.FindStringSubmatch(raw); len(m) > 1 {
-		turn.Question = strings.TrimSpace(m[1])
-	}
-	if m := reGuess.FindStringSubmatch(raw); len(m) > 1 {
-		turn.Guess = strings.TrimSpace(m[1])
-	}
-
+	turn.Question, _ = capture(reQuestion, raw)
+	turn.Guess, _ = capture(reGuess, raw)
 	// Se houver espelho canônico ou confiança >= 95%
 	if strings.Contains(strings.ToUpper(raw), "ESPELHO CANÔNICO") || turn.Confidence >= 95 {
-		mirror := &Mirror{}
-		if m := reOutcome.FindStringSubmatch(raw); len(m) > 1 {
-			mirror.Outcome = strings.TrimSpace(m[1])
-		}
-		if m := reUser.FindStringSubmatch(raw); len(m) > 1 {
-			mirror.User = strings.TrimSpace(m[1])
-		}
-		if m := reWhyNow.FindStringSubmatch(raw); len(m) > 1 {
-			mirror.WhyNow = strings.TrimSpace(m[1])
-		}
-		if m := reSuccess.FindStringSubmatch(raw); len(m) > 1 {
-			mirror.Success = strings.TrimSpace(m[1])
-		}
-		if m := reConstraints.FindStringSubmatch(raw); len(m) > 1 {
-			for _, item := range strings.Split(m[1], ",") {
-				mirror.Constraints = append(mirror.Constraints, strings.TrimSpace(item))
-			}
-		}
-		if m := reOutOfScope.FindStringSubmatch(raw); len(m) > 1 {
-			for _, item := range strings.Split(m[1], ",") {
-				mirror.OutOfScope = append(mirror.OutOfScope, strings.TrimSpace(item))
-			}
-		}
-
-		if mirror.Outcome != "" || turn.Confidence >= 95 {
-			turn.Mirror = mirror
-			turn.Status = StatusCompleted
-			if turn.Confidence < 95 {
-				turn.Confidence = 95
-			}
-		}
+		completeTurn(turn, parseMirror(raw))
 	}
-
 	return turn
+}
+
+// parseMirror lê os seis campos do espelho canônico.
+func parseMirror(raw string) *Mirror {
+	m := &Mirror{}
+	m.Outcome, _ = capture(reOutcome, raw)
+	m.User, _ = capture(reUser, raw)
+	m.WhyNow, _ = capture(reWhyNow, raw)
+	m.Success, _ = capture(reSuccess, raw)
+	if s, ok := capture(reConstraints, raw); ok {
+		m.Constraints = splitItems(s)
+	}
+	if s, ok := capture(reOutOfScope, raw); ok {
+		m.OutOfScope = splitItems(s)
+	}
+	return m
+}
+
+// completeTurn dá o turno por concluído quando o espelho traz o resultado esperado ou a confiança chegou a 95%.
+func completeTurn(turn *TurnResult, mirror *Mirror) {
+	if mirror.Outcome == "" && turn.Confidence < 95 {
+		return
+	}
+	turn.Mirror = mirror
+	turn.Status = StatusCompleted
+	if turn.Confidence < 95 {
+		turn.Confidence = 95
+	}
 }
 
 func sanitizeFileName(s string) string {

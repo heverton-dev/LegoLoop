@@ -38,40 +38,47 @@ func (c *RouterLLMClient) Chat(ctx context.Context, messages []Message) (string,
 	if c.BaseURL == "" {
 		return "", errors.New("router_url não configurada")
 	}
-
-	url := c.BaseURL + "/v1/chat/completions"
-	reqBody := map[string]any{
-		"model":       c.Model,
-		"messages":    messages,
-		"temperature": 0.3,
-		"stream":      false, // o 9Router transmite em SSE por padrão; este cliente só decodifica JSON
-	}
-
-	data, err := json.Marshal(reqBody)
+	req, err := c.newChatRequest(ctx, messages)
 	if err != nil {
 		return "", err
 	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(data))
-	if err != nil {
-		return "", err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	if c.APIKey != "" {
-		req.Header.Set("Authorization", "Bearer "+c.APIKey)
-	}
-
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("falha na requisição ao 9Router: %w", err)
 	}
 	defer resp.Body.Close()
+	return decodeCompletion(resp)
+}
 
+// newChatRequest monta o POST de chat. O 9Router transmite em SSE por padrão; este cliente só decodifica
+// JSON, por isso stream é falso.
+func (c *RouterLLMClient) newChatRequest(ctx context.Context, messages []Message) (*http.Request, error) {
+	data, err := json.Marshal(map[string]any{
+		"model":       c.Model,
+		"messages":    messages,
+		"temperature": 0.3,
+		"stream":      false,
+	})
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.BaseURL+"/v1/chat/completions", bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	if c.APIKey != "" {
+		req.Header.Set("Authorization", "Bearer "+c.APIKey)
+	}
+	return req, nil
+}
+
+// decodeCompletion lê o texto da primeira escolha da resposta do 9Router.
+func decodeCompletion(resp *http.Response) (string, error) {
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		body, _ := io.ReadAll(resp.Body)
 		return "", fmt.Errorf("9Router retornou status %d: %s", resp.StatusCode, string(body))
 	}
-
 	var completion struct {
 		Choices []struct {
 			Message struct {
@@ -79,13 +86,11 @@ func (c *RouterLLMClient) Chat(ctx context.Context, messages []Message) (string,
 			} `json:"message"`
 		} `json:"choices"`
 	}
-
 	if err := json.NewDecoder(resp.Body).Decode(&completion); err != nil {
 		return "", fmt.Errorf("falha ao decodificar JSON do 9Router: %w", err)
 	}
 	if len(completion.Choices) == 0 {
 		return "", errors.New("9Router retornou choices vazias")
 	}
-
 	return completion.Choices[0].Message.Content, nil
 }
