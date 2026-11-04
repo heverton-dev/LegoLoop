@@ -340,7 +340,7 @@
 * **Escopo:** Cada decisão traz Motivo (determinístico) e Explicacao (cérebro); quando o cérebro devolve ordem diferente, o ranking calculado vale e a divergência aparece em Divergencias.
 
 #### Ticket `TICK-02.8` — Contrato único de etapa e as seis projeções
-* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.7"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `high` · Fallback Harness `9router` · Modelo `code-fast`
