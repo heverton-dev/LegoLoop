@@ -445,7 +445,7 @@
 * **Escopo:** Processo existente: exit 1 e oferta de 'refinar'. Cérebro além do tempo limite: exit 1, mensagem STE-PT com o limite e como mudá-lo, zero arquivos. 'Cancelar' no cartão: exit 1 e zero arquivos.
 
 #### Ticket `TICK-02.15` — Studio envia a entrevista inteira à fabricação
-* **Nature:** `micro` | **Tipo:** `ui_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `ui_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.4","TICK-02.13"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`

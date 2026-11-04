@@ -2300,7 +2300,8 @@ async function fabricarRun(ui, flow, opts = {}) {
   let res;
   try {
     const turn = opts.skipInterview ? null : flow.turn;
-    res = await api("/api/fabricar/run", fabricarPayload(fabricarForm(ui), turn, opts.force));
+    const sessId = opts.skipInterview ? "" : flow.sessionId;
+    res = await api("/api/fabricar/run", fabricarPayload(fabricarForm(ui), turn, opts.force, sessId));
   } catch (e) {
     res = { ok: false, status: 0, data: null };
   }

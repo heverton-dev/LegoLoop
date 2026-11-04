@@ -21,17 +21,18 @@ type FabricarFunc func(ctx context.Context, req fabricar.Request) (*fabricar.Res
 // fabricarRunRequest é tudo que o cliente pode pedir. Caminhos, confiança em mídia removível, link em harness
 // e drives são decisões do operador (servidor) e não existem aqui: campo desconhecido vira 400.
 type fabricarRunRequest struct {
-	Name     string `json:"name"`
-	Goal     string `json:"goal"`
-	Category string `json:"category"`
-	Model    string `json:"model"`
-	Force    bool   `json:"force"`
+	Name       string `json:"name"`
+	Goal       string `json:"goal"`
+	Category   string `json:"category"`
+	Model      string `json:"model"`
+	Force      bool   `json:"force"`
+	Entrevista string `json:"entrevista,omitempty"`
 }
 
 // handleFabricarRun materializa um processo novo (skill, loop, dag e documentos). Rota distinta de
 // /api/canonize/*, que segue sendo a desduplicação.
 func (s *Server) handleFabricarRun(w http.ResponseWriter, r *http.Request) {
-	req, ok := decodeFabricarRequest(w, r)
+	req, rawReq, ok := s.decodeFabricarRequest(w, r)
 	if !ok {
 		return
 	}
@@ -53,7 +54,7 @@ func (s *Server) handleFabricarRun(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(r.Context()), fabricarTimeout)
 	defer cancel()
 	_ = http.NewResponseController(w).SetWriteDeadline(time.Now().Add(fabricarTimeout))
-	res, err := s.runFabricar(ctx, req)
+	res, err := s.runFabricar(ctx, req, rawReq.Entrevista)
 	if err != nil {
 		writeFabricarError(w, err)
 		return
@@ -64,7 +65,7 @@ func (s *Server) handleFabricarRun(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, s.maskResult(res))
 }
 
-func decodeFabricarRequest(w http.ResponseWriter, r *http.Request) (fabricar.Request, bool) {
+func (s *Server) decodeFabricarRequest(w http.ResponseWriter, r *http.Request) (fabricar.Request, fabricarRunRequest, bool) {
 	var in fabricarRunRequest
 	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()
@@ -73,26 +74,27 @@ func decodeFabricarRequest(w http.ResponseWriter, r *http.Request) (fabricar.Req
 	switch {
 	case errors.As(err, &tooBig):
 		writeError(w, http.StatusRequestEntityTooLarge, "corpo excede 1 MiB")
-		return fabricar.Request{}, false
+		return fabricar.Request{}, in, false
 	case err != nil, !atEOF(dec):
 		writeError(w, http.StatusBadRequest, "pedido inválido: JSON malformado ou com campos desconhecidos")
-		return fabricar.Request{}, false
+		return fabricar.Request{}, in, false
 	}
 	if in.Category == "" {
 		in.Category = string(fabricar.CategoryBuild)
 	}
-	return fabricar.Request{RawName: in.Name, Goal: in.Goal, Category: fabricar.Category(in.Category), ModelChoice: in.Model, Force: in.Force}, true
+	req := fabricar.Request{RawName: in.Name, Goal: in.Goal, Category: fabricar.Category(in.Category), ModelChoice: in.Model, Force: in.Force}
+	return req, in, true
 }
 
 // runFabricar usa a função injetada ou, na falta dela, a fábrica real com o cérebro escolhido no 9Router.
-func (s *Server) runFabricar(ctx context.Context, req fabricar.Request) (*fabricar.Result, error) {
+func (s *Server) runFabricar(ctx context.Context, req fabricar.Request, entrevista string) (*fabricar.Result, error) {
 	if s.Fabricar != nil {
 		return s.Fabricar(ctx, req)
 	}
-	return s.defaultFabricar(ctx, req)
+	return s.defaultFabricar(ctx, req, entrevista)
 }
 
-func (s *Server) defaultFabricar(ctx context.Context, req fabricar.Request) (*fabricar.Result, error) {
+func (s *Server) defaultFabricar(ctx context.Context, req fabricar.Request, entrevista string) (*fabricar.Result, error) {
 	if s.Discover == nil || s.ProjectDir == "" {
 		return nil, errors.New("studio: fábrica indisponível neste servidor")
 	}
@@ -104,7 +106,14 @@ func (s *Server) defaultFabricar(ctx context.Context, req fabricar.Request) (*fa
 	if err != nil {
 		return nil, err
 	}
-	return fabricar.Fabricar(ctx, req, fabricar.Deps{LLM: b, Scanner: s.FabricarScanner, Roots: fabricar.Roots{Vault: vault, Docs: s.ProjectDir}})
+	deps := fabricar.Deps{LLM: b, Scanner: s.FabricarScanner, Roots: fabricar.Roots{Vault: vault, Docs: s.ProjectDir}}
+	if entrevista != "" && s.Interview != nil {
+		if sess, err := s.Interview.GetSession(entrevista); err == nil && sess != nil {
+			clar := fabricar.ClarificationFromSession(sess)
+			deps.Interview = &clar
+		}
+	}
+	return fabricar.Fabricar(ctx, req, deps)
 }
 
 // writeFabricarError traduz o erro em status HTTP com mensagem própria. O texto bruto do erro nunca sobe ao

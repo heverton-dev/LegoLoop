@@ -29,9 +29,10 @@ function fabricarNameError(name) {
 
 // Corpo de POST /api/fabricar/run. O objetivo vem do espelho da entrevista; sem entrevista fica vazio e o
 // servidor usa o próprio nome. O cliente nunca envia caminhos, force nem confiança em mídia removível.
-function fabricarPayload(form, turn, force) {
+function fabricarPayload(form, turn, force, sessionId) {
   const goal = (turn && ((turn.mirror && turn.mirror.outcome) || turn.hypothesis)) || "";
   const body = { name: String(form.name || "").trim(), goal, category: form.category || "build", model: form.model };
+  if (sessionId) body.entrevista = sessionId;
   if (force === true) body.force = true; // só depois de o usuário confirmar a sobrescrita
   return body;
 }

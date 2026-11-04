@@ -340,7 +340,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** o binário e a skill `legoloop-fabricar` do cofre
   * **Quando:** o comando `legoloop fabricar entrevista iniciar "<ideia>"` roda e depois `... responder <sessao> "<texto>"` a cada resposta
   * **Então:** cada chamada devolve JSON com `sessao`, `pergunta`, `palpite`, `opcoes`, `confianca` e `espelho`; a sessão persiste em `sessions/`; ao fechar, `legoloop fabricar "<nome>" --entrevista <sessao>` carrega o espelho completo; a skill proíbe `--yes` sem `--entrevista` (teste de conteúdo e teste do comando: `--yes` sem entrevista imprime o aviso de INTENT sem entrevista e exige `--sem-entrevista`).
-* [ ] `AC-E02.5`: **O Studio envia o espelho inteiro**
+* [x] `AC-E02.5`: **O Studio envia o espelho inteiro**
   * **Dado que:** o servidor do Studio e uma entrevista concluída pela rota de entrevista
   * **Quando:** o modal envia a fabricação
   * **Então:** `POST /api/fabricar/run` recebe o identificador da entrevista; o INTENT gerado contém `Quem Sofre`, `Porquê`, restrições e fora de escopo vindos do espelho, e nenhum "Não informado".
