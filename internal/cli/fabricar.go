@@ -194,7 +194,7 @@ func buildFabricarDeps(o fabricarOpts, req fabricar.Request, d Deps, b brain.Bra
 		progress = d.Stderr // mantém o stdout como JSON puro
 	}
 	return fabricar.Deps{LLM: x.LLM, Scanner: x.Scanner, Clock: x.Clock, Roots: roots, Harnesses: x.Harnesses, Link: x.Link,
-		Progress: printProgress(progress)}, nil
+		Progress: printProgress(progress), Aprovar: aprovarSemPerguntar(progress)}, nil
 }
 
 func printProgress(w io.Writer) fabricar.ProgressFunc {

@@ -31,11 +31,8 @@ type Deps struct {
 	Interview    *Clarification       // opcional: entrevista já feita (Chat); o motor a usa em vez de entrevistar
 	ConfirmDraft ConfirmDraftFunc     // opcional: confirma gerar a SPEC quando a entrevista ficou abaixo da meta
 	Context      interview.Context    // opcional: o que a entrevista sabe do projeto (objetivo, AGENTS.md, peças aptas)
-	Confirm      ConfirmFunc          // opcional: última palavra do usuário, com todos os caminhos, antes de gravar
+	Aprovar      ApproveFunc          // opcional: o plano único (arquivos, links, pausas extras) e a última palavra do usuário
 }
-
-// ConfirmFunc recebe os caminhos que serão gravados e devolve true para prosseguir. Não é chamada no dry-run.
-type ConfirmFunc func(paths []string) (bool, error)
 
 // ErrAborted: o usuário recusou a gravação; nada foi escrito.
 var ErrAborted = errors.New("fabricar: cancelado pelo usuário")
@@ -204,8 +201,8 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	if err != nil {
 		return nil, err
 	}
-	vinculos, lwarns := planLinks(req, d.Harnesses, artifactsOf(files).SkillPath, name)
-	if err := d.confirm(req, append(filePaths(files), linkDests(vinculos)...)); err != nil {
+	vinculos, lwarns, err := aprovar(d, req, files, m, name)
+	if err != nil {
 		return nil, err
 	}
 	art, err := Materialize(ctx, MaterializePlan{Name: name, Roots: d.Roots, Files: files, Force: req.Force, DryRun: req.DryRun,
@@ -216,21 +213,6 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	warns := append(append(clar.Warnings(), scan.Warnings...), m.Warnings...)
 	return &Result{CanonicalName: name, Slug: slug, CreatedAt: now, Artifacts: art, CuratedPieces: m.Used,
 		SkippedRoots: scan.Skipped, Warnings: append(warns, lwarns...)}, nil
-}
-
-// confirm pede a última confirmação antes de gravar. O dry-run não grava e por isso não pergunta.
-func (d Deps) confirm(req Request, paths []string) error {
-	if d.Confirm == nil || req.DryRun {
-		return nil
-	}
-	ok, err := d.Confirm(paths)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		return ErrAborted
-	}
-	return nil
 }
 
 func filePaths(files []PlannedFile) []string {

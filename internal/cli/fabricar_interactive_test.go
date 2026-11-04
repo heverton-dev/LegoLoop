@@ -75,7 +75,7 @@ func TestRunFabricarInteractive(t *testing.T) {
 		if code := r.fabricar(t); code != 0 {
 			t.Fatalf("exit %d\n%s\n%s", code, r.out, r.errb)
 		}
-		for _, want := range []string{`[1] C:\`, `[2] D:\`, "[1] Aceitar o palpite: mp3", "[s/N]", "SKILL.md", "legoloop-novo-fluxo"} {
+		for _, want := range []string{`[1] C:\`, `[2] D:\`, "[1] Aceitar o palpite: mp3", "[1] seguir", "SKILL.md", "legoloop-novo-fluxo"} {
 			if !strings.Contains(r.out.String(), want) {
 				t.Errorf("saída sem %q:\n%s", want, r.out)
 			}

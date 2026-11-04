@@ -45,8 +45,13 @@ func ParseDecisao(in string) (Decisao, bool) {
 	return Cancelar, false
 }
 
-// Render monta o texto do cartão. O aviso de risco vem antes dos passos.
+// Render monta o cartão com a linha de escolha. O aviso de risco vem antes dos passos.
 func (c Cartao) Render() string {
+	return c.Texto() + "Escolha: [1] seguir  [2] personalizar  [0] cancelar\n"
+}
+
+// Texto monta o cartão sem a linha de escolha (para o modo que não pergunta).
+func (c Cartao) Texto() string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "AÇÃO: %s\n", c.Acao)
 	if c.Aviso != "" {
@@ -60,7 +65,6 @@ func (c Cartao) Render() string {
 		fmt.Fprintf(&b, "  Efeito: %s\n", e)
 	}
 	fmt.Fprintf(&b, "SE DER ERRADO: %s\n", c.SeDerErrado)
-	b.WriteString("Escolha: [1] seguir  [2] personalizar  [0] cancelar\n")
 	return b.String()
 }
 

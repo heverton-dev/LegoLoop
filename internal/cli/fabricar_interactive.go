@@ -62,7 +62,7 @@ func setupInteractive(ctx context.Context, req *fabricar.Request, fd *fabricar.D
 		return err
 	}
 	req.TargetDrives = chosen
-	fd.Ask, fd.Confirm, fd.ConfirmDraft = p.ask, p.confirm, p.confirmDraft
+	fd.Ask, fd.Aprovar, fd.ConfirmDraft = p.ask, p.aprovar, p.confirmDraft
 	fd.Context = interview.Context{Goal: goalOf(*req), Docs: interview.LoadProjectContext(fd.Roots.Docs)}
 	fd.OnTurn = func(c int) { fmt.Fprintln(d.Stdout, ste.Msg("fabricar.confianca", c, metaConfianca)) }
 	return nil
@@ -155,15 +155,6 @@ func (p *prompter) showQuestion(question, guess string, accept, free int) {
 }
 
 func (p *prompter) freeText() (string, error) { return p.line("Sua resposta: ") }
-
-// confirm mostra o resumo dos caminhos e pede [s/N]. Enter vale N; resposta fora do padrão reapresenta.
-func (p *prompter) confirm(paths []string) (bool, error) {
-	fmt.Fprintln(p.w, "\nResumo: serão gravados")
-	for _, path := range paths {
-		fmt.Fprintf(p.w, "  %s\n", path)
-	}
-	return p.yesNo("Gravar? [s/N]: ")
-}
 
 // confirmDraft mostra a confiança medida e as lacunas e pergunta se a SPEC deve ser gerada assim mesmo.
 func (p *prompter) confirmDraft(c fabricar.Clarification) (bool, error) {

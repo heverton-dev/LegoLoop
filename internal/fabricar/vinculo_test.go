@@ -42,7 +42,10 @@ func TestVinculoTodosOsHarnessesDetectados(t *testing.T) {
 	r := newRig(t, goodPieces())
 	comHarnesses(t, r, "claude", "gemini", "codex")
 	var previa []string
-	r.deps.Confirm = func(paths []string) (bool, error) { previa = paths; return true, nil }
+	r.deps.Aprovar = func(p fabricar.Plano, _ func([]string) fabricar.Plano) (bool, error) {
+		previa = p.Vinculos
+		return true, nil
+	}
 	res := r.run(t)
 	if len(res.Artifacts.SkillLinks) != 3 {
 		t.Fatalf("esperava 3 vínculos: %v", res.Artifacts.SkillLinks)

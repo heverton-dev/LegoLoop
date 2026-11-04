@@ -372,7 +372,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** 3 harnesses simulados em HOME descartável
   * **Quando:** o binário grava um processo, e depois com `--no-link`, e depois com falha injetada no 2º link
   * **Então:** a prévia lista os 3 e a gravação cria 3 links que apontam ao cofre; `--no-link` cria 0; a falha desfaz os links já criados e o cofre.
-* [ ] `AC-E02.13`: **Plano único antes de gravar**
+* [x] `AC-E02.13`: **Plano único antes de gravar**
   * **Dado que:** o binário em modo interativo
   * **Quando:** a Tríade termina
   * **Então:** o cartão STE-PT lista todas as ações com efeito, as pausas extras (sobrescrever, ligar a harnesses, mídia removível) e as três decisões; sem "seguir" nada é gravado (árvore idêntica); "personalizar" abre `Parametros` e volta ao cartão; `--yes` imprime o cartão e segue só no que ele mostrou.

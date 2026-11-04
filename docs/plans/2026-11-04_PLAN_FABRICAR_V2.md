@@ -400,7 +400,7 @@
 * **Escopo:** Com 3 harnesses em HOME descartável: a prévia lista os 3 e a gravação cria 3 links ao cofre; --no-link cria 0; falha no 2º link desfaz os links criados e o cofre.
 
 #### Ticket `TICK-02.12` — Cartão STE-PT e plano único
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.11","TICK-02.10"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
