@@ -380,7 +380,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** uma fabricação em `--dry-run`
   * **Quando:** a CLI roda com `--json`, a API do Studio responde e a skill repassa a saída
   * **Então:** os três contêm o mesmo `Report` (mesmas 5 seções, sem campo vazio nas seções executadas) e a CLI em texto imprime um resumo por camada (espelho e confiança, peças vistas e cortes, decisões com motivo, ACs e gates, arquivos e harnesses).
-* [ ] `AC-E02.15`: **Falhas: processo existente, cérebro caiu, cancelamento**
+* [x] `AC-E02.15`: **Falhas: processo existente, cérebro caiu, cancelamento**
   * **Dado que:** (a) o processo já existe, (b) o cérebro expira na Camada 4, (c) o usuário responde "cancelar" no cartão
   * **Quando:** `fabricar` roda
   * **Então:** (a) exit 1 e oferta de `refinar`; (b) exit 1, mensagem STE-PT com o tempo limite e como mudar, zero arquivos; (c) exit 1 e zero arquivos.

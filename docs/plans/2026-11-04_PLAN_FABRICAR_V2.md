@@ -430,7 +430,7 @@
 * **Escopo:** Em --dry-run, o --json da CLI, a resposta da API e o texto repassado pela skill trazem o mesmo Report (5 seções, nenhuma vazia nas camadas executadas); o texto da CLI resume espelho e confiança, peças e cortes, decisões com motivo, ACs e gates, arquivos e harnesses.
 
 #### Ticket `TICK-02.14` — Falhas: já existe, cérebro lento, cancelamento
-* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.13"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `low` · Fallback Harness `9router` · Modelo `code-fast`

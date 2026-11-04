@@ -170,6 +170,19 @@ func failFabricar(d Deps, err error) int {
 		fmt.Fprintln(d.Stderr, "erro:", err)
 		return 2
 	}
+	if errors.Is(err, fabricar.ErrExists) {
+		fmt.Fprintln(d.Stderr, "erro:", err)
+		fmt.Fprintln(d.Stderr, ste.Msg("fabricar.existe_oferta_refinar"))
+		return 1
+	}
+	if errors.Is(err, context.DeadlineExceeded) {
+		fmt.Fprintln(d.Stderr, "erro:", ste.Msg("fabricar.cerebro_timeout"))
+		return 1
+	}
+	if errors.Is(err, fabricar.ErrAborted) {
+		fmt.Fprintln(d.Stderr, "cancelado: zero arquivos gravados")
+		return 1
+	}
 	return fail(d, err)
 }
 
@@ -266,6 +279,9 @@ func init() {
 		"fabricar.aviso_sem_entrevista":  "Aviso: INTENT sem entrevista. O objetivo vem só do que você escreveu.",
 		"fabricar.entrevista_dupla":      "Use --entrevista ou --sem-entrevista, não os dois.",
 		"fabricar.rascunho_exige_aceite": "A entrevista ficou em %d%%. A meta é %d%%. Para gerar a SPEC mesmo assim, use --aceitar-rascunho.",
+		"fabricar.existe_oferta_refinar": "O processo já existe. Use legoloop refinar para alterá-lo ou --force para sobrescrever.",
+		"fabricar.cerebro_timeout":       "O cérebro excedeu o tempo limite. Aumente o prazo com a opção de configuração ou tente outro modelo.",
+		"fabricar.cancelado":             "Operação cancelada pelo usuário. Zero arquivos gravados.",
 	} {
 		ste.Default.Register(id, msg)
 	}
