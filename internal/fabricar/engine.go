@@ -27,6 +27,7 @@ type Deps struct {
 	Out         io.Writer            // idem: escreve as perguntas aqui
 	Progress    ProgressFunc         // opcional: avisa o início de cada uma das Layers camadas
 	OnTurn      func(confidence int) // opcional: recebe a confiança antes de cada pergunta da entrevista
+	Context     interview.Context    // opcional: o que a entrevista sabe do projeto (objetivo, AGENTS.md, peças aptas)
 	Confirm     ConfirmFunc          // opcional: última palavra do usuário, com todos os caminhos, antes de gravar
 }
 
@@ -119,6 +120,7 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	deps.progress(1, "Clarificação")
 	clarifier := NewClarifier(deps.LLM)
 	clarifier.OnTurn = deps.OnTurn
+	clarifier.Context = deps.Context
 	clar, err := clarifier.Clarify(ctx, req, deps.Ask)
 	if err != nil {
 		return nil, err

@@ -16,6 +16,7 @@ import (
 // Engine orquestra as sessões da entrevista socrática.
 type Engine struct {
 	llm      LLMClient
+	ctx      Context
 	mu       sync.RWMutex
 	sessions map[string]*Session
 }
@@ -46,7 +47,7 @@ func (e *Engine) Start(ctx context.Context, initialIdea string) (*Session, *Turn
 		Confidence: 10,
 		Turns:      1,
 		Messages: []Message{
-			{Role: "system", Content: SystemPromptCanonical},
+			{Role: "system", Content: e.systemPrompt()},
 			{Role: "user", Content: fmt.Sprintf("Minha ideia inicial é: %s", initialIdea)},
 		},
 	}

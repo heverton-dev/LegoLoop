@@ -29,6 +29,8 @@ type Clarifier struct {
 	MaxTurns int
 	// OnTurn, se definido, recebe a confiança medida antes de cada pergunta ao usuário.
 	OnTurn func(confidence int)
+	// Context é o que a entrevista sabe do projeto: objetivo, AGENTS.md e peças aptas.
+	Context interview.Context
 }
 
 // NewClarifier cria o Clarifier. llm pode ser nil se só o modo autônomo for usado.
@@ -62,7 +64,7 @@ func (c *Clarifier) interview(ctx context.Context, req Request, ask AskFunc) (Cl
 	if idea == "" {
 		idea = strings.TrimSpace(req.RawName)
 	}
-	eng := interview.NewEngine(c.llm)
+	eng := interview.NewEngine(c.llm).WithContext(c.Context)
 	sess, turn, err := eng.Start(ctx, idea)
 	if err != nil {
 		return Clarification{}, err

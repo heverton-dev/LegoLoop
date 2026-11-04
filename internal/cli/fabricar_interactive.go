@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"legoloop/internal/fabricar"
+	"legoloop/internal/interview"
 	"legoloop/internal/ste"
 )
 
@@ -61,6 +62,7 @@ func setupInteractive(ctx context.Context, req *fabricar.Request, fd *fabricar.D
 	}
 	req.TargetDrives = chosen
 	fd.Ask, fd.Confirm = p.ask, p.confirm
+	fd.Context = interview.Context{Goal: goalOf(*req), Docs: interview.LoadProjectContext(fd.Roots.Docs)}
 	fd.OnTurn = func(c int) { fmt.Fprintln(d.Stdout, ste.Msg("fabricar.confianca", c, metaConfianca)) }
 	return nil
 }
@@ -173,4 +175,12 @@ func (p *prompter) confirm(paths []string) (bool, error) {
 		fmt.Fprintln(p.w, "Entrada inválida: responda s ou n.")
 	}
 	return false, errTooManyInvalid
+}
+
+// goalOf é o objetivo que a entrevista recebe: --goal ou, sem ele, o próprio nome do processo.
+func goalOf(req fabricar.Request) string {
+	if g := strings.TrimSpace(req.Goal); g != "" {
+		return g
+	}
+	return strings.TrimSpace(req.RawName)
 }

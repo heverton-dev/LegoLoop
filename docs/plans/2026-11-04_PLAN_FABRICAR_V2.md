@@ -250,7 +250,7 @@
 * **Escopo:** O teste compila o binário e o executa por os/exec com stdin em pipe: a entrevista começa (o erro 'exige um terminal' não aparece), imprime a confiança a cada turno e só grava depois de o espelho final ser confirmado.
 
 #### Ticket `TICK-02.2` — Entrevista contextual
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
