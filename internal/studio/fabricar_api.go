@@ -150,5 +150,19 @@ func (s *Server) maskResult(res *fabricar.Result) fabricar.Result {
 	for i, w := range res.Warnings {
 		out.Warnings[i] = s.maskPaths(w)
 	}
+	if res.Report != nil {
+		repCopy := *res.Report
+		var maskedFiles []string
+		for _, f := range repCopy.Gravacao.Arquivos {
+			maskedFiles = append(maskedFiles, s.displayPath(f))
+		}
+		repCopy.Gravacao.Arquivos = maskedFiles
+		var maskedEfeitos []string
+		for _, e := range repCopy.Cartao.Efeitos {
+			maskedEfeitos = append(maskedEfeitos, s.maskPaths(e))
+		}
+		repCopy.Cartao.Efeitos = maskedEfeitos
+		out.Report = &repCopy
+	}
 	return out
 }

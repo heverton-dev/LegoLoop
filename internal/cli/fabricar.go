@@ -256,6 +256,7 @@ func reportFabricar(d Deps, res *fabricar.Result, o fabricarOpts) int {
 		fmt.Fprintf(d.Stdout, "  %-14s %s\n", "link harness", l)
 	}
 	fmt.Fprintf(d.Stdout, "\nPeças curadas: %d\nExecute com: legoloop run %s\n", len(res.CuratedPieces), a.DagPath)
+	PrintReportTexto(d.Stdout, res.Report)
 	return 0
 }
 

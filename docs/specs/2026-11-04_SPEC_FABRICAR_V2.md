@@ -376,7 +376,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** o binário em modo interativo
   * **Quando:** a Tríade termina
   * **Então:** o cartão STE-PT lista todas as ações com efeito, as pausas extras (sobrescrever, ligar a harnesses, mídia removível) e as três decisões; sem "seguir" nada é gravado (árvore idêntica); "personalizar" abre `Parametros` e volta ao cartão; `--yes` imprime o cartão e segue só no que ele mostrou.
-* [ ] `AC-E02.14`: **O relatório é um objeto só, nas três portas**
+* [x] `AC-E02.14`: **O relatório é um objeto só, nas três portas**
   * **Dado que:** uma fabricação em `--dry-run`
   * **Quando:** a CLI roda com `--json`, a API do Studio responde e a skill repassa a saída
   * **Então:** os três contêm o mesmo `Report` (mesmas 5 seções, sem campo vazio nas seções executadas) e a CLI em texto imprime um resumo por camada (espelho e confiança, peças vistas e cortes, decisões com motivo, ACs e gates, arquivos e harnesses).

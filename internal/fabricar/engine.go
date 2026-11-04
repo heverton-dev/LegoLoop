@@ -58,6 +58,7 @@ type Result struct {
 	CuratedPieces []DiscoveredPiece  `json:"curated_pieces"` // Ordem estável: Score desc, Path asc
 	SkippedRoots  []SkippedRoot      `json:"skipped_roots"`
 	Warnings      []string           `json:"warnings"`
+	Report        *Report            `json:"report,omitempty"`
 }
 
 // prepare aplica os padrões e recusa o que não tem padrão seguro.
@@ -205,6 +206,8 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	if err != nil {
 		return nil, err
 	}
+	plano := novoPlano(d, req, files, m, vinculos)
+	rep := buildReport(d, clar, scan, m, tri, files, plano)
 	art, err := Materialize(ctx, MaterializePlan{Name: name, Roots: d.Roots, Files: files, Force: req.Force, DryRun: req.DryRun,
 		Vinculos: vinculos, Link: d.Link}, d.FS)
 	if err != nil {
@@ -212,7 +215,7 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	}
 	warns := append(append(clar.Warnings(), scan.Warnings...), m.Warnings...)
 	return &Result{CanonicalName: name, Slug: slug, CreatedAt: now, Artifacts: art, CuratedPieces: m.Used,
-		SkippedRoots: scan.Skipped, Warnings: append(warns, lwarns...)}, nil
+		SkippedRoots: scan.Skipped, Warnings: append(warns, lwarns...), Report: rep}, nil
 }
 
 func filePaths(files []PlannedFile) []string {

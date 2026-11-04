@@ -415,7 +415,7 @@
 * **Escopo:** Antes de gravar, o cartão lista todas as ações com efeito, as pausas extras (sobrescrever, harnesses, mídia removível) e [1] seguir [2] personalizar [0] cancelar; sem 'seguir' a árvore fica idêntica; 'personalizar' abre os Parametros e volta; --yes imprime o cartão e segue só no que ele mostrou.
 
 #### Ticket `TICK-02.13` — Relatório único por camada nas três portas
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.12"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
