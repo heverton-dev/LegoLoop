@@ -49,7 +49,7 @@ func routerRig(t *testing.T, inventoryURL string) (*fabRig, int) {
 		return provider.Inventory{RouterURL: inventoryURL, RouterModels: []string{"code-pro"}}
 	}
 	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }}
-	return r, run(t, r.d, r.args("extrator", "--yes", "--model", "code-pro")...)
+	return r, run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista", "--model", "code-pro")...)
 }
 
 func TestFabricarSendsTheRouterKeyOnlyToTheTrustedRouter(t *testing.T) {
@@ -120,7 +120,7 @@ func TestFabricarUsesTheChosenModelAsTheBrain(t *testing.T) {
 		return provider.Inventory{RouterURL: router.URL, RouterModels: []string{"code-fast", "code-pro"}}
 	}
 	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }}
-	if code := run(t, r.d, r.args("extrator", "--yes", "--model", "code-fast")...); code != 0 {
+	if code := run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista", "--model", "code-fast")...); code != 0 {
 		t.Fatalf("exit %d: %s", code, r.errb)
 	}
 	if got := router.model.Load().(string); got != "code-fast" {

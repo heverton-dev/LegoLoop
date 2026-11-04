@@ -97,6 +97,13 @@ func (c *Clarifier) maxTurns() int {
 	return c.MaxTurns
 }
 
+// ClarificationFromSession transforma uma entrevista salva (feita no Chat, passo a passo) na Camada 1 pronta.
+// A confiança é a medida na sessão; o espelho só existe se a entrevista o consolidou.
+func ClarificationFromSession(s *interview.Session) Clarification {
+	turn := &interview.TurnResult{Status: s.Status, Hypothesis: s.Hypothesis, Confidence: s.Confidence, Mirror: s.Mirror}
+	return outcome(s.Theme, turn, s.Turns)
+}
+
 func outcome(idea string, turn *interview.TurnResult, turns int) Clarification {
 	m := interview.Mirror{Outcome: turn.Hypothesis}
 	if turn.Mirror != nil {

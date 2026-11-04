@@ -39,7 +39,7 @@ func (r *fabRig) semModelo(name string, extra ...string) []string {
 
 // AC-E01.7: modelo fora do inventário sai com 2, lista os disponíveis e não grava nada.
 func TestFabricarModelInvalido_Sai2ListaOsModelosENaoGrava(t *testing.T) {
-	for _, extra := range [][]string{{"--yes", "--dry-run"}, {"--yes"}} {
+	for _, extra := range [][]string{{"--yes", "--sem-entrevista", "--dry-run"}, {"--yes", "--sem-entrevista"}} {
 		r := newFabRig(t)
 		r.d.Discover = func(context.Context) provider.Inventory {
 			return provider.Inventory{RouterURL: "http://127.0.0.1:20128", RouterModels: []string{"code-fast", "code-pro"}, Ollama: []string{"qwen2.5"}}
@@ -62,7 +62,7 @@ func TestFabricarModelInvalido_Sai2ListaOsModelosENaoGrava(t *testing.T) {
 func TestFabricarModelInvalido_SemNenhumCerebroExplicaOQueFalta(t *testing.T) {
 	r := newFabRig(t)
 	r.d.Discover = func(context.Context) provider.Inventory { return provider.Inventory{} }
-	if code := run(t, r.d, r.semModelo("extrator", "--yes")...); code != 1 {
+	if code := run(t, r.d, r.semModelo("extrator", "--yes", "--sem-entrevista")...); code != 1 {
 		t.Fatalf("exit %d, esperado 1", code)
 	}
 	for _, quer := range []string{"9Router", "Ollama", "harness"} {
@@ -81,7 +81,7 @@ func TestFabricarCerebro_OllamaSemRouterFabricaDePontaAPonta(t *testing.T) {
 	r := newFabRig(t)
 	r.d.Discover = func(context.Context) provider.Inventory { return invOllama() }
 	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }, BrainOpts: []brain.Option{brain.WithOllamaURL(srv.URL)}}
-	if code := run(t, r.d, r.semModelo("extrator", "--yes", "--model", "qwen2.5")...); code != 0 {
+	if code := run(t, r.d, r.semModelo("extrator", "--yes", "--sem-entrevista", "--model", "qwen2.5")...); code != 0 {
 		t.Fatalf("exit %d: %s", code, r.errb)
 	}
 	if modelo.Load().(string) != "qwen2.5" || calls.Load() == 0 {
@@ -97,7 +97,7 @@ func TestFabricarCerebro_SemModeloEscolheOPrimeiroEExplica(t *testing.T) {
 	r := newFabRig(t)
 	r.d.Discover = func(context.Context) provider.Inventory { return invOllama() }
 	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }, BrainOpts: []brain.Option{brain.WithOllamaURL(srv.URL)}}
-	if code := run(t, r.d, r.semModelo("extrator", "--yes")...); code != 0 {
+	if code := run(t, r.d, r.semModelo("extrator", "--yes", "--sem-entrevista")...); code != 0 {
 		t.Fatalf("exit %d: %s", code, r.errb)
 	}
 	if !strings.Contains(r.out.String(), "Cérebro escolhido: ollama/qwen2.5.") || modelo.Load().(string) != "qwen2.5" {
@@ -110,7 +110,7 @@ func TestFabricarCerebro_JSONMantemOStdoutPuroEExplicaNoStderr(t *testing.T) {
 	r := newFabRig(t)
 	r.d.Discover = func(context.Context) provider.Inventory { return invOllama() }
 	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }, BrainOpts: []brain.Option{brain.WithOllamaURL(srv.URL)}}
-	if code := run(t, r.d, r.semModelo("extrator", "--yes", "--json")...); code != 0 {
+	if code := run(t, r.d, r.semModelo("extrator", "--yes", "--sem-entrevista", "--json")...); code != 0 {
 		t.Fatalf("exit %d: %s", code, r.errb)
 	}
 	var doc map[string]any
@@ -125,7 +125,7 @@ func TestFabricarCerebro_JSONMantemOStdoutPuroEExplicaNoStderr(t *testing.T) {
 // Contrato novo: o modelo do claude CLI (ou de qualquer executor do inventário) é aceito; o 9Router não é requisito.
 func TestFabricarCerebro_ModeloDoClaudeCLIEAceitoSemRouter(t *testing.T) {
 	r := newFabRig(t) // inventário só com o claude CLI e LLM injetado
-	if code := run(t, r.d, r.args("extrator", "--yes", "--model", "sonnet")...); code != 0 {
+	if code := run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista", "--model", "sonnet")...); code != 0 {
 		t.Fatalf("exit %d: %s", code, r.errb)
 	}
 	if strings.Contains(r.errb.String(), "9Router") || !strings.Contains(r.out.String(), "Cérebro escolhido: claude/sonnet, por pedido seu.") {

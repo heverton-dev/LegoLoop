@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"legoloop/internal/fabricar"
+	"legoloop/internal/interview"
 	"legoloop/internal/ste"
 )
 
@@ -131,5 +132,49 @@ func TestConfiancaHonestaModoAutonomoNaoExigeConfirmacao(t *testing.T) {
 	r := newRig(t, goodPieces()) // sem Interactive: nenhuma entrevista aconteceu
 	if _, err := fabricar.Fabricar(context.Background(), r.req, r.deps); err != nil {
 		t.Fatalf("o modo autônomo não tem entrevista a confirmar: %v", err)
+	}
+}
+
+// A entrevista feita no Chat chega ao motor já pronta: o motor não pergunta de novo e usa o espelho salvo.
+func TestEntrevistaPassoAPassoMotorUsaEntrevistaPronta(t *testing.T) {
+	sess := &interview.Session{
+		ID: "intv_1", Theme: "extrair áudio", Status: interview.StatusCompleted, Confidence: 98, Turns: 3,
+		Mirror: &interview.Mirror{Outcome: "extrair áudio em mp3", User: "editores sobrecarregados", WhyNow: "retrabalho",
+			Success: "arquivo gerado", Constraints: []string{"sem rede"}, OutOfScope: []string{"edição de vídeo"}},
+	}
+	clar := fabricar.ClarificationFromSession(sess)
+	if !clar.Reached || !clar.Interviewed || clar.Confidence != 98 || len(clar.Gaps) != 0 {
+		t.Fatalf("sessão concluída deve virar entrevista concluída: %+v", clar)
+	}
+	r := newRig(t, goodPieces())
+	r.deps.Interview = &clar
+	res := r.run(t)
+	if r.llm.interviewCalls != 0 {
+		t.Errorf("o motor refez a entrevista (%d chamadas)", r.llm.interviewCalls)
+	}
+	intent := read(t, res.Artifacts.IntentPath)
+	for _, want := range []string{"editores sobrecarregados", "retrabalho", "sem rede", "edição de vídeo", "**Confiança da Entrevista:** 98%"} {
+		if !strings.Contains(intent, want) {
+			t.Errorf("INTENT sem %q:\n%s", want, intent)
+		}
+	}
+	if strings.Contains(intent, "Não informado") {
+		t.Error("o espelho completo não pode deixar campo 'Não informado'")
+	}
+}
+
+func TestEntrevistaPassoAPassoSessaoIncompletaTemLacunas(t *testing.T) {
+	sess := &interview.Session{ID: "intv_2", Theme: "x", Status: interview.StatusInProgress, Confidence: 60, Hypothesis: "extrator", Turns: 4}
+	clar := fabricar.ClarificationFromSession(sess)
+	if clar.Reached || clar.Confidence != 60 || clar.Mirror.Outcome != "extrator" || len(clar.Gaps) != 5 {
+		t.Errorf("sessão em andamento: confiança medida, hipótese como resultado e 5 lacunas: %+v", clar)
+	}
+	r := newRig(t, goodPieces())
+	r.deps.Interview = &clar // sem ConfirmDraft: a SPEC não pode sair
+	if _, err := fabricar.Fabricar(context.Background(), r.req, r.deps); !errors.Is(err, fabricar.ErrLowConfidence) {
+		t.Errorf("esperava ErrLowConfidence, veio %v", err)
+	}
+	if r.llm.specCalls != 0 {
+		t.Error("a SPEC foi pedida sem confirmação")
 	}
 }

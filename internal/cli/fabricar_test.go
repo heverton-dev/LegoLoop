@@ -110,7 +110,7 @@ func (r *fabRig) files(t *testing.T) []string {
 func TestRunFabricar(t *testing.T) {
 	t.Run("autonomo imprime as 5 camadas e os caminhos", func(t *testing.T) {
 		r := newFabRig(t)
-		if code := run(t, r.d, r.args("extrator de audio", "--yes", "--goal", "extrair áudio")...); code != 0 {
+		if code := run(t, r.d, r.args("extrator de audio", "--yes", "--sem-entrevista", "--goal", "extrair áudio")...); code != 0 {
 			t.Fatalf("exit %d\nstdout:%s\nstderr:%s", code, r.out, r.errb)
 		}
 		for i := 1; i <= 5; i++ {
@@ -130,7 +130,7 @@ func TestRunFabricar(t *testing.T) {
 
 	t.Run("o dag gerado passa no validate", func(t *testing.T) {
 		r := newFabRig(t)
-		run(t, r.d, r.args("extrator de audio", "--yes")...)
+		run(t, r.d, r.args("extrator de audio", "--yes", "--sem-entrevista")...)
 		dagPath := filepath.Join(r.vault, "loops", "legoloop-extrator-de-audio.dag.json")
 		d2, _, errb := deps(t)
 		if code := run(t, d2, "validate", dagPath); code != 0 {
@@ -140,7 +140,7 @@ func TestRunFabricar(t *testing.T) {
 
 	t.Run("json imprime o Result e deixa o stdout puro", func(t *testing.T) {
 		r := newFabRig(t)
-		if code := run(t, r.d, r.args("extrator de audio", "--yes", "--json")...); code != 0 {
+		if code := run(t, r.d, r.args("extrator de audio", "--yes", "--sem-entrevista", "--json")...); code != 0 {
 			t.Fatalf("exit %d: %s", code, r.errb)
 		}
 		var res fabricar.Result
@@ -157,7 +157,7 @@ func TestRunFabricar(t *testing.T) {
 
 	t.Run("nome invalido sai com 2 e nao grava", func(t *testing.T) {
 		r := newFabRig(t)
-		if code := run(t, r.d, r.args("!!!", "--yes")...); code != 2 {
+		if code := run(t, r.d, r.args("!!!", "--yes", "--sem-entrevista")...); code != 2 {
 			t.Fatalf("exit %d, esperado 2", code)
 		}
 		if f := r.files(t); len(f) != 0 {
@@ -167,7 +167,7 @@ func TestRunFabricar(t *testing.T) {
 
 	t.Run("nome com traversal e sanitizado e fica dentro das raizes", func(t *testing.T) {
 		r := newFabRig(t)
-		if code := run(t, r.d, r.args("../../etc/passwd", "--yes")...); code != 0 {
+		if code := run(t, r.d, r.args("../../etc/passwd", "--yes", "--sem-entrevista")...); code != 0 {
 			t.Fatalf("exit %d: %s", code, r.errb)
 		}
 		if !strings.Contains(r.out.String(), "legoloop-etc-passwd") {
@@ -182,14 +182,14 @@ func TestRunFabricar(t *testing.T) {
 
 	t.Run("categoria invalida sai com 2", func(t *testing.T) {
 		r := newFabRig(t)
-		if code := run(t, r.d, r.args("x", "--yes", "--category", "explodir")...); code != 2 {
+		if code := run(t, r.d, r.args("x", "--yes", "--sem-entrevista", "--category", "explodir")...); code != 2 {
 			t.Fatalf("exit %d, esperado 2", code)
 		}
 	})
 
 	t.Run("modelo fora do inventario sai com 2 sem gravar", func(t *testing.T) {
 		r := newFabRig(t)
-		args := append(r.args("extrator", "--yes"), "--model", "gpt-inexistente")
+		args := append(r.args("extrator", "--yes", "--sem-entrevista"), "--model", "gpt-inexistente")
 		if code := run(t, r.d, args...); code != 2 {
 			t.Fatalf("exit %d, esperado 2 (uso incorreto)", code)
 		}
@@ -203,24 +203,24 @@ func TestRunFabricar(t *testing.T) {
 
 	t.Run("processo existente sai com 1 e force sobrescreve com backup", func(t *testing.T) {
 		r := newFabRig(t)
-		run(t, r.d, r.args("extrator", "--yes")...)
+		run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista")...)
 		before := r.files(t)
 		r.out.Reset()
 		r.errb.Reset()
-		if code := run(t, r.d, r.args("extrator", "--yes")...); code != 1 {
+		if code := run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista")...); code != 1 {
 			t.Fatalf("exit %d, esperado 1 (ErrExists)", code)
 		}
 		if len(r.files(t)) != len(before) {
 			t.Errorf("ErrExists não pode alterar o disco")
 		}
-		if code := run(t, r.d, r.args("extrator", "--yes", "--force")...); code != 0 {
+		if code := run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista", "--force")...); code != 0 {
 			t.Fatalf("--force exit %d: %s", code, r.errb)
 		}
 	})
 
 	t.Run("dry-run nao grava nada", func(t *testing.T) {
 		r := newFabRig(t)
-		if code := run(t, r.d, r.args("extrator", "--yes", "--dry-run")...); code != 0 {
+		if code := run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista", "--dry-run")...); code != 0 {
 			t.Fatalf("exit %d: %s", code, r.errb)
 		}
 		if f := r.files(t); len(f) != 0 {
@@ -235,7 +235,7 @@ func TestRunFabricar(t *testing.T) {
 		r := newFabRig(t)
 		r.d.Discover = func(context.Context) provider.Inventory { return provider.Inventory{} }
 		r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }}
-		if code := run(t, r.d, r.args("extrator", "--yes")...); code != 1 {
+		if code := run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista")...); code != 1 {
 			t.Fatalf("exit %d, esperado 1", code)
 		}
 		if !strings.Contains(r.errb.String(), "9Router") {

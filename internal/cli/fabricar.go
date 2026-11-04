@@ -14,6 +14,7 @@ import (
 	"legoloop/internal/canon"
 	"legoloop/internal/fabricar"
 	"legoloop/internal/interview"
+	"legoloop/internal/ste"
 )
 
 // FabricarDeps injeta o que o `fabricar` não deve buscar sozinho; o valor zero usa o ambiente real.
@@ -30,6 +31,8 @@ type FabricarDeps struct {
 // fabricarOpts reúne as flags do comando.
 type fabricarOpts struct {
 	yes, asJSON, force, dry, trust bool
+	semEntrevista, aceitar         bool
+	entrevista                     string
 	goal, model, category          string
 	vault, docs                    string
 	link                           listFlag
@@ -39,6 +42,9 @@ func newFabricarFlags(o *fabricarOpts) *flag.FlagSet {
 	fs := flag.NewFlagSet("fabricar", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	fs.BoolVar(&o.yes, "yes", false, "modo autônomo: não pergunta nada")
+	fs.StringVar(&o.entrevista, "entrevista", "", "usa a entrevista já feita no Chat (identificador da sessão)")
+	fs.BoolVar(&o.semEntrevista, "sem-entrevista", false, "com --yes: segue sem entrevista; o INTENT sai sem ela")
+	fs.BoolVar(&o.aceitar, "aceitar-rascunho", false, "com --entrevista: gera a SPEC mesmo com a confiança abaixo da meta")
 	fs.StringVar(&o.goal, "goal", "", "objetivo em linguagem natural (padrão: o próprio nome)")
 	fs.StringVar(&o.model, "model", "", "modelo que conduz a fabricação, executor 9router (padrão: o primeiro listado por legoloop doctor)")
 	fs.StringVar(&o.category, "category", "build", "categoria: build, reverse, web ou mobile")
@@ -69,6 +75,9 @@ func printFabricarHelp(d Deps) {
 }
 
 func cmdFabricar(ctx context.Context, args []string, d Deps) int {
+	if len(args) > 0 && args[0] == "entrevista" {
+		return cmdEntrevista(ctx, args[1:], d)
+	}
 	var o fabricarOpts
 	fs := newFabricarFlags(&o)
 	name, rest := splitPositional(args)
@@ -92,6 +101,9 @@ func cmdFabricar(ctx context.Context, args []string, d Deps) int {
 
 // runFabricar valida, resolve o ambiente e executa a fábrica. Pedido inválido sai com 2; falha de execução, com 1.
 func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
+	if code, stop := checkEntrevista(o, d); stop {
+		return code
+	}
 	req := fabricar.Request{RawName: name, Goal: o.goal, Category: fabricar.Category(o.category), ModelChoice: o.model,
 		Interactive: !o.yes, Force: o.force, DryRun: o.dry, TrustRemovable: o.trust, LinkHarnesses: o.link}
 	probe := req
@@ -110,8 +122,8 @@ func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
 	req.ModelChoice = b.Model()
 	announceBrain(d, why, o.asJSON)
 	fd, err := buildFabricarDeps(o, req, d, b)
-	if err == nil && req.Interactive {
-		err = setupInteractive(ctx, &req, &fd, d)
+	if err == nil {
+		err = prepareInterview(ctx, &req, &fd, o, d)
 	}
 	if err != nil {
 		return failFabricar(d, err)
@@ -248,4 +260,65 @@ func reportFabricar(d Deps, res *fabricar.Result, o fabricarOpts) int {
 	}
 	fmt.Fprintf(d.Stdout, "\nPeças curadas: %d\nExecute com: legoloop run %s\n", len(res.CuratedPieces), a.DagPath)
 	return 0
+}
+
+func init() {
+	for id, msg := range map[string]string{
+		"fabricar.sem_entrevista_exige":  "INTENT sem entrevista não vale com --yes. Faça a entrevista com legoloop fabricar entrevista iniciar. Ou use --sem-entrevista para seguir sem ela.",
+		"fabricar.aviso_sem_entrevista":  "Aviso: INTENT sem entrevista. O objetivo vem só do que você escreveu.",
+		"fabricar.entrevista_dupla":      "Use --entrevista ou --sem-entrevista, não os dois.",
+		"fabricar.rascunho_exige_aceite": "A entrevista ficou em %d%%. A meta é %d%%. Para gerar a SPEC mesmo assim, use --aceitar-rascunho.",
+	} {
+		ste.Default.Register(id, msg)
+	}
+}
+
+// checkEntrevista aplica a regra do modo autônomo: --yes sem entrevista só segue com --sem-entrevista.
+// Devolve stop=true quando o comando deve terminar com o código dado.
+func checkEntrevista(o fabricarOpts, d Deps) (code int, stop bool) {
+	switch {
+	case o.semEntrevista && o.entrevista != "":
+		fmt.Fprintln(d.Stderr, "erro:", ste.Msg("fabricar.entrevista_dupla"))
+		return 2, true
+	case o.yes && o.entrevista == "" && !o.semEntrevista:
+		fmt.Fprintln(d.Stderr, "erro:", ste.Msg("fabricar.sem_entrevista_exige"))
+		return 2, true
+	case o.semEntrevista:
+		fmt.Fprintln(d.Stderr, ste.Msg("fabricar.aviso_sem_entrevista"))
+	}
+	return 0, false
+}
+
+// prepareInterview liga o motor à entrevista: o terminal (modo interativo) e/ou a sessão já feita no Chat.
+func prepareInterview(ctx context.Context, req *fabricar.Request, fd *fabricar.Deps, o fabricarOpts, d Deps) error {
+	if req.Interactive {
+		if err := setupInteractive(ctx, req, fd, d); err != nil {
+			return err
+		}
+	}
+	if o.entrevista == "" {
+		return nil
+	}
+	store := interview.Store{Dir: filepath.Join(fd.Roots.Vault, "sessions")}
+	sess, err := store.Load(o.entrevista)
+	if err != nil {
+		return err
+	}
+	clar := fabricar.ClarificationFromSession(sess)
+	fd.Interview = &clar
+	if !req.Interactive {
+		fd.ConfirmDraft = draftByFlag(o.aceitar)
+	}
+	return nil
+}
+
+// draftByFlag é a confirmação do modo sem terminal: só o --aceitar-rascunho autoriza gerar a SPEC com confiança baixa.
+func draftByFlag(aceitar bool) fabricar.ConfirmDraftFunc {
+	return func(c fabricar.Clarification) (bool, error) {
+		if aceitar {
+			return true, nil
+		}
+		return false, fmt.Errorf("%w: %s", fabricar.ErrLowConfidence,
+			ste.Msg("fabricar.rascunho_exige_aceite", c.Confidence, fabricar.ConfidenceTarget))
+	}
 }

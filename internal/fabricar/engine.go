@@ -27,6 +27,7 @@ type Deps struct {
 	Out          io.Writer            // idem: escreve as perguntas aqui
 	Progress     ProgressFunc         // opcional: avisa o início de cada uma das Layers camadas
 	OnTurn       func(confidence int) // opcional: recebe a confiança antes de cada pergunta da entrevista
+	Interview    *Clarification       // opcional: entrevista já feita (Chat); o motor a usa em vez de entrevistar
 	ConfirmDraft ConfirmDraftFunc     // opcional: confirma gerar a SPEC quando a entrevista ficou abaixo da meta
 	Context      interview.Context    // opcional: o que a entrevista sabe do projeto (objetivo, AGENTS.md, peças aptas)
 	Confirm      ConfirmFunc          // opcional: última palavra do usuário, com todos os caminhos, antes de gravar
@@ -119,10 +120,7 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 		return nil, err
 	}
 	deps.progress(1, "Clarificação")
-	clarifier := NewClarifier(deps.LLM)
-	clarifier.OnTurn = deps.OnTurn
-	clarifier.Context = deps.Context
-	clar, err := clarifier.Clarify(ctx, req, deps.Ask)
+	clar, err := clarify(ctx, req, deps)
 	if err != nil {
 		return nil, err
 	}
@@ -134,6 +132,17 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 		return nil, err
 	}
 	return assemble(ctx, req, deps, name, clar, scan, merged)
+}
+
+// clarify é a Camada 1. Com Deps.Interview a entrevista já foi feita (no Chat) e o motor não pergunta de novo.
+func clarify(ctx context.Context, req Request, deps Deps) (Clarification, error) {
+	if deps.Interview != nil {
+		return *deps.Interview, nil
+	}
+	c := NewClarifier(deps.LLM)
+	c.OnTurn = deps.OnTurn
+	c.Context = deps.Context
+	return c.Clarify(ctx, req, deps.Ask)
 }
 
 // preflight antecipa o conflito antes de gastar LLM e varredura.
