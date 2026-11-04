@@ -1,0 +1,47 @@
+{
+  "versao": 1,
+  "etapas": [
+    {"nome": "clarificar", "palavras": ["clarific", "entrevista", "grill", "requisito", "socr"]},
+    {"nome": "planejar", "palavras": ["plano", "planej", "ticket", "decompor", "spec", "especific"]},
+    {"nome": "coletar", "palavras": ["coleta", "coletar", "scrap", "extrair", "extração", "extracao", "raspar", "crawl"]},
+    {"nome": "transformar", "palavras": ["transform", "converter", "normaliz", "limpar", "limpeza"]},
+    {"nome": "construir", "palavras": ["construir", "implement", "tdd", "build", "codific", "desenvolv"]},
+    {"nome": "verificar", "palavras": ["verific", "testar", "teste", "qualidade", "validar", "validação", "revisar", "auditar", "homolog"]},
+    {"nome": "documentar", "palavras": ["document", "manual", "readme", "tutorial"]},
+    {"nome": "publicar", "palavras": ["publicar", "publicação", "publicacao", "deploy", "release", "lançar"]},
+    {"nome": "entregar", "palavras": ["entregar", "entrega", "empacot", "handoff", "exportar"]}
+  ],
+  "naturezas": [
+    {"nome": "software", "palavras": ["software", "código", "codigo", "programa", "aplicativo", "api", "tdd"]},
+    {"nome": "dados", "palavras": ["dados", "planilha", "csv", "dataset", "scraping"]},
+    {"nome": "documentacao", "palavras": ["documentação", "documentacao", "manual", "readme"]},
+    {"nome": "pesquisa", "palavras": ["pesquis", "benchmark", "levantamento"]},
+    {"nome": "midia", "palavras": ["vídeo", "video", "imagem", "áudio", "audio", "mídia", "midia", "site", "design"]},
+    {"nome": "operacao", "palavras": ["infraestrutura", "servidor", "devops", "operação", "operacao"]},
+    {"nome": "qualquer", "palavras": []}
+  ],
+  "casos_de_uso": [
+    {"nome": "tdd", "palavras": ["tdd", "test-driven", "red-green"]},
+    {"nome": "especificacao", "palavras": ["spec", "especific"]},
+    {"nome": "planejamento", "palavras": ["plano", "planej"]},
+    {"nome": "decomposicao-de-tarefas", "palavras": ["ticket", "tarefas", "backlog", "decompos"]},
+    {"nome": "entrevista-de-requisitos", "palavras": ["entrevista", "grill", "requisito", "socr"]},
+    {"nome": "revisao-de-codigo", "palavras": ["code review", "revisão de código", "revisao de codigo"]},
+    {"nome": "refatoracao", "palavras": ["refator", "simplific"]},
+    {"nome": "depuracao", "palavras": ["depur", "debug", "bug"]},
+    {"nome": "seguranca", "palavras": ["segurança", "seguranca", "vulnerab", "hardening"]},
+    {"nome": "documentacao-tecnica", "palavras": ["documentação técnica", "documentacao tecnica", "manual", "readme"]},
+    {"nome": "pesquisa", "palavras": ["pesquis", "benchmark"]},
+    {"nome": "coleta-de-dados", "palavras": ["coleta de dados", "coletar dados", "extrair dados", "extração de dados"]},
+    {"nome": "analise-de-dados", "palavras": ["análise de dados", "analise de dados", "estatíst", "estatist"]},
+    {"nome": "design-de-interface", "palavras": ["design", "interface", "ui", "ux", "frontend"]},
+    {"nome": "testes-end-to-end", "palavras": ["end-to-end", "e2e", "homolog"]},
+    {"nome": "orquestracao", "palavras": ["orquestr", "pipeline", "esteira"]},
+    {"nome": "publicacao", "palavras": ["publicação", "publicacao", "deploy", "release"]},
+    {"nome": "geracao-de-midia", "palavras": ["vídeo", "video", "imagem", "áudio", "audio", "animação"]},
+    {"nome": "operacao-de-infraestrutura", "palavras": ["infraestrutura", "servidor", "devops", "ci/cd"]},
+    {"nome": "governanca-de-processo", "palavras": ["governança", "governanca", "stop-gate", "intent"]},
+    {"nome": "verificacao-de-qualidade", "palavras": ["qualidade", "qa", "lint", "mutação", "mutacao"]},
+    {"nome": "canonizacao", "palavras": ["canoniz", "desduplic"]}
+  ]
+}

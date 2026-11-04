@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"legoloop/internal/interview"
+	"legoloop/internal/processo"
 )
 
 // Deps reúne tudo que o motor recebe de fora, para ser hermético e determinístico.
@@ -136,7 +137,7 @@ func preflight(d Deps, name string, force bool) error {
 		{Path: filepath.Join(d.Roots.Vault, "loops", name+".loop.json")},
 		{Path: filepath.Join(d.Roots.Vault, "loops", name+".dag.json")},
 	}
-	if found := existing(d.FS, probe); len(found) > 0 {
+	if found := processo.Existentes(d.FS, probe); len(found) > 0 {
 		return fmt.Errorf("%w: %s", ErrExists, strings.Join(found, ", "))
 	}
 	return nil

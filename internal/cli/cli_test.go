@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"legoloop/internal/assets"
 	"legoloop/internal/gate"
 	"legoloop/internal/provider"
 )
@@ -20,6 +21,8 @@ func deps(t *testing.T) (Deps, *bytes.Buffer, *bytes.Buffer) {
 	var out, errb bytes.Buffer
 	return Deps{
 		Stdout: &out, Stderr: &errb,
+		// hermético: o gancho da matriz no canonize não pode varrer o HOME real de quem roda os testes
+		Matriz: &MatrizDeps{Scan: func(context.Context, string) ([]assets.Item, error) { return nil, nil }},
 		Discover: func(context.Context) provider.Inventory {
 			return provider.Inventory{Ollama: []string{"qwen2.5-coder:7b"}, APIKeys: []string{"anthropic"},
 				Errors: []string{"9router: nenhuma base respondeu"}}

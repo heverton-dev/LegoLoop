@@ -1,0 +1,14 @@
+{
+  "versao": 1,
+  "max_palavras": 20,
+  "ambiguas": ["talvez", "geralmente", "normalmente", "provavelmente", "em geral", "pode ser", "às vezes", "quase sempre", "acho que"],
+  "termos": {
+    "processo": ["esteira", "fluxo", "workflow"],
+    "peça": ["componente"],
+    "cérebro": ["modelo condutor"],
+    "cofre": ["repositório canônico"],
+    "gravar": ["persistir"],
+    "etapa": ["estágio"],
+    "harness": ["agente hospedeiro"]
+  }
+}

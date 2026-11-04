@@ -18,6 +18,8 @@ import (
 	"time"
 
 	"legoloop/internal/assets"
+	"legoloop/internal/brain"
+	"legoloop/internal/fabricar"
 	"legoloop/internal/graph"
 	"legoloop/internal/interview"
 	"legoloop/internal/loop"
@@ -64,6 +66,10 @@ type Server struct {
 	PlanGen *plangen.Generator
 	// Fabricar cria processos novos (POST /api/fabricar/run); nil usa a fábrica real com o 9Router do inventário.
 	Fabricar FabricarFunc
+	// BrainOpts ajusta o cérebro da fábrica real (URL do Ollama, prazo, cliente HTTP); usado em testes.
+	BrainOpts []brain.Option
+	// FabricarScanner substitui a varredura de discos da fábrica real (nil = varredura real); usado em testes.
+	FabricarScanner fabricar.Scanner
 
 	matrixOnce sync.Once
 	matrixReg  *reputation.RegistryMatrix

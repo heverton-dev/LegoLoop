@@ -187,11 +187,11 @@ func TestRunFabricar(t *testing.T) {
 		}
 	})
 
-	t.Run("modelo fora do inventario sai com 1 sem gravar", func(t *testing.T) {
+	t.Run("modelo fora do inventario sai com 2 sem gravar", func(t *testing.T) {
 		r := newFabRig(t)
 		args := append(r.args("extrator", "--yes"), "--model", "gpt-inexistente")
-		if code := run(t, r.d, args...); code != 1 {
-			t.Fatalf("exit %d, esperado 1", code)
+		if code := run(t, r.d, args...); code != 2 {
+			t.Fatalf("exit %d, esperado 2 (uso incorreto)", code)
 		}
 		if !strings.Contains(r.errb.String(), "gpt-inexistente") {
 			t.Errorf("o erro deve citar o modelo:\n%s", r.errb)
@@ -231,8 +231,9 @@ func TestRunFabricar(t *testing.T) {
 		}
 	})
 
-	t.Run("sem LLM configurado falha com 1 e mensagem clara", func(t *testing.T) {
+	t.Run("sem nenhum modelo disponivel falha com 1 e mensagem clara", func(t *testing.T) {
 		r := newFabRig(t)
+		r.d.Discover = func(context.Context) provider.Inventory { return provider.Inventory{} }
 		r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }}
 		if code := run(t, r.d, r.args("extrator", "--yes")...); code != 1 {
 			t.Fatalf("exit %d, esperado 1", code)

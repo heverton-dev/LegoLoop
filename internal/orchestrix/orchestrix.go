@@ -205,3 +205,10 @@ func artifactExists(root *os.Root, name string) bool {
 	_, err := root.Stat(filepath.FromSlash(name))
 	return !errors.Is(err, os.ErrNotExist)
 }
+
+// Ask despacha um prompt avulso (sem nó de DAG) a um executor do inventário e devolve o texto. O cérebro
+// plugável (internal/brain) usa esta porta para falar com Ollama, claude CLI e harnesses.
+func (o *Orchestrix) Ask(ctx context.Context, src provider.Source, model, prompt string) (string, error) {
+	text, _, err := o.dispatch(ctx, src, model, prompt, "")
+	return text, err
+}

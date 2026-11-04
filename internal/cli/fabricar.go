@@ -10,10 +10,10 @@ import (
 	"path/filepath"
 	"time"
 
+	"legoloop/internal/brain"
 	"legoloop/internal/canon"
 	"legoloop/internal/fabricar"
 	"legoloop/internal/interview"
-	"legoloop/internal/provider"
 )
 
 // FabricarDeps injeta o que o `fabricar` não deve buscar sozinho; o valor zero usa o ambiente real.
@@ -24,6 +24,7 @@ type FabricarDeps struct {
 	Clock       func() time.Time               // nil = time.Now
 	HarnessDirs []string                       // nil = ~/.<harness>/skills para cada --link-harness
 	DriveRoots  func(context.Context) []string // nil = drives do sistema; só o modo interativo os lista
+	BrainOpts   []brain.Option                 // ajustes do cérebro (URL do Ollama, prazo, cliente HTTP); usado em testes
 }
 
 // fabricarOpts reúne as flags do comando.
@@ -102,12 +103,13 @@ func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
 		return 2
 	}
 	inv := d.discover(ctx)
-	model, err := chooseModel(inv, o.model)
+	b, why, err := brain.Pick(inv, o.model, d.brainOpts()...)
 	if err != nil {
-		return fail(d, err)
+		return failBrain(d, err)
 	}
-	req.ModelChoice = model
-	fd, err := buildFabricarDeps(inv, o, req, d)
+	req.ModelChoice = b.Model()
+	announceBrain(d, why, o.asJSON)
+	fd, err := buildFabricarDeps(o, req, d, b)
 	if err == nil && req.Interactive {
 		err = setupInteractive(ctx, &req, &fd, d)
 	}
@@ -121,19 +123,30 @@ func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
 	return reportFabricar(d, res, o)
 }
 
-// chooseModel aplica a Regra de Ouro: só modelos do inventário. Sem --model, usa o primeiro disponível.
-func chooseModel(inv provider.Inventory, want string) (string, error) {
-	if want == "" {
-		models := inv.Models()
-		if len(models) == 0 {
-			return "", errors.New("nenhum modelo no inventário; rode `legoloop doctor`")
-		}
-		return models[0].ID, nil
+// failBrain traduz o erro da escolha do cérebro: modelo fora do inventário é uso incorreto (2); sem nenhum
+// cérebro disponível é falha de ambiente (1).
+func failBrain(d Deps, err error) int {
+	if errors.Is(err, brain.ErrModeloDesconhecido) {
+		fmt.Fprintln(d.Stderr, "erro:", err)
+		return 2
 	}
-	if !inv.Has(want) {
-		return "", fmt.Errorf("modelo %q fora do inventário; rode `legoloop doctor` para ver os disponíveis", want)
+	return fail(d, err)
+}
+
+// announceBrain diz ao usuário qual cérebro conduz a fabricação. Com --json o aviso vai ao stderr.
+func announceBrain(d Deps, why string, asJSON bool) {
+	w := d.Stdout
+	if asJSON {
+		w = d.Stderr
 	}
-	return want, nil
+	fmt.Fprintln(w, why)
+}
+
+func (d Deps) brainOpts() []brain.Option {
+	if d.Fabricar != nil {
+		return d.Fabricar.BrainOpts
+	}
+	return nil
 }
 
 func failFabricar(d Deps, err error) int {
@@ -145,17 +158,13 @@ func failFabricar(d Deps, err error) int {
 }
 
 // buildFabricarDeps resolve as raízes e as dependências do motor; o que não vier injetado usa o ambiente real.
-func buildFabricarDeps(inv provider.Inventory, o fabricarOpts, req fabricar.Request, d Deps) (fabricar.Deps, error) {
+func buildFabricarDeps(o fabricarOpts, req fabricar.Request, d Deps, b brain.Brain) (fabricar.Deps, error) {
 	x := FabricarDeps{}
 	if d.Fabricar != nil {
 		x = *d.Fabricar
 	}
 	if x.LLM == nil {
-		llm, err := fabricar.BrainFor(inv, req.ModelChoice)
-		if err != nil {
-			return fabricar.Deps{}, err
-		}
-		x.LLM = llm
+		x.LLM = b
 	}
 	roots, err := fabricarRoots(o, d)
 	if err != nil {

@@ -53,11 +53,20 @@ func cmdCanonize(ctx context.Context, args []string, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
-	plan := canon.BuildPlan(files, v)
-	if *dry {
-		return reportPlan(d, plan, len(files), *asJSON)
+	return finalizarCanonize(ctx, d, v, canon.BuildPlan(files, v), len(files), *dry, *asJSON)
+}
+
+// finalizarCanonize mostra o plano (--dry-run) ou aplica os links e, nos dois casos, trata a matriz de peças:
+// a prévia só informa quantas peças seriam recatalogadas; o --apply gera a matriz ao final.
+func finalizarCanonize(ctx context.Context, d Deps, vault string, plan canon.Plan, scanned int, dry, asJSON bool) int {
+	if dry {
+		code := reportPlan(d, plan, scanned, asJSON)
+		matrizPreviaCanonize(ctx, d, vault, asJSON)
+		return code
 	}
-	return reportApply(d, canon.Apply(ctx, plan, canon.DefaultLinker()), *asJSON)
+	code := reportApply(d, canon.Apply(ctx, plan, canon.DefaultLinker()), asJSON)
+	matrizAposCanonize(ctx, d, vault, asJSON)
+	return code
 }
 
 // warnGitRoots avisa (stderr) cada raiz que será pulada por estar num repositório git.

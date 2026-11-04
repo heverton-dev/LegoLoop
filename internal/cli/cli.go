@@ -31,6 +31,8 @@ type Deps struct {
 	Home string
 	// Fabricar injeta LLM, scanner e relógio do comando fabricar (nil = ambiente real; usado em testes).
 	Fabricar *FabricarDeps
+	// Matriz injeta varredura, cérebro e relógio do comando matriz (nil = ambiente real; usado em testes).
+	Matriz *MatrizDeps
 }
 
 func (d Deps) discover(ctx context.Context) provider.Inventory {
@@ -53,8 +55,9 @@ Comandos:
   forge      [--addr 127.0.0.1:7878] [--project DIR]  abre o Studio e dispara primeira varredura
   import     <github-url> [--name N] [--json]         importa e canoniza skill do GitHub
   upgrade    <arquivo> [--diagnose|--apply] [--json]  diagnóstica ou valida elevação para Padrão Ouro
-  matrix     [--kind K] [--tier T] [--min N] [--json] visualiza matriz de reputação das peças
+  matrix     [--kind K] [--tier T] [--min N] [--json] DESCONTINUADO: use "matriz ver"
   fabricar   "<nome>" [--yes] [--goal T] [--model M] [--dry-run] [--json]  cria um processo novo (skill, loop, dag e docs)
+  matriz     gerar|status|vocab|perfil|ver  gera e consulta a matriz de peças (qualidade e perfil de uso)
   version
 `
 
@@ -67,7 +70,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 	cmds := map[string]func(context.Context, []string, Deps) int{
 		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
-		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar,
+		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

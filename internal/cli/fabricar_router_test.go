@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"legoloop/internal/brain"
 	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
 	"legoloop/internal/provider"
 )
 
@@ -89,16 +89,20 @@ func TestFabricarLLMHasALongEnoughTimeout(t *testing.T) {
 	router := newFakeRouter(t)
 	d, _, _ := deps(t)
 	d.Home = t.TempDir()
-	fd, err := buildFabricarDeps(provider.Inventory{RouterURL: router.URL, RouterModels: []string{"code-pro"}}, fabricarOpts{vault: t.TempDir(), docs: t.TempDir()}, fabricarReq(), d)
+	b, _, err := brain.Pick(provider.Inventory{RouterURL: router.URL, RouterModels: []string{"code-pro"}}, "code-pro")
 	if err != nil {
 		t.Fatal(err)
 	}
-	c, ok := fd.LLM.(*interview.RouterLLMClient)
-	if !ok {
-		t.Fatalf("o LLM padrão deve ser o cliente do 9Router, veio %T", fd.LLM)
+	fd, err := buildFabricarDeps(fabricarOpts{vault: t.TempDir(), docs: t.TempDir()}, fabricarReq(), d, b)
+	if err != nil {
+		t.Fatal(err)
 	}
-	if c.HTTPClient.Timeout < 2*time.Minute {
-		t.Errorf("timeout de %s é curto para gerar a SPEC; esperado >= 2m", c.HTTPClient.Timeout)
+	br, ok := fd.LLM.(brain.Brain)
+	if !ok {
+		t.Fatalf("o LLM padrão deve ser um cérebro (brain.Brain), veio %T", fd.LLM)
+	}
+	if br.Timeout() < 2*time.Minute {
+		t.Errorf("timeout de %s é curto para gerar a SPEC; esperado >= 2m", br.Timeout())
 	}
 }
 
@@ -121,21 +125,5 @@ func TestFabricarUsesTheChosenModelAsTheBrain(t *testing.T) {
 	}
 	if got := router.model.Load().(string); got != "code-fast" {
 		t.Errorf("o router recebeu o modelo %q; esperado o escolhido (code-fast)", got)
-	}
-}
-
-func TestFabricarRejectsABrainThatTheRouterDoesNotServe(t *testing.T) {
-	router := newFakeRouter(t)
-	t.Setenv("NINEROUTER_URL", router.URL)
-	r := newFabRig(t)
-	r.d.Discover = func(context.Context) provider.Inventory {
-		return provider.Inventory{RouterURL: router.URL, CLIs: []provider.CLI{{Name: "claude"}}} // "sonnet" é do claude CLI
-	}
-	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }}
-	if code := run(t, r.d, r.args("extrator", "--yes", "--model", "sonnet")...); code != 1 {
-		t.Fatalf("exit %d, esperado 1", code)
-	}
-	if !strings.Contains(r.errb.String(), "9Router") || router.calls.Load() != 0 || len(r.files(t)) != 0 {
-		t.Errorf("devia explicar o motivo sem chamar o router nem gravar: calls=%d\n%s", router.calls.Load(), r.errb)
 	}
 }

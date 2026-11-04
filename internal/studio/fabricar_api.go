@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"legoloop/internal/brain"
 	"legoloop/internal/fabricar"
 	"legoloop/internal/specgen"
 )
@@ -95,7 +96,7 @@ func (s *Server) defaultFabricar(ctx context.Context, req fabricar.Request) (*fa
 	if s.Discover == nil || s.ProjectDir == "" {
 		return nil, errors.New("studio: fábrica indisponível neste servidor")
 	}
-	llm, err := fabricar.BrainFor(s.inventory(ctx), req.ModelChoice)
+	b, _, err := brain.Pick(s.inventory(ctx), req.ModelChoice, s.BrainOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +104,7 @@ func (s *Server) defaultFabricar(ctx context.Context, req fabricar.Request) (*fa
 	if err != nil {
 		return nil, err
 	}
-	return fabricar.Fabricar(ctx, req, fabricar.Deps{LLM: llm, Roots: fabricar.Roots{Vault: vault, Docs: s.ProjectDir}})
+	return fabricar.Fabricar(ctx, req, fabricar.Deps{LLM: b, Scanner: s.FabricarScanner, Roots: fabricar.Roots{Vault: vault, Docs: s.ProjectDir}})
 }
 
 // writeFabricarError traduz o erro em status HTTP com mensagem própria. O texto bruto do erro nunca sobe ao
@@ -116,8 +117,10 @@ func writeFabricarError(w http.ResponseWriter, err error) {
 		writeError(w, http.StatusBadRequest, "pedido inválido: informe uma categoria válida e um modelo")
 	case errors.Is(err, fabricar.ErrExists):
 		writeErrorCode(w, http.StatusConflict, "exists", "já existe um processo com este nome")
-	case errors.Is(err, fabricar.ErrBrain):
-		writeError(w, http.StatusUnprocessableEntity, "o modelo escolhido não pode conduzir a fabricação; escolha outro do 9Router")
+	case errors.Is(err, brain.ErrModeloDesconhecido):
+		writeError(w, http.StatusUnprocessableEntity, "o modelo escolhido não está disponível; escolha outro da lista")
+	case errors.Is(err, brain.ErrSemCerebro):
+		writeError(w, http.StatusServiceUnavailable, "nenhum modelo está disponível; suba o 9Router, instale o Ollama ou instale um harness com CLI")
 	case errors.Is(err, specgen.ErrContract):
 		writeError(w, http.StatusBadGateway, "o modelo respondeu fora do contrato após várias tentativas; tente outro modelo")
 	default:
