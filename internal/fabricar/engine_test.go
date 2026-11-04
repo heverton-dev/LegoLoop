@@ -319,32 +319,6 @@ func TestFabricar_InteractiveUsesAskAndRecordsRealConfidence(t *testing.T) {
 	}
 }
 
-func TestFabricar_LinksTheSkillOnlyWithTheHarnessOptIn(t *testing.T) {
-	r := newRig(t, goodPieces())
-	harness := filepath.Join(r.home, ".claude", "skills")
-	r.deps.HarnessDirs = []string{harness}
-	if res := r.run(t); len(res.Artifacts.SkillLinks) != 0 {
-		t.Fatalf("sem --link-harness nada é ligado: %v", res.Artifacts.SkillLinks)
-	}
-	if _, err := os.Stat(harness); err == nil {
-		t.Fatal("a pasta do harness não deve ser tocada sem opt-in")
-	}
-	r2 := newRig(t, goodPieces())
-	harness2 := filepath.Join(r2.home, ".claude", "skills")
-	r2.deps.HarnessDirs = []string{harness2, filepath.Join(r2.home, ".gemini", "skills")}
-	r2.req.LinkHarnesses = []string{"claude"}
-	res := r2.run(t)
-	if len(res.Artifacts.SkillLinks) != 1 || !strings.HasPrefix(res.Artifacts.SkillLinks[0], harness2) {
-		t.Fatalf("só o harness pedido deve receber o link: %v", res.Artifacts.SkillLinks)
-	}
-	if !strings.Contains(read(t, filepath.Join(res.Artifacts.SkillLinks[0], "SKILL.md")), "name: legoloop-extrator-de-audio") {
-		t.Error("o link (ou a cópia) deve expor o SKILL.md")
-	}
-	if _, err := os.Stat(filepath.Join(r2.home, ".gemini")); err == nil {
-		t.Error("harness não pedido não pode ser tocado")
-	}
-}
-
 func TestFabricar_RejectsInvalidRequestsBeforeAnyWork(t *testing.T) {
 	r := newRig(t, goodPieces())
 	r.req.RawName = "日本語"

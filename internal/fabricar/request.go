@@ -29,7 +29,8 @@ type Request struct {
 	Interactive    bool     `json:"interactive"`     // true = solicita prompts; false = autônomo (--yes)
 	Force          bool     `json:"force"`           // true = sobrescreve após backup .legoloop-bak
 	TrustRemovable bool     `json:"trust_removable"` // true = aceita peças Untrusted na fusão
-	LinkHarnesses  []string `json:"link_harnesses"`  // Ex: ["claude"]; vazio = só cofre, sem link
+	LinkHarnesses  []string `json:"link_harnesses"`  // Ex: ["claude"]; vazio = todos os harnesses detectados
+	NoLink         bool     `json:"no_link"`         // true = só o cofre, nenhum vínculo a harness
 	DryRun         bool     `json:"dry_run"`         // true = calcula tudo e não grava nada
 }
 

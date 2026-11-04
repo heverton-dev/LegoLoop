@@ -385,7 +385,7 @@
 * **Escopo:** Objetivo 'coletar preços de 20 lojas e entregar uma planilha' dá natureza dados; INTENT e ROUTE não contêm go test, go build nem Zero Stubs; ao menos um gate verifica o conteúdo dos dados.
 
 #### Ticket `TICK-02.11` — Vínculo a todos os harnesses detectados
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.9"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`

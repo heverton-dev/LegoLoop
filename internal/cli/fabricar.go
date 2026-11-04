@@ -14,23 +14,26 @@ import (
 	"legoloop/internal/canon"
 	"legoloop/internal/fabricar"
 	"legoloop/internal/interview"
+	"legoloop/internal/processo"
 	"legoloop/internal/ste"
 )
 
 // FabricarDeps injeta o que o `fabricar` não deve buscar sozinho; o valor zero usa o ambiente real.
 // É assim que os testes rodam sem rede, sem disco real e com data fixa.
 type FabricarDeps struct {
-	LLM         interview.LLMClient            // nil = cliente do 9Router descoberto no inventário
-	Scanner     fabricar.Scanner               // nil = varredura real dos discos
-	Clock       func() time.Time               // nil = time.Now
-	HarnessDirs []string                       // nil = ~/.<harness>/skills para cada --link-harness
-	DriveRoots  func(context.Context) []string // nil = drives do sistema; só o modo interativo os lista
-	BrainOpts   []brain.Option                 // ajustes do cérebro (URL do Ollama, prazo, cliente HTTP); usado em testes
+	LLM        interview.LLMClient            // nil = cliente do 9Router descoberto no inventário
+	Scanner    fabricar.Scanner               // nil = varredura real dos discos
+	Clock      func() time.Time               // nil = time.Now
+	Harnesses  []processo.Harness             // nil = harnesses detectados no HOME
+	Link       processo.LinkFunc              // nil = symlink ou cópia; testes trocam para provar o desfazer
+	DriveRoots func(context.Context) []string // nil = drives do sistema; só o modo interativo os lista
+	BrainOpts  []brain.Option                 // ajustes do cérebro (URL do Ollama, prazo, cliente HTTP); usado em testes
 }
 
 // fabricarOpts reúne as flags do comando.
 type fabricarOpts struct {
 	yes, asJSON, force, dry, trust bool
+	noLink                         bool
 	semEntrevista, aceitar         bool
 	entrevista                     string
 	goal, model, category          string
@@ -54,7 +57,8 @@ func newFabricarFlags(o *fabricarOpts) *flag.FlagSet {
 	fs.BoolVar(&o.dry, "dry-run", false, "calcula tudo e não grava nada")
 	fs.BoolVar(&o.trust, "trust-removable", false, "aceita peças de mídia removível na fusão")
 	fs.BoolVar(&o.asJSON, "json", false, "imprime o Result como JSON")
-	fs.Var(&o.link, "link-harness", "liga a skill à pasta do harness, ex.: claude (repetível)")
+	fs.Var(&o.link, "link-harness", "liga só aos harnesses citados, ex.: claude (repetível); padrão: todos os detectados")
+	fs.BoolVar(&o.noLink, "no-link", false, "grava só no cofre, sem ligar a nenhum harness")
 	return fs
 }
 
@@ -105,7 +109,7 @@ func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
 		return code
 	}
 	req := fabricar.Request{RawName: name, Goal: o.goal, Category: fabricar.Category(o.category), ModelChoice: o.model,
-		Interactive: !o.yes, Force: o.force, DryRun: o.dry, TrustRemovable: o.trust, LinkHarnesses: o.link}
+		Interactive: !o.yes, Force: o.force, DryRun: o.dry, TrustRemovable: o.trust, LinkHarnesses: o.link, NoLink: o.noLink}
 	probe := req
 	if probe.ModelChoice == "" {
 		probe.ModelChoice = "auto" // só para validar nome e categoria antes de consultar o inventário
@@ -182,14 +186,14 @@ func buildFabricarDeps(o fabricarOpts, req fabricar.Request, d Deps, b brain.Bra
 	if err != nil {
 		return fabricar.Deps{}, err
 	}
-	if x.HarnessDirs == nil {
-		x.HarnessDirs = harnessSkillDirs(req.LinkHarnesses, d.Home)
+	if x.Harnesses == nil && !req.NoLink {
+		x.Harnesses = detectHarnesses(d.Home)
 	}
 	progress := d.Stdout
 	if o.asJSON {
 		progress = d.Stderr // mantém o stdout como JSON puro
 	}
-	return fabricar.Deps{LLM: x.LLM, Scanner: x.Scanner, Clock: x.Clock, Roots: roots, HarnessDirs: x.HarnessDirs,
+	return fabricar.Deps{LLM: x.LLM, Scanner: x.Scanner, Clock: x.Clock, Roots: roots, Harnesses: x.Harnesses, Link: x.Link,
 		Progress: printProgress(progress)}, nil
 }
 
@@ -222,19 +226,12 @@ func fabricarRoots(o fabricarOpts, d Deps) (fabricar.Roots, error) {
 	return fabricar.Roots{Vault: v, Docs: p}, err
 }
 
-// harnessSkillDirs devolve ~/.<harness>/skills para cada harness pedido.
-func harnessSkillDirs(harnesses []string, home string) []string {
-	if len(harnesses) == 0 {
-		return nil
-	}
+// detectHarnesses procura os harnesses no HOME informado (vazio = o HOME real).
+func detectHarnesses(home string) []processo.Harness {
 	if home == "" {
 		home, _ = os.UserHomeDir()
 	}
-	var dirs []string
-	for _, h := range harnesses {
-		dirs = append(dirs, filepath.Join(home, "."+h, "skills"))
-	}
-	return dirs
+	return processo.DetectarHarnesses(processo.OSFS(), home)
 }
 
 func reportFabricar(d Deps, res *fabricar.Result, o fabricarOpts) int {

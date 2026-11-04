@@ -59,6 +59,9 @@ type File struct {
 type WriteOpts struct {
 	Force  bool // sobrescreve após preservar o original como .legoloop-bak
 	DryRun bool // valida e antecipa conflitos; não grava nada
+	// Depois roda com tudo já promovido (ex.: criar os vínculos aos harnesses). Se falhar, a gravação inteira é desfeita.
+	// A própria Depois desfaz o que ela criou antes de devolver o erro.
+	Depois func() error
 }
 
 // Store é o acesso ao cofre e ao projeto. É a única porta de gravação das funções de processo.
@@ -91,7 +94,11 @@ func (s Store) Write(ctx context.Context, files []File, opts WriteOpts) error {
 		return nil
 	}
 	tx := &txn{fsys: fsys, backups: map[string]string{}}
-	if err := tx.run(ctx, files); err != nil {
+	err := tx.run(ctx, files)
+	if err == nil && opts.Depois != nil {
+		err = opts.Depois()
+	}
+	if err != nil {
 		tx.rollback(files)
 		return err
 	}

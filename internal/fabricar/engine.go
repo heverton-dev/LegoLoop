@@ -21,7 +21,8 @@ type Deps struct {
 	Clock        func() time.Time     // nil usa time.Now
 	Roots        Roots                // obrigatório
 	FS           FS                   // nil usa o disco real
-	HarnessDirs  []string             // pastas de skills dos harnesses (ex.: ~/.claude/skills), usadas só com LinkHarnesses
+	Harnesses    []processo.Harness   // harnesses detectados; a skill é ligada a todos, salvo Request.NoLink
+	Link         processo.LinkFunc    // nil = symlink ou cópia; os testes trocam para provar o desfazer
 	Ask          AskFunc              // modo interativo: entrega as perguntas ao usuário
 	In           io.Reader            // modo interativo sem Ask: lê as respostas daqui
 	Out          io.Writer            // idem: escreve as perguntas aqui
@@ -203,28 +204,24 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	if err != nil {
 		return nil, err
 	}
-	if err := d.confirm(req, files); err != nil {
+	vinculos, lwarns := planLinks(req, d.Harnesses, artifactsOf(files).SkillPath, name)
+	if err := d.confirm(req, append(filePaths(files), linkDests(vinculos)...)); err != nil {
 		return nil, err
 	}
-	art, err := Materialize(ctx, MaterializePlan{Name: name, Roots: d.Roots, Files: files, Force: req.Force, DryRun: req.DryRun}, d.FS)
+	art, err := Materialize(ctx, MaterializePlan{Name: name, Roots: d.Roots, Files: files, Force: req.Force, DryRun: req.DryRun,
+		Vinculos: vinculos, Link: d.Link}, d.FS)
 	if err != nil {
 		return nil, err
 	}
 	warns := append(append(clar.Warnings(), scan.Warnings...), m.Warnings...)
-	links, lwarns := linkHarnesses(req, d.HarnessDirs, art.SkillPath, name)
-	art.SkillLinks = links
 	return &Result{CanonicalName: name, Slug: slug, CreatedAt: now, Artifacts: art, CuratedPieces: m.Used,
 		SkippedRoots: scan.Skipped, Warnings: append(warns, lwarns...)}, nil
 }
 
 // confirm pede a última confirmação antes de gravar. O dry-run não grava e por isso não pergunta.
-func (d Deps) confirm(req Request, files []PlannedFile) error {
+func (d Deps) confirm(req Request, paths []string) error {
 	if d.Confirm == nil || req.DryRun {
 		return nil
-	}
-	paths := make([]string, len(files))
-	for i, f := range files {
-		paths[i] = f.Path
 	}
 	ok, err := d.Confirm(paths)
 	if err != nil {
@@ -234,6 +231,14 @@ func (d Deps) confirm(req Request, files []PlannedFile) error {
 		return ErrAborted
 	}
 	return nil
+}
+
+func filePaths(files []PlannedFile) []string {
+	paths := make([]string, len(files))
+	for i, f := range files {
+		paths[i] = f.Path
+	}
+	return paths
 }
 
 // plannedFiles monta a lista final de arquivos: os três meios no cofre e a governança em docs/.

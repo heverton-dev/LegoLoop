@@ -368,7 +368,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** o objetivo "coletar preços de 20 lojas e entregar uma planilha" e cérebro real
   * **Quando:** `fabricar` roda em `--dry-run`
   * **Então:** a natureza é `dados`; o INTENT e a ROUTE gerados não contêm `go test`, `go build` nem `Zero Stubs`; pelo menos um gate verifica conteúdo dos dados (contagem de registros ou `schema_valid`).
-* [ ] `AC-E02.12`: **O processo chega a todos os harnesses detectados**
+* [x] `AC-E02.12`: **O processo chega a todos os harnesses detectados**
   * **Dado que:** 3 harnesses simulados em HOME descartável
   * **Quando:** o binário grava um processo, e depois com `--no-link`, e depois com falha injetada no 2º link
   * **Então:** a prévia lista os 3 e a gravação cria 3 links que apontam ao cofre; `--no-link` cria 0; a falha desfaz os links já criados e o cofre.
