@@ -360,7 +360,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** um `Processo` com 4 etapas
   * **Quando:** o emissor gera SPEC, PLAN, ROUTE, `.dag.json`, `.loop.json` e `SKILL.md`
   * **Então:** o teste extrai os IDs e a ordem das etapas de cada arquivo e eles são iguais; remover uma etapa de uma única projeção faz o teste falhar (mutação); o PLAN não contém `Aplicar a skill` fora do mapeamento etapa a peça.
-* [ ] `AC-E02.10`: **Gate de existência é recusado quando há promessa de conteúdo**
+* [x] `AC-E02.10`: **Gate de existência é recusado quando há promessa de conteúdo**
   * **Dado que:** uma etapa com `Produz{Tipo:"markdown", Promete:true}` e gate `file_exists('out/x.md')`
   * **Quando:** `Processo.Validate` roda
   * **Então:** devolve `ErrGateTrivial`; com o gate gerado pela biblioteca (`file_exists(..) && word_count(..) >= N && !has_pattern(.., '\{\{')`, ou `schema_valid` para JSON) a validação passa e o gate compila em `internal/gate`.

@@ -29,8 +29,9 @@ var (
 // Artefato é o que uma etapa produz.
 type Artefato struct {
 	Caminho string `json:"caminho"`
-	Tipo    string `json:"tipo"`    // markdown | json | codigo | dados | marcador
-	Promete bool   `json:"promete"` // true = promete conteúdo; gate só de existência não basta
+	Tipo    string `json:"tipo"`              // markdown | json | codigo | dados | marcador
+	Promete bool   `json:"promete"`           // true = promete conteúdo; gate só de existência não basta
+	Esquema string `json:"esquema,omitempty"` // JSON: caminho do JSON Schema que o artefato deve cumprir
 }
 
 // Etapa é a unidade única do processo. SPEC, PLAN, ROUTE, DAG, loop e skill são projeções dela.
@@ -112,14 +113,15 @@ func (e Etapa) validate(ids map[string]bool) error {
 	if strings.TrimSpace(e.Gate) == "" {
 		return invalido("etapa %q sem gate", e.ID)
 	}
-	if _, err := gate.Compile(e.Gate); err != nil {
+	g, err := gate.Compile(e.Gate)
+	if err != nil {
 		return invalido("etapa %q: o gate não compila: %v", e.ID, err)
 	}
 	c := e.Produz.Caminho
 	if c == "" || strings.HasPrefix(c, "/") || !filepath.IsLocal(filepath.FromSlash(c)) {
 		return invalido("etapa %q: o artefato %q precisa de caminho relativo dentro do projeto", e.ID, c)
 	}
-	return nil
+	return gateNaoTrivial(e, g)
 }
 
 // grafo recusa ciclos e etapas sem conexão (quando há mais de uma etapa, toda etapa precisa ligar-se a outra).

@@ -355,7 +355,7 @@
 * **Escopo:** Um Processo de 4 etapas gera SPEC, PLAN, ROUTE, .dag.json, .loop.json e SKILL.md; o teste extrai IDs e ordem das etapas de cada arquivo e eles são iguais; remover uma etapa de uma só projeção faz o teste falhar; 'Aplicar a skill' só aparece no mapeamento etapa a peça.
 
 #### Ticket `TICK-02.9` — Biblioteca de gates e recusa de gate trivial
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.8"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
