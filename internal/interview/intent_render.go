@@ -15,6 +15,9 @@ type IntentView struct {
 	Confidence int
 	Mirror     *Mirror
 	SpecRel    string // caminho do próximo documento, relativo à raiz do projeto
+	// Natureza do processo (vocabulário). Vazia ou "software" mantém os blocos e critérios de engenharia de
+	// software; qualquer outra natureza usa blocos e critérios sem comandos de Go.
+	Natureza string
 }
 
 const notInformed = "Não informado na entrevista"
@@ -26,7 +29,7 @@ func RenderIntent(v IntentView) string {
 	writeIntentHeader(&b, v)
 	writeIntentContext(&b, v)
 	writeIntentScope(&b, v)
-	writeIntentBlocks(&b)
+	writeIntentBlocks(&b, v.Natureza)
 	writeIntentGovernance(&b, v)
 	writeIntentCriteria(&b, v)
 	writeIntentHandoff(&b, v)
@@ -102,14 +105,28 @@ func writeIntentScope(b *strings.Builder, v IntentView) {
 	b.WriteString("\n---\n\n")
 }
 
-func writeIntentBlocks(b *strings.Builder) {
+func writeIntentBlocks(b *strings.Builder, natureza string) {
 	b.WriteString("## 3. Mapeamento Preliminar de Blocos e Subloops\n")
 	b.WriteString("Identificação das capacidades que a futura esteira precisará acionar. Tipos permitidos: `skill`, `script`, `subloop`, `unit_task`, `ui_task`, `stop_gate`.\n\n")
 	b.WriteString("| Identificador | Tipo da Peça | Especialidade / Skill / Subloop | Papel na Esteira |\n| :--- | :--- | :--- | :--- |\n")
 	b.WriteString("| `BLOCO-01` | `skill` | `skills/aidd-spec` | Elaborar a especificação formal com critérios BDD. |\n")
+	if !ehSoftware(natureza) {
+		writeBlocosGenericos(b)
+		return
+	}
 	b.WriteString("| `BLOCO-02` | `unit_task` | Código de produção | Implementação da lógica via TDD Red-Green. |\n")
 	b.WriteString("| `BLOCO-03` | `script` | `go test ./...` | Regressão mecânica e integridade. |\n")
 	b.WriteString("| `BLOCO-04` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5). |\n\n---\n\n")
+}
+
+// ehSoftware: natureza vazia (INTENT antigo ou entrevista sem natureza) e "software" usam o texto de engenharia de software.
+func ehSoftware(natureza string) bool { return natureza == "" || natureza == "software" }
+
+// writeBlocosGenericos completa a tabela de blocos de um processo que não é de software: sem comandos de Go.
+func writeBlocosGenericos(b *strings.Builder) {
+	b.WriteString("| `BLOCO-02` | `unit_task` | Execução das etapas | Cada etapa grava o seu artefato e passa por um gate de conteúdo. |\n")
+	b.WriteString("| `BLOCO-03` | `script` | `legoloop validate` | Validação mecânica do grafo do processo. |\n")
+	b.WriteString("| `BLOCO-04` | `stop_gate` | Aprovação humana | Pausa antes de qualquer gravação definitiva. |\n\n---\n\n")
 }
 
 func writeIntentGovernance(b *strings.Builder, v IntentView) {
@@ -136,8 +153,13 @@ func writeIntentCriteria(b *strings.Builder, v IntentView) {
 	b.WriteString("## 5. Critérios de Sucesso de Alto Nível\n")
 	b.WriteString("Cada critério precisa ter uma forma mecânica de prova.\n\n")
 	b.WriteString("| # | Critério | Como se prova | Comando / Evidência |\n| :--- | :--- | :--- | :--- |\n")
-	b.WriteString("| 1 | Todas as invariantes da esteira passam com zero stubs e zero mocks provisórios. | Suíte verde e busca por stubs vazia | `go test ./...` com exit code 0 |\n")
-	b.WriteString("| 2 | Cobertura de testes mantida ou expandida (TDD Red-Green). | Teste novo falhando antes do código | Relatório de testes do ticket |\n")
+	if ehSoftware(v.Natureza) {
+		b.WriteString("| 1 | Todas as invariantes da esteira passam com zero stubs e zero mocks provisórios. | Suíte verde e busca por stubs vazia | `go test ./...` com exit code 0 |\n")
+		b.WriteString("| 2 | Cobertura de testes mantida ou expandida (TDD Red-Green). | Teste novo falhando antes do código | Relatório de testes do ticket |\n")
+	} else {
+		b.WriteString("| 1 | Cada etapa grava o artefato prometido, e o gate de conteúdo dela passa. | Gate da etapa avaliado sobre o artefato | `legoloop run` com exit code 0 |\n")
+		b.WriteString("| 2 | O grafo do processo é válido antes de executar. | Validação mecânica do grafo | `legoloop validate` com exit code 0 |\n")
+	}
 	fmt.Fprintf(b, "| 3 | %s | Critério de sucesso acordado na entrevista | A definir na SPEC como `AC-XX` binário |\n\n---\n\n",
 		cell(orDefault(v.Mirror.Success, notInformed)))
 }

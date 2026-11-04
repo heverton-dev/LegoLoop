@@ -34,6 +34,7 @@ type Ticket struct {
 	TargetFiles    []string `json:"target_files"`     // Arquivos tocados
 	SpecCriteria   []string `json:"spec_criteria"`    // AC-E01.1
 	ValidationCmd  string   `json:"validation_cmd"`   // Comando mecânico de teste
+	Gate           string   `json:"gate,omitempty"`   // Gate DSL do ticket; vazio = exit code 0 e artefatos existentes
 	HumanGateAfter bool     `json:"human_gate_after"` // Se há parada após este ticket
 }
 

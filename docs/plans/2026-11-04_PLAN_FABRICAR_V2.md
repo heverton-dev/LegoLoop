@@ -370,7 +370,7 @@
 * **Escopo:** Etapa que promete markdown com gate file_exists isolado devolve ErrGateTrivial; o gate da biblioteca (file_exists && word_count >= N && !has_pattern '\{\{', ou schema_valid para JSON) passa e compila em internal/gate.
 
 #### Ticket `TICK-02.10` — Natureza aberta do processo
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.9","TICK-02.4"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`

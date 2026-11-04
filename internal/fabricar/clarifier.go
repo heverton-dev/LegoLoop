@@ -20,6 +20,8 @@ type Clarification struct {
 	Reached    bool             `json:"reached"` // true se a entrevista chegou a >= 95%
 	// Interviewed é verdadeiro quando houve entrevista (modo interativo); no autônomo nada foi medido.
 	Interviewed bool `json:"interviewed"`
+	// Natureza do processo (vocabulário), quando já conhecida; vazia = natureza ainda não identificada.
+	Natureza string `json:"natureza,omitempty"`
 	// Gaps lista o que o espelho ainda não respondeu quando a entrevista parou abaixo da meta.
 	Gaps []string `json:"gaps,omitempty"`
 }

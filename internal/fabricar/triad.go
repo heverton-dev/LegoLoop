@@ -51,7 +51,7 @@ func writeIntent(stage, name string, clar Clarification, date string) (string, e
 	file := fmt.Sprintf("%s_INTENT_%s.md", date, upperSnake(strings.TrimPrefix(name, namePrefix)))
 	doc := interview.RenderIntent(interview.IntentView{
 		Theme: clar.Theme, Date: date, SessionID: "fabricar-" + strings.TrimPrefix(name, namePrefix),
-		Confidence: clar.Confidence, Mirror: &clar.Mirror, SpecRel: interview.SpecRelFor(file, clar.Theme, date),
+		Confidence: clar.Confidence, Natureza: clar.Natureza, Mirror: &clar.Mirror, SpecRel: interview.SpecRelFor(file, clar.Theme, date),
 	})
 	dir := filepath.Join(stage, "docs", "intents")
 	if err := os.MkdirAll(dir, 0o755); err != nil {

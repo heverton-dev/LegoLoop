@@ -13,6 +13,9 @@ import (
 // PalavrasMinimas é o mínimo de palavras que o gate da biblioteca exige de um artefato Markdown.
 const PalavrasMinimas = 30
 
+// LinhasMinimasDados é o mínimo de linhas do gate de dados: o cabeçalho e ao menos um registro.
+const LinhasMinimasDados = 2
+
 // ErrGateTrivial: a etapa promete conteúdo, mas o gate só confere que o arquivo existe (ou nem isso).
 var ErrGateTrivial = errors.New("processo: gate trivial")
 
@@ -27,7 +30,7 @@ const tipoMarcador = "marcador"
 // GateParaArtefato gera o gate da biblioteca para o artefato: o mínimo que prova que o conteúdo existe.
 //   - markdown: existe, tem ao menos PalavrasMinimas palavras e não deixou {{placeholder}};
 //   - json: existe e cumpre o esquema (se houver), senão começa como objeto ou lista JSON;
-//   - codigo e dados: existe e não está vazio;
+//   - codigo: existe e não está vazio; dados: existe e tem o cabeçalho e ao menos um registro;
 //   - marcador: existe.
 func GateParaArtefato(a Artefato) (string, error) {
 	p, err := refGate("caminho", a.Caminho)
@@ -40,7 +43,7 @@ func GateParaArtefato(a Artefato) (string, error) {
 	case "json":
 		return gateJSON(p, a.Esquema)
 	case "codigo", "dados":
-		return fmt.Sprintf(`file_exists(%[1]s) && word_count(%[1]s) >= 1`, p), nil
+		return gateCodigoOuDados(p, a.Tipo), nil
 	case tipoMarcador:
 		return fmt.Sprintf(`file_exists(%s)`, p), nil
 	}
@@ -77,4 +80,12 @@ func gateNaoTrivial(e Etapa, g *gate.Expr) error {
 		msg += " " + ste.Msg("processo.gate_sugerido", sugerido)
 	}
 	return fmt.Errorf("%w: %w: %s", ErrInvalido, ErrGateTrivial, msg)
+}
+
+// gateCodigoOuDados: código não pode estar vazio; dados precisam de ao menos duas linhas (cabeçalho e um registro).
+func gateCodigoOuDados(p, tipo string) string {
+	if tipo == "dados" {
+		return fmt.Sprintf(`file_exists(%[1]s) && line_count(%[1]s) >= %[2]d`, p, LinhasMinimasDados)
+	}
+	return fmt.Sprintf(`file_exists(%[1]s) && word_count(%[1]s) >= 1`, p)
 }

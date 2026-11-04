@@ -143,6 +143,9 @@ func routingFor(nature string) (routeRouting, int) {
 func ticketNode(t Ticket, m planMeta) routeNode {
 	routing, budget := routingFor(t.Nature)
 	verify, g := verifyAndGate(t.ValidationCmd, t.TargetFiles)
+	if t.Gate != "" {
+		g = t.Gate
+	}
 	return routeNode{
 		ID: t.ID, Label: t.Title, Nature: t.Nature, Type: "unit_task", Status: "PENDING", ExecutionMode: t.ExecutionMode,
 		Isolation: localIsolation("orchestrix_hermetic"), TimeoutSec: defaultTimeout, TokenBudget: tokenBudget{budget},

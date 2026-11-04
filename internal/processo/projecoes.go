@@ -147,6 +147,7 @@ func ticketsDe(ord []Etapa, validateCmd string) []plangen.Ticket {
 			TargetFiles:   []string{e.Produz.Caminho},
 			SpecCriteria:  []string{fmt.Sprintf("AC-E01.%d", i+1)},
 			ValidationCmd: validateCmd,
+			Gate:          e.Gate,
 		}
 		for _, d := range e.Depende {
 			t.DependsOn = append(t.DependsOn, idDe[d])

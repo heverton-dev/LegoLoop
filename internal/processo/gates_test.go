@@ -1,6 +1,7 @@
 package processo_test
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -77,7 +78,7 @@ func TestGateTrivialBibliotecaGeraOGateEsperado(t *testing.T) {
 		{processo.Artefato{Caminho: "out/x.json", Tipo: "json"},
 			`file_exists('out/x.json') && has_pattern('out/x.json', '^\s*[\{\[]')`},
 		{processo.Artefato{Caminho: "src/x.go", Tipo: "codigo"}, `file_exists('src/x.go') && word_count('src/x.go') >= 1`},
-		{processo.Artefato{Caminho: "out/x.csv", Tipo: "dados"}, `file_exists('out/x.csv') && word_count('out/x.csv') >= 1`},
+		{processo.Artefato{Caminho: "out/x.csv", Tipo: "dados"}, `file_exists('out/x.csv') && line_count('out/x.csv') >= 2`},
 		{processo.Artefato{Caminho: "out/ok.flag", Tipo: "marcador"}, `file_exists('out/ok.flag')`},
 	} {
 		got, err := processo.GateParaArtefato(c.art)
@@ -200,5 +201,59 @@ func TestGateTrivialMensagemSegueOPerfilSTE(t *testing.T) {
 		if v := ste.Lint(frase); len(v) != 0 {
 			t.Errorf("mensagem fora do perfil STE-PT: %q → %v", frase, v)
 		}
+	}
+}
+
+func TestGateTrivialGateDeDadosConfereRegistros(t *testing.T) {
+	g, _ := processo.GateParaArtefato(processo.Artefato{Caminho: "out/x.csv", Tipo: "dados"})
+	for nome, c := range map[string]struct {
+		texto string
+		want  bool
+	}{
+		"cabeçalho e um registro":      {"loja,preco\nA,9.90\n", true},
+		"cabeçalho e muitos":           {"loja,preco\nA,1\nB,2\nC,3\n", true},
+		"só o cabeçalho":               {"loja,preco\n", false},
+		"vazio":                        {"", false},
+		"uma linha sem quebra":         {"loja,preco", false},
+		"duas linhas sem quebra final": {"loja,preco\nA,9.90", true},
+	} {
+		if got := avalia(t, g, map[string]string{"out/x.csv": c.texto}); got != c.want {
+			t.Errorf("%s: gate = %v, queria %v", nome, got, c.want)
+		}
+	}
+	if avalia(t, g, map[string]string{}) {
+		t.Error("arquivo ausente deve falhar")
+	}
+}
+
+func TestGateTrivialRouteUsaOGateDaEtapa(t *testing.T) {
+	p := quatro()
+	g, _ := processo.GateParaArtefato(processo.Artefato{Caminho: "out/e02.md", Tipo: "markdown"})
+	p.Etapas[1].Produz = processo.Artefato{Caminho: "out/e02.md", Tipo: "markdown", Promete: true}
+	p.Etapas[1].Gate = g
+	pr := projetar(t, p)
+	var d struct {
+		Nodes []struct {
+			Type, Label string
+			Output      struct{ Gate string }
+		}
+	}
+	if err := json.Unmarshal(pr.Route, &d); err != nil {
+		t.Fatal(err)
+	}
+	achou := false
+	for _, n := range d.Nodes {
+		if n.Type == "unit_task" && strings.Contains(n.Label, "`e02`") {
+			achou = true
+			if n.Output.Gate != g {
+				t.Errorf("o ticket da etapa deve usar o gate da etapa:\n%s\nquando era\n%s", n.Output.Gate, g)
+			}
+		}
+	}
+	if !achou {
+		t.Fatal("ticket da etapa e02 não encontrado na ROUTE")
+	}
+	if !strings.Contains(pr.Plan, g) {
+		t.Error("o PLAN espelha o gate da ROUTE")
 	}
 }
