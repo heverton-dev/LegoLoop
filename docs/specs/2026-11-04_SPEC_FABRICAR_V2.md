@@ -344,7 +344,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** o servidor do Studio e uma entrevista concluída pela rota de entrevista
   * **Quando:** o modal envia a fabricação
   * **Então:** `POST /api/fabricar/run` recebe o identificador da entrevista; o INTENT gerado contém `Quem Sofre`, `Porquê`, restrições e fora de escopo vindos do espelho, e nenhum "Não informado".
-* [ ] `AC-E02.6`: **A Fusão usa o caso de uso, não o `Score`**
+* [x] `AC-E02.6`: **A Fusão usa o caso de uso, não o `Score`**
   * **Dado que:** uma matriz de teste com perfis reais: `aidd-tdd` (construir, software, `Score` 0.58), `aidd-site-dominator` (publicar, midia, `Score` 0.90, `quando_nao_usar: ["software"]`) e 40 outras
   * **Quando:** `Rank` roda com `Needs{Natureza:"software", Etapas:["construir","verificar"]}`
   * **Então:** `aidd-tdd` está entre as escolhidas e `aidd-site-dominator` está excluída com o motivo; ao mudar o `Score` de `aidd-site-dominator` para 1.0 o resultado **não muda**; ao mudar o perfil de `aidd-tdd` para `etapas: ["publicar"]` ela sai.

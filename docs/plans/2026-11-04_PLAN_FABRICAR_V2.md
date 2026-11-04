@@ -295,7 +295,7 @@
 * **Escopo:** 'fabricar entrevista iniciar' e '... responder <sessao>' devolvem JSON com sessao, pergunta, palpite, opcoes, confianca e espelho; a sessão persiste em sessions/; 'fabricar <nome> --entrevista <sessao>' carrega o espelho; '--yes' sem '--entrevista' avisa e exige '--sem-entrevista'; a skill proíbe o atalho (teste de conteúdo).
 
 #### Ticket `TICK-02.5` — Fusão por aptidão ao caso de uso
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["SG-E01"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
