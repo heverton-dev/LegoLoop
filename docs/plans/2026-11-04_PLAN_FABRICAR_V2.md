@@ -280,7 +280,7 @@
 * **Escopo:** Entrevista que não chega a 95% em 12 turnos gera INTENT DRAFT com a confiança medida (nunca 0% por padrão), lista as lacunas em STE-PT e não gera SPEC sem o usuário confirmar que quer seguir assim.
 
 #### Ticket `TICK-02.4` — Entrevista passo a passo para o Chat
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.3"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`

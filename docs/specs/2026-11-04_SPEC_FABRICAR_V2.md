@@ -336,7 +336,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** uma entrevista que não chega a 95% em 12 turnos
   * **Quando:** o limite de turnos acaba
   * **Então:** o INTENT sai `DRAFT` com a confiança **medida** (não 0%), o relatório avisa em STE-PT que faltou confiança e lista as lacunas; nenhuma SPEC é gerada sem o usuário confirmar que quer seguir assim.
-* [ ] `AC-E02.4`: **O Chat conduz a entrevista pelo motor**
+* [x] `AC-E02.4`: **O Chat conduz a entrevista pelo motor**
   * **Dado que:** o binário e a skill `legoloop-fabricar` do cofre
   * **Quando:** o comando `legoloop fabricar entrevista iniciar "<ideia>"` roda e depois `... responder <sessao> "<texto>"` a cada resposta
   * **Então:** cada chamada devolve JSON com `sessao`, `pergunta`, `palpite`, `opcoes`, `confianca` e `espelho`; a sessão persiste em `sessions/`; ao fechar, `legoloop fabricar "<nome>" --entrevista <sessao>` carrega o espelho completo; a skill proíbe `--yes` sem `--entrevista` (teste de conteúdo e teste do comando: `--yes` sem entrevista imprime o aviso de INTENT sem entrevista e exige `--sem-entrevista`).

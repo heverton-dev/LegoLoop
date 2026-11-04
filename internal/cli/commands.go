@@ -225,17 +225,27 @@ func cmdRun(ctx context.Context, args []string, d Deps) int {
 		return fail(d, err)
 	}
 	ox.AllowScripts = f.allowScripts
-
-	var prompter gate.Prompter
-	if !f.autoApprove && !f.nonInteractive {
-		in := d.Stdin
-		if in == nil {
-			in = os.Stdin
-		}
-		prompter = &terminalPrompter{reader: bufio.NewReader(in), out: d.Stdout}
+	rep, err := runner.Run(ctx, p, f.runnerOptions(ox, f.prompter(d)))
+	if err != nil {
+		return fail(d, err)
 	}
+	return reportRun(d, rep, f.asJSON)
+}
 
-	rep, err := runner.Run(ctx, p, runner.Options{
+// prompter devolve o prompt de aprovação no terminal; nil quando a aprovação é automática ou não interativa.
+func (f runFlags) prompter(d Deps) gate.Prompter {
+	if f.autoApprove || f.nonInteractive {
+		return nil
+	}
+	in := d.Stdin
+	if in == nil {
+		in = os.Stdin
+	}
+	return &terminalPrompter{reader: bufio.NewReader(in), out: d.Stdout}
+}
+
+func (f runFlags) runnerOptions(ox *orchestrix.Orchestrix, prompter gate.Prompter) runner.Options {
+	return runner.Options{
 		Workdir:        f.workdir,
 		Parallelism:    f.parallel,
 		DefaultTimeout: f.timeout,
@@ -244,11 +254,7 @@ func cmdRun(ctx context.Context, args []string, d Deps) int {
 		AutoApprove:    f.autoApprove,
 		NonInteractive: f.nonInteractive,
 		Prompter:       prompter,
-	})
-	if err != nil {
-		return fail(d, err)
 	}
-	return reportRun(d, rep, f.asJSON)
 }
 
 func newOrchestrix(ctx context.Context, d Deps, skills string, vars map[string]string) (*orchestrix.Orchestrix, error) {
@@ -415,33 +421,40 @@ func cmdImport(ctx context.Context, args []string, d Deps) int {
 	}
 	rawURL := remaining[0]
 
-	destDir := *target
-	if destDir == "" {
-		home := d.Home
-		if home == "" {
-			home, _ = os.UserHomeDir()
-		}
-		if home != "" {
-			geminiConfig := filepath.Join(home, ".gemini", "config")
-			if fi, err := os.Stat(geminiConfig); err == nil && fi.IsDir() {
-				destDir = geminiConfig
-			} else {
-				destDir = filepath.Join(home, ".aidd", "canonical")
-			}
-		}
-	}
+	destDir := importDest(*target, d.Home)
 
 	res, err := canon.ImportSkillFromURL(ctx, rawURL, *name, destDir)
 	if err != nil {
 		return fail(d, err)
 	}
 
-	if *asJSON {
+	return reportImport(d, res, *asJSON)
+}
+
+// importDest resolve a pasta destino da importação: --target, senão ~/.gemini/config (se existir), senão o cofre canônico.
+func importDest(target, home string) string {
+	if target != "" {
+		return target
+	}
+	if home == "" {
+		home, _ = os.UserHomeDir()
+	}
+	if home == "" {
+		return ""
+	}
+	geminiConfig := filepath.Join(home, ".gemini", "config")
+	if fi, err := os.Stat(geminiConfig); err == nil && fi.IsDir() {
+		return geminiConfig
+	}
+	return filepath.Join(home, ".aidd", "canonical")
+}
+
+func reportImport(d Deps, res canon.ImportResult, asJSON bool) int {
+	if asJSON {
 		data, _ := json.MarshalIndent(res, "", "  ")
 		fmt.Fprintln(d.Stdout, string(data))
 		return 0
 	}
-
 	fmt.Fprintf(d.Stdout, "Skill %q importada e canonizada com sucesso!\n", res.Name)
 	fmt.Fprintf(d.Stdout, "Destino: %s\n", res.TargetDir)
 	fmt.Fprintf(d.Stdout, "SHA-256: %s\n", res.SHA256)
