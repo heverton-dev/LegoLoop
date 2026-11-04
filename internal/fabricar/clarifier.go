@@ -18,6 +18,10 @@ type Clarification struct {
 	Confidence int              `json:"confidence"` // 0 no modo autônomo: nenhuma entrevista aconteceu
 	Turns      int              `json:"turns"`
 	Reached    bool             `json:"reached"` // true se a entrevista chegou a >= 95%
+	// Interviewed é verdadeiro quando houve entrevista (modo interativo); no autônomo nada foi medido.
+	Interviewed bool `json:"interviewed"`
+	// Gaps lista o que o espelho ainda não respondeu quando a entrevista parou abaixo da meta.
+	Gaps []string `json:"gaps,omitempty"`
 }
 
 // defaultMaxTurns é o limite de turnos da entrevista interativa.
@@ -101,8 +105,10 @@ func outcome(idea string, turn *interview.TurnResult, turns int) Clarification {
 	if strings.TrimSpace(m.Outcome) == "" {
 		m.Outcome = idea
 	}
-	return Clarification{
-		Theme: idea, Mirror: m, Confidence: turn.Confidence, Turns: turns,
-		Reached: turn.Status == interview.StatusCompleted && turn.Confidence >= 95,
+	reached := turn.Status == interview.StatusCompleted && turn.Confidence >= ConfidenceTarget
+	clar := Clarification{Theme: idea, Mirror: m, Confidence: turn.Confidence, Turns: turns, Reached: reached, Interviewed: true}
+	if !reached {
+		clar.Gaps = mirrorGaps(m)
 	}
+	return clar
 }

@@ -87,6 +87,9 @@ func (e *Engine) exchange(ctx context.Context, sess *Session) (*TurnResult, erro
 	sess.Messages = append(sess.Messages, Message{Role: "assistant", Content: rawResp})
 	turn := ParseTurnResult(rawResp)
 	turn.SessionID = sess.ID
+	if !turn.ConfidenceReported {
+		turn.Confidence = sess.Confidence // sem medida nova, vale a última; nunca um número inventado
+	}
 	sess.Confidence = turn.Confidence
 	sess.Hypothesis = turn.Hypothesis
 	if turn.Status == StatusCompleted {
@@ -188,7 +191,7 @@ func ParseTurnResult(raw string) *TurnResult {
 	turn.Hypothesis, _ = capture(reHypothesis, raw)
 	if s, ok := capture(reConfidence, raw); ok {
 		if val, err := strconv.Atoi(s); err == nil {
-			turn.Confidence = val
+			turn.Confidence, turn.ConfidenceReported = val, true
 		}
 	}
 	turn.Question, _ = capture(reQuestion, raw)
@@ -223,9 +226,6 @@ func completeTurn(turn *TurnResult, mirror *Mirror) {
 	}
 	turn.Mirror = mirror
 	turn.Status = StatusCompleted
-	if turn.Confidence < 95 {
-		turn.Confidence = 95
-	}
 }
 
 func sanitizeFileName(s string) string {

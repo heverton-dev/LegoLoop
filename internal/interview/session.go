@@ -44,6 +44,8 @@ type TurnResult struct {
 	Guess       string        `json:"guess,omitempty"`
 	Mirror      *Mirror       `json:"mirror,omitempty"`
 	RawResponse string        `json:"raw_response"`
+	// ConfidenceReported diz se a resposta trouxe o campo CONFIANÇA. Sem ele, Confidence é só um valor provisório.
+	ConfidenceReported bool `json:"-"`
 }
 
 // Session mantém o estado em memória da sessão socrática.

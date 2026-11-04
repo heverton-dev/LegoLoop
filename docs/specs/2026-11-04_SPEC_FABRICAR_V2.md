@@ -332,7 +332,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** um projeto cujo `AGENTS.md` diz "Go, stdlib only" e o objetivo "refinar a etapa de BUILD do mega-pipeline"; um cérebro de teste que registra o prompt recebido
   * **Quando:** a entrevista pede a primeira pergunta
   * **Então:** o prompt contém trechos do `AGENTS.md`, o nome das peças aptas da matriz e o objetivo; no cenário real com 9Router, a 1ª pergunta e os palpites não citam "Docker", "GitHub Actions" nem "Node".
-* [ ] `AC-E02.3`: **A confiança nunca é inventada nem escondida**
+* [x] `AC-E02.3`: **A confiança nunca é inventada nem escondida**
   * **Dado que:** uma entrevista que não chega a 95% em 12 turnos
   * **Quando:** o limite de turnos acaba
   * **Então:** o INTENT sai `DRAFT` com a confiança **medida** (não 0%), o relatório avisa em STE-PT que faltou confiança e lista as lacunas; nenhuma SPEC é gerada sem o usuário confirmar que quer seguir assim.

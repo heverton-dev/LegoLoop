@@ -16,19 +16,20 @@ import (
 
 // Deps reúne tudo que o motor recebe de fora, para ser hermético e determinístico.
 type Deps struct {
-	LLM         interview.LLMClient  // entrevista e SPEC; obrigatório
-	Scanner     Scanner              // nil usa o DiskScanner real
-	Clock       func() time.Time     // nil usa time.Now
-	Roots       Roots                // obrigatório
-	FS          FS                   // nil usa o disco real
-	HarnessDirs []string             // pastas de skills dos harnesses (ex.: ~/.claude/skills), usadas só com LinkHarnesses
-	Ask         AskFunc              // modo interativo: entrega as perguntas ao usuário
-	In          io.Reader            // modo interativo sem Ask: lê as respostas daqui
-	Out         io.Writer            // idem: escreve as perguntas aqui
-	Progress    ProgressFunc         // opcional: avisa o início de cada uma das Layers camadas
-	OnTurn      func(confidence int) // opcional: recebe a confiança antes de cada pergunta da entrevista
-	Context     interview.Context    // opcional: o que a entrevista sabe do projeto (objetivo, AGENTS.md, peças aptas)
-	Confirm     ConfirmFunc          // opcional: última palavra do usuário, com todos os caminhos, antes de gravar
+	LLM          interview.LLMClient  // entrevista e SPEC; obrigatório
+	Scanner      Scanner              // nil usa o DiskScanner real
+	Clock        func() time.Time     // nil usa time.Now
+	Roots        Roots                // obrigatório
+	FS           FS                   // nil usa o disco real
+	HarnessDirs  []string             // pastas de skills dos harnesses (ex.: ~/.claude/skills), usadas só com LinkHarnesses
+	Ask          AskFunc              // modo interativo: entrega as perguntas ao usuário
+	In           io.Reader            // modo interativo sem Ask: lê as respostas daqui
+	Out          io.Writer            // idem: escreve as perguntas aqui
+	Progress     ProgressFunc         // opcional: avisa o início de cada uma das Layers camadas
+	OnTurn       func(confidence int) // opcional: recebe a confiança antes de cada pergunta da entrevista
+	ConfirmDraft ConfirmDraftFunc     // opcional: confirma gerar a SPEC quando a entrevista ficou abaixo da meta
+	Context      interview.Context    // opcional: o que a entrevista sabe do projeto (objetivo, AGENTS.md, peças aptas)
+	Confirm      ConfirmFunc          // opcional: última palavra do usuário, com todos os caminhos, antes de gravar
 }
 
 // ConfirmFunc recebe os caminhos que serão gravados e devolve true para prosseguir. Não é chamada no dry-run.
@@ -125,6 +126,9 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := deps.confirmDraft(clar); err != nil {
+		return nil, err
+	}
 	scan, merged, err := curate(ctx, req, deps)
 	if err != nil {
 		return nil, err
@@ -197,7 +201,7 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	if err != nil {
 		return nil, err
 	}
-	warns := append(append([]string{}, scan.Warnings...), m.Warnings...)
+	warns := append(append(clar.Warnings(), scan.Warnings...), m.Warnings...)
 	links, lwarns := linkHarnesses(req, d.HarnessDirs, art.SkillPath, name)
 	art.SkillLinks = links
 	return &Result{CanonicalName: name, Slug: slug, CreatedAt: now, Artifacts: art, CuratedPieces: m.Used,

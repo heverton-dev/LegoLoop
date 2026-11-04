@@ -177,14 +177,17 @@ func TestRunFabricarInteractive(t *testing.T) {
 		}
 	})
 
-	t.Run("12 turnos sem chegar a 95 por cento ainda segue para a confirmacao", func(t *testing.T) {
-		in := "\n" + strings.Repeat("1\n", 12) + "s\n"
+	t.Run("12 turnos sem chegar a 95 por cento pergunta sobre a SPEC e depois confirma a gravacao", func(t *testing.T) {
+		in := "\n" + strings.Repeat("1\n", 12) + "s\ns\n"
 		r := newInterRig(t, in, lowReply)
 		if code := r.fabricar(t); code != 0 {
 			t.Fatalf("exit %d: %s\n%s", code, r.errb, r.out)
 		}
 		if r.llm.interview != 13 {
 			t.Errorf("1 início + 12 turnos = 13 chamadas, houve %d", r.llm.interview)
+		}
+		if !strings.Contains(r.out.String(), "SPEC mesmo assim") {
+			t.Errorf("faltou perguntar se gera a SPEC com confiança baixa:\n%s", r.out)
 		}
 	})
 

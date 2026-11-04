@@ -16,10 +16,11 @@ import (
 
 func init() {
 	ste.Default.Register("fabricar.confianca", "Confiança: %d%% (meta: %d%%).")
+	ste.Default.Register("fabricar.confirmar_rascunho", "Gerar a SPEC mesmo assim?")
 }
 
 // metaConfianca é a confiança a partir da qual a entrevista pode terminar.
-const metaConfianca = 95
+const metaConfianca = fabricar.ConfidenceTarget
 
 // maxInvalid é quantas entradas inválidas seguidas o terminal tolera antes de abortar.
 const maxInvalid = 3
@@ -61,7 +62,7 @@ func setupInteractive(ctx context.Context, req *fabricar.Request, fd *fabricar.D
 		return err
 	}
 	req.TargetDrives = chosen
-	fd.Ask, fd.Confirm = p.ask, p.confirm
+	fd.Ask, fd.Confirm, fd.ConfirmDraft = p.ask, p.confirm, p.confirmDraft
 	fd.Context = interview.Context{Goal: goalOf(*req), Docs: interview.LoadProjectContext(fd.Roots.Docs)}
 	fd.OnTurn = func(c int) { fmt.Fprintln(d.Stdout, ste.Msg("fabricar.confianca", c, metaConfianca)) }
 	return nil
@@ -161,8 +162,21 @@ func (p *prompter) confirm(paths []string) (bool, error) {
 	for _, path := range paths {
 		fmt.Fprintf(p.w, "  %s\n", path)
 	}
+	return p.yesNo("Gravar? [s/N]: ")
+}
+
+// confirmDraft mostra a confiança medida e as lacunas e pergunta se a SPEC deve ser gerada assim mesmo.
+func (p *prompter) confirmDraft(c fabricar.Clarification) (bool, error) {
+	for _, w := range c.Warnings() {
+		fmt.Fprintln(p.w, w)
+	}
+	return p.yesNo(ste.Msg("fabricar.confirmar_rascunho") + " [s/N]: ")
+}
+
+// yesNo pede [s/N]. Enter vale N; resposta fora do padrão reapresenta, até maxInvalid vezes.
+func (p *prompter) yesNo(prompt string) (bool, error) {
 	for attempt := 0; attempt < maxInvalid; attempt++ {
-		in, err := p.line("Gravar? [s/N]: ")
+		in, err := p.line(prompt)
 		if err != nil {
 			return false, err
 		}
