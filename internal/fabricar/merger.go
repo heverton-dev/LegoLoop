@@ -21,6 +21,10 @@ type Merged struct {
 	Used     []DiscoveredPiece
 	Excluded []DiscoveredPiece
 	Warnings []string
+	// Só preenchidos por MergeByFit:
+	Decisoes []Decisao         // o que a Fusão decidiu sobre cada etapa e peça
+	Lacunas  []string          // etapas pedidas sem nenhuma peça apta
+	Unknown  []DiscoveredPiece // skills sem perfil: nunca escolhidas, aptidão desconhecida
 }
 
 // DefaultSteps são os passos usados quando nenhuma peça curada é utilizável: especificar e planejar.

@@ -310,7 +310,7 @@
 * **Escopo:** Com aidd-tdd (construir, software, Score 0.58), aidd-site-dominator (publicar, midia, Score 0.90, quando_nao_usar software) e 40 outras: needs software/construir+verificar escolhe aidd-tdd e exclui aidd-site-dominator com motivo; mudar o Score do site-dominator para 1.0 não altera o resultado; mudar o perfil do tdd para publicar o tira.
 
 #### Ticket `TICK-02.6` — Peça sem perfil e lacuna declaradas
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.5"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`

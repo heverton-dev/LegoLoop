@@ -29,10 +29,11 @@ func MergeByFit(n matriz.Needs, es []matriz.Entrada, opts MergeOptions) Merged {
 	for _, etapas := range grupos {
 		ranked := matriz.Rank(matriz.Needs{Natureza: n.Natureza, Etapas: etapas, Casos: n.Casos}, skills, 0)
 		m.noteExclusions(ranked, avisadas)
-		if !m.addBest(ranked, etapas == nil, max) {
+		if !m.addBest(ranked, etapas, max) {
 			break
 		}
 	}
+	m.noteUnknown(skills)
 	if len(m.Steps) == 0 {
 		m.Steps = DefaultSteps()
 		m.Warnings = append(m.Warnings, "nenhuma peça apta na matriz; usando os passos padrão")
@@ -48,22 +49,30 @@ func (m *Merged) noteExclusions(ranked []matriz.Ranked, avisadas map[string]bool
 		}
 		avisadas[r.Entrada.Ref] = true
 		m.Excluded = append(m.Excluded, pieceOf(r.Entrada))
+		m.Decisoes = append(m.Decisoes, Decisao{Peca: r.Entrada.Nome, Score: r.Entrada.Rating.TotalScore, Motivo: r.Motivo})
 		m.Warnings = append(m.Warnings, fmt.Sprintf("peça %q excluída: %s", r.Entrada.Nome, r.Motivo))
 	}
 }
 
-// addBest acrescenta a melhor peça ainda não usada (todas, se for o ranking geral) respeitando o limite.
-// Devolve false quando o limite de passos foi atingido.
-func (m *Merged) addBest(ranked []matriz.Ranked, geral bool, max int) bool {
+// addBest acrescenta a melhor peça apta à etapa (todas, no ranking geral, que não tem etapa) respeitando o
+// limite de passos. Etapa sem peça apta vira lacuna. Devolve false quando o limite foi atingido.
+func (m *Merged) addBest(ranked []matriz.Ranked, etapas []string, max int) bool {
+	geral, etapa := len(etapas) == 0, ""
+	if !geral {
+		etapa = etapas[0]
+	}
+	achou := false
 	for _, r := range ranked {
 		if r.Excluida {
 			break
 		}
+		achou = true
 		if slices.ContainsFunc(m.Steps, func(s Step) bool { return s.Piece == r.Entrada.Nome }) {
-			if geral {
-				continue
+			if !geral {
+				m.decide(etapa, r)
+				return true
 			}
-			return true
+			continue
 		}
 		if len(m.Steps) >= max {
 			m.Warnings = append(m.Warnings, fmt.Sprintf("limite de %d passos atingido; as demais peças foram ignoradas", max))
@@ -71,11 +80,21 @@ func (m *Merged) addBest(ranked []matriz.Ranked, geral bool, max int) bool {
 		}
 		m.Steps = append(m.Steps, Step{Piece: r.Entrada.Nome})
 		m.Used = append(m.Used, pieceOf(r.Entrada))
+		m.decide(etapa, r)
 		if !geral {
 			return true
 		}
 	}
+	if !achou && !geral {
+		m.addLacuna(etapa)
+	}
 	return true
+}
+
+// decide registra que a peça entrou para a etapa.
+func (m *Merged) decide(etapa string, r matriz.Ranked) {
+	m.Decisoes = append(m.Decisoes, Decisao{Etapa: etapa, Peca: r.Entrada.Nome, Entrou: true, Aptidao: r.Aptidao,
+		Score: r.Entrada.Rating.TotalScore, Motivo: r.Motivo})
 }
 
 func pieceOf(e matriz.Entrada) DiscoveredPiece {

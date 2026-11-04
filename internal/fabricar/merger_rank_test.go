@@ -79,6 +79,10 @@ func TestRankMergeAvisaExclusaoPorUsoUmaVez(t *testing.T) {
 	if n != 1 {
 		t.Errorf("a exclusão deve ser avisada uma vez, não %d: %v", n, m.Warnings)
 	}
+	i := slices.IndexFunc(m.Decisoes, func(d fabricar.Decisao) bool { return d.Peca == "aidd-site-dominator" })
+	if i < 0 || m.Decisoes[i].Entrou || !strings.Contains(m.Decisoes[i].Motivo, "quando_nao_usar") || m.Decisoes[i].Score != 0.90 {
+		t.Errorf("a exclusão por uso deve constar nas decisões, com motivo e Score: %+v", m.Decisoes)
+	}
 	if slices.ContainsFunc(m.Warnings, func(w string) bool { return strings.Contains(w, "so-publica") }) {
 		t.Errorf("sair só por etapa não é exclusão a avisar: %v", m.Warnings)
 	}
