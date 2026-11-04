@@ -324,7 +324,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
 
 ### Épico 02 — `fabricar` refeito
 
-* [ ] `AC-E02.1`: **A entrevista funciona no binário real**
+* [x] `AC-E02.1`: **A entrevista funciona no binário real**
   * **Dado que:** o binário instalado e um terminal (stdin) com respostas
   * **Quando:** `legoloop fabricar "x" --goal "..."` roda sem `--yes`
   * **Então:** a entrevista começa (o erro "exige um terminal" não ocorre), imprime a confiança a cada turno e só grava depois da confirmação do espelho final. *(Corrige o defeito A1: o `main` liga `os.Stdin`.)*

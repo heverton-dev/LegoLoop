@@ -10,7 +10,15 @@ import (
 	"strings"
 
 	"legoloop/internal/fabricar"
+	"legoloop/internal/ste"
 )
+
+func init() {
+	ste.Default.Register("fabricar.confianca", "Confiança: %d%% (meta: %d%%).")
+}
+
+// metaConfianca é a confiança a partir da qual a entrevista pode terminar.
+const metaConfianca = 95
 
 // maxInvalid é quantas entradas inválidas seguidas o terminal tolera antes de abortar.
 const maxInvalid = 3
@@ -53,6 +61,7 @@ func setupInteractive(ctx context.Context, req *fabricar.Request, fd *fabricar.D
 	}
 	req.TargetDrives = chosen
 	fd.Ask, fd.Confirm = p.ask, p.confirm
+	fd.OnTurn = func(c int) { fmt.Fprintln(d.Stdout, ste.Msg("fabricar.confianca", c, metaConfianca)) }
 	return nil
 }
 

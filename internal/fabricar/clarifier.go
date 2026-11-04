@@ -27,6 +27,8 @@ const defaultMaxTurns = 12
 type Clarifier struct {
 	llm      interview.LLMClient
 	MaxTurns int
+	// OnTurn, se definido, recebe a confiança medida antes de cada pergunta ao usuário.
+	OnTurn func(confidence int)
 }
 
 // NewClarifier cria o Clarifier. llm pode ser nil se só o modo autônomo for usado.
@@ -67,6 +69,9 @@ func (c *Clarifier) interview(ctx context.Context, req Request, ask AskFunc) (Cl
 	}
 	turns := 0
 	for turn.Status != interview.StatusCompleted && turns < c.maxTurns() {
+		if c.OnTurn != nil {
+			c.OnTurn(turn.Confidence)
+		}
 		answer, err := ask(turn.Question, turn.Guess)
 		if err != nil {
 			return Clarification{}, err

@@ -11,7 +11,7 @@ import (
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-	code := cli.Run(ctx, os.Args[1:], cli.Deps{Stdout: os.Stdout, Stderr: os.Stderr})
+	code := cli.Run(ctx, os.Args[1:], cli.Deps{Stdin: os.Stdin, Stdout: os.Stdout, Stderr: os.Stderr})
 	stop()
 	os.Exit(code)
 }

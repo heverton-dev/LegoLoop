@@ -16,17 +16,18 @@ import (
 
 // Deps reúne tudo que o motor recebe de fora, para ser hermético e determinístico.
 type Deps struct {
-	LLM         interview.LLMClient // entrevista e SPEC; obrigatório
-	Scanner     Scanner             // nil usa o DiskScanner real
-	Clock       func() time.Time    // nil usa time.Now
-	Roots       Roots               // obrigatório
-	FS          FS                  // nil usa o disco real
-	HarnessDirs []string            // pastas de skills dos harnesses (ex.: ~/.claude/skills), usadas só com LinkHarnesses
-	Ask         AskFunc             // modo interativo: entrega as perguntas ao usuário
-	In          io.Reader           // modo interativo sem Ask: lê as respostas daqui
-	Out         io.Writer           // idem: escreve as perguntas aqui
-	Progress    ProgressFunc        // opcional: avisa o início de cada uma das Layers camadas
-	Confirm     ConfirmFunc         // opcional: última palavra do usuário, com todos os caminhos, antes de gravar
+	LLM         interview.LLMClient  // entrevista e SPEC; obrigatório
+	Scanner     Scanner              // nil usa o DiskScanner real
+	Clock       func() time.Time     // nil usa time.Now
+	Roots       Roots                // obrigatório
+	FS          FS                   // nil usa o disco real
+	HarnessDirs []string             // pastas de skills dos harnesses (ex.: ~/.claude/skills), usadas só com LinkHarnesses
+	Ask         AskFunc              // modo interativo: entrega as perguntas ao usuário
+	In          io.Reader            // modo interativo sem Ask: lê as respostas daqui
+	Out         io.Writer            // idem: escreve as perguntas aqui
+	Progress    ProgressFunc         // opcional: avisa o início de cada uma das Layers camadas
+	OnTurn      func(confidence int) // opcional: recebe a confiança antes de cada pergunta da entrevista
+	Confirm     ConfirmFunc          // opcional: última palavra do usuário, com todos os caminhos, antes de gravar
 }
 
 // ConfirmFunc recebe os caminhos que serão gravados e devolve true para prosseguir. Não é chamada no dry-run.
@@ -116,7 +117,9 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 		return nil, err
 	}
 	deps.progress(1, "Clarificação")
-	clar, err := NewClarifier(deps.LLM).Clarify(ctx, req, deps.Ask)
+	clarifier := NewClarifier(deps.LLM)
+	clarifier.OnTurn = deps.OnTurn
+	clar, err := clarifier.Clarify(ctx, req, deps.Ask)
 	if err != nil {
 		return nil, err
 	}

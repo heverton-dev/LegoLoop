@@ -226,16 +226,16 @@
 
 ### 🛑 STOP-GATE HUMANO — ÉPICO 01 (`SG-E01`)
 * **Gate (DSL):** `prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')`
-- [ ] 100% dos tickets de E01 executados com sucesso (PASS nos gates mecânicos).
-- [ ] Saída **real** do binário instalado apresentada ao usuário, com o que não foi provado declarado.
-- [ ] Autorização explícita do usuário concedida para iniciar o Épico 02.
+- [x] 100% dos tickets de E01 executados com sucesso (PASS nos gates mecânicos).
+- [x] Saída **real** do binário instalado apresentada ao usuário, com o que não foi provado declarado.
+- [x] Autorização explícita do usuário concedida para iniciar o Épico 02.
 
 ---
 
 ### Épico 02 — `fabricar` refeito: entrevista, Fusão, contrato e cartão
 
 #### Ticket `TICK-02.1` — Entrevista interativa no binário real (liga o stdin no main)
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["SG-E01"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
