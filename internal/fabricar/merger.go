@@ -25,6 +25,8 @@ type Merged struct {
 	Decisoes []Decisao         // o que a Fusão decidiu sobre cada etapa e peça
 	Lacunas  []string          // etapas pedidas sem nenhuma peça apta
 	Unknown  []DiscoveredPiece // skills sem perfil: nunca escolhidas, aptidão desconhecida
+	// Preenchido por Explain: ordens que o cérebro propôs e que o ranking calculado não seguiu.
+	Divergencias []string
 }
 
 // DefaultSteps são os passos usados quando nenhuma peça curada é utilizável: especificar e planejar.

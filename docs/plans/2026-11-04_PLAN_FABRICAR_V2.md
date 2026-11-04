@@ -325,7 +325,7 @@
 * **Escopo:** Etapa verificar sem peça apta vira lacuna (Peca vazia) e é destacada; peça de Score 0.95 sem perfil não é escolhida e aparece como aptidão desconhecida.
 
 #### Ticket `TICK-02.7` — O cérebro explica e contesta, sem decidir
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.6"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`

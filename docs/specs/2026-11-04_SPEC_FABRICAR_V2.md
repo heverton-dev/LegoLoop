@@ -352,7 +352,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** uma etapa `verificar` sem nenhuma peça apta, e uma peça de `Score` 0.95 sem perfil
   * **Quando:** a Fusão roda
   * **Então:** a peça sem perfil não é escolhida e aparece no relatório como "aptidão desconhecida"; a etapa vira lacuna (`Peca==""`) e o relatório e o cartão a destacam.
-* [ ] `AC-E02.8`: **O cérebro explica e pode contestar, mas não decide**
+* [x] `AC-E02.8`: **O cérebro explica e pode contestar, mas não decide**
   * **Dado que:** um cérebro de teste que devolve explicações e, em outra rodada, uma ordem diferente da calculada
   * **Quando:** a Fusão fecha
   * **Então:** cada decisão do relatório tem `Motivo` (determinístico) e `Explicacao` (cérebro); no segundo caso o ranking calculado vale e a divergência aparece em `Divergencias`.
