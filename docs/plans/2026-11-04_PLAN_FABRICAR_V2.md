@@ -490,7 +490,7 @@
 * **Escopo:** O motor monta o Processo com ProcessoDe e grava SPEC, PLAN, ROUTE, DAG, loop e skill gerados por Projetar (coerência por Verificar), o INTENT da entrevista e loops/<nome>.processo.json, tudo no mesmo plano atômico. Prova pelo binário em --dry-run e gravação em cofre descartável: o processo.json relido valida e tem a natureza; as seis visões listam os mesmos ids.
 
 #### Ticket `TICK-02.18` — Calibrar a Fusão: aptidão mínima e casos de uso por etapa
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.17"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
