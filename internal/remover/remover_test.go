@@ -15,7 +15,6 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/listar"
 	"legoloop/internal/processo"
 	"legoloop/internal/remover"
 	"legoloop/internal/ste"
@@ -173,9 +172,10 @@ func TestRemover(t *testing.T) {
 				t.Errorf("a perdeu %s", p)
 			}
 		}
-		res, err := listar.Run(ctx, listar.Deps{Store: d.Store, Home: d.Home})
-		if err != nil || len(res.Processos) != 1 || len(res.Processos[0].UsadoPor) != 0 {
-			t.Errorf("depois de remover b, a não é usado por ninguém: %+v %v", res.Processos, err)
+		procs, err := processo.ProcessosDoCofre(d.Store.Roots.Vault)
+		usadoPor := processo.MapearUsadoPor(procs)
+		if err != nil || len(procs) != 1 || len(usadoPor["legoloop-a"]) != 0 {
+			t.Errorf("depois de remover b, a não é usado por ninguém: %+v %v", procs, err)
 		}
 	})
 

@@ -1,6 +1,6 @@
 // Package remover apaga um processo do cofre e os vínculos dele nos harnesses. Um processo que outro processo
-// compõe não sai: a função falha com ErrEmUso e nada muda. É uma fatia do Épico 03: depende do núcleo
-// (processo, ste) e reaproveita o cálculo de "usado por" e de harnesses do listar.
+// compõe não sai: a função falha com ErrEmUso e nada muda. É uma fatia independente do Épico 03: depende apenas do
+// núcleo (processo, ste).
 package remover
 
 import (
@@ -12,7 +12,6 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/listar"
 	"legoloop/internal/processo"
 	"legoloop/internal/ste"
 )
@@ -69,21 +68,35 @@ func Planejar(ctx context.Context, d Deps, nome string) (Plano, error) {
 	if !nomeValido(nome) {
 		return Plano{}, fmt.Errorf("%w: %s", ErrNomeInvalido, ste.Msg("remover.nome_invalido", nome))
 	}
+	if err := ctx.Err(); err != nil {
+		return Plano{}, err
+	}
 	vault := d.Store.Roots.Vault
-	res, err := listar.Run(ctx, listar.Deps{Store: d.Store, Home: d.Home})
+	if info, err := os.Stat(vault); err != nil || !info.IsDir() {
+		return Plano{}, fmt.Errorf("%w: %s", ErrNaoEncontrado, ste.Msg("remover.nao_achou", vault, nome))
+	}
+	procs, err := processo.ProcessosDoCofre(vault)
 	if err != nil {
 		return Plano{}, err
 	}
-	for _, it := range res.Processos {
-		if it.Nome != nome {
-			continue
-		}
-		if len(it.UsadoPor) > 0 {
-			return Plano{}, fmt.Errorf("%w: %s", ErrEmUso, ste.Msg("remover.em_uso", nome, strings.Join(it.UsadoPor, ", ")))
-		}
-		return montar(d, it), nil
+	alvo := acharProcesso(procs, nome)
+	if alvo == nil {
+		return Plano{}, fmt.Errorf("%w: %s", ErrNaoEncontrado, ste.Msg("remover.nao_achou", vault, nome))
 	}
-	return Plano{}, fmt.Errorf("%w: %s", ErrNaoEncontrado, ste.Msg("remover.nao_achou", vault, nome))
+	usadoPor := processo.MapearUsadoPor(procs)
+	if quem := usadoPor[nome]; len(quem) > 0 {
+		return Plano{}, fmt.Errorf("%w: %s", ErrEmUso, ste.Msg("remover.em_uso", nome, strings.Join(quem, ", ")))
+	}
+	return montar(d, *alvo), nil
+}
+
+func acharProcesso(procs []processo.ProcessoCofre, nome string) *processo.ProcessoCofre {
+	for i := range procs {
+		if procs[i].Nome == nome {
+			return &procs[i]
+		}
+	}
+	return nil
 }
 
 // nomeValido aceita só legoloop-<algo> sem separador de caminho: o nome vira caminho no disco.
@@ -92,22 +105,32 @@ func nomeValido(nome string) bool {
 		!strings.ContainsAny(nome, `/\`)
 }
 
-func montar(d Deps, it listar.Item) Plano {
+func montar(d Deps, it processo.ProcessoCofre) Plano {
 	vault := d.Store.Roots.Vault
-	p := Plano{Nome: it.Nome, Versao: it.Versao, Harnesses: it.Harnesses, Links: []string{}, Arquivos: []string{}}
-	for _, h := range processo.DetectarHarnesses(fsDe(d), d.Home) {
-		if slices.Contains(it.Harnesses, h.Nome) {
+	hs := processo.DetectarHarnesses(fsDe(d), d.Home)
+	vinculados := processo.HarnessesVinculados(fsDe(d), hs, it.Nome)
+	p := Plano{Nome: it.Nome, Versao: it.Versao, Harnesses: vinculados, Links: []string{}, Arquivos: []string{}}
+	for _, h := range hs {
+		if slices.Contains(vinculados, h.Nome) {
 			p.Links = append(p.Links, filepath.Join(h.Skills, it.Nome))
 		}
 	}
-	for _, c := range []string{filepath.Join(vault, "skills", it.Nome), filepath.Join(vault, "loops", it.Nome+".loop.json"),
-		filepath.Join(vault, "loops", it.Nome+".dag.json"), processo.CaminhoNoCofre(vault, it.Nome)} {
+	for _, c := range caminhosCofre(vault, it.Nome) {
 		if _, err := os.Lstat(c); err == nil {
 			p.Arquivos = append(p.Arquivos, c)
 		}
 	}
 	p.Cartao = cartao(p)
 	return p
+}
+
+func caminhosCofre(vault, nome string) []string {
+	return []string{
+		filepath.Join(vault, "skills", nome),
+		filepath.Join(vault, "loops", nome+".loop.json"),
+		filepath.Join(vault, "loops", nome+".dag.json"),
+		processo.CaminhoNoCofre(vault, nome),
+	}
 }
 
 func fsDe(d Deps) processo.FS {

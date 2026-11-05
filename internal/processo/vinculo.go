@@ -122,3 +122,17 @@ func desfazer(destinos []string) {
 		_ = os.RemoveAll(destinos[i])
 	}
 }
+
+// HarnessesVinculados devolve os nomes dos harnesses que têm a pasta skills/<nome>.
+func HarnessesVinculados(fsys FS, hs []Harness, nome string) []string {
+	if fsys == nil {
+		fsys = OSFS()
+	}
+	out := []string{}
+	for _, h := range hs {
+		if _, err := fsys.Stat(filepath.Join(h.Skills, nome)); err == nil {
+			out = append(out, h.Nome)
+		}
+	}
+	return out
+}
