@@ -10,6 +10,20 @@ import (
 	"legoloop/internal/fabricar"
 )
 
+// reportLacuna é a saída do dry-run com lacuna: os avisos, depois o cartão e o resumo por camada (ou o JSON).
+// O erro e o código de saída 1 ficam com o chamador.
+func reportLacuna(d Deps, res *fabricar.Result, o fabricarOpts) {
+	for _, w := range res.Warnings {
+		fmt.Fprintln(d.Stderr, "aviso:", w)
+	}
+	if o.asJSON {
+		printJSON(d, res)
+		return
+	}
+	fmt.Fprintf(d.Stdout, "\n(dry-run) o processo %s tem lacuna; nada seria gravado.\n\n%s", res.CanonicalName, res.Report.Cartao.Texto())
+	PrintReportTexto(d.Stdout, res.Report)
+}
+
 // PrintReportTexto imprime o resumo por camada em formato texto human-readable.
 // Resumo por camada: espelho e confiança, matriz e cortes, peça ou lacuna por etapa,
 // ACs e gates, arquivos e harnesses.
@@ -69,7 +83,7 @@ func printEtapas(w io.Writer, ds []fabricar.Decisao) {
 		if d.Entrou {
 			fmt.Fprintf(w, "  %s%s  %s (aptidão %.2f) | %s\n", rotuloEtapa(d), pad, d.Peca, d.Aptidao, d.Motivo)
 		} else {
-			fmt.Fprintf(w, "  %s%s  %s\n", rotuloEtapa(d), pad, d.Motivo)
+			fmt.Fprintf(w, "  %s%s  LACUNA | %s\n", rotuloEtapa(d), pad, d.Motivo)
 		}
 	}
 }

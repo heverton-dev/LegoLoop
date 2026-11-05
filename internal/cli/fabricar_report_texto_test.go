@@ -38,8 +38,8 @@ func TestResumoTextoDaMatrizEDaFusao(t *testing.T) {
 		"[Camada 2 - Matriz] Peças na matriz: 6207 | Idade: 18 h | Cortes: 2",
 		"[Camada 3 - Fusão] Necessidades: software | etapas: construir, verificar",
 		"  construir  aidd-tdd (aptidão 0.50) | natureza: software; etapas: construir",
-		"  verificar  lacuna: nenhuma peça apta a esta etapa",
-		"  publicar   lacuna: nenhuma peça apta a esta etapa",
+		"  verificar  LACUNA | lacuna: nenhuma peça apta a esta etapa",
+		"  publicar   LACUNA | lacuna: nenhuma peça apta a esta etapa",
 		"  Fora: 3 peças (aptidão desconhecida: 1, natureza: 2)",
 	} {
 		if !strings.Contains(out, want) {

@@ -133,6 +133,9 @@ func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
 	}
 	res, err := fabricar.Fabricar(ctx, req, fd)
 	if err != nil {
+		if res != nil && errors.Is(err, fabricar.ErrLacuna) {
+			reportLacuna(d, res, o) // dry-run: o relatório e o cartão destacam a lacuna antes do erro
+		}
 		return failFabricar(d, err)
 	}
 	return reportFabricar(d, res, o)

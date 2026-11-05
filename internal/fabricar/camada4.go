@@ -26,24 +26,42 @@ type namedFile struct {
 }
 
 // projetar é a Camada 4. O Processo nasce das necessidades e da Fusão (ProcessoDe), e SPEC, PLAN, ROUTE,
-// DAG, loop e skill são projeções dele, conferidas entre si por processo.Projetar. Etapa sem peça para aqui.
+// DAG, loop e skill são projeções dele, conferidas entre si por processo.Projetar. Etapa sem peça para aqui:
+// o erro é ErrLacuna e o Processo volta junto, para o dry-run montar o relatório da lacuna.
 func projetar(name, objetivo string, c consulta, now time.Time) (processo.Processo, *processo.Projecoes, error) {
 	p, err := ProcessoDe(name, objetivo, c.needs, c.m, now)
 	if err != nil {
 		return processo.Processo{}, nil, err
 	}
 	if l := lacunasDe(p); len(l) > 0 {
-		chave := "fabricar.lacuna_sem_peca"
-		if len(l) > 1 {
-			chave = "fabricar.lacunas_sem_peca"
-		}
-		return processo.Processo{}, nil, fmt.Errorf("%w: %s", ErrLacuna, ste.Msg(chave, strings.Join(l, ", ")))
+		return p, nil, fmt.Errorf("%w: %s", ErrLacuna, msgLacuna(l))
 	}
 	pr, err := processo.Projetar(p, now)
 	if err != nil {
 		return processo.Processo{}, nil, err
 	}
 	return p, pr, nil
+}
+
+// msgLacuna é a orientação STE-PT para as etapas sem peça: a mesma no erro e no aviso do cartão.
+func msgLacuna(etapas []string) string {
+	chave := "fabricar.lacuna_sem_peca"
+	if len(etapas) > 1 {
+		chave = "fabricar.lacunas_sem_peca"
+	}
+	return ste.Msg(chave, strings.Join(etapas, ", "))
+}
+
+// relatorioDaLacuna é o dry-run com lacuna: nada seria gravado, mas o Report e o cartão saem com a lacuna
+// destacada, para o usuário ver a etapa e o que fazer. O chamador devolve o resultado junto com ErrLacuna.
+func relatorioDaLacuna(d Deps, name string, clar Clarification, c consulta, p processo.Processo, now time.Time) *Result {
+	plano := Plano{Lacunas: lacunasDe(p)}
+	for _, h := range d.Harnesses {
+		plano.Detectados = append(plano.Detectados, h.Nome)
+	}
+	warns := append(append(clar.Warnings(), c.avisos...), c.m.Warnings...)
+	return &Result{CanonicalName: name, Slug: strings.TrimPrefix(name, namePrefix), CreatedAt: now,
+		CuratedPieces: c.m.Used, Warnings: warns, Report: buildReport(d, clar, c, p, nil, plano)}
 }
 
 // lacunasDe devolve o nome das etapas sem peça e sem processo composto.

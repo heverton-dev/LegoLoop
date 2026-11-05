@@ -16,6 +16,7 @@ type Plano struct {
 	Removivel   []string // peças de mídia removível ou de rede que entram na fusão
 	Detectados  []string // nomes dos harnesses detectados
 	Ligados     []string // nomes dos harnesses que vão receber o link
+	Lacunas     []string // etapas sem peça apta: com elas nada é gravado (só o dry-run chega ao cartão)
 }
 
 // ApproveFunc mostra o plano e devolve true para gravar. replan recalcula o plano com outra lista de harnesses
@@ -67,8 +68,25 @@ func novoPlano(d Deps, req Request, files []PlannedFile, m Merged, vs []processo
 	return p
 }
 
+// cartaoDaLacuna destaca as etapas sem peça: o aviso diz o que fazer, e não há efeito, porque nada é gravado.
+func cartaoDaLacuna(etapas []string) ste.Cartao {
+	c := ste.Cartao{
+		Acao:        "Parar: o processo tem lacuna",
+		Aviso:       msgLacuna(etapas),
+		SeDerErrado: "Nada foi gravado. Não há o que desfazer. Corrija a lacuna e rode o comando de novo.",
+	}
+	for _, e := range etapas {
+		c.Passos = append(c.Passos, ste.Msg("fabricar.lacuna_etapa", e))
+	}
+	c.Passos = append(c.Passos, "O programa não grava nenhum arquivo.")
+	return c
+}
+
 // Cartao traduz o plano para o cartão STE-PT: o aviso de risco vem antes dos passos.
 func (p Plano) Cartao() ste.Cartao {
+	if len(p.Lacunas) > 0 {
+		return cartaoDaLacuna(p.Lacunas)
+	}
 	c := ste.Cartao{
 		Acao:        "Gravar o processo novo",
 		Passos:      []string{fmt.Sprintf("O programa grava %d arquivos: skill, loop, DAG e os documentos.", len(p.Arquivos))},

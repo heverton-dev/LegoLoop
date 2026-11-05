@@ -210,6 +210,9 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	now := d.Clock().UTC()
 	d.progress(4, "Tríade")
 	p, pr, err := projetar(name, objetivoDoProcesso(req, clar), c, now)
+	if req.DryRun && errors.Is(err, ErrLacuna) {
+		return relatorioDaLacuna(d, name, clar, c, p, now), err // a lacuna não para antes do relatório
+	}
 	if err != nil {
 		return nil, err
 	}
