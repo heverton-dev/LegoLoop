@@ -18,6 +18,7 @@ import (
 	"legoloop/internal/dag"
 	"legoloop/internal/gate"
 	"legoloop/internal/graph"
+	"legoloop/internal/loop"
 	"legoloop/internal/orchestrix"
 	"legoloop/internal/provider"
 	"legoloop/internal/runner"
@@ -263,10 +264,23 @@ func newOrchestrix(ctx context.Context, d Deps, skills string, vars map[string]s
 		return nil, err
 	}
 	cfg := provider.DefaultConfig()
-	return &orchestrix.Orchestrix{
+	ox := &orchestrix.Orchestrix{
 		Inventory: d.discover(ctx), HTTP: &http.Client{}, OllamaURL: cfg.OllamaURL,
 		RouterKey: cfg.RouterKey, RouterKeyURL: cfg.TrustedRouterURL(), SkillsDir: dir, Vars: vars,
-	}, nil
+	}
+	// O acervo de loops do cofre executa os nós subloop (etapa que compõe outro processo). Só liga se a pasta
+	// existe: o run não cria pasta no cofre.
+	if loops := filepath.Join(dir, "loops"); dirExists(loops) {
+		if ox.LoopStore, err = loop.NewStore(loops); err != nil {
+			return nil, err
+		}
+	}
+	return ox, nil
+}
+
+func dirExists(p string) bool {
+	st, err := os.Stat(p)
+	return err == nil && st.IsDir()
 }
 
 func reportRun(d Deps, rep runner.Report, asJSON bool) int {
