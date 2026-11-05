@@ -2970,7 +2970,7 @@
       "nature": "macro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",

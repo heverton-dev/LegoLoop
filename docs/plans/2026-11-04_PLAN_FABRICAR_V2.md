@@ -547,7 +547,7 @@
 * **Escopo:** Cofre com 3 processos (um da v1, um composto, um com 2 harnesses): mostra nome, versão, natureza, harnesses e usado por; o da v1 aparece com natureza desconhecida; --json; cofre vazio imprime a mensagem e sai com 0.
 
 #### Ticket `TICK-03.2` — Função `refinar`
-* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-03.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `high` · Fallback Harness `9router` · Modelo `code-fast`

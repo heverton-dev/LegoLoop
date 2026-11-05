@@ -391,7 +391,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** um cofre com 3 processos (um da v1, um composto, um vinculado a 2 harnesses)
   * **Quando:** o binário roda `legoloop listar` e `listar --json`
   * **Então:** mostra nome, versão, natureza, harnesses e "usado por"; o da v1 aparece com `natureza: desconhecida`; cofre vazio imprime a mensagem e exit 0.
-* [ ] `AC-E03.2`: **`refinar` mostra o diff, faz backup e sobe a versão**
+* [x] `AC-E03.2`: **`refinar` mostra o diff, faz backup e sobe a versão** _(provado em 05/11/2026 no TICK-03.2 (worker Orca, 0511e24) pelo binário com fixture: o diff cita INTENT, SPEC, PLAN, ROUTE, DAG, loop e skill; seguir sobe a 1.1.0 com `.legoloop-bak` e `Historico`; cancelar deixa a árvore idêntica; falha do FS em qualquer ponto volta a 1.0.0. Mutação 55/55. Real com o binário instalado num cofre descartável (processo fabricado com a matriz real, `--no-link`): cancelar (0) sai com 1 e cofre e projeto ficam idênticos (md5); `--yes` troca a peça de `e01` para `golang-testing` com caso `tdd`, versão 1.1.0, histórico `[1.0.0]`, 8 backups, e o `listar` mostra 1.1.0. O refinar preenche `Etapa.Casos` (o fabricar ainda grava sem). A etapa se escolhe pelo id (`e01`), não pelo tipo; peça fora da matriz só gera aviso. Limite: a falha do FS só por fixture.)_
   * **Dado que:** o processo `legoloop-x` versão 1.0.0
   * **Quando:** `refinar legoloop-x` roda com uma mudança de etapa e o usuário segue; e em outra rodada o usuário cancela; e em outra o `FS` falha
   * **Então:** o diff cita INTENT, SPEC, PLAN, ROUTE, DAG, loop e skill; ao seguir, a versão sobe para 1.1.0, `.legoloop-bak` guarda a anterior e `Historico` a lista; ao cancelar a árvore fica idêntica; na falha volta a 1.0.0.
