@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"legoloop/internal/matriz"
@@ -57,10 +58,11 @@ func dataDaMatriz(generatedAt, path string) time.Time {
 	return time.Time{}
 }
 
-// confiaveis tira as peças em mídia removível ou de rede, salvo trust. Cada peça cortada vira um aviso.
+// confiaveis tira as skills em mídia removível ou de rede, salvo trust. Cada skill cortada vira um aviso.
+// Só skills são julgadas: são as únicas peças que a Fusão usa (MCPs, hooks e loops nunca viram passo).
 func confiaveis(es []matriz.Entrada, trust bool) (kept []matriz.Entrada, cortes []string) {
 	for _, e := range es {
-		if !trust && naoConfiavel(e.Ref) {
+		if !trust && e.Tipo == "skill" && naoConfiavel(e.Ref) {
 			cortes = append(cortes, ste.Msg("fabricar.peca_removivel", e.Nome))
 			continue
 		}
@@ -69,11 +71,27 @@ func confiaveis(es []matriz.Entrada, trust bool) (kept []matriz.Entrada, cortes 
 	return kept, cortes
 }
 
-// naoConfiavel aplica a regra das raízes ao volume do caminho da peça.
+// naoConfiavel aplica a regra das raízes ao volume do arquivo da peça.
 func naoConfiavel(ref string) bool {
-	vol := filepath.VolumeName(ref)
+	p := caminhoDoRef(ref)
+	vol := filepath.VolumeName(p)
 	if vol == "" {
-		return isUntrustedRoot(ref)
+		return isUntrustedRoot(p)
 	}
 	return isUntrustedRoot(vol + string(filepath.Separator))
+}
+
+// caminhoDoRef traduz o ref da matriz para um caminho de arquivo. A matriz guarda "~/caminho" (relativo ao
+// HOME) e, em MCP e hook, "arquivo#nome": o "~" vira o HOME e o "#nome" sai. Sem HOME o ref fica como está
+// e cai na regra de não confiável, que é o lado seguro.
+func caminhoDoRef(ref string) string {
+	if i := strings.Index(ref, "#"); i >= 0 {
+		ref = ref[:i]
+	}
+	if ref == "~" || strings.HasPrefix(ref, "~/") || strings.HasPrefix(ref, `~\`) {
+		if home, err := os.UserHomeDir(); err == nil && home != "" {
+			return filepath.Join(home, filepath.FromSlash(ref[1:]))
+		}
+	}
+	return filepath.FromSlash(ref)
 }

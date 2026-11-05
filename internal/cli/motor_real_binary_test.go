@@ -61,10 +61,11 @@ func (c *cerebroPorPapel) servidor(t *testing.T) *httptest.Server {
 }
 
 // matrizDeTeste grava no cofre uma matriz v2 com três skills: aidd-tdd (apta, Score baixo), aidd-site-dominator
-// (Score alto, mas exclui software) e sem-perfil (Score mais alto, sem perfil de uso).
+// (Score alto, mas exclui software) e sem-perfil (Score mais alto, sem perfil de uso), e um MCP. Os ref seguem
+// o formato real do registry_matrix.json: relativos ao HOME ("~/...") e, no MCP, "arquivo#nome".
 func matrizDeTeste(t *testing.T, vault string) {
 	t.Helper()
-	ref := func(n string) string { return filepath.Join(vault, "pecas", n, "SKILL.md") }
+	ref := func(n string) string { return "~/.claude/skills/" + n + "/SKILL.md" }
 	type perfil = map[string]any
 	ent := func(n string, p perfil) map[string]any {
 		e := map[string]any{"ref": ref(n), "nome": n, "tipo": "skill", "hash": "h-" + n}
@@ -74,7 +75,7 @@ func matrizDeTeste(t *testing.T, vault string) {
 		return e
 	}
 	reg := map[string]any{
-		"generated_at": "2026-11-01T10:00:00Z", "matrix_version": "2.0.0", "total_pieces": 3,
+		"generated_at": "2026-11-01T10:00:00Z", "matrix_version": "2.0.0", "total_pieces": 4,
 		"ratings": []map[string]any{
 			{"ref": ref("aidd-tdd"), "name": "aidd-tdd", "total_score": 0.58},
 			{"ref": ref("aidd-site-dominator"), "name": "aidd-site-dominator", "total_score": 0.90},
@@ -84,6 +85,7 @@ func matrizDeTeste(t *testing.T, vault string) {
 			ent("aidd-tdd", perfil{"etapas": []string{"construir", "verificar"}, "naturezas": []string{"software"}, "casos_de_uso": []string{}, "origem": "declarado"}),
 			ent("aidd-site-dominator", perfil{"etapas": []string{"publicar"}, "naturezas": []string{"midia"}, "casos_de_uso": []string{}, "quando_nao_usar": []string{"software"}, "origem": "declarado"}),
 			ent("sem-perfil", nil),
+			{"ref": "~/.claude.json#designi-mcp", "nome": "designi-mcp", "tipo": "mcp", "hash": "h-mcp"},
 		},
 	}
 	b, err := json.Marshal(reg)
@@ -136,6 +138,9 @@ func TestMotorRealBinarioEscolhePelaAptidaoDaMatriz(t *testing.T) {
 		"--vault", vault, "--docs", proj, "--yes", "--sem-entrevista", "--dry-run", "--json", "--no-link")
 	if r.code != 0 {
 		t.Fatalf("exit %d\nstdout:\n%s\nstderr:\n%s", r.code, r.out, r.errb)
+	}
+	if strings.Contains(r.out+r.errb, "mídia removível") {
+		t.Errorf("peça do HOME (ref \"~/...\") não é mídia removível:\n%s", r.errb)
 	}
 	if strings.Contains(r.out+r.errb, "Drives detectados") || strings.Contains(r.out+r.errb, "Varredura...") {
 		t.Errorf("o fabricar não deve varrer drives:\n%s", r.errb)

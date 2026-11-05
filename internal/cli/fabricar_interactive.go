@@ -2,7 +2,6 @@ package cli
 
 import (
 	"bufio"
-	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -51,8 +50,8 @@ func (p *prompter) line(prompt string) (string, error) {
 	return strings.TrimSpace(s), nil
 }
 
-// setupInteractive liga o terminal ao motor: drives, entrevista e confirmação final usam o mesmo prompter.
-func setupInteractive(ctx context.Context, req *fabricar.Request, fd *fabricar.Deps, d Deps) error {
+// setupInteractive liga o terminal ao motor: entrevista e confirmação final usam o mesmo prompter.
+func setupInteractive(req *fabricar.Request, fd *fabricar.Deps, d Deps) error {
 	if d.Stdin == nil {
 		return errors.New("o modo interativo exige um terminal (stdin); use --yes para o modo autônomo")
 	}

@@ -305,7 +305,7 @@ func checkEntrevista(o fabricarOpts, d Deps) (code int, stop bool) {
 // prepareInterview liga o motor à entrevista: o terminal (modo interativo) e/ou a sessão já feita no Chat.
 func prepareInterview(ctx context.Context, req *fabricar.Request, fd *fabricar.Deps, o fabricarOpts, d Deps) error {
 	if req.Interactive {
-		if err := setupInteractive(ctx, req, fd, d); err != nil {
+		if err := setupInteractive(req, fd, d); err != nil {
 			return err
 		}
 	}

@@ -60,13 +60,13 @@ func TestReportUnico(t *testing.T) {
 
 	for _, check := range []string{
 		"Clarificação",
-		"Varredura",
+		"Matriz",
 		"Fusão",
 		"Tríade",
 		"Gravação",
 		"Confiança",
-		"Peças vistas",
-		"Decisões",
+		"Peças na matriz",
+		"Necessidades",
 		"Critérios",
 		"Arquivos",
 	} {
