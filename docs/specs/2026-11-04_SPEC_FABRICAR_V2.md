@@ -395,7 +395,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** o processo `legoloop-x` versão 1.0.0
   * **Quando:** `refinar legoloop-x` roda com uma mudança de etapa e o usuário segue; e em outra rodada o usuário cancela; e em outra o `FS` falha
   * **Então:** o diff cita INTENT, SPEC, PLAN, ROUTE, DAG, loop e skill; ao seguir, a versão sobe para 1.1.0, `.legoloop-bak` guarda a anterior e `Historico` a lista; ao cancelar a árvore fica idêntica; na falha volta a 1.0.0.
-* [ ] `AC-E03.3`: **`remover` desvincula e protege o que está em uso**
+* [x] `AC-E03.3`: **`remover` desvincula e protege o que está em uso** _(provado em 05/11/2026 no TICK-03.3 (worker Orca, 8088b41) pelo binário com fixture: `a` com 2 harnesses e composto por `b`; remover `a` falha com `ErrEmUso` (exit 1, nada muda); `b` com confirmação sai; depois `a` sai com os 2 links; sem confirmação nada muda. Mutação 32/32. Real com o binário instalado num cofre descartável (cópia da matriz real, processo fabricado com `--no-link`): cancelar sai com 1 e o cofre fica idêntico (md5); `--yes` apaga os 4 itens e o `listar` não mostra mais o processo; de novo, `não encontrado` e exit 1. Limite: vínculos e `ErrEmUso` só por fixture (o HOME real não foi tocado; composição real depende do `compor`). A confirmação é `[s/N]`, como as pausas extras do fabricar.)_
   * **Dado que:** `legoloop-a` vinculado a 2 harnesses e `legoloop-b` que o compõe
   * **Quando:** `remover legoloop-a` roda, depois `remover legoloop-b` e depois `remover legoloop-a`
   * **Então:** a primeira falha com `ErrEmUso` (exit 1, nada removido); a segunda remove `b` com confirmação e desvincula; a terceira remove `a` e seus 2 links; sem confirmação nada muda.

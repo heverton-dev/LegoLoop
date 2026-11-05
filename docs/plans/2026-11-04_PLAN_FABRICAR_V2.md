@@ -562,7 +562,7 @@
 * **Escopo:** Mudança de etapa em legoloop-x 1.0.0: o diff cita INTENT, SPEC, PLAN, ROUTE, DAG, loop e skill; ao seguir, a versão vai a 1.1.0, .legoloop-bak guarda a anterior e Historico a lista; ao cancelar a árvore fica idêntica; com falha do FS volta a 1.0.0.
 
 #### Ticket `TICK-03.3` — Função `remover`
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-03.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
