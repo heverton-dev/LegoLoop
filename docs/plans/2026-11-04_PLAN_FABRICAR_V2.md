@@ -622,7 +622,7 @@
 * **Escopo:** Quando o `listar` mostra um processo com lacuna, para cada etapa em lacuna ele consulta a matriz e lista as peças que fazem aquela etapa mas não declaram o caso de uso pedido. A saída inclui o comando `legoloop matriz perfil definir <peça> --caso <caso>` pronto para copiar. Em --json sai como campo `sugestoes` (array de {etapa, caso, pecas, comandos}; o comando repete o perfil atual da peça, porque `perfil definir` substitui etapas, naturezas e casos). Sem peça candidata, só mostra a lacuna sem sugestão. Prova: processo com lacuna em coletar (caso coleta-de-dados), matriz com 2 peças que fazem coletar sem declarar o caso: a saída cita as duas e o comando.
 
 #### Ticket `TICK-03.8` — Origem do perfil visível na Fusão: declarado vence inferido no empate
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["SG-E02"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`

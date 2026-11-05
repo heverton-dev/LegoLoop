@@ -411,7 +411,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** um processo com lacuna na etapa `coletar` (caso `coleta-de-dados`) e uma matriz com 2 peças que fazem `coletar` mas não declaram `coleta-de-dados`
   * **Quando:** `legoloop listar` roda
   * **Então:** a saída cita as duas peças e imprime o comando `legoloop matriz perfil definir <peça> --caso coleta-de-dados` pronto para copiar; em `--json` sai como campo `sugestoes`; sem peça candidata, só mostra a lacuna sem sugestão.
-* [ ] `AC-E03.8`: **A origem do perfil aparece e desempata**
+* [x] `AC-E03.8`: **A origem do perfil aparece e desempata** _(provado em 05/11/2026 no TICK-03.8 (worker Orca, aaaaa44) pelo binário com fixture: a declarada de Score 0.60 vence a inferida de 0.95 no texto e no `--json` (campo `origem` na decisão); só a inferida, ela é escolhida com `perfil: inferido`. Mutação 9/9. Real com o binário instalado e a matriz real num cofre descartável (software, TDD e qualidade): exit 0, a linha de `construir` mostra `aidd-piece-upgrader ... perfil: inferido`, cofre inalterado. Limite: a matriz real tem 243 peças inferidas e 0 declaradas para `construir`/`tdd`, então o desempate só está provado por fixture.)_
   * **Dado que:** duas peças com a mesma aptidão para `construir` (caso `tdd`), uma com perfil `inferido` e `Score` 0.95 e outra com perfil `declarado` e `Score` 0.60
   * **Quando:** a Fusão roda
   * **Então:** a declarada é escolhida (declarado ou confirmado vence inferido no empate de aptidão, antes do `Score`); o motivo da escolha cita `perfil: declarado`; o resumo em texto e o `--json` do `fabricar` mostram a origem; com só a inferida na matriz, ela é escolhida e o motivo cita `perfil: inferido`.
