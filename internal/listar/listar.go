@@ -41,13 +41,15 @@ type Deps struct {
 
 // Item é um processo do cofre.
 type Item struct {
-	Nome      string   `json:"nome"`
-	Versao    string   `json:"versao"`
-	Natureza  string   `json:"natureza"`
-	Harnesses []string `json:"harnesses"`
-	UsadoPor  []string `json:"usado_por"`
-	Origem    string   `json:"origem"`         // "v2" (tem .processo.json) ou "v1" (só o .loop.json)
-	Erro      string   `json:"erro,omitempty"` // o .processo.json não pôde ser lido
+	Nome      string     `json:"nome"`
+	Versao    string     `json:"versao"`
+	Natureza  string     `json:"natureza"`
+	Harnesses []string   `json:"harnesses"`
+	UsadoPor  []string   `json:"usado_por"`
+	Origem    string     `json:"origem"`              // "v2" (tem .processo.json) ou "v1" (só o .loop.json)
+	Erro      string     `json:"erro,omitempty"`      // o .processo.json não pôde ser lido
+	Lacunas   []string   `json:"lacunas,omitempty"`   // etapas sem peça
+	Sugestoes []Sugestao `json:"sugestoes,omitempty"` // peças que podem cobrir a lacuna com perfil definir
 }
 
 // Resultado é a lista ordenada por nome.
@@ -80,6 +82,7 @@ func Run(ctx context.Context, d Deps) (Resultado, error) {
 		res.Processos = append(res.Processos, it)
 	}
 	completar(res.Processos, compostos, harnesses(d))
+	sugerir(vault, res.Processos, compostos)
 	return res, nil
 }
 

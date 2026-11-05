@@ -407,7 +407,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** os pacotes `fabricar`, `listar`, `refinar`, `remover` e `compor`
   * **Quando:** `go list -deps` roda em cada um
   * **Então:** nenhum depende de outra fatia; só dependem do núcleo (`processo`, `ste`, `matriz`, `brain`).
-* [ ] `AC-E03.7`: **`listar` sugere `perfil definir` quando há lacuna**
+* [x] `AC-E03.7`: **`listar` sugere `perfil definir` quando há lacuna** _(provado em 05/11/2026 no TICK-03.7 pelo binário, e real com a matriz real num cofre descartável: 6 peças candidatas para `coletar`/`coleta-de-dados`. Decisão do usuário: a Etapa ganhou o campo `casos` no núcleo; sem ele, valem os casos que o vocabulário liga à etapa. O comando repete o perfil atual da peça, porque `perfil definir` substitui o perfil inteiro. O `--json` traz `sugestoes: [{etapa, caso, pecas, comandos}]`; o texto mostra até 5 comandos.)_
   * **Dado que:** um processo com lacuna na etapa `coletar` (caso `coleta-de-dados`) e uma matriz com 2 peças que fazem `coletar` mas não declaram `coleta-de-dados`
   * **Quando:** `legoloop listar` roda
   * **Então:** a saída cita as duas peças e imprime o comando `legoloop matriz perfil definir <peça> --caso coleta-de-dados` pronto para copiar; em `--json` sai como campo `sugestoes`; sem peça candidata, só mostra a lacuna sem sugestão.

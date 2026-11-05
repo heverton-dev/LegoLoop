@@ -10,6 +10,7 @@ import (
 	"legoloop/internal/canon"
 	"legoloop/internal/listar"
 	"legoloop/internal/processo"
+	"legoloop/internal/ste"
 )
 
 // cmdListar mostra os processos do cofre. Sem --vault, um cofre padrão que ainda não existe conta como vazio.
@@ -90,7 +91,40 @@ func imprimirListar(d Deps, res listar.Resultado, asJSON bool) int {
 	if err := w.Flush(); err != nil {
 		return fail(d, err)
 	}
+	imprimirLacunas(d, res.Processos)
 	return 0
+}
+
+// imprimirLacunas mostra cada etapa em lacuna e, quando há peça candidata, os comandos prontos para copiar.
+func imprimirLacunas(d Deps, its []listar.Item) {
+	for _, it := range its {
+		for _, etapa := range it.Lacunas {
+			fmt.Fprintf(d.Stdout, "\nAVISO: %s\n", ste.Msg("listar.lacuna", etapa, it.Nome))
+			n := 0
+			for _, s := range it.Sugestoes {
+				if s.Etapa == etapa {
+					n++
+					imprimirSugestao(d, s)
+				}
+			}
+			if n == 0 {
+				fmt.Fprintln(d.Stdout, ste.Msg("listar.lacuna_sem_peca", etapa, etapa))
+			}
+		}
+	}
+}
+
+func imprimirSugestao(d Deps, s listar.Sugestao) {
+	fmt.Fprintln(d.Stdout, ste.Msg("listar.lacuna_sugestao", s.Etapa, s.Caso))
+	for _, c := range s.Comandos[:min(len(s.Comandos), listar.MaxComandosTexto)] {
+		fmt.Fprintf(d.Stdout, "  %s\n", c)
+	}
+	switch mais := len(s.Comandos) - listar.MaxComandosTexto; {
+	case mais == 1:
+		fmt.Fprintln(d.Stdout, ste.Msg("listar.lacuna_mais_uma", s.Etapa))
+	case mais > 1:
+		fmt.Fprintln(d.Stdout, ste.Msg("listar.lacuna_mais", mais, s.Etapa))
+	}
 }
 
 func ouTraco(s string) string {

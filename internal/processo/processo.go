@@ -40,6 +40,7 @@ type Etapa struct {
 	Titulo  string   `json:"titulo"`
 	Tipo    string   `json:"tipo"`             // etapa do vocabulário (ex.: "construir")
 	Peca    string   `json:"peca"`             // "" = lacuna declarada
+	Casos   []string `json:"casos,omitempty"`  // casos de uso pedidos para esta etapa (o listar usa na lacuna)
 	Compoe  string   `json:"compoe,omitempty"` // "nome@versao" se a etapa é outro processo
 	Consome []string `json:"consome"`
 	Produz  Artefato `json:"produz"`

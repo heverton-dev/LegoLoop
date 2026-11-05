@@ -216,3 +216,143 @@ func TestListarBinario(t *testing.T) {
 		t.Fatalf("exit %d; cofre vazio (HOME/.aidd/canonical) imprime a mensagem e sai com 0:\n%s\n%s", r.code, r.out, r.errb)
 	}
 }
+
+// cofreComLacuna monta um processo com a etapa coletar em lacuna (caso coleta-de-dados) e uma matriz com 2 peças
+// que fazem coletar sem declarar o caso, mais uma que já o declara.
+func cofreComLacuna(t *testing.T) (home, vault string) {
+	t.Helper()
+	home = t.TempDir()
+	vault = filepath.Join(home, "vault")
+	col := processo.Etapa{ID: "E01", Titulo: "Coletar", Tipo: "coletar", Casos: []string{"coleta-de-dados"},
+		Produz: processo.Artefato{Caminho: "out/E01.md", Tipo: "markdown"}, Gate: "file_exists('out/E01.md')"}
+	p := processo.Processo{Nome: "legoloop-coleta", Versao: "1.0.0", Natureza: "dados", Objetivo: "Coletar.",
+		Etapas: []processo.Etapa{col}, CriadoEm: time.Date(2026, 11, 5, 0, 0, 0, 0, time.UTC)}
+	data, err := p.Marshal()
+	if err != nil {
+		t.Fatal(err)
+	}
+	gravarArq(t, processo.CaminhoNoCofre(vault, p.Nome), string(data))
+	gravarArq(t, filepath.Join(vault, "registry_matrix.json"), `{"matrix_version":"2.0.0","ratings":[],"entradas":[
+ {"ref":"~/skills/peca-a/SKILL.md","nome":"peca-a","tipo":"skill","hash":"ha","perfil":{"etapas":["coletar"],"naturezas":["dados"],"casos_de_uso":[],"consome":[],"produz":[],"quando_nao_usar":[],"origem":"inferido"}},
+ {"ref":"~/skills/peca-b/SKILL.md","nome":"peca-b","tipo":"skill","hash":"hb","perfil":{"etapas":["coletar"],"naturezas":[],"casos_de_uso":[],"consome":[],"produz":[],"quando_nao_usar":[],"origem":"inferido"}},
+ {"ref":"~/skills/peca-c/SKILL.md","nome":"peca-c","tipo":"skill","hash":"hc","perfil":{"etapas":["coletar"],"naturezas":[],"casos_de_uso":["coleta-de-dados"],"consome":[],"produz":[],"quando_nao_usar":[],"origem":"declarado"}}]}`)
+	return home, vault
+}
+
+const (
+	cmdPecaA = "legoloop matriz perfil definir peca-a --caso coleta-de-dados --etapa coletar --natureza dados"
+	cmdPecaB = "legoloop matriz perfil definir peca-b --caso coleta-de-dados --etapa coletar"
+)
+
+func conferirSugestaoTexto(t *testing.T, out string) {
+	t.Helper()
+	for _, quer := range []string{"A etapa coletar do processo legoloop-coleta não tem peça", "peca-a", "peca-b",
+		"\n  " + cmdPecaA + "\n", "\n  " + cmdPecaB + "\n"} {
+		if !strings.Contains(out, quer) {
+			t.Errorf("falta %q na saída:\n%s", quer, out)
+		}
+	}
+	if strings.Contains(out, "definir peca-c") {
+		t.Errorf("peca-c já declara o caso e não é sugerida:\n%s", out)
+	}
+}
+
+func conferirSugestaoJSON(t *testing.T, out string) {
+	t.Helper()
+	var doc struct {
+		Processos []struct {
+			Lacunas   []string `json:"lacunas"`
+			Sugestoes []struct {
+				Etapa, Caso string
+				Pecas       []string `json:"pecas"`
+				Comandos    []string `json:"comandos"`
+			} `json:"sugestoes"`
+		} `json:"processos"`
+	}
+	if err := json.Unmarshal([]byte(out), &doc); err != nil || len(doc.Processos) != 1 {
+		t.Fatalf("JSON: %v\n%s", err, out)
+	}
+	p := doc.Processos[0]
+	if !slices.Equal(p.Lacunas, []string{"coletar"}) || len(p.Sugestoes) != 1 || p.Sugestoes[0].Caso != "coleta-de-dados" ||
+		!slices.Equal(p.Sugestoes[0].Pecas, []string{"peca-a", "peca-b"}) || !slices.Equal(p.Sugestoes[0].Comandos, []string{cmdPecaA, cmdPecaB}) {
+		t.Errorf("sugestoes no JSON: %+v", p)
+	}
+}
+
+func TestListarSugestao(t *testing.T) {
+	home, vault := cofreComLacuna(t)
+	t.Run("texto", func(t *testing.T) {
+		code, out, errb := rodarListar(home, "--vault", vault)
+		if code != 0 {
+			t.Fatalf("exit %d\n%s", code, errb)
+		}
+		conferirSugestaoTexto(t, out)
+	})
+	t.Run("json", func(t *testing.T) {
+		code, out, _ := rodarListar(home, "--vault", vault, "--json")
+		if code != 0 {
+			t.Fatalf("exit %d", code)
+		}
+		conferirSugestaoJSON(t, out)
+	})
+	t.Run("duas lacunas, uma sem candidata", func(t *testing.T) {
+		h, v := cofreComLacuna(t)
+		col := processo.Etapa{ID: "E01", Titulo: "Coletar", Tipo: "coletar", Casos: []string{"coleta-de-dados"},
+			Produz: processo.Artefato{Caminho: "out/E01.md", Tipo: "markdown"}, Gate: "file_exists('out/E01.md')"}
+		cons := processo.Etapa{ID: "E02", Titulo: "Construir", Tipo: "construir", Casos: []string{"tdd"}, Depende: []string{"E01"},
+			Produz: processo.Artefato{Caminho: "out/E02.md", Tipo: "markdown"}, Gate: "file_exists('out/E02.md')"}
+		p := processo.Processo{Nome: "legoloop-coleta", Versao: "1.0.0", Natureza: "dados", Objetivo: "Coletar.",
+			Etapas: []processo.Etapa{col, cons}, CriadoEm: time.Date(2026, 11, 5, 0, 0, 0, 0, time.UTC)}
+		data, err := p.Marshal()
+		if err != nil {
+			t.Fatal(err)
+		}
+		gravarArq(t, processo.CaminhoNoCofre(v, p.Nome), string(data))
+		code, out, _ := rodarListar(h, "--vault", v)
+		_, depois, _ := strings.Cut(out, "A etapa construir do processo")
+		if code != 0 || strings.Count(out, "perfil definir") != 2 || !strings.Contains(depois, "Nenhuma peça da matriz faz a etapa construir") ||
+			strings.Contains(depois, "perfil definir") {
+			t.Fatalf("exit %d; a sugestão de coletar não aparece em construir:\n%s", code, out)
+		}
+	})
+	t.Run("sem candidata", func(t *testing.T) {
+		gravarArq(t, filepath.Join(vault, "registry_matrix.json"), `{"matrix_version":"2.0.0","ratings":[],"entradas":[]}`)
+		code, out, _ := rodarListar(home, "--vault", vault)
+		if code != 0 || !strings.Contains(out, "A etapa coletar do processo legoloop-coleta não tem peça") ||
+			!strings.Contains(out, "Nenhuma peça da matriz faz a etapa coletar") || strings.Contains(out, "perfil definir") {
+			t.Fatalf("exit %d; só a lacuna, sem comando:\n%s", code, out)
+		}
+	})
+	t.Run("muitas candidatas", func(t *testing.T) {
+		var es []string
+		for _, n := range []string{"a", "b", "c", "d", "e", "f", "g"} {
+			es = append(es, `{"ref":"~/s/`+n+`","nome":"p-`+n+`","tipo":"skill","hash":"h`+n+`","perfil":{"etapas":["coletar"]}}`)
+		}
+		gravarArq(t, filepath.Join(vault, "registry_matrix.json"), `{"matrix_version":"2.0.0","ratings":[],"entradas":[`+strings.Join(es, ",")+`]}`)
+		code, out, _ := rodarListar(home, "--vault", vault)
+		if code != 0 || strings.Count(out, "perfil definir") != 5 || !strings.Contains(out, "Mais 2 peças fazem a etapa coletar") {
+			t.Fatalf("exit %d; o texto mostra 5 comandos e conta o resto:\n%s", code, out)
+		}
+		gravarArq(t, filepath.Join(vault, "registry_matrix.json"), `{"matrix_version":"2.0.0","ratings":[],"entradas":[`+strings.Join(es[:6], ",")+`]}`)
+		if _, out, _ = rodarListar(home, "--vault", vault); !strings.Contains(out, "Mais 1 peça faz a etapa coletar") {
+			t.Fatalf("uma a mais vai no singular:\n%s", out)
+		}
+	})
+}
+
+// TestListarSugestaoBinario prova o AC-E03.7 pelo binário: texto e --json.
+func TestListarSugestaoBinario(t *testing.T) {
+	bin := buildBinary(t)
+	home, vault := cofreComLacuna(t)
+	srv := binRouter(t, 90)
+	r := runBinaryEm(t, bin, srv, home, filepath.Join(home, "proj"), "listar", "--vault", vault)
+	if r.code != 0 {
+		t.Fatalf("exit %d\n%s", r.code, r.errb)
+	}
+	conferirSugestaoTexto(t, r.out)
+	r = runBinaryEm(t, bin, srv, home, filepath.Join(home, "proj"), "listar", "--vault", vault, "--json")
+	if r.code != 0 {
+		t.Fatalf("exit %d\n%s", r.code, r.errb)
+	}
+	conferirSugestaoJSON(t, r.out)
+}
