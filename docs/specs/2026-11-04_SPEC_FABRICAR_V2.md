@@ -387,7 +387,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
 
 ### Épico 03 — Verbos: `listar`, `refinar`, `remover`, `compor`
 
-* [ ] `AC-E03.1`: **`listar` mostra o que existe**
+* [x] `AC-E03.1`: **`listar` mostra o que existe** _(provado em 05/11/2026 no TICK-03.1 pelo binário: cofre de teste com 3 processos em texto e `--json`, e cofre vazio com exit 0; real no `scratch/cofre-real` com 2 processos da v2. O cofre real não tem processos da v1, então a v1 só está provada pelo teste do binário.)_
   * **Dado que:** um cofre com 3 processos (um da v1, um composto, um vinculado a 2 harnesses)
   * **Quando:** o binário roda `legoloop listar` e `listar --json`
   * **Então:** mostra nome, versão, natureza, harnesses e "usado por"; o da v1 aparece com `natureza: desconhecida`; cofre vazio imprime a mensagem e exit 0.
