@@ -3245,6 +3245,59 @@
       }
     },
     {
+      "id": "TICK-03.7",
+      "label": "Sugestão de perfil definir quando o listar mostra lacuna",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 800
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "9router",
+          "model": "code-fast"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/listar/sugestao.go"
+        ],
+        "spec_anchor": "AC-E03.7",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.7",
+      "test_target": "internal/listar/sugestao_test.go:TestSugestaoPerfilDefinir",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/listar/sugestao.go",
+          "internal/listar/sugestao_test.go"
+        ]
+      }
+    },
+    {
       "id": "TICK-03.5",
       "label": "Independência das fatias",
       "nature": "nano",
@@ -3262,7 +3315,8 @@
         "max_output_tokens": 300
       },
       "depends_on": [
-        "TICK-03.4"
+        "TICK-03.4",
+        "TICK-03.7"
       ],
       "routing": {
         "mode": "suggested",
@@ -3434,7 +3488,8 @@
         "TICK-03.3",
         "TICK-03.4",
         "TICK-03.5",
-        "TICK-03.6"
+        "TICK-03.6",
+        "TICK-03.7"
       ],
       "routing": {
         "mode": "manual",

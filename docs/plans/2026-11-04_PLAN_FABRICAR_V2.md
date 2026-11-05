@@ -44,7 +44,7 @@
 |---|---|---|---|---|
 | **E01** | Núcleo, motor de matrizes e cérebro plugável | 11 | `AC-E01.1`, `AC-E01.10`, `AC-E01.2`, `AC-E01.3`, `AC-E01.4`, `AC-E01.5`, `AC-E01.6`, `AC-E01.7`, `AC-E01.8`, `AC-E01.9`, `AC-NF.1`, `AC-NF.2`, `AC-NF.4` | `micro` |
 | **E02** | `fabricar` refeito: entrevista, Fusão, contrato e cartão | 19 | `AC-E02.1`, `AC-E02.10`, `AC-E02.11`, `AC-E02.12`, `AC-E02.13`, `AC-E02.14`, `AC-E02.15`, `AC-E02.2`, `AC-E02.3`, `AC-E02.4`, `AC-E02.5`, `AC-E02.6`, `AC-E02.7`, `AC-E02.8`, `AC-E02.9` | `micro` |
-| **E03** | Verbos `listar`, `refinar`, `remover` e `compor` | 6 | `AC-E03.1`, `AC-E03.2`, `AC-E03.3`, `AC-E03.4`, `AC-E03.5`, `AC-E03.6` | `micro` |
+| **E03** | Verbos `listar`, `refinar`, `remover` e `compor` | 7 | `AC-E03.1`, `AC-E03.2`, `AC-E03.3`, `AC-E03.4`, `AC-E03.5`, `AC-E03.6`, `AC-E03.7` | `micro` |
 | **E04** | Studio, prova com o sistema real e fechamento | 4 | `AC-E04.1`, `AC-E04.2`, `AC-E04.3`, `AC-E04.4`, `AC-NF.1`, `AC-NF.3`, `AC-NF.4` | `macro` |
 
 > Regra de cobertura: a união da coluna "Critérios de Aceite Cobertos" é igual ao conjunto de `AC-*` da SPEC (37 critérios).
@@ -593,7 +593,7 @@
 
 #### Ticket `TICK-03.5` — Independência das fatias
 * **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
-* **Dependências:** `["TICK-03.4"]`
+* **Dependências:** `["TICK-03.4","TICK-03.7"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `low` · Fallback Harness `9router` · Modelo `code-fast`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
@@ -605,6 +605,21 @@
 * **Gate (DSL):** `exit_code == 0 && file_exists('internal/processo/independencia_test.go')`
 * **Spec Ref:** `AC-E03.5`
 * **Escopo:** go list -deps de fabricar, listar, refinar, remover e compor: nenhum depende de outra fatia; só de processo, ste, matriz e brain.
+
+#### Ticket `TICK-03.7` — Sugestão de `perfil definir` quando o `listar` mostra lacuna
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Dependências:** `["TICK-03.1"]`
+* **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
+* **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
+* **Limites:** Timeout `300s` · Teto de saída `800` tokens · Rollback `stash_changes`
+* **Inputs:** Source Files `internal/listar/listar.go`, `internal/listar/sugestao.go` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E03.7` · Context Artifacts `[]`
+* **Alvo de Teste TDD:** `internal/listar/sugestao_test.go:TestSugestaoPerfilDefinir`
+* **Outputs:** Artifacts `internal/listar/sugestao.go`, `internal/listar/sugestao_test.go`
+* **Verificação (argv, sem shell):** `go test -count=1 -v -run ^TestSugestaoPerfilDefinir ./internal/listar/...`; `go vet ./internal/listar/...`; `go run ./tools/funclen internal/listar`; `go build -o bin/legoloop.exe ./cmd/legoloop`
+* **Gate (DSL):** `exit_code == 0 && file_exists('internal/listar/sugestao.go') && file_exists('internal/listar/sugestao_test.go')`
+* **Spec Ref:** `AC-E03.7`
+* **Escopo:** Quando o `listar` mostra um processo com lacuna, para cada etapa em lacuna ele consulta a matriz e lista as peças que fazem aquela etapa mas não declaram o caso de uso pedido. A saída inclui o comando `legoloop matriz perfil definir <peça> --caso <caso>` pronto para copiar. Em --json sai como campo `sugestoes` (array de {etapa, pecas, comando}). Sem peça candidata, só mostra a lacuna sem sugestão. Prova: processo com lacuna em coletar (caso coleta-de-dados), matriz com 2 peças que fazem coletar sem declarar o caso: a saída cita as duas e o comando.
 
 #### Ticket `TICK-03.6` — Skills universais das seis funções e manuais
 * **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
