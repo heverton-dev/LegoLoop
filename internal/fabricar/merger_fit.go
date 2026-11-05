@@ -133,7 +133,7 @@ func (m *Merged) noteCasosSemEtapa(n matriz.Needs, v matriz.Vocab) {
 // decide registra que a peça entrou para a etapa.
 func (m *Merged) decide(etapa string, r matriz.Ranked) {
 	m.Decisoes = append(m.Decisoes, Decisao{Etapa: etapa, Peca: r.Entrada.Nome, Entrou: true, Aptidao: r.Aptidao,
-		Score: r.Entrada.Rating.TotalScore, Motivo: r.Motivo})
+		Score: r.Entrada.Rating.TotalScore, Motivo: r.Motivo, Origem: r.Entrada.Perfil.Origem})
 }
 
 func pieceOf(e matriz.Entrada) DiscoveredPiece {

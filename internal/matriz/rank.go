@@ -28,7 +28,8 @@ type Ranked struct {
 const naturezaQualquer = "qualquer"
 
 // Rank avalia as peças contra o Needs. É pura: não altera es. O Score só desempata; quem decide é a aptidão
-// ao caso de uso. Ordem: aptidão desc, natureza explícita antes de coringa, Score desc, Ref asc; as excluídas
+// ao caso de uso. Ordem: aptidão desc, natureza explícita antes de coringa, perfil declarado ou confirmado antes
+// de inferido, Score desc, Ref asc; o motivo cita a origem do perfil. As excluídas
 // vêm depois, por Ref. Peça sem perfil e de tier tóxico nunca entram no resultado.
 func Rank(n Needs, es []Entrada, minAptidao float64) []Ranked {
 	var out []Ranked
@@ -70,8 +71,14 @@ func avaliar(n Needs, e Entrada, minAptidao float64) Ranked {
 	r.Aptidao = apt
 	r.naturezaExplicita = declara(e.Perfil.Naturezas, n.Natureza)
 	r.Motivo = motivoEscolha(n, r.naturezaExplicita, etapas, casos)
+	if o := e.Perfil.Origem; o != "" {
+		r.Motivo += "; perfil: " + o
+	}
 	return r
 }
+
+// inferido diz se o perfil é só palpite do cérebro (declarado e confirmado valem mais no empate).
+func (r Ranked) inferido() bool { return r.Entrada.Perfil.Origem == OrigemInferido }
 
 // exclusaoDura devolve o motivo se o perfil proíbe o uso pedido (quando_nao_usar) ou serve a outra natureza.
 func exclusaoDura(n Needs, p *PerfilDeUso) string {
@@ -123,6 +130,11 @@ func comparar(a, b Ranked) int {
 		return cmpDesc(a.Aptidao, b.Aptidao)
 	case a.naturezaExplicita != b.naturezaExplicita:
 		if a.naturezaExplicita {
+			return -1
+		}
+		return 1
+	case a.inferido() != b.inferido():
+		if b.inferido() {
 			return -1
 		}
 		return 1

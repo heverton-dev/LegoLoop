@@ -27,6 +27,7 @@ type Decisao struct {
 	Aptidao    float64 `json:"aptidao"`
 	Score      float64 `json:"score"`
 	Motivo     string  `json:"motivo"`
+	Origem     string  `json:"origem,omitempty"`     // origem do perfil da peça escolhida: declarado, confirmado ou inferido
 	Explicacao string  `json:"explicacao,omitempty"` // escrita pelo cérebro; nunca decide
 }
 
