@@ -2621,6 +2621,192 @@
       }
     },
     {
+      "id": "TICK-02.18",
+      "label": "Calibrar a Fusão: aptidão mínima e casos de uso por etapa",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 800
+      },
+      "depends_on": [
+        "TICK-02.17"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "9router",
+          "model": "code-fast"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/matriz/rank.go",
+          "internal/fabricar/merger_fit.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E02.6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.6",
+      "test_target": "internal/fabricar/calibragem_test.go:TestCalibragem",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/matriz/rank.go",
+          "internal/fabricar/merger_fit.go",
+          "internal/fabricar/calibragem_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestCalibragem",
+            "./internal/matriz/...",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/matriz/...",
+            "./internal/fabricar/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/matriz"
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/matriz/rank.go') && file_exists('internal/fabricar/calibragem_test.go')"
+      }
+    },
+    {
+      "id": "TICK-02.19",
+      "label": "Lacuna visível no --dry-run: relatório e cartão",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 800
+      },
+      "depends_on": [
+        "TICK-02.18"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "9router",
+          "model": "code-fast"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/camada4.go",
+          "internal/cli/fabricar_report.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E02.7",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.7",
+      "test_target": "internal/fabricar/lacuna_relatorio_test.go:TestLacunaRelatorio",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/camada4.go",
+          "internal/cli/fabricar_report.go",
+          "internal/fabricar/lacuna_relatorio_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestLacunaRelatorio",
+            "./internal/fabricar/...",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/...",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/cli"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/camada4.go') && file_exists('internal/fabricar/lacuna_relatorio_test.go')"
+      }
+    },
+    {
       "id": "SG-E02",
       "label": "Stop-Gate Humano do Épico 02",
       "nature": "nano",
@@ -2654,7 +2840,9 @@
         "TICK-02.14",
         "TICK-02.15",
         "TICK-02.16",
-        "TICK-02.17"
+        "TICK-02.17",
+        "TICK-02.18",
+        "TICK-02.19"
       ],
       "routing": {
         "mode": "manual",

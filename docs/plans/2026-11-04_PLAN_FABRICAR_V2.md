@@ -43,7 +43,7 @@
 | Épico ID | Nome do Épico | Total Tickets | Critérios de Aceite Cobertos | Natureza Dominante |
 |---|---|---|---|---|
 | **E01** | Núcleo, motor de matrizes e cérebro plugável | 11 | `AC-E01.1`, `AC-E01.10`, `AC-E01.2`, `AC-E01.3`, `AC-E01.4`, `AC-E01.5`, `AC-E01.6`, `AC-E01.7`, `AC-E01.8`, `AC-E01.9`, `AC-NF.1`, `AC-NF.2`, `AC-NF.4` | `micro` |
-| **E02** | `fabricar` refeito: entrevista, Fusão, contrato e cartão | 17 | `AC-E02.1`, `AC-E02.10`, `AC-E02.11`, `AC-E02.12`, `AC-E02.13`, `AC-E02.14`, `AC-E02.15`, `AC-E02.2`, `AC-E02.3`, `AC-E02.4`, `AC-E02.5`, `AC-E02.6`, `AC-E02.7`, `AC-E02.8`, `AC-E02.9` | `micro` |
+| **E02** | `fabricar` refeito: entrevista, Fusão, contrato e cartão | 19 | `AC-E02.1`, `AC-E02.10`, `AC-E02.11`, `AC-E02.12`, `AC-E02.13`, `AC-E02.14`, `AC-E02.15`, `AC-E02.2`, `AC-E02.3`, `AC-E02.4`, `AC-E02.5`, `AC-E02.6`, `AC-E02.7`, `AC-E02.8`, `AC-E02.9` | `micro` |
 | **E03** | Verbos `listar`, `refinar`, `remover` e `compor` | 6 | `AC-E03.1`, `AC-E03.2`, `AC-E03.3`, `AC-E03.4`, `AC-E03.5`, `AC-E03.6` | `micro` |
 | **E04** | Studio, prova com o sistema real e fechamento | 4 | `AC-E04.1`, `AC-E04.2`, `AC-E04.3`, `AC-E04.4`, `AC-NF.1`, `AC-NF.3`, `AC-NF.4` | `macro` |
 
@@ -488,6 +488,36 @@
 * **Gate (DSL):** `exit_code == 0 && file_exists('internal/fabricar/engine.go') && file_exists('internal/fabricar/processo_real_test.go')`
 * **Spec Ref:** `AC-E02.9`
 * **Escopo:** O motor monta o Processo com ProcessoDe e grava SPEC, PLAN, ROUTE, DAG, loop e skill gerados por Projetar (coerência por Verificar), o INTENT da entrevista e loops/<nome>.processo.json, tudo no mesmo plano atômico. Prova pelo binário em --dry-run e gravação em cofre descartável: o processo.json relido valida e tem a natureza; as seis visões listam os mesmos ids.
+
+#### Ticket `TICK-02.18` — Calibrar a Fusão: aptidão mínima e casos de uso por etapa
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Dependências:** `["TICK-02.17"]`
+* **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
+* **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
+* **Limites:** Timeout `300s` · Teto de saída `800` tokens · Rollback `stash_changes`
+* **Inputs:** Source Files `internal/matriz/rank.go`, `internal/fabricar/merger_fit.go` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E02.6` · Context Artifacts `[]`
+* **Alvo de Teste TDD:** `internal/fabricar/calibragem_test.go:TestCalibragem`
+* **Outputs:** Artifacts `internal/matriz/rank.go`, `internal/fabricar/merger_fit.go`, `internal/fabricar/calibragem_test.go`
+* **Verificação (argv, sem shell):** `go test -count=1 -v -run ^TestCalibragem ./internal/matriz/... ./internal/fabricar/...`; `go vet ./internal/matriz/... ./internal/fabricar/...`; `go run ./tools/funclen internal/matriz`; `go run ./tools/funclen internal/fabricar`; `go build -o bin/legoloop.exe ./cmd/legoloop`
+* **Gate (DSL):** `exit_code == 0 && file_exists('internal/matriz/rank.go') && file_exists('internal/fabricar/calibragem_test.go')`
+* **Spec Ref:** `AC-E02.6`
+* **Escopo:** Peça que só casa a etapa e a natureza coringa (aptidão 0, quando há casos pedidos) não é escolhida: a etapa vira lacuna com motivo. Cada caso de uso pedido conta só na etapa a que pertence, não em todas. Prova pelo binário com a matriz real num cofre descartável: no caso dos preços, nenhuma peça de aptidão 0 entra; no caso de software, a escolha de construir casa tdd.
+
+#### Ticket `TICK-02.19` — Lacuna visível no --dry-run: relatório e cartão
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Dependências:** `["TICK-02.18"]`
+* **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
+* **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
+* **Limites:** Timeout `300s` · Teto de saída `800` tokens · Rollback `stash_changes`
+* **Inputs:** Source Files `internal/fabricar/camada4.go`, `internal/cli/fabricar_report.go` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E02.7` · Context Artifacts `[]`
+* **Alvo de Teste TDD:** `internal/fabricar/lacuna_relatorio_test.go:TestLacunaRelatorio`
+* **Outputs:** Artifacts `internal/fabricar/camada4.go`, `internal/cli/fabricar_report.go`, `internal/fabricar/lacuna_relatorio_test.go`
+* **Verificação (argv, sem shell):** `go test -count=1 -v -run ^TestLacunaRelatorio ./internal/fabricar/... ./internal/cli/...`; `go vet ./internal/fabricar/... ./internal/cli/...`; `go run ./tools/funclen internal/fabricar`; `go run ./tools/funclen internal/cli`; `go build -o bin/legoloop.exe ./cmd/legoloop`
+* **Gate (DSL):** `exit_code == 0 && file_exists('internal/fabricar/camada4.go') && file_exists('internal/fabricar/lacuna_relatorio_test.go')`
+* **Spec Ref:** `AC-E02.7`
+* **Escopo:** Em --dry-run a lacuna não para antes do relatório: o Report e o cartão saem com a lacuna destacada (etapa e orientação STE-PT) e o comando sai com 1. Sem --dry-run a lacuna segue parando sem gravar nada. Peça sem perfil aparece como aptidão desconhecida. Prova pelo binário nos dois modos.
 
 ---
 

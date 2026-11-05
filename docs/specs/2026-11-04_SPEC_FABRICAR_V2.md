@@ -328,7 +328,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** o binário instalado e um terminal (stdin) com respostas
   * **Quando:** `legoloop fabricar "x" --goal "..."` roda sem `--yes`
   * **Então:** a entrevista começa (o erro "exige um terminal" não ocorre), imprime a confiança a cada turno e só grava depois da confirmação do espelho final. *(Corrige o defeito A1: o `main` liga `os.Stdin`.)*
-* [ ] `AC-E02.2`: **A entrevista é contextual**
+* [x] `AC-E02.2`: **A entrevista é contextual** _(provado em 05/11/2026 pelo binário com o 9Router real: `fabricar entrevista iniciar` com o AGENTS.md do projeto; a 1ª pergunta e o palpite usam o contexto e não citam Docker, GitHub Actions nem Node.)_
   * **Dado que:** um projeto cujo `AGENTS.md` diz "Go, stdlib only" e o objetivo "refinar a etapa de BUILD do mega-pipeline"; um cérebro de teste que registra o prompt recebido
   * **Quando:** a entrevista pede a primeira pergunta
   * **Então:** o prompt contém trechos do `AGENTS.md`, o nome das peças aptas da matriz e o objetivo; no cenário real com 9Router, a 1ª pergunta e os palpites não citam "Docker", "GitHub Actions" nem "Node".
@@ -364,7 +364,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** uma etapa com `Produz{Tipo:"markdown", Promete:true}` e gate `file_exists('out/x.md')`
   * **Quando:** `Processo.Validate` roda
   * **Então:** devolve `ErrGateTrivial`; com o gate gerado pela biblioteca (`file_exists(..) && word_count(..) >= N && !has_pattern(.., '\{\{')`, ou `schema_valid` para JSON) a validação passa e o gate compila em `internal/gate`.
-* [ ] `AC-E02.11`: **A natureza é aberta**
+* [x] `AC-E02.11`: **A natureza é aberta** _(provado em 05/11/2026 pelo binário com o 9Router e a matriz reais, em cofre descartável: natureza dados; INTENT, ROUTE e SKILL sem go test, go build e Zero Stubs; gates line_count nos CSV.)_
   * **Dado que:** o objetivo "coletar preços de 20 lojas e entregar uma planilha" e cérebro real
   * **Quando:** `fabricar` roda em `--dry-run`
   * **Então:** a natureza é `dados`; o INTENT e a ROUTE gerados não contêm `go test`, `go build` nem `Zero Stubs`; pelo menos um gate verifica conteúdo dos dados (contagem de registros ou `schema_valid`).
