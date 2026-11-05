@@ -70,7 +70,9 @@ func TestCartaoPlanoUnico(t *testing.T) {
 	})
 
 	t.Run("mídia removível aparece no plano", func(t *testing.T) {
-		pcs := append(goodPieces(), skillApta("usb", "/media/usb/s/SKILL.md", 0.95, "construir"))
+		usb := skillApta("usb", "/media/usb/s/SKILL.md", 0.95, "construir")
+		usb.Perfil.CasosDeUso = []string{"tdd"} // apta como alfa; o Score maior a escolhe
+		pcs := append(goodPieces(), usb)
 		r := newRig(t, pcs)
 		r.req.TrustRemovable = true
 		c := &captura{ok: true}

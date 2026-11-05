@@ -3,8 +3,10 @@ package fabricar
 import (
 	"fmt"
 	"slices"
+	"strings"
 
 	"legoloop/internal/matriz"
+	"legoloop/internal/ste"
 )
 
 // MergeByFit é a Camada 3 pela aptidão ao caso de uso: para cada etapa pedida escolhe a peça mais apta da matriz
@@ -27,12 +29,20 @@ func MergeByFit(n matriz.Needs, es []matriz.Entrada, opts MergeOptions) Merged {
 	var m Merged
 	avisadas := map[string]bool{}
 	for _, etapas := range grupos {
-		ranked := matriz.Rank(matriz.Needs{Natureza: n.Natureza, Etapas: etapas, Casos: n.Casos}, skills, 0)
+		casos := n.Casos
+		if len(etapas) == 1 && len(n.Casos) > 0 { // o caso conta só na etapa a que pertence
+			if casos = opts.Vocab.CasosDaEtapa(n.Casos, etapas[0]); len(casos) == 0 {
+				m.addLacuna(etapas[0], motivoSemCaso)
+				continue
+			}
+		}
+		ranked := matriz.Rank(matriz.Needs{Natureza: n.Natureza, Etapas: etapas, Casos: casos}, skills, 0)
 		m.noteExclusions(ranked, avisadas)
 		if !m.addBest(ranked, etapas, max) {
 			break
 		}
 	}
+	m.noteCasosSemEtapa(n, opts.Vocab)
 	m.noteUnknown(skills)
 	if len(m.Steps) == 0 {
 		m.Steps = DefaultSteps()
@@ -86,9 +96,38 @@ func (m *Merged) addBest(ranked []matriz.Ranked, etapas []string, max int) bool 
 		}
 	}
 	if !achou && !geral {
-		m.addLacuna(etapa)
+		m.addLacuna(etapa, motivoSemPeca(ranked))
 	}
 	return true
+}
+
+// motivoSemPeca explica a lacuna: se alguma peça fazia a etapa mas não cobria o caso pedido, o motivo diz qual
+// caso ninguém cobre; senão, nenhuma peça é apta à etapa.
+func motivoSemPeca(ranked []matriz.Ranked) string {
+	for _, r := range ranked {
+		if strings.HasPrefix(r.Motivo, "caso de uso:") {
+			return "lacuna: nenhuma peça desta etapa cobre o caso pedido (" + strings.TrimPrefix(r.Motivo, "caso de uso: a peça não cobre ") + ")"
+		}
+	}
+	return motivoLacuna
+}
+
+// noteCasosSemEtapa avisa o caso pedido que não pertence a nenhuma etapa pedida: ele não contou em nenhuma.
+func (m *Merged) noteCasosSemEtapa(n matriz.Needs, v matriz.Vocab) {
+	if len(n.Etapas) == 0 {
+		return
+	}
+	for _, c := range n.Casos {
+		dele := v.EtapasDoCaso(c)
+		if slices.ContainsFunc(n.Etapas, func(e string) bool { return slices.Contains(dele, e) }) {
+			continue
+		}
+		onde := strings.Join(dele, ", ")
+		if onde == "" {
+			onde = "nenhuma etapa do vocabulário"
+		}
+		m.Warnings = append(m.Warnings, ste.Msg("fabricar.caso_sem_etapa", c, onde))
+	}
 }
 
 // decide registra que a peça entrou para a etapa.

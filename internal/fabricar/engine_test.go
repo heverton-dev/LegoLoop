@@ -67,8 +67,8 @@ type routerLLM struct {
 	needsPrompt      string // o que o cérebro recebeu para dar as necessidades
 }
 
-// needsReply são as necessidades que o cérebro de teste devolve: software, construir e verificar.
-const needsReply = `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`
+// needsReply são as necessidades que o cérebro de teste devolve: software, construir (tdd) e verificar (qualidade).
+const needsReply = `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": ["tdd", "verificacao-de-qualidade"]}`
 
 func (r *routerLLM) Chat(_ context.Context, msgs []interview.Message) (string, error) {
 	if r.fail != nil {
@@ -109,13 +109,14 @@ func skillApta(nome, ref string, score float64, etapas ...string) matriz.Entrada
 		Rating: reputation.PieceRating{Ref: ref, Name: nome, TotalScore: score, Tier: reputation.TierOuro}}
 }
 
-// goodPieces são duas skills aptas: alfa constrói e beta verifica. Ficam num disco fixo de verdade.
+// goodPieces são duas skills aptas: alfa constrói (tdd) e beta verifica (qualidade). Ficam num disco fixo de verdade.
 func goodPieces() []matriz.Entrada {
 	dir := os.TempDir()
-	return []matriz.Entrada{
-		skillApta("alfa", filepath.Join(dir, "s", "alfa", "SKILL.md"), 0.9, "construir"),
-		skillApta("beta", filepath.Join(dir, "s", "beta", "SKILL.md"), 0.8, "verificar"),
-	}
+	alfa := skillApta("alfa", filepath.Join(dir, "s", "alfa", "SKILL.md"), 0.9, "construir")
+	alfa.Perfil.CasosDeUso = []string{"tdd"}
+	beta := skillApta("beta", filepath.Join(dir, "s", "beta", "SKILL.md"), 0.8, "verificar")
+	beta.Perfil.CasosDeUso = []string{"verificacao-de-qualidade"}
+	return []matriz.Entrada{alfa, beta}
 }
 
 type rig struct {

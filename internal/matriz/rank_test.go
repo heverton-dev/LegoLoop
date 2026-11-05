@@ -124,8 +124,11 @@ func TestRankAptidaoEhFracaoDosCasosPedidos(t *testing.T) {
 	none := entrada("zero", 0.99, perfil([]string{"construir"}, nil, "outro"))
 	n := Needs{Etapas: []string{"construir"}, Casos: []string{"TDD", "refatorar"}} // maiúsculas casam
 	r := Rank(n, []Entrada{one, none, two}, 0)
-	if got := escolhidas(r); !slices.Equal(got, []string{"dois", "um", "zero"}) {
-		t.Errorf("ordem por aptidão: %v", got)
+	if got := escolhidas(r); !slices.Equal(got, []string{"dois", "um"}) {
+		t.Errorf("ordem por aptidão; aptidão 0 nunca é escolhida: %v", got)
+	}
+	if z := achar(t, r, "zero"); !z.Excluida || !strings.HasPrefix(z.Motivo, "caso de uso:") {
+		t.Errorf("sem caso coberto sai com motivo, mesmo com o mínimo 0: %+v", z)
 	}
 	if a := achar(t, r, "dois").Aptidao; a != 1 {
 		t.Errorf("2 de 2 casos = 1, veio %v", a)
@@ -133,10 +136,11 @@ func TestRankAptidaoEhFracaoDosCasosPedidos(t *testing.T) {
 	if a := achar(t, r, "um").Aptidao; a != 0.5 {
 		t.Errorf("1 de 2 casos = 0.5, veio %v", a)
 	}
-	r = Rank(n, []Entrada{one, none, two}, 0.5)
-	if z := achar(t, r, "zero"); !z.Excluida || !strings.Contains(z.Motivo, "mínimo") {
-		t.Errorf("abaixo do mínimo sai com motivo: %+v", z)
+	r = Rank(n, []Entrada{one, none, two}, 0.75)
+	if u := achar(t, r, "um"); !u.Excluida || !strings.Contains(u.Motivo, "mínimo") {
+		t.Errorf("abaixo do mínimo sai com motivo: %+v", u)
 	}
+	r = Rank(n, []Entrada{one, none, two}, 0.5)
 	if achar(t, r, "um").Excluida {
 		t.Error("aptidão igual ao mínimo ainda passa")
 	}

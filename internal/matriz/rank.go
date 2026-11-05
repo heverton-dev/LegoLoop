@@ -18,7 +18,7 @@ type Needs struct {
 // Ranked é uma peça avaliada para um Needs. Motivo é determinístico: diz o que casou ou qual exclusão agiu.
 type Ranked struct {
 	Entrada  Entrada
-	Aptidao  float64 // 0..1 = |casos casados| / |casos pedidos| (1 se nenhum caso foi pedido); 0 se excluída
+	Aptidao  float64 // (0..1] = |casos casados| / |casos pedidos| (1 se nenhum caso foi pedido); 0 se excluída
 	Motivo   string
 	Excluida bool
 
@@ -56,6 +56,10 @@ func avaliar(n Needs, e Entrada, minAptidao float64) Ranked {
 	casos := casados(n.Casos, e.Perfil.CasosDeUso)
 	apt := 1.0
 	if len(n.Casos) > 0 {
+		if len(casos) == 0 { // só a etapa e a natureza casaram: a aptidão ao pedido é zero
+			r.Excluida, r.Motivo = true, fmt.Sprintf("caso de uso: a peça não cobre %s", listar(n.Casos))
+			return r
+		}
 		apt = float64(len(casos)) / float64(len(n.Casos))
 	}
 	if apt < minAptidao {

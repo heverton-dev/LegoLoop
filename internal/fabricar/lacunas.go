@@ -13,6 +13,7 @@ const maxDesconhecidasCitadas = 5
 
 func init() {
 	ste.Default.Register("fabricar.lacuna_etapa", "Lacuna: a etapa %s não tem peça apta.")
+	ste.Default.Register("fabricar.caso_sem_etapa", "O caso de uso %s não contou: ele pertence a %s, e nenhuma dessas etapas foi pedida.")
 	ste.Default.Register("fabricar.aptidao_desconhecida", "Aptidão desconhecida: %s. A peça não foi escolhida. Rode legoloop matriz gerar.")
 	ste.Default.Register("fabricar.aptidao_desconhecida_mais", "Aptidão desconhecida em mais %d peças. Veja todas com legoloop matriz ver.")
 }
@@ -29,12 +30,16 @@ type Decisao struct {
 	Explicacao string  `json:"explicacao,omitempty"` // escrita pelo cérebro; nunca decide
 }
 
-const motivoDesconhecida = "aptidão desconhecida: a peça não tem perfil"
+const (
+	motivoDesconhecida = "aptidão desconhecida: a peça não tem perfil"
+	motivoLacuna       = "lacuna: nenhuma peça apta a esta etapa"
+	motivoSemCaso      = "lacuna: nenhum caso de uso pedido pertence a esta etapa, então não há como medir a aptidão"
+)
 
-// addLacuna registra uma etapa pedida sem nenhuma peça apta e a destaca nos avisos.
-func (m *Merged) addLacuna(etapa string) {
+// addLacuna registra uma etapa pedida sem nenhuma peça apta, com o motivo, e a destaca nos avisos.
+func (m *Merged) addLacuna(etapa, motivo string) {
 	m.Lacunas = append(m.Lacunas, etapa)
-	m.Decisoes = append(m.Decisoes, Decisao{Etapa: etapa, Motivo: "lacuna: nenhuma peça apta a esta etapa"})
+	m.Decisoes = append(m.Decisoes, Decisao{Etapa: etapa, Motivo: motivo})
 	m.Warnings = append(m.Warnings, ste.Msg("fabricar.lacuna_etapa", etapa))
 }
 

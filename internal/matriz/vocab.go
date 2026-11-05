@@ -42,9 +42,11 @@ var reTermo = regexp.MustCompile(`^[a-z0-9]+(-[a-z0-9]+)*$`)
 // TermoValido diz se o nome pode ser um termo do vocabulário (kebab-case ASCII).
 func TermoValido(nome string) bool { return reTermo.MatchString(nome) }
 
-// Termo é um item do vocabulário; Palavras são as pistas usadas na inferência determinística.
+// Termo é um item do vocabulário; Palavras são as pistas usadas na inferência determinística. Etapas só vale
+// para caso de uso: as etapas do processo a que o caso pertence (é só nelas que ele conta na aptidão).
 type Termo struct {
 	Nome     string   `json:"nome"`
+	Etapas   []string `json:"etapas,omitempty"`
 	Palavras []string `json:"palavras,omitempty"`
 }
 
@@ -97,6 +99,33 @@ func (v Vocab) Termos(c Categoria) []Termo {
 // Has diz se o termo existe na categoria.
 func (v Vocab) Has(c Categoria, nome string) bool {
 	return slices.ContainsFunc(v.Termos(c), func(t Termo) bool { return t.Nome == nome })
+}
+
+// EtapasDoCaso devolve as etapas a que o caso de uso pertence. Se este vocabulário não as declara (cofre com
+// vocabulário anterior à versão 2), valem as do vocabulário padrão. Caso novo sem etapa declarada: nenhuma.
+func (v Vocab) EtapasDoCaso(caso string) []string {
+	for _, t := range v.CasosDeUso {
+		if t.Nome == caso && len(t.Etapas) > 0 {
+			return t.Etapas
+		}
+	}
+	for _, t := range DefaultVocab().CasosDeUso {
+		if t.Nome == caso {
+			return t.Etapas
+		}
+	}
+	return nil
+}
+
+// CasosDaEtapa devolve, na ordem do pedido, os casos pedidos que pertencem à etapa.
+func (v Vocab) CasosDaEtapa(casos []string, etapa string) []string {
+	var out []string
+	for _, c := range casos {
+		if slices.Contains(v.EtapasDoCaso(c), etapa) {
+			out = append(out, c)
+		}
+	}
+	return out
 }
 
 // HasAny diz se o termo existe em alguma categoria.

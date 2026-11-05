@@ -29,7 +29,7 @@ func (c *chatLLM) Chat(_ context.Context, msgs []interview.Message) (string, err
 	case strings.Contains(msgs[0].Content, "Arquiteto de Especificações"):
 		return specFake, nil
 	case strings.Contains(msgs[0].Content, "vocabulário fechado do LegoLoop"):
-		return `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`, nil
+		return `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": ["tdd", "verificacao-de-qualidade"]}`, nil
 	case strings.Contains(msgs[0].Content, "explicador da Fusão"):
 		return `{"explicacoes": {}}`, nil
 	}

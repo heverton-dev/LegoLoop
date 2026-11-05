@@ -27,7 +27,7 @@ func TestStudioCerebro_OllamaSemRouterFabrica(t *testing.T) {
 		modelo.Store(req.Model)
 		resposta := studioSpec
 		if strings.Contains(string(body), "vocabulário fechado do LegoLoop") {
-			resposta = `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`
+			resposta = `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": ["tdd", "verificacao-de-qualidade"]}`
 		}
 		_ = json.NewEncoder(w).Encode(map[string]any{"response": resposta})
 	}))

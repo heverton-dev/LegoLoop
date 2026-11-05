@@ -1,5 +1,7 @@
 package fabricar
 
+import "legoloop/internal/matriz"
+
 // Step é um passo escolhido pela Fusão: a skill que executa a etapa.
 type Step struct {
 	Piece string // nome da skill
@@ -7,7 +9,8 @@ type Step struct {
 
 // MergeOptions controla a Camada 3.
 type MergeOptions struct {
-	MaxSteps int // padrão 5
+	MaxSteps int          // padrão 5
+	Vocab    matriz.Vocab // diz a etapa de cada caso de uso; vazio = o vocabulário padrão
 }
 
 const defaultMaxSteps = 5

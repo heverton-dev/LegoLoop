@@ -59,21 +59,22 @@ func (l *specOnlyLLM) Chat(_ context.Context, msgs []interview.Message) (string,
 		return "", l.fail
 	}
 	if strings.Contains(msgs[0].Content, "vocabulário fechado do LegoLoop") {
-		return `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`, nil
+		return `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": ["tdd", "verificacao-de-qualidade"]}`, nil
 	}
 	return studioSpec, nil
 }
 
-// studioMatriz é a matriz em memória dos testes do Studio: alfa constrói e beta verifica, ambas de software.
+// studioMatriz é a matriz em memória dos testes do Studio: alfa constrói (tdd) e beta verifica (qualidade), de software.
 func studioMatriz() fabricar.MatrizFunc {
-	apta := func(nome string, score float64, etapa string) matriz.Entrada {
+	apta := func(nome string, score float64, etapa, caso string) matriz.Entrada {
 		ref := filepath.Join(os.TempDir(), "s", nome, "SKILL.md")
 		return matriz.Entrada{Ref: ref, Nome: nome, Tipo: "skill", Hash: "h-" + nome,
-			Perfil: &matriz.PerfilDeUso{Etapas: []string{etapa}, Naturezas: []string{"software"}, Origem: matriz.OrigemDeclarado},
+			Perfil: &matriz.PerfilDeUso{Etapas: []string{etapa}, Naturezas: []string{"software"}, CasosDeUso: []string{caso},
+				Origem: matriz.OrigemDeclarado},
 			Rating: reputation.PieceRating{Ref: ref, Name: nome, TotalScore: score, Tier: reputation.TierOuro}}
 	}
 	return func() (fabricar.FonteMatriz, error) {
-		return fabricar.FonteMatriz{Entradas: []matriz.Entrada{apta("alfa", 0.9, "construir"), apta("beta", 0.8, "verificar")},
+		return fabricar.FonteMatriz{Entradas: []matriz.Entrada{apta("alfa", 0.9, "construir", "tdd"), apta("beta", 0.8, "verificar", "verificacao-de-qualidade")},
 			Vocab: matriz.DefaultVocab(), GeradaEm: studioNow.Add(-48 * time.Hour)}, nil
 	}
 }

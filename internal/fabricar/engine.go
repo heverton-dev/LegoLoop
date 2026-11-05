@@ -188,7 +188,7 @@ func consultar(ctx context.Context, req Request, d Deps, clar Clarification, fon
 		needs.Natureza = nat // a natureza confirmada na entrevista vale sobre a proposta do cérebro
 	}
 	aptas, cortes := confiaveis(fonte.Entradas, req.TrustRemovable)
-	m := MergeByFit(needs, aptas, MergeOptions{})
+	m := MergeByFit(needs, aptas, MergeOptions{Vocab: fonte.Vocab})
 	m.Explain(ctx, d.LLM, needs)
 	if len(req.TargetDrives) > 0 {
 		avisos = append(avisos, ste.Msg("fabricar.drives_ignorados"))

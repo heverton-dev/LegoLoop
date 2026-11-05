@@ -22,7 +22,7 @@ type cerebroPorPapel struct {
 	needsFalha                   bool
 }
 
-const needsPadrao = `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`
+const needsPadrao = `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": ["tdd", "verificacao-de-qualidade"]}`
 
 const explicacaoFalsa = "testa antes de construir"
 
@@ -97,7 +97,7 @@ func matrizDeTeste(t *testing.T, vault string) {
 			{"ref": ref("sem-perfil"), "name": "sem-perfil", "total_score": 0.95},
 		},
 		"entradas": []map[string]any{
-			ent("aidd-tdd", perfil{"etapas": []string{"construir", "verificar"}, "naturezas": []string{"software"}, "casos_de_uso": []string{}, "origem": "declarado"}),
+			ent("aidd-tdd", perfil{"etapas": []string{"construir", "verificar"}, "naturezas": []string{"software"}, "casos_de_uso": []string{"tdd", "verificacao-de-qualidade"}, "origem": "declarado"}),
 			ent("aidd-site-dominator", perfil{"etapas": []string{"publicar"}, "naturezas": []string{"midia"}, "casos_de_uso": []string{}, "quando_nao_usar": []string{"software"}, "origem": "declarado"}),
 			ent("sem-perfil", nil),
 			{"ref": "~/.claude.json#designi-mcp", "nome": "designi-mcp", "tipo": "mcp", "hash": "h-mcp"},
