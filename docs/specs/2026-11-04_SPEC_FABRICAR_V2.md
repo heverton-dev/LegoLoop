@@ -348,7 +348,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** uma matriz de teste com perfis reais: `aidd-tdd` (construir, software, `Score` 0.58), `aidd-site-dominator` (publicar, midia, `Score` 0.90, `quando_nao_usar: ["software"]`) e 40 outras
   * **Quando:** `Rank` roda com `Needs{Natureza:"software", Etapas:["construir","verificar"]}`
   * **Então:** `aidd-tdd` está entre as escolhidas e `aidd-site-dominator` está excluída com o motivo; ao mudar o `Score` de `aidd-site-dominator` para 1.0 o resultado **não muda**; ao mudar o perfil de `aidd-tdd` para `etapas: ["publicar"]` ela sai.
-* [ ] `AC-E02.7`: **Peça sem perfil e lacuna nunca passam em silêncio**
+* [x] `AC-E02.7`: **Peça sem perfil e lacuna nunca passam em silêncio** _(provado em 05/11/2026 no TICK-02.19 pelo binário instalado com o 9Router e a matriz reais, em cofre descartável: no --dry-run o cartão e o resumo destacam as etapas em lacuna com a orientação STE-PT e exit 1; sem --dry-run exit 1 sem gravar; 331 peças sem perfil como aptidão desconhecida.)_
   * **Dado que:** uma etapa `verificar` sem nenhuma peça apta, e uma peça de `Score` 0.95 sem perfil
   * **Quando:** a Fusão roda
   * **Então:** a peça sem perfil não é escolhida e aparece no relatório como "aptidão desconhecida"; a etapa vira lacuna (`Peca==""`) e o relatório e o cartão a destacam.
@@ -411,6 +411,10 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** um processo com lacuna na etapa `coletar` (caso `coleta-de-dados`) e uma matriz com 2 peças que fazem `coletar` mas não declaram `coleta-de-dados`
   * **Quando:** `legoloop listar` roda
   * **Então:** a saída cita as duas peças e imprime o comando `legoloop matriz perfil definir <peça> --caso coleta-de-dados` pronto para copiar; em `--json` sai como campo `sugestoes`; sem peça candidata, só mostra a lacuna sem sugestão.
+* [ ] `AC-E03.8`: **A origem do perfil aparece e desempata**
+  * **Dado que:** duas peças com a mesma aptidão para `construir` (caso `tdd`), uma com perfil `inferido` e `Score` 0.95 e outra com perfil `declarado` e `Score` 0.60
+  * **Quando:** a Fusão roda
+  * **Então:** a declarada é escolhida (declarado ou confirmado vence inferido no empate de aptidão, antes do `Score`); o motivo da escolha cita `perfil: declarado`; o resumo em texto e o `--json` do `fabricar` mostram a origem; com só a inferida na matriz, ela é escolhida e o motivo cita `perfil: inferido`.
 * [ ] `AC-E03.6`: **Cada função tem skill de Chat universal e manual**
   * **Dado que:** o cofre e 3 harnesses simulados
   * **Quando:** `legoloop instalar-skills` roda (ou o `canonize --apply`)

@@ -2812,7 +2812,7 @@
       "nature": "nano",
       "type": "stop_gate",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -3298,6 +3298,60 @@
       }
     },
     {
+      "id": "TICK-03.8",
+      "label": "Origem do perfil visível na Fusão: declarado vence inferido no empate",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 800
+      },
+      "depends_on": [
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "9router",
+          "model": "code-fast"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/matriz/rank.go",
+          "internal/cli/fabricar_report.go"
+        ],
+        "spec_anchor": "AC-E03.8",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.8",
+      "test_target": "internal/matriz/origem_test.go:TestOrigemDoPerfil",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/matriz/rank.go",
+          "internal/matriz/origem_test.go"
+        ]
+      }
+    },
+    {
       "id": "TICK-03.5",
       "label": "Independência das fatias",
       "nature": "nano",
@@ -3489,7 +3543,8 @@
         "TICK-03.4",
         "TICK-03.5",
         "TICK-03.6",
-        "TICK-03.7"
+        "TICK-03.7",
+        "TICK-03.8"
       ],
       "routing": {
         "mode": "manual",

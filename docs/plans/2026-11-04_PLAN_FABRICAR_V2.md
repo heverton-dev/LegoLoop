@@ -44,7 +44,7 @@
 |---|---|---|---|---|
 | **E01** | Núcleo, motor de matrizes e cérebro plugável | 11 | `AC-E01.1`, `AC-E01.10`, `AC-E01.2`, `AC-E01.3`, `AC-E01.4`, `AC-E01.5`, `AC-E01.6`, `AC-E01.7`, `AC-E01.8`, `AC-E01.9`, `AC-NF.1`, `AC-NF.2`, `AC-NF.4` | `micro` |
 | **E02** | `fabricar` refeito: entrevista, Fusão, contrato e cartão | 19 | `AC-E02.1`, `AC-E02.10`, `AC-E02.11`, `AC-E02.12`, `AC-E02.13`, `AC-E02.14`, `AC-E02.15`, `AC-E02.2`, `AC-E02.3`, `AC-E02.4`, `AC-E02.5`, `AC-E02.6`, `AC-E02.7`, `AC-E02.8`, `AC-E02.9` | `micro` |
-| **E03** | Verbos `listar`, `refinar`, `remover` e `compor` | 7 | `AC-E03.1`, `AC-E03.2`, `AC-E03.3`, `AC-E03.4`, `AC-E03.5`, `AC-E03.6`, `AC-E03.7` | `micro` |
+| **E03** | Verbos `listar`, `refinar`, `remover` e `compor` | 8 | `AC-E03.1`, `AC-E03.2`, `AC-E03.3`, `AC-E03.4`, `AC-E03.5`, `AC-E03.6`, `AC-E03.7`, `AC-E03.8` | `micro` |
 | **E04** | Studio, prova com o sistema real e fechamento | 4 | `AC-E04.1`, `AC-E04.2`, `AC-E04.3`, `AC-E04.4`, `AC-NF.1`, `AC-NF.3`, `AC-NF.4` | `macro` |
 
 > Regra de cobertura: a união da coluna "Critérios de Aceite Cobertos" é igual ao conjunto de `AC-*` da SPEC (37 critérios).
@@ -523,9 +523,9 @@
 
 ### 🛑 STOP-GATE HUMANO — ÉPICO 02 (`SG-E02`)
 * **Gate (DSL):** `prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o Épico 03?')`
-- [ ] 100% dos tickets de E02 executados com sucesso (PASS nos gates mecânicos).
-- [ ] Saída **real** do binário instalado apresentada ao usuário, com o que não foi provado declarado.
-- [ ] Autorização explícita do usuário concedida para iniciar o Épico 03.
+- [x] 100% dos tickets de E02 executados com sucesso (PASS nos gates mecânicos).
+- [x] Saída **real** do binário instalado apresentada ao usuário, com o que não foi provado declarado.
+- [x] Autorização explícita do usuário concedida para iniciar o Épico 03.
 
 ---
 
@@ -620,6 +620,21 @@
 * **Gate (DSL):** `exit_code == 0 && file_exists('internal/listar/sugestao.go') && file_exists('internal/listar/sugestao_test.go')`
 * **Spec Ref:** `AC-E03.7`
 * **Escopo:** Quando o `listar` mostra um processo com lacuna, para cada etapa em lacuna ele consulta a matriz e lista as peças que fazem aquela etapa mas não declaram o caso de uso pedido. A saída inclui o comando `legoloop matriz perfil definir <peça> --caso <caso>` pronto para copiar. Em --json sai como campo `sugestoes` (array de {etapa, pecas, comando}). Sem peça candidata, só mostra a lacuna sem sugestão. Prova: processo com lacuna em coletar (caso coleta-de-dados), matriz com 2 peças que fazem coletar sem declarar o caso: a saída cita as duas e o comando.
+
+#### Ticket `TICK-03.8` — Origem do perfil visível na Fusão: declarado vence inferido no empate
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Dependências:** `["SG-E02"]`
+* **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
+* **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
+* **Limites:** Timeout `300s` · Teto de saída `800` tokens · Rollback `stash_changes`
+* **Inputs:** Source Files `internal/matriz/rank.go`, `internal/cli/fabricar_report.go` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E03.8` · Context Artifacts `[]`
+* **Alvo de Teste TDD:** `internal/matriz/origem_test.go:TestOrigemDoPerfil`
+* **Outputs:** Artifacts `internal/matriz/rank.go`, `internal/matriz/origem_test.go`
+* **Verificação (argv, sem shell):** `go test -count=1 -v -run ^TestOrigemDoPerfil ./internal/matriz/... ./internal/cli/...`; `go vet ./internal/matriz/... ./internal/cli/...`; `go run ./tools/funclen internal/matriz`; `go run ./tools/funclen internal/cli`; `go build -o bin/legoloop.exe ./cmd/legoloop`
+* **Gate (DSL):** `exit_code == 0 && file_exists('internal/matriz/rank.go') && file_exists('internal/matriz/origem_test.go')`
+* **Spec Ref:** `AC-E03.8`
+* **Escopo:** O motivo de cada escolha da Fusão cita a origem do perfil da peça (declarado, confirmado ou inferido), e o resumo em texto e o --json do fabricar a mostram. No empate de aptidão, perfil declarado ou confirmado vence o inferido, antes do Score; a aptidão em si não muda. Origem do achado: no SG-E02 (05/11/2026), aidd-piece-upgrader venceu construir com aptidão 1.00 só por perfil inferido. Prova pelo binário com a matriz real em cofre descartável: no caso de software, a linha de construir mostra a origem da peça escolhida.
 
 #### Ticket `TICK-03.6` — Skills universais das seis funções e manuais
 * **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
