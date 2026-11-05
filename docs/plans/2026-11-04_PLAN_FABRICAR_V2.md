@@ -577,7 +577,7 @@
 * **Escopo:** legoloop-a (2 harnesses) composto por legoloop-b: remover a falha com ErrEmUso e nada muda; remover b com confirmação funciona; depois remover a apaga o processo e seus 2 links; sem confirmação nada muda.
 
 #### Ticket `TICK-03.4` — Função `compor`
-* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-03.3","TICK-03.2"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `high` · Fallback Harness `9router` · Modelo `code-fast`
