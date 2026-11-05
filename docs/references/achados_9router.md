@@ -13,6 +13,7 @@
 | `components sync` left files removed from the source in harness copies | verify flagged orphans after a clean sync | Fixed: sync now removes them inside the component folder |
 | Reading Orca settings through the accessibility tree prints env values (the key) | key shown in tool output | Read Orca settings with `orca_9router.py --estado`, which masks the key |
 | Gemini v1beta Schema: rejects empty `object` nodes, array `properties`, and extra JSON Schema fields | API Error 400: `Invalid value at 'tools[0].function_declarations[97].parameters.properties[0]'` | Recursive sanitizer in chunk 6922 converts empty child `object` to string and normalizes properties map |
+| `gw` route switch leaked into every open Claude session (fixed 2026-11-05) | orchestrator on `claude-opus-5-5` failed with `There's an issue with the selected model` after an isolated worker switched to 9Router; `gw.exe` wrote `ANTHROPIC_BASE_URL` into global and all Orca profile `settings.json`, which Claude Code hot-reloads | Route applies only to the child of `claude-gw`; never put 9Router in `settings.json`; open sessions keep their route |
 | Context overflow on Kiro (`kr/*`): fails with 400 `CONTENT_LENGTH_EXCEEDS_THRESHOLD` above 100k tokens | API Error 400: `Input is too long` on large Claude Code sessions | Combo detects >100k tokens and auto-prioritizes 1M Gemini Flash models, keeping Kiro as last resort |
 
 # Re-verificação na VPS (2026-10-31, `https://9router.vpsconexao.org`)
