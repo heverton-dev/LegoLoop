@@ -27,6 +27,8 @@ type Projecoes struct {
 	Spec, Plan, Skill string
 	Route, DAG, Loop  []byte
 	Avisos            []string // avisos do plangen (por exemplo, critério sem ticket)
+	// Nomes dos arquivos em docs/specs, docs/plans e docs/routes, na convenção do plangen.
+	SpecNome, PlanNome, RouteNome string
 }
 
 // Projetar gera SPEC, PLAN, ROUTE, DAG, loop e SKILL a partir do processo e confere a coerência entre eles.
@@ -46,11 +48,12 @@ func Projetar(p Processo, now time.Time) (*Projecoes, error) {
 		return nil, err
 	}
 	spec := projetarSpec(p, ord)
-	plan, route, avisos, err := projetarPlano(p, ord, spec, now)
+	pl, err := projetarPlano(p, ord, spec, now)
 	if err != nil {
 		return nil, err
 	}
-	pr := &Projecoes{Spec: spec, Plan: plan, Route: route, DAG: dagJSON, Loop: loopJSON, Skill: projetarSkill(p, ord), Avisos: avisos}
+	pr := &Projecoes{Spec: spec, Plan: pl.plan, Route: pl.route, DAG: dagJSON, Loop: loopJSON, Skill: projetarSkill(p, ord),
+		Avisos: pl.avisos, SpecNome: pl.specNome, PlanNome: pl.planNome, RouteNome: pl.routeNome}
 	if err := pr.Verificar(p); err != nil {
 		return nil, err
 	}
@@ -157,29 +160,45 @@ func ticketsDe(ord []Etapa, validateCmd string) []plangen.Ticket {
 	return tickets
 }
 
+// planoProjetado é o que o plangen devolve: PLAN e ROUTE, os avisos e os nomes dos três documentos.
+type planoProjetado struct {
+	plan                          string
+	route                         []byte
+	avisos                        []string
+	specNome, planNome, routeNome string
+}
+
 // projetarPlano gera PLAN e ROUTE com o plangen, numa pasta temporária que some ao fim.
-func projetarPlano(p Processo, ord []Etapa, spec string, now time.Time) (plan string, route []byte, avisos []string, err error) {
+func projetarPlano(p Processo, ord []Etapa, spec string, now time.Time) (planoProjetado, error) {
 	stage, err := os.MkdirTemp("", "legoloop-processo-*")
 	if err != nil {
-		return "", nil, nil, err
+		return planoProjetado{}, err
 	}
 	defer os.RemoveAll(stage)
-	dir := filepath.Join(stage, "docs", "specs")
-	if err = os.MkdirAll(dir, 0o755); err != nil {
-		return "", nil, nil, err
-	}
-	specPath := filepath.Join(dir, fmt.Sprintf("%s_SPEC_%s.md", now.Format("2006-01-02"), strings.ToUpper(strings.ReplaceAll(strings.TrimPrefix(p.Nome, "legoloop-"), "-", "_"))))
-	if err = os.WriteFile(specPath, []byte(spec), 0o644); err != nil {
-		return "", nil, nil, err
+	specPath, err := gravarSpec(stage, p.Nome, spec, now)
+	if err != nil {
+		return planoProjetado{}, err
 	}
 	res, err := plangen.Render(stage, specPath, ticketsDe(ord, "legoloop validate ~/.aidd/canonical/loops/"+p.Nome+".dag.json"), plangen.SupervisionEpic, now)
 	if err != nil {
-		return "", nil, nil, err
+		return planoProjetado{}, err
 	}
 	planB, err := os.ReadFile(res.PlanMarkdownPath)
 	if err != nil {
-		return "", nil, nil, err
+		return planoProjetado{}, err
 	}
 	routeB, err := os.ReadFile(res.RouteJSONPath)
-	return string(planB), routeB, res.Warnings, err
+	return planoProjetado{plan: string(planB), route: routeB, avisos: res.Warnings, specNome: filepath.Base(specPath),
+		planNome: filepath.Base(res.PlanMarkdownPath), routeNome: filepath.Base(res.RouteJSONPath)}, err
+}
+
+// gravarSpec grava a SPEC em <stage>/docs/specs com o nome <data>_SPEC_<NOME>.md, que o plangen espera.
+func gravarSpec(stage, nome, spec string, now time.Time) (string, error) {
+	dir := filepath.Join(stage, "docs", "specs")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return "", err
+	}
+	slug := strings.ToUpper(strings.ReplaceAll(strings.TrimPrefix(nome, "legoloop-"), "-", "_"))
+	specPath := filepath.Join(dir, fmt.Sprintf("%s_SPEC_%s.md", now.Format("2006-01-02"), slug))
+	return specPath, os.WriteFile(specPath, []byte(spec), 0o644)
 }

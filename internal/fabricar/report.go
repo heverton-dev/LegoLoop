@@ -1,11 +1,11 @@
 package fabricar
 
 import (
-	"encoding/json"
 	"time"
 
 	"legoloop/internal/interview"
 	"legoloop/internal/matriz"
+	"legoloop/internal/processo"
 	"legoloop/internal/ste"
 )
 
@@ -44,7 +44,7 @@ type Report struct {
 }
 
 // buildReport constrói o relatório canônico após as 5 camadas da esteira de fabricação.
-func buildReport(d Deps, clar Clarification, c consulta, tri triadFiles, files []PlannedFile, plano Plano) *Report {
+func buildReport(d Deps, clar Clarification, c consulta, p processo.Processo, files []PlannedFile, plano Plano) *Report {
 	rep := &Report{}
 	rep.Clarificacao.Espelho = clar.Mirror
 	rep.Clarificacao.Confianca = clar.Confidence
@@ -53,7 +53,7 @@ func buildReport(d Deps, clar Clarification, c consulta, tri triadFiles, files [
 
 	populateVarredura(d, c, rep)
 	populateFusao(c, rep)
-	extractTriadeInfo(tri, rep)
+	populateTriade(p, rep)
 	populateGravacao(files, plano, rep)
 
 	rep.Cartao = plano.Cartao()
@@ -92,33 +92,12 @@ func populateGravacao(files []PlannedFile, plano Plano, rep *Report) {
 	rep.Gravacao.Bytes = totalBytes
 }
 
-type routeNodeJSON struct {
-	Type   string `json:"type"`
-	Output struct {
-		Gate string `json:"gate"`
-	} `json:"output"`
-}
-
-type routeDocJSON struct {
-	Nodes []routeNodeJSON `json:"nodes"`
-}
-
-func extractTriadeInfo(tri triadFiles, rep *Report) {
+// populateTriade é a Camada 4: um critério, um ticket e um gate por etapa. Coerente porque processo.Projetar só
+// devolve as projeções depois de conferir que todas listam as mesmas etapas, na mesma ordem.
+func populateTriade(p processo.Processo, rep *Report) {
 	rep.Triade.Coerente = true
-	var r routeDocJSON
-	if err := json.Unmarshal(tri.Route.Data, &r); err == nil {
-		rep.Triade.Tickets = len(r.Nodes)
-		for _, n := range r.Nodes {
-			if n.Output.Gate != "" {
-				rep.Triade.Gates = append(rep.Triade.Gates, n.Output.Gate)
-			}
-		}
-	}
-	if len(rep.Triade.Gates) == 0 {
-		rep.Triade.Gates = []string{"exit_code == 0"}
-	}
-	rep.Triade.ACs = rep.Triade.Tickets
-	if rep.Triade.ACs == 0 {
-		rep.Triade.ACs = 1
+	rep.Triade.ACs, rep.Triade.Tickets = len(p.Etapas), len(p.Etapas)
+	for _, e := range p.Etapas {
+		rep.Triade.Gates = append(rep.Triade.Gates, e.Gate)
 	}
 }

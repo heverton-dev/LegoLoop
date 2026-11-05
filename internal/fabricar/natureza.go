@@ -40,15 +40,18 @@ type naturezaResposta struct {
 
 // Necessidades converte o pedido em termos do vocabulário: natureza, etapas e casos de uso. É o único ponto
 // probabilístico da seleção de peças. O cérebro propõe e cada termo é conferido no vocabulário fechado: o que
-// não consta é descartado com aviso. Se o cérebro falhar, ou não der uma natureza válida, a natureza vem das
-// palavras do vocabulário que aparecem no texto do pedido, de forma determinística.
-func Necessidades(ctx context.Context, llm interview.LLMClient, goal string, m interview.Mirror, v matriz.Vocab) (matriz.Needs, []string) {
+// não consta é descartado com aviso. Se o cérebro cair ou expirar, a fabricação para (erro). Se ele responder
+// sem uma natureza válida, a natureza vem das palavras do vocabulário que aparecem no texto do pedido, de forma
+// determinística. Sem cérebro (llm nil) vale só a inferência.
+func Necessidades(ctx context.Context, llm interview.LLMClient, goal string, m interview.Mirror, v matriz.Vocab) (matriz.Needs, []string, error) {
 	texto := textoDoPedido(goal, m)
 	var prop naturezaResposta
 	if llm != nil {
-		if reply, err := llm.Chat(ctx, naturezaMensagens(goal, m, v)); err == nil {
-			prop, _ = parseNatureza(reply)
+		reply, err := llm.Chat(ctx, naturezaMensagens(goal, m, v))
+		if err != nil {
+			return matriz.Needs{}, nil, fmt.Errorf("fabricar: o cérebro não deu as necessidades: %w", err)
 		}
+		prop, _ = parseNatureza(reply)
 	}
 	var avisos []string
 	n := matriz.Needs{}
@@ -66,7 +69,7 @@ func Necessidades(ctx context.Context, llm interview.LLMClient, goal string, m i
 	if len(n.Casos) == 0 {
 		n.Casos = infCasos
 	}
-	return n, avisos
+	return n, avisos, nil
 }
 
 func avisoNatureza(inferida string) string {

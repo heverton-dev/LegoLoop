@@ -15,13 +15,13 @@ import (
 	"legoloop/internal/provider"
 )
 
-// slowLLM simula um cérebro que expira por timeout na Camada 4 (SPEC)
+// slowLLM simula um cérebro que expira ao dar as necessidades (Camada 3). A Camada 4 não usa o cérebro.
 type slowLLM struct {
 	delay time.Duration
 }
 
 func (s *slowLLM) Chat(ctx context.Context, msgs []interview.Message) (string, error) {
-	if strings.Contains(msgs[0].Content, "Arquiteto de Especificações") {
+	if strings.Contains(msgs[0].Content, "vocabulário fechado do LegoLoop") {
 		select {
 		case <-ctx.Done():
 			return "", ctx.Err()
@@ -45,7 +45,7 @@ func TestFalhas(t *testing.T) {
 		}
 	})
 
-	t.Run("cerebro expira na Camada 4: cancela sem gravar arquivos", func(t *testing.T) {
+	t.Run("cerebro expira na Camada 3: cancela sem gravar arquivos", func(t *testing.T) {
 		r := newRig(t, goodPieces())
 		ctx, cancel := context.WithTimeout(context.Background(), 20*time.Millisecond)
 		defer cancel()

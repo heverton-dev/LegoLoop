@@ -14,8 +14,15 @@ import (
 )
 
 // cerebroPorPapel é um 9Router falso que responde conforme o papel pedido no prompt do sistema:
-// necessidades, explicação da Fusão, SPEC ou entrevista. Conta as chamadas de cada papel.
-type cerebroPorPapel struct{ needs, explain, spec, outros atomic.Int32 }
+// necessidades, explicação da Fusão, SPEC ou entrevista. Conta as chamadas de cada papel. needsJSON troca as
+// necessidades devolvidas; needsFalha faz o pedido de necessidades falhar com HTTP 500.
+type cerebroPorPapel struct {
+	needs, explain, spec, outros atomic.Int32
+	needsJSON                    string
+	needsFalha                   bool
+}
+
+const needsPadrao = `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`
 
 const explicacaoFalsa = "testa antes de construir"
 
@@ -23,7 +30,10 @@ func (c *cerebroPorPapel) responder(system string) string {
 	switch {
 	case strings.Contains(system, "vocabulário fechado do LegoLoop"):
 		c.needs.Add(1)
-		return `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`
+		if c.needsJSON != "" {
+			return c.needsJSON
+		}
+		return needsPadrao
 	case strings.Contains(system, "explicador da Fusão"):
 		c.explain.Add(1)
 		return `{"explicacoes": {"d1": "` + explicacaoFalsa + `", "d2": "` + explicacaoFalsa + `", "d3": "` + explicacaoFalsa + `", "d4": "` + explicacaoFalsa + `"}}`
@@ -49,6 +59,11 @@ func (c *cerebroPorPapel) servidor(t *testing.T) *httptest.Server {
 			system := ""
 			if len(req.Messages) > 0 {
 				system = req.Messages[0].Content
+			}
+			if c.needsFalha && strings.Contains(system, "vocabulário fechado do LegoLoop") {
+				c.needs.Add(1)
+				http.Error(w, "cérebro fora do ar", http.StatusInternalServerError)
+				return
 			}
 			reply := c.responder(system)
 			_ = json.NewEncoder(w).Encode(map[string]any{"choices": []map[string]any{{"message": map[string]string{"content": reply}}}})

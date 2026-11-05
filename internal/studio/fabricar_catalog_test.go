@@ -152,12 +152,18 @@ func TestFabricarRunFailsCleanly(t *testing.T) {
 	}
 }
 
-func TestFabricarRunContractFailureIs502(t *testing.T) {
+// TestFabricarRunLacunaIs422: o cérebro responde fora do formato, a natureza vem das palavras ("extrair" é
+// coletar), e a matriz não tem peça para coletar. A lacuna é do usuário: 422, código estável, nada gravado.
+func TestFabricarRunLacunaIs422(t *testing.T) {
 	s, _, _ := catalogServer(t, &specOnlyLLM{})
 	s.Fabricar = func(ctx context.Context, req fabricar.Request) (*fabricar.Result, error) {
 		return fabricar.Fabricar(ctx, req, fabricar.Deps{LLM: badLLM{}, Matriz: studioMatriz(), Roots: fabricar.Roots{Vault: s.Vault, Docs: s.ProjectDir}})
 	}
-	if code, body := postFabricar(t, s, okBody); code != http.StatusBadGateway {
-		t.Errorf("SPEC fora do contrato = %d, esperado 502: %s", code, body)
+	code, body := postFabricar(t, s, okBody)
+	if code != http.StatusUnprocessableEntity || !strings.Contains(body, `"code":"lacuna"`) || !strings.Contains(body, "matriz perfil definir") {
+		t.Errorf("lacuna = %d, esperado 422 com code lacuna e a orientação: %s", code, body)
+	}
+	if strings.Contains(body, s.ProjectDir) || strings.Contains(body, s.Vault) {
+		t.Errorf("a resposta não pode ter caminho local: %s", body)
 	}
 }

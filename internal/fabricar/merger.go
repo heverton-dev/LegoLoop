@@ -1,5 +1,10 @@
 package fabricar
 
+// Step é um passo escolhido pela Fusão: a skill que executa a etapa.
+type Step struct {
+	Piece string // nome da skill
+}
+
 // MergeOptions controla a Camada 3.
 type MergeOptions struct {
 	MaxSteps int // padrão 5

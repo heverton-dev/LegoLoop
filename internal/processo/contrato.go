@@ -95,5 +95,9 @@ func invalidoLacuna(id string) error {
 	return errors.Join(ErrLacuna, invalido("etapa %q sem peça: escolha uma peça antes de gerar o processo", id))
 }
 
+// NomeDePecaValido diz se o nome pode virar peça de etapa: ref de nó e texto de documento, sem espaço nem
+// caractere de comando. A Fusão usa a mesma regra do contrato para nunca escolher uma peça que ele recusaria.
+func NomeDePecaValido(nome string) bool { return rePeca.MatchString(nome) }
+
 // nomeComposto devolve o nome do processo composto ("legoloop-x" de "legoloop-x@1.0.0").
 func nomeComposto(compoe string) string { return reCompoe.FindStringSubmatch(compoe)[1] }

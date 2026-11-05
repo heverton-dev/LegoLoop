@@ -3,6 +3,7 @@ package studio
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -20,10 +21,15 @@ func TestStudioCerebro_OllamaSemRouterFabrica(t *testing.T) {
 	var modelo atomic.Value
 	modelo.Store("")
 	ollama := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
 		var req struct{ Model string }
-		_ = json.NewDecoder(r.Body).Decode(&req)
+		_ = json.Unmarshal(body, &req)
 		modelo.Store(req.Model)
-		_ = json.NewEncoder(w).Encode(map[string]any{"response": studioSpec})
+		resposta := studioSpec
+		if strings.Contains(string(body), "vocabulário fechado do LegoLoop") {
+			resposta = `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`
+		}
+		_ = json.NewEncoder(w).Encode(map[string]any{"response": resposta})
 	}))
 	defer ollama.Close()
 

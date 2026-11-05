@@ -132,7 +132,11 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if err := deps.confirmDraft(clar); err != nil {
 		return nil, err
 	}
-	return assemble(ctx, req, deps, name, clar, consultar(ctx, req, deps, clar, fonte))
+	c, err := consultar(ctx, req, deps, clar, fonte)
+	if err != nil {
+		return nil, err
+	}
+	return assemble(ctx, req, deps, name, clar, c)
 }
 
 // clarify é a Camada 1. Com Deps.Interview a entrevista já foi feita (no Chat) e o motor não pergunta de novo.
@@ -155,6 +159,7 @@ func preflight(d Deps, name string, force bool) error {
 		{Path: filepath.Join(d.Roots.Vault, "skills", name, "SKILL.md")},
 		{Path: filepath.Join(d.Roots.Vault, "loops", name+".loop.json")},
 		{Path: filepath.Join(d.Roots.Vault, "loops", name+".dag.json")},
+		{Path: processo.CaminhoNoCofre(d.Roots.Vault, name)},
 	}
 	if found := processo.Existentes(d.FS, probe); len(found) > 0 {
 		return fmt.Errorf("%w: %s", ErrExists, strings.Join(found, ", "))
@@ -172,17 +177,23 @@ type consulta struct {
 
 // consultar é a Camada 2 (matriz) e a Camada 3 (fusão por aptidão). O fabricar só lê a matriz: nunca varre
 // drives nem a regenera. O cérebro dá as necessidades e explica as decisões; quem decide é o ranking.
-func consultar(ctx context.Context, req Request, d Deps, clar Clarification, fonte FonteMatriz) consulta {
+func consultar(ctx context.Context, req Request, d Deps, clar Clarification, fonte FonteMatriz) (consulta, error) {
 	d.progress(2, "Matriz")
 	d.progress(3, "Fusão")
-	needs, avisos := Necessidades(ctx, d.LLM, objetivoDe(req), clar.Mirror, fonte.Vocab)
+	needs, avisos, err := Necessidades(ctx, d.LLM, objetivoDe(req), clar.Mirror, fonte.Vocab)
+	if err != nil {
+		return consulta{}, err
+	}
+	if nat := strings.TrimSpace(clar.Natureza); nat != "" && fonte.Vocab.Has(matriz.CatNatureza, nat) {
+		needs.Natureza = nat // a natureza confirmada na entrevista vale sobre a proposta do cérebro
+	}
 	aptas, cortes := confiaveis(fonte.Entradas, req.TrustRemovable)
 	m := MergeByFit(needs, aptas, MergeOptions{})
 	m.Explain(ctx, d.LLM, needs)
 	if len(req.TargetDrives) > 0 {
 		avisos = append(avisos, ste.Msg("fabricar.drives_ignorados"))
 	}
-	return consulta{fonte: fonte, needs: needs, m: m, avisos: append(avisos, cortes...)}
+	return consulta{fonte: fonte, needs: needs, m: m, avisos: append(avisos, cortes...)}, nil
 }
 
 // objetivoDe é o objetivo do pedido; sem ele, o próprio nome.
@@ -193,30 +204,17 @@ func objetivoDe(req Request) string {
 	return req.RawName
 }
 
-func producesFor(c Category) string {
-	switch c {
-	case CategoryReverse:
-		return "Artifact:ReverseStructure"
-	case CategoryWeb:
-		return "Artifact:RenderedPage"
-	}
-	return "Artifact:Code"
-}
-
-// assemble é a Camada 4 (Tríade), a Camada 5 (Template) e a gravação.
+// assemble é a Camada 4 (o Processo e as seis projeções), a Camada 5 (Template) e a gravação.
 func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarification, c consulta) (*Result, error) {
 	m := c.m
 	now := d.Clock().UTC()
-	slug := strings.TrimPrefix(name, namePrefix)
-	ps := ProcessSpec{Name: name, Description: clar.Mirror.Outcome, Goal: clar.Mirror.Outcome, Model: req.ModelChoice, Produces: producesFor(req.Category), Steps: m.Steps}
-	dagPath := filepath.Join(d.Roots.Vault, "loops", name+".dag.json")
 	d.progress(4, "Tríade")
-	tri, err := buildTriad(ctx, d.LLM, clar, ps, dagPath, now)
+	p, pr, err := projetar(name, objetivoDoProcesso(req, clar), c, now)
 	if err != nil {
 		return nil, err
 	}
 	d.progress(5, "Template e gravação")
-	files, err := plannedFiles(d.Roots, ps, tri, now)
+	files, err := plannedFiles(d.Roots, p, pr, intentDe(name, clar, p.Natureza, now))
 	if err != nil {
 		return nil, err
 	}
@@ -225,15 +223,15 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 		return nil, err
 	}
 	plano := novoPlano(d, req, files, m, vinculos)
-	rep := buildReport(d, clar, c, tri, files, plano)
+	rep := buildReport(d, clar, c, p, files, plano)
 	art, err := Materialize(ctx, MaterializePlan{Name: name, Roots: d.Roots, Files: files, Force: req.Force, DryRun: req.DryRun,
 		Vinculos: vinculos, Link: d.Link}, d.FS)
 	if err != nil {
 		return nil, err
 	}
-	warns := append(append(clar.Warnings(), c.avisos...), m.Warnings...)
-	return &Result{CanonicalName: name, Slug: slug, CreatedAt: now, Artifacts: art, CuratedPieces: m.Used,
-		Warnings: append(warns, lwarns...), Report: rep}, nil
+	warns := append(append(append(clar.Warnings(), c.avisos...), m.Warnings...), pr.Avisos...)
+	return &Result{CanonicalName: name, Slug: strings.TrimPrefix(name, namePrefix), CreatedAt: now, Artifacts: art,
+		CuratedPieces: m.Used, Warnings: append(warns, lwarns...), Report: rep}, nil
 }
 
 func filePaths(files []PlannedFile) []string {
@@ -242,32 +240,4 @@ func filePaths(files []PlannedFile) []string {
 		paths[i] = f.Path
 	}
 	return paths
-}
-
-// plannedFiles monta a lista final de arquivos: os três meios no cofre e a governança em docs/.
-func plannedFiles(roots Roots, ps ProcessSpec, tri triadFiles, now time.Time) ([]PlannedFile, error) {
-	skill, err := EmitSkill(ps)
-	if err != nil {
-		return nil, err
-	}
-	loopJSON, err := EmitLoop(ps, now)
-	if err != nil {
-		return nil, err
-	}
-	dagJSON, err := EmitDag(ps)
-	if err != nil {
-		return nil, err
-	}
-	docs := func(sub, file string) string { return filepath.Join(roots.Docs, "docs", sub, file) }
-	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
-	return []PlannedFile{
-		{Kind: "skill", Path: vault("skills", ps.Name, "SKILL.md"), Data: []byte(skill)},
-		{Kind: "loop", Path: vault("loops", ps.Name+".loop.json"), Data: loopJSON},
-		{Kind: "dag", Path: vault("loops", ps.Name+".dag.json"), Data: dagJSON},
-		{Kind: "intent", Path: docs("intents", tri.Intent.Name), Data: tri.Intent.Data},
-		{Kind: "spec", Path: docs("specs", tri.Spec.Name), Data: tri.Spec.Data},
-		{Kind: "plan", Path: docs("plans", tri.Plan.Name), Data: tri.Plan.Data},
-		{Kind: "route", Path: docs("routes", tri.Route.Name), Data: tri.Route.Data},
-		{Kind: "template", Path: docs("templates", templateFileName(ps.Name)), Data: []byte(EmitTemplate(ps))},
-	}, nil
 }

@@ -475,7 +475,7 @@
 * **Escopo:** O fabricar não varre drives: lê registry_matrix.json e vocab.json do cofre e mostra a idade da matriz; sem matriz, exit 1 com aviso STE-PT para rodar 'legoloop matriz gerar'. A Camada 3 chama Necessidades, MergeByFit e Explain; o Report traz as decisões reais com Motivo e nunca inventa 'selecionada na fusão'. Prova pelo binário: matriz de teste com aidd-tdd e aidd-site-dominator, a escolha segue a aptidão, não o Score.
 
 #### Ticket `TICK-02.17` — Camada 4 pelo Processo: seis projeções e processo.json no plano atômico
-* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.16"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `high` · Fallback Harness `9router` · Modelo `code-fast`

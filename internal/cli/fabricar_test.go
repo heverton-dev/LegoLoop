@@ -52,8 +52,11 @@ Structs.
 
 type fakeLLM struct{ calls int }
 
-func (f *fakeLLM) Chat(_ context.Context, _ []interview.Message) (string, error) {
+func (f *fakeLLM) Chat(_ context.Context, msgs []interview.Message) (string, error) {
 	f.calls++
+	if len(msgs) > 0 && strings.Contains(msgs[0].Content, "vocabulário fechado do LegoLoop") {
+		return `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`, nil
+	}
 	return specFake, nil
 }
 
@@ -129,8 +132,8 @@ func TestRunFabricar(t *testing.T) {
 				t.Errorf("saída sem %q:\n%s", want, r.out)
 			}
 		}
-		if len(r.files(t)) != 8 {
-			t.Errorf("devia gravar 8 arquivos: %v", r.files(t))
+		if len(r.files(t)) != 9 {
+			t.Errorf("devia gravar 9 arquivos: %v", r.files(t))
 		}
 	})
 

@@ -3,6 +3,8 @@ package processo
 import (
 	"fmt"
 	"strings"
+
+	"legoloop/docs/templates"
 )
 
 // projetarSpec gera a SPEC do processo no contrato do TEMPLATE_SPEC: as seis seções, um critério binário por
@@ -10,7 +12,8 @@ import (
 func projetarSpec(p Processo, ord []Etapa) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# 📋 SPEC: %s\n\n> **Status:** Proposta para Revisão  \n> **Versão:** %s  \n", p.Nome, p.Versao)
-	b.WriteString("> **Gerada por:** `legoloop fabricar` (projeção do processo)  \n\n---\n\n")
+	b.WriteString("> **Gerada por:** `legoloop fabricar` (projeção do processo)  \n")
+	fmt.Fprintf(&b, "> **Template:** TEMPLATE_SPEC.md v%s  \n\n---\n\n", templates.Version)
 	fmt.Fprintf(&b, "## 1. Premissas Técnicas Assumidas (Addy Osmani)\n1. Natureza do processo: %s.\n2. Objetivo: %s\n", limpo(p.Natureza), limpo(p.Objetivo))
 	b.WriteString("3. Cada etapa é executada por uma peça do cofre; o id da etapa é o id do nó no grafo.\n\n")
 	b.WriteString("## 2. Fronteiras de Ação & Regras de Governança (Boundaries — Addy Osmani)\n")

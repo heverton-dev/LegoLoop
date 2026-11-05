@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
 	"legoloop/internal/matriz"
+	"legoloop/internal/processo"
 	"legoloop/internal/ste"
 )
 
@@ -16,6 +18,7 @@ func init() {
 	ste.Default.Register("fabricar.sem_matriz", "A matriz de peças não existe em %s. Rode legoloop matriz gerar e tente de novo.")
 	ste.Default.Register("fabricar.drives_ignorados", "O fabricar não varre drives. As peças vêm da matriz. Os drives pedidos foram ignorados.")
 	ste.Default.Register("fabricar.peca_removivel", "A peça %s está em mídia removível ou de rede. Ela ficou fora. Use --trust-removable para aceitá-la.")
+	ste.Default.Register("fabricar.peca_nome_inseguro", "Uma peça tem um nome que não é seguro para o grafo: %s. Ela ficou fora.")
 }
 
 // ErrSemMatriz: o cofre não tem registry_matrix.json. O fabricar só consulta a matriz; nunca a gera.
@@ -48,9 +51,12 @@ func LerMatriz(vault string) (FonteMatriz, error) {
 	return FonteMatriz{Entradas: reg.Entradas, Vocab: voc, GeradaEm: dataDaMatriz(reg.GeneratedAt, path)}, nil
 }
 
+// dataDaMatriz lê generated_at com hora (RFC 3339) ou só com o dia, como a matriz real grava ("2026-11-04").
 func dataDaMatriz(generatedAt, path string) time.Time {
-	if t, err := time.Parse(time.RFC3339, generatedAt); err == nil {
-		return t
+	for _, layout := range []string{time.RFC3339, time.DateOnly} {
+		if t, err := time.Parse(layout, generatedAt); err == nil {
+			return t
+		}
 	}
 	if fi, err := os.Stat(path); err == nil {
 		return fi.ModTime()
@@ -58,17 +64,31 @@ func dataDaMatriz(generatedAt, path string) time.Time {
 	return time.Time{}
 }
 
-// confiaveis tira as skills em mídia removível ou de rede, salvo trust. Cada skill cortada vira um aviso.
-// Só skills são julgadas: são as únicas peças que a Fusão usa (MCPs, hooks e loops nunca viram passo).
+// confiaveis tira as skills que a Fusão não pode usar, cada uma com um aviso: nome que não serve de peça
+// (sempre) e skill em mídia removível ou de rede (salvo trust). Só skills são julgadas: são as únicas peças
+// que a Fusão usa (MCPs, hooks e loops nunca viram passo).
 func confiaveis(es []matriz.Entrada, trust bool) (kept []matriz.Entrada, cortes []string) {
 	for _, e := range es {
-		if !trust && e.Tipo == "skill" && naoConfiavel(e.Ref) {
+		switch {
+		case e.Tipo != "skill":
+		case !processo.NomeDePecaValido(e.Nome):
+			cortes = append(cortes, ste.Msg("fabricar.peca_nome_inseguro", strconv.Quote(limiteRunas(e.Nome, 40))))
+			continue
+		case !trust && naoConfiavel(e.Ref):
 			cortes = append(cortes, ste.Msg("fabricar.peca_removivel", e.Nome))
 			continue
 		}
 		kept = append(kept, e)
 	}
 	return kept, cortes
+}
+
+// limiteRunas corta o texto em n runas: um nome hostil não vira um aviso enorme.
+func limiteRunas(s string, n int) string {
+	if r := []rune(s); len(r) > n {
+		return string(r[:n]) + "..."
+	}
+	return s
 }
 
 // naoConfiavel aplica a regra das raízes ao volume do arquivo da peça.

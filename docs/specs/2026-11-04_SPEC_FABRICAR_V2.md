@@ -356,7 +356,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** um cérebro de teste que devolve explicações e, em outra rodada, uma ordem diferente da calculada
   * **Quando:** a Fusão fecha
   * **Então:** cada decisão do relatório tem `Motivo` (determinístico) e `Explicacao` (cérebro); no segundo caso o ranking calculado vale e a divergência aparece em `Divergencias`.
-* [ ] `AC-E02.9`: **As seis visões contam a mesma história** _(desmarcado em 04/11/2026: provado só na função; o binário não chamava o código. Volta a [x] com a prova pelo binário no TICK-02.17.)_
+* [x] `AC-E02.9`: **As seis visões contam a mesma história** _(desmarcado em 04/11/2026 porque o binário não chamava o código; remarcado no TICK-02.17 com a prova pelo binário: `TestProcessoRealBinarioGravaOProcessoEAsSeisVisoesCoerentes`.)_
   * **Dado que:** um `Processo` com 4 etapas
   * **Quando:** o emissor gera SPEC, PLAN, ROUTE, `.dag.json`, `.loop.json` e `SKILL.md`
   * **Então:** o teste extrai os IDs e a ordem das etapas de cada arquivo e eles são iguais; remover uma etapa de uma única projeção faz o teste falhar (mutação); o PLAN não contém `Aplicar a skill` fora do mapeamento etapa a peça.
@@ -381,7 +381,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Quando:** a CLI roda com `--json`, a API do Studio responde e a skill repassa a saída
   * **Então:** os três contêm o mesmo `Report` (mesmas 5 seções, sem campo vazio nas seções executadas) e a CLI em texto imprime um resumo por camada (espelho e confiança, peças vistas e cortes, decisões com motivo, ACs e gates, arquivos e harnesses).
 * [x] `AC-E02.15`: **Falhas: processo existente, cérebro caiu, cancelamento**
-  * **Dado que:** (a) o processo já existe, (b) o cérebro expira na Camada 4, (c) o usuário responde "cancelar" no cartão
+  * **Dado que:** (a) o processo já existe, (b) o cérebro cai ou expira ao dar as necessidades (Camada 3; desde o TICK-02.17 a Camada 4 não usa o cérebro), (c) o usuário responde "cancelar" no cartão
   * **Quando:** `fabricar` roda
   * **Então:** (a) exit 1 e oferta de `refinar`; (b) exit 1, mensagem STE-PT com o tempo limite e como mudar, zero arquivos; (c) exit 1 e zero arquivos.
 

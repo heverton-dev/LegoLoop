@@ -35,8 +35,8 @@ func TestFabricar_ConfirmReceivesAllPathsBeforeWriting(t *testing.T) {
 		return true, nil
 	}
 	res := r.run(t)
-	if len(got) != 8 {
-		t.Errorf("Aprovar devia receber os 8 caminhos: %v", got)
+	if len(got) != 9 {
+		t.Errorf("Aprovar devia receber os 9 caminhos: %v", got)
 	}
 	if wroteAtConfirm != 0 {
 		t.Errorf("nada pode estar gravado quando Aprovar é chamado: %d", wroteAtConfirm)

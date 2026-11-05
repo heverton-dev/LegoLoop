@@ -25,6 +25,9 @@ func (m *mockStudioEntrevistaLLM) Chat(ctx context.Context, msgs []interview.Mes
 		if strings.Contains(msg.Content, "Arquiteto de Especificações") {
 			return studioSpec, nil
 		}
+		if strings.Contains(msg.Content, "vocabulário fechado do LegoLoop") {
+			return `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`, nil
+		}
 	}
 	m.mu.Lock()
 	defer m.mu.Unlock()

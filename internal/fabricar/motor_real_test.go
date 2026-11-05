@@ -114,3 +114,20 @@ func TestMotorRealObjetivoChegaAoCerebroMesmoComEspelhoDiferente(t *testing.T) {
 		t.Errorf("o objetivo do pedido deve chegar ao cérebro:\n%s", r.llm.needsPrompt)
 	}
 }
+
+// TestMotorRealDataDaMatrizSoComODia: a matriz real grava generated_at como "2026-11-04" (só o dia). A idade
+// vem dessa data, nunca da data do arquivo (que muda numa cópia).
+func TestMotorRealDataDaMatrizSoComODia(t *testing.T) {
+	vault := t.TempDir()
+	reg := `{"generated_at":"2026-11-04","matrix_version":"2.0.0","total_pieces":0,"ratings":[]}`
+	if err := os.WriteFile(filepath.Join(vault, "registry_matrix.json"), []byte(reg), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	f, err := fabricar.LerMatriz(vault)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !f.GeradaEm.Equal(time.Date(2026, 11, 4, 0, 0, 0, 0, time.UTC)) {
+		t.Errorf("generated_at só com o dia deve valer como data da matriz: %v", f.GeradaEm)
+	}
+}

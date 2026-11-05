@@ -9,7 +9,6 @@ import (
 
 	"legoloop/internal/brain"
 	"legoloop/internal/fabricar"
-	"legoloop/internal/specgen"
 )
 
 // fabricarTimeout é o teto de uma fabricação (varredura, LLM e gravação).
@@ -130,8 +129,9 @@ func writeFabricarError(w http.ResponseWriter, err error) {
 		writeError(w, http.StatusUnprocessableEntity, "o modelo escolhido não está disponível; escolha outro da lista")
 	case errors.Is(err, brain.ErrSemCerebro):
 		writeError(w, http.StatusServiceUnavailable, "nenhum modelo está disponível; suba o 9Router, instale o Ollama ou instale um harness com CLI")
-	case errors.Is(err, specgen.ErrContract):
-		writeError(w, http.StatusBadGateway, "o modelo respondeu fora do contrato após várias tentativas; tente outro modelo")
+	case errors.Is(err, fabricar.ErrLacuna):
+		writeErrorCode(w, http.StatusUnprocessableEntity, "lacuna",
+			"uma etapa não tem peça apta na matriz; dê um perfil a uma peça com legoloop matriz perfil definir, ou mude o objetivo")
 	default:
 		writeError(w, http.StatusInternalServerError, "falha ao fabricar o processo")
 	}
@@ -147,7 +147,7 @@ func writeErrorCode(w http.ResponseWriter, status int, code, msg string) {
 func (s *Server) maskResult(res *fabricar.Result) fabricar.Result {
 	out := *res
 	a := &out.Artifacts
-	for _, p := range []*string{&a.IntentPath, &a.SpecPath, &a.PlanPath, &a.RoutePath, &a.TemplatePath, &a.SkillPath, &a.LoopPath, &a.DagPath} {
+	for _, p := range []*string{&a.IntentPath, &a.SpecPath, &a.PlanPath, &a.RoutePath, &a.TemplatePath, &a.SkillPath, &a.LoopPath, &a.DagPath, &a.ProcessoPath} {
 		*p = s.displayPath(*p)
 	}
 	a.SkillLinks = nil

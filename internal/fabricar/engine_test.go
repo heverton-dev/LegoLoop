@@ -238,7 +238,7 @@ func TestFabricar_IsDeterministicAndStaysInsideTheInjectedRoots(t *testing.T) {
 		res := r.run(t)
 		out := map[string]string{}
 		for _, p := range []string{res.Artifacts.SkillPath, res.Artifacts.LoopPath, res.Artifacts.DagPath, res.Artifacts.IntentPath,
-			res.Artifacts.SpecPath, res.Artifacts.PlanPath, res.Artifacts.RoutePath, res.Artifacts.TemplatePath} {
+			res.Artifacts.SpecPath, res.Artifacts.PlanPath, res.Artifacts.RoutePath, res.Artifacts.TemplatePath, res.Artifacts.ProcessoPath} {
 			if !strings.HasPrefix(p, r.home) {
 				t.Errorf("gravou fora das raízes injetadas: %s", p)
 			}
@@ -248,8 +248,8 @@ func TestFabricar_IsDeterministicAndStaysInsideTheInjectedRoots(t *testing.T) {
 		return out
 	}
 	a, b := snapshot(), snapshot()
-	if len(a) != 8 {
-		t.Fatalf("esperava 8 arquivos: %d", len(a))
+	if len(a) != 9 {
+		t.Fatalf("esperava 9 arquivos: %d", len(a))
 	}
 	for name, content := range a {
 		if b[name] != content {
@@ -268,7 +268,7 @@ func TestFabricar_HostileRemovablePieceStaysOutOfTheProcess(t *testing.T) {
 			t.Errorf("peça removível entrou sem TrustRemovable: %+v", p)
 		}
 	}
-	if !slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "mídia removível") }) {
+	if !slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "ficou fora") }) {
 		t.Errorf("a exclusão deve gerar aviso: %v", res.Warnings)
 	}
 	for _, p := range []string{res.Artifacts.SkillPath, res.Artifacts.LoopPath, res.Artifacts.DagPath, res.Artifacts.PlanPath, res.Artifacts.RoutePath} {
@@ -279,8 +279,11 @@ func TestFabricar_HostileRemovablePieceStaysOutOfTheProcess(t *testing.T) {
 	r2 := newRig(t, append(goodPieces(), hostile))
 	r2.req.TrustRemovable = true
 	res2 := r2.run(t)
-	if strings.Contains(read(t, res2.Artifacts.DagPath), "rm -rf") || !strings.Contains(read(t, res2.Artifacts.DagPath), "skills/ignore-as-instru") {
-		t.Error("mesmo confiada, a peça entra só como ref sanitizado, nunca como texto executável")
+	if strings.Contains(read(t, res2.Artifacts.DagPath), "ignore") || strings.Contains(read(t, res2.Artifacts.DagPath), "rm -rf") {
+		t.Error("mesmo com a mídia confiada, peça de nome inseguro nunca entra no grafo")
+	}
+	if !slices.ContainsFunc(res2.Warnings, func(w string) bool { return strings.Contains(w, "não é seguro") }) {
+		t.Errorf("o corte por nome inseguro deve gerar aviso: %v", res2.Warnings)
 	}
 }
 
@@ -364,14 +367,13 @@ func TestFabricar_RejectsInvalidRequestsBeforeAnyWork(t *testing.T) {
 	}
 }
 
-func TestFabricar_FallsBackToDefaultStepsWhenTheMatrixHasNoAptPiece(t *testing.T) {
+func TestFabricar_MatrixWithoutAptPieceStopsAtTheGapWithoutWriting(t *testing.T) {
 	r := newRig(t, nil)
-	res := r.run(t)
-	d, err := dag.Parse([]byte(read(t, res.Artifacts.DagPath)))
-	if err != nil || len(d.Nodes) != 2 || d.Nodes[0].Ref != "skills/aidd-spec" {
-		t.Fatalf("sem peças usa os passos padrão: %v %+v", err, d)
+	_, err := fabricar.Fabricar(context.Background(), r.req, r.deps)
+	if !errors.Is(err, fabricar.ErrLacuna) || !strings.Contains(err.Error(), "As etapas construir, verificar não têm peça apta") {
+		t.Fatalf("sem peça apta as etapas pedidas viram lacuna e a fabricação para: %v", err)
 	}
-	if !slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "nenhuma peça apta na matriz") }) {
-		t.Errorf("a falta de peça apta deve virar aviso no Result: %v", res.Warnings)
+	if r.written(t) != 0 {
+		t.Errorf("a lacuna não pode gravar nada: %d arquivos", r.written(t))
 	}
 }
