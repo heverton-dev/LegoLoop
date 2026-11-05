@@ -75,9 +75,6 @@ func Run(ctx context.Context, d Deps) (Resultado, error) {
 	}
 	compostos := map[string][]processo.Etapa{}
 	for _, nome := range nomes(entradas) {
-		if err := ctx.Err(); err != nil {
-			return res, err
-		}
 		it, etapas := ler(vault, nome)
 		compostos[nome] = etapas
 		res.Processos = append(res.Processos, it)

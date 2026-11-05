@@ -177,6 +177,17 @@ func TestListarCLI(t *testing.T) {
 			t.Fatalf("exit %d; esperava 1 com orientação:\n%s", code, errb)
 		}
 	})
+	t.Run("processo inválido", func(t *testing.T) {
+		h, v := cofreListar(t)
+		gravarArq(t, processo.CaminhoNoCofre(v, "legoloop-quebrado"), "{ não é json")
+		code, out, errb := rodarListar(h, "--vault", v)
+		if code != 0 || !strings.Contains(errb, "aviso: legoloop-quebrado não pôde ser lido") {
+			t.Fatalf("exit %d; o inválido gera aviso no stderr e a lista segue:\n%s", code, errb)
+		}
+		if l := linhaDe(strings.Split(out, "\n"), "legoloop-quebrado"); !strings.Contains(l, "inválido") {
+			t.Errorf("a linha do inválido diz inválido: %q\n%s", l, out)
+		}
+	})
 	t.Run("argumento a mais", func(t *testing.T) {
 		if code, _, _ := rodarListar(home, "--vault", vault, "sobra"); code != 2 {
 			t.Fatalf("exit %d; argumento posicional é uso incorreto (2)", code)

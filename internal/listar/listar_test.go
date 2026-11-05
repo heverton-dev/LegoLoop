@@ -61,6 +61,9 @@ func cofreDeTres(t *testing.T) (vault, home string) {
 	escrever(t, filepath.Join(vault, "loops", "legoloop-velho.loop.json"), `{"id":"legoloop-velho","name":"legoloop-velho","version":"0.3.0"}`)
 	escrever(t, filepath.Join(vault, "loops", "legoloop-a.loop.json"), `{"id":"legoloop-a","version":"1.2.0"}`)
 	escrever(t, filepath.Join(vault, "loops", "nova-esteira.loop.json"), `{"id":"nova-esteira","version":"2.0.0"}`)
+	if err := os.MkdirAll(filepath.Join(vault, "loops", "legoloop-pasta.loop.json"), 0o755); err != nil {
+		t.Fatal(err)
+	}
 	for _, h := range []string{"claude", "codex", "gemini"} {
 		if err := os.MkdirAll(filepath.Join(home, "."+h, "skills"), 0o755); err != nil {
 			t.Fatal(err)
