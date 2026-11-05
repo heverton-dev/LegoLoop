@@ -59,6 +59,7 @@ Comandos:
   fabricar   "<nome>" [--yes] [--goal T] [--model M] [--dry-run] [--json]  cria um processo novo (skill, loop, dag e docs)
   matriz     gerar|status|vocab|perfil|ver  gera e consulta a matriz de peças (qualidade e perfil de uso)
   listar     [--vault DIR] [--json]  mostra os processos do cofre (versão, natureza, harnesses, usado por)
+  refinar    <nome> --etapa ID [--peca P] [--caso C]... [--yes]  muda uma etapa, sobe a versão e guarda a anterior
   remover    <nome> [--vault DIR] [--yes]  apaga um processo do cofre e os vínculos dele (falha se outro processo o usa)
   version
 `
@@ -72,7 +73,8 @@ func Run(ctx context.Context, args []string, d Deps) int {
 	cmds := map[string]func(context.Context, []string, Deps) int{
 		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
-		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar, "remover": cmdRemover,
+		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
+		"refinar": cmdRefinar, "remover": cmdRemover,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":
