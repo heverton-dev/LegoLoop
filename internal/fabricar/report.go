@@ -2,8 +2,6 @@ package fabricar
 
 import (
 	"encoding/json"
-	"os"
-	"path/filepath"
 	"time"
 
 	"legoloop/internal/interview"
@@ -46,15 +44,15 @@ type Report struct {
 }
 
 // buildReport constrói o relatório canônico após as 5 camadas da esteira de fabricação.
-func buildReport(d Deps, clar Clarification, scan ScanResult, m Merged, tri triadFiles, files []PlannedFile, plano Plano) *Report {
+func buildReport(d Deps, clar Clarification, c consulta, tri triadFiles, files []PlannedFile, plano Plano) *Report {
 	rep := &Report{}
 	rep.Clarificacao.Espelho = clar.Mirror
 	rep.Clarificacao.Confianca = clar.Confidence
 	rep.Clarificacao.Turnos = clar.Turns
 	rep.Clarificacao.Alcancou = clar.Reached
 
-	populateVarredura(d, scan, m, rep)
-	populateFusao(clar, m, rep)
+	populateVarredura(d, c, rep)
+	populateFusao(c, rep)
 	extractTriadeInfo(tri, rep)
 	populateGravacao(files, plano, rep)
 
@@ -62,42 +60,26 @@ func buildReport(d Deps, clar Clarification, scan ScanResult, m Merged, tri tria
 	return rep
 }
 
-func populateVarredura(d Deps, scan ScanResult, m Merged, rep *Report) {
+// populateVarredura é a Camada 2: as peças da matriz por tipo, os cortes e a idade da matriz.
+func populateVarredura(d Deps, c consulta, rep *Report) {
 	rep.Varredura.PecasVistas = make(map[string]int)
-	for _, p := range scan.Pieces {
-		rep.Varredura.PecasVistas[string(p.Kind)]++
+	for _, e := range c.fonte.Entradas {
+		rep.Varredura.PecasVistas[e.Tipo]++
 	}
-	if len(rep.Varredura.PecasVistas) == 0 {
-		rep.Varredura.PecasVistas["skill"] = 0
-	}
-	for _, s := range scan.Skipped {
-		rep.Varredura.Cortes = append(rep.Varredura.Cortes, s.Root+": "+s.Reason)
-	}
-	for _, ex := range m.Excluded {
+	for _, ex := range c.m.Excluded {
 		rep.Varredura.Cortes = append(rep.Varredura.Cortes, ex.Name)
 	}
-	if d.Roots.Vault != "" {
-		matrizPath := filepath.Join(d.Roots.Vault, "registry_matrix.json")
-		if fi, err := os.Stat(matrizPath); err == nil {
-			rep.Varredura.MatrizIdade = d.Clock().Sub(fi.ModTime())
-		}
+	if !c.fonte.GeradaEm.IsZero() {
+		rep.Varredura.MatrizIdade = d.Clock().Sub(c.fonte.GeradaEm)
 	}
 }
 
-func populateFusao(clar Clarification, m Merged, rep *Report) {
-	rep.Fusao.Necessidades = matriz.Needs{Natureza: clar.Natureza}
-	rep.Fusao.Decisoes = m.Decisoes
-	rep.Fusao.Lacunas = m.Lacunas
-	rep.Fusao.Divergencias = m.Divergencias
-	if len(rep.Fusao.Decisoes) == 0 && len(m.Steps) > 0 {
-		for _, s := range m.Steps {
-			rep.Fusao.Decisoes = append(rep.Fusao.Decisoes, Decisao{
-				Peca:   s.Piece,
-				Entrou: true,
-				Motivo: "selecionada na fusão",
-			})
-		}
-	}
+// populateFusao é a Camada 3, como a Fusão decidiu: nada é acrescentado aqui.
+func populateFusao(c consulta, rep *Report) {
+	rep.Fusao.Necessidades = c.needs
+	rep.Fusao.Decisoes = c.m.Decisoes
+	rep.Fusao.Lacunas = c.m.Lacunas
+	rep.Fusao.Divergencias = c.m.Divergencias
 }
 
 func populateGravacao(files []PlannedFile, plano Plano, rep *Report) {

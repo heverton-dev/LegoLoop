@@ -12,6 +12,7 @@ import (
 
 	"legoloop/internal/fabricar"
 	"legoloop/internal/interview"
+	"legoloop/internal/matriz"
 	"legoloop/internal/reputation"
 )
 
@@ -52,21 +53,29 @@ type specOnlyLLM struct {
 	calls atomic.Int32
 }
 
-func (l *specOnlyLLM) Chat(context.Context, []interview.Message) (string, error) {
+func (l *specOnlyLLM) Chat(_ context.Context, msgs []interview.Message) (string, error) {
 	l.calls.Add(1)
 	if l.fail != nil {
 		return "", l.fail
 	}
+	if strings.Contains(msgs[0].Content, "vocabulário fechado do LegoLoop") {
+		return `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`, nil
+	}
 	return studioSpec, nil
 }
 
-type studioScan struct{}
-
-func (studioScan) Scan(context.Context, []string, fabricar.ScanOptions) (fabricar.ScanResult, error) {
-	return fabricar.ScanResult{Pieces: []fabricar.DiscoveredPiece{
-		{Name: "alfa", Kind: fabricar.KindSkill, Drive: `C:\`, Path: `C:\s\alfa`, Score: 0.9, Tier: reputation.TierOuro},
-		{Name: "beta", Kind: fabricar.KindSkill, Drive: `C:\`, Path: `C:\s\beta`, Score: 0.8, Tier: reputation.TierPrata},
-	}}, nil
+// studioMatriz é a matriz em memória dos testes do Studio: alfa constrói e beta verifica, ambas de software.
+func studioMatriz() fabricar.MatrizFunc {
+	apta := func(nome string, score float64, etapa string) matriz.Entrada {
+		ref := filepath.Join(os.TempDir(), "s", nome, "SKILL.md")
+		return matriz.Entrada{Ref: ref, Nome: nome, Tipo: "skill", Hash: "h-" + nome,
+			Perfil: &matriz.PerfilDeUso{Etapas: []string{etapa}, Naturezas: []string{"software"}, Origem: matriz.OrigemDeclarado},
+			Rating: reputation.PieceRating{Ref: ref, Name: nome, TotalScore: score, Tier: reputation.TierOuro}}
+	}
+	return func() (fabricar.FonteMatriz, error) {
+		return fabricar.FonteMatriz{Entradas: []matriz.Entrada{apta("alfa", 0.9, "construir"), apta("beta", 0.8, "verificar")},
+			Vocab: matriz.DefaultVocab(), GeradaEm: studioNow.Add(-48 * time.Hour)}, nil
+	}
 }
 
 // realFabricar liga ao Studio a fábrica de verdade (LLM e scanner falsos, raízes no servidor), do jeito que o
@@ -77,8 +86,7 @@ func realFabricar(s *Server, llm *specOnlyLLM) FabricarFunc {
 		if err != nil {
 			return nil, err
 		}
-		req.TargetDrives = []string{`C:\`}
-		return fabricar.Fabricar(ctx, req, fabricar.Deps{LLM: llm, Scanner: studioScan{}, Clock: func() time.Time { return studioNow },
+		return fabricar.Fabricar(ctx, req, fabricar.Deps{LLM: llm, Matriz: studioMatriz(), Clock: func() time.Time { return studioNow },
 			Roots: fabricar.Roots{Vault: vault, Docs: s.ProjectDir}})
 	}
 }

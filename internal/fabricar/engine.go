@@ -11,13 +11,15 @@ import (
 	"time"
 
 	"legoloop/internal/interview"
+	"legoloop/internal/matriz"
 	"legoloop/internal/processo"
+	"legoloop/internal/ste"
 )
 
 // Deps reúne tudo que o motor recebe de fora, para ser hermético e determinístico.
 type Deps struct {
 	LLM          interview.LLMClient  // entrevista e SPEC; obrigatório
-	Scanner      Scanner              // nil usa o DiskScanner real
+	Matriz       MatrizFunc           // nil lê registry_matrix.json e vocab.json do cofre (Roots.Vault)
 	Clock        func() time.Time     // nil usa time.Now
 	Roots        Roots                // obrigatório
 	FS           FS                   // nil usa o disco real
@@ -56,7 +58,6 @@ type Result struct {
 	CreatedAt     time.Time          `json:"created_at"`     // UTC, vindo de Deps.Clock
 	Artifacts     CanonicalArtifacts `json:"artifacts"`
 	CuratedPieces []DiscoveredPiece  `json:"curated_pieces"` // Ordem estável: Score desc, Path asc
-	SkippedRoots  []SkippedRoot      `json:"skipped_roots"`
 	Warnings      []string           `json:"warnings"`
 	Report        *Report            `json:"report,omitempty"`
 }
@@ -69,8 +70,9 @@ func (d Deps) prepare(req Request) (Deps, error) {
 	if d.Roots.Vault == "" || d.Roots.Docs == "" {
 		return d, errors.New("fabricar: Deps.Roots.Vault e Deps.Roots.Docs são obrigatórios")
 	}
-	if d.Scanner == nil {
-		d.Scanner = NewDiskScanner()
+	if d.Matriz == nil {
+		vault := d.Roots.Vault
+		d.Matriz = func() (FonteMatriz, error) { return LerMatriz(vault) }
 	}
 	if d.Clock == nil {
 		d.Clock = time.Now
@@ -118,6 +120,10 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if err := preflight(deps, name, req.Force); err != nil {
 		return nil, err
 	}
+	fonte, err := deps.Matriz() // antes da entrevista: sem matriz não vale a pena perguntar nada
+	if err != nil {
+		return nil, err
+	}
 	deps.progress(1, "Clarificação")
 	clar, err := clarify(ctx, req, deps)
 	if err != nil {
@@ -126,11 +132,7 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if err := deps.confirmDraft(clar); err != nil {
 		return nil, err
 	}
-	scan, merged, err := curate(ctx, req, deps)
-	if err != nil {
-		return nil, err
-	}
-	return assemble(ctx, req, deps, name, clar, scan, merged)
+	return assemble(ctx, req, deps, name, clar, consultar(ctx, req, deps, clar, fonte))
 }
 
 // clarify é a Camada 1. Com Deps.Interview a entrevista já foi feita (no Chat) e o motor não pergunta de novo.
@@ -160,20 +162,35 @@ func preflight(d Deps, name string, force bool) error {
 	return nil
 }
 
-// curate é a Camada 2 (varredura) e a Camada 3 (fusão).
-func curate(ctx context.Context, req Request, d Deps) (ScanResult, Merged, error) {
-	d.progress(2, "Varredura")
-	roots, skipped := req.TargetDrives, []SkippedRoot(nil)
-	if len(roots) == 0 {
-		roots, skipped = SystemRoots(ctx)
-	}
-	scan, err := d.Scanner.Scan(ctx, roots, ScanOptions{})
-	if err != nil {
-		return scan, Merged{}, err
-	}
-	scan.Skipped = append(skipped, scan.Skipped...)
+// consulta é o que as Camadas 2 e 3 entregam à Tríade.
+type consulta struct {
+	fonte  FonteMatriz
+	needs  matriz.Needs
+	m      Merged
+	avisos []string
+}
+
+// consultar é a Camada 2 (matriz) e a Camada 3 (fusão por aptidão). O fabricar só lê a matriz: nunca varre
+// drives nem a regenera. O cérebro dá as necessidades e explica as decisões; quem decide é o ranking.
+func consultar(ctx context.Context, req Request, d Deps, clar Clarification, fonte FonteMatriz) consulta {
+	d.progress(2, "Matriz")
 	d.progress(3, "Fusão")
-	return scan, ArchitectMerge(scan.Pieces, MergeOptions{TrustRemovable: req.TrustRemovable}), nil
+	needs, avisos := Necessidades(ctx, d.LLM, objetivoDe(req), clar.Mirror, fonte.Vocab)
+	aptas, cortes := confiaveis(fonte.Entradas, req.TrustRemovable)
+	m := MergeByFit(needs, aptas, MergeOptions{})
+	m.Explain(ctx, d.LLM, needs)
+	if len(req.TargetDrives) > 0 {
+		avisos = append(avisos, ste.Msg("fabricar.drives_ignorados"))
+	}
+	return consulta{fonte: fonte, needs: needs, m: m, avisos: append(avisos, cortes...)}
+}
+
+// objetivoDe é o objetivo do pedido; sem ele, o próprio nome.
+func objetivoDe(req Request) string {
+	if strings.TrimSpace(req.Goal) != "" {
+		return req.Goal
+	}
+	return req.RawName
 }
 
 func producesFor(c Category) string {
@@ -187,7 +204,8 @@ func producesFor(c Category) string {
 }
 
 // assemble é a Camada 4 (Tríade), a Camada 5 (Template) e a gravação.
-func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarification, scan ScanResult, m Merged) (*Result, error) {
+func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarification, c consulta) (*Result, error) {
+	m := c.m
 	now := d.Clock().UTC()
 	slug := strings.TrimPrefix(name, namePrefix)
 	ps := ProcessSpec{Name: name, Description: clar.Mirror.Outcome, Goal: clar.Mirror.Outcome, Model: req.ModelChoice, Produces: producesFor(req.Category), Steps: m.Steps}
@@ -207,15 +225,15 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 		return nil, err
 	}
 	plano := novoPlano(d, req, files, m, vinculos)
-	rep := buildReport(d, clar, scan, m, tri, files, plano)
+	rep := buildReport(d, clar, c, tri, files, plano)
 	art, err := Materialize(ctx, MaterializePlan{Name: name, Roots: d.Roots, Files: files, Force: req.Force, DryRun: req.DryRun,
 		Vinculos: vinculos, Link: d.Link}, d.FS)
 	if err != nil {
 		return nil, err
 	}
-	warns := append(append(clar.Warnings(), scan.Warnings...), m.Warnings...)
+	warns := append(append(clar.Warnings(), c.avisos...), m.Warnings...)
 	return &Result{CanonicalName: name, Slug: slug, CreatedAt: now, Artifacts: art, CuratedPieces: m.Used,
-		SkippedRoots: scan.Skipped, Warnings: append(warns, lwarns...), Report: rep}, nil
+		Warnings: append(warns, lwarns...), Report: rep}, nil
 }
 
 func filePaths(files []PlannedFile) []string {

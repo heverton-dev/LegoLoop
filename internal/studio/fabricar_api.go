@@ -106,7 +106,7 @@ func (s *Server) defaultFabricar(ctx context.Context, req fabricar.Request, entr
 	if err != nil {
 		return nil, err
 	}
-	deps := fabricar.Deps{LLM: b, Scanner: s.FabricarScanner, Roots: fabricar.Roots{Vault: vault, Docs: s.ProjectDir}}
+	deps := fabricar.Deps{LLM: b, Matriz: s.FabricarMatriz, Roots: fabricar.Roots{Vault: vault, Docs: s.ProjectDir}}
 	if entrevista != "" && s.Interview != nil {
 		if sess, err := s.Interview.GetSession(entrevista); err == nil && sess != nil {
 			clar := fabricar.ClarificationFromSession(sess)

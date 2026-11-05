@@ -57,65 +57,10 @@ func setupInteractive(ctx context.Context, req *fabricar.Request, fd *fabricar.D
 		return errors.New("o modo interativo exige um terminal (stdin); use --yes para o modo autônomo")
 	}
 	p := newPrompter(d.Stdin, d.Stdout)
-	chosen, err := p.pickDrives(driveRoots(ctx, d))
-	if err != nil {
-		return err
-	}
-	req.TargetDrives = chosen
 	fd.Ask, fd.Aprovar, fd.ConfirmDraft = p.ask, p.aprovar, p.confirmDraft
 	fd.Context = interview.Context{Goal: goalOf(*req), Docs: interview.LoadProjectContext(fd.Roots.Docs)}
 	fd.OnTurn = func(c int) { fmt.Fprintln(d.Stdout, ste.Msg("fabricar.confianca", c, metaConfianca)) }
 	return nil
-}
-
-func driveRoots(ctx context.Context, d Deps) []string {
-	if d.Fabricar != nil && d.Fabricar.DriveRoots != nil {
-		return d.Fabricar.DriveRoots(ctx)
-	}
-	roots, _ := fabricar.SystemRoots(ctx)
-	return roots
-}
-
-// pickDrives lista os drives detectados e deixa o usuário desmarcar alguns. Enter mantém todos.
-func (p *prompter) pickDrives(drives []string) ([]string, error) {
-	if len(drives) == 0 {
-		fmt.Fprintln(p.w, "Nenhum drive detectado; a varredura usará as raízes padrão do sistema.")
-		return nil, nil
-	}
-	for attempt := 0; attempt < maxInvalid; attempt++ {
-		fmt.Fprintln(p.w, "Drives detectados:")
-		for i, dr := range drives {
-			fmt.Fprintf(p.w, "  [%d] %s\n", i+1, dr)
-		}
-		in, err := p.line("Desmarcar quais? (números separados por vírgula; Enter mantém todos): ")
-		if err != nil {
-			return nil, err
-		}
-		if kept, ok := keepDrives(drives, in); ok {
-			return kept, nil
-		}
-		fmt.Fprintln(p.w, "Entrada inválida: use números da lista e deixe ao menos um drive.")
-	}
-	return nil, errTooManyInvalid
-}
-
-// keepDrives devolve os drives que sobram. ok é falso se algum número for inválido ou se nenhum drive sobrar.
-func keepDrives(drives []string, input string) ([]string, bool) {
-	drop := map[int]bool{}
-	for _, f := range strings.FieldsFunc(input, func(r rune) bool { return r == ',' || r == ' ' }) {
-		n, err := strconv.Atoi(f)
-		if err != nil || n < 1 || n > len(drives) {
-			return nil, false
-		}
-		drop[n-1] = true
-	}
-	var kept []string
-	for i, dr := range drives {
-		if !drop[i] {
-			kept = append(kept, dr)
-		}
-	}
-	return kept, len(kept) > 0
 }
 
 // ask apresenta a pergunta da entrevista com opções numeradas: aceitar o palpite, responder em texto livre ou cancelar.

@@ -11,7 +11,8 @@ import (
 	"legoloop/internal/specgen"
 )
 
-// specLLM devolve as respostas da SPEC em ordem (a última se repete) e guarda as mensagens de cada chamada.
+// specLLM devolve as respostas da SPEC em ordem (a última se repete) e guarda as mensagens de cada chamada
+// da SPEC. As chamadas de necessidades e de explicação da Fusão não entram na conta.
 type specLLM struct {
 	replies []string
 	err     error
@@ -19,6 +20,9 @@ type specLLM struct {
 }
 
 func (s *specLLM) Chat(_ context.Context, msgs []interview.Message) (string, error) {
+	if !strings.Contains(msgs[0].Content, "Arquiteto de Especificações") {
+		return needsReply, nil
+	}
 	s.calls = append(s.calls, msgs)
 	if s.err != nil {
 		return "", s.err

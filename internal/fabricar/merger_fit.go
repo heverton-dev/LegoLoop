@@ -98,7 +98,8 @@ func (m *Merged) decide(etapa string, r matriz.Ranked) {
 }
 
 func pieceOf(e matriz.Entrada) DiscoveredPiece {
-	return DiscoveredPiece{Name: e.Nome, Kind: KindSkill, Path: e.Ref, SHA256: e.Hash, Score: e.Rating.TotalScore, Tier: e.Rating.Tier}
+	return DiscoveredPiece{Name: e.Nome, Kind: KindSkill, Path: e.Ref, SHA256: e.Hash, Score: e.Rating.TotalScore, Tier: e.Rating.Tier,
+		Untrusted: naoConfiavel(e.Ref)}
 }
 
 func onlySkills(es []matriz.Entrada) []matriz.Entrada {

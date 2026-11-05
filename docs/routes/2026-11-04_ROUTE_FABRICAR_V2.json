@@ -2423,6 +2423,204 @@
       }
     },
     {
+      "id": "TICK-02.16",
+      "label": "Camadas 2 e 3 reais no motor: matriz, necessidades e fusão por aptidão",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 600,
+      "token_budget": {
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-02.15"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "9router",
+          "model": "code-fast"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/engine.go",
+          "internal/fabricar/report.go",
+          "internal/cli/fabricar.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E02.6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.6",
+      "test_target": "internal/fabricar/motor_real_test.go:TestMotorReal",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/engine.go",
+          "internal/fabricar/report.go",
+          "internal/cli/fabricar.go",
+          "internal/fabricar/motor_real_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestMotorReal",
+            "./internal/fabricar/...",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/...",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/cli"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/engine.go') && file_exists('internal/fabricar/motor_real_test.go')"
+      }
+    },
+    {
+      "id": "TICK-02.17",
+      "label": "Camada 4 pelo Processo: seis projeções e processo.json no plano atômico",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 600,
+      "token_budget": {
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-02.16"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "9router",
+          "model": "code-fast"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/engine.go",
+          "internal/fabricar/triad.go",
+          "internal/processo/persistencia.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E02.9",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.9",
+      "test_target": "internal/fabricar/processo_real_test.go:TestProcessoReal",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/engine.go",
+          "internal/fabricar/triad.go",
+          "internal/processo/persistencia.go",
+          "internal/fabricar/processo_real_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestProcessoReal",
+            "./internal/fabricar/...",
+            "./internal/processo/...",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/fabricar/...",
+            "./internal/processo/...",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/fabricar"
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/processo"
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/cli"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fabricar/engine.go') && file_exists('internal/fabricar/processo_real_test.go')"
+      }
+    },
+    {
       "id": "SG-E02",
       "label": "Stop-Gate Humano do Épico 02",
       "nature": "nano",
@@ -2454,7 +2652,9 @@
         "TICK-02.12",
         "TICK-02.13",
         "TICK-02.14",
-        "TICK-02.15"
+        "TICK-02.15",
+        "TICK-02.16",
+        "TICK-02.17"
       ],
       "routing": {
         "mode": "manual",

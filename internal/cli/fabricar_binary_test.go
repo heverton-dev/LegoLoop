@@ -64,11 +64,24 @@ type binRun struct {
 func runBinary(t *testing.T, bin string, router *httptest.Server, stdin string, args ...string) binRun {
 	t.Helper()
 	root := t.TempDir()
-	r := binRun{vault: filepath.Join(root, "vault"), docsRoot: filepath.Join(root, "proj")}
-	_ = os.MkdirAll(r.docsRoot, 0o755)
-	full := append([]string{"fabricar", "extrair audio", "--goal", "extrair audio de video", "--vault", r.vault, "--docs", r.docsRoot}, args...)
-	cmd := exec.Command(bin, full...)
-	cmd.Dir = r.docsRoot
+	vault, proj := filepath.Join(root, "vault"), filepath.Join(root, "proj")
+	matrizDeTeste(t, vault)
+	full := append([]string{"fabricar", "extrair audio", "--goal", "extrair audio de video", "--vault", vault, "--docs", proj}, args...)
+	return runBinaryStdin(t, bin, router, root, proj, stdin, full...)
+}
+
+// runBinaryEm executa o binário com os argumentos dados, HOME em root e diretório de trabalho em proj, sem stdin.
+func runBinaryEm(t *testing.T, bin string, router *httptest.Server, root, proj string, args ...string) binRun {
+	t.Helper()
+	return runBinaryStdin(t, bin, router, root, proj, "", args...)
+}
+
+func runBinaryStdin(t *testing.T, bin string, router *httptest.Server, root, proj, stdin string, args ...string) binRun {
+	t.Helper()
+	r := binRun{vault: filepath.Join(root, "vault"), docsRoot: proj}
+	_ = os.MkdirAll(proj, 0o755)
+	cmd := exec.Command(bin, args...)
+	cmd.Dir = proj
 	cmd.Env = append(os.Environ(), "NINEROUTER_URL="+router.URL, "HOME="+root, "USERPROFILE="+root)
 	cmd.Stdin = strings.NewReader(stdin)
 	var so, se bytes.Buffer
@@ -107,7 +120,7 @@ func TestFabricarBinaryInterativo(t *testing.T) {
 	bin := buildBinary(t)
 
 	t.Run("a entrevista começa: o erro de terminal não aparece", func(t *testing.T) {
-		r := runBinary(t, bin, binRouter(t, 40), "\n0\n")
+		r := runBinary(t, bin, binRouter(t, 40), "0\n")
 		all := r.out + r.errb
 		if strings.Contains(all, "exige um terminal") {
 			t.Fatalf("o main não ligou o stdin:\n%s", all)
@@ -118,7 +131,7 @@ func TestFabricarBinaryInterativo(t *testing.T) {
 	})
 
 	t.Run("a confiança é impressa a cada turno, em ordem", func(t *testing.T) {
-		r := runBinary(t, bin, binRouter(t, 40, 70, 90), "\n1\n1\n0\n")
+		r := runBinary(t, bin, binRouter(t, 40, 70, 90), "1\n1\n0\n")
 		last := -1
 		for _, want := range []string{"Confiança: 40%", "Confiança: 70%", "Confiança: 90%"} {
 			i := strings.Index(r.out, want)
@@ -130,11 +143,11 @@ func TestFabricarBinaryInterativo(t *testing.T) {
 	})
 
 	t.Run("cancelar na entrevista não grava nada", func(t *testing.T) {
-		r := runBinary(t, bin, binRouter(t, 40), "\n0\n")
+		r := runBinary(t, bin, binRouter(t, 40), "0\n")
 		if r.code == 0 {
 			t.Errorf("cancelar deveria sair com código diferente de 0\n%s", r.out)
 		}
-		if got := append(filesUnder(r.vault), filesUnder(r.docsRoot)...); len(got) != 0 {
+		if got := append(filesUnder(r.vault), filesUnder(r.docsRoot)...); len(got) != 1 || filepath.Base(got[0]) != "registry_matrix.json" {
 			t.Errorf("gravou antes da confirmação: %v", got)
 		}
 	})

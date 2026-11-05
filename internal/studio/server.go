@@ -68,8 +68,8 @@ type Server struct {
 	Fabricar FabricarFunc
 	// BrainOpts ajusta o cérebro da fábrica real (URL do Ollama, prazo, cliente HTTP); usado em testes.
 	BrainOpts []brain.Option
-	// FabricarScanner substitui a varredura de discos da fábrica real (nil = varredura real); usado em testes.
-	FabricarScanner fabricar.Scanner
+	// FabricarMatriz substitui a matriz do cofre na fábrica (nil = registry_matrix.json do cofre); usado em testes.
+	FabricarMatriz fabricar.MatrizFunc
 
 	matrixOnce sync.Once
 	matrixReg  *reputation.RegistryMatrix

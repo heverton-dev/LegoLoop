@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"legoloop/internal/fabricar"
-	"legoloop/internal/reputation"
 	"legoloop/internal/ste"
 )
 
@@ -71,14 +70,13 @@ func TestCartaoPlanoUnico(t *testing.T) {
 	})
 
 	t.Run("mídia removível aparece no plano", func(t *testing.T) {
-		pcs := append(goodPieces(), fabricar.DiscoveredPiece{Name: "usb", Kind: fabricar.KindSkill, Drive: `E:\`, Path: `E:\s\usb`,
-			Score: 0.95, Tier: reputation.TierOuro, Untrusted: true})
+		pcs := append(goodPieces(), skillApta("usb", "/media/usb/s/SKILL.md", 0.95, "construir"))
 		r := newRig(t, pcs)
 		r.req.TrustRemovable = true
 		c := &captura{ok: true}
 		r.deps.Aprovar = c.aprovar(r, t)
 		r.run(t)
-		if len(c.planos[0].Removivel) != 1 || c.planos[0].Removivel[0] != `E:\s\usb` {
+		if len(c.planos[0].Removivel) != 1 || c.planos[0].Removivel[0] != "/media/usb/s/SKILL.md" {
 			t.Errorf("a peça removível deve ser listada: %v", c.planos[0].Removivel)
 		}
 	})

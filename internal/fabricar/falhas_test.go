@@ -106,9 +106,9 @@ func TestFalhas(t *testing.T) {
 				return provider.Inventory{CLIs: []provider.CLI{{Name: "claude"}}}
 			},
 			Fabricar: &cli.FabricarDeps{
-				LLM:        r.deps.LLM,
-				Scanner:    r.deps.Scanner,
-				Clock:      r.deps.Clock,
+				LLM:    r.deps.LLM,
+				Matriz: r.deps.Matriz,
+				Clock:  r.deps.Clock,
 			},
 		}
 		code := cli.Run(context.Background(), []string{

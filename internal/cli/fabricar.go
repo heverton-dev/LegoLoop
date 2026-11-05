@@ -21,13 +21,12 @@ import (
 // FabricarDeps injeta o que o `fabricar` não deve buscar sozinho; o valor zero usa o ambiente real.
 // É assim que os testes rodam sem rede, sem disco real e com data fixa.
 type FabricarDeps struct {
-	LLM        interview.LLMClient            // nil = cliente do 9Router descoberto no inventário
-	Scanner    fabricar.Scanner               // nil = varredura real dos discos
-	Clock      func() time.Time               // nil = time.Now
-	Harnesses  []processo.Harness             // nil = harnesses detectados no HOME
-	Link       processo.LinkFunc              // nil = symlink ou cópia; testes trocam para provar o desfazer
-	DriveRoots func(context.Context) []string // nil = drives do sistema; só o modo interativo os lista
-	BrainOpts  []brain.Option                 // ajustes do cérebro (URL do Ollama, prazo, cliente HTTP); usado em testes
+	LLM       interview.LLMClient // nil = cliente do 9Router descoberto no inventário
+	Matriz    fabricar.MatrizFunc // nil = registry_matrix.json do cofre
+	Clock     func() time.Time    // nil = time.Now
+	Harnesses []processo.Harness  // nil = harnesses detectados no HOME
+	Link      processo.LinkFunc   // nil = symlink ou cópia; testes trocam para provar o desfazer
+	BrainOpts []brain.Option      // ajustes do cérebro (URL do Ollama, prazo, cliente HTTP); usado em testes
 }
 
 // fabricarOpts reúne as flags do comando.
@@ -206,7 +205,7 @@ func buildFabricarDeps(o fabricarOpts, req fabricar.Request, d Deps, b brain.Bra
 	if o.asJSON {
 		progress = d.Stderr // mantém o stdout como JSON puro
 	}
-	return fabricar.Deps{LLM: x.LLM, Scanner: x.Scanner, Clock: x.Clock, Roots: roots, Harnesses: x.Harnesses, Link: x.Link,
+	return fabricar.Deps{LLM: x.LLM, Matriz: x.Matriz, Clock: x.Clock, Roots: roots, Harnesses: x.Harnesses, Link: x.Link,
 		Progress: printProgress(progress), Aprovar: aprovarSemPerguntar(progress)}, nil
 }
 

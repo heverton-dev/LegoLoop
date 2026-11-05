@@ -344,7 +344,7 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** o servidor do Studio e uma entrevista concluída pela rota de entrevista
   * **Quando:** o modal envia a fabricação
   * **Então:** `POST /api/fabricar/run` recebe o identificador da entrevista; o INTENT gerado contém `Quem Sofre`, `Porquê`, restrições e fora de escopo vindos do espelho, e nenhum "Não informado".
-* [x] `AC-E02.6`: **A Fusão usa o caso de uso, não o `Score`**
+* [x] `AC-E02.6`: **A Fusão usa o caso de uso, não o `Score`** _(desmarcado em 04/11/2026 porque o binário não chamava o código; remarcado no TICK-02.16 com a prova pelo binário: `TestMotorRealBinarioEscolhePelaAptidaoDaMatriz`.)_
   * **Dado que:** uma matriz de teste com perfis reais: `aidd-tdd` (construir, software, `Score` 0.58), `aidd-site-dominator` (publicar, midia, `Score` 0.90, `quando_nao_usar: ["software"]`) e 40 outras
   * **Quando:** `Rank` roda com `Needs{Natureza:"software", Etapas:["construir","verificar"]}`
   * **Então:** `aidd-tdd` está entre as escolhidas e `aidd-site-dominator` está excluída com o motivo; ao mudar o `Score` de `aidd-site-dominator` para 1.0 o resultado **não muda**; ao mudar o perfil de `aidd-tdd` para `etapas: ["publicar"]` ela sai.
@@ -352,11 +352,11 @@ type Decisao struct { Peca string; Entrou bool; Aptidao, Score float64; Motivo, 
   * **Dado que:** uma etapa `verificar` sem nenhuma peça apta, e uma peça de `Score` 0.95 sem perfil
   * **Quando:** a Fusão roda
   * **Então:** a peça sem perfil não é escolhida e aparece no relatório como "aptidão desconhecida"; a etapa vira lacuna (`Peca==""`) e o relatório e o cartão a destacam.
-* [x] `AC-E02.8`: **O cérebro explica e pode contestar, mas não decide**
+* [x] `AC-E02.8`: **O cérebro explica e pode contestar, mas não decide** _(desmarcado em 04/11/2026 porque o binário não chamava o código; remarcado no TICK-02.16 com a prova pelo binário: `TestMotorRealBinarioEscolhePelaAptidaoDaMatriz`.)_
   * **Dado que:** um cérebro de teste que devolve explicações e, em outra rodada, uma ordem diferente da calculada
   * **Quando:** a Fusão fecha
   * **Então:** cada decisão do relatório tem `Motivo` (determinístico) e `Explicacao` (cérebro); no segundo caso o ranking calculado vale e a divergência aparece em `Divergencias`.
-* [x] `AC-E02.9`: **As seis visões contam a mesma história**
+* [ ] `AC-E02.9`: **As seis visões contam a mesma história** _(desmarcado em 04/11/2026: provado só na função; o binário não chamava o código. Volta a [x] com a prova pelo binário no TICK-02.17.)_
   * **Dado que:** um `Processo` com 4 etapas
   * **Quando:** o emissor gera SPEC, PLAN, ROUTE, `.dag.json`, `.loop.json` e `SKILL.md`
   * **Então:** o teste extrai os IDs e a ordem das etapas de cada arquivo e eles são iguais; remover uma etapa de uma única projeção faz o teste falhar (mutação); o PLAN não contém `Aplicar a skill` fora do mapeamento etapa a peça.

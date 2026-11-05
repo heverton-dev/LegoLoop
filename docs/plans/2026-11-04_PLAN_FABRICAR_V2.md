@@ -43,7 +43,7 @@
 | Épico ID | Nome do Épico | Total Tickets | Critérios de Aceite Cobertos | Natureza Dominante |
 |---|---|---|---|---|
 | **E01** | Núcleo, motor de matrizes e cérebro plugável | 11 | `AC-E01.1`, `AC-E01.10`, `AC-E01.2`, `AC-E01.3`, `AC-E01.4`, `AC-E01.5`, `AC-E01.6`, `AC-E01.7`, `AC-E01.8`, `AC-E01.9`, `AC-NF.1`, `AC-NF.2`, `AC-NF.4` | `micro` |
-| **E02** | `fabricar` refeito: entrevista, Fusão, contrato e cartão | 15 | `AC-E02.1`, `AC-E02.10`, `AC-E02.11`, `AC-E02.12`, `AC-E02.13`, `AC-E02.14`, `AC-E02.15`, `AC-E02.2`, `AC-E02.3`, `AC-E02.4`, `AC-E02.5`, `AC-E02.6`, `AC-E02.7`, `AC-E02.8`, `AC-E02.9` | `micro` |
+| **E02** | `fabricar` refeito: entrevista, Fusão, contrato e cartão | 17 | `AC-E02.1`, `AC-E02.10`, `AC-E02.11`, `AC-E02.12`, `AC-E02.13`, `AC-E02.14`, `AC-E02.15`, `AC-E02.2`, `AC-E02.3`, `AC-E02.4`, `AC-E02.5`, `AC-E02.6`, `AC-E02.7`, `AC-E02.8`, `AC-E02.9` | `micro` |
 | **E03** | Verbos `listar`, `refinar`, `remover` e `compor` | 6 | `AC-E03.1`, `AC-E03.2`, `AC-E03.3`, `AC-E03.4`, `AC-E03.5`, `AC-E03.6` | `micro` |
 | **E04** | Studio, prova com o sistema real e fechamento | 4 | `AC-E04.1`, `AC-E04.2`, `AC-E04.3`, `AC-E04.4`, `AC-NF.1`, `AC-NF.3`, `AC-NF.4` | `macro` |
 
@@ -458,6 +458,36 @@
 * **Gate (DSL):** `exit_code == 0 && file_exists('internal/studio/fabricar_api.go') && file_exists('internal/studio/fabricar_entrevista_test.go')`
 * **Spec Ref:** `AC-E02.5`
 * **Escopo:** POST /api/fabricar/run recebe o identificador da entrevista; o INTENT contém Quem Sofre, Porquê, restrições e fora de escopo do espelho e nenhum 'Não informado'; o payload antigo continua aceito.
+
+#### Ticket `TICK-02.16` — Camadas 2 e 3 reais no motor: matriz, necessidades e fusão por aptidão
+* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
+* **Dependências:** `["TICK-02.15"]`
+* **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `high` · Fallback Harness `9router` · Modelo `code-fast`
+* **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
+* **Limites:** Timeout `600s` · Teto de saída `1200` tokens · Rollback `stash_changes`
+* **Inputs:** Source Files `internal/fabricar/engine.go`, `internal/fabricar/report.go`, `internal/cli/fabricar.go` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E02.6` · Context Artifacts `[]`
+* **Alvo de Teste TDD:** `internal/fabricar/motor_real_test.go:TestMotorReal`
+* **Outputs:** Artifacts `internal/fabricar/engine.go`, `internal/fabricar/report.go`, `internal/cli/fabricar.go`, `internal/fabricar/motor_real_test.go`
+* **Verificação (argv, sem shell):** `go test -count=1 -v -run ^TestMotorReal ./internal/fabricar/... ./internal/cli/...`; `go vet ./internal/fabricar/... ./internal/cli/...`; `go run ./tools/funclen internal/fabricar`; `go run ./tools/funclen internal/cli`; `go build -o bin/legoloop.exe ./cmd/legoloop`
+* **Gate (DSL):** `exit_code == 0 && file_exists('internal/fabricar/engine.go') && file_exists('internal/fabricar/motor_real_test.go')`
+* **Spec Ref:** `AC-E02.6`
+* **Escopo:** O fabricar não varre drives: lê registry_matrix.json e vocab.json do cofre e mostra a idade da matriz; sem matriz, exit 1 com aviso STE-PT para rodar 'legoloop matriz gerar'. A Camada 3 chama Necessidades, MergeByFit e Explain; o Report traz as decisões reais com Motivo e nunca inventa 'selecionada na fusão'. Prova pelo binário: matriz de teste com aidd-tdd e aidd-site-dominator, a escolha segue a aptidão, não o Score.
+
+#### Ticket `TICK-02.17` — Camada 4 pelo Processo: seis projeções e processo.json no plano atômico
+* **Nature:** `macro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Dependências:** `["TICK-02.16"]`
+* **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `high` · Fallback Harness `9router` · Modelo `code-fast`
+* **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
+* **Limites:** Timeout `600s` · Teto de saída `1200` tokens · Rollback `stash_changes`
+* **Inputs:** Source Files `internal/fabricar/engine.go`, `internal/fabricar/triad.go`, `internal/processo/persistencia.go` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E02.9` · Context Artifacts `[]`
+* **Alvo de Teste TDD:** `internal/fabricar/processo_real_test.go:TestProcessoReal`
+* **Outputs:** Artifacts `internal/fabricar/engine.go`, `internal/fabricar/triad.go`, `internal/processo/persistencia.go`, `internal/fabricar/processo_real_test.go`
+* **Verificação (argv, sem shell):** `go test -count=1 -v -run ^TestProcessoReal ./internal/fabricar/... ./internal/processo/... ./internal/cli/...`; `go vet ./internal/fabricar/... ./internal/processo/... ./internal/cli/...`; `go run ./tools/funclen internal/fabricar`; `go run ./tools/funclen internal/processo`; `go run ./tools/funclen internal/cli`; `go build -o bin/legoloop.exe ./cmd/legoloop`
+* **Gate (DSL):** `exit_code == 0 && file_exists('internal/fabricar/engine.go') && file_exists('internal/fabricar/processo_real_test.go')`
+* **Spec Ref:** `AC-E02.9`
+* **Escopo:** O motor monta o Processo com ProcessoDe e grava SPEC, PLAN, ROUTE, DAG, loop e skill gerados por Projetar (coerência por Verificar), o INTENT da entrevista e loops/<nome>.processo.json, tudo no mesmo plano atômico. Prova pelo binário em --dry-run e gravação em cofre descartável: o processo.json relido valida e tem a natureza; as seis visões listam os mesmos ids.
 
 ---
 

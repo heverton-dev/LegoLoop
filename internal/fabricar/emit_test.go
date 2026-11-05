@@ -18,6 +18,16 @@ import (
 
 var emitNow = time.Date(2026, 11, 3, 10, 0, 0, 0, time.UTC)
 
+func writeFile(t *testing.T, path, content string) {
+	t.Helper()
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func sampleProcess() fabricar.ProcessSpec {
 	return fabricar.ProcessSpec{
 		Name:        "legoloop-extrator-de-audio",

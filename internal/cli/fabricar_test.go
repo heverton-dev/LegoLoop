@@ -12,6 +12,7 @@ import (
 
 	"legoloop/internal/fabricar"
 	"legoloop/internal/interview"
+	"legoloop/internal/matriz"
 	"legoloop/internal/provider"
 	"legoloop/internal/reputation"
 )
@@ -56,13 +57,18 @@ func (f *fakeLLM) Chat(_ context.Context, _ []interview.Message) (string, error)
 	return specFake, nil
 }
 
-type fixedScan struct{}
-
-func (fixedScan) Scan(context.Context, []string, fabricar.ScanOptions) (fabricar.ScanResult, error) {
-	return fabricar.ScanResult{Pieces: []fabricar.DiscoveredPiece{
-		{Name: "alfa", Kind: fabricar.KindSkill, Drive: `C:\`, Path: `C:\s\alfa`, Score: 0.9, Tier: reputation.TierOuro},
-		{Name: "beta", Kind: fabricar.KindSkill, Drive: `C:\`, Path: `C:\s\beta`, Score: 0.8, Tier: reputation.TierPrata},
-	}}, nil
+// matrizCLI é a matriz em memória dos testes da CLI: alfa constrói e beta verifica, ambas de software.
+func matrizCLI() fabricar.MatrizFunc {
+	apta := func(nome string, score float64, etapa string) matriz.Entrada {
+		ref := filepath.Join(os.TempDir(), "s", nome, "SKILL.md")
+		return matriz.Entrada{Ref: ref, Nome: nome, Tipo: "skill", Hash: "h-" + nome,
+			Perfil: &matriz.PerfilDeUso{Etapas: []string{etapa}, Naturezas: []string{"software"}, Origem: matriz.OrigemDeclarado},
+			Rating: reputation.PieceRating{Ref: ref, Name: nome, TotalScore: score, Tier: reputation.TierOuro}}
+	}
+	return func() (fabricar.FonteMatriz, error) {
+		return fabricar.FonteMatriz{Entradas: []matriz.Entrada{apta("alfa", 0.9, "construir"), apta("beta", 0.8, "verificar")},
+			Vocab: matriz.DefaultVocab(), GeradaEm: fabCLINow.Add(-48 * time.Hour)}, nil
+	}
 }
 
 // fabRig monta Deps hermético: inventário com o modelo "sonnet", LLM falso, scanner fixo e relógio fixo.
@@ -83,7 +89,7 @@ func newFabRig(t *testing.T) *fabRig {
 	d.Discover = func(context.Context) provider.Inventory {
 		return provider.Inventory{CLIs: []provider.CLI{{Name: "claude"}}}
 	}
-	d.Fabricar = &FabricarDeps{LLM: llm, Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }}
+	d.Fabricar = &FabricarDeps{LLM: llm, Matriz: matrizCLI(), Clock: func() time.Time { return fabCLINow }}
 	return &fabRig{d: d, out: out, errb: errb, llm: llm, vault: filepath.Join(home, "vault"), doc: filepath.Join(home, "proj")}
 }
 
@@ -234,7 +240,7 @@ func TestRunFabricar(t *testing.T) {
 	t.Run("sem nenhum modelo disponivel falha com 1 e mensagem clara", func(t *testing.T) {
 		r := newFabRig(t)
 		r.d.Discover = func(context.Context) provider.Inventory { return provider.Inventory{} }
-		r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }}
+		r.d.Fabricar = &FabricarDeps{Matriz: matrizCLI(), Clock: func() time.Time { return fabCLINow }}
 		if code := run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista")...); code != 1 {
 			t.Fatalf("exit %d, esperado 1", code)
 		}

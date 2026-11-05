@@ -80,7 +80,7 @@ func TestFabricarCerebro_OllamaSemRouterFabricaDePontaAPonta(t *testing.T) {
 	srv, modelo, calls := fakeOllama(t)
 	r := newFabRig(t)
 	r.d.Discover = func(context.Context) provider.Inventory { return invOllama() }
-	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }, BrainOpts: []brain.Option{brain.WithOllamaURL(srv.URL)}}
+	r.d.Fabricar = &FabricarDeps{Matriz: matrizCLI(), Clock: func() time.Time { return fabCLINow }, BrainOpts: []brain.Option{brain.WithOllamaURL(srv.URL)}}
 	if code := run(t, r.d, r.semModelo("extrator", "--yes", "--sem-entrevista", "--model", "qwen2.5")...); code != 0 {
 		t.Fatalf("exit %d: %s", code, r.errb)
 	}
@@ -96,7 +96,7 @@ func TestFabricarCerebro_SemModeloEscolheOPrimeiroEExplica(t *testing.T) {
 	srv, modelo, _ := fakeOllama(t)
 	r := newFabRig(t)
 	r.d.Discover = func(context.Context) provider.Inventory { return invOllama() }
-	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }, BrainOpts: []brain.Option{brain.WithOllamaURL(srv.URL)}}
+	r.d.Fabricar = &FabricarDeps{Matriz: matrizCLI(), Clock: func() time.Time { return fabCLINow }, BrainOpts: []brain.Option{brain.WithOllamaURL(srv.URL)}}
 	if code := run(t, r.d, r.semModelo("extrator", "--yes", "--sem-entrevista")...); code != 0 {
 		t.Fatalf("exit %d: %s", code, r.errb)
 	}
@@ -109,7 +109,7 @@ func TestFabricarCerebro_JSONMantemOStdoutPuroEExplicaNoStderr(t *testing.T) {
 	srv, _, _ := fakeOllama(t)
 	r := newFabRig(t)
 	r.d.Discover = func(context.Context) provider.Inventory { return invOllama() }
-	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }, BrainOpts: []brain.Option{brain.WithOllamaURL(srv.URL)}}
+	r.d.Fabricar = &FabricarDeps{Matriz: matrizCLI(), Clock: func() time.Time { return fabCLINow }, BrainOpts: []brain.Option{brain.WithOllamaURL(srv.URL)}}
 	if code := run(t, r.d, r.semModelo("extrator", "--yes", "--sem-entrevista", "--json")...); code != 0 {
 		t.Fatalf("exit %d: %s", code, r.errb)
 	}

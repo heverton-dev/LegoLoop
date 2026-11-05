@@ -48,7 +48,7 @@ func routerRig(t *testing.T, inventoryURL string) (*fabRig, int) {
 	r.d.Discover = func(context.Context) provider.Inventory {
 		return provider.Inventory{RouterURL: inventoryURL, RouterModels: []string{"code-pro"}}
 	}
-	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }}
+	r.d.Fabricar = &FabricarDeps{Matriz: matrizCLI(), Clock: func() time.Time { return fabCLINow }}
 	return r, run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista", "--model", "code-pro")...)
 }
 
@@ -119,7 +119,7 @@ func TestFabricarUsesTheChosenModelAsTheBrain(t *testing.T) {
 	r.d.Discover = func(context.Context) provider.Inventory {
 		return provider.Inventory{RouterURL: router.URL, RouterModels: []string{"code-fast", "code-pro"}}
 	}
-	r.d.Fabricar = &FabricarDeps{Scanner: fixedScan{}, Clock: func() time.Time { return fabCLINow }}
+	r.d.Fabricar = &FabricarDeps{Matriz: matrizCLI(), Clock: func() time.Time { return fabCLINow }}
 	if code := run(t, r.d, r.args("extrator", "--yes", "--sem-entrevista", "--model", "code-fast")...); code != 0 {
 		t.Fatalf("exit %d: %s", code, r.errb)
 	}

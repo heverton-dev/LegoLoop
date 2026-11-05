@@ -30,7 +30,7 @@ func TestStudioCerebro_OllamaSemRouterFabrica(t *testing.T) {
 	s, _, _ := newAssetsServer(t)
 	s.Discover = func(context.Context) provider.Inventory { return provider.Inventory{Ollama: []string{"qwen2.5"}} }
 	s.BrainOpts = []brain.Option{brain.WithOllamaURL(ollama.URL)}
-	s.FabricarScanner = studioScan{}
+	s.FabricarMatriz = studioMatriz()
 
 	code, body := postFabricar(t, s, `{"name":"Extrator","goal":"extrair","category":"build","model":"qwen2.5"}`)
 	if code != http.StatusOK {

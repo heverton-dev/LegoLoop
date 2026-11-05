@@ -155,7 +155,7 @@ func TestFabricarRunFailsCleanly(t *testing.T) {
 func TestFabricarRunContractFailureIs502(t *testing.T) {
 	s, _, _ := catalogServer(t, &specOnlyLLM{})
 	s.Fabricar = func(ctx context.Context, req fabricar.Request) (*fabricar.Result, error) {
-		return fabricar.Fabricar(ctx, req, fabricar.Deps{LLM: badLLM{}, Scanner: studioScan{}, Roots: fabricar.Roots{Vault: s.Vault, Docs: s.ProjectDir}})
+		return fabricar.Fabricar(ctx, req, fabricar.Deps{LLM: badLLM{}, Matriz: studioMatriz(), Roots: fabricar.Roots{Vault: s.Vault, Docs: s.ProjectDir}})
 	}
 	if code, body := postFabricar(t, s, okBody); code != http.StatusBadGateway {
 		t.Errorf("SPEC fora do contrato = %d, esperado 502: %s", code, body)

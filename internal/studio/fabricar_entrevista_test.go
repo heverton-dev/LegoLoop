@@ -46,7 +46,7 @@ func TestStudioEntrevista(t *testing.T) {
 			CLIs:         []provider.CLI{{Name: "claude"}},
 		}
 	}
-	s.FabricarScanner = studioScan{}
+	s.FabricarMatriz = studioMatriz()
 
 	vault, err := s.vault()
 	if err != nil {
@@ -79,12 +79,11 @@ func TestStudioEntrevista(t *testing.T) {
 
 	// 3. Configura s.Fabricar para associar a sessão carregada
 	s.Fabricar = func(ctx context.Context, req fabricar.Request) (*fabricar.Result, error) {
-		req.TargetDrives = []string{`C:\`}
 		deps := fabricar.Deps{
-			LLM:     llm,
-			Scanner: studioScan{},
-			Clock:   func() time.Time { return studioNow },
-			Roots:   fabricar.Roots{Vault: vault, Docs: s.ProjectDir},
+			LLM:    llm,
+			Matriz: studioMatriz(),
+			Clock:  func() time.Time { return studioNow },
+			Roots:  fabricar.Roots{Vault: vault, Docs: s.ProjectDir},
 		}
 		if sess, err := s.Interview.GetSession(sessID); err == nil && sess != nil {
 			clar := fabricar.ClarificationFromSession(sess)

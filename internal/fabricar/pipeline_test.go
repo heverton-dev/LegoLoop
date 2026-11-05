@@ -3,8 +3,6 @@ package fabricar_test
 import (
 	"context"
 	"errors"
-	"slices"
-	"strings"
 	"testing"
 
 	"legoloop/internal/fabricar"
@@ -143,72 +141,4 @@ func stepNames(m fabricar.Merged) []string {
 		out = append(out, s.Piece)
 	}
 	return out
-}
-
-func TestArchitectMerger_SelectsByScoreThenPathAndExcludesUntrustedByDefault(t *testing.T) {
-	pieces := []fabricar.DiscoveredPiece{
-		piece("b", "D:\\b", 0.9, false), piece("a", "D:\\a", 0.9, false),
-		piece("c", "D:\\c", 0.8, false), piece("pendrive", "E:\\p", 0.99, true),
-	}
-	m := fabricar.ArchitectMerge(pieces, fabricar.MergeOptions{})
-	if !slices.Equal(stepNames(m), []string{"a", "b", "c"}) {
-		t.Errorf("ordem = %v; quer Score desc, Path asc, sem Untrusted", stepNames(m))
-	}
-	if len(m.Excluded) != 1 || m.Excluded[0].Name != "pendrive" || len(m.Warnings) == 0 {
-		t.Errorf("a peça de origem não confiável deve ficar de fora, com aviso: %+v %v", m.Excluded, m.Warnings)
-	}
-	trusted := fabricar.ArchitectMerge(pieces, fabricar.MergeOptions{TrustRemovable: true})
-	if !slices.Contains(stepNames(trusted), "pendrive") {
-		t.Errorf("com TrustRemovable a peça entra: %v", stepNames(trusted))
-	}
-}
-
-func TestArchitectMerger_NeverInheritsMCPsHooksOrScripts(t *testing.T) {
-	var pieces []fabricar.DiscoveredPiece
-	for _, k := range []fabricar.PieceKind{fabricar.KindMCP, fabricar.KindHook, fabricar.KindScript, fabricar.KindLoop} {
-		pieces = append(pieces, fabricar.DiscoveredPiece{Name: "x-" + string(k), Kind: k, Score: 1, Tier: reputation.TierOuro})
-	}
-	m := fabricar.ArchitectMerge(pieces, fabricar.MergeOptions{})
-	for _, name := range stepNames(m) {
-		if strings.HasPrefix(name, "x-") {
-			t.Errorf("só skills viram passos (default-deny para MCP, hook, script e loop): %v", stepNames(m))
-		}
-	}
-	if len(m.Used) != 0 {
-		t.Errorf("nenhuma dessas peças pode ser usada: %+v", m.Used)
-	}
-}
-
-func TestArchitectMerger_DropsToxicDuplicatesAndCapsSteps(t *testing.T) {
-	toxic := piece("t", "D:\\t", 0.1, false)
-	toxic.Tier = reputation.TierToxica
-	pieces := []fabricar.DiscoveredPiece{toxic, piece("dup", "D:\\1", 0.9, false), piece("dup", "D:\\2", 0.7, false)}
-	for _, n := range []string{"e", "f", "g", "h", "i", "j"} {
-		pieces = append(pieces, piece(n, "D:\\"+n, 0.5, false))
-	}
-	m := fabricar.ArchitectMerge(pieces, fabricar.MergeOptions{})
-	names := stepNames(m)
-	if slices.Contains(names, "t") || len(names) != 5 {
-		t.Errorf("tóxica fora e teto de 5 passos: %v", names)
-	}
-	if names[0] != "dup" || countName(names, "dup") != 1 {
-		t.Errorf("duplicada: fica só a melhor: %v", names)
-	}
-}
-
-func TestArchitectMerger_FallsBackToDefaultStepsWithAWarning(t *testing.T) {
-	m := fabricar.ArchitectMerge(nil, fabricar.MergeOptions{})
-	if !slices.Equal(stepNames(m), []string{"aidd-spec", "aidd-tickets"}) || len(m.Warnings) == 0 {
-		t.Errorf("sem peças curadas usa os passos padrão e avisa: %v %v", stepNames(m), m.Warnings)
-	}
-}
-
-func countName(names []string, want string) int {
-	n := 0
-	for _, s := range names {
-		if s == want {
-			n++
-		}
-	}
-	return n
 }

@@ -4,12 +4,10 @@ import (
 	"context"
 	"os"
 	"path/filepath"
-	"slices"
 	"strings"
 	"testing"
 	"time"
 
-	"legoloop/internal/fabricar"
 	"legoloop/internal/interview"
 	"legoloop/internal/provider"
 )
@@ -27,8 +25,13 @@ type chatLLM struct {
 }
 
 func (c *chatLLM) Chat(_ context.Context, msgs []interview.Message) (string, error) {
-	if strings.Contains(msgs[0].Content, "Arquiteto de Especificações") {
+	switch {
+	case strings.Contains(msgs[0].Content, "Arquiteto de Especificações"):
 		return specFake, nil
+	case strings.Contains(msgs[0].Content, "vocabulário fechado do LegoLoop"):
+		return `{"natureza": "software", "etapas": ["construir", "verificar"], "casos": []}`, nil
+	case strings.Contains(msgs[0].Content, "explicador da Fusão"):
+		return `{"explicacoes": {}}`, nil
 	}
 	c.user = append(c.user, msgs[len(msgs)-1].Content)
 	i := min(c.interview, len(c.replies)-1)
@@ -36,17 +39,9 @@ func (c *chatLLM) Chat(_ context.Context, msgs []interview.Message) (string, err
 	return c.replies[i], nil
 }
 
-type recScan struct{ roots *[]string }
-
-func (r recScan) Scan(ctx context.Context, roots []string, o fabricar.ScanOptions) (fabricar.ScanResult, error) {
-	*r.roots = slices.Clone(roots)
-	return fixedScan{}.Scan(ctx, roots, o)
-}
-
 type interRig struct {
 	*fabRig
-	llm     *chatLLM
-	scanned []string
+	llm *chatLLM
 }
 
 // newInterRig prepara o terminal roteirizado: stdin é o que o usuário digitaria, em ordem.
@@ -57,8 +52,7 @@ func newInterRig(t *testing.T, stdin string, replies ...string) *interRig {
 	r.d.Discover = func(context.Context) provider.Inventory {
 		return provider.Inventory{CLIs: []provider.CLI{{Name: "claude"}}}
 	}
-	r.d.Fabricar = &FabricarDeps{LLM: r.llm, Scanner: recScan{&r.scanned}, Clock: func() time.Time { return fabCLINow },
-		DriveRoots: func(context.Context) []string { return []string{`C:\`, `D:\`} }}
+	r.d.Fabricar = &FabricarDeps{LLM: r.llm, Matriz: matrizCLI(), Clock: func() time.Time { return fabCLINow }}
 	return r
 }
 
@@ -70,12 +64,12 @@ func (r *interRig) fabricar(t *testing.T, extra ...string) int {
 func (r *interRig) wrote(t *testing.T) int { return len(r.files(t)) }
 
 func TestRunFabricarInteractive(t *testing.T) {
-	t.Run("caminho feliz: palpite aceito, drives mantidos, confirmado", func(t *testing.T) {
-		r := newInterRig(t, "\n1\ns\n", lowReply, doneReply)
+	t.Run("caminho feliz: palpite aceito e confirmado", func(t *testing.T) {
+		r := newInterRig(t, "1\ns\n", lowReply, doneReply)
 		if code := r.fabricar(t); code != 0 {
 			t.Fatalf("exit %d\n%s\n%s", code, r.out, r.errb)
 		}
-		for _, want := range []string{`[1] C:\`, `[2] D:\`, "[1] Aceitar o palpite: mp3", "[1] seguir", "SKILL.md", "legoloop-novo-fluxo"} {
+		for _, want := range []string{"[1] Aceitar o palpite: mp3", "[1] seguir", "SKILL.md", "legoloop-novo-fluxo"} {
 			if !strings.Contains(r.out.String(), want) {
 				t.Errorf("saída sem %q:\n%s", want, r.out)
 			}
@@ -83,8 +77,8 @@ func TestRunFabricarInteractive(t *testing.T) {
 		if r.wrote(t) != 8 {
 			t.Errorf("devia gravar 8 arquivos, gravou %d", r.wrote(t))
 		}
-		if !slices.Equal(r.scanned, []string{`C:\`, `D:\`}) {
-			t.Errorf("drives escaneados: %v", r.scanned)
+		if strings.Contains(r.out.String(), "Drives detectados") {
+			t.Errorf("o fabricar não pergunta drives: as peças vêm da matriz:\n%s", r.out)
 		}
 		intent := firstGlob(t, filepath.Join(r.doc, "docs", "intents", "*.md"))
 		if !strings.Contains(intent, "extrair áudio em mp3") {
@@ -92,18 +86,8 @@ func TestRunFabricarInteractive(t *testing.T) {
 		}
 	})
 
-	t.Run("desmarcar um drive", func(t *testing.T) {
-		r := newInterRig(t, "2\n1\ns\n", lowReply, doneReply)
-		if code := r.fabricar(t); code != 0 {
-			t.Fatalf("exit %d: %s", code, r.errb)
-		}
-		if !slices.Equal(r.scanned, []string{`C:\`}) {
-			t.Errorf("o drive 2 devia ter sido desmarcado: %v", r.scanned)
-		}
-	})
-
 	t.Run("resposta livre vai para a entrevista", func(t *testing.T) {
-		r := newInterRig(t, "\n2\nSó mp3 e wav\ns\n", lowReply, doneReply)
+		r := newInterRig(t, "2\nSó mp3 e wav\ns\n", lowReply, doneReply)
 		if code := r.fabricar(t); code != 0 {
 			t.Fatalf("exit %d: %s", code, r.errb)
 		}
@@ -113,7 +97,7 @@ func TestRunFabricarInteractive(t *testing.T) {
 	})
 
 	t.Run("responder N nao grava e sai com 1", func(t *testing.T) {
-		r := newInterRig(t, "\n1\nn\n", lowReply, doneReply)
+		r := newInterRig(t, "1\nn\n", lowReply, doneReply)
 		if code := r.fabricar(t); code != 1 {
 			t.Fatalf("exit %d, esperado 1", code)
 		}
@@ -123,35 +107,35 @@ func TestRunFabricarInteractive(t *testing.T) {
 	})
 
 	t.Run("Enter vazio na confirmacao vale N", func(t *testing.T) {
-		r := newInterRig(t, "\n1\n\n", lowReply, doneReply)
+		r := newInterRig(t, "1\n\n", lowReply, doneReply)
 		if code := r.fabricar(t); code != 1 || r.wrote(t) != 0 {
 			t.Fatalf("exit %d gravou=%d", code, r.wrote(t))
 		}
 	})
 
 	t.Run("EOF antes da confirmacao aborta com 1 sem gravar", func(t *testing.T) {
-		r := newInterRig(t, "\n1\n", lowReply, doneReply)
+		r := newInterRig(t, "1\n", lowReply, doneReply)
 		if code := r.fabricar(t); code != 1 || r.wrote(t) != 0 {
 			t.Fatalf("exit %d gravou=%d", code, r.wrote(t))
 		}
 	})
 
 	t.Run("EOF no meio da entrevista aborta com 1", func(t *testing.T) {
-		r := newInterRig(t, "\n", lowReply, doneReply)
+		r := newInterRig(t, "", lowReply, doneReply)
 		if code := r.fabricar(t); code != 1 || r.wrote(t) != 0 {
 			t.Fatalf("exit %d gravou=%d", code, r.wrote(t))
 		}
 	})
 
 	t.Run("opcao 0 cancela a entrevista", func(t *testing.T) {
-		r := newInterRig(t, "\n0\n", lowReply, doneReply)
+		r := newInterRig(t, "0\n", lowReply, doneReply)
 		if code := r.fabricar(t); code != 1 || r.wrote(t) != 0 {
 			t.Fatalf("exit %d gravou=%d", code, r.wrote(t))
 		}
 	})
 
 	t.Run("tres entradas invalidas seguidas abortam", func(t *testing.T) {
-		r := newInterRig(t, "\n9\nabc\nzzz\n", lowReply, doneReply)
+		r := newInterRig(t, "9\nabc\nzzz\n", lowReply, doneReply)
 		if code := r.fabricar(t); code != 1 || r.wrote(t) != 0 {
 			t.Fatalf("exit %d gravou=%d", code, r.wrote(t))
 		}
@@ -164,21 +148,14 @@ func TestRunFabricarInteractive(t *testing.T) {
 	})
 
 	t.Run("duas invalidas e depois valida segue em frente", func(t *testing.T) {
-		r := newInterRig(t, "\n9\nabc\n1\ns\n", lowReply, doneReply)
+		r := newInterRig(t, "9\nabc\n1\ns\n", lowReply, doneReply)
 		if code := r.fabricar(t); code != 0 {
 			t.Fatalf("exit %d: %s", code, r.errb)
 		}
 	})
 
-	t.Run("drive invalido reapresenta e aborta na terceira", func(t *testing.T) {
-		r := newInterRig(t, "x\n99\n1,2\n", lowReply, doneReply)
-		if code := r.fabricar(t); code != 1 || r.wrote(t) != 0 {
-			t.Fatalf("exit %d gravou=%d (desmarcar todos os drives é inválido)", code, r.wrote(t))
-		}
-	})
-
 	t.Run("12 turnos sem chegar a 95 por cento pergunta sobre a SPEC e depois confirma a gravacao", func(t *testing.T) {
-		in := "\n" + strings.Repeat("1\n", 12) + "s\ns\n"
+		in := strings.Repeat("1\n", 12) + "s\ns\n"
 		r := newInterRig(t, in, lowReply)
 		if code := r.fabricar(t); code != 0 {
 			t.Fatalf("exit %d: %s\n%s", code, r.errb, r.out)
@@ -192,7 +169,7 @@ func TestRunFabricarInteractive(t *testing.T) {
 	})
 
 	t.Run("dry-run interativo nao pergunta a confirmacao nem grava", func(t *testing.T) {
-		r := newInterRig(t, "\n1\n", lowReply, doneReply)
+		r := newInterRig(t, "1\n", lowReply, doneReply)
 		if code := r.fabricar(t, "--dry-run"); code != 0 || r.wrote(t) != 0 {
 			t.Fatalf("exit %d gravou=%d: %s", code, r.wrote(t), r.errb)
 		}
