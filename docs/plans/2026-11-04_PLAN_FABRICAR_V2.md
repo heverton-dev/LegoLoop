@@ -505,7 +505,7 @@
 * **Escopo:** Peça que só casa a etapa e a natureza coringa (aptidão 0, quando há casos pedidos) não é escolhida: a etapa vira lacuna com motivo. Cada caso de uso pedido conta só na etapa a que pertence, não em todas. Prova pelo binário com a matriz real num cofre descartável: no caso dos preços, nenhuma peça de aptidão 0 entra; no caso de software, a escolha de construir casa tdd.
 
 #### Ticket `TICK-02.19` — Lacuna visível no --dry-run: relatório e cartão
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-02.18"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
