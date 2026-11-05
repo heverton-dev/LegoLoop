@@ -36,12 +36,15 @@ type Artefato struct {
 
 // Etapa é a unidade única do processo. SPEC, PLAN, ROUTE, DAG, loop e skill são projeções dela.
 type Etapa struct {
-	ID      string   `json:"id"`
-	Titulo  string   `json:"titulo"`
-	Tipo    string   `json:"tipo"`             // etapa do vocabulário (ex.: "construir")
-	Peca    string   `json:"peca"`             // "" = lacuna declarada
-	Casos   []string `json:"casos,omitempty"`  // casos de uso pedidos para esta etapa (o listar usa na lacuna)
-	Compoe  string   `json:"compoe,omitempty"` // "nome@versao" se a etapa é outro processo
+	ID     string   `json:"id"`
+	Titulo string   `json:"titulo"`
+	Tipo   string   `json:"tipo"`             // etapa do vocabulário (ex.: "construir")
+	Peca   string   `json:"peca"`             // "" = lacuna declarada
+	Casos  []string `json:"casos,omitempty"`  // casos de uso pedidos para esta etapa (o listar usa na lacuna)
+	Compoe string   `json:"compoe,omitempty"` // "nome@versao" se a etapa é outro processo
+	// Origem só vale com Compoe: o caminho do artefato dentro do processo composto. Produz.Caminho é o caminho
+	// no processo que recebe a etapa. Vazia = o mesmo caminho dos dois lados (etapas compostas antigas).
+	Origem  string   `json:"origem,omitempty"`
 	Consome []string `json:"consome"`
 	Produz  Artefato `json:"produz"`
 	Gate    string   `json:"gate"` // expressão da DSL de internal/gate
@@ -119,10 +122,32 @@ func (e Etapa) validate(ids map[string]bool) error {
 		return invalido("etapa %q: o gate não compila: %v", e.ID, err)
 	}
 	c := e.Produz.Caminho
-	if c == "" || strings.HasPrefix(c, "/") || !filepath.IsLocal(filepath.FromSlash(c)) {
+	if !caminhoLocal(c) {
 		return invalido("etapa %q: o artefato %q precisa de caminho relativo dentro do projeto", e.ID, c)
 	}
+	if err := e.validarOrigem(); err != nil {
+		return err
+	}
 	return gateNaoTrivial(e, g)
+}
+
+// caminhoLocal: relativo e dentro da raiz. filepath.IsLocal já recusa o vazio e o caminho que começa com "/"
+// (no Windows, "/x" vira "\x", que não é local).
+func caminhoLocal(c string) bool {
+	return filepath.IsLocal(filepath.FromSlash(c))
+}
+
+// validarOrigem: a origem só existe na etapa composta e é um caminho relativo dentro do processo composto.
+func (e Etapa) validarOrigem() error {
+	switch {
+	case e.Origem == "":
+		return nil
+	case e.Compoe == "":
+		return invalido("etapa %q: a origem %q só vale na etapa que executa outro processo", e.ID, e.Origem)
+	case !caminhoLocal(e.Origem):
+		return invalido("etapa %q: a origem %q precisa de caminho relativo dentro do processo composto", e.ID, e.Origem)
+	}
+	return nil
 }
 
 // grafo recusa ciclos e etapas sem conexão (quando há mais de uma etapa, toda etapa precisa ligar-se a outra).

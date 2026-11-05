@@ -181,6 +181,7 @@ func TestCompor(t *testing.T) {
 	t.Run("depende escolhido pelo usuário", testDepende)
 	t.Run("personalizar: vale o último plano", testPersonalizar)
 	t.Run("artefato repetido: erro claro", testArtefatoRepetido)
+	t.Run("mesmo artefato em a e b: caminho próprio no pai", testMesmoArtefato)
 	t.Run("cartão cumpre o STE-PT", testCartao)
 	t.Run("raízes vazias", testRaizesVazias)
 	t.Run("outro dia: mantém os nomes e a criação", testOutroDia)
@@ -204,9 +205,12 @@ func testLigar(t *testing.T) {
 		t.Fatalf("processo a: versão %q, histórico %v, %d etapas", a.Versao, a.Historico, len(a.Etapas))
 	}
 	e := a.Etapas[3]
-	termB := processoDe(nomeB, 2).Etapas[1]
+	// o artefato de b chega ao pai em out/<b>/<arquivo>; a origem é o caminho dentro de b (TICK-03.4b)
+	quer := processoDe(nomeB, 2).Etapas[1].Produz
+	quer.Caminho = "out/legoloop-b/e02.md"
 	if e.ID != "e04" || e.Compoe != nomeB+"@1.0.0" || e.Peca != "" || !slices.Equal(e.Depende, []string{"e03"}) ||
-		e.Produz != termB.Produz || e.Gate != termB.Gate || !slices.Equal(e.Consome, []string{"out/a/e03.md"}) ||
+		e.Produz != quer || e.Origem != "out/b/e02.md" || e.Gate != "file_exists('out/legoloop-b/e02.md')" ||
+		!slices.Equal(e.Consome, []string{"out/a/e03.md"}) ||
 		e.Titulo != "Executar o processo legoloop-b" {
 		t.Errorf("etapa composta: %+v", e)
 	}
@@ -574,13 +578,70 @@ func testPersonalizar(t *testing.T) {
 	}
 }
 
+// testArtefatoRepetido: a colisão agora é com o caminho do artefato no pai (out/<b>/<arquivo>). O caminho
+// dentro de b (out/b/e02.md) não colide mais: isso é o testMesmoArtefato.
 func testArtefatoRepetido(t *testing.T) {
 	c := semear(t, nomeB)
 	a := processoDe(nomeA, 3)
-	a.Etapas[0].Produz.Caminho, a.Etapas[0].Gate = "out/b/e02.md", "file_exists('out/b/e02.md')"
-	a.Etapas[1].Consome = []string{"out/b/e02.md"}
+	a.Etapas[0].Produz.Caminho, a.Etapas[0].Gate = "out/legoloop-b/e02.md", "file_exists('out/legoloop-b/e02.md')"
+	a.Etapas[1].Consome = []string{"out/legoloop-b/e02.md"}
 	gravar(t, c, a)
-	esperarFalha(t, c, nomeA, nomeB+"@1.0.0", compor.ErrPedido, "out/b/e02.md", "e01", nomeB)
+	esperarFalha(t, c, nomeA, nomeB+"@1.0.0", compor.ErrPedido, "out/legoloop-b/e02.md", "e01", nomeB)
+}
+
+// comoFabricar devolve o processo como o fabricar grava: construir e verificar em out/01_construir.md e
+// out/02_verificar.md, com o gate da biblioteca. Dois processos assim gravam os mesmos caminhos.
+func comoFabricar(t *testing.T, nome string) processo.Processo {
+	t.Helper()
+	p := processo.Processo{Nome: nome, Versao: "1.0.0", Natureza: "software", Objetivo: "Objetivo de " + nome + ".", CriadoEm: inicio}
+	for i, tipo := range []string{"construir", "verificar"} {
+		art := processo.Artefato{Caminho: "out/0" + string(rune('1'+i)) + "_" + tipo + ".md", Tipo: "markdown", Promete: true}
+		g, err := processo.GateParaArtefato(art)
+		if err != nil {
+			t.Fatal(err)
+		}
+		e := processo.Etapa{ID: "e0" + string(rune('1'+i)), Titulo: "Etapa " + tipo, Tipo: tipo, Peca: "aidd-tdd", Produz: art, Gate: g}
+		if i > 0 {
+			e.Depende, e.Consome = []string{"e01"}, []string{"out/01_construir.md"}
+		}
+		p.Etapas = append(p.Etapas, e)
+	}
+	return p
+}
+
+// testMesmoArtefato: a e b gravam out/02_verificar.md. O compor liga b em a: o artefato de b chega ao pai em
+// out/legoloop-b/02_verificar.md, o gate confere esse caminho e o DAG vale. A etapa e02 de a não muda.
+func testMesmoArtefato(t *testing.T) {
+	root := t.TempDir()
+	c := cofre{vault: filepath.Join(root, "vault"), docs: filepath.Join(root, "proj")}
+	gravar(t, c, comoFabricar(t, nomeA))
+	pb := comoFabricar(t, nomeB)
+	pb.Etapas[0].Produz.Promete = false // o artefato da etapa nova vem da etapa final de b, não da primeira
+	gravar(t, c, pb)
+	if _, err := ligar(c, nomeA, nomeB+"@1.0.0"); err != nil {
+		t.Fatalf("dois processos com os mesmos artefatos deveriam se ligar: %v", err)
+	}
+	a := lerProcesso(t, c, nomeA)
+	e, velha := a.Etapas[2], comoFabricar(t, nomeA).Etapas[1]
+	quer, _ := processo.GateParaArtefato(processo.Artefato{Caminho: "out/legoloop-b/02_verificar.md", Tipo: "markdown"})
+	if e.Produz.Caminho != "out/legoloop-b/02_verificar.md" || e.Origem != "out/02_verificar.md" || e.Gate != quer ||
+		!e.Produz.Promete || !slices.Equal(e.Consome, []string{"out/02_verificar.md"}) {
+		t.Errorf("etapa composta: %+v", e)
+	}
+	if strings.Contains(e.Gate, "'out/02_verificar.md'") || a.Etapas[1].Produz != velha.Produz || a.Etapas[1].Gate != velha.Gate {
+		t.Errorf("o gate da etapa nova não pode conferir o arquivo de a, e a e02 de a não muda: %+v", a.Etapas)
+	}
+	b, err := os.ReadFile(filepath.Join(c.vault, "loops", nomeA+".dag.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	d, err := dag.Parse(b)
+	if err != nil {
+		t.Fatalf("o DAG gravado não é válido: %v", err)
+	}
+	if o := d.Nodes[2].Output; o.Artifact != e.Produz.Caminho || o.SubArtifact != "out/02_verificar.md" || o.Gate != quer {
+		t.Errorf("nó do subloop: %+v", o)
+	}
 }
 
 func testCartao(t *testing.T) {
@@ -608,7 +669,7 @@ func testCartao(t *testing.T) {
 	if i, j := strings.Index(texto, "AVISO:"), strings.Index(texto, "O QUE VAI ACONTECER"); i < 0 || i > j {
 		t.Errorf("o aviso de risco deve vir antes dos passos:\n%s", texto)
 	}
-	for _, quer := range []string{"COMPOR", "DAG", "processo", "e03", "out/b/e02.md"} {
+	for _, quer := range []string{"COMPOR", "DAG", "processo", "e03", "out/b/e02.md", "out/legoloop-b/e02.md"} {
 		if !strings.Contains(diff, quer) {
 			t.Errorf("o diff não diz %q:\n%s", quer, diff)
 		}

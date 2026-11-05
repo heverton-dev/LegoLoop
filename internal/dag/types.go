@@ -94,8 +94,11 @@ type RoutingConfig struct {
 // HandoffContract é a saída imutável do nó e sua condição de saída.
 type HandoffContract struct {
 	Artifact string `json:"artifact"`
-	Schema   string `json:"schema,omitempty"`
-	Gate     string `json:"gate"`
+	// SubArtifact só vale no nó subloop: o caminho do artefato final dentro do diretório do sub-loop. O
+	// orchestrix lê esse caminho no sub-loop e grava em Artifact no pai. Vazio = o mesmo caminho de Artifact.
+	SubArtifact string `json:"sub_artifact,omitempty"`
+	Schema      string `json:"schema,omitempty"`
+	Gate        string `json:"gate"`
 }
 
 // Node é uma peça Lego do pipeline.

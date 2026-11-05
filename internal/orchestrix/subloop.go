@@ -110,12 +110,31 @@ func buildFailedResult(n dag.Node, rep runner.Report) (runner.Result, error) {
 	}, fmt.Errorf("orchestrix: sub-loop %q falhou (%s)", n.Ref, strings.Join(msgs, "; "))
 }
 
-func (o *Orchestrix) finalizeSubloop(n dag.Node, parentDir, subWorkdir string, rep runner.Report) (runner.Result, error) {
-	subArtPath := filepath.Join(subWorkdir, n.Output.Artifact)
-	data, err := os.ReadFile(subArtPath)
+// subArtifact é o caminho do artefato final dentro do sub-loop: sub_artifact, ou o próprio artifact quando
+// o DAG não separa os dois caminhos (contrato antigo).
+func subArtifact(n dag.Node) string {
+	if n.Output.SubArtifact != "" {
+		return n.Output.SubArtifact
+	}
+	return n.Output.Artifact
+}
+
+// readSubArtifact lê o artefato final dentro do diretório do sub-loop, sem sair dele.
+func readSubArtifact(subWorkdir, rel string) ([]byte, error) {
+	root, err := os.OpenRoot(subWorkdir)
 	if err != nil {
-		return runner.Result{}, fmt.Errorf("orchestrix: artefato final %q não produzido pelo sub-loop: %w",
-			n.Output.Artifact, err)
+		return nil, err
+	}
+	defer root.Close()
+	return root.ReadFile(filepath.FromSlash(rel))
+}
+
+// finalizeSubloop lê o artefato final no sub-loop (subArtifact) e grava no pai em n.Output.Artifact.
+func (o *Orchestrix) finalizeSubloop(n dag.Node, parentDir, subWorkdir string, rep runner.Report) (runner.Result, error) {
+	sub := subArtifact(n)
+	data, err := readSubArtifact(subWorkdir, sub)
+	if err != nil {
+		return runner.Result{}, fmt.Errorf("orchestrix: artefato final %q não produzido pelo sub-loop: %w", sub, err)
 	}
 	root, err := os.OpenRoot(parentDir)
 	if err != nil {

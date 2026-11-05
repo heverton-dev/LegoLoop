@@ -78,6 +78,9 @@ func validarEtapa(e Etapa) error {
 	if strings.ContainsAny(e.Produz.Caminho, "`\r\n\t ") {
 		return invalido("etapa %q: o caminho %q não pode ter espaço, crase nem quebra de linha", e.ID, e.Produz.Caminho)
 	}
+	if strings.ContainsAny(e.Origem, "`\r\n\t ") {
+		return invalido("etapa %q: a origem %q não pode ter espaço, crase nem quebra de linha", e.ID, e.Origem)
+	}
 	switch {
 	case e.Peca != "" && e.Compoe != "":
 		return invalido("etapa %q: use peça ou processo composto, não os dois", e.ID)

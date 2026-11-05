@@ -148,13 +148,8 @@ func validateNode(n Node) error {
 	if n.TimeoutSec < 0 || n.TimeoutSec > MaxTimeoutSec {
 		return fmt.Errorf("timeout_sec deve estar entre 0 e %d", MaxTimeoutSec)
 	}
-	if err := validateArtifact(n.Output.Artifact); err != nil {
+	if err := validateOutput(n); err != nil {
 		return err
-	}
-	if n.Output.Schema != "" {
-		if err := validatePath("schema", n.Output.Schema); err != nil {
-			return err
-		}
 	}
 	if err := validateExecution(n.Execution); err != nil {
 		return err
@@ -183,6 +178,31 @@ func validateCommand(cmd []string) error {
 }
 
 func validateArtifact(artifact string) error { return validatePath("artifact", artifact) }
+
+// validateOutput confere os caminhos do contrato de saída: artifact, sub_artifact e schema.
+func validateOutput(n Node) error {
+	if err := validateArtifact(n.Output.Artifact); err != nil {
+		return err
+	}
+	if err := validateSubArtifact(n); err != nil {
+		return err
+	}
+	if n.Output.Schema != "" {
+		return validatePath("schema", n.Output.Schema)
+	}
+	return nil
+}
+
+// validateSubArtifact: sub_artifact só existe no nó subloop e segue a mesma regra de caminho do artifact.
+func validateSubArtifact(n Node) error {
+	if n.Output.SubArtifact == "" {
+		return nil
+	}
+	if n.Type != TypeSubloop {
+		return fmt.Errorf("sub_artifact só vale no nó subloop (tipo %q)", n.Type)
+	}
+	return validatePath("sub_artifact", n.Output.SubArtifact)
+}
 
 // ValidateArtifact aplica ao nome de um artefato a mesma regra do contrato: caminho relativo ao
 // projeto, sem ":", sem nome curto 8.3 e fora dos diretórios sensíveis.

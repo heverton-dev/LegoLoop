@@ -161,8 +161,12 @@ func compRodar(t *testing.T, bin string, router *httptest.Server, root, proj, va
 			t.Errorf("o nó %s rodou fora do router falso: %s", n.ID, n.Model)
 		}
 	}
-	if _, err := os.Stat(filepath.Join(work, "out", "b", "e02.md")); err != nil || chamadas.Load() != 5 {
+	// TICK-03.4b: o artefato de b chega ao pai em out/<b>/<arquivo>, não no caminho que ele tem dentro de b
+	if _, err := os.Stat(filepath.Join(work, "out", "legoloop-b", "e02.md")); err != nil || chamadas.Load() != 5 {
 		t.Errorf("artefato do subloop: %v; chamadas ao router: %d (esperava 3 de a e 2 de b)", err, chamadas.Load())
+	}
+	if _, err := os.Stat(filepath.Join(work, "out", "b", "e02.md")); err == nil {
+		t.Error("o caminho de dentro de b não pode aparecer no pai")
 	}
 }
 

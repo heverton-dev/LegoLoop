@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"slices"
@@ -56,7 +57,7 @@ func init() {
 		"compor.ciclo":              "Ligar %s em %s cria um ciclo: %s.",
 		"compor.ja_compoe":          "O processo %s já usa %s na etapa %s.",
 		"compor.sem_etapa":          "O processo %s não tem a etapa %s. As etapas são: %s.",
-		"compor.artefato_repetido":  "A etapa %s de %s já grava %s. O processo %s grava o mesmo arquivo, e o DAG não aceita dois nós no mesmo arquivo.",
+		"compor.artefato_repetido":  "A etapa %s de %s já grava %s. A etapa nova grava o artefato de %s no mesmo arquivo. O DAG não aceita dois nós no mesmo arquivo.",
 		"compor.titulo_padrao":      "Executar o processo %s",
 		"compor.cancelado":          "Operação cancelada. Nenhum arquivo mudou.",
 		"compor.concluido":          "Processo %s ligado a %s na etapa %s: versão %s para %s.",
@@ -65,7 +66,7 @@ func init() {
 		"compor.diff_etapa":         "Etapa nova %s: %s.",
 		"compor.diff_composto":      "Processo que entra: %s.",
 		"compor.diff_depende":       "Depende de: %s.",
-		"compor.diff_produz":        "Artefato: %s.",
+		"compor.diff_produz":        "Artefato: %s. Origem: %s, no processo %s.",
 		"compor.diff_colunas":       "ARQUIVO  ESTADO MUDANÇA   CAMINHO",
 		"compor.cartao_acao":        "Ligar o processo %s em %s",
 		"compor.cartao_aviso":       "O programa troca %d arquivos. Cada original fica guardado como .legoloop-bak.",
@@ -334,7 +335,9 @@ func novaEtapa(a, b processo.Processo, l Ligacao) (processo.Etapa, error) {
 		return processo.Etapa{}, err
 	}
 	fim := ord[len(ord)-1]
-	if err := artefatoLivre(a, b, fim); err != nil {
+	produz := fim.Produz
+	produz.Caminho = noPai(b.Nome, fim.Produz.Caminho)
+	if err := artefatoLivre(a, b, produz.Caminho); err != nil {
 		return processo.Etapa{}, err
 	}
 	titulo := strings.TrimSpace(l.Titulo)
@@ -342,7 +345,7 @@ func novaEtapa(a, b processo.Processo, l Ligacao) (processo.Etapa, error) {
 		titulo = ste.Msg("compor.titulo_padrao", b.Nome)
 	}
 	e := processo.Etapa{ID: proximoID(a.Etapas), Titulo: titulo, Tipo: fim.Tipo, Compoe: b.Nome + "@" + b.Versao,
-		Produz: fim.Produz, Gate: fim.Gate, Depende: deps}
+		Origem: fim.Produz.Caminho, Produz: produz, Gate: gateNoPai(fim.Gate, fim.Produz.Caminho, produz.Caminho), Depende: deps}
 	for _, d := range deps {
 		e.Consome = append(e.Consome, a.Etapas[indiceDe(a.Etapas, d)].Produz.Caminho)
 	}
@@ -415,11 +418,24 @@ func comEtapa(a processo.Processo, e processo.Etapa) (processo.Processo, error) 
 	return novo, nil
 }
 
-// artefatoLivre recusa a ligação quando uma etapa de a já grava o artefato que b devolve: o DAG não aceita
-// dois nós que gravam o mesmo arquivo.
-func artefatoLivre(a, b processo.Processo, fim processo.Etapa) error {
+// noPai devolve o caminho do artefato de b no processo que recebe a etapa: out/<nome-de-b>/<arquivo>. O
+// fabricar grava sempre out/NN_<tipo>.md, então dois processos reais repetem os nomes; no pai, o artefato de b
+// fica numa pasta só dele. O subloop lê o artefato no caminho de dentro de b (a origem) e grava neste.
+func noPai(nomeB, origem string) string {
+	return path.Join("out", nomeB, path.Base(origem))
+}
+
+// gateNoPai troca, no gate da etapa final de b, o literal com o caminho de dentro de b pelo caminho no pai: o
+// gate do nó subloop é conferido no diretório do pai.
+func gateNoPai(gate, origem, destino string) string {
+	return strings.ReplaceAll(gate, "'"+origem+"'", "'"+destino+"'")
+}
+
+// artefatoLivre recusa a ligação quando uma etapa de a já grava o caminho que a etapa nova vai gravar no pai:
+// o DAG não aceita dois nós que gravam o mesmo arquivo.
+func artefatoLivre(a, b processo.Processo, caminho string) error {
 	for _, x := range a.Etapas {
-		if x.Produz.Caminho == fim.Produz.Caminho {
+		if x.Produz.Caminho == caminho {
 			return erroPedido("compor.artefato_repetido", x.ID, a.Nome, x.Produz.Caminho, b.Nome)
 		}
 	}
@@ -597,7 +613,7 @@ func (p Plano) Diff() string {
 	fmt.Fprintf(&b, "  %s\n", ste.Msg("compor.diff_etapa", p.Etapa.ID, p.Etapa.Titulo))
 	fmt.Fprintf(&b, "  %s\n", ste.Msg("compor.diff_composto", p.Etapa.Compoe))
 	fmt.Fprintf(&b, "  %s\n", ste.Msg("compor.diff_depende", strings.Join(p.Etapa.Depende, ", ")))
-	fmt.Fprintf(&b, "  %s\n", ste.Msg("compor.diff_produz", p.Etapa.Produz.Caminho))
+	fmt.Fprintf(&b, "  %s\n", ste.Msg("compor.diff_produz", p.Etapa.Produz.Caminho, p.Etapa.Origem, p.Etapa.Compoe))
 	fmt.Fprintf(&b, "\n%s\n", ste.Msg("compor.diff_colunas"))
 	for _, a := range p.Arquivos {
 		fmt.Fprintf(&b, formato, a.Tipo, a.Estado, a.resumo(), a.Caminho)

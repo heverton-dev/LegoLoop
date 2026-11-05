@@ -93,6 +93,7 @@ func noDe(e Etapa, porID map[string]Etapa) dag.Node {
 	}
 	if e.Compoe != "" {
 		n.Type, n.Ref = dag.TypeSubloop, nomeComposto(e.Compoe)
+		n.Output.SubArtifact = e.Origem
 	} else {
 		n.Type, n.Ref = dag.TypeSkill, "skills/"+e.Peca
 	}
