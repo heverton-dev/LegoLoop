@@ -23,6 +23,7 @@ func targetConfigs(home string) []string {
 	return []string{
 		filepath.Join(home, ".claude.json"),
 		filepath.Join(home, ".config", "mimocode", "mimocode.jsonc"),
+		filepath.Join(home, ".config", "opencode", "opencode.json"),
 		filepath.Join(home, ".cursor", "mcp.json"),
 		filepath.Join(home, ".codeium", "windsurf", "mcp_config.json"),
 	}
@@ -69,6 +70,9 @@ func injectMimoConfig(obj map[string]any) {
 		"command": []string{"legoloop", "mcp-router"},
 		"enabled": true,
 	}
+	if reaCfg, ok := mcpMap["rea"].(map[string]any); ok {
+		reaCfg["enabled"] = false
+	}
 	obj["mcp"] = mcpMap
 }
 
@@ -86,12 +90,17 @@ func injectStandardConfig(obj map[string]any) {
 	obj["mcpServers"] = servers
 }
 
+func isMimoOrOpencode(path string) bool {
+	lower := strings.ToLower(path)
+	return strings.Contains(lower, "mimocode") || strings.Contains(lower, "opencode")
+}
+
 func injectServerConfig(path string, raw []byte) ([]byte, error) {
 	var obj map[string]any
 	if err := json.Unmarshal(raw, &obj); err != nil {
 		return nil, err
 	}
-	if strings.Contains(strings.ToLower(path), "mimocode") {
+	if isMimoOrOpencode(path) {
 		injectMimoConfig(obj)
 	} else {
 		injectStandardConfig(obj)

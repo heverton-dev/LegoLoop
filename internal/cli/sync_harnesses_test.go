@@ -20,7 +20,7 @@ func TestSyncHarnesses(t *testing.T) {
 		t.Fatalf("erro ao criar fixture claude: %v", err)
 	}
 
-	// 2. Cria fixture de ~/.config/mimocode/mimocode.jsonc
+	// 2. Cria fixture de ~/.config/mimocode/mimocode.jsonc e ~/.config/opencode/opencode.json
 	mimoDir := filepath.Join(tmpHome, ".config", "mimocode")
 	if err := os.MkdirAll(mimoDir, 0755); err != nil {
 		t.Fatalf("erro ao criar dir mimocode: %v", err)
@@ -29,6 +29,16 @@ func TestSyncHarnesses(t *testing.T) {
 	mimoData := `{"provider":{"custom":{}}}`
 	if err := os.WriteFile(mimoPath, []byte(mimoData), 0644); err != nil {
 		t.Fatalf("erro ao criar fixture mimocode: %v", err)
+	}
+
+	opencodeDir := filepath.Join(tmpHome, ".config", "opencode")
+	if err := os.MkdirAll(opencodeDir, 0755); err != nil {
+		t.Fatalf("erro ao criar dir opencode: %v", err)
+	}
+	opencodePath := filepath.Join(opencodeDir, "opencode.json")
+	opencodeData := `{"mcp":{"rea":{"enabled":true}}}`
+	if err := os.WriteFile(opencodePath, []byte(opencodeData), 0644); err != nil {
+		t.Fatalf("erro ao criar fixture opencode: %v", err)
 	}
 
 	stdout := &bytes.Buffer{}
@@ -103,5 +113,23 @@ func TestSyncHarnesses(t *testing.T) {
 	legoCfg, ok := mcpMap["legoloop"].(map[string]any)
 	if !ok || legoCfg["type"] != "local" {
 		t.Errorf("esperava mcp.legoloop.type == 'local', obteve: %+v", legoCfg)
+	}
+
+	// Verifica config do OpenCode: mcp.legoloop presente e mcp.rea desativado
+	updatedOpencode, err := os.ReadFile(opencodePath)
+	if err != nil {
+		t.Fatalf("erro ao ler opencode atualizado: %v", err)
+	}
+	var opencodeObj map[string]any
+	if err := json.Unmarshal(updatedOpencode, &opencodeObj); err != nil {
+		t.Fatalf("erro ao decodificar opencode atualizado: %v", err)
+	}
+	opencodeMcp := opencodeObj["mcp"].(map[string]any)
+	if opencodeMcp["legoloop"] == nil {
+		t.Errorf("esperava mcp.legoloop no opencode.json, obteve: %+v", opencodeMcp)
+	}
+	reaMap := opencodeMcp["rea"].(map[string]any)
+	if reaMap["enabled"] != false {
+		t.Errorf("esperava mcp.rea.enabled == false no opencode.json, obteve: %+v", reaMap)
 	}
 }

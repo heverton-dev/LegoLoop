@@ -38,6 +38,16 @@
    * **Stop-gates (`SG-*`) são humanos:** nunca marque um gate como aprovado sem autorização explícita do usuário. Commit e push também só quando pedidos.
    * **Processos:** nunca `taskkill /IM legoloop.exe` (mata o Studio do usuário). Encerre só o PID ou a porta que você mesmo abriu.
    * **Declare o que não foi provado.** Relatórios dizem o que ficou aberto (ex.: `-race`, fluxo com LLM real) em vez de arredondar para "pronto".
+9. **Diagramação Visual Impecável (Zero Quebras em Mermaid e Tabelas):**
+   * **Proibido HTML em Mermaid:** NUNCA use `<br>`, `<br/>`, `<b>` ou qualquer tag HTML em nós ou arestas. Isso quebra o renderizador do chat e expõe o código cru.
+   * **Aspas Obrigatórias:** Todo rótulo de nó deve estar entre aspas duplas: `["Label"]`, `{"Decisão"}`.
+   * **Arestas Seguras:** Nunca use caminhos de arquivos ou barras (`/`) em rótulos de arestas (`-->|"Aresta Segura"|`).
+   * **Tabelas Enxutas:** Alinhamento estrito (`:---`, `:---:`) e colunas concisas para evitar rolagem horizontal na janela do chat.
+10. **Comunicação Canônica STE-PT (Tríade Obrigatória com Bold Limpo):**
+   * Toda interação técnica deve seguir compulsoriamente a Tríade STE-PT compacta, sem blocos de código artificiais e com quebras diretas de linha (dois espaços no final, sem linhas vazias extras):
+   * **Pré-Ação (antes de alterar código):** `**[S] Situação:**`, `**[T] Teoria:**`, `**[E] Execução:**` (com tópicos `· **Ação:**`, `· **Rollback:**`, `· **Decisão:** **[1] seguir** \| **[2] personalizar** \| **[0] cancelar**).
+   * **Pós-Ação (após executar e testar):** `**[S] Situação:**`, `**[T] Tese:**`, `**[E] Evidência:**` (com tópicos `· **Testes:**`, `· **Build:**`, `· **Verificação:**`).
+   * Proibido preâmbulos, saudações ou re-resumos de arquivos no chat.
 
 ---
 

@@ -13,17 +13,15 @@ func PromptRegra(perfil ConfigPerfil) string {
 	var b strings.Builder
 	b.WriteString("# 🛡️ REGRAS DE GOVERNANÇA E ECONOMIA STE-PT\n\n")
 	b.WriteString(blocoInputImperativo())
-	if perfil.Modo == ModoCaveman || perfil.Modo == ModoHibrido {
+	if perfil.Modo == ModoCaveman || perfil.Modo == ModoHibrido || perfil.Modo == ModoStept {
 		b.WriteString(blocoCavemanThinking())
 	}
 	if perfil.Modo == ModoCaveman {
 		b.WriteString(blocoOutputCaveman())
 	}
-	if perfil.Modo == ModoHibrido {
-		b.WriteString(blocoOutputHibrido())
-	}
-	if perfil.Modo == ModoStept || perfil.Modo == ModoHibrido {
-		b.WriteString(blocoCartaoStept(perfil.Pausa))
+	if perfil.Modo == ModoHibrido || perfil.Modo == ModoStept {
+		b.WriteString(blocoOutputTriade())
+		b.WriteString(blocoRegrasConcisao(perfil.Pausa))
 	}
 	return b.String()
 }
@@ -56,13 +54,25 @@ func blocoOutputCaveman() string {
 `
 }
 
-func blocoOutputHibrido() string {
-	return `## 3. CONCISÃO DE OUTPUT (Modo Híbrido - Chat Econômico)
-- Respostas conversacionais ultra-concisas e diretas (1 a 3 linhas no máximo).
-- PROIBIDO re-resumir artefatos, arquivos criados ou diffs de código após a execução.
-- Teto estrito de saída: no máximo 300 tokens para respostas normais e 600 tokens para explicações técnicas.
-- Use listas curtas ou tabelas em vez de parágrafos prolixos.
-- Emita o Cartão de Ação STE-PT antes de qualquer alteração com efeito.
+func blocoOutputTriade() string {
+	return `## 3. CONTRATO DE RESPOSTA OBRIGATÓRIO (TRÍADE STE-PT & CARTÃO DE AÇÃO STE-PT)
+TODA resposta técnica DEVE seguir a hierarquia de negrito limpa, compacta (quebra direta sem linhas em branco extras) e sem blocos de código artificiais:
+
+### FORMATO PRÉ-AÇÃO (Antes de alterar código ou executar comandos com efeito):
+**[S] Situação:** <Cenário factual do problema ou contexto encontrado>
+**[T] Teoria:** <Hipótese técnica e plano de ação antes de alterar código>
+**[E] Execução:**
+· **Ação:** <O que vai ser feito com verbo imperativo e arquivos tocados>
+· **Rollback:** <Comando exato de recuperação caso falhe>
+· **Decisão:** **[1] seguir** | **[2] personalizar** | **[0] cancelar**
+
+### FORMATO PÓS-AÇÃO (Após executar e validar alterações):
+**[S] Situação:** <O que foi executado no sistema>
+**[T] Tese:** <A tese técnica comprovada pela alteração>
+**[E] Evidência:**
+· **Testes:** <Comando de teste executado e resultado real>
+· **Build:** <Status de compilação ou verificação real do sistema>
+· **Verificação:** <Resultado mensurável final>
 
 `
 }
@@ -70,28 +80,23 @@ func blocoOutputHibrido() string {
 func diretivaPausa(pausa Pausa) string {
 	switch pausa {
 	case PausaNunca:
-		return "Exiba o cartão a título informativo e prossiga sem aguardar aprovação."
+		return "Exiba a execução e prossiga sem aguardar aprovação."
 	case PausaSempre:
-		return "Pare e aguarde a aprovação do usuário para todas as ações com efeito."
+		return "Pare em [E] Execução e aguarde a aprovação do usuário para todas as ações com efeito."
 	case PausaDestrutivo:
 		fallthrough
 	default:
-		return "Pare e aguarde a aprovação do usuário apenas em ações destrutivas (deleção, sobrescrita, git reset/clean, drop de dados)."
+		return "Pare em [E] Execução e aguarde a aprovação do usuário apenas em ações destrutivas (deleção, sobrescrita, git reset/clean, drop de dados)."
 	}
 }
 
-func blocoCartaoStept(pausa Pausa) string {
+func blocoRegrasConcisao(pausa Pausa) string {
 	var b strings.Builder
-	b.WriteString("## 4. CARTÃO DE AÇÃO STE-PT (ASD-STE100)\n")
-	b.WriteString("Antes de executar comandos de escrita ou alterações com efeito, emita o cartão:\n\n")
-	b.WriteString("```\n")
-	b.WriteString("AÇÃO: <Verbo imperativo + Alvo>\n")
-	b.WriteString("AVISO: <Impacto de risco ou vazio se seguro>\n")
-	b.WriteString("O QUE VAI ACONTECER: <Lista de passos concretos>\n")
-	b.WriteString("EFEITO: <Arquivos tocados ou estado final>\n")
-	b.WriteString("SE DER ERRADO: <Estratégia de rollback ou recuperação>\n")
-	b.WriteString("DECISÃO: [1] seguir  [2] personalizar  [0] cancelar\n")
-	b.WriteString("```\n\n")
-	fmt.Fprintf(&b, "**Diretiva de Pausa:** %s\n\n", diretivaPausa(pausa))
+	b.WriteString("## 4. DIRETIVAS DE CONCISÃO & PAUSA\n")
+	b.WriteString("- PROIBIDO introduções, preâmbulos, saudações ou explicações prolixas antes de [S].\n")
+	b.WriteString("- Quando o usuário responder confirmações (ex.: '1', 'seguir', 'sim', 'STEPT 1'), vá DIRETO à execução e responda com o formato PÓS-AÇÃO ou próximo PRÉ-AÇÃO.\n")
+	b.WriteString("- Respostas estritamente limitadas a 1 a 3 linhas por bloco.\n")
+	b.WriteString("- PROIBIDO re-resumir artefatos ou diffs após a entrega.\n")
+	fmt.Fprintf(&b, "- **Diretiva de Pausa:** %s\n\n", diretivaPausa(pausa))
 	return b.String()
 }

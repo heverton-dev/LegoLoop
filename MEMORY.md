@@ -287,8 +287,16 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Qualidade & Recompilação:** 100% dos testes verdes em LegoLoop e no Standalone, `go vet` limpo, `gofmt -l .` vazio, `funclen` <= 35 linhas, `go.mod` stdlib pura intacta. Recompilado `bin/legoloop.exe`, `Desktop/stept-cli/bin/stept.exe` e instalado no GOPATH via `go install ./cmd/legoloop`.
   - **Artefatos:** SPEC, PLAN, ROUTE (`SG-FINAL` aprovado) e Relatório Oficial em `docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md`.
 
+- **06/11/2026** — 🛡️ **Canalização da Tríade STE-PT Compacta com Hierarquia de Negrito:**
+  - **Diagnóstico de Usabilidade:** Respostas no chat estavam excessivamente longas e o Cartão solto gerava duplicação; blocos de código pintavam tags em verde indesejado sem contraste.
+  - **Contrato Canônico Unificado:** Fusão da Tríade e do Cartão com hierarquia pura de bold e quebra direta (`· **Ação:**`, etc.):
+    - **Pré-Ação:** `**[S] Situação:**`, `**[T] Teoria:**`, `**[E] Execução:**` + Decisão `[1] seguir` `[2] personalizar` `[0] cancelar`.
+    - **Pós-Ação:** `**[S] Situação:**`, `**[T] Tese:**`, `**[E] Evidência:**` + Testes, Build, Verificação.
+  - **Endurecimento nos Geradores:** Atualizado `internal/ste/prompt.go` e suite de testes (`prompt_test.go`, `mutations_test.go`) no LegoLoop e no standalone `stept-cli`.
+  - **Qualidade & Recompilação:** 100% dos testes verdes nos dois repositórios, `funclen` <= 35 linhas, binários `bin/legoloop.exe` e `stept.exe` recompilados e sincronizados nos 5 harnesses (`stept-rules.md`).
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `main` — Alternador Universal STE-PT implementado e homologado com sucesso.
+- **Status da Branch:** `main` — Alternador Universal STE-PT e Tríade Compacta homologados.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado e instalado (`go install ./cmd/legoloop`).
 - **Projeto Standalone no Desktop:** `C:\Users\trcnologia\Desktop\stept-cli\bin\stept.exe`.
-- **Documentação & Relatório:** `docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md`.
+- **Documentação & Relatório:** `docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md` e `AGENTS.md` (Lei 10).

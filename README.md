@@ -144,6 +144,33 @@ O LegoLoop cobre todo o ciclo de vida de esteiras autônomas através de **5 ver
 * [`MANUAL_FUNCAO_REMOVER_LEGOLOOP.md`](docs/manuals/2026-11-06_MANUAL_FUNCAO_REMOVER_LEGOLOOP.md)
 * [`MANUAL_FUNCAO_COMPOR_LEGOLOOP.md`](docs/manuals/2026-11-06_MANUAL_FUNCAO_COMPOR_LEGOLOOP.md)
 
+## 🛡️ Governança & Alternador STE-PT (`legoloop stept`)
+
+O LegoLoop inclui governança determinística e alternador universal de regras para os 5 harnesses do sistema (**Google Gemini/Antigravity**, **Claude Code**, **OMP CLI**, **OpenCode** e **MimoCode**), além do executável standalone `stept.exe` no PATH:
+
+* **Gerenciamento Unificado:** `legoloop stept [status|set|on|off|scan|manual]`
+* **Modos Suportados:** `hibrido` (padrão recomendado), `stept`, `caveman`, `off`.
+* **Políticas de Pausa:** `destrutivo` (pausa em deleções/resets), `sempre` (pausa em toda alteração com efeito), `nunca` (informativo).
+* **Contrato Canônico da Tríade STE-PT (Hierarquia Visual de Bold Limpa):**
+  * **Pré-Ação (antes de alterar arquivos):**
+    ```markdown
+    **[S] Situação:** <Cenário factual do problema ou contexto encontrado>
+    **[T] Teoria:** <Hipótese técnica e plano de ação antes de alterar código>
+    **[E] Execução:**
+    · **Ação:** <O que vai ser feito com verbo imperativo e arquivos tocados>
+    · **Rollback:** <Comando exato de recuperação caso falhe>
+    · **Decisão:** **[1] seguir** | **[2] personalizar** | **[0] cancelar**
+    ```
+  * **Pós-Ação (após executar e testar):**
+    ```markdown
+    **[S] Situação:** <O que foi executado no sistema>
+    **[T] Tese:** <A tese técnica comprovada pela alteração>
+    **[E] Evidência:**
+    · **Testes:** <Comando de teste executado e resultado real>
+    · **Build:** <Status de compilação ou verificação real do sistema>
+    · **Verificação:** <Resultado mensurável final>
+    ```
+
 ## 🧠 Executores (roteamento por nó)
 
 | `routing.model` | Executor | Observação medida (31/10/2026) |

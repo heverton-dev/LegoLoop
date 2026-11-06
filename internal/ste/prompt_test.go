@@ -38,13 +38,13 @@ func TestPromptRegra(t *testing.T) {
 		blocosObrigatorios := []string{
 			"INPUT IMPERATIVO",
 			"CAVEMAN THINKING",
-			"CARTÃO DE AÇÃO STE-PT",
-			"AÇÃO:",
-			"AVISO:",
-			"O QUE VAI ACONTECER:",
-			"EFEITO:",
-			"SE DER ERRADO:",
-			"DECISÃO:",
+			"TRÍADE STE-PT",
+			"[S] Situação",
+			"[T] Teoria",
+			"[T] Tese",
+			"[E] Execução",
+			"[E] Evidência",
+			"[1] seguir",
 			"ações destrutivas",
 		}
 
@@ -62,11 +62,14 @@ func TestPromptRegra(t *testing.T) {
 		}
 		prompt := ste.PromptRegra(perfil)
 
-		if !strings.Contains(prompt, "CARTÃO DE AÇÃO STE-PT") {
-			t.Errorf("prompt stept deve conter especificacao do cartao")
+		if !strings.Contains(prompt, "TRÍADE STE-PT") {
+			t.Errorf("prompt stept deve conter especificacao da triade")
 		}
 		if !strings.Contains(strings.ToLower(prompt), "todas as ações") && !strings.Contains(strings.ToLower(prompt), "todas as acoes") {
 			t.Errorf("prompt stept com pausa sempre deve mencionar todas as acoes: %s", prompt)
+		}
+		if !strings.Contains(prompt, "1 a 3 linhas") {
+			t.Errorf("prompt stept DEVE exigir teto de 1 a 3 linhas")
 		}
 	})
 }
