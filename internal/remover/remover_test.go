@@ -231,8 +231,23 @@ func TestRemoverErros(t *testing.T) {
 	if _, err := remover.Planejar(ctx, d, "legoloop-zzz"); !errors.Is(err, remover.ErrNaoEncontrado) {
 		t.Errorf("esperava ErrNaoEncontrado, veio %v", err)
 	}
+	arqVault := filepath.Join(t.TempDir(), "arquivo-vault")
+	if err := os.WriteFile(arqVault, []byte("não é pasta"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	dVault := remover.Deps{Store: processo.Store{Roots: processo.Roots{Vault: arqVault}}, Home: d.Home}
+	if _, err := remover.Planejar(ctx, dVault, "legoloop-b"); !errors.Is(err, remover.ErrNaoEncontrado) {
+		t.Errorf("esperava ErrNaoEncontrado para vault arquivo, veio %v", err)
+	}
+	conteudo, err := os.ReadFile(arqVault)
+	if err != nil || string(conteudo) != "não é pasta" {
+		t.Fatalf("o arquivo de vault foi alterado: %s %v", conteudo, err)
+	}
 	cancelado, cancel := context.WithCancel(ctx)
 	cancel()
+	if _, err := remover.Planejar(cancelado, d, "legoloop-b"); !errors.Is(err, context.Canceled) {
+		t.Errorf("planejar cancelado: esperava context.Canceled, veio %v", err)
+	}
 	pl, err := remover.Planejar(ctx, d, "legoloop-b")
 	if err != nil {
 		t.Fatal(err)

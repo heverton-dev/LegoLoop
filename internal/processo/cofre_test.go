@@ -87,6 +87,27 @@ func TestCofreProcessos(t *testing.T) {
 			t.Errorf("gama deveria ter Erro anotado: %+v", procs[2])
 		}
 	})
+
+	t.Run("loop v1 sem campo version devolve versão interrogacao", func(t *testing.T) {
+		vault := t.TempDir()
+		loopsDir := filepath.Join(vault, "loops")
+		if err := os.MkdirAll(loopsDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(loopsDir, "legoloop-semver.loop.json"), []byte(`{"id":"legoloop-semver"}`), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		procs, err := processo.ProcessosDoCofre(vault)
+		if err != nil {
+			t.Fatalf("erro inesperado: %v", err)
+		}
+		if len(procs) != 1 {
+			t.Fatalf("esperava 1 processo, vieram %d", len(procs))
+		}
+		if procs[0].Versao != "?" {
+			t.Errorf("esperava versão '?', veio %q", procs[0].Versao)
+		}
+	})
 }
 
 func TestMapearUsadoPor(t *testing.T) {
