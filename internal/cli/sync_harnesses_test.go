@@ -63,8 +63,11 @@ func TestSyncHarnesses(t *testing.T) {
 	if _, err := os.Stat(claudePath + ".bak_legoloop"); os.IsNotExist(err) {
 		t.Errorf("apply deveria ter criado claude.json.bak_legoloop")
 	}
+	if _, err := os.Stat(mimoPath + ".bak_legoloop"); os.IsNotExist(err) {
+		t.Errorf("apply deveria ter criado mimocode.jsonc.bak_legoloop")
+	}
 
-	// Verifica se a config do claude agora contem o servidor legoloop mcp-router
+	// Verifica config do Claude: usa mcpServers
 	updatedClaude, err := os.ReadFile(claudePath)
 	if err != nil {
 		t.Fatalf("erro ao ler claude atualizado: %v", err)
@@ -79,5 +82,26 @@ func TestSyncHarnesses(t *testing.T) {
 	mcpServers, ok := claudeObj["mcpServers"].(map[string]any)
 	if !ok || mcpServers["legoloop"] == nil {
 		t.Errorf("esperava mcpServers.legoloop no claude.json, obteve: %+v", claudeObj["mcpServers"])
+	}
+
+	// Verifica config do MIMO: usa mcp (rejeita mcpServers com Unrecognized key)
+	updatedMimo, err := os.ReadFile(mimoPath)
+	if err != nil {
+		t.Fatalf("erro ao ler mimocode atualizado: %v", err)
+	}
+	var mimoObj map[string]any
+	if err := json.Unmarshal(updatedMimo, &mimoObj); err != nil {
+		t.Fatalf("erro ao decodificar mimocode atualizado: %v", err)
+	}
+	if mimoObj["mcpServers"] != nil {
+		t.Errorf("mimocode.jsonc nao pode conter 'mcpServers', obteve: %+v", mimoObj["mcpServers"])
+	}
+	mcpMap, ok := mimoObj["mcp"].(map[string]any)
+	if !ok || mcpMap["legoloop"] == nil {
+		t.Errorf("esperava mcp.legoloop no mimocode.jsonc, obteve: %+v", mimoObj["mcp"])
+	}
+	legoCfg, ok := mcpMap["legoloop"].(map[string]any)
+	if !ok || legoCfg["type"] != "local" {
+		t.Errorf("esperava mcp.legoloop.type == 'local', obteve: %+v", legoCfg)
 	}
 }

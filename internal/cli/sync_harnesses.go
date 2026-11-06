@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func parseSyncHarnessesFlags(args []string) (dryRun, apply bool, err error) {
@@ -55,11 +56,23 @@ func backupFile(path string) error {
 	return os.WriteFile(bak, data, 0644)
 }
 
-func injectServerConfig(raw []byte) ([]byte, error) {
-	var obj map[string]any
-	if err := json.Unmarshal(raw, &obj); err != nil {
-		return nil, err
+func injectMimoConfig(obj map[string]any) {
+	delete(obj, "mcpServers")
+	var mcpMap map[string]any
+	if existing, ok := obj["mcp"].(map[string]any); ok && existing != nil {
+		mcpMap = existing
+	} else {
+		mcpMap = make(map[string]any)
 	}
+	mcpMap["legoloop"] = map[string]any{
+		"type":    "local",
+		"command": []string{"legoloop", "mcp-router"},
+		"enabled": true,
+	}
+	obj["mcp"] = mcpMap
+}
+
+func injectStandardConfig(obj map[string]any) {
 	var servers map[string]any
 	if existing, ok := obj["mcpServers"].(map[string]any); ok && existing != nil {
 		servers = existing
@@ -71,6 +84,18 @@ func injectServerConfig(raw []byte) ([]byte, error) {
 		"args":    []string{"mcp-router"},
 	}
 	obj["mcpServers"] = servers
+}
+
+func injectServerConfig(path string, raw []byte) ([]byte, error) {
+	var obj map[string]any
+	if err := json.Unmarshal(raw, &obj); err != nil {
+		return nil, err
+	}
+	if strings.Contains(strings.ToLower(path), "mimocode") {
+		injectMimoConfig(obj)
+	} else {
+		injectStandardConfig(obj)
+	}
 	return json.MarshalIndent(obj, "", "  ")
 }
 
@@ -86,7 +111,7 @@ func syncFile(path string, dryRun bool, out io.Writer) error {
 	if err != nil {
 		return err
 	}
-	updated, err := injectServerConfig(raw)
+	updated, err := injectServerConfig(path, raw)
 	if err != nil {
 		return err
 	}
