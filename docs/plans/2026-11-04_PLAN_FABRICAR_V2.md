@@ -592,7 +592,7 @@
 * **Escopo:** Ligar b@1.0.0 como etapa de a gera um DAG válido (legoloop validate exit 0) e legoloop run executa a sub-etapa; ligar a em b devolve ErrCiclo; ligar um processo inexistente falha com erro claro; em toda falha a árvore não muda.
 
 #### Ticket `TICK-03.5` — Independência das fatias
-* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-03.4","TICK-03.7"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
 * **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `low` · Fallback Harness `9router` · Modelo `code-fast`
