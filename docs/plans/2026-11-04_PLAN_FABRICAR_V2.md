@@ -30,7 +30,7 @@
 | # | Decisão | Valor | Tickets afetados |
 |---|---|---|---|
 | D1 | Onde mora a prova pelo binário | Pacote `internal/e2e`, só de teste, atrás da build tag `e2e`, versionado (reproduzível; `scratch/` é ignorado pelo git) | `TICK-04.2` |
-| D2 | Segundo cérebro de referência (INTENT, risco em aberto) | **A decidir com o usuário no `SG-E03`**: Ollama local ou a CLI de um harness. O `TICK-04.2` não começa sem essa escolha | `TICK-04.2` |
+| D2 | Segundo cérebro de referência (INTENT, risco em aberto) | **Decidido no `SG-E03` (06/11/2026)**: CLI de harness com `agy` / Gemini (`gemini-3.8-flash`) | `TICK-04.2` |
 | D3 | Supervisão | `epic`: o usuário aprova cada épico com a saída real na mão | `SG-E01` a `SG-E04` |
 | D4 | `AC-NF.1` cresce por épico | O catálogo de mensagens STE-PT nasce no `TICK-01.1` e recebe as mensagens de cada ticket; o fechamento é conferido no `TICK-04.4` | `TICK-01.1`, `TICK-04.4` |
 | D5 | ACs com mais de um ticket de apoio | Cada ticket tem um `Spec Ref` principal; os demais ACs que ele também prova aparecem em `Também fecha` | vários |
@@ -637,10 +637,10 @@
 * **Escopo:** O motivo de cada escolha da Fusão cita a origem do perfil da peça (declarado, confirmado ou inferido), e o resumo em texto e o --json do fabricar a mostram. No empate de aptidão, perfil declarado ou confirmado vence o inferido, antes do Score; a aptidão em si não muda. Origem do achado: no SG-E02 (05/11/2026), aidd-piece-upgrader venceu construir com aptidão 1.00 só por perfil inferido. Prova pelo binário com a matriz real em cofre descartável: no caso de software, a linha de construir mostra a origem da peça escolhida.
 
 #### Ticket `TICK-03.6` — Skills universais das seis funções e manuais
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["TICK-03.5"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
-* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `claude-sonnet-5-5` · Effort `medium` · Fallback Harness `9router` · Modelo `task-micro`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites:** Timeout `300s` · Teto de saída `800` tokens · Rollback `stash_changes`
 * **Inputs:** Source Files `internal/cli/instalar_skills.go`, `skills/legoloop-matriz/SKILL.md`, `skills/legoloop-listar/SKILL.md` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E03.6` · Context Artifacts `[]`
@@ -655,20 +655,20 @@
 
 ### 🛑 STOP-GATE HUMANO — ÉPICO 03 (`SG-E03`)
 * **Gate (DSL):** `prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o Épico 04?')`
-- [ ] 100% dos tickets de E03 executados com sucesso (PASS nos gates mecânicos).
-- [ ] Saída **real** do binário instalado apresentada ao usuário, com o que não foi provado declarado.
-- [ ] Autorização explícita do usuário concedida para iniciar o Épico 04.
-- [ ] O usuário escolheu o segundo cérebro de referência (decisão D2).
+- [x] 100% dos tickets de E03 executados com sucesso (PASS nos gates mecânicos).
+- [x] Saída **real** do binário instalado apresentada ao usuário, com o que não foi provado declarado.
+- [x] Autorização explícita do usuário concedida para iniciar o Épico 04.
+- [x] O usuário escolheu o segundo cérebro de referência (decisão D2: `agy` / Gemini).
 
 ---
 
 ### Épico 04 — Studio, prova com o sistema real e fechamento
 
 #### Ticket `TICK-04.1` — Studio com os cinco verbos, cartão e relatório
-* **Nature:** `macro` | **Tipo:** `ui_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Nature:** `macro` | **Tipo:** `ui_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`
 * **Dependências:** `["SG-E03"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
-* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `high` · Fallback Harness `9router` · Modelo `code-fast`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `claude-sonnet-5-5` · Effort `high` · Fallback Harness `9router` · Modelo `code-pro`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites:** Timeout `600s` · Teto de saída `1200` tokens · Rollback `stash_changes`
 * **Inputs:** Source Files `internal/studio/static/processos.js`, `internal/studio/static/app.js`, `internal/studio/static/index.html` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E04.1` · Context Artifacts `[]`
@@ -680,10 +680,10 @@
 * **Escopo:** Fabricar, listar, refinar, remover e compor pelo navegador real mostram o cartão STE-PT, o relatório por camada e a confirmação; sem erro de console ou de CSP; static_test sem innerHTML, diálogo nativo ou emoji; imagens anexadas ao relatório.
 
 #### Ticket `TICK-04.2` — Três cenários de referência, três portas, dois cérebros
-* **Nature:** `macro` | **Tipo:** `script` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+* **Nature:** `macro` | **Tipo:** `script` | **Modo de Execução:** `sequential` | **Status:** `PASSED`
 * **Dependências:** `["TICK-04.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
-* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `high` · Fallback Harness `9router` · Modelo `code-fast`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `claude-sonnet-5-5` · Effort `high` · Fallback Harness `9router` · Modelo `code-pro`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites:** Timeout `600s` · Teto de saída `1200` tokens · Rollback `stash_changes`
 * **Inputs:** Source Files `[]` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E04.2` · Context Artifacts `[]`
@@ -695,10 +695,10 @@
 * **Escopo:** build-engine (software), coleta-de-precos (dados) e manual-de-processo (documentação) pelo binário (CLI), por um harness real (Chat) e pelo Studio, com o 9Router real e um segundo cérebro. Checklist: INTENT sem 'Não informado', peças relevantes e nenhuma proibida, seis visões coerentes, gates não triviais, processo no Catálogo e nos harnesses. Pacote com build tag e2e, só de teste.
 
 #### Ticket `TICK-04.3` — Mutação nos pontos críticos
-* **Nature:** `micro` | **Tipo:** `script` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `script` | **Modo de Execução:** `sequential` | **Status:** `PASSED`
 * **Dependências:** `["TICK-04.2"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
-* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `claude-sonnet-5-5` · Effort `medium` · Fallback Harness `9router` · Modelo `task-micro`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites:** Timeout `300s` · Teto de saída `800` tokens · Rollback `stash_changes`
 * **Inputs:** Source Files `[]` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E04.3` · Context Artifacts `[]`
@@ -710,10 +710,10 @@
 * **Escopo:** Cinco mutações deliberadas (Score no lugar da aptidão; aceitar file_exists isolado; ignorar peça alterada; não desfazer links; escolher sempre o 9Router): cada uma faz ao menos um teste falhar; o relatório lista mutação, teste que a pegou e o resultado.
 
 #### Ticket `TICK-04.4` — Fechamento: suíte, estática, binário, hermetismo e desempenho
-* **Nature:** `micro` | **Tipo:** `script` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+* **Nature:** `micro` | **Tipo:** `script` | **Modo de Execução:** `sequential` | **Status:** `PASSED`
 * **Dependências:** `["TICK-04.3"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
-* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `sonnet` · Effort `medium` · Fallback Harness `9router` · Modelo `code-fast`
+* **Roteamento:** Modo `suggested` · Harness `claude` · Modelo `claude-sonnet-5-5` · Effort `medium` · Fallback Harness `9router` · Modelo `task-micro`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites:** Timeout `300s` · Teto de saída `800` tokens · Rollback `stash_changes`
 * **Inputs:** Source Files `[]` · Spec Anchor `docs/specs/2026-11-04_SPEC_FABRICAR_V2.md#AC-E04.4` · Context Artifacts `[]`
@@ -729,9 +729,9 @@
 
 ### 🛑 STOP-GATE HUMANO — ÉPICO 04 (`SG-E04`)
 * **Gate (DSL):** `prompt('Evidências do Épico 04 aprovadas? Autoriza a homologação final?')`
-- [ ] 100% dos tickets de E04 executados com sucesso (PASS nos gates mecânicos).
-- [ ] Saída **real** do binário instalado apresentada ao usuário, com o que não foi provado declarado.
-- [ ] Autorização explícita do usuário concedida para iniciar a homologação final.
+- [x] 100% dos tickets de E04 executados com sucesso (PASS nos gates mecânicos).
+- [x] Saída **real** do binário instalado apresentada ao usuário, com o que não foi provado declarado.
+- [x] Autorização explícita do usuário concedida para iniciar a homologação final.
 
 ---
 

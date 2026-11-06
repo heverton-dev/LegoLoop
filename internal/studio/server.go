@@ -24,6 +24,7 @@ import (
 	"legoloop/internal/interview"
 	"legoloop/internal/loop"
 	"legoloop/internal/plangen"
+	"legoloop/internal/processo"
 	"legoloop/internal/provider"
 	"legoloop/internal/reputation"
 	"legoloop/internal/specgen"
@@ -70,6 +71,8 @@ type Server struct {
 	BrainOpts []brain.Option
 	// FabricarMatriz substitui a matriz do cofre na fábrica (nil = registry_matrix.json do cofre); usado em testes.
 	FabricarMatriz fabricar.MatrizFunc
+	// StoreOverride força o store do processo diretamente (usado em testes).
+	StoreOverride *processo.Store
 
 	matrixOnce sync.Once
 	matrixReg  *reputation.RegistryMatrix
@@ -87,7 +90,7 @@ func (s *Server) Handler() http.Handler {
 	static, _ := fs.Sub(staticFS, "static")
 	mux := http.NewServeMux()
 	files := http.FileServerFS(static)
-	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /style.css", "GET /components/"} {
+	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /processos.js", "GET /style.css", "GET /components/"} {
 		mux.Handle(p, files)
 	}
 	mux.HandleFunc("GET /inventario", handlePage("inventario.html"))
@@ -112,6 +115,10 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/assets/import", s.handleAssetImport)
 	mux.HandleFunc("POST /api/canonize/piece", s.handleCanonizePiece)
 	mux.HandleFunc("POST /api/fabricar/run", s.handleFabricarRun)
+	mux.HandleFunc("GET /api/processos", s.handleProcessosListar)
+	mux.HandleFunc("POST /api/processos/refinar", s.handleProcessosRefinar)
+	mux.HandleFunc("POST /api/processos/remover", s.handleProcessosRemover)
+	mux.HandleFunc("POST /api/processos/compor", s.handleProcessosCompor)
 	mux.HandleFunc("POST /api/assets/{kind}/{id}/favorite", s.handlePieceFavorite)
 	mux.HandleFunc("POST /api/assets/{kind}/{id}/upgrade", s.handlePieceUpgrade)
 	mux.HandleFunc("DELETE /api/assets/{kind}/{id}", s.handlePieceDelete)

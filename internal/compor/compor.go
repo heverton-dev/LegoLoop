@@ -189,6 +189,11 @@ func (d Deps) agora() time.Time {
 	return d.Clock().UTC()
 }
 
+// Planejar valida o composto, anti-ciclo e gera a prévia dos arquivos sem tocar no disco.
+func Planejar(req Request, d Deps) (Plano, error) {
+	return planejar(req, d)
+}
+
 // planejar lê os dois processos, recusa o ciclo e a versão errada, cria a etapa e regera os arquivos. Não grava.
 func planejar(req Request, d Deps) (Plano, error) {
 	roots := d.Store.Roots

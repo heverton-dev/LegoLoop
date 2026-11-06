@@ -2180,3 +2180,219 @@ lego-item-modal {
 .fabricar-error[hidden] {
   display: none;
 }
+
+/* Modal de Processos & Cartão STE-PT */
+.modal-processos {
+  width: min(840px, 94vw);
+  max-height: min(720px, 90vh);
+}
+.processos-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow-y: auto;
+  max-height: calc(min(720px, 90vh) - 80px);
+}
+.processos-toolbar {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+.processos-toolbar .input {
+  flex: 1;
+}
+.processos-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.processo-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 6px);
+  padding: var(--space-3);
+  background: var(--bg-surface, rgba(255, 255, 255, 0.02));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.processo-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+}
+.processo-card__title-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.processo-card__nome {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-normal, #f1f5f9);
+}
+.processo-card__actions {
+  display: flex;
+  gap: var(--space-1);
+}
+.processo-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.processo-card__desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.processo-card__tags {
+  display: flex;
+  gap: var(--space-1);
+}
+.processo-tag {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-hover, rgba(255, 255, 255, 0.05));
+  color: var(--text-muted);
+}
+
+/* Painel de Ações de Processo (Refinar / Compor / Remover) */
+.processos-action-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 6px);
+  padding: var(--space-3);
+  background: var(--bg-surface, rgba(255, 255, 255, 0.03));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.processos-action-panel[hidden] {
+  display: none;
+}
+.processos-form-grid {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* Cartão STE-PT Universal */
+.cartao-ste {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 6px);
+  padding: var(--space-3);
+  background: var(--bg-surface, rgba(255, 255, 255, 0.02));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.cartao-ste__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cartao-ste__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-normal, #f1f5f9);
+}
+.cartao-ste__aviso {
+  border-left: 3px solid var(--danger, #e5484d);
+  background: rgba(229, 72, 77, 0.08);
+  padding: var(--space-2);
+  border-radius: 0 var(--radius-sm, 4px) var(--radius-sm, 4px) 0;
+  font-size: 12px;
+}
+.cartao-ste__aviso-rotulo {
+  color: var(--danger, #e5484d);
+}
+.cartao-ste__aviso-texto {
+  color: var(--text-normal, #f1f5f9);
+}
+.cartao-ste__secao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.cartao-ste__subtitulo {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.cartao-ste__passos,
+.cartao-ste__efeitos {
+  margin: 0;
+  padding-left: var(--space-4);
+  font-size: 12px;
+  color: var(--text-normal, #f1f5f9);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cartao-ste__desfazer {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  border-top: 1px dashed var(--border);
+  padding-top: var(--space-1);
+}
+
+/* Relatório por Camada e Diff View */
+.relatorio-camadas {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 6px);
+  padding: var(--space-3);
+  background: var(--bg-surface, rgba(255, 255, 255, 0.01));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.relatorio-camadas__titulo {
+  margin: 0 0 var(--space-2) 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.relatorio-camada {
+  border-left: 2px solid var(--accent, #38bdf8);
+  padding-left: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.relatorio-camada__nome {
+  margin: 0 0 2px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent, #38bdf8);
+}
+.relatorio-camada__info {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-normal, #f1f5f9);
+}
+.relatorio-camada__detalhe {
+  margin: 2px 0 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.relatorio-camada__arquivos,
+.relatorio-camada__avisos {
+  margin: 4px 0 0 0;
+  padding-left: var(--space-3);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.diff-view {
+  margin: var(--space-1) 0 0 0;
+  padding: var(--space-2);
+  background: var(--bg-base, #0b0f17);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 4px);
+  font-family: monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-normal, #f1f5f9);
+  overflow-x: auto;
+  white-space: pre;
+}
+

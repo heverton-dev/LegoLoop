@@ -309,6 +309,14 @@ function renderProcessPanel(body, proc) {
     ...proc.rows.map((r) => kv(r.label, r.value)),
     ...proc.notes.map((n) => el("p", "panel__hint", "Aviso: " + n)),
   ];
+  if (proc.report) {
+    if (proc.report.cartao && typeof renderCartaoSTE === "function") {
+      children.push(renderCartaoSTE(proc.report.cartao));
+    }
+    if (typeof renderRelatorioCamadas === "function") {
+      children.push(renderRelatorioCamadas(proc.report));
+    }
+  }
   body.replaceChildren(...children);
 }
 

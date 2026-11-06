@@ -14,6 +14,7 @@
   <script src="inspector.js" defer></script>
   <script src="components/lego-item-modal.js" defer></script>
   <script src="fabricar.js" defer></script>
+  <script src="processos.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -38,6 +39,7 @@
     </div>
     <div class="topbar__actions">
       <button id="btn-novo-processo" class="btn btn--primary" type="button" title="Cria um processo novo: skill, loop e DAG">+ Novo Processo</button>
+      <button id="btn-processos" class="btn" type="button" title="Gerenciar processos do cofre: listar, refinar, remover e compor"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Processos</button>
       <button id="btn-templates" class="btn" type="button" title="Galeria de Templates de Esteira"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Templates</button>
       <button id="btn-vault" class="btn" type="button" title="Gerenciar Cofre Canônico e Volumes do SO"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="7" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="17"/></svg> Cofre Canônico</button>
       <button id="btn-validate" class="btn" type="button">Validar</button>
@@ -329,6 +331,87 @@
         <button id="btn-import-submit" class="btn btn--primary" type="submit">Importar & Canonizar</button>
       </div>
     </form>
+  </dialog>
+
+  <!-- Modal de Gestão de Processos do Cofre (Listar, Refinar, Compor, Remover) -->
+  <dialog id="modal-processos" class="modal-item modal-processos" aria-labelledby="modal-processos-title">
+    <div class="modal-item-header">
+      <div class="modal-title-group">
+        <h3 id="modal-processos-title" class="modal-title">Processos do Cofre</h3>
+        <span class="modal-badge badge--canon">Governança HDSM</span>
+      </div>
+      <div class="modal-header-actions">
+        <button id="btn-modal-processos-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">&times;</button>
+      </div>
+    </div>
+    <div class="modal-item-body processos-body">
+      <!-- Toolbar de busca e atualização -->
+      <div class="processos-toolbar">
+        <input id="processos-search" class="input" type="search" placeholder="Filtrar processos..." autocomplete="off" spellcheck="false">
+        <button id="btn-processos-refresh" class="btn" type="button" title="Recarregar processos do cofre">Atualizar</button>
+      </div>
+
+      <!-- Lista de processos -->
+      <div id="processos-list" class="processos-list"></div>
+
+      <!-- Painel de ação dinâmico (Refinar / Compor / Remover) -->
+      <div id="processos-action-panel" class="processos-action-panel" hidden>
+        <div class="modal-title-group">
+          <h4 id="processos-action-title" class="modal-title">Configurar Ação</h4>
+        </div>
+
+        <!-- Formulário Refinar -->
+        <div id="form-refinar" class="processos-form-grid" hidden>
+          <div class="field">
+            <label for="refinar-etapa" class="fabricar-label">Nome da etapa a alterar</label>
+            <input id="refinar-etapa" class="input" placeholder="ex: clarificacao" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="refinar-peca" class="fabricar-label">Nova peça de substituição</label>
+            <input id="refinar-peca" class="input" placeholder="ex: minha-skill-v2" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="refinar-titulo" class="fabricar-label">Novo título (opcional)</label>
+            <input id="refinar-titulo" class="input" placeholder="Título descritivo" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+
+        <!-- Formulário Compor -->
+        <div id="form-compor" class="processos-form-grid" hidden>
+          <div class="field">
+            <label for="compor-alvo" class="fabricar-label">Processo Composto (onde inserir)</label>
+            <input id="compor-alvo" class="input" placeholder="ex: legoloop-processo-pai" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="compor-titulo" class="fabricar-label">Título da sub-etapa (opcional)</label>
+            <input id="compor-titulo" class="input" placeholder="ex: Sub-etapa de apoio" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="compor-depende" class="fabricar-label">Dependências (separadas por vírgula)</label>
+            <input id="compor-depende" class="input" placeholder="ex: etapa-anterior" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+
+        <!-- Formulário Remover -->
+        <div id="form-remover" class="processos-form-grid" hidden>
+          <p id="remover-aviso-texto" class="cartao-ste__aviso-texto">O processo selecionado será desvinculado de todos os harnesses e excluído do cofre.</p>
+        </div>
+
+        <div class="fabricar-actions">
+          <button id="btn-processo-preview" class="btn btn--primary" type="button">Gerar Prévia & Cartão STE</button>
+          <button id="btn-processo-voltar" class="btn btn--ghost" type="button">Voltar</button>
+        </div>
+
+        <!-- Área de visualização do Cartão STE-PT e Relatório por Camada -->
+        <div id="processos-preview-container" class="processos-preview-container" hidden>
+          <div id="processos-cartao-area"></div>
+          <div id="processos-relatorio-area"></div>
+          <div class="fabricar-actions" style="margin-top: 12px;">
+            <button id="btn-processo-apply" class="btn btn--danger" type="button">Confirmar e Aplicar</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </dialog>
 
   <div id="toasts" class="toasts" aria-live="polite"></div>

@@ -3438,7 +3438,7 @@
       "nature": "micro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -3455,11 +3455,11 @@
       "routing": {
         "mode": "suggested",
         "harness": "claude",
-        "model": "sonnet",
+        "model": "claude-sonnet-5-5",
         "effort": "medium",
         "fallback": {
           "harness": "9router",
-          "model": "code-fast"
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -3525,7 +3525,7 @@
       "nature": "nano",
       "type": "stop_gate",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -3579,7 +3579,7 @@
       "nature": "macro",
       "type": "ui_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -3596,11 +3596,11 @@
       "routing": {
         "mode": "suggested",
         "harness": "claude",
-        "model": "sonnet",
+        "model": "claude-sonnet-5-5",
         "effort": "high",
         "fallback": {
           "harness": "9router",
-          "model": "code-fast"
+          "model": "code-pro"
         }
       },
       "tooling": {
@@ -3666,7 +3666,7 @@
       "nature": "macro",
       "type": "script",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -3683,11 +3683,11 @@
       "routing": {
         "mode": "suggested",
         "harness": "claude",
-        "model": "sonnet",
+        "model": "claude-sonnet-5-5",
         "effort": "high",
         "fallback": {
           "harness": "9router",
-          "model": "code-fast"
+          "model": "code-pro"
         }
       },
       "tooling": {
@@ -3738,7 +3738,7 @@
       "nature": "micro",
       "type": "script",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -3755,11 +3755,11 @@
       "routing": {
         "mode": "suggested",
         "harness": "claude",
-        "model": "sonnet",
+        "model": "claude-sonnet-5-5",
         "effort": "medium",
         "fallback": {
           "harness": "9router",
-          "model": "code-fast"
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -3797,7 +3797,7 @@
       "nature": "micro",
       "type": "script",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -3814,11 +3814,11 @@
       "routing": {
         "mode": "suggested",
         "harness": "claude",
-        "model": "sonnet",
+        "model": "claude-sonnet-5-5",
         "effort": "medium",
         "fallback": {
           "harness": "9router",
-          "model": "code-fast"
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -3879,7 +3879,7 @@
       "nature": "nano",
       "type": "stop_gate",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -3929,7 +3929,7 @@
       "nature": "nano",
       "type": "stop_gate",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",

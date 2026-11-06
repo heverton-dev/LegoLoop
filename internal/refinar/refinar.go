@@ -187,6 +187,11 @@ func (d Deps) agora() time.Time {
 	return d.Clock().UTC()
 }
 
+// Planejar calcula a mudança na etapa e o diff dos arquivos sem tocar no disco.
+func Planejar(req Request, d Deps) (Plano, error) {
+	return planejar(req, d)
+}
+
 // planejar lê o processo, aplica a mudança, sobe a versão e regera os arquivos. Não grava nada.
 func planejar(req Request, d Deps) (Plano, error) {
 	roots := d.Store.Roots

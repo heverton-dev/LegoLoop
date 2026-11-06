@@ -109,5 +109,5 @@ function fabricarInspector(result) {
     ["TEMPLATE", a.template_path], ["Skill", a.skill_path], ["Loop", a.loop_path], ["DAG", a.dag_path],
   ].filter(([, v]) => v).map(([label, value]) => ({ label, value }));
   rows.push({ label: "Peças curadas", value: String((result.curated_pieces || []).length) });
-  return { title: result.canonical_name, rows, notes: result.warnings || [] };
+  return { title: result.canonical_name, rows, notes: result.warnings || [], report: result.report };
 }

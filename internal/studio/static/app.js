@@ -1669,6 +1669,7 @@ async function boot() {
   initTemplatesModal();
   initImportModal();
   initFabricarModal();
+  initProcessosModal();
   updateEmpty();
   await pollItems();
   setInterval(() => { if (document.visibilityState === "visible") pollItems().catch(() => {}); }, POLL_MS);
@@ -2377,4 +2378,190 @@ function initFabricarModal() {
   busy(ui.guess, () => fabricarAnswer(ui, flow, flow.turn && flow.turn.guess));
   busy(ui.run, () => fabricarRun(ui, flow));
   ui.answer.addEventListener("keydown", (e) => { if (e.key === "Enter") ui.send.click(); });
+}
+
+function initProcessosModal() {
+  const openBtn = $("btn-processos");
+  const modal = $("modal-processos");
+  if (!openBtn || !modal) return;
+
+  const closeBtn = $("btn-modal-processos-close");
+  const refreshBtn = $("btn-processos-refresh");
+  const searchInput = $("processos-search");
+  const list = $("processos-list");
+  const actionPanel = $("processos-action-panel");
+  const actionTitle = $("processos-action-title");
+  const formRefinar = $("form-refinar");
+  const formCompor = $("form-compor");
+  const formRemover = $("form-remover");
+  const previewBtn = $("btn-processo-preview");
+  const voltarBtn = $("btn-processo-voltar");
+  const previewContainer = $("processos-preview-container");
+  const cartaoArea = $("processos-cartao-area");
+  const relatorioArea = $("processos-relatorio-area");
+  const applyBtn = $("btn-processo-apply");
+
+  let processosCache = [];
+  let activeAction = "";
+  let targetProc = null;
+  let currentPlan = null;
+
+  function renderLista(itens) {
+    if (!list) return;
+    list.replaceChildren();
+    if (!itens || itens.length === 0) {
+      const p = document.createElement("p");
+      p.className = "note";
+      p.textContent = "Nenhum processo cadastrado no cofre.";
+      list.append(p);
+      return;
+    }
+    for (const item of itens) {
+      if (typeof renderProcessoItem === "function") {
+        list.append(renderProcessoItem(item, iniciarAcao));
+      }
+    }
+  }
+
+  async function carregarProcessos() {
+    const res = await api("/api/processos");
+    if (!res.ok) {
+      toast("Falha ao listar processos: " + (res.data?.error || res.status), true);
+      return;
+    }
+    processosCache = res.data?.processos || res.data || [];
+    filtrarLista();
+  }
+
+  function filtrarLista() {
+    const term = (searchInput?.value || "").toLowerCase().trim();
+    if (!term) {
+      renderLista(processosCache);
+      return;
+    }
+    const filtrados = processosCache.filter((p) => {
+      const nome = (p.nome || "").toLowerCase();
+      const desc = (p.descricao || p.objetivo || "").toLowerCase();
+      return nome.includes(term) || desc.includes(term);
+    });
+    renderLista(filtrados);
+  }
+
+  function iniciarAcao(action, proc) {
+    activeAction = action;
+    targetProc = proc;
+    currentPlan = null;
+    if (actionPanel) actionPanel.hidden = false;
+    if (previewContainer) previewContainer.hidden = true;
+    if (formRefinar) formRefinar.hidden = action !== "refinar";
+    if (formCompor) formCompor.hidden = action !== "compor";
+    if (formRemover) formRemover.hidden = action !== "remover";
+
+    const rotulos = { refinar: "Refinar Processo", compor: "Compor com Processo", remover: "Remover Processo" };
+    if (actionTitle) actionTitle.textContent = `${rotulos[action] || action}: ${proc.nome}`;
+
+    if (action === "refinar") {
+      if ($("refinar-etapa")) $("refinar-etapa").value = "";
+      if ($("refinar-peca")) $("refinar-peca").value = "";
+      if ($("refinar-titulo")) $("refinar-titulo").value = "";
+    } else if (action === "compor") {
+      if ($("compor-alvo")) $("compor-alvo").value = "";
+      if ($("compor-titulo")) $("compor-titulo").value = "";
+      if ($("compor-depende")) $("compor-depende").value = "";
+    }
+  }
+
+  function resetAcao() {
+    activeAction = "";
+    targetProc = null;
+    currentPlan = null;
+    if (actionPanel) actionPanel.hidden = true;
+    if (previewContainer) previewContainer.hidden = true;
+    if (cartaoArea) cartaoArea.replaceChildren();
+    if (relatorioArea) relatorioArea.replaceChildren();
+  }
+
+  function montarPayload(apply) {
+    if (!targetProc) return null;
+    if (activeAction === "refinar") {
+      return {
+        name: targetProc.nome,
+        etapa: $("refinar-etapa")?.value.trim() || "",
+        peca: $("refinar-peca")?.value.trim() || "",
+        titulo: $("refinar-titulo")?.value.trim() || "",
+        apply: Boolean(apply),
+      };
+    }
+    if (activeAction === "compor") {
+      const depStr = $("compor-depende")?.value || "";
+      const deps = depStr.split(",").map((s) => s.trim()).filter(Boolean);
+      return {
+        name: targetProc.nome,
+        composto: $("compor-alvo")?.value.trim() || "",
+        titulo: $("compor-titulo")?.value.trim() || "",
+        depende: deps,
+        apply: Boolean(apply),
+      };
+    }
+    if (activeAction === "remover") {
+      return {
+        name: targetProc.nome,
+        apply: Boolean(apply),
+      };
+    }
+    return null;
+  }
+
+  async function gerarPreview() {
+    const payload = montarPayload(false);
+    if (!payload) return;
+    const res = await api(`/api/processos/${activeAction}`, payload);
+    if (!res.ok) {
+      toast("Erro ao planejar ação: " + (res.data?.error || res.status), true);
+      return;
+    }
+    currentPlan = res.data;
+    if (cartaoArea && typeof renderCartaoSTE === "function") {
+      cartaoArea.replaceChildren(renderCartaoSTE(currentPlan.cartao));
+    }
+    if (relatorioArea && typeof renderRelatorioCamadas === "function") {
+      relatorioArea.replaceChildren(renderRelatorioCamadas(currentPlan));
+    }
+    if (previewContainer) previewContainer.hidden = false;
+  }
+
+  async function aplicarAcao() {
+    if (!currentPlan || !targetProc) return;
+    const acaoNome = activeAction === "remover" ? "Remoção" : activeAction === "refinar" ? "Refinamento" : "Composição";
+    const ok = await confirmDialog({
+      title: `Confirmar ${acaoNome}?`,
+      message: `Deseja realmente aplicar a alteração no processo "${targetProc.nome}"?`,
+      confirmLabel: "Confirmar e Aplicar",
+      danger: activeAction === "remover" || Boolean(currentPlan.cartao?.irreversivel),
+    });
+    if (!ok) return;
+
+    const payload = montarPayload(true);
+    const res = await api(`/api/processos/${activeAction}`, payload);
+    if (!res.ok) {
+      toast("Falha ao aplicar alteração: " + (res.data?.error || res.status), true);
+      return;
+    }
+    toast(`Ação de ${activeAction} executada com sucesso!`);
+    resetAcao();
+    await carregarProcessos();
+    await pollItems();
+  }
+
+  openBtn.addEventListener("click", () => {
+    resetAcao();
+    modal.showModal();
+    carregarProcessos();
+  });
+  closeBtn?.addEventListener("click", () => modal.close());
+  refreshBtn?.addEventListener("click", () => carregarProcessos());
+  searchInput?.addEventListener("input", () => filtrarLista());
+  voltarBtn?.addEventListener("click", () => resetAcao());
+  previewBtn?.addEventListener("click", () => withBusy(previewBtn, gerarPreview));
+  applyBtn?.addEventListener("click", () => withBusy(applyBtn, aplicarAcao));
 }

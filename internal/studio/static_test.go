@@ -130,7 +130,7 @@ func TestInventoryPageWiring(t *testing.T) {
 
 // Todo texto vindo da API entra no DOM via textContent: innerHTML é proibido nos scripts.
 func TestNoInnerHTMLInScripts(t *testing.T) {
-	for _, f := range []string{"app.js", "ui.js", "inventory.js", "search.js", "virtual.js", "palette.js", "slots.js", "fabricar.js"} {
+	for _, f := range []string{"app.js", "ui.js", "inventory.js", "search.js", "virtual.js", "palette.js", "slots.js", "fabricar.js", "processos.js"} {
 		for i, line := range strings.Split(readStatic(t, f), "\n") {
 			if strings.HasPrefix(strings.TrimSpace(line), "//") {
 				continue // comentários podem citar a regra
@@ -491,5 +491,25 @@ func TestNoInlineStylesInComponents(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+// TICK-04.1: o Studio oferece a gestão de processos com cartão STE e relatório por camadas.
+func TestProcessosModalWiring(t *testing.T) {
+	html := readStatic(t, "index.html")
+	for _, id := range []string{`src="processos.js"`, `id="btn-processos"`, `id="modal-processos"`, `id="processos-list"`} {
+		if !strings.Contains(html, id) {
+			t.Errorf("index.html sem %s", id)
+		}
+	}
+	js := readStatic(t, "processos.js")
+	for _, want := range []string{"function renderCartaoSTE", "function renderRelatorioCamadas", "cartao-ste__aviso"} {
+		if !strings.Contains(js, want) {
+			t.Errorf("processos.js sem %q", want)
+		}
+	}
+	app := readStatic(t, "app.js")
+	if !strings.Contains(app, "initProcessosModal") {
+		t.Error("app.js deve chamar initProcessosModal")
 	}
 }

@@ -62,6 +62,7 @@ Comandos:
   refinar    <nome> --etapa ID [--peca P] [--caso C]... [--yes]  muda uma etapa, sobe a versão e guarda a anterior
   remover    <nome> [--vault DIR] [--yes]  apaga um processo do cofre e os vínculos dele (falha se outro processo o usa)
   compor     <nome> <legoloop-x@versão> [--depende ID]... [--yes]  liga um processo como etapa de outro (recusa ciclo)
+  instalar-skills [--vault DIR] [--dry-run] [--json]  instala e vincula as skills nativas universais
   version
 `
 
@@ -75,7 +76,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
 		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
-		"refinar": cmdRefinar, "remover": cmdRemover, "compor": cmdCompor,
+		"refinar": cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":
