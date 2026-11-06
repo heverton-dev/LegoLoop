@@ -43,14 +43,22 @@
 
 ## 2. Comandos & Rotas de Governança
 
-* **Validar conformidade e testes:** `go test -count=1 ./...` (ou `npm test` quando houver front-end com testes JS; a lógica pura do Studio roda em `node`).
-* **Criar um processo novo (skill + loop + dag + INTENT/SPEC/PLAN/ROUTE/TEMPLATE):** `legoloop fabricar "<nome>" [--yes] [--goal T] [--model M] [--category build|reverse|web|mobile] [--dry-run] [--json]`. Também no Chat (`/legoloop-fabricar`, skill em `skills/legoloop-fabricar/`) e no Studio (**+ Novo Processo**). **Não confundir com `legoloop canonize`** (desduplicação por SHA-256).
+* **Validar conformidade e testes:** `go test -count=1 ./...` e `go test -count=1 -tags e2e ./internal/e2e/...` (ou `npm test` quando houver front-end com testes JS; a lógica pura do Studio roda em `node`).
+* **Fábrica & Ciclo de Vida dos 5 Verbos de Processo:**
+  * **Fabricar (criação completa):** `legoloop fabricar "<nome>" [--yes] [--goal T] [--model M] [--category build|reverse|web|mobile] [--dry-run] [--json]` (Chat: `/legoloop-fabricar`; Studio: **+ Novo Processo**). **Não confundir com `legoloop canonize`** (desduplicação por SHA-256).
+  * **Matriz de Peças (reputação/aptidão):** `legoloop matriz [--tier ouro|prata|bronze] [--json]` (Chat: `/legoloop-matriz`).
+  * **Listar (inventário e vínculos):** `legoloop listar [--json]` (Chat: `/legoloop-listar`; Studio: **Processos**).
+  * **Refinar (substituição atômica de passos):** `legoloop refinar "<nome>" [--trocar P] [--json]` (Chat: `/legoloop-refinar`).
+  * **Remover (desvinculação com rollback):** `legoloop remover "<nome>" [--dry-run] [--force] [--json]` (Chat: `/legoloop-remover`).
+  * **Compor (sub-loops hierárquicos):** `legoloop compor "<alvo>" "<sub-loop>" [--pos N] [--json]` (Chat: `/legoloop-compor`).
+* **Instalação Canônica das Skills:** `legoloop instalar-skills [--vault DIR] [--dry-run] [--json]` (distribui as 6 skills canônicas embutidas para o cofre e cria vínculos nos harnesses).
 * **Registrar histórico de sessão:** `faz-session --id <CONVERSATION_ID> --format all` (saída em `~/Desktop/sessoes-agentes/`; o script pode ignorar `--id` e exportar o transcript ativo).
 * **Consultar Templates Canônicos v2 (SSOT):** [docs/templates/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/templates)
+* **Consultar Manuais Operacionais das Funções:** [docs/manuals/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/manuals)
 * **Consultar Intenções:** [docs/intents/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents)
 * **Consultar a Spec Master:** [docs/specs/2026-10-30_SPEC_MASTER.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/2026-10-30_SPEC_MASTER.md)
 * **Consultar o Plano de Tickets:** [docs/plans/2026-10-30_PLAN_MASTER.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/2026-10-30_PLAN_MASTER.md)
-* **Demanda mais recente (`fabricar`):** [INTENT](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents/2026-11-03_INTENT_LEGOLOOP_FABRICAR.md) · [SPEC](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md) · [PLAN](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/2026-11-03_PLAN_LEGOLOOP_FABRICAR.md) · [ROUTE](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/routes/2026-11-03_ROUTE_LEGOLOOP_FABRICAR.json) · [Relatório final](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports/2026-11-03_REPORT_LEGOLOOP_FABRICAR.md)
+* **Demanda mais recente (`fabricar v2`):** [INTENT](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents/2026-11-04_INTENT_FABRICAR_V2.md) · [SPEC](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/2026-11-04_SPEC_FABRICAR_V2.md) · [PLAN](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/2026-11-04_PLAN_FABRICAR_V2.md) · [ROUTE](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/routes/2026-11-04_ROUTE_FABRICAR_V2.json) · [Relatório final](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports/2026-11-04_REPORT_FABRICAR_V2.md)
 * **Consultar Mapas de Rota:** [docs/routes/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/routes)
 * **Consultar Relatórios:** [docs/reports/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports) (capturas em `docs/reports/img/`)
 * **Diário de evolução e retomada de sessão:** [MEMORY.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/MEMORY.md)
