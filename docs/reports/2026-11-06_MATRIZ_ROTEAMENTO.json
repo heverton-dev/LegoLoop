@@ -1,0 +1,1975 @@
+{
+ "gerado_em": "2026-11-06T11:09:18.146Z",
+ "observacao": "Evidência da auditoria de 06/11/2026. 'funciona' = respondeu a um prompt mínimo em modo headless. Effort: só os níveis testados. Veja o relatório para as ressalvas.",
+ "harnesses": {
+  "claude": {
+   "headless": true,
+   "comando": "claude -p <prompt> --model <m> --effort <nivel> --output-format json",
+   "assinatura": true,
+   "rota": "oficial (combos code-* inexistentes nesta rota)",
+   "modelos": [
+    {
+     "modelo": "claude-fable-5",
+     "funciona": false,
+     "modelo_real": null,
+     "ms": 6227,
+     "efforts_testados": [],
+     "motivo_falha": "exige créditos de uso (fora da assinatura)"
+    },
+    {
+     "modelo": "claude-fable-5-1",
+     "funciona": false,
+     "modelo_real": null,
+     "ms": 5373,
+     "efforts_testados": [],
+     "motivo_falha": "exige créditos de uso (fora da assinatura)"
+    },
+    {
+     "modelo": "claude-haiku-4-5-20251001",
+     "funciona": true,
+     "modelo_real": "claude-haiku-4-5-20251001",
+     "ms": 5896,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 95
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "claude-haiku-5-5",
+     "funciona": true,
+     "modelo_real": "claude-haiku-5-5",
+     "ms": 6616,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 26
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 66
+      },
+      {
+       "nivel": "xhigh",
+       "aceito": true,
+       "raciocinio_tokens": 64
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 153
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "claude-opus-4-6",
+     "funciona": true,
+     "modelo_real": "claude-opus-4-6",
+     "ms": 6766,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "claude-opus-4-7",
+     "funciona": true,
+     "modelo_real": "claude-opus-4-7",
+     "ms": 5918,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "xhigh",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "claude-opus-4-8",
+     "funciona": true,
+     "modelo_real": "claude-opus-4-8",
+     "ms": 6197,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "xhigh",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 21
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "claude-opus-5",
+     "funciona": true,
+     "modelo_real": "claude-opus-5",
+     "ms": 6405,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "xhigh",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "claude-opus-5-5",
+     "funciona": true,
+     "modelo_real": "claude-opus-5-5",
+     "ms": 6426,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 15
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "xhigh",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 52
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "claude-sonnet-4-6",
+     "funciona": true,
+     "modelo_real": "claude-sonnet-4-6",
+     "ms": 6443,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "claude-sonnet-5",
+     "funciona": true,
+     "modelo_real": "claude-sonnet-5",
+     "ms": 6436,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "xhigh",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "claude-sonnet-5-5",
+     "funciona": true,
+     "modelo_real": "claude-sonnet-5-5",
+     "ms": 6895,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "xhigh",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "code-fast",
+     "funciona": false,
+     "modelo_real": null,
+     "ms": 5367,
+     "efforts_testados": [],
+     "motivo_falha": "modelo inexistente nesta rota"
+    },
+    {
+     "modelo": "code-free",
+     "funciona": false,
+     "modelo_real": null,
+     "ms": 5394,
+     "efforts_testados": [],
+     "motivo_falha": "modelo inexistente nesta rota"
+    },
+    {
+     "modelo": "code-pro",
+     "funciona": false,
+     "modelo_real": null,
+     "ms": 5361,
+     "efforts_testados": [],
+     "motivo_falha": "modelo inexistente nesta rota"
+    },
+    {
+     "modelo": "fable",
+     "funciona": false,
+     "modelo_real": null,
+     "ms": 5284,
+     "efforts_testados": [],
+     "motivo_falha": "exige créditos de uso (fora da assinatura)"
+    },
+    {
+     "modelo": "haiku",
+     "funciona": true,
+     "modelo_real": "claude-haiku-5-5",
+     "ms": 7196,
+     "efforts_testados": [],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "opus",
+     "funciona": true,
+     "modelo_real": "claude-opus-5-5",
+     "ms": 7109,
+     "efforts_testados": [],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "sonnet",
+     "funciona": true,
+     "modelo_real": "claude-sonnet-5-5",
+     "ms": 7130,
+     "efforts_testados": [],
+     "motivo_falha": null
+    }
+   ]
+  },
+  "agy": {
+   "headless": true,
+   "interativo": true,
+   "comando": "agy -p <prompt> --model <m> --output-format json  (agy.cmd = gw agy exec, com failover automático em 429)",
+   "assinatura": true,
+   "regra_effort": "o effort vem embutido no nome (-low/-medium/-high); --effort só no id base gemini-3.8-flash e aceita low, medium e high",
+   "modelos": [
+    {
+     "modelo": "gemini-3.8-flash",
+     "funciona": true,
+     "ms": 14136,
+     "motivo_falha": null,
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 56
+      },
+      {
+       "nivel": "medium",
+       "aceito": true,
+       "raciocinio_tokens": 74
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 61
+      },
+      {
+       "nivel": "xhigh",
+       "aceito": false,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": false,
+       "raciocinio_tokens": 0
+      }
+     ]
+    },
+    {
+     "modelo": "gemini-3.8-flash-high",
+     "funciona": true,
+     "ms": 18436,
+     "motivo_falha": null
+    },
+    {
+     "modelo": "gemini-3.8-flash-medium",
+     "funciona": true,
+     "ms": 40302,
+     "motivo_falha": null
+    },
+    {
+     "modelo": "gemini-3.8-flash-low",
+     "funciona": true,
+     "ms": 13892,
+     "motivo_falha": null
+    },
+    {
+     "modelo": "gpt-oss-120b-medium",
+     "funciona": false,
+     "ms": 8879,
+     "motivo_falha": "cota esgotada (429)"
+    },
+    {
+     "modelo": "claude-opus-4-6-thinking",
+     "funciona": false,
+     "ms": 10625,
+     "motivo_falha": "cota esgotada (429)"
+    },
+    {
+     "modelo": "claude-sonnet-4-6",
+     "funciona": false,
+     "ms": 11729,
+     "motivo_falha": "cota esgotada (429)"
+    }
+   ]
+  },
+  "opencode": {
+   "headless": true,
+   "comando": "opencode run -m <provedor/modelo> --variant <nivel> --format json \"<prompt>\"  (rodar com stdin fechado)",
+   "assinatura": false,
+   "so_gratuitos_com_credencial": true,
+   "modelos": [
+    {
+     "modelo": "opencode/big-pickle",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 8437,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "opencode/deepseek-v4.1-flash-free",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 8742,
+     "efforts_declarados": [
+      "low",
+      "high",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 8
+      },
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "opencode/crouton-alpha-free",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 9423,
+     "efforts_declarados": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "minimal",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "opencode/beam-free",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 10209,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 70
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 64
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "opencode/flint-40b-free",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 8577,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "opencode/glm-5.3-flash-free",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 11325,
+     "efforts_declarados": [
+      "low",
+      "high",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 23
+      },
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 62
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "opencode/nemotron-3.5-lightning-free",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 12646,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "freellmapi/auto",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2025,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Unexpected server error. Check server logs for det"
+    },
+    {
+     "modelo": "freellmapi/auto:fast",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 1957,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Unexpected server error. Check server logs for det"
+    },
+    {
+     "modelo": "opencode/nemotron-3.5-super-vl-free",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 10163,
+     "efforts_declarados": [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "xhigh",
+       "aceito": true,
+       "raciocinio_tokens": 114
+      },
+      {
+       "nivel": "none",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "freellmapi/auto:smart",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2329,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Unexpected server error. Check server logs for det"
+    },
+    {
+     "modelo": "groq/allam-2-7b",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3583,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Invalid API Key"
+    },
+    {
+     "modelo": "groq/whisper-large-v3",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3368,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Invalid API Key"
+    },
+    {
+     "modelo": "groq/whisper-large-v3-turbo",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3105,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Invalid API Key"
+    },
+    {
+     "modelo": "mimo/mimo-v2.5",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 1908,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Unexpected server error. Check server logs for det"
+    },
+    {
+     "modelo": "mimo/mimo-v2.5-pro",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 1963,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Unexpected server error. Check server logs for det"
+    },
+    {
+     "modelo": "opencode/pulse-alpha-free",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 25707,
+     "efforts_declarados": [
+      "low",
+      "high",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 31
+      },
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 30
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "opencode/mimo-v2.6-flash-free",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 42567,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/google/diffusiongemma-26b-a4b-it",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 17994,
+     "efforts_declarados": [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "none",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/google/google-paligemma",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3109,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/meta/llama-3.2-11b-vision-instruct",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3399,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo removido (410)"
+    },
+    {
+     "modelo": "nvidia/meta/llama-guard-4-12b",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3853,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Bad Request: \"auto\" tool choice requires --enable-"
+    },
+    {
+     "modelo": "nvidia/meta/muse-glimmer-30b",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 18734,
+     "efforts_declarados": [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "none",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/minimaxai/minimax-m3.1-flash",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 6719,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/active-speaker-detection",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3633,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/nvidia/bevformer",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3316,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/nvidia/llama-3.1-nemotron-safety-guard-8b-v3",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 4574,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Bad Request: \"auto\" tool choice requires --enable-"
+    },
+    {
+     "modelo": "nvidia/nvidia/llama-nemotron-embed-vl-1b-v2",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3343,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/nvidia/llama-nemotron-rerank-vl-1b-v2",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2931,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 6935,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 34
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 233
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3-ultra-550b-a55b",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 9196,
+     "efforts_declarados": [
+      "none",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "none",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 26
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3.5-content-safety",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3206,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 8227,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 74
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 86
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 10302,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 95
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 95
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-voicechat",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3139,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/nvidia/sparsedrive",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3170,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/nvidia/streampetr",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3104,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/google/gemma-4-31b-it",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 48119,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 63
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 95
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/synthetic-video-detector",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3230,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/openai/whisper-large-v3",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 4603,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/poolside/laguna-xs-2.1",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 8531,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/stepfun-ai/step-5-preview",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 10724,
+     "efforts_declarados": [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "max",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "none",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/deepseek-ai/deepseek-v4.1-flash",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180292,
+     "efforts_declarados": [
+      "none",
+      "low",
+      "high",
+      "max"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "omniroute/ai-studio",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 1920,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Unexpected server error. Check server logs for det"
+    },
+    {
+     "modelo": "openrouter/cohere/north-mini-code:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2854,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/google/gemma-4-26b-a4b-it:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2643,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/google/gemma-4-31b-it:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2674,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/google/lyria-3-clip-preview",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2651,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/google/lyria-3-pro-preview",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2609,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/liquid/lfm-2.5-2.6b:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2694,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "nvidia/meta/llama-3.2-90b-vision-instruct",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180239,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "openrouter/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2712,
+     "efforts_declarados": [
+      "high",
+      "max"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2931,
+     "efforts_declarados": [
+      "none",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/nvidia/nemotron-3.5-lightning:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3016,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/nvidia/nemotron-3.5-super-vl:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3025,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/openrouter/auto",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3188,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/openrouter/bodybuilder",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3549,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/openrouter/free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3475,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/openrouter/fusion",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3423,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/openrouter/pareto-code",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3373,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/recursive/flint-v1.0:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3415,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/stealth/crouton-alpha",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3575,
+     "efforts_declarados": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "openrouter/xingchen-agi/xing4.0-29b-a4b:free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3269,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "modelo não encontrado (404)"
+    },
+    {
+     "modelo": "zenmux/x-ai/grok-voice-stt-1.0",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3816,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "acesso negado (403)"
+    },
+    {
+     "modelo": "zenmux/z-ai/glm-4.6v-flash-free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 3673,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "acesso negado (403)"
+    },
+    {
+     "modelo": "zenmux/z-ai/glm-4.7-flash-free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 4154,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "acesso negado (403)"
+    },
+    {
+     "modelo": "nvidia/openai/gpt-oss-20b",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180299,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/z-ai/glm-5.3-flash",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180233,
+     "efforts_declarados": [
+      "low",
+      "high",
+      "max"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    }
+   ]
+  },
+  "mimo": {
+   "headless": true,
+   "comando": "mimo run -m <provedor/modelo> --variant <nivel> --format json \"<prompt>\"  (rodar com stdin fechado)",
+   "assinatura": false,
+   "so_gratuitos_com_credencial": true,
+   "modelos": [
+    {
+     "modelo": "nvidia/deepseek-ai/deepseek-v4.1-flash",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 2837,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "erro sem mensagem"
+    },
+    {
+     "modelo": "nvidia/google/diffusiongemma-26b-a4b-it",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 40499,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "low",
+       "aceito": false,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/google/gemma-4-31b-it",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 58476,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 138
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 136
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/meta/llama-3.2-11b-vision-instruct",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 13098,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "modelo removido (410)"
+    },
+    {
+     "modelo": "nvidia/google/google-paligemma",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180312,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/meta/llama-guard-4-12b",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 11533,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Bad Request: \"auto\" tool choice requires --enable-"
+    },
+    {
+     "modelo": "nvidia/meta/llama-3.2-90b-vision-instruct",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180452,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/meta/muse-glimmer-30b",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 28626,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/minimaxai/minimax-m3.1-flash",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 18998,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/active-speaker-detection",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180294,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/nvidia/bevformer",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180245,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/nvidia/llama-3.1-nemotron-safety-guard-8b-v3",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 15129,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "Bad Request: \"auto\" tool choice requires --enable-"
+    },
+    {
+     "modelo": "nvidia/nvidia/llama-nemotron-rerank-vl-1b-v2",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 4708,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "erro sem mensagem"
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 20157,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 49
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 46
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3-ultra-550b-a55b",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 27139,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 50
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 68
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/llama-nemotron-embed-vl-1b-v2",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180312,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 23187,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 105
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 99
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3.5-super-vl-120b-a12b",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 25631,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 70
+      },
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 107
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-3.5-content-safety",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180288,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/nvidia/nemotron-voicechat",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180152,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/nvidia/sparsedrive",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180306,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/nvidia/streampetr",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180287,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/nvidia/synthetic-video-detector",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180295,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/openai/gpt-oss-20b",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180341,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "nvidia/poolside/laguna-xs-2.1",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": true,
+     "ms": 15812,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "high",
+       "aceito": false,
+       "raciocinio_tokens": null
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/stepfun-ai/step-5-preview",
+     "funciona_config_limpa": true,
+     "funciona_config_do_usuario": false,
+     "ms": 21955,
+     "efforts_declarados": [
+      "low",
+      "medium",
+      "high"
+     ],
+     "efforts_testados": [
+      {
+       "nivel": "high",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      },
+      {
+       "nivel": "low",
+       "aceito": true,
+       "raciocinio_tokens": 0
+      }
+     ],
+     "motivo_falha": null
+    },
+    {
+     "modelo": "nvidia/openai/whisper-large-v3",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180320,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    },
+    {
+     "modelo": "zenmux/x-ai/grok-voice-stt-1.0",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 16919,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "erro sem mensagem"
+    },
+    {
+     "modelo": "zenmux/z-ai/glm-4.6v-flash-free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 18014,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "acesso negado (403)"
+    },
+    {
+     "modelo": "zenmux/z-ai/glm-4.7-flash-free",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 23340,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "acesso negado (403)"
+    },
+    {
+     "modelo": "nvidia/z-ai/glm-5.3-flash",
+     "funciona_config_limpa": false,
+     "funciona_config_do_usuario": null,
+     "ms": 180291,
+     "efforts_declarados": [],
+     "efforts_testados": [],
+     "motivo_falha": "sem resposta no limite"
+    }
+   ]
+  }
+ },
+ "combos_9router": {
+  "code-pro": {
+   "membros": [
+    "ag/gemini-3.1-pro-low",
+    "ag/claude-opus-4-6-thinking",
+    "gemini/gemini-3.1-pro-preview",
+    "ag/claude-sonnet-4-6",
+    "kr/claude-sonnet-4.5"
+   ],
+   "veredito": "FUNCIONA, COM DEFEITOS",
+   "servido_por": "claude-opus-4-6-thinking",
+   "ms": 28615,
+   "membros_ok": 3,
+   "membros_total": 5,
+   "defeitos": [
+    "membros indisponíveis agora: ag/gemini-3.1-pro-low (modelo não encontrado (404)), gemini/gemini-3.1-pro-preview (cota esgotada (429))",
+    "o 1º membro vivo é o nº 2; o anterior falha e o combo gasta 28.6 s para responder"
+   ],
+   "capacidade": "código: OK; conta: OK",
+   "no_servidor_remoto": true
+  },
+  "code-fast": {
+   "membros": [
+    "ag/gemini-3.8-flash-low",
+    "gemini/gemini-3.8-flash",
+    "ag/gemini-3.7-flash-low",
+    "ag/claude-sonnet-4-6",
+    "kr/qwen3-coder-next"
+   ],
+   "veredito": "FUNCIONA, COM DEFEITOS",
+   "servido_por": "gemini-3.8-flash-n",
+   "ms": 62687,
+   "membros_ok": 3,
+   "membros_total": 5,
+   "defeitos": [
+    "membros indisponíveis agora: gemini/gemini-3.8-flash (cota esgotada (429)), ag/gemini-3.7-flash-low (modelo não encontrado (404))"
+   ],
+   "capacidade": "código: OK; conta: OK",
+   "no_servidor_remoto": true
+  },
+  "code-free": {
+   "membros": [
+    "gemini/gemini-3.8-flash",
+    "agnes/agnes-3.0-flash",
+    "kr/qwen3-coder-next"
+   ],
+   "veredito": "FUNCIONA, COM DEFEITOS",
+   "servido_por": "agnes-3.0-flash",
+   "ms": 135741,
+   "membros_ok": 2,
+   "membros_total": 3,
+   "defeitos": [
+    "membros indisponíveis agora: gemini/gemini-3.8-flash (cota esgotada (429))",
+    "o 1º membro vivo é o nº 2; o anterior falha e o combo gasta 135.7 s para responder"
+   ],
+   "capacidade": "código: OK; conta: OK",
+   "no_servidor_remoto": true
+  },
+  "code-tests": {
+   "membros": [
+    "kr/qwen3-coder-next",
+    "kr/claude-haiku-4.5",
+    "ag/gemini-3.8-flash-low"
+   ],
+   "veredito": "FUNCIONA",
+   "servido_por": "qwen3-coder-next",
+   "ms": 1316,
+   "membros_ok": 3,
+   "membros_total": 3,
+   "defeitos": [],
+   "capacidade": "código: OK; conta: OK",
+   "no_servidor_remoto": false
+  },
+  "task-micro": {
+   "membros": [
+    "groq/openai/gpt-oss-120b",
+    "agnes/agnes-3.0-flash",
+    "kr/qwen3-coder-next"
+   ],
+   "veredito": "FUNCIONA",
+   "servido_por": "openai/gpt-oss-120b",
+   "ms": 1487,
+   "membros_ok": 3,
+   "membros_total": 3,
+   "defeitos": [],
+   "capacidade": "código: OK; conta: OK",
+   "no_servidor_remoto": false
+  },
+  "megacombo-coding": {
+   "membros": [
+    "gemini/gemma-4-26b-a4b-it",
+    "gemini/gemini-3.8-flash",
+    "cloudflare-ai/qwen3.8-27b",
+    "gemini/gemma-4-31b-it"
+   ],
+   "veredito": "FUNCIONA, COM DEFEITOS",
+   "servido_por": "gemma-4-26b-a4b-it",
+   "ms": 3400,
+   "membros_ok": 2,
+   "membros_total": 4,
+   "defeitos": [
+    "membros que não existem no provedor: cloudflare-ai/qwen3.8-27b",
+    "membros indisponíveis agora: gemini/gemini-3.8-flash (cota esgotada (429))"
+   ],
+   "capacidade": "código: OK; conta: OK",
+   "no_servidor_remoto": true
+  },
+  "megacombo-context": {
+   "membros": [
+    "gemini/gemini-3.6-flash",
+    "gemini/gemini-3.5-flash",
+    "gemini/gemini-flash-lite-latest",
+    "gemini/gemini-3.8-flash"
+   ],
+   "veredito": "FUNCIONA, COM DEFEITOS",
+   "servido_por": "gemini-3.6-flash",
+   "ms": 1620,
+   "membros_ok": 3,
+   "membros_total": 4,
+   "defeitos": [
+    "membros indisponíveis agora: gemini/gemini-3.8-flash (cota esgotada (429))"
+   ],
+   "capacidade": "código: OK; conta: OK",
+   "no_servidor_remoto": true
+  },
+  "megacombo-embedding": {
+   "membros": [
+    "gemini/gemini-embedding-2"
+   ],
+   "veredito": "NÃO CHAMÁVEL PELO NOME",
+   "servido_por": "",
+   "ms": 221,
+   "membros_ok": 1,
+   "membros_total": 1,
+   "defeitos": [
+    "o combo NÃO é chamável pelo nome em /v1/embeddings (HTTP 400 Invalid model format), embora o membro responda"
+   ],
+   "capacidade": "embedding: ver defeito",
+   "no_servidor_remoto": true
+  },
+  "megacombo-reasoning": {
+   "membros": [
+    "gemini/gemini-3.1-pro-preview",
+    "gemini/gemini-3.6-flash",
+    "cloudflare-ai/gemma-4-26b-a4b-it"
+   ],
+   "veredito": "FUNCIONA, COM DEFEITOS",
+   "servido_por": "gemini-3.6-flash",
+   "ms": 9768,
+   "membros_ok": 1,
+   "membros_total": 3,
+   "defeitos": [
+    "membros que não existem no provedor: cloudflare-ai/gemma-4-26b-a4b-it",
+    "membros indisponíveis agora: gemini/gemini-3.1-pro-preview (cota esgotada (429))",
+    "o 1º membro vivo é o nº 2; o anterior falha e o combo gasta 9.8 s para responder"
+   ],
+   "capacidade": "código: OK; conta: OK",
+   "no_servidor_remoto": true
+  },
+  "megacombo-vision": {
+   "membros": [
+    "gemini/gemini-3.6-flash",
+    "gemini/gemini-3.8-flash",
+    "cloudflare-ai/llama-3.2-11b-vision-instruct"
+   ],
+   "veredito": "FUNCIONA, COM DEFEITOS",
+   "servido_por": "gemini-3.6-flash",
+   "ms": 1940,
+   "membros_ok": 1,
+   "membros_total": 3,
+   "defeitos": [
+    "membros que não existem no provedor: cloudflare-ai/llama-3.2-11b-vision-instruct",
+    "membros indisponíveis agora: gemini/gemini-3.8-flash (cota esgotada (429))"
+   ],
+   "capacidade": "visão: OK (imagem 16x16 vermelha reconhecida)",
+   "no_servidor_remoto": true
+  }
+ }
+}

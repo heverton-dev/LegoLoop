@@ -1,0 +1,8 @@
+{"alvo":"megacombo-vision","http":200,"ms":2955,"usado":"gemini-3.6-flash","respondeu":true,"correto":true,"resp":"Vermelho","erro":""}
+{"alvo":"gemini/gemini-3.6-flash","http":200,"ms":2111,"usado":"gemini-3.6-flash","respondeu":true,"correto":true,"resp":"Vermelho","erro":""}
+{"alvo":"gemini/gemini-3.8-flash","http":503,"ms":3690,"usado":"","respondeu":false,"correto":false,"resp":"","erro":"[gemini/gemini-3.8-flash] [403]: { \"error\": { \"code\": 403, \"message\": \"Requests from referer \\u003cempty\\u003e are blocked.\", \"sta"}
+{"alvo":"cloudflare-ai/llama-3.2-11b-vision-instruct","http":400,"ms":470,"usado":"","respondeu":false,"correto":false,"resp":"","erro":"[400]: {\"errors\":[{\"message\":\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (84f734d1-b8c6-4fc5-ad4b"}
+{"alvo":"gemini/gemini-3.5-flash","http":200,"ms":2158,"usado":"gemini-3.6-flash","respondeu":true,"correto":true,"resp":"Vermelho","erro":""}
+{"alvo":"gemini/gemma-4-31b-it","http":200,"ms":36304,"usado":"gemma-4-31b-it","respondeu":true,"correto":true,"resp":"Vermelho. * User asks for the predominant color of","erro":""}
+{"alvo":"code-fast","http":0,"ms":90000,"respondeu":false,"correto":false,"resp":"","erro":"timeout 90s"}
+{"alvo":"kr/claude-sonnet-4.5","http":200,"ms":2527,"usado":"claude-sonnet-4.5","respondeu":true,"correto":false,"resp":"Sem imagem anexada. Por favor, envie a imagem.","erro":""}

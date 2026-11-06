@@ -1,0 +1,294 @@
+[
+ {
+  "id": "auto[1m]",
+  "rotulo": "auto[1m]",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "claude-fable-5",
+  "rotulo": "Fable 5",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "claude-fable-5-1",
+  "rotulo": "Fable 5.1",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "claude-fable-5-1[1m]",
+  "rotulo": "Fable",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "claude-haiku-4-5-20251001",
+  "rotulo": "Haiku 4.5",
+  "efforts": [],
+  "origem": "id"
+ },
+ {
+  "id": "claude-haiku-5-5",
+  "rotulo": "Haiku 5.5",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "claude-opus-4-6",
+  "rotulo": "Opus 4.6",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "claude-opus-4-7",
+  "rotulo": "Opus 4.7",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "claude-opus-4-8",
+  "rotulo": "Opus 4.8",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "claude-opus-5",
+  "rotulo": "Opus 5",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "claude-opus-5-5",
+  "rotulo": "Opus 5.5",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "claude-sonnet-4-6",
+  "rotulo": "Sonnet 4.6",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "claude-sonnet-5",
+  "rotulo": "Sonnet 5",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "claude-sonnet-5-5",
+  "rotulo": "Sonnet 5.5",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "code-fast",
+  "rotulo": "code-fast",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "code-fast[1m]",
+  "rotulo": "code-fast[1m]",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "code-free",
+  "rotulo": "code-free",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "code-free[1m]",
+  "rotulo": "code-free[1m]",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "code-pro",
+  "rotulo": "code-pro",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "code-pro[1m]",
+  "rotulo": "code-pro[1m]",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "code-tests[1m]",
+  "rotulo": "code-tests[1m]",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "resolvido"
+ },
+ {
+  "id": "fable",
+  "rotulo": "code-free",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "haiku",
+  "rotulo": "code-free",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "opus",
+  "rotulo": "code-pro",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ },
+ {
+  "id": "sonnet",
+  "rotulo": "code-fast",
+  "efforts": [
+   "low",
+   "medium",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "origem": "id"
+ }
+]

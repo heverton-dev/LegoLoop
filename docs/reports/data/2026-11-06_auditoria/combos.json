@@ -1,0 +1,106 @@
+[
+ {
+  "nome": "code-pro",
+  "tipo": null,
+  "membros": [
+   "ag/gemini-3.1-pro-low",
+   "ag/claude-opus-4-6-thinking",
+   "gemini/gemini-3.1-pro-preview",
+   "ag/claude-sonnet-4-6",
+   "kr/claude-sonnet-4.5"
+  ],
+  "criado": "2026-10-03T13:14:48.851Z"
+ },
+ {
+  "nome": "code-fast",
+  "tipo": null,
+  "membros": [
+   "ag/gemini-3.8-flash-low",
+   "gemini/gemini-3.8-flash",
+   "ag/gemini-3.7-flash-low",
+   "ag/claude-sonnet-4-6",
+   "kr/qwen3-coder-next"
+  ],
+  "criado": "2026-10-03T13:14:48.858Z"
+ },
+ {
+  "nome": "code-free",
+  "tipo": null,
+  "membros": [
+   "gemini/gemini-3.8-flash",
+   "agnes/agnes-3.0-flash",
+   "kr/qwen3-coder-next"
+  ],
+  "criado": "2026-10-03T13:14:48.863Z"
+ },
+ {
+  "nome": "code-tests",
+  "tipo": "custom",
+  "membros": [
+   "kr/qwen3-coder-next",
+   "kr/claude-haiku-4.5",
+   "ag/gemini-3.8-flash-low"
+  ],
+  "criado": "2026-10-04T19:54:32.088165+00:00"
+ },
+ {
+  "nome": "task-micro",
+  "tipo": "custom",
+  "membros": [
+   "groq/openai/gpt-oss-120b",
+   "agnes/agnes-3.0-flash",
+   "kr/qwen3-coder-next"
+  ],
+  "criado": "2026-10-04T19:54:32.088165+00:00"
+ },
+ {
+  "nome": "megacombo-coding",
+  "tipo": null,
+  "membros": [
+   "gemini/gemma-4-26b-a4b-it",
+   "gemini/gemini-3.8-flash",
+   "cloudflare-ai/qwen3.8-27b",
+   "gemini/gemma-4-31b-it"
+  ],
+  "criado": "2026-11-04T20:14:32.307740+00:00"
+ },
+ {
+  "nome": "megacombo-context",
+  "tipo": null,
+  "membros": [
+   "gemini/gemini-3.6-flash",
+   "gemini/gemini-3.5-flash",
+   "gemini/gemini-flash-lite-latest",
+   "gemini/gemini-3.8-flash"
+  ],
+  "criado": "2026-11-04T20:14:32.307740+00:00"
+ },
+ {
+  "nome": "megacombo-embedding",
+  "tipo": null,
+  "membros": [
+   "gemini/gemini-embedding-2"
+  ],
+  "criado": "2026-11-04T20:14:32.307740+00:00"
+ },
+ {
+  "nome": "megacombo-reasoning",
+  "tipo": null,
+  "membros": [
+   "gemini/gemini-3.1-pro-preview",
+   "gemini/gemini-3.6-flash",
+   "cloudflare-ai/gemma-4-26b-a4b-it"
+  ],
+  "criado": "2026-11-04T20:14:32.307740+00:00"
+ },
+ {
+  "nome": "megacombo-vision",
+  "tipo": null,
+  "membros": [
+   "gemini/gemini-3.6-flash",
+   "gemini/gemini-3.8-flash",
+   "cloudflare-ai/llama-3.2-11b-vision-instruct"
+  ],
+  "criado": "2026-11-04T20:14:32.307740+00:00"
+ }
+]
