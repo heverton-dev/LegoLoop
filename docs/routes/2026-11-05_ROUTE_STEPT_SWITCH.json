@@ -1,0 +1,654 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.0.0",
+  "name": "stept-switch",
+  "version": "1.0.0",
+  "date": "2026-11-05",
+  "session_id": "8d960f94-04a7-4717-9a72-2b34281e3a80",
+  "intent_ref": "docs/intents/2026-11-05_INTENT_STEPT_SWITCH.md",
+  "spec_ref": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md",
+  "plan_ref": "docs/plans/2026-11-05_PLAN_STEPT_SWITCH.md",
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "label": "Modelos de Dados, Enums e Validação",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": "internal/ste/switch.go:ConfigPerfil",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/ste/switch.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": "internal/ste/switch_test.go:TestConfigPerfil_Validate",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/ste/switch.go",
+          "internal/ste/switch_test.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/ste/...", "-run", "TestConfigPerfil_Validate"]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/ste/switch.go') && file_exists('internal/ste/switch_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "label": "Persistência JSON e Resolução de Herança",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": "internal/ste/switch.go:Config",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/ste/switch.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/ste/switch_test.go:TestConfig_ResolveEHeranca",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/ste/switch.go",
+          "internal/ste/switch_test.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/ste/...", "-run", "TestConfig_ResolveEHeranca"]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-01.3",
+      "label": "Geração do Prompt Canônico ASD / STE-PT",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": "internal/ste/prompt.go:PromptRegra",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/ste/prompt.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/ste/prompt_test.go:TestPromptRegra",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/ste/prompt.go",
+          "internal/ste/prompt_test.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/ste/...", "-run", "TestPromptRegra"]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/ste/prompt.go')"
+      }
+    },
+    {
+      "id": "SG-E01",
+      "label": "Stop-Gate Humano — Épico 01",
+      "nature": "macro",
+      "type": "stop_gate",
+      "ref": "gate:SG-E01",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/ste/switch.go",
+          "internal/ste/prompt.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Épico-01",
+        "context_artifacts": []
+      },
+      "spec_ref": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Épico-01",
+      "test_target": "internal/ste/...:TestConfig*",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          ["go", "test", "-v", "./internal/ste/..."]
+        ],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "label": "Sincronizador de Harnesses (Injeção e Remoção Atômica)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": "internal/ste/sync.go:SyncHarnesses",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/ste/sync.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/ste/sync_test.go:TestSyncHarnesses",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/ste/sync.go",
+          "internal/ste/sync_test.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/ste/...", "-run", "TestSyncHarnesses"]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/ste/sync.go')"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "label": "Subcomando CLI legoloop stept e Tabela de Status",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": "internal/cli/stept.go:RodarStept",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/stept.go",
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E02.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.3",
+      "test_target": "internal/cli/stept_test.go:TestCLIStept_StatusESet",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/stept.go",
+          "internal/cli/stept_test.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/cli/...", "-run", "TestCLIStept"]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/cli/stept.go')"
+      }
+    },
+    {
+      "id": "SG-E02",
+      "label": "Stop-Gate Humano — Épico 02",
+      "nature": "macro",
+      "type": "stop_gate",
+      "ref": "gate:SG-E02",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/stept.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Épico-02",
+        "context_artifacts": []
+      },
+      "spec_ref": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Épico-02",
+      "test_target": "internal/cli/...:TestCLIStept*",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          ["go", "test", "-v", "./internal/cli/..."]
+        ],
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o Épico 03?')"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "label": "Estrutura e Código do Projeto Standalone",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main.go",
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "cmd/stept/main_test.go:TestStandaloneMain",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "C:/Users/trcnologia/Desktop/stept-cli/go.mod",
+          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./..."]
+        ],
+        "gate": "exit_code == 0 && dir_exists('C:/Users/trcnologia/Desktop/stept-cli')"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "label": "Documentação Comercial e Manual de Referência",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": "C:/Users/trcnologia/Desktop/stept-cli/README.md",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "C:/Users/trcnologia/Desktop/stept-cli/README.md",
+          "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "C:/Users/trcnologia/Desktop/stept-cli/README.md",
+          "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./..."]
+        ],
+        "gate": "file_exists('C:/Users/trcnologia/Desktop/stept-cli/README.md') && file_exists('C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md')"
+      }
+    },
+    {
+      "id": "TICK-03.3",
+      "label": "Compilação e Prova de Latência Sub-10ms",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-NF.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-NF.1",
+      "test_target": "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe:status",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe"
+        ],
+        "verify": [
+          ["go", "build", "-o", "bin/stept.exe", "./cmd/stept"]
+        ],
+        "gate": "exit_code == 0 && file_exists('C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe')"
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "label": "Stop-Gate Humano Final e Homologação",
+      "nature": "macro",
+      "type": "stop_gate",
+      "ref": "gate:SG-FINAL",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "gemini",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "bin/legoloop.exe",
+          "internal/ste/switch.go",
+          "internal/cli/stept.go",
+          "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe",
+          "C:/Users/trcnologia/Desktop/stept-cli/README.md",
+          "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Critério-de-Done-Global",
+        "context_artifacts": [
+          "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md",
+          "docs/plans/2026-11-05_PLAN_STEPT_SWITCH.md"
+        ]
+      },
+      "spec_ref": "AC-NF.1",
+      "test_target": "go test -count=1 ./...",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/reports/2026-11-05_REPORT_STEPT_SWITCH.md"
+        ],
+        "verify": [
+          ["go", "test", "-count=1", "./..."],
+          ["go", "run", "./tools/funclen", "internal"]
+        ],
+        "gate": "prompt('Todos os 3 Épicos executados, binários compilados e provados. Aprova a entrega final?')"
+      }
+    }
+  ]
+}
