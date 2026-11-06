@@ -54,7 +54,8 @@ LegoLoop/
 │   ├── board/ · wave/       # Integração com GitHub Projects e planejador de ondas sem sobreposição
 │   ├── studio/              # Looping Studio (canvas + API REST + modais Novo Processo e Processos)
 │   ├── e2e/                 # Testes E2E herméticos dos cenários de referência (tag e2e)
-│   └── cli/                 # Comandos da CLI e instalação de skills
+│   ├── mcp/                 # Meta-MCP Router STDIO: bootstrap mínimo (2 tools), busca Lazy e catálogo de skills
+│   └── cli/                 # Comandos da CLI, alternador STE-PT e sincronização de harnesses
 ├── skills/                  # Skills canônicas embutidas no binário (//go:embed via skills/embed.go)
 │   ├── legoloop-fabricar/   # Criação de processos (/legoloop-fabricar)
 │   ├── legoloop-matriz/     # Consulta à matriz de peças (/legoloop-matriz)
@@ -103,6 +104,12 @@ legoloop studio                                   # http://127.0.0.1:7878
 legoloop forge                                    # abre o Studio e dispara a primeira varredura
 legoloop import <github-url>                      # importa e canoniza uma skill do GitHub
 legoloop upgrade <arquivo> --diagnose             # diagnóstico para o Padrão Ouro
+
+# Governança Lazy Universal de MCPs e Alternador STE-PT
+legoloop sync-harnesses --dry-run                 # simula alinhamento dos harnesses ao Meta-MCP Router
+legoloop sync-harnesses --apply                   # conecta Claude, MIMO, Cursor e Windsurf com backup
+legoloop mcp-router                               # servidor STDIO com Lazy discovery (mcp_search, call_mcp_tool)
+legoloop stept [status|set|on|off|scan|manual]   # auditoria e alternância de governança STE-PT nos harnesses
 ```
 
 ## 🏭 Fábrica & Ciclo de Vida de Processos
@@ -189,4 +196,4 @@ git diff --exit-code -- go.mod                 # só biblioteca padrão (sem go.
 
 ## 📚 Governança
 
-Cada demanda segue a cascata **INTENT → SPEC → PLAN → ROUTE → BUILD (TDD) → relatório**, com stop-gates humanos e artefatos em `docs/` com prefixo `YYYY-MM-DD_`. Os formatos estão em `docs/templates/` (templates v2, testados por `go test ./docs/templates`). A demanda mais recente é a `fabricar v2` (`docs/*/2026-11-04_*_FABRICAR_V2.*`, relatório final em `docs/reports/2026-11-04_REPORT_FABRICAR_V2.md`). Manuais operacionais em `docs/manuals/`. Regras para agentes em [`AGENTS.md`](AGENTS.md); diário de evolução em [`MEMORY.md`](MEMORY.md).
+Cada demanda segue a cascata **INTENT → SPEC → PLAN → ROUTE → BUILD (TDD) → relatório**, com stop-gates humanos e artefatos em `docs/` com prefixo `YYYY-MM-DD_`. Os formatos estão em `docs/templates/` (templates v2, testados por `go test ./docs/templates`). Demandas recentes: Alternador STE-PT (`docs/*/2026-11-05_*_STEPT_SWITCH.*`, relatório final em `docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md`), Governança Lazy de MCPs (`docs/*/2026-11-06_*_GOVERNANCA_LAZY_UNIVERSAL.*`) e `fabricar v2` (`docs/*/2026-11-04_*_FABRICAR_V2.*`). Manuais operacionais em `docs/manuals/`. Regras para agentes em [`AGENTS.md`](AGENTS.md); diário de evolução em [`MEMORY.md`](MEMORY.md).

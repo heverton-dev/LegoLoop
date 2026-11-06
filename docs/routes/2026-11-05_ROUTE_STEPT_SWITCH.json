@@ -1,23 +1,23 @@
 {
   "$schema": "https://legoloop.dev/schemas/route.v2.json",
   "template_version": "2.0.0",
-  "name": "stept-switch",
-  "version": "1.0.0",
+  "name": "STEPT_SWITCH",
+  "version": "2.0.0",
   "date": "2026-11-05",
-  "session_id": "8d960f94-04a7-4717-9a72-2b34281e3a80",
+  "session_id": "78979240-b03f-4f85-8d01-66cd6312f633",
   "intent_ref": "docs/intents/2026-11-05_INTENT_STEPT_SWITCH.md",
   "spec_ref": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md",
   "plan_ref": "docs/plans/2026-11-05_PLAN_STEPT_SWITCH.md",
   "execution_strategy": {
-    "supervision_level": "micro",
+    "supervision_level": "epic",
     "default_isolation": {
       "workspace": "local",
       "executor": "orchestrix_hermetic",
       "subagents_allowed": false
     },
-    "max_parallel_workers": 2,
+    "max_parallel_workers": 1,
     "tdd_enforced": true,
-    "default_timeout_sec": 180,
+    "default_timeout_sec": 300,
     "rollback_on_failure": "abort_pipeline"
   },
   "nodes": [
@@ -26,27 +26,27 @@
       "label": "Modelos de Dados, Enums e Validação",
       "nature": "micro",
       "type": "unit_task",
-      "ref": "internal/ste/switch.go:ConfigPerfil",
-      "status": "PENDING",
+      "ref": null,
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false
       },
-      "timeout_sec": 180,
+      "timeout_sec": 300,
       "token_budget": {
-        "max_output_tokens": 600
+        "max_output_tokens": 800
       },
       "depends_on": [],
       "routing": {
         "mode": "suggested",
-        "harness": "gemini",
-        "model": "flash",
-        "effort": "low",
+        "harness": "claude",
+        "model": "claude-sonnet-5-5",
+        "effort": "medium",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -71,7 +71,33 @@
           "internal/ste/switch_test.go"
         ],
         "verify": [
-          ["go", "test", "-v", "./internal/ste/...", "-run", "TestConfigPerfil_Validate"]
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestConfigPerfil_Validate",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/ste"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
         ],
         "gate": "exit_code == 0 && file_exists('internal/ste/switch.go') && file_exists('internal/ste/switch_test.go')"
       }
@@ -81,29 +107,29 @@
       "label": "Persistência JSON e Resolução de Herança",
       "nature": "micro",
       "type": "unit_task",
-      "ref": "internal/ste/switch.go:Config",
-      "status": "PENDING",
+      "ref": null,
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false
       },
-      "timeout_sec": 180,
+      "timeout_sec": 300,
       "token_budget": {
-        "max_output_tokens": 600
+        "max_output_tokens": 800
       },
       "depends_on": [
         "TICK-01.1"
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "gemini",
-        "model": "flash",
-        "effort": "low",
+        "harness": "claude",
+        "model": "claude-sonnet-5-5",
+        "effort": "medium",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -128,39 +154,65 @@
           "internal/ste/switch_test.go"
         ],
         "verify": [
-          ["go", "test", "-v", "./internal/ste/...", "-run", "TestConfig_ResolveEHeranca"]
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestConfig_ResolveEHeranca",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/ste"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
         ],
-        "gate": "exit_code == 0"
+        "gate": "exit_code == 0 && file_exists('internal/ste/switch.go') && file_exists('internal/ste/switch_test.go')"
       }
     },
     {
       "id": "TICK-01.3",
-      "label": "Geração do Prompt Canônico ASD / STE-PT",
+      "label": "Geração do Prompt Canônico (Tríade Input + Caveman Thinking + Cartão STE-PT)",
       "nature": "micro",
       "type": "unit_task",
-      "ref": "internal/ste/prompt.go:PromptRegra",
-      "status": "PENDING",
+      "ref": null,
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false
       },
-      "timeout_sec": 180,
+      "timeout_sec": 300,
       "token_budget": {
-        "max_output_tokens": 600
+        "max_output_tokens": 800
       },
       "depends_on": [
         "TICK-01.2"
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "gemini",
-        "model": "flash",
-        "effort": "low",
+        "harness": "claude",
+        "model": "claude-sonnet-5-5",
+        "effort": "medium",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -185,19 +237,94 @@
           "internal/ste/prompt_test.go"
         ],
         "verify": [
-          ["go", "test", "-v", "./internal/ste/...", "-run", "TestPromptRegra"]
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestPromptRegra",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/ste"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
         ],
-        "gate": "exit_code == 0 && file_exists('internal/ste/prompt.go')"
+        "gate": "exit_code == 0 && file_exists('internal/ste/prompt.go') && file_exists('internal/ste/prompt_test.go')"
       }
     },
     {
       "id": "SG-E01",
-      "label": "Stop-Gate Humano — Épico 01",
-      "nature": "macro",
+      "label": "Stop-Gate Humano do Épico 01",
+      "nature": "nano",
       "type": "stop_gate",
-      "ref": "gate:SG-E01",
-      "status": "PENDING",
+      "ref": null,
+      "status": "PASSED",
       "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "label": "Scanner Dinâmico de Harnesses no SO",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
@@ -205,19 +332,19 @@
       },
       "timeout_sec": 300,
       "token_budget": {
-        "max_output_tokens": 300
+        "max_output_tokens": 800
       },
       "depends_on": [
-        "TICK-01.3"
+        "SG-E01"
       ],
       "routing": {
-        "mode": "manual",
-        "harness": "gemini",
-        "model": "flash",
-        "effort": "low",
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "claude-sonnet-5-5",
+        "effort": "medium",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -227,52 +354,80 @@
       },
       "inputs": {
         "source_files": [
-          "internal/ste/switch.go",
-          "internal/ste/prompt.go"
+          "internal/ste/scan.go"
         ],
-        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Épico-01",
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E02.1",
         "context_artifacts": []
       },
-      "spec_ref": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Épico-01",
-      "test_target": "internal/ste/...:TestConfig*",
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/ste/scan_test.go:TestScanHarnesses",
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
-        "artifacts": [],
-        "verify": [
-          ["go", "test", "-v", "./internal/ste/..."]
+        "artifacts": [
+          "internal/ste/scan.go",
+          "internal/ste/scan_test.go"
         ],
-        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')"
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestScanHarnesses",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/ste"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/ste/scan.go') && file_exists('internal/ste/scan_test.go')"
       }
     },
     {
-      "id": "TICK-02.1",
-      "label": "Sincronizador de Harnesses (Injeção e Remoção Atômica)",
+      "id": "TICK-02.2",
+      "label": "Sincronizador Atômico e Remoção Limpa por Harness",
       "nature": "micro",
       "type": "unit_task",
-      "ref": "internal/ste/sync.go:SyncHarnesses",
-      "status": "PENDING",
+      "ref": null,
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false
       },
-      "timeout_sec": 180,
+      "timeout_sec": 300,
       "token_budget": {
-        "max_output_tokens": 600
+        "max_output_tokens": 800
       },
       "depends_on": [
-        "SG-E01"
+        "TICK-02.1"
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "gemini",
-        "model": "flash",
+        "harness": "claude",
+        "model": "claude-sonnet-5-5",
         "effort": "medium",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -284,10 +439,10 @@
         "source_files": [
           "internal/ste/sync.go"
         ],
-        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E02.1",
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E02.2",
         "context_artifacts": []
       },
-      "spec_ref": "AC-E02.1",
+      "spec_ref": "AC-E02.2",
       "test_target": "internal/ste/sync_test.go:TestSyncHarnesses",
       "defects": [],
       "rollback_strategy": "stash_changes",
@@ -297,77 +452,45 @@
           "internal/ste/sync_test.go"
         ],
         "verify": [
-          ["go", "test", "-v", "./internal/ste/...", "-run", "TestSyncHarnesses"]
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestSyncHarnesses",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/ste"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
         ],
-        "gate": "exit_code == 0 && file_exists('internal/ste/sync.go')"
+        "gate": "exit_code == 0 && file_exists('internal/ste/sync.go') && file_exists('internal/ste/sync_test.go')"
       }
     },
     {
-      "id": "TICK-02.2",
+      "id": "TICK-02.3",
       "label": "Subcomando CLI legoloop stept e Tabela de Status",
       "nature": "micro",
       "type": "unit_task",
-      "ref": "internal/cli/stept.go:RodarStept",
-      "status": "PENDING",
+      "ref": null,
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "timeout_sec": 180,
-      "token_budget": {
-        "max_output_tokens": 600
-      },
-      "depends_on": [
-        "TICK-02.1"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "harness": "gemini",
-        "model": "flash",
-        "effort": "medium",
-        "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
-        }
-      },
-      "tooling": {
-        "runtime": "powershell",
-        "mcps_required": false,
-        "mcps_allowed": []
-      },
-      "inputs": {
-        "source_files": [
-          "internal/cli/stept.go",
-          "cmd/legoloop/main.go"
-        ],
-        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E02.3",
-        "context_artifacts": []
-      },
-      "spec_ref": "AC-E02.3",
-      "test_target": "internal/cli/stept_test.go:TestCLIStept_StatusESet",
-      "defects": [],
-      "rollback_strategy": "stash_changes",
-      "output": {
-        "artifacts": [
-          "internal/cli/stept.go",
-          "internal/cli/stept_test.go"
-        ],
-        "verify": [
-          ["go", "test", "-v", "./internal/cli/...", "-run", "TestCLIStept"]
-        ],
-        "gate": "exit_code == 0 && file_exists('internal/cli/stept.go')"
-      }
-    },
-    {
-      "id": "SG-E02",
-      "label": "Stop-Gate Humano — Épico 02",
-      "nature": "macro",
-      "type": "stop_gate",
-      "ref": "gate:SG-E02",
-      "status": "PENDING",
-      "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
@@ -375,19 +498,19 @@
       },
       "timeout_sec": 300,
       "token_budget": {
-        "max_output_tokens": 300
+        "max_output_tokens": 800
       },
       "depends_on": [
         "TICK-02.2"
       ],
       "routing": {
-        "mode": "manual",
-        "harness": "gemini",
-        "model": "flash",
-        "effort": "low",
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "claude-sonnet-5-5",
+        "effort": "medium",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -399,49 +522,127 @@
         "source_files": [
           "internal/cli/stept.go"
         ],
-        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Épico-02",
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E02.3",
         "context_artifacts": []
       },
-      "spec_ref": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Épico-02",
-      "test_target": "internal/cli/...:TestCLIStept*",
+      "spec_ref": "AC-E02.3",
+      "test_target": "internal/cli/stept_test.go:TestCLIStept",
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
-        "artifacts": [],
-        "verify": [
-          ["go", "test", "-v", "./internal/cli/..."]
+        "artifacts": [
+          "internal/cli/stept.go",
+          "internal/cli/stept_test.go"
         ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestCLIStept",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/cli/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/cli"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/cli/stept.go') && file_exists('internal/cli/stept_test.go')"
+      }
+    },
+    {
+      "id": "SG-E02",
+      "label": "Stop-Gate Humano do Épico 02",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-02.2",
+        "TICK-02.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
         "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o Épico 03?')"
       }
     },
     {
       "id": "TICK-03.1",
-      "label": "Estrutura e Código do Projeto Standalone",
+      "label": "Estrutura e Código do Projeto Standalone em Go",
       "nature": "micro",
       "type": "unit_task",
-      "ref": "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main.go",
-      "status": "PENDING",
+      "ref": null,
+      "status": "PASSED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false
       },
-      "timeout_sec": 180,
+      "timeout_sec": 300,
       "token_budget": {
-        "max_output_tokens": 600
+        "max_output_tokens": 800
       },
       "depends_on": [
         "SG-E02"
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "gemini",
-        "model": "flash",
+        "harness": "claude",
+        "model": "claude-sonnet-5-5",
         "effort": "medium",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -451,6 +652,7 @@
       },
       "inputs": {
         "source_files": [
+          "C:/Users/trcnologia/Desktop/stept-cli/go.mod",
           "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main.go"
         ],
         "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E03.1",
@@ -463,136 +665,39 @@
       "output": {
         "artifacts": [
           "C:/Users/trcnologia/Desktop/stept-cli/go.mod",
-          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main.go"
+          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main.go",
+          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main_test.go"
         ],
         "verify": [
-          ["go", "test", "-v", "./..."]
+          [
+            "cd",
+            "C:/Users/trcnologia/Desktop/stept-cli"
+          ],
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/stept.exe",
+            "./cmd/stept"
+          ]
         ],
-        "gate": "exit_code == 0 && dir_exists('C:/Users/trcnologia/Desktop/stept-cli')"
+        "gate": "exit_code == 0 && file_exists('C:/Users/trcnologia/Desktop/stept-cli/go.mod') && file_exists('C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main_test.go')"
       }
     },
     {
       "id": "TICK-03.2",
-      "label": "Documentação Comercial e Manual de Referência",
-      "nature": "nano",
-      "type": "unit_task",
-      "ref": "C:/Users/trcnologia/Desktop/stept-cli/README.md",
-      "status": "PENDING",
-      "execution_mode": "sequential",
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "timeout_sec": 180,
-      "token_budget": {
-        "max_output_tokens": 600
-      },
-      "depends_on": [
-        "TICK-03.1"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "harness": "gemini",
-        "model": "flash",
-        "effort": "low",
-        "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
-        }
-      },
-      "tooling": {
-        "runtime": "powershell",
-        "mcps_required": false,
-        "mcps_allowed": []
-      },
-      "inputs": {
-        "source_files": [
-          "C:/Users/trcnologia/Desktop/stept-cli/README.md",
-          "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md"
-        ],
-        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E03.2",
-        "context_artifacts": []
-      },
-      "spec_ref": "AC-E03.2",
-      "test_target": "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md",
-      "defects": [],
-      "rollback_strategy": "stash_changes",
-      "output": {
-        "artifacts": [
-          "C:/Users/trcnologia/Desktop/stept-cli/README.md",
-          "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md"
-        ],
-        "verify": [
-          ["go", "test", "-v", "./..."]
-        ],
-        "gate": "file_exists('C:/Users/trcnologia/Desktop/stept-cli/README.md') && file_exists('C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md')"
-      }
-    },
-    {
-      "id": "TICK-03.3",
-      "label": "Compilação e Prova de Latência Sub-10ms",
+      "label": "Instalador Universal de PATH (stept install)",
       "nature": "micro",
       "type": "unit_task",
-      "ref": "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe",
-      "status": "PENDING",
-      "execution_mode": "sequential",
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "timeout_sec": 180,
-      "token_budget": {
-        "max_output_tokens": 600
-      },
-      "depends_on": [
-        "TICK-03.2"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "harness": "gemini",
-        "model": "flash",
-        "effort": "low",
-        "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
-        }
-      },
-      "tooling": {
-        "runtime": "powershell",
-        "mcps_required": false,
-        "mcps_allowed": []
-      },
-      "inputs": {
-        "source_files": [
-          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/main.go"
-        ],
-        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-NF.1",
-        "context_artifacts": []
-      },
-      "spec_ref": "AC-NF.1",
-      "test_target": "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe:status",
-      "defects": [],
-      "rollback_strategy": "stash_changes",
-      "output": {
-        "artifacts": [
-          "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe"
-        ],
-        "verify": [
-          ["go", "build", "-o", "bin/stept.exe", "./cmd/stept"]
-        ],
-        "gate": "exit_code == 0 && file_exists('C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe')"
-      }
-    },
-    {
-      "id": "SG-FINAL",
-      "label": "Stop-Gate Humano Final e Homologação",
-      "nature": "macro",
-      "type": "stop_gate",
-      "ref": "gate:SG-FINAL",
-      "status": "PENDING",
-      "execution_mode": "sequential",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
@@ -600,19 +705,19 @@
       },
       "timeout_sec": 300,
       "token_budget": {
-        "max_output_tokens": 600
+        "max_output_tokens": 800
       },
       "depends_on": [
-        "TICK-03.3"
+        "TICK-03.1"
       ],
       "routing": {
-        "mode": "manual",
-        "harness": "gemini",
-        "model": "flash",
-        "effort": "low",
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "claude-sonnet-5-5",
+        "effort": "medium",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "task-micro"
         }
       },
       "tooling": {
@@ -622,32 +727,439 @@
       },
       "inputs": {
         "source_files": [
-          "bin/legoloop.exe",
-          "internal/ste/switch.go",
-          "internal/cli/stept.go",
-          "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe",
-          "C:/Users/trcnologia/Desktop/stept-cli/README.md",
-          "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md"
+          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/install.go"
         ],
-        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#Critério-de-Done-Global",
-        "context_artifacts": [
-          "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md",
-          "docs/plans/2026-11-05_PLAN_STEPT_SWITCH.md"
-        ]
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E03.2",
+        "context_artifacts": []
       },
-      "spec_ref": "AC-NF.1",
-      "test_target": "go test -count=1 ./...",
+      "spec_ref": "AC-E03.2",
+      "test_target": "cmd/stept/install_test.go:TestStandaloneInstall",
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "docs/reports/2026-11-05_REPORT_STEPT_SWITCH.md"
+          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/install.go",
+          "C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/install_test.go"
         ],
         "verify": [
-          ["go", "test", "-count=1", "./..."],
-          ["go", "run", "./tools/funclen", "internal"]
+          [
+            "cd",
+            "C:/Users/trcnologia/Desktop/stept-cli"
+          ],
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/stept.exe",
+            "./cmd/stept"
+          ]
         ],
-        "gate": "prompt('Todos os 3 Épicos executados, binários compilados e provados. Aprova a entrega final?')"
+        "gate": "exit_code == 0 && file_exists('C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/install.go') && file_exists('C:/Users/trcnologia/Desktop/stept-cli/cmd/stept/install_test.go')"
+      }
+    },
+    {
+      "id": "TICK-03.3",
+      "label": "Documentação Comercial, Manual e Prova de Latência Sub-10ms",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "claude-haiku-5-5",
+        "effort": "low",
+        "fallback": {
+          "harness": "9router",
+          "model": "code-tests"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "C:/Users/trcnologia/Desktop/stept-cli/README.md",
+          "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md",
+          "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe"
+        ],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E03.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.3",
+      "test_target": "cmd/stept/perf_test.go:TestStandalonePerformance",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "C:/Users/trcnologia/Desktop/stept-cli/README.md",
+          "C:/Users/trcnologia/Desktop/stept-cli/MANUAL.md",
+          "C:/Users/trcnologia/Desktop/stept-cli/bin/stept.exe"
+        ],
+        "verify": [
+          [
+            "cd",
+            "C:/Users/trcnologia/Desktop/stept-cli"
+          ],
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/stept.exe",
+            "./cmd/stept"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('C:/Users/trcnologia/Desktop/stept-cli/README.md')"
+      }
+    },
+    {
+      "id": "SG-E03",
+      "label": "Stop-Gate Humano do Épico 03",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2",
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o Épico 04?')"
+      }
+    },
+    {
+      "id": "TICK-04.1",
+      "label": "Prova de Mutações Deliberadas nos 4 Pontos Críticos (M1 a M4)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 800
+      },
+      "depends_on": [
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "claude-sonnet-5-5",
+        "effort": "medium",
+        "fallback": {
+          "harness": "9router",
+          "model": "task-micro"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.1",
+      "test_target": "internal/ste/mutations_test.go:TestMutationsCoverage",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/ste/mutations_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-v",
+            "-run",
+            "^TestMutationsCoverage",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "vet",
+            "./internal/ste/..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal/ste"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/ste/mutations_test.go')"
+      }
+    },
+    {
+      "id": "TICK-04.2",
+      "label": "Homologação Final, Varredura Limpa e Relatório Consolidado",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "claude-haiku-5-5",
+        "effort": "low",
+        "fallback": {
+          "harness": "9router",
+          "model": "code-tests"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-05_SPEC_STEPT_SWITCH.md#AC-NF.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-NF.1",
+      "test_target": "docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./..."
+          ],
+          [
+            "go",
+            "vet",
+            "./..."
+          ],
+          [
+            "go",
+            "run",
+            "./tools/funclen",
+            "internal"
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md')"
+      }
+    },
+    {
+      "id": "SG-E04",
+      "label": "Stop-Gate Humano do Épico 04",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-04.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 04 e testes de mutação aprovados? Autoriza a homologação final?')"
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "label": "Homologação Final (Regressão Global & Recompilação Fresca)",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 600,
+      "token_budget": {
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./..."
+          ],
+          [
+            "go",
+            "vet",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
       }
     }
   ]

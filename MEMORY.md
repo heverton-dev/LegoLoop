@@ -270,7 +270,25 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Stop-Gate `SG-E04` & Homologação Final `SG-FINAL`:** Usuário aprovou `SG-E04`. Suíte de regressão global aprovada (29 pacotes internos + pacote E2E), `go vet ./...` (Windows, Linux, Darwin) com zero erros, `gofmt -l .` 100% vazio, `funclen` sem nenhuma nova função > 35 linhas, `go.mod` stdlib pura intacta. Binário `bin/legoloop.exe` recompilado e sincronizado no PATH via `go install ./cmd/legoloop`.
   - **Encerramento da Demanda:** Todos os 26 tickets, 4 stop-gates de épicos (`SG-E01..SG-E04`) e o stop-gate final (`SG-FINAL`) marcados como `PASSED` na ROUTE. Todos os critérios binários de aceitação e de Done Global marcados na SPEC (`[x]`).
 
+- **06/11/2026** — 🛡️ **Conclusão da Governança Lazy Universal de MCPs e Skills (`Mega Pipeline`):**
+  - **Diagnóstico do Inchaço:** Engenharia reversa no MIMO Code provou ~120k tokens no Turno 1 (63k de 596 skills no prompt, 11,5k em `<system-reminder>` de 207 tools do REA e ~28k em schemas).
+  - **Estanque Imediato no SO:** Backup seguro em `~/.claude.json.bak_estanque`, cofre seguro em `~/.config/mcp-vault/profiles/full.json`, e renomeação de pastas `upstream` para `.upstream` (-380 skills da varredura imediata).
+  - **Épico 01 (`internal/mcp/router.go`):** Servidor Meta-MCP Router via STDIO em JSON-RPC 2.0 expondo apenas `mcp_search` e `call_mcp_tool`.
+  - **Épico 02 (`internal/mcp/skills.go`):** Descoberta sob demanda de skills com taxonomia canônica enriquecida (`Tier`, `Natureza`, `Categoria`, `Resumo`) e poda mecânica de pastas com ponto (`.upstream`).
+  - **Épico 03 (`internal/cli/sync_harnesses.go` e `cli.go`):** Comando `legoloop sync-harnesses [--dry-run|--apply]` com backup automático (`.bak_legoloop`) conectando Claude, MimoCode, Cursor e Windsurf.
+  - **Governança Estrita:** Testes de mutação aprovados, `go vet` limpo, `gofmt -l` vazio, `funclen` <= 35 linhas, zero dependências externas novas no `go.mod`. Binário compilado em `bin/legoloop.exe` e instalado no PATH via `go install`.
+
+- **06/11/2026** — 🚀 **Alternador Universal e Granular STE-PT para Harnesses Concluído (Épicos 01 a 04):**
+  - **Tríade de Governança e Economia de Tokens:** Input Imperativo + Caveman Thinking + Cartão STE-PT (ASD-STE100).
+  - **Épico 01 (`internal/ste/switch.go`, `prompt.go`):** Modelos de dados, validação estrita de enums (`Modo`, `Pausa`, `HarnessID`), persistência atômica `~/.stept/config.json` com resolução de herança `padrao` vs `override`, e gerador de prompt canônico.
+  - **Épico 02 (`internal/ste/scan.go`, `sync.go`, `internal/cli/stept.go`):** Scanner dinâmico no SO (sem diretórios fantasmas), sincronizador atômico de regras dedicado (`stept-rules.md`) com remoção limpa no modo `off` (sem tocar em `~/.claude.json` conforme ressalva), e subcomando `legoloop stept status|set|on|off|scan`.
+  - **Épico 03 (`C:\Users\trcnologia\Desktop\stept-cli`):** Projeto independente em Go sem dependências externas, instalador universal de PATH no escopo do usuário (`stept install`), manuais comerciais (`README.md`, `MANUAL.md`) e prova de latência sub-10ms (**8.16ms**).
+  - **Épico 04 (Regra 8 — Mutações Deliberadas & Homologação Final):** 4 mutações deliberadas M1 a M4 quebraram os testes comprovadamente e foram restauradas para verde (`mutations_test.go`).
+  - **Qualidade & Recompilação:** 100% dos testes verdes em LegoLoop e no Standalone, `go vet` limpo, `gofmt -l .` vazio, `funclen` <= 35 linhas, `go.mod` stdlib pura intacta. Recompilado `bin/legoloop.exe`, `Desktop/stept-cli/bin/stept.exe` e instalado no GOPATH via `go install ./cmd/legoloop`.
+  - **Artefatos:** SPEC, PLAN, ROUTE (`SG-FINAL` aprovado) e Relatório Oficial em `docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md`.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `main` — Demanda `fabricar v2` 100% concluída e pronta para commit/push sob solicitação do usuário.
-- **Binário Oficial:** `bin/legoloop.exe` atualizado e testado.
-- **Grafo Semântico:** Atualizado via `codebase-memory-mcp`.
+- **Status da Branch:** `main` — Alternador Universal STE-PT implementado e homologado com sucesso.
+- **Binário Oficial:** `bin/legoloop.exe` recompilado e instalado (`go install ./cmd/legoloop`).
+- **Projeto Standalone no Desktop:** `C:\Users\trcnologia\Desktop\stept-cli\bin\stept.exe`.
+- **Documentação & Relatório:** `docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md`.

@@ -63,6 +63,9 @@ Comandos:
   remover    <nome> [--vault DIR] [--yes]  apaga um processo do cofre e os vínculos dele (falha se outro processo o usa)
   compor     <nome> <legoloop-x@versão> [--depende ID]... [--yes]  liga um processo como etapa de outro (recusa ciclo)
   instalar-skills [--vault DIR] [--dry-run] [--json]  instala e vincula as skills nativas universais
+  stept      [status|set|on|off|scan] [--harness H] [--modo M] [--pausa P] [--json]  alternador de governança STE-PT
+  sync-harnesses (--dry-run|--apply)         conecta harnesses ao legoloop mcp-router
+  mcp-router                                 inicia servidor MCP STDIO com Lazy discovery
   version
 `
 
@@ -77,6 +80,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
 		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
 		"refinar": cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills,
+		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

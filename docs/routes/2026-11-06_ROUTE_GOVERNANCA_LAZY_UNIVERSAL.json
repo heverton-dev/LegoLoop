@@ -1,0 +1,604 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.0.0",
+  "name": "governança-lazy-universal",
+  "version": "1.0.0",
+  "date": "2026-11-06",
+  "session_id": "088c6d3f-4908-4fd5-b40e-896ee8fcf556",
+  "intent_ref": "docs/intents/2026-11-06_INTENT_GOVERNANCA_LAZY_UNIVERSAL.md",
+  "spec_ref": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md",
+  "plan_ref": "docs/plans/2026-11-06_PLAN_GOVERNANCA_LAZY_UNIVERSAL.md",
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "label": "Handshake JSON-RPC e Ferramentas Mínimas",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/mcp/router.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/mcp/router_test.go:TestRouterHandshakeAndListTools",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/mcp/router.go",
+          "internal/mcp/router_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "./internal/mcp/..."
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/mcp/router.go') && file_exists('internal/mcp/router_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "label": "Despacho Dinâmico de Ferramentas",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/mcp/router.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": "internal/mcp/router_test.go:TestRouterSearchAndCallTool",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/mcp/router.go",
+          "internal/mcp/router_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "./internal/mcp/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-01.3",
+      "label": "Tratamento de Erros e Verificação Estática de E01",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/mcp/router.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/mcp/router_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/mcp/router.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "vet",
+            "./internal/mcp/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-E01",
+      "label": "Stop-Gate Humano Épico 01",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "APPROVED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "label": "Motor de Busca de Skills com Taxonomia",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/mcp/skills.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/mcp/skills_test.go:TestSkillSearchTaxonomy",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/mcp/skills.go",
+          "internal/mcp/skills_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "./internal/mcp/..."
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/mcp/skills.go')"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "label": "Poda de Pastas Upstream com Prefixo de Ponto",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/mcp/skills.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": "internal/mcp/skills_test.go:TestSkillSkipDottedPaths",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/mcp/skills.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "./internal/mcp/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-E02",
+      "label": "Stop-Gate Humano Épico 02",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "APPROVED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o Épico 03?')"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "label": "CLI legoloop sync-harnesses e Distribuição de Configs",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/sync_harnesses.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/cli/sync_harnesses_test.go:TestSyncHarnesses",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/sync_harnesses.go",
+          "internal/cli/sync_harnesses_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "./internal/cli/..."
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/cli/sync_harnesses.go')"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "label": "Recompilação Fresca e Integridade da Suíte Global",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PASSED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "label": "Stop-Gate Final de Auditoria Humana",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "APPROVED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Todos os 3 Épicos concluídos e binário atualizado. Autoriza entrega final?')"
+      }
+    }
+  ]
+}
