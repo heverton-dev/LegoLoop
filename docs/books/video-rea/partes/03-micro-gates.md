@@ -4,8 +4,8 @@
 
 Identificar ferramentas comerciais não basta: a engenharia reversa no LegoLoop visa à independência tecnológica. O módulo curador cruza cada dependência mapeada contra o catálogo de peças do ecossistema (`internal/matriz`):
 
-| Ferramenta do Vídeo          | Peça Local do Cofre                     | Ganho de Soberania                     |
-| :--------------------------- | :-------------------------------------- | :------------------------------------- |
+| Ferramenta do Vídeo      | Peça Local do Cofre                     | Ganho de Soberania                     |
+| :----------------------- | :-------------------------------------- | :------------------------------------- |
 | **Higgsfield AI**            | Google AI Studio + Texturas Procedurais | Custo zero, sem filas e determinístico |
 | **After Effects / Premiere** | Remotion + CSS3 3D Shaders              | Versionamento Git e render em pipeline |
 | **Whisper API Paga**         | Whisper Local / FFmpeg SilenceRemove    | Processamento offline a 48kHz          |

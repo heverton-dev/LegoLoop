@@ -186,7 +186,7 @@
   show raw.where(block: false): r => text(font: ("Consolas", "Courier New"), size: 5.6pt, fill: cor-accent2, hyphenate: false)[#r.text]
   it
 }
-#show figure.where(kind: table): set block(breakable: false)
+#show figure.where(kind: table): set block(breakable: true)
 #show figure.where(kind: table): set align(left)
 #show figure.where(kind: table): set figure(numbering: none)
 #show figure.where(kind: table): set figure.caption(position: top)

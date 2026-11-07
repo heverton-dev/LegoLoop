@@ -77,6 +77,40 @@
   inset: (x: 5pt, y: 2.5pt), radius: 3pt, outset: (y: 1.5pt),
 )[#text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: cor.darken(15%))[#txt]]
 
+#let no(titulo, sub: none, cor: cor-tinta) = block(
+  width: 100%, fill: cor, radius: 4pt, inset: (x: 4pt, y: 7pt),
+)[
+  #align(center)[
+    #text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: white, hyphenate: false)[#titulo]
+    #if sub != none [ #linebreak() #text(font: ("Segoe UI", "Arial"), size: 6.6pt, fill: rgb("#cbd5e1"), hyphenate: false)[#sub] ]
+  ]
+]
+
+#let no-claro(titulo, sub: none, cor: cor-accent) = block(
+  width: 100%, fill: cor.lighten(92%), radius: 4pt,
+  stroke: 0.6pt + cor.lighten(40%), inset: (x: 4pt, y: 7pt),
+)[
+  #align(center)[
+    #text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: cor.darken(25%), hyphenate: false)[#titulo]
+    #if sub != none [ #linebreak() #text(font: ("Segoe UI", "Arial"), size: 6.6pt, fill: cor-suave, hyphenate: false)[#sub] ]
+  ]
+]
+
+#let seta = align(horizon + center)[#text(size: 11pt, fill: cor-accent)[#sym.arrow.r]]
+
+#let ficha(..pares) = block(width: 100%, above: 12pt, below: 14pt)[
+  #table(
+    columns: (auto, 1fr),
+    stroke: 0.5pt + cor-linha,
+    fill: (_, y) => if calc.odd(y) { rgb("#f8fafc") } else { white },
+    inset: (x: 6pt, y: 4.5pt),
+    ..pares.pos().map(p => (
+      text(font: ("Segoe UI", "Arial"), size: 7.5pt, weight: "bold", fill: cor-suave)[#p.at(0)],
+      text(font: ("Segoe UI", "Arial"), size: 7.8pt, fill: cor-tinta)[#p.at(1)],
+    )).flatten()
+  )
+]
+
 // ---------------------------------------------------------------------------
 // Títulos de Seção — APENAS TEXTO LIMPO (Sem estilo botão, sem blocos escuros)
 // ---------------------------------------------------------------------------
@@ -152,7 +186,7 @@
   show raw.where(block: false): r => text(font: ("Consolas", "Courier New"), size: 5.6pt, fill: cor-accent2, hyphenate: false)[#r.text]
   it
 }
-#show figure.where(kind: table): set block(breakable: false)
+#show figure.where(kind: table): set block(breakable: true)
 #show figure.where(kind: table): set align(left)
 #show figure.where(kind: table): set figure(numbering: none)
 #show figure.where(kind: table): set figure.caption(position: top)
@@ -171,19 +205,33 @@
   ]
 )
 
-// Esteira vertical: estágios com gates entre eles. Uso: #esteira(("Nome", "detalhe"), ...; gates: ("G1", ...))
-#let esteira(etapas, gates: ()) = block(width: 100%, above: 14pt, below: 14pt, breakable: false)[
-  #for (i, e) in etapas.enumerate() {
-    block(width: 100%, radius: 4pt, fill: rgb("#f8fafc"), stroke: (left: 3pt + cor-accent, rest: 0.5pt + cor-linha), inset: (x: 10pt, y: 6pt), below: 0pt)[
-      #text(font: ("Segoe UI", "Arial"), size: 8.6pt, weight: "bold", fill: cor-tinta)[#e.at(0)]
-      #h(6pt)
-      #text(font: ("Segoe UI", "Arial"), size: 7.6pt, fill: cor-suave)[#e.at(1)]
+#let esteira(..itens, gates: ()) = {
+  let pos = itens.pos()
+  if pos.len() == 1 and type(pos.first()) == array {
+    let etapas = pos.first()
+    block(width: 100%, above: 14pt, below: 14pt, breakable: false)[
+      #for (i, e) in etapas.enumerate() {
+        block(width: 100%, radius: 4pt, fill: rgb("#f8fafc"), stroke: (left: 3pt + cor-accent, rest: 0.5pt + cor-linha), inset: (x: 10pt, y: 6pt), below: 0pt)[
+          #text(font: ("Segoe UI", "Arial"), size: 8.6pt, weight: "bold", fill: cor-tinta)[#e.at(0)]
+          #h(6pt)
+          #text(font: ("Segoe UI", "Arial"), size: 7.6pt, fill: cor-suave)[#e.at(1)]
+        ]
+        if i < etapas.len() - 1 {
+          align(center)[#block(above: 3pt, below: 3pt)[#text(font: ("Segoe UI", "Arial"), size: 7.2pt, fill: cor-accent2, weight: "bold")[↓ #if i < gates.len() { gates.at(i) }]]]
+        }
+      }
     ]
-    if i < etapas.len() - 1 {
-      align(center)[#block(above: 3pt, below: 3pt)[#text(font: ("Segoe UI", "Arial"), size: 7.2pt, fill: cor-accent2, weight: "bold")[↓ #if i < gates.len() { gates.at(i) }]]]
-    }
+  } else {
+    let n = pos.len()
+    block(width: 100%, above: 14pt, below: 14pt)[
+      #grid(
+        columns: range(n * 2 - 1).map(i => if calc.even(i) { 1fr } else { auto }),
+        align: horizon, column-gutter: 4pt,
+        ..pos.enumerate().map(((i, it)) => if i == n - 1 { (it,) } else { (it, seta) }).flatten()
+      )
+    ]
   }
-]
+}
 
 $for(header-includes)$
 $header-includes$

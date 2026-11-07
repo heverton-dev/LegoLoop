@@ -4,14 +4,14 @@
 
 O manual decompõe o ecossistema de Matt Pocock em seis sub-loops, disponíveis como blocos conectáveis no Studio Canvas e em pipelines DAG.
 
-| Sub-loop | Nome                           | Gate de saída                             |
-| :------- | :----------------------------- | :---------------------------------------- |
-| 1        | Concepção, Grilling e Domínio  | Ambiguidades sanadas e aprovadas          |
-| 2        | Exploração Empírica e Pesquisa | Resposta empírica devolvida via `handoff` |
-| 3        | Especificação e Grafo          | DAG aprovado, bloqueios resolvidos        |
-| 4        | Construção Cirúrgica e TDD     | Testes verdes, sem testes enfraquecidos   |
-| 5        | Diagnóstico e Arquitetura      | Falha reproduzida, corrigida e protegida  |
-| 6        | Auditoria, Entrega e Ambiente  | Review aprovado e ambiente atualizado     |
+| Sub-loop       | Nome                           | Gate de saída                            |
+| :------------- | :----------------------------- | :--------------------------------------- |
+| 1              | Concepção, Grilling e Domínio  | Ambiguidades sanadas e aprovadas         |
+| 2              | Exploração Empírica e Pesquisa | Resposta empírica devolvida via `handoff`  |
+| 3              | Especificação e Grafo          | DAG aprovado, bloqueios resolvidos       |
+| 4              | Construção Cirúrgica e TDD     | Testes verdes, sem testes enfraquecidos  |
+| 5              | Diagnóstico e Arquitetura      | Falha reproduzida, corrigida e protegida |
+| 6              | Auditoria, Entrega e Ambiente  | Review aprovado e ambiente atualizado    |
 
 ## 8. Sub-loop 1: Concepção, Grilling e Domínio
 

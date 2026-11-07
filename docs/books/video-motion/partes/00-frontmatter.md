@@ -35,10 +35,10 @@ Esta obra destina-se a engenheiros de software, criadores de conteúdo técnico 
 
 ## Estrutura da obra
 
-| Parte   | Nível      | Conteúdo                                                     |
-| :------ | :--------- | :----------------------------------------------------------- |
-| **I**   | Macro      | Fundação filosófica, determinismo estrito e zero dependência |
-| **II**  | Meso       | Arquitetura dos quatro pilares técnicos                      |
-| **III** | Micro      | Guia prático de execução e stop-gates de QA instantâneo      |
-| **IV**  | Prática    | Receitas multi-aspecto (9:16, 16:9, 1:1) e broadcast bundle  |
-| **V**   | Governança | Rotina de atualização contínua por diff (LegoPress)          |
+| Parte            | Nível            | Conteúdo                                         |
+| :--------------- | :--------------- | :----------------------------------------------- |
+| **I**                | Macro            | Fundação filosófica, determinismo estrito e zero dependência |
+| **II**               | Meso             | Arquitetura dos quatro pilares técnicos          |
+| **III**              | Micro            | Guia prático de execução e stop-gates de QA instantâneo |
+| **IV**               | Prática          | Receitas multi-aspecto (9:16, 16:9, 1:1) e broadcast bundle |
+| **V**                | Governança       | Rotina de atualização contínua por diff (LegoPress) |

@@ -10,13 +10,13 @@ Nenhum fluxo é código estático ou monolítico. Qualquer processo pode ser mon
 
 ![Os cinco níveis de granularidade, do Mega Pipeline às Nano-Etapas](/img/diagrama_granularidade.svg){width=88%}
 
-| Nível                | Escopo                   | O que se controla                    | Exemplo real                |
-| :------------------- | :----------------------- | :----------------------------------- | :-------------------------- |
+| Nível            | Escopo                   | O que se controla                    | Exemplo real                |
+| :--------------- | :----------------------- | :----------------------------------- | :-------------------------- |
 | **1. Mega Pipeline** | Ciclo de vida do produto | Orquestração e paralelismo de épicos | Mega Pipeline ponta a ponta |
 | **2. Sub-Loops**     | Módulos reutilizáveis    | Injeção hierárquica, saída isolada   | Loop de Auditoria 4F        |
-| **3. Etapas (Nós)**  | Contratos de I/O         | Troca de peças, dependências         | `e01` -> `e02`              |
+| **3. Etapas (Nós)**  | Contratos de I/O         | Troca de peças, dependências         | `e01` -> `e02`                  |
 | **4. Micro-Etapas**  | Execução cognitiva       | Modelo de IA, contexto, MCPs         | Redator de testes isolado   |
-| **5. Nano-Etapas**   | Invariantes de código    | Asserções, cobertura, gates `SG-*`   | Função Go com até 35 linhas |
+| **5. Nano-Etapas**   | Invariantes de código    | Asserções, cobertura, gates `SG-*`      | Função Go com até 35 linhas |
 
 ## 3. A Tríade de Triggers
 

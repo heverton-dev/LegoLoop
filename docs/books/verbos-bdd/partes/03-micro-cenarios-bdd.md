@@ -36,12 +36,12 @@ vulnerabilidades de reentrancy e overflow em Solidity, na categoria build.
 
 **Então** o motor hermético produz quatro artefatos canônicos, nomeados no padrão `YYYY-MM-DD_<TIPO>_AUDITORIA_SMART_CONTRACTS`:
 
-| Artefato | Pasta           | Extensão | Conteúdo                        |
-| :------- | :-------------- | :------- | :------------------------------ |
-| INTENT   | `docs/intents/` | `.md`    | Problema e motivação            |
-| SPEC     | `docs/specs/`   | `.md`    | Critérios de aceitação binários |
-| PLAN     | `docs/plans/`   | `.md`    | Tickets em fatias verticais     |
-| ROUTE    | `docs/routes/`  | `.json`  | DAG formal executável           |
+| Artefato       | Pasta             | Extensão       | Conteúdo                         |
+| :------------- | :---------------- | :------------- | :------------------------------- |
+| INTENT         | `docs/intents/`     | `.md`            | Problema e motivação             |
+| SPEC           | `docs/specs/`       | `.md`            | Critérios de aceitação binários  |
+| PLAN           | `docs/plans/`       | `.md`            | Tickets em fatias verticais      |
+| ROUTE          | `docs/routes/`      | `.json`          | DAG formal executável            |
 
 **E** o pipeline fica pronto para execução sem código boilerplate manual.
 

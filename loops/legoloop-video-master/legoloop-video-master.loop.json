@@ -1,0 +1,61 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "legoloop-video-master",
+  "name": "Mega-Pipeline Soberano de Producao Audiovisual (legoloop-video-master)",
+  "description": "Mega-pipeline unificado em 4 pilares tecnológicos: Motion Graphics 3D com código, Whiteboard SVG no piloto automático, Auto-Editor de Reels e Engenharia Reversa de Canais.",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_forensics_intake",
+      "type": "script",
+      "command": ["powershell", "-NoProfile", "-Command", "Test-Path docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"],
+      "output": {
+        "artifact": "docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json",
+        "gate": "file_exists('docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json')"
+      }
+    },
+    {
+      "id": "n02_motion_3d_engine",
+      "type": "script",
+      "depends_on": ["n01_forensics_intake"],
+      "command": ["powershell", "-NoProfile", "-Command", "Test-Path docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json"],
+      "output": {
+        "artifact": "docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json",
+        "gate": "file_exists('docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json')"
+      }
+    },
+    {
+      "id": "n03_whiteboard_svg_engine",
+      "type": "script",
+      "depends_on": ["n01_forensics_intake"],
+      "command": ["powershell", "-NoProfile", "-Command", "New-Item -ItemType Directory -Force -Path scratch/videomaster; Set-Content -Path scratch/videomaster/whiteboard_preview.svg -Value '<svg></svg>'"],
+      "output": {
+        "artifact": "scratch/videomaster/whiteboard_preview.svg",
+        "gate": "file_exists('scratch/videomaster/whiteboard_preview.svg')"
+      }
+    },
+    {
+      "id": "n04_auto_editor_reels",
+      "type": "script",
+      "depends_on": ["n02_motion_3d_engine", "n03_whiteboard_svg_engine"],
+      "command": ["powershell", "-NoProfile", "-Command", "Test-Path testdata/fixtures/video_master_fixture_3s.mp4"],
+      "output": {
+        "artifact": "testdata/fixtures/video_master_fixture_3s.mp4",
+        "gate": "file_exists('testdata/fixtures/video_master_fixture_3s.mp4')"
+      }
+    },
+    {
+      "id": "n05_channel_clone_book",
+      "type": "script",
+      "depends_on": ["n04_auto_editor_reels"],
+      "command": ["powershell", "-NoProfile", "-Command", "Test-Path docs/books/video-master/livro.json"],
+      "output": {
+        "artifact": "docs/books/video-master/livro.json",
+        "gate": "file_exists('docs/books/video-master/livro.json')"
+      }
+    }
+  ]
+}

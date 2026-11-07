@@ -8,18 +8,18 @@ O arquivo `craft-floor.md` fica em `upstream/reference/` dentro da skill `aidd-i
 
 Cada item é uma checagem sobre o resultado renderizado, e não uma intenção. Todos são conferidos na mesma captura.
 
-| Eixo         | Critério verificável                            |
-| :----------- | :---------------------------------------------- |
-| Contraste    | Corpo e placeholder ≥ 4,5:1; texto grande ≥ 3:1 |
-| Profundidade | Sombras com deslocamento e desfoque suave       |
-| Espaçamento  | Grupos apertados, separação generosa            |
-| Tipografia   | Corpo entre 65 e 75ch; display até 6rem         |
-| Tracking     | Piso de -0,04em; -0,02 a -0,03em lê melhor      |
-| Movimento    | Um momento autoral, ease-out exponencial        |
-| Estados      | Hover, disabled, loading, error e empty         |
-| Superfícies  | Seleção, cursor, scrollbar e foco tematizados   |
-| Texto        | Linguagem do produto; erros com saída           |
-| Cobertura    | Todo requisito do briefing achável em segundos  |
+| Eixo                    | Critério verificável                                     |
+| :---------------------- | :------------------------------------------------------- |
+| Contraste               | Corpo e placeholder ≥ 4,5:1; texto grande ≥ 3:1          |
+| Profundidade            | Sombras com deslocamento e desfoque suave                |
+| Espaçamento             | Grupos apertados, separação generosa                     |
+| Tipografia              | Corpo entre 65 e 75ch; display até 6rem                  |
+| Tracking                | Piso de -0,04em; -0,02 a -0,03em lê melhor               |
+| Movimento               | Um momento autoral, ease-out exponencial                 |
+| Estados                 | Hover, disabled, loading, error e empty                  |
+| Superfícies             | Seleção, cursor, scrollbar e foco tematizados            |
+| Texto                   | Linguagem do produto; erros com saída                    |
+| Cobertura               | Todo requisito do briefing achável em segundos           |
 
 Sobre o contraste em superfícies coloridas, o arquivo acrescenta uma regra fina: o texto secundário deve ser tingido a partir do matiz da superfície ou do primeiro plano, nunca cinza.
 
@@ -58,12 +58,12 @@ Por fim, uma regra de honestidade que vale para qualquer interface: afirmações
 
 Para evitar contaminação de contexto, o ecossistema do Impeccable delega quatro papéis a agentes autônomos. Cada um recebe apenas o que precisa para sua função.
 
-| Agente              | Papel                                      | Momento        |
-| :------------------ | :----------------------------------------- | :------------- |
-| Documenter          | Gera DESIGN.md a partir do código entregue | Estágio 5      |
-| Finish reviewer     | Julga o acabamento contra a direção        | Gate P4        |
-| Asset producer      | Produz ícones e vetores SVG inline         | Estágio 3      |
-| Manual edit applier | Aplica micro-ajustes da auditoria          | Estágios 3 e 4 |
+| Agente                 | Papel                                     | Momento          |
+| :--------------------- | :---------------------------------------- | :--------------- |
+| Documenter             | Gera DESIGN.md a partir do código entregue | Estágio 5        |
+| Finish reviewer        | Julga o acabamento contra a direção       | Gate P4          |
+| Asset producer         | Produz ícones e vetores SVG inline        | Estágio 3        |
+| Manual edit applier    | Aplica micro-ajustes da auditoria         | Estágios 3 e 4   |
 
 O manual descreve o revisor de acabamento como um diretor de arte intransigente: ele decide se o resultado alcançou o nível esperado ou precisa ser refeito. Os SVG do produtor de ativos seguem um padrão semântico, sem emoji e com `stroke="currentColor"`, para herdarem a cor do texto ao redor.
 
@@ -77,14 +77,14 @@ No LegoLoop, o pipeline existe em duas formas canônicas, ambas verificáveis no
 
 O arquivo `loops/impeccable-design.loop.json` segue o esquema `dag.v1` e se chama "Pipeline de Design Impeccable (6 Sub-Loops)", versão 1.0.0. Ele declara seis nós em cadeia linear, cada um dependente do anterior, com o artefato exigido e o modelo sugerido em `routing`:
 
-| Nó                          | Artefato que o gate exige                 | Modelo sugerido  |
-| :-------------------------- | :---------------------------------------- | :--------------- |
-| `subloop-avaliar`           | `docs/reports/AUDITORIA_DESIGN.md`        | sonnet, ou haiku |
-| `subloop-construir`         | `docs/specs/DIRECAO_VISUAL.md`            | sonnet, ou haiku |
-| `subloop-melhorar`          | `src/styles/theme.css`                    | não declarado    |
-| `subloop-refinar`           | `docs/reports/HARDENING_UI.md`            | não declarado    |
-| `subloop-corrigir`          | `docs/reports/RESPONSIVE_VERIFICATION.md` | não declarado    |
-| `subloop-iterar-documentar` | `DESIGN.md`                               | não declarado    |
+| Nó                            | Artefato que o gate exige                  | Modelo sugerido  |
+| :---------------------------- | :----------------------------------------- | :--------------- |
+| `subloop-avaliar`               | `docs/reports/AUDITORIA_DESIGN.md`            | sonnet, ou haiku |
+| `subloop-construir`             | `docs/specs/DIRECAO_VISUAL.md`                | sonnet, ou haiku |
+| `subloop-melhorar`              | `src/styles/theme.css`                       | não declarado    |
+| `subloop-refinar`               | `docs/reports/HARDENING_UI.md`                | não declarado    |
+| `subloop-corrigir`              | `docs/reports/RESPONSIVE_VERIFICATION.md`     | não declarado    |
+| `subloop-iterar-documentar`     | `DESIGN.md`                                  | não declarado    |
 
 Cada nó tem um gate mecânico do tipo `file_exists(...)`: o nó só é considerado concluído se o artefato existir no disco. É um gate de existência, não de qualidade; quem julga o conteúdo continua sendo o protocolo humano P1 a P4 conduzido pela skill.
 

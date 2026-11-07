@@ -113,12 +113,12 @@ Essa elegância de engenharia garante que o modelo nunca veja mais do que precis
 
 A tabela abaixo sintetiza a economia e os ganhos de desempenho obtidos em testes reais:
 
-| Métrica Operacional            | Abordagem Eager Convencional | LegoLoop Lazy Router    | Ganho Industrial          |
-| :----------------------------- | :--------------------------: | :---------------------: | :-----------------------: |
-| **Tokens Iniciais no Prompt**  | ~120.000 tokens despejados   | **~800 tokens**         | **99,3% de economia**     |
-| **Latência de Resposta**       | 8 a 14 segundos              | **1,2 segundos**        | **~10x mais rápido**      |
-| **Risco de Alucinação**        | Alto (> 25% de falhas)       | **Raro (< 1%)**         | **Confiabilidade total**  |
-| **Sincronização de Ambientes** | Configuração manual isolada  | **1 comando unificado** | **Claude, Cursor e IDEs** |
+| Métrica Operacional        | Abordagem Eager Convencional | LegoLoop Lazy Router | Ganho Industrial      |
+| :------------------------- | :--------------------------: | :------------------: | :-------------------: |
+| **Tokens Iniciais no Prompt**  | ~120.000 tokens despejados   | **~800 tokens**          | **99,3% de economia**     |
+| **Latência de Resposta**       | 8 a 14 segundos              | **1,2 segundos**         | **~10x mais rápido**      |
+| **Risco de Alucinação**        | Alto (> 25% de falhas)       | **Raro (< 1%)**          | **Confiabilidade total**  |
+| **Sincronização de Ambientes** | Configuração manual isolada  | **1 comando unificado**  | **Claude, Cursor e IDEs** |
 
 ---
 

@@ -13,10 +13,10 @@ No LegoLoop, a premissa é invertida:
 
 ## Comparativo de Eficiência Arquitetural
 
-| Dimensão                 | Fluxo Tradicional (SaaS / NLE)         | Pipeline LegoLoop (`video-motion`)   |
-| :----------------------- | :------------------------------------- | :----------------------------------- |
+| Dimensão             | Fluxo Tradicional (SaaS / NLE)         | Pipeline LegoLoop (`video-motion`)     |
+| :------------------- | :------------------------------------- | :----------------------------------- |
 | **Corte de Respiração**  | Manual em timeline ou app proprietário | Automático (-30dB RMS + 40ms ataque) |
-| **Sincronia de Legenda** | Digitação ou exportação com drift      | `words.json` milimétrico sem desvio  |
+| **Sincronia de Legenda** | Digitação ou exportação com drift      | `words.json` milimétrico sem desvio    |
 | **Estilo Visual 3D**     | Plugins pagos de After Effects         | Remotion / CSS3 com blur procedural  |
 | **Custo por Minuto**     | Assinaturas mensais recorrentes        | Custo zero de licença e 100% local   |
 | **Versionamento**        | Binários pesados (.aep / .prproj)      | Código puro versionado em Git        |

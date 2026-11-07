@@ -30,43 +30,43 @@
 
 Este apêndice compara o manual de 01/11/2026 com o estado do repositório em 07/11/2026. O objetivo é que o leitor saiba exatamente onde o texto do manual e o código coincidem.
 
-| Ponto verificado       | Manual                        | Código                       | Situação        |
-| :--------------------- | :---------------------------- | :--------------------------- | :-------------- |
-| Arquivo do loop        | `impeccable-design.loop.json` | Existe em `loops/`           | Conforme        |
-| Número de nós          | 6 sub-loops                   | 6 nós lineares               | Conforme        |
-| Sexto nó               | Iterar                        | `subloop-iterar-documentar`  | Diverge no nome |
-| Peça executora         | Não especificada              | `skills/impeccable` em todos | Informativo     |
-| Template do Studio     | Ícone `palette`               | Ícone `palette`              | Conforme        |
-| Nome do template       | Não especificado              | "...(6 Sub-Loops)"           | Informativo     |
-| Estágios e gates P1-P4 | 5 estágios, 4 gates           | Gates `file_exists` por nó   | Diverge         |
-| Nome do revisor        | `impeccabe-finish-reviewer`   | `impeccable-finish-reviewer` | Erro de grafia  |
+| Ponto verificado       | Manual                          | Código                         | Situação        |
+| :--------------------- | :------------------------------ | :----------------------------- | :-------------- |
+| Arquivo do loop        | `impeccable-design.loop.json`     | Existe em `loops/`               | Conforme        |
+| Número de nós          | 6 sub-loops                     | 6 nós lineares                 | Conforme        |
+| Sexto nó               | Iterar                          | `subloop-iterar-documentar`      | Diverge no nome |
+| Peça executora         | Não especificada                | `skills/impeccable` em todos     | Informativo     |
+| Template do Studio     | Ícone `palette`                   | Ícone `palette`                  | Conforme        |
+| Nome do template       | Não especificado                | "...(6 Sub-Loops)"             | Informativo     |
+| Estágios e gates P1-P4 | 5 estágios, 4 gates             | Gates `file_exists` por nó        | Diverge         |
+| Nome do revisor        | `impeccabe-finish-reviewer`       | `impeccable-finish-reviewer`     | Erro de grafia  |
 
 **Leitura do relatório.** O DAG declara apenas gates de existência de arquivo por nó; os gates de julgamento P1 a P4 são protocolo da skill, conduzido no chat. No sexto nó, o código agrupa iteração e documentação, enquanto o manual trata `document` como comando do sub-loop Construir. Para o revisor, o livro usa a grafia do agente instalado.
 
 ## Apêndice C: Referência rápida de comandos
 
-| Comando     | Sub-loop  | Função resumida                          |
-| :---------- | :-------- | :--------------------------------------- |
-| `critique`  | Avaliar   | Revisão heurística de UX                 |
-| `audit`     | Avaliar   | Acessibilidade, performance, viewports   |
-| `init`      | Construir | Cria PRODUCT.md                          |
-| `shape`     | Construir | Planeja fluxos sem código                |
-| `document`  | Construir | Gera DESIGN.md do código                 |
-| `extract`   | Construir | Isola tokens e componentes               |
-| `layout`    | Melhorar  | Espaçamento, grid, ritmo                 |
-| `typeset`   | Melhorar  | Escala e pesos tipográficos              |
-| `colorize`  | Melhorar  | Paleta com significado                   |
-| `animate`   | Melhorar  | Micro-interações funcionais              |
-| `delight`   | Melhorar  | Detalhes memoráveis                      |
-| `overdrive` | Melhorar  | Expressividade; só Persuade e Experience |
-| `polish`    | Refinar   | Micropolimento final                     |
-| `harden`    | Refinar   | Erros, loading, i18n, limites            |
-| `onboard`   | Refinar   | Primeira execução e estados vazios       |
-| `distill`   | Refinar   | Remove ruído visual                      |
-| `bolder`    | Refinar   | Aumenta contraste e presença             |
-| `quieter`   | Refinar   | Reduz estimulação                        |
-| `clarify`   | Corrigir  | UX copy e mensagens                      |
-| `adapt`     | Corrigir  | Telas extremas                           |
-| `optimize`  | Corrigir  | Gargalos de renderização                 |
-| `live`      | Iterar    | Variantes ao vivo no navegador           |
-| `generate`  | Iterar    | Variações simultâneas                    |
+| Comando          | Sub-loop         | Função resumida                                 |
+| :--------------- | :--------------- | :---------------------------------------------- |
+| `critique`         | Avaliar          | Revisão heurística de UX                        |
+| `audit`            | Avaliar          | Acessibilidade, performance, viewports          |
+| `init`             | Construir        | Cria PRODUCT.md                                 |
+| `shape`            | Construir        | Planeja fluxos sem código                       |
+| `document`         | Construir        | Gera DESIGN.md do código                        |
+| `extract`          | Construir        | Isola tokens e componentes                      |
+| `layout`           | Melhorar         | Espaçamento, grid, ritmo                        |
+| `typeset`          | Melhorar         | Escala e pesos tipográficos                     |
+| `colorize`         | Melhorar         | Paleta com significado                          |
+| `animate`          | Melhorar         | Micro-interações funcionais                     |
+| `delight`          | Melhorar         | Detalhes memoráveis                             |
+| `overdrive`        | Melhorar         | Expressividade; só Persuade e Experience        |
+| `polish`           | Refinar          | Micropolimento final                            |
+| `harden`           | Refinar          | Erros, loading, i18n, limites                   |
+| `onboard`          | Refinar          | Primeira execução e estados vazios              |
+| `distill`          | Refinar          | Remove ruído visual                             |
+| `bolder`           | Refinar          | Aumenta contraste e presença                    |
+| `quieter`          | Refinar          | Reduz estimulação                               |
+| `clarify`          | Corrigir         | UX copy e mensagens                             |
+| `adapt`            | Corrigir         | Telas extremas                                  |
+| `optimize`         | Corrigir         | Gargalos de renderização                        |
+| `live`             | Iterar           | Variantes ao vivo no navegador                  |
+| `generate`         | Iterar           | Variações simultâneas                           |

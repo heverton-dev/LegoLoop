@@ -22,13 +22,13 @@ legoloop video-motion bundle  --input video.mp4 --output dist/job_01/
 
 ### 2. Parâmetros e Modos de Operação
 
-| Subcomando | Flag Principal       | Descrição e Comportamento                     |
-| :--------- | :------------------- | :-------------------------------------------- |
-| `silence`  | `--pad 40`           | Margem de ataque em milissegundos pré-fala    |
-| `punch`    | `--words words.json` | Análise de amplitude RMS e destaque Anton     |
-| `assets`   | `--prompt "..."`     | Consulta ao cache SHA-256 e bridge AI Studio  |
-| `preview`  | `--output qa.jpg`    | Renderização ultra-rápida dos 12 frames-chave |
-| `bundle`   | `--output dist/`     | Consolidação do master, legendas e post copy  |
+| Subcomando       | Flag Principal       | Descrição e Comportamento                  |
+| :--------------- | :------------------- | :----------------------------------------- |
+| `silence`          | `--pad 40`             | Margem de ataque em milissegundos pré-fala |
+| `punch`            | `--words words.json`   | Análise de amplitude RMS e destaque Anton  |
+| `assets`           | `--prompt "..."`       | Consulta ao cache SHA-256 e bridge AI Studio |
+| `preview`          | `--output qa.jpg`      | Renderização ultra-rápida dos 12 frames-chave |
+| `bundle`           | `--output dist/`       | Consolidação do master, legendas e post copy |
 
 ### 3. Via Grafo DAG e LegoLoop Studio
 

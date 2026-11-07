@@ -1,0 +1,55 @@
+{
+  "pipeline": "legoloop-video-master",
+  "data_auditoria": "2026-11-07",
+  "status_stop_gate": "SG-CURADORIA-APROVADO",
+  "aprovador": "Operador LegoLoop",
+  "custo_mercado_estimado_mensal": "R$ 1.350,00",
+  "custo_soberano_legoloop": "R$ 0,00",
+  "economia_anual_projetada": "R$ 16.200,00",
+  "matriz_de_substituicao": [
+    {
+      "ferramenta_comercial": "Higgsfield / Pika / Runway Gen-3",
+      "custo_estimado": "US$ 60,00/mês (~R$ 350,00)",
+      "substituto_soberano": "Remotion Canvas 60fps + Shaders Procedurais GLSL + Google AI Studio Free",
+      "tier": "Ouro",
+      "ganho": "Controle milimétrico por código React, zero marca d'água, render determinístico sem fila"
+    },
+    {
+      "ferramenta_comercial": "Adobe After Effects + Cinema 4D",
+      "custo_estimado": "US$ 55,00/mês (~R$ 320,00)",
+      "substituto_soberano": "Remotion (React) + Three.js + Cartões de Vidro 3D procedurais",
+      "tier": "Ouro",
+      "ganho": "Render headless no CI/CD, parametrização JSON direta, sem licença Creative Cloud"
+    },
+    {
+      "ferramenta_comercial": "Fable / Astra / Jitter Pro",
+      "custo_estimado": "US$ 35,00/mês (~R$ 200,00)",
+      "substituto_soberano": "Opus 5.5 Scripts de Animação Vetorial + Remotion Spring Physics",
+      "tier": "Ouro",
+      "ganho": "Animações vetoriais programáticas sem mensalidades nem restrições de exportação"
+    },
+    {
+      "ferramenta_comercial": "Adobe Premiere Pro + CapCut Pro",
+      "custo_estimado": "US$ 35,00/mês (~R$ 200,00)",
+      "substituto_soberano": "FFmpeg nativo + Script silenceremove (+40ms padding) + video-motion",
+      "tier": "Ouro",
+      "ganho": "Corte de vídeo de 10 minutos em < 5 segundos, sem telemetria ou compressão opaca"
+    },
+    {
+      "ferramenta_comercial": "VideoScribe / Vyond / Doodly",
+      "custo_estimado": "US$ 49,00/mês (~R$ 280,00)",
+      "substituto_soberano": "Renderizador SVG de Traço Dinâmico (Stroke-Dasharray) + Stickman Procedural",
+      "tier": "Ouro",
+      "ganho": "Animações SVG infinitamente escaláveis, 4K nativo, peso de arquivo em kilobytes"
+    }
+  ],
+  "governanca_vsa": {
+    "fatias_verticais": [
+      "slice-motion-3d",
+      "slice-whiteboard-autopilot",
+      "slice-auto-editor-reels",
+      "slice-channel-clone-rea"
+    ],
+    "gate_integracao": "SG-VIDEO-MASTER-GATE"
+  }
+}

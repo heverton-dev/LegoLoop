@@ -27,12 +27,12 @@ Depois do estágio 5, o gate G4, review aprovado, marca a entrega como concluíd
 
 ## 5. Os gates e o que cada um exige
 
-| Gate | Entre                       | Condição para passar                               |
-| :--- | :-------------------------- | :------------------------------------------------- |
-| G1   | Alinhamento e Especificação | Ambiguidades de domínio sanadas e aprovadas        |
-| G2   | Especificação e Construção  | DAG de tickets aprovado, bloqueios resolvidos      |
-| G3   | Construção e Fechamento     | Testes 100% verdes, sem testes enfraquecidos       |
-| G4   | Fechamento e Entrega        | Review sem notas bloqueadoras, ambiente atualizado |
+| Gate           | Entre                       | Condição para passar                    |
+| :------------- | :-------------------------- | :-------------------------------------- |
+| G1             | Alinhamento e Especificação | Ambiguidades de domínio sanadas e aprovadas |
+| G2             | Especificação e Construção  | DAG de tickets aprovado, bloqueios resolvidos |
+| G3             | Construção e Fechamento     | Testes 100% verdes, sem testes enfraquecidos |
+| G4             | Fechamento e Entrega        | Review sem notas bloqueadoras, ambiente atualizado |
 
 ### G1: decisões aprovadas
 
@@ -54,9 +54,9 @@ O review em dois eixos não pode ter notas bloqueadoras, e a retrospectiva preci
 
 Cada estágio produz o insumo exato do seguinte. A especificação depende de um vocabulário fixado; os tickets dependem da especificação; a implementação depende de tickets autocontidos; o review depende da especificação para o segundo eixo.
 
-| Estágio       | Produz                           | Consumido por    |
-| :------------ | :------------------------------- | :--------------- |
-| Alinhamento   | `GLOSSARY.md`, intenção, ADRs    | Especificação    |
-| Especificação | Spec e DAG de tickets            | Construção       |
-| Construção    | Código, testes, relatório TDD    | Fechamento       |
-| Fechamento    | Review, corpo do PR, `AGENTS.md` | A próxima sessão |
+| Estágio               | Produz                                | Consumido por         |
+| :-------------------- | :------------------------------------ | :-------------------- |
+| Alinhamento           | `GLOSSARY.md`, intenção, ADRs           | Especificação         |
+| Especificação         | Spec e DAG de tickets                 | Construção            |
+| Construção            | Código, testes, relatório TDD         | Fechamento            |
+| Fechamento            | Review, corpo do PR, `AGENTS.md`        | A próxima sessão      |

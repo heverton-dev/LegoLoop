@@ -4,12 +4,12 @@
 
 Um mesmo produto tem telas com objetivos muito diferentes. A página de preços precisa convencer; o painel de configurações precisa ser rápido de usar; a documentação precisa ser lida sem cansaço. O Impeccable mede a ambição visual pelo **modo da superfície**, e não pelo produto como um todo.
 
-| Modo       | O visitante precisa     | Exemplos                    | Prioridade de design             |
-| :--------- | :---------------------- | :-------------------------- | :------------------------------- |
-| Operate    | Completar uma tarefa    | Dashboards, admin, editores | Escaneabilidade e contenção      |
-| Persuade   | Decidir e agir          | Landing pages, preços       | Hierarquia de valor e conversão  |
-| Read       | Compreender um conteúdo | Docs, manuais, changelogs   | Ritmo de leitura sem distração   |
-| Experience | Imergir na própria obra | Portfólios, galerias        | A interface recua, a obra lidera |
+| Modo           | O visitante precisa     | Exemplos                    | Prioridade de design             |
+| :------------- | :---------------------- | :-------------------------- | :------------------------------- |
+| Operate        | Completar uma tarefa    | Dashboards, admin, editores | Escaneabilidade e contenção      |
+| Persuade       | Decidir e agir          | Landing pages, preços       | Hierarquia de valor e conversão  |
+| Read           | Compreender um conteúdo | Docs, manuais, changelogs   | Ritmo de leitura sem distração   |
+| Experience     | Imergir na própria obra | Portfólios, galerias        | A interface recua, a obra lidera |
 
 ### Como o modo muda as decisões
 
@@ -79,9 +79,9 @@ O comando `document` atualiza o `DESIGN.md` a partir do código real, e não das
 
 Cada gate fica no ponto em que o próximo estágio ficaria caro se começasse com uma premissa errada.
 
-| Gate | Fica antes de     | Custo evitado                         |
-| :--- | :---------------- | :------------------------------------ |
-| P1   | Decidir a direção | Direção escolhida sem diagnóstico     |
-| P2   | Escrever código   | Reimplementar uma tela inteira        |
-| P3   | Verificar em lote | Revisão subjetiva sem comparação      |
-| P4   | Documentar        | Registrar no DESIGN.md algo reprovado |
+| Gate             | Fica antes de        | Custo evitado                               |
+| :--------------- | :------------------- | :------------------------------------------ |
+| P1               | Decidir a direção    | Direção escolhida sem diagnóstico           |
+| P2               | Escrever código      | Reimplementar uma tela inteira              |
+| P3               | Verificar em lote    | Revisão subjetiva sem comparação            |
+| P4               | Documentar           | Registrar no DESIGN.md algo reprovado       |

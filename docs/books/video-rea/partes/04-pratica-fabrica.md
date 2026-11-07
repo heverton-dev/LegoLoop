@@ -5,7 +5,7 @@
 Assim que o operador aprova a curadoria no Stop-Gate, o pipeline convoca a esteira de fabricação do LegoLoop:
 
 
-![Diagrama de Arquitetura](/img/diagrama_373f383a.svg){width=95%}
+![Diagrama de Arquitetura](/img/diagrama_373f383a.png){width=85%}
 
 
 ### 1. Emissão da Tríade ISO de Governança

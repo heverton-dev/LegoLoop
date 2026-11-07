@@ -48,11 +48,11 @@ O ciclo termina com rastreabilidade: logs estruturados, métricas, traces, um pl
 
 ## 3. O que o leitor leva desta parte
 
-| Pilar                      | Pergunta que impõe antes de agir            |
-| :------------------------- | :------------------------------------------ |
-| Medir antes de otimizar    | Qual é o número hoje?                       |
-| Restrições                 | Qual limite esta mudança não pode passar?   |
-| Documentação oficial       | Onde a documentação diz que funciona assim? |
-| Fatiamento e Prove-It      | Qual teste falha agora e passará depois?    |
-| Runtime real e cinco eixos | O navegador real confirma? Quem contestou?  |
-| Entrega observável         | Como saberemos que quebrou em produção?     |
+| Pilar                             | Pergunta que impõe antes de agir               |
+| :-------------------------------- | :--------------------------------------------- |
+| Medir antes de otimizar           | Qual é o número hoje?                          |
+| Restrições                        | Qual limite esta mudança não pode passar?      |
+| Documentação oficial              | Onde a documentação diz que funciona assim?    |
+| Fatiamento e Prove-It             | Qual teste falha agora e passará depois?       |
+| Runtime real e cinco eixos        | O navegador real confirma? Quem contestou?     |
+| Entrega observável                | Como saberemos que quebrou em produção?        |

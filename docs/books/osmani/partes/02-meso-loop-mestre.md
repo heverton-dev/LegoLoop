@@ -58,14 +58,14 @@ O loop mestre leva uma ideia à produção em sete estágios. Entre cada par de 
 
 ## 5. O que os gates protegem
 
-| Gate | Sem ele, o risco é                                     |
-| :--- | :----------------------------------------------------- |
-| G1   | Resolver com perfeição o problema errado               |
-| G2   | Discutir "está rápido?" sem um número combinado        |
-| G3   | Tickets que não se sabe quando estão prontos           |
-| G4   | Medir performance de um código que ainda está quebrado |
-| G5   | Auditar segurança de uma versão que ainda vai mudar    |
-| G6   | Entregar com um achado crítico em aberto               |
+| Gate                 | Sem ele, o risco é                                          |
+| :------------------- | :---------------------------------------------------------- |
+| G1                   | Resolver com perfeição o problema errado                    |
+| G2                   | Discutir "está rápido?" sem um número combinado             |
+| G3                   | Tickets que não se sabe quando estão prontos                |
+| G4                   | Medir performance de um código que ainda está quebrado      |
+| G5                   | Auditar segurança de uma versão que ainda vai mudar         |
+| G6                   | Entregar com um achado crítico em aberto                    |
 
 ```{=typst}
 #painel("A ordem entre G4 e G5")[
@@ -77,12 +77,12 @@ O loop mestre leva uma ideia à produção em sete estágios. Entre cada par de 
 
 A skill `aidd-osmani` tem sua própria versão do fluxo completo, o Playbook L, acionado por pedidos como "fluxo completo na rota X". Ele parte de uma rota existente, e não de uma ideia, e por isso começa auditando.
 
-| Playbook L, estágio | Parada | Equivale no loop mestre            |
-| :------------------ | :----- | :--------------------------------- |
-| 1. Alvo             | P1     | Estágio 1, alinhamento e baseline  |
-| 2. Auditoria        | P2     | Estágio 6, antecipado e só leitura |
-| 3. Spec e plano     | P3     | Estágios 2 e 3                     |
-| 4. Execução         | P4     | Estágio 4, um ticket por vez       |
-| 5. Prova e entrega  | —      | Estágios 5 a 7                     |
+| Playbook L, estágio    | Parada           | Equivale no loop mestre                  |
+| :--------------------- | :--------------- | :--------------------------------------- |
+| 1. Alvo                | P1               | Estágio 1, alinhamento e baseline        |
+| 2. Auditoria           | P2               | Estágio 6, antecipado e só leitura       |
+| 3. Spec e plano        | P3               | Estágios 2 e 3                           |
+| 4. Execução            | P4               | Estágio 4, um ticket por vez             |
+| 5. Prova e entrega     | —                | Estágios 5 a 7                           |
 
 Cada estágio do Playbook L respeita o limite de três a cinco passos e grava o `ESTADO.md` ao terminar. O fluxo acaba com commits locais e um texto de PR proposto; push e PR só acontecem com ordem do usuário.

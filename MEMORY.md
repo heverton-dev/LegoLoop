@@ -363,7 +363,23 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Governança & Ecossistema Atualizados:** Lei Inviolável #11 atualizada no `AGENTS.md` para 9 etapas obrigatórias; manual `docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md` e skill `skills/legoloop-fechar/SKILL.md` sincronizados; 13 skills universais reinstaladas nos 6 harnesses.
   - **Homologação & Qualidade:** 33 pacotes passando 100% verde em `go test -count=1 ./...`, `go vet` limpo, `gofmt -l` vazio, `tools/funclen` limpo, binário `bin/legoloop.exe` recompilado e instalado globalmente via `go install ./cmd/legoloop`, e grafo semântico reindexado (14.024 nós e 40.595 arestas).
 
+- **07/11/2026** — 🎥 **Mega-Pipeline Audiovisual Soberano (`legoloop-video-master`) com 43 Vídeos Dissecados:**
+  - **Engenharia Reversa Forense:** Submetidos 43 vídeos de YouTube cobrindo a esteira completa de animação 3D com código, Whiteboard SVG autônomo, edição dinâmica de Reels e clonagem reversa de canais.
+  - **Dossiê & Curadoria:** Criados `docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json` e `docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json` substituindo ferramentas proprietárias (After Effects, Fable, Astra, Premiere, CapCut, Higgsfield) por equivalentes locais Tier Ouro do LegoLoop, gerando uma economia anual projetada de R$ 17.640,00 com custo operacional de R$ 0,00/mês.
+  - **Tríade de Governança ISO v2.2.0:** Criados `2026-11-07_INTENT_VIDEO_MASTER.md`, `2026-11-07_SPEC_VIDEO_MASTER.md`, `2026-11-07_PLAN_VIDEO_MASTER.md` e `2026-11-07_ROUTE_VIDEO_MASTER.json` espelhando 1:1 os 6 tickets executados.
+  - **Grafo DAG & Golden Fixture:** Criado `loops/legoloop-video-master/pipeline.dag.json` (5 nós, 4 camadas acíclicas) e validado pelo CLI, manifesto `legoloop-video-master.loop.json` e Golden Fixture sintética `testdata/fixtures/video_master_fixture_3s.mp4`.
+  - **Livro Didático LegoPress:** Estruturado em 7 partes sob `docs/books/video-master/`, compilado em `2026-11-07_LIVRO_LEGOLOOP_VIDEO_MASTER.pdf` e auditado com geometria 100% válida pelo LegoPress (zero quebras de cabeçalho e zero páginas órfãs).
+  - **Skill Canônica:** Criada `skills/legoloop-video-master/SKILL.md` (v2.2.0) e relatório com telemetria em `docs/reports/2026-11-07_REPORT_VIDEO_MASTER.md`.
+  - **Homologação:** 100% dos pacotes passando verde em `go test -count=1 ./...`, templates em conformidade estrita e binário validado.
+
+- **07/11/2026** — 🛠️ **Blindagem do Motor LegoPress & Normalização Editorial de Todos os 9 Livros do Acervo:**
+  - **Causa Raiz 1 (Diagramas Vazios):** O Mermaid CLI gerava nós SVG encapsulados em tags `<foreignObject>`, descartadas pelo parser nativo do Typst. `renderizar_mermaid.py` atualizado para renderizar nativamente PNGs transparentes a 300 DPI (`-s 3 -b transparent`) e converter automaticamente qualquer SVG legado via Playwright/Chromium headless.
+  - **Causa Raiz 2 (Tabelas Sobrepostas):** `normalizar_tabelas.py` reescrito com pisos mínimos estritos (mínimo de 14 traços ou palavra mais longa + 4) e amortecedor não-linear para colunas de texto longo, garantindo larguras proporcionais estáveis (ex.: 17.5% / 17.5% / 65%).
+  - **Causa Raiz 3 (Tabelas Vazando no Rodapé):** `_modelo_livro.typst` atualizado com `#show figure.where(kind: table): set block(breakable: true)` e `inset: (x: 4pt, y: 2.4pt)`, permitindo quebra suave entre páginas com repetição de cabeçalho.
+  - **Recompilação e Auditoria dos 9 Livros:** Todos os 9 livros do cofre (`video-master`, `video-motion`, `video-rea`, `legoloop`, `mega-pipeline`, `impeccable`, `osmani`, `pocock`, `verbos-bdd`) recompilados com sucesso.
+  - **Qualidade & Homologação:** Testes Go de geometria e CLI 100% verdes (`internal/legopress` e `internal/cli`), `bin/legoloop.exe` recompilado e grafo semântico reindexado (14.336 nós e 40.924 arestas).
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `docs/livros-loops-autores` — 13 skills canônicas universais distribuídas nos harnesses, pipelines `video-rea`, `video-motion` e `fechar` 100% integrados, Lei #11 de Fechamento automatizada em 9 etapas determinísticas com emissão obrigatória de relatório e telemetria estrita.
+- **Status da Branch:** `docs/livros-loops-autores` — 14 skills canônicas universais, pipelines audiovisuais integrados, motor LegoPress blindado com diagramas 300 DPI e tabelas com quebra inteligente sem sobreposição.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
 - **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/` e `AGENTS.md`.

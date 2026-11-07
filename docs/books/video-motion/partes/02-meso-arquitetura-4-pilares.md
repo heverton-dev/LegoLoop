@@ -3,7 +3,7 @@
 O pipeline é estruturado em quatro motores independentes, integrados por um grafo acíclico dirigido (DAG):
 
 
-![Diagrama de Arquitetura](/img/diagrama_436e5a57.svg){width=95%}
+![Diagrama de Arquitetura](/img/diagrama_436e5a57.png){width=85%}
 
 
 ## 1. Relógio Mestre Fonético (Speech-Sync Engine)

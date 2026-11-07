@@ -17,12 +17,12 @@ Toda demanda que entra no ecossistema passa compulsoriamente por quatro estágio
 )
 ```
 
-| Estágio de Governança | Arquivo de Template   | Função Primária                                       | Validação no Motor    |
-| :-------------------- | :-------------------- | :---------------------------------------------------- | :-------------------- |
-| **1. INTENT**         | `TEMPLATE_INTENT.md`  | Registra a dor do usuário, hipóteses e premissas      | `Human-Gate 01`       |
-| **2. SPEC**           | `TEMPLATE_SPEC.md`    | Define premissas, boundaries e critérios BDD `AC-XX`  | `has_binary_criteria` |
-| **3. PLAN**           | `TEMPLATE_PLAN.md`    | Fatiamento vertical hierárquico (Épicos ➔ Nano)       | `Human-Gate 02`       |
-| **4. ROUTE**          | `TEMPLATE_ROUTE.json` | Grafo acíclico executável em formato machine-readable | `dag.Parse` e Schema  |
+| Estágio de Governança | Arquivo de Template    | Função Primária                          | Validação no Motor    |
+| :-------------------- | :--------------------- | :--------------------------------------- | :-------------------- |
+| **1. INTENT**             | `TEMPLATE_INTENT.md`      | Registra a dor do usuário, hipóteses e premissas | `Human-Gate 01`         |
+| **2. SPEC**               | `TEMPLATE_SPEC.md`        | Define premissas, boundaries e critérios BDD `AC-XX` | `has_binary_criteria`     |
+| **3. PLAN**               | `TEMPLATE_PLAN.md`        | Fatiamento vertical hierárquico (Épicos ➔ Nano) | `Human-Gate 02`         |
+| **4. ROUTE**              | `TEMPLATE_ROUTE.json`     | Grafo acíclico executável em formato machine-readable | `dag.Parse` e Schema    |
 
 ```{=typst}
 #frase-destaque[O PLAN para os olhos humanos é o espelho exato da ROUTE para os nós de máquina. Divergência entre os dois é defeito impeditivo.]
@@ -66,13 +66,13 @@ Imagine que você fabricou um processo chamado `subloop-tdd` contendo o ciclo co
 
 O LegoLoop padronizou a gestão de processos no ecossistema através de cinco verbos de comando universais, disponíveis tanto na CLI quanto na interface visual do Studio:
 
-| Verbo Operacional | Comando CLI                            | Papel no Ciclo de Vida                                 |
-| :---------------- | :------------------------------------- | :----------------------------------------------------- |
-| **Fabricar**      | `legoloop fabricar "<nome>"`           | Cria um processo novo do zero via cascata socrática    |
-| **Compor**        | `legoloop compor "<alvo>" "<subloop>"` | Acopla um processo como sub-etapa de outro             |
-| **Listar**        | `legoloop listar`                      | Audita o inventário de processos, versões e vínculos   |
-| **Refinar**       | `legoloop refinar "<nome>"`            | Substitui atomicamente um nó defasado por um melhor    |
-| **Remover**       | `legoloop remover "<nome>"`            | Desvincula um processo com garantia de rollback seguro |
+| Verbo Operacional | Comando CLI                          | Papel no Ciclo de Vida                   |
+| :---------------- | :----------------------------------- | :--------------------------------------- |
+| **Fabricar**          | `legoloop fabricar "<nome>"`           | Cria um processo novo do zero via cascata socrática |
+| **Compor**            | `legoloop compor "<alvo>" "<subloop>"` | Acopla um processo como sub-etapa de outro |
+| **Listar**            | `legoloop listar`                      | Audita o inventário de processos, versões e vínculos |
+| **Refinar**           | `legoloop refinar "<nome>"`            | Substitui atomicamente um nó defasado por um melhor |
+| **Remover**           | `legoloop remover "<nome>"`            | Desvincula um processo com garantia de rollback seguro |
 
 ```{=typst}
 #painel("Canonização e Hashing SHA-256")[

@@ -1,0 +1,426 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "legoloop-video-master",
+  "version": "1.1.0",
+  "date": "2026-11-07",
+  "session_id": "7a62d284-717f-4c6c-9e24-47b9c787a9be",
+  "intent_ref": "docs/intents/2026-11-07_INTENT_VIDEO_MASTER.md",
+  "spec_ref": "docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md",
+  "plan_ref": "docs/plans/2026-11-07_PLAN_VIDEO_MASTER.md",
+  "initiative_ref": "Audiovisual Soberano 2026",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-07_INTENT_VIDEO_MASTER.md",
+      "sha256": "d21e75d797cf88effdd2d82c38e794e5836425123dccd49254f099cad2012584"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md",
+      "sha256": "2e9145e1b3ac57c83401e526f756b3b535396b8df0f635b9c505baafd0950da3"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-07_PLAN_VIDEO_MASTER.md",
+      "sha256": "f1ca4d4b0f78da78ddbd592a92284834c3597554e1c555e387a010639a0f96d2"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "Audiovisual Soberano 2026",
+      "epic_id": "E01",
+      "label": "Consolidação do Dossiê Forense dos 43 Vídeos",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "DONE",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "input": {
+        "source_files": [
+          "docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "output": {
+        "artifacts": [
+          "docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"
+        ],
+        "verification": [
+          "Test-Path",
+          "docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json')"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "Audiovisual Soberano 2026",
+      "epic_id": "E01",
+      "label": "Emissão da Matriz de Curadoria e Stop-Gate",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "DONE",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "input": {
+        "source_files": [
+          "docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "output": {
+        "artifacts": [
+          "docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json"
+        ],
+        "verification": [
+          "Test-Path",
+          "docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "Audiovisual Soberano 2026",
+      "epic_id": "E02",
+      "label": "Construção e Validação do Grafo DAG Mestre",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "DONE",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "input": {
+        "source_files": [
+          "docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "output": {
+        "artifacts": [
+          "loops/legoloop-video-master/pipeline.dag.json",
+          "loops/legoloop-video-master/legoloop-video-master.loop.json"
+        ],
+        "verification": [
+          "legoloop",
+          "validate",
+          "loops/legoloop-video-master/pipeline.dag.json"
+        ],
+        "gate": "exit_code == 0 && file_exists('loops/legoloop-video-master/pipeline.dag.json')"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "Audiovisual Soberano 2026",
+      "epic_id": "E02",
+      "label": "Geração Determinística da Golden Fixture de 3s",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "DONE",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "input": {
+        "source_files": [
+          "internal/videorea/factory_bridge.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "output": {
+        "artifacts": [
+          "testdata/fixtures/video_master_fixture_3s.mp4"
+        ],
+        "verification": [
+          "Test-Path",
+          "testdata/fixtures/video_master_fixture_3s.mp4"
+        ],
+        "gate": "exit_code == 0 && file_exists('testdata/fixtures/video_master_fixture_3s.mp4')"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "Audiovisual Soberano 2026",
+      "epic_id": "E03",
+      "label": "Compilação e Estruturação do Livro LegoPress",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "DONE",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "input": {
+        "source_files": [
+          "docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "output": {
+        "artifacts": [
+          "docs/books/video-master/livro.json",
+          "docs/books/video-master/2026-11-07_LIVRO_LEGOLOOP_VIDEO_MASTER.pdf"
+        ],
+        "verification": [
+          "legoloop",
+          "legopress",
+          "auditar",
+          "docs/books/video-master/2026-11-07_LIVRO_LEGOLOOP_VIDEO_MASTER.pdf"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/books/video-master/2026-11-07_LIVRO_LEGOLOOP_VIDEO_MASTER.pdf')"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "Audiovisual Soberano 2026",
+      "epic_id": "E03",
+      "label": "Registro da Skill Universal nos Harnesses",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "DONE",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "input": {
+        "source_files": [
+          "skills/legoloop-video-master/SKILL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "output": {
+        "artifacts": [
+          "skills/legoloop-video-master/SKILL.md"
+        ],
+        "verification": [
+          "Test-Path",
+          "skills/legoloop-video-master/SKILL.md"
+        ],
+        "gate": "exit_code == 0 && file_exists('skills/legoloop-video-master/SKILL.md')"
+      }
+    }
+  ]
+}

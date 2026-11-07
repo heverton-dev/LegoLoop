@@ -54,10 +54,10 @@ Retrospectivas não mudam o código passado. Elas mudam as regras, os linters, a
 
 O método não é um conjunto de prompts melhores. É uma divisão de trabalho: o humano decide o que é difícil de reverter, o agente executa fatias pequenas e verificáveis, e cada falha vira uma regra automática. A tabela abaixo antecipa onde cada pilar se materializa no loop.
 
-| Pilar                      | Onde aparece no loop                         |
-| :------------------------- | :------------------------------------------- |
-| Alinhar antes de construir | Sub-loop 1 e gate G1                         |
-| Desenvolvedor no controle  | Gates G1 a G4 e ações críticas autorizadas   |
-| Módulos profundos          | `codebase-design` e testes em costuras       |
-| Higiene de contexto        | Janela única até os tickets, `/clear` depois |
-| Retroalimentar o ambiente  | `retro` e o gate G4                          |
+| Pilar                             | Onde aparece no loop                           |
+| :-------------------------------- | :--------------------------------------------- |
+| Alinhar antes de construir        | Sub-loop 1 e gate G1                           |
+| Desenvolvedor no controle         | Gates G1 a G4 e ações críticas autorizadas     |
+| Módulos profundos                 | `codebase-design` e testes em costuras           |
+| Higiene de contexto               | Janela única até os tickets, `/clear` depois     |
+| Retroalimentar o ambiente         | `retro` e o gate G4                              |

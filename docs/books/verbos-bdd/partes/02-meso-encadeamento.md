@@ -6,16 +6,16 @@ Os verbos do LegoLoop não foram projetados para rodar isolados. Cada um é elo 
 
 ![Fluxo entre diagnóstico, ação e validação](/img/diagrama_encadeamento.svg){width=95%}
 
-| Origem                            | Destino            | Finalidade da ligação                  |
-| :-------------------------------- | :----------------- | :------------------------------------- |
-| `listar`                          | `refinar`          | Inspecionar os nós antes da troca      |
-| `listar`                          | `compor`           | Identificar sub-loops reutilizáveis    |
-| `listar`                          | `remover`          | Auditar resíduos e vínculos            |
-| `matriz`                          | `refinar`          | Detectar peças defasadas               |
-| `matriz`                          | `fabricar`         | Validar a aptidão das peças            |
-| `fabricar` / `compor` / `remover` | `listar`           | Revalidar grafo, acoplamento e limpeza |
-| `refinar`                         | Auditoria de gates | Validar o score após a troca           |
-| Auditoria de gates                | `legopress`        | Gerar a documentação final             |
+| Origem                      | Destino            | Finalidade da ligação                  |
+| :-------------------------- | :----------------- | :------------------------------------- |
+| `listar`                      | `refinar`            | Inspecionar os nós antes da troca      |
+| `listar`                      | `compor`             | Identificar sub-loops reutilizáveis    |
+| `listar`                      | `remover`            | Auditar resíduos e vínculos            |
+| `matriz`                      | `refinar`            | Detectar peças defasadas               |
+| `matriz`                      | `fabricar`           | Validar a aptidão das peças            |
+| `fabricar` / `compor` / `remover` | `listar`             | Revalidar grafo, acoplamento e limpeza |
+| `refinar`                     | Auditoria de gates | Validar o score após a troca           |
+| Auditoria de gates          | `legopress`          | Gerar a documentação final             |
 
 ## 5. As Cinco Trilhas Canônicas
 
@@ -74,8 +74,8 @@ As trilhas abaixo esgotam as combinações lógicas da operação diária.
 
 ## 6. Tabela-Resumo dos Encadeamentos
 
-| Trilha                      | Sequência de verbos                | Gatilho típico         | Resultado entregue          |
-| :-------------------------- | :--------------------------------- | :--------------------- | :-------------------------- |
+| Trilha                  | Sequência de verbos                | Gatilho típico         | Resultado entregue          |
+| :---------------------- | :--------------------------------- | :--------------------- | :-------------------------- |
 | **1. Criação**              | listar → fabricar → matriz         | Nova demanda           | INTENT, SPEC, PLAN e ROUTE  |
 | **2. Refinamento**          | listar → matriz → refinar → matriz | Peça lenta ou defasada | Etapa trocada, bump minor   |
 | **3. Composição**           | listar → compor → listar           | Reuso de fluxo         | Sub-loop isolado no DAG     |

@@ -58,11 +58,11 @@ A ilustração a seguir resume a discrepância abissal entre o modelo caótico c
 
 A maioria das empresas subestima o impacto financeiro da perda de contexto porque enxerga o preço por milhão de tokens como uma quantia insignificante (por exemplo, US$ 3,00 por milhão de tokens de entrada). No entanto, quando multiplicamos essa taxa pelo número de desenvolvedores e pelo acúmulo contínuo de mensagens, a conta se torna astronômica:
 
-| Modelo de Execução             | Tokens / Turno       | Consumo Mensal (1.200 turnos)   | Custo Estimado / Dev / Mês |
-| :----------------------------- | :------------------: | :-----------------------------: | :------------------------: |
-| **Chat Monolítico Cumulativo** | ~65.000 tokens       | 78.000.000 tokens de entrada    | ~US$ 234,00                |
-| **Esteira Modular LegoLoop**   | **~3.500 tokens**    | **4.200.000 tokens (estéril)**  | **~US$ 12,60**             |
-| **Economia Líquida Obtida**    | **-94,6% por turno** | **-73.800.000 tokens poupados** | **Economia de US$ 221,40** |
+| Modelo de Execução         | Tokens / Turno   | Consumo Mensal (1.200 turnos) | Custo Estimado / Dev / Mês |
+| :------------------------- | :--------------: | :---------------------------: | :------------------------: |
+| **Chat Monolítico Cumulativo** | ~65.000 tokens   | 78.000.000 tokens de entrada  | ~US$ 234,00                |
+| **Esteira Modular LegoLoop**   | **~3.500 tokens**    | **4.200.000 tokens (estéril)**    | **~US$ 12,60**                 |
+| **Economia Líquida Obtida**    | **-94,6% por turno** | **-73.800.000 tokens poupados**   | **Economia de US$ 221,40**     |
 
 Em uma equipe com 20 profissionais de tecnologia, a migração do paradigma conversacional desordenado para esteiras modulares estéreis representa uma economia anual superior a **US$ 53.000,00** apenas em consumo de rede e APIs, além de reduzir a zero o retrabalho causado por alucinações.
 

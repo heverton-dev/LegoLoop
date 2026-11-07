@@ -69,12 +69,12 @@ Hoje, vivemos exatamente o mesmo momento de transição no universo da inteligê
 
 Para que você extraia o máximo valor desta obra de acordo com sua formação e seus desafios atuais, sugerimos a seguinte trilha de leitura:
 
-| Perfil do Leitor         | Início             | Capítulos Chave         | Entrega Prática Imediata                     |
-| :----------------------- | :----------------- | :---------------------- | :------------------------------------------- |
+| Perfil do Leitor     | Início             | Capítulos Chave         | Entrega Prática Imediata              |
+| :------------------- | :----------------- | :---------------------- | :------------------------------------ |
 | **Executivos e TI**      | Parte I (Macro)    | Caps. 1, 2, 3 e 24      | Reduzir em até 95% os custos e governar a IA |
 | **Product Owners**       | Parte III (Studio) | Caps. 13, 14, 15 e 16   | Desenhar e validar esteiras no canvas visual |
-| **Engenheiros / Devs**   | Partes II e IV     | Caps. 6, 7, 19, 20 e 22 | Construir nós em TDD e integrar ao Meta-MCP  |
-| **Analistas de Negócio** | Parte VI (Prática) | Caps. 26 a 36           | Operar as 10 receitas prontas no dia a dia   |
+| **Engenheiros / Devs**   | Partes II e IV     | Caps. 6, 7, 19, 20 e 22 | Construir nós em TDD e integrar ao Meta-MCP |
+| **Analistas de Negócio** | Parte VI (Prática) | Caps. 26 a 36           | Operar as 10 receitas prontas no dia a dia |
 
 ---
 

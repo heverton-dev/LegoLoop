@@ -4,16 +4,16 @@
 
 O manual decompõe o ecossistema de Addy Osmani em oito sub-loops, cada um com entradas e saídas contratadas. O arquivo do loop no repositório declara sete deles como nós; o oitavo, `osmani-debugging-recovery`, funciona como desvio do estágio de construção. O Apêndice B registra essa diferença.
 
-| Sub-loop                     | Entrada                   | Saída contratada                         |
-| :--------------------------- | :------------------------ | :--------------------------------------- |
-| `osmani-alignment`           | Ideia ou demanda bruta    | Intenção com alvos e baseline            |
-| `osmani-spec-constraints`    | Intenção validada         | Spec e `CONSTRAINTS.md` com orçamentos   |
-| `osmani-task-breakdown`      | Spec e contratos          | Plano com DAG e testes por ticket        |
-| `osmani-incremental-build`   | Fatias do plano           | Código sem stubs e testes verdes         |
-| `osmani-debugging-recovery`  | Falha ou regressão        | Teste vermelho, patch e suíte verde      |
-| `osmani-performance-webperf` | Rota em runtime local     | Relatório com métricas antes e depois    |
-| `osmani-review-hardening`    | Código e diff consolidado | Auditoria em 5 eixos e diff simplificado |
-| `osmani-ship-lifecycle`      | Código auditado           | ADRs, instrumentação e release           |
+| Sub-loop                       | Entrada                   | Saída contratada                         |
+| :----------------------------- | :------------------------ | :--------------------------------------- |
+| `osmani-alignment`               | Ideia ou demanda bruta    | Intenção com alvos e baseline            |
+| `osmani-spec-constraints`        | Intenção validada         | Spec e `CONSTRAINTS.md` com orçamentos     |
+| `osmani-task-breakdown`          | Spec e contratos          | Plano com DAG e testes por ticket        |
+| `osmani-incremental-build`       | Fatias do plano           | Código sem stubs e testes verdes         |
+| `osmani-debugging-recovery`      | Falha ou regressão        | Teste vermelho, patch e suíte verde      |
+| `osmani-performance-webperf`     | Rota em runtime local     | Relatório com métricas antes e depois    |
+| `osmani-review-hardening`        | Código e diff consolidado | Auditoria em 5 eixos e diff simplificado |
+| `osmani-ship-lifecycle`          | Código auditado           | ADRs, instrumentação e release           |
 
 ## 7. Alinhamento
 

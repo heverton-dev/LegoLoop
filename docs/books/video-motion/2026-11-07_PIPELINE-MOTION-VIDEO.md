@@ -35,13 +35,13 @@ Esta obra destina-se a engenheiros de software, criadores de conteúdo técnico 
 
 ## Estrutura da obra
 
-| Parte   | Nível      | Conteúdo                                                     |
-| :------ | :--------- | :----------------------------------------------------------- |
-| **I**   | Macro      | Fundação filosófica, determinismo estrito e zero dependência |
-| **II**  | Meso       | Arquitetura dos quatro pilares técnicos                      |
-| **III** | Micro      | Guia prático de execução e stop-gates de QA instantâneo      |
-| **IV**  | Prática    | Receitas multi-aspecto (9:16, 16:9, 1:1) e broadcast bundle  |
-| **V**   | Governança | Rotina de atualização contínua por diff (LegoPress)          |
+| Parte            | Nível            | Conteúdo                                         |
+| :--------------- | :--------------- | :----------------------------------------------- |
+| **I**                | Macro            | Fundação filosófica, determinismo estrito e zero dependência |
+| **II**               | Meso             | Arquitetura dos quatro pilares técnicos          |
+| **III**              | Micro            | Guia prático de execução e stop-gates de QA instantâneo |
+| **IV**               | Prática          | Receitas multi-aspecto (9:16, 16:9, 1:1) e broadcast bundle |
+| **V**                | Governança       | Rotina de atualização contínua por diff (LegoPress) |
 
 
 # Parte I — Fundação e Princípio Determinístico
@@ -59,10 +59,10 @@ No LegoLoop, a premissa é invertida:
 
 ## Comparativo de Eficiência Arquitetural
 
-| Dimensão                 | Fluxo Tradicional (SaaS / NLE)         | Pipeline LegoLoop (`video-motion`)   |
-| :----------------------- | :------------------------------------- | :----------------------------------- |
+| Dimensão             | Fluxo Tradicional (SaaS / NLE)         | Pipeline LegoLoop (`video-motion`)     |
+| :------------------- | :------------------------------------- | :----------------------------------- |
 | **Corte de Respiração**  | Manual em timeline ou app proprietário | Automático (-30dB RMS + 40ms ataque) |
-| **Sincronia de Legenda** | Digitação ou exportação com drift      | `words.json` milimétrico sem desvio  |
+| **Sincronia de Legenda** | Digitação ou exportação com drift      | `words.json` milimétrico sem desvio    |
 | **Estilo Visual 3D**     | Plugins pagos de After Effects         | Remotion / CSS3 com blur procedural  |
 | **Custo por Minuto**     | Assinaturas mensais recorrentes        | Custo zero de licença e 100% local   |
 | **Versionamento**        | Binários pesados (.aep / .prproj)      | Código puro versionado em Git        |
@@ -73,7 +73,7 @@ No LegoLoop, a premissa é invertida:
 O pipeline é estruturado em quatro motores independentes, integrados por um grafo acíclico dirigido (DAG):
 
 
-![Diagrama de Arquitetura](/img/diagrama_436e5a57.svg){width=95%}
+![Diagrama de Arquitetura](/img/diagrama_436e5a57.png){width=85%}
 
 
 ## 1. Relógio Mestre Fonético (Speech-Sync Engine)
@@ -126,13 +126,13 @@ legoloop video-motion bundle  --input video.mp4 --output dist/job_01/
 
 ### 2. Parâmetros e Modos de Operação
 
-| Subcomando | Flag Principal       | Descrição e Comportamento                     |
-| :--------- | :------------------- | :-------------------------------------------- |
-| `silence`  | `--pad 40`           | Margem de ataque em milissegundos pré-fala    |
-| `punch`    | `--words words.json` | Análise de amplitude RMS e destaque Anton     |
-| `assets`   | `--prompt "..."`     | Consulta ao cache SHA-256 e bridge AI Studio  |
-| `preview`  | `--output qa.jpg`    | Renderização ultra-rápida dos 12 frames-chave |
-| `bundle`   | `--output dist/`     | Consolidação do master, legendas e post copy  |
+| Subcomando       | Flag Principal       | Descrição e Comportamento                  |
+| :--------------- | :------------------- | :----------------------------------------- |
+| `silence`          | `--pad 40`             | Margem de ataque em milissegundos pré-fala |
+| `punch`            | `--words words.json`   | Análise de amplitude RMS e destaque Anton  |
+| `assets`           | `--prompt "..."`       | Consulta ao cache SHA-256 e bridge AI Studio |
+| `preview`          | `--output qa.jpg`      | Renderização ultra-rápida dos 12 frames-chave |
+| `bundle`           | `--output dist/`       | Consolidação do master, legendas e post copy |
 
 ### 3. Via Grafo DAG e LegoLoop Studio
 
@@ -169,11 +169,11 @@ Caso algum artefato visual apresente inconsistência na folha de contato:
 
 Cada rede social possui restrições visuais específicas (sobreposição de botões de like, comentários e legenda de rodapé). O motor ajusta o layout com base na matriz abaixo:
 
-| Formato  | Resolução | Destino Principal        | Margem de Segurança    |
-| :------- | :-------- | :----------------------- | :--------------------- |
-| **9:16** | 1080x1920 | TikTok, Reels, Shorts    | 120px topo, 280px base |
-| **16:9** | 1920x1080 | YouTube Desktop, Cursos  | 60px uniforme          |
-| **1:1**  | 1080x1080 | Instagram Feed, LinkedIn | 80px topo e base       |
+| Formato         | Resolução       | Destino Principal         | Margem de Segurança     |
+| :-------------- | :-------------- | :------------------------ | :---------------------- |
+| **9:16**            | 1080x1920       | TikTok, Reels, Shorts     | 120px topo, 280px base  |
+| **16:9**            | 1920x1080       | YouTube Desktop, Cursos   | 60px uniforme           |
+| **1:1**             | 1080x1080       | Instagram Feed, LinkedIn  | 80px topo e base        |
 
 ## Anatomia do Pacote de Entrega (`dist/<job_id>/`)
 

@@ -1,0 +1,19 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Mega-Pipeline Soberano de Producao Audiovisual",
+  "nome_base": "2026-11-07_LIVRO_LEGOLOOP_VIDEO_MASTER",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-visao-geral.md",
+    "02-meso-pilar1-motion-3d.md",
+    "03-meso-pilar2-whiteboard.md",
+    "04-meso-pilar3-auto-editor-reels.md",
+    "05-meso-pilar4-canal-clone-rea.md",
+    "06-micro-soberania-matriz-custo-zero.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "video-master-v2",
+  "ultima_compilacao": "2026-11-07"
+}

@@ -64,14 +64,14 @@ Uma das propriedades mais poderosas da engenharia do LegoLoop é a sua **naturez
 
 Para que uma esteira seja flexível e componível, as etapas do processo utilizam um catálogo ontológico padronizado em seis naturezas de peças:
 
-| Natureza da Peça | Formato Nativo                  | Função Primária no Fluxo                                | Motor de Execução |
-| :--------------- | :------------------------------ | :------------------------------------------------------ | :---------------- |
-| **1. Skill**     | Markdown (`SKILL.md`)           | Prompt especialista com heurísticas e raciocínio de IA  | `Orchestrix`      |
-| **2. Script**    | PowerShell / Shell / Go         | Transformação determinística de dados e arquivos locais | `Runtime Local`   |
-| **3. Hook**      | Configuração JSON               | Interceptação de ciclo de vida pré e pós-execução       | `Harness Hooks`   |
-| **4. MCP**       | Configuração JSON (`.mcp.json`) | Ferramental vivo externo (navegador, banco de dados)    | `Protocolo MCP`   |
-| **5. Gate**      | Expressão booleana em DSL       | Validação mecânica binária e aprovação de transição     | `internal/gate`   |
-| **6. Loop**      | Manifesto JSON (`.loop.json`)   | Encadeamento de nós em DAG para reúso modular           | `dag.Parse`       |
+| Natureza da Peça | Formato Nativo                | Função Primária no Fluxo                 | Motor de Execução |
+| :--------------- | :---------------------------- | :--------------------------------------- | :---------------- |
+| **1. Skill**         | Markdown (`SKILL.md`)           | Prompt especialista com heurísticas e raciocínio de IA | `Orchestrix`        |
+| **2. Script**        | PowerShell / Shell / Go       | Transformação determinística de dados e arquivos locais | `Runtime Local`     |
+| **3. Hook**          | Configuração JSON             | Interceptação de ciclo de vida pré e pós-execução | `Harness Hooks`     |
+| **4. MCP**           | Configuração JSON (`.mcp.json`) | Ferramental vivo externo (navegador, banco de dados) | `Protocolo MCP`     |
+| **5. Gate**          | Expressão booleana em DSL     | Validação mecânica binária e aprovação de transição | `internal/gate`     |
+| **6. Loop**          | Manifesto JSON (`.loop.json`)   | Encadeamento de nós em DAG para reúso modular | `dag.Parse`         |
 
 ```{=typst}
 #painel("Equilíbrio Cognitivo vs. Determinístico")[

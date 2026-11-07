@@ -34,10 +34,10 @@ Na prática, isso significa que se o briefing pede uma estética anos 90 com bor
 
 Toda tarefa de interface começa com uma pergunta: estamos refinando ou redesenhando?
 
-| Abordagem   | O que preserva                    | O que muda                       | Quando usar                           |
-| :---------- | :-------------------------------- | :------------------------------- | :------------------------------------ |
-| Refinamento | Identidade, comportamento e texto | Alinhamento, ritmo, consistência | A tela funciona, mas está mal acabada |
-| Redesenho   | Apenas o conteúdo e a função      | Todo o mundo visual              | A tela atual é anti-referência        |
+| Abordagem       | O que preserva                    | O que muda                       | Quando usar                           |
+| :-------------- | :-------------------------------- | :------------------------------- | :------------------------------------ |
+| Refinamento     | Identidade, comportamento e texto | Alinhamento, ritmo, consistência | A tela funciona, mas está mal acabada |
+| Redesenho       | Apenas o conteúdo e a função      | Todo o mundo visual              | A tela atual é anti-referência        |
 
 No redesenho, a interface antiga vira evidência do que não fazer. O novo mundo visual precisa ser documentado, e não apenas aplicado, para que a próxima sessão o reconheça.
 

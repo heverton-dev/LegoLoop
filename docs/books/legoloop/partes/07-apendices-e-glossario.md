@@ -36,19 +36,19 @@ O executável central do LegoLoop (`legoloop`) oferece comandos determinísticos
 
 Todos os comandos são executados a partir do binário `legoloop` no terminal. A tabela abaixo sintetiza os principais subcomandos, opções de execução e efeitos no sistema:
 
-| Subcomando       | Opções e Argumentos          | Finalidade Operacional no Ecossistema              |
-| :--------------- | :--------------------------- | :------------------------------------------------- |
-| `studio`         | `[--porta 8080] [--abrir]`   | Abre o canvas gráfico interativo no navegador      |
-| `fabricar`       | `<nome> [--yes] [--model M]` | Dispara entrevista socrática para gerar a Tríade   |
-| `matriz`         | `[--tier ouro/prata/bronze]` | Audita reputação e testes das ferramentas do cofre |
-| `listar`         | `[--json] [--verbose]`       | Exibe o inventário de processos e harnesses ativos |
-| `refinar`        | `<nome> [--trocar P]`        | Substitui cirurgicamente uma peça na esteira       |
-| `remover`        | `<nome> [--force]`           | Desvincula e arquiva o processo com rollback limpo |
-| `compor`         | `<alvo> <sub-loop>`          | Encaixa um sub-loop como passo dentro da esteira   |
-| `sync-harnesses` | `[--dry-run] [--apply]`      | Conecta assistentes ao Meta-MCP Router sob demanda |
-| `stept status`   | `[--harness H] [--json]`     | Audita conformidade do protocolo nos assistentes   |
-| `stept on`       | `[--harness todos]`          | Ativa a Tríade STE-PT compulsoriamente nas IAs     |
-| `stept off`      | `[--harness todos]`          | Desativa a exigência formal para exploração livre  |
+| Subcomando         | Opções e Argumentos        | Finalidade Operacional no Ecossistema   |
+| :----------------- | :------------------------- | :-------------------------------------- |
+| `studio`             | `[--porta 8080] [--abrir]`   | Abre o canvas gráfico interativo no navegador |
+| `fabricar`           | `<nome> [--yes] [--model M]` | Dispara entrevista socrática para gerar a Tríade |
+| `matriz`             | `[--tier ouro/prata/bronze]` | Audita reputação e testes das ferramentas do cofre |
+| `listar`             | `[--json] [--verbose]`       | Exibe o inventário de processos e harnesses ativos |
+| `refinar`            | `<nome> [--trocar P]`        | Substitui cirurgicamente uma peça na esteira |
+| `remover`            | `<nome> [--force]`           | Desvincula e arquiva o processo com rollback limpo |
+| `compor`             | `<alvo> <sub-loop>`          | Encaixa um sub-loop como passo dentro da esteira |
+| `sync-harnesses`     | `[--dry-run] [--apply]`      | Conecta assistentes ao Meta-MCP Router sob demanda |
+| `stept status`       | `[--harness H] [--json]`     | Audita conformidade do protocolo nos assistentes |
+| `stept on`           | `[--harness todos]`          | Ativa a Tríade STE-PT compulsoriamente nas IAs |
+| `stept off`          | `[--harness todos]`          | Desativa a exigência formal para exploração livre |
 
 ---
 

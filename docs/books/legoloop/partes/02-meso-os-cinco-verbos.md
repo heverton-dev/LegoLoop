@@ -83,12 +83,12 @@ Em um ecossistema com centenas de ferramentas disponíveis, como garantir que um
 
 O LegoLoop não confia em reputações subjetivas ou número de estrelas em plataformas sociais. O motor de **Matriz de Reputação** (`legoloop matriz`) avalia continuamente a qualidade das peças a partir de critérios frios, objetivos e matematicamente auditáveis:
 
-| Critério Automatizado da Peça         | O Que é Auditado no Código                        | Peso no Score |
-| :------------------------------------ | :------------------------------------------------ | :-----------: |
-| **Cobertura e Integridade de Testes** | Testes unitários reais que falham sob mutação     | +0.35         |
-| **Zero Stubs (Sem Mocks Simulados)**  | Sem funções vazias, TODOs ou simulações fictícias | +0.25         |
-| **Conformidade de Esquema Formal**    | Validação estrita de contratos via JSON Schema    | +0.20         |
-| **Economia de Contexto e Tokens**     | Prompts concisos e isolamento cirúrgico estéril   | +0.20         |
+| Critério Automatizado da Peça     | O Que é Auditado no Código              | Peso no Score  |
+| :-------------------------------- | :-------------------------------------- | :------------: |
+| **Cobertura e Integridade de Testes** | Testes unitários reais que falham sob mutação | +0.35          |
+| **Zero Stubs (Sem Mocks Simulados)**  | Sem funções vazias, TODOs ou simulações fictícias | +0.25          |
+| **Conformidade de Esquema Formal**    | Validação estrita de contratos via JSON Schema | +0.20          |
+| **Economia de Contexto e Tokens**     | Prompts concisos e isolamento cirúrgico estéril | +0.20          |
 
 ### A Hierarquia dos Tiers de Qualidade
 

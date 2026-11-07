@@ -40,14 +40,14 @@ abstract: |
 
 ## A estrutura da obra
 
-| Parte | Nível     | Conteúdo                                                     |
-| :---- | :-------- | :----------------------------------------------------------- |
-| I     | Macro     | Achismo de desempenho, código sem controle e os seis pilares |
-| II    | Meso      | O loop mestre de sete estágios e seis gates                  |
-| III   | Meso      | Os sub-loops e suas habilidades                              |
-| IV    | Micro     | Limiares, eixos de revisão, playbooks e integração           |
-| V     | Prática   | Receitas para situações frequentes                           |
-| VI    | Apêndices | Glossário, relatório de conformidade e referência rápida     |
+| Parte            | Nível            | Conteúdo                                         |
+| :--------------- | :--------------- | :----------------------------------------------- |
+| I                | Macro            | Achismo de desempenho, código sem controle e os seis pilares |
+| II               | Meso             | O loop mestre de sete estágios e seis gates      |
+| III              | Meso             | Os sub-loops e suas habilidades                  |
+| IV               | Micro            | Limiares, eixos de revisão, playbooks e integração |
+| V                | Prática          | Receitas para situações frequentes               |
+| VI               | Apêndices        | Glossário, relatório de conformidade e referência rápida |
 
 ## As convenções da obra
 

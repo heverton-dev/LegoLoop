@@ -35,10 +35,10 @@ Esta obra destina-se a engenheiros de IA, desenvolvedores de software e operador
 
 ## Estrutura da obra
 
-| Parte   | Nível      | Conteúdo                                                     |
-| :------ | :--------- | :----------------------------------------------------------- |
-| **I**   | Macro      | Visão geral da engenharia reversa e soberania técnica        |
-| **II**  | Meso       | Dissecação forense de prompts ocultos e OCR de código        |
-| **III** | Micro      | Curadoria contra a matriz do cofre e Stop-Gate humano        |
-| **IV**  | Prática    | Fábrica da Tríade ISO (INTENT, SPEC, PLAN, ROUTE) e Fixtures |
-| **V**   | Governança | Nomenclatura legoloop-*, publicação LegoPress e Skills       |
+| Parte            | Nível            | Conteúdo                                         |
+| :--------------- | :--------------- | :----------------------------------------------- |
+| **I**                | Macro            | Visão geral da engenharia reversa e soberania técnica |
+| **II**               | Meso             | Dissecação forense de prompts ocultos e OCR de código |
+| **III**              | Micro            | Curadoria contra a matriz do cofre e Stop-Gate humano |
+| **IV**               | Prática          | Fábrica da Tríade ISO (INTENT, SPEC, PLAN, ROUTE) e Fixtures |
+| **V**                | Governança       | Nomenclatura legoloop-*, publicação LegoPress e Skills |

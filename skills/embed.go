@@ -13,7 +13,7 @@ import (
 //go:embed legoloop-*/*.md
 var FS embed.FS
 
-// FuncoesNativas lista os nomes canônicos das 13 funções nativas do LegoLoop.
+// FuncoesNativas lista os nomes canônicos das 14 funções nativas do LegoLoop.
 var FuncoesNativas = []string{
 	"legoloop-fabricar",
 	"legoloop-matriz",
@@ -27,6 +27,7 @@ var FuncoesNativas = []string{
 	"legoloop-loop-map",
 	"legoloop-video-rea",
 	"legoloop-video-motion",
+	"legoloop-video-master",
 	"legoloop-fechar",
 }
 

@@ -13,8 +13,8 @@ Esses conteúdos, contudo, apresentam três barreiras críticas para a engenhari
 
 O pipeline `legoloop-video-rea` foi concebido para fechar essa lacuna. Ele opera como um perito forense automatizado: ingere qualquer vídeo a partir de uma simples URL, quebra as barreiras de login de forma furtiva, lê as entrelinhas e as telas de código congeladas, cruza as necessidades contra o acervo local de código aberto e projeta um novo pipeline canônico pronto para ser fabricado.
 
-| Dimensão               | Análise Manual Convencional          | Esteira Automatizada `video-rea`      |
-| :--------------------- | :----------------------------------- | :------------------------------------ |
+| Dimensão           | Análise Manual Convencional          | Esteira Automatizada `video-rea`        |
+| :----------------- | :----------------------------------- | :------------------------------------ |
 | **Tempo de Análise**   | 2 a 4 horas por vídeo longo          | Menos de 30 segundos por alvo         |
 | **Captura de Prompts** | Apenas o que for digitado na tela    | Reconstrução de prompts implícitos    |
 | **Leitura de Código**  | Digitação manual com erros           | OCR local frame a frame em 4K         |

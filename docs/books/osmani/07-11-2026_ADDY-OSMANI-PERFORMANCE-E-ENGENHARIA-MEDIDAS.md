@@ -40,14 +40,14 @@ abstract: |
 
 ## A estrutura da obra
 
-| Parte | Nível     | Conteúdo                                                     |
-| :---- | :-------- | :----------------------------------------------------------- |
-| I     | Macro     | Achismo de desempenho, código sem controle e os seis pilares |
-| II    | Meso      | O loop mestre de sete estágios e seis gates                  |
-| III   | Meso      | Os sub-loops e suas habilidades                              |
-| IV    | Micro     | Limiares, eixos de revisão, playbooks e integração           |
-| V     | Prática   | Receitas para situações frequentes                           |
-| VI    | Apêndices | Glossário, relatório de conformidade e referência rápida     |
+| Parte            | Nível            | Conteúdo                                         |
+| :--------------- | :--------------- | :----------------------------------------------- |
+| I                | Macro            | Achismo de desempenho, código sem controle e os seis pilares |
+| II               | Meso             | O loop mestre de sete estágios e seis gates      |
+| III              | Meso             | Os sub-loops e suas habilidades                  |
+| IV               | Micro            | Limiares, eixos de revisão, playbooks e integração |
+| V                | Prática          | Receitas para situações frequentes               |
+| VI               | Apêndices        | Glossário, relatório de conformidade e referência rápida |
 
 ## As convenções da obra
 
@@ -104,14 +104,14 @@ O ciclo termina com rastreabilidade: logs estruturados, métricas, traces, um pl
 
 ## 3. O que o leitor leva desta parte
 
-| Pilar                      | Pergunta que impõe antes de agir            |
-| :------------------------- | :------------------------------------------ |
-| Medir antes de otimizar    | Qual é o número hoje?                       |
-| Restrições                 | Qual limite esta mudança não pode passar?   |
-| Documentação oficial       | Onde a documentação diz que funciona assim? |
-| Fatiamento e Prove-It      | Qual teste falha agora e passará depois?    |
-| Runtime real e cinco eixos | O navegador real confirma? Quem contestou?  |
-| Entrega observável         | Como saberemos que quebrou em produção?     |
+| Pilar                             | Pergunta que impõe antes de agir               |
+| :-------------------------------- | :--------------------------------------------- |
+| Medir antes de otimizar           | Qual é o número hoje?                          |
+| Restrições                        | Qual limite esta mudança não pode passar?      |
+| Documentação oficial              | Onde a documentação diz que funciona assim?    |
+| Fatiamento e Prove-It             | Qual teste falha agora e passará depois?       |
+| Runtime real e cinco eixos        | O navegador real confirma? Quem contestou?     |
+| Entrega observável                | Como saberemos que quebrou em produção?        |
 
 
 # PARTE II — Meso: O Loop Mestre de Engenharia
@@ -174,14 +174,14 @@ O loop mestre leva uma ideia à produção em sete estágios. Entre cada par de 
 
 ## 5. O que os gates protegem
 
-| Gate | Sem ele, o risco é                                     |
-| :--- | :----------------------------------------------------- |
-| G1   | Resolver com perfeição o problema errado               |
-| G2   | Discutir "está rápido?" sem um número combinado        |
-| G3   | Tickets que não se sabe quando estão prontos           |
-| G4   | Medir performance de um código que ainda está quebrado |
-| G5   | Auditar segurança de uma versão que ainda vai mudar    |
-| G6   | Entregar com um achado crítico em aberto               |
+| Gate                 | Sem ele, o risco é                                          |
+| :------------------- | :---------------------------------------------------------- |
+| G1                   | Resolver com perfeição o problema errado                    |
+| G2                   | Discutir "está rápido?" sem um número combinado             |
+| G3                   | Tickets que não se sabe quando estão prontos                |
+| G4                   | Medir performance de um código que ainda está quebrado      |
+| G5                   | Auditar segurança de uma versão que ainda vai mudar         |
+| G6                   | Entregar com um achado crítico em aberto                    |
 
 ```{=typst}
 #painel("A ordem entre G4 e G5")[
@@ -193,13 +193,13 @@ O loop mestre leva uma ideia à produção em sete estágios. Entre cada par de 
 
 A skill `aidd-osmani` tem sua própria versão do fluxo completo, o Playbook L, acionado por pedidos como "fluxo completo na rota X". Ele parte de uma rota existente, e não de uma ideia, e por isso começa auditando.
 
-| Playbook L, estágio | Parada | Equivale no loop mestre            |
-| :------------------ | :----- | :--------------------------------- |
-| 1. Alvo             | P1     | Estágio 1, alinhamento e baseline  |
-| 2. Auditoria        | P2     | Estágio 6, antecipado e só leitura |
-| 3. Spec e plano     | P3     | Estágios 2 e 3                     |
-| 4. Execução         | P4     | Estágio 4, um ticket por vez       |
-| 5. Prova e entrega  | —      | Estágios 5 a 7                     |
+| Playbook L, estágio    | Parada           | Equivale no loop mestre                  |
+| :--------------------- | :--------------- | :--------------------------------------- |
+| 1. Alvo                | P1               | Estágio 1, alinhamento e baseline        |
+| 2. Auditoria           | P2               | Estágio 6, antecipado e só leitura       |
+| 3. Spec e plano        | P3               | Estágios 2 e 3                           |
+| 4. Execução            | P4               | Estágio 4, um ticket por vez             |
+| 5. Prova e entrega     | —                | Estágios 5 a 7                           |
 
 Cada estágio do Playbook L respeita o limite de três a cinco passos e grava o `ESTADO.md` ao terminar. O fluxo acaba com commits locais e um texto de PR proposto; push e PR só acontecem com ordem do usuário.
 
@@ -210,16 +210,16 @@ Cada estágio do Playbook L respeita o limite de três a cinco passos e grava o 
 
 O manual decompõe o ecossistema de Addy Osmani em oito sub-loops, cada um com entradas e saídas contratadas. O arquivo do loop no repositório declara sete deles como nós; o oitavo, `osmani-debugging-recovery`, funciona como desvio do estágio de construção. O Apêndice B registra essa diferença.
 
-| Sub-loop                     | Entrada                   | Saída contratada                         |
-| :--------------------------- | :------------------------ | :--------------------------------------- |
-| `osmani-alignment`           | Ideia ou demanda bruta    | Intenção com alvos e baseline            |
-| `osmani-spec-constraints`    | Intenção validada         | Spec e `CONSTRAINTS.md` com orçamentos   |
-| `osmani-task-breakdown`      | Spec e contratos          | Plano com DAG e testes por ticket        |
-| `osmani-incremental-build`   | Fatias do plano           | Código sem stubs e testes verdes         |
-| `osmani-debugging-recovery`  | Falha ou regressão        | Teste vermelho, patch e suíte verde      |
-| `osmani-performance-webperf` | Rota em runtime local     | Relatório com métricas antes e depois    |
-| `osmani-review-hardening`    | Código e diff consolidado | Auditoria em 5 eixos e diff simplificado |
-| `osmani-ship-lifecycle`      | Código auditado           | ADRs, instrumentação e release           |
+| Sub-loop                       | Entrada                   | Saída contratada                         |
+| :----------------------------- | :------------------------ | :--------------------------------------- |
+| `osmani-alignment`               | Ideia ou demanda bruta    | Intenção com alvos e baseline            |
+| `osmani-spec-constraints`        | Intenção validada         | Spec e `CONSTRAINTS.md` com orçamentos     |
+| `osmani-task-breakdown`          | Spec e contratos          | Plano com DAG e testes por ticket        |
+| `osmani-incremental-build`       | Fatias do plano           | Código sem stubs e testes verdes         |
+| `osmani-debugging-recovery`      | Falha ou regressão        | Teste vermelho, patch e suíte verde      |
+| `osmani-performance-webperf`     | Rota em runtime local     | Relatório com métricas antes e depois    |
+| `osmani-review-hardening`        | Código e diff consolidado | Auditoria em 5 eixos e diff simplificado |
+| `osmani-ship-lifecycle`          | Código auditado           | ADRs, instrumentação e release           |
 
 ## 7. Alinhamento
 
@@ -282,11 +282,11 @@ O sub-loop planeja a migração sem downtime, ativa a observabilidade, automatiz
 
 O arquivo `references/performance-checklist.md`, no upstream da skill `aidd-osmani`, fixa as faixas usadas para classificar as três métricas de experiência do usuário.
 
-| Métrica                     | Bom      | Precisa melhorar | Ruim     |
-| :-------------------------- | :------- | :--------------- | :------- |
-| LCP, maior elemento visível | ≤ 2,5 s  | ≤ 4,0 s          | > 4,0 s  |
-| INP, resposta à interação   | ≤ 200 ms | ≤ 500 ms         | > 500 ms |
-| CLS, deslocamento acumulado | ≤ 0,1    | ≤ 0,25           | > 0,25   |
+| Métrica                        | Bom             | Precisa melhorar   | Ruim            |
+| :----------------------------- | :-------------- | :----------------- | :-------------- |
+| LCP, maior elemento visível    | ≤ 2,5 s         | ≤ 4,0 s            | > 4,0 s         |
+| INP, resposta à interação      | ≤ 200 ms        | ≤ 500 ms           | > 500 ms        |
+| CLS, deslocamento acumulado    | ≤ 0,1           | ≤ 0,25             | > 0,25          |
 
 O mesmo checklist liga cada métrica a ações concretas. Imagens e elementos `<source>` com largura e altura explícitas evitam CLS. A imagem principal da página usa `fetchpriority="high"` e não é carregada sob demanda, para não atrasar o LCP. Tarefas longas, acima de 50 ms, são quebradas para liberar a thread principal, que o checklist aponta como a principal alavanca do INP.
 
@@ -294,28 +294,28 @@ O mesmo checklist liga cada métrica a ações concretas. Imagens e elementos `<
 
 O upstream da habilidade `code-review-and-quality` define cinco eixos e afirma que toda mudança é revisada antes do merge, sem exceções.
 
-| Eixo                        | Pergunta central                                      |
-| :-------------------------- | :---------------------------------------------------- |
-| Correção                    | O código faz o que a spec pede, inclusive nas bordas? |
-| Legibilidade e simplicidade | Outra pessoa entende sem explicação?                  |
-| Arquitetura                 | A mudança respeita os limites dos módulos?            |
-| Segurança                   | Introduz alguma vulnerabilidade?                      |
-| Performance                 | Introduz algum problema de desempenho?                |
+| Eixo                             | Pergunta central                                |
+| :------------------------------- | :---------------------------------------------- |
+| Correção                         | O código faz o que a spec pede, inclusive nas bordas? |
+| Legibilidade e simplicidade      | Outra pessoa entende sem explicação?            |
+| Arquitetura                      | A mudança respeita os limites dos módulos?      |
+| Segurança                        | Introduz alguma vulnerabilidade?                |
+| Performance                      | Introduz algum problema de desempenho?          |
 
 Os eixos de segurança e performance remetem às habilidades especializadas, `security-and-hardening` e `performance-optimization`, para a análise detalhada.
 
 ## 17. Roteamento cognitivo e esforço
 
-| Sub-loop          | Papel cognitivo           | Modelo             | Esforço       |
-| :---------------- | :------------------------ | :----------------- | :------------ |
-| Alinhamento       | Raciocínio socrático      | Sonnet ou Code-Pro | Médio         |
-| Spec e restrições | Síntese de contratos      | Sonnet             | Alto          |
-| Tickets           | Planejamento de DAG       | Code-Pro           | Médio         |
-| Construção        | Engenharia TDD            | Sonnet             | Alto          |
-| Diagnóstico       | Isolamento de falhas      | Sonnet             | Alto          |
-| Performance       | Telemetria e profiling    | Code-Pro           | Médio         |
-| Review            | Auditoria adversarial     | Sonnet             | Alto          |
-| Entrega           | Governança e documentação | Code-Pro           | Baixo a médio |
+| Sub-loop           | Papel cognitivo             | Modelo              | Esforço         |
+| :----------------- | :-------------------------- | :------------------ | :-------------- |
+| Alinhamento        | Raciocínio socrático        | Sonnet ou Code-Pro  | Médio           |
+| Spec e restrições  | Síntese de contratos        | Sonnet              | Alto            |
+| Tickets            | Planejamento de DAG         | Code-Pro            | Médio           |
+| Construção         | Engenharia TDD              | Sonnet              | Alto            |
+| Diagnóstico        | Isolamento de falhas        | Sonnet              | Alto            |
+| Performance        | Telemetria e profiling      | Code-Pro            | Médio           |
+| Review             | Auditoria adversarial       | Sonnet              | Alto            |
+| Entrega            | Governança e documentação   | Code-Pro            | Baixo a médio   |
 
 ## 18. Higiene de contexto e retomada
 
@@ -327,20 +327,20 @@ Os eixos de segurança e performance remetem às habilidades especializadas, `se
 
 A skill `aidd-osmani` organiza as habilidades em doze playbooks. Em cada um, o agente para em cada gate e resume em uma linha a passagem entre fases.
 
-| Playbook | Nome           | Uso típico                                          |
-| :------- | :------------- | :-------------------------------------------------- |
-| A        | Auditar        | Varredura somente leitura por eixo, com contestação |
-| B        | Corrigir       | Bug com reprodução, Prove-It e correção mínima      |
-| C        | Construir      | Funcionalidade da entrevista à revisão              |
-| D        | Simplificar    | Menos código com comportamento idêntico             |
-| E        | Otimizar       | Medir, atacar o maior gargalo, medir de novo        |
-| F        | Proteger       | Segurança com teste negativo por correção           |
-| G        | Entregar       | Review final, observabilidade, ADR e ship           |
-| H        | Migrar         | Expandir e contrair com testes e rollback           |
-| I        | Definir        | Entrevista até spec ou decisão de não fazer         |
-| J        | Documentar     | ADRs e contratos                                    |
-| K        | Planejar       | Tickets verticais com critério binário              |
-| L        | Ciclo completo | Encadeia os demais em cinco estágios, P1 a P4       |
+| Playbook         | Nome              | Uso típico                                    |
+| :--------------- | :---------------- | :-------------------------------------------- |
+| A                | Auditar           | Varredura somente leitura por eixo, com contestação |
+| B                | Corrigir          | Bug com reprodução, Prove-It e correção mínima |
+| C                | Construir         | Funcionalidade da entrevista à revisão        |
+| D                | Simplificar       | Menos código com comportamento idêntico       |
+| E                | Otimizar          | Medir, atacar o maior gargalo, medir de novo  |
+| F                | Proteger          | Segurança com teste negativo por correção     |
+| G                | Entregar          | Review final, observabilidade, ADR e ship     |
+| H                | Migrar            | Expandir e contrair com testes e rollback     |
+| I                | Definir           | Entrevista até spec ou decisão de não fazer   |
+| J                | Documentar        | ADRs e contratos                              |
+| K                | Planejar          | Tickets verticais com critério binário        |
+| L                | Ciclo completo    | Encadeia os demais em cinco estágios, P1 a P4 |
 
 O Playbook L é comparado ao loop mestre no capítulo 6.
 
@@ -348,15 +348,15 @@ O Playbook L é comparado ao loop mestre no capítulo 6.
 
 O arquivo `loops/addy-osmani.loop.json` segue o esquema `dag.v1`, tem gatilho manual e declara sete nós em cadeia linear, todos apontando para `skills/aidd-osmani`.
 
-| Nó                                 | Artefato exigido pelo gate    | Modelo sugerido  |
-| :--------------------------------- | :---------------------------- | :--------------- |
-| `subloop-1-alinhar-contexto`       | `docs/intents/INTENT.md`      | sonnet, ou haiku |
-| `subloop-2-especificar-restricoes` | `docs/specs/SPEC.md`          | não declarado    |
-| `subloop-3-planejar-tickets`       | `docs/plans/PLAN.md`          | não declarado    |
-| `subloop-4-construir-tdd`          | `docs/reports/TDD_REPORT.md`  | sonnet, ou qwen  |
-| `subloop-5-runtime-webperf`        | `docs/reports/PERF_REPORT.md` | não declarado    |
-| `subloop-6-review-hardening`       | `docs/reports/CODE_REVIEW.md` | sonnet, ou haiku |
-| `subloop-7-observabilidade-ship`   | `docs/reports/SHIP_REPORT.md` | não declarado    |
+| Nó                                   | Artefato exigido pelo gate     | Modelo sugerido  |
+| :----------------------------------- | :----------------------------- | :--------------- |
+| `subloop-1-alinhar-contexto`           | `docs/intents/INTENT.md`         | sonnet, ou haiku |
+| `subloop-2-especificar-restricoes`     | `docs/specs/SPEC.md`             | não declarado    |
+| `subloop-3-planejar-tickets`           | `docs/plans/PLAN.md`             | não declarado    |
+| `subloop-4-construir-tdd`              | `docs/reports/TDD_REPORT.md`      | sonnet, ou qwen  |
+| `subloop-5-runtime-webperf`            | `docs/reports/PERF_REPORT.md`     | não declarado    |
+| `subloop-6-review-hardening`           | `docs/reports/CODE_REVIEW.md`     | sonnet, ou haiku |
+| `subloop-7-observabilidade-ship`       | `docs/reports/SHIP_REPORT.md`     | não declarado    |
 
 Cada gate é do tipo `file_exists(...)`: confirma que o artefato existe, não que está correto. No Studio, o template se chama "Addy Osmani Web Performance & Rigor Loop", em `internal/studio/templates.go`.
 
@@ -386,11 +386,11 @@ As receitas combinam sub-loops e playbooks para situações frequentes. Rotas, n
 5. Meça de novo depois de cada mudança.
 6. Rode `browser-testing-with-devtools` para confirmar no navegador real que nada quebrou visualmente.
 
-| Mudança (ilustrativa)                     | LCP antes | LCP depois |
-| :---------------------------------------- | :-------- | :--------- |
-| Imagem principal com `fetchpriority=high` | 4,6 s     | 3,4 s      |
-| Remoção de biblioteca de carrossel        | 3,4 s     | 2,7 s      |
-| Fonte com pré-carregamento                | 2,7 s     | 2,3 s      |
+| Mudança (ilustrativa)                          | LCP antes        | LCP depois       |
+| :--------------------------------------------- | :--------------- | :--------------- |
+| Imagem principal com `fetchpriority=high`        | 4,6 s            | 3,4 s            |
+| Remoção de biblioteca de carrossel             | 3,4 s            | 2,7 s            |
+| Fonte com pré-carregamento                     | 2,7 s            | 2,3 s            |
 
 **Erro comum.** Aplicar as três mudanças juntas e medir só no fim. O ganho total aparece, mas não se sabe qual mudança contribuiu, nem se alguma piorou o resultado.
 
@@ -438,13 +438,13 @@ Cada passo é implantável e reversível isoladamente. É isso que permite a mig
 
 ## 25. Como escolher a receita
 
-| Situação                               | Receita | Playbook da skill |
-| :------------------------------------- | :------ | :---------------- |
-| Lentidão percebida, sem número         | 21      | E, Otimizar       |
-| Bug relatado com sintoma claro         | 22      | B, Corrigir       |
-| Rota desconhecida, antes de mexer      | 23      | A, Auditar        |
-| Mudança de esquema com clientes ativos | 24      | H, Migrar         |
-| Rota inteira, da auditoria à entrega   | —       | L, Ciclo completo |
+| Situação                                     | Receita          | Playbook da skill   |
+| :------------------------------------------- | :--------------- | :------------------ |
+| Lentidão percebida, sem número               | 21               | E, Otimizar         |
+| Bug relatado com sintoma claro               | 22               | B, Corrigir         |
+| Rota desconhecida, antes de mexer            | 23               | A, Auditar          |
+| Mudança de esquema com clientes ativos       | 24               | H, Migrar           |
+| Rota inteira, da auditoria à entrega         | —                | L, Ciclo completo   |
 
 
 # PARTE VI — Apêndices
@@ -475,52 +475,52 @@ Cada passo é implantável e reversível isoladamente. É isso que permite a mig
 
 Comparação entre o manual de 02/11/2026 e o repositório em 07/11/2026.
 
-| Ponto verificado           | Manual                      | Código ou upstream               | Situação |
-| :------------------------- | :-------------------------- | :------------------------------- | :------- |
-| Número de sub-loops        | 8                           | 7 nós no JSON                    | Diverge  |
-| Nome do loop no JSON       | Não citado                  | Diz "(8 Sub-Loops)" com 7 nós    | Diverge  |
-| Nó de diagnóstico          | `osmani-debugging-recovery` | Ausente no JSON                  | Diverge  |
-| Validação do DAG           | Não citada                  | 7 nós, sem ciclos                | Conforme |
-| Nome do template no Studio | "...& Engineering Loop"     | "...& Rigor Loop"                | Diverge  |
-| Parâmetros do `run`        | `--param`, `--verbose`      | Não existem; usa-se `--var`      | Diverge  |
-| Endereço do Studio         | `localhost:3000`            | `127.0.0.1:7878`                 | Diverge  |
-| Quinto eixo de revisão     | Manutenibilidade            | Legibilidade e simplicidade      | Diverge  |
-| `metrics-guide.md`         | Citado                      | Não encontrado no upstream       | Ausente  |
-| `profiling-guide.md`       | Citado                      | Não encontrado no upstream       | Ausente  |
-| `threat-modeling.md`       | Citado                      | Seção do `security-checklist.md` | Diverge  |
-| `idea-refiner.py`          | Citado                      | Não encontrado no upstream       | Ausente  |
-| Total de habilidades       | 25                          | 25 em `upstream/skills/`         | Conforme |
+| Ponto verificado           | Manual                        | Código ou upstream             | Situação       |
+| :------------------------- | :---------------------------- | :----------------------------- | :------------- |
+| Número de sub-loops        | 8                             | 7 nós no JSON                  | Diverge        |
+| Nome do loop no JSON       | Não citado                    | Diz "(8 Sub-Loops)" com 7 nós  | Diverge        |
+| Nó de diagnóstico          | `osmani-debugging-recovery`     | Ausente no JSON                | Diverge        |
+| Validação do DAG           | Não citada                    | 7 nós, sem ciclos              | Conforme       |
+| Nome do template no Studio | "...& Engineering Loop"       | "...& Rigor Loop"              | Diverge        |
+| Parâmetros do `run`          | `--param`, `--verbose`            | Não existem; usa-se `--var`      | Diverge        |
+| Endereço do Studio         | `localhost:3000`                | `127.0.0.1:7878`                 | Diverge        |
+| Quinto eixo de revisão     | Manutenibilidade              | Legibilidade e simplicidade    | Diverge        |
+| `metrics-guide.md`           | Citado                        | Não encontrado no upstream     | Ausente        |
+| `profiling-guide.md`         | Citado                        | Não encontrado no upstream     | Ausente        |
+| `threat-modeling.md`         | Citado                        | Seção do `security-checklist.md` | Diverge        |
+| `idea-refiner.py`            | Citado                        | Não encontrado no upstream     | Ausente        |
+| Total de habilidades       | 25                            | 25 em `upstream/skills/`         | Conforme       |
 
 **Leitura do relatório.** As divergências de operação são as mais importantes para o leitor: os comandos do manual com `--param` e `--verbose` falham no CLI atual, que aceita `--var chave=valor`; o Studio sobe por padrão em `127.0.0.1:7878`. Este livro usa a forma real em todos os exemplos. O nó de diagnóstico ausente no JSON é coerente com o papel de desvio que o diagnóstico tem no loop mestre, mas o nome do pipeline ainda anuncia oito sub-loops.
 
 ## Apêndice C: Referência rápida das habilidades
 
-| Habilidade                          | Estágio | Função resumida                         |
-| :---------------------------------- | :------ | :-------------------------------------- |
-| `using-agent-skills`                | 1       | Roteia a intenção para as habilidades   |
-| `interview-me`                      | 1       | Entrevista até entender a intenção real |
-| `idea-refine`                       | 1       | Refina um conceito cru em opções        |
-| `context-engineering`               | 1       | Escopo cirúrgico e baseline             |
-| `constraint-driven-development`     | 2       | Restrições ativas em `CONSTRAINTS.md`   |
-| `spec-driven-development`           | 2       | Spec com critérios de aceite            |
-| `api-and-interface-design`          | 2       | Contratos de API e tipagem              |
-| `planning-and-task-breakdown`       | 3       | DAG de tickets verticais                |
-| `source-driven-development`         | 4       | Decisões ancoradas em docs oficiais     |
-| `test-driven-development`           | 4       | Vermelho e verde; Prove-It              |
-| `incremental-implementation`        | 4       | Fatias pequenas e testadas              |
-| `frontend-ui-engineering`           | 4       | UI acessível e responsiva               |
-| `debugging-and-error-recovery`      | 4       | Causa raiz com reprodução               |
-| `browser-testing-with-devtools`     | 5       | Inspeção no navegador real              |
-| `performance-optimization`          | 5       | Medição, profiling e otimização         |
-| `security-and-hardening`            | 6       | OWASP Top 10 e endurecimento            |
-| `doubt-driven-development`          | 6       | Contestação adversarial                 |
-| `code-simplification`               | 6       | Menos código, mesmo comportamento       |
-| `code-review-and-quality`           | 6       | Revisão em cinco eixos                  |
-| `deprecation-and-migration`         | 7       | Expandir e contrair                     |
-| `observability-and-instrumentation` | 7       | Logs, métricas e traces                 |
-| `documentation-and-adrs`            | 7       | ADRs e documentação                     |
-| `git-workflow-and-versioning`       | 7       | Commits atômicos e versionamento        |
-| `ci-cd-and-automation`              | 7       | Pipelines e gates automáticos           |
-| `shipping-and-launch`               | 7       | Checklist, rollout e rollback           |
+| Habilidade                            | Estágio        | Função resumida                         |
+| :------------------------------------ | :------------- | :-------------------------------------- |
+| `using-agent-skills`                    | 1              | Roteia a intenção para as habilidades   |
+| `interview-me`                          | 1              | Entrevista até entender a intenção real |
+| `idea-refine`                           | 1              | Refina um conceito cru em opções        |
+| `context-engineering`                   | 1              | Escopo cirúrgico e baseline             |
+| `constraint-driven-development`         | 2              | Restrições ativas em `CONSTRAINTS.md`     |
+| `spec-driven-development`               | 2              | Spec com critérios de aceite            |
+| `api-and-interface-design`              | 2              | Contratos de API e tipagem              |
+| `planning-and-task-breakdown`           | 3              | DAG de tickets verticais                |
+| `source-driven-development`             | 4              | Decisões ancoradas em docs oficiais     |
+| `test-driven-development`               | 4              | Vermelho e verde; Prove-It              |
+| `incremental-implementation`            | 4              | Fatias pequenas e testadas              |
+| `frontend-ui-engineering`               | 4              | UI acessível e responsiva               |
+| `debugging-and-error-recovery`          | 4              | Causa raiz com reprodução               |
+| `browser-testing-with-devtools`         | 5              | Inspeção no navegador real              |
+| `performance-optimization`              | 5              | Medição, profiling e otimização         |
+| `security-and-hardening`                | 6              | OWASP Top 10 e endurecimento            |
+| `doubt-driven-development`              | 6              | Contestação adversarial                 |
+| `code-simplification`                   | 6              | Menos código, mesmo comportamento       |
+| `code-review-and-quality`               | 6              | Revisão em cinco eixos                  |
+| `deprecation-and-migration`             | 7              | Expandir e contrair                     |
+| `observability-and-instrumentation`     | 7              | Logs, métricas e traces                 |
+| `documentation-and-adrs`                | 7              | ADRs e documentação                     |
+| `git-workflow-and-versioning`           | 7              | Commits atômicos e versionamento        |
+| `ci-cd-and-automation`                  | 7              | Pipelines e gates automáticos           |
+| `shipping-and-launch`                   | 7              | Checklist, rollout e rollback           |
 
 

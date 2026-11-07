@@ -41,14 +41,14 @@ O livro atende três leitores diferentes, e cada um pode começar por um ponto d
 
 ## A estrutura da obra
 
-| Parte | Nível     | Conteúdo                                                           |
-| :---- | :-------- | :----------------------------------------------------------------- |
-| I     | Macro     | O problema do visual genérico e os quatro pilares do método        |
-| II    | Meso      | Os quatro modos de superfície e o loop mestre de cinco estágios    |
-| III   | Meso      | Os seis sub-loops e cada um dos seus comandos                      |
-| IV    | Micro     | Piso de qualidade, agentes especializados e integração no LegoLoop |
-| V     | Prática   | Receitas para situações frequentes                                 |
-| VI    | Apêndices | Glossário, referência rápida e relatório de conformidade           |
+| Parte           | Nível           | Conteúdo                                         |
+| :-------------- | :-------------- | :----------------------------------------------- |
+| I               | Macro           | O problema do visual genérico e os quatro pilares do método |
+| II              | Meso            | Os quatro modos de superfície e o loop mestre de cinco estágios |
+| III             | Meso            | Os seis sub-loops e cada um dos seus comandos    |
+| IV              | Micro           | Piso de qualidade, agentes especializados e integração no LegoLoop |
+| V               | Prática         | Receitas para situações frequentes               |
+| VI              | Apêndices       | Glossário, referência rápida e relatório de conformidade |
 
 ## As convenções da obra
 
@@ -91,10 +91,10 @@ Na prática, isso significa que se o briefing pede uma estética anos 90 com bor
 
 Toda tarefa de interface começa com uma pergunta: estamos refinando ou redesenhando?
 
-| Abordagem   | O que preserva                    | O que muda                       | Quando usar                           |
-| :---------- | :-------------------------------- | :------------------------------- | :------------------------------------ |
-| Refinamento | Identidade, comportamento e texto | Alinhamento, ritmo, consistência | A tela funciona, mas está mal acabada |
-| Redesenho   | Apenas o conteúdo e a função      | Todo o mundo visual              | A tela atual é anti-referência        |
+| Abordagem       | O que preserva                    | O que muda                       | Quando usar                           |
+| :-------------- | :-------------------------------- | :------------------------------- | :------------------------------------ |
+| Refinamento     | Identidade, comportamento e texto | Alinhamento, ritmo, consistência | A tela funciona, mas está mal acabada |
+| Redesenho       | Apenas o conteúdo e a função      | Todo o mundo visual              | A tela atual é anti-referência        |
 
 No redesenho, a interface antiga vira evidência do que não fazer. O novo mundo visual precisa ser documentado, e não apenas aplicado, para que a próxima sessão o reconheça.
 
@@ -127,12 +127,12 @@ O Impeccable não é uma biblioteca de componentes nem um tema visual. É um pro
 
 Um mesmo produto tem telas com objetivos muito diferentes. A página de preços precisa convencer; o painel de configurações precisa ser rápido de usar; a documentação precisa ser lida sem cansaço. O Impeccable mede a ambição visual pelo **modo da superfície**, e não pelo produto como um todo.
 
-| Modo       | O visitante precisa     | Exemplos                    | Prioridade de design             |
-| :--------- | :---------------------- | :-------------------------- | :------------------------------- |
-| Operate    | Completar uma tarefa    | Dashboards, admin, editores | Escaneabilidade e contenção      |
-| Persuade   | Decidir e agir          | Landing pages, preços       | Hierarquia de valor e conversão  |
-| Read       | Compreender um conteúdo | Docs, manuais, changelogs   | Ritmo de leitura sem distração   |
-| Experience | Imergir na própria obra | Portfólios, galerias        | A interface recua, a obra lidera |
+| Modo           | O visitante precisa     | Exemplos                    | Prioridade de design             |
+| :------------- | :---------------------- | :-------------------------- | :------------------------------- |
+| Operate        | Completar uma tarefa    | Dashboards, admin, editores | Escaneabilidade e contenção      |
+| Persuade       | Decidir e agir          | Landing pages, preços       | Hierarquia de valor e conversão  |
+| Read           | Compreender um conteúdo | Docs, manuais, changelogs   | Ritmo de leitura sem distração   |
+| Experience     | Imergir na própria obra | Portfólios, galerias        | A interface recua, a obra lidera |
 
 ### Como o modo muda as decisões
 
@@ -202,12 +202,12 @@ O comando `document` atualiza o `DESIGN.md` a partir do código real, e não das
 
 Cada gate fica no ponto em que o próximo estágio ficaria caro se começasse com uma premissa errada.
 
-| Gate | Fica antes de     | Custo evitado                         |
-| :--- | :---------------- | :------------------------------------ |
-| P1   | Decidir a direção | Direção escolhida sem diagnóstico     |
-| P2   | Escrever código   | Reimplementar uma tela inteira        |
-| P3   | Verificar em lote | Revisão subjetiva sem comparação      |
-| P4   | Documentar        | Registrar no DESIGN.md algo reprovado |
+| Gate             | Fica antes de        | Custo evitado                               |
+| :--------------- | :------------------- | :------------------------------------------ |
+| P1               | Decidir a direção    | Direção escolhida sem diagnóstico           |
+| P2               | Escrever código      | Reimplementar uma tela inteira              |
+| P3               | Verificar em lote    | Revisão subjetiva sem comparação            |
+| P4               | Documentar           | Registrar no DESIGN.md algo reprovado       |
 
 
 # PARTE III — Meso: Os Seis Sub-Loops
@@ -216,14 +216,14 @@ Cada gate fica no ponto em que o próximo estágio ficaria caro se começasse co
 
 Os cerca de 25 comandos do Impeccable estão agrupados em seis sub-loops reutilizáveis. Cada sub-loop tem um objetivo único, o que permite chamá-lo isoladamente quando a tarefa não exige o fluxo completo.
 
-| Sub-loop | Nome                   | Objetivo em uma frase                         |
-| :------- | :--------------------- | :-------------------------------------------- |
-| 1        | Avaliar                | Radiografar o estado atual sem alterar nada   |
-| 2        | Construir e Direcionar | Fixar contratos de produto antes de codificar |
-| 3        | Melhorar               | Elevar a qualidade pelos fundamentos visuais  |
-| 4        | Refinar                | Preparar a interface para produção            |
-| 5        | Corrigir               | Resolver fricções específicas                 |
-| 6        | Iterar                 | Explorar alternativas visuais ao vivo         |
+| Sub-loop        | Nome                     | Objetivo em uma frase                    |
+| :-------------- | :----------------------- | :--------------------------------------- |
+| 1               | Avaliar                  | Radiografar o estado atual sem alterar nada |
+| 2               | Construir e Direcionar   | Fixar contratos de produto antes de codificar |
+| 3               | Melhorar                 | Elevar a qualidade pelos fundamentos visuais |
+| 4               | Refinar                  | Preparar a interface para produção       |
+| 5               | Corrigir                 | Resolver fricções específicas            |
+| 6               | Iterar                   | Explorar alternativas visuais ao vivo    |
 
 ## 8. Sub-loop 1: Avaliar
 
@@ -253,14 +253,14 @@ Este sub-loop estabelece as fundações conceituais e os contratos duráveis de 
 
 O objetivo é elevar a qualidade sensorial e tátil da interface pelos fundamentos visuais. São seis comandos, e a ordem em que aparecem é a ordem recomendada.
 
-| Comando     | Atua sobre                           | Pergunta que responde            |
-| :---------- | :----------------------------------- | :------------------------------- |
-| `layout`    | Respiros, grids, alinhamento, ritmo  | O olho encontra o caminho?       |
-| `typeset`   | Proporção, peso, escala tipográfica  | A hierarquia é óbvia sem cor?    |
-| `colorize`  | Paleta com significado semântico     | Cada cor quer dizer algo?        |
-| `animate`   | Micro-interações funcionais          | O movimento explica uma mudança? |
-| `delight`   | Detalhes memoráveis e estados táteis | Há um momento que se lembra?     |
-| `overdrive` | Expressividade estética ampliada     | Só em Persuade ou Experience     |
+| Comando        | Atua sobre                           | Pergunta que responde            |
+| :------------- | :----------------------------------- | :------------------------------- |
+| `layout`         | Respiros, grids, alinhamento, ritmo  | O olho encontra o caminho?       |
+| `typeset`        | Proporção, peso, escala tipográfica  | A hierarquia é óbvia sem cor?    |
+| `colorize`       | Paleta com significado semântico     | Cada cor quer dizer algo?        |
+| `animate`        | Micro-interações funcionais          | O movimento explica uma mudança? |
+| `delight`        | Detalhes memoráveis e estados táteis | Há um momento que se lembra?     |
+| `overdrive`      | Expressividade estética ampliada     | Só em Persuade ou Experience     |
 
 O comando `colorize` evita dois extremos que o manual nomeia: o monocromatismo insosso e o carnaval de cores. A cor só entra quando carrega significado: estado, categoria, ação primária.
 
@@ -303,14 +303,14 @@ Iterar é útil quando a direção está aprovada, mas um elemento específico a
 
 ## 14. Como escolher o sub-loop certo
 
-| Situação                      | Sub-loop  | Comando de entrada |
-| :---------------------------- | :-------- | :----------------- |
-| Não sei o que está errado     | Avaliar   | `critique`         |
-| Tela nova, sem código ainda   | Construir | `shape`            |
-| Funciona, mas parece amadora  | Melhorar  | `layout`           |
-| Vai para produção amanhã      | Refinar   | `harden`           |
-| Usuários erram um formulário  | Corrigir  | `clarify`          |
-| Duas opções e nenhuma decisão | Iterar    | `generate`         |
+| Situação                               | Sub-loop           | Comando de entrada      |
+| :------------------------------------- | :----------------- | :---------------------- |
+| Não sei o que está errado              | Avaliar            | `critique`                |
+| Tela nova, sem código ainda            | Construir          | `shape`                   |
+| Funciona, mas parece amadora           | Melhorar           | `layout`                  |
+| Vai para produção amanhã               | Refinar            | `harden`                  |
+| Usuários erram um formulário           | Corrigir           | `clarify`                 |
+| Duas opções e nenhuma decisão          | Iterar             | `generate`                |
 
 
 # PARTE IV — Micro: Piso de Qualidade, Agentes e Integração
@@ -323,18 +323,18 @@ O arquivo `craft-floor.md` fica em `upstream/reference/` dentro da skill `aidd-i
 
 Cada item é uma checagem sobre o resultado renderizado, e não uma intenção. Todos são conferidos na mesma captura.
 
-| Eixo         | Critério verificável                            |
-| :----------- | :---------------------------------------------- |
-| Contraste    | Corpo e placeholder ≥ 4,5:1; texto grande ≥ 3:1 |
-| Profundidade | Sombras com deslocamento e desfoque suave       |
-| Espaçamento  | Grupos apertados, separação generosa            |
-| Tipografia   | Corpo entre 65 e 75ch; display até 6rem         |
-| Tracking     | Piso de -0,04em; -0,02 a -0,03em lê melhor      |
-| Movimento    | Um momento autoral, ease-out exponencial        |
-| Estados      | Hover, disabled, loading, error e empty         |
-| Superfícies  | Seleção, cursor, scrollbar e foco tematizados   |
-| Texto        | Linguagem do produto; erros com saída           |
-| Cobertura    | Todo requisito do briefing achável em segundos  |
+| Eixo                    | Critério verificável                                     |
+| :---------------------- | :------------------------------------------------------- |
+| Contraste               | Corpo e placeholder ≥ 4,5:1; texto grande ≥ 3:1          |
+| Profundidade            | Sombras com deslocamento e desfoque suave                |
+| Espaçamento             | Grupos apertados, separação generosa                     |
+| Tipografia              | Corpo entre 65 e 75ch; display até 6rem                  |
+| Tracking                | Piso de -0,04em; -0,02 a -0,03em lê melhor               |
+| Movimento               | Um momento autoral, ease-out exponencial                 |
+| Estados                 | Hover, disabled, loading, error e empty                  |
+| Superfícies             | Seleção, cursor, scrollbar e foco tematizados            |
+| Texto                   | Linguagem do produto; erros com saída                    |
+| Cobertura               | Todo requisito do briefing achável em segundos           |
 
 Sobre o contraste em superfícies coloridas, o arquivo acrescenta uma regra fina: o texto secundário deve ser tingido a partir do matiz da superfície ou do primeiro plano, nunca cinza.
 
@@ -373,12 +373,12 @@ Por fim, uma regra de honestidade que vale para qualquer interface: afirmações
 
 Para evitar contaminação de contexto, o ecossistema do Impeccable delega quatro papéis a agentes autônomos. Cada um recebe apenas o que precisa para sua função.
 
-| Agente              | Papel                                      | Momento        |
-| :------------------ | :----------------------------------------- | :------------- |
-| Documenter          | Gera DESIGN.md a partir do código entregue | Estágio 5      |
-| Finish reviewer     | Julga o acabamento contra a direção        | Gate P4        |
-| Asset producer      | Produz ícones e vetores SVG inline         | Estágio 3      |
-| Manual edit applier | Aplica micro-ajustes da auditoria          | Estágios 3 e 4 |
+| Agente                 | Papel                                     | Momento          |
+| :--------------------- | :---------------------------------------- | :--------------- |
+| Documenter             | Gera DESIGN.md a partir do código entregue | Estágio 5        |
+| Finish reviewer        | Julga o acabamento contra a direção       | Gate P4          |
+| Asset producer         | Produz ícones e vetores SVG inline        | Estágio 3        |
+| Manual edit applier    | Aplica micro-ajustes da auditoria         | Estágios 3 e 4   |
 
 O manual descreve o revisor de acabamento como um diretor de arte intransigente: ele decide se o resultado alcançou o nível esperado ou precisa ser refeito. Os SVG do produtor de ativos seguem um padrão semântico, sem emoji e com `stroke="currentColor"`, para herdarem a cor do texto ao redor.
 
@@ -392,14 +392,14 @@ No LegoLoop, o pipeline existe em duas formas canônicas, ambas verificáveis no
 
 O arquivo `loops/impeccable-design.loop.json` segue o esquema `dag.v1` e se chama "Pipeline de Design Impeccable (6 Sub-Loops)", versão 1.0.0. Ele declara seis nós em cadeia linear, cada um dependente do anterior, com o artefato exigido e o modelo sugerido em `routing`:
 
-| Nó                          | Artefato que o gate exige                 | Modelo sugerido  |
-| :-------------------------- | :---------------------------------------- | :--------------- |
-| `subloop-avaliar`           | `docs/reports/AUDITORIA_DESIGN.md`        | sonnet, ou haiku |
-| `subloop-construir`         | `docs/specs/DIRECAO_VISUAL.md`            | sonnet, ou haiku |
-| `subloop-melhorar`          | `src/styles/theme.css`                    | não declarado    |
-| `subloop-refinar`           | `docs/reports/HARDENING_UI.md`            | não declarado    |
-| `subloop-corrigir`          | `docs/reports/RESPONSIVE_VERIFICATION.md` | não declarado    |
-| `subloop-iterar-documentar` | `DESIGN.md`                               | não declarado    |
+| Nó                            | Artefato que o gate exige                  | Modelo sugerido  |
+| :---------------------------- | :----------------------------------------- | :--------------- |
+| `subloop-avaliar`               | `docs/reports/AUDITORIA_DESIGN.md`            | sonnet, ou haiku |
+| `subloop-construir`             | `docs/specs/DIRECAO_VISUAL.md`                | sonnet, ou haiku |
+| `subloop-melhorar`              | `src/styles/theme.css`                       | não declarado    |
+| `subloop-refinar`               | `docs/reports/HARDENING_UI.md`                | não declarado    |
+| `subloop-corrigir`              | `docs/reports/RESPONSIVE_VERIFICATION.md`     | não declarado    |
+| `subloop-iterar-documentar`     | `DESIGN.md`                                  | não declarado    |
 
 Cada nó tem um gate mecânico do tipo `file_exists(...)`: o nó só é considerado concluído se o artefato existir no disco. É um gate de existência, não de qualidade; quem julga o conteúdo continua sendo o protocolo humano P1 a P4 conduzido pela skill.
 
@@ -452,12 +452,12 @@ As receitas a seguir combinam sub-loops para situações frequentes. São roteir
 
 **Saída esperada.** Uma lista como esta, ilustrativa:
 
-| Severidade | Achado                                     | Origem     |
-| :--------- | :----------------------------------------- | :--------- |
-| Alta       | Ação principal abaixo da dobra em 375px    | `critique` |
-| Alta       | Contraste de 3,1:1 no texto secundário     | `audit`    |
-| Média      | Quatro tamanhos de título sem escala clara | `critique` |
-| Baixa      | Scrollbar com o estilo padrão do navegador | `audit`    |
+| Severidade        | Achado                                        | Origem            |
+| :---------------- | :-------------------------------------------- | :---------------- |
+| Alta              | Ação principal abaixo da dobra em 375px       | `critique`          |
+| Alta              | Contraste de 3,1:1 no texto secundário        | `audit`             |
+| Média             | Quatro tamanhos de título sem escala clara    | `critique`          |
+| Baixa             | Scrollbar com o estilo padrão do navegador    | `audit`             |
 
 **Erro comum.** Corrigir o contraste enquanto ainda está avaliando. A correção isolada parece produtiva, mas impede de ver que o problema de hierarquia talvez peça uma reorganização maior.
 
@@ -510,12 +510,12 @@ As receitas a seguir combinam sub-loops para situações frequentes. São roteir
 
 O critério do `clarify` vem do piso de qualidade: cada erro precisa nomear o problema e a forma de recuperação. A tabela abaixo mostra o tipo de troca esperada; as mensagens são ilustrativas.
 
-| Antes             | Depois                                              |
-| :---------------- | :-------------------------------------------------- |
-| Erro inválido     | O CPF precisa ter 11 números. Confira os dígitos.   |
-| Campo obrigatório | Informe um e-mail para receber a confirmação.       |
-| Senha fraca       | Use 8 caracteres ou mais, com pelo menos um número. |
-| Enviar            | Criar conta                                         |
+| Antes                    | Depois                                                  |
+| :----------------------- | :------------------------------------------------------ |
+| Erro inválido            | O CPF precisa ter 11 números. Confira os dígitos.       |
+| Campo obrigatório        | Informe um e-mail para receber a confirmação.           |
+| Senha fraca              | Use 8 caracteres ou mais, com pelo menos um número.     |
+| Enviar                   | Criar conta                                             |
 
 ## 23. Receita: tornar uma tela mais calma
 
@@ -561,45 +561,45 @@ O passo 4 existe porque reduzir estímulo visual costuma significar clarear core
 
 Este apêndice compara o manual de 01/11/2026 com o estado do repositório em 07/11/2026. O objetivo é que o leitor saiba exatamente onde o texto do manual e o código coincidem.
 
-| Ponto verificado       | Manual                        | Código                       | Situação        |
-| :--------------------- | :---------------------------- | :--------------------------- | :-------------- |
-| Arquivo do loop        | `impeccable-design.loop.json` | Existe em `loops/`           | Conforme        |
-| Número de nós          | 6 sub-loops                   | 6 nós lineares               | Conforme        |
-| Sexto nó               | Iterar                        | `subloop-iterar-documentar`  | Diverge no nome |
-| Peça executora         | Não especificada              | `skills/impeccable` em todos | Informativo     |
-| Template do Studio     | Ícone `palette`               | Ícone `palette`              | Conforme        |
-| Nome do template       | Não especificado              | "...(6 Sub-Loops)"           | Informativo     |
-| Estágios e gates P1-P4 | 5 estágios, 4 gates           | Gates `file_exists` por nó   | Diverge         |
-| Nome do revisor        | `impeccabe-finish-reviewer`   | `impeccable-finish-reviewer` | Erro de grafia  |
+| Ponto verificado       | Manual                          | Código                         | Situação        |
+| :--------------------- | :------------------------------ | :----------------------------- | :-------------- |
+| Arquivo do loop        | `impeccable-design.loop.json`     | Existe em `loops/`               | Conforme        |
+| Número de nós          | 6 sub-loops                     | 6 nós lineares                 | Conforme        |
+| Sexto nó               | Iterar                          | `subloop-iterar-documentar`      | Diverge no nome |
+| Peça executora         | Não especificada                | `skills/impeccable` em todos     | Informativo     |
+| Template do Studio     | Ícone `palette`                   | Ícone `palette`                  | Conforme        |
+| Nome do template       | Não especificado                | "...(6 Sub-Loops)"             | Informativo     |
+| Estágios e gates P1-P4 | 5 estágios, 4 gates             | Gates `file_exists` por nó        | Diverge         |
+| Nome do revisor        | `impeccabe-finish-reviewer`       | `impeccable-finish-reviewer`     | Erro de grafia  |
 
 **Leitura do relatório.** O DAG declara apenas gates de existência de arquivo por nó; os gates de julgamento P1 a P4 são protocolo da skill, conduzido no chat. No sexto nó, o código agrupa iteração e documentação, enquanto o manual trata `document` como comando do sub-loop Construir. Para o revisor, o livro usa a grafia do agente instalado.
 
 ## Apêndice C: Referência rápida de comandos
 
-| Comando     | Sub-loop  | Função resumida                          |
-| :---------- | :-------- | :--------------------------------------- |
-| `critique`  | Avaliar   | Revisão heurística de UX                 |
-| `audit`     | Avaliar   | Acessibilidade, performance, viewports   |
-| `init`      | Construir | Cria PRODUCT.md                          |
-| `shape`     | Construir | Planeja fluxos sem código                |
-| `document`  | Construir | Gera DESIGN.md do código                 |
-| `extract`   | Construir | Isola tokens e componentes               |
-| `layout`    | Melhorar  | Espaçamento, grid, ritmo                 |
-| `typeset`   | Melhorar  | Escala e pesos tipográficos              |
-| `colorize`  | Melhorar  | Paleta com significado                   |
-| `animate`   | Melhorar  | Micro-interações funcionais              |
-| `delight`   | Melhorar  | Detalhes memoráveis                      |
-| `overdrive` | Melhorar  | Expressividade; só Persuade e Experience |
-| `polish`    | Refinar   | Micropolimento final                     |
-| `harden`    | Refinar   | Erros, loading, i18n, limites            |
-| `onboard`   | Refinar   | Primeira execução e estados vazios       |
-| `distill`   | Refinar   | Remove ruído visual                      |
-| `bolder`    | Refinar   | Aumenta contraste e presença             |
-| `quieter`   | Refinar   | Reduz estimulação                        |
-| `clarify`   | Corrigir  | UX copy e mensagens                      |
-| `adapt`     | Corrigir  | Telas extremas                           |
-| `optimize`  | Corrigir  | Gargalos de renderização                 |
-| `live`      | Iterar    | Variantes ao vivo no navegador           |
-| `generate`  | Iterar    | Variações simultâneas                    |
+| Comando          | Sub-loop         | Função resumida                                 |
+| :--------------- | :--------------- | :---------------------------------------------- |
+| `critique`         | Avaliar          | Revisão heurística de UX                        |
+| `audit`            | Avaliar          | Acessibilidade, performance, viewports          |
+| `init`             | Construir        | Cria PRODUCT.md                                 |
+| `shape`            | Construir        | Planeja fluxos sem código                       |
+| `document`         | Construir        | Gera DESIGN.md do código                        |
+| `extract`          | Construir        | Isola tokens e componentes                      |
+| `layout`           | Melhorar         | Espaçamento, grid, ritmo                        |
+| `typeset`          | Melhorar         | Escala e pesos tipográficos                     |
+| `colorize`         | Melhorar         | Paleta com significado                          |
+| `animate`          | Melhorar         | Micro-interações funcionais                     |
+| `delight`          | Melhorar         | Detalhes memoráveis                             |
+| `overdrive`        | Melhorar         | Expressividade; só Persuade e Experience        |
+| `polish`           | Refinar          | Micropolimento final                            |
+| `harden`           | Refinar          | Erros, loading, i18n, limites                   |
+| `onboard`          | Refinar          | Primeira execução e estados vazios              |
+| `distill`          | Refinar          | Remove ruído visual                             |
+| `bolder`           | Refinar          | Aumenta contraste e presença                    |
+| `quieter`          | Refinar          | Reduz estimulação                               |
+| `clarify`          | Corrigir         | UX copy e mensagens                             |
+| `adapt`            | Corrigir         | Telas extremas                                  |
+| `optimize`         | Corrigir         | Gargalos de renderização                        |
+| `live`             | Iterar           | Variantes ao vivo no navegador                  |
+| `generate`         | Iterar           | Variações simultâneas                           |
 
 

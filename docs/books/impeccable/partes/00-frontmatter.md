@@ -41,14 +41,14 @@ O livro atende três leitores diferentes, e cada um pode começar por um ponto d
 
 ## A estrutura da obra
 
-| Parte | Nível     | Conteúdo                                                           |
-| :---- | :-------- | :----------------------------------------------------------------- |
-| I     | Macro     | O problema do visual genérico e os quatro pilares do método        |
-| II    | Meso      | Os quatro modos de superfície e o loop mestre de cinco estágios    |
-| III   | Meso      | Os seis sub-loops e cada um dos seus comandos                      |
-| IV    | Micro     | Piso de qualidade, agentes especializados e integração no LegoLoop |
-| V     | Prática   | Receitas para situações frequentes                                 |
-| VI    | Apêndices | Glossário, referência rápida e relatório de conformidade           |
+| Parte           | Nível           | Conteúdo                                         |
+| :-------------- | :-------------- | :----------------------------------------------- |
+| I               | Macro           | O problema do visual genérico e os quatro pilares do método |
+| II              | Meso            | Os quatro modos de superfície e o loop mestre de cinco estágios |
+| III             | Meso            | Os seis sub-loops e cada um dos seus comandos    |
+| IV              | Micro           | Piso de qualidade, agentes especializados e integração no LegoLoop |
+| V               | Prática         | Receitas para situações frequentes               |
+| VI              | Apêndices       | Glossário, referência rápida e relatório de conformidade |
 
 ## As convenções da obra
 

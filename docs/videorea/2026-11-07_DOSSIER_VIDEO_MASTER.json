@@ -1,0 +1,94 @@
+{
+  "versao": "1.1.0",
+  "data": "2026-11-07",
+  "pipeline_alvo": "legoloop-video-master",
+  "total_videos_analisados": 43,
+  "pilares": {
+    "PILAR_1_MOTION_3D": {
+      "nome": "Motion Graphics 3D & Efeitos Procedurais com Código",
+      "videos": [
+        {"id": "6Tth927NQWc", "titulo": "How to Recreate a VIRAL 3D Motion Graphics With AI (Omni 1.1 Flash)", "autor": "Case Studio"},
+        {"id": "-Lt3-rAJ2Cw", "titulo": "Opus 5.5 Is a Pro Designer With This MCP", "autor": "Griffin Wooldridge"},
+        {"id": "ia8xgSqqQ_0", "titulo": "Claude Skills for Designers (Ban AI Slop Forever)", "autor": "Griffin Wooldridge"},
+        {"id": "mTkW6RO8moM", "titulo": "Claude Skills for Brand Design", "autor": "Griffin Wooldridge"},
+        {"id": "Ysr7oNDajJI", "titulo": "Insane Claude Design Skills You Need To Actually Build Beautiful Sites", "autor": "AI LABS"},
+        {"id": "6_MrVEXM06E", "titulo": "Claude Transformou Animações por Código com Modelos de Vídeo", "autor": "ViktorKav"},
+        {"id": "PK0DZOKxK30", "titulo": "Claude Replaced Higgsfield with This FREE MCP", "autor": "Calvin Hia"},
+        {"id": "T4auMaDQ5Ps", "titulo": "Claude Design FINALLY Solved Motion Graphics", "autor": "Jack Roberts"},
+        {"id": "J20jBptm1Vo", "titulo": "Claude Code + Remotion Edited this Entire Video", "autor": "Guney Topcu | AI Made Easy"},
+        {"id": "IUV8QzwIb6g", "titulo": "I Quit Remotion After Claude Made These Motion Graphics", "autor": "Guney Topcu | AI Made Easy"},
+        {"id": "qCPlEOY2zgI", "titulo": "Claude + Three.js = Premium 3D Motion Graphics", "autor": "Matt Penny | Applied AI"},
+        {"id": "CCUSpJkAfgU", "titulo": "How I Make $880/Day with AI Motion Design (Claude Motion)", "autor": "Sanji Nai-Chien"},
+        {"id": "W_jYe1xNdSs", "titulo": "How I Make 30s AI Motion Graphics for FREE Every Day", "autor": "Guney Topcu | AI Made Easy"},
+        {"id": "AsvN_feasyY", "titulo": "How To Make Insane Motion Graphics With Opus 5.5 (Claude Motion)", "autor": "kaye.creatives"},
+        {"id": "3AIZ4FT61aw", "titulo": "How I Make Motion Graphics with Claude + After Effects (Full Setup)", "autor": "Artlist"},
+        {"id": "J4oygRI6mN0", "titulo": "How I Make Insane Motion Graphics with Opus 5.5 (Better than Fable or Astra)", "autor": "Jason Lee"},
+        {"id": "cDb-wPq0Iyk", "titulo": "Claude Opus 5.5: How To Make Motion Graphics", "autor": "Rourke"}
+      ],
+      "ferramentas_comerciais": ["Higgsfield", "Pika", "After Effects", "Cinema 4D", "Fable", "Astra"],
+      "substitutos_soberanos": ["Remotion React Canvas", "Three.js nativo", "Shaders GLSL procedurais", "CSS3 3D Matrix", "Opus 5.5 Scripting"]
+    },
+    "PILAR_2_WHITEBOARD_AUTOPILOT": {
+      "nome": "Whiteboard & Stickman Explainer no Piloto Automático",
+      "videos": [
+        {"id": "mV74tDW0mc0", "titulo": "How to Make YouTube Explainer Videos With Claude (Not Higgsfield)", "autor": "Sirio"},
+        {"id": "UvHbWfvJMEc", "titulo": "Claude Code Made This Entire Whiteboard Animation (No Editing)", "autor": "Guney Topcu | AI Made Easy"},
+        {"id": "EJV0MLPrv-o", "titulo": "Claude + Google Flow = Full Stickman Animations on Autopilot 2.0", "autor": "The AI Blueprint"},
+        {"id": "OnfE9NhYcSI", "titulo": "How I Create INSANE Explainer Videos With Claude For $0", "autor": "Michael Szach"},
+        {"id": "7Z8BTSx8TNs", "titulo": "How I Make Viral Explainer Stickman Videos for FREE (FULL TUTORIAL)", "autor": "Guney Topcu | AI Made Easy"},
+        {"id": "M6n74ShLW80", "titulo": "Como Criar um Avatar com IA que Faz Vídeos Automáticos com o Google Vids", "autor": "Dica Top Demais"},
+        {"id": "up9EjN2rbBs", "titulo": "How to Make Complete Youtube Videos From One Idea (Free) using Claude Code and Google Flow", "autor": "Guney Topcu | AI Made Easy"},
+        {"id": "JEla_mdlfxs", "titulo": "I Fully Automated Google Flow Using Claude Code (Full Walkthrough)", "autor": "Guney Topcu | AI Made Easy"},
+        {"id": "Oh8Hy1S9RbY", "titulo": "How Google Flow Agent Turned One Storyboard into an AI Commercial", "autor": "GenAI with Keera"},
+        {"id": "Uwpc-z1KppU", "titulo": "Como eu faço uma explicação virar animação com IA", "autor": "ViktorKav"},
+        {"id": "IFstAP91GtY", "titulo": "This Claude Plugin Automates Full 2D Videos in Minutes (Full Guide)", "autor": "aiTrends"}
+      ],
+      "ferramentas_comerciais": ["VideoScribe", "Doodly", "Vyond", "Synthesia"],
+      "substitutos_soberanos": ["Renderizador SVG Stroke-Dasharray procedural", "Google Flow Canvas", "Whisper TTS local"]
+    },
+    "PILAR_3_AUTO_EDITOR_REELS": {
+      "nome": "Edição e Montagem Autônoma de Cortes, Reels e YouTube",
+      "videos": [
+        {"id": "W7E7Ln0z6aY", "titulo": "Como eu edito meus vídeos com Claude Code (fluxo completo)", "autor": "Lucas Leite"},
+        {"id": "mNsR_KfjZpY", "titulo": "3 AI Video Generators for FREE & UNLIMITED Videos", "autor": "Malva AI"},
+        {"id": "M59zhPRXg1I", "titulo": "How to Edit Instagram Videos With AI (Claude Code)", "autor": "Rourke"},
+        {"id": "tAmLCI6PYm4", "titulo": "The World's SHORTEST AI Video Editing Course (5 mins)", "autor": "Matt Penny | Applied AI"},
+        {"id": "_VJu1kID8Hc", "titulo": "Claude Agora Cria 60 Vídeos em 30 Minutos! (100% DE GRAÇA e Sem Editor)", "autor": "Manoel Thiago"},
+        {"id": "RDytbVDzMF4", "titulo": "Vídeo Viral em 7 Etapas de Gatilho: a IA Faz Tudo com 1 Comando", "autor": "INEMA TDS"},
+        {"id": "cGc0DTy4-JA", "titulo": "This Claude Skill Finally Solves Video Editing (Full Breakdown)", "autor": "Matt Penny | Applied AI"},
+        {"id": "51VvpgOLmgk", "titulo": "Google Flow: Now you can add captions to AI videos for free", "autor": "Guney Topcu | AI Made Easy"}
+      ],
+      "ferramentas_comerciais": ["Premiere Pro", "CapCut Pro", "Descript", "Submagic"],
+      "substitutos_soberanos": ["FFmpeg silenceremove (+40ms padding)", "video-motion punch RMS", "Tipografia Anton cinética ASS/SRT"]
+    },
+    "PILAR_4_CANAL_CLONE_REA": {
+      "nome": "Engenharia Reversa de Canais, Storyboards e Síntese de Skills",
+      "videos": [
+        {"id": "sOtJVSt-BwM", "titulo": "How to Clone ANY YouTube Channel & Make 100s of Videos for FREE", "autor": "Nuli Studio"},
+        {"id": "pK0DZOKxK30_alt", "titulo": "Convierte cualquier libro en una Skill IA que usarás", "autor": "Lorena Bordonaba - Inteligencia Artificial"},
+        {"id": "pK0DZOKxK30_alt2", "titulo": "Ingeniería inversa para editar vídeos con Claude", "autor": "Lorena Bordonaba - Inteligencia Artificial"},
+        {"id": "k-FNGqaindk", "titulo": "1M Followers in 6 Months: 3 Steps to Grow on Instagram in 2026", "autor": "kaye.creatives"},
+        {"id": "d-TCtUhaLiU", "titulo": "The Secret to Professional AI Filmmaking (Oakley x Meta Ad Breakdown)", "autor": "kaye.creatives"},
+        {"id": "D5qpBbEWTxo", "titulo": "How to Use Storyboard Studio in Google Flow (Step-by-Step)", "autor": "GenAI with Keera"},
+        {"id": "AO3bgthoqQU", "titulo": "OpenArt + Claude Code = Anúncios Virais Que Vendem Sozinhos", "autor": "Maestros da IA"}
+      ],
+      "ferramentas_comerciais": ["Midjourney", "Kling AI", "Runway Gen-3", "Pencil/Figma Pro"],
+      "substitutos_soberanos": ["LegoLoop REA Crawler", "OCR Tesseract/FFmpeg", "Geração de Prompts Sintéticos Locais", "LegoPress Book Engine"]
+    }
+  },
+  "prompts_explicitos_coletados": [
+    "Cinematic 3D translucent glass panel, depth blur 16px, specular reflection, 4k broadcast clean background",
+    "Bold kinetic typography, Anton font, high contrast color pop on keyframes, perspective grid",
+    "Minimalist whiteboard stickman drawing with continuous single-line path, hand-drawn sketch style, black ink on white background",
+    "Dynamic split-screen B-roll, fast-paced cut on audio transient peak, dynamic zoom 1.05x on emphatic words",
+    "Procedural abstract grid plane receding into horizon, glowing cyan wireframe with particle dust",
+    "Opus 5.5 motion graphics script, programmatic easing cubic-bezier(0.16, 1, 0.3, 1), 60fps canvas render"
+  ],
+  "regras_de_ouro_extraidas": [
+    "Regra #1 (Corte): Nunca cortar silêncio a seco; adicionar 40ms de margem antes e depois para evitar deglutição de fonemas.",
+    "Regra #2 (Legendas): No máximo 3 palavras por cartão de legenda com destaque na palavra tônica (Punch RMS > -14dB).",
+    "Regra #3 (Animação): Movimento contínuo a 60fps usando curvas cúbicas suaves (ease-in-out quint) em vez de interpolações lineares.",
+    "Regra #4 (Soberania): Todo código deve ser executável localmente sem depender de créditos SaaS em nuvem.",
+    "Regra #5 (Substituição Fable/Astra): O Opus 5.5 em conjunto com Remotion React substitui integralmente suítes proprietárias de animação vetorial com controle imperativo via script."
+  ]
+}

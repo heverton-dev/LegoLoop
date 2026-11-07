@@ -13,12 +13,12 @@ As receitas a seguir combinam sub-loops para situações frequentes. São roteir
 
 **Saída esperada.** Uma lista como esta, ilustrativa:
 
-| Severidade | Achado                                     | Origem     |
-| :--------- | :----------------------------------------- | :--------- |
-| Alta       | Ação principal abaixo da dobra em 375px    | `critique` |
-| Alta       | Contraste de 3,1:1 no texto secundário     | `audit`    |
-| Média      | Quatro tamanhos de título sem escala clara | `critique` |
-| Baixa      | Scrollbar com o estilo padrão do navegador | `audit`    |
+| Severidade        | Achado                                        | Origem            |
+| :---------------- | :-------------------------------------------- | :---------------- |
+| Alta              | Ação principal abaixo da dobra em 375px       | `critique`          |
+| Alta              | Contraste de 3,1:1 no texto secundário        | `audit`             |
+| Média             | Quatro tamanhos de título sem escala clara    | `critique`          |
+| Baixa             | Scrollbar com o estilo padrão do navegador    | `audit`             |
 
 **Erro comum.** Corrigir o contraste enquanto ainda está avaliando. A correção isolada parece produtiva, mas impede de ver que o problema de hierarquia talvez peça uma reorganização maior.
 
@@ -71,12 +71,12 @@ As receitas a seguir combinam sub-loops para situações frequentes. São roteir
 
 O critério do `clarify` vem do piso de qualidade: cada erro precisa nomear o problema e a forma de recuperação. A tabela abaixo mostra o tipo de troca esperada; as mensagens são ilustrativas.
 
-| Antes             | Depois                                              |
-| :---------------- | :-------------------------------------------------- |
-| Erro inválido     | O CPF precisa ter 11 números. Confira os dígitos.   |
-| Campo obrigatório | Informe um e-mail para receber a confirmação.       |
-| Senha fraca       | Use 8 caracteres ou mais, com pelo menos um número. |
-| Enviar            | Criar conta                                         |
+| Antes                    | Depois                                                  |
+| :----------------------- | :------------------------------------------------------ |
+| Erro inválido            | O CPF precisa ter 11 números. Confira os dígitos.       |
+| Campo obrigatório        | Informe um e-mail para receber a confirmação.           |
+| Senha fraca              | Use 8 caracteres ou mais, com pelo menos um número.     |
+| Enviar                   | Criar conta                                             |
 
 ## 23. Receita: tornar uma tela mais calma
 

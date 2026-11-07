@@ -35,13 +35,13 @@ Esta obra destina-se a engenheiros de IA, desenvolvedores de software e operador
 
 ## Estrutura da obra
 
-| Parte   | Nível      | Conteúdo                                                     |
-| :------ | :--------- | :----------------------------------------------------------- |
-| **I**   | Macro      | Visão geral da engenharia reversa e soberania técnica        |
-| **II**  | Meso       | Dissecação forense de prompts ocultos e OCR de código        |
-| **III** | Micro      | Curadoria contra a matriz do cofre e Stop-Gate humano        |
-| **IV**  | Prática    | Fábrica da Tríade ISO (INTENT, SPEC, PLAN, ROUTE) e Fixtures |
-| **V**   | Governança | Nomenclatura legoloop-*, publicação LegoPress e Skills       |
+| Parte            | Nível            | Conteúdo                                         |
+| :--------------- | :--------------- | :----------------------------------------------- |
+| **I**                | Macro            | Visão geral da engenharia reversa e soberania técnica |
+| **II**               | Meso             | Dissecação forense de prompts ocultos e OCR de código |
+| **III**              | Micro            | Curadoria contra a matriz do cofre e Stop-Gate humano |
+| **IV**               | Prática          | Fábrica da Tríade ISO (INTENT, SPEC, PLAN, ROUTE) e Fixtures |
+| **V**                | Governança       | Nomenclatura legoloop-*, publicação LegoPress e Skills |
 
 
 # Parte I — Visão Geral e Soberania Técnica
@@ -59,8 +59,8 @@ Esses conteúdos, contudo, apresentam três barreiras críticas para a engenhari
 
 O pipeline `legoloop-video-rea` foi concebido para fechar essa lacuna. Ele opera como um perito forense automatizado: ingere qualquer vídeo a partir de uma simples URL, quebra as barreiras de login de forma furtiva, lê as entrelinhas e as telas de código congeladas, cruza as necessidades contra o acervo local de código aberto e projeta um novo pipeline canônico pronto para ser fabricado.
 
-| Dimensão               | Análise Manual Convencional          | Esteira Automatizada `video-rea`      |
-| :--------------------- | :----------------------------------- | :------------------------------------ |
+| Dimensão           | Análise Manual Convencional          | Esteira Automatizada `video-rea`        |
+| :----------------- | :----------------------------------- | :------------------------------------ |
 | **Tempo de Análise**   | 2 a 4 horas por vídeo longo          | Menos de 30 segundos por alvo         |
 | **Captura de Prompts** | Apenas o que for digitado na tela    | Reconstrução de prompts implícitos    |
 | **Leitura de Código**  | Digitação manual com erros           | OCR local frame a frame em 4K         |
@@ -100,8 +100,8 @@ Muitos criadores exibem seu terminal ou editor de código por frações de segun
 
 Identificar ferramentas comerciais não basta: a engenharia reversa no LegoLoop visa à independência tecnológica. O módulo curador cruza cada dependência mapeada contra o catálogo de peças do ecossistema (`internal/matriz`):
 
-| Ferramenta do Vídeo          | Peça Local do Cofre                     | Ganho de Soberania                     |
-| :--------------------------- | :-------------------------------------- | :------------------------------------- |
+| Ferramenta do Vídeo      | Peça Local do Cofre                     | Ganho de Soberania                     |
+| :----------------------- | :-------------------------------------- | :------------------------------------- |
 | **Higgsfield AI**            | Google AI Studio + Texturas Procedurais | Custo zero, sem filas e determinístico |
 | **After Effects / Premiere** | Remotion + CSS3 3D Shaders              | Versionamento Git e render em pipeline |
 | **Whisper API Paga**         | Whisper Local / FFmpeg SilenceRemove    | Processamento offline a 48kHz          |
@@ -128,7 +128,7 @@ O operador tem três opções diretas:
 Assim que o operador aprova a curadoria no Stop-Gate, o pipeline convoca a esteira de fabricação do LegoLoop:
 
 
-![Diagrama de Arquitetura](/img/diagrama_373f383a.svg){width=95%}
+![Diagrama de Arquitetura](/img/diagrama_373f383a.png){width=85%}
 
 
 ### 1. Emissão da Tríade ISO de Governança

@@ -13,11 +13,11 @@ As receitas combinam sub-loops e playbooks para situações frequentes. Rotas, n
 5. Meça de novo depois de cada mudança.
 6. Rode `browser-testing-with-devtools` para confirmar no navegador real que nada quebrou visualmente.
 
-| Mudança (ilustrativa)                     | LCP antes | LCP depois |
-| :---------------------------------------- | :-------- | :--------- |
-| Imagem principal com `fetchpriority=high` | 4,6 s     | 3,4 s      |
-| Remoção de biblioteca de carrossel        | 3,4 s     | 2,7 s      |
-| Fonte com pré-carregamento                | 2,7 s     | 2,3 s      |
+| Mudança (ilustrativa)                          | LCP antes        | LCP depois       |
+| :--------------------------------------------- | :--------------- | :--------------- |
+| Imagem principal com `fetchpriority=high`        | 4,6 s            | 3,4 s            |
+| Remoção de biblioteca de carrossel             | 3,4 s            | 2,7 s            |
+| Fonte com pré-carregamento                     | 2,7 s            | 2,3 s            |
 
 **Erro comum.** Aplicar as três mudanças juntas e medir só no fim. O ganho total aparece, mas não se sabe qual mudança contribuiu, nem se alguma piorou o resultado.
 
@@ -65,10 +65,10 @@ Cada passo é implantável e reversível isoladamente. É isso que permite a mig
 
 ## 25. Como escolher a receita
 
-| Situação                               | Receita | Playbook da skill |
-| :------------------------------------- | :------ | :---------------- |
-| Lentidão percebida, sem número         | 21      | E, Otimizar       |
-| Bug relatado com sintoma claro         | 22      | B, Corrigir       |
-| Rota desconhecida, antes de mexer      | 23      | A, Auditar        |
-| Mudança de esquema com clientes ativos | 24      | H, Migrar         |
-| Rota inteira, da auditoria à entrega   | —       | L, Ciclo completo |
+| Situação                                     | Receita          | Playbook da skill   |
+| :------------------------------------------- | :--------------- | :------------------ |
+| Lentidão percebida, sem número               | 21               | E, Otimizar         |
+| Bug relatado com sintoma claro               | 22               | B, Corrigir         |
+| Rota desconhecida, antes de mexer            | 23               | A, Auditar          |
+| Mudança de esquema com clientes ativos       | 24               | H, Migrar           |
+| Rota inteira, da auditoria à entrega         | —                | L, Ciclo completo   |

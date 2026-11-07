@@ -4,14 +4,14 @@
 
 Os cerca de 25 comandos do Impeccable estão agrupados em seis sub-loops reutilizáveis. Cada sub-loop tem um objetivo único, o que permite chamá-lo isoladamente quando a tarefa não exige o fluxo completo.
 
-| Sub-loop | Nome                   | Objetivo em uma frase                         |
-| :------- | :--------------------- | :-------------------------------------------- |
-| 1        | Avaliar                | Radiografar o estado atual sem alterar nada   |
-| 2        | Construir e Direcionar | Fixar contratos de produto antes de codificar |
-| 3        | Melhorar               | Elevar a qualidade pelos fundamentos visuais  |
-| 4        | Refinar                | Preparar a interface para produção            |
-| 5        | Corrigir               | Resolver fricções específicas                 |
-| 6        | Iterar                 | Explorar alternativas visuais ao vivo         |
+| Sub-loop        | Nome                     | Objetivo em uma frase                    |
+| :-------------- | :----------------------- | :--------------------------------------- |
+| 1               | Avaliar                  | Radiografar o estado atual sem alterar nada |
+| 2               | Construir e Direcionar   | Fixar contratos de produto antes de codificar |
+| 3               | Melhorar                 | Elevar a qualidade pelos fundamentos visuais |
+| 4               | Refinar                  | Preparar a interface para produção       |
+| 5               | Corrigir                 | Resolver fricções específicas            |
+| 6               | Iterar                   | Explorar alternativas visuais ao vivo    |
 
 ## 8. Sub-loop 1: Avaliar
 
@@ -41,14 +41,14 @@ Este sub-loop estabelece as fundações conceituais e os contratos duráveis de 
 
 O objetivo é elevar a qualidade sensorial e tátil da interface pelos fundamentos visuais. São seis comandos, e a ordem em que aparecem é a ordem recomendada.
 
-| Comando     | Atua sobre                           | Pergunta que responde            |
-| :---------- | :----------------------------------- | :------------------------------- |
-| `layout`    | Respiros, grids, alinhamento, ritmo  | O olho encontra o caminho?       |
-| `typeset`   | Proporção, peso, escala tipográfica  | A hierarquia é óbvia sem cor?    |
-| `colorize`  | Paleta com significado semântico     | Cada cor quer dizer algo?        |
-| `animate`   | Micro-interações funcionais          | O movimento explica uma mudança? |
-| `delight`   | Detalhes memoráveis e estados táteis | Há um momento que se lembra?     |
-| `overdrive` | Expressividade estética ampliada     | Só em Persuade ou Experience     |
+| Comando        | Atua sobre                           | Pergunta que responde            |
+| :------------- | :----------------------------------- | :------------------------------- |
+| `layout`         | Respiros, grids, alinhamento, ritmo  | O olho encontra o caminho?       |
+| `typeset`        | Proporção, peso, escala tipográfica  | A hierarquia é óbvia sem cor?    |
+| `colorize`       | Paleta com significado semântico     | Cada cor quer dizer algo?        |
+| `animate`        | Micro-interações funcionais          | O movimento explica uma mudança? |
+| `delight`        | Detalhes memoráveis e estados táteis | Há um momento que se lembra?     |
+| `overdrive`      | Expressividade estética ampliada     | Só em Persuade ou Experience     |
 
 O comando `colorize` evita dois extremos que o manual nomeia: o monocromatismo insosso e o carnaval de cores. A cor só entra quando carrega significado: estado, categoria, ação primária.
 
@@ -91,11 +91,11 @@ Iterar é útil quando a direção está aprovada, mas um elemento específico a
 
 ## 14. Como escolher o sub-loop certo
 
-| Situação                      | Sub-loop  | Comando de entrada |
-| :---------------------------- | :-------- | :----------------- |
-| Não sei o que está errado     | Avaliar   | `critique`         |
-| Tela nova, sem código ainda   | Construir | `shape`            |
-| Funciona, mas parece amadora  | Melhorar  | `layout`           |
-| Vai para produção amanhã      | Refinar   | `harden`           |
-| Usuários erram um formulário  | Corrigir  | `clarify`          |
-| Duas opções e nenhuma decisão | Iterar    | `generate`         |
+| Situação                               | Sub-loop           | Comando de entrada      |
+| :------------------------------------- | :----------------- | :---------------------- |
+| Não sei o que está errado              | Avaliar            | `critique`                |
+| Tela nova, sem código ainda            | Construir          | `shape`                   |
+| Funciona, mas parece amadora           | Melhorar           | `layout`                  |
+| Vai para produção amanhã               | Refinar            | `harden`                  |
+| Usuários erram um formulário           | Corrigir           | `clarify`                 |
+| Duas opções e nenhuma decisão          | Iterar             | `generate`                |

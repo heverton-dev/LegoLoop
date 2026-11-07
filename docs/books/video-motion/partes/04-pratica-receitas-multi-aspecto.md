@@ -4,11 +4,11 @@
 
 Cada rede social possui restrições visuais específicas (sobreposição de botões de like, comentários e legenda de rodapé). O motor ajusta o layout com base na matriz abaixo:
 
-| Formato  | Resolução | Destino Principal        | Margem de Segurança    |
-| :------- | :-------- | :----------------------- | :--------------------- |
-| **9:16** | 1080x1920 | TikTok, Reels, Shorts    | 120px topo, 280px base |
-| **16:9** | 1920x1080 | YouTube Desktop, Cursos  | 60px uniforme          |
-| **1:1**  | 1080x1080 | Instagram Feed, LinkedIn | 80px topo e base       |
+| Formato         | Resolução       | Destino Principal         | Margem de Segurança     |
+| :-------------- | :-------------- | :------------------------ | :---------------------- |
+| **9:16**            | 1080x1920       | TikTok, Reels, Shorts     | 120px topo, 280px base  |
+| **16:9**            | 1920x1080       | YouTube Desktop, Cursos   | 60px uniforme           |
+| **1:1**             | 1080x1080       | Instagram Feed, LinkedIn  | 80px topo e base        |
 
 ## Anatomia do Pacote de Entrega (`dist/<job_id>/`)
 

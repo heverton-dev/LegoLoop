@@ -140,14 +140,14 @@ Uma das propriedades mais poderosas da engenharia do LegoLoop é a sua **naturez
 
 Para que uma esteira seja flexível e componível, as etapas do processo utilizam um catálogo ontológico padronizado em seis naturezas de peças:
 
-| Natureza da Peça | Formato Nativo                  | Função Primária no Fluxo                                | Motor de Execução |
-| :--------------- | :------------------------------ | :------------------------------------------------------ | :---------------- |
-| **1. Skill**     | Markdown (`SKILL.md`)           | Prompt especialista com heurísticas e raciocínio de IA  | `Orchestrix`      |
-| **2. Script**    | PowerShell / Shell / Go         | Transformação determinística de dados e arquivos locais | `Runtime Local`   |
-| **3. Hook**      | Configuração JSON               | Interceptação de ciclo de vida pré e pós-execução       | `Harness Hooks`   |
-| **4. MCP**       | Configuração JSON (`.mcp.json`) | Ferramental vivo externo (navegador, banco de dados)    | `Protocolo MCP`   |
-| **5. Gate**      | Expressão booleana em DSL       | Validação mecânica binária e aprovação de transição     | `internal/gate`   |
-| **6. Loop**      | Manifesto JSON (`.loop.json`)   | Encadeamento de nós em DAG para reúso modular           | `dag.Parse`       |
+| Natureza da Peça | Formato Nativo                | Função Primária no Fluxo                 | Motor de Execução |
+| :--------------- | :---------------------------- | :--------------------------------------- | :---------------- |
+| **1. Skill**         | Markdown (`SKILL.md`)           | Prompt especialista com heurísticas e raciocínio de IA | `Orchestrix`        |
+| **2. Script**        | PowerShell / Shell / Go       | Transformação determinística de dados e arquivos locais | `Runtime Local`     |
+| **3. Hook**          | Configuração JSON             | Interceptação de ciclo de vida pré e pós-execução | `Harness Hooks`     |
+| **4. MCP**           | Configuração JSON (`.mcp.json`) | Ferramental vivo externo (navegador, banco de dados) | `Protocolo MCP`     |
+| **5. Gate**          | Expressão booleana em DSL     | Validação mecânica binária e aprovação de transição | `internal/gate`     |
+| **6. Loop**          | Manifesto JSON (`.loop.json`)   | Encadeamento de nós em DAG para reúso modular | `dag.Parse`         |
 
 ```{=typst}
 #painel("Equilíbrio Cognitivo vs. Determinístico")[
@@ -230,11 +230,11 @@ Nem toda tarefa exige o mesmo poder de fogo computacional. Enviar a correção d
 
 O Mega Pipeline introduz a matriz de **Roteamento Cognitivo com Clamping de Esforço**:
 
-| Nível de Tarefa   | Escopo e Complexidade                       | Modelo Cognitivo Sugerido               | Flag de Esforço |
-| :---------------- | :------------------------------------------ | :-------------------------------------- | :-------------- |
-| **Épico (Macro)** | Arquitetura, contratos BDD, DAG e modelagem | `Claude 3.7 Sonnet`, `Gemini 2.0 Pro`   | `--effort high` |
-| **Micro-ticket**  | Módulo funcional, suíte de testes unitários | `Claude 3.5 Sonnet`, `Gemini 2.0 Flash` | `--effort med`  |
-| **Nano-ticket**   | Correção de lint, tipo TypeScript, assert   | `Gemini Flash-Lite`, `Ollama Local 8B`  | `--effort low`  |
+| Nível de Tarefa  | Escopo e Complexidade                 | Modelo Cognitivo Sugerido           | Flag de Esforço |
+| :--------------- | :------------------------------------ | :---------------------------------- | :-------------- |
+| **Épico (Macro)**    | Arquitetura, contratos BDD, DAG e modelagem | `Claude 3.7 Sonnet`, `Gemini 2.0 Pro`   | `--effort high`   |
+| **Micro-ticket**     | Módulo funcional, suíte de testes unitários | `Claude 3.5 Sonnet`, `Gemini 2.0 Flash` | `--effort med`    |
+| **Nano-ticket**      | Correção de lint, tipo TypeScript, assert | `Gemini Flash-Lite`, `Ollama Local 8B`  | `--effort low`    |
 
 ```{=typst}
 #painel("Regra de Clamping de Tokens")[
@@ -542,12 +542,12 @@ Toda demanda que entra no ecossistema passa compulsoriamente por quatro estágio
 )
 ```
 
-| Estágio de Governança | Arquivo de Template   | Função Primária                                       | Validação no Motor    |
-| :-------------------- | :-------------------- | :---------------------------------------------------- | :-------------------- |
-| **1. INTENT**         | `TEMPLATE_INTENT.md`  | Registra a dor do usuário, hipóteses e premissas      | `Human-Gate 01`       |
-| **2. SPEC**           | `TEMPLATE_SPEC.md`    | Define premissas, boundaries e critérios BDD `AC-XX`  | `has_binary_criteria` |
-| **3. PLAN**           | `TEMPLATE_PLAN.md`    | Fatiamento vertical hierárquico (Épicos ➔ Nano)       | `Human-Gate 02`       |
-| **4. ROUTE**          | `TEMPLATE_ROUTE.json` | Grafo acíclico executável em formato machine-readable | `dag.Parse` e Schema  |
+| Estágio de Governança | Arquivo de Template    | Função Primária                          | Validação no Motor    |
+| :-------------------- | :--------------------- | :--------------------------------------- | :-------------------- |
+| **1. INTENT**             | `TEMPLATE_INTENT.md`      | Registra a dor do usuário, hipóteses e premissas | `Human-Gate 01`         |
+| **2. SPEC**               | `TEMPLATE_SPEC.md`        | Define premissas, boundaries e critérios BDD `AC-XX` | `has_binary_criteria`     |
+| **3. PLAN**               | `TEMPLATE_PLAN.md`        | Fatiamento vertical hierárquico (Épicos ➔ Nano) | `Human-Gate 02`         |
+| **4. ROUTE**              | `TEMPLATE_ROUTE.json`     | Grafo acíclico executável em formato machine-readable | `dag.Parse` e Schema    |
 
 ```{=typst}
 #frase-destaque[O PLAN para os olhos humanos é o espelho exato da ROUTE para os nós de máquina. Divergência entre os dois é defeito impeditivo.]
@@ -591,13 +591,13 @@ Imagine que você fabricou um processo chamado `subloop-tdd` contendo o ciclo co
 
 O LegoLoop padronizou a gestão de processos no ecossistema através de cinco verbos de comando universais, disponíveis tanto na CLI quanto na interface visual do Studio:
 
-| Verbo Operacional | Comando CLI                            | Papel no Ciclo de Vida                                 |
-| :---------------- | :------------------------------------- | :----------------------------------------------------- |
-| **Fabricar**      | `legoloop fabricar "<nome>"`           | Cria um processo novo do zero via cascata socrática    |
-| **Compor**        | `legoloop compor "<alvo>" "<subloop>"` | Acopla um processo como sub-etapa de outro             |
-| **Listar**        | `legoloop listar`                      | Audita o inventário de processos, versões e vínculos   |
-| **Refinar**       | `legoloop refinar "<nome>"`            | Substitui atomicamente um nó defasado por um melhor    |
-| **Remover**       | `legoloop remover "<nome>"`            | Desvincula um processo com garantia de rollback seguro |
+| Verbo Operacional | Comando CLI                          | Papel no Ciclo de Vida                   |
+| :---------------- | :----------------------------------- | :--------------------------------------- |
+| **Fabricar**          | `legoloop fabricar "<nome>"`           | Cria um processo novo do zero via cascata socrática |
+| **Compor**            | `legoloop compor "<alvo>" "<subloop>"` | Acopla um processo como sub-etapa de outro |
+| **Listar**            | `legoloop listar`                      | Audita o inventário de processos, versões e vínculos |
+| **Refinar**           | `legoloop refinar "<nome>"`            | Substitui atomicamente um nó defasado por um melhor |
+| **Remover**           | `legoloop remover "<nome>"`            | Desvincula um processo com garantia de rollback seguro |
 
 ```{=typst}
 #painel("Canonização e Hashing SHA-256")[
@@ -618,18 +618,18 @@ O LegoLoop padronizou a gestão de processos no ecossistema através de cinco ve
 
 Para garantir a auditabilidade total desta obra, a tabela abaixo mapeia cada conceito arquitetural apresentado diretamente ao código-fonte ou documento normativo correspondente no repositório:
 
-| Conceito ou Mecanismo         | Arquivo de Implementação no LegoLoop                       | Responsabilidade Factual                             |
-| :---------------------------- | :--------------------------------------------------------- | :--------------------------------------------------- |
-| **Contrato do Nó DAG**        | `internal/dag/types.go`                                    | Estrutura do nó, modos de roteamento e handoffs      |
-| **Parser e Schema**           | `internal/dag/parse.go`                                    | Validação sintática contra `schemas/dag.v1.json`     |
-| **Prevenção de Ciclos**       | `internal/dag/cycle.go`                                    | Algoritmo de DFS que impede grafos circulares        |
+| Conceito ou Mecanismo     | Arquivo de Implementação no LegoLoop                     | Responsabilidade Factual                |
+| :------------------------ | :------------------------------------------------------- | :-------------------------------------- |
+| **Contrato do Nó DAG**        | `internal/dag/types.go`                                    | Estrutura do nó, modos de roteamento e handoffs |
+| **Parser e Schema**           | `internal/dag/parse.go`                                    | Validação sintática contra `schemas/dag.v1.json` |
+| **Prevenção de Ciclos**       | `internal/dag/cycle.go`                                    | Algoritmo de DFS que impede grafos circulares |
 | **Isolamento de Sub-Loop**    | `internal/orchestrix/subloop.go`                           | Workspaces temporários herméticos e `transferInputs` |
-| **Compilação de Gates**       | `internal/gate/gate.go`                                    | Compilador de expressões booleanas em DSL            |
-| **Composição de Loops**       | `internal/compor/compor.go`                                | Injeção de nós sub-loop e elevação de versão         |
-| **Sub-Artefatos sem Colisão** | `internal/dag/subartifact_test.go`                         | Isolamento de saídas entre loops pai e filho         |
-| **Templates Canônicos**       | `docs/templates/README.md`                                 | Modelos oficiais da sextilha de peças                |
-| **Mega Pipeline Master**      | `loops/mega-pipeline.loop.json`                            | Manifesto canônico da esteira dos 5 sub-loops        |
-| **Manual dos Sub-Loops**      | `docs/manuals/2026-11-01_MANUAL_MEGA_PIPELINE_LEGOLOOP.md` | Especificação operacional e stop-gates               |
+| **Compilação de Gates**       | `internal/gate/gate.go`                                    | Compilador de expressões booleanas em DSL |
+| **Composição de Loops**       | `internal/compor/compor.go`                                | Injeção de nós sub-loop e elevação de versão |
+| **Sub-Artefatos sem Colisão** | `internal/dag/subartifact_test.go`                          | Isolamento de saídas entre loops pai e filho |
+| **Templates Canônicos**       | `docs/templates/README.md`                                 | Modelos oficiais da sextilha de peças   |
+| **Mega Pipeline Master**      | `loops/mega-pipeline.loop.json`                            | Manifesto canônico da esteira dos 5 sub-loops |
+| **Manual dos Sub-Loops**      | `docs/manuals/2026-11-01_MANUAL_MEGA_PIPELINE_LEGOLOOP.md`     | Especificação operacional e stop-gates  |
 
 ---
 
@@ -653,12 +653,12 @@ Para garantir a auditabilidade total desta obra, a tabela abaixo mapeia cada con
 
 Em consonância com a Lei da Honestidade de Rotulagem, declaramos formalmente o estado real e as limitações conhecidas da implementação na data de publicação desta obra:
 
-| Recurso / Componente       | Status Atual | Evidência de Funcionamento     | Limitação Conhecida                                             |
-| :------------------------- | :----------- | :----------------------------- | :-------------------------------------------------------------- |
-| **Validação de DAG**       | Concluído    | 100% verde em `go test ./...`  | Suporta apenas grafos estáticos em tempo de carga               |
-| **Isolamento Orchestrix**  | Concluído    | Provado em testes temporários  | No Windows, remoção de pasta pode exigir retentativas se aberta |
-| **Composição de Loops**    | Concluído    | Provado no ticket TICK-03.4    | O sub-loop reescreve apenas o gate do artefato final            |
-| **Templates Canônicos V2** | Concluído    | Testado em `templates_test.go` | Scorer de reputação ainda avalia estrutura por regex            |
-| **Execução com LLM Real**  | Operacional  | Testado com Claude e 9Router   | Exige chave configurada e conexão ativa de rede                 |
+| Recurso / Componente   | Status Atual    | Evidência de Funcionamento    | Limitação Conhecida                        |
+| :--------------------- | :-------------- | :---------------------------- | :----------------------------------------- |
+| **Validação de DAG**       | Concluído       | 100% verde em `go test ./...`   | Suporta apenas grafos estáticos em tempo de carga |
+| **Isolamento Orchestrix**  | Concluído       | Provado em testes temporários | No Windows, remoção de pasta pode exigir retentativas se aberta |
+| **Composição de Loops**    | Concluído       | Provado no ticket TICK-03.4   | O sub-loop reescreve apenas o gate do artefato final |
+| **Templates Canônicos V2** | Concluído       | Testado em `templates_test.go`   | Scorer de reputação ainda avalia estrutura por regex |
+| **Execução com LLM Real**  | Operacional     | Testado com Claude e 9Router  | Exige chave configurada e conexão ativa de rede |
 
 

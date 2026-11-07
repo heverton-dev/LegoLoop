@@ -37,12 +37,12 @@ O guia se destina a desenvolvedores, engenheiros de IA e arquitetos de software 
 
 ## Estrutura da obra
 
-| Parte   | Nível      | Conteúdo                                                     |
-| :------ | :--------- | :----------------------------------------------------------- |
-| **I**   | Macro      | Filosofia Lego, níveis de granularidade e Tríade de Triggers |
-| **II**  | Meso       | Matriz de encadeamento e as cinco trilhas canônicas          |
-| **III** | Micro      | Sete cenários BDD multi-trigger                              |
-| **IV**  | Referência | Tabela de consulta rápida e síntese final                    |
+| Parte            | Nível            | Conteúdo                                         |
+| :--------------- | :--------------- | :----------------------------------------------- |
+| **I**                | Macro            | Filosofia Lego, níveis de granularidade e Tríade de Triggers |
+| **II**               | Meso             | Matriz de encadeamento e as cinco trilhas canônicas |
+| **III**              | Micro            | Sete cenários BDD multi-trigger                  |
+| **IV**               | Referência       | Tabela de consulta rápida e síntese final        |
 
 ## Convenção BDD
 

@@ -39,14 +39,14 @@ abstract: |
 
 ## A estrutura da obra
 
-| Parte | Nível     | Conteúdo                                                 |
-| :---- | :-------- | :------------------------------------------------------- |
-| I     | Macro     | O problema da geração cega e os cinco pilares do método  |
-| II    | Meso      | O loop mestre, da ideia à produção, com quatro gates     |
-| III   | Meso      | Os seis sub-loops e suas habilidades                     |
-| IV    | Micro     | Roteamento de modelos, higiene de contexto e integração  |
-| V     | Prática   | Receitas para situações frequentes                       |
-| VI    | Apêndices | Glossário, relatório de conformidade e referência rápida |
+| Parte            | Nível            | Conteúdo                                        |
+| :--------------- | :--------------- | :---------------------------------------------- |
+| I                | Macro            | O problema da geração cega e os cinco pilares do método |
+| II               | Meso             | O loop mestre, da ideia à produção, com quatro gates |
+| III              | Meso             | Os seis sub-loops e suas habilidades            |
+| IV               | Micro            | Roteamento de modelos, higiene de contexto e integração |
+| V                | Prática          | Receitas para situações frequentes              |
+| VI               | Apêndices        | Glossário, relatório de conformidade e referência rápida |
 
 ## As convenções da obra
 

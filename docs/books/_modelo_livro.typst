@@ -176,7 +176,7 @@
 
 #set table(
   stroke: 0.35pt + cor-linha,
-  inset: (x: 4pt, y: 3pt),
+  inset: (x: 4pt, y: 2.4pt),
   fill: (_, y) => if y == 0 { rgb("#f1f5f9") } else if calc.odd(y) { rgb("#f8fafc") } else { white },
 )
 #show table.cell.where(y: 0): set text(font: ("Segoe UI", "Arial"), fill: cor-tinta, weight: "bold", size: 6.2pt, hyphenate: false)
@@ -186,7 +186,7 @@
   show raw.where(block: false): r => text(font: ("Consolas", "Courier New"), size: 5.6pt, fill: cor-accent2, hyphenate: false)[#r.text]
   it
 }
-#show figure.where(kind: table): set block(breakable: false)
+#show figure.where(kind: table): set block(breakable: true)
 #show figure.where(kind: table): set align(left)
 #show figure.where(kind: table): set figure(numbering: none)
 #show figure.where(kind: table): set figure.caption(position: top)

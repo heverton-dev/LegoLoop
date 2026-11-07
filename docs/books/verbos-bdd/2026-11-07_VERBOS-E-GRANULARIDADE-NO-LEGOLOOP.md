@@ -37,12 +37,12 @@ O guia se destina a desenvolvedores, engenheiros de IA e arquitetos de software 
 
 ## Estrutura da obra
 
-| Parte   | Nível      | Conteúdo                                                     |
-| :------ | :--------- | :----------------------------------------------------------- |
-| **I**   | Macro      | Filosofia Lego, níveis de granularidade e Tríade de Triggers |
-| **II**  | Meso       | Matriz de encadeamento e as cinco trilhas canônicas          |
-| **III** | Micro      | Sete cenários BDD multi-trigger                              |
-| **IV**  | Referência | Tabela de consulta rápida e síntese final                    |
+| Parte            | Nível            | Conteúdo                                         |
+| :--------------- | :--------------- | :----------------------------------------------- |
+| **I**                | Macro            | Filosofia Lego, níveis de granularidade e Tríade de Triggers |
+| **II**               | Meso             | Matriz de encadeamento e as cinco trilhas canônicas |
+| **III**              | Micro            | Sete cenários BDD multi-trigger                  |
+| **IV**               | Referência       | Tabela de consulta rápida e síntese final        |
 
 ## Convenção BDD
 
@@ -61,13 +61,13 @@ Nenhum fluxo é código estático ou monolítico. Qualquer processo pode ser mon
 
 ![Os cinco níveis de granularidade, do Mega Pipeline às Nano-Etapas](/img/diagrama_granularidade.svg){width=88%}
 
-| Nível                | Escopo                   | O que se controla                    | Exemplo real                |
-| :------------------- | :----------------------- | :----------------------------------- | :-------------------------- |
+| Nível            | Escopo                   | O que se controla                    | Exemplo real                |
+| :--------------- | :----------------------- | :----------------------------------- | :-------------------------- |
 | **1. Mega Pipeline** | Ciclo de vida do produto | Orquestração e paralelismo de épicos | Mega Pipeline ponta a ponta |
 | **2. Sub-Loops**     | Módulos reutilizáveis    | Injeção hierárquica, saída isolada   | Loop de Auditoria 4F        |
-| **3. Etapas (Nós)**  | Contratos de I/O         | Troca de peças, dependências         | `e01` -> `e02`              |
+| **3. Etapas (Nós)**  | Contratos de I/O         | Troca de peças, dependências         | `e01` -> `e02`                  |
 | **4. Micro-Etapas**  | Execução cognitiva       | Modelo de IA, contexto, MCPs         | Redator de testes isolado   |
-| **5. Nano-Etapas**   | Invariantes de código    | Asserções, cobertura, gates `SG-*`   | Função Go com até 35 linhas |
+| **5. Nano-Etapas**   | Invariantes de código    | Asserções, cobertura, gates `SG-*`      | Função Go com até 35 linhas |
 
 ## 3. A Tríade de Triggers
 
@@ -88,16 +88,16 @@ Os verbos do LegoLoop não foram projetados para rodar isolados. Cada um é elo 
 
 ![Fluxo entre diagnóstico, ação e validação](/img/diagrama_encadeamento.svg){width=95%}
 
-| Origem                            | Destino            | Finalidade da ligação                  |
-| :-------------------------------- | :----------------- | :------------------------------------- |
-| `listar`                          | `refinar`          | Inspecionar os nós antes da troca      |
-| `listar`                          | `compor`           | Identificar sub-loops reutilizáveis    |
-| `listar`                          | `remover`          | Auditar resíduos e vínculos            |
-| `matriz`                          | `refinar`          | Detectar peças defasadas               |
-| `matriz`                          | `fabricar`         | Validar a aptidão das peças            |
-| `fabricar` / `compor` / `remover` | `listar`           | Revalidar grafo, acoplamento e limpeza |
-| `refinar`                         | Auditoria de gates | Validar o score após a troca           |
-| Auditoria de gates                | `legopress`        | Gerar a documentação final             |
+| Origem                      | Destino            | Finalidade da ligação                  |
+| :-------------------------- | :----------------- | :------------------------------------- |
+| `listar`                      | `refinar`            | Inspecionar os nós antes da troca      |
+| `listar`                      | `compor`             | Identificar sub-loops reutilizáveis    |
+| `listar`                      | `remover`            | Auditar resíduos e vínculos            |
+| `matriz`                      | `refinar`            | Detectar peças defasadas               |
+| `matriz`                      | `fabricar`           | Validar a aptidão das peças            |
+| `fabricar` / `compor` / `remover` | `listar`             | Revalidar grafo, acoplamento e limpeza |
+| `refinar`                     | Auditoria de gates | Validar o score após a troca           |
+| Auditoria de gates          | `legopress`          | Gerar a documentação final             |
 
 ## 5. As Cinco Trilhas Canônicas
 
@@ -156,8 +156,8 @@ As trilhas abaixo esgotam as combinações lógicas da operação diária.
 
 ## 6. Tabela-Resumo dos Encadeamentos
 
-| Trilha                      | Sequência de verbos                | Gatilho típico         | Resultado entregue          |
-| :-------------------------- | :--------------------------------- | :--------------------- | :-------------------------- |
+| Trilha                  | Sequência de verbos                | Gatilho típico         | Resultado entregue          |
+| :---------------------- | :--------------------------------- | :--------------------- | :-------------------------- |
 | **1. Criação**              | listar → fabricar → matriz         | Nova demanda           | INTENT, SPEC, PLAN e ROUTE  |
 | **2. Refinamento**          | listar → matriz → refinar → matriz | Peça lenta ou defasada | Etapa trocada, bump minor   |
 | **3. Composição**           | listar → compor → listar           | Reuso de fluxo         | Sub-loop isolado no DAG     |
@@ -203,12 +203,12 @@ vulnerabilidades de reentrancy e overflow em Solidity, na categoria build.
 
 **Então** o motor hermético produz quatro artefatos canônicos, nomeados no padrão `YYYY-MM-DD_<TIPO>_AUDITORIA_SMART_CONTRACTS`:
 
-| Artefato | Pasta           | Extensão | Conteúdo                        |
-| :------- | :-------------- | :------- | :------------------------------ |
-| INTENT   | `docs/intents/` | `.md`    | Problema e motivação            |
-| SPEC     | `docs/specs/`   | `.md`    | Critérios de aceitação binários |
-| PLAN     | `docs/plans/`   | `.md`    | Tickets em fatias verticais     |
-| ROUTE    | `docs/routes/`  | `.json`  | DAG formal executável           |
+| Artefato       | Pasta             | Extensão       | Conteúdo                         |
+| :------------- | :---------------- | :------------- | :------------------------------- |
+| INTENT         | `docs/intents/`     | `.md`            | Problema e motivação             |
+| SPEC           | `docs/specs/`       | `.md`            | Critérios de aceitação binários  |
+| PLAN           | `docs/plans/`       | `.md`            | Tickets em fatias verticais      |
+| ROUTE          | `docs/routes/`      | `.json`          | DAG formal executável            |
 
 **E** o pipeline fica pronto para execução sem código boilerplate manual.
 
@@ -431,16 +431,16 @@ No arquivo de rota mais recente, configure o nó 'ticket-01' para usar o modelo
 
 Na coluna Terminal, todo comando é prefixado por `legoloop`; na coluna Chat, toda skill é prefixada por `/legoloop-`.
 
-| Ação desejada                 | Nível      | Terminal               | Chat         | LegoLoop Studio                   |
-| :---------------------------- | :--------- | :--------------------- | :----------- | :-------------------------------- |
-| **Criar processo**            | Macro      | `fabricar "<nome>"`    | `fabricar`   | Botão **+ Novo Processo**         |
-| **Consultar inventário**      | Macro      | `listar [--json]`      | `listar`     | Aba **Processos**                 |
-| **Auditar reputação**         | Meso       | `matriz [--tier ouro]` | `matriz`     | Aba **Matriz**                    |
-| **Encaixar sub-loop**         | Meso       | `compor <pai> <filho>` | `compor`     | Arrastar bloco e traçar aresta    |
-| **Substituir etapa**          | Micro      | `refinar "<alvo>"`     | `refinar`    | Botão direito no nó, **Refinar**  |
-| **Remover com rollback**      | Macro      | `remover "<nome>"`     | `remover`    | Menu do cartão, **Remover**       |
-| **Ajustar modelo e contexto** | Micro/Nano | Edição do `ROUTE.json` | Pedido livre | Painel de propriedades do nó      |
-| **Compilar livro em PDF**     | Macro      | `legopress "<alvo>"`   | `legopress`  | Botão **Exportar Livro Didático** |
+| Ação desejada             | Nível          | Terminal             | Chat           | LegoLoop Studio                |
+| :------------------------ | :------------- | :------------------- | :------------- | :----------------------------- |
+| **Criar processo**            | Macro          | `fabricar "<nome>"`    | `fabricar`       | Botão **+ Novo Processo**          |
+| **Consultar inventário**      | Macro          | `listar [--json]`      | `listar`         | Aba **Processos**                  |
+| **Auditar reputação**         | Meso           | `matriz [--tier ouro]` | `matriz`         | Aba **Matriz**                     |
+| **Encaixar sub-loop**         | Meso           | `compor <pai> <filho>` | `compor`         | Arrastar bloco e traçar aresta |
+| **Substituir etapa**          | Micro          | `refinar "<alvo>"`     | `refinar`        | Botão direito no nó, **Refinar**   |
+| **Remover com rollback**      | Macro          | `remover "<nome>"`     | `remover`        | Menu do cartão, **Remover**        |
+| **Ajustar modelo e contexto** | Micro/Nano     | Edição do `ROUTE.json` | Pedido livre   | Painel de propriedades do nó   |
+| **Compilar livro em PDF**     | Macro          | `legopress "<alvo>"`   | `legopress`      | Botão **Exportar Livro Didático**  |
 
 ## 16. Síntese
 

@@ -69,12 +69,12 @@ Hoje, vivemos exatamente o mesmo momento de transição no universo da inteligê
 
 Para que você extraia o máximo valor desta obra de acordo com sua formação e seus desafios atuais, sugerimos a seguinte trilha de leitura:
 
-| Perfil do Leitor         | Início             | Capítulos Chave         | Entrega Prática Imediata                     |
-| :----------------------- | :----------------- | :---------------------- | :------------------------------------------- |
+| Perfil do Leitor     | Início             | Capítulos Chave         | Entrega Prática Imediata              |
+| :------------------- | :----------------- | :---------------------- | :------------------------------------ |
 | **Executivos e TI**      | Parte I (Macro)    | Caps. 1, 2, 3 e 24      | Reduzir em até 95% os custos e governar a IA |
 | **Product Owners**       | Parte III (Studio) | Caps. 13, 14, 15 e 16   | Desenhar e validar esteiras no canvas visual |
-| **Engenheiros / Devs**   | Partes II e IV     | Caps. 6, 7, 19, 20 e 22 | Construir nós em TDD e integrar ao Meta-MCP  |
-| **Analistas de Negócio** | Parte VI (Prática) | Caps. 26 a 36           | Operar as 10 receitas prontas no dia a dia   |
+| **Engenheiros / Devs**   | Partes II e IV     | Caps. 6, 7, 19, 20 e 22 | Construir nós em TDD e integrar ao Meta-MCP |
+| **Analistas de Negócio** | Parte VI (Prática) | Caps. 26 a 36           | Operar as 10 receitas prontas no dia a dia |
 
 ---
 
@@ -149,11 +149,11 @@ A ilustração a seguir resume a discrepância abissal entre o modelo caótico c
 
 A maioria das empresas subestima o impacto financeiro da perda de contexto porque enxerga o preço por milhão de tokens como uma quantia insignificante (por exemplo, US$ 3,00 por milhão de tokens de entrada). No entanto, quando multiplicamos essa taxa pelo número de desenvolvedores e pelo acúmulo contínuo de mensagens, a conta se torna astronômica:
 
-| Modelo de Execução             | Tokens / Turno       | Consumo Mensal (1.200 turnos)   | Custo Estimado / Dev / Mês |
-| :----------------------------- | :------------------: | :-----------------------------: | :------------------------: |
-| **Chat Monolítico Cumulativo** | ~65.000 tokens       | 78.000.000 tokens de entrada    | ~US$ 234,00                |
-| **Esteira Modular LegoLoop**   | **~3.500 tokens**    | **4.200.000 tokens (estéril)**  | **~US$ 12,60**             |
-| **Economia Líquida Obtida**    | **-94,6% por turno** | **-73.800.000 tokens poupados** | **Economia de US$ 221,40** |
+| Modelo de Execução         | Tokens / Turno   | Consumo Mensal (1.200 turnos) | Custo Estimado / Dev / Mês |
+| :------------------------- | :--------------: | :---------------------------: | :------------------------: |
+| **Chat Monolítico Cumulativo** | ~65.000 tokens   | 78.000.000 tokens de entrada  | ~US$ 234,00                |
+| **Esteira Modular LegoLoop**   | **~3.500 tokens**    | **4.200.000 tokens (estéril)**    | **~US$ 12,60**                 |
+| **Economia Líquida Obtida**    | **-94,6% por turno** | **-73.800.000 tokens poupados**   | **Economia de US$ 221,40**     |
 
 Em uma equipe com 20 profissionais de tecnologia, a migração do paradigma conversacional desordenado para esteiras modulares estéreis representa uma economia anual superior a **US$ 53.000,00** apenas em consumo de rede e APIs, além de reduzir a zero o retrabalho causado por alucinações.
 
@@ -299,12 +299,12 @@ Em um ecossistema com centenas de ferramentas disponíveis, como garantir que um
 
 O LegoLoop não confia em reputações subjetivas ou número de estrelas em plataformas sociais. O motor de **Matriz de Reputação** (`legoloop matriz`) avalia continuamente a qualidade das peças a partir de critérios frios, objetivos e matematicamente auditáveis:
 
-| Critério Automatizado da Peça         | O Que é Auditado no Código                        | Peso no Score |
-| :------------------------------------ | :------------------------------------------------ | :-----------: |
-| **Cobertura e Integridade de Testes** | Testes unitários reais que falham sob mutação     | +0.35         |
-| **Zero Stubs (Sem Mocks Simulados)**  | Sem funções vazias, TODOs ou simulações fictícias | +0.25         |
-| **Conformidade de Esquema Formal**    | Validação estrita de contratos via JSON Schema    | +0.20         |
-| **Economia de Contexto e Tokens**     | Prompts concisos e isolamento cirúrgico estéril   | +0.20         |
+| Critério Automatizado da Peça     | O Que é Auditado no Código              | Peso no Score  |
+| :-------------------------------- | :-------------------------------------- | :------------: |
+| **Cobertura e Integridade de Testes** | Testes unitários reais que falham sob mutação | +0.35          |
+| **Zero Stubs (Sem Mocks Simulados)**  | Sem funções vazias, TODOs ou simulações fictícias | +0.25          |
+| **Conformidade de Esquema Formal**    | Validação estrita de contratos via JSON Schema | +0.20          |
+| **Economia de Contexto e Tokens**     | Prompts concisos e isolamento cirúrgico estéril | +0.20          |
 
 ### A Hierarquia dos Tiers de Qualidade
 
@@ -666,12 +666,12 @@ Essa elegância de engenharia garante que o modelo nunca veja mais do que precis
 
 A tabela abaixo sintetiza a economia e os ganhos de desempenho obtidos em testes reais:
 
-| Métrica Operacional            | Abordagem Eager Convencional | LegoLoop Lazy Router    | Ganho Industrial          |
-| :----------------------------- | :--------------------------: | :---------------------: | :-----------------------: |
-| **Tokens Iniciais no Prompt**  | ~120.000 tokens despejados   | **~800 tokens**         | **99,3% de economia**     |
-| **Latência de Resposta**       | 8 a 14 segundos              | **1,2 segundos**        | **~10x mais rápido**      |
-| **Risco de Alucinação**        | Alto (> 25% de falhas)       | **Raro (< 1%)**         | **Confiabilidade total**  |
-| **Sincronização de Ambientes** | Configuração manual isolada  | **1 comando unificado** | **Claude, Cursor e IDEs** |
+| Métrica Operacional        | Abordagem Eager Convencional | LegoLoop Lazy Router | Ganho Industrial      |
+| :------------------------- | :--------------------------: | :------------------: | :-------------------: |
+| **Tokens Iniciais no Prompt**  | ~120.000 tokens despejados   | **~800 tokens**          | **99,3% de economia**     |
+| **Latência de Resposta**       | 8 a 14 segundos              | **1,2 segundos**         | **~10x mais rápido**      |
+| **Risco de Alucinação**        | Alto (> 25% de falhas)       | **Raro (< 1%)**          | **Confiabilidade total**  |
+| **Sincronização de Ambientes** | Configuração manual isolada  | **1 comando unificado**  | **Claude, Cursor e IDEs** |
 
 ---
 
@@ -1058,19 +1058,19 @@ O executável central do LegoLoop (`legoloop`) oferece comandos determinísticos
 
 Todos os comandos são executados a partir do binário `legoloop` no terminal. A tabela abaixo sintetiza os principais subcomandos, opções de execução e efeitos no sistema:
 
-| Subcomando       | Opções e Argumentos          | Finalidade Operacional no Ecossistema              |
-| :--------------- | :--------------------------- | :------------------------------------------------- |
-| `studio`         | `[--porta 8080] [--abrir]`   | Abre o canvas gráfico interativo no navegador      |
-| `fabricar`       | `<nome> [--yes] [--model M]` | Dispara entrevista socrática para gerar a Tríade   |
-| `matriz`         | `[--tier ouro/prata/bronze]` | Audita reputação e testes das ferramentas do cofre |
-| `listar`         | `[--json] [--verbose]`       | Exibe o inventário de processos e harnesses ativos |
-| `refinar`        | `<nome> [--trocar P]`        | Substitui cirurgicamente uma peça na esteira       |
-| `remover`        | `<nome> [--force]`           | Desvincula e arquiva o processo com rollback limpo |
-| `compor`         | `<alvo> <sub-loop>`          | Encaixa um sub-loop como passo dentro da esteira   |
-| `sync-harnesses` | `[--dry-run] [--apply]`      | Conecta assistentes ao Meta-MCP Router sob demanda |
-| `stept status`   | `[--harness H] [--json]`     | Audita conformidade do protocolo nos assistentes   |
-| `stept on`       | `[--harness todos]`          | Ativa a Tríade STE-PT compulsoriamente nas IAs     |
-| `stept off`      | `[--harness todos]`          | Desativa a exigência formal para exploração livre  |
+| Subcomando         | Opções e Argumentos        | Finalidade Operacional no Ecossistema   |
+| :----------------- | :------------------------- | :-------------------------------------- |
+| `studio`             | `[--porta 8080] [--abrir]`   | Abre o canvas gráfico interativo no navegador |
+| `fabricar`           | `<nome> [--yes] [--model M]` | Dispara entrevista socrática para gerar a Tríade |
+| `matriz`             | `[--tier ouro/prata/bronze]` | Audita reputação e testes das ferramentas do cofre |
+| `listar`             | `[--json] [--verbose]`       | Exibe o inventário de processos e harnesses ativos |
+| `refinar`            | `<nome> [--trocar P]`        | Substitui cirurgicamente uma peça na esteira |
+| `remover`            | `<nome> [--force]`           | Desvincula e arquiva o processo com rollback limpo |
+| `compor`             | `<alvo> <sub-loop>`          | Encaixa um sub-loop como passo dentro da esteira |
+| `sync-harnesses`     | `[--dry-run] [--apply]`      | Conecta assistentes ao Meta-MCP Router sob demanda |
+| `stept status`       | `[--harness H] [--json]`     | Audita conformidade do protocolo nos assistentes |
+| `stept on`           | `[--harness todos]`          | Ativa a Tríade STE-PT compulsoriamente nas IAs |
+| `stept off`          | `[--harness todos]`          | Desativa a exigência formal para exploração livre |
 
 ---
 

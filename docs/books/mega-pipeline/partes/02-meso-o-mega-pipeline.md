@@ -66,11 +66,11 @@ Nem toda tarefa exige o mesmo poder de fogo computacional. Enviar a correção d
 
 O Mega Pipeline introduz a matriz de **Roteamento Cognitivo com Clamping de Esforço**:
 
-| Nível de Tarefa   | Escopo e Complexidade                       | Modelo Cognitivo Sugerido               | Flag de Esforço |
-| :---------------- | :------------------------------------------ | :-------------------------------------- | :-------------- |
-| **Épico (Macro)** | Arquitetura, contratos BDD, DAG e modelagem | `Claude 3.7 Sonnet`, `Gemini 2.0 Pro`   | `--effort high` |
-| **Micro-ticket**  | Módulo funcional, suíte de testes unitários | `Claude 3.5 Sonnet`, `Gemini 2.0 Flash` | `--effort med`  |
-| **Nano-ticket**   | Correção de lint, tipo TypeScript, assert   | `Gemini Flash-Lite`, `Ollama Local 8B`  | `--effort low`  |
+| Nível de Tarefa  | Escopo e Complexidade                 | Modelo Cognitivo Sugerido           | Flag de Esforço |
+| :--------------- | :------------------------------------ | :---------------------------------- | :-------------- |
+| **Épico (Macro)**    | Arquitetura, contratos BDD, DAG e modelagem | `Claude 3.7 Sonnet`, `Gemini 2.0 Pro`   | `--effort high`   |
+| **Micro-ticket**     | Módulo funcional, suíte de testes unitários | `Claude 3.5 Sonnet`, `Gemini 2.0 Flash` | `--effort med`    |
+| **Nano-ticket**      | Correção de lint, tipo TypeScript, assert | `Gemini Flash-Lite`, `Ollama Local 8B`  | `--effort low`    |
 
 ```{=typst}
 #painel("Regra de Clamping de Tokens")[
