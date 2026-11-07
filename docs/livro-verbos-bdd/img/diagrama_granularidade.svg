@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330"><defs><style>.t{font-family:Segoe UI,Arial,sans-serif;fill:#0f172a}.h{font-size:15px;font-weight:700}.b{font-size:13px}.s{font-size:11px;fill:#64748b}.box{fill:#fff;stroke:#2563eb;stroke-width:1.4}.grp{fill:#f8fafc;stroke:#e2e8f0;stroke-width:1}.ln{stroke:#64748b;stroke-width:1.3;fill:none;marker-end:url(#a)}</style><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs><rect width="880" height="330" fill="#fff"/>
+<rect class="box" x="60" y="10" width="760" height="48" rx="6"/><text class="t h" x="440" y="32" text-anchor="middle">Nível 1 · Mega Pipeline</text><text class="t s" x="440" y="49" text-anchor="middle">Macro-Loop: ciclo de vida completo</text>
+<path class="ln" d="M440,59 L440,74"/>
+<rect class="box" x="100" y="75" width="680" height="48" rx="6"/><text class="t h" x="440" y="97" text-anchor="middle">Nível 2 · Sub-Loops</text><text class="t s" x="440" y="114" text-anchor="middle">Fases modulares reutilizáveis</text>
+<path class="ln" d="M440,124 L440,139"/>
+<rect class="box" x="140" y="140" width="600" height="48" rx="6"/><text class="t h" x="440" y="162" text-anchor="middle">Nível 3 · Etapas (Nós)</text><text class="t s" x="440" y="179" text-anchor="middle">Passos com contrato de entrada e saída</text>
+<path class="ln" d="M440,189 L440,204"/>
+<rect class="box" x="180" y="205" width="520" height="48" rx="6"/><text class="t h" x="440" y="227" text-anchor="middle">Nível 4 · Micro-Etapas</text><text class="t s" x="440" y="244" text-anchor="middle">Tarefas e modelos de IA</text>
+<path class="ln" d="M440,254 L440,269"/>
+<rect class="box" x="220" y="270" width="440" height="48" rx="6"/><text class="t h" x="440" y="292" text-anchor="middle">Nível 5 · Nano-Etapas</text><text class="t s" x="440" y="309" text-anchor="middle">Gates binários e TDD</text>
+</svg>

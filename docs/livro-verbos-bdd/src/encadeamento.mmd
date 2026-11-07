@@ -1,0 +1,29 @@
+flowchart LR
+    subgraph D["1. Diagnóstico"]
+        direction TB
+        L1["listar"]
+        MZ["matriz"]
+    end
+    subgraph A["2. Ação"]
+        direction TB
+        FB["fabricar"]
+        CP["compor"]
+        RF["refinar"]
+        RM["remover"]
+    end
+    subgraph F["3. Validação e entrega"]
+        direction TB
+        L2["listar (revalidação)"]
+        AU["auditoria de gates"]
+        LP["legopress"]
+    end
+    MZ --> FB
+    L1 --> CP
+    L1 --> RF
+    MZ --> RF
+    L1 --> RM
+    FB --> L2
+    CP --> L2
+    RM --> L2
+    RF --> AU
+    AU --> LP

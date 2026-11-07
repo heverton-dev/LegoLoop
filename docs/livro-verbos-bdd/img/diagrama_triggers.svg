@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300"><defs><style>.t{font-family:Segoe UI,Arial,sans-serif;fill:#0f172a}.h{font-size:15px;font-weight:700}.b{font-size:13px}.s{font-size:11px;fill:#64748b}.box{fill:#fff;stroke:#2563eb;stroke-width:1.4}.grp{fill:#f8fafc;stroke:#e2e8f0;stroke-width:1}.ln{stroke:#64748b;stroke-width:1.3;fill:none;marker-end:url(#a)}</style><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs><rect width="880" height="300" fill="#fff"/>
+<rect class="grp" x="20" y="10" width="840" height="100" rx="8"/><text class="t h" x="440" y="34" text-anchor="middle">Três triggers de entrada</text>
+<rect class="box" x="70" y="50" width="220" height="44" rx="6"/><text class="t b" x="180" y="77" text-anchor="middle">Terminal (CLI)</text>
+<rect class="box" x="330" y="50" width="220" height="44" rx="6"/><text class="t b" x="440" y="77" text-anchor="middle">Chat do Agente (Harness)</text>
+<rect class="box" x="590" y="50" width="220" height="44" rx="6"/><text class="t b" x="700" y="77" text-anchor="middle">LegoLoop Studio (Web)</text>
+<path class="ln" d="M440,112 L440,160"/>
+<rect class="grp" x="20" y="165" width="840" height="120" rx="8"/><text class="t h" x="440" y="189" text-anchor="middle">Motor canônico LegoLoop</text>
+<rect class="box" x="45" y="215" width="120" height="44" rx="6"/><text class="t b" x="105" y="242" text-anchor="middle">fabricar</text>
+<rect class="box" x="180" y="215" width="120" height="44" rx="6"/><text class="t b" x="240" y="242" text-anchor="middle">listar</text>
+<rect class="box" x="315" y="215" width="120" height="44" rx="6"/><text class="t b" x="375" y="242" text-anchor="middle">matriz</text>
+<rect class="box" x="450" y="215" width="120" height="44" rx="6"/><text class="t b" x="510" y="242" text-anchor="middle">compor</text>
+<rect class="box" x="585" y="215" width="120" height="44" rx="6"/><text class="t b" x="645" y="242" text-anchor="middle">refinar</text>
+<rect class="box" x="720" y="215" width="120" height="44" rx="6"/><text class="t b" x="780" y="242" text-anchor="middle">remover</text>
+</svg>

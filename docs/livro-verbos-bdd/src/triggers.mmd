@@ -1,0 +1,17 @@
+flowchart TB
+    subgraph TRIGGERS["Três triggers de entrada"]
+        direction LR
+        T1["Terminal (CLI)"]
+        T2["Chat do Agente"]
+        T3["LegoLoop Studio"]
+    end
+    subgraph ENGINE["Motor canônico LegoLoop"]
+        direction LR
+        M1["fabricar"]
+        M2["listar"]
+        M3["matriz"]
+        M4["compor"]
+        M5["refinar"]
+        M6["remover"]
+    end
+    TRIGGERS --> ENGINE

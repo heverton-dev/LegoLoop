@@ -1,0 +1,18 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Verbos e Granularidade no LegoLoop",
+  "nome_base": "2026-11-07_VERBOS-E-GRANULARIDADE-NO-LEGOLOOP",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "fonte": "docs/manuals/2026-11-07_MANUAL_DIDATICO_VERBOS_BDD.md",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-filosofia-e-triggers.md",
+    "02-meso-encadeamento.md",
+    "03-micro-cenarios-bdd.md",
+    "04-referencia-rapida.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "36f661c0b3aebb3a8a1532d325b1a4fb52fafc7add9f8cb764c30078bdb47b2d",
+  "ultima_compilacao": "2026-11-07"
+}
