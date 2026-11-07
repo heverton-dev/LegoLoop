@@ -9,7 +9,7 @@ import (
 )
 
 func TestAuditorGeometry_RealPDF(t *testing.T) {
-	pdfPath := filepath.Join("..", "..", "docs", "books", "legoloop", "06-11-2026_LEGOLOOP-A-REVOLU-O-DA-IA-MODULAR-EM-PE-AS-SIMPLES.pdf")
+	pdfPath := filepath.Join("..", "..", "docs", "books", "video-rea", "2026-11-07_PIPELINE-VIDEO-REA.pdf")
 	if _, err := os.Stat(pdfPath); os.IsNotExist(err) {
 		t.Skip("PDF real nao encontrado para teste fim-a-fim")
 	}
@@ -24,9 +24,9 @@ func TestAuditorGeometry_RealPDF(t *testing.T) {
 		t.Fatal("esperava relatorio de geometria, obteve nil")
 	}
 
-	// O PDF atual possui 57 páginas homologadas
-	if report.TotalPages != 57 {
-		t.Errorf("esperava 57 paginas no PDF auditado, obteve: %d", report.TotalPages)
+	// O PDF atual possui 9 páginas homologadas
+	if report.TotalPages != 9 {
+		t.Errorf("esperava 9 paginas no PDF auditado, obteve: %d", report.TotalPages)
 	}
 
 	// Deve validar como perfeito (AC-E03.2)

@@ -337,7 +337,17 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Documentação e Compilação:** `docs/templates/README.md` atualizado com o vocabulário e taxonomia v2.2.0; manual técnico `docs/templates/MANUAL_TEMPLATES_LEGOLOOP.typ` atualizado e recompilado para PDF com o Typst 0.15.1 (`docs/templates/MANUAL_TEMPLATES_LEGOLOOP.pdf`, 521 KB).
   - **Qualidade & Recompilação:** 10/10 testes de templates e 100% da suíte global em verde (`go test -count=1 ./...`), `go vet` limpo, `gofmt` vazio, `bin/legoloop.exe` recompilado com êxito.
 
+- **07/11/2026** — 🌐 **Universalização Completa de Skills e Loops & Formalização da Lei #11 de Fechamento:**
+  - **Identificação e Diagnóstico de Gap:** As skills recém-criadas (`legoloop-video-rea` e `legoloop-video-motion`) não estavam universais nos harnesses porque não constavam em `skills.FuncoesNativas` em `skills/embed.go`, o cofre `~/.aidd/canonical/skills` não as havia recebido e `legoloop-video-motion/SKILL.md` sequer havia sido criada. Além disso, `processo.Vincular` bloqueava a atualização de skills modificadas em harnesses sem symlink (`copiaDesatualizada`).
+  - **Criação de Peças Canônicas:** Criada a skill `skills/legoloop-video-motion/SKILL.md` (padrão v2.2.0 com contratos I/O e regras negativas) e manuais operacionais dedicados `2026-11-07_MANUAL_FUNCAO_VIDEO_REA_LEGOLOOP.md` e `2026-11-07_MANUAL_FUNCAO_VIDEO_MOTION_LEGOLOOP.md`.
+  - **Expansão para 12 Funções Nativas:** `skills/embed.go` atualizado com 12 funções canônicas; testes em `internal/cli/instalar_skills_test.go` ajustados para 12 e provados via TDD.
+  - **Distribuição Universal:** Executado `legoloop instalar-skills`, populando o cofre `~/.aidd/canonical` e vinculando com sucesso todas as 12 skills nos 6 harnesses detectados (`claude`, `gemini`, `cursor`, `codex`, `opencode`, `kiro`).
+  - **Auditoria Geométrica LegoPress:** Ajustados testes de auditoria em `internal/legopress/auditor_test.go` e `internal/cli/legopress_test.go` para validar PDFs homologados (100% perfeitos).
+  - **Homologação Global:** 32 pacotes verdes (`go test -count=1 ./...`), `go vet` limpo, `gofmt` limpo, `funclen` verificado, `go.mod` stdlib pura.
+  - **Recompilação Fresca:** `bin/legoloop.exe` recompilado e instalado via `go install ./cmd/legoloop`.
+  - **Formalização da Lei #11 no AGENTS.md:** Instituído o Protocolo Inviolável de Fechamento & Canonização Universal (Zero Entregas pela Metade) em 8 passos obrigatórios para todo pós-implementação aprovado.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `docs/livros-loops-autores` (e `main`) — Templates satélites elevados para v2.2.0 Padrão Ouro, taxonomia normalizada, ROUTE v2.2.0 homologada.
-- **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH.
-- **Documentação & Relatório:** `docs/templates/README.md`, `MANUAL_TEMPLATES_LEGOLOOP.pdf` e `AGENTS.md`.
+- **Status da Branch:** `docs/livros-loops-autores` (e `main`) — 12 skills canônicas universais distribuídas nos harnesses, pipelines `video-rea` e `video-motion` 100% integrados, Lei #11 de Fechamento formalizada.
+- **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
+- **Documentação & Relatório:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/` e `AGENTS.md`.

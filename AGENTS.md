@@ -48,6 +48,16 @@
    * **Pré-Ação (antes de alterar código):** `**[S] Situação:**`, `**[T] Teoria:**`, `**[E] Execução:**` (com tópicos `· **Ação:**`, `· **Rollback:**`, `· **Decisão:** **[1] seguir** \| **[2] personalizar** \| **[0] cancelar**).
    * **Pós-Ação (após executar e testar):** `**[S] Situação:**`, `**[T] Tese:**`, `**[E] Evidência:**` (com tópicos `· **Testes:**`, `· **Build:**`, `· **Verificação:**`).
    * Proibido preâmbulos, saudações ou re-resumos de arquivos no chat.
+11. **Protocolo Inviolável de Fechamento & Canonização Universal (Zero Entregas pela Metade):**
+   * Nenhuma implementação de processo, peça ou pipeline é declarada concluída sem disparar a cadeia obrigatória de fechamento:
+     1. **Manual Operacional:** em `docs/manuals/` (`YYYY-MM-DD_MANUAL_FUNCAO_<NOME>_LEGOLOOP.md`).
+     2. **Livro Didático LegoPress:** em `docs/books/<slug>/` (`livro.json`, `partes/`, `.md`, `.pdf` compilado e auditado com `legoloop legopress auditar`).
+     3. **Skill Canônica Universal:** em `skills/<nome>/SKILL.md` (distribuída universalmente para todos os harnesses via `legoloop instalar-skills`).
+     4. **Loop / Grafo DAG:** em `loops/<slug>/pipeline.dag.json` (e `.loop.json`), validado por `legoloop validate`.
+     5. **Recompilação e Instalação Fresca:** `go build -o bin/legoloop.exe ./cmd/legoloop` e `go install ./cmd/legoloop` para manter o PATH e o runtime do usuário atualizados.
+     6. **Atualização da Governança Viva:** `AGENTS.md`, `MEMORY.md`, `README.md`.
+     7. **Reindexação do Grafo Semântico:** via `codebase-memory-mcp cli index_repository`.
+     8. **Portões Mecânicos de Qualidade & Commit/Push:** testes 100% verdes, gofmt limpo, go vet sem warnings, funclen <= 35 linhas, commit e push rastreáveis.
 
 ---
 
@@ -61,7 +71,7 @@
   * **Refinar (substituição atômica de passos):** `legoloop refinar "<nome>" [--trocar P] [--json]` (Chat: `/legoloop-refinar`).
   * **Remover (desvinculação com rollback):** `legoloop remover "<nome>" [--dry-run] [--force] [--json]` (Chat: `/legoloop-remover`).
   * **Compor (sub-loops hierárquicos):** `legoloop compor "<alvo>" "<sub-loop>" [--pos N] [--json]` (Chat: `/legoloop-compor`).
-* **Instalação Canônica das Skills:** `legoloop instalar-skills [--vault DIR] [--dry-run] [--json]` (distribui as 10 skills canônicas embutidas para o cofre e cria vínculos nos harnesses).
+* **Instalação Canônica das Skills:** `legoloop instalar-skills [--vault DIR] [--dry-run] [--json]` (distribui as 12 skills canônicas embutidas para o cofre e cria vínculos nos harnesses).
 * **Demanda Normalização da Taxonomia de Skills (07/11/2026):** [INTENT](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md) · [SPEC](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md) · [PLAN](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md) · [ROUTE](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/routes/2026-11-07_ROUTE_NORMALIZACAO_TAXONOMIA_SKILLS.json)
 * **Governança Lazy Universal de MCPs:** `legoloop sync-harnesses [--dry-run|--apply]` (conecta Claude, MIMO, Cursor e Windsurf ao Meta-MCP Router) e `legoloop mcp-router` (servidor STDIO leve com bootstrap de apenas 2 tools).
 * **Alternador de Governança STE-PT:** `legoloop stept [status|set|on|off|scan|manual] [--harness H] [--modo M] [--pausa P] [--json]` (auditoria e chaveamento em todos os harnesses).

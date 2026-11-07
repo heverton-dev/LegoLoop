@@ -139,16 +139,15 @@
       "command": [
         "legoloop",
         "legopress",
-        "build",
-        "--manifest",
-        "docs/manuals/livro-video-motion/livro.json"
+        "auditar",
+        "docs/books/video-motion/2026-11-07_PIPELINE-MOTION-VIDEO.pdf"
       ],
       "depends_on": [
         "n05_render_bundle"
       ],
       "output": {
-        "artifact": "docs/manuals/livro-video-motion/livro.json",
-        "gate": "file_exists('docs/manuals/livro-video-motion/livro.json')"
+        "artifact": "docs/books/video-motion/livro.json",
+        "gate": "file_exists('docs/books/video-motion/livro.json')"
       }
     }
   ]
