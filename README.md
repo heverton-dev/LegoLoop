@@ -94,7 +94,7 @@ legoloop listar                                   # lista processos do cofre e v
 legoloop refinar "extrator-audio" --trocar aidd-rea
 legoloop remover "extrator-audio" --dry-run
 legoloop compor "esteira-master" "extrator-audio"
-legoloop instalar-skills                          # distribui as 6 skills canônicas nos harnesses
+legoloop instalar-skills                          # distribui as 10 skills canônicas nos harnesses
 
 # Execução e Studio Visual
 legoloop route --from Artifact:URL --to Artifact:Spec

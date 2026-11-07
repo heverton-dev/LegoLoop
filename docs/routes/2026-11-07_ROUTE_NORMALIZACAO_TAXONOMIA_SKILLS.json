@@ -1,0 +1,442 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "normalizacao-taxonomia-skills",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "session_id": "38311f3b-f20c-4f72-b15e-6826ffe786cd",
+  "intent_ref": "docs/intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+  "spec_ref": "docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+  "plan_ref": "docs/plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+  "initiative_ref": "I03",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+      "sha256": "76ea82f149503b9442ac4d1575a21ca81c4c510ebc99e56ffc36824b691ab7f5"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+      "sha256": "b330cb5f2ce007407de7a0c4b33c67e358f579f4106301ce3f1ae5dd289d37e7"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+      "sha256": "6dc06c9856803f725e5b5ee1adb4fafb258a5d899d4388555a50ec0faf9fe0b5"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-E01.1",
+      "initiative_id": "I03",
+      "epic_id": "E01",
+      "label": "Criar SKILL.md Canônicos em skills/",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "direct",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "skills/embed.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "skills/legoloop-piece-upgrader/SKILL.md",
+          "skills/legoloop-mega-pipeline/SKILL.md",
+          "skills/legoloop-loop-map/SKILL.md"
+        ],
+        "verify": [
+          ["go", "test", "-count=1", "./docs/templates/..."]
+        ],
+        "gate": "file_exists('skills/legoloop-piece-upgrader/SKILL.md') && file_exists('skills/legoloop-mega-pipeline/SKILL.md') && file_exists('skills/legoloop-loop-map/SKILL.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-E01.2",
+      "initiative_id": "I03",
+      "epic_id": "E01",
+      "label": "Redigir Manuais Operacionais em docs/manuals/",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "direct",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-E01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/manuals/MANUAL_FUNCAO_PIECE_UPGRADER_LEGOLOOP.md",
+          "docs/manuals/MANUAL_FUNCAO_MEGA_PIPELINE_LEGOLOOP.md",
+          "docs/manuals/MANUAL_FUNCAO_LOOP_MAP_LEGOLOOP.md"
+        ],
+        "verify": [],
+        "gate": "file_exists('docs/manuals/MANUAL_FUNCAO_PIECE_UPGRADER_LEGOLOOP.md') && file_exists('docs/manuals/MANUAL_FUNCAO_MEGA_PIPELINE_LEGOLOOP.md') && file_exists('docs/manuals/MANUAL_FUNCAO_LOOP_MAP_LEGOLOOP.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-E02.1",
+      "initiative_id": "I03",
+      "epic_id": "E02",
+      "label": "Atualizar Testes de Instalação (Red-Green)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-E01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/instalar_skills_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/cli/instalar_skills_test.go:TestInstalarSkills",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/instalar_skills_test.go"
+        ],
+        "verify": [
+          ["go", "test", "-count=1", "./internal/cli/..."]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-E02.2",
+      "initiative_id": "I03",
+      "epic_id": "E02",
+      "label": "Expandir skills.FuncoesNativas em Go (Green)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-E02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "skills/embed.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/cli/instalar_skills_test.go:TestInstalarSkills",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "skills/embed.go"
+        ],
+        "verify": [
+          ["go", "test", "-count=1", "./internal/cli/..."]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-E03.1",
+      "initiative_id": "I03",
+      "epic_id": "E03",
+      "label": "Recompilar Binário e Regressão Global",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "direct",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-E02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          ["go", "build", "-o", "bin/legoloop.exe", "./cmd/legoloop"],
+          ["go", "test", "-count=1", "./..."]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-E03.2",
+      "initiative_id": "I03",
+      "epic_id": "E03",
+      "label": "Executar legoloop instalar-skills Real",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "direct",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-E03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          ["bin/legoloop.exe", "instalar-skills", "--json"]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    }
+  ]
+}

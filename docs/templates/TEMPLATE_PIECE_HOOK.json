@@ -6,8 +6,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -File \"$CLAUDE_PROJECT_DIR/.claude/scripts/guard-secrets.ps1\"",
-            "timeout": 10
+            "command": "powershell -NoProfile -File \"$CLAUDE_PROJECT_DIR/.claude/scripts/guard-write-boundary.ps1\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"$CLAUDE_PROJECT_DIR/.claude/scripts/post-format-linter.ps1\"",
+            "timeout": 20
           }
         ]
       }

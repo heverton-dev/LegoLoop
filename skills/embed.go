@@ -13,7 +13,7 @@ import (
 //go:embed legoloop-*/*.md
 var FS embed.FS
 
-// FuncoesNativas lista os nomes canônicos das 7 funções nativas do LegoLoop.
+// FuncoesNativas lista os nomes canônicos das 10 funções nativas do LegoLoop.
 var FuncoesNativas = []string{
 	"legoloop-fabricar",
 	"legoloop-matriz",
@@ -22,6 +22,9 @@ var FuncoesNativas = []string{
 	"legoloop-remover",
 	"legoloop-compor",
 	"legoloop-legopress",
+	"legoloop-piece-upgrader",
+	"legoloop-mega-pipeline",
+	"legoloop-loop-map",
 }
 
 // ObterSkill devolve o conteúdo do SKILL.md da função informada (ex: "legoloop-matriz").

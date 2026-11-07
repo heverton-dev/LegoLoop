@@ -317,7 +317,15 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Motores em Go (`internal/plangen`):** Structs `routeNode`, `routeIsolation`, `routeRetryPolicy`, `tokenBudget`, `routeTelemetry` tipadas e geradas deterministicamente em `route.go` e `plan_md.go`.
   - **Conformidade Mecânica & Homologação:** 10/10 testes em `docs/templates`, 24/24 testes em `internal/plangen`, 100% de aprovação na suíte global (31 pacotes), `funclen` $\le 35$ linhas, `gofmt -l` 100% vazio, `go.mod` stdlib pura, binário `bin/legoloop.exe` recompilado.
 
+- **07/11/2026** — 🏷️ **Normalização da Taxonomia de Skills Proprietárias do LegoLoop (`legoloop-*`):**
+  - **Desvinculação do Prefixo Obsoleto `aidd-*`:** As 3 skills proprietárias do LegoLoop foram canonicamente renomeadas: `aidd-piece-upgrader` $\rightarrow$ `legoloop-piece-upgrader`, `aidd-legoloop-mega-pipeline` $\rightarrow$ `legoloop-mega-pipeline` e `aidd-loop-map` $\rightarrow$ `legoloop-loop-map`.
+  - **Expansão para 10 Funções Canônicas em Go:** O pacote `skills/embed.go` embutiu estaticamente as novas skills em `skills/` e o slice `FuncoesNativas` foi expandido de 7 para 10 itens.
+  - **TDD Red-Green & Manuais ISO:** Testes em `internal/cli/instalar_skills_test.go` provados via Red-Green. Adicionados 3 novos manuais em `docs/manuals/` (`2026-11-07_MANUAL_FUNCAO_PIECE_UPGRADER_LEGOLOOP.md`, `2026-11-07_MANUAL_FUNCAO_LOOP_MAP_LEGOLOOP.md`, `2026-11-07_MANUAL_FUNCAO_MEGA_PIPELINE_LEGOLOOP.md`).
+  - **Distribuição Universal:** `legoloop instalar-skills --json` executado com sucesso, populando o cofre `~/.aidd/canonical` e criando vínculos nos 6 harnesses detectados (`claude`, `gemini`, `cursor`, `codex`, `opencode`, `kiro`) e junctions em `antigravity-cli/skills/`.
+  - **Qualidade & Recompilação:** `go test ./...` verde, `go vet` limpo, `gofmt` vazio, `bin/legoloop.exe` recompilado e atualizado no PATH via `go install`.
+  - **Artefatos:** `docs/intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/routes/2026-11-07_ROUTE_NORMALIZACAO_TAXONOMIA_SKILLS.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_NORMALIZACAO_TAXONOMIA_SKILLS.md`.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `main` — ROUTE v2.2.0, Cadeia Merkle, Governança de Concorrência e Nós Blindados homologados.
-- **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso.
-- **Documentação & Relatório:** `docs/reports/2026-11-07_REPORT_ROUTE_V2_GOVERNANCE.md` e `AGENTS.md`.
+- **Status da Branch:** `main` — Taxonomia de 10 skills normalizada, ROUTE v2.2.0, Cadeia Merkle e Governança de Concorrência homologadas.
+- **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH.
+- **Documentação & Relatório:** `docs/reports/2026-11-07_REPORT_NORMALIZACAO_TAXONOMIA_SKILLS.md` e `AGENTS.md`.

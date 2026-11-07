@@ -1,13 +1,36 @@
 {
   "mcpServers": {
-    "{{nome-do-servidor}}": {
-      "command": "node",
+    "meu-servidor-mcp": {
+      "command": "uvx",
       "args": [
-        "./build/index.js"
+        "--from",
+        "fastmcp",
+        "run",
+        "server.py"
       ],
       "env": {
-        "SERVICE_TOKEN": "${SERVICE_TOKEN}"
-      }
+        "API_KEY": "${API_KEY}",
+        "WORKSPACE_ROOT": "${WORKSPACE_ROOT}"
+      },
+      "autoApprove": [
+        "consultar_recurso",
+        "analisar_alvo"
+      ]
+    },
+    "meu-servidor-node": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./docs"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "autoApprove": [
+        "read_file",
+        "list_directory"
+      ]
     }
   }
 }

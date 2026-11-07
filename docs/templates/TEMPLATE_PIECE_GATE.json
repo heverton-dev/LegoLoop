@@ -1,55 +1,80 @@
 {
-  "$schema": "https://legoloop.dev/schemas/gate-recipe.v1.json",
-  "template_version": "2.0.0",
+  "$schema": "https://legoloop.dev/schemas/gate-recipe.v2.json",
+  "template_version": "2.2.0",
   "name": "{{nome-da-receita-de-gate}}",
-  "description": "Receitas de gate binário. Cada expression compila no DSL de internal/gate e pode ser colada em output.gate de um nó DAG ou ROUTE, ou em slots.gates.",
+  "description": "Receitas de gate binário canônicas v2.2.0. Cada expression compila no DSL determinístico de internal/gate e pode ser colada em output.gate de um nó DAG ou ROUTE, ou em slots.gates.",
+  "metadata": {
+    "version": "2.2.0",
+    "tier": "ouro",
+    "category": "governance"
+  },
   "recipes": [
     {
       "id": "mechanical",
       "kind": "mechanical",
       "description": "Passa quando o comando de verificação sai com código 0.",
       "verify": [
-        ["go", "test", "./..."]
+        ["go", "test", "-v", "-count=1", "./..."]
       ],
       "expression": "exit_code == 0",
-      "timeout_sec": 120
+      "timeout_sec": 120,
+      "thresholds": {
+        "max_exit_code": 0,
+        "max_duration_sec": 120
+      }
     },
     {
       "id": "artifact-quality",
       "kind": "artifact",
-      "description": "O artefato existe, tem corpo mínimo e nenhum marcador de pendência.",
+      "description": "O artefato existe, tem corpo mínimo e nenhum marcador de pendência (Zero Stubs).",
       "verify": [],
       "expression": "file_exists('{{ARTEFATO}}') && word_count('{{ARTEFATO}}') > 50 && !has_pattern('{{ARTEFATO}}', '(?i)\\b(TODO|FIXME|TBD)\\b')",
-      "timeout_sec": 30
+      "timeout_sec": 30,
+      "thresholds": {
+        "min_word_count": 50,
+        "forbidden_patterns": ["TODO", "FIXME", "TBD"]
+      }
     },
     {
       "id": "spec-contract",
       "kind": "artifact",
-      "description": "A especificação tem checklist de critérios binários e seção de critérios de aceitação.",
+      "description": "A especificação tem checklist de critérios binários e seção de critérios de aceitação BDD.",
       "verify": [],
       "expression": "has_binary_criteria('{{SPEC}}') && has_acceptance_criteria('{{SPEC}}')",
-      "timeout_sec": 30
+      "timeout_sec": 30,
+      "thresholds": {
+        "require_binary_checklist": true,
+        "require_acceptance_criteria": true
+      }
     },
     {
       "id": "schema-contract",
       "kind": "schema",
-      "description": "O artefato JSON cumpre o JSON Schema informado.",
+      "description": "O artefato JSON cumpre estritamente o JSON Schema informado.",
       "verify": [],
       "expression": "schema_valid('{{SCHEMA}}', '{{ARTEFATO_JSON}}')",
-      "timeout_sec": 30
+      "timeout_sec": 30,
+      "thresholds": {
+        "strict_types": true,
+        "additional_properties": false
+      }
     },
     {
       "id": "human-stop-gate",
       "kind": "human",
-      "description": "Pausa a execução e exige aprovação humana explícita.",
+      "description": "Pausa a esteira determinística e exige autorização humana explícita (Stop-Gate Humano).",
       "verify": [],
       "expression": "prompt('{{PERGUNTA_AO_HUMANO}}')",
-      "timeout_sec": 0
+      "timeout_sec": 0,
+      "thresholds": {
+        "requires_explicit_decision": true
+      }
     }
   ],
   "on_failure": {
     "action": "block",
-    "max_retries": 0,
-    "notify_message": "O gate falhou: o artefato ou o comando não cumpriu o contrato. Corrija a causa e reexecute o nó."
+    "max_retries": 1,
+    "backoff_ms": 1000,
+    "notify_message": "O gate falhou: o artefato ou o comando não cumpriu o contrato inegociável. Corrija a causa e reexecute o nó."
   }
 }

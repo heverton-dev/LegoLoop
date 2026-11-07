@@ -14,7 +14,12 @@ import (
 )
 
 func TestInstalarSkills(t *testing.T) {
-	// 1. Manuais das 7 funções devem existir na raiz do repositório
+	// 0. Quantidade canônica de funções nativas
+	if len(skills.FuncoesNativas) != 10 {
+		t.Fatalf("esperava 10 funções nativas em skills.FuncoesNativas, obteve %d", len(skills.FuncoesNativas))
+	}
+
+	// 1. Manuais das 10 funções devem existir na raiz do repositório
 	manuaisEsperados := []string{
 		"2026-11-03_MANUAL_FUNCAO_FABRICAR_LEGOLOOP.md",
 		"2026-11-06_MANUAL_FUNCAO_MATRIZ_LEGOLOOP.md",
@@ -23,6 +28,9 @@ func TestInstalarSkills(t *testing.T) {
 		"2026-11-06_MANUAL_FUNCAO_REMOVER_LEGOLOOP.md",
 		"2026-11-06_MANUAL_FUNCAO_COMPOR_LEGOLOOP.md",
 		"2026-11-06_MANUAL_FUNCAO_LEGOPRESS_LEGOLOOP.md",
+		"2026-11-07_MANUAL_FUNCAO_PIECE_UPGRADER_LEGOLOOP.md",
+		"2026-11-07_MANUAL_FUNCAO_LOOP_MAP_LEGOLOOP.md",
+		"2026-11-07_MANUAL_FUNCAO_MEGA_PIPELINE_LEGOLOOP.md",
 	}
 	manualDir := filepath.Join("..", "..", "docs", "manuals")
 	for _, m := range manuaisEsperados {
