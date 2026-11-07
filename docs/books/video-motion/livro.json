@@ -1,0 +1,18 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Pipeline Canônico de Motion Video",
+  "nome_base": "2026-11-07_PIPELINE-MOTION-VIDEO",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura-4-pilares.md",
+    "03-micro-passo-a-passo.md",
+    "04-pratica-receitas-multi-aspecto.md",
+    "05-rotina-diff-updater.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "video-motion-v1",
+  "ultima_compilacao": "2026-11-07"
+}
