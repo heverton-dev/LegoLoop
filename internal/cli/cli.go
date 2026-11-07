@@ -67,6 +67,7 @@ Comandos:
   sync-harnesses (--dry-run|--apply)         conecta harnesses ao legoloop mcp-router
   mcp-router                                 inicia servidor MCP STDIO com Lazy discovery
   legopress  [doctor|auditar|criar|editar|atualizar|adequar|preview]  esteira industrial de livros técnicos
+  video-motion <subcomando> [opções]          pipeline determinístico de edição e motion vídeo
   version
 `
 
@@ -82,7 +83,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
 		"refinar": cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills,
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter,
-		"legopress": cmdLegoPress,
+		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

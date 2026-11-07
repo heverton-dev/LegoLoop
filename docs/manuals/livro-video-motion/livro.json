@@ -1,0 +1,32 @@
+{
+  "titulo": "Manual Operacional e Didático do Pipeline Video Motion",
+  "slug": "video-motion",
+  "versao": "1.0.0",
+  "capitulos": [
+    {
+      "ordem": 1,
+      "titulo": "Fundação e Princípio Determinístico",
+      "arquivo": "capitulo-01-fundacao.md"
+    },
+    {
+      "ordem": 2,
+      "titulo": "Arquitetura dos 4 Pilares",
+      "arquivo": "capitulo-02-arquitetura-4-pilares.md"
+    },
+    {
+      "ordem": 3,
+      "titulo": "Guia Prático Passo a Passo",
+      "arquivo": "capitulo-03-passo-a-passo.md"
+    },
+    {
+      "ordem": 4,
+      "titulo": "Receitas Multi-Aspecto (9:16, 16:9, 1:1)",
+      "arquivo": "capitulo-04-receitas-multi-aspecto.md"
+    },
+    {
+      "ordem": 5,
+      "titulo": "Rotina de Atualização Contínua por Diff",
+      "arquivo": "capitulo-05-rotina-diff-updater.md"
+    }
+  ]
+}
