@@ -29,6 +29,9 @@ var planMD string
 //go:embed TEMPLATE_ROUTE.json
 var routeJSON []byte
 
+//go:embed TEMPLATE_REPORT.md
+var reportMD string
+
 // Intent devolve o TEMPLATE_INTENT.md.
 func Intent() string { return intentMD }
 
@@ -40,6 +43,9 @@ func Plan() string { return planMD }
 
 // Route devolve o TEMPLATE_ROUTE.json.
 func Route() []byte { return slices.Clone(routeJSON) }
+
+// Report devolve o TEMPLATE_REPORT.md.
+func Report() string { return reportMD }
 
 var (
 	headingRe  = regexp.MustCompile(`(?m)^## (\d+\. .+?)\s*$`)

@@ -39,14 +39,20 @@ func TestEmbeddedTemplatesMatchFiles(t *testing.T) {
 	if templates.Intent() != string(read(t, "TEMPLATE_INTENT.md")) ||
 		templates.Spec() != string(read(t, "TEMPLATE_SPEC.md")) ||
 		templates.Plan() != string(read(t, "TEMPLATE_PLAN.md")) ||
+		templates.Report() != string(read(t, "TEMPLATE_REPORT.md")) ||
 		string(templates.Route()) != string(read(t, "TEMPLATE_ROUTE.json")) {
 		t.Fatal("o conteúdo embutido diverge dos arquivos em docs/templates")
 	}
 }
 
 func TestDocumentHeadingsAreNumberedAndStable(t *testing.T) {
-	want := map[string]int{"intent": 6, "spec": 6, "plan": 4}
-	docs := map[string]string{"intent": templates.Intent(), "spec": templates.Spec(), "plan": templates.Plan()}
+	want := map[string]int{"intent": 6, "spec": 6, "plan": 4, "report": 6}
+	docs := map[string]string{
+		"intent": templates.Intent(),
+		"spec":   templates.Spec(),
+		"plan":   templates.Plan(),
+		"report": templates.Report(),
+	}
 	for name, md := range docs {
 		hs := templates.Headings(md)
 		if len(hs) != want[name] {

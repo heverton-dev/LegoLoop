@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -32,7 +33,7 @@ func (d *Deps) initDefaults() {
 	}
 }
 
-// Executar executa as 8 etapas determinísticas de canonização e fechamento.
+// Executar executa as 9 etapas determinísticas de canonização e fechamento.
 func Executar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
@@ -45,11 +46,14 @@ func Executar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 		CanonName: canon,
 		Sucesso:   true,
 		Timestamp: start,
-		Etapas:    make([]EtapaStatus, 0, 8),
+		Etapas:    make([]EtapaStatus, 0, 9),
 	}
-
+	if req.Telemetria != nil {
+		res.Telemetria = *req.Telemetria
+	}
 	executarEtapas(ctx, &deps, slug, canon, req.DryRun, res)
 	res.Duracao = deps.Clock().Sub(start)
+	res.Telemetria.EnsureDefaults(res.Duracao)
 	return res, nil
 }
 
@@ -77,6 +81,9 @@ func executarEtapas(ctx context.Context, d *Deps, slug, canon string, dry bool, 
 	})
 	runEtapa(res, 8, "Portões Mecânicos & Commit", func() (string, error) {
 		return fecharPortoes(d, dry)
+	})
+	runEtapa(res, 9, "Relatório de Conclusão & Telemetria", func() (string, error) {
+		return fecharReporte(d, slug, canon, res, dry)
 	})
 }
 
@@ -184,4 +191,22 @@ func fecharGrafo(d *Deps, dry bool) (string, error) {
 
 func fecharPortoes(d *Deps, dry bool) (string, error) {
 	return "portoes_verificados", nil
+}
+
+func fecharReporte(d *Deps, slug, canon string, res *Result, dry bool) (string, error) {
+	dir := filepath.Join(d.RepoDir, "docs", "reports")
+	if !dry {
+		_ = os.MkdirAll(dir, 0o755)
+	}
+	name := fmt.Sprintf("%s_REPORT_%s.md", d.Clock().Format("2006-01-02"), strings.ToUpper(strings.ReplaceAll(slug, "-", "_")))
+	target := filepath.Join(dir, name)
+	res.ReportPath = target
+	if !dry {
+		res.Telemetria.EnsureDefaults(res.Duracao)
+		md := GerarReportMD(slug, canon, res, d.Clock())
+		if err := os.WriteFile(target, []byte(md), 0o644); err != nil {
+			return target, err
+		}
+	}
+	return target, nil
 }

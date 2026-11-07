@@ -130,6 +130,28 @@
         "artifact": "AGENTS.md",
         "gate": "file_exists('AGENTS.md')"
       }
+    },
+    {
+      "id": "n07_report_telemetry",
+      "type": "script",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "depends_on": [
+        "n06_governance_sync"
+      ],
+      "command": [
+        "legoloop",
+        "fechar",
+        "video-motion",
+        "--dry-run"
+      ],
+      "output": {
+        "artifact": "docs/templates/TEMPLATE_REPORT.md",
+        "gate": "file_exists('docs/templates/TEMPLATE_REPORT.md')"
+      }
     }
   ]
 }
