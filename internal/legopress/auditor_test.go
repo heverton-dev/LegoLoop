@@ -9,7 +9,7 @@ import (
 )
 
 func TestAuditorGeometry_RealPDF(t *testing.T) {
-	pdfPath := filepath.Join("..", "..", "docs", "livro", "06-11-2026_LEGOLOOP-A-REVOLU-O-DA-IA-MODULAR-EM-PE-AS-SIMPLES.pdf")
+	pdfPath := filepath.Join("..", "..", "docs", "books", "legoloop", "06-11-2026_LEGOLOOP-A-REVOLU-O-DA-IA-MODULAR-EM-PE-AS-SIMPLES.pdf")
 	if _, err := os.Stat(pdfPath); os.IsNotExist(err) {
 		t.Skip("PDF real nao encontrado para teste fim-a-fim")
 	}

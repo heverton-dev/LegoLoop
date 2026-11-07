@@ -169,7 +169,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "docs/livro/livro.json"
+          "docs/books/<slug>/livro.json"
         ],
         "verify": [
           [
@@ -238,7 +238,7 @@
       },
       "inputs": {
         "source_files": [
-          "docs/livro/livro.json"
+          "docs/books/<slug>/livro.json"
         ],
         "spec_anchor": "",
         "context_artifacts": []
@@ -249,7 +249,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "docs/livro/partes/*.md"
+          "docs/books/<slug>/partes/*.md"
         ],
         "verify": [
           [
@@ -318,8 +318,8 @@
       },
       "inputs": {
         "source_files": [
-          "docs/livro/partes/*.md",
-          "docs/livro/ativos/livro.typst"
+          "docs/books/<slug>/partes/*.md",
+          "docs/books/<slug>/ativos/livro.typst"
         ],
         "spec_anchor": "",
         "context_artifacts": []
@@ -330,7 +330,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "docs/livro/livro.pdf"
+          "docs/books/<slug>/livro.pdf"
         ],
         "verify": [
           [
@@ -399,7 +399,7 @@
       },
       "inputs": {
         "source_files": [
-          "docs/livro/livro.pdf"
+          "docs/books/<slug>/livro.pdf"
         ],
         "spec_anchor": "",
         "context_artifacts": []
@@ -410,7 +410,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "docs/livro/relatorio_geometria.json"
+          "docs/books/<slug>/relatorio_geometria.json"
         ],
         "verify": [
           [
@@ -479,7 +479,7 @@
       },
       "inputs": {
         "source_files": [
-          "docs/livro/relatorio_geometria.json"
+          "docs/books/<slug>/relatorio_geometria.json"
         ],
         "spec_anchor": "",
         "context_artifacts": []

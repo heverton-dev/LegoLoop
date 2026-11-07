@@ -1,0 +1,19 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Impeccable no LegoLoop: Design de Interfaces sem Clichês",
+  "nome_base": "07-11-2026_IMPECCABLE-DESIGN-DE-INTERFACES-SEM-CLICHES",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "fonte": "docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro.md",
+    "02-meso-loop-mestre.md",
+    "03-meso-sub-loops.md",
+    "04-micro-motor.md",
+    "05-pratica.md",
+    "06-apendices.md"
+  ],
+  "revisoes": [],
+  "ultima_compilacao": "2026-11-07"
+}

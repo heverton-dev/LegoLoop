@@ -51,8 +51,8 @@
         "intent": "file('docs/intents/INTENT_LIVRO.md')"
       },
       "output": {
-        "artifact": "docs/livro/livro.json",
-        "gate": "file_exists('docs/livro/livro.json')"
+        "artifact": "docs/books/<slug>/livro.json",
+        "gate": "file_exists('docs/books/<slug>/livro.json')"
       }
     },
     {
@@ -73,11 +73,11 @@
         "mode": "isolated"
       },
       "inputs": {
-        "manifest": "file('docs/livro/livro.json')"
+        "manifest": "file('docs/books/<slug>/livro.json')"
       },
       "output": {
-        "artifact": "docs/livro/partes/00-frontmatter.md",
-        "gate": "file_exists('docs/livro/partes/00-frontmatter.md')"
+        "artifact": "docs/books/<slug>/partes/00-frontmatter.md",
+        "gate": "file_exists('docs/books/<slug>/partes/00-frontmatter.md')"
       }
     },
     {
@@ -99,11 +99,11 @@
       },
       "timeout_sec": 180,
       "inputs": {
-        "manifest": "file('docs/livro/livro.json')"
+        "manifest": "file('docs/books/<slug>/livro.json')"
       },
       "output": {
-        "artifact": "docs/livro/livro.pdf",
-        "gate": "file_exists('docs/livro/livro.pdf')"
+        "artifact": "docs/books/<slug>/livro.pdf",
+        "gate": "file_exists('docs/books/<slug>/livro.pdf')"
       }
     },
     {
@@ -125,11 +125,11 @@
       },
       "timeout_sec": 120,
       "inputs": {
-        "pdf": "file('docs/livro/livro.pdf')"
+        "pdf": "file('docs/books/<slug>/livro.pdf')"
       },
       "output": {
-        "artifact": "docs/livro/relatorio_geometria.json",
-        "gate": "file_exists('docs/livro/relatorio_geometria.json')"
+        "artifact": "docs/books/<slug>/relatorio_geometria.json",
+        "gate": "file_exists('docs/books/<slug>/relatorio_geometria.json')"
       }
     }
   ]

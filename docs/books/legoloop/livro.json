@@ -1,0 +1,20 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "LegoLoop: A Revolução da IA Modular em Peças Simples",
+  "nome_base": "06-11-2026_LEGOLOOP-A-REVOLU-O-DA-IA-MODULAR-EM-PE-AS-SIMPLES",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro.md",
+    "02-meso-os-cinco-verbos.md",
+    "03-meso-o-looping-studio.md",
+    "04-micro-o-motor-e-governanca.md",
+    "05-padroes-e-anti-padroes.md",
+    "06-pratica-caderno-de-esteiras.md",
+    "07-apendices-e-glossario.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "b9ac0858ef1f0a85176c1d432b9b3184220ff5f14abb99ad1efa8cdf8a6f0ebe",
+  "ultima_compilacao": "2026-11-06"
+}

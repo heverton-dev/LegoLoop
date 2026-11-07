@@ -43,7 +43,7 @@ func TestLegoPressCLI_Doctor(t *testing.T) {
 }
 
 func TestLegoPressCLI_Auditar(t *testing.T) {
-	pdfPath := filepath.Join("..", "..", "docs", "livro", "06-11-2026_LEGOLOOP-A-REVOLU-O-DA-IA-MODULAR-EM-PE-AS-SIMPLES.pdf")
+	pdfPath := filepath.Join("..", "..", "docs", "books", "legoloop", "06-11-2026_LEGOLOOP-A-REVOLU-O-DA-IA-MODULAR-EM-PE-AS-SIMPLES.pdf")
 
 	var stdout, stderr bytes.Buffer
 	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}

@@ -31,16 +31,16 @@ legoloop legopress auditar caminho/do/livro.pdf
 legoloop legopress criar "Nome do Livro"
 
 # Edição e calibração de livro existente
-legoloop legopress editar docs/livro/
+legoloop legopress editar docs/books/<slug>/
 
 # Sincronização viva com diffs do Git
-legoloop legopress atualizar docs/livro/
+legoloop legopress atualizar docs/books/<slug>/
 
 # Adequação didática sem IA-slop
 legoloop legopress adequar conteudo_bruto.md
 
 # Geração de preview em alta resolução (PNG por página)
-legoloop legopress preview docs/livro/
+legoloop legopress preview docs/books/<slug>/
 ```
 
 ---
