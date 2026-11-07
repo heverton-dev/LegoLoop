@@ -1,0 +1,627 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "legoloop-fechar-canonico",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "session_id": "9408084d-aa3e-40a3-a924-418ca1f67855",
+  "intent_ref": "docs/intents/2026-11-07_INTENT_FECHAR_CANONICO.md",
+  "spec_ref": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md",
+  "plan_ref": "docs/plans/2026-11-07_PLAN_FECHAR_CANONICO.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-07_INTENT_FECHAR_CANONICO.md",
+      "sha256": "f814b610075d4f8c4e2c22e41c9c3bdc5a00dfec244d6ab62e6cd8ec4e135884"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md",
+      "sha256": "df77fa28c18d2ede65ed5346853707c02f150f62f47bc145d6f54dd9ac9a15b2"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-07_PLAN_FECHAR_CANONICO.md",
+      "sha256": "756717e8d2361322ff9f71187bd4a3da288b7860da64f7cdb71f52a37abdd7ad"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Modelagem de Tipos e Validação do Slug",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "routing": {
+        "mode": "suggested",
+        "primary": {
+          "harness": "9router",
+          "model": "code-pro",
+          "effort": "high"
+        },
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "allowlist": []
+      },
+      "limits": {
+        "timeout_sec": 180,
+        "retry_policy": {
+          "max_retries": 1,
+          "backoff_ms": 1000,
+          "fallback_model": true
+        },
+        "token_budget": {
+          "max_input_tokens": 8000,
+          "max_output_tokens": 300
+        },
+        "rollback": "stash_changes"
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fechar/types.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts": [
+          "internal/fechar/types.go",
+          "internal/fechar/fechar_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/fechar",
+          "-run",
+          "TestValidateAndNormalizeSlug"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fechar/types.go')"
+      },
+      "dependencies": [],
+      "spec_ref": "AC-E01.1",
+      "telemetry": {
+        "tokens_consumed": null,
+        "duration_ms": null,
+        "model_used": null,
+        "exit_code": null
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Orquestrador Hermético das 8 Etapas",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "routing": {
+        "mode": "suggested",
+        "primary": {
+          "harness": "9router",
+          "model": "code-pro",
+          "effort": "high"
+        },
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "allowlist": []
+      },
+      "limits": {
+        "timeout_sec": 240,
+        "retry_policy": {
+          "max_retries": 1,
+          "backoff_ms": 1000,
+          "fallback_model": true
+        },
+        "token_budget": {
+          "max_input_tokens": 16000,
+          "max_output_tokens": 600
+        },
+        "rollback": "stash_changes"
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fechar/fechar.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts": [
+          "internal/fechar/fechar.go",
+          "internal/fechar/fechar_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/fechar"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fechar/fechar.go')"
+      },
+      "dependencies": [
+        "TICK-01.1"
+      ],
+      "spec_ref": "AC-E01.3",
+      "telemetry": {
+        "tokens_consumed": null,
+        "duration_ms": null,
+        "model_used": null,
+        "exit_code": null
+      }
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano — Épico 01",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "interactive_prompt",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "routing": {
+        "mode": "manual",
+        "primary": {
+          "harness": "cli",
+          "model": "human",
+          "effort": "none"
+        },
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "allowlist": []
+      },
+      "limits": {
+        "timeout_sec": 86400,
+        "retry_policy": null,
+        "token_budget": {
+          "max_input_tokens": 1000,
+          "max_output_tokens": 100
+        },
+        "rollback": "abort_pipeline"
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#SG-E01",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "verification": [],
+        "gate": "prompt('Motor internal/fechar testado com 100% verde? Autoriza iniciar CLI e Skill?')"
+      },
+      "dependencies": [
+        "TICK-01.2"
+      ],
+      "spec_ref": "SG-E01",
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Implementação do Comando CLI legoloop fechar",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "routing": {
+        "mode": "suggested",
+        "primary": {
+          "harness": "9router",
+          "model": "code-pro",
+          "effort": "high"
+        },
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "allowlist": []
+      },
+      "limits": {
+        "timeout_sec": 180,
+        "retry_policy": {
+          "max_retries": 1,
+          "backoff_ms": 1000,
+          "fallback_model": true
+        },
+        "token_budget": {
+          "max_input_tokens": 12000,
+          "max_output_tokens": 400
+        },
+        "rollback": "stash_changes"
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fechar.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts": [
+          "internal/cli/fechar.go",
+          "internal/cli/fechar_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/cli",
+          "-run",
+          "TestCmdFechar"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/cli/fechar.go')"
+      },
+      "dependencies": [
+        "SG-E01"
+      ],
+      "spec_ref": "AC-E02.1",
+      "telemetry": {
+        "tokens_consumed": null,
+        "duration_ms": null,
+        "model_used": null,
+        "exit_code": null
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Criação da Skill Universal skills/legoloop-fechar/SKILL.md",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "routing": {
+        "mode": "suggested",
+        "primary": {
+          "harness": "9router",
+          "model": "code-nano",
+          "effort": "low"
+        },
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "allowlist": []
+      },
+      "limits": {
+        "timeout_sec": 120,
+        "retry_policy": {
+          "max_retries": 1,
+          "backoff_ms": 1000,
+          "fallback_model": true
+        },
+        "token_budget": {
+          "max_input_tokens": 6000,
+          "max_output_tokens": 300
+        },
+        "rollback": "stash_changes"
+      },
+      "inputs": {
+        "source_files": [
+          "skills/legoloop-fechar/SKILL.md",
+          "skills/embed.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts": [
+          "skills/legoloop-fechar/SKILL.md"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/cli",
+          "-run",
+          "TestInstalarSkills"
+        ],
+        "gate": "exit_code == 0 && file_exists('skills/legoloop-fechar/SKILL.md')"
+      },
+      "dependencies": [
+        "TICK-02.1"
+      ],
+      "spec_ref": "AC-E02.2",
+      "telemetry": {
+        "tokens_consumed": null,
+        "duration_ms": null,
+        "model_used": null,
+        "exit_code": null
+      }
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano — Épico 02",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "interactive_prompt",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "routing": {
+        "mode": "manual",
+        "primary": {
+          "harness": "cli",
+          "model": "human",
+          "effort": "none"
+        },
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "allowlist": []
+      },
+      "limits": {
+        "timeout_sec": 86400,
+        "retry_policy": null,
+        "token_budget": {
+          "max_input_tokens": 1000,
+          "max_output_tokens": 100
+        },
+        "rollback": "abort_pipeline"
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#SG-E02",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "verification": [],
+        "gate": "prompt('CLI e Skill legoloop-fechar criados e testados? Autoriza DAG e Acoplamento?')"
+      },
+      "dependencies": [
+        "TICK-02.2"
+      ],
+      "spec_ref": "SG-E02",
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Grafo DAG loops/fechar/pipeline.dag.json",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "routing": {
+        "mode": "suggested",
+        "primary": {
+          "harness": "9router",
+          "model": "code-nano",
+          "effort": "low"
+        },
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "allowlist": []
+      },
+      "limits": {
+        "timeout_sec": 120,
+        "retry_policy": {
+          "max_retries": 1,
+          "backoff_ms": 1000,
+          "fallback_model": true
+        },
+        "token_budget": {
+          "max_input_tokens": 6000,
+          "max_output_tokens": 300
+        },
+        "rollback": "stash_changes"
+      },
+      "inputs": {
+        "source_files": [
+          "loops/fechar/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts": [
+          "loops/fechar/pipeline.dag.json"
+        ],
+        "verification": [
+          "go",
+          "run",
+          "./cmd/legoloop",
+          "validate",
+          "loops/fechar/pipeline.dag.json"
+        ],
+        "gate": "exit_code == 0 && file_exists('loops/fechar/pipeline.dag.json')"
+      },
+      "dependencies": [
+        "SG-E02"
+      ],
+      "spec_ref": "AC-E03.1",
+      "telemetry": {
+        "tokens_consumed": null,
+        "duration_ms": null,
+        "model_used": null,
+        "exit_code": null
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Acoplamento no loops/mega-pipeline.loop.json",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "routing": {
+        "mode": "suggested",
+        "primary": {
+          "harness": "9router",
+          "model": "code-nano",
+          "effort": "low"
+        },
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "allowlist": []
+      },
+      "limits": {
+        "timeout_sec": 120,
+        "retry_policy": {
+          "max_retries": 1,
+          "backoff_ms": 1000,
+          "fallback_model": true
+        },
+        "token_budget": {
+          "max_input_tokens": 6000,
+          "max_output_tokens": 300
+        },
+        "rollback": "stash_changes"
+      },
+      "inputs": {
+        "source_files": [
+          "loops/mega-pipeline.loop.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts": [
+          "loops/mega-pipeline.loop.json"
+        ],
+        "verification": [
+          "go",
+          "run",
+          "./cmd/legoloop",
+          "validate",
+          "loops/mega-pipeline.loop.json"
+        ],
+        "gate": "exit_code == 0"
+      },
+      "dependencies": [
+        "TICK-03.1"
+      ],
+      "spec_ref": "AC-E03.2",
+      "telemetry": {
+        "tokens_consumed": null,
+        "duration_ms": null,
+        "model_used": null,
+        "exit_code": null
+      }
+    }
+  ]
+}

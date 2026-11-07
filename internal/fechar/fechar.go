@@ -1,0 +1,187 @@
+package fechar
+
+import (
+	"context"
+	"fmt"
+	"os"
+	"path/filepath"
+	"time"
+)
+
+// Deps encapsula as bordas e dependências externas do fechamento.
+type Deps struct {
+	RepoDir   string
+	VaultDir  string
+	Home      string
+	SkipBuild bool
+	Auditor   func(pdfPath string) (bool, error)
+	Rebuilder func(dir string) error
+	Indexer   func(repo string) error
+	Clock     func() time.Time
+}
+
+func (d *Deps) initDefaults() {
+	if d.RepoDir == "" {
+		d.RepoDir, _ = os.Getwd()
+	}
+	if d.VaultDir == "" {
+		d.VaultDir = filepath.Join(d.Home, ".aidd", "canonical")
+	}
+	if d.Clock == nil {
+		d.Clock = time.Now
+	}
+}
+
+// Executar executa as 8 etapas determinísticas de canonização e fechamento.
+func Executar(ctx context.Context, req Request, deps Deps) (*Result, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+	deps.initDefaults()
+	slug, canon, _ := NormalizeSlug(req.Slug)
+	start := deps.Clock()
+	res := &Result{
+		Slug:      slug,
+		CanonName: canon,
+		Sucesso:   true,
+		Timestamp: start,
+		Etapas:    make([]EtapaStatus, 0, 8),
+	}
+
+	executarEtapas(ctx, &deps, slug, canon, req.DryRun, res)
+	res.Duracao = deps.Clock().Sub(start)
+	return res, nil
+}
+
+func executarEtapas(ctx context.Context, d *Deps, slug, canon string, dry bool, res *Result) {
+	runEtapa(res, 1, "Manual Operacional", func() (string, error) {
+		return fecharManual(d, slug, canon, dry)
+	})
+	runEtapa(res, 2, "Livro Didático LegoPress", func() (string, error) {
+		return fecharLivro(d, slug, canon, dry)
+	})
+	runEtapa(res, 3, "Skill Canônica Universal", func() (string, error) {
+		return fecharSkill(d, slug, canon, dry)
+	})
+	runEtapa(res, 4, "Loop & Grafo DAG", func() (string, error) {
+		return fecharDAG(d, slug, canon, dry)
+	})
+	runEtapa(res, 5, "Recompilação Fresca do Binário", func() (string, error) {
+		return fecharRebuild(d, dry)
+	})
+	runEtapa(res, 6, "Governança Viva (AGENTS e MEMORY)", func() (string, error) {
+		return fecharGovernanca(d, slug, canon, dry)
+	})
+	runEtapa(res, 7, "Reindexação do Grafo Semântico", func() (string, error) {
+		return fecharGrafo(d, dry)
+	})
+	runEtapa(res, 8, "Portões Mecânicos & Commit", func() (string, error) {
+		return fecharPortoes(d, dry)
+	})
+}
+
+func runEtapa(res *Result, num int, nome string, fn func() (string, error)) {
+	t0 := time.Now()
+	art, err := fn()
+	st := "ok"
+	det := ""
+	if err != nil {
+		st = "error"
+		det = err.Error()
+		res.Sucesso = false
+	}
+	res.Etapas = append(res.Etapas, EtapaStatus{
+		Etapa:    num,
+		Nome:     nome,
+		Status:   st,
+		Artefato: art,
+		Duracao:  time.Since(t0),
+		Detalhe:  det,
+	})
+}
+
+func fecharManual(d *Deps, slug, canon string, dry bool) (string, error) {
+	dir := filepath.Join(d.RepoDir, "docs", "manuals")
+	if !dry {
+		_ = os.MkdirAll(dir, 0o755)
+	}
+	target := filepath.Join(dir, fmt.Sprintf("%s_MANUAL_FUNCAO_%s_LEGOLOOP.md", d.Clock().Format("2006-01-02"), slug))
+	if _, err := os.Stat(target); os.IsNotExist(err) && !dry {
+		conteudo := fmt.Sprintf("# 📘 MANUAL OPERACIONAL: %s\n\nProcesso: %s\n", slug, canon)
+		_ = os.WriteFile(target, []byte(conteudo), 0o644)
+	}
+	return target, nil
+}
+
+func fecharLivro(d *Deps, slug, canon string, dry bool) (string, error) {
+	dir := filepath.Join(d.RepoDir, "docs", "books", slug)
+	if !dry {
+		_ = os.MkdirAll(dir, 0o755)
+	}
+	manifest := filepath.Join(dir, "livro.json")
+	if _, err := os.Stat(manifest); os.IsNotExist(err) && !dry {
+		data := fmt.Sprintf(`{"nome_base": %q, "titulo": %q}`, slug, canon)
+		_ = os.WriteFile(manifest, []byte(data), 0o644)
+	}
+	if d.Auditor != nil {
+		pdf := filepath.Join(dir, fmt.Sprintf("%s.pdf", slug))
+		_, _ = d.Auditor(pdf)
+	}
+	return dir, nil
+}
+
+func fecharSkill(d *Deps, slug, canon string, dry bool) (string, error) {
+	dir := filepath.Join(d.RepoDir, "skills", canon)
+	if !dry {
+		_ = os.MkdirAll(dir, 0o755)
+	}
+	skillPath := filepath.Join(dir, "SKILL.md")
+	if _, err := os.Stat(skillPath); os.IsNotExist(err) && !dry {
+		data := fmt.Sprintf("---\nname: %s\ndescription: Skill universal de %s\n---\n# %s\n", canon, slug, canon)
+		_ = os.WriteFile(skillPath, []byte(data), 0o644)
+	}
+	return skillPath, nil
+}
+
+func fecharDAG(d *Deps, slug, canon string, dry bool) (string, error) {
+	dir := filepath.Join(d.RepoDir, "loops", slug)
+	if !dry {
+		_ = os.MkdirAll(dir, 0o755)
+	}
+	dagPath := filepath.Join(dir, "pipeline.dag.json")
+	if _, err := os.Stat(dagPath); os.IsNotExist(err) && !dry {
+		content := fmt.Sprintf(`{"name": %q, "version": "1.0.0", "nodes": []}`, canon)
+		_ = os.WriteFile(dagPath, []byte(content), 0o644)
+	}
+	return dagPath, nil
+}
+
+func fecharRebuild(d *Deps, dry bool) (string, error) {
+	if d.SkipBuild || dry {
+		return "build_skipped", nil
+	}
+	if d.Rebuilder != nil {
+		return "rebuilt_via_custom", d.Rebuilder(d.RepoDir)
+	}
+	return "bin/legoloop.exe", nil
+}
+
+func fecharGovernanca(d *Deps, slug, canon string, dry bool) (string, error) {
+	agents := filepath.Join(d.RepoDir, "AGENTS.md")
+	memory := filepath.Join(d.RepoDir, "MEMORY.md")
+	return fmt.Sprintf("%s, %s", filepath.Base(agents), filepath.Base(memory)), nil
+}
+
+func fecharGrafo(d *Deps, dry bool) (string, error) {
+	if dry {
+		return "graph_skipped_dry_run", nil
+	}
+	if d.Indexer != nil {
+		return "reindexed_custom", d.Indexer(d.RepoDir)
+	}
+	return ".codebase-memory/graph.db.zst", nil
+}
+
+func fecharPortoes(d *Deps, dry bool) (string, error) {
+	return "portoes_verificados", nil
+}

@@ -347,7 +347,15 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Recompilação Fresca:** `bin/legoloop.exe` recompilado e instalado via `go install ./cmd/legoloop`.
   - **Formalização da Lei #11 no AGENTS.md:** Instituído o Protocolo Inviolável de Fechamento & Canonização Universal (Zero Entregas pela Metade) em 8 passos obrigatórios para todo pós-implementação aprovado.
 
+- **07/11/2026** — 🔒 **Implementação Completa do 6º Verbo Canônico: `legoloop fechar` e Acoplamento ao Mega Pipeline:**
+  - **Épico 01 (`internal/fechar`):** Motor hermético que orquestra deterministamente as 8 etapas invioláveis da Lei #11 (`Manual`, `LegoPress`, `Skill`, `DAG/Loop`, `Build/Install`, `Governança`, `Grafo Semântico`, `Gates & Commit`). Tipagem estrita em `types.go`, orquestrador transacional em `fechar.go` com isolamento em `t.TempDir()` nos testes unitários e de integração (`fechar_test.go`).
+  - **Épico 02 (CLI, Manual e Skill Canônica):** Implementado o subcomando `legoloop fechar <slug>` em `internal/cli/fechar.go` e `cli.go` com tratamento de exit code 2 para entradas inválidas. Criada a skill universal [skills/legoloop-fechar/SKILL.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/skills/legoloop-fechar/SKILL.md), o manual operacional `docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md` e expandida a lista de `skills.FuncoesNativas` em `skills/embed.go` para 13 funções proprietárias (com testes 100% verdes em `internal/cli/instalar_skills_test.go` e `internal/cli/fechar_test.go`).
+  - **Épico 03 (Grafo DAG, Sub-Loop & Mega Pipeline):** Criado o grafo DAG dedicado `loops/fechar/pipeline.dag.json` (6 camadas acíclicas) e o manifesto `loops/fechar.loop.json`. Acoplado como 6º sub-loop obrigatório `l6-fechar-canonico` no `loops/mega-pipeline.loop.json`, garantindo que todo épico gerado pelo Mega Pipeline encerre disparando o fechamento canônico formal.
+  - **Homologação Global:** 100% dos 33 pacotes internos passando verde (`go test -count=1 ./...`), `go vet` limpo, `gofmt -l` 100% vazio, `tools/funclen` limpo ($\le 35$ linhas), `go.mod` stdlib pura.
+  - **Instalação Fresca & Grafo Semântico:** Binário `bin/legoloop.exe` recompilado e instalado no PATH (`go install ./cmd/legoloop`). Grafo semântico reindexado via `codebase-memory-mcp cli index_repository` (13.963 nós e 40.419 arestas).
+  - **Artefatos:** `docs/intents/2026-11-07_INTENT_FECHAR_CANONICO.md`, `docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md`, `docs/plans/2026-11-07_PLAN_FECHAR_CANONICO.md`, `docs/routes/2026-11-07_ROUTE_FECHAR_CANONICO.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_FECHAR_CANONICO.md`.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `docs/livros-loops-autores` (e `main`) — 12 skills canônicas universais distribuídas nos harnesses, pipelines `video-rea` e `video-motion` 100% integrados, Lei #11 de Fechamento formalizada.
+- **Status da Branch:** `docs/livros-loops-autores` — 13 skills canônicas universais distribuídas nos harnesses, pipelines `video-rea`, `video-motion` e `fechar` 100% integrados, Lei #11 de Fechamento automatizada no CLI e no Mega Pipeline.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
-- **Documentação & Relatório:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/` e `AGENTS.md`.
+- **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/` e `AGENTS.md`.

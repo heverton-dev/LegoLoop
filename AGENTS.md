@@ -64,14 +64,16 @@
 ## 2. Comandos & Rotas de Governança
 
 * **Validar conformidade e testes:** `go test -count=1 ./...` e `go test -count=1 -tags e2e ./internal/e2e/...` (ou `npm test` quando houver front-end com testes JS; a lógica pura do Studio roda em `node`).
-* **Fábrica & Ciclo de Vida dos 5 Verbos de Processo:**
+* **Fábrica & Ciclo de Vida dos 6 Verbos de Processo:**
   * **Fabricar (criação completa):** `legoloop fabricar "<nome>" [--yes] [--goal T] [--model M] [--category build|reverse|web|mobile] [--dry-run] [--json]` (Chat: `/legoloop-fabricar`; Studio: **+ Novo Processo**). **Não confundir com `legoloop canonize`** (desduplicação por SHA-256).
   * **Matriz de Peças (reputação/aptidão):** `legoloop matriz [--tier ouro|prata|bronze] [--json]` (Chat: `/legoloop-matriz`).
   * **Listar (inventário e vínculos):** `legoloop listar [--json]` (Chat: `/legoloop-listar`; Studio: **Processos**).
   * **Refinar (substituição atômica de passos):** `legoloop refinar "<nome>" [--trocar P] [--json]` (Chat: `/legoloop-refinar`).
   * **Remover (desvinculação com rollback):** `legoloop remover "<nome>" [--dry-run] [--force] [--json]` (Chat: `/legoloop-remover`).
   * **Compor (sub-loops hierárquicos):** `legoloop compor "<alvo>" "<sub-loop>" [--pos N] [--json]` (Chat: `/legoloop-compor`).
-* **Instalação Canônica das Skills:** `legoloop instalar-skills [--vault DIR] [--dry-run] [--json]` (distribui as 12 skills canônicas embutidas para o cofre e cria vínculos nos harnesses).
+  * **Fechar (canonização determinística em 8 etapas):** `legoloop fechar "<slug>" [--dry-run] [--skip-build] [--json]` (Chat: `/legoloop-fechar`).
+* **Instalação Canônica das Skills:** `legoloop instalar-skills [--vault DIR] [--dry-run] [--json]` (distribui as 13 skills canônicas embutidas para o cofre e cria vínculos nos harnesses).
+* **Demanda Motor Universal de Fechamento (07/11/2026):** [INTENT](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents/2026-11-07_INTENT_FECHAR_CANONICO.md) · [SPEC](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md) · [PLAN](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/2026-11-07_PLAN_FECHAR_CANONICO.md) · [ROUTE](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/routes/2026-11-07_ROUTE_FECHAR_CANONICO.json) · [Relatório final](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports/2026-11-07_REPORT_FECHAR_CANONICO.md)
 * **Demanda Normalização da Taxonomia de Skills (07/11/2026):** [INTENT](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md) · [SPEC](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md) · [PLAN](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md) · [ROUTE](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/routes/2026-11-07_ROUTE_NORMALIZACAO_TAXONOMIA_SKILLS.json)
 * **Governança Lazy Universal de MCPs:** `legoloop sync-harnesses [--dry-run|--apply]` (conecta Claude, MIMO, Cursor e Windsurf ao Meta-MCP Router) e `legoloop mcp-router` (servidor STDIO leve com bootstrap de apenas 2 tools).
 * **Alternador de Governança STE-PT:** `legoloop stept [status|set|on|off|scan|manual] [--harness H] [--modo M] [--pausa P] [--json]` (auditoria e chaveamento em todos os harnesses).
