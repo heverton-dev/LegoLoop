@@ -68,6 +68,7 @@ Comandos:
   mcp-router                                 inicia servidor MCP STDIO com Lazy discovery
   legopress  [doctor|auditar|criar|editar|atualizar|adequar|preview]  esteira industrial de livros técnicos
   video-motion <subcomando> [opções]          pipeline determinístico de edição e motion vídeo
+  video-rea  <subcomando> [opções]             pipeline universal de engenharia reversa audiovisual
   version
 `
 
@@ -83,7 +84,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
 		"refinar": cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills,
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter,
-		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion,
+		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

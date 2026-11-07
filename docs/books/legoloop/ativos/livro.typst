@@ -1,7 +1,8 @@
 // =============================================================================
-// TEMPLATE TYPST CORPORATIVO — ESTILO EDITORIAL MINIMALISTA CLEAN BRANCO
-// Direção de arte: Capa branca, tipografia pura, zero sobreposições,
-// cabeçalho discreto clarinho, entrelinha 1.5 e paleta Google Suavizada.
+// TEMPLATE TYPST CORPORATIVO — ESTILO EDITORIAL MINIMALISTA COM COLUNA DE ANOTAÇÕES
+// Direção de arte: Capa branca padronizada, tipografia clássica,
+// coluna lateral direita com linhas pautadas de caderno para anotações do leitor,
+// cabeçalho discreto em linha única e paleta Google Suavizada.
 // =============================================================================
 
 #let cor-fundo    = rgb("#ffffff")                                    // Branco puro limpo
@@ -10,8 +11,8 @@
 #let cor-texto    = rgb("#292524")                                    // Grafite quente stone
 #let cor-suave    = rgb("#64748b")                                    // Cinza pedra suave
 #let cor-linha    = rgb("#e2e8f0")                                    // Linha divisória sutil
-#let cor-accent   = rgb($if(accent)$"$accent$"$else$"#2563eb"$endif$) // Azul Cobalto Google Suave
-#let cor-accent2  = rgb("#1d4ed8")                                    // Cobalto profundo
+#let cor-accent   = rgb($if(accent)$"#$accent$"$else$"#2563eb"$endif$) // Azul Cobalto Google Suave
+#let cor-accent2  = cor-accent.darken(25%)                            // Tom profundo da cor da obra
 #let cor-alerta   = rgb("#d97706")                                    // Âmbar Google Dourado
 #let cor-ok       = rgb("#16a34a")                                    // Verde Esmeralda Google
 #let cor-erro     = rgb("#dc2626")                                    // Carmesim Google
@@ -48,7 +49,7 @@
 
 // Painel com cantos arredondados, fundo sutil e barra lateral limpa
 #let painel(titulo, corpo, cor: cor-accent) = block(
-  width: 100%, breakable: true, above: 16pt, below: 16pt,
+  width: 100%, breakable: false, above: 16pt, below: 16pt,
   fill: rgb("#f8fafc"), radius: 6pt,
   stroke: (left: 3.5pt + cor, rest: 0.6pt + cor-linha),
   inset: (x: 14pt, y: 12pt),
@@ -67,7 +68,7 @@
 )[
   #text(
     font: ("Segoe UI", "Arial"),
-    size: 13pt, weight: "bold", fill: cor-tinta
+    size: 13pt, weight: "bold", fill: cor-tinta,
   )[#corpo]
 ]
 
@@ -148,10 +149,10 @@
 #show table: set text(size: 5.9pt, hyphenate: false)
 #show table: set par(justify: false, leading: 0.45em)
 #show table: it => {
-  show raw: set text(font: ("Consolas", "Courier New"), size: 5.4pt)
+  show raw.where(block: false): r => text(font: ("Consolas", "Courier New"), size: 5.6pt, fill: cor-accent2, hyphenate: false)[#r.text]
   it
 }
-#show figure.where(kind: table): set block(breakable: true)
+#show figure.where(kind: table): set block(breakable: false)
 #show figure.where(kind: table): set align(left)
 #show figure.where(kind: table): set figure(numbering: none)
 #show figure.where(kind: table): set figure.caption(position: top)
@@ -169,6 +170,20 @@
     #text(font: ("Segoe UI", "Arial"), size: 8.4pt, fill: cor-suave)[#it.caption]
   ]
 )
+
+// Esteira vertical: estágios com gates entre eles. Uso: #esteira(("Nome", "detalhe"), ...; gates: ("G1", ...))
+#let esteira(etapas, gates: ()) = block(width: 100%, above: 14pt, below: 14pt, breakable: false)[
+  #for (i, e) in etapas.enumerate() {
+    block(width: 100%, radius: 4pt, fill: rgb("#f8fafc"), stroke: (left: 3pt + cor-accent, rest: 0.5pt + cor-linha), inset: (x: 10pt, y: 6pt), below: 0pt)[
+      #text(font: ("Segoe UI", "Arial"), size: 8.6pt, weight: "bold", fill: cor-tinta)[#e.at(0)]
+      #h(6pt)
+      #text(font: ("Segoe UI", "Arial"), size: 7.6pt, fill: cor-suave)[#e.at(1)]
+    ]
+    if i < etapas.len() - 1 {
+      align(center)[#block(above: 3pt, below: 3pt)[#text(font: ("Segoe UI", "Arial"), size: 7.2pt, fill: cor-accent2, weight: "bold")[↓ #if i < gates.len() { gates.at(i) }]]]
+    }
+  }
+]
 
 $for(header-includes)$
 $header-includes$
@@ -202,23 +217,31 @@ $endfor$
 
   #v(12pt)
 
-  // Título Principal
-  #text(
-    font: ("Segoe UI", "Arial"),
-    size: 28pt,
-    weight: "black",
-    fill: cor-tinta,
-    tracking: -0.5pt,
-  )[LegoLoop]
-
-  #v(4pt)
-
-  #text(
-    font: ("Segoe UI", "Arial"),
-    size: 15.5pt,
-    weight: "bold",
-    fill: cor-accent,
-  )[A Revolução da IA Modular em Peças Simples]
+  // Título Principal e Destaque
+  $if(cover-title)$
+    #text(
+      font: ("Segoe UI", "Arial"),
+      size: 28pt,
+      weight: "black",
+      fill: cor-tinta,
+      tracking: -0.5pt,
+    )[$cover-title$]
+    #v(4pt)
+    #text(
+      font: ("Segoe UI", "Arial"),
+      size: 15.5pt,
+      weight: "bold",
+      fill: cor-accent,
+    )[$if(cover-accent)$$cover-accent$$endif$]
+  $else$
+    #text(
+      font: ("Segoe UI", "Arial"),
+      size: 26pt,
+      weight: "black",
+      fill: cor-tinta,
+      tracking: -0.5pt,
+    )[$title$]
+  $endif$
 
   #v(8pt)
 
@@ -234,17 +257,33 @@ $endfor$
 
   #v(16pt)
 
-  // Arte dos Blocos com Proporção Harmônica
-  #align(center)[
-    #block(
-      width: 100%,
-      height: 8.8cm,
-      radius: 6pt,
-      clip: true,
-      stroke: 0.5pt + rgb("#cbd5e1"),
-      image("/img/capa_arte.jpg", width: 100%, height: 100%, fit: "cover")
+  // Arte: esteira de sub-loops desenhada em Typst
+  $if(cover-stages)$
+  #block(width: 100%, radius: 6pt, clip: true, fill: rgb("#f8fafc"), stroke: 0.5pt + rgb("#cbd5e1"), inset: 16pt)[
+    #let etapas = ($for(cover-stages)$"$cover-stages$", $endfor$)
+    #text(font: ("Segoe UI", "Arial"), size: 7pt, weight: "bold", fill: cor-suave, tracking: 1.6pt)[$if(cover-caption)$$cover-caption$$else$ESTEIRA CANÔNICA DE EXECUÇÃO$endif$]
+    #v(8pt)
+    #grid(
+      columns: (1fr,) * 2, gutter: 8pt,
+      ..etapas.enumerate().map(((i, e)) => block(
+        width: 100%, height: 1.7cm, radius: 4pt,
+        fill: if calc.even(i) { cor-accent.lighten(88%) } else { white },
+        stroke: (left: 3pt + cor-accent, rest: 0.5pt + cor-linha),
+        inset: (x: 8pt, y: 6pt),
+      )[
+        #text(font: ("Consolas", "Courier New"), size: 6.5pt, fill: cor-accent2)[#str(i + 1).]
+        #h(3pt)
+        #text(font: ("Segoe UI", "Arial"), size: 8pt, weight: "bold", fill: cor-tinta)[#e]
+      ])
     )
   ]
+  $else$
+  #block(width: 100%, radius: 6pt, clip: true, fill: rgb("#f8fafc"), stroke: 0.5pt + rgb("#cbd5e1"), inset: 20pt)[
+    #text(font: ("Segoe UI", "Arial"), size: 7.2pt, weight: "bold", fill: cor-suave, tracking: 1.6pt)[MANUAL OPERACIONAL DE CAMPO]
+    #v(8pt)
+    #text(font: ("Georgia", "Segoe UI"), size: 10pt, fill: cor-texto)[$if(tagline)$$tagline$$else$Engenharia determinística de software com inteligência artificial, contratos verificáveis e arquitetura desacoplada.$endif$]
+  ]
+  $endif$
 
   #v(1fr)
 
@@ -289,11 +328,24 @@ $endfor$
 ]
 
 // ---------------------------------------------------------------------------
-// CORPO: CABEÇALHO EM UMA ÚNICA LINHA, RODAPÉ E SUMÁRIO
+// CORPO: CABEÇALHO, COLUNA DE ANOTAÇÕES (MARGINALIA PONTILHADA) E RODAPÉ
 // ---------------------------------------------------------------------------
 #set page(
   fill: cor-miolo,
   numbering: "1",
+  margin: (top: 2.0cm, bottom: 2.0cm, left: 1.6cm, right: 3.8cm),
+  background: context {
+    if here().page() > 2 {
+      // Linha vertical divisória da coluna de anotações
+      place(top + left, dx: 13.2cm, dy: 2.0cm, line(angle: 90deg, length: 20cm, stroke: 0.4pt + rgb("#e2e8f0")))
+      // Rótulo discreto de anotações
+      place(top + left, dx: 13.5cm, dy: 2.1cm, text(font: ("Segoe UI", "Arial"), size: 6.2pt, fill: rgb("#94a3b8"), weight: "bold", tracking: 1.6pt)[ANOTAÇÕES])
+      // Pauta de caderno pontilhada sutil para anotações do leitor
+      for i in range(21) {
+        place(top + left, dx: 13.5cm, dy: 2.6cm + i * 8.5mm, line(length: 2.7cm, stroke: (paint: rgb("#e2e8f0"), dash: "dotted", thickness: 0.45pt)))
+      }
+    }
+  },
   header: context {
     if here().page() > 2 {
       let pagina = here().page()
@@ -308,7 +360,7 @@ $endfor$
           columns: (auto, 1fr),
           gutter: 10pt,
           align: (left + horizon, right + horizon),
-          text(font: ("Segoe UI", "Arial"), size: 5.8pt, fill: cor-tinta, weight: "bold", tracking: 1.2pt)[LEGOLOOP],
+          text(font: ("Segoe UI", "Arial"), size: 5.8pt, fill: cor-tinta, weight: "bold", tracking: 1.2pt)[$if(header-mark)$$header-mark$$else$LEGOLOOP$endif$],
           text(font: ("Segoe UI", "Arial"), size: 5.8pt, fill: cor-suave, hyphenate: false)[#titulo-cap],
         ),
         line(length: 100%, stroke: 0.5pt + cor-linha),
@@ -332,10 +384,12 @@ $if(toc)$
   #line(length: 100%, stroke: 1.5pt + cor-linha)
 ]
 #show outline.entry.where(level: 1): it => {
-  v(10pt, weak: true)
+  v(6pt, weak: true)
   text(font: ("Segoe UI", "Arial"), size: 9.6pt, weight: "bold", fill: cor-tinta)[#it]
 }
 #show outline.entry.where(level: 2): it => text(font: ("Segoe UI", "Arial"), size: 8.8pt, fill: cor-suave)[#it]
+#show outline: set par(leading: 0.45em, spacing: 0.5em)
+#show outline.entry: set block(spacing: 0.42em)
 #outline(title: none, depth: $if(toc-depth)$$toc-depth$$else$2$endif$, indent: 1.2em)
 $endif$
 

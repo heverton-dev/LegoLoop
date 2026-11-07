@@ -1,7 +1,8 @@
 // =============================================================================
-// TEMPLATE TYPST CORPORATIVO — ESTILO EDITORIAL MINIMALISTA CLEAN BRANCO
-// Direção de arte: Capa branca, tipografia pura, zero sobreposições,
-// cabeçalho discreto clarinho, entrelinha 1.5 e paleta Google Suavizada.
+// TEMPLATE TYPST CORPORATIVO — ESTILO EDITORIAL MINIMALISTA COM COLUNA DE ANOTAÇÕES
+// Direção de arte: Capa branca padronizada, tipografia clássica,
+// coluna lateral direita com linhas pautadas de caderno para anotações do leitor,
+// cabeçalho discreto em linha única e paleta Google Suavizada.
 // =============================================================================
 
 #let cor-fundo    = rgb("#ffffff")                                    // Branco puro limpo
@@ -67,7 +68,7 @@
 )[
   #text(
     font: ("Segoe UI", "Arial"),
-    size: 13pt, weight: "bold", fill: cor-tinta
+    size: 13pt, weight: "bold", fill: cor-tinta,
   )[#corpo]
 ]
 
@@ -216,23 +217,31 @@ $endfor$
 
   #v(12pt)
 
-  // Título Principal
-  #text(
-    font: ("Segoe UI", "Arial"),
-    size: 28pt,
-    weight: "black",
-    fill: cor-tinta,
-    tracking: -0.5pt,
-  )[$cover-title$]
-
-  #v(4pt)
-
-  #text(
-    font: ("Segoe UI", "Arial"),
-    size: 15.5pt,
-    weight: "bold",
-    fill: cor-accent,
-  )[$cover-accent$]
+  // Título Principal e Destaque
+  $if(cover-title)$
+    #text(
+      font: ("Segoe UI", "Arial"),
+      size: 28pt,
+      weight: "black",
+      fill: cor-tinta,
+      tracking: -0.5pt,
+    )[$cover-title$]
+    #v(4pt)
+    #text(
+      font: ("Segoe UI", "Arial"),
+      size: 15.5pt,
+      weight: "bold",
+      fill: cor-accent,
+    )[$if(cover-accent)$$cover-accent$$endif$]
+  $else$
+    #text(
+      font: ("Segoe UI", "Arial"),
+      size: 26pt,
+      weight: "black",
+      fill: cor-tinta,
+      tracking: -0.5pt,
+    )[$title$]
+  $endif$
 
   #v(8pt)
 
@@ -248,11 +257,11 @@ $endfor$
 
   #v(16pt)
 
-  // Arte: esteira de sub-loops desenhada em Typst (sem raster)
+  // Arte: esteira de sub-loops desenhada em Typst
+  $if(cover-stages)$
   #block(width: 100%, radius: 6pt, clip: true, fill: rgb("#f8fafc"), stroke: 0.5pt + rgb("#cbd5e1"), inset: 16pt)[
-    #let etapas = ($for(cover-stages)$"$cover-stages$"$sep$, $endfor$,)
-    #let n = etapas.len()
-    #text(font: ("Segoe UI", "Arial"), size: 7pt, weight: "bold", fill: cor-suave, tracking: 1.6pt)[$cover-caption$]
+    #let etapas = ($for(cover-stages)$"$cover-stages$", $endfor$)
+    #text(font: ("Segoe UI", "Arial"), size: 7pt, weight: "bold", fill: cor-suave, tracking: 1.6pt)[$if(cover-caption)$$cover-caption$$else$ESTEIRA CANÔNICA DE EXECUÇÃO$endif$]
     #v(8pt)
     #grid(
       columns: (1fr,) * 2, gutter: 8pt,
@@ -268,6 +277,13 @@ $endfor$
       ])
     )
   ]
+  $else$
+  #block(width: 100%, radius: 6pt, clip: true, fill: rgb("#f8fafc"), stroke: 0.5pt + rgb("#cbd5e1"), inset: 20pt)[
+    #text(font: ("Segoe UI", "Arial"), size: 7.2pt, weight: "bold", fill: cor-suave, tracking: 1.6pt)[MANUAL OPERACIONAL DE CAMPO]
+    #v(8pt)
+    #text(font: ("Georgia", "Segoe UI"), size: 10pt, fill: cor-texto)[$if(tagline)$$tagline$$else$Engenharia determinística de software com inteligência artificial, contratos verificáveis e arquitetura desacoplada.$endif$]
+  ]
+  $endif$
 
   #v(1fr)
 
@@ -312,11 +328,24 @@ $endfor$
 ]
 
 // ---------------------------------------------------------------------------
-// CORPO: CABEÇALHO EM UMA ÚNICA LINHA, RODAPÉ E SUMÁRIO
+// CORPO: CABEÇALHO, COLUNA DE ANOTAÇÕES (MARGINALIA PONTILHADA) E RODAPÉ
 // ---------------------------------------------------------------------------
 #set page(
   fill: cor-miolo,
   numbering: "1",
+  margin: (top: 2.0cm, bottom: 2.0cm, left: 1.6cm, right: 3.8cm),
+  background: context {
+    if here().page() > 2 {
+      // Linha vertical divisória da coluna de anotações
+      place(top + left, dx: 13.2cm, dy: 2.0cm, line(angle: 90deg, length: 20cm, stroke: 0.4pt + rgb("#e2e8f0")))
+      // Rótulo discreto de anotações
+      place(top + left, dx: 13.5cm, dy: 2.1cm, text(font: ("Segoe UI", "Arial"), size: 6.2pt, fill: rgb("#94a3b8"), weight: "bold", tracking: 1.6pt)[ANOTAÇÕES])
+      // Pauta de caderno pontilhada sutil para anotações do leitor
+      for i in range(21) {
+        place(top + left, dx: 13.5cm, dy: 2.6cm + i * 8.5mm, line(length: 2.7cm, stroke: (paint: rgb("#e2e8f0"), dash: "dotted", thickness: 0.45pt)))
+      }
+    }
+  },
   header: context {
     if here().page() > 2 {
       let pagina = here().page()
@@ -331,7 +360,7 @@ $endfor$
           columns: (auto, 1fr),
           gutter: 10pt,
           align: (left + horizon, right + horizon),
-          text(font: ("Segoe UI", "Arial"), size: 5.8pt, fill: cor-tinta, weight: "bold", tracking: 1.2pt)[$header-mark$],
+          text(font: ("Segoe UI", "Arial"), size: 5.8pt, fill: cor-tinta, weight: "bold", tracking: 1.2pt)[$if(header-mark)$$header-mark$$else$LEGOLOOP$endif$],
           text(font: ("Segoe UI", "Arial"), size: 5.8pt, fill: cor-suave, hyphenate: false)[#titulo-cap],
         ),
         line(length: 100%, stroke: 0.5pt + cor-linha),

@@ -7,6 +7,18 @@ date: "07/11/2026"
 lang: pt-BR
 institute: "LegoLoop Foundation"
 eyebrow: "GUIA DIDÁTICO · BEHAVIOR-DRIVEN DEVELOPMENT"
+cover-title: "Verbos & BDD"
+cover-accent: "Granularidade e Tríade de Triggers no LegoLoop"
+cover-caption: "OS CINCO VERBOS DO CICLO DE VIDA"
+cover-stages:
+  - "Fabricar"
+  - "Matriz"
+  - "Listar"
+  - "Refinar"
+  - "Remover"
+  - "Compor"
+header-mark: "VERBOS BDD"
+accent: "16a34a"
 tagline: |
   O mesmo comportamento, três vias de acionamento, contratos Dado-Quando-Então idênticos
 toc: true

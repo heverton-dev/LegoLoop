@@ -2,12 +2,9 @@
 
 O pipeline é estruturado em quatro motores independentes, integrados por um grafo acíclico dirigido (DAG):
 
-```mermaid
-flowchart LR
-    P1["1. Relógio Fonético\n(Speech-Sync Engine)"] --> P2["2. Compositor Visual\n(Remotion / CSS 3D)"]
-    P2 --> P3["3. Asset Pipeline\n(Cache SHA-256)"]
-    P3 --> P4["4. Render & Bundle\n(Broadcast Exporter)"]
-```
+
+![Diagrama de Arquitetura](/img/diagrama_436e5a57.svg){width=95%}
+
 
 ## 1. Relógio Mestre Fonético (Speech-Sync Engine)
 

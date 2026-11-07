@@ -1,0 +1,18 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Pipeline Universal de Engenharia Reversa Audiovisual",
+  "nome_base": "2026-11-07_PIPELINE-VIDEO-REA",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-forense.md",
+    "02-meso-curadoria.md",
+    "03-micro-gates.md",
+    "04-pratica-fabrica.md",
+    "05-soberania-zero-custo.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "video-rea-v1",
+  "ultima_compilacao": "2026-11-07"
+}

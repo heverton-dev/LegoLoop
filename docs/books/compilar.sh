@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Compila um livro de docs/books/<slug>/ e gera TUDO dentro da pasta do livro:
 #   <slug>/<nome_base>.md   manuscrito consolidado
-#   <slug>/<nome_base>.pdf  PDF 170x240mm
+#   <slug>/<nome_base>.pdf  PDF 170x240mm com coluna de anotações
 #   <slug>/build/livro.typ  intermediario (ignorado pelo git)
 #   <slug>/preview/pNN.png  previews (se PyMuPDF estiver instalado)
 # Uso: bash docs/books/compilar.sh <slug> [--sem-preview]
@@ -14,9 +14,19 @@ nome=$(python -c "import json;print(json.load(open('$slug/livro.json',encoding='
 tpl=$(python -c "import json;print(json.load(open('$slug/livro.json',encoding='utf-8')).get('template','ativos/livro.typst'))")
 partes=$(python -c "import json;m=json.load(open('$slug/livro.json',encoding='utf-8'));print(' '.join(m['partes']))")
 cd "$slug"
-mkdir -p build preview
+mkdir -p build preview img
+
+# Sincroniza o template com o modelo oficial atualizado
+if [ -f "ativos/livro.typst" ] && [ -f "../_modelo_livro.typst" ]; then
+  cp "../_modelo_livro.typst" "ativos/livro.typst"
+fi
+
+# shellcheck disable=SC2086
+python ../renderizar_mermaid.py $(for p in $partes; do echo "partes/$p"; done)
+
 # shellcheck disable=SC2086
 python ../normalizar_tabelas.py $(for p in $partes; do echo "partes/$p"; done)
+
 : > "$nome.md"
 for p in $partes; do cat "partes/$p" >> "$nome.md"; printf '\n\n' >> "$nome.md"; done
 # shellcheck disable=SC2086

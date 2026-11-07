@@ -7,6 +7,18 @@ date: "06/11/2026"
 lang: pt-BR
 institute: "LegoLoop Foundation"
 eyebrow: "ARQUITETURA DE SISTEMAS AGÊNTICOS"
+cover-title: "Mega Pipeline"
+cover-accent: "A Engenharia Determinística dos 5 Sub-Loops"
+cover-caption: "OS CINCO SUB-LOOPS DO MEGA PIPELINE"
+cover-stages:
+  - "Sub-Loop 1: Planejar"
+  - "Sub-Loop 2: Roteamento"
+  - "Sub-Loop 3: Executar"
+  - "Sub-Loop 4: Auditar"
+  - "Sub-Loop 5: Concluir"
+  - "Handoff Imutável"
+header-mark: "MEGA PIPELINE"
+accent: "1d4ed8"
 tagline: |
   A modularidade e o rigor de processos como antídoto definitivo para o inchaço de contexto e alucinações de agentes
 toc: true

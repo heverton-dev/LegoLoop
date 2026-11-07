@@ -7,6 +7,18 @@ date: "06/11/2026"
 lang: pt-BR
 institute: "LegoLoop Foundation"
 eyebrow: "ARQUITETURA DE SISTEMAS AGÊNTICOS"
+cover-title: "LegoLoop"
+cover-accent: "A Revolução da IA Modular em Peças Simples"
+cover-caption: "OS CINCO NÍVEIS DE GRANULARIDADE DO LEGOLOOP"
+cover-stages:
+  - "Mega Pipeline"
+  - "Processos Canônicos"
+  - "Sub-Loops Modulares"
+  - "Micro-Tickets"
+  - "Nano-Etapas"
+  - "Contratos BDD"
+header-mark: "LEGOLOOP"
+accent: "2563eb"
 tagline: |
   A modularidade como antídoto definitivo para o inchaço de contexto e a alucinação de agentes
 toc: true
