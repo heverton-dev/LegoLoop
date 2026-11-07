@@ -9,6 +9,7 @@ import (
 
 // planMeta reúne o que PLAN e ROUTE compartilham: é a fonte única dos dois, o que os mantém espelhados.
 type planMeta struct {
+	BaseDir                         string
 	Date                            string
 	Theme                           string
 	Level                           SupervisionLevel
@@ -62,7 +63,7 @@ func (p pathSet) link(projectRel string) string {
 }
 
 func newMeta(ps pathSet, specText, date string, level SupervisionLevel) planMeta {
-	m := planMeta{Date: date, Level: level, SpecFile: filepath.Base(ps.specPath), Epics: map[int]string{}, Initiatives: map[int]string{}, EpicInitiative: map[int]int{}}
+	m := planMeta{BaseDir: ps.baseDir, Date: date, Level: level, SpecFile: filepath.Base(ps.specPath), Epics: map[int]string{}, Initiatives: map[int]string{}, EpicInitiative: map[int]int{}}
 	m.SpecRel, m.PlanRel, m.RouteRel = ps.rel(ps.specPath), ps.rel(ps.planPath), ps.rel(ps.routePath)
 	m.RouteName = strings.TrimSuffix(filepath.Base(ps.routePath), ".json")
 	m.Theme = strings.TrimSuffix(m.SpecFile, ".md")

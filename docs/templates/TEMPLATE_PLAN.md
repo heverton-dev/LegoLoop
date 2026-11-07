@@ -8,7 +8,7 @@
 > **Referência da Intenção:** [docs/intents/{{DATA}}_INTENT_{{NOME}}.md](../intents/{{DATA}}_INTENT_{{NOME}}.md)  
 > **Referência da Especificação:** [docs/specs/{{DATA}}_SPEC_{{NOME}}.md](../specs/{{DATA}}_SPEC_{{NOME}}.md)  
 > **Espelho Executável JSON:** [docs/routes/{{DATA}}_ROUTE_{{NOME}}.json](../routes/{{DATA}}_ROUTE_{{NOME}}.json)  
-> **Template:** TEMPLATE_PLAN.md v2.0.0 (espelha TEMPLATE_ROUTE.json v2.0.0)  
+> **Template:** TEMPLATE_PLAN.md v2.2.0 (espelha TEMPLATE_ROUTE.json v2.2.0)  
 
 <!--
 GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
@@ -49,12 +49,13 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 ### Épico 01 — {{NOME_DO_EPICO_01}}
 
 #### Ticket `TICK-01.1` — {{Descrição resumida da ação}}
-* **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
 * **Dependências:** `[]`
 * **Isolamento:**
   * **Workspace:** `local` (ou `git_worktree` / `tempdir`)
   * **Executor:** `orchestrix_hermetic` (subprocesso estéril)
   * **Subagentes Permitidos:** `false`
+  * **Write Boundary:** `strict`
 * **Roteamento Cognitivo:**
   * **Modo:** `suggested`
   * **Primário:** Harness `9router` · Modelo `code-pro` · Effort `high`
@@ -62,7 +63,10 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 * **Tooling:**
   * **Runtime:** `powershell` (ou `node`, `obscura`, etc.)
   * **MCPs Requeridos:** `false` · **Allowlist:** `[]` (formato `servidor:ferramenta`)
-* **Limites:** Timeout `180s` · Teto de saída `600` tokens · Rollback `stash_changes`
+* **Limites & Resiliência:**
+  * **Timeout:** `180s` · **Retries:** `1` (backoff `1000ms`, fallback model `true`)
+  * **Orçamento de Tokens:** Entrada `16000` tokens · Teto de saída `600` tokens
+  * **Rollback:** `stash_changes`
 * **Inputs:**
   * **Source Files:** `internal/pkg/service.go`
   * **Spec Anchor:** `docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E01.1`
@@ -76,12 +80,12 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 * **Escopo (opcional):** {{Detalhe do que o teste do ticket precisa provar, com valores concretos. Use quando o gate sozinho não explica o ticket. Só existe no PLAN: o ROUTE não tem este campo.}}
 
 #### Ticket `TICK-01.2` — {{Descrição resumida da ação}}
-* **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E01` | **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["TICK-01.1"]`
-* **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false`
+* **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `code-nano` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
-* **Limites:** Timeout `180s` · Teto de saída `300` tokens · Rollback `stash_changes`
+* **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `8000` tokens · Teto de saída `300` tokens · Rollback `stash_changes`
 * **Inputs:** `internal/pkg/service.go` · Spec Anchor `docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E01.2`
 * **Outputs:** `internal/pkg/service.go`
 * **Verificação (argv, sem shell):** `go vet ./internal/pkg/...`
@@ -101,13 +105,13 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 ### Épico 02 — {{NOME_DO_EPICO_02}}
 
 #### Ticket `TICK-02.1` — {{Descrição resumida da ação (subloop especialista)}}
-* **Nature:** `macro` | **Tipo:** `subloop` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E02` | **Nature:** `macro` | **Tipo:** `subloop` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["SG-E01"]`
 * **Ref do Subloop:** `exemplo-subloop` (id de um loop do acervo; nunca um caminho)
-* **Isolamento:** Workspace `tempdir` · Executor `orchestrix_hermetic` · Subagentes `false`
+* **Isolamento:** Workspace `tempdir` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `code-fast` · Effort `medium` · Fallback Harness `ollama` · Modelo `deepseek-coder:6.7b`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `true` · Allowlist `["codebase-memory-mcp:search_code"]`
-* **Limites:** Timeout `300s` · Teto de saída `1200` tokens · Rollback `stash_changes`
+* **Limites & Resiliência:** Timeout `300s` · Retries `1` · Entrada `32000` tokens · Teto de saída `1200` tokens · Rollback `stash_changes`
 * **Inputs:** Context Artifacts `["scratch/target_analysis.json"]` · Spec Anchor `docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E02.1`
 * **Outputs:** `scratch/subloop_output.json`
 * **Verificação (argv, sem shell):** nenhuma (o subloop se valida pelo próprio gate)

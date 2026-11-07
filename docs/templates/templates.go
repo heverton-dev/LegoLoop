@@ -15,7 +15,7 @@ import (
 )
 
 // Version é a versão dos templates (campo template_version do ROUTE e linha "Template:" dos documentos).
-const Version = "2.0.0"
+const Version = "2.2.0"
 
 //go:embed TEMPLATE_INTENT.md
 var intentMD string

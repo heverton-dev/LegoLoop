@@ -1,0 +1,581 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.1.0",
+  "name": "GOVERNANCA_ROUTE_V2_CONCORRENCIA",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "session_id": "6353f637-cb0a-41a1-92ee-8c1400e75faa",
+  "intent_ref": "docs/intents/2026-11-07_INTENT_ROUTE_V2_GOVERNANCE.md",
+  "spec_ref": "docs/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md",
+  "plan_ref": "docs/plans/2026-11-07_PLAN_ROUTE_V2_GOVERNANCE.md",
+  "initiative_ref": "I01",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-07_INTENT_ROUTE_V2_GOVERNANCE.md",
+      "sha256": "1473fffa79b93b6cec38ac8e2d9fad19ad1468b044325245a8d02acb613d2570"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md",
+      "sha256": "6871848f192c27c2411eb4c4040a6e3d2abcbf020770dab81541396aac32a80e"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-07_PLAN_ROUTE_V2_GOVERNANCE.md",
+      "sha256": "51d271fb416f2299c5e91ff43fe3aca64fd396ee1de9a76941bcad169d89a51a"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "I01",
+      "label": "Atualização do TEMPLATE_ROUTE.json para v2.1.0",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/templates/TEMPLATE_ROUTE.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "docs/templates:templates_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/templates/TEMPLATE_ROUTE.json"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./docs/templates/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "I01",
+      "label": "Sincronização de templates.go e testes de conformidade",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/templates/templates.go",
+          "docs/templates/templates_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": "docs/templates:templates_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/templates/templates.go",
+          "docs/templates/templates_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./docs/templates/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": "I01",
+      "label": "Stop-Gate Humano: Auditoria do Épico 01",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "human_in_the_loop",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas?')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "I01",
+      "label": "Implementação do Hashing Normalizado e Structs Upstream em plangen",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/plangen/route.go",
+          "internal/plangen/route_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/plangen:route_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/plangen/route.go",
+          "internal/plangen/route_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./internal/plangen/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "I01",
+      "label": "Implementação do Validador de Integridade com Bloqueio de Boot",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/plangen/verify.go",
+          "internal/plangen/verify_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": "internal/plangen:verify_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/plangen/verify.go",
+          "internal/plangen/verify_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./internal/plangen/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": "I01",
+      "label": "Stop-Gate Humano: Auditoria do Épico 02",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "human_in_the_loop",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 02 aprovadas?')"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "I01",
+      "label": "ConcurrencyStrategy com Teto de Subagentes e Degradação Serial",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/plangen/route.go",
+          "internal/plangen/route_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/plangen:route_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/plangen/route.go",
+          "internal/plangen/route_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./internal/plangen/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": "I01",
+      "label": "Stop-Gate Humano: Auditoria do Épico 03",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "human_in_the_loop",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 03 aprovadas?')"
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": "I01",
+      "label": "Stop-Gate Final: Homologação e Recompilação Obrigatória",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "human_in_the_loop",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe",
+          "docs/reports/2026-11-07_REPORT_ROUTE_V2_GOVERNANCE.md"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      }
+    }
+  ]
+}

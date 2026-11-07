@@ -226,12 +226,26 @@ func TestRouteKeysAreExposedForEngines(t *testing.T) {
 			t.Errorf("conjunto %s vazio ou não ordenado: %v", name, set)
 		}
 	}
-	for _, must := range []string{"spec_ref", "token_budget", "rollback_strategy", "defects", "tooling", "initiative_id"} {
+	for _, must := range []string{"spec_ref", "token_budget", "rollback_strategy", "defects", "tooling", "initiative_id", "epic_id", "retry_policy", "telemetry"} {
 		if !slices.Contains(k.Node, must) {
 			t.Errorf("a chave de nó %q sumiu do template", must)
 		}
 	}
+	if !slices.Contains(k.Isolation, "write_boundary") {
+		t.Errorf("a chave isolation 'write_boundary' deve existir no template v2.2")
+	}
 	if !slices.Contains(k.Top, "initiative_ref") {
 		t.Errorf("a chave top 'initiative_ref' sumiu do template")
+	}
+	if !slices.Contains(k.Top, "upstream_signatures") {
+		t.Errorf("a chave top 'upstream_signatures' deve existir no template v2.1")
+	}
+	for _, must := range []string{"concurrency", "rollback_policy"} {
+		if !slices.Contains(k.Strategy, must) {
+			t.Errorf("a chave strategy %q deve existir no template v2.1", must)
+		}
+	}
+	if templates.Version != "2.2.0" {
+		t.Errorf("templates.Version deve ser 2.2.0, obteve %s", templates.Version)
 	}
 }

@@ -114,14 +114,19 @@ func jsonOf(v any) string {
 
 func writePlanTicket(b *strings.Builder, n routeNode) {
 	fmt.Fprintf(b, "#### Ticket `%s` — %s\n", n.ID, n.Label)
-	fmt.Fprintf(b, "* **Nature:** `%s` | **Tipo:** `%s` | **Modo de Execução:** `%s` | **Status:** `%s`\n", n.Nature, n.Type, n.ExecutionMode, n.Status)
+	fmt.Fprintf(b, "* **Iniciativa:** `%s` | **Épico:** `%s` | **Nature:** `%s` | **Tipo:** `%s` | **Modo de Execução:** `%s` | **Status:** `%s`\n",
+		deref(n.InitiativeID), deref(n.EpicID), n.Nature, n.Type, n.ExecutionMode, n.Status)
 	fmt.Fprintf(b, "* **Dependências:** `%s`\n", jsonOf(n.DependsOn))
-	fmt.Fprintf(b, "* **Isolamento:** Workspace `%s` · Executor `%s` · Subagentes `%t`\n", n.Isolation.Workspace, n.Isolation.Executor, n.Isolation.SubagentsAllowed)
+	fmt.Fprintf(b, "* **Isolamento:** Workspace `%s` · Executor `%s` · Subagentes `%t` · Write Boundary `%s`\n",
+		n.Isolation.Workspace, n.Isolation.Executor, n.Isolation.SubagentsAllowed, n.Isolation.WriteBoundary)
 	fmt.Fprintf(b, "* **Roteamento:** Harness `%s` · Modelo `%s` · Effort `%s` · Fallback Harness `%s` · Modelo `%s`\n",
 		n.Routing.Harness, n.Routing.Model, *n.Routing.Effort, n.Routing.Fallback.Harness, n.Routing.Fallback.Model)
-	fmt.Fprintf(b, "* **Tooling:** Runtime `%s` · MCPs Requeridos `%t` · Allowlist `%s`\n", n.Tooling.Runtime, n.Tooling.McpsRequired, jsonOf(n.Tooling.McpsAllowed))
-	fmt.Fprintf(b, "* **Limites:** Timeout `%ds` · Teto de saída `%d` tokens · Rollback `%s`\n", n.TimeoutSec, n.TokenBudget.Max, n.RollbackStrategy)
-	fmt.Fprintf(b, "* **Inputs:** Source Files `%s` · Spec Anchor `%s` · Context Artifacts `%s`\n", strings.Join(n.Inputs.SourceFiles, ", "), deref(n.Inputs.SpecAnchor), jsonOf(n.Inputs.ContextArtifacts))
+	fmt.Fprintf(b, "* **Tooling:** Runtime `%s` · MCPs Requeridos `%t` · Allowlist `%s`\n",
+		n.Tooling.Runtime, n.Tooling.McpsRequired, jsonOf(n.Tooling.McpsAllowed))
+	fmt.Fprintf(b, "* **Limites & Resiliência:** Timeout `%ds` · Retries `%d` · Entrada `%d` tokens · Teto de saída `%d` tokens · Rollback `%s`\n",
+		n.TimeoutSec, n.RetryPolicy.MaxRetries, n.TokenBudget.MaxInputTokens, n.TokenBudget.MaxOutputTokens, n.RollbackStrategy)
+	fmt.Fprintf(b, "* **Inputs:** Source Files `%s` · Spec Anchor `%s` · Context Artifacts `%s`\n",
+		strings.Join(n.Inputs.SourceFiles, ", "), deref(n.Inputs.SpecAnchor), jsonOf(n.Inputs.ContextArtifacts))
 	fmt.Fprintf(b, "* **Alvo de Teste TDD:** `%s`\n", deref(n.TestTarget))
 	fmt.Fprintf(b, "* **Outputs:** Artifacts `%s`\n", strings.Join(n.Output.Artifacts, ", "))
 	fmt.Fprintf(b, "* **Verificação (argv, sem shell):** %s\n", verifyText(n.Output.Verify))

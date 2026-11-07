@@ -303,8 +303,21 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Homologação Global:** 100% dos 32 pacotes internos passando verde (`go test -count=1 ./...`), `go vet` limpo, `gofmt` vazio, `funclen` <= 35 linhas, `go.mod` stdlib pura. Binário `bin/legoloop.exe` recompilado e instalado globalmente via `go install ./cmd/legoloop`.
   - **Artefatos:** `docs/intents/2026-11-07_INTENT_HIERARQUIA_INICIATIVA.md`, `docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md`, `docs/plans/2026-11-07_PLAN_HIERARQUIA_INICIATIVA.md`, `docs/routes/2026-11-07_ROUTE_HIERARQUIA_INICIATIVA.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_HIERARQUIA_INICIATIVA.md`.
 
+- **07/11/2026** — 🔐 **Evolução da ROUTE v2.1: Integridade Criptográfica Merkle & Governança de Concorrência Concluída (`Mega Pipeline`):**
+  - **Quarteto Criptográfico Merkle (`upstream_signatures`):** Assinatura encadeada dos 3 artefatos anteriores da Tríade (`INTENT` $\rightarrow$ `SPEC` $\rightarrow$ `PLAN` $\rightarrow$ `ROUTE`) via SHA-256 com normalização cross-platform (`CRLF` $\rightarrow$ `LF`). Testado e provado com `TestHashNormalized_EquivalenceCRLF`.
+  - **Validador de Boot Anti-Adulteração:** Função `VerifySignatures` em `internal/plangen/signatures.go` que aborta a esteira (`ErrHashMismatch`) se 1 byte for mutado em qualquer upstream no disco (`TestVerifyRouteIntegrity_DetectsTampering`).
+  - **Governança Fina de Concorrência & Subagentes Limpos:** Tipagem e validação formal de `ConcurrencyStrategy` (`internal/plangen/concurrency.go`) com teto [1, 8] de `max_parallel_subagents`, rate-limiting de API e degradação graciosa para modo serial se o harness declarar `harness_capability: "none"` (`concurrency_test.go`).
+  - **Harmonização do Ecossistema:** Pacote `internal/refinar` harmonizado para rastrear as mutações de upstream na ROUTE com precisão cirúrgica (27/27 testes verdes).
+  - **Homologação & Qualidade:** 100% dos testes verdes nos pacotes afetados, `funclen` $\le 35$ linhas, `gofmt` limpo, `go.mod` stdlib intacto, e binário `bin/legoloop.exe` recompilado.
+  - **Artefatos:** `docs/intents/2026-11-07_INTENT_ROUTE_V2_GOVERNANCE.md`, `docs/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md`, `docs/plans/2026-11-07_PLAN_ROUTE_V2_GOVERNANCE.md`, `docs/routes/2026-11-07_ROUTE_ROUTE_V2_GOVERNANCE.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_ROUTE_V2_GOVERNANCE.md`.
+
+- **07/11/2026** — 💎 **Harmonização Canônica e Expansão dos Nós da ROUTE e PLAN para v2.2.0:**
+  - **Contrato Atômico dos Nós Enriquecido:** Adicionados `epic_id` (linhagem tripartite Iniciativa $\rightarrow$ Épico $\rightarrow$ Nó), `isolation.write_boundary: "strict"` (blindagem mecânica contra mutações fora do escopo), `retry_policy` (tolerância a falhas temporárias com retentativa e fallback de modelo), `token_budget` bidirecional (`max_input_tokens` e `max_output_tokens`), e `telemetry` (persistência factual para auditoria pós-execução).
+  - **Harmonização do Espelho PLAN $\leftrightarrow$ ROUTE 1:1:** `TEMPLATE_PLAN.md` e `TEMPLATE_ROUTE.json` sincronizados com as novas propriedades atômicas em `docs/templates/` (`templates.go` Version = "2.2.0").
+  - **Motores em Go (`internal/plangen`):** Structs `routeNode`, `routeIsolation`, `routeRetryPolicy`, `tokenBudget`, `routeTelemetry` tipadas e geradas deterministicamente em `route.go` e `plan_md.go`.
+  - **Conformidade Mecânica & Homologação:** 10/10 testes em `docs/templates`, 24/24 testes em `internal/plangen`, 100% de aprovação na suíte global (31 pacotes), `funclen` $\le 35$ linhas, `gofmt -l` 100% vazio, `go.mod` stdlib pura, binário `bin/legoloop.exe` recompilado.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `main` — Hierarquia de Iniciativas e Mega Pipeline homologados.
-- **Binário Oficial:** `bin/legoloop.exe` recompilado e instalado (`go install ./cmd/legoloop`).
-- **Projeto Standalone no Desktop:** `C:\Users\trcnologia\Desktop\stept-cli\bin\stept.exe`.
-- **Documentação & Relatório:** `docs/reports/2026-11-07_REPORT_HIERARQUIA_INICIATIVA.md` e `AGENTS.md`.
+- **Status da Branch:** `main` — ROUTE v2.2.0, Cadeia Merkle, Governança de Concorrência e Nós Blindados homologados.
+- **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso.
+- **Documentação & Relatório:** `docs/reports/2026-11-07_REPORT_ROUTE_V2_GOVERNANCE.md` e `AGENTS.md`.
