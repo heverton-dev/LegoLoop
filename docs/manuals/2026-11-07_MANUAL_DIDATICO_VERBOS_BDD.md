@@ -34,27 +34,39 @@ flowchart TD
 
 ---
 
-## 2. Mapa dos 5 Verbos Canônicos
+## 2. Mapa dos Verbos e a Tríade de Triggers (Gatilhos de Entrada)
+
+O LegoLoop **não se limita à linha de comando**. Todas as operações e verbos do ecossistema suportam **três triggers equivalentes de entrada**:
 
 ```mermaid
 flowchart LR
-    V1["1. Fabricar"] --> V2["2. Listar"]
-    V2 --> V3["3. Matriz"]
-    V3 --> V4["4. Compor"]
-    V4 --> V5["5. Refinar"]
-    V5 --> V6["6. Remover"]
+    subgraph TRIGGERS["3 Triggers Disponíveis"]
+        T1["Trigger 1: Terminal (CLI)"]
+        T2["Trigger 2: Chat do Agente (Harness)"]
+        T3["Trigger 3: LegoLoop Studio (Interface Web)"]
+    end
+    subgraph ENGINE["Motor Canônico LegoLoop"]
+        M1["Fabricar"]
+        M2["Listar"]
+        M3["Matriz"]
+        M4["Compor"]
+        M5["Refinar"]
+        M6["Remover"]
+    end
+    TRIGGERS --> ENGINE
 ```
 
-1. **`fabricar`**: Criação do zero a partir de uma intenção em linguagem natural.
-2. **`listar`**: Radiografia completa do cofre e conexões ativas nos harnesses.
-3. **`matriz`**: Classificação de reputação e aptidão de cada peça (Ouro, Prata, Bronze).
-4. **`compor`**: Encaixe hierárquico de processos menores dentro de processos maiores.
-5. **`refinar`**: Troca atômica de um passo sem quebrar o grafo.
-6. **`remover`**: Desconexão segura e reversível de processos e vínculos.
+### Os Três Modos de Acionamento:
+
+1. **Terminal (CLI):** Linha de comando direta (`legoloop <verbo> [flags]`), ideal para scripts, CI/CD, terminais rápidos e automação sem interface.
+2. **Chat do Agente / Harness:** Diálogo em linguagem natural no editor preferido (Claude Code, Cursor, Windsurf, MIMO, Antigravity) utilizando as **skills canônicas** ou **slash commands** (ex: `/legoloop-fabricar`, `/legoloop-listar`). O agente interpreta o pedido e despacha a ação de forma estéril.
+3. **LegoLoop Studio (Interface Gráfica):** Painel web visual interativo (`legoloop studio`), ideal para inspeção em tempo real de grafos DAG, visualização de cartões, clique de botões, modais assistidos e drag-and-drop.
 
 ---
 
-## 3. Cenários BDD Didáticos (Casos de Uso)
+## 3. Cenários BDD Didáticos (Casos de Uso Multi-Trigger)
+
+Abaixo, cada cenário BDD demonstra **exatamente o mesmo comportamento esperado** sendo acionado pelas três vias disponíveis.
 
 ---
 
@@ -63,10 +75,24 @@ flowchart LR
 > **Objetivo:** O usuário tem uma necessidade de automação e precisa que o sistema crie toda a estrutura de governança automaticamente.
 
 * **Dado que** o desenvolvedor precisa de um pipeline para "Auditar segurança de contratos inteligentes em Solidity",
-* **Quando** ele executa o comando de fabricação no terminal:
-  ```bash
-  legoloop fabricar "auditoria-smart-contracts" --goal "Auditar vulnerabilidades reentrancy e overflow em Solidity" --category build --yes
-  ```
+* **Quando** ele aciona a fabricação por qualquer uma das vias:
+  * **Via Terminal (CLI):**
+    ```bash
+    legoloop fabricar "auditoria-smart-contracts" --goal "Auditar vulnerabilidades reentrancy e overflow em Solidity" --category build --yes
+    ```
+  * **Via Chat do Agente (Harness):**
+    ```markdown
+    /legoloop-fabricar
+    Prompt: "Crie um novo processo chamado 'auditoria-smart-contracts' focado em auditar 
+    vulnerabilidades de reentrancy e overflow em Solidity, na categoria build."
+    ```
+  * **Via LegoLoop Studio (Interface Web):**
+    1. Acessa a aba **Processos** e clica no botão **`+ Novo Processo`**.
+    2. No formulário do modal, preenche:
+       * **Nome:** `auditoria-smart-contracts`
+       * **Categoria:** `build`
+       * **Objetivo:** *Auditar vulnerabilidades reentrancy e overflow em Solidity*
+    3. Clica em **"Fabricar Processo"**.
 * **Então** o LegoLoop executa o motor hermético e produz 4 artefatos canônicos padronizados:
   1. `docs/intents/YYYY-MM-DD_INTENT_AUDITORIA_SMART_CONTRACTS.md` (Problema e motivação)
   2. `docs/specs/YYYY-MM-DD_SPEC_AUDITORIA_SMART_CONTRACTS.md` (Critérios de aceitação binários)
@@ -81,30 +107,53 @@ flowchart LR
 > **Objetivo:** O usuário quer entender quais processos já existem no cofre, suas versões e em quais harnesses (Claude, Cursor, Windsurf, MIMO) eles estão vinculados.
 
 * **Dado que** existem vários loops criados na máquina,
-* **Quando** o usuário executa:
-  ```bash
-  legoloop listar
-  ```
-* **Então** o sistema exibe uma tabela detalhada com:
+* **Quando** o usuário solicita a listagem:
+  * **Via Terminal (CLI):**
+    ```bash
+    legoloop listar
+    # Ou estruturado para pipelines:
+    legoloop listar --json
+    ```
+  * **Via Chat do Agente (Harness):**
+    ```markdown
+    /legoloop-listar
+    Prompt: "Liste todos os processos ativos no cofre do LegoLoop e verifique se há 
+    harnesses descalibrados ou vínculos órfãos."
+    ```
+  * **Via LegoLoop Studio (Interface Web):**
+    1. Acessa a seção **Processos** no menu lateral.
+    2. Visualiza a grade de cartões com os processos, selos de versão (`@1.0.0`), badges de categoria e status dos harnesses vinculados com indicadores coloridos (`Claude [OK]`, `Cursor [OK]`).
+* **Então** o sistema exibe a radiografia completa com:
   * Nome do processo e versão (`@1.0.0`)
   * Categoria (`build`, `reverse`, `web`, `mobile`)
-  * Harnesses vinculados (ex: `Claude Code [OK]`, `Cursor [OK]`)
+  * Harnesses vinculados e estado dos links simbólicos
   * Vínculos órfãos ou advertências de sincronização
-* **E** permite inspecionar em formato estruturado usando `--json` para integrações automáticas.
+* **E** o desenvolvedor obtém visibilidade instantânea do ecossistema em qualquer um dos ambientes.
 
 ---
 
 ### Cenário BDD 3: Avaliar a Saúde das Peças com `matriz`
 
-> **Objetivo:** Garantir que o pipeline utiliza apenas peças modernas e com alta reputação de engenharia.
+> **Objetivo:** Garantir que o pipeline utiliza apenas peças modernas e com alta reputação de engenharia antes de rodar uma entrega crítica.
 
-* **Dado que** o desenvolvedor quer auditar as peças do ecossistema antes de rodar uma entrega crítica,
-* **Quando** ele executa:
-  ```bash
-  legoloop matriz --tier ouro
-  ```
-* **Então** o sistema filtra e exibe apenas os componentes com selo **Padrão Ouro** (Score >= 0.85, testes de mutação aprovados, zero stubs),
-* **E** destaca peças defasadas ou em nível **Bronze** que devem ser substituídas no próximo ciclo de refinamento.
+* **Dado que** o desenvolvedor quer auditar a integridade das peças do ecossistema,
+* **Quando** ele aciona a consulta da matriz:
+  * **Via Terminal (CLI):**
+    ```bash
+    legoloop matriz --tier ouro
+    ```
+  * **Via Chat do Agente (Harness):**
+    ```markdown
+    /legoloop-matriz
+    Prompt: "Consulte a matriz de peças do LegoLoop e me mostre apenas as ferramentas 
+    de Tier Ouro com score >= 0.85 que podemos usar no pipeline."
+    ```
+  * **Via LegoLoop Studio (Interface Web):**
+    1. Clica no item **Matriz de Peças** na navegação principal.
+    2. Aplica o filtro de topo selecionando o chip **"Padrão Ouro"**.
+    3. Inspeciona a tabela interativa contendo scores de reputação, cobertura de testes de mutação e conformidade com zero stubs.
+* **Então** o sistema filtra e exibe apenas os componentes certificados (Score >= 0.85, sem stubs e com testes herméticos),
+* **E** sinaliza claramente quais peças estão em nível **Bronze** ou defasadas, recomendando substituição cirúrgica.
 
 ---
 
@@ -114,9 +163,21 @@ flowchart LR
 
 * **Dado que** existe um pipeline mestre `pipeline-frontend` e um sub-loop homologador `aidd-homologue@1.0.0`,
 * **Quando** o usuário conecta o sub-loop logo após a etapa de build (`e02`):
-  ```bash
-  legoloop compor pipeline-frontend aidd-homologue@1.0.0 --depende e02 --yes
-  ```
+  * **Via Terminal (CLI):**
+    ```bash
+    legoloop compor pipeline-frontend aidd-homologue@1.0.0 --depende e02 --yes
+    ```
+  * **Via Chat do Agente (Harness):**
+    ```markdown
+    /legoloop-compor
+    Prompt: "Componha o sub-loop 'aidd-homologue@1.0.0' dentro do 'pipeline-frontend', 
+    fazendo-o depender da etapa 'e02'."
+    ```
+  * **Via LegoLoop Studio (Interface Web):**
+    1. Abre o pipeline `pipeline-frontend` no visualizador de DAG interativo.
+    2. Clica no botão **"+ Adicionar Sub-Loop"** ou arrasta o bloco `aidd-homologue` da gaveta lateral.
+    3. Traça a aresta de conexão saindo de `e02` até o nó do sub-loop.
+    4. Clica em **"Salvar Composição"**.
 * **Então** o LegoLoop:
   1. Verifica se a junção criaria ciclos proibidos (`ErrCiclo`).
   2. Isola a saída do sub-loop na pasta confinada `out/aidd-homologue/`.
@@ -130,15 +191,27 @@ flowchart LR
 > **Objetivo:** Uma etapa do pipeline está lenta ou usando uma ferramenta antiga e o usuário quer trocá-la sem recriar o pipeline.
 
 * **Dado que** a etapa `e03_analise_estatica` está usando uma ferramenta obsoleta,
-* **Quando** o usuário executa:
-  ```bash
-  legoloop refinar "auditoria-smart-contracts" --trocar e03_analise_estatica --por "slither-analyzer@2.0.0" --yes
-  ```
+* **Quando** o usuário solicita a substituição atômica:
+  * **Via Terminal (CLI):**
+    ```bash
+    legoloop refinar "auditoria-smart-contracts" --trocar e03_analise_estatica --por "slither-analyzer@2.0.0" --yes
+    ```
+  * **Via Chat do Agente (Harness):**
+    ```markdown
+    /legoloop-refinar
+    Prompt: "No processo 'auditoria-smart-contracts', refine a etapa 'e03_analise_estatica' 
+    substituindo-a pela peça 'slither-analyzer@2.0.0'."
+    ```
+  * **Via LegoLoop Studio (Interface Web):**
+    1. Clica com o botão direito sobre o nó `e03_analise_estatica` no grafo do Studio.
+    2. Seleciona a opção **"Refinar / Trocar Peça"** no menu de contexto.
+    3. Escolhe `slither-analyzer@2.0.0` no catálogo de peças aptas sugerido pela matriz.
+    4. Confirma a substituição no modal de validação de contratos.
 * **Então** o LegoLoop:
   1. Valida se os contratos de entrada e saída da nova peça são compatíveis com os nós adjacentes.
   2. Substitui o nó no DAG preservando todas as conexões anteriores e posteriores.
   3. Incrementa a versão menor do processo (ex: de `@1.0.0` para `@1.1.0`).
-* **E** nenhuma outra etapa do fluxo sofre qualquer alteração.
+* **E** nenhuma outra etapa do fluxo sofre qualquer alteração ou efeito colateral.
 
 ---
 
@@ -147,13 +220,25 @@ flowchart LR
 > **Objetivo:** Um processo ou etapa não é mais necessário e deve ser excluído sem deixar resíduos nos editores ou quebrar links.
 
 * **Dado que** o processo `experimento-legado` deve ser desativado,
-* **Quando** o usuário executa primeiro em modo de simulação:
-  ```bash
-  legoloop remover "experimento-legado" --dry-run
-  ```
-* **Então** o sistema exibe tudo o que seria desvinculado (links nos harnesses, arquivos no cofre).
-* **E quando** o usuário confirma com `legoloop remover "experimento-legado" --force`,
-* **Então** o processo é desregistrado, os symlinks nos harnesses são limpos e uma cópia de segurança de rollback é gerada para restauração imediata se necessário.
+* **Quando** o usuário aciona a remoção segura:
+  * **Via Terminal (CLI):**
+    ```bash
+    # 1. Simulação prévia
+    legoloop remover "experimento-legado" --dry-run
+    # 2. Execução definitiva
+    legoloop remover "experimento-legado" --force
+    ```
+  * **Via Chat do Agente (Harness):**
+    ```markdown
+    /legoloop-remover
+    Prompt: "Remova o processo 'experimento-legado' com segurança, executando a 
+    simulação primeiro e limpando os links simbólicos de todos os harnesses."
+    ```
+  * **Via LegoLoop Studio (Interface Web):**
+    1. No card do processo `experimento-legado`, clica no ícone de engrenagem / três pontos e seleciona **"Remover Processo"**.
+    2. O Studio abre o diálogo de **Impacto e Dry-Run**, listando arquivos e harnesses afetados.
+    3. O usuário digita o nome do processo para confirmação e clica no botão vermelho **"Confirmar Remoção"**.
+* **Então** o sistema exibe o relatório de desvinculação, limpa os symlinks nos harnesses (Claude, Cursor, etc.), arquiva os dados e gera uma cópia de segurança de rollback para restauração imediata se necessário.
 
 ---
 
@@ -162,17 +247,30 @@ flowchart LR
 > **Objetivo:** Controlar o custo cognitivo e a velocidade de execução ajustando modelos de IA e limites por bloco.
 
 * **Dado que** o arquivo de rota `docs/routes/YYYY-MM-DD_ROUTE_EXEMPLO.json` define a execução por nós,
-* **Quando** o usuário abre o nó `ticket-01` e edita suas propriedades declarativas:
-  ```json
-  {
-    "id": "ticket-01",
-    "titulo": "Gerar Casos de Teste Unitários",
-    "modelo_cognitivo": "gemini-flash",
-    "contexto_esteril": true,
-    "mcps_permitidos": ["codebase-memory-mcp"],
-    "stop_gates": ["SG-01-REVISAO-HUMANA"]
-  }
-  ```
+* **Quando** o usuário ajusta as propriedades declarativas de um nó:
+  * **Via Terminal / Editor de Código:**
+    Abre o arquivo e edita diretamente:
+    ```json
+    {
+      "id": "ticket-01",
+      "titulo": "Gerar Casos de Teste Unitários",
+      "modelo_cognitivo": "gemini-flash",
+      "contexto_esteril": true,
+      "mcps_permitidos": ["codebase-memory-mcp"],
+      "stop_gates": ["SG-01-REVISAO-HUMANA"]
+    }
+    ```
+  * **Via Chat do Agente (Harness):**
+    ```markdown
+    Prompt: "No arquivo de rota mais recente, configure o nó 'ticket-01' para usar o modelo 
+    cognitivo 'gemini-flash', isolamento de contexto estéril e apenas a ferramenta 'codebase-memory-mcp'."
+    ```
+  * **Via LegoLoop Studio (Interface Web):**
+    1. Clica no nó `ticket-01` no diagrama do Studio para abrir o painel lateral de **Propriedades da Etapa**.
+    2. Seleciona o modelo no dropdown: `gemini-flash` (modo econômico).
+    3. Ativa o switch **"Contexto Estéril"**.
+    4. Marca apenas o MCP `codebase-memory-mcp` na lista de ferramentas e ativa o portão `SG-01-REVISAO-HUMANA`.
+    5. Clica em **"Aplicar Alterações"**.
 * **Então** na execução da Orchestrix:
   1. O nó executa com modelo ultrarrápido e econômico (`gemini-flash`).
   2. Carrega apenas as ferramentas necessárias (`codebase-memory-mcp`), sem poluir a janela de contexto.
@@ -180,24 +278,26 @@ flowchart LR
 
 ---
 
-## 4. Tabela de Consulta Rápida (Cheat Sheet de Decisão)
+## 4. Tabela de Consulta Rápida: A Tríade de Triggers por Operação
 
-| O que você quer fazer? | Nível | Comando Recomendado | Parâmetros Chave |
-| :--- | :--- | :--- | :--- |
-| **Criar um processo novo** | Macro | `legoloop fabricar "<nome>"` | `--goal "<desc>" --category <cat>` |
-| **Consultar o que está instalado** | Macro | `legoloop listar` | `--json` para automações |
-| **Verificar saúde e notas das peças** | Meso | `legoloop matriz` | `--tier ouro` ou `--tier prata` |
-| **Encaixar um pipeline dentro de outro** | Meso | `legoloop compor "<pai>" "<filho>"` | `--depende <etapa> --yes` |
-| **Substituir uma etapa com defeito** | Micro | `legoloop refinar "<nome>"` | `--trocar <id> --por <nova_peca>` |
-| **Desinstalar com limpeza de links** | Macro | `legoloop remover "<nome>"` | `--dry-run` antes, `--force` depois |
-| **Alterar modelo de IA / Tokens de um nó** | Micro/Nano | Edição direta no `ROUTE.json` | `"modelo_cognitivo": "pro\|flash"` |
-| **Gerar livro didático / PDF do processo** | Macro | `legoloop legopress "<alvo>"` | Compilação via Typst determinístico |
+| Ação Desejada | Nível | Trigger 1: Terminal (CLI) | Trigger 2: Chat do Agente | Trigger 3: LegoLoop Studio |
+| :--- | :--- | :--- | :--- | :--- |
+| **Criar processo do zero** | Macro | `legoloop fabricar "<nome>"` | `/legoloop-fabricar` ou prompt de intenção | Botão **`+ Novo Processo`** (modal com meta e categoria) |
+| **Consultar inventário** | Macro | `legoloop listar [--json]` | `/legoloop-listar` ou prompt de auditoria | Aba **Processos** (cards visuais e status dos harnesses) |
+| **Auditar reputação de peças** | Meso | `legoloop matriz [--tier ouro]` | `/legoloop-matriz` ou prompt de reputação | Aba **Matriz** (filtros interativos Ouro / Prata / Bronze) |
+| **Encaixar sub-loop em pipeline** | Meso | `legoloop compor "<pai>" "<filho>"` | `/legoloop-compor` ou prompt de acoplamento | Arrastar bloco e traçar aresta de dependência no DAG |
+| **Substituir etapa pontual** | Micro | `legoloop refinar "<alvo>"` | `/legoloop-refinar` ou prompt de refinamento | Botão direito no nó do grafo -> **Refinar / Trocar Peça** |
+| **Remover processo com rollback** | Macro | `legoloop remover "<nome>"` | `/legoloop-remover` ou prompt de desativação | Menu de contexto do card -> **Remover** (com modal de impacto) |
+| **Ajustar Modelo IA / Contexto** | Micro/Nano | Edição direta do `ROUTE.json` | Solicitação direta ao agente no chat | Painel lateral de propriedades do nó selecionado no grafo |
+| **Compilar livro didático / PDF** | Macro | `legoloop legopress "<alvo>"` | `/legoloop-legopress` ou prompt de livro | Botão **"Exportar Livro Didático"** na barra de ferramentas |
 
 ---
 
 ## 5. Conclusão
 
-Com essa arquitetura em BDD, o usuário não precisa decorar códigos internos do LegoLoop. Ele pensa exclusivamente em termos de **comportamento esperado**:
-* **Qual é o meu estado atual?** (Dado)
-* **Qual verbo de comando eu aciono?** (Quando)
-* **Qual garantia determinística o sistema me devolve?** (Então)
+Com a Tríade de Triggers integrada ao padrão BDD, o usuário compreende que o LegoLoop **não é apenas uma CLI**:
+* Se estiver num ambiente de automação headless ou CI/CD, utiliza o **Terminal**.
+* Se estiver programando em par com um modelo de linguagem no seu editor favorito, utiliza o **Chat do Agente**.
+* Se preferir visão panorâmica, edição visual e clique intuitivo, utiliza o **LegoLoop Studio**.
+
+Em qualquer um dos três caminhos, o comportamento contratado pelo BDD (**Dado-Quando-Então**) é idêntico, determinístico e auditável.
