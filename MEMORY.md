@@ -325,7 +325,19 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Qualidade & Recompilação:** `go test ./...` verde, `go vet` limpo, `gofmt` vazio, `bin/legoloop.exe` recompilado e atualizado no PATH via `go install`.
   - **Artefatos:** `docs/intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/routes/2026-11-07_ROUTE_NORMALIZACAO_TAXONOMIA_SKILLS.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_NORMALIZACAO_TAXONOMIA_SKILLS.md`.
 
+- **07/11/2026** — 🏆 **Elevação dos Templates Satélites ao Padrão Ouro da Indústria Agêntica (v2.2.0):**
+  - **Diagnóstico de Fronteira:** Confronto sistemático dos templates secundários com o estado da arte (Anthropic Model Context Protocol 2024-2025, Claude Code Lifecycle Hooks, `agentskills.io` Open Standard, OpenAI Assistants/Agents SDK e Google Antigravity).
+  - **Sextilha Canônica Atualizada:**
+    - `TEMPLATE_PIECE_MCP.json`: Configuração moderna com runners isolados (`uvx` e `npx -y`), permissões granulares com `autoApprove` seletivo, interpolação segura de variáveis de ambiente `${ENV}` e regra imperativa de direcionamento de logs exclusivamente via `stderr` (protegendo a integridade da comunicação STDIO JSON-RPC).
+    - `TEMPLATE_PIECE_HOOK.json`: Suporte completo ao ciclo de vida da Anthropic com `PreToolUse` (bloqueio mecânico determinístico com exit `2` e devolução de diagnóstico no `stderr` para autocorreção do LLM) e `PostToolUse` (linter/formatador idempotente pós-escrita).
+    - `TEMPLATE_PIECE_SKILL.md`: Frontmatter enriquecido com `compatibility`, `allowed-tools` (mitigação mandatória de tool sprawl e contenção de contexto), contratos ontológicos e formalização da regra taxonômica (prefixo `legoloop-*` exclusivo das 10 funções proprietárias; peças de domínio mantêm seu nome e autoria).
+    - `TEMPLATE_PIECE_SCRIPT.ps1`: Adicionada flag `-Json` para emissão de telemetria estruturada consumível por DAGs, preservando isolamento estrito de raiz (`Resolve-InsideRoot`), exit codes padronizados (0, 1, 2) e BOM UTF-8 mandatória.
+    - `TEMPLATE_PIECE_GATE.json`: Receitas v2.2.0 com thresholds numéricos tipados e políticas de retentativa com backoff.
+    - `TEMPLATE_PIECE_LOOP.json`, `TEMPLATE_DAG_LEGOPRESS.json`, `TEMPLATE_ROUTE_LEGOPRESS.json`: Elevados ao schema v2.2.0 com nós isomórficos, assinaturas Merkle, limites bidirecionais de tokens e contratos de telemetria.
+  - **Documentação e Compilação:** `docs/templates/README.md` atualizado com o vocabulário e taxonomia v2.2.0; manual técnico `docs/templates/MANUAL_TEMPLATES_LEGOLOOP.typ` atualizado e recompilado para PDF com o Typst 0.15.1 (`docs/templates/MANUAL_TEMPLATES_LEGOLOOP.pdf`, 521 KB).
+  - **Qualidade & Recompilação:** 10/10 testes de templates e 100% da suíte global em verde (`go test -count=1 ./...`), `go vet` limpo, `gofmt` vazio, `bin/legoloop.exe` recompilado com êxito.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `main` — Taxonomia de 10 skills normalizada, ROUTE v2.2.0, Cadeia Merkle e Governança de Concorrência homologadas.
+- **Status da Branch:** `docs/livros-loops-autores` (e `main`) — Templates satélites elevados para v2.2.0 Padrão Ouro, taxonomia normalizada, ROUTE v2.2.0 homologada.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH.
-- **Documentação & Relatório:** `docs/reports/2026-11-07_REPORT_NORMALIZACAO_TAXONOMIA_SKILLS.md` e `AGENTS.md`.
+- **Documentação & Relatório:** `docs/templates/README.md`, `MANUAL_TEMPLATES_LEGOLOOP.pdf` e `AGENTS.md`.

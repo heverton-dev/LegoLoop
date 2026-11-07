@@ -6,7 +6,7 @@
       #grid(
         columns: (1fr, auto),
         align(left)[#text(size: 8.5pt, fill: rgb("#64748b"))[*LegoLoop Ecosystem* • Engenharia de Software Autônoma]],
-        align(right)[#text(size: 8.5pt, fill: rgb("#0284c7"))[*Manual Canônico de Templates v2.0.0* (SSOT)]]
+        align(right)[#text(size: 8.5pt, fill: rgb("#0284c7"))[*Manual Canônico de Templates v2.2.0* (SSOT)]]
       )
       #line(length: 100%, stroke: 0.5pt + rgb("#cbd5e1"))
     ]
@@ -104,7 +104,7 @@
     align(left)[
       #text(size: 9.5pt, fill: rgb("#64748b"))[
         *Repositório:* LegoLoop Engine \
-        *Versão do SSOT:* v2.0.0 (Isomórfica e Hermética) \
+        *Versão do SSOT:* v2.2.0 (Isomórfica e Hermética) \
         *Diretório Canônico:* `docs/templates/`
       ]
     ],

@@ -1,7 +1,8 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "name": "legopress-engine",
-  "version": "1.0.0",
+  "version": "2.2.0",
+  "description": "Pipeline canônico de geração, diagramação e auditoria geométrica de livros técnicos (LegoPress).",
   "trigger": {
     "type": "manual"
   },
@@ -13,7 +14,12 @@
       "routing": {
         "mode": "suggested",
         "model": "sonnet",
+        "effort": "high",
         "fallback": "code-fast"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
       },
       "inputs": {
         "briefing": "var.briefing"
@@ -37,8 +43,10 @@
       "routing": {
         "mode": "suggested",
         "model": "code-nano",
+        "effort": "low",
         "fallback": "flash-lite"
       },
+      "timeout_sec": 120,
       "inputs": {
         "intent": "file('docs/intents/INTENT_LIVRO.md')"
       },
@@ -57,7 +65,12 @@
       "routing": {
         "mode": "suggested",
         "model": "code-fast",
+        "effort": "medium",
         "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
       },
       "inputs": {
         "manifest": "file('docs/livro/livro.json')"
@@ -81,8 +94,10 @@
       "routing": {
         "mode": "suggested",
         "model": "code-nano",
+        "effort": "low",
         "fallback": "flash-lite"
       },
+      "timeout_sec": 180,
       "inputs": {
         "manifest": "file('docs/livro/livro.json')"
       },
@@ -105,8 +120,10 @@
       "routing": {
         "mode": "suggested",
         "model": "code-pro",
+        "effort": "high",
         "fallback": "sonnet"
       },
+      "timeout_sec": 120,
       "inputs": {
         "pdf": "file('docs/livro/livro.pdf')"
       },
