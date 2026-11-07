@@ -64,7 +64,103 @@ flowchart LR
 
 ---
 
-## 3. Cenários BDD Didáticos (Casos de Uso Multi-Trigger)
+## 3. Matriz de Encadeamento de Verbos: Construindo Processos Reais
+
+No LegoLoop, **os verbos não foram projetados para rodar de forma isolada**. Eles atuam como elos de uma corrente lógica, onde as saídas de diagnósticos alimentam ações cirúrgicas e auditorias finais:
+
+```mermaid
+flowchart TD
+    subgraph DIAGNOSTICO["1. Diagnóstico e Inventário"]
+        V_LISTAR["legoloop listar"]
+        V_MATRIZ["legoloop matriz"]
+    end
+
+    subgraph ACAO["2. Ação e Transformação"]
+        V_FABRICAR["legoloop fabricar"]
+        V_COMPOR["legoloop compor"]
+        V_REFINAR["legoloop refinar"]
+        V_REMOVER["legoloop remover"]
+    end
+
+    subgraph FECHAMENTO["3. Validação e Entrega"]
+        V_AUDIT["Auditoria de Gates"]
+        V_LEGOPRESS["legoloop legopress"]
+    end
+
+    V_LISTAR -->|"Inspecionar Nós"| V_REFINAR
+    V_LISTAR -->|"Identificar Sub-Loops"| V_COMPOR
+    V_LISTAR -->|"Auditar Resíduos"| V_REMOVER
+    V_MATRIZ -->|"Detectar Defasagem"| V_REFINAR
+    V_MATRIZ -->|"Validar Aptidão"| V_FABRICAR
+    V_FABRICAR -->|"Validar Grafo"| V_LISTAR
+    V_COMPOR -->|"Verificar Acoplamento"| V_LISTAR
+    V_REFINAR -->|"Validar Score"| V_AUDIT
+    V_REMOVER -->|"Confirmar Limpeza"| V_LISTAR
+    V_AUDIT -->|"Gerar Documentação"| V_LEGOPRESS
+```
+
+---
+
+### As 5 Trilhas Canônicas de Encadeamento (Esgotamento de Casos)
+
+Abaixo estão documentadas todas as combinações lógicas para operação diária no ecossistema:
+
+#### Trilha 1: Criação e Publicação (Do Zero ao Grafo Executável)
+* **Objetivo:** Criar um novo processo com governança completa sem duplicar trabalho.
+* **Encadeamento:** `legoloop listar` $\rightarrow$ `legoloop fabricar` $\rightarrow$ `legoloop matriz`
+* **Passo a Passo Prático:**
+  1. **Passo 1 (`listar`):** Verifica se já não existe outro processo similar registrado no cofre.
+  2. **Passo 2 (`fabricar`):** Gera os 4 artefatos contratuais (`INTENT`, `SPEC`, `PLAN`, `ROUTE`).
+  3. **Passo 3 (`matriz`):** Confere se as peças e ferramentas selecionadas pelo motor possuem boa reputação (Tier Ouro/Prata).
+
+#### Trilha 2: Diagnóstico e Refinamento Cirúrgico (Melhoria Contínua)
+* **Objetivo:** Encontrar etapas com baixo desempenho, substituir peças defasadas e elevar a qualidade.
+* **Encadeamento:** `legoloop listar` $\rightarrow$ `legoloop matriz` $\rightarrow$ `legoloop refinar` $\rightarrow$ `legoloop matriz`
+* **Passo a Passo Prático:**
+  1. **Passo 1 (`listar`):** Localiza os identificadores exatos das etapas do processo (`e01`, `e02`...).
+  2. **Passo 2 (`matriz`):** Filtra peças com pontuação baixa ou defasada (Tier Bronze/Defasado) e mapeia substitutas Tier Ouro ($\ge 0.85$).
+  3. **Passo 3 (`refinar`):** Executa a troca atômica da peça na etapa (`--etapa e02 --peca nova-peca`), gerando backup em `.legoloop-bak` e bump minor de versão.
+  4. **Passo 4 (`matriz`):** Revalida o processo confirmando que a saúde geral do cofre subiu.
+
+#### Trilha 3: Composição Hierárquica e Reuso (Mega-Pipelines e Sub-Loops)
+* **Objetivo:** Reaproveitar um processo existente como sub-etapa de outro processo maior.
+* **Encadeamento:** `legoloop listar` $\rightarrow$ `legoloop compor` $\rightarrow$ `legoloop listar`
+* **Passo a Passo Prático:**
+  1. **Passo 1 (`listar`):** Seleciona o processo anfitrião (Pai) e o processo modular que será acoplado (Filho/Sub-Loop).
+  2. **Passo 2 (`compor`):** Conecta o sub-loop em uma posição específica do pipeline (`legoloop compor <pai> <filho> --pos N`).
+  3. **Passo 3 (`listar`):** Valida a árvore hierárquica e os links do DAG gerados na saída JSON.
+
+#### Trilha 4: Ciclo de Vida, Higienização e Descomissionamento
+* **Objetivo:** Desativar processos depreciados limpando symlinks de todos os editores sem risco de quebra.
+* **Encadeamento:** `legoloop matriz` $\rightarrow$ `legoloop listar` $\rightarrow$ `legoloop remover --dry-run` $\rightarrow$ `legoloop remover --force`
+* **Passo a Passo Prático:**
+  1. **Passo 1 (`matriz`):** Identifica processos com peças órfãs ou critérios descontinuados.
+  2. **Passo 2 (`listar`):** Analisa o blast radius (quais harnesses e editores estão vinculados ao processo).
+  3. **Passo 3 (`remover --dry-run`):** Simula a exclusão para conferir se nenhum artefato crítico será danificado.
+  4. **Passo 4 (`remover --force`):** Executa o descarte com limpeza automática de symlinks e histórico de rollback preservado.
+
+#### Trilha 5: Governança Editorial e Consolidação Didática
+* **Objetivo:** Transformar as especificações, planos e rotas refinadas em um livro técnico ou manual em PDF.
+* **Encadeamento:** `legoloop listar` $\rightarrow$ `legoloop matriz` $\rightarrow$ `legoloop legopress`
+* **Passo a Passo Prático:**
+  1. **Passo 1 (`listar` / `matriz`):** Audita a estabilidade e integridade dos nós do processo.
+  2. **Passo 2 (`legopress`):** Compila os diffs de código, especificações BDD e diagramas visuais em documento Typst/PDF canônico em `docs/manuals/`.
+
+---
+
+### Tabela-Resumo dos Encadeamentos
+
+| Trilha Operacional | Sequência de Verbos | Gatilho Típico | Resultado Entregue |
+| :--- | :--- | :--- | :--- |
+| **1. Criação do Zero** | `listar` $\rightarrow$ `fabricar` $\rightarrow$ `matriz` | Nova demanda ou projeto | Processo completo com INTENT, SPEC, PLAN e ROUTE |
+| **2. Refinamento e Melhoria** | `listar` $\rightarrow$ `matriz` $\rightarrow$ `refinar` $\rightarrow$ `matriz` | Peça lenta, falha em teste ou defasagem | Etapa substituída com TDD e subida de versão minor |
+| **3. Composição de Sub-Loop** | `listar` $\rightarrow$ `compor` $\rightarrow$ `listar` | Necessidade de reaproveitar fluxo existente | Sub-loop injetado no DAG preservando isolamento |
+| **4. Descomissionamento** | `matriz` $\rightarrow$ `listar` $\rightarrow$ `remover` | Processo legado ou substituição total | Limpeza de symlinks sem orfandade de arquivos |
+| **5. Fechamento Editorial** | `matriz` $\rightarrow$ `legopress` | Conclusão de ciclo ou entrega ao cliente | Manual técnico e PDF canônico gerado |
+
+---
+
+## 4. Cenários BDD Didáticos (Casos de Uso Multi-Trigger)
 
 Abaixo, cada cenário BDD demonstra **exatamente o mesmo comportamento esperado** sendo acionado pelas três vias disponíveis.
 
@@ -278,7 +374,7 @@ Abaixo, cada cenário BDD demonstra **exatamente o mesmo comportamento esperado*
 
 ---
 
-## 4. Tabela de Consulta Rápida: A Tríade de Triggers por Operação
+## 5. Tabela de Consulta Rápida: A Tríade de Triggers por Operação
 
 | Ação Desejada | Nível | Trigger 1: Terminal (CLI) | Trigger 2: Chat do Agente | Trigger 3: LegoLoop Studio |
 | :--- | :--- | :--- | :--- | :--- |
@@ -293,9 +389,9 @@ Abaixo, cada cenário BDD demonstra **exatamente o mesmo comportamento esperado*
 
 ---
 
-## 5. Conclusão
+## 6. Conclusão
 
-Com a Tríade de Triggers integrada ao padrão BDD, o usuário compreende que o LegoLoop **não é apenas uma CLI**:
+Com a Tríade de Triggers integrada ao padrão BDD e os encadeamentos canônicos mapeados, o usuário compreende que o LegoLoop **não é apenas uma CLI**:
 * Se estiver num ambiente de automação headless ou CI/CD, utiliza o **Terminal**.
 * Se estiver programando em par com um modelo de linguagem no seu editor favorito, utiliza o **Chat do Agente**.
 * Se preferir visão panorâmica, edição visual e clique intuitivo, utiliza o **LegoLoop Studio**.
