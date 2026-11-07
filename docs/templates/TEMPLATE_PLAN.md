@@ -4,6 +4,7 @@
 > **Data:** {{DATA}}  
 > **Versão:** {{1.0.0}}  
 > **Autor:** {{AUTOR}}  
+> **Iniciativa:** {{NOME_OU_ID_DA_INICIATIVA | Opcional para demandas amplas}}  
 > **Referência da Intenção:** [docs/intents/{{DATA}}_INTENT_{{NOME}}.md](../intents/{{DATA}}_INTENT_{{NOME}}.md)  
 > **Referência da Especificação:** [docs/specs/{{DATA}}_SPEC_{{NOME}}.md](../specs/{{DATA}}_SPEC_{{NOME}}.md)  
 > **Espelho Executável JSON:** [docs/routes/{{DATA}}_ROUTE_{{NOME}}.json](../routes/{{DATA}}_ROUTE_{{NOME}}.json)  
@@ -15,6 +16,7 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
   Qualquer divergência entre os dois é defeito. Valores do exemplo abaixo coincidem com o exemplo do ROUTE.
 - Cada ticket é uma fatia vertical: entrega comportamento verificável de ponta a ponta, não uma camada.
 - Cada ticket cita o critério AC da SPEC que ele fecha (Spec Ref). AC sem ticket = plano incompleto.
+- Em demandas amplas, múltiplos Épicos podem ser agrupados opcionalmente sob uma Iniciativa (ex: I01 — Nome).
 -->
 
 ---

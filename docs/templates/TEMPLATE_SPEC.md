@@ -4,6 +4,7 @@
 > **Data:** {{DATA}}  
 > **Versão:** {{1.0.0}}  
 > **Autor:** {{AUTOR}} (Fusão Addy Osmani + Matt Pocock + AIDD-Spec)  
+> **Iniciativa:** {{NOME_OU_ID_DA_INICIATIVA | Opcional para demandas amplas}}  
 > **Referência da Intenção:** [docs/intents/{{DATA}}_INTENT_{{NOME}}.md](../intents/{{DATA}}_INTENT_{{NOME}}.md)  
 > **Alvo Primário:** {{Ex: internal/dag, internal/studio, cmd/legoloop}}  
 > **Consome:** INTENT aprovada · **Produz:** PLAN e ROUTE  
@@ -13,6 +14,7 @@
 GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 - Toda premissa, fronteira, contrato e critério precisa ser verificável. Frase vaga = critério reprovado.
 - Antes de escrever contratos e ACs, leia o código existente do alvo: reuse pacotes já presentes em vez de reinventar.
+- Em demandas amplas, múltiplos Épicos podem ser agrupados opcionalmente sob uma Iniciativa (ex: I01 — Nome).
 - Fechamento: !has_pattern('docs/specs/<arquivo>.md', '\{\{') e has_binary_criteria + has_acceptance_criteria.
 -->
 

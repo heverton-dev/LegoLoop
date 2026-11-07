@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 480" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font-family: system-ui, -apple-system, sans-serif; font-size: 20px; font-weight: 700; fill: #0f172a; }
+      .subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; fill: #64748b; }
+      .card-bg { fill: #ffffff; stroke-width: 1.5; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); rx: 10px; }
+      .card-title { font-family: system-ui, -apple-system, sans-serif; font-size: 15px; font-weight: 700; }
+      .card-desc { font-family: system-ui, -apple-system, sans-serif; font-size: 11.5px; fill: #475569; }
+      .verb-tag { font-family: system-ui, -apple-system, monospace; font-size: 11px; font-weight: 600; text-anchor: middle; }
+      .center-circle { fill: #0f172a; stroke: #334155; stroke-width: 3; }
+      .center-text { font-family: system-ui, -apple-system, sans-serif; font-size: 16px; font-weight: 700; fill: #ffffff; text-anchor: middle; }
+      .center-sub { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; fill: #94a3b8; text-anchor: middle; }
+      .arrow { stroke: #cbd5e1; stroke-width: 2; fill: none; stroke-dasharray: 4,4; }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#94a3b8" />
+    </marker>
+  </defs>
+
+  <!-- Fundo -->
+  <rect width="880" height="480" class="bg" rx="12" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- Título do Diagrama -->
+  <text x="40" y="42" class="title">O Ciclo de Vida dos Cinco Verbos Canônicos</text>
+  <text x="40" y="64" class="subtitle">A mecânica contínua de fabricação, inspeção, refinamento e descarte de processos no LegoLoop</text>
+
+  <!-- Nó Central: COMPOR -->
+  <circle cx="440" cy="265" r="75" class="center-circle" />
+  <text x="440" y="258" class="center-text">COMPOR</text>
+  <text x="440" y="278" class="center-sub">Sub-Loops</text>
+  <text x="440" y="294" class="center-sub">Hierárquicos</text>
+
+  <!-- Verbo 1: FABRICAR (Azul Cobalto) -->
+  <g transform="translate(330, 95)">
+    <rect width="220" height="85" class="card-bg" stroke="#2563eb" />
+    <rect x="0" y="0" width="220" height="6" fill="#2563eb" rx="3" />
+    <text x="14" y="28" class="card-title" fill="#2563eb">1. FABRICAR</text>
+    <text x="14" y="48" class="card-desc">Criação autônoma do zero via</text>
+    <text x="14" y="64" class="card-desc">Tríade (Intent, Spec, Plan, Route)</text>
+    <rect x="135" y="16" width="72" height="18" fill="#eff6ff" rx="4" />
+    <text x="171" y="29" class="verb-tag" fill="#2563eb">/fabricar</text>
+  </g>
+
+  <!-- Verbo 2: MATRIZ (Verde Esmeralda) -->
+  <g transform="translate(610, 195)">
+    <rect width="230" height="85" class="card-bg" stroke="#16a34a" />
+    <rect x="0" y="0" width="230" height="6" fill="#16a34a" rx="3" />
+    <text x="14" y="28" class="card-title" fill="#16a34a">2. MATRIZ</text>
+    <text x="14" y="48" class="card-desc">Auditoria contínua de reputação,</text>
+    <text x="14" y="64" class="card-desc">Tiers Ouro/Prata e defasagem</text>
+    <rect x="155" y="16" width="62" height="18" fill="#f0fdf4" rx="4" />
+    <text x="186" y="29" class="verb-tag" fill="#16a34a">/matriz</text>
+  </g>
+
+  <!-- Verbo 3: LISTAR (Âmbar Dourado) -->
+  <g transform="translate(530, 360)">
+    <rect width="220" height="85" class="card-bg" stroke="#d97706" />
+    <rect x="0" y="0" width="220" height="6" fill="#d97706" rx="3" />
+    <text x="14" y="28" class="card-title" fill="#d97706">3. LISTAR</text>
+    <text x="14" y="48" class="card-desc">Inventário de processos ativos,</text>
+    <text x="14" y="64" class="card-desc">vínculos com ferramentas e harnesses</text>
+    <rect x="145" y="16" width="62" height="18" fill="#fffbeb" rx="4" />
+    <text x="176" y="29" class="verb-tag" fill="#d97706">/listar</text>
+  </g>
+
+  <!-- Verbo 4: REFINAR (Cobalto / Céu) -->
+  <g transform="translate(130, 360)">
+    <rect width="220" height="85" class="card-bg" stroke="#0284c7" />
+    <rect x="0" y="0" width="220" height="6" fill="#0284c7" rx="3" />
+    <text x="14" y="28" class="card-title" fill="#0284c7">4. REFINAR</text>
+    <text x="14" y="48" class="card-desc">Substituição cirúrgica de peças,</text>
+    <text x="14" y="64" class="card-desc">otimização atômica sem quebras</text>
+    <rect x="145" y="16" width="62" height="18" fill="#f0f9ff" rx="4" />
+    <text x="176" y="29" class="verb-tag" fill="#0284c7">/refinar</text>
+  </g>
+
+  <!-- Verbo 5: REMOVER (Carmesim) -->
+  <g transform="translate(40, 195)">
+    <rect width="220" height="85" class="card-bg" stroke="#dc2626" />
+    <rect x="0" y="0" width="220" height="6" fill="#dc2626" rx="3" />
+    <text x="14" y="28" class="card-title" fill="#dc2626">5. REMOVER</text>
+    <text x="14" y="48" class="card-desc">Desvinculação limpa e segura,</text>
+    <text x="14" y="64" class="card-desc">limpeza em harnesses com rollback</text>
+    <rect x="135" y="16" width="72" height="18" fill="#fef2f2" rx="4" />
+    <text x="171" y="29" class="verb-tag" fill="#dc2626">/remover</text>
+  </g>
+
+  <!-- Linhas de Conexão -->
+  <path d="M 550 145 Q 680 145 700 195" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 720 280 Q 720 340 680 360" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 530 400 L 350 400" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 180 360 Q 140 320 140 280" class="arrow" marker-end="url(#arrowhead)"/>
+  <path d="M 180 195 Q 220 145 330 140" class="arrow" marker-end="url(#arrowhead)"/>
+</svg>

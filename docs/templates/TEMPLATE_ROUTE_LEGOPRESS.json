@@ -1,0 +1,320 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.0.0",
+  "name": "legopress_engine_canonical",
+  "version": "1.0.0",
+  "date": "2026-11-06",
+  "session_id": "00000000-0000-0000-0000-000000000000",
+  "intent_ref": "docs/intents/TEMPLATE_INTENT.md",
+  "spec_ref": "docs/specs/TEMPLATE_SPEC.md",
+  "plan_ref": "docs/plans/TEMPLATE_PLAN.md",
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "nodes": [
+    {
+      "id": "STEP-01-BRIEFING",
+      "label": "Entrevista Socrática & Alinhamento de Intenção",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 1200
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "",
+        "context_artifacts": []
+      },
+      "test_target": "",
+      "output": {
+        "artifacts": [
+          "docs/intents/INTENT_LIVRO.md"
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "STEP-02-PARTITION",
+      "label": "Fatiamento Hierárquico em Tríade (Macro, Meso, Micro)",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 60,
+      "token_budget": {
+        "max_output_tokens": 800
+      },
+      "depends_on": [
+        "STEP-01-BRIEFING"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash-lite"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/intents/INTENT_LIVRO.md"
+        ],
+        "spec_anchor": "",
+        "context_artifacts": []
+      },
+      "test_target": "",
+      "output": {
+        "artifacts": [
+          "docs/livro/livro.json"
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "STEP-03-WRITING",
+      "label": "Redação Estéril e Purificação Didática sem IA-Slop",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_output_tokens": 4000
+      },
+      "depends_on": [
+        "STEP-02-PARTITION"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/livro/livro.json"
+        ],
+        "spec_anchor": "",
+        "context_artifacts": []
+      },
+      "test_target": "",
+      "output": {
+        "artifacts": [
+          "docs/livro/partes/*.md"
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "STEP-04-COMPILE",
+      "label": "Compilação Typst + Pandoc no Formato 170x240mm",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 120,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "STEP-03-WRITING"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash-lite"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/livro/partes/*.md",
+          "docs/livro/ativos/livro.typst"
+        ],
+        "spec_anchor": "",
+        "context_artifacts": []
+      },
+      "test_target": "",
+      "output": {
+        "artifacts": [
+          "docs/livro/livro.pdf"
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "STEP-05-AUDIT-GEOMETRY",
+      "label": "Auditoria Mecânica com PyMuPDF (Zero Quebras & Linha Única)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 60,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "STEP-04-COMPILE"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/livro/livro.pdf"
+        ],
+        "spec_anchor": "",
+        "context_artifacts": []
+      },
+      "test_target": "",
+      "output": {
+        "artifacts": [
+          "docs/livro/relatorio_geometria.json"
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "STEP-06-HUMAN-STOP-GATE",
+      "label": "Stop-Gate Humano: Aprovação Final do Livro e Publicação",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 30,
+      "token_budget": {
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "STEP-05-AUDIT-GEOMETRY"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash-lite"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/livro/relatorio_geometria.json"
+        ],
+        "spec_anchor": "",
+        "context_artifacts": []
+      },
+      "test_target": "",
+      "output": {
+        "artifacts": [],
+        "gate": "exit_code == 0"
+      }
+    }
+  ]
+}

@@ -8,6 +8,7 @@
   "intent_ref": "docs/intents/{{DATA}}_INTENT_{{NOME}}.md",
   "spec_ref": "docs/specs/{{DATA}}_SPEC_{{NOME}}.md",
   "plan_ref": "docs/plans/{{DATA}}_PLAN_{{NOME}}.md",
+  "initiative_ref": null,
   "execution_strategy": {
     "supervision_level": "micro",
     "default_isolation": {
@@ -23,6 +24,7 @@
   "nodes": [
     {
       "id": "TICK-01.1",
+      "initiative_id": null,
       "label": "Implementação da Unidade com Red-Green TDD",
       "nature": "micro",
       "type": "unit_task",
@@ -78,6 +80,7 @@
     },
     {
       "id": "TICK-01.2",
+      "initiative_id": null,
       "label": "Verificação Estática da Unidade",
       "nature": "nano",
       "type": "unit_task",
@@ -134,6 +137,7 @@
     },
     {
       "id": "SG-E01",
+      "initiative_id": null,
       "label": "Stop-Gate Humano do Épico 01",
       "nature": "nano",
       "type": "stop_gate",
@@ -182,6 +186,7 @@
     },
     {
       "id": "TICK-02.1",
+      "initiative_id": null,
       "label": "Dissecação via Subloop Especialista",
       "nature": "macro",
       "type": "subloop",
@@ -238,6 +243,7 @@
     },
     {
       "id": "SG-FINAL",
+      "initiative_id": null,
       "label": "Homologação Final (Regressão Global & Recompilação Fresca)",
       "nature": "nano",
       "type": "stop_gate",

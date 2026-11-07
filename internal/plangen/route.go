@@ -59,6 +59,7 @@ type tokenBudget struct {
 // routeNode segue, campo a campo e na mesma ordem, o nó do TEMPLATE_ROUTE.json.
 type routeNode struct {
 	ID               string         `json:"id"`
+	InitiativeID     *string        `json:"initiative_id"`
 	Label            string         `json:"label"`
 	Nature           string         `json:"nature"`
 	Type             string         `json:"type"`
@@ -100,6 +101,7 @@ type routeDoc struct {
 	IntentRef         *string       `json:"intent_ref"`
 	SpecRef           string        `json:"spec_ref"`
 	PlanRef           string        `json:"plan_ref"`
+	InitiativeRef     *string       `json:"initiative_ref"`
 	ExecutionStrategy routeStrategy `json:"execution_strategy"`
 	Nodes             []routeNode   `json:"nodes"`
 }
@@ -114,7 +116,7 @@ func str(s string) *string {
 func newRouteDoc(m planMeta, nodes []routeNode) routeDoc {
 	return routeDoc{
 		Schema: routeSchemaURL, TemplateVersion: templates.Version, Name: m.RouteName, Version: "1.0.0", Date: m.Date,
-		IntentRef: str(m.IntentRef), SpecRef: m.SpecRel, PlanRef: m.PlanRel,
+		IntentRef: str(m.IntentRef), SpecRef: m.SpecRel, PlanRef: m.PlanRel, InitiativeRef: str(m.InitiativeRef),
 		ExecutionStrategy: routeStrategy{
 			SupervisionLevel: string(m.Level), DefaultIsolation: localIsolation("orchestrix_hermetic"),
 			MaxParallelWorkers: 2, TDDEnforced: true, DefaultTimeoutSec: defaultTimeout, RollbackOnFailure: "abort_pipeline",
@@ -146,8 +148,15 @@ func ticketNode(t Ticket, m planMeta) routeNode {
 	if t.Gate != "" {
 		g = t.Gate
 	}
+	var initID *string
+	if t.InitiativeID != "" {
+		initID = str(t.InitiativeID)
+	} else if iNum, ok := m.EpicInitiative[epicNumber(t.EpicID)]; ok && iNum > 0 {
+		s := fmt.Sprintf("I%02d", iNum)
+		initID = &s
+	}
 	return routeNode{
-		ID: t.ID, Label: t.Title, Nature: t.Nature, Type: "unit_task", Status: "PENDING", ExecutionMode: t.ExecutionMode,
+		ID: t.ID, InitiativeID: initID, Label: t.Title, Nature: t.Nature, Type: "unit_task", Status: "PENDING", ExecutionMode: t.ExecutionMode,
 		Isolation: localIsolation("orchestrix_hermetic"), TimeoutSec: defaultTimeout, TokenBudget: tokenBudget{budget},
 		DependsOn: nonNil(t.DependsOn), Routing: routing,
 		Tooling: routeTooling{Runtime: "powershell", McpsAllowed: []string{}},
@@ -216,7 +225,7 @@ func finalGate(deps []string) routeNode {
 
 func stopGate(id, label string, deps []string, epic string, out routeOutput, routing routeRouting, in routeInputs) routeNode {
 	return routeNode{
-		ID: id, Label: label, Nature: "nano", Type: "stop_gate", Status: "PENDING", ExecutionMode: "sequential",
+		ID: id, InitiativeID: nil, Label: label, Nature: "nano", Type: "stop_gate", Status: "PENDING", ExecutionMode: "sequential",
 		Isolation: localIsolation("local_process"), TimeoutSec: defaultTimeout, TokenBudget: tokenBudget{0},
 		DependsOn: nonNil(deps), Routing: routing, Tooling: routeTooling{Runtime: "powershell", McpsAllowed: []string{}},
 		Inputs: in, Defects: []any{}, RollbackStrategy: "abort_pipeline", Output: out, epic: epic,

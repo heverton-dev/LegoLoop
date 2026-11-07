@@ -226,9 +226,12 @@ func TestRouteKeysAreExposedForEngines(t *testing.T) {
 			t.Errorf("conjunto %s vazio ou não ordenado: %v", name, set)
 		}
 	}
-	for _, must := range []string{"spec_ref", "token_budget", "rollback_strategy", "defects", "tooling"} {
+	for _, must := range []string{"spec_ref", "token_budget", "rollback_strategy", "defects", "tooling", "initiative_id"} {
 		if !slices.Contains(k.Node, must) {
 			t.Errorf("a chave de nó %q sumiu do template", must)
 		}
+	}
+	if !slices.Contains(k.Top, "initiative_ref") {
+		t.Errorf("a chave top 'initiative_ref' sumiu do template")
 	}
 }

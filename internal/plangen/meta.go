@@ -14,18 +14,23 @@ type planMeta struct {
 	Level                           SupervisionLevel
 	SpecRel, PlanRel, RouteRel      string // relativos à raiz do projeto, com "/"
 	IntentRef                       string // idem; vazio quando a SPEC não informa
+	InitiativeRef                   string // idem; vazio quando a SPEC/INTENT não informa
 	SpecLink, IntentLink, RouteLink string // relativos a docs/plans (links do PLAN)
 	SpecFile, RouteName             string
+	Initiatives                     map[int]string
 	Epics                           map[int]string
+	EpicInitiative                  map[int]int
 	SpecCriteria                    []string
 }
 
 var (
-	specThemeRe  = regexp.MustCompile(`(?m)^# 📋 SPEC:\s*(.+?)\s*$`)
-	intentRefRe  = regexp.MustCompile(`Referência da Intenção:\*\*\s*(?:\[([^\]]+)\]|(\S+))`)
-	epicNameRe   = regexp.MustCompile(`(?m)^#{2,4}\s*(?:Épico\s+|E)?(\d+)\s*[—–-]\s*(.+?)\s*$`)
-	specACRe     = regexp.MustCompile(`(?i)\*\s*\[\s*\]\s*[\x60*]*(AC-[A-Za-z0-9_.-]+)`)
-	firstNumbers = regexp.MustCompile(`\d+`)
+	specThemeRe      = regexp.MustCompile(`(?m)^# 📋 SPEC:\s*(.+?)\s*$`)
+	intentRefRe      = regexp.MustCompile(`Referência da Intenção:\*\*\s*(?:\[([^\]]+)\]|(\S+))`)
+	initiativeRefRe  = regexp.MustCompile(`(?im)^>?\s*\*?\*?Iniciativa:\*?\*?\s*(?:\[([^\]]+)\]|(.+?))\s*$`)
+	initiativeNameRe = regexp.MustCompile(`(?m)^#{2,4}\s*(?:(?:Iniciativa|I)\s*(?:I)?)?(\d+)\s*[—–-]\s*(.+?)\s*$`)
+	epicNameRe       = regexp.MustCompile(`(?m)^#{2,4}\s*(?:(?:Épico|E)\s*(?:E)?)?(\d+)\s*[—–-]\s*(.+?)\s*$`)
+	specACRe         = regexp.MustCompile(`(?i)\*\s*\[\s*\]\s*[\x60*]*(AC-[A-Za-z0-9_.-]+)`)
+	firstNumbers     = regexp.MustCompile(`\d+`)
 )
 
 type pathSet struct {
@@ -57,7 +62,7 @@ func (p pathSet) link(projectRel string) string {
 }
 
 func newMeta(ps pathSet, specText, date string, level SupervisionLevel) planMeta {
-	m := planMeta{Date: date, Level: level, SpecFile: filepath.Base(ps.specPath), Epics: map[int]string{}}
+	m := planMeta{Date: date, Level: level, SpecFile: filepath.Base(ps.specPath), Epics: map[int]string{}, Initiatives: map[int]string{}, EpicInitiative: map[int]int{}}
 	m.SpecRel, m.PlanRel, m.RouteRel = ps.rel(ps.specPath), ps.rel(ps.planPath), ps.rel(ps.routePath)
 	m.RouteName = strings.TrimSuffix(filepath.Base(ps.routePath), ".json")
 	m.Theme = strings.TrimSuffix(m.SpecFile, ".md")
@@ -65,9 +70,17 @@ func newMeta(ps pathSet, specText, date string, level SupervisionLevel) planMeta
 		m.Theme = t[1]
 	}
 	m.IntentRef = intentRefOf(ps, specText)
+	if initM := initiativeRefRe.FindStringSubmatch(specText); initM != nil {
+		m.InitiativeRef = strings.TrimSpace(initM[1] + initM[2])
+	}
 	m.SpecLink, m.RouteLink = ps.link(m.SpecRel), ps.link(m.RouteRel)
 	if m.IntentRef != "" {
 		m.IntentLink = ps.link(m.IntentRef)
+	}
+	for _, in := range initiativeNameRe.FindAllStringSubmatch(specText, -1) {
+		if n, err := strconv.Atoi(in[1]); err == nil {
+			m.Initiatives[n] = in[2]
+		}
 	}
 	for _, e := range epicNameRe.FindAllStringSubmatch(specText, -1) {
 		if n, err := strconv.Atoi(e[1]); err == nil {

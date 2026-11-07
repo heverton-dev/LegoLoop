@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 480" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font-family: system-ui, -apple-system, sans-serif; font-size: 22px; font-weight: 800; fill: #0f172a; }
+      .subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 13.5px; fill: #64748b; }
+      .card { fill: #ffffff; stroke-width: 1.5; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.04)); rx: 10px; }
+      .card-title { font-family: system-ui, -apple-system, sans-serif; font-size: 14.5px; font-weight: 800; }
+      .card-sub { font-family: system-ui, -apple-system, sans-serif; font-size: 11.5px; fill: #475569; }
+      .badge { font-family: system-ui, -apple-system, monospace; font-size: 10.5px; font-weight: 700; text-anchor: middle; }
+      .flow-arrow { stroke: #94a3b8; stroke-width: 2.2; fill: none; }
+      .gate-pill { fill: #fef2f2; stroke: #ef4444; stroke-width: 1.5; rx: 10px; }
+      .gate-text { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; font-weight: 800; fill: #b91c1c; text-anchor: middle; }
+    </style>
+    <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <rect width="1020" height="480" class="bg" rx="14" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <text x="40" y="44" class="title">Esteira Mestre do Mega Pipeline LegoLoop</text>
+  <text x="40" y="68" class="subtitle">Os 5 Sub-Loops Modulares acoplados em Grafo Acíclico Dirigido (DAG) com Stop-Gates humanos e contexto estéril</text>
+
+  <!-- L1: Concepção -->
+  <g transform="translate(40, 110)">
+    <rect width="168" height="230" class="card" stroke="#2563eb" />
+    <rect x="0" y="0" width="168" height="6" fill="#2563eb" rx="3" />
+    <text x="14" y="30" class="card-title" fill="#2563eb">L1. Concepção</text>
+    <text x="14" y="48" class="card-sub">Entrevista Socrática</text>
+    <line x1="14" y1="58" x2="154" y2="58" stroke="#e2e8f0" />
+    <text x="14" y="80" class="card-sub">• aidd-grill (Addy)</text>
+    <text x="14" y="100" class="card-sub">• Hipótese &amp; Palpite</text>
+    <text x="14" y="120" class="card-sub">• Confiança ≥ 95%</text>
+    <text x="14" y="140" class="card-sub">• Espelho Canônico</text>
+    <rect x="14" y="190" width="140" height="24" fill="#eff6ff" rx="4" />
+    <text x="84" y="206" class="badge" fill="#2563eb">INTENT.md</text>
+  </g>
+
+  <!-- Seta 1 com Stop-Gate -->
+  <path d="M 208 225 L 240 225" class="flow-arrow" marker-end="url(#arr)" />
+  <g transform="translate(196, 260)">
+    <rect width="48" height="22" class="gate-pill" />
+    <text x="24" y="15" class="gate-text">SG-01</text>
+  </g>
+
+  <!-- L2: Design -->
+  <g transform="translate(242, 110)">
+    <rect width="168" height="230" class="card" stroke="#8b5cf6" />
+    <rect x="0" y="0" width="168" height="6" fill="#8b5cf6" rx="3" />
+    <text x="14" y="30" class="card-title" fill="#8b5cf6">L2. Design Pass</text>
+    <text x="14" y="48" class="card-sub">Engenharia Reversa</text>
+    <line x1="14" y1="58" x2="154" y2="58" stroke="#e2e8f0" />
+    <text x="14" y="80" class="card-sub">• Obscura / Playwright</text>
+    <text x="14" y="100" class="card-sub">• Dissecção de DOM</text>
+    <text x="14" y="120" class="card-sub">• Linter de Design</text>
+    <text x="14" y="140" class="card-sub">• Zero Emojis (SVG)</text>
+    <rect x="14" y="190" width="140" height="24" fill="#f5f3ff" rx="4" />
+    <text x="84" y="206" class="badge" fill="#8b5cf6">DESIGN.md</text>
+  </g>
+
+  <!-- Seta 2 com Stop-Gate -->
+  <path d="M 410 225 L 442 225" class="flow-arrow" marker-end="url(#arr)" />
+  <g transform="translate(398, 260)">
+    <rect width="48" height="22" class="gate-pill" />
+    <text x="24" y="15" class="gate-text">SG-02</text>
+  </g>
+
+  <!-- L3: Planejamento -->
+  <g transform="translate(444, 110)">
+    <rect width="168" height="230" class="card" stroke="#059669" />
+    <rect x="0" y="0" width="168" height="6" fill="#059669" rx="3" />
+    <text x="14" y="30" class="card-title" fill="#059669">L3. Tríade Plan</text>
+    <text x="14" y="48" class="card-sub">Especificação BDD</text>
+    <line x1="14" y1="58" x2="154" y2="58" stroke="#e2e8f0" />
+    <text x="14" y="80" class="card-sub">• aidd-spec (Critérios)</text>
+    <text x="14" y="100" class="card-sub">• Fatiamento Vertical</text>
+    <text x="14" y="120" class="card-sub">• Boundaries &amp; Seams</text>
+    <text x="14" y="140" class="card-sub">• Grafo Executável</text>
+    <rect x="14" y="190" width="140" height="24" fill="#ecfdf5" rx="4" />
+    <text x="84" y="206" class="badge" fill="#059669">ROUTE.json</text>
+  </g>
+
+  <!-- Seta 3 com Stop-Gate -->
+  <path d="M 612 225 L 644 225" class="flow-arrow" marker-end="url(#arr)" />
+  <g transform="translate(600, 260)">
+    <rect width="48" height="22" class="gate-pill" />
+    <text x="24" y="15" class="gate-text">SG-03</text>
+  </g>
+
+  <!-- L4: TDD -->
+  <g transform="translate(646, 110)">
+    <rect width="168" height="230" class="card" stroke="#d97706" />
+    <rect x="0" y="0" width="168" height="6" fill="#d97706" rx="3" />
+    <text x="14" y="30" class="card-title" fill="#d97706">L4. Construção TDD</text>
+    <text x="14" y="48" class="card-sub">Orchestrix Cirúrgica</text>
+    <line x1="14" y1="58" x2="154" y2="58" stroke="#e2e8f0" />
+    <text x="14" y="80" class="card-sub">• Red: Teste Falha</text>
+    <text x="14" y="100" class="card-sub">• Green: Código Real</text>
+    <text x="14" y="120" class="card-sub">• Refactor: funclen &lt; 35</text>
+    <text x="14" y="140" class="card-sub">• Zero Stubs / Mocks</text>
+    <rect x="14" y="190" width="140" height="24" fill="#fffbeb" rx="4" />
+    <text x="84" y="206" class="badge" fill="#d97706">TDD_REPORT.md</text>
+  </g>
+
+  <!-- Seta 4 com Stop-Gate -->
+  <path d="M 814 225 L 846 225" class="flow-arrow" marker-end="url(#arr)" />
+  <g transform="translate(802, 260)">
+    <rect width="48" height="22" class="gate-pill" />
+    <text x="24" y="15" class="gate-text">SG-Épico</text>
+  </g>
+
+  <!-- L5: Homologação -->
+  <g transform="translate(848, 110)">
+    <rect width="140" height="230" class="card" stroke="#0284c7" />
+    <rect x="0" y="0" width="140" height="6" fill="#0284c7" rx="3" />
+    <text x="12" y="30" class="card-title" fill="#0284c7">L5. Release</text>
+    <text x="12" y="48" class="card-sub">Homologação E2E</text>
+    <line x1="12" y1="58" x2="128" y2="58" stroke="#e2e8f0" />
+    <text x="12" y="80" class="card-sub">• Playwright E2E</text>
+    <text x="12" y="100" class="card-sub">• go build nativo</text>
+    <text x="12" y="120" class="card-sub">• legoloop.exe</text>
+    <text x="12" y="140" class="card-sub">• faz-session</text>
+    <rect x="12" y="190" width="116" height="24" fill="#f0f9ff" rx="4" />
+    <text x="70" y="206" class="badge" fill="#0284c7">REPORT.md</text>
+  </g>
+
+  <!-- Rodapé explicativo -->
+  <rect x="40" y="375" width="948" height="70" fill="#ffffff" rx="8" stroke="#e2e8f0" />
+  <text x="60" y="402" style="font-family: system-ui; font-size: 12px; font-weight: 700; fill: #0f172a;">Garantia Fundamental:</text>
+  <text x="200" y="402" style="font-family: system-ui; font-size: 12px; fill: #475569;">Nenhum nó compartilha memória ou histórico com o anterior. O handoff é 100% mediado por arquivos no disco.</text>
+  <text x="60" y="425" style="font-family: system-ui; font-size: 12px; font-weight: 700; fill: #b91c1c;">Stop-Gates (SG):</text>
+  <text x="200" y="425" style="font-family: system-ui; font-size: 12px; fill: #475569;">Paradas físicas obrigatórias de auditoria humana antes de prosseguir para as fases subsequentes.</text>
+</svg>

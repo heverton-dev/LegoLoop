@@ -295,8 +295,16 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Endurecimento nos Geradores:** Atualizado `internal/ste/prompt.go` e suite de testes (`prompt_test.go`, `mutations_test.go`) no LegoLoop e no standalone `stept-cli`.
   - **Qualidade & Recompilação:** 100% dos testes verdes nos dois repositórios, `funclen` <= 35 linhas, binários `bin/legoloop.exe` e `stept.exe` recompilados e sincronizados nos 5 harnesses (`stept-rules.md`).
 
+- **07/11/2026** — ♾️ **Hierarquia Canônica de 4 Níveis (Iniciativa ➔ Épico ➔ Micro ➔ Nano) Concluída (`Mega Pipeline`):**
+  - **Taxonomia Canônica sem Colisão:** Formalizada a adição do nível **Iniciativa (`I01`, `I02`...)** acima de **Épico (`E01`, `E02`...)**, com o nível Iniciativa estritamente opcional/cumulativo (zero quebras em planos legados).
+  - **Épico 01 (`docs/templates/`):** Templates SSOT (`TEMPLATE_INTENT.md`, `TEMPLATE_SPEC.md`, `TEMPLATE_PLAN.md`, `TEMPLATE_ROUTE.json`) atualizados. Preservação estrita do isomorfismo de nós JSON (`initiative_id: null`) e estabilidade de headings de nível 2. Testado com mutação falha e reversão em `templates_test.go`.
+  - **Épico 02 (`internal/plangen/`):** Modelagem e parsers de Iniciativas (`meta.go`, `route.go`, `plangen.go`). Reconhecimento de `InitiativeRef`, `Initiatives` e emissão precisa de nós JSON com `initiative_id` e `initiative_ref`. 20/20 testes verdes com suíte dedicada em `initiative_test.go`.
+  - **Épico 03 (Governança & Recompilação):** Skill `aidd-legoloop-mega-pipeline/SKILL.md` atualizada com a matriz de 4 níveis e guia de classificação, sincronizada nos harnesses.
+  - **Homologação Global:** 100% dos 32 pacotes internos passando verde (`go test -count=1 ./...`), `go vet` limpo, `gofmt` vazio, `funclen` <= 35 linhas, `go.mod` stdlib pura. Binário `bin/legoloop.exe` recompilado e instalado globalmente via `go install ./cmd/legoloop`.
+  - **Artefatos:** `docs/intents/2026-11-07_INTENT_HIERARQUIA_INICIATIVA.md`, `docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md`, `docs/plans/2026-11-07_PLAN_HIERARQUIA_INICIATIVA.md`, `docs/routes/2026-11-07_ROUTE_HIERARQUIA_INICIATIVA.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_HIERARQUIA_INICIATIVA.md`.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `main` — Alternador Universal STE-PT e Tríade Compacta homologados.
+- **Status da Branch:** `main` — Hierarquia de Iniciativas e Mega Pipeline homologados.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado e instalado (`go install ./cmd/legoloop`).
 - **Projeto Standalone no Desktop:** `C:\Users\trcnologia\Desktop\stept-cli\bin\stept.exe`.
-- **Documentação & Relatório:** `docs/reports/2026-11-06_REPORT_STEPT_SWITCH.md` e `AGENTS.md` (Lei 10).
+- **Documentação & Relatório:** `docs/reports/2026-11-07_REPORT_HIERARQUIA_INICIATIVA.md` e `AGENTS.md`.

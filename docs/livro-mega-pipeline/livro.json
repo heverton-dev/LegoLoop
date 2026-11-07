@@ -1,0 +1,18 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "O Mega Pipeline do LegoLoop",
+  "nome_base": "06-11-2026_O-MEGA-PIPELINE-DO-LEGOLOOP",
+  "pasta_partes": "partes",
+  "template": "ativos\\livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-ontologia-e-processo.md",
+    "02-meso-o-mega-pipeline.md",
+    "03-micro-anatomia-dos-cinco-subloops.md",
+    "04-pratica-templates-e-composicao.md",
+    "05-apendices-rastreabilidade-e-glossario.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "4078f8a8bbbefb427a3c7ce574c8deac638052a80869f7b2e0f0413b718a2175",
+  "ultima_compilacao": "2026-11-06"
+}

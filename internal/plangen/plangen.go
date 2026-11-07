@@ -25,17 +25,18 @@ const (
 
 // Ticket representa uma unidade de trabalho atômica e verticalmente fatiada (Addy Osmani).
 type Ticket struct {
-	ID             string   `json:"id"`               // TICK-01.1
-	Title          string   `json:"title"`            // Descrição imperativa
-	EpicID         string   `json:"epic_id"`          // E01
-	Nature         string   `json:"nature"`           // nano | micro
-	ExecutionMode  string   `json:"execution_mode"`   // tdd_red_green | sequential | parallel
-	DependsOn      []string `json:"depends_on"`       // IDs predecessores
-	TargetFiles    []string `json:"target_files"`     // Arquivos tocados
-	SpecCriteria   []string `json:"spec_criteria"`    // AC-E01.1
-	ValidationCmd  string   `json:"validation_cmd"`   // Comando mecânico de teste
-	Gate           string   `json:"gate,omitempty"`   // Gate DSL do ticket; vazio = exit code 0 e artefatos existentes
-	HumanGateAfter bool     `json:"human_gate_after"` // Se há parada após este ticket
+	ID             string   `json:"id"`                      // TICK-01.1
+	Title          string   `json:"title"`                   // Descrição imperativa
+	EpicID         string   `json:"epic_id"`                 // E01
+	InitiativeID   string   `json:"initiative_id,omitempty"` // I01 (opcional)
+	Nature         string   `json:"nature"`                  // nano | micro
+	ExecutionMode  string   `json:"execution_mode"`          // tdd_red_green | sequential | parallel
+	DependsOn      []string `json:"depends_on"`              // IDs predecessores
+	TargetFiles    []string `json:"target_files"`            // Arquivos tocados
+	SpecCriteria   []string `json:"spec_criteria"`           // AC-E01.1
+	ValidationCmd  string   `json:"validation_cmd"`          // Comando mecânico de teste
+	Gate           string   `json:"gate,omitempty"`          // Gate DSL do ticket; vazio = exit code 0 e artefatos existentes
+	HumanGateAfter bool     `json:"human_gate_after"`        // Se há parada após este ticket
 }
 
 // PlanResult consolida os artefatos de planejamento gerados.

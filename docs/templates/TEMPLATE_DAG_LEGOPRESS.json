@@ -1,0 +1,119 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "name": "legopress-engine",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_concepcao",
+      "type": "skill",
+      "ref": "skills/aidd-spec",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "briefing": "var.briefing"
+      },
+      "output": {
+        "artifact": "docs/intents/INTENT_LIVRO.md",
+        "gate": "file_exists('docs/intents/INTENT_LIVRO.md')"
+      }
+    },
+    {
+      "id": "n02_particionamento",
+      "type": "script",
+      "command": [
+        "legoloop",
+        "legopress",
+        "criar"
+      ],
+      "depends_on": [
+        "n01_concepcao"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-nano",
+        "fallback": "flash-lite"
+      },
+      "inputs": {
+        "intent": "file('docs/intents/INTENT_LIVRO.md')"
+      },
+      "output": {
+        "artifact": "docs/livro/livro.json",
+        "gate": "file_exists('docs/livro/livro.json')"
+      }
+    },
+    {
+      "id": "n03_redacao",
+      "type": "skill",
+      "ref": "skills/aidd-textbook",
+      "depends_on": [
+        "n02_particionamento"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "inputs": {
+        "manifest": "file('docs/livro/livro.json')"
+      },
+      "output": {
+        "artifact": "docs/livro/partes/00-frontmatter.md",
+        "gate": "file_exists('docs/livro/partes/00-frontmatter.md')"
+      }
+    },
+    {
+      "id": "n04_compilacao",
+      "type": "script",
+      "command": [
+        "legoloop",
+        "legopress",
+        "compile"
+      ],
+      "depends_on": [
+        "n03_redacao"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-nano",
+        "fallback": "flash-lite"
+      },
+      "inputs": {
+        "manifest": "file('docs/livro/livro.json')"
+      },
+      "output": {
+        "artifact": "docs/livro/livro.pdf",
+        "gate": "file_exists('docs/livro/livro.pdf')"
+      }
+    },
+    {
+      "id": "n05_auditoria_geometrica",
+      "type": "script",
+      "command": [
+        "legoloop",
+        "legopress",
+        "auditar"
+      ],
+      "depends_on": [
+        "n04_compilacao"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "fallback": "sonnet"
+      },
+      "inputs": {
+        "pdf": "file('docs/livro/livro.pdf')"
+      },
+      "output": {
+        "artifact": "docs/livro/relatorio_geometria.json",
+        "gate": "file_exists('docs/livro/relatorio_geometria.json')"
+      }
+    }
+  ]
+}

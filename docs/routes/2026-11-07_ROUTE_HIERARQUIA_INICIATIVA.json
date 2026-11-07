@@ -1,0 +1,350 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.0.0",
+  "name": "HIERARQUIA_INICIATIVA",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "session_id": "8b70e2fa-9b0e-4604-9f78-939da83d0d55",
+  "intent_ref": "docs/intents/2026-11-07_INTENT_HIERARQUIA_INICIATIVA.md",
+  "spec_ref": "docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md",
+  "plan_ref": "docs/plans/2026-11-07_PLAN_HIERARQUIA_INICIATIVA.md",
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "label": "Atualização dos Templates Canônicos com Nível Iniciativa Opcional",
+      "nature": "micro",
+      "type": "unit_task",
+      "epic_id": "E01",
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/templates/TEMPLATE_INTENT.md",
+          "docs/templates/TEMPLATE_SPEC.md",
+          "docs/templates/TEMPLATE_PLAN.md",
+          "docs/templates/TEMPLATE_ROUTE.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "docs/templates/TEMPLATE_INTENT.md",
+          "docs/templates/TEMPLATE_SPEC.md",
+          "docs/templates/TEMPLATE_PLAN.md",
+          "docs/templates/TEMPLATE_ROUTE.json"
+        ],
+        "verification": "go test -v -run TestEmbeddedTemplatesMatchFiles ./docs/templates/...",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "label": "Garantia de Estabilidade de Headings e Schemas de Templates",
+      "nature": "nano",
+      "type": "unit_task",
+      "epic_id": "E01",
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 400
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "low"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/templates/templates_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "docs/templates/templates_test.go"
+        ],
+        "verification": "go test -v ./docs/templates/...",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-E01",
+      "label": "🛑 STOP-GATE: Auditoria do Épico 01 (Templates Canônicos SSOT)",
+      "nature": "gate",
+      "type": "stop_gate",
+      "epic_id": "E01",
+      "status": "PASSED",
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "human_gate": true,
+      "prompt": "Templates SSOT atualizados e validados com testes de paridade. Autoriza iniciar o Épico 02?"
+    },
+    {
+      "id": "TICK-02.1",
+      "label": "Parsing e Modelagem de Iniciativas em meta.go e assemble.go",
+      "nature": "micro",
+      "type": "unit_task",
+      "epic_id": "E02",
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/plangen/meta.go",
+          "internal/plangen/assemble.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/plangen/meta.go",
+          "internal/plangen/assemble.go",
+          "internal/plangen/plangen_test.go"
+        ],
+        "verification": "go test -v ./internal/plangen/...",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "label": "Emissão de Nós de Rota com initiative_id em route.go",
+      "nature": "micro",
+      "type": "unit_task",
+      "epic_id": "E02",
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 500
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/plangen/route.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/plangen/route.go"
+        ],
+        "verification": "go test -v ./internal/plangen/...",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-E02",
+      "label": "🛑 STOP-GATE: Auditoria do Épico 02 (Motores Go internal/plangen)",
+      "nature": "gate",
+      "type": "stop_gate",
+      "epic_id": "E02",
+      "status": "PASSED",
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "human_gate": true,
+      "prompt": "Motores internal/plangen atualizados e validados com TDD. Autoriza iniciar o Épico 03?"
+    },
+    {
+      "id": "TICK-03.1",
+      "label": "Atualização da Matriz de 4 Níveis na Skill do Mega Pipeline",
+      "nature": "micro",
+      "type": "unit_task",
+      "epic_id": "E03",
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "medium"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "skills/aidd-legoloop-mega-pipeline/SKILL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "skills/aidd-legoloop-mega-pipeline/SKILL.md"
+        ],
+        "verification": "powershell -Command \"Select-String -Path C:\\Users\\trcnologia\\.gemini\\skills\\aidd-legoloop-mega-pipeline\\SKILL.md -Pattern 'Iniciativa'\"",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "label": "Recompilação Go, Checagem de Funclen e Invariantes",
+      "nature": "nano",
+      "type": "unit_task",
+      "epic_id": "E03",
+      "status": "PASSED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 400
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "low"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md#AC-NF.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "bin/legoloop.exe"
+        ],
+        "verification": "go test -count=1 ./...; go vet ./...; go run ./tools/funclen internal; go build -o bin/legoloop.exe ./cmd/legoloop",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "label": "🛑 STOP-GATE FINAL: Homologação Global e Entrega",
+      "nature": "gate",
+      "type": "stop_gate",
+      "status": "PASSED",
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "human_gate": true,
+      "prompt": "Todos os épicos concluídos, suíte verde e binário fresco pronto. Autoriza a entrega e homologação final?"
+    }
+  ]
+}

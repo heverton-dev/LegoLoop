@@ -1,0 +1,335 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.0.0",
+  "name": "legopress_pipeline",
+  "version": "1.0.0",
+  "date": "2026-11-06",
+  "session_id": "088c6d3f-4908-4fd5-b40e-896ee8fcf556",
+  "intent_ref": "docs/intents/2026-11-06_INTENT_LEGOPRESS_PIPELINE.md",
+  "spec_ref": "docs/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md",
+  "plan_ref": "docs/plans/2026-11-06_PLAN_LEGOPRESS_PIPELINE.md",
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "label": "Implementação dos Contratos e Validador de Manifesto",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "test_target": "internal/legopress/types_test.go:TestManifestValidation",
+      "output": {
+        "artifacts": [
+          "internal/legopress/types.go",
+          "internal/legopress/types_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestManifestValidation ./internal/legopress/..."
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "label": "Motor de Particionamento Macro/Meso/Micro",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/legopress/types.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "test_target": "internal/legopress/partitioner_test.go:TestPartitionHierarchy",
+      "output": {
+        "artifacts": [
+          "internal/legopress/partitioner.go",
+          "internal/legopress/partitioner_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestPartitionHierarchy ./internal/legopress/..."
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "label": "Compilador Pandoc + Typst com Verificação de Dependências",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/legopress/types.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md#AC-E02.1",
+        "context_artifacts": [
+          "docs/livro/ativos/livro.typst"
+        ]
+      },
+      "test_target": "internal/legopress/compiler_test.go:TestCompilerBuildArgsAndDoctor",
+      "output": {
+        "artifacts": [
+          "internal/legopress/compiler.go",
+          "internal/legopress/compiler_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestCompilerBuildArgsAndDoctor ./internal/legopress/..."
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "label": "Auditor de Geometria de PDF e Validador de Layout",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/legopress/types.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md#AC-E03.1",
+        "context_artifacts": [
+          "docs/livro/06-11-2026_LEGOLOOP-A-REVOLU-O-DA-IA-MODULAR-EM-PE-AS-SIMPLES.pdf"
+        ]
+      },
+      "test_target": "internal/legopress/auditor_test.go:TestAuditorGeometry",
+      "output": {
+        "artifacts": [
+          "internal/legopress/auditor.go",
+          "internal/legopress/auditor_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestAuditorGeometry ./internal/legopress/..."
+      }
+    },
+    {
+      "id": "TICK-04.1",
+      "label": "Transmutador Pedagógico e Sincronizador de Diffs do Git",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/legopress/types.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "test_target": "internal/legopress/transmuter_test.go:TestTransmuterAndSync",
+      "output": {
+        "artifacts": [
+          "internal/legopress/transmuter.go",
+          "internal/legopress/sync.go",
+          "internal/legopress/transmuter_test.go"
+        ],
+        "gate": "exit_code == 0 && go test -v -run TestTransmuterAndSync ./internal/legopress/..."
+      }
+    },
+    {
+      "id": "TICK-05.1",
+      "label": "Exposição CLI legoloop legopress e Template de Rota",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-04.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go",
+          "internal/legopress/types.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md#AC-E05.1",
+        "context_artifacts": []
+      },
+      "test_target": "cmd/legoloop/legopress_test.go:TestLegoPressCLIIntegration",
+      "output": {
+        "artifacts": [
+          "cmd/legoloop/legopress.go",
+          "cmd/legoloop/legopress_test.go",
+          "docs/templates/TEMPLATE_ROUTE_LEGOPRESS.json"
+        ],
+        "gate": "exit_code == 0 && go build -o bin/legoloop.exe ./cmd/legoloop && go test -v -run TestLegoPressCLIIntegration ./cmd/legoloop/..."
+      }
+    }
+  ]
+}

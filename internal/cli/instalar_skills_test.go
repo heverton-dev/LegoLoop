@@ -14,7 +14,7 @@ import (
 )
 
 func TestInstalarSkills(t *testing.T) {
-	// 1. Manuais das 6 funções devem existir na raiz do repositório
+	// 1. Manuais das 7 funções devem existir na raiz do repositório
 	manuaisEsperados := []string{
 		"2026-11-03_MANUAL_FUNCAO_FABRICAR_LEGOLOOP.md",
 		"2026-11-06_MANUAL_FUNCAO_MATRIZ_LEGOLOOP.md",
@@ -22,6 +22,7 @@ func TestInstalarSkills(t *testing.T) {
 		"2026-11-06_MANUAL_FUNCAO_REFINAR_LEGOLOOP.md",
 		"2026-11-06_MANUAL_FUNCAO_REMOVER_LEGOLOOP.md",
 		"2026-11-06_MANUAL_FUNCAO_COMPOR_LEGOLOOP.md",
+		"2026-11-06_MANUAL_FUNCAO_LEGOPRESS_LEGOLOOP.md",
 	}
 	manualDir := filepath.Join("..", "..", "docs", "manuals")
 	for _, m := range manuaisEsperados {

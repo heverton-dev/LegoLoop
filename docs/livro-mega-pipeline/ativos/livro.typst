@@ -1,0 +1,385 @@
+// =============================================================================
+// TEMPLATE TYPST CORPORATIVO — ESTILO EDITORIAL MINIMALISTA CLEAN BRANCO
+// Padrão Canônico Oficial LegoLoop (Stripe Press / Editorial 17x24cm)
+// Direção de arte: Capa branca, tipografia pura, zero sobreposições,
+// cabeçalho discreto clarinho, entrelinha 1.5 e paleta Google Suavizada.
+// =============================================================================
+
+#let cor-fundo    = rgb("#ffffff")                                    // Branco puro limpo
+#let cor-miolo    = rgb("#fafafa")                                    // Off-white sutil para leitura confortável
+#let cor-tinta    = rgb("#0f172a")                                    // Ardósia escuro nobre
+#let cor-texto    = rgb("#292524")                                    // Grafite quente stone
+#let cor-suave    = rgb("#64748b")                                    // Cinza pedra suave
+#let cor-linha    = rgb("#e2e8f0")                                    // Linha divisória sutil
+#let cor-accent   = rgb("#2563eb")                                    // Azul Cobalto Google Suave
+#let cor-accent2  = rgb("#1d4ed8")                                    // Cobalto profundo
+#let cor-alerta   = rgb("#d97706")                                    // Âmbar Google Dourado
+#let cor-ok       = rgb("#16a34a")                                    // Verde Esmeralda Google
+#let cor-erro     = rgb("#dc2626")                                    // Carmesim Google
+
+#set document(
+  title: [$title$],
+  author: "$for(author)$$author$$sep$, $endfor$",
+)
+
+#set page(
+  paper: "a4",
+  width: 170mm,
+  height: 240mm,
+  fill: cor-fundo,
+  margin: (top: 2.0cm, bottom: 2.0cm, left: 1.8cm, right: 1.8cm),
+)
+
+// Tipografia: Georgia clássica no miolo com entrelinha arejada 1.5
+#set text(
+  font: ("Georgia", "Segoe UI", "Calibri"),
+  size: 10.3pt,
+  lang: "pt",
+  region: "BR",
+  fill: cor-texto,
+  hyphenate: true,
+)
+
+// Entrelinha arejada 1.45 a 1.5
+#set par(justify: true, leading: 1.05em, spacing: 1.35em)
+#set smartquote(enabled: false)
+
+// ---------------------------------------------------------------------------
+// Blocos Utilitários de Destaque (Design Clean e Discreto)
+// ---------------------------------------------------------------------------
+
+// Painel com cantos arredondados, fundo sutil e barra lateral limpa
+#let painel(titulo, corpo, cor: cor-accent) = block(
+  width: 100%, breakable: true, above: 16pt, below: 16pt,
+  fill: rgb("#f8fafc"), radius: 6pt,
+  stroke: (left: 3.5pt + cor, rest: 0.6pt + cor-linha),
+  inset: (x: 14pt, y: 12pt),
+)[
+  #text(font: ("Segoe UI", "Arial"), size: 8.5pt, weight: "bold", fill: cor, tracking: 1.2pt)[#upper(titulo)]
+  #v(4pt)
+  #set text(font: ("Georgia", "Segoe UI"), size: 9.6pt, fill: cor-texto)
+  #set par(leading: 0.9em, spacing: 1em)
+  #corpo
+]
+
+// Frase de Impacto com barra lateral limpa
+#let frase-destaque(corpo, cor: cor-accent) = block(
+  width: 100%, above: 18pt, below: 18pt,
+  stroke: (left: 4pt + cor), inset: (left: 14pt, y: 4pt),
+)[
+  #text(
+    font: ("Segoe UI", "Arial"),
+    size: 13pt, weight: "bold", fill: cor-tinta
+  )[#corpo]
+]
+
+#let chip(txt, cor: cor-accent) = box(
+  fill: cor.lighten(90%), stroke: 0.5pt + cor.lighten(50%),
+  inset: (x: 5pt, y: 2.5pt), radius: 3pt, outset: (y: 1.5pt),
+)[#text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: cor.darken(15%))[#txt]]
+
+#let no(titulo, sub: none, cor: cor-tinta) = block(
+  width: 100%, fill: cor, radius: 4pt, inset: (x: 4pt, y: 7pt),
+)[
+  #align(center)[
+    #text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: white, hyphenate: false)[#titulo]
+    #if sub != none [ #linebreak() #text(font: ("Segoe UI", "Arial"), size: 6.6pt, fill: rgb("#cbd5e1"), hyphenate: false)[#sub] ]
+  ]
+]
+
+#let no-claro(titulo, sub: none, cor: cor-accent) = block(
+  width: 100%, fill: cor.lighten(92%), radius: 4pt,
+  stroke: 0.6pt + cor.lighten(40%), inset: (x: 4pt, y: 7pt),
+)[
+  #align(center)[
+    #text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: cor.darken(25%), hyphenate: false)[#titulo]
+    #if sub != none [ #linebreak() #text(font: ("Segoe UI", "Arial"), size: 6.6pt, fill: cor-suave, hyphenate: false)[#sub] ]
+  ]
+]
+
+#let seta = align(horizon + center)[#text(size: 11pt, fill: cor-accent)[#sym.arrow.r]]
+
+#let esteira(..itens) = block(width: 100%, above: 14pt, below: 14pt)[
+  #let lista = itens.pos()
+  #let n = lista.len()
+  #grid(
+    columns: range(n * 2 - 1).map(i => if calc.even(i) { 1fr } else { auto }),
+    align: horizon, column-gutter: 4pt,
+    ..lista.enumerate().map(((i, it)) => if i == n - 1 { (it,) } else { (it, seta) }).flatten()
+  )
+]
+
+#let ficha(..pares) = block(width: 100%, above: 12pt, below: 14pt)[
+  #table(
+    columns: (auto, 1fr),
+    stroke: 0.5pt + cor-linha,
+    inset: (x: 8pt, y: 6pt),
+    fill: (x, _) => if x == 0 { rgb("#f1f5f9") } else { white },
+    ..pares.pos().map(((c, v)) => (
+      text(font: ("Segoe UI", "Arial"), size: 8.2pt, weight: "bold", fill: cor-tinta)[#c],
+      text(size: 8.8pt, fill: cor-texto)[#v],
+    )).flatten()
+  )
+]
+
+// ---------------------------------------------------------------------------
+// Títulos de Seção — APENAS TEXTO LIMPO COM LINHA SUTIL
+// ---------------------------------------------------------------------------
+
+#set heading(numbering: none)
+#show heading: set text(font: ("Segoe UI", "Arial"))
+
+#show heading.where(level: 1): it => {
+  pagebreak(weak: true)
+  block(width: 100%, above: 0pt, below: 22pt)[
+    #text(size: 20pt, weight: "black", fill: cor-tinta)[#it.body]
+    #v(6pt)
+    #line(length: 100%, stroke: 1.5pt + cor-linha)
+  ]
+}
+
+#show heading.where(level: 2): it => block(above: 22pt, below: 10pt, width: 100%)[
+  #text(size: 13.5pt, weight: "bold", fill: cor-tinta)[#it.body]
+  #v(3pt)
+  #line(length: 100%, stroke: 0.6pt + cor-linha)
+]
+
+#show heading.where(level: 3): it => block(above: 14pt, below: 6pt)[
+  #text(size: 10.8pt, weight: "bold", fill: cor-accent2)[#it.body]
+]
+
+#let _separadores = ("/", ".", "_", "-")
+#let _quebravel(txt) = {
+  let res = ()
+  let atual = ""
+  for c in txt.clusters() {
+    atual += c
+    if c in _separadores { res.push(atual); res.push(sym.zws); atual = "" }
+  }
+  if atual != "" { res.push(atual) }
+  res.join()
+}
+
+#show raw.where(block: false): it => highlight(
+  fill: rgb("#f1f5f9"), extent: 1.5pt, radius: 2.5pt,
+  top-edge: "ascender", bottom-edge: "descender",
+)[#text(font: ("Consolas", "Courier New"), size: 8.6pt, fill: cor-accent2, hyphenate: false)[#_quebravel(it.text)]]
+
+#show raw.where(block: true): it => block(
+  width: 100%, fill: rgb("#f8fafc"),
+  stroke: (left: 3pt + cor-accent, rest: 0.6pt + cor-linha),
+  radius: 4pt, inset: (x: 11pt, y: 10pt), above: 13pt, below: 13pt, breakable: true,
+)[#text(font: ("Consolas", "Courier New"), size: 8.2pt, fill: cor-tinta)[#it]]
+
+#show quote.where(block: true): it => block(
+  width: 100%, fill: rgb("#f8fafc"), stroke: (left: 3pt + cor-accent),
+  inset: (x: 13pt, y: 10pt), radius: 4pt, above: 14pt, below: 14pt, breakable: true,
+)[#set text(font: ("Georgia", "Segoe UI"), size: 10pt, fill: cor-suave, style: "italic"); #it.body]
+
+#set list(indent: 8pt, body-indent: 7pt, spacing: 0.88em)
+#set enum(indent: 8pt, body-indent: 7pt, spacing: 0.88em)
+
+#set table(
+  stroke: 0.5pt + cor-linha,
+  inset: (x: 8pt, y: 6pt),
+  fill: (_, y) => if y == 0 { rgb("#f1f5f9") } else if calc.odd(y) { rgb("#f8fafc") } else { white },
+)
+#show table.cell.where(y: 0): set text(font: ("Segoe UI", "Arial"), fill: cor-tinta, weight: "bold", size: 8.4pt)
+#show table: set text(size: 8.8pt)
+#show table: set par(justify: false, leading: 0.72em)
+#show figure.where(kind: table): set block(breakable: true)
+#show figure.where(kind: table): set align(left)
+#show figure.where(kind: table): set figure(numbering: none)
+#show figure.where(kind: table): set figure.caption(position: top)
+#show figure.caption: it => text(font: ("Segoe UI", "Arial"), size: 8.4pt, style: "italic", fill: cor-suave)[#it.body]
+
+#show link: it => text(fill: cor-accent, weight: "medium")[#it]
+#let horizontalrule = align(center)[#block(above: 16pt, below: 16pt)[#line(length: 25%, stroke: 1pt + cor-linha)]]
+
+#show strong: set text(hyphenate: false)
+
+#show figure.where(kind: image): it => block(
+  width: 100%, above: 16pt, below: 16pt, align(center)[
+    #it.body
+    #v(4pt)
+    #text(font: ("Segoe UI", "Arial"), size: 8.4pt, fill: cor-suave)[#it.caption]
+  ]
+)
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+// ---------------------------------------------------------------------------
+// CAPA — DESIGN STRIPE PRESS / EDITORIAL MINIMALISTA CONTEMPORÂNEO (17x24cm)
+// ---------------------------------------------------------------------------
+#page(margin: (x: 1.8cm, top: 2.0cm, bottom: 1.8cm), numbering: none, header: none, footer: none, fill: white)[
+
+  // Detalhe arquitetural no topo: 4 traços finos elegantes na paleta Google Suavizada
+  #grid(
+    columns: (1fr, 1fr, 1fr, 1fr),
+    gutter: 5pt,
+    line(length: 100%, stroke: 2pt + cor-accent),
+    line(length: 100%, stroke: 2pt + cor-erro),
+    line(length: 100%, stroke: 2pt + cor-alerta),
+    line(length: 100%, stroke: 2pt + cor-ok),
+  )
+
+  #v(16pt)
+
+  // Categoria editorial
+  #text(
+    font: ("Segoe UI", "Arial"),
+    size: 8pt,
+    fill: cor-suave,
+    weight: "bold",
+    tracking: 2.2pt,
+  )[$if(eyebrow)$$eyebrow$$else$ARQUITETURA DE SISTEMAS AGÊNTICOS$endif$]
+
+  #v(12pt)
+
+  // Título Principal
+  #text(
+    font: ("Segoe UI", "Arial"),
+    size: 28pt,
+    weight: "black",
+    fill: cor-tinta,
+    tracking: -0.5pt,
+  )[LegoLoop]
+
+  #v(4pt)
+
+  #text(
+    font: ("Segoe UI", "Arial"),
+    size: 15.5pt,
+    weight: "bold",
+    fill: cor-accent,
+  )[O Mega Pipeline da IA Modular]
+
+  #v(8pt)
+
+  // Subtítulo
+  #block(width: 95%)[
+    #text(
+      font: ("Segoe UI", "Arial"),
+      size: 9.6pt,
+      fill: cor-suave,
+      weight: "medium",
+    )[$if(subtitle)$$subtitle$$else$A Engenharia Determinística dos 5 Sub-Loops, Contexto Estéril e Governança de Processos com IA$endif$]
+  ]
+
+  #v(16pt)
+
+  // Arte dos Blocos com Proporção Harmônica
+  #align(center)[
+    #block(
+      width: 100%,
+      height: 8.8cm,
+      radius: 6pt,
+      clip: true,
+      stroke: 0.5pt + rgb("#cbd5e1"),
+      image("docs/livro-mega-pipeline/img/capa_arte.jpg", width: 100%, height: 100%, fit: "cover")
+    )
+  ]
+
+  #v(1fr)
+
+  // Rodapé da Capa
+  #line(length: 100%, stroke: 0.6pt + cor-linha)
+  #v(6pt)
+  #grid(
+    columns: (1fr, auto),
+    align: (left + horizon, right + horizon),
+    text(font: ("Segoe UI", "Arial"), size: 8.8pt, weight: "bold", fill: cor-tinta)[$for(author)$$author$$sep$ · $endfor$],
+    text(font: ("Segoe UI", "Arial"), size: 8.2pt, fill: cor-suave)[$date$ · $if(institute)$$institute$$else$LegoLoop Foundation$endif$]
+  )
+]
+
+// ---------------------------------------------------------------------------
+// FOLHA DE ROSTO / COLOFÃO
+// ---------------------------------------------------------------------------
+#page(numbering: none, header: none, footer: none, fill: cor-miolo)[
+  #v(2cm)
+  #text(font: ("Segoe UI", "Arial"), size: 8.8pt, weight: "bold", fill: cor-accent, tracking: 1.8pt)[SOBRE ESTA OBRA]
+  #v(6pt)
+  #line(length: 100%, stroke: 0.8pt + cor-linha)
+  #v(16pt)
+  $if(abstract)$
+  #set text(size: 9.8pt, fill: cor-texto)
+  #set par(leading: 0.95em, spacing: 1.2em)
+  $abstract$
+  $endif$
+
+  #v(1fr)
+  #line(length: 100%, stroke: 0.8pt + cor-linha)
+  #v(8pt)
+  #text(font: ("Segoe UI", "Arial"), size: 8.2pt, fill: cor-suave)[
+    $if(colophon)$$colophon$$else$Documento gerado deterministicamente a partir das fontes
+    citadas no próprio texto, via pandoc + typst. Toda afirmação técnica desta obra é
+    rastreável a um arquivo nomeado no capítulo correspondente.$endif$
+  ]
+  #v(2pt)
+  #text(font: ("Segoe UI", "Arial"), size: 7.8pt, fill: cor-suave)[
+    Data da compilação: $date$ · $if(institute)$$institute$$else$LegoLoop Foundation$endif$
+  ]
+]
+
+// ---------------------------------------------------------------------------
+// CORPO: CABEÇALHO CLARINHO DISCRETO, RODAPÉ E SUMÁRIO
+// ---------------------------------------------------------------------------
+#set page(
+  fill: cor-miolo,
+  numbering: "1",
+  header: context {
+    if here().page() > 2 {
+      let pagina = here().page()
+      let nesta = query(heading.where(level: 1)).filter(h => h.location().page() == pagina)
+      let anteriores = query(selector(heading.where(level: 1)).before(here()))
+      let titulo-cap = if nesta.len() > 0 { nesta.first().body }
+        else if anteriores.len() > 0 { anteriores.last().body }
+        else { [Sumário] }
+      stack(
+        spacing: 4pt,
+        grid(
+          columns: (1fr, auto),
+          align: (left + horizon, right + horizon),
+          text(font: ("Segoe UI", "Arial"), size: 7.6pt, fill: cor-suave, weight: "medium")[$title$],
+          text(font: ("Segoe UI", "Arial"), size: 7.4pt, fill: cor-suave, weight: "bold")[#titulo-cap],
+        ),
+        line(length: 100%, stroke: 0.5pt + cor-linha),
+      )
+    }
+  },
+  footer: context {
+    if here().page() > 2 {
+      align(center)[
+        #text(font: ("Segoe UI", "Arial"), size: 8.6pt, fill: cor-suave)[#counter(page).display("1")]
+      ]
+    }
+  },
+)
+#counter(page).update(1)
+
+$if(toc)$
+#block(above: 0pt, below: 18pt)[
+  #text(font: ("Segoe UI", "Arial"), size: 18pt, weight: "bold", fill: cor-tinta)[Sumário]
+  #v(5pt)
+  #line(length: 100%, stroke: 1.5pt + cor-linha)
+]
+#show outline.entry.where(level: 1): it => {
+  v(10pt, weak: true)
+  text(font: ("Segoe UI", "Arial"), size: 9.6pt, weight: "bold", fill: cor-tinta)[#it]
+}
+#show outline.entry.where(level: 2): it => text(font: ("Segoe UI", "Arial"), size: 8.8pt, fill: cor-suave)[#it]
+#outline(title: none, depth: $if(toc-depth)$$toc-depth$$else$2$endif$, indent: 1.2em)
+$endif$
+
+$for(include-before)$
+$include-before$
+$endfor$
+
+$body$
+
+$for(include-after)$
+$include-after$
+$endfor$

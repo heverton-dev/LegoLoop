@@ -3,6 +3,7 @@
 > **Status:** {{DRAFT | UNDER_REVIEW | APPROVED}}  
 > **Data:** {{DATA}}  
 > **Autor:** {{AUTOR}}  
+> **Iniciativa:** {{NOME_OU_ID_DA_INICIATIVA | Opcional para demandas corporativas/multi-sistemas}}  
 > **Alvo:** {{MODULOS_AFETADOS}}  
 > **Sessão:** {{UUID_DA_SESSAO}}  
 > **Confiança da Entrevista:** {{NN}}% (mínimo de 95% para sair de DRAFT)  
@@ -13,6 +14,7 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 - Todo {{PLACEHOLDER}} deve ser substituído. O gate de fechamento do documento é:
   !has_pattern('docs/intents/<arquivo>.md', '\{\{')
 - A Intent responde "por quê". Nada de contratos, schemas ou nomes de função aqui: isso é da SPEC.
+- Em demandas amplas ou multi-sistemas, indique a Iniciativa agregadora (ex: I01 — Nome). Em demandas comuns, o campo é opcional.
 - Nome do arquivo: docs/intents/YYYY-MM-DD_INTENT_<NOME>.md (AGENTS.md, regra 6).
 -->
 
