@@ -20,6 +20,7 @@ scratch/
 tmp/
 .cache/
 *.log
+docs/videorea/**/scratch/
 
 # IDEs e editores
 .vscode/

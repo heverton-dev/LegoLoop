@@ -24,12 +24,10 @@ suggested_model: sonnet
 * **Consumes (Entradas Obrigatórias):**
   - URL do vídeo ou caminho local de arquivo multimídia.
 * **Produces (Saídas Mecânicas):**
-  - Dossiê forense estruturado (`dossier.json`)
-  - Relatório de curadoria e soberania (`curation.json`)
-  - Tríade de Governança ISO (`INTENT`, `SPEC`, `PLAN`, `ROUTE`)
-  - Golden Fixture de 3s (`testdata/fixture_3s.mp4`)
-  - Livro Didático compilado pelo LegoPress (`docs/books/<slug>/`)
-  - Grafo acíclico executável (`loops/<slug>/pipeline.dag.json`)
+  - Target Workspace isolado (`docs/videorea/<slug>/`) com camada volátil (`scratch/`), forense (`dossier.json`), curadoria (`curation.json`), governança local (`governance/`), livro didático (`book/`), pipeline (`loop/`) e skill (`skill/`).
+  - Projeção canônica automática na raiz (`loops/<slug>/pipeline.dag.json` e `skills/<slug>/SKILL.md`).
+  - Golden Fixture determinística de 3s (`testdata/fixture_3s.mp4`).
+  - Livro Didático compilado pelo LegoPress (`docs/books/<slug>/`).
 
 ---
 

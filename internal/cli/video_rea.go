@@ -15,9 +15,9 @@ Subcomandos:
   forensics --input <file> --out <file>     extrai prompts explícitos, deduções ocultas e OCR
   curate    --dossier <file> --out <file>   cruza com peças Tier Ouro da matriz e calcula soberania
   gate      --report <file>                 executa o stop-gate humano de validação da curadoria
-  govern    --approval <file> --out <dir>   gera a Tríade de Governança ISO e Golden Fixture 3s
+  govern    --approval <file> [--bundle <dir>] gera o Target Workspace isolado e projeção canônica
   book      --manifest <file>               compila o Livro Didático LegoPress e audita geometria
-  run       <url>                           executa o pipeline completo de ponta a ponta
+  run       <url> [--bundle <dir>]          executa o pipeline completo criando o bundle do vídeo
 `
 
 func cmdVideoRea(_ context.Context, args []string, d Deps) int {

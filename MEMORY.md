@@ -389,6 +389,14 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Tríade de Governança e Telemetria:** [INTENT](docs/intents/2026-11-07_INTENT_CANAL_REDC.md) · [SPEC](docs/specs/2026-11-07_SPEC_CANAL_REDC.md) · [PLAN](docs/plans/2026-11-07_PLAN_CANAL_REDC.md) · [ROUTE](docs/routes/2026-11-07_ROUTE_CANAL_REDC.json) · [Relatório final](docs/reports/2026-11-07_REPORT_CANAL_REDC.md).
   - **Homologação:** 100% dos pacotes verdes em `go test -count=1 ./...`, `go vet` limpo, `gofmt` limpo, binário fresco `bin/legoloop.exe` instalado no PATH.
 
+- **08/11/2026** — 📦 **Target Workspace Isolado por Vídeo (`docs/videorea/<slug>/`) e Blindagem Git:**
+  - **Demanda & Arquitetura:** Implementado o padrão de Target Bundle autocontido no pipeline de engenharia reversa de vídeos (`legoloop-video-rea`). Cada vídeo agora reside isoladamente em `docs/videorea/<slug>/` contendo mídia volátil (`scratch/`), dossiê forense (`dossier.json`), curadoria de soberania (`curation.json`), governança local (`governance/`), livro didático (`book/`), loop (`loop/`) e skill (`skill/`).
+  - **Projeção Canônica:** Implementada ponte em `bundle_factory.go` que projeta os vínculos na raiz do LegoLoop (`loops/<slug>/pipeline.dag.json` e `skills/<slug>/SKILL.md`) após aprovação do Stop-Gate, permitindo consumo transparente e sem atrito pelos comandos globais (`legoloop fechar`, `legoloop run`, harnesses).
+  - **Pacote Go `internal/videorea`:** Criados `bundle.go` e `bundle_factory.go` com métodos `NewTargetBundle`, `Materialize` e `MaterializeAndProject`, desenvolvidos sob TDD estrito em `bundle_test.go` (100% verde, funclen $\le 35$ linhas).
+  - **CLI & Blindagem Git:** `internal/cli/video_rea.go` atualizado com a flag `[--bundle <dir>]`; regra `docs/videorea/**/scratch/` adicionada ao `.gitignore` para bloquear commit de mídia pesada.
+  - **Tríade ISO & Governança:** Criados `2026-11-08_INTENT_VIDEO_BUNDLE.md`, `2026-11-08_SPEC_VIDEO_BUNDLE.md`, `2026-11-08_PLAN_VIDEO_BUNDLE.md`, `2026-11-08_ROUTE_VIDEO_BUNDLE.json` e relatório de conclusão com telemetria em `2026-11-08_REPORT_VIDEO_BUNDLE.md`.
+  - **Homologação:** Suítes `internal/videorea`, `internal/cli` e `docs/templates` 100% verdes, `gofmt -l` limpo, `go vet` limpo, binário fresco `bin/legoloop.exe` recompilado e instalado no PATH.
+
 ## Estado Atual do Repositório
 - **Status da Branch:** `docs/livros-loops-autores` — 14 skills canônicas universais, pipelines audiovisuais integrados, motor LegoPress blindado com diagramas 300 DPI e tabelas com quebra inteligente sem sobreposição.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).

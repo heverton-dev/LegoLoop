@@ -12,6 +12,16 @@
 
 A função **`legoloop-video-rea`** ingere URLs de vídeos (YouTube, Instagram Reels, TikTok) ou arquivos locais e executa a dissecação técnica forense: extrai prompts declarados e implícitos, faz OCR em trechos ultrarrápidos de código, mapeia as ferramentas proprietárias contra a Matriz LegoLoop (R$ 0,00/mês de custo de licença), impõe o Stop-Gate humano de aprovação e fabrica a Tríade de Governança ISO (`INTENT`, `SPEC`, `PLAN`, `ROUTE`), a Golden Fixture de 3s e o livro didático via LegoPress.
 
+### 1.1 Arquitetura de Target Workspace (`docs/videorea/<slug>/`)
+Cada vídeo analisado recebe um bundle autocontido para não poluir o repositório global:
+* `scratch/`: mídia bruta, áudio 48kHz e frames OCR (ignorado pelo `.gitignore`).
+* `dossier.json` & `curation.json`: evidências forenses e substituições aprovadas.
+* `governance/`: Tríade ISO local (`INTENT.md`, `SPEC.md`, `PLAN.md`, `ROUTE.json`).
+* `book/`: Livro Didático LegoPress local (`livro.json`).
+* `loop/`: Grafo executável local (`pipeline.dag.json`) e fixture 3s.
+* `skill/`: Definição local da skill (`SKILL.md`).
+* **Projeção Canônica:** Na aprovação, o motor projeta os vínculos na raiz (`loops/<slug>/` e `skills/<slug>/`) para consumo transparente pelo LegoLoop.
+
 ---
 
 ## 2. Comandos e Uso
