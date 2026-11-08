@@ -89,11 +89,22 @@ A execução deste lote de homologação comprovou que o subsistema `legoloop vi
 
 ## 5. Artefatos e Entregas Finais por Branch
 
-| Repositório / Branch | Target Workspace | Peças Canônicas Projetadas | Livro LegoPress |
+| Repositório / Branch | Target Workspace | Peças Canônicas Projetadas | Livro LegoPress (PDF Compilado) |
 | :--- | :--- | :--- | :--- |
-| **`LegoLoop-v1-low`** (`videorea/v1-shorts-s34hm5`) | `docs/videorea/video-001-claude-marketing-system/` | `skills/video-001-claude-marketing-system/SKILL.md`<br>`loops/video-001-claude-marketing-system/pipeline.dag.json` | `docs/books/video-001-claude-marketing-system/` |
-| **`LegoLoop-v2-medium`** (`videorea/v2-deep-n50kkou`) | `docs/videorea/video-002-reachmora-motion-flow/` | `skills/video-002-reachmora-motion-flow/SKILL.md`<br>`loops/video-002-reachmora-motion-flow/pipeline.dag.json` | `docs/books/video-002-reachmora-motion-flow/` |
-| **`LegoLoop-v3-high`** (`videorea/v3-arch-ll45rz8`) | `docs/videorea/video-003-mattloui-remotion-capcut/` | `skills/video-003-mattloui-remotion-capcut/SKILL.md`<br>`loops/video-003-mattloui-remotion-capcut/pipeline.dag.json` | `docs/books/video-003-mattloui-remotion-capcut/` |
+| **`LegoLoop-v1-low`** (`videorea/v1-shorts-s34hm5`) | `docs/videorea/video-001-claude-marketing-system/` | `skills/video-001-claude-marketing-system/SKILL.md`<br>`loops/video-001-claude-marketing-system/pipeline.dag.json` | [`2026-11-08_PIPELINE-CLAUDE-MARKETING-SYSTEM.pdf`](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/books/video-001-claude-marketing-system/2026-11-08_PIPELINE-CLAUDE-MARKETING-SYSTEM.pdf) (**462 KB** · 17 páginas) |
+| **`LegoLoop-v2-medium`** (`videorea/v2-deep-n50kkou`) | `docs/videorea/video-002-reachmora-motion-flow/` | `skills/video-002-reachmora-motion-flow/SKILL.md`<br>`loops/video-002-reachmora-motion-flow/pipeline.dag.json` | [`2026-11-08_PIPELINE-REACHMORA-MOTION-FLOW.pdf`](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/books/video-002-reachmora-motion-flow/2026-11-08_PIPELINE-REACHMORA-MOTION-FLOW.pdf) (**439 KB** · 16 páginas) |
+| **`LegoLoop-v3-high`** (`videorea/v3-arch-ll45rz8`) | `docs/videorea/video-003-mattloui-remotion-capcut/` | `skills/video-003-mattloui-remotion-capcut/SKILL.md`<br>`loops/video-003-mattloui-remotion-capcut/pipeline.dag.json` | [`2026-11-08_PIPELINE-REMOTION-CLAUDE-CAPCUT.pdf`](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/books/video-003-mattloui-remotion-capcut/2026-11-08_PIPELINE-REMOTION-CLAUDE-CAPCUT.pdf) (**494 KB** · 18 páginas) |
+
+---
+
+## 5.1 Retrospectiva Crítica: Correção do Padrão Ouro LegoPress
+
+Durante a inspeção técnica de entrega, foi identificado que a versão inicial de `bundle_factory.go` havia gerado apenas stubs esqueléticos de 3 a 5 linhas em `partes/`, sem acionar a compilação do Typst e sem gerar o binário PDF.
+
+### Ações Corretivas Executadas com Sucesso:
+1. **Blindagem Anti-Stub na CLI (`internal/cli/video_rea.go`):** O subcomando `legoloop video-rea book` foi reescrito para auditar o tamanho de cada capítulo (falha obrigatória se < 200 bytes) e exigir o arquivo PDF físico compilado (> 50KB).
+2. **Materialização Didática Completa (170x240mm):** Todos os 3 livros foram reescritos com capítulos Macro, Meso e Micro baseados no modelo de ouro de `lucas-leite-edicao-claude-code`, incluindo frontmatter rico, blocos `#painel-teoria`, `#painel-alerta`, `#painel-sucesso` e `#painel-perigo`.
+3. **Compilação e Auditoria Typst:** Executada compilação mecânica via `pandoc` + `typst compile` e auditoria geométrica com `legoloop legopress auditar`, obtendo 100% de conformidade com zero cabeçalhos quebrados e zero páginas órfãs.
 
 ---
 

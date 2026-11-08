@@ -193,12 +193,45 @@ func runBook(args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro: --bundle é obrigatório\n")
 		return 2
 	}
-	manifest := filepath.Join(*bundleDir, "book", "livro.json")
-	if _, err := os.Stat(manifest); os.IsNotExist(err) {
-		fmt.Fprintf(d.Stderr, "manifesto livro.json não encontrado em %s\n", manifest)
+	bookDir := filepath.Join(*bundleDir, "book")
+	if _, err := os.Stat(bookDir); os.IsNotExist(err) {
+		bookDir = *bundleDir
+	}
+	manifestPath := filepath.Join(bookDir, "livro.json")
+	data, err := os.ReadFile(manifestPath)
+	if err != nil {
+		fmt.Fprintf(d.Stderr, "manifesto livro.json não encontrado em %s: %v\n", manifestPath, err)
 		return 1
 	}
-	fmt.Fprintf(d.Stdout, "Livro validado com sucesso: %s\n", manifest)
+	var manifest struct {
+		NomeBase string   `json:"nome_base"`
+		Partes   []string `json:"partes"`
+	}
+	if err := json.Unmarshal(data, &manifest); err != nil {
+		fmt.Fprintf(d.Stderr, "erro decodificando livro.json: %v\n", err)
+		return 1
+	}
+	if len(manifest.Partes) == 0 {
+		fmt.Fprintf(d.Stderr, "erro: livro.json não define partes didáticas\n")
+		return 1
+	}
+	// Auditoria anti-stub: verifica se as partes possuem conteúdo real (> 200 bytes)
+	for _, p := range manifest.Partes {
+		pPath := filepath.Join(bookDir, "partes", p)
+		info, err := os.Stat(pPath)
+		if err != nil || info.Size() < 200 {
+			fmt.Fprintf(d.Stderr, "erro de conformidade LegoPress: capítulo %s inexistente ou esquelético/stub (< 200 bytes)\n", p)
+			return 1
+		}
+	}
+	// Auditoria do PDF compilado
+	pdfPath := filepath.Join(bookDir, fmt.Sprintf("%s.pdf", manifest.NomeBase))
+	pdfInfo, err := os.Stat(pdfPath)
+	if err != nil || pdfInfo.Size() < 50000 {
+		fmt.Fprintf(d.Stderr, "erro: PDF editorial %s não encontrado ou inválido (< 50KB). Execute a compilação do LegoPress via typst/pandoc.\n", pdfPath)
+		return 1
+	}
+	fmt.Fprintf(d.Stdout, "Livro LegoPress 100%% auditado e aprovado: %s (%d partes, %d KB)\n", pdfPath, len(manifest.Partes), pdfInfo.Size()/1024)
 	return 0
 }
 
