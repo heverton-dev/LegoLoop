@@ -9,9 +9,9 @@ WS = RAIZ / "docs/videorea/video-001"
 AQUI = pathlib.Path(__file__).parent
 
 def test_projeto_hyperframes_nao_depende_de_cdn():
-    html = (WS / "scratch/projeto_hf/index.html").read_text(encoding="utf8")
+    html = (WS / "loop/projeto_hf/index.html").read_text(encoding="utf8")
     assert not re.search(r"""src=["']https?://""", html)
-    assert (WS / "scratch/projeto_hf/gsap.min.js").exists()
+    assert (WS / "loop/projeto_hf/gsap.min.js").exists()
 
 def test_fixture_3s_1080p60_conforme():
     v = WS / "loop/fixture_3s.mp4"

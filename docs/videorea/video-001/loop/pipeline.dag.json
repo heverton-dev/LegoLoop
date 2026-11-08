@@ -166,7 +166,7 @@
       "command": [
         "hyperframes",
         "render",
-        "docs/videorea/video-001/scratch/projeto_hf",
+        "docs/videorea/video-001/loop/projeto_hf",
         "--format",
         "webm",
         "-o",
@@ -189,7 +189,7 @@
         "mode": "isolated"
       },
       "inputs": {
-        "projeto": "file('docs/videorea/video-001/scratch/projeto_hf/index.html')"
+        "projeto": "file('docs/videorea/video-001/loop/projeto_hf/index.html')"
       },
       "output": {
         "artifact": "docs/videorea/video-001/scratch/cenas/cenas.webm",

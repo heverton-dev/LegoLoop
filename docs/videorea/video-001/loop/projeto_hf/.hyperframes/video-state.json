@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "historyId": "4d5056fa-009e-4405-a278-5c645c9b2802",
+  "currentRevision": null,
+  "pendingChanges": false,
+  "files": {
+    "AGENTS.md": {
+      "hash": "18bcca1593d1b29cd7442b3dc91d18ada440affb9b7acd577c1da57446f3d24f",
+      "content": "C:\\Users\\trcnologia\\.cache\\hyperframes\\history\\4d5056fa-009e-4405-a278-5c645c9b2802\\blobs\\18\\18bcca1593d1b29cd7442b3dc91d18ada440affb9b7acd577c1da57446f3d24f"
+    },
+    "CLAUDE.md": {
+      "hash": "18bcca1593d1b29cd7442b3dc91d18ada440affb9b7acd577c1da57446f3d24f",
+      "content": "C:\\Users\\trcnologia\\.cache\\hyperframes\\history\\4d5056fa-009e-4405-a278-5c645c9b2802\\blobs\\18\\18bcca1593d1b29cd7442b3dc91d18ada440affb9b7acd577c1da57446f3d24f"
+    },
+    "gsap.min.js": {
+      "hash": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb",
+      "content": "C:\\Users\\trcnologia\\.cache\\hyperframes\\history\\4d5056fa-009e-4405-a278-5c645c9b2802\\blobs\\92\\92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb"
+    },
+    "hyperframes.json": {
+      "hash": "53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50",
+      "content": "C:\\Users\\trcnologia\\.cache\\hyperframes\\history\\4d5056fa-009e-4405-a278-5c645c9b2802\\blobs\\53\\53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50"
+    },
+    "index.html": {
+      "hash": "0234aea90f3e201ffcc15aaa7df53d5ecc1cce9739ac2dfa35da86ddee5423c0",
+      "content": "C:\\Users\\trcnologia\\.cache\\hyperframes\\history\\4d5056fa-009e-4405-a278-5c645c9b2802\\blobs\\02\\0234aea90f3e201ffcc15aaa7df53d5ecc1cce9739ac2dfa35da86ddee5423c0"
+    },
+    "meta.json": {
+      "hash": "77e71db17ffa61998c882e4c9ae3d8f4a3dedcb5b3a59539f2ea5649c98a8627",
+      "content": "C:\\Users\\trcnologia\\.cache\\hyperframes\\history\\4d5056fa-009e-4405-a278-5c645c9b2802\\blobs\\77\\77e71db17ffa61998c882e4c9ae3d8f4a3dedcb5b3a59539f2ea5649c98a8627"
+    },
+    "package.json": {
+      "hash": "d76b06af2cee6da49a060ba029537e43f4fd4d726bc379b121d350ed074b0f25",
+      "content": "C:\\Users\\trcnologia\\.cache\\hyperframes\\history\\4d5056fa-009e-4405-a278-5c645c9b2802\\blobs\\d7\\d76b06af2cee6da49a060ba029537e43f4fd4d726bc379b121d350ed074b0f25"
+    }
+  },
+  "revisions": {},
+  "checks": {
+    "latest": null,
+    "revisions": {},
+    "unversioned": []
+  },
+  "snapshots": {
+    "latest": null,
+    "revisions": {},
+    "unversioned": []
+  },
+  "renders": {
+    "latest": {
+      "id": "f81c35f6-e4d4-487c-9091-782cf7dddd52",
+      "completedAt": 1794160409039,
+      "output": "C:\\Users\\trcnologia\\Desktop\\LegoLoop\\docs\\videorea\\video-001\\scratch\\cenas\\cenas.webm",
+      "status": "completed",
+      "revision": null
+    },
+    "retainedRevisions": []
+  },
+  "pendingArtifactCleanup": []
+}
