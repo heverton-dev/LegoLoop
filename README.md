@@ -160,6 +160,12 @@ O LegoLoop cobre todo o ciclo de vida de esteiras autônomas através de **5 ver
 * [`MANUAL_FUNCAO_VIDEO_MASTER_LEGOLOOP.md`](docs/manuals/2026-11-07_MANUAL_FUNCAO_VIDEO_MASTER_LEGOLOOP.md)
 * [`MANUAL_FUNCAO_FECHAR_LEGOLOOP.md`](docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md)
 
+### 🎬 Mega-Pipelines Audiovisuais & Engenharia Reversa (`video-rea`)
+* **Engenharia Reversa Audiovisual (`legoloop video-rea`):** Disseca URLs ou mídias locais criando Target Workspaces isolados em `docs/videorea/<slug>/`.
+  * **Fase 1 (Forense & Matriz Original):** Extração de transcrição e OCR rápido em `dossier.json`, alimentando a nova camada `original_matrix.json` (stack real do autor, ferramentas pagas vs gratuitas explícitas e comandos implícitos de terminal/código).
+  * **Fase 2 (Curadoria & Soberania):** Substituição de ferramentas comerciais por peças Tier Ouro do cofre e **Adoção Soberana Imediata** de utilitários gratuitos vazados no vídeo (custo R$ 0,00).
+  * **Fase 3 & 4 (Governança, Livro e Loop):** Fabricação da Tríade ISO local (`governance/`), Livro Didático LegoPress (`book/`), DAG com Golden Fixture de 3s (`loop/`), com projeção canônica na raiz (`loops/` e `skills/`) mediante aprovação do Stop-Gate humano.
+
 ## 🛡️ Governança & Alternador STE-PT (`legoloop stept`)
 
 O LegoLoop inclui governança determinística e alternador universal de regras para os 5 harnesses do sistema (**Google Gemini/Antigravity**, **Claude Code**, **OMP CLI**, **OpenCode** e **MimoCode**), além do executável standalone `stept.exe` no PATH:

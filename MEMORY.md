@@ -405,6 +405,6 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Portões Mecânicos:** 100% dos testes verdes em `internal/videorea/...` e `internal/cli/...`, funclen $\le 35$ linhas, `gofmt -l` limpo, `go vet` limpo, binário `bin/legoloop.exe` recompilado e instalado no PATH.
 
 ## Estado Atual do Repositório
-- **Status da Branch:** `docs/livros-loops-autores` — 14 skills canônicas universais, pipelines audiovisuais integrados, motor LegoPress blindado com diagramas 300 DPI e tabelas com quebra inteligente sem sobreposição.
+- **Status da Branch:** `docs/livros-loops-autores` — 14 skills canônicas universais, pipelines audiovisuais integrados (`legoloop-canal-redc`, `legoloop-video-motion`, `legoloop-video-master` e `legoloop-video-rea` com Fase 1 de Matriz Original e Adoção Soberana), motor LegoPress blindado com diagramas 300 DPI e tabelas com quebra inteligente sem sobreposição.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
 - **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/` e `AGENTS.md`.
