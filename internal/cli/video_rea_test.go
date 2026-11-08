@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"legoloop/internal/cli"
+	"legoloop/internal/provider"
 )
 
 func TestVideoReaCLI_HelpAndInvalid(t *testing.T) {
@@ -252,5 +253,73 @@ func TestVideoReaCLI_CurateNomeCanônico(t *testing.T) {
 	}
 	if report.SuggestedName != "legoloop-minimax-h3-local" {
 		t.Errorf("esperava nome canônico sobrescrito, obteve %q", report.SuggestedName)
+	}
+}
+
+func TestVideoReaCLI_SuporteAModelEEffort(t *testing.T) {
+	tempDir := t.TempDir()
+	var stdout, stderr bytes.Buffer
+	deps := cli.Deps{
+		Stdout: &stdout,
+		Stderr: &stderr,
+		Discover: func(context.Context) provider.Inventory {
+			return provider.Inventory{
+				RouterURL:    "http://127.0.0.1:20128",
+				RouterModels: []string{"fast-brain", "deep-brain"},
+			}
+		},
+	}
+
+	videoJSON := filepath.Join(tempDir, "video.json")
+	if exit := cli.Run(context.Background(), []string{
+		"video-rea", "ingest",
+		"--url", "https://youtu.be/W7E7Ln0z6aY",
+		"--out", videoJSON,
+	}, deps); exit != 0 {
+		t.Fatalf("ingest falhou: %s", stderr.String())
+	}
+
+	dossierJSON := filepath.Join(tempDir, "dossier.json")
+	// Teste 1: Forensics com --model e --effort
+	exit := cli.Run(context.Background(), []string{
+		"video-rea", "forensics",
+		"--input", videoJSON,
+		"--transcript", "Testando extração com cérebro alocado.",
+		"--model", "fast-brain",
+		"--effort", "high",
+		"--out", dossierJSON,
+	}, deps)
+	if exit != 0 {
+		t.Fatalf("forensics com --model e --effort falhou (exit %d): %s", exit, stderr.String())
+	}
+
+	// Teste 2: Run completo com --model e --effort
+	stdout.Reset()
+	stderr.Reset()
+	exit = cli.Run(context.Background(), []string{
+		"video-rea", "run",
+		"--url", "https://youtu.be/W7E7Ln0z6aY",
+		"--transcript", "Pipeline completo com modelo roteado.",
+		"--model", "deep-brain",
+		"--effort", "medium",
+		"--bundle", filepath.Join(tempDir, "bundle"),
+		"--repo", tempDir,
+	}, deps)
+	if exit != 0 {
+		t.Fatalf("run com --model e --effort falhou (exit %d): %s", exit, stderr.String())
+	}
+
+	// Teste 3: Modelo inexistente deve falhar com exit code 1
+	stdout.Reset()
+	stderr.Reset()
+	exit = cli.Run(context.Background(), []string{
+		"video-rea", "forensics",
+		"--input", videoJSON,
+		"--transcript", "Teste com modelo inexistente.",
+		"--model", "modelo-fantasma",
+		"--out", filepath.Join(tempDir, "fantasma.json"),
+	}, deps)
+	if exit != 1 || !strings.Contains(stderr.String(), "erro ao selecionar cérebro") {
+		t.Errorf("esperava exit 1 com erro de cérebro, obteve %d: %s", exit, stderr.String())
 	}
 }

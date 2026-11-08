@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"legoloop/internal/brain"
 	"legoloop/internal/videorea"
 )
 
@@ -17,15 +18,15 @@ Pipeline universal de engenharia reversa audiovisual, dissecação forense e fá
 
 Subcomandos:
   ingest    --url <url> --out <file>        raspa e extrai metadados de YouTube, Instagram e TikTok
-  forensics --input <file> [--transcript-file <f>] [--desc-file <f>] --out <file>   extrai prompts, deduções ocultas e OCR
+  forensics --input <file> [--transcript-file <f>] [--desc-file <f>] [--model <m>] [--effort <low|medium|high>] --out <file>   extrai prompts, deduções ocultas e OCR
   curate    --dossier <file> [--name <slug>] --out <file>   cruza com peças Tier Ouro e calcula soberania
   gate      --report <file> [--approve]     executa o stop-gate humano de validação da curadoria
-  govern    --approval <file> [--bundle <dir>] gera o Target Workspace isolado e projeção canônica
-  book      --bundle <dir>                  compila o Livro Didático LegoPress e audita geometria
-  run       --url <url> [--bundle <dir>]    executa o pipeline completo criando o bundle do vídeo
+  govern    --approval <file> [--bundle <dir>] [--model <m>] [--effort <low|medium|high>] gera o Target Workspace isolado e projeção canônica
+  book      --bundle <dir> [--model <m>] [--effort <low|medium|high>] compila o Livro Didático LegoPress e audita geometria
+  run       --url <url> [--bundle <dir>] [--model <m>] [--effort <low|medium|high>] executa o pipeline completo criando o bundle do vídeo
 `
 
-func cmdVideoRea(_ context.Context, args []string, d Deps) int {
+func cmdVideoRea(ctx context.Context, args []string, d Deps) int {
 	if len(args) == 0 || args[0] == "--help" || args[0] == "-h" || args[0] == "help" {
 		fmt.Fprint(d.Stdout, videoReaUsage)
 		return 0
@@ -36,21 +37,34 @@ func cmdVideoRea(_ context.Context, args []string, d Deps) int {
 	case "ingest":
 		return runIngest(subArgs, d)
 	case "forensics":
-		return runForensics(subArgs, d)
+		return runForensics(ctx, subArgs, d)
 	case "curate":
 		return runCurate(subArgs, d)
 	case "gate":
 		return runGate(subArgs, d)
 	case "govern":
-		return runGovern(subArgs, d)
+		return runGovern(ctx, subArgs, d)
 	case "book":
-		return runBook(subArgs, d)
+		return runBook(ctx, subArgs, d)
 	case "run":
-		return runFullPipeline(subArgs, d)
+		return runFullPipeline(ctx, subArgs, d)
 	default:
 		fmt.Fprintf(d.Stderr, "subcomando desconhecido %q\n\n%s", subcmd, videoReaUsage)
 		return 2
 	}
+}
+
+func resolveBrain(ctx context.Context, modelFlag, effortFlag string, d Deps) (brain.Brain, error) {
+	inv := d.discover(ctx)
+	if len(inv.Models()) == 0 {
+		return nil, nil
+	}
+	opts := d.brainOpts()
+	if effortFlag != "" {
+		opts = append(opts, brain.WithEffort(brain.Effort(effortFlag)))
+	}
+	b, _, err := brain.Pick(inv, modelFlag, opts...)
+	return b, err
 }
 
 func runIngest(args []string, d Deps) int {
@@ -69,29 +83,41 @@ func runIngest(args []string, d Deps) int {
 	return saveJSONOutput(vInput, *out, d)
 }
 
-func runForensics(args []string, d Deps) int {
+func runForensics(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("video-rea forensics", d)
 	inputPath := fs.String("input", "", "arquivo de entrada")
 	transcript := fs.String("transcript", "", "transcrição")
 	transcriptFile := fs.String("transcript-file", "", "arquivo com a transcrição")
 	descFile := fs.String("desc-file", "", "arquivo com a descrição do vídeo")
+	model := fs.String("model", "", "modelo para inferência")
+	effort := fs.String("effort", "", "esforço cognitivo (low, medium, high)")
 	out := fs.String("out", "", "arquivo de saida do dossie")
 	if err := fs.Parse(args); err != nil || *inputPath == "" {
 		fmt.Fprintf(d.Stderr, "erro: --input é obrigatório\n")
 		return 2
 	}
-	text, err := resolveInlineOrFile(*transcript, *transcriptFile)
+	if b, err := resolveBrain(ctx, *model, *effort, d); *model != "" && err != nil {
+		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
+		return 1
+	} else {
+		_ = b
+	}
+	return executeForensics(*inputPath, *transcript, *transcriptFile, *descFile, *out, d)
+}
+
+func executeForensics(inPath, tr, trFile, descFile, out string, d Deps) int {
+	text, err := resolveInlineOrFile(tr, trFile)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro lendo transcrição: %v\n", err)
 		return 1
 	}
-	desc, err := resolveInlineOrFile("", *descFile)
+	desc, err := resolveInlineOrFile("", descFile)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro lendo descrição: %v\n", err)
 		return 1
 	}
 	var vInput videorea.VideoInput
-	if err := loadJSONFile(*inputPath, &vInput); err != nil {
+	if err := loadJSONFile(inPath, &vInput); err != nil {
 		fmt.Fprintf(d.Stderr, "erro lendo input: %v\n", err)
 		return 1
 	}
@@ -100,7 +126,7 @@ func runForensics(args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro extraindo forense: %v\n", err)
 		return 1
 	}
-	return saveJSONOutput(dossier, *out, d)
+	return saveJSONOutput(dossier, out, d)
 }
 
 func resolveInlineOrFile(inline, path string) (string, error) {
@@ -162,15 +188,23 @@ func runGate(args []string, d Deps) int {
 	return saveJSONOutput(report, *reportPath, d)
 }
 
-func runGovern(args []string, d Deps) int {
+func runGovern(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("video-rea govern", d)
 	approvalPath := fs.String("approval", "", "relatorio aprovado")
 	bundleDir := fs.String("bundle", "docs/videorea", "diretorio base do bundle")
 	repoFlag := fs.String("repo", "", "raiz do repositorio")
+	model := fs.String("model", "", "modelo para inferência")
+	effort := fs.String("effort", "", "esforço cognitivo (low, medium, high)")
 	if err := fs.Parse(args); err != nil || *approvalPath == "" {
 		fmt.Fprintf(d.Stderr, "erro: --approval é obrigatório\n")
 		return 2
 	}
+	b, err := resolveBrain(ctx, *model, *effort, d)
+	if *model != "" && err != nil {
+		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
+		return 1
+	}
+	_ = b
 	var report videorea.CurationReport
 	if err := loadJSONFile(*approvalPath, &report); err != nil {
 		fmt.Fprintf(d.Stderr, "erro lendo relatorio: %v\n", err)
@@ -186,16 +220,28 @@ func runGovern(args []string, d Deps) int {
 	return 0
 }
 
-func runBook(args []string, d Deps) int {
+func runBook(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("video-rea book", d)
 	bundleDir := fs.String("bundle", "", "diretorio do bundle")
+	model := fs.String("model", "", "modelo para inferência")
+	effort := fs.String("effort", "", "esforço cognitivo (low, medium, high)")
 	if err := fs.Parse(args); err != nil || *bundleDir == "" {
 		fmt.Fprintf(d.Stderr, "erro: --bundle é obrigatório\n")
 		return 2
 	}
-	bookDir := filepath.Join(*bundleDir, "book")
+	if b, err := resolveBrain(ctx, *model, *effort, d); *model != "" && err != nil {
+		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
+		return 1
+	} else {
+		_ = b
+	}
+	return executeAuditBook(*bundleDir, d)
+}
+
+func executeAuditBook(bundleDir string, d Deps) int {
+	bookDir := filepath.Join(bundleDir, "book")
 	if _, err := os.Stat(bookDir); os.IsNotExist(err) {
-		bookDir = *bundleDir
+		bookDir = bundleDir
 	}
 	manifestPath := filepath.Join(bookDir, "livro.json")
 	data, err := os.ReadFile(manifestPath)
@@ -203,45 +249,44 @@ func runBook(args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "manifesto livro.json não encontrado em %s: %v\n", manifestPath, err)
 		return 1
 	}
-	var manifest struct {
+	var m struct {
 		NomeBase string   `json:"nome_base"`
 		Partes   []string `json:"partes"`
 	}
-	if err := json.Unmarshal(data, &manifest); err != nil {
-		fmt.Fprintf(d.Stderr, "erro decodificando livro.json: %v\n", err)
+	if err := json.Unmarshal(data, &m); err != nil || len(m.Partes) == 0 {
+		fmt.Fprintf(d.Stderr, "erro: livro.json inválido ou sem partes didáticas\n")
 		return 1
 	}
-	if len(manifest.Partes) == 0 {
-		fmt.Fprintf(d.Stderr, "erro: livro.json não define partes didáticas\n")
-		return 1
-	}
-	// Auditoria anti-stub: verifica se as partes possuem conteúdo real (> 200 bytes)
-	for _, p := range manifest.Partes {
-		pPath := filepath.Join(bookDir, "partes", p)
-		info, err := os.Stat(pPath)
+	return verifyBookFiles(bookDir, m.NomeBase, m.Partes, d)
+}
+
+func verifyBookFiles(bookDir, nomeBase string, partes []string, d Deps) int {
+	for _, p := range partes {
+		info, err := os.Stat(filepath.Join(bookDir, "partes", p))
 		if err != nil || info.Size() < 200 {
-			fmt.Fprintf(d.Stderr, "erro de conformidade LegoPress: capítulo %s inexistente ou esquelético/stub (< 200 bytes)\n", p)
+			fmt.Fprintf(d.Stderr, "erro de conformidade LegoPress: capítulo %s inexistente ou < 200 bytes\n", p)
 			return 1
 		}
 	}
-	// Auditoria do PDF compilado
-	pdfPath := filepath.Join(bookDir, fmt.Sprintf("%s.pdf", manifest.NomeBase))
-	pdfInfo, err := os.Stat(pdfPath)
-	if err != nil || pdfInfo.Size() < 50000 {
-		fmt.Fprintf(d.Stderr, "erro: PDF editorial %s não encontrado ou inválido (< 50KB). Execute a compilação do LegoPress via typst/pandoc.\n", pdfPath)
+	pdfPath := filepath.Join(bookDir, fmt.Sprintf("%s.pdf", nomeBase))
+	info, err := os.Stat(pdfPath)
+	if err != nil || info.Size() < 50000 {
+		fmt.Fprintf(d.Stderr, "erro: PDF editorial %s não encontrado ou inválido (< 50KB)\n", pdfPath)
 		return 1
 	}
-	fmt.Fprintf(d.Stdout, "Livro LegoPress 100%% auditado e aprovado: %s (%d partes, %d KB)\n", pdfPath, len(manifest.Partes), pdfInfo.Size()/1024)
+	fmt.Fprintf(d.Stdout, "Livro LegoPress 100%% auditado e aprovado: %s (%d partes, %d KB)\n", pdfPath, len(partes), info.Size()/1024)
 	return 0
 }
 
-func runFullPipeline(args []string, d Deps) int {
+func runFullPipeline(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("video-rea run", d)
 	rawURL := fs.String("url", "", "URL do video")
 	transcript := fs.String("transcript", "", "transcrição do vídeo")
 	desc := fs.String("desc", "", "descrição do vídeo")
 	bundleDir := fs.String("bundle", "docs/videorea", "diretório base")
 	repoFlag := fs.String("repo", "", "raiz do repositorio")
+	model := fs.String("model", "", "modelo para inferência")
+	effort := fs.String("effort", "", "esforço cognitivo (low, medium, high)")
 	if err := fs.Parse(args); err != nil || *rawURL == "" {
 		if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
 			*rawURL = args[0]
@@ -250,6 +295,12 @@ func runFullPipeline(args []string, d Deps) int {
 			return 2
 		}
 	}
+	b, err := resolveBrain(ctx, *model, *effort, d)
+	if *model != "" && err != nil {
+		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
+		return 1
+	}
+	_ = b
 	if _, err := videorea.DetectPlatform(*rawURL); err != nil {
 		fmt.Fprintf(d.Stderr, "erro na plataforma: %v\n", err)
 		return 1

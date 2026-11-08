@@ -11,8 +11,9 @@ suggested_model: sonnet
 # 🎥 legoloop-video-rea — Pipeline Universal de Engenharia Reversa Audiovisual
 
 > **Autor:** LegoLoop  
-> **Versão:** 1.2.0  
+> **Versão:** 1.3.0  
 > **Template:** TEMPLATE_PIECE_SKILL.md v2.0.0  
+> **Combustível Cognitivo:** Suporte nativo a `--model <id>` e `--effort <low|medium|high>` com seleção inteligente em cascata.  
 
 ---
 
