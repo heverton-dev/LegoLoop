@@ -23,6 +23,7 @@ func cmdRemover(ctx context.Context, args []string, d Deps) int {
 	nome, rest := splitPositional(args)
 	fs := newFlags("remover", d)
 	vault := fs.String("vault", "", "cofre canônico (padrão ~/.aidd/canonical)")
+	ws := fs.Bool("workspace", false, "apaga também os artefatos locais do workspace")
 	yes := fs.Bool("yes", false, "confirma sem perguntar")
 	if err := fs.Parse(rest); err != nil {
 		return 2
@@ -39,7 +40,11 @@ func cmdRemover(ctx context.Context, args []string, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
-	rd := remover.Deps{Store: processo.Store{Roots: processo.Roots{Vault: v}}, Home: home}
+	var wsDir string
+	if *ws {
+		wsDir, _ = os.Getwd()
+	}
+	rd := remover.Deps{Store: processo.Store{Roots: processo.Roots{Vault: v}}, Home: home, Workspace: wsDir}
 	plano, err := remover.Planejar(ctx, rd, nome)
 	if err != nil {
 		return fail(d, err)

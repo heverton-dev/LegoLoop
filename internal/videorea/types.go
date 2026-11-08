@@ -28,10 +28,12 @@ const (
 
 // VideoInput representa a entrada para o crawler de engenharia reversa.
 type VideoInput struct {
-	URL        string            `json:"url"`
-	RawVideo   string            `json:"raw_video,omitempty"`
-	AuthCookie string            `json:"auth_cookie,omitempty"`
-	Headers    map[string]string `json:"headers,omitempty"`
+	URL         string            `json:"url"`
+	Title       string            `json:"title,omitempty"`
+	Description string            `json:"description,omitempty"`
+	RawVideo    string            `json:"raw_video,omitempty"`
+	AuthCookie  string            `json:"auth_cookie,omitempty"`
+	Headers     map[string]string `json:"headers,omitempty"`
 }
 
 // ForensicsDossier consolida as evidências forenses extraídas do vídeo.
@@ -125,11 +127,13 @@ const (
 // CurationReport consolida a curadoria contra o cofre e economia de soberania.
 type CurationReport struct {
 	SuggestedName    string            `json:"suggested_name"`
+	VideoTitle       string            `json:"video_title"`
 	OriginalCost     string            `json:"original_cost"`
 	SovereignCost    string            `json:"sovereign_cost"`
 	Replacements     map[string]string `json:"replacements"`
 	SubstitutedTools []SubstitutedTool `json:"substituted_tools,omitempty"`
 	AdoptedTools     []AdoptedTool     `json:"adopted_tools,omitempty"`
+	OriginalMatrix   *OriginalMatrix   `json:"original_matrix,omitempty"`
 	Approved         bool              `json:"approved"`
 }
 

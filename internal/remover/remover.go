@@ -41,8 +41,9 @@ var (
 
 // Deps são as bordas do remover. Store.Roots.Vault é o cofre; Home é onde ficam os harnesses.
 type Deps struct {
-	Store processo.Store
-	Home  string
+	Store     processo.Store
+	Home      string
+	Workspace string
 }
 
 // Plano é o que Executar vai apagar. Planejar não toca o disco.
@@ -120,8 +121,29 @@ func montar(d Deps, it processo.ProcessoCofre) Plano {
 			p.Arquivos = append(p.Arquivos, c)
 		}
 	}
+	if d.Workspace != "" {
+		for _, c := range caminhosWorkspace(d.Workspace, it.Nome) {
+			if _, err := os.Lstat(c); err == nil {
+				p.Arquivos = append(p.Arquivos, c)
+			}
+		}
+	}
 	p.Cartao = cartao(p)
 	return p
+}
+
+func caminhosWorkspace(workspace, nome string) []string {
+	sem := strings.TrimPrefix(nome, prefixo)
+	return []string{
+		filepath.Join(workspace, "skills", nome),
+		filepath.Join(workspace, "skills", sem),
+		filepath.Join(workspace, "loops", nome),
+		filepath.Join(workspace, "loops", sem),
+		filepath.Join(workspace, "docs", "books", nome),
+		filepath.Join(workspace, "docs", "books", sem),
+		filepath.Join(workspace, "docs", "videorea", nome),
+		filepath.Join(workspace, "docs", "videorea", sem),
+	}
 }
 
 func caminhosCofre(vault, nome string) []string {

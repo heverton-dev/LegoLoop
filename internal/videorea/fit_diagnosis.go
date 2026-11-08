@@ -25,8 +25,40 @@ func DiagnoseToolFit(toolName string) ToolDiagnosis {
 		return diagnoseSFX()
 	case strings.Contains(lower, "claude") || strings.Contains(lower, "9router"):
 		return diagnoseRouter()
+	case strings.Contains(lower, "comfy"):
+		return diagnoseComfyUI()
+	case strings.Contains(lower, "minimax") || strings.Contains(lower, "minimx") ||
+		strings.Contains(lower, "flux"):
+		return diagnoseLocalDiffusionModel(toolName)
 	default:
 		return diagnoseLocalScript(toolName)
+	}
+}
+
+func diagnoseComfyUI() ToolDiagnosis {
+	for _, bin := range []string{"comfy", "comfyui"} {
+		if path, err := exec.LookPath(bin); err == nil {
+			return ToolDiagnosis{
+				InstalledOnHost: true, HostLocation: path, FitStatus: FitOuro,
+				FitSolution:  "Encaixe perfeito: ComfyUI disponivel no PATH e pronto para orquestrar workflows locais.",
+				GoldStandard: "ComfyUI Portable (Windows) / comfyui CLI",
+			}
+		}
+	}
+	return ToolDiagnosis{
+		InstalledOnHost: false, FitStatus: MissingAquisicao,
+		FitSolution:    "Instalar o ComfyUI Portable (Windows) para orquestrar os workflows de geracao de video local sem mensalidade.",
+		GoldStandard:   "ComfyUI Portable (Windows) / comfyui CLI",
+		InstallCommand: "git clone https://github.com/comfyanonymous/ComfyUI && pip install -r requirements.txt",
+	}
+}
+
+func diagnoseLocalDiffusionModel(name string) ToolDiagnosis {
+	return ToolDiagnosis{
+		InstalledOnHost: false, FitStatus: MissingAquisicao,
+		FitSolution:    "Pesos de " + name + " nao detectados no host: baixar VAE e diffusion model e aloca-los em models/ do ComfyUI antes da geracao.",
+		GoldStandard:   name + " (pesos abertos locais via ComfyUI)",
+		InstallCommand: "ComfyUI Manager > Load Model > " + name,
 	}
 }
 

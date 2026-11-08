@@ -1,6 +1,7 @@
 package videorea
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -41,8 +42,20 @@ func writeBundleArtifacts(b *TargetBundle, r *CurationReport) error {
 }
 
 func writeLocalOriginalMatrix(b *TargetBundle, r *CurationReport) error {
-	content := fmt.Sprintf(`{"video_title": %q, "total_monthly_cost": %q, "tools": []}`, r.SuggestedName, r.OriginalCost)
-	return os.WriteFile(b.OriginalMatrixPath, []byte(content), 0o644)
+	matrix := r.OriginalMatrix
+	if matrix == nil {
+		matrix = &OriginalMatrix{
+			VideoTitle:       r.VideoTitle,
+			TotalMonthlyCost: r.OriginalCost,
+			Tools:            []OriginalTool{},
+			OriginalSteps:    []string{},
+		}
+	}
+	data, err := json.MarshalIndent(matrix, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(b.OriginalMatrixPath, append(data, '\n'), 0o644)
 }
 
 func writeLocalGovernance(b *TargetBundle, r *CurationReport) error {

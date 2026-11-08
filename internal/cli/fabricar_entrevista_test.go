@@ -224,3 +224,44 @@ func wroteDocs(t *testing.T, r *interRig) int {
 	}
 	return n
 }
+
+func TestEntrevistaIntentMaterializaINTENT(t *testing.T) {
+	r := newInterRig(t, "", lowReply, doneReply)
+	p, code := r.entrevista(t, "iniciar", "pipeline local de vídeo offline")
+	if code != 0 {
+		t.Fatalf("iniciar: exit %d\n%s", code, r.errb)
+	}
+	if _, code := r.entrevista(t, "responder", p.Sessao, "FFmpeg e CPU"); code != 0 {
+		t.Fatalf("responder: exit %d\n%s", code, r.errb)
+	}
+
+	r.out.Reset()
+	r.errb.Reset()
+	code = run(t, r.d, "fabricar", "entrevista", "intent", p.Sessao, "--vault", r.vault, "--docs", r.doc)
+	if code != 0 {
+		t.Fatalf("intent: exit %d\n%s", code, r.errb)
+	}
+	var out struct {
+		Arquivo string `json:"arquivo"`
+	}
+	if err := json.Unmarshal(r.out.Bytes(), &out); err != nil {
+		t.Fatalf("saída não é JSON: %v\n%s", err, r.out)
+	}
+	data, err := os.ReadFile(out.Arquivo)
+	if err != nil {
+		t.Fatalf("lendo INTENT: %v", err)
+	}
+	conteudo := string(data)
+	if !strings.Contains(conteudo, "UNDER_REVIEW") {
+		t.Errorf("esperava status UNDER_REVIEW na INTENT")
+	}
+	if strings.Contains(conteudo, "{{") {
+		t.Errorf("INTENT com placeholder não resolvido")
+	}
+	if !strings.Contains(conteudo, p.Sessao) {
+		t.Errorf("INTENT sem o id da sessão %s", p.Sessao)
+	}
+	if !strings.Contains(filepath.Base(out.Arquivo), "INTENT_") {
+		t.Errorf("nome de arquivo fora do padrão: %s", out.Arquivo)
+	}
+}

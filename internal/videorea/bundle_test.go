@@ -1,6 +1,7 @@
 package videorea_test
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -105,5 +106,49 @@ func TestTargetBundleMaterializeAndProject(t *testing.T) {
 	canonicalBook := filepath.Join(tempRoot, "docs", "books", slug, "livro.json")
 	if _, err := os.Stat(canonicalBook); os.IsNotExist(err) {
 		t.Errorf("projeção canônica do Livro não encontrada: %s", canonicalBook)
+	}
+}
+
+func TestMaterializeAndProject_GravaMatrizOriginalCompleta(t *testing.T) {
+	tempRoot := t.TempDir()
+	baseDir := filepath.Join(tempRoot, "docs", "videorea")
+	slug := "legoloop-minimax-h3-local"
+
+	report := &videorea.CurationReport{
+		SuggestedName: slug,
+		VideoTitle:    "Adeus IAs pagas: Nova IA gera videos em PC fraco",
+		OriginalCost:  "R$ 0,00/mes",
+		SovereignCost: "R$ 0,00/mes",
+		OriginalMatrix: &videorea.OriginalMatrix{
+			VideoTitle:       "Adeus IAs pagas: Nova IA gera videos em PC fraco",
+			TotalMonthlyCost: "R$ 0,00/mes",
+			Tools: []videorea.OriginalTool{
+				{Name: "ComfyUI", IsFree: true, CostTier: "R$ 0,00 (Gratuito/Aberto)"},
+				{Name: "MiniMax H3", IsFree: true, CostTier: "R$ 0,00 (Gratuito/Aberto)"},
+				{Name: "FLUX", IsFree: true, CostTier: "R$ 0,00 (Gratuito/Aberto)"},
+			},
+			OriginalSteps: []string{"Execucao local via ComfyUI Portable"},
+		},
+		Approved: true,
+	}
+
+	bundle, err := videorea.MaterializeAndProject(report, baseDir, tempRoot)
+	if err != nil {
+		t.Fatalf("MaterializeAndProject falhou: %v", err)
+	}
+
+	data, err := os.ReadFile(bundle.OriginalMatrixPath)
+	if err != nil {
+		t.Fatalf("lendo original_matrix.json: %v", err)
+	}
+	var matrix videorea.OriginalMatrix
+	if err := json.Unmarshal(data, &matrix); err != nil {
+		t.Fatalf("parse original_matrix.json: %v", err)
+	}
+	if len(matrix.Tools) != 3 {
+		t.Errorf("esperava 3 ferramentas gravadas, obteve %d (%s)", len(matrix.Tools), data)
+	}
+	if matrix.VideoTitle != report.VideoTitle {
+		t.Errorf("video_title do arquivo esperado %q, obteve %q", report.VideoTitle, matrix.VideoTitle)
 	}
 }

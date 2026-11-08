@@ -151,17 +151,18 @@ func intentTarget(baseDir, fileName, theme, date string) (path, name string) {
 }
 
 var (
-	reHypothesis = regexp.MustCompile(`(?i)HIPÓTESE:\s*([^\n]+)`)
-	reConfidence = regexp.MustCompile(`(?i)CONFIANÇA:\s*(\d+)%?`)
-	reQuestion   = regexp.MustCompile(`(?i)PERGUNTA:\s*([^\n]+)`)
-	reGuess      = regexp.MustCompile(`(?i)PALPITE:\s*([^\n]+)`)
+	// \*{0,2} tolera o realce em Markdown (**CONFIANÇA**:) que os cérebros emitem.
+	reHypothesis = regexp.MustCompile(`(?i)\*{0,2}HIPÓTESE\*{0,2}:\s*([^\n]+)`)
+	reConfidence = regexp.MustCompile(`(?i)\*{0,2}CONFIANÇA\*{0,2}:\s*(\d+)%?`)
+	reQuestion   = regexp.MustCompile(`(?i)\*{0,2}PERGUNTA\*{0,2}:\s*([^\n]+)`)
+	reGuess      = regexp.MustCompile(`(?i)\*{0,2}PALPITE\*{0,2}:\s*([^\n]+)`)
 
-	reOutcome     = regexp.MustCompile(`(?i)- Resultado Esperado:\s*([^\n]+)`)
-	reUser        = regexp.MustCompile(`(?i)- Quem se Beneficia:\s*([^\n]+)`)
-	reWhyNow      = regexp.MustCompile(`(?i)- Por que Agora:\s*([^\n]+)`)
-	reSuccess     = regexp.MustCompile(`(?i)- Critério de Sucesso:\s*([^\n]+)`)
-	reConstraints = regexp.MustCompile(`(?i)- Restrições Inegociáveis:\s*([^\n]+)`)
-	reOutOfScope  = regexp.MustCompile(`(?i)- Fora de Escopo:\s*([^\n]+)`)
+	reOutcome     = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Resultado Esperado\*{0,2}:\s*([^\n]+)`)
+	reUser        = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Quem se Beneficia\*{0,2}:\s*([^\n]+)`)
+	reWhyNow      = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Por que Agora\*{0,2}:\s*([^\n]+)`)
+	reSuccess     = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Critério de Sucesso\*{0,2}:\s*([^\n]+)`)
+	reConstraints = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Restrições Inegociáveis\*{0,2}:\s*([^\n]+)`)
+	reOutOfScope  = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Fora de Escopo\*{0,2}:\s*([^\n]+)`)
 )
 
 // capture devolve o primeiro grupo de re em raw, sem espaços nas pontas, e se houve casamento.
@@ -170,6 +171,19 @@ func capture(re *regexp.Regexp, raw string) (string, bool) {
 		return strings.TrimSpace(m[1]), true
 	}
 	return "", false
+}
+
+// captureLast devolve a última ocorrência: o cérebro costuma repetir a confiança ao final do espelho.
+func captureLast(re *regexp.Regexp, raw string) (string, bool) {
+	all := re.FindAllStringSubmatch(raw, -1)
+	if len(all) == 0 {
+		return "", false
+	}
+	m := all[len(all)-1]
+	if len(m) < 2 {
+		return "", false
+	}
+	return strings.TrimSpace(m[1]), true
 }
 
 // splitItems separa uma lista escrita em uma linha, com itens separados por vírgula.
@@ -189,7 +203,7 @@ func ParseTurnResult(raw string) *TurnResult {
 		Confidence:  50,
 	}
 	turn.Hypothesis, _ = capture(reHypothesis, raw)
-	if s, ok := capture(reConfidence, raw); ok {
+	if s, ok := captureLast(reConfidence, raw); ok {
 		if val, err := strconv.Atoi(s); err == nil {
 			turn.Confidence, turn.ConfidenceReported = val, true
 		}

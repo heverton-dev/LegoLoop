@@ -19,6 +19,9 @@ var defaultFreeTools = map[string]string{
 	"HyperFrames": "Framework Motion em Codigo (HTML/CSS/GSAP)",
 	"YuNet":       "Detector e Rastreio Facial Local (OpenCV)",
 	"WhisperX":    "Transcricao Local Alinhada por Palavra (Open Source)",
+	"ComfyUI":     "Interface de Orquestracao de Diffusion Local (Open Source)",
+	"MiniMax H3":  "Modelo Aberto de Geracao de Video (Open Weights)",
+	"FLUX":        "Modelo Local de Difusao Texto-para-Imagem",
 }
 
 // BuildOriginalMatrix constrói a matriz tecnológica original antes da curadoria.

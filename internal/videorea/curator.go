@@ -72,7 +72,7 @@ func CurateAgainstMatrixWithOriginal(dossier *ForensicsDossier, orig *OriginalMa
 		return nil, ErrEmptyDossier
 	}
 	repl, substituted, adopted, origCost := curateOriginalTools(orig)
-	return buildCurationReport(dossier.Title, origCost, repl, substituted, adopted), nil
+	return buildCurationReport(dossier.Title, origCost, repl, substituted, adopted, orig), nil
 }
 
 func curateOriginalTools(orig *OriginalMatrix) (map[string]string, []SubstitutedTool, []AdoptedTool, string) {
@@ -119,7 +119,7 @@ func matchSovereignSubstitution(tool OriginalTool) SubstitutedTool {
 	}
 }
 
-func buildCurationReport(title, origCost string, repl map[string]string, subs []SubstitutedTool, adopted []AdoptedTool) *CurationReport {
+func buildCurationReport(title, origCost string, repl map[string]string, subs []SubstitutedTool, adopted []AdoptedTool, orig *OriginalMatrix) *CurationReport {
 	primaryName := "legoloop-video-pipeline"
 	suggested := SuggestCanonicalNames(title)
 	if len(suggested) > 0 {
@@ -127,11 +127,13 @@ func buildCurationReport(title, origCost string, repl map[string]string, subs []
 	}
 	return &CurationReport{
 		SuggestedName:    primaryName,
+		VideoTitle:       title,
 		OriginalCost:     origCost,
 		SovereignCost:    "R$ 0,00/mes",
 		Replacements:     repl,
 		SubstitutedTools: subs,
 		AdoptedTools:     adopted,
+		OriginalMatrix:   orig,
 		Approved:         false,
 	}
 }

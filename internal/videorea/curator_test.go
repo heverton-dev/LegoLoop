@@ -51,3 +51,25 @@ func TestCanonicalNaming(t *testing.T) {
 		}
 	}
 }
+
+func TestCurateAgainstMatrix_CarregaMatrizOriginal(t *testing.T) {
+	dossier := &videorea.ForensicsDossier{
+		Title:           "Adeus IAs pagas: Nova IA gera videos em PC fraco",
+		ToolsIdentified: []string{"ComfyUI", "MiniMax H3", "FLUX"},
+	}
+
+	report, err := videorea.CurateAgainstMatrix(dossier)
+	if err != nil {
+		t.Fatalf("CurateAgainstMatrix falhou: %v", err)
+	}
+
+	if report.VideoTitle != dossier.Title {
+		t.Errorf("video_title esperado %q, obteve %q", dossier.Title, report.VideoTitle)
+	}
+	if report.OriginalMatrix == nil {
+		t.Fatalf("esperava original_matrix no relatório")
+	}
+	if len(report.OriginalMatrix.Tools) != 3 {
+		t.Errorf("esperava 3 ferramentas na matriz, obteve %d", len(report.OriginalMatrix.Tools))
+	}
+}

@@ -320,3 +320,32 @@ func TestRemoverSoOQueExiste(t *testing.T) {
 		t.Error("o processo sobrou")
 	}
 }
+
+// TestRemoverComWorkspace confere que com Workspace informado, os itens locais também são apagados.
+func TestRemoverComWorkspace(t *testing.T) {
+	d, _ := cofre(t)
+	ws := t.TempDir()
+	d.Workspace = ws
+	escrever(t, filepath.Join(ws, "skills", "legoloop-b", "SKILL.md"), "# b")
+	escrever(t, filepath.Join(ws, "loops", "legoloop-b", "pipeline.dag.json"), "{}")
+	escrever(t, filepath.Join(ws, "docs", "books", "b", "livro.json"), "{}")
+	escrever(t, filepath.Join(ws, "docs", "videorea", "b", "curation.json"), "{}")
+
+	pl, err := remover.Planejar(context.Background(), d, "legoloop-b")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := remover.Executar(context.Background(), pl); err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range []string{
+		filepath.Join(ws, "skills", "legoloop-b"),
+		filepath.Join(ws, "loops", "legoloop-b"),
+		filepath.Join(ws, "docs", "books", "b"),
+		filepath.Join(ws, "docs", "videorea", "b"),
+	} {
+		if existe(p) {
+			t.Errorf("deveria ter apagado item do workspace: %s", p)
+		}
+	}
+}

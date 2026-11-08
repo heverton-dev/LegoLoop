@@ -138,3 +138,69 @@ PALPITE:    SVG puro pela facilidade de eventos DOM.`
 		t.Errorf("palpite inesperado: %s", turn.Guess)
 	}
 }
+
+func TestParseTurnResult_MarkdownEmDestaque(t *testing.T) {
+	raw := "**CONFIANÇA**: 60%\n\n**PALPITE**: pipeline 100% local\n\n" +
+		"**PERGUNTA**: Você pretende usar algum framework específico para a geração?"
+
+	turn := interview.ParseTurnResult(raw)
+	if !turn.ConfidenceReported || turn.Confidence != 60 {
+		t.Errorf("esperava confiança 60%% reportada, obteve %d (reportado=%v)", turn.Confidence, turn.ConfidenceReported)
+	}
+	if strings.TrimSpace(turn.Question) == "" {
+		t.Errorf("pergunta não extraída de resposta em markdown: %q", turn.RawResponse)
+	}
+	if strings.TrimSpace(turn.Guess) == "" {
+		t.Errorf("palpite não extraído de resposta em markdown")
+	}
+}
+
+func TestParseTurnResult_EspelhoEmMarkdown(t *testing.T) {
+	raw := "**CONFIANÇA**: 98%\n\n**ESPELHO CANÔNICO**:\n" +
+		"- **Resultado Esperado**: gerar vídeos 100% locais\n" +
+		"- **Quem se Beneficia**: criadores de PC fraco\n" +
+		"- **Por que Agora**: IAs pagas dispararam preço\n" +
+		"- **Critério de Sucesso**: rodar offline sem API\n" +
+		"- **Restrições Inegociáveis**: sem nuvem\n" +
+		"- **Fora de Escopo**: treinar modelos do zero"
+
+	turn := interview.ParseTurnResult(raw)
+	if turn.Status != interview.StatusCompleted {
+		t.Fatalf("esperava status COMPLETED, obteve %q", turn.Status)
+	}
+	if turn.Mirror == nil {
+		t.Fatal("espelho canônico não extraído")
+	}
+	if turn.Mirror.Outcome != "gerar vídeos 100% locais" {
+		t.Errorf("resultado esperado extraído: %q", turn.Mirror.Outcome)
+	}
+	if turn.Mirror.Constraints[0] != "sem nuvem" {
+		t.Errorf("restrições extraídas: %v", turn.Mirror.Constraints)
+	}
+}
+
+func TestParseTurnResult_EspelhoComBulletEstrela(t *testing.T) {
+	raw := "**HIPÓTESE**: pipeline local\n\n**CONFIANÇA**: 90%\n\n**PERGUNTA**: falta algo?\n\n" +
+		"**ESPELHO CANÔNICO**:\n\n" +
+		"* **Resultado Esperado**: pipeline offline 1080p\n" +
+		"* **Quem se Beneficia**: criadores sem GPU\n" +
+		"* **Por que Agora**: IA pagas encareceram\n" +
+		"* **Critério de Sucesso**: MP4/H.264 leve e offline\n" +
+		"* **Restrições Inegociáveis**: sem nuvem, só CPU\n" +
+		"* **Fora de Escopo**: treinar modelos\n\n" +
+		"**CONFIANÇA**: 95% (ou mais)"
+
+	turn := interview.ParseTurnResult(raw)
+	if turn.Status != interview.StatusCompleted {
+		t.Fatalf("esperava COMPLETED com espelho completo, obteve %q (conf=%d)", turn.Status, turn.Confidence)
+	}
+	if turn.Confidence < 95 {
+		t.Errorf("esperava última confiança 95%%, obteve %d", turn.Confidence)
+	}
+	if turn.Mirror == nil || turn.Mirror.Outcome != "pipeline offline 1080p" {
+		t.Errorf("espelho não extraído: %+v", turn.Mirror)
+	}
+	if turn.Mirror != nil && len(turn.Mirror.Constraints) == 0 {
+		t.Errorf("restrições não extraídas")
+	}
+}

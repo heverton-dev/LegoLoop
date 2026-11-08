@@ -68,6 +68,7 @@ Comandos:
   mcp-router                                 inicia servidor MCP STDIO com Lazy discovery
   legopress  [doctor|auditar|criar|editar|atualizar|adequar|preview]  esteira industrial de livros técnicos
   video-motion <subcomando> [opções]          pipeline determinístico de edição e motion vídeo
+  video-capcut <subcomando> [opções]          pipeline soberano de edição talking-head com CapCut e FCPXML
   video-rea  <subcomando> [opções]             pipeline universal de engenharia reversa audiovisual
   canal      redc|gerar [opções]              pipeline REDC de canais e clonagem estrutural
   fechar     <slug> [--dry-run] [--skip-build] [--json]  cadeia determinística de 8 etapas de canonização e fechamento

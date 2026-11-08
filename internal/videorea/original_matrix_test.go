@@ -153,3 +153,26 @@ func TestLucasLeiteVideo_ForensicsAndOriginalMatrix(t *testing.T) {
 		}
 	}
 }
+
+func TestOriginalMatrix_StackLocalGratuita(t *testing.T) {
+	dossier := &videorea.ForensicsDossier{
+		Title:           "Adeus IAs pagas: Nova IA gera videos em PC fraco",
+		ToolsIdentified: []string{"ComfyUI", "MiniMax H3", "FLUX"},
+	}
+
+	matrix, err := videorea.BuildOriginalMatrix(dossier)
+	if err != nil {
+		t.Fatalf("BuildOriginalMatrix falhou: %v", err)
+	}
+	if len(matrix.Tools) != 3 {
+		t.Fatalf("esperava 3 ferramentas na matriz, obteve %d (%v)", len(matrix.Tools), matrix.Tools)
+	}
+	for _, tool := range matrix.Tools {
+		if !tool.IsFree {
+			t.Errorf("ferramenta %q deveria ser gratuita", tool.Name)
+		}
+	}
+	if matrix.TotalMonthlyCost != "R$ 0,00/mes" {
+		t.Errorf("custo original esperado R$ 0,00/mes, obteve %q", matrix.TotalMonthlyCost)
+	}
+}

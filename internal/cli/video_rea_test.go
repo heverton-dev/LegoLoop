@@ -31,6 +31,65 @@ func TestVideoReaCLI_HelpAndInvalid(t *testing.T) {
 	}
 }
 
+func TestVideoReaCLI_ForensicsTranscriptFile(t *testing.T) {
+	tempDir := t.TempDir()
+	var stdout, stderr bytes.Buffer
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+
+	videoJSON := filepath.Join(tempDir, "video.json")
+	if exit := cli.Run(context.Background(), []string{
+		"video-rea", "ingest",
+		"--url", "https://youtu.be/W7E7Ln0z6aY",
+		"--out", videoJSON,
+	}, deps); exit != 0 {
+		t.Fatalf("ingest falhou (exit %d): %s", exit, stderr.String())
+	}
+
+	transcriptPath := filepath.Join(tempDir, "transcript.txt")
+	longTranscript := strings.Repeat("MiniMax H3 roda em PC fraco e gera vídeo grátis. ", 400)
+	if err := os.WriteFile(transcriptPath, []byte(longTranscript), 0o644); err != nil {
+		t.Fatalf("gravando transcrição: %v", err)
+	}
+
+	descPath := filepath.Join(tempDir, "desc.txt")
+	if err := os.WriteFile(descPath, []byte("Adeus IAs pagas: Nova IA gera vídeos insanos em PC fraco (100% GRÁTIS)"), 0o644); err != nil {
+		t.Fatalf("gravando descrição: %v", err)
+	}
+
+	dossierJSON := filepath.Join(tempDir, "dossier.json")
+	stdout.Reset()
+	stderr.Reset()
+	exit := cli.Run(context.Background(), []string{
+		"video-rea", "forensics",
+		"--input", videoJSON,
+		"--transcript-file", transcriptPath,
+		"--desc-file", descPath,
+		"--out", dossierJSON,
+	}, deps)
+	if exit != 0 {
+		t.Fatalf("forensics com --transcript-file falhou (exit %d): %s", exit, stderr.String())
+	}
+
+	data, err := os.ReadFile(dossierJSON)
+	if err != nil {
+		t.Fatalf("lendo dossiê: %v", err)
+	}
+	var dossier struct {
+		TranscribedText string `json:"transcribed_text"`
+		Title           string `json:"title"`
+	}
+	if err := json.Unmarshal(data, &dossier); err != nil {
+		t.Fatalf("parse dossiê: %v", err)
+	}
+	if dossier.TranscribedText != longTranscript {
+		t.Errorf("transcrição do arquivo não foi preservada: obtido %d chars, esperado %d",
+			len(dossier.TranscribedText), len(longTranscript))
+	}
+	if !strings.HasPrefix(dossier.Title, "Adeus IAs pagas") {
+		t.Errorf("esperava título vindo do --desc-file, obteve %q", dossier.Title)
+	}
+}
+
 func TestVideoReaCLI_PipelineReal(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
@@ -142,5 +201,56 @@ func TestVideoReaCLI_PipelineReal(t *testing.T) {
 	}, deps)
 	if exit != 0 {
 		t.Fatalf("run full falhou (exit %d): %s", exit, stderr.String())
+	}
+}
+
+func TestVideoReaCLI_CurateNomeCanônico(t *testing.T) {
+	tempDir := t.TempDir()
+	var stdout, stderr bytes.Buffer
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+
+	videoJSON := filepath.Join(tempDir, "video.json")
+	if exit := cli.Run(context.Background(), []string{
+		"video-rea", "ingest",
+		"--url", "https://youtu.be/W7E7Ln0z6aY",
+		"--out", videoJSON,
+	}, deps); exit != 0 {
+		t.Fatalf("ingest falhou: %s", stderr.String())
+	}
+
+	dossierJSON := filepath.Join(tempDir, "dossier.json")
+	if exit := cli.Run(context.Background(), []string{
+		"video-rea", "forensics",
+		"--input", videoJSON,
+		"--transcript", "Minimx H3 rodando no Confi para gerar video gratis.",
+		"--out", dossierJSON,
+	}, deps); exit != 0 {
+		t.Fatalf("forensics falhou: %s", stderr.String())
+	}
+
+	curationJSON := filepath.Join(tempDir, "curation.json")
+	stdout.Reset()
+	stderr.Reset()
+	if exit := cli.Run(context.Background(), []string{
+		"video-rea", "curate",
+		"--dossier", dossierJSON,
+		"--name", "legoloop-minimax-h3-local",
+		"--out", curationJSON,
+	}, deps); exit != 0 {
+		t.Fatalf("curate falhou (exit %d): %s", exit, stderr.String())
+	}
+
+	data, err := os.ReadFile(curationJSON)
+	if err != nil {
+		t.Fatalf("lendo curadoria: %v", err)
+	}
+	var report struct {
+		SuggestedName string `json:"suggested_name"`
+	}
+	if err := json.Unmarshal(data, &report); err != nil {
+		t.Fatalf("parse curadoria: %v", err)
+	}
+	if report.SuggestedName != "legoloop-minimax-h3-local" {
+		t.Errorf("esperava nome canônico sobrescrito, obteve %q", report.SuggestedName)
 	}
 }

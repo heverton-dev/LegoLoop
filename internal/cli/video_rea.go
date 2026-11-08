@@ -17,8 +17,8 @@ Pipeline universal de engenharia reversa audiovisual, dissecação forense e fá
 
 Subcomandos:
   ingest    --url <url> --out <file>        raspa e extrai metadados de YouTube, Instagram e TikTok
-  forensics --input <file> --out <file>     extrai prompts explícitos, deduções ocultas e OCR
-  curate    --dossier <file> --out <file>   cruza com peças Tier Ouro da matriz e calcula soberania
+  forensics --input <file> [--transcript-file <f>] [--desc-file <f>] --out <file>   extrai prompts, deduções ocultas e OCR
+  curate    --dossier <file> [--name <slug>] --out <file>   cruza com peças Tier Ouro e calcula soberania
   gate      --report <file> [--approve]     executa o stop-gate humano de validação da curadoria
   govern    --approval <file> [--bundle <dir>] gera o Target Workspace isolado e projeção canônica
   book      --bundle <dir>                  compila o Livro Didático LegoPress e audita geometria
@@ -73,17 +73,29 @@ func runForensics(args []string, d Deps) int {
 	fs := newFlags("video-rea forensics", d)
 	inputPath := fs.String("input", "", "arquivo de entrada")
 	transcript := fs.String("transcript", "", "transcrição")
+	transcriptFile := fs.String("transcript-file", "", "arquivo com a transcrição")
+	descFile := fs.String("desc-file", "", "arquivo com a descrição do vídeo")
 	out := fs.String("out", "", "arquivo de saida do dossie")
 	if err := fs.Parse(args); err != nil || *inputPath == "" {
 		fmt.Fprintf(d.Stderr, "erro: --input é obrigatório\n")
 		return 2
+	}
+	text, err := resolveInlineOrFile(*transcript, *transcriptFile)
+	if err != nil {
+		fmt.Fprintf(d.Stderr, "erro lendo transcrição: %v\n", err)
+		return 1
+	}
+	desc, err := resolveInlineOrFile("", *descFile)
+	if err != nil {
+		fmt.Fprintf(d.Stderr, "erro lendo descrição: %v\n", err)
+		return 1
 	}
 	var vInput videorea.VideoInput
 	if err := loadJSONFile(*inputPath, &vInput); err != nil {
 		fmt.Fprintf(d.Stderr, "erro lendo input: %v\n", err)
 		return 1
 	}
-	dossier, err := videorea.ExtractForensics(vInput, *transcript, "")
+	dossier, err := videorea.ExtractForensics(vInput, text, desc)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro extraindo forense: %v\n", err)
 		return 1
@@ -91,9 +103,21 @@ func runForensics(args []string, d Deps) int {
 	return saveJSONOutput(dossier, *out, d)
 }
 
+func resolveInlineOrFile(inline, path string) (string, error) {
+	if strings.TrimSpace(path) == "" {
+		return inline, nil
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
 func runCurate(args []string, d Deps) int {
 	fs := newFlags("video-rea curate", d)
 	dossierPath := fs.String("dossier", "", "arquivo do dossie")
+	name := fs.String("name", "", "nome canônico do pipeline (slug legoloop-*)")
 	out := fs.String("out", "", "arquivo de saida da curadoria")
 	if err := fs.Parse(args); err != nil || *dossierPath == "" {
 		fmt.Fprintf(d.Stderr, "erro: --dossier é obrigatório\n")
@@ -108,6 +132,9 @@ func runCurate(args []string, d Deps) int {
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro na curadoria: %v\n", err)
 		return 1
+	}
+	if canonical := strings.TrimSpace(*name); canonical != "" {
+		report.SuggestedName = canonical
 	}
 	return saveJSONOutput(report, *out, d)
 }
