@@ -3,6 +3,7 @@
 ## 7.1 A Armadilha da Entrega Fechada
 
 A imensa maioria das ferramentas de inteligência artificial comercializadas para criadores comete um erro fatal de fluxo de trabalho: elas entregam um único arquivo MP4 compactado. Se o criador discordar de um corte, quiser ajustar o volume de uma palavra ou trocar uma cor em um cartão gráfico, ele enfrenta duas opções ruins:
+
 1. Reenviar o vídeo para a nuvem, esperar a fila de processamento e torcer para o modelo acertar;
 2. Importar o MP4 achatado em um editor e tentar recortar sobre uma imagem já compactada, onde a trilha musical e a voz estão misturadas e inseparáveis.
 

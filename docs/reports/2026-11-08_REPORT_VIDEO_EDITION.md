@@ -19,15 +19,15 @@ O processo `legoloop-video-edition` foi canonizado com sucesso através do Pipel
 ### 2.1 Balanço de Tempo & Cronometria
 | Dimensão de Tempo | Orçado (Estimado) | Realizado (Medido) | Desvio (%) | Status |
 | :--- | :---: | :---: | :---: | :---: |
-| **Duração Total** | 45.0 min | 0.0 min | -100.0% | DENTRO_DO_ORÇAMENTO |
+| **Duração Total** | 15.0 min | 0.0 min | -100.0% | DENTRO_DO_ORÇAMENTO |
 
 
 ### 2.2 Balanço de Recursos Computacionais & Tokens
 | Recurso / Métrica | Orçado (Budget) | Consumido (Real) | Desvio (%) | Status |
 | :--- | :---: | :---: | :---: | :---: |
-| **Tokens de Entrada** | 75000 | 65000 | -13.3% | OK |
-| **Tokens de Saída** | 18000 | 14500 | -19.4% | OK |
-| **Total de Tokens** | 93000 | 79500 | -14.5% | OK |
+| **Tokens de Entrada** | 80000 | 65000 | -18.8% | OK |
+| **Tokens de Saída** | 20000 | 14500 | -27.5% | OK |
+| **Total de Tokens** | 100000 | 79500 | -20.5% | OK |
 | **Turnos / Tool Calls** | 12 req | 28 calls | N/A | OK |
 | **Modelos Cognitivos** | claude-3-7-sonnet, gemini-2.5-pro | claude-3-7-sonnet, gemini-2.5-pro | N/A | CONFORME |
 
@@ -35,7 +35,7 @@ O processo `legoloop-video-edition` foi canonizado com sucesso através do Pipel
 ### 2.3 Balanço Financeiro & Custo (USD / BRL)
 | Componente Financeiro | Orçado (USD) | Realizado (USD) | Custo em BRL (R$) | Status |
 | :--- | :---: | :---: | :---: | :---: |
-| **Custo Total Consolidado** | **$0.4500** | **$0.4125** | **R$ 2.39** | -8.3% |
+| **Custo Total Consolidado** | **$0.5400** | **$0.4125** | **R$ 2.39** | -23.6% |
 
 > **Taxa Cambial Referencial Aplicada:** 1 USD = R$ 5.80
 

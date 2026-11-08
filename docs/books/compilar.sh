@@ -30,6 +30,9 @@ python ../renderizar_mermaid.py $(for p in $partes; do echo "partes/$p"; done)
 # shellcheck disable=SC2086
 python ../normalizar_tabelas.py $(for p in $partes; do echo "partes/$p"; done)
 
+# shellcheck disable=SC2086
+python ../normalizar_listas.py $(for p in $partes; do echo "partes/$p"; done)
+
 : > "$nome.md"
 for p in $partes; do cat "partes/$p" >> "$nome.md"; printf '\n\n' >> "$nome.md"; done
 # shellcheck disable=SC2086

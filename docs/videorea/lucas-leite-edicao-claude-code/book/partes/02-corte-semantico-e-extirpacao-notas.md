@@ -24,6 +24,7 @@ Cada sentença gerada pelo Whisper Local é formatada em um contrato de dados JS
 ```
 
 O modelo cognitivo (LLM) avalia as sentenças com base em coerência narrativa, eliminando:
+
 * Repetições gagas (*"então nós... então nós vamos..."*);
 * Falsos inícios de raciocínio descartados pelo orador;
 * Pausas excessivas entre ideias desconectadas.
@@ -44,6 +45,7 @@ O nó `n03_decisao_cortes` implementa uma máquina de estados semântica projeta
 
 ### Padrões Canônicos de Detecção de Notas
 O analisador semântico busca gatilhos textuais e modulações de prosódia como:
+
 1. **Marcadores de Abertura:** *"nota de edição:"*, *"corta isso"*, *"editor, atenção:"*, *"errei, recomeçando de..."*, *"deixa eu refazer essa frase"*;
 2. **Marcadores de Fechamento:** *"fim da nota"*, *"valeu"*, *"voltando em 3, 2, 1"*, *"recomeçando agora"*;
 3. **Pausas de Hesitação:** Silêncios anormais superiores a 1.2 segundos acompanhados de mudança abrupta no tom do locutor.

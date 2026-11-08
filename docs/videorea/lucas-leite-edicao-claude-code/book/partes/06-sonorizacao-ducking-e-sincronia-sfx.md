@@ -39,6 +39,7 @@ ffmpeg -i voz_limpa.wav -i trilha_fundo.mp3 -filter_complex \
 ```
 
 ### Parâmetros Recomendados de Calibração:
+
 * **Atenuação da Trilha sob Fala:** `-18dB` (garante que a voz permaneça nítida e dominante);
 * **Ataque (*Attack*):** `40ms` (a música abaixa rapidamente assim que a primeira sílaba soa);
 * **Liberação (*Release*):** `250ms` (a música retorna suavemente após o término da frase, sem oscilações bruscas de volume nos pequenos respiros);

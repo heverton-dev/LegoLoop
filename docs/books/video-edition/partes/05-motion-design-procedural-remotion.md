@@ -3,6 +3,7 @@
 ## 5.1 O Fim dos Templates Monolíticos do After Effects
 
 A edição comercial tradicional depende fortemente de pacotes de motion graphics pré-renderizados comprados em bancos de mídia (Envato Elements, Motion Array). Esses templates apresentam limitações severas:
+
 * Exigem máquinas potentes para rodar instâncias pesadas do Adobe After Effects;
 * Qualquer alteração de uma única linha de texto obriga o editor a abrir um arquivo `.aep` complexo e renderizar novamente em tempo real;
 * Dificuldade crônica de versionamento: arquivos binários de projeto não aceitam controle de versão via Git (`git diff`).

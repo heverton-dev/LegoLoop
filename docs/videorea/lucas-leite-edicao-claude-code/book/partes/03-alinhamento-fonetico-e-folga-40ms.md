@@ -19,6 +19,7 @@ Para eliminar definitivamente esse problema, o método de Lucas Leite institui a
 $$T_{\text{corte\_início}} = T_{\text{palavra\_início}} - 0.040\text{ s}$$
 
 Essa pequena janela temporal é suficiente para capturar:
+
 1. O ruído suave da abertura dos lábios ou dentes do locutor;
 2. A respiração preparatória imediata que confere naturalidade orgânica à fala;
 3. O ataque transitório completo da forma de onda da primeira sílaba.

@@ -5,6 +5,7 @@
 A produção de conteúdo audiovisual em escala enfrenta um gargalo histórico: a pós-produção manual. Em produções faladas (aulas, podcasts, tutoriais de tecnologia, vídeos corporativos), um editor profissional gasta em média de 3 a 5 horas para cada 15 minutos de vídeo finalizado. 
 
 A maior parte desse tempo não é gasta em decisões criativas de alto nível, mas em tarefas puramente mecânicas:
+
 * Ouvir repetições de frases geradas por erros do apresentador;
 * Cortar pausas de respiração mortas e silêncios constrangedores;
 * Identificar quando o locutor fala *"corta isso aqui"* ou *"vou recomeçar"* (as chamadas notas de edição);
@@ -57,6 +58,7 @@ O pilar mais importante da metodologia de Lucas Leite reside na separação estr
 Para garantir que a manipulação pesada de mídia nunca polua o repositório Git ou o workspace do usuário, o pipeline impõe que todo arquivo intermediário (áudio WAV de 48kHz extraído, arquivos JSON de alinhamento fonético, frames de OCR e renders temporários de animação) resida exclusivamente dentro da pasta temporária e efêmera `scratch/`.
 
 Apenas três artefatos finais nobres são projetados no diretório `dist/`:
+
 1. `dist/timeline.fcpxml` (Linha do tempo aberta editável);
 2. `dist/render_final.mp4` (Render de visualização broadcast em 1080p60);
 3. `dist/manifest_final.json` (Certificado criptográfico de execução com telemetria).

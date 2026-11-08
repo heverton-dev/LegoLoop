@@ -73,6 +73,7 @@ O LegoLoop resolve este dilema através de três leis fundamentais:
 A produção de conteúdo audiovisual em escala enfrenta um gargalo histórico: a pós-produção manual. Em produções faladas (aulas, podcasts, tutoriais de tecnologia, vídeos corporativos), um editor profissional gasta em média de 3 a 5 horas para cada 15 minutos de vídeo finalizado. 
 
 A maior parte desse tempo não é gasta em decisões criativas de alto nível, mas em tarefas puramente mecânicas:
+
 * Ouvir repetições de frases geradas por erros do apresentador;
 * Cortar pausas de respiração mortas e silêncios constrangedores;
 * Identificar quando o locutor fala *"corta isso aqui"* ou *"vou recomeçar"* (as chamadas notas de edição);
@@ -125,6 +126,7 @@ O pilar mais importante da metodologia de Lucas Leite reside na separação estr
 Para garantir que a manipulação pesada de mídia nunca polua o repositório Git ou o workspace do usuário, o pipeline impõe que todo arquivo intermediário (áudio WAV de 48kHz extraído, arquivos JSON de alinhamento fonético, frames de OCR e renders temporários de animação) resida exclusivamente dentro da pasta temporária e efêmera `scratch/`.
 
 Apenas três artefatos finais nobres são projetados no diretório `dist/`:
+
 1. `dist/timeline.fcpxml` (Linha do tempo aberta editável);
 2. `dist/render_final.mp4` (Render de visualização broadcast em 1080p60);
 3. `dist/manifest_final.json` (Certificado criptográfico de execução com telemetria).
@@ -156,6 +158,7 @@ Cada sentença gerada pelo Whisper Local é formatada em um contrato de dados JS
 ```
 
 O modelo cognitivo (LLM) avalia as sentenças com base em coerência narrativa, eliminando:
+
 * Repetições gagas (*"então nós... então nós vamos..."*);
 * Falsos inícios de raciocínio descartados pelo orador;
 * Pausas excessivas entre ideias desconectadas.
@@ -176,6 +179,7 @@ O nó `n03_decisao_cortes` implementa uma máquina de estados semântica projeta
 
 ### Padrões Canônicos de Detecção de Notas
 O analisador semântico busca gatilhos textuais e modulações de prosódia como:
+
 1. **Marcadores de Abertura:** *"nota de edição:"*, *"corta isso"*, *"editor, atenção:"*, *"errei, recomeçando de..."*, *"deixa eu refazer essa frase"*;
 2. **Marcadores de Fechamento:** *"fim da nota"*, *"valeu"*, *"voltando em 3, 2, 1"*, *"recomeçando agora"*;
 3. **Pausas de Hesitação:** Silêncios anormais superiores a 1.2 segundos acompanhados de mudança abrupta no tom do locutor.
@@ -220,6 +224,7 @@ Para eliminar definitivamente esse problema, o método de Lucas Leite institui a
 $$T_{\text{corte\_início}} = T_{\text{palavra\_início}} - 0.040\text{ s}$$
 
 Essa pequena janela temporal é suficiente para capturar:
+
 1. O ruído suave da abertura dos lábios ou dentes do locutor;
 2. A respiração preparatória imediata que confere naturalidade orgânica à fala;
 3. O ataque transitório completo da forma de onda da primeira sílaba.
@@ -315,6 +320,7 @@ def calcular_enquadramento_camera(frame, face_box, landmarks, largura_alvo=1920,
 ## 5.1 O Fim dos Templates Monolíticos do After Effects
 
 A edição comercial tradicional depende fortemente de pacotes de motion graphics pré-renderizados comprados em bancos de mídia (Envato Elements, Motion Array). Esses templates apresentam limitações severas:
+
 * Exigem máquinas potentes para rodar instâncias pesadas do Adobe After Effects;
 * Qualquer alteração de uma única linha de texto obriga o editor a abrir um arquivo `.aep` complexo e renderizar novamente em tempo real;
 * Dificuldade crônica de versionamento: arquivos binários de projeto não aceitam controle de versão via Git (`git diff`).
@@ -429,6 +435,7 @@ ffmpeg -i voz_limpa.wav -i trilha_fundo.mp3 -filter_complex \
 ```
 
 ### Parâmetros Recomendados de Calibração:
+
 * **Atenuação da Trilha sob Fala:** `-18dB` (garante que a voz permaneça nítida e dominante);
 * **Ataque (*Attack*):** `40ms` (a música abaixa rapidamente assim que a primeira sílaba soa);
 * **Liberação (*Release*):** `250ms` (a música retorna suavemente após o término da frase, sem oscilações bruscas de volume nos pequenos respiros);
@@ -440,6 +447,7 @@ ffmpeg -i voz_limpa.wav -i trilha_fundo.mp3 -filter_complex \
 ## 7.1 A Armadilha da Entrega Fechada
 
 A imensa maioria das ferramentas de inteligência artificial comercializadas para criadores comete um erro fatal de fluxo de trabalho: elas entregam um único arquivo MP4 compactado. Se o criador discordar de um corte, quiser ajustar o volume de uma palavra ou trocar uma cor em um cartão gráfico, ele enfrenta duas opções ruins:
+
 1. Reenviar o vídeo para a nuvem, esperar a fila de processamento e torcer para o modelo acertar;
 2. Importar o MP4 achatado em um editor e tentar recortar sobre uma imagem já compactada, onde a trilha musical e a voz estão misturadas e inseparáveis.
 
