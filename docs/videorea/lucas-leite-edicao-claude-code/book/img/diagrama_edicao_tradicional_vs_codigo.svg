@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 400" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font-family: system-ui, -apple-system, sans-serif; font-size: 20px; font-weight: 800; fill: #0f172a; }
+      .subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; fill: #64748b; }
+      .card { fill: #ffffff; stroke-width: 1.5; rx: 10px; }
+      .card-title { font-family: system-ui, -apple-system, sans-serif; font-size: 15px; font-weight: 800; }
+      .card-desc { font-family: system-ui, -apple-system, sans-serif; font-size: 12px; fill: #475569; }
+      .pill { font-family: system-ui, -apple-system, monospace; font-size: 11px; font-weight: 700; text-anchor: middle; rx: 4px; }
+    </style>
+  </defs>
+
+  <rect width="880" height="400" class="bg" rx="12" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="40" y="42" class="title">Edição Tradicional (Monólito NLE) vs Video as Code (LegoLoop)</text>
+  <text x="40" y="66" class="subtitle">A transição da montagem manual em linha do tempo para a separação estrita de cognição e computação determinística</text>
+
+  <!-- LADO ESQUERDO: TRADICIONAL -->
+  <g transform="translate(40, 100)">
+    <rect width="380" height="260" class="card" stroke="#dc2626"/>
+    <rect x="0" y="0" width="380" height="6" fill="#dc2626" rx="3"/>
+    <text x="24" y="34" class="card-title" fill="#dc2626">Edição Tradicional / SaaS Fechado</text>
+    <text x="24" y="56" class="card-desc">Custo Recorrente: R$ 350 a R$ 600 / mês</text>
+    <line x1="24" y1="68" x2="356" y2="68" stroke="#fee2e2"/>
+    
+    <g transform="translate(24, 82)">
+      <text x="0" y="20" class="card-desc">• Decisão manual de corte frame a frame na timeline gráfica</text>
+      <text x="0" y="44" class="card-desc">• IA alucina ou calcula timestamps em segundos (erro cumulativo)</text>
+      <text x="0" y="68" class="card-desc">• Notas de gravação cortadas manualmente no cansaço</text>
+      <text x="0" y="92" class="card-desc">• Zoom estático deforma o enquadramento sobre gráficos</text>
+      <text x="0" y="116" class="card-desc">• Render destrutivo: qualquer ajuste exige novo export</text>
+    </g>
+    <rect x="24" y="215" width="332" height="26" fill="#fef2f2" rx="4"/>
+    <text x="190" y="232" class="pill" fill="#dc2626">ALTO CUSTO · DESGASTE MANUAL · RISCO DE SLOP</text>
+  </g>
+
+  <!-- LADO DIREITO: VIDEO AS CODE -->
+  <g transform="translate(460, 100)">
+    <rect width="380" height="260" class="card" stroke="#16a34a"/>
+    <rect x="0" y="0" width="380" height="6" fill="#16a34a" rx="3"/>
+    <text x="24" y="34" class="card-title" fill="#16a34a">Metodologia Soberana (LegoLoop)</text>
+    <text x="24" y="56" class="card-desc">Custo Soberano: R$ 0,00 / mês (Local e Aberto)</text>
+    <line x1="24" y1="68" x2="356" y2="68" stroke="#dcfce7"/>
+
+    <g transform="translate(24, 82)">
+      <text x="0" y="20" class="card-desc">• LLM opera sobre o texto (frases inteiras e semântica pura)</text>
+      <text x="0" y="44" class="card-desc">• Scripts matemáticos calculam frames e energia de áudio</text>
+      <text x="0" y="68" class="card-desc">• Extirpação automática de notas ("nota de edição... fim")</text>
+      <text x="0" y="92" class="card-desc">• Câmera YuNet pós-motion com olhos ancorados a 35% do topo</text>
+      <text x="0" y="116" class="card-desc">• Entrega híbrida não-destrutiva (FCPXML aberta + MP4 direto)</text>
+    </g>
+    <rect x="24" y="215" width="332" height="26" fill="#f0fdf4" rx="4"/>
+    <text x="190" y="232" class="pill" fill="#16a34a">CUSTO ZERO · DETERMINÍSTICO · TIMELINE ABERTA</text>
+  </g>
+</svg>

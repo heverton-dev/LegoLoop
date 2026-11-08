@@ -415,7 +415,17 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Skill Canônica Atualizada:** [`skills/legoloop-video-rea/SKILL.md`](skills/legoloop-video-rea/SKILL.md) atualizada para a versão 1.2.0 com o protocolo fatiado em 7 fases e regras negativas invioláveis.
   - **Binário Recompilado:** `bin/legoloop.exe` e `go install ./cmd/legoloop` atualizados no PATH.
 
+- **08/11/2026** — 🎬 **Conclusão do Laboratório Lucas Leite (`video-edition`), Refatoração TDD do Video-REA e Fechamento Canônico em 9 Etapas:**
+  - **Refatoração TDD do Motor & CLI Video-REA:** Eliminados todos os stubs no CLI `internal/cli/video_rea.go` e no `internal/videorea/bundle_factory.go`. O comando `legoloop video-rea` agora possui 7 subcomandos totalmente funcionais e desacoplados (`ingest`, `forensics`, `curate`, `gate`, `govern`, `book`, `run`) com suporte a `--repo` hermético e zero funções acima de 35 linhas (funclen limpo).
+  - **Template Mestre Universal de DAG (`TEMPLATE_DAG.json`):** Adicionado e embutido em `docs/templates/templates.go` e testado em `templates_test.go`, servindo de matriz canônica para qualquer DAG futuro no ecossistema (5 camadas, suporte a routing `auto` com `combo`, isolamento e stop-gates).
+  - **Materialização da Skill Canônica Universal (`legoloop-video-edition`):** Criada em `skills/legoloop-video-edition/SKILL.md` (e espelho em `docs/videorea/lucas-leite-edicao-claude-code/skill/SKILL.md`), distribuída no cofre do sistema (`~/.aidd/canonical`) e nos harnesses ativos (`.gemini`, etc.) com todas as regras dos 13 guias autorais de Lucas Leite.
+  - **Base de Conhecimento Autoral (Manual + Livro LegoPress):**
+    - Manual Operacional gerado em `docs/manuals/2026-11-08_MANUAL_FUNCAO_video-edition_LEGOLOOP.md`.
+    - Livro Didático LegoPress gerado em `docs/books/video-edition/` e `docs/videorea/lucas-leite-edicao-claude-code/book/`, contendo manifesto `livro.json` e 10 capítulos modulares em `partes/` dissecando o método de edição por código.
+  - **Fechamento Canônico Determinístico (`legoloop fechar`):** Executada a esteira de 9 etapas determinísticas (`legoloop fechar video-edition --tempo-min 45 --tokens-in 75000 --tokens-out 18000 --custo-usd 0.45`), compilando o relatório oficial em `docs/reports/2026-11-08_REPORT_VIDEO_EDITION.md` com balanço financeiro auditável (Custo real: $0.4125 / R$ 2,39 vs orçado $0.4500).
+  - **Homologação:** 100% dos testes unitários e de integração verdes, binário `bin/legoloop.exe` e executável no PATH atualizados.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `docs/livros-loops-autores` — 14 skills canônicas universais, pipelines audiovisuais integrados (`legoloop-canal-redc`, `legoloop-video-motion`, `legoloop-video-master` e `legoloop-video-rea` com Fase 1 de Matriz Original e Adoção Soberana), motor LegoPress blindado com diagramas 300 DPI e tabelas com quebra inteligente sem sobreposição.
+- **Status da Branch:** `docs/livros-loops-autores` — 15 skills canônicas universais, pipelines audiovisuais integrados (`legoloop-canal-redc`, `legoloop-video-motion`, `legoloop-video-master`, `legoloop-video-rea` e `legoloop-video-edition`), motor LegoPress blindado e esteira de fechamento canônico 100% funcional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
 - **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/` e `AGENTS.md`.

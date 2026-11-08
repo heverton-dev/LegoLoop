@@ -1,0 +1,23 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Pipeline Canônico de Edição Audiovisual Assistida por IA",
+  "nome_base": "2026-11-08_PIPELINE-VIDEO-EDITION",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao-edicao-codigo.md",
+    "02-corte-semantico-e-extirpacao-notas.md",
+    "03-alinhamento-fonetico-e-folga-40ms.md",
+    "04-camera-inteligente-yunet-e-eye-level.md",
+    "05-motion-design-procedural-remotion.md",
+    "06-sonorizacao-ducking-e-sincronia-sfx.md",
+    "07-entrega-hibrida-fcpxml-e-mp4.md",
+    "08-arquitetura-dag-e-stopgates.md",
+    "09-operacao-e-telemetria-soberana.md",
+    "10-conclusao-e-proximos-passos.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "video-edition-v1.0.0",
+  "ultima_compilacao": "2026-11-08"
+}

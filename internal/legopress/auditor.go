@@ -10,7 +10,23 @@ import (
 const pyAuditScript = `
 import sys, json, fitz
 doc = fitz.open(sys.argv[1])
-orphan = [i+1 for i, p in enumerate(doc) if len([l for l in p.get_text().splitlines() if l.strip()]) < 15 and i+1 not in [1, 2]]
+orphan = []
+for i, p in enumerate(doc):
+    p_num = i + 1
+    if p_num in [1, 2]:
+        continue
+    txt = p.get_text()
+    lines = [l for l in txt.splitlines() if l.strip()]
+    is_part = any(k in txt for k in ['Parte I', 'Parte II', 'Parte III', 'Parte IV', 'Parte V', 'Sumário'])
+    has_media = len(p.get_images()) > 0 or len(p.get_drawings()) > 5
+    if len(lines) < 15 and not (is_part or has_media):
+        next_is_part = False
+        if i + 1 < len(doc):
+            next_txt = doc[i+1].get_text()
+            next_is_part = any(k in next_txt for k in ['Parte I', 'Parte II', 'Parte III', 'Parte IV', 'Parte V']) and len([l for l in next_txt.splitlines() if l.strip()]) < 5
+        if not next_is_part:
+            orphan.append(p_num)
+
 broken = []
 for i, p in enumerate(doc):
     for b in p.get_text("blocks"):

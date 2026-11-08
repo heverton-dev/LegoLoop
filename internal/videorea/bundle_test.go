@@ -78,6 +78,8 @@ func TestTargetBundleMaterializeAndProject(t *testing.T) {
 	// 2. Verificar arquivos essenciais no bundle
 	filesToCheck := []string{
 		filepath.Join(bundle.BookDir, "livro.json"),
+		filepath.Join(bundle.BookDir, "partes", "00-frontmatter.md"),
+		filepath.Join(bundle.BookDir, "partes", "01-fundacao.md"),
 		filepath.Join(bundle.LoopDir, "pipeline.dag.json"),
 		filepath.Join(bundle.LoopDir, "fixture_3s.mp4"),
 		filepath.Join(bundle.SkillDir, "SKILL.md"),
@@ -98,5 +100,10 @@ func TestTargetBundleMaterializeAndProject(t *testing.T) {
 	canonicalSkill := filepath.Join(tempRoot, "skills", slug, "SKILL.md")
 	if _, err := os.Stat(canonicalSkill); os.IsNotExist(err) {
 		t.Errorf("projeção canônica da Skill não encontrada: %s", canonicalSkill)
+	}
+
+	canonicalBook := filepath.Join(tempRoot, "docs", "books", slug, "livro.json")
+	if _, err := os.Stat(canonicalBook); os.IsNotExist(err) {
+		t.Errorf("projeção canônica do Livro não encontrada: %s", canonicalBook)
 	}
 }

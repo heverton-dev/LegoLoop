@@ -66,8 +66,106 @@ func writeLocalGovernance(b *TargetBundle, r *CurationReport) error {
 }
 
 func writeLocalBook(b *TargetBundle, r *CurationReport) error {
-	bookJSON := fmt.Sprintf(`{"nome_base": %q, "titulo": %q}`, b.Slug, r.SuggestedName)
-	return os.WriteFile(filepath.Join(b.BookDir, "livro.json"), []byte(bookJSON), 0o644)
+	partesDir := filepath.Join(b.BookDir, "partes")
+	if err := os.MkdirAll(partesDir, 0o755); err != nil {
+		return err
+	}
+	if err := writeBookParts(partesDir, b.Slug, r); err != nil {
+		return err
+	}
+	return writeBookManifest(b.BookDir, b.Slug, r)
+}
+
+func writeBookParts(partesDir, slug string, r *CurationReport) error {
+	parts := map[string]string{
+		"00-frontmatter.md":         buildBookFrontmatter(slug, r),
+		"01-fundacao.md":            buildBookFundacao(slug, r),
+		"02-matriz-original.md":     buildBookMatriz(r),
+		"03-guias-autorais.md":      buildBookGuias(slug),
+		"04-arquitetura-dag.md":     buildBookDAG(slug),
+		"05-operacao-e-execucao.md": buildBookOperacao(slug),
+	}
+	for filename, content := range parts {
+		if err := os.WriteFile(filepath.Join(partesDir, filename), []byte(content), 0o644); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func writeBookManifest(bookDir, slug string, r *CurationReport) error {
+	manifest := fmt.Sprintf(`{
+  "versao_manifesto": "1.0",
+  "titulo": "Pipeline Canônico de %s",
+  "nome_base": %q,
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-fundacao.md",
+    "02-matriz-original.md",
+    "03-guias-autorais.md",
+    "04-arquitetura-dag.md",
+    "05-operacao-e-execucao.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": %q,
+  "ultima_compilacao": "2026-11-08"
+}
+`, r.SuggestedName, slug, slug)
+	return os.WriteFile(filepath.Join(bookDir, "livro.json"), []byte(manifest), 0o644)
+}
+
+func buildBookFrontmatter(slug string, r *CurationReport) string {
+	return fmt.Sprintf(`---
+title: "Pipeline Canônico de %s"
+subtitle: "Engenharia Reversa Audiovisual e Governança Soberana LegoLoop"
+author:
+  - Ecossistema LegoLoop
+date: "08/11/2026"
+lang: pt-BR
+institute: "LegoLoop Foundation"
+eyebrow: "MANUAL OPERACIONAL DIDÁTICO · VIDEO AS CODE"
+cover-title: "%s"
+cover-accent: "Engenharia Reversa e Adoção Soberana"
+cover-caption: "LIVRO DIDÁTICO LEGOPRESS"
+---
+# Introdução
+Manual técnico do pipeline %s compilado pelo ecossistema LegoLoop.
+`, r.SuggestedName, slug, slug)
+}
+
+func buildBookFundacao(slug string, r *CurationReport) string {
+	return fmt.Sprintf(`# 1. Fundação e Princípios Soberanos
+Este volume documenta a engenharia reversa metódica do processo %s.
+Custo Original Identificado: %s.
+Custo Soberano LegoLoop: %s.
+`, slug, r.OriginalCost, r.SovereignCost)
+}
+
+func buildBookMatriz(r *CurationReport) string {
+	return fmt.Sprintf(`# 2. Matriz Original e Substituições
+Substituições identificadas na curadoria:
+%v
+`, r.Replacements)
+}
+
+func buildBookGuias(slug string) string {
+	return fmt.Sprintf(`# 3. Guias Autorais e Metodologia
+Detalhamento dos princípios de edição, sincronia e governança estrita de %s.
+`, slug)
+}
+
+func buildBookDAG(slug string) string {
+	return fmt.Sprintf(`# 4. Arquitetura do Pipeline DAG
+Estrutura topológica, isolamento em scratch e stop-gates de revisão humana para %s.
+`, slug)
+}
+
+func buildBookOperacao(slug string) string {
+	return fmt.Sprintf(`# 5. Operação e Execução
+Comandos de execução via CLI legoloop, triggers cognitivos e telemetria de produção.
+`)
 }
 
 func writeLocalLoop(b *TargetBundle, r *CurationReport) error {
@@ -80,30 +178,60 @@ func writeLocalLoop(b *TargetBundle, r *CurationReport) error {
 }
 
 func writeLocalSkill(b *TargetBundle, r *CurationReport) error {
-	skillMD := fmt.Sprintf("---\nname: %s\ndescription: Skill de %s\n---\n# %s\n", b.Slug, r.SuggestedName, b.Slug)
+	skillMD := fmt.Sprintf(`---
+name: %s
+description: Use quando precisar executar ou orquestrar o pipeline %s no ecossistema LegoLoop.
+tags: [audiovisual, video-rea, pipeline, soberano]
+---
+# Skill Universal: %s
+
+## Visão Geral
+Pipeline operacional gerado via engenharia reversa com governança LegoLoop v2.2.0.
+
+## Comandos e Triggers
+- Chat: /legoloop-%s
+- CLI: legoloop run %s
+`, b.Slug, r.SuggestedName, b.Slug, b.Slug, b.Slug)
 	return os.WriteFile(filepath.Join(b.SkillDir, "SKILL.md"), []byte(skillMD), 0o644)
 }
 
 func projectCanonical(b *TargetBundle, repoRoot string) error {
-	loopDest := filepath.Join(repoRoot, "loops", b.Slug)
-	if err := os.MkdirAll(loopDest, 0o755); err != nil {
+	if err := copyFile(filepath.Join(b.LoopDir, "pipeline.dag.json"), filepath.Join(repoRoot, "loops", b.Slug, "pipeline.dag.json")); err != nil {
 		return err
 	}
-	dagSrc, err := os.ReadFile(filepath.Join(b.LoopDir, "pipeline.dag.json"))
-	if err != nil {
+	if err := copyFile(filepath.Join(b.SkillDir, "SKILL.md"), filepath.Join(repoRoot, "skills", b.Slug, "SKILL.md")); err != nil {
 		return err
 	}
-	if err := os.WriteFile(filepath.Join(loopDest, "pipeline.dag.json"), dagSrc, 0o644); err != nil {
-		return err
-	}
+	return projectCanonicalBook(b.BookDir, filepath.Join(repoRoot, "docs", "books", b.Slug))
+}
 
-	skillDest := filepath.Join(repoRoot, "skills", b.Slug)
-	if err := os.MkdirAll(skillDest, 0o755); err != nil {
+func copyFile(src, dst string) error {
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		return err
 	}
-	skillSrc, err := os.ReadFile(filepath.Join(b.SkillDir, "SKILL.md"))
+	data, err := os.ReadFile(src)
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join(skillDest, "SKILL.md"), skillSrc, 0o644)
+	return os.WriteFile(dst, data, 0o644)
+}
+
+func projectCanonicalBook(srcDir, dstDir string) error {
+	if err := copyFile(filepath.Join(srcDir, "livro.json"), filepath.Join(dstDir, "livro.json")); err != nil {
+		return err
+	}
+	srcPartes := filepath.Join(srcDir, "partes")
+	dstPartes := filepath.Join(dstDir, "partes")
+	entries, err := os.ReadDir(srcPartes)
+	if err != nil {
+		return nil
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			if err := copyFile(filepath.Join(srcPartes, entry.Name()), filepath.Join(dstPartes, entry.Name())); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
