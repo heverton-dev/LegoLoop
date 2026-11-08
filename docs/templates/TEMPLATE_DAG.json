@@ -1,0 +1,141 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "name": "{{DAG_NAME}}",
+  "version": "2.2.0",
+  "description": "{{DAG_DESCRIPTION}}",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "node_01_ingestao",
+      "type": "script",
+      "command": [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        "Test-Path var.input_artifact"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "source": "var.input_artifact"
+      },
+      "output": {
+        "artifact": "output/ingestion_manifest.json",
+        "gate": "file_exists('output/ingestion_manifest.json')"
+      }
+    },
+    {
+      "id": "node_02_cognicao",
+      "type": "skill",
+      "ref": "skills/aidd-spec",
+      "depends_on": [
+        "node_01_ingestao"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "manifest": "file('output/ingestion_manifest.json')"
+      },
+      "output": {
+        "artifact": "output/spec_processed.json",
+        "gate": "file_exists('output/spec_processed.json')"
+      }
+    },
+    {
+      "id": "node_03_subprocesso",
+      "type": "subloop",
+      "ref": "video-motion",
+      "depends_on": [
+        "node_02_cognicao"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast"
+      },
+      "timeout_sec": 900,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "spec": "file('output/spec_processed.json')"
+      },
+      "output": {
+        "artifact": "output/subloop_result.json",
+        "sub_artifact": "dist/bundle_manifest.json",
+        "gate": "file_exists('output/subloop_result.json')"
+      }
+    },
+    {
+      "id": "node_04_sg_aprovacao",
+      "type": "stop_gate",
+      "depends_on": [
+        "node_03_subprocesso"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "inputs": {
+        "result": "file('output/subloop_result.json')"
+      },
+      "output": {
+        "artifact": "output/approved_checkpoint.json",
+        "gate": "file_exists('output/subloop_result.json') && prompt('Aprovar resultado para entrega final?')"
+      }
+    },
+    {
+      "id": "node_05_entrega_final",
+      "type": "script",
+      "command": [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        "Copy-Item output/subloop_result.json dist/final_delivery.json"
+      ],
+      "depends_on": [
+        "node_04_sg_aprovacao"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 120,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "checkpoint": "file('output/approved_checkpoint.json')"
+      },
+      "output": {
+        "artifact": "dist/final_delivery.json",
+        "gate": "file_exists('dist/final_delivery.json')"
+      }
+    }
+  ]
+}

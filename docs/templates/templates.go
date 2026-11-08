@@ -32,6 +32,12 @@ var routeJSON []byte
 //go:embed TEMPLATE_REPORT.md
 var reportMD string
 
+//go:embed TEMPLATE_DAG_VIDEOREA.json
+var dagVideoReaJSON []byte
+
+//go:embed TEMPLATE_DAG.json
+var dagJSON []byte
+
 // Intent devolve o TEMPLATE_INTENT.md.
 func Intent() string { return intentMD }
 
@@ -46,6 +52,12 @@ func Route() []byte { return slices.Clone(routeJSON) }
 
 // Report devolve o TEMPLATE_REPORT.md.
 func Report() string { return reportMD }
+
+// DAGVideoREA devolve o TEMPLATE_DAG_VIDEOREA.json.
+func DAGVideoREA() []byte { return slices.Clone(dagVideoReaJSON) }
+
+// DAG devolve o TEMPLATE_DAG.json universal para qualquer pipeline.
+func DAG() []byte { return slices.Clone(dagJSON) }
 
 var (
 	headingRe  = regexp.MustCompile(`(?m)^## (\d+\. .+?)\s*$`)

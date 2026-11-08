@@ -254,3 +254,33 @@ func TestRoutingEffortValidation(t *testing.T) {
 		}
 	}
 }
+
+func TestParseStopGateNode(t *testing.T) {
+	src := `{
+		"name": "stopgate-test",
+		"version": "1.0.0",
+		"nodes": [
+			{
+				"id": "step_01",
+				"type": "script",
+				"command": ["go", "test", "./..."],
+				"routing": {"mode": "suggested", "model": "code-fast"},
+				"output": {"artifact": "res.txt", "gate": "exit_code == 0"}
+			},
+			{
+				"id": "sg_approval",
+				"type": "stop_gate",
+				"depends_on": ["step_01"],
+				"routing": {"mode": "suggested", "model": "code-pro"},
+				"output": {"artifact": "res_approved.txt", "gate": "file_exists('res.txt') && prompt('Aprovar etapa?')"}
+			}
+		]
+	}`
+	d, err := Parse([]byte(src))
+	if err != nil {
+		t.Fatalf("Parse com stop_gate falhou: %v", err)
+	}
+	if len(d.Nodes) != 2 || d.Nodes[1].Type != TypeStopGate {
+		t.Fatalf("nó stop_gate não decodificado: %+v", d.Nodes[1])
+	}
+}

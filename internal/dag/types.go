@@ -23,6 +23,8 @@ const (
 	TypeScript NodeType = "script"
 	// TypeSubloop referencia outro loop do acervo (Ref = nome do loop); roda isolado e estéril.
 	TypeSubloop NodeType = "subloop"
+	// TypeStopGate representa uma barreira de auditoria humana na esteira.
+	TypeStopGate NodeType = "stop_gate"
 )
 
 // ExecMode define onde a peça roda: na pasta do projeto ou em workspace isolado.

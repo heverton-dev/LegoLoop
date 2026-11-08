@@ -144,6 +144,64 @@ type GovernanceDraft struct {
 	GoldenFixture string `json:"golden_fixture"`
 }
 
+// IntentDraft representa o rascunho de intenção materializado.
+type IntentDraft struct {
+	Slug       string `json:"slug"`
+	IntentPath string `json:"intent_path"`
+	Confidence int    `json:"confidence"`
+	Status     string `json:"status"`
+}
+
+// SpecDraft representa o rascunho de especificação formal materializado.
+type SpecDraft struct {
+	Slug     string `json:"slug"`
+	SpecPath string `json:"spec_path"`
+	Status   string `json:"status"`
+}
+
+// ExecutionPackageDraft reúne os 4 artefatos técnicos consolidados da sub-etapa 3.4.
+type ExecutionPackageDraft struct {
+	Slug        string `json:"slug"`
+	PlanPath    string `json:"plan_path"`
+	RoutePath   string `json:"route_path"`
+	DAGPath     string `json:"dag_path"`
+	FixturePath string `json:"fixture_path"`
+}
+
+// PipelineStage enumera as fases sequenciais do pipeline de engenharia reversa.
+type PipelineStage string
+
+const (
+	StageForensics PipelineStage = "forensics"
+	StageCurated   PipelineStage = "curated"
+	StageInterview PipelineStage = "interview"
+	StageIntent    PipelineStage = "intent"
+	StageSpec      PipelineStage = "spec"
+	StageRoute     PipelineStage = "route"
+	StageDAG       PipelineStage = "dag_fixture"
+	StageSkill     PipelineStage = "skill"
+	StageBook      PipelineStage = "book"
+	StageClosed    PipelineStage = "closed"
+)
+
+// StopGateType identifica cada portão de auditoria humana obrigatório.
+type StopGateType string
+
+const (
+	GateCuradoria StopGateType = "SG_CURADORIA"
+	GateIntent    StopGateType = "SG_INTENT"
+	GateSpec      StopGateType = "SG_SPEC"
+	GateRoute     StopGateType = "SG_ROUTE"
+	GateDAG       StopGateType = "SG_DAG"
+)
+
+// StopGateDecision encapsula o veredito humano e observações de um portão.
+type StopGateDecision struct {
+	Gate     StopGateType `json:"gate"`
+	Approved bool         `json:"approved"`
+	Notes    string       `json:"notes,omitempty"`
+}
+
 // Validate valida a integridade do input de vídeo.
 func (v VideoInput) Validate() error {
 	if strings.TrimSpace(v.URL) == "" && strings.TrimSpace(v.RawVideo) == "" {

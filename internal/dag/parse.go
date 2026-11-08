@@ -140,6 +140,8 @@ func validateNode(n Node) error {
 		if !idRe.MatchString(n.Ref) {
 			return fmt.Errorf("subloop exige ref com o nome de um loop válido, recebeu %q", n.Ref)
 		}
+	case TypeStopGate:
+		// stop_gate não exige ref nem command; atua como barreira humana através de seu gate.
 	case "mcp":
 		return errors.New("nó MCP ainda não é executável: não há cliente MCP (fase 2)")
 	default:

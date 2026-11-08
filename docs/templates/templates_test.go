@@ -27,7 +27,7 @@ func read(t *testing.T, name string) []byte {
 }
 
 func TestJSONTemplatesAreValid(t *testing.T) {
-	for _, n := range []string{"TEMPLATE_ROUTE.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_MCP.json", "TEMPLATE_PIECE_LOOP.json"} {
+	for _, n := range []string{"TEMPLATE_ROUTE.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_MCP.json", "TEMPLATE_PIECE_LOOP.json", "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG.json"} {
 		var v any
 		if err := json.Unmarshal(read(t, n), &v); err != nil {
 			t.Errorf("%s não é JSON válido: %v", n, err)
@@ -40,7 +40,9 @@ func TestEmbeddedTemplatesMatchFiles(t *testing.T) {
 		templates.Spec() != string(read(t, "TEMPLATE_SPEC.md")) ||
 		templates.Plan() != string(read(t, "TEMPLATE_PLAN.md")) ||
 		templates.Report() != string(read(t, "TEMPLATE_REPORT.md")) ||
-		string(templates.Route()) != string(read(t, "TEMPLATE_ROUTE.json")) {
+		string(templates.Route()) != string(read(t, "TEMPLATE_ROUTE.json")) ||
+		string(templates.DAGVideoREA()) != string(read(t, "TEMPLATE_DAG_VIDEOREA.json")) ||
+		string(templates.DAG()) != string(read(t, "TEMPLATE_DAG.json")) {
 		t.Fatal("o conteúdo embutido diverge dos arquivos em docs/templates")
 	}
 }

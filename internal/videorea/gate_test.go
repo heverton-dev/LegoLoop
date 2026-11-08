@@ -31,3 +31,39 @@ func TestStopGateCuration(t *testing.T) {
 		t.Errorf("report.Approved deveria ser true apos o gate")
 	}
 }
+
+func TestEvaluateStopGateAllTypes(t *testing.T) {
+	gates := []videorea.StopGateType{
+		videorea.GateCuradoria,
+		videorea.GateIntent,
+		videorea.GateSpec,
+		videorea.GateRoute,
+		videorea.GateDAG,
+	}
+
+	for _, g := range gates {
+		// Rejeição
+		d, err := videorea.EvaluateStopGate(g, false, "ajustar threshold")
+		if err != videorea.ErrGateRejected {
+			t.Errorf("[%s] esperava ErrGateRejected, obteve: %v", g, err)
+		}
+		if d.Approved {
+			t.Errorf("[%s] Approved deveria ser false", g)
+		}
+		if d.Notes != "ajustar threshold" {
+			t.Errorf("[%s] Notes incorreto: %s", g, d.Notes)
+		}
+
+		// Aprovação
+		d, err = videorea.EvaluateStopGate(g, true, "aprovado pelo operador")
+		if err != nil {
+			t.Errorf("[%s] erro inesperado na aprovacao: %v", g, err)
+		}
+		if !d.Approved {
+			t.Errorf("[%s] Approved deveria ser true", g)
+		}
+		if d.Gate != g {
+			t.Errorf("[%s] Gate retornado incorreto: %s", g, d.Gate)
+		}
+	}
+}

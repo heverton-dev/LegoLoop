@@ -1,5 +1,5 @@
 {
-  "suggested_name": "legoloop-edicao-claude-code",
+  "suggested_name": "legoloop-video-edition",
   "original_cost": "R$ 329,00/mes (SaaS + Softwares Proprietarios)",
   "sovereign_cost": "R$ 0,00/mes",
   "replacements": {
@@ -264,5 +264,5 @@
       }
     }
   ],
-  "approved": false
+  "approved": true
 }
