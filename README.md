@@ -54,6 +54,7 @@ LegoLoop/
 │   ├── board/ · wave/       # Integração com GitHub Projects e planejador de ondas sem sobreposição
 │   ├── studio/              # Looping Studio (canvas + API REST + modais Novo Processo e Processos)
 │   ├── e2e/                 # Testes E2E herméticos dos cenários de referência (tag e2e)
+│   ├── redc/                # MEGA-PIPELINE REDC: engenharia reversa de canais, DNA, ganchos e Brand Swap
 │   ├── mcp/                 # Meta-MCP Router STDIO: bootstrap mínimo (2 tools), busca Lazy e catálogo de skills
 │   └── cli/                 # Comandos da CLI, alternador STE-PT e sincronização de harnesses
 ├── skills/                  # Skills canônicas embutidas no binário (//go:embed via skills/embed.go)
@@ -62,7 +63,8 @@ LegoLoop/
 │   ├── legoloop-listar/     # Inspeção de processos e vínculos (/legoloop-listar)
 │   ├── legoloop-refinar/    # Refinamento de passos (/legoloop-refinar)
 │   ├── legoloop-remover/    # Remoção e desvinculação (/legoloop-remover)
-│   └── legoloop-compor/     # Composição como sub-loop (/legoloop-compor)
+│   ├── legoloop-compor/     # Composição como sub-loop (/legoloop-compor)
+│   └── legoloop-canal-redc/ # Engenharia reversa profunda de canais e clonagem (/legoloop-canal-redc)
 ├── docs/
 │   ├── templates/           # Templates canônicos v2 (INTENT, SPEC, PLAN, ROUTE e peças) + conformidade em Go
 │   ├── manuals/             # Manuais operacionais dos 6 comandos principais
@@ -95,6 +97,12 @@ legoloop refinar "extrator-audio" --trocar aidd-rea
 legoloop remover "extrator-audio" --dry-run
 legoloop compor "esteira-master" "extrator-audio"
 legoloop instalar-skills                          # distribui as 10 skills canônicas nos harnesses
+
+# Mega-Pipelines Audiovisuais & Engenharia Reversa de Canais
+legoloop canal redc <dir> --canal meu-canal --json   # analisa 100 vídeos e extrai Dossiê DNA
+legoloop canal gerar meu-canal --tema "Novo Tema"     # gera vídeo estrutural com Brand Swap
+legoloop video-motion                                # pipeline determinístico de edição e motion
+legoloop video-rea                                   # pipeline universal de engenharia reversa audiovisual
 
 # Execução e Studio Visual
 legoloop route --from Artifact:URL --to Artifact:Spec

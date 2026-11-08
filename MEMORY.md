@@ -379,6 +379,16 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Recompilação e Auditoria dos 9 Livros:** Todos os 9 livros do cofre (`video-master`, `video-motion`, `video-rea`, `legoloop`, `mega-pipeline`, `impeccable`, `osmani`, `pocock`, `verbos-bdd`) recompilados com sucesso.
   - **Qualidade & Homologação:** Testes Go de geometria e CLI 100% verdes (`internal/legopress` e `internal/cli`), `bin/legoloop.exe` recompilado e grafo semântico reindexado (14.336 nós e 40.924 arestas).
 
+- **07/11/2026** — 📡 **Mega-Pipeline REDC (Engenharia Reversa Profunda de Canais e Clonagem com Brand Swap):**
+  - **Demanda & Arquitetura:** Implementado o Mega-Pipeline de Engenharia Reversa Profunda de Canais (REDC), que disseca canais de redes sociais (YouTube, Instagram, TikTok, LinkedIn) e estrutura a produção de mídia em árvores autocontidas sob `docs/channels/<canal>/`.
+  - **Amostragem Inteligente (Lei de Pareto):** Tabulação e clustering dos 100 vídeos virais em `catalogo_videos.json`; extração aprofundada do DNA em `repc/` (tom de voz, arquétipo, cadência de corte a cada 2.5s, design tokens, motion tokens e matriz de ganchos virais) sobre a amostra ouro dos Top 15 vídeos de pico, economizando >80% de tokens.
+  - **Fábrica de Micro-Pipelines de Métodos:** Mapeamento de cada metodologia única dos vídeos em micro-pipelines canônicos (`pipeline.dag.json`) gravados em `docs/channels/<canal>/pipelines/`.
+  - **Motor de Brand Swap:** Pipeline de geração paramétrico que recebe qualquer tema autoral e injeta os tokens visuais e de tom da marca do usuário, preservando a retenção algorítmica comprovada em `docs/channels/<canal>/outputs/`.
+  - **Pacote Go `internal/redc` & CLI `legoloop canal`:** Módulos herméticos desenvolvidos sob TDD estrito com zero stubs e funções $\le 35$ linhas; comandos CLI `legoloop canal redc <dir> [--canal C] [--json]` e `legoloop canal gerar <slug> --tema "..." [--nome-marca M] [--cor-primaria C]`.
+  - **Grafo DAG & Skill Canônica:** Grafo acíclico `loops/legoloop-canal-redc/pipeline.dag.json` (4 nós, 3 camadas, 0 ciclos aprovado pelo validador), skill universal `skills/legoloop-canal-redc/SKILL.md` (vinculada a todos os harnesses via `legoloop instalar-skills`), manual `docs/manuals/2026-11-07_MANUAL_FUNCAO_CANAL_REDC_LEGOLOOP.md` e livro técnico em `docs/books/canal-redc/`.
+  - **Tríade de Governança e Telemetria:** [INTENT](docs/intents/2026-11-07_INTENT_CANAL_REDC.md) · [SPEC](docs/specs/2026-11-07_SPEC_CANAL_REDC.md) · [PLAN](docs/plans/2026-11-07_PLAN_CANAL_REDC.md) · [ROUTE](docs/routes/2026-11-07_ROUTE_CANAL_REDC.json) · [Relatório final](docs/reports/2026-11-07_REPORT_CANAL_REDC.md).
+  - **Homologação:** 100% dos pacotes verdes em `go test -count=1 ./...`, `go vet` limpo, `gofmt` limpo, binário fresco `bin/legoloop.exe` instalado no PATH.
+
 ## Estado Atual do Repositório
 - **Status da Branch:** `docs/livros-loops-autores` — 14 skills canônicas universais, pipelines audiovisuais integrados, motor LegoPress blindado com diagramas 300 DPI e tabelas com quebra inteligente sem sobreposição.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
