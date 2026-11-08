@@ -1,0 +1,18 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Pipeline Canônico video-001",
+  "nome_base": "video-001",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-fundacao.md",
+    "02-matriz-original.md",
+    "03-metodo-autoral.md",
+    "04-arquitetura-dag.md",
+    "05-operacao-e-limites.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "video-001",
+  "ultima_compilacao": "2026-11-08"
+}

@@ -1,0 +1,40 @@
+{
+  "video_url": "https://www.youtube.com/watch?v=J-S1JqGaY1s",
+  "platform": "youtube",
+  "title": "Automatizei a edição dos meus vídeos com Claude Code (passo a passo)",
+  "transcribed_text": "Chiara Costa mostra vídeos com animações feitos no Claude Code (Opus 5.5, esforço alto) com a skill HyperFrames (HeyGen) ou Remotion, renderizando HTML/JS em MP4. Narração com voz clonada no HeyGen, cenas realistas via conector Higgsfield (plano Plus) com imagem-base aprovada antes do vídeo, e edição de takes gravados guiada por roteiro segundo a segundo e vídeo de referência, consolidada numa skill reutilizável. Consumo declarado: 10% do limite do plano de R$ 100 por edição. Resultado: 76 mil views orgânicas. Transcrição completa em scratch/transcript.txt.",
+  "explicit_prompts": [
+    "Crie um vídeo de apresentação desse produto [pasta do produto]. Use motion graphics e mostre todo o seu potencial para produção de vídeo. (01:38)",
+    "Você fez tudo isso usando HyperFrames? (pergunta de confirmação do uso da skill, 03:58)",
+    "Estrutura: pedido no início + contexto necessário abaixo + referência visual de estilo (06:14)",
+    "Cena inicial com homem de 30 anos em cenário de trabalho no computador apresentando o problema; depois retoma a apresentação existente; gerar primeiro uma imagem-base para aprovação antes do vídeo (08:21)",
+    "Roteiro segundo a segundo, fala por fala + vídeo de referência de edição + pasta com takes gravados (10:03)"
+  ],
+  "hidden_prompts": [
+    "Planejar cena por cena e apresentar o plano antes de gerar, para correção prévia (10:48)",
+    "Regras de estilo e correções pedidas viram a skill reutilizável de edição (10:48)"
+  ],
+  "tools_identified": [
+    "Claude Code",
+    "Opus 5.5",
+    "HyperFrames (HeyGen)",
+    "Remotion",
+    "HeyGen (voz clonada)",
+    "ElevenLabs",
+    "Higgsfield (Plus; Kling, Seedance)",
+    "Node.js",
+    "FFmpeg",
+    "Python",
+    "whatships.com"
+  ],
+  "hidden_tools": [
+    "Transcrição de áudio com temporização via Python (03:27)",
+    "Renderização HTML/JS para MP4 via CLI"
+  ],
+  "ocr_findings": [],
+  "suggested_slugs": [
+    "chiara-costa-edicao-claude-code",
+    "edicao-hyperframes-claude"
+  ],
+  "notes": "OCR não executado: fluxo sem vídeo baixado, apenas metadados e legendas. Dossiê escrito manualmente a partir da transcrição (motor forensics do CLI retornou campos vazios)."
+}

@@ -1,0 +1,283 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "name": "video-001",
+  "version": "1.0.0",
+  "description": "Edição por roteiro com Whisper local, HyperFrames e FFmpeg. Parcial: nós n01-n03 (TICK-01.2).",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_extrair_audio",
+      "type": "script",
+      "command": [
+        "ffmpeg",
+        "-y",
+        "-i",
+        "docs/videorea/video-001/scratch/raw_video.mp4",
+        "-vn",
+        "-ar",
+        "16000",
+        "-ac",
+        "1",
+        "docs/videorea/video-001/scratch/audio.wav"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "video": "var.raw_video"
+      },
+      "output": {
+        "artifact": "docs/videorea/video-001/scratch/audio.wav",
+        "gate": "file_exists('docs/videorea/video-001/scratch/audio.wav')"
+      }
+    },
+    {
+      "id": "n02_transcrever",
+      "type": "script",
+      "command": [
+        "C:/Users/trcnologia/tools/whisper-cpp/Release/whisper-cli.exe",
+        "-m",
+        "C:/Users/trcnologia/.cache/whisper-models/ggml-small.bin",
+        "-f",
+        "docs/videorea/video-001/scratch/audio.wav",
+        "-l",
+        "pt",
+        "-ojf",
+        "-of",
+        "docs/videorea/video-001/scratch/audio"
+      ],
+      "depends_on": [
+        "n01_extrair_audio"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "audio": "file('docs/videorea/video-001/scratch/audio.wav')"
+      },
+      "output": {
+        "artifact": "docs/videorea/video-001/scratch/audio.json",
+        "gate": "file_exists('docs/videorea/video-001/scratch/audio.json')"
+      }
+    },
+    {
+      "id": "n03_alinhar_roteiro",
+      "type": "script",
+      "command": [
+        "python",
+        "-I",
+        "scripts/alinhar_roteiro.py",
+        "--roteiro",
+        "docs/videorea/video-001/scratch/roteiro.txt",
+        "--whisper",
+        "docs/videorea/video-001/scratch/audio.json",
+        "--out",
+        "docs/videorea/video-001/scratch/segmentos.json"
+      ],
+      "depends_on": [
+        "n02_transcrever"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 60,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "roteiro": "file('docs/videorea/video-001/scratch/roteiro.txt')"
+      },
+      "output": {
+        "artifact": "docs/videorea/video-001/scratch/segmentos.json",
+        "gate": "file_exists('docs/videorea/video-001/scratch/segmentos.json')"
+      }
+    },
+    {
+      "id": "n04_plano_cenas",
+      "type": "skill",
+      "ref": "skills/video-001",
+      "depends_on": [
+        "n03_alinhar_roteiro"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "segmentos": "file('docs/videorea/video-001/scratch/segmentos.json')"
+      },
+      "output": {
+        "artifact": "docs/videorea/video-001/scratch/plano.md",
+        "gate": "file_exists('docs/videorea/video-001/scratch/plano.md')"
+      }
+    },
+    {
+      "id": "n05_gate_plano",
+      "type": "stop_gate",
+      "depends_on": [
+        "n04_plano_cenas"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "inputs": {
+        "plano": "file('docs/videorea/video-001/scratch/plano.md')"
+      },
+      "output": {
+        "artifact": "docs/videorea/video-001/scratch/plano_aprovado.json",
+        "gate": "file_exists('docs/videorea/video-001/scratch/plano.md') && prompt('Aprovar plano de cenas antes de renderizar?')"
+      }
+    },
+    {
+      "id": "n06_renderizar_cenas",
+      "type": "script",
+      "command": [
+        "hyperframes",
+        "render",
+        "docs/videorea/video-001/scratch/projeto_hf",
+        "--format",
+        "webm",
+        "-o",
+        "docs/videorea/video-001/scratch/cenas/cenas.webm",
+        "-f",
+        "60",
+        "--quiet"
+      ],
+      "depends_on": [
+        "n05_gate_plano"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 900,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "projeto": "file('docs/videorea/video-001/scratch/projeto_hf/index.html')"
+      },
+      "output": {
+        "artifact": "docs/videorea/video-001/scratch/cenas/cenas.webm",
+        "gate": "file_exists('docs/videorea/video-001/scratch/cenas/cenas.webm')"
+      }
+    },
+    {
+      "id": "n07_montar",
+      "type": "script",
+      "command": [
+        "ffmpeg",
+        "-y",
+        "-i",
+        "docs/videorea/video-001/scratch/raw_video.mp4",
+        "-c:v",
+        "libvpx-vp9",
+        "-i",
+        "docs/videorea/video-001/scratch/cenas/cenas.webm",
+        "-filter_complex",
+        "[0:v]scale=1920:1080,fps=60[b];[1:v]scale=1920:1080,fps=60,format=yuva420p[o];[b][o]overlay=shortest=1[v]",
+        "-map",
+        "[v]",
+        "-map",
+        "0:a?",
+        "-c:v",
+        "libx264",
+        "-pix_fmt",
+        "yuv420p",
+        "-c:a",
+        "aac",
+        "docs/videorea/video-001/scratch/final.mp4"
+      ],
+      "depends_on": [
+        "n06_renderizar_cenas"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 900,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "video": "var.raw_video",
+        "cenas": "file('docs/videorea/video-001/scratch/cenas/cenas.webm')"
+      },
+      "output": {
+        "artifact": "docs/videorea/video-001/scratch/final.mp4",
+        "gate": "file_exists('docs/videorea/video-001/scratch/final.mp4')"
+      }
+    },
+    {
+      "id": "n08_verificar",
+      "type": "script",
+      "command": [
+        "python",
+        "-I",
+        "scripts/verificar_video.py",
+        "--video",
+        "docs/videorea/video-001/scratch/final.mp4",
+        "--duracao",
+        "3",
+        "--saida",
+        "docs/videorea/video-001/scratch/verificacao.json"
+      ],
+      "depends_on": [
+        "n07_montar"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 60,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "video": "file('docs/videorea/video-001/scratch/final.mp4')"
+      },
+      "output": {
+        "artifact": "docs/videorea/video-001/scratch/verificacao.json",
+        "gate": "file_exists('docs/videorea/video-001/scratch/verificacao.json')"
+      }
+    }
+  ]
+}
