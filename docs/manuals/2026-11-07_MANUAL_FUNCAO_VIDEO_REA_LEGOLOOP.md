@@ -15,7 +15,9 @@ A função **`legoloop-video-rea`** ingere URLs de vídeos (YouTube, Instagram R
 ### 1.1 Arquitetura de Target Workspace (`docs/videorea/<slug>/`)
 Cada vídeo analisado recebe um bundle autocontido para não poluir o repositório global:
 * `scratch/`: mídia bruta, áudio 48kHz e frames OCR (ignorado pelo `.gitignore`).
-* `dossier.json` & `curation.json`: evidências forenses e substituições aprovadas.
+* `dossier.json`: evidências forenses puras (transcrição, OCR, menções brutas).
+* `original_matrix.json`: **Matriz Original do Criador** (stack tecnológica original, ferramentas pagas vs. gratuitas explícitas e implícitas/vazadas capturadas por OCR).
+* `curation.json`: relatório de curadoria e soberania (substituição de peças pagas pela Matriz Tier Ouro e **adoção direta de peças gratuitas sem custo**).
 * `governance/`: Tríade ISO local (`INTENT.md`, `SPEC.md`, `PLAN.md`, `ROUTE.json`).
 * `book/`: Livro Didático LegoPress local (`livro.json`).
 * `loop/`: Grafo executável local (`pipeline.dag.json`) e fixture 3s.

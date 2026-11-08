@@ -397,6 +397,13 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Tríade ISO & Governança:** Criados `2026-11-08_INTENT_VIDEO_BUNDLE.md`, `2026-11-08_SPEC_VIDEO_BUNDLE.md`, `2026-11-08_PLAN_VIDEO_BUNDLE.md`, `2026-11-08_ROUTE_VIDEO_BUNDLE.json` e relatório de conclusão com telemetria em `2026-11-08_REPORT_VIDEO_BUNDLE.md`.
   - **Homologação:** Suítes `internal/videorea`, `internal/cli` e `docs/templates` 100% verdes, `gofmt -l` limpo, `go vet` limpo, binário fresco `bin/legoloop.exe` recompilado e instalado no PATH.
 
+- **08/11/2026** — 🧬 **Camada Intermediária de Matriz Original e Adoção Soberana de Peças Gratuitas:**
+  - **Demanda & Decisão:** Inserida a camada intermediária `OriginalMatrix` entre a Forense Bruta e a Curadoria no pipeline `legoloop-video-rea`. Permite auditoria comparativa entre a stack original do criador e o pipeline curado pelo LegoLoop.
+  - **Classificação Tríplice & Descoberta Implícita:** Suporte a ferramentas comerciais (SaaS pago), gratuitas explícitas (links/fala) e gratuitas implícitas/vazadas capturadas via OCR de alta velocidade (comandos de terminal `ffmpeg`, `pip`, scripts Python no editor, prompts visuais).
+  - **Política de Adoção sem Substituição:** Peças gratuitas não sofrem substituição arbitrária: são catalogadas como `AdoptedTools` no `CurationReport` e incorporadas diretamente ao pipeline local do usuário, preservando a gratuidade.
+  - **Engenharia & TDD em Go:** Criado `internal/videorea/original_matrix.go` e `original_matrix_test.go`; atualizados `types.go`, `curator.go`, `bundle.go` e `bundle_factory.go`. O artefato `original_matrix.json` passa a ser gerado dentro de `docs/videorea/<slug>/`.
+  - **Portões Mecânicos:** 100% dos testes verdes em `internal/videorea/...` e `internal/cli/...`, funclen $\le 35$ linhas, `gofmt -l` limpo, `go vet` limpo, binário `bin/legoloop.exe` recompilado e instalado no PATH.
+
 ## Estado Atual do Repositório
 - **Status da Branch:** `docs/livros-loops-autores` — 14 skills canônicas universais, pipelines audiovisuais integrados, motor LegoPress blindado com diagramas 300 DPI e tabelas com quebra inteligente sem sobreposição.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).

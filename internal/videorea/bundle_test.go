@@ -33,6 +33,9 @@ func TestTargetBundlePaths(t *testing.T) {
 	if bundle.LoopDir != filepath.Join(expectedBase, "loop") {
 		t.Errorf("LoopDir incorreto: %s", bundle.LoopDir)
 	}
+	if bundle.OriginalMatrixPath != filepath.Join(expectedBase, "original_matrix.json") {
+		t.Errorf("OriginalMatrixPath incorreto: %s", bundle.OriginalMatrixPath)
+	}
 	if bundle.SkillDir != filepath.Join(expectedBase, "skill") {
 		t.Errorf("SkillDir incorreto: %s", bundle.SkillDir)
 	}
@@ -78,6 +81,7 @@ func TestTargetBundleMaterializeAndProject(t *testing.T) {
 		filepath.Join(bundle.LoopDir, "pipeline.dag.json"),
 		filepath.Join(bundle.LoopDir, "fixture_3s.mp4"),
 		filepath.Join(bundle.SkillDir, "SKILL.md"),
+		bundle.OriginalMatrixPath,
 	}
 	for _, f := range filesToCheck {
 		if _, err := os.Stat(f); os.IsNotExist(err) {

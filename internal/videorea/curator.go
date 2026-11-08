@@ -20,30 +20,51 @@ func CurateAgainstMatrix(dossier *ForensicsDossier) (*CurationReport, error) {
 	if dossier == nil {
 		return nil, ErrEmptyDossier
 	}
+	orig, err := BuildOriginalMatrix(dossier)
+	if err != nil {
+		return nil, err
+	}
+	return CurateAgainstMatrixWithOriginal(dossier, orig)
+}
+
+// CurateAgainstMatrixWithOriginal realiza a curadoria considerando a Matriz Original do criador.
+func CurateAgainstMatrixWithOriginal(dossier *ForensicsDossier, orig *OriginalMatrix) (*CurationReport, error) {
+	if dossier == nil {
+		return nil, ErrEmptyDossier
+	}
 	replacements := make(map[string]string)
-	hasCommercial := false
-	for _, tool := range dossier.ToolsIdentified {
-		if subst, ok := knownReplacements[tool]; ok {
-			replacements[tool] = subst
-			hasCommercial = true
+	var adopted []OriginalTool
+	originalCost := "R$ 0,00/mes"
+
+	if orig != nil {
+		originalCost = orig.TotalMonthlyCost
+		for _, tool := range orig.Tools {
+			if tool.IsFree {
+				adopted = append(adopted, tool)
+				continue
+			}
+			if subst, ok := knownReplacements[tool.Name]; ok {
+				replacements[tool.Name] = subst
+			}
 		}
 	}
-	originalCost := "R$ 0,00/mes"
-	if hasCommercial {
-		originalCost = "R$ 180,00/mes (SaaS + Softwares Proprietários)"
-	}
-	suggested := SuggestCanonicalNames(dossier.Title)
+	return buildCurationReport(dossier.Title, originalCost, replacements, adopted), nil
+}
+
+func buildCurationReport(title, origCost string, repl map[string]string, adopted []OriginalTool) *CurationReport {
 	primaryName := "legoloop-video-pipeline"
+	suggested := SuggestCanonicalNames(title)
 	if len(suggested) > 0 {
 		primaryName = suggested[0]
 	}
 	return &CurationReport{
 		SuggestedName: primaryName,
-		OriginalCost:  originalCost,
+		OriginalCost:  origCost,
 		SovereignCost: "R$ 0,00/mes",
-		Replacements:  replacements,
+		Replacements:  repl,
+		AdoptedTools:  adopted,
 		Approved:      false,
-	}, nil
+	}
 }
 
 // SuggestCanonicalNames gera 3 opções de nomes padronizados com o prefixo legoloop-*.

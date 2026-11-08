@@ -24,7 +24,7 @@ suggested_model: sonnet
 * **Consumes (Entradas Obrigatórias):**
   - URL do vídeo ou caminho local de arquivo multimídia.
 * **Produces (Saídas Mecânicas):**
-  - Target Workspace isolado (`docs/videorea/<slug>/`) com camada volátil (`scratch/`), forense (`dossier.json`), curadoria (`curation.json`), governança local (`governance/`), livro didático (`book/`), pipeline (`loop/`) e skill (`skill/`).
+  - Target Workspace isolado (`docs/videorea/<slug>/`) com camada volátil (`scratch/`), forense (`dossier.json`), matriz original (`original_matrix.json`), curadoria (`curation.json`), governança local (`governance/`), livro didático (`book/`), pipeline (`loop/`) e skill (`skill/`).
   - Projeção canônica automática na raiz (`loops/<slug>/pipeline.dag.json` e `skills/<slug>/SKILL.md`).
   - Golden Fixture determinística de 3s (`testdata/fixture_3s.mp4`).
   - Livro Didático compilado pelo LegoPress (`docs/books/<slug>/`).

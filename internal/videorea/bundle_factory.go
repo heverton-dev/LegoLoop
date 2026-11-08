@@ -34,7 +34,15 @@ func writeBundleArtifacts(b *TargetBundle, r *CurationReport) error {
 	if err := writeLocalLoop(b, r); err != nil {
 		return err
 	}
+	if err := writeLocalOriginalMatrix(b, r); err != nil {
+		return err
+	}
 	return writeLocalSkill(b, r)
+}
+
+func writeLocalOriginalMatrix(b *TargetBundle, r *CurationReport) error {
+	content := fmt.Sprintf(`{"video_title": %q, "total_monthly_cost": %q, "tools": []}`, r.SuggestedName, r.OriginalCost)
+	return os.WriteFile(b.OriginalMatrixPath, []byte(content), 0o644)
 }
 
 func writeLocalGovernance(b *TargetBundle, r *CurationReport) error {

@@ -48,12 +48,43 @@ type ForensicsDossier struct {
 	SuggestedSlugs  []string `json:"suggested_slugs"`
 }
 
+// DetectionType categoriza o método de descoberta de uma ferramenta.
+type DetectionType string
+
+const (
+	DetectionExplicitMention  DetectionType = "explicit_mention"
+	DetectionExplicitLink     DetectionType = "explicit_link"
+	DetectionImplicitTerminal DetectionType = "implicit_terminal"
+	DetectionImplicitCode     DetectionType = "implicit_code"
+)
+
+// OriginalTool representa uma ferramenta ou script na stack original do autor.
+type OriginalTool struct {
+	Name                 string        `json:"name"`
+	Category             string        `json:"category"`
+	IsFree               bool          `json:"is_free"`
+	LicenseType          string        `json:"license_type"`
+	CostTier             string        `json:"cost_tier"`
+	Detection            DetectionType `json:"detection"`
+	SourceEvidence       string        `json:"source_evidence"`
+	ReconstructedSnippet string        `json:"reconstructed_snippet,omitempty"`
+}
+
+// OriginalMatrix consolida a stack tecnológica original do criador antes da curadoria.
+type OriginalMatrix struct {
+	VideoTitle       string         `json:"video_title"`
+	TotalMonthlyCost string         `json:"total_monthly_cost"`
+	Tools            []OriginalTool `json:"tools"`
+	OriginalSteps    []string       `json:"original_steps"`
+}
+
 // CurationReport consolida a curadoria contra o cofre e economia de soberania.
 type CurationReport struct {
 	SuggestedName string            `json:"suggested_name"`
 	OriginalCost  string            `json:"original_cost"`
 	SovereignCost string            `json:"sovereign_cost"`
 	Replacements  map[string]string `json:"replacements"`
+	AdoptedTools  []OriginalTool    `json:"adopted_tools,omitempty"`
 	Approved      bool              `json:"approved"`
 }
 
