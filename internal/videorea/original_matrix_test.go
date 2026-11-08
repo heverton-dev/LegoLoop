@@ -76,11 +76,80 @@ func TestCurateAgainstOriginalMatrix_AdoptsFreeTools(t *testing.T) {
 
 	var ffmpegAdopted bool
 	for _, tool := range report.AdoptedTools {
-		if tool.Name == "FFmpeg CLI" {
+		if tool.Adopted.Name == "FFmpeg CLI" {
 			ffmpegAdopted = true
 		}
 	}
 	if !ffmpegAdopted {
 		t.Error("esperava FFmpeg CLI adotado na lista de pecas gratuitas")
+	}
+}
+
+func TestLucasLeiteVideo_ForensicsAndOriginalMatrix(t *testing.T) {
+	dossier := &videorea.ForensicsDossier{
+		Title: "Como eu edito meus videos com Claude Code (fluxo completo)",
+		ToolsIdentified: []string{
+			"Claude", "Premiere", "Epidemic Sound", "HyperFrames", "YuNet", "WhisperX",
+		},
+		OCRFindings: []string{
+			"ver.py <pasta> status",
+			"ffmpeg -i raw.mp4 -vn audio.wav",
+		},
+		ExplicitPrompts: []string{"fluxo de edicao com o Claude Code"},
+	}
+
+	matrix, err := videorea.BuildOriginalMatrix(dossier)
+	if err != nil {
+		t.Fatalf("BuildOriginalMatrix falhou: %v", err)
+	}
+
+	freeCount := 0
+	paidCount := 0
+	for _, tool := range matrix.Tools {
+		if tool.IsFree {
+			freeCount++
+		} else {
+			paidCount++
+		}
+	}
+
+	if paidCount < 3 {
+		t.Errorf("esperava pelo menos 3 ferramentas comerciais pagas, obteve %d", paidCount)
+	}
+	if freeCount < 3 {
+		t.Errorf("esperava pelo menos 3 ferramentas gratuitas identificadas/adotadas, obteve %d", freeCount)
+	}
+
+	report, err := videorea.CurateAgainstMatrixWithOriginal(dossier, matrix)
+	if err != nil {
+		t.Fatalf("CurateAgainstMatrixWithOriginal falhou: %v", err)
+	}
+
+	if _, ok := report.Replacements["Epidemic Sound"]; !ok {
+		t.Error("esperava substituicao para Epidemic Sound")
+	}
+	if len(report.AdoptedTools) < 3 {
+		t.Errorf("esperava no minimo 3 ferramentas adotadas, obteve %d", len(report.AdoptedTools))
+	}
+
+	if len(report.SubstitutedTools) < 3 {
+		t.Errorf("esperava no minimo 3 ferramentas substituidas detalhadas, obteve %d", len(report.SubstitutedTools))
+	}
+	for _, sub := range report.SubstitutedTools {
+		if sub.Replacement.Tier == "" || sub.Replacement.Rationale == "" {
+			t.Errorf("ferramenta substituida %s sem Tier ou Rationale preenchidos", sub.Original.Name)
+		}
+		if sub.Diagnosis.FitStatus == "" || sub.Diagnosis.GoldStandard == "" || sub.Diagnosis.FitSolution == "" {
+			t.Errorf("ferramenta substituida %s sem Diagnosis ou FitSolution preenchidos", sub.Original.Name)
+		}
+	}
+
+	for _, adopted := range report.AdoptedTools {
+		if adopted.Adopted.Name == "" {
+			t.Errorf("ferramenta adotada sem nome no bloco adopted")
+		}
+		if adopted.Diagnosis.FitStatus == "" || adopted.Diagnosis.GoldStandard == "" || adopted.Diagnosis.FitSolution == "" {
+			t.Errorf("ferramenta adotada %s sem Diagnosis ou FitSolution completos", adopted.Adopted.Name)
+		}
 	}
 }

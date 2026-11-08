@@ -1,0 +1,35 @@
+{
+  "video_url": "https://www.youtube.com/watch?v=W7E7Ln0z6aY",
+  "platform": "youtube",
+  "title": "Como eu edito meus vídeos com Claude Code (fluxo completo)",
+  "transcribed_text": "Edicao de video com IA usando o Claude Code: o meu fluxo completo de edicao com IA, do bruto ao video pronto, em 8 etapas.\nNo final, uma skill gratuita pra voce criar o seu fluxo.\nFerramentas do video:\nClaude (assinatura Pro) + Claude Code\nWhisperX: transcricao gratuita com alinhamento de palavras\nHyperFrames: animacoes feitas com codigo HTML CSS GSAP\nYuNet: rastreio de rosto e deteccao facial local\nEpidemic Sound: efeitos sonoros e biblioteca musical\nAdobe Premiere: revisao em timeline com XML e FCPXML",
+  "explicit_prompts": [
+    "futuristic glass card UI"
+  ],
+  "hidden_prompts": [
+    "Abstract motion background, procedural wave displacement, 60fps clean loop"
+  ],
+  "tools_identified": [
+    "Premiere",
+    "Claude",
+    "Whisper",
+    "WhisperX",
+    "HyperFrames",
+    "YuNet",
+    "Epidemic Sound"
+  ],
+  "hidden_tools": [
+    "FFmpeg CLI"
+  ],
+  "ocr_findings": [
+    "ver.py \u003cpasta\u003e status",
+    "ver.py \u003cpasta\u003e cortes",
+    "ffmpeg -i raw.mp4 -vn audio.wav",
+    "pip install yt-dlp opencv-python hyperframes",
+    "git clone https://github.com/LeiteZ/fluxo-de-edicao ~/.claude/skills/fluxo-de-edicao"
+  ],
+  "suggested_slugs": [
+    "lucas-leite-edicao-claude-code",
+    "fluxo-de-edicao"
+  ]
+}

@@ -67,7 +67,42 @@ type OriginalTool struct {
 	CostTier             string        `json:"cost_tier"`
 	Detection            DetectionType `json:"detection"`
 	SourceEvidence       string        `json:"source_evidence"`
+	Timestamp            string        `json:"timestamp,omitempty"`
+	RepositoryURL        string        `json:"repository_url,omitempty"`
+	LocalArtifactPath    string        `json:"local_artifact_path,omitempty"`
 	ReconstructedSnippet string        `json:"reconstructed_snippet,omitempty"`
+}
+
+// SovereignReplacement detalha a peça soberana do cofre que substitui uma comercial.
+type SovereignReplacement struct {
+	Name      string `json:"name"`
+	Tier      string `json:"tier"`
+	Cost      string `json:"cost"`
+	License   string `json:"license"`
+	Rationale string `json:"rationale"`
+}
+
+// ToolDiagnosis consolida a situação e o encaixe real da ferramenta no sistema do operador.
+type ToolDiagnosis struct {
+	InstalledOnHost bool          `json:"installed_on_host"`
+	HostLocation    string        `json:"host_location,omitempty"`
+	FitStatus       LegoFitStatus `json:"fit_status"`
+	FitSolution     string        `json:"fit_solution"`
+	GoldStandard    string        `json:"gold_standard"`
+	InstallCommand  string        `json:"install_command,omitempty"`
+}
+
+// SubstitutedTool vincula a ferramenta proprietária original ao seu substituto e diagnóstico.
+type SubstitutedTool struct {
+	Original    OriginalTool         `json:"original"`
+	Replacement SovereignReplacement `json:"replacement"`
+	Diagnosis   ToolDiagnosis        `json:"diagnosis"`
+}
+
+// AdoptedTool vincula a ferramenta gratuita adotada ao seu diagnóstico no host do operador.
+type AdoptedTool struct {
+	Adopted   OriginalTool  `json:"adopted"`
+	Diagnosis ToolDiagnosis `json:"diagnosis"`
 }
 
 // OriginalMatrix consolida a stack tecnológica original do criador antes da curadoria.
@@ -78,14 +113,24 @@ type OriginalMatrix struct {
 	OriginalSteps    []string       `json:"original_steps"`
 }
 
+// LegoFitStatus qualifica o encaixe de uma ferramenta local contra as exigências do pipeline.
+type LegoFitStatus string
+
+const (
+	FitOuro           LegoFitStatus = "FIT_OURO"
+	FitFrouxoDefasado LegoFitStatus = "FIT_FROUXO_DEFASADO"
+	MissingAquisicao  LegoFitStatus = "MISSING_AQUISICAO"
+)
+
 // CurationReport consolida a curadoria contra o cofre e economia de soberania.
 type CurationReport struct {
-	SuggestedName string            `json:"suggested_name"`
-	OriginalCost  string            `json:"original_cost"`
-	SovereignCost string            `json:"sovereign_cost"`
-	Replacements  map[string]string `json:"replacements"`
-	AdoptedTools  []OriginalTool    `json:"adopted_tools,omitempty"`
-	Approved      bool              `json:"approved"`
+	SuggestedName    string            `json:"suggested_name"`
+	OriginalCost     string            `json:"original_cost"`
+	SovereignCost    string            `json:"sovereign_cost"`
+	Replacements     map[string]string `json:"replacements"`
+	SubstitutedTools []SubstitutedTool `json:"substituted_tools,omitempty"`
+	AdoptedTools     []AdoptedTool     `json:"adopted_tools,omitempty"`
+	Approved         bool              `json:"approved"`
 }
 
 // GovernanceDraft representa os arquivos gerados pela fábrica.

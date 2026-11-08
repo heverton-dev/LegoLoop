@@ -5,13 +5,20 @@ import (
 )
 
 var defaultCommercialCosts = map[string]string{
-	"Higgsfield":    "R$ 49,00/mes",
-	"Pika":          "R$ 59,00/mes",
-	"After Effects": "R$ 124,00/mes",
-	"Premiere":      "R$ 124,00/mes",
-	"CapCut":        "R$ 39,00/mes",
-	"Whisper":       "R$ 20,00/mes (API comercial)",
-	"Claude":        "R$ 110,00/mes (Pro)",
+	"Higgsfield":     "R$ 49,00/mes",
+	"Pika":           "R$ 59,00/mes",
+	"After Effects":  "R$ 124,00/mes",
+	"Premiere":       "R$ 124,00/mes",
+	"CapCut":         "R$ 39,00/mes",
+	"Whisper":        "R$ 20,00/mes (API comercial)",
+	"Claude":         "R$ 110,00/mes (Pro)",
+	"Epidemic Sound": "R$ 75,00/mes",
+}
+
+var defaultFreeTools = map[string]string{
+	"HyperFrames": "Framework Motion em Codigo (HTML/CSS/GSAP)",
+	"YuNet":       "Detector e Rastreio Facial Local (OpenCV)",
+	"WhisperX":    "Transcricao Local Alinhada por Palavra (Open Source)",
 }
 
 // BuildOriginalMatrix constrói a matriz tecnológica original antes da curadoria.
@@ -33,8 +40,7 @@ func BuildOriginalMatrix(dossier *ForensicsDossier) (*OriginalMatrix, error) {
 
 func populateIdentifiedTools(matrix *OriginalMatrix, tools []string) {
 	for _, toolName := range tools {
-		cost, isPaid := defaultCommercialCosts[toolName]
-		if isPaid {
+		if cost, isPaid := defaultCommercialCosts[toolName]; isPaid {
 			matrix.Tools = append(matrix.Tools, OriginalTool{
 				Name:           toolName,
 				Category:       "commercial_saas",
@@ -45,6 +51,19 @@ func populateIdentifiedTools(matrix *OriginalMatrix, tools []string) {
 				SourceEvidence: "Identificado no roteiro ou mencao verbal",
 			})
 			matrix.OriginalSteps = append(matrix.OriginalSteps, "Uso do servico proprietario "+toolName)
+			continue
+		}
+		if cat, isFree := defaultFreeTools[toolName]; isFree {
+			matrix.Tools = append(matrix.Tools, OriginalTool{
+				Name:           toolName,
+				Category:       cat,
+				IsFree:         true,
+				LicenseType:    "open_source_free",
+				CostTier:       "R$ 0,00 (Gratuito/Aberto)",
+				Detection:      DetectionExplicitMention,
+				SourceEvidence: "Disponibilizado ou mencionado gratuitamente pelo autor",
+			})
+			matrix.OriginalSteps = append(matrix.OriginalSteps, "Uso de ferramenta gratuita/aberta "+toolName)
 		}
 	}
 }
@@ -65,32 +84,42 @@ func populateImplicitOCRTools(matrix *OriginalMatrix, ocrFindings []string) {
 
 func parseImplicitToolFromFinding(finding string) *OriginalTool {
 	lower := strings.ToLower(finding)
-	switch {
-	case strings.Contains(lower, "ffmpeg"):
-		return &OriginalTool{
-			Name:                 "FFmpeg CLI",
-			Category:             "video_audio_processing",
-			IsFree:               true,
-			LicenseType:          "open_source_lgpl",
-			CostTier:             "R$ 0,00 (Gratuito/Aberto)",
-			Detection:            DetectionImplicitTerminal,
-			SourceEvidence:       "Comando detectado em frame de terminal",
-			ReconstructedSnippet: finding,
-		}
-	case strings.Contains(lower, "yt-dlp") || strings.Contains(lower, "pip install"):
-		return &OriginalTool{
-			Name:                 "Python / yt-dlp",
-			Category:             "media_downloader",
-			IsFree:               true,
-			LicenseType:          "open_source_unlicense",
-			CostTier:             "R$ 0,00 (Gratuito/Aberto)",
-			Detection:            DetectionImplicitTerminal,
-			SourceEvidence:       "Instalador pip detectado no terminal",
-			ReconstructedSnippet: finding,
-		}
-	default:
-		return nil
+	if tool := matchTerminalMediaTool(finding, lower); tool != nil {
+		return tool
 	}
+	if strings.Contains(lower, "ver.py") || strings.Contains(lower, ".py") {
+		return &OriginalTool{
+			Name:                 "Python Helper Scripts",
+			Category:             "automation_scripts",
+			IsFree:               true,
+			LicenseType:          "open_source_script",
+			CostTier:             "R$ 0,00 (Gratuito/Aberto)",
+			Detection:            DetectionImplicitCode,
+			SourceEvidence:       "Script local python detectado",
+			ReconstructedSnippet: finding,
+		}
+	}
+	return nil
+}
+
+func matchTerminalMediaTool(finding, lower string) *OriginalTool {
+	if strings.Contains(lower, "ffmpeg") {
+		return &OriginalTool{
+			Name: "FFmpeg CLI", Category: "video_audio_processing",
+			IsFree: true, LicenseType: "open_source_lgpl",
+			CostTier: "R$ 0,00 (Gratuito/Aberto)", Detection: DetectionImplicitTerminal,
+			SourceEvidence: "Comando detectado em frame de terminal", ReconstructedSnippet: finding,
+		}
+	}
+	if strings.Contains(lower, "yt-dlp") || strings.Contains(lower, "pip install") {
+		return &OriginalTool{
+			Name: "Python / yt-dlp", Category: "media_downloader",
+			IsFree: true, LicenseType: "open_source_unlicense",
+			CostTier: "R$ 0,00 (Gratuito/Aberto)", Detection: DetectionImplicitTerminal,
+			SourceEvidence: "Instalador pip detectado no terminal", ReconstructedSnippet: finding,
+		}
+	}
+	return nil
 }
 
 func calculateTotalCost(matrix *OriginalMatrix) {

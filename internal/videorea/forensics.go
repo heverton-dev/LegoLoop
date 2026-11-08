@@ -7,7 +7,11 @@ import (
 
 var (
 	promptPattern = regexp.MustCompile(`(?i)(?:prompt|use o prompt|comando)[:\s]+"([^"]+)"`)
-	toolKeywords  = []string{"Higgsfield", "Pika", "After Effects", "Premiere", "Claude", "Whisper", "Remotion", "CapCut"}
+	toolKeywords  = []string{
+		"Higgsfield", "Pika", "After Effects", "Premiere", "Claude",
+		"Whisper", "WhisperX", "Remotion", "CapCut", "HyperFrames",
+		"YuNet", "Epidemic Sound",
+	}
 )
 
 // ExtractForensics analisa o vídeo, transcrição e descrição extraindo evidências.
