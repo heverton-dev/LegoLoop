@@ -41,9 +41,10 @@
     "default_timeout_sec": 180,
     "rollback_on_failure": "abort_pipeline",
     "rollback_policy": {
-      "action": "abort_and_clean",
-      "git_strategy": "discard_uncommitted",
-      "preserve_artifacts": true
+      "action": "abort_and_pause",
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": true
     }
   },
   "nodes": [
@@ -68,6 +69,7 @@
         "docs/specs/2026-11-07_SPEC_LEGOLOOP_VIDEO_REA.md"
       ],
       "context_out": [
+        "internal/videorea/types.go",
         "internal/videorea/crawler.go",
         "internal/videorea/crawler_test.go"
       ],
@@ -363,7 +365,9 @@
         "subagents_allowed": false
       },
       "context_in": [
-        "internal/videorea/curator.go"
+        "internal/videorea/curator.go",
+        "internal/videorea/gate.go",
+        "internal/videorea/types.go"
       ],
       "context_out": [
         "internal/videorea/factory_bridge.go",
@@ -448,7 +452,11 @@
         "subagents_allowed": false
       },
       "context_in": [
-        "docs/books/_modelo_livro.typst"
+        "docs/books/_modelo_livro.typst",
+        "docs/specs/2026-11-07_SPEC_LEGOLOOP_VIDEO_REA.md",
+        "internal/videorea/types.go",
+        "internal/videorea/video_rea.go",
+        "internal/videorea/factory_bridge_test.go"
       ],
       "context_out": [
         "docs/books/video-rea/livro.json",
@@ -460,7 +468,7 @@
         "file": "internal/videorea/factory_bridge_test.go"
       },
       "verification": {
-        "test_command": "bash docs/books/compilar.sh video-rea",
+        "test_command": "go test -v ./internal/videorea -run TestVideoReaBookCompilation",
         "exit_code": 0
       },
       "limits": {

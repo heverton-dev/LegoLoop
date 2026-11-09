@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LegoLoop Spec Contract v1.0.0",
+  "description": "Contrato formal JSON Schema da especificação executável (LegoLoop N10)",
+  "type": "object",
+  "required": ["version", "theme", "acceptance_criteria"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "string" },
+    "date": { "type": "string" },
+    "theme": { "type": "string" },
+    "assumptions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "boundaries": {
+      "type": "object",
+      "properties": {
+        "always": { "type": "array", "items": { "type": "string" } },
+        "ask_first": { "type": "array", "items": { "type": "string" } },
+        "never": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "epic_id", "statement"],
+        "properties": {
+          "id": { "type": "string" },
+          "epic_id": { "type": "string" },
+          "statement": { "type": "string" },
+          "test_seam": { "type": "string" }
+        }
+      }
+    }
+  }
+}

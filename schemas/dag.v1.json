@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LegoLoop DAG Contract",
+  "description": "Contrato formal JSON Schema do pipeline.dag.json (LegoLoop N10)",
+  "type": "object",
+  "required": ["name", "nodes"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "version": { "type": "string" },
+    "date": { "type": "string" },
+    "upstream_signatures": { "type": "object" },
+    "execution_strategy": {
+      "type": "object",
+      "properties": {
+        "supervision_level": { "type": "string" },
+        "max_parallel_workers": { "type": "integer" },
+        "default_timeout_sec": { "type": "integer" },
+        "rollback_on_failure": { "type": "string" },
+        "rollback_policy": {
+          "type": "object",
+          "properties": {
+            "action": { "type": "string" },
+            "git_strategy": { "type": "string" },
+            "preserve_artifacts": { "type": "boolean" },
+            "commit_on_node_pass": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "trigger": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string", "enum": ["manual", "cron", "file_change", "loop_end"] },
+        "cron": { "type": "string" },
+        "path": { "type": "string" },
+        "loop": { "type": "string" }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "routing", "output"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,64}$" },
+          "name": { "type": "string" },
+          "type": { "type": "string", "enum": ["skill", "script", "subloop", "stop_gate", "unit_task"] },
+          "nature": { "type": "string", "enum": ["nano", "micro", "macro", "epic"] },
+          "cognitive_complexity": { "type": "string" },
+          "ref": { "type": "string" },
+          "depends_on": { "type": "array", "items": { "type": "string" } },
+          "dependencies": { "type": "array", "items": { "type": "string" } },
+          "command": { "type": "array", "items": { "type": "string" } },
+          "timeout_sec": { "type": "integer", "minimum": 0, "maximum": 86400 },
+          "routing": {
+            "type": "object",
+            "required": ["mode"],
+            "properties": {
+              "mode": { "type": "string", "enum": ["suggested", "manual", "auto"] },
+              "model": { "type": "string" },
+              "effort": { "type": "string", "enum": ["low", "medium", "high"] },
+              "fallback": { "type": "string" }
+            }
+          },
+          "context_in": { "type": "array", "items": { "type": "string" } },
+          "context_out": { "type": "array", "items": { "type": "string" } },
+          "inputs": { "type": "object" },
+          "output": {
+            "type": "object",
+            "required": ["artifact", "gate"],
+            "properties": {
+              "artifact": { "type": "string" },
+              "sub_artifact": { "type": "string" },
+              "schema": { "type": "string" },
+              "gate": { "type": "string" }
+            }
+          },
+          "execution": {
+            "type": "object",
+            "properties": {
+              "mode": { "type": "string", "enum": ["inline", "isolated"] }
+            }
+          },
+          "slots": { "type": "object" },
+          "stop_gate": { "type": ["object", "null"] }
+        }
+      }
+    }
+  }
+}

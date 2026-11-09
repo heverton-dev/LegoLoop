@@ -41,9 +41,10 @@
     "default_timeout_sec": 180,
     "rollback_on_failure": "abort_pipeline",
     "rollback_policy": {
-      "action": "abort_and_clean",
-      "git_strategy": "discard_uncommitted",
-      "preserve_artifacts": true
+      "action": "abort_and_pause",
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": true
     }
   },
   "nodes": [

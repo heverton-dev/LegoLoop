@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LegoLoop Route Contract v2.2.0",
+  "description": "Contrato formal JSON Schema do route.v2.json (LegoLoop N10)",
+  "type": "object",
+  "required": ["template_version", "name", "version", "nodes"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "template_version": { "type": "string" },
+    "name": { "type": "string" },
+    "version": { "type": "string" },
+    "date": { "type": "string" },
+    "session_id": { "type": "string" },
+    "intent_ref": { "type": "string" },
+    "spec_ref": { "type": "string" },
+    "plan_ref": { "type": "string" },
+    "initiative_ref": { "type": ["string", "null"] },
+    "upstream_signatures": { "type": "object" },
+    "execution_strategy": {
+      "type": "object",
+      "properties": {
+        "supervision_level": { "type": "string" },
+        "concurrency": { "type": "object" },
+        "default_isolation": { "type": "object" },
+        "max_parallel_workers": { "type": "integer" },
+        "tdd_enforced": { "type": "boolean" },
+        "default_timeout_sec": { "type": "integer" },
+        "rollback_on_failure": { "type": "string" },
+        "rollback_policy": {
+          "type": "object",
+          "properties": {
+            "action": { "type": "string" },
+            "git_strategy": { "type": "string" },
+            "preserve_artifacts": { "type": "boolean" },
+            "commit_on_node_pass": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "nature", "type", "routing", "output"],
+        "properties": {
+          "id": { "type": "string" },
+          "initiative_id": { "type": ["string", "null"] },
+          "epic_id": { "type": "string" },
+          "label": { "type": "string" },
+          "nature": { "type": "string", "enum": ["nano", "micro", "macro", "epic"] },
+          "type": { "type": "string" },
+          "ref": { "type": ["string", "null"] },
+          "status": { "type": "string" },
+          "execution_mode": { "type": "string" },
+          "isolation": { "type": "object" },
+          "timeout_sec": { "type": "integer" },
+          "token_budget": { "type": "object" },
+          "depends_on": { "type": "array", "items": { "type": "string" } },
+          "dependencies": { "type": "array", "items": { "type": "string" } },
+          "routing": { "type": "object" },
+          "tooling": { "type": "object" },
+          "inputs": { "type": "object" },
+          "context_in": { "type": "array", "items": { "type": "string" } },
+          "context_out": { "type": "array", "items": { "type": "string" } },
+          "spec_ref": { "type": "string" },
+          "test_target": { "type": "string" },
+          "test_seam": { "type": "object" },
+          "verification": { "type": "object" },
+          "output": { "type": "object" },
+          "stop_gate": { "type": ["object", "null"] }
+        }
+      }
+    },
+    "gates": { "type": "object" }
+  }
+}

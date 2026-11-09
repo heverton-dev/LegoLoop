@@ -473,7 +473,21 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
     - A Bíblia da Engenharia de Harness & AI-Driven Development: `docs/books/harness-engineering/2026-11-09_ENGENHARIA-DE-HARNESS.pdf` (30 páginas de alta densidade técnica sintetizando Addy Osmani, Matt Pocock, Lauren Tan e a anatomia das 5 Prisões Mecânicas).
   - **Recompilação e Instalação:** `bin/legoloop.exe` recompilado e instalado no PATH (`go install ./cmd/legoloop`). Relatório oficial emitido em `docs/reports/2026-11-09_REPORT_LEGOLOOP_CARTOON_SHORTS.md`.
 
+- **09/11/2026** — 🌐 **LegoLoop N10 Foundry: Protocolos Industriais de Missão Crítica & 6 Motores Globais de Fronteira:**
+  - **Saneamento Global (Wave 0):** Criação da pasta canônica `schemas/` (`dag.v1.json`, `route.v2.json`, `spec.v1.json`), implementação do validador semântico de proveniência de contexto em `internal/dag/provenance.go` (Anti-Fantasma FMEA-01/SYS-01), erradicação da política destrutiva `discard_uncommitted` em templates e consolidação de CLI.
+  - **Kernel Orchestrix & 7 Protocolos Industriais (Wave 1):** Disjuntor Jidoka Andon Cord em `internal/runner/retry.go` (limite estrito de 2 retries), escalonamento estruturado militar/aeroespacial em `internal/runner/sbar.go`, trava destrutiva em `internal/cli/icao.go` (ICAO Readback com confirmação `HEARBACK APPROVED`) e linter sintático ASD-STE100 em `internal/gate/ste100.go` ($\le 20$ palavras, zero hedging).
+  - **Os 6 Motores Globais de Fronteira N10 (Wave 2):**
+    - Motor I: `internal/runner/redteam_blueteam.go` bloqueia mutações de testes por Blue-Team (Anti-Reward Hacking).
+    - Motor II: `internal/runner/worktree.go` provê `MergeAST()` para fusão determinística via AST em isolamento efêmero.
+    - Motor III: `internal/brain/antibodies.go` provê `AntibodiesDB` com injeção de contexto preventivo por pacote.
+    - Motor IV: `internal/brain/speculative.go` implementa FinOps em cascata com hot-swap automático e enriquecimento de contexto negativo.
+    - Motor V: `internal/runner/telemetry.go` implementa `FlightRecord` OTel GenAI com cálculo de First-Pass Yield (FPY).
+    - Motor VI: `internal/videorea/fuzz_test.go` valida resiliência com 236k+ execuções de fuzzing nativo Go (`testing.F`) sem falhas.
+  - **Dupla Superfície Global (Wave 3):** `internal/cli/autopilot.go` com cartões de decisão para operadores leigos e `internal/legopress/double_surface.go` compilando simultaneamente *Edição de Engenharia* e *Edição Executiva*.
+  - **Fechamento Canônico:** Manual operacional em `docs/manuals/2026-11-09_MANUAL_FUNCAO_N10_FOUNDRY_HARNESS_LEGOLOOP.md`, Livro Didático em `docs/books/n10-foundry/`, Skill Canônica em `skills/legoloop-n10-foundry/SKILL.md`, DAG em `loops/legoloop-n10-foundry/` e relatório oficial em `docs/reports/2026-11-09_REPORT_N10_FOUNDRY_GLOBAL.md`.
+  - **Portões Mecânicos:** 100% PASS em `go test -count=1 ./...`, `go vet` limpo, `gofmt` vazio, `funclen` conforme e binário `bin/legoloop.exe` instalado no PATH.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `docs/livros-loops-autores` — 16 skills canônicas universais, pipelines audiovisuais integrados (`legoloop-canal-redc`, `legoloop-video-motion`, `legoloop-video-master`, `legoloop-video-rea`, `legoloop-video-edition` e `legoloop-cartoon-shorts`), motor LegoPress blindado e esteira de fechamento canônico 100% funcional.
+- **Status da Branch:** `docs/livros-loops-autores` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
-- **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/` e `AGENTS.md`.
+- **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/`, `schemas/` e `AGENTS.md`.

@@ -1,0 +1,7 @@
+{
+  "name": "legoloop-n10-foundry",
+  "version": "1.0.0",
+  "description": "Loop mestre da Fundição Autônoma de Software LegoLoop N10",
+  "author": "Ecossistema LegoLoop",
+  "entry_point": "pipeline.dag.json"
+}
