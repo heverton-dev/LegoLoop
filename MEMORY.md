@@ -455,7 +455,25 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Saneamento do Acervo de Loops & Enriquecimento Pleno:** Os 4 loops operacionais em `loops/` (`legoloop-fechar`, `legoloop-video-rea`, `legoloop-video-motion`, `legoloop-video-edition`) foram enriquecidos com seus contratos cognitivos completos (`nature`, `cognitive_complexity`, `isolation`, `token_budget`, `tooling`, `context_in`, `context_out`, `status`), espelhados em `docs/dags/` e auditados com paridade de hash SHA-256 idêntica.
   - **Portões Mecânicos:** 100% dos pacotes verdes em `go test -count=1 ./...`, `go vet` limpo, `gofmt` com saída vazia, `funclen <= 35` limpo e `go.mod` intacto. Binário fresco `bin/legoloop.exe` instalado no PATH.
 
+- **09/11/2026** — 🎬 **Engenharia Reversa Audiovisual & Pipeline Canônico `legoloop-cartoon-shorts` + Livro da Bíblia de Harness Engineering:**
+  - **Dissecação Forense Real do Alvo (`XUrllG_1qNk` - Ideias Artificiais):** Extração factual dos materiais oficiais fixados pelo autor nos comentários do YouTube para o workspace isolado `docs/videorea/legoloop-cartoon-shorts/`:
+    - Skill oficial `cartoon-audio-short` (14.9 KB, baseada no MIT `mromidev/claude-animated-shorts`).
+    - Kit completo descompactado `cartoon-short-kit.zip` (444 KB) contendo motor Three.js r160 (`paint.js`, `motion.js`, `roman.js`, `main.js`), Playwright headless Chromium e `timing.py`.
+    - Prompt oficial de narração expressiva do Google Docs com tags entre colchetes (`[reflexivo]`, `[animado]`, `[dá uma risadinha]`).
+  - **Soberania Absoluta (R$ 0,00/mês):** Substituição do Claude Pro ($20/mês) pelo 9Router Local e ElevenLabs comercial ($5 a $22/mês) pelo **Edge-TTS Neural Local (`pt-BR-AntonioNeural`)** sem custos recorrentes e sem rate-limits.
+  - **Implementação Go com TDD Estrito & Mutação (Zero Stubs):**
+    - `internal/videorea/script_engine.go` e `script_engine_test.go`: Geração de 10 ideias de curiosidades com gancho paradoxal e checagem factual (*Verdade ou Lenda*) no ritmo de 3.7 palavras/s.
+    - `internal/videorea/tts_edge.go` e `tts_edge_test.go`: Síntese Edge-TTS neural local com sanitização de tags e resiliência em caso de falha.
+    - `internal/videorea/cartoon_render.go` e `cartoon_render_test.go`: Composição de cenas em 1080x1920 a 30fps, muxing determinístico FFmpeg com trilha em -6 dB Gated RMS e síntese da Golden Fixture de 3 segundos (`fixture_3s.mp4`).
+    - `internal/cli/cartoon_shorts.go` e `cartoon_shorts_test.go`: Comando CLI nativo `legoloop cartoon-shorts` com suporte a `--theme`, `--duration`, `--voice`, `--dry-run` e `--out`.
+  - **Grafo DAG Validado:** `loops/legoloop-cartoon-shorts/pipeline.dag.json` (3 nós em camadas sem ciclos, auditado por `legoloop validate`).
+  - **Skill Canônica Universal:** `skills/legoloop-cartoon-shorts/SKILL.md` (e espelho em `docs/videorea/legoloop-cartoon-shorts/skill/SKILL.md`).
+  - **Produção Editorial LegoPress (2 Livros em PDF Compilados):**
+    - Livro do Processo: `docs/books/legoloop-cartoon-shorts/2026-11-09_PIPELINE-CARTOON-SHORTS.pdf` (250 KB).
+    - A Bíblia da Engenharia de Harness & AI-Driven Development: `docs/books/harness-engineering/2026-11-09_ENGENHARIA-DE-HARNESS.pdf` (30 páginas de alta densidade técnica sintetizando Addy Osmani, Matt Pocock, Lauren Tan e a anatomia das 5 Prisões Mecânicas).
+  - **Recompilação e Instalação:** `bin/legoloop.exe` recompilado e instalado no PATH (`go install ./cmd/legoloop`). Relatório oficial emitido em `docs/reports/2026-11-09_REPORT_LEGOLOOP_CARTOON_SHORTS.md`.
+
 ## Estado Atual do Repositório
-- **Status da Branch:** `docs/livros-loops-autores` — 15 skills canônicas universais, pipelines audiovisuais integrados (`legoloop-canal-redc`, `legoloop-video-motion`, `legoloop-video-master`, `legoloop-video-rea` e `legoloop-video-edition`), motor LegoPress blindado e esteira de fechamento canônico 100% funcional.
+- **Status da Branch:** `docs/livros-loops-autores` — 16 skills canônicas universais, pipelines audiovisuais integrados (`legoloop-canal-redc`, `legoloop-video-motion`, `legoloop-video-master`, `legoloop-video-rea`, `legoloop-video-edition` e `legoloop-cartoon-shorts`), motor LegoPress blindado e esteira de fechamento canônico 100% funcional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
 - **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/` e `AGENTS.md`.

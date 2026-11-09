@@ -1,0 +1,42 @@
+﻿{
+    "video_title":  "Essa skill pouco conhecida cria shorts virais com Claude (quase ninguém conhece).",
+    "total_monthly_cost":  "R$ 180,00 a R$ 250,00/mes",
+    "tools":  [
+                  {
+                      "name":  "Claude Desktop Pro (Skill cartoon-audio-short)",
+                      "category":  "commercial_saas",
+                      "is_free":  false,
+                      "license_type":  "proprietary_paid",
+                      "cost_tier":  "R$ 110,00/mes (Pro)",
+                      "detection":  "explicit_mention",
+                      "source_evidence":  "Uso da skill customizada cartoon-audio-short para geração de ideias e roteiro"
+                  },
+                  {
+                      "name":  "ElevenLabs (TTS Comercial)",
+                      "category":  "commercial_saas",
+                      "is_free":  false,
+                      "license_type":  "proprietary_paid",
+                      "cost_tier":  "R$ 40,00 a R$ 120,00/mes",
+                      "detection":  "explicit_mention",
+                      "source_evidence":  "Síntese de voz com prompts de emoção no ElevenLabs"
+                  },
+                  {
+                      "name":  "cartoon-short-kit (Three.js + Playwright + Python)",
+                      "category":  "open_source_adapted",
+                      "is_free":  true,
+                      "license_type":  "mit",
+                      "cost_tier":  "R$ 0,00",
+                      "detection":  "file_extraction",
+                      "source_evidence":  "Kit oficial com motor Three.js r160, toon.ts e scripts de renderização"
+                  }
+              ],
+    "original_steps":  [
+                           "1. Instalação da skill \u0027cartoon-audio-short\u0027 no Claude Desktop",
+                           "2. Geração de 10 ideias de curiosidades com gancho paradoxal e checagem verdade/lenda",
+                           "3. Redação do roteiro com ritmo de 3.7 palavras/segundo",
+                           "4. Adição de tags de emoção [reflexivo], [animado] e geração de áudio no ElevenLabs",
+                           "5. Extração de estilo via artefato web do Claude",
+                           "6. Renderização frame a frame no Three.js via Playwright Chromium (SwiftShader CPU WebGL)",
+                           "7. Mixagem determinística de áudio com trilha a 50% (-6 dB Gated RMS) e muxing FFmpeg a 1080x1920"
+                       ]
+}

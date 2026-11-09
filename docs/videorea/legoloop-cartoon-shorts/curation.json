@@ -1,0 +1,136 @@
+{
+  "suggested_name": "legoloop-cartoon-shorts",
+  "video_title": "Essa skill pouco conhecida cria shorts virais com Claude (quase ninguém conhece).",
+  "original_cost": "R$ 180,00 a R$ 250,00/mes (Claude Pro + ElevenLabs Starter)",
+  "sovereign_cost": "R$ 0,00/mes",
+  "replacements": {
+    "Claude Desktop Pro (Skill cartoon-audio-short)": "9Router Local / Modelos Abertos Gratuitos + Skill Canônica LegoLoop",
+    "ElevenLabs (TTS Comercial)": "Edge-TTS Neural Local (pt-BR-AntonioNeural com tags de emoção)",
+    "Artefato Web Claude (Vu35wCnizwxo5qPEmTSckr)": "LegoLoop Studio Web (Painel de Processos + Preview Player)",
+    "Engine Three.js / Playwright (cartoon-short-kit)": "LegoLoop Local Canvas / Remotion / Three.js Headless Engine",
+    "Alinhamento Manual / DP": "LegoLoop Whisper & Timing Engine"
+  },
+  "substituted_tools": [
+    {
+      "original": {
+        "name": "Claude Desktop Pro (Skill cartoon-audio-short)",
+        "category": "commercial_saas",
+        "is_free": false,
+        "license_type": "proprietary_paid",
+        "cost_tier": "R$ 110,00/mes (Pro)",
+        "detection": "explicit_mention_and_download",
+        "source_evidence": "Skill 'cartoon-audio-short' (14.9 KB) disponibilizada pelo autor no Google Drive (ID 1gC2AZA8gpoodi6KjnStQ0rRVce3meNWO), derivada de github.com/mromidev/claude-animated-shorts"
+      },
+      "replacement": {
+        "name": "9Router Local / Modelos Abertos Gratuitos + Skill Canônica LegoLoop",
+        "tier": "Tier Ouro (LegoLoop)",
+        "cost": "R$ 0,00",
+        "license": "open_source_mit",
+        "rationale": "Geração das 10 ideias de curiosidade com gancho/twist e roteiro a 3.7 palavras/s via 9Router sem restrição de tokens ou custos fixos"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "9Router Gateway / agy harness",
+        "fit_status": "FIT_PERFEITO",
+        "fit_solution": "Já integrado no ecossistema LegoLoop",
+        "gold_standard": "9Router Local",
+        "install_command": "legoloop stept status"
+      }
+    },
+    {
+      "original": {
+        "name": "ElevenLabs (TTS Comercial)",
+        "category": "commercial_saas",
+        "is_free": false,
+        "license_type": "proprietary_paid",
+        "cost_tier": "R$ 40,00 a R$ 120,00/mes",
+        "detection": "explicit_mention_and_doc",
+        "source_evidence": "Documento Google Docs oficial com prompt de formatação de emoção com colchetes [reflexivo], [animado]"
+      },
+      "replacement": {
+        "name": "Edge-TTS Neural Local (pt-BR-AntonioNeural)",
+        "tier": "Tier Ouro (LegoLoop)",
+        "cost": "R$ 0,00",
+        "license": "open_source_mit",
+        "rationale": "Síntese neural sem custos e com alta expressividade em português brasileiro nativo"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "Python 3.14 (edge-tts 7.3.1)",
+        "fit_status": "FIT_PERFEITO",
+        "fit_solution": "Instalado e verificado no host local",
+        "gold_standard": "edge-tts --voice pt-BR-AntonioNeural",
+        "install_command": "pip install edge-tts"
+      }
+    },
+    {
+      "original": {
+        "name": "cartoon-short-kit (Three.js r160 + Playwright + Python)",
+        "category": "open_source_adapted",
+        "is_free": true,
+        "license_type": "mit",
+        "cost_tier": "R$ 0,00 (Kit disponibilizado pelo autor)",
+        "detection": "file_extraction",
+        "source_evidence": "Arquivo cartoon-short-kit.zip (444 KB) contendo engine/main.js, engine/paint.js, engine/motion.js, tools/render.mjs e tools/timing.py"
+      },
+      "replacement": {
+        "name": "LegoLoop Video-REA Engine / Video-Motion",
+        "tier": "Tier Ouro (LegoLoop)",
+        "cost": "R$ 0,00",
+        "license": "open_source_mit",
+        "rationale": "Adoção canônica do kit de renderização 3D/2D bean-head integrado diretamente no pipeline LegoLoop com execução determinística e testes TDD"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "docs/videorea/legoloop-cartoon-shorts/scratch/kit_descompactado/cartoon-short-kit",
+        "fit_status": "FIT_PERFEITO",
+        "fit_solution": "Descompactado e auditado no workspace local",
+        "gold_standard": "legoloop run legoloop-cartoon-shorts",
+        "install_command": "go build -o bin/legoloop.exe ./cmd/legoloop"
+      }
+    }
+  ],
+  "original_matrix": {
+    "video_title": "Essa skill pouco conhecida cria shorts virais com Claude (quase ninguém conhece).",
+    "total_monthly_cost": "R$ 180,00 a R$ 250,00/mes",
+    "tools": [
+      {
+        "name": "Claude Desktop Pro (Skill cartoon-audio-short)",
+        "category": "commercial_saas",
+        "is_free": false,
+        "license_type": "proprietary_paid",
+        "cost_tier": "R$ 110,00/mes (Pro)",
+        "detection": "explicit_mention",
+        "source_evidence": "Uso da skill customizada cartoon-audio-short para geração de ideias e roteiro"
+      },
+      {
+        "name": "ElevenLabs (TTS Comercial)",
+        "category": "commercial_saas",
+        "is_free": false,
+        "license_type": "proprietary_paid",
+        "cost_tier": "R$ 40,00 a R$ 120,00/mes",
+        "detection": "explicit_mention",
+        "source_evidence": "Síntese de voz com prompts de emoção no ElevenLabs"
+      },
+      {
+        "name": "cartoon-short-kit (Three.js + Playwright + Python)",
+        "category": "open_source_adapted",
+        "is_free": true,
+        "license_type": "mit",
+        "cost_tier": "R$ 0,00",
+        "detection": "file_extraction",
+        "source_evidence": "Kit oficial com motor Three.js r160, toon.ts e scripts de renderização"
+      }
+    ],
+    "original_steps": [
+      "1. Instalação da skill 'cartoon-audio-short' no Claude Desktop",
+      "2. Geração de 10 ideias de curiosidades com gancho paradoxal e checagem verdade/lenda",
+      "3. Redação do roteiro com ritmo de 3.7 palavras/segundo",
+      "4. Adição de tags de emoção [reflexivo], [animado] e geração de áudio no ElevenLabs",
+      "5. Extração de estilo via artefato web do Claude",
+      "6. Renderização frame a frame no Three.js via Playwright Chromium (SwiftShader CPU WebGL)",
+      "7. Mixagem determinística de áudio com trilha a 50% (-6 dB Gated RMS) e muxing FFmpeg a 1080x1920"
+    ]
+  },
+  "approved": true
+}

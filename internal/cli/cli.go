@@ -71,6 +71,7 @@ Comandos:
   video-capcut <subcomando> [opções]          pipeline soberano de edição talking-head com CapCut e FCPXML
   video-rea  <subcomando> [opções]             pipeline universal de engenharia reversa audiovisual
   canal      redc|gerar [opções]              pipeline REDC de canais e clonagem estrutural
+  cartoon-shorts --theme "<tema>" [opções]    pipeline soberano de geração de Cartoon Shorts (1080x1920)
   fechar     <slug> [--dry-run] [--skip-build] [--json]  cadeia determinística de 8 etapas de canonização e fechamento
   version
 `
@@ -88,7 +89,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"refinar": cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills,
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar,
-		"canal": cmdCanal,
+		"canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

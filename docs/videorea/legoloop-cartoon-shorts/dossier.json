@@ -1,0 +1,76 @@
+{
+  "video_url": "https://www.youtube.com/watch?v=XUrllG_1qNk",
+  "platform": "youtube",
+  "title": "Essa skill pouco conhecida cria shorts virais com Claude (quase ninguém conhece).",
+  "channel": "Ideias Artificiais (Leo)",
+  "duration": "15:45",
+  "skill_identified": {
+    "name": "cartoon-audio-short",
+    "slug": "legoloop-cartoon-shorts",
+    "origin_repository": "https://github.com/mromidev/claude-animated-shorts",
+    "drive_folder_id": "1frRlFTSyGrIHnSJYz5djqq7sgDHZKcng",
+    "kit_zip": "cartoon-short-kit.zip",
+    "description": "Criação de shorts verticais animados (1080x1920 a 30fps) no estilo cartoon 2D bean-head em mundo 3D com Three.js r160, toon.ts, iluminação estilisada, câmera cinemática contínua e áudio sincronizado."
+  },
+  "materials_found": {
+    "skill_md": "docs/videorea/legoloop-cartoon-shorts/scratch/SKILL_ORIGINAL_AUTOR.md",
+    "prompt_voz_doc": "docs/videorea/legoloop-cartoon-shorts/scratch/prompt_voz_autor.txt",
+    "system_artifact_url": "https://claude.ai/artifact/Vu35wCnizwxo5qPEmTSckr",
+    "code_kit_extracted": "docs/videorea/legoloop-cartoon-shorts/scratch/kit_descompactado/cartoon-short-kit"
+  },
+  "tools_identified": [
+    "Claude Desktop (Anthropic)",
+    "ElevenLabs (Text-to-Speech comercial)",
+    "Sistema Claude Artifact (Vu35wCnizwxo5qPEmTSckr)",
+    "Google Drive / Google Docs",
+    "Bloco de Notas / Notepad"
+  ],
+  "hidden_tools": [
+    "Node.js 22 (Playwright Chromium com SwiftShader CPU WebGL)",
+    "Three.js r160 (Renderizador 3D com Toon Materials, Normal/Depth pass e Ink Contract)",
+    "Python 3 (Numpy, Pillow, Whisper / ASR para timing.py)",
+    "FFmpeg (Muxing H.264 CRF 17, AAC, Limiter de Pico -1 dBFS, Loudness -14 LUFS)",
+    "mromidev/claude-animated-shorts (repositório base MIT de animação cartoon)"
+  ],
+  "explicit_prompts": [
+    {
+      "stage": "Stage 1 & 2: Geração de Ideias de Curiosidade",
+      "command": "/cartoon short <tema>",
+      "prompt_logic": "Oferece exatamente 10 ideias numeradas com: Título (5-8 palavras de alta curiosidade), Linha de Gancho (paradoxo afirmado como fato sem introdução), Reviravolta/Twist irônico na última linha, Por que anima bem (2-3 momentos visuais físicos) e Verificação Verdade ou Lenda (fato documentado vs folclore).",
+      "sample": "Tema: Minas Gerais -> Ideia escolhida: 'O Enigma do ET de Varginha: A noite em que Varginha viu algo'."
+    },
+    {
+      "stage": "Stage 3: Roteiro Viral (Ritmo 3.7 palavras/segundo)",
+      "structure": "1. Hook (fato absurdo imediato); 2. Setting (1-2 linhas concretas); 3. Escalation (2-4 beats de ceticismo e exagero); 4. Mystery/Pivot ('Mas quando...' / 'Você vê...'); 5. Twist final irônico.",
+      "length_budget": "20s ≈ 75 palavras | 30s ≈ 110 palavras | 60s ≈ 220 palavras"
+    },
+    {
+      "stage": "Diretiva de Emoção para TTS (Google Docs Oficial)",
+      "content": "Agora preciso que você prepare a narração acima para convertê-la em uma narração expressiva no ElevenLabs/TTS. Pegue o roteiro exato e adicione somente indicações curtas entre colchetes quando ajudarem na interpretação da voz. Exemplos: [reflexivo], [respira fundo], [pausa curta], [animado], Suavemente, [dá uma risadinha]. Regras: Não altere o roteiro, não reescreva frases, não sobrecarregue o texto."
+    },
+    {
+      "stage": "Prompt de Montagem Visual e Estilo",
+      "content": "Geração do código de animação contendo: proporção 9:16 vertical, personagens bean-head 2D (cards canvas 600x1000 com contornos plum), mundo 3D em Three.js com texturas pintadas (paint.js), câmera cinemática contínua (smootherstep glides sem estática por mais de 4 frames), iluminação por beats e mix de áudio a 50% (-6 dB gated RMS)."
+    }
+  ],
+  "hidden_prompts": [
+    "Estratégia de Token Economy: Uso de duas contas gratuitas do Claude (Conta 1 para intake, pesquisa e roteiro; Conta 2 para geração do código de animação e render)",
+    "Alinhamento Forçado de Timing: Algoritmo de programação dinâmica (DP) que casa sílabas com duração e penaliza quebras de frase no meio de segmentos de fala quando não há Whisper disponível",
+    "Ink Contract e Normal/Depth Pass: Shader customizado que detecta saltos de profundidade e vincos de normais em Three.js para desenhar contornos de tinta preta estilo história em quadrinhos",
+    "Gated RMS Audio Lock: Regra estrita de mixagem onde música e SFX ficam travados em -6 dB em relação à voz, sem compressão destrutiva, garantindo inteligibilidade máxima"
+  ],
+  "ocr_findings": [
+    "00:45: Vídeo final do ET de Varginha com caixa d'água de disco voador em 3D e personagem de cabeça oval",
+    "02:43: Painel de configurações do Claude Desktop exibindo a aba 'Skills' e upload de 'SKILL.md'",
+    "03:34: Autocomplete do Claude mostrando comando '/cartoon short' com prompt de tema",
+    "05:01: Bloco de notas com prompt de formatação de emoção com colchetes",
+    "05:41: Interface do ElevenLabs com voz 'Adam' / 'Daniel' e controle de stability em 50%",
+    "07:14: Artefato do Claude aberto como Web App para drop de vídeo de referência e extração de paleta",
+    "09:14: Claude gerando blocos de código JavaScript e Three.js para o short"
+  ],
+  "suggested_slugs": [
+    "legoloop-cartoon-shorts",
+    "cartoon-shorts-claude",
+    "cartoon-audio-short"
+  ]
+}
