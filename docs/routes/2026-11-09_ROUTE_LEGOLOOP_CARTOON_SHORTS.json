@@ -55,7 +55,7 @@
       "nature": "micro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "EXECUTED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -100,7 +100,7 @@
       "nature": "micro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "EXECUTED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -147,7 +147,7 @@
       "nature": "macro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "EXECUTED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
@@ -194,7 +194,7 @@
       "nature": "micro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "EXECUTED",
       "execution_mode": "tdd_red_green",
       "isolation": {
         "workspace": "local",
