@@ -278,6 +278,8 @@ func verifyBookFiles(bookDir, nomeBase string, partes []string, d Deps) int {
 
 func runFullPipeline(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("video-rea run", d)
+	name := fs.String("name", "", "nome canônico (slug)")
+	title := fs.String("title", "", "título do vídeo")
 	rawURL := fs.String("url", "", "URL do video")
 	transcript := fs.String("transcript", "", "transcrição do vídeo")
 	desc := fs.String("desc", "", "descrição do vídeo")
@@ -298,7 +300,6 @@ func runFullPipeline(ctx context.Context, args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
 		return 1
 	}
-	_ = b
 	if _, err := videorea.DetectPlatform(*rawURL); err != nil {
 		fmt.Fprintf(d.Stderr, "erro na plataforma: %v\n", err)
 		return 1
@@ -307,11 +308,12 @@ func runFullPipeline(ctx context.Context, args []string, d Deps) int {
 		*desc = fmt.Sprintf("Vídeo analisado via %s", *rawURL)
 	}
 	root := resolveRepoRoot(*repoFlag)
-	return executeFullVideoREA(videorea.VideoInput{URL: *rawURL}, *transcript, *desc, *bundleDir, root, d)
+	vInput := videorea.VideoInput{URL: *rawURL, Title: *title}
+	return executeFullVideoREA(ctx, vInput, *transcript, *desc, *bundleDir, root, *name, b, d)
 }
 
-func executeFullVideoREA(vInput videorea.VideoInput, transcript, desc, baseDir, repoRoot string, d Deps) int {
-	dossier, err := videorea.ExtractForensics(vInput, transcript, desc)
+func executeFullVideoREA(ctx context.Context, vInput videorea.VideoInput, transcript, desc, baseDir, repoRoot, canonicalName string, b brain.Brain, d Deps) int {
+	dossier, err := videorea.ExtractForensicsWithBrain(ctx, vInput, transcript, desc, b)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro forense: %v\n", err)
 		return 1
@@ -320,6 +322,9 @@ func executeFullVideoREA(vInput videorea.VideoInput, transcript, desc, baseDir, 
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro curadoria: %v\n", err)
 		return 1
+	}
+	if canonical := strings.TrimSpace(canonicalName); canonical != "" {
+		report.SuggestedName = canonical
 	}
 	report.Approved = true
 	bundle, err := videorea.MaterializeAndProject(report, baseDir, repoRoot)
