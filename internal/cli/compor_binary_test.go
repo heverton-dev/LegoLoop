@@ -107,7 +107,7 @@ func TestComporBinario(t *testing.T) {
 		Arquivos              []struct{ Backup string }
 	}
 	if err := json.Unmarshal([]byte(r.out), &res); err != nil || r.code != 0 || res.Etapa != "e04" || res.Para != "1.1.0" ||
-		res.Composto != "legoloop-b@1.0.0" || len(res.Arquivos) != 8 || !strings.HasSuffix(res.Arquivos[7].Backup, ".processo.json.legoloop-bak") {
+		res.Composto != "legoloop-b@1.0.0" || len(res.Arquivos) != 9 || !strings.HasSuffix(res.Arquivos[8].Backup, ".processo.json.legoloop-bak") {
 		t.Fatalf("compor --json: código %d, json %v %+v\nstdout:\n%s\nstderr:\n%s", r.code, err, res, r.out, r.errb)
 	}
 	if !strings.Contains(r.errb, "COMPOR legoloop-a") || strings.Contains(r.out, "COMPOR") {

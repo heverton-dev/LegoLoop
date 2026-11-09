@@ -107,6 +107,9 @@ func (d *DAG) indexNodes() error {
 }
 
 func (d *DAG) indexNode(i int) error {
+	if len(d.Nodes[i].DependsOn) == 0 && len(d.Nodes[i].Dependencies) > 0 {
+		d.Nodes[i].DependsOn = d.Nodes[i].Dependencies
+	}
 	n := d.Nodes[i]
 	if !idRe.MatchString(n.ID) {
 		return fmt.Errorf("dag: id inválido %q", n.ID)
@@ -136,6 +139,12 @@ func validateNode(n Node) error {
 		if err := validateCommand(n.Command); err != nil {
 			return err
 		}
+	case TypeUnitTask:
+		if len(n.Command) > 0 {
+			if err := validateCommand(n.Command); err != nil {
+				return err
+			}
+		}
 	case TypeSubloop:
 		if !idRe.MatchString(n.Ref) {
 			return fmt.Errorf("subloop exige ref com o nome de um loop válido, recebeu %q", n.Ref)
@@ -147,6 +156,10 @@ func validateNode(n Node) error {
 	default:
 		return fmt.Errorf("tipo desconhecido %q", n.Type)
 	}
+	return validateNodeCommon(n)
+}
+
+func validateNodeCommon(n Node) error {
 	if n.TimeoutSec < 0 || n.TimeoutSec > MaxTimeoutSec {
 		return fmt.Errorf("timeout_sec deve estar entre 0 e %d", MaxTimeoutSec)
 	}

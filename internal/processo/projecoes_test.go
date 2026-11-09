@@ -3,6 +3,8 @@ package processo_test
 import (
 	"encoding/json"
 	"errors"
+	"os"
+	"path/filepath"
 	"regexp"
 	"slices"
 	"strings"
@@ -484,5 +486,41 @@ func TestProjecoesCoerentesDescricaoDaSkillRespeitaOLimite(t *testing.T) {
 	desc := regexp.MustCompile(`(?m)^description: (.+)$`).FindStringSubmatch(sk)
 	if desc == nil || len([]rune(desc[1])) > 300 {
 		t.Errorf("description passou de 300 caracteres: %d", len([]rune(desc[1])))
+	}
+}
+
+func TestProjetarEmiteDAGNome(t *testing.T) {
+	p := quatro()
+	pr := projetar(t, p)
+	if pr.DAGNome == "" {
+		t.Fatal("DAGNome não pode ser vazio")
+	}
+	if !strings.Contains(pr.DAGNome, "_DAG_") || !strings.HasSuffix(pr.DAGNome, ".json") {
+		t.Errorf("DAGNome fora do padrão ISO YYYY-MM-DD_DAG_<SLUG>.json: %q", pr.DAGNome)
+	}
+}
+
+func TestCheckParity(t *testing.T) {
+	dir := t.TempDir()
+	f1 := filepath.Join(dir, "a.json")
+	f2 := filepath.Join(dir, "b.json")
+	f3 := filepath.Join(dir, "c.json")
+	if err := os.WriteFile(f1, []byte("conteudo identical"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(f2, []byte("conteudo identical"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(f3, []byte("conteudo diferente"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	igual, err := processo.CheckParity(f1, f2)
+	if err != nil || !igual {
+		t.Errorf("CheckParity deve retornar true para arquivos idênticos, obteve %v, err=%v", igual, err)
+	}
+	diferente, err := processo.CheckParity(f1, f3)
+	if err != nil || diferente {
+		t.Errorf("CheckParity deve retornar false para arquivos distintos, obteve %v, err=%v", diferente, err)
 	}
 }

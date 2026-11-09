@@ -257,3 +257,33 @@ func TestRouteKeysAreExposedForEngines(t *testing.T) {
 		t.Errorf("templates.Version deve ser 2.2.0, obteve %s", templates.Version)
 	}
 }
+
+func TestQuintetoTemplatesConformidade(t *testing.T) {
+	quinteto := []struct {
+		name string
+		data []byte
+	}{
+		{"TEMPLATE_INTENT.md", []byte(templates.Intent())},
+		{"TEMPLATE_SPEC.md", []byte(templates.Spec())},
+		{"TEMPLATE_PLAN.md", []byte(templates.Plan())},
+		{"TEMPLATE_ROUTE.json", templates.Route()},
+		{"TEMPLATE_DAG.json", templates.DAG()},
+	}
+
+	for _, item := range quinteto {
+		if len(item.data) == 0 {
+			t.Errorf("template do quinteto %s não pode estar vazio", item.name)
+		}
+	}
+
+	var d struct {
+		Name  string `json:"name"`
+		Nodes []any  `json:"nodes"`
+	}
+	if err := json.Unmarshal(templates.DAG(), &d); err != nil {
+		t.Fatalf("TEMPLATE_DAG.json não é um DAG válido: %v", err)
+	}
+	if len(d.Nodes) == 0 {
+		t.Errorf("TEMPLATE_DAG.json deve conter nós de exemplo")
+	}
+}

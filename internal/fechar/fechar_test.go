@@ -2,6 +2,7 @@ package fechar_test
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -142,5 +143,37 @@ func TestExecutarNoveEtapasEGerarReportComTelemetria(t *testing.T) {
 		if !strings.Contains(corpo, esperado) {
 			t.Errorf("relatório não contém string esperada %q", esperado)
 		}
+	}
+}
+
+func TestFecharDAG_AuditaParidadeSHA256(t *testing.T) {
+	dir := t.TempDir()
+	dagsDir := filepath.Join(dir, "docs", "dags")
+	loopsDir := filepath.Join(dir, "loops", "teste")
+	_ = os.MkdirAll(dagsDir, 0o755)
+	_ = os.MkdirAll(loopsDir, 0o755)
+
+	dagIso := filepath.Join(dagsDir, "2026-11-09_DAG_TESTE.json")
+	loopDag := filepath.Join(loopsDir, "pipeline.dag.json")
+
+	// Caso 1: Idênticos -> Sucesso
+	_ = os.WriteFile(dagIso, []byte(`{"name":"teste","version":"1.0.0"}`), 0o644)
+	_ = os.WriteFile(loopDag, []byte(`{"name":"teste","version":"1.0.0"}`), 0o644)
+
+	deps := fechar.Deps{RepoDir: dir, SkipBuild: true}
+	req := fechar.Request{Slug: "teste"}
+	res, err := fechar.Executar(nil, req, deps)
+	if err != nil || !res.Sucesso {
+		t.Fatalf("esperava sucesso quando DAGs são idênticos: err=%v", err)
+	}
+
+	// Caso 2: Divergentes -> Erro na etapa 4
+	_ = os.WriteFile(loopDag, []byte(`{"name":"teste-divergente"}`), 0o644)
+	resDiv, _ := fechar.Executar(nil, req, deps)
+	if resDiv.Sucesso {
+		t.Fatalf("esperava falha quando DAGs divergem em SHA-256")
+	}
+	if resDiv.Etapas[3].Status != "error" || !strings.Contains(resDiv.Etapas[3].Detalhe, "divergente") {
+		t.Errorf("etapa 4 deveria falhar com erro de divergência: %+v", resDiv.Etapas[3])
 	}
 }

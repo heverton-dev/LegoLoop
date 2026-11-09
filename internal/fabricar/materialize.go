@@ -44,6 +44,7 @@ type CanonicalArtifacts struct {
 	SkillPath    string   `json:"skill_path"`
 	LoopPath     string   `json:"loop_path"`
 	DagPath      string   `json:"dag_path"`
+	DagIsoPath   string   `json:"dag_iso_path"`
 	ProcessoPath string   `json:"processo_path"` // loops/<nome>.processo.json: o que listar, refinar e compor leem
 	SkillLinks   []string `json:"skill_links"`   // links nas pastas dos harnesses (no dry-run, os que seriam criados; vazio com --no-link)
 }
@@ -97,6 +98,8 @@ func artifactsOf(files []PlannedFile) CanonicalArtifacts {
 			a.LoopPath = f.Path
 		case "dag":
 			a.DagPath = f.Path
+		case "dag_iso":
+			a.DagIsoPath = f.Path
 		case "processo":
 			a.ProcessoPath = f.Path
 		}

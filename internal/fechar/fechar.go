@@ -2,6 +2,7 @@ package fechar
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,7 +10,11 @@ import (
 	"time"
 
 	"legoloop/internal/brain"
+	"legoloop/internal/processo"
 )
+
+// ErrDAGDivergente sinaliza divergência de hash SHA-256 entre docs/dags e loops/.
+var ErrDAGDivergente = errors.New("fechar: hash SHA-256 divergente entre docs/dags e loops/")
 
 // Deps encapsula as bordas e dependências externas do fechamento.
 type Deps struct {
@@ -198,7 +203,32 @@ func fecharDAG(d *Deps, slug, canon string, dry bool) (string, error) {
 		content := fmt.Sprintf(`{"name": %q, "version": "1.0.0", "nodes": []}`, canon)
 		_ = os.WriteFile(dagPath, []byte(content), 0o644)
 	}
+	if err := auditDAGParity(d.RepoDir, slug, dagPath); err != nil {
+		return dagPath, err
+	}
 	return dagPath, nil
+}
+
+func auditDAGParity(repoDir, slug, loopDAGPath string) error {
+	dagsDir := filepath.Join(repoDir, "docs", "dags")
+	pattern := filepath.Join(dagsDir, fmt.Sprintf("*_DAG_%s.json", upperSlug(slug)))
+	matches, _ := filepath.Glob(pattern)
+	if len(matches) == 0 {
+		return nil
+	}
+	par, err := processo.CheckParity(matches[len(matches)-1], loopDAGPath)
+	if err != nil {
+		return err
+	}
+	if !par {
+		return ErrDAGDivergente
+	}
+	return nil
+}
+
+func upperSlug(slug string) string {
+	s := strings.TrimPrefix(slug, "legoloop-")
+	return strings.ToUpper(strings.ReplaceAll(s, "-", "_"))
 }
 
 func fecharRebuild(d *Deps, dry bool) (string, error) {

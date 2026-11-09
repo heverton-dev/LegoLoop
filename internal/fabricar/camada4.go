@@ -119,6 +119,7 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, inte
 		{Kind: "spec", Path: docs("specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Kind: "plan", Path: docs("plans", pr.PlanNome), Data: []byte(pr.Plan)},
 		{Kind: "route", Path: docs("routes", pr.RouteNome), Data: pr.Route},
+		{Kind: "dag_iso", Path: docs("dags", pr.DAGNome), Data: pr.DAG},
 		{Kind: "template", Path: docs("templates", templateFileName(p.Nome)), Data: []byte(EmitTemplate(p))},
 	}, nil
 }

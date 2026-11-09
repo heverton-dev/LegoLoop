@@ -33,7 +33,7 @@ func TestCartaoPlanoUnico(t *testing.T) {
 		r.deps.Aprovar = c.aprovar(r, t)
 		r.run(t)
 		p := c.planos[0]
-		if len(p.Arquivos) != 9 || len(p.Vinculos) != 2 || len(p.Detectados) != 2 || len(p.Ligados) != 2 {
+		if len(p.Arquivos) != 10 || len(p.Vinculos) != 2 || len(p.Detectados) != 2 || len(p.Ligados) != 2 {
 			t.Fatalf("plano incompleto: %+v", p)
 		}
 		if c.antes != 0 {
@@ -64,8 +64,8 @@ func TestCartaoPlanoUnico(t *testing.T) {
 		c := &captura{ok: true}
 		r.deps.Aprovar = c.aprovar(r, t)
 		r.run(t)
-		if len(c.planos[0].Sobrescreve) != 9 {
-			t.Errorf("os 9 arquivos existentes devem ser listados: %v", c.planos[0].Sobrescreve)
+		if len(c.planos[0].Sobrescreve) != 10 {
+			t.Errorf("os 10 arquivos existentes devem ser listados: %v", c.planos[0].Sobrescreve)
 		}
 	})
 

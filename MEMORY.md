@@ -443,6 +443,18 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Auditoria vs Projeto Piloto:** Todos os 3 bundles compilaram com sucesso os 4 pilares contratuais (`book`, `governance`, `loop`, `skill`) com PDFs LegoPress 100% aprovados pela auditoria mecânica. Identificadas oportunidades de evolução no tratamento de rate limit do YouTube e unificação do path de bundle no CLI.
   - **Relatório Oficial Consolidado:** Emitido [`docs/reports/2026-11-08_REPORT_TRIPLO_VIDEO_REA.md`](docs/reports/2026-11-08_REPORT_TRIPLO_VIDEO_REA.md) com balanço estrito de telemetria, cronometria, tokens e custos orçado vs realizado.
 
+- **09/11/2026** — 🏛️ **Quinteto de Governança ISO (`docs/dags/`), Paridade Total Cognitiva ROUTE ↔ DAG e Saneamento do Acervo:**
+  - **Demanda & Arquitetura:** Instituição formal do Quinteto de Governança ISO (`[INTENT -> SPEC -> PLAN -> ROUTE -> DAG]`) eliminando discrepâncias entre o planejamento e os grafos executáveis.
+  - **Paridade Total dos Contratos Cognitivos (Zero Cascas Ocas):** O motor Go em `internal/dag/types.go` e `parse.go` foi estendido via TDD para suportar nativamente nós `unit_task`, amarras de isolamento (`isolation`), orçamentos de tokens (`token_budget`), tooling de execução (`tooling`), contratos de entrada/saída de contexto (`context_in`, `context_out`), costuras de teste TDD (`test_seam`), verificações (`verification`) e limites operacionais (`limits`). O DAG deixa de ser apenas um script runner e passa a ser um grafo de inferência autônomo e completo.
+  - **Motores Nucleares em Go Atualizados:**
+    - `internal/processo/projecoes.go`: `DAGNome` e `CheckParity` auditando paridade mecânica de hash SHA-256.
+    - `internal/fabricar/camada4.go` e `materialize.go`: Persistência atômica de `docs/dags/YYYY-MM-DD_DAG_<SLUG>.json` e mascaramento seguro de caminhos no Studio.
+    - `internal/compor/compor.go`: Recalcular e regenerar o 5º elemento durante composições hierárquicas de sub-loops.
+    - `internal/fechar/fechar.go`: `fecharDAG` e `auditDAGParity` rejeitando canonizações com erro `ErrDAGDivergente` em caso de adulteração.
+  - **Templates & Governança:** `docs/templates/templates.go` e `templates_test.go` atualizados com `TestQuintetoTemplatesConformidade` cobrindo os 5 documentos canônicos; Regras #6 e #10 de `AGENTS.md` atualizadas para a Governança Pentafásica.
+  - **Saneamento do Acervo de Loops & Enriquecimento Pleno:** Os 4 loops operacionais em `loops/` (`legoloop-fechar`, `legoloop-video-rea`, `legoloop-video-motion`, `legoloop-video-edition`) foram enriquecidos com seus contratos cognitivos completos (`nature`, `cognitive_complexity`, `isolation`, `token_budget`, `tooling`, `context_in`, `context_out`, `status`), espelhados em `docs/dags/` e auditados com paridade de hash SHA-256 idêntica.
+  - **Portões Mecânicos:** 100% dos pacotes verdes em `go test -count=1 ./...`, `go vet` limpo, `gofmt` com saída vazia, `funclen <= 35` limpo e `go.mod` intacto. Binário fresco `bin/legoloop.exe` instalado no PATH.
+
 ## Estado Atual do Repositório
 - **Status da Branch:** `docs/livros-loops-autores` — 15 skills canônicas universais, pipelines audiovisuais integrados (`legoloop-canal-redc`, `legoloop-video-motion`, `legoloop-video-master`, `legoloop-video-rea` e `legoloop-video-edition`), motor LegoPress blindado e esteira de fechamento canônico 100% funcional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).

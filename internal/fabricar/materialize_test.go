@@ -214,3 +214,24 @@ func TestMaterialize_RejectsEmptyDuplicateAndCanceled(t *testing.T) {
 		t.Errorf("nada deve ser gravado: %v", v)
 	}
 }
+
+func TestMaterialize_PersisteDAGIso(t *testing.T) {
+	e := newEnv(t)
+	dagIsoPath := filepath.Join(e.docs, "docs", "dags", "2026-11-09_DAG_X.json")
+	e.plan.Files = append(e.plan.Files, fabricar.PlannedFile{
+		Kind: "dag_iso",
+		Path: dagIsoPath,
+		Data: []byte(`{"name":"dag-iso"}`),
+	})
+	art, err := fabricar.Materialize(context.Background(), e.plan, fabricar.OSFS())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if art.DagIsoPath != dagIsoPath {
+		t.Errorf("esperava DagIsoPath %s, obteve %s", dagIsoPath, art.DagIsoPath)
+	}
+	b, err := os.ReadFile(dagIsoPath)
+	if err != nil || string(b) != `{"name":"dag-iso"}` {
+		t.Errorf("conteúdo de DAG ISO incorreto: %q err=%v", b, err)
+	}
+}

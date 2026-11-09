@@ -470,6 +470,7 @@ func montar(p processo.Processo, e processo.Etapa, now time.Time, roots processo
 		{Kind: "SPEC", Path: filepath.Join(docs, "specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Kind: "PLAN", Path: filepath.Join(docs, "plans", pr.PlanNome), Data: []byte(pr.Plan)},
 		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
+		{Kind: "DAG_ISO", Path: filepath.Join(docs, "dags", pr.DAGNome), Data: pr.DAG},
 		{Kind: "DAG", Path: vault("loops", p.Nome+".dag.json"), Data: pr.DAG},
 		{Kind: "loop", Path: vault("loops", p.Nome+".loop.json"), Data: pr.Loop},
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
@@ -495,7 +496,7 @@ func projetar(p processo.Processo, now, dataDocs time.Time) (*processo.Projecoes
 		return nil, err
 	}
 	pr.Spec, pr.Plan, pr.Route = pd.Spec, pd.Plan, pd.Route
-	pr.SpecNome, pr.PlanNome, pr.RouteNome = pd.SpecNome, pd.PlanNome, pd.RouteNome
+	pr.SpecNome, pr.PlanNome, pr.RouteNome, pr.DAGNome = pd.SpecNome, pd.PlanNome, pd.RouteNome, pd.DAGNome
 	return pr, nil
 }
 

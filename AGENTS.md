@@ -24,10 +24,10 @@
    * O teste unitário deve falhar antes de qualquer implementação de código de produção (Red-Green-Refactor).
    * Garanta que todos os testes passem com código limpo e sem warnings.
    * **Recompilação Obrigatória Pós-Ticket:** Ao finalizar qualquer ticket com alteração em Go, execute `go build -o bin/legoloop.exe ./cmd/legoloop` e, ao fechar o épico, `go install ./cmd/legoloop`, para que o binário no PATH permaneça sempre atualizado. Um Studio já aberto continua no binário antigo: reinicie-o.
-6. **Padronização ISO de Artefatos:**
-   * TODOS os artefatos gerados em `docs/` (`intents/`, `specs/`, `plans/`, `routes/`, `reports/`, `sessions/`) DEVEM obrigatoriamente utilizar o prefixo de data no formato ISO: `YYYY-MM-DD_<NOME>.<ext>`.
+6. **Quinteto de Governança ISO de Artefatos:**
+   * TODOS os artefatos do Quinteto gerados em `docs/` (`intents/`, `specs/`, `plans/`, `routes/`, `dags/`, `reports/`, `sessions/`) DEVEM obrigatoriamente utilizar o prefixo de data no formato ISO: `YYYY-MM-DD_<NOME>.<ext>`.
    * Isso garante ordenação cronológica natural e busca imediata no SO.
-   * INTENT, SPEC, PLAN e ROUTE seguem os templates canônicos v2 em `docs/templates/` (conformidade testada em `docs/templates/templates_test.go`). Ao mudar um template, os motores (`interview`, `specgen`, `plangen`) e os testes mudam juntos.
+   * **INTENT, SPEC, PLAN, ROUTE e DAG** compõem o **Quinteto de Governança ISO** e seguem os templates canônicos v2 em `docs/templates/` (conformidade testada em `docs/templates/templates_test.go`). O `DAG.json` em `docs/dags/` é o espelho executável 1:1 da ROUTE, projetado atomicamente para `loops/<slug>/pipeline.dag.json` e com paridade SHA-256 auditada mecanicamente no fechamento (`legoloop fechar`). A Skill (`SKILL.md`) é a manifestação em prosa fiel dos nós do DAG.
 7. **Idioma:** SEMPRE utilize o idioma Português do Brasil (PT-BR) em documentações, planos, especificações e respostas.
 8. **Verificação de Verdade (lições da demanda `fabricar`):**
    * **Rode o sistema real antes de declarar pronto** (binário e, se houver UI, o navegador). LLM falso e fixtures só provam o que o autor imaginou: o validador de SPEC recusava a SPEC correta de um LLM real e nenhum teste unitário via isso.
