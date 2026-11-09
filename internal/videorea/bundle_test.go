@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"legoloop/internal/dag"
 	"legoloop/internal/videorea"
 )
 
@@ -150,5 +151,53 @@ func TestMaterializeAndProject_GravaMatrizOriginalCompleta(t *testing.T) {
 	}
 	if matrix.VideoTitle != report.VideoTitle {
 		t.Errorf("video_title do arquivo esperado %q, obteve %q", report.VideoTitle, matrix.VideoTitle)
+	}
+}
+
+func TestTargetBundle_DAGValidoEAntiStub(t *testing.T) {
+	tempRoot := t.TempDir()
+	baseDir := filepath.Join(tempRoot, "docs", "videorea")
+	slug := "legoloop-video-antistub"
+
+	report := &videorea.CurationReport{
+		SuggestedName: slug,
+		VideoTitle:    "Tutorial Motion Soberano",
+		OriginalCost:  "R$ 300,00/mes",
+		SovereignCost: "R$ 0,00/mes",
+		Approved:      true,
+	}
+
+	bundle, err := videorea.MaterializeAndProject(report, baseDir, tempRoot)
+	if err != nil {
+		t.Fatalf("MaterializeAndProject falhou: %v", err)
+	}
+
+	// 1. DAG gerado deve ser válido segundo o parser oficial do LegoLoop
+	dagPath := filepath.Join(bundle.LoopDir, "pipeline.dag.json")
+	dagData, err := os.ReadFile(dagPath)
+	if err != nil {
+		t.Fatalf("lendo pipeline.dag.json: %v", err)
+	}
+	parsedDAG, err := dag.Parse(dagData)
+	if err != nil {
+		t.Fatalf("DAG gerado é inválido segundo dag.Parse: %v", err)
+	}
+	if len(parsedDAG.Nodes) == 0 {
+		t.Errorf("DAG não pode ter lista de nós vazia")
+	}
+
+	// 2. Governança não pode ter arquivos esqueléticos / stubs (< 200 bytes)
+	govFiles := []string{"INTENT.md", "SPEC.md", "PLAN.md", "ROUTE.json"}
+	for _, gf := range govFiles {
+		p := filepath.Join(bundle.GovernanceDir, gf)
+		info, err := os.Stat(p)
+		if err != nil {
+			t.Errorf("arquivo de governança %s não encontrado: %v", gf, err)
+			continue
+		}
+		if info.Size() < 200 {
+			content, _ := os.ReadFile(p)
+			t.Errorf("arquivo %s é um stub esquelético (< 200 bytes, tam: %d):\n%s", gf, info.Size(), string(content))
+		}
 	}
 }

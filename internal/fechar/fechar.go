@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"legoloop/internal/brain"
 )
 
 // Deps encapsula as bordas e dependências externas do fechamento.
@@ -15,6 +17,7 @@ type Deps struct {
 	VaultDir  string
 	Home      string
 	SkipBuild bool
+	Brain     brain.Brain
 	Auditor   func(pdfPath string) (bool, error)
 	Rebuilder func(dir string) error
 	Indexer   func(repo string) error
@@ -114,10 +117,45 @@ func fecharManual(d *Deps, slug, canon string, dry bool) (string, error) {
 	}
 	target := filepath.Join(dir, fmt.Sprintf("%s_MANUAL_FUNCAO_%s_LEGOLOOP.md", d.Clock().Format("2006-01-02"), slug))
 	if _, err := os.Stat(target); os.IsNotExist(err) && !dry {
-		conteudo := fmt.Sprintf("# 📘 MANUAL OPERACIONAL: %s\n\nProcesso: %s\n", slug, canon)
+		conteudo := buildManualContent(slug, canon, d.Clock().Format("2006-01-02"))
 		_ = os.WriteFile(target, []byte(conteudo), 0o644)
 	}
 	return target, nil
+}
+
+func buildManualContent(slug, canon, data string) string {
+	return fmt.Sprintf(`# 📘 MANUAL OPERACIONAL: %s
+
+> **Status:** ATIVO · PADRÃO CANÔNICO LEGOLOOP  
+> **Processo Canônico:** %s  
+> **Data de Canonização:** %s  
+> **Governança:** AGENTS.md Regra #11  
+
+---
+
+## 1. Visão Geral e Propósito
+Este manual documenta a cadeia operacional e os gatilhos do processo %s.
+Opera sob a política de Zero Stubs com integridade e reprodutibilidade determinística.
+
+---
+
+## 2. Comandos e Interfaces
+* **CLI:** legoloop %s [opções]
+* **Chat:** /legoloop-%s
+* **Studio Web:** Card de processo no dashboard local.
+
+---
+
+## 3. Fluxo Operacional
+1. **Entrada e Validação:** Parsing de parâmetros e seleção cognitiva via internal/brain.
+2. **Execução Hermética:** Processamento em contexto estéril com isolamento em scratch/.
+3. **Portão de Saída:** Auditoria mecânica antes de qualquer emissão de artefatos.
+
+---
+
+## 4. Telemetria e Fechamento
+Relatório de conclusão compilado em docs/reports/ com balanço auditável de tempo e recursos.
+`, slug, canon, data, canon, slug, slug)
 }
 
 func fecharLivro(d *Deps, slug, canon string, dry bool) (string, error) {

@@ -89,4 +89,16 @@ func TestCmdFechar(t *testing.T) {
 			t.Fatalf("esperava erro ao chamar fechar sem slug, obteve 0")
 		}
 	})
+
+	t.Run("suporte a model e effort", func(t *testing.T) {
+		var stdout, stderr bytes.Buffer
+		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+		code := cli.Run(context.Background(), []string{"fechar", "video-motion", "--dry-run", "--model", "modelo-inexistente-abc"}, deps)
+		if code == 0 {
+			t.Fatalf("esperava erro ao chamar fechar com modelo inexistente")
+		}
+		if !strings.Contains(stderr.String(), "cérebro") && !strings.Contains(stderr.String(), "modelo") {
+			t.Errorf("esperava erro de modelo no stderr: %s", stderr.String())
+		}
+	})
 }

@@ -29,10 +29,11 @@ const (
 // Brain conduz a conversa com o modelo. Satisfaz interview.LLMClient.
 type Brain interface {
 	interview.LLMClient
-	Name() string           // "9router/code-fast", "ollama/qwen2.5", "claude/sonnet", "agy:default"
-	Model() string          // o id do modelo, sem o executor: "code-fast", "qwen2.5", "sonnet"
-	Timeout() time.Duration // tempo limite de cada chamada ao modelo
-	Effort() Effort         // esforço cognitivo configurado (low, medium, high)
+	Infer(ctx context.Context, prompt string) (string, error) // inferência direta de prompt único
+	Name() string                                             // "9router/code-fast", "ollama/qwen2.5", "claude/sonnet", "agy:default"
+	Model() string                                            // o id do modelo, sem o executor: "code-fast", "qwen2.5", "sonnet"
+	Timeout() time.Duration                                   // tempo limite de cada chamada ao modelo
+	Effort() Effort                                           // esforço cognitivo configurado (low, medium, high)
 }
 
 type config struct {
@@ -83,6 +84,10 @@ func (b routerBrain) Timeout() time.Duration { return b.RouterLLMClient.HTTPClie
 
 func (b routerBrain) Effort() Effort { return b.effort }
 
+func (b routerBrain) Infer(ctx context.Context, prompt string) (string, error) {
+	return b.Chat(ctx, []interview.Message{{Role: "user", Content: prompt}})
+}
+
 // orchBrain fala com os demais executores pelo despacho do Orchestrix, que recebe um prompt único.
 type orchBrain struct {
 	o      *orchestrix.Orchestrix
@@ -100,6 +105,10 @@ func (b orchBrain) Model() string { return b.model }
 func (b orchBrain) Timeout() time.Duration { return b.limit }
 
 func (b orchBrain) Effort() Effort { return b.effort }
+
+func (b orchBrain) Infer(ctx context.Context, prompt string) (string, error) {
+	return b.Chat(ctx, []interview.Message{{Role: "user", Content: prompt}})
+}
 
 func (b orchBrain) Chat(ctx context.Context, msgs []interview.Message) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, b.limit)

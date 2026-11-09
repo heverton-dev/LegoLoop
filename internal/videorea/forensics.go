@@ -1,8 +1,12 @@
 package videorea
 
 import (
+	"context"
+	"fmt"
 	"regexp"
 	"strings"
+
+	"legoloop/internal/brain"
 )
 
 var (
@@ -38,6 +42,11 @@ func buildToolAliasPatterns() map[string][]*regexp.Regexp {
 
 // ExtractForensics analisa o vídeo, transcrição e descrição extraindo evidências.
 func ExtractForensics(input VideoInput, transcript, description string) (*ForensicsDossier, error) {
+	return ExtractForensicsWithBrain(context.Background(), input, transcript, description, nil)
+}
+
+// ExtractForensicsWithBrain analisa o vídeo e enriquece os achados usando um cérebro cognitivo.
+func ExtractForensicsWithBrain(ctx context.Context, input VideoInput, transcript, description string, b brain.Brain) (*ForensicsDossier, error) {
 	if strings.TrimSpace(transcript) == "" && strings.TrimSpace(description) == "" {
 		return nil, ErrEmptyDossier
 	}
@@ -59,7 +68,26 @@ func ExtractForensics(input VideoInput, transcript, description string) (*Forens
 		ToolsIdentified: findMentionedTools(combined),
 		SuggestedSlugs:  SuggestCanonicalNames(title),
 	}
+	if b != nil {
+		enrichWithBrain(ctx, dossier, combined, b)
+	}
 	return dossier, nil
+}
+
+func enrichWithBrain(ctx context.Context, d *ForensicsDossier, text string, b brain.Brain) {
+	prompt := fmt.Sprintf("Analise a transcrição e descrição e deduza prompts ocultos e ferramentas:\n\n%s", text)
+	resp, err := b.Infer(ctx, prompt)
+	if err != nil || strings.TrimSpace(resp) == "" {
+		return
+	}
+	for line := range strings.SplitSeq(resp, "\n") {
+		clean := strings.TrimSpace(line)
+		if strings.HasPrefix(clean, "PROMPT_OCULTO:") {
+			d.HiddenPrompts = append(d.HiddenPrompts, strings.TrimSpace(strings.TrimPrefix(clean, "PROMPT_OCULTO:")))
+		} else if strings.HasPrefix(clean, "FERRAMENTA_OCULTA:") {
+			d.HiddenTools = append(d.HiddenTools, strings.TrimSpace(strings.TrimPrefix(clean, "FERRAMENTA_OCULTA:")))
+		}
+	}
 }
 
 // EnrichWithOCR adiciona texto capturado via OCR de frames e infere ferramentas ocultas.

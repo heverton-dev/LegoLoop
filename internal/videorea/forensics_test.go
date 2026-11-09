@@ -1,9 +1,13 @@
 package videorea_test
 
 import (
+	"context"
 	"strings"
 	"testing"
+	"time"
 
+	"legoloop/internal/brain"
+	"legoloop/internal/interview"
 	"legoloop/internal/videorea"
 )
 
@@ -57,6 +61,48 @@ func TestExtractForensics_EmptyValidation(t *testing.T) {
 	_, err := videorea.ExtractForensics(videorea.VideoInput{}, "", "")
 	if err != videorea.ErrEmptyDossier {
 		t.Errorf("esperava ErrEmptyDossier para input vazio, obteve %v", err)
+	}
+}
+
+type fakeBrain struct {
+	called   bool
+	response string
+}
+
+func (f *fakeBrain) Infer(ctx context.Context, prompt string) (string, error) {
+	f.called = true
+	return f.response, nil
+}
+func (f *fakeBrain) Chat(ctx context.Context, msgs []interview.Message) (string, error) {
+	f.called = true
+	return f.response, nil
+}
+func (f *fakeBrain) Name() string           { return "fake-brain" }
+func (f *fakeBrain) Model() string          { return "fake-model" }
+func (f *fakeBrain) Timeout() time.Duration { return time.Second }
+func (f *fakeBrain) Effort() brain.Effort   { return brain.EffortHigh }
+
+func TestExtractForensicsWithBrain(t *testing.T) {
+	fb := &fakeBrain{
+		response: "PROMPT_OCULTO: Cinematic hyperrealistic render of glass panel in 8k\nFERRAMENTA_OCULTA: Blender 3D",
+	}
+	input := videorea.VideoInput{URL: "https://youtube.com/watch?v=123"}
+	dossier, err := videorea.ExtractForensicsWithBrain(context.Background(), input, "audio narrando edição", "descrição curta", fb)
+	if err != nil {
+		t.Fatalf("ExtractForensicsWithBrain falhou: %v", err)
+	}
+	if !fb.called {
+		t.Errorf("esperava que o brain fosse chamado para inferência avançada")
+	}
+	foundPrompt := false
+	for _, p := range dossier.HiddenPrompts {
+		if strings.Contains(p, "Cinematic hyperrealistic") {
+			foundPrompt = true
+			break
+		}
+	}
+	if !foundPrompt {
+		t.Errorf("esperava prompt oculto inferido pelo cérebro em dossier.HiddenPrompts, obteve: %v", dossier.HiddenPrompts)
 	}
 }
 

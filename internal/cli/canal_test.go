@@ -80,4 +80,20 @@ func TestCanalCLI_RedcAndGerar(t *testing.T) {
 	if !strings.Contains(gerarOut, "roteiro") {
 		t.Errorf("stdout deve conter indicacao de roteiro gerado: %s", gerarOut)
 	}
+
+	// 3. Testar suporte a --model e falha com modelo inexistente
+	stdout.Reset()
+	stderr.Reset()
+	codeInexistente := cli.Run(ctx, []string{
+		"canal", "gerar", "canal-teste",
+		"--tema", "Agentes",
+		"--model", "modelo-inexistente-redc",
+		"--root", tempDir,
+	}, deps)
+	if codeInexistente == 0 {
+		t.Fatalf("esperava erro ao requisitar modelo inexistente em canal gerar")
+	}
+	if !strings.Contains(stderr.String(), "cérebro") && !strings.Contains(stderr.String(), "modelo") {
+		t.Errorf("esperava mensagem de erro sobre modelo no stderr: %s", stderr.String())
+	}
 }

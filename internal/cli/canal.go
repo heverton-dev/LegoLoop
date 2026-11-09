@@ -18,9 +18,9 @@ func cmdCanal(ctx context.Context, args []string, d Deps) int {
 	}
 	switch args[0] {
 	case "redc":
-		return runCanalREDC(args[1:], d)
+		return runCanalREDC(ctx, args[1:], d)
 	case "gerar":
-		return runCanalGerar(args[1:], d)
+		return runCanalGerar(ctx, args[1:], d)
 	default:
 		fmt.Fprintf(d.Stderr, "subcomando de canal desconhecido: %s\n", args[0])
 		return 2
@@ -40,15 +40,21 @@ func parseArgsAndFlags(rawArgs []string) (string, []string) {
 	return pos, flags
 }
 
-func runCanalREDC(rawArgs []string, d Deps) int {
+func runCanalREDC(ctx context.Context, rawArgs []string, d Deps) int {
 	origem, flagsToParse := parseArgsAndFlags(rawArgs)
 	fs := newFlags("canal redc", d)
 	canal := fs.String("canal", "", "slug do canal")
 	root := fs.String("root", ".", "diretório raiz do projeto")
 	asJSON := fs.Bool("json", false, "saída JSON")
+	model := fs.String("model", "", "modelo para inferência")
+	effort := fs.String("effort", "", "esforço cognitivo (low, medium, high)")
 	if err := fs.Parse(flagsToParse); err != nil || (origem == "" && fs.NArg() == 0) {
 		fmt.Fprintln(d.Stderr, "uso: legoloop canal redc <origem-dir> [--canal <nome>] [--root DIR] [--json]")
 		return 2
+	}
+	if _, err := resolveBrain(ctx, *model, *effort, d); *model != "" && err != nil {
+		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
+		return 1
 	}
 	if origem == "" {
 		origem = fs.Arg(0)
@@ -117,7 +123,7 @@ func printCanalReport(report redc.ChannelReport, asJSON bool, d Deps) int {
 	return 0
 }
 
-func runCanalGerar(rawArgs []string, d Deps) int {
+func runCanalGerar(ctx context.Context, rawArgs []string, d Deps) int {
 	canalSlug, flagsToParse := parseArgsAndFlags(rawArgs)
 	fs := newFlags("canal gerar", d)
 	tema := fs.String("tema", "", "tema do novo vídeo")
@@ -125,9 +131,15 @@ func runCanalGerar(rawArgs []string, d Deps) int {
 	corPrim := fs.String("cor-primaria", "#3B82F6", "cor primária")
 	root := fs.String("root", ".", "diretório raiz do projeto")
 	asJSON := fs.Bool("json", false, "saída JSON")
+	model := fs.String("model", "", "modelo para inferência")
+	effort := fs.String("effort", "", "esforço cognitivo (low, medium, high)")
 	if err := fs.Parse(flagsToParse); err != nil || (canalSlug == "" && fs.NArg() == 0) {
 		fmt.Fprintln(d.Stderr, "uso: legoloop canal gerar <canal-slug> --tema <tema> [opções]")
 		return 2
+	}
+	if _, err := resolveBrain(ctx, *model, *effort, d); *model != "" && err != nil {
+		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
+		return 1
 	}
 	if canalSlug == "" {
 		canalSlug = fs.Arg(0)

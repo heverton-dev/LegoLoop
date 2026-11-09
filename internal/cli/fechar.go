@@ -51,8 +51,15 @@ func parseFecharEExecutar(ctx context.Context, d Deps, slug string, rawArgs []st
 	tokensOut := fs.Int("tokens-out", 0, "tokens de saída orçados")
 	custoUSD := fs.Float64("custo-usd", 0, "custo orçado em USD")
 	taxaCambio := fs.Float64("taxa-cambio", 5.80, "taxa de câmbio BRL")
+	model := fs.String("model", "", "modelo para inferência")
+	effort := fs.String("effort", "", "esforço cognitivo (low, medium, high)")
 	if err := fs.Parse(rawArgs); err != nil {
 		return 2
+	}
+	b, err := resolveBrain(ctx, *model, *effort, d)
+	if *model != "" && err != nil {
+		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
+		return 1
 	}
 	telem := &fechar.TelemetriaOrcamento{
 		TempoEstimadoMin:   *tempoMin,
@@ -61,12 +68,12 @@ func parseFecharEExecutar(ctx context.Context, d Deps, slug string, rawArgs []st
 		CustoEstimadoUSD:   *custoUSD,
 		TaxaCambioBRL:      *taxaCambio,
 	}
-	return runFechar(ctx, d, slug, *dryRun, *skipBuild, *asJSON, telem)
+	req := fechar.Request{Slug: slug, DryRun: *dryRun, SkipBuild: *skipBuild, Telemetria: telem}
+	deps := fechar.Deps{Home: d.Home, SkipBuild: *skipBuild, Brain: b}
+	return runFechar(ctx, d, req, deps, *asJSON)
 }
 
-func runFechar(ctx context.Context, d Deps, slug string, dry, skipBuild, asJSON bool, t *fechar.TelemetriaOrcamento) int {
-	req := fechar.Request{Slug: slug, DryRun: dry, SkipBuild: skipBuild, Telemetria: t}
-	deps := fechar.Deps{Home: d.Home, SkipBuild: skipBuild}
+func runFechar(ctx context.Context, d Deps, req fechar.Request, deps fechar.Deps, asJSON bool) int {
 	res, err := fechar.Executar(ctx, req, deps)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro no fechamento: %v\n", err)

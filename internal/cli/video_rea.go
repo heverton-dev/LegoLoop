@@ -96,16 +96,15 @@ func runForensics(ctx context.Context, args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro: --input é obrigatório\n")
 		return 2
 	}
-	if b, err := resolveBrain(ctx, *model, *effort, d); *model != "" && err != nil {
+	b, err := resolveBrain(ctx, *model, *effort, d)
+	if *model != "" && err != nil {
 		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
 		return 1
-	} else {
-		_ = b
 	}
-	return executeForensics(*inputPath, *transcript, *transcriptFile, *descFile, *out, d)
+	return executeForensics(ctx, b, *inputPath, *transcript, *transcriptFile, *descFile, *out, d)
 }
 
-func executeForensics(inPath, tr, trFile, descFile, out string, d Deps) int {
+func executeForensics(ctx context.Context, b brain.Brain, inPath, tr, trFile, descFile, out string, d Deps) int {
 	text, err := resolveInlineOrFile(tr, trFile)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro lendo transcrição: %v\n", err)
@@ -121,7 +120,7 @@ func executeForensics(inPath, tr, trFile, descFile, out string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro lendo input: %v\n", err)
 		return 1
 	}
-	dossier, err := videorea.ExtractForensics(vInput, text, desc)
+	dossier, err := videorea.ExtractForensicsWithBrain(ctx, vInput, text, desc, b)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro extraindo forense: %v\n", err)
 		return 1
@@ -204,14 +203,13 @@ func runGovern(ctx context.Context, args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
 		return 1
 	}
-	_ = b
 	var report videorea.CurationReport
 	if err := loadJSONFile(*approvalPath, &report); err != nil {
 		fmt.Fprintf(d.Stderr, "erro lendo relatorio: %v\n", err)
 		return 1
 	}
 	root := resolveRepoRoot(*repoFlag)
-	bundle, err := videorea.MaterializeAndProject(&report, *bundleDir, root)
+	bundle, err := videorea.MaterializeAndProjectWithBrain(ctx, &report, *bundleDir, root, b)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro materializando bundle: %v\n", err)
 		return 1
