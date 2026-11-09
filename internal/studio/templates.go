@@ -400,6 +400,77 @@ func BuiltinTemplates() []Template {
 				},
 			},
 		},
+		{
+			ID:          "lauren-tan",
+			Name:        "Pipeline Lauren Tan pstack (6 Sub-Loops)",
+			Description: "Pipeline de rigor de engenharia baseado no método Lauren Tan (pstack / poteto-mode): Intenção -> Arquitetura -> Decomposição -> Construção TDD -> Verificação no Artefato Real -> Higiene & Ship.",
+			Category:    "Engenharia",
+			Icon:        "shield",
+			Composition: Composition{
+				Name: "lauren-tan-esteira",
+				Nodes: []CompNode{
+					{
+						ID:    "inquiry",
+						Block: "aidd-lauren",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "haiku",
+						},
+					},
+					{
+						ID:    "architect",
+						Block: "aidd-lauren",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "code-pro",
+						},
+					},
+					{
+						ID:    "plan",
+						Block: "aidd-lauren",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "code-fast",
+						},
+					},
+					{
+						ID:    "craft",
+						Block: "aidd-lauren",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "code-pro",
+						},
+					},
+					{
+						ID:    "verify",
+						Block: "aidd-lauren",
+						Routing: dag.RoutingConfig{
+							Mode:     dag.ModeSuggested,
+							Model:    "sonnet",
+							Fallback: "qwen2.5-coder:7b",
+						},
+					},
+					{
+						ID:    "unslop-ship",
+						Block: "aidd-lauren",
+						Routing: dag.RoutingConfig{
+							Mode:  dag.ModeAuto,
+							Combo: "fast",
+						},
+					},
+				},
+				Edges: []CompEdge{
+					{From: "inquiry", To: "architect"},
+					{From: "architect", To: "plan"},
+					{From: "plan", To: "craft"},
+					{From: "craft", To: "verify"},
+					{From: "verify", To: "unslop-ship"},
+				},
+			},
+		},
 	}
 }
 
