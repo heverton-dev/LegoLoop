@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 460" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font-family: system-ui, -apple-system, sans-serif; font-size: 19px; font-weight: 800; fill: #0f172a; }
+      .subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 12.5px; fill: #64748b; }
+      .node-box { fill: #ffffff; stroke-width: 1.5; rx: 8px; }
+      .node-txt { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+      .node-sub { font-family: system-ui, -apple-system, sans-serif; font-size: 9.5px; fill: #64748b; }
+      .gate-box { fill: #fffbeb; stroke: #d97706; stroke-width: 1.5; rx: 8px; }
+      .gate-txt { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 800; fill: #d97706; text-anchor: middle; }
+      .flow-line { stroke: #cbd5e1; stroke-width: 2; fill: none; }
+    </style>
+    <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <polygon points="0 0, 6 3, 0 6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect width="920" height="460" class="bg" rx="12" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="35" y="38" class="title">Topologia do Pipeline DAG de Edição (12 Nós e 3 Stop-Gates Humanos)</text>
+  <text x="35" y="60" class="subtitle">Execução estéril por camadas em scratch/ com barreiras humanas de aprovação estética</text>
+
+  <!-- Camadas Horizontais -->
+  <!-- Linha 1: Nós 01 a 04 -->
+  <g transform="translate(35, 90)">
+    <rect width="180" height="60" class="node-box" stroke="#2563eb"/>
+    <text x="14" y="26" class="node-txt">n01_iniciar_preparar</text>
+    <text x="14" y="44" class="node-sub">Extração WAV 48k + JSON</text>
+  </g>
+  <path d="M 215 120 L 255 120" class="flow-line" marker-end="url(#arr)"/>
+
+  <g transform="translate(260, 90)">
+    <rect width="180" height="60" class="node-box" stroke="#2563eb"/>
+    <text x="14" y="26" class="node-txt">n02_transcricao</text>
+    <text x="14" y="44" class="node-sub">Whisper Local +40ms folga</text>
+  </g>
+  <path d="M 440 120 L 480 120" class="flow-line" marker-end="url(#arr)"/>
+
+  <g transform="translate(485, 90)">
+    <rect width="180" height="60" class="node-box" stroke="#2563eb"/>
+    <text x="14" y="26" class="node-txt">n03_decisao_cortes</text>
+    <text x="14" y="44" class="node-sub">Corte semântico &amp; extirpação</text>
+  </g>
+  <path d="M 665 120 L 705 120" class="flow-line" marker-end="url(#arr)"/>
+
+  <g transform="translate(710, 90)">
+    <rect width="175" height="60" class="gate-box"/>
+    <text x="87" y="27" class="gate-txt">🛑 STOP-GATE 01</text>
+    <text x="87" y="44" font-family="system-ui" font-size="9.5px" fill="#b45309" text-anchor="middle">Validação do Corte</text>
+  </g>
+
+  <!-- Curva para Linha 2 -->
+  <path d="M 797 150 L 797 195 L 125 195 L 125 220" class="flow-line" marker-end="url(#arr)"/>
+
+  <!-- Linha 2: Nós 05 a 08 -->
+  <g transform="translate(35, 225)">
+    <rect width="180" height="60" class="node-box" stroke="#2563eb"/>
+    <text x="14" y="26" class="node-txt">n05_motion_mapa</text>
+    <text x="14" y="44" class="node-sub">Storyboard dos cartões</text>
+  </g>
+  <path d="M 215 255 L 255 255" class="flow-line" marker-end="url(#arr)"/>
+
+  <g transform="translate(260, 225)">
+    <rect width="180" height="60" class="gate-box"/>
+    <text x="90" y="27" class="gate-txt">🛑 STOP-GATE 02</text>
+    <text x="90" y="44" font-family="system-ui" font-size="9.5px" fill="#b45309" text-anchor="middle">Revisão do Motion</text>
+  </g>
+
+  <!-- Divisão paralela para YuNet e Assets -->
+  <path d="M 440 255 L 465 255 L 465 220 L 485 220" class="flow-line" marker-end="url(#arr)"/>
+  <path d="M 465 255 L 465 290 L 485 290" class="flow-line" marker-end="url(#arr)"/>
+
+  <g transform="translate(490, 195)">
+    <rect width="175" height="50" class="node-box" stroke="#16a34a"/>
+    <text x="12" y="22" class="node-txt">n07_camera_yunet</text>
+    <text x="12" y="38" class="node-sub">Olhos a 35% do topo</text>
+  </g>
+
+  <g transform="translate(490, 265)">
+    <rect width="175" height="50" class="node-box" stroke="#16a34a"/>
+    <text x="12" y="22" class="node-txt">n08_assets_download</text>
+    <text x="12" y="38" class="node-sub">B-Roll e ícones locais</text>
+  </g>
+
+  <!-- Junção para Linha 3 -->
+  <path d="M 665 220 L 690 220 L 690 255 L 710 255" class="flow-line"/>
+  <path d="M 665 290 L 690 290 L 690 255 L 710 255" class="flow-line"/>
+
+  <g transform="translate(710, 225)">
+    <rect width="175" height="60" class="node-box" stroke="#2563eb"/>
+    <text x="14" y="26" class="node-txt">n09_motion_render</text>
+    <text x="14" y="44" class="node-sub">Remotion/HyperFrames</text>
+  </g>
+
+  <!-- Curva para Linha 3 -->
+  <path d="M 797 285 L 797 330 L 125 330 L 125 355" class="flow-line" marker-end="url(#arr)"/>
+
+  <!-- Linha 3: Nós 10 a 12 -->
+  <g transform="translate(35, 360)">
+    <rect width="240" height="60" class="node-box" stroke="#2563eb"/>
+    <text x="14" y="26" class="node-txt">n10_efeitos_sonoros_sfx</text>
+    <text x="14" y="44" class="node-sub">Ducking -18dB + Whoosh no pico</text>
+  </g>
+  <path d="M 275 390 L 325 390" class="flow-line" marker-end="url(#arr)"/>
+
+  <g transform="translate(330, 360)">
+    <rect width="250" height="60" class="node-box" stroke="#16a34a"/>
+    <text x="14" y="26" class="node-txt">n11_entrega_final_hibrida</text>
+    <text x="14" y="44" class="node-sub">Timeline FCPXML aberta + MP4 direto</text>
+  </g>
+  <path d="M 580 390 L 630 390" class="flow-line" marker-end="url(#arr)"/>
+
+  <g transform="translate(635, 360)">
+    <rect width="250" height="60" class="gate-box" stroke="#dc2626"/>
+    <text x="125" y="27" font-family="system-ui" font-size="12px" font-weight="800" fill="#dc2626" text-anchor="middle">🛑 STOP-GATE 03: FINAL</text>
+    <text x="125" y="44" font-family="system-ui" font-size="10px" fill="#b91c1c" text-anchor="middle">Aprovação da Linha do Tempo</text>
+  </g>
+</svg>
