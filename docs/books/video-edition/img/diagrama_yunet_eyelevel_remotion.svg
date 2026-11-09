@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 380" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font-family: system-ui, -apple-system, sans-serif; font-size: 19px; font-weight: 800; fill: #0f172a; }
+      .subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 12.5px; fill: #64748b; }
+      .label { font-family: system-ui, -apple-system, sans-serif; font-size: 11.5px; font-weight: 700; }
+      .sublabel { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; fill: #64748b; }
+    </style>
+  </defs>
+
+  <rect width="880" height="380" class="bg" rx="12" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="35" y="38" class="title">Câmera Inteligente YuNet &amp; Motion Procedural sem Colisão</text>
+  <text x="35" y="60" class="subtitle">O enquadramento facial é calculado após os gráficos, ancorando os olhos a 35% do topo</text>
+
+  <!-- QUADRO DE VÍDEO (16:9) -->
+  <g transform="translate(60, 90)">
+    <!-- Moldura de Vídeo 16:9 -->
+    <rect width="440" height="247" fill="#0f172a" rx="8" stroke="#334155" stroke-width="2"/>
+    
+    <!-- Linha Guia 35% do Topo (Eye Level Dourado) -->
+    <line x1="0" y1="86" x2="440" y2="86" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <rect x="8" y="72" width="140" height="20" fill="#78350f" fill-opacity="0.8" rx="4"/>
+    <text x="78" y="86" font-family="system-ui" font-size="9.5" font-weight="700" fill="#fef3c7" text-anchor="middle">LINHA DOS OLHOS: 35%</text>
+
+    <!-- Apresentador (Silhueta Enquadrada) -->
+    <g transform="translate(130, 45)">
+      <!-- Cabeça -->
+      <circle cx="50" cy="40" r="28" fill="#475569" stroke="#94a3b8"/>
+      <!-- Olhos na Linha Exata (Y=86 absoluto -> Y=41 relativo) -->
+      <circle cx="42" cy="41" r="3" fill="#38bdf8"/>
+      <circle cx="58" cy="41" r="3" fill="#38bdf8"/>
+      <!-- Tronco / Ombros -->
+      <path d="M 0 130 C 10 90 30 80 50 80 C 70 80 90 90 100 130 Z" fill="#334155"/>
+      <!-- Bounding Box YuNet -->
+      <rect x="15" y="8" width="70" height="85" fill="none" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <text x="50" y="4" font-family="monospace" font-size="8.5" fill="#4ade80" text-anchor="middle">YuNet Box</text>
+    </g>
+
+    <!-- Cartão Gráfico Remotion (Entra sem colidir na direita) -->
+    <g transform="translate(265, 55)">
+      <rect width="160" height="150" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+      <rect x="0" y="0" width="160" height="4" fill="#38bdf8" rx="2"/>
+      <text x="14" y="24" font-family="system-ui" font-size="10" font-weight="800" fill="#38bdf8">REMOTION CARD</text>
+      <text x="14" y="44" font-family="system-ui" font-size="9" fill="#e2e8f0">• Layout Reativo</text>
+      <text x="14" y="64" font-family="system-ui" font-size="9" fill="#e2e8f0">• Tipografia Anton</text>
+      <text x="14" y="84" font-family="system-ui" font-size="9" fill="#e2e8f0">• Canal Alfa RGBA</text>
+      <text x="14" y="104" font-family="system-ui" font-size="9" fill="#e2e8f0">• Spring Easing</text>
+      <rect x="14" y="120" width="132" height="18" fill="#0369a1" rx="3"/>
+      <text x="80" y="133" font-family="system-ui" font-size="8.5" font-weight="700" fill="#ffffff" text-anchor="middle">RENDER PROCEDURAL</text>
+    </g>
+  </g>
+
+  <!-- PAINEL EXPLICATIVO NA DIREITA -->
+  <g transform="translate(530, 90)">
+    <rect width="310" height="247" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" rx="8"/>
+    <text x="20" y="30" class="label" fill="#0f172a">Por que Pós-Motion?</text>
+    <line x1="20" y1="42" x2="290" y2="42" stroke="#e2e8f0"/>
+
+    <g transform="translate(20, 56)">
+      <text x="0" y="18" class="sublabel" fill="#334155"><tspan font-weight="bold">1. Prevenção de Oclusão:</tspan></text>
+      <text x="0" y="34" class="sublabel" fill="#64748b">O apresentador é deslocado lateralmente</text>
+      <text x="0" y="48" class="sublabel" fill="#64748b">para abrir palco ao cartão gráfico.</text>
+
+      <text x="0" y="74" class="sublabel" fill="#334155"><tspan font-weight="bold">2. Estabilidade Visual:</tspan></text>
+      <text x="0" y="90" class="sublabel" fill="#64748b">A ancoragem constante a 35% evita</text>
+      <text x="0" y="104" class="sublabel" fill="#64748b">saltos desconfortáveis no corte.</text>
+
+      <text x="0" y="130" class="sublabel" fill="#334155"><tspan font-weight="bold">3. Reversibilidade Total:</tspan></text>
+      <text x="0" y="146" class="sublabel" fill="#64748b">O recorte é persistido como parâmetros</text>
+      <text x="0" y="160" class="sublabel" fill="#64748b">de transformação na timeline FCPXML.</text>
+    </g>
+  </g>
+</svg>

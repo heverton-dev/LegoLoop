@@ -1,14 +1,29 @@
 {
   "$schema": "https://legoloop.dev/schemas/route.v2.json",
-  "template_version": "2.0.0",
+  "template_version": "2.2.0",
   "name": "legopress_engine_canonical",
-  "version": "1.0.0",
-  "date": "2026-11-06",
+  "version": "2.2.0",
+  "date": "2026-11-07",
   "session_id": "00000000-0000-0000-0000-000000000000",
-  "intent_ref": "docs/intents/TEMPLATE_INTENT.md",
-  "spec_ref": "docs/specs/TEMPLATE_SPEC.md",
-  "plan_ref": "docs/plans/TEMPLATE_PLAN.md",
+  "initiative_ref": "docs/intents/2026-11-06_INTENT_LEGOPRESS_PIPELINE.md",
+  "intent_ref": "docs/intents/2026-11-06_INTENT_LEGOPRESS_PIPELINE.md",
+  "spec_ref": "docs/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md",
+  "plan_ref": "docs/plans/2026-11-06_PLAN_LEGOPRESS_PIPELINE.md",
+  "upstream_signatures": {
+    "intent_merkle": "0000000000000000000000000000000000000000000000000000000000000000",
+    "spec_merkle": "0000000000000000000000000000000000000000000000000000000000000000",
+    "plan_merkle": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
   "execution_strategy": {
+    "concurrency": {
+      "max_parallel_workers": 2,
+      "worker_allocation": "per_epic"
+    },
+    "rollback_policy": {
+      "strategy": "abort_pipeline",
+      "auto_stash": true,
+      "preserve_telemetry": true
+    },
     "supervision_level": "micro",
     "default_isolation": {
       "workspace": "local",
@@ -23,6 +38,8 @@
   "nodes": [
     {
       "id": "STEP-01-BRIEFING",
+      "initiative_id": "I04",
+      "epic_id": "E01",
       "label": "Entrevista Socrática & Alinhamento de Intenção",
       "nature": "micro",
       "type": "unit_task",
@@ -32,11 +49,18 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "timeout_sec": 180,
       "token_budget": {
+        "max_input_tokens": 4000,
         "max_output_tokens": 1200
+      },
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": "code-fast"
       },
       "depends_on": [],
       "routing": {
@@ -59,16 +83,39 @@
         "spec_anchor": "",
         "context_artifacts": []
       },
+      "spec_ref": "AC-LP.1",
       "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
           "docs/intents/INTENT_LIVRO.md"
         ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./internal/interview/..."
+          ]
+        ],
         "gate": "exit_code == 0"
+      },
+      "telemetry": {
+        "started_at": null,
+        "finished_at": null,
+        "duration_ms": null,
+        "tokens_consumed": null,
+        "exit_code": null,
+        "git_commit": null,
+        "error_message": null
       }
     },
     {
       "id": "STEP-02-PARTITION",
+      "initiative_id": "I04",
+      "epic_id": "E01",
       "label": "Fatiamento Hierárquico em Tríade (Macro, Meso, Micro)",
       "nature": "nano",
       "type": "unit_task",
@@ -78,11 +125,18 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "timeout_sec": 60,
       "token_budget": {
+        "max_input_tokens": 3000,
         "max_output_tokens": 800
+      },
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": "flash-lite"
       },
       "depends_on": [
         "STEP-01-BRIEFING"
@@ -109,16 +163,39 @@
         "spec_anchor": "",
         "context_artifacts": []
       },
+      "spec_ref": "AC-LP.2",
       "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "docs/livro/livro.json"
+          "docs/books/<slug>/livro.json"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./internal/plangen/..."
+          ]
         ],
         "gate": "exit_code == 0"
+      },
+      "telemetry": {
+        "started_at": null,
+        "finished_at": null,
+        "duration_ms": null,
+        "tokens_consumed": null,
+        "exit_code": null,
+        "git_commit": null,
+        "error_message": null
       }
     },
     {
       "id": "STEP-03-WRITING",
+      "initiative_id": "I04",
+      "epic_id": "E01",
       "label": "Redação Estéril e Purificação Didática sem IA-Slop",
       "nature": "micro",
       "type": "unit_task",
@@ -128,11 +205,18 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "timeout_sec": 300,
       "token_budget": {
+        "max_input_tokens": 8000,
         "max_output_tokens": 4000
+      },
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": "code-pro"
       },
       "depends_on": [
         "STEP-02-PARTITION"
@@ -154,21 +238,44 @@
       },
       "inputs": {
         "source_files": [
-          "docs/livro/livro.json"
+          "docs/books/<slug>/livro.json"
         ],
         "spec_anchor": "",
         "context_artifacts": []
       },
+      "spec_ref": "AC-LP.3",
       "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "docs/livro/partes/*.md"
+          "docs/books/<slug>/partes/*.md"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./internal/specgen/..."
+          ]
         ],
         "gate": "exit_code == 0"
+      },
+      "telemetry": {
+        "started_at": null,
+        "finished_at": null,
+        "duration_ms": null,
+        "tokens_consumed": null,
+        "exit_code": null,
+        "git_commit": null,
+        "error_message": null
       }
     },
     {
       "id": "STEP-04-COMPILE",
+      "initiative_id": "I04",
+      "epic_id": "E01",
       "label": "Compilação Typst + Pandoc no Formato 170x240mm",
       "nature": "micro",
       "type": "unit_task",
@@ -178,11 +285,18 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "timeout_sec": 120,
       "token_budget": {
+        "max_input_tokens": 2000,
         "max_output_tokens": 600
+      },
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": "flash-lite"
       },
       "depends_on": [
         "STEP-03-WRITING"
@@ -204,22 +318,45 @@
       },
       "inputs": {
         "source_files": [
-          "docs/livro/partes/*.md",
-          "docs/livro/ativos/livro.typst"
+          "docs/books/<slug>/partes/*.md",
+          "docs/books/<slug>/ativos/livro.typst"
         ],
         "spec_anchor": "",
         "context_artifacts": []
       },
+      "spec_ref": "AC-LP.4",
       "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "docs/livro/livro.pdf"
+          "docs/books/<slug>/livro.pdf"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./cmd/legoloop/..."
+          ]
         ],
         "gate": "exit_code == 0"
+      },
+      "telemetry": {
+        "started_at": null,
+        "finished_at": null,
+        "duration_ms": null,
+        "tokens_consumed": null,
+        "exit_code": null,
+        "git_commit": null,
+        "error_message": null
       }
     },
     {
       "id": "STEP-05-AUDIT-GEOMETRY",
+      "initiative_id": "I04",
+      "epic_id": "E01",
       "label": "Auditoria Mecânica com PyMuPDF (Zero Quebras & Linha Única)",
       "nature": "micro",
       "type": "unit_task",
@@ -229,11 +366,18 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "timeout_sec": 60,
       "token_budget": {
+        "max_input_tokens": 4000,
         "max_output_tokens": 600
+      },
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": "code-pro"
       },
       "depends_on": [
         "STEP-04-COMPILE"
@@ -255,35 +399,65 @@
       },
       "inputs": {
         "source_files": [
-          "docs/livro/livro.pdf"
+          "docs/books/<slug>/livro.pdf"
         ],
         "spec_anchor": "",
         "context_artifacts": []
       },
+      "spec_ref": "AC-LP.5",
       "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "docs/livro/relatorio_geometria.json"
+          "docs/books/<slug>/relatorio_geometria.json"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-v",
+            "-count=1",
+            "./internal/gate/..."
+          ]
         ],
         "gate": "exit_code == 0"
+      },
+      "telemetry": {
+        "started_at": null,
+        "finished_at": null,
+        "duration_ms": null,
+        "tokens_consumed": null,
+        "exit_code": null,
+        "git_commit": null,
+        "error_message": null
       }
     },
     {
       "id": "STEP-06-HUMAN-STOP-GATE",
+      "initiative_id": "I04",
+      "epic_id": "E01",
       "label": "Stop-Gate Humano: Aprovação Final do Livro e Publicação",
       "nature": "nano",
-      "type": "unit_task",
+      "type": "stop_gate",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "none"
       },
       "timeout_sec": 30,
       "token_budget": {
+        "max_input_tokens": 1000,
         "max_output_tokens": 300
+      },
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": "human"
       },
       "depends_on": [
         "STEP-05-AUDIT-GEOMETRY"
@@ -305,15 +479,28 @@
       },
       "inputs": {
         "source_files": [
-          "docs/livro/relatorio_geometria.json"
+          "docs/books/<slug>/relatorio_geometria.json"
         ],
         "spec_anchor": "",
         "context_artifacts": []
       },
+      "spec_ref": "AC-LP.6",
       "test_target": "",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [],
-        "gate": "exit_code == 0"
+        "verify": [],
+        "gate": "prompt('Aprova a versão final do livro e relatório geométrico?')"
+      },
+      "telemetry": {
+        "started_at": null,
+        "finished_at": null,
+        "duration_ms": null,
+        "tokens_consumed": null,
+        "exit_code": null,
+        "git_commit": null,
+        "error_message": null
       }
     }
   ]

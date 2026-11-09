@@ -1,0 +1,142 @@
+{
+  "video_title": "Como eu edito meus vídeos com Claude Code (fluxo completo)",
+  "total_monthly_cost": "R$ 329,00/mes (SaaS + Softwares Proprietarios)",
+  "tools": [
+    {
+      "name": "Adobe Premiere Pro",
+      "category": "video_editor_nle",
+      "is_free": false,
+      "license_type": "proprietary_subscription",
+      "cost_tier": "R$ 124,00/mes",
+      "detection": "explicit_mention",
+      "source_evidence": "Etapa 3: cortes e revisao fina na timeline do Premiere",
+      "timestamp": "02:54"
+    },
+    {
+      "name": "Claude Pro + Claude Code",
+      "category": "commercial_llm_service",
+      "is_free": false,
+      "license_type": "proprietary_subscription",
+      "cost_tier": "R$ 110,00/mes (Pro)",
+      "detection": "explicit_mention",
+      "source_evidence": "Claude (assinatura Pro) + Claude Code instalado no computador",
+      "timestamp": "00:59"
+    },
+    {
+      "name": "Epidemic Sound",
+      "category": "commercial_audio_library",
+      "is_free": false,
+      "license_type": "proprietary_subscription",
+      "cost_tier": "R$ 75,00/mes",
+      "detection": "explicit_mention",
+      "source_evidence": "Epidemic Sound: biblioteca musical e efeitos sonoros com link de afiliado",
+      "timestamp": "05:06"
+    },
+    {
+      "name": "Whisper API Comercial",
+      "category": "cloud_transcription_api",
+      "is_free": false,
+      "license_type": "proprietary_pay_per_minute",
+      "cost_tier": "R$ 20,00/mes (API comercial)",
+      "detection": "explicit_mention",
+      "source_evidence": "Transcricao em nuvem cobrada por hora de audio",
+      "timestamp": "02:26"
+    },
+    {
+      "name": "WhisperX",
+      "category": "transcription_word_alignment",
+      "is_free": true,
+      "license_type": "open_source_bsd",
+      "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+      "detection": "explicit_mention",
+      "source_evidence": "WhisperX: transcricao gratuita com alinhamento preciso por palavra",
+      "timestamp": "02:26",
+      "repository_url": "https://github.com/m-bain/whisperX",
+      "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/decisoes.md#L21"
+    },
+    {
+      "name": "HyperFrames",
+      "category": "motion_graphics_code",
+      "is_free": true,
+      "license_type": "open_source_mit",
+      "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+      "detection": "explicit_mention",
+      "source_evidence": "HyperFrames: animacoes feitas com codigo HTML CSS GSAP renderizadas via CLI",
+      "timestamp": "04:16",
+      "repository_url": "https://github.com/hyperframes/hyperframes",
+      "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/hyperframes.md"
+    },
+    {
+      "name": "YuNet (OpenCV)",
+      "category": "facial_detection_tracking",
+      "is_free": true,
+      "license_type": "open_source_apache2",
+      "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+      "detection": "explicit_mention",
+      "source_evidence": "YuNet: rastreio de rosto leve que roda local para movimento inteligente de camera",
+      "timestamp": "04:44",
+      "repository_url": "https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet",
+      "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/etapa-camera.md"
+    },
+    {
+      "name": "Skill Fluxo de Edicao",
+      "category": "editing_workflow_framework",
+      "is_free": true,
+      "license_type": "open_source_mit",
+      "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+      "detection": "explicit_link",
+      "source_evidence": "Skill gratuita 'Fluxo de edicao' compartilhada no GitHub sob licenca MIT",
+      "timestamp": "08:01",
+      "repository_url": "https://github.com/LeiteZ/fluxo-de-edicao",
+      "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/SKILL.md"
+    },
+    {
+      "name": "Python Helper Scripts",
+      "category": "state_inspection_scripts",
+      "is_free": true,
+      "license_type": "open_source_script",
+      "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+      "detection": "implicit_code",
+      "source_evidence": "ver.py status e ver.py cortes para inspecionar estado sem consumir tokens de LLM",
+      "timestamp": "05:37",
+      "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/principios-do-fluxo.md#L18",
+      "reconstructed_snippet": "ver.py \u003cpasta\u003e status"
+    },
+    {
+      "name": "FFmpeg CLI",
+      "category": "media_slicing_conversion",
+      "is_free": true,
+      "license_type": "open_source_lgpl",
+      "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+      "detection": "implicit_terminal",
+      "source_evidence": "Separacao de audio 48k e cortes de precisao em linha de comando",
+      "timestamp": "02:26",
+      "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/etapa-iniciar-preparar.md",
+      "reconstructed_snippet": "ffmpeg -i raw.mp4 -vn audio.wav"
+    },
+    {
+      "name": "Python / yt-dlp",
+      "category": "asset_download_management",
+      "is_free": true,
+      "license_type": "open_source_unlicense",
+      "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+      "detection": "implicit_terminal",
+      "source_evidence": "Download de assets e gerenciamento de dependencias",
+      "timestamp": "04:03",
+      "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/etapa-assets.md",
+      "reconstructed_snippet": "pip install yt-dlp opencv-python hyperframes"
+    }
+  ],
+  "original_steps": [
+    "00:59 - Inicializacao de ambiente com Claude Pro e Claude Code",
+    "02:26 - Extracao de audio via FFmpeg e transcricao com WhisperX",
+    "02:54 - Decisao de cortes de respiros e hesitacoes no Premiere",
+    "03:18 - Planejamento visual em motion mapa",
+    "04:03 - Coleta de assets com Python e yt-dlp",
+    "04:16 - Renderizacao de motion graphics em codigo com HyperFrames",
+    "04:44 - Rastreamento facial e zooms de camera com YuNet",
+    "05:06 - Insercao de efeitos sonoros da Epidemic Sound",
+    "05:37 - Inspecao de estado com ver.py e recap da skill mestra",
+    "08:01 - Disponibilizacao da skill gratuita no GitHub"
+  ]
+}

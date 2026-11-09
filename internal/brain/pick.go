@@ -46,9 +46,30 @@ func Pick(inv provider.Inventory, requested string, opts ...Option) (Brain, stri
 		b := build(inv, cfg, src, requested)
 		return b, ste.Msg("brain.escolha_pedido", b.Name()), nil
 	}
-	m := preferred(models)
+	m := preferredByEffort(models, cfg.effort)
 	b := build(inv, cfg, m.Source, m.ID)
 	return b, ste.Msg("brain.escolha_auto", b.Name()), nil
+}
+
+// preferredByEffort seleciona o modelo de acordo com o esforço cognitivo pedido.
+func preferredByEffort(models []provider.Model, effort Effort) provider.Model {
+	switch effort {
+	case EffortLow:
+		for _, m := range models {
+			id := strings.ToLower(m.ID)
+			if strings.Contains(id, "fast") || strings.Contains(id, "flash") || strings.Contains(id, "haiku") || strings.Contains(id, "mini") {
+				return m
+			}
+		}
+	case EffortHigh:
+		for _, m := range models {
+			id := strings.ToLower(m.ID)
+			if strings.Contains(id, "pro") || strings.Contains(id, "opus") || strings.Contains(id, "reasoning") || strings.Contains(id, "coder") {
+				return m
+			}
+		}
+	}
+	return preferred(models)
 }
 
 // preferred é o primeiro modelo da lista; no claude CLI prefere o sonnet (bom custo e capacidade).
@@ -88,7 +109,7 @@ func build(inv provider.Inventory, cfg config, src provider.Source, model string
 	case provider.SourceRouter:
 		c := interview.NewRouterClient(inv.RouterURL, provider.TrustedRouterKey(inv.RouterURL), model)
 		c.HTTPClient.Timeout = cfg.timeout
-		return routerBrain{RouterLLMClient: c, name: name}
+		return routerBrain{RouterLLMClient: c, name: name, effort: cfg.effort}
 	case provider.SourceClaudeCLI:
 		name = "claude/" + model
 	case provider.SourceOllama:
@@ -97,5 +118,5 @@ func build(inv provider.Inventory, cfg config, src provider.Source, model string
 		name = model // harness: "agy:default" já carrega o nome do executor
 	}
 	o := &orchestrix.Orchestrix{Inventory: inv, HTTP: cfg.http, OllamaURL: cfg.ollamaURL}
-	return orchBrain{o: o, src: src, model: model, name: name, limit: cfg.timeout}
+	return orchBrain{o: o, src: src, model: model, name: name, limit: cfg.timeout, effort: cfg.effort}
 }

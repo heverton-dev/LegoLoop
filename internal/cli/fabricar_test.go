@@ -133,8 +133,8 @@ func TestRunFabricar(t *testing.T) {
 				t.Errorf("saída sem %q:\n%s", want, r.out)
 			}
 		}
-		if len(r.files(t)) != 9 {
-			t.Errorf("devia gravar 9 arquivos: %v", r.files(t))
+		if len(r.files(t)) != 10 {
+			t.Errorf("devia gravar 10 arquivos: %v", r.files(t))
 		}
 	})
 

@@ -19,6 +19,7 @@ func TestGateTrivialChecksContent(t *testing.T) {
 		{"file_exists('a.md') && has_acceptance_criteria('a.md')", true},
 		{"file_exists('a.md') && line_count('a.md') >= 2", true},
 		{"file_exists('a.json') && schema_valid('s.json', 'a.json')", true},
+		{"file_exists('a.go') && no_stubs('a.go')", true},
 		{"prompt('Aprova?')", true},
 		{"interactive('Aprova?')", true},
 		// "||" só prova conteúdo se os dois lados provam

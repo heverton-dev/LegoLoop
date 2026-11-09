@@ -1,6 +1,8 @@
 package processo
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -21,14 +23,30 @@ const (
 	maxTimeoutNode = 600
 )
 
-// Projecoes são as seis visões do mesmo processo. Todas nascem das mesmas etapas, e Verificar prova que
+// Projecoes são as visões do mesmo processo no Quinteto ISO. Todas nascem das mesmas etapas, e Verificar prova que
 // listam os mesmos ids na mesma ordem.
 type Projecoes struct {
 	Spec, Plan, Skill string
 	Route, DAG, Loop  []byte
 	Avisos            []string // avisos do plangen (por exemplo, critério sem ticket)
-	// Nomes dos arquivos em docs/specs, docs/plans e docs/routes, na convenção do plangen.
+	// Nomes dos arquivos em docs/specs, docs/plans, docs/routes e docs/dags.
 	SpecNome, PlanNome, RouteNome string
+	DAGNome                       string
+}
+
+// CheckParity compara o hash SHA-256 de dois arquivos no disco.
+func CheckParity(pathA, pathB string) (bool, error) {
+	dataA, err := os.ReadFile(pathA)
+	if err != nil {
+		return false, err
+	}
+	dataB, err := os.ReadFile(pathB)
+	if err != nil {
+		return false, err
+	}
+	hashA := sha256.Sum256(dataA)
+	hashB := sha256.Sum256(dataB)
+	return hex.EncodeToString(hashA[:]) == hex.EncodeToString(hashB[:]), nil
 }
 
 // Projetar gera SPEC, PLAN, ROUTE, DAG, loop e SKILL a partir do processo e confere a coerência entre eles.
@@ -52,8 +70,9 @@ func Projetar(p Processo, now time.Time) (*Projecoes, error) {
 	if err != nil {
 		return nil, err
 	}
+	dagNome := strings.Replace(strings.Replace(pl.specNome, "SPEC", "DAG", 1), ".md", ".json", 1)
 	pr := &Projecoes{Spec: spec, Plan: pl.plan, Route: pl.route, DAG: dagJSON, Loop: loopJSON, Skill: projetarSkill(p, ord),
-		Avisos: pl.avisos, SpecNome: pl.specNome, PlanNome: pl.planNome, RouteNome: pl.routeNome}
+		Avisos: pl.avisos, SpecNome: pl.specNome, PlanNome: pl.planNome, RouteNome: pl.routeNome, DAGNome: dagNome}
 	if err := pr.Verificar(p); err != nil {
 		return nil, err
 	}
@@ -104,7 +123,26 @@ func noDe(e Etapa, porID map[string]Etapa) dag.Node {
 		}
 		n.Inputs[d] = "file('" + porID[d].Produz.Caminho + "')"
 	}
+	adicionarMetadadosCognitivos(&n, e, porID)
 	return n
+}
+
+func adicionarMetadadosCognitivos(n *dag.Node, e Etapa, porID map[string]Etapa) {
+	n.Name = limpo(e.Titulo)
+	n.Nature = "micro"
+	n.CognitiveComplexity = "simples"
+	n.Isolation = map[string]any{"workspace": "local", "executor": "orchestrix_hermetic", "subagents_allowed": false}
+	n.TokenBudget = map[string]any{"max_prompt_tokens": 10000, "max_completion_tokens": 3000}
+	n.Tooling = map[string]any{"runtime": "powershell"}
+	n.Status = "PENDING"
+	if e.Produz.Caminho != "" {
+		n.ContextOut = []string{e.Produz.Caminho}
+	}
+	for _, d := range e.Depende {
+		if prod := porID[d].Produz.Caminho; prod != "" {
+			n.ContextIn = append(n.ContextIn, prod)
+		}
+	}
 }
 
 func marshalDAG(d dag.DAG) ([]byte, error) {

@@ -35,7 +35,7 @@ type fabricarOpts struct {
 	noLink                         bool
 	semEntrevista, aceitar         bool
 	entrevista                     string
-	goal, model, category          string
+	goal, model, category, effort  string
 	vault, docs                    string
 	link                           listFlag
 }
@@ -49,6 +49,7 @@ func newFabricarFlags(o *fabricarOpts) *flag.FlagSet {
 	fs.BoolVar(&o.aceitar, "aceitar-rascunho", false, "com --entrevista: gera a SPEC mesmo com a confiança abaixo da meta")
 	fs.StringVar(&o.goal, "goal", "", "objetivo em linguagem natural (padrão: o próprio nome)")
 	fs.StringVar(&o.model, "model", "", "modelo que conduz a fabricação, executor 9router (padrão: o primeiro listado por legoloop doctor)")
+	fs.StringVar(&o.effort, "effort", "", "esforço cognitivo (low, medium, high)")
 	fs.StringVar(&o.category, "category", "build", "categoria: build, reverse, web ou mobile")
 	fs.StringVar(&o.vault, "vault", "", "cofre canônico (padrão ~/.aidd/canonical)")
 	fs.StringVar(&o.docs, "docs", "", "raiz do projeto que recebe docs/ (padrão: diretório atual)")
@@ -117,8 +118,7 @@ func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
 		fmt.Fprintln(d.Stderr, "erro:", err)
 		return 2
 	}
-	inv := d.discover(ctx)
-	b, why, err := brain.Pick(inv, o.model, d.brainOpts()...)
+	b, why, err := resolveFabricarBrain(ctx, o, d)
 	if err != nil {
 		return failBrain(d, err)
 	}
@@ -139,6 +139,20 @@ func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
 		return failFabricar(d, err)
 	}
 	return reportFabricar(d, res, o)
+}
+
+func resolveFabricarBrain(ctx context.Context, o fabricarOpts, d Deps) (brain.Brain, string, error) {
+	opts := d.brainOpts()
+	if o.effort != "" {
+		switch o.effort {
+		case "low", "medium", "high":
+			opts = append(opts, brain.WithEffort(brain.Effort(o.effort)))
+		default:
+			return nil, "", fmt.Errorf("esforço cognitivo inválido %q (use low, medium ou high)", o.effort)
+		}
+	}
+	inv := d.discover(ctx)
+	return brain.Pick(inv, o.model, opts...)
 }
 
 // failBrain traduz o erro da escolha do cérebro: modelo fora do inventário é uso incorreto (2); sem nenhum

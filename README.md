@@ -54,6 +54,7 @@ LegoLoop/
 │   ├── board/ · wave/       # Integração com GitHub Projects e planejador de ondas sem sobreposição
 │   ├── studio/              # Looping Studio (canvas + API REST + modais Novo Processo e Processos)
 │   ├── e2e/                 # Testes E2E herméticos dos cenários de referência (tag e2e)
+│   ├── redc/                # MEGA-PIPELINE REDC: engenharia reversa de canais, DNA, ganchos e Brand Swap
 │   ├── mcp/                 # Meta-MCP Router STDIO: bootstrap mínimo (2 tools), busca Lazy e catálogo de skills
 │   └── cli/                 # Comandos da CLI, alternador STE-PT e sincronização de harnesses
 ├── skills/                  # Skills canônicas embutidas no binário (//go:embed via skills/embed.go)
@@ -62,7 +63,8 @@ LegoLoop/
 │   ├── legoloop-listar/     # Inspeção de processos e vínculos (/legoloop-listar)
 │   ├── legoloop-refinar/    # Refinamento de passos (/legoloop-refinar)
 │   ├── legoloop-remover/    # Remoção e desvinculação (/legoloop-remover)
-│   └── legoloop-compor/     # Composição como sub-loop (/legoloop-compor)
+│   ├── legoloop-compor/     # Composição como sub-loop (/legoloop-compor)
+│   └── legoloop-canal-redc/ # Engenharia reversa profunda de canais e clonagem (/legoloop-canal-redc)
 ├── docs/
 │   ├── templates/           # Templates canônicos v2 (INTENT, SPEC, PLAN, ROUTE e peças) + conformidade em Go
 │   ├── manuals/             # Manuais operacionais dos 6 comandos principais
@@ -95,6 +97,12 @@ legoloop refinar "extrator-audio" --trocar aidd-rea
 legoloop remover "extrator-audio" --dry-run
 legoloop compor "esteira-master" "extrator-audio"
 legoloop instalar-skills                          # distribui as 10 skills canônicas nos harnesses
+
+# Mega-Pipelines Audiovisuais & Engenharia Reversa de Canais
+legoloop canal redc <dir> --canal meu-canal --json   # analisa 100 vídeos e extrai Dossiê DNA
+legoloop canal gerar meu-canal --tema "Novo Tema"     # gera vídeo estrutural com Brand Swap
+legoloop video-motion                                # pipeline determinístico de edição e motion
+legoloop video-rea                                   # pipeline universal de engenharia reversa audiovisual
 
 # Execução e Studio Visual
 legoloop route --from Artifact:URL --to Artifact:Spec
@@ -143,6 +151,20 @@ O LegoLoop cobre todo o ciclo de vida de esteiras autônomas através de **5 ver
 * [`MANUAL_FUNCAO_REFINAR_LEGOLOOP.md`](docs/manuals/2026-11-06_MANUAL_FUNCAO_REFINAR_LEGOLOOP.md)
 * [`MANUAL_FUNCAO_REMOVER_LEGOLOOP.md`](docs/manuals/2026-11-06_MANUAL_FUNCAO_REMOVER_LEGOLOOP.md)
 * [`MANUAL_FUNCAO_COMPOR_LEGOLOOP.md`](docs/manuals/2026-11-06_MANUAL_FUNCAO_COMPOR_LEGOLOOP.md)
+* [`MANUAL_FUNCAO_LEGOPRESS_LEGOLOOP.md`](docs/manuals/2026-11-06_MANUAL_FUNCAO_LEGOPRESS_LEGOLOOP.md)
+* [`MANUAL_FUNCAO_PIECE_UPGRADER_LEGOLOOP.md`](docs/manuals/2026-11-07_MANUAL_FUNCAO_PIECE_UPGRADER_LEGOLOOP.md)
+* [`MANUAL_FUNCAO_LOOP_MAP_LEGOLOOP.md`](docs/manuals/2026-11-07_MANUAL_FUNCAO_LOOP_MAP_LEGOLOOP.md)
+* [`MANUAL_FUNCAO_MEGA_PIPELINE_LEGOLOOP.md`](docs/manuals/2026-11-07_MANUAL_FUNCAO_MEGA_PIPELINE_LEGOLOOP.md)
+* [`MANUAL_FUNCAO_VIDEO_REA_LEGOLOOP.md`](docs/manuals/2026-11-07_MANUAL_FUNCAO_VIDEO_REA_LEGOLOOP.md)
+* [`MANUAL_FUNCAO_VIDEO_MOTION_LEGOLOOP.md`](docs/manuals/2026-11-07_MANUAL_FUNCAO_VIDEO_MOTION_LEGOLOOP.md)
+* [`MANUAL_FUNCAO_VIDEO_MASTER_LEGOLOOP.md`](docs/manuals/2026-11-07_MANUAL_FUNCAO_VIDEO_MASTER_LEGOLOOP.md)
+* [`MANUAL_FUNCAO_FECHAR_LEGOLOOP.md`](docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md)
+
+### 🎬 Mega-Pipelines Audiovisuais & Engenharia Reversa (`video-rea`)
+* **Engenharia Reversa Audiovisual (`legoloop video-rea`):** Disseca URLs ou mídias locais criando Target Workspaces isolados em `docs/videorea/<slug>/`.
+  * **Fase 1 (Forense & Matriz Original):** Extração de transcrição e OCR rápido em `dossier.json`, alimentando a nova camada `original_matrix.json` (stack real do autor, ferramentas pagas vs gratuitas explícitas e comandos implícitos de terminal/código).
+  * **Fase 2 (Curadoria & Soberania):** Substituição de ferramentas comerciais por peças Tier Ouro do cofre e **Adoção Soberana Imediata** de utilitários gratuitos vazados no vídeo (custo R$ 0,00).
+  * **Fase 3 & 4 (Governança, Livro e Loop):** Fabricação da Tríade ISO local (`governance/`), Livro Didático LegoPress (`book/`), DAG com Golden Fixture de 3s (`loop/`), com projeção canônica na raiz (`loops/` e `skills/`) mediante aprovação do Stop-Gate humano.
 
 ## 🛡️ Governança & Alternador STE-PT (`legoloop stept`)
 

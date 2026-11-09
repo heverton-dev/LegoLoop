@@ -27,7 +27,7 @@ func read(t *testing.T, name string) []byte {
 }
 
 func TestJSONTemplatesAreValid(t *testing.T) {
-	for _, n := range []string{"TEMPLATE_ROUTE.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_MCP.json", "TEMPLATE_PIECE_LOOP.json"} {
+	for _, n := range []string{"TEMPLATE_ROUTE.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_MCP.json", "TEMPLATE_PIECE_LOOP.json", "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG.json"} {
 		var v any
 		if err := json.Unmarshal(read(t, n), &v); err != nil {
 			t.Errorf("%s não é JSON válido: %v", n, err)
@@ -39,14 +39,22 @@ func TestEmbeddedTemplatesMatchFiles(t *testing.T) {
 	if templates.Intent() != string(read(t, "TEMPLATE_INTENT.md")) ||
 		templates.Spec() != string(read(t, "TEMPLATE_SPEC.md")) ||
 		templates.Plan() != string(read(t, "TEMPLATE_PLAN.md")) ||
-		string(templates.Route()) != string(read(t, "TEMPLATE_ROUTE.json")) {
+		templates.Report() != string(read(t, "TEMPLATE_REPORT.md")) ||
+		string(templates.Route()) != string(read(t, "TEMPLATE_ROUTE.json")) ||
+		string(templates.DAGVideoREA()) != string(read(t, "TEMPLATE_DAG_VIDEOREA.json")) ||
+		string(templates.DAG()) != string(read(t, "TEMPLATE_DAG.json")) {
 		t.Fatal("o conteúdo embutido diverge dos arquivos em docs/templates")
 	}
 }
 
 func TestDocumentHeadingsAreNumberedAndStable(t *testing.T) {
-	want := map[string]int{"intent": 6, "spec": 6, "plan": 4}
-	docs := map[string]string{"intent": templates.Intent(), "spec": templates.Spec(), "plan": templates.Plan()}
+	want := map[string]int{"intent": 6, "spec": 6, "plan": 4, "report": 6}
+	docs := map[string]string{
+		"intent": templates.Intent(),
+		"spec":   templates.Spec(),
+		"plan":   templates.Plan(),
+		"report": templates.Report(),
+	}
 	for name, md := range docs {
 		hs := templates.Headings(md)
 		if len(hs) != want[name] {
@@ -247,5 +255,35 @@ func TestRouteKeysAreExposedForEngines(t *testing.T) {
 	}
 	if templates.Version != "2.2.0" {
 		t.Errorf("templates.Version deve ser 2.2.0, obteve %s", templates.Version)
+	}
+}
+
+func TestQuintetoTemplatesConformidade(t *testing.T) {
+	quinteto := []struct {
+		name string
+		data []byte
+	}{
+		{"TEMPLATE_INTENT.md", []byte(templates.Intent())},
+		{"TEMPLATE_SPEC.md", []byte(templates.Spec())},
+		{"TEMPLATE_PLAN.md", []byte(templates.Plan())},
+		{"TEMPLATE_ROUTE.json", templates.Route()},
+		{"TEMPLATE_DAG.json", templates.DAG()},
+	}
+
+	for _, item := range quinteto {
+		if len(item.data) == 0 {
+			t.Errorf("template do quinteto %s não pode estar vazio", item.name)
+		}
+	}
+
+	var d struct {
+		Name  string `json:"name"`
+		Nodes []any  `json:"nodes"`
+	}
+	if err := json.Unmarshal(templates.DAG(), &d); err != nil {
+		t.Fatalf("TEMPLATE_DAG.json não é um DAG válido: %v", err)
+	}
+	if len(d.Nodes) == 0 {
+		t.Errorf("TEMPLATE_DAG.json deve conter nós de exemplo")
 	}
 }

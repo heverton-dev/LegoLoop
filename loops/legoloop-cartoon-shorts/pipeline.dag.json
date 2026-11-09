@@ -1,0 +1,165 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "name": "legoloop-cartoon-shorts",
+  "version": "1.0.0",
+  "date": "2026-11-09",
+  "description": "Pipeline canônico soberano de geração de Cartoon Shorts (1080x1920 30fps) com roteiro 3.7 palavras/s, voz neural Edge-TTS e renderização Three.js/Playwright a custo R$ 0,00",
+  "upstream_signatures": {
+    "intent": "6ef659ca8a52b2aa64cb8cd88fddec0444400c9a9088bca7aa9c5a358f05cf9f",
+    "spec": "5aacc736641d9a342a57c510e76455f28978032b18f30d699942f22ebc5cba3f",
+    "plan": "ad2c69d7bc1d3fae4d1a1c4a1e15ba94b8c47868a0f6be196c9860105dc9e7e7",
+    "route": "docs/routes/2026-11-09_ROUTE_LEGOLOOP_CARTOON_SHORTS.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_script_engine",
+      "name": "Geração do Roteiro de Curiosidades com Tags de Emoção",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 600
+      },
+      "timeout_sec": 180,
+      "context_in": [
+        "docs/specs/2026-11-09_SPEC_LEGOLOOP_CARTOON_SHORTS.md"
+      ],
+      "context_out": [
+        "docs/videorea/legoloop-cartoon-shorts/scratch/script.json"
+      ],
+      "status": "PENDING",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestBuildCartoonScript",
+        "./internal/videorea/..."
+      ],
+      "output": {
+        "artifact": "docs/videorea/legoloop-cartoon-shorts/scratch/script.json",
+        "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/scratch/script.json')"
+      }
+    },
+    {
+      "id": "n02_edge_tts",
+      "name": "Síntese de Voz Soberana Edge-TTS pt-BR",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "depends_on": [
+        "n01_script_engine"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 500
+      },
+      "timeout_sec": 180,
+      "context_in": [
+        "docs/videorea/legoloop-cartoon-shorts/scratch/script.json"
+      ],
+      "context_out": [
+        "docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3"
+      ],
+      "status": "PENDING",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestSynthesizeEdgeTTS",
+        "./internal/videorea/..."
+      ],
+      "output": {
+        "artifact": "docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3",
+        "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3')"
+      }
+    },
+    {
+      "id": "n03_threejs_render",
+      "name": "Renderização Visual Three.js e Muxing Determinístico FFmpeg",
+      "nature": "macro",
+      "cognitive_complexity": "complexo",
+      "type": "unit_task",
+      "depends_on": [
+        "n02_edge_tts"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "fallback": "code-pro"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 24000,
+        "max_completion_tokens": 800
+      },
+      "timeout_sec": 240,
+      "context_in": [
+        "docs/videorea/legoloop-cartoon-shorts/scratch/script.json",
+        "docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3"
+      ],
+      "context_out": [
+        "docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4"
+      ],
+      "status": "PENDING",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestRenderCartoonScenes",
+        "./internal/videorea/..."
+      ],
+      "output": {
+        "artifact": "docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4",
+        "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4')"
+      }
+    }
+  ]
+}

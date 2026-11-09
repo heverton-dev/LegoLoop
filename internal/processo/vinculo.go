@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // harnessesConhecidos são os harnesses que têm pasta de skills própria em ~/.<nome>/skills.
@@ -106,7 +107,21 @@ func jaLigado(v Vinculo) (bool, error) {
 	if copiaIdentica(v) {
 		return true, nil
 	}
+	if copiaDesatualizada(v) {
+		return false, nil
+	}
 	return false, fmt.Errorf("vínculo com %s: já existe %s", v.Harness, v.Destino)
+}
+
+func copiaDesatualizada(v Vinculo) bool {
+	a, errA := os.ReadFile(filepath.Join(v.Destino, "SKILL.md"))
+	b, errB := os.ReadFile(filepath.Join(v.Origem, "SKILL.md"))
+	if errA != nil || errB != nil {
+		return false
+	}
+	nomeSkill := filepath.Base(v.Origem)
+	tag := "name: " + nomeSkill
+	return strings.Contains(string(a), tag) && strings.Contains(string(b), tag)
 }
 
 // copiaIdentica reconhece o vínculo feito por cópia (sistema sem symlink): o SKILL.md é o mesmo do cofre.

@@ -1,0 +1,1438 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "ROUTE_VIDEO_MOTION_PIPELINE",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "session_id": "217415b3-cbf6-432f-bbe6-b267fa3fddea",
+  "intent_ref": "docs/intents/2026-11-07_INTENT_VIDEO_MOTION_PIPELINE.md",
+  "spec_ref": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md",
+  "plan_ref": "docs/plans/2026-11-07_PLAN_VIDEO_MOTION_PIPELINE.md",
+  "initiative_ref": "I01",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-07_INTENT_VIDEO_MOTION_PIPELINE.md",
+      "sha256": "a36836db665a95c0deac4580190b4258ac38794690e0d3e062638ae3a17eb59b"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md",
+      "sha256": "11be48e00104963c62becc6c32eb71303ae29bed123513765e482c32a4de46e0"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-07_PLAN_VIDEO_MOTION_PIPELINE.md",
+      "sha256": "9ecc5025711a5abcc08cb57b0eede7664bb0de74f33b5d5fa8802698da39c2c2"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "I01",
+      "epic_id": "E01",
+      "label": "Detecção de Silêncio e Fatiamento de Pausas com 40ms Pré-Ataque",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/silence.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/videomotion/silence_test.go:TestDetectSilenceAndCut",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/silence.go",
+          "internal/videomotion/silence_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestDetectSilenceAndCut"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/silence.go') && file_exists('internal/videomotion/silence_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "I01",
+      "epic_id": "E01",
+      "label": "Parser e Validador Fonético Palavra por Palavra (words.json)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/words.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": "internal/videomotion/words_test.go:TestParseAndValidateWords",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/words.go",
+          "internal/videomotion/words_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestParseAndValidateWords"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/words.go') && file_exists('internal/videomotion/words_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.3",
+      "initiative_id": "I01",
+      "epic_id": "E01",
+      "label": "Detector de Ênfase Vocal por Análise de Energia RMS",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/energy.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/videomotion/energy_test.go:TestDetectPunchWords",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/energy.go",
+          "internal/videomotion/energy_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestDetectPunchWords"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/energy.go') && file_exists('internal/videomotion/energy_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.4",
+      "initiative_id": "I01",
+      "epic_id": "E01",
+      "label": "Normalizador de Loudness EBU R128 (-14 LUFS) e Tratamento de Erros",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/loudness.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E01.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.4",
+      "test_target": "internal/videomotion/loudness_test.go:TestMeasureAndNormalizeLUFS",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/loudness.go",
+          "internal/videomotion/loudness_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestMeasureAndNormalizeLUFS"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/loudness.go') && file_exists('internal/videomotion/loudness_test.go')"
+      }
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": "I01",
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano — Épico 01",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.4"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md",
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "output": {
+        "artifacts": [],
+        "verification": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "I01",
+      "epic_id": "E02",
+      "label": "Gerador Procedural de Cartões de Vidro 3D (Glass Cards)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/motion_glass.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/videomotion/motion_glass_test.go:TestGlassCardComposition",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/motion_glass.go",
+          "internal/videomotion/motion_glass_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestGlassCardComposition"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/motion_glass.go') && file_exists('internal/videomotion/motion_glass_test.go')"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "I01",
+      "epic_id": "E02",
+      "label": "Grid em Perspectiva e Kinetic Typography no Beat da Fala",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/kinetic.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": "internal/videomotion/kinetic_test.go:TestKineticWordFlipTiming",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/kinetic.go",
+          "internal/videomotion/kinetic_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestKineticWordFlipTiming"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/kinetic.go') && file_exists('internal/videomotion/kinetic_test.go')"
+      }
+    },
+    {
+      "id": "TICK-02.3",
+      "initiative_id": "I01",
+      "epic_id": "E02",
+      "label": "Auto-Framing Facial e Safe Zones Verticais (9:16)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/framing.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E02.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.3",
+      "test_target": "internal/videomotion/framing_test.go:TestAutoFramingCenterCrop",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/framing.go",
+          "internal/videomotion/framing_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestAutoFramingCenterCrop"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/framing.go') && file_exists('internal/videomotion/framing_test.go')"
+      }
+    },
+    {
+      "id": "TICK-02.4",
+      "initiative_id": "I01",
+      "epic_id": "E02",
+      "label": "Gerador Instantâneo de Folha de Contato QA (qa_sheet.jpg)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/qasheet.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E02.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.4",
+      "test_target": "internal/videomotion/qasheet_test.go:TestGenerateQASheet",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/qasheet.go",
+          "internal/videomotion/qasheet_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestGenerateQASheet"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/qasheet.go') && file_exists('internal/videomotion/qasheet_test.go')"
+      }
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": "I01",
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano — Épico 02",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-02.4"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md",
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "output": {
+        "artifacts": [],
+        "verification": [],
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o Épico 03?')"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "I01",
+      "epic_id": "E03",
+      "label": "Gerenciador de Cache Criptográfico SHA-256 de Prompts",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/cache.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/videomotion/cache_test.go:TestAssetCacheHitMiss",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/cache.go",
+          "internal/videomotion/cache_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestAssetCacheHitMiss"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/cache.go') && file_exists('internal/videomotion/cache_test.go')"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "I01",
+      "epic_id": "E03",
+      "label": "Bridge Google AI Studio e Fallback Gracioso para Texturas",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/bridge.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": "internal/videomotion/bridge_test.go:TestBridgeGenerationAndFallback",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/bridge.go",
+          "internal/videomotion/bridge_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestBridgeGenerationAndFallback"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/bridge.go') && file_exists('internal/videomotion/bridge_test.go')"
+      }
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": "I01",
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano — Épico 03",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md",
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "output": {
+        "artifacts": [],
+        "verification": [],
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o Épico 04?')"
+      }
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Gerador do Pacote de Entrega Broadcast (dist/<job_id>/)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/bundle.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.1",
+      "test_target": "internal/videomotion/bundle_test.go:TestGenerateBroadcastBundle",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/bundle.go",
+          "internal/videomotion/bundle_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestGenerateBroadcastBundle"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/bundle.go') && file_exists('internal/videomotion/bundle_test.go')"
+      }
+    },
+    {
+      "id": "TICK-04.2",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Renderizador Multi-Aspect Ratio (9:16, 16:9, 1:1)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/render.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E04.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.2",
+      "test_target": "internal/videomotion/render_test.go:TestRenderMultiAspect",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/render.go",
+          "internal/videomotion/render_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestRenderMultiAspect"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/render.go') && file_exists('internal/videomotion/render_test.go')"
+      }
+    },
+    {
+      "id": "TICK-04.3",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Exportador de Timeline FCPXML para DaVinci Resolve Studio",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videomotion/fcpxml.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E04.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.3",
+      "test_target": "internal/videomotion/fcpxml_test.go:TestExportFCPXMLTimeline",
+      "output": {
+        "artifacts": [
+          "internal/videomotion/fcpxml.go",
+          "internal/videomotion/fcpxml_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestExportFCPXMLTimeline"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/videomotion/fcpxml.go') && file_exists('internal/videomotion/fcpxml_test.go')"
+      }
+    },
+    {
+      "id": "SG-E04",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Stop-Gate Humano — Épico 04",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md",
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "output": {
+        "artifacts": [],
+        "verification": [],
+        "gate": "prompt('Evidências do Épico 04 aprovadas? Autoriza iniciar o Épico 05?')"
+      }
+    },
+    {
+      "id": "TICK-05.1",
+      "initiative_id": "I01",
+      "epic_id": "E05",
+      "label": "Grafo DAG Canônico pipeline.dag.json e Comando CLI",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "loops/video-motion/pipeline.dag.json",
+          "internal/cli/video_motion.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E05.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.1",
+      "test_target": "internal/cli/video_motion_test.go:TestVideoMotionCLI",
+      "output": {
+        "artifacts": [
+          "loops/video-motion/pipeline.dag.json",
+          "internal/cli/video_motion.go",
+          "internal/cli/video_motion_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/cli/...",
+          "-run",
+          "TestVideoMotionCLI"
+        ],
+        "gate": "exit_code == 0 && file_exists('loops/video-motion/pipeline.dag.json') && file_exists('internal/cli/video_motion.go')"
+      }
+    },
+    {
+      "id": "TICK-05.2",
+      "initiative_id": "I01",
+      "epic_id": "E05",
+      "label": "Gerador do Livro Didático Canônico de Uso (LegoPress)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-05.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/manuals/livro-video-motion/livro.json",
+          "internal/videomotion/book.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E05.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.2",
+      "test_target": "internal/videomotion/book_test.go:TestGenerateDidacticBook",
+      "output": {
+        "artifacts": [
+          "docs/manuals/livro-video-motion/livro.json",
+          "internal/videomotion/book.go",
+          "internal/videomotion/book_test.go"
+        ],
+        "verification": [
+          "go",
+          "test",
+          "-v",
+          "./internal/videomotion/...",
+          "-run",
+          "TestGenerateDidacticBook"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/manuals/livro-video-motion/livro.json') && file_exists('internal/videomotion/book.go')"
+      }
+    },
+    {
+      "id": "TICK-05.3",
+      "initiative_id": "I01",
+      "epic_id": "E05",
+      "label": "Manual do Meta-Processo de Engenharia Reversa de Vídeo",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-05.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/manuals/MANUAL_ENGENHARIA_REVERSA_VIDEO_PIPELINE.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E05.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.3",
+      "test_target": null,
+      "output": {
+        "artifacts": [
+          "docs/manuals/MANUAL_ENGENHARIA_REVERSA_VIDEO_PIPELINE.md"
+        ],
+        "verification": [
+          "python",
+          "-c",
+          "assert len(open('docs/manuals/MANUAL_ENGENHARIA_REVERSA_VIDEO_PIPELINE.md', encoding='utf-8').read()) > 500"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/manuals/MANUAL_ENGENHARIA_REVERSA_VIDEO_PIPELINE.md')"
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": "I01",
+      "epic_id": "E05",
+      "label": "Stop-Gate Final de Homologação & Entrega",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-05.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md",
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "output": {
+        "artifacts": [],
+        "verification": [],
+        "gate": "prompt('Pipeline Video Motion completo e homologado? Autoriza entrega final?')"
+      }
+    }
+  ]
+}

@@ -1,0 +1,876 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "CANAL_REDC",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "session_id": "90e39a5f-4aee-4306-8527-98d77bb3d0d2",
+  "intent_ref": "docs/intents/2026-11-07_INTENT_CANAL_REDC.md",
+  "spec_ref": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md",
+  "plan_ref": "docs/plans/2026-11-07_PLAN_CANAL_REDC.md",
+  "initiative_ref": "I04",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-07_INTENT_CANAL_REDC.md",
+      "sha256": "05deac970437ef94a69af587e9d386b20654aab3d14b82ba16d06ccc822277e9"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md",
+      "sha256": "a61ce6fe42757cb168b30e77dc1f63c11bc07eb7538376cc8a000c761f3516bb"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-07_PLAN_CANAL_REDC.md",
+      "sha256": "803e184d5e36c4cbe63ecbbfa0833c82f3027b358c581d02c516daa5f0a90b34"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "I04",
+      "epic_id": "E01",
+      "label": "Modelagem de dados, parser de métricas e ranking de viralidade",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/redc/catalog.go",
+          "internal/redc/types.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/redc/types.go",
+          "internal/redc/catalog.go",
+          "internal/redc/catalog_test.go"
+        ],
+        "verification_cmd": [
+          "go",
+          "test",
+          "-v",
+          "-count=1",
+          "./internal/redc/..."
+        ],
+        "gate_expression": "exit_code == 0 && file_exists('internal/redc/catalog.go') && file_exists('internal/redc/catalog_test.go')"
+      },
+      "spec_ref": "AC-E01.1",
+      "assigned_to": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "I04",
+      "epic_id": "E01",
+      "label": "Clusterização de métodos e desduplicação",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/redc/cluster.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/redc/cluster.go",
+          "internal/redc/cluster_test.go"
+        ],
+        "verification_cmd": [
+          "go",
+          "test",
+          "-v",
+          "-count=1",
+          "-run",
+          "TestClusterMethods",
+          "./internal/redc/..."
+        ],
+        "gate_expression": "exit_code == 0 && file_exists('internal/redc/cluster.go')"
+      },
+      "spec_ref": "AC-E01.2",
+      "assigned_to": null
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": "I04",
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano Épico 01",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 2000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [],
+        "verification_cmd": [],
+        "gate_expression": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')"
+      },
+      "spec_ref": "AC-E01.1",
+      "assigned_to": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "I04",
+      "epic_id": "E02",
+      "label": "Síntese do Dossiê DNA (tom, ritmo, design tokens, motion tokens e ganchos)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/redc/dna.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/redc/dna.go",
+          "internal/redc/dna_test.go"
+        ],
+        "verification_cmd": [
+          "go",
+          "test",
+          "-v",
+          "-count=1",
+          "-run",
+          "TestExtractDNA",
+          "./internal/redc/..."
+        ],
+        "gate_expression": "exit_code == 0 && file_exists('internal/redc/dna.go')"
+      },
+      "spec_ref": "AC-E02.1",
+      "assigned_to": null
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "I04",
+      "epic_id": "E02",
+      "label": "Persistência determinística da pasta repc/",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/redc/writer.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/redc/writer.go",
+          "internal/redc/writer_test.go"
+        ],
+        "verification_cmd": [
+          "go",
+          "test",
+          "-v",
+          "-count=1",
+          "-run",
+          "TestWriteREPC",
+          "./internal/redc/..."
+        ],
+        "gate_expression": "exit_code == 0 && file_exists('internal/redc/writer.go')"
+      },
+      "spec_ref": "AC-E02.2",
+      "assigned_to": null
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": "I04",
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano Épico 02",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 2000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [],
+        "verification_cmd": [],
+        "gate_expression": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o Épico 03?')"
+      },
+      "spec_ref": "AC-E02.2",
+      "assigned_to": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "I04",
+      "epic_id": "E03",
+      "label": "Gerador de micro-pipelines canônicos dos métodos em pipelines/",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/redc/pipeline_gen.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/redc/pipeline_gen.go",
+          "internal/redc/pipeline_gen_test.go"
+        ],
+        "verification_cmd": [
+          "go",
+          "test",
+          "-v",
+          "-count=1",
+          "-run",
+          "TestGenerateMethodPipelines",
+          "./internal/redc/..."
+        ],
+        "gate_expression": "exit_code == 0 && file_exists('internal/redc/pipeline_gen.go')"
+      },
+      "spec_ref": "AC-E03.1",
+      "assigned_to": null
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "I04",
+      "epic_id": "E03",
+      "label": "Gerador estrutural de vídeo com injeção de marca (Brand Swap)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/redc/brand_swap.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/redc/brand_swap.go",
+          "internal/redc/brand_swap_test.go"
+        ],
+        "verification_cmd": [
+          "go",
+          "test",
+          "-v",
+          "-count=1",
+          "-run",
+          "TestGenerateStructuralVideo",
+          "./internal/redc/..."
+        ],
+        "gate_expression": "exit_code == 0 && file_exists('internal/redc/brand_swap.go')"
+      },
+      "spec_ref": "AC-E03.2",
+      "assigned_to": null
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": "I04",
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano Épico 03",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 2000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [],
+        "verification_cmd": [],
+        "gate_expression": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o Épico 04?')"
+      },
+      "spec_ref": "AC-E03.2",
+      "assigned_to": null
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": "I04",
+      "epic_id": "E04",
+      "label": "Comandos CLI legoloop canal redc e legoloop canal gerar",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/canal.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/cli/canal.go",
+          "internal/cli/canal_test.go"
+        ],
+        "verification_cmd": [
+          "go",
+          "test",
+          "-v",
+          "-count=1",
+          "-run",
+          "TestCanalCLI",
+          "./internal/cli/..."
+        ],
+        "gate_expression": "exit_code == 0 && file_exists('internal/cli/canal.go')"
+      },
+      "spec_ref": "AC-E04.1",
+      "assigned_to": null
+    },
+    {
+      "id": "TICK-04.2",
+      "initiative_id": "I04",
+      "epic_id": "E04",
+      "label": "Grafo DAG acíclico loops/legoloop-canal-redc/pipeline.dag.json",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "medium",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "loops/legoloop-canal-redc/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E04.3",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "loops/legoloop-canal-redc/pipeline.dag.json",
+          "loops/legoloop-canal-redc/legoloop-canal-redc.loop.json"
+        ],
+        "verification_cmd": [
+          "go",
+          "run",
+          "./cmd/legoloop",
+          "validate",
+          "loops/legoloop-canal-redc/pipeline.dag.json"
+        ],
+        "gate_expression": "exit_code == 0 && file_exists('loops/legoloop-canal-redc/pipeline.dag.json')"
+      },
+      "spec_ref": "AC-E04.3",
+      "assigned_to": null
+    },
+    {
+      "id": "TICK-04.3",
+      "initiative_id": "I04",
+      "epic_id": "E04",
+      "label": "Skill Canônica skills/legoloop-canal-redc/SKILL.md",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "medium",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "skills/legoloop-canal-redc/SKILL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "skills/legoloop-canal-redc/SKILL.md"
+        ],
+        "verification_cmd": [
+          "go",
+          "test",
+          "-v",
+          "-count=1",
+          "./..."
+        ],
+        "gate_expression": "exit_code == 0 && file_exists('skills/legoloop-canal-redc/SKILL.md')"
+      },
+      "spec_ref": "AC-E04.1",
+      "assigned_to": null
+    },
+    {
+      "id": "SG-E04",
+      "initiative_id": "I04",
+      "epic_id": "E04",
+      "label": "Stop-Gate Humano Épico 04",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 2000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback_harness": "antigravity",
+        "fallback_model": "flash"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowlist": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-07_SPEC_CANAL_REDC.md#AC-E04.3",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [],
+        "verification_cmd": [],
+        "gate_expression": "prompt('Mega-Pipeline REDC 100% implementado, testado e validado? Autoriza a canonização final?')"
+      },
+      "spec_ref": "AC-E04.3",
+      "assigned_to": null
+    }
+  ]
+}

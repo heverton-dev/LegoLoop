@@ -1,0 +1,35 @@
+{
+  "name": "legoloop-route-video-bundle",
+  "version": "1.0.0",
+  "description": "Rota de Execução Cirúrgica por Bloco para Target Workspace Isolado por Vídeo",
+  "nodes": [
+    {
+      "id": "node-01-types",
+      "type": "unit_task",
+      "inputs": ["docs/specs/2026-11-08_SPEC_VIDEO_BUNDLE.md"],
+      "outputs": ["internal/videorea/types.go", "internal/videorea/bundle_test.go"],
+      "gate": "go test ./internal/videorea/... (Red)"
+    },
+    {
+      "id": "node-02-factory-bridge",
+      "type": "unit_task",
+      "inputs": ["internal/videorea/types.go"],
+      "outputs": ["internal/videorea/factory_bridge.go"],
+      "gate": "go test ./internal/videorea/... (Green)"
+    },
+    {
+      "id": "node-03-cli-gitignore",
+      "type": "unit_task",
+      "inputs": ["internal/videorea/factory_bridge.go"],
+      "outputs": ["internal/cli/video_rea.go", ".gitignore"],
+      "gate": "go test ./internal/cli/..."
+    },
+    {
+      "id": "node-04-gates-rebuild",
+      "type": "unit_task",
+      "inputs": ["internal/videorea/", "internal/cli/"],
+      "outputs": ["bin/legoloop.exe"],
+      "gate": "go test -count=1 ./... && go vet ./... && go run ./tools/funclen internal"
+    }
+  ]
+}

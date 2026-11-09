@@ -1,0 +1,381 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "name": "template-videorea-pipeline",
+  "version": "2.2.0",
+  "description": "Pipeline canônico de engenharia reversa e edição determinística de vídeo por código (Video as Code) com isolamento hermético e Stop-Gates humanos.",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_iniciar_preparar",
+      "type": "script",
+      "command": [
+        "ffmpeg",
+        "-i",
+        "raw_video.mp4",
+        "-vn",
+        "-acodec",
+        "pcm_s16le",
+        "-ar",
+        "48000",
+        "-ac",
+        "2",
+        "output/audio_extracted.wav"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "video": "var.raw_video"
+      },
+      "output": {
+        "artifact": "output/audio_extracted.wav",
+        "gate": "file_exists('output/audio_extracted.wav')"
+      }
+    },
+    {
+      "id": "n02_transcricao_alinhamento",
+      "type": "script",
+      "command": [
+        "whisperx",
+        "output/audio_extracted.wav",
+        "--output_format",
+        "json",
+        "--output_dir",
+        "output"
+      ],
+      "depends_on": [
+        "n01_iniciar_preparar"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "audio": "file('output/audio_extracted.wav')"
+      },
+      "output": {
+        "artifact": "output/audio_extracted.json",
+        "gate": "file_exists('output/audio_extracted.json')"
+      }
+    },
+    {
+      "id": "n03_decisao_cortes",
+      "type": "script",
+      "command": [
+        "python",
+        "scripts/corte_silencio.py",
+        "--input",
+        "output/audio_extracted.json",
+        "--threshold",
+        "0.4",
+        "--margin",
+        "0.04"
+      ],
+      "depends_on": [
+        "n02_transcricao_alinhamento"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "code-fast"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "transcript": "file('output/audio_extracted.json')"
+      },
+      "output": {
+        "artifact": "output/cut_decision_list.json",
+        "gate": "file_exists('output/cut_decision_list.json')"
+      }
+    },
+    {
+      "id": "n04_sg_revisao_corte",
+      "type": "stop_gate",
+      "depends_on": [
+        "n03_decisao_cortes"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "inputs": {
+        "cuts": "file('output/cut_decision_list.json')"
+      },
+      "output": {
+        "artifact": "output/cuts_approved.json",
+        "gate": "file_exists('output/cut_decision_list.json') && prompt('Aprovar cortes de silencio e selecao de takes?')"
+      }
+    },
+    {
+      "id": "n05_motion_mapa",
+      "type": "skill",
+      "ref": "skills/aidd-impeccable",
+      "depends_on": [
+        "n04_sg_revisao_corte"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "cuts": "file('output/cuts_approved.json')"
+      },
+      "output": {
+        "artifact": "output/motion_storyboard.json",
+        "gate": "file_exists('output/motion_storyboard.json')"
+      }
+    },
+    {
+      "id": "n06_sg_revisao_motion",
+      "type": "stop_gate",
+      "depends_on": [
+        "n05_motion_mapa"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "inputs": {
+        "storyboard": "file('output/motion_storyboard.json')"
+      },
+      "output": {
+        "artifact": "output/motion_approved.json",
+        "gate": "file_exists('output/motion_storyboard.json') && prompt('Aprovar plano de animacoes cineticas e overlays?')"
+      }
+    },
+    {
+      "id": "n07_camera_yunet",
+      "type": "script",
+      "command": [
+        "python",
+        "scripts/yunet_tracking.py",
+        "--video",
+        "raw_video.mp4",
+        "--cuts",
+        "output/cuts_approved.json",
+        "--motion",
+        "output/motion_approved.json"
+      ],
+      "depends_on": [
+        "n06_sg_revisao_motion"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "cuts": "file('output/cuts_approved.json')",
+        "motion": "file('output/motion_approved.json')"
+      },
+      "output": {
+        "artifact": "output/camera_framing.json",
+        "gate": "file_exists('output/camera_framing.json')"
+      }
+    },
+    {
+      "id": "n08_assets_download",
+      "type": "script",
+      "command": [
+        "yt-dlp",
+        "--batch-file",
+        "output/asset_urls.txt",
+        "-P",
+        "output/assets",
+        "--write-info-json"
+      ],
+      "depends_on": [
+        "n06_sg_revisao_motion"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "motion": "file('output/motion_approved.json')"
+      },
+      "output": {
+        "artifact": "output/assets_manifest.json",
+        "gate": "file_exists('output/assets_manifest.json')"
+      }
+    },
+    {
+      "id": "n09_motion_render",
+      "type": "script",
+      "command": [
+        "bun",
+        "run",
+        "hyperframes",
+        "render",
+        "--composition",
+        "video_overlays",
+        "--out",
+        "output/motion_overlays.mp4"
+      ],
+      "depends_on": [
+        "n08_assets_download"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "assets": "file('output/assets_manifest.json')"
+      },
+      "output": {
+        "artifact": "output/motion_overlays.mp4",
+        "gate": "file_exists('output/motion_overlays.mp4')"
+      }
+    },
+    {
+      "id": "n10_efeitos_sonoros_sfx",
+      "type": "script",
+      "command": [
+        "python",
+        "scripts/mix_sfx.py",
+        "--camera",
+        "output/camera_framing.json",
+        "--motion",
+        "output/motion_overlays.mp4",
+        "--sfx-lib",
+        "sfx/",
+        "--ducking",
+        "-18dB"
+      ],
+      "depends_on": [
+        "n07_camera_yunet",
+        "n09_motion_render"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "camera": "file('output/camera_framing.json')",
+        "motion": "file('output/motion_overlays.mp4')"
+      },
+      "output": {
+        "artifact": "output/sfx_mix.wav",
+        "gate": "file_exists('output/sfx_mix.wav')"
+      }
+    },
+    {
+      "id": "n11_entrega_final_hibrida",
+      "type": "script",
+      "command": [
+        "python",
+        "scripts/export_fcpxml.py",
+        "--timeline",
+        "output/timeline_state.json",
+        "--out-xml",
+        "output/final_edit.fcpxml",
+        "--out-mp4",
+        "output/final_edit.mp4"
+      ],
+      "depends_on": [
+        "n10_efeitos_sonoros_sfx"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "sfx": "file('output/sfx_mix.wav')"
+      },
+      "output": {
+        "artifact": "output/final_edit.fcpxml",
+        "gate": "file_exists('output/final_edit.fcpxml')"
+      }
+    },
+    {
+      "id": "n12_sg_entrega_final",
+      "type": "stop_gate",
+      "depends_on": [
+        "n11_entrega_final_hibrida"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "inputs": {
+        "fcpxml": "file('output/final_edit.fcpxml')"
+      },
+      "output": {
+        "artifact": "output/delivery_approved.json",
+        "gate": "file_exists('output/final_edit.fcpxml') && prompt('Aprovar entrega final do video?')"
+      }
+    }
+  ]
+}

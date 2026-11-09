@@ -147,7 +147,7 @@ func writeErrorCode(w http.ResponseWriter, status int, code, msg string) {
 func (s *Server) maskResult(res *fabricar.Result) fabricar.Result {
 	out := *res
 	a := &out.Artifacts
-	for _, p := range []*string{&a.IntentPath, &a.SpecPath, &a.PlanPath, &a.RoutePath, &a.TemplatePath, &a.SkillPath, &a.LoopPath, &a.DagPath, &a.ProcessoPath} {
+	for _, p := range []*string{&a.IntentPath, &a.SpecPath, &a.PlanPath, &a.RoutePath, &a.TemplatePath, &a.SkillPath, &a.LoopPath, &a.DagPath, &a.DagIsoPath, &a.ProcessoPath} {
 		*p = s.displayPath(*p)
 	}
 	a.SkillLinks = nil

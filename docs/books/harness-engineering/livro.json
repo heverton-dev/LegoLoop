@@ -1,0 +1,23 @@
+{
+  "versao_manifesto": "1.1",
+  "titulo": "Engenharia de Harness & AI-Driven Development",
+  "subtitulo": "Da Exaustão da Babá de Modelos à Fábrica de Software Determinística",
+  "nome_base": "2026-11-09_ENGENHARIA-DE-HARNESS",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-manifesto-saturacao.md",
+    "02-meso-anatomia-harness-5-prisoes.md",
+    "03-meso-desmistificando-drivens-engineerings.md",
+    "04a-meso-triade-mestres-osmani-pocock-tan.md",
+    "04b-meso-teoria-dos-processos-dags-caixas-estereis.md",
+    "04c-meso-orquestracao-cofre-meta-mcp.md",
+    "04-micro-autopsia-legoloop.md",
+    "05-pratica-blueprint-projeto-blindado.md",
+    "06-epilogo-novo-modelo-mental.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "harness-engineering-v2",
+  "ultima_compilacao": "2026-11-09"
+}

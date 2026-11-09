@@ -16,7 +16,7 @@ import (
 
 func init() {
 	for id, msg := range map[string]string{
-		"entrevista.uso":           "Uso: legoloop fabricar entrevista iniciar \"<ideia>\" ou legoloop fabricar entrevista responder <sessao> \"<texto>\".",
+		"entrevista.uso":           "Uso: legoloop fabricar entrevista iniciar \"<ideia>\", responder <sessao> \"<texto>\" ou intent <sessao>.",
 		"entrevista.opcao_palpite": "Aceitar o palpite: %s",
 		"entrevista.opcao_livre":   "Responder com as suas palavras",
 	} {
@@ -86,6 +86,8 @@ func cmdEntrevista(ctx context.Context, args []string, d Deps) int {
 		return runIniciar(ctx, rest[0], o, d)
 	case verb == "responder" && len(rest) == 2:
 		return runResponder(ctx, rest[0], rest[1], o, d)
+	case verb == "intent" && len(rest) == 1:
+		return runIntent(rest[0], o, d)
 	}
 	return usoEntrevista(d, nil)
 }
@@ -149,6 +151,30 @@ func runResponder(ctx context.Context, id, text string, o entrevistaOpts, d Deps
 		return fail(d, err)
 	}
 	return gravaEMostra(d, store, sess, turn)
+}
+
+// runIntent materializa a INTENT canônica a partir do espelho socrático consolidado.
+func runIntent(id string, o entrevistaOpts, d Deps) int {
+	roots, err := fabricarRoots(fabricarOpts{vault: o.vault, docs: o.docs}, d)
+	if err != nil {
+		return fail(d, err)
+	}
+	store := interview.Store{Dir: filepath.Join(roots.Vault, "sessions")}
+	sess, err := store.Load(id)
+	if err != nil {
+		return failSessao(d, err)
+	}
+	base := o.docs
+	if base == "" {
+		base = "."
+	}
+	eng := interview.NewEngine(nil)
+	eng.Adopt(sess)
+	path, err := eng.MaterializeIntent(sess.ID, base, "")
+	if err != nil {
+		return fail(d, err)
+	}
+	return printJSON(d, map[string]string{"sessao": sess.ID, "arquivo": path})
 }
 
 // failSessao: identificador malformado é uso incorreto (2); sessão ausente ou ilegível é falha (1).

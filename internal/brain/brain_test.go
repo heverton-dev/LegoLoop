@@ -248,3 +248,35 @@ func TestPick_ListaDeModelosLongaVemResumida(t *testing.T) {
 		t.Errorf("lista curta não leva resumo: %v", err)
 	}
 }
+
+func TestPick_SuporteAEffortEInferencia(t *testing.T) {
+	inv := provider.Inventory{RouterURL: "http://127.0.0.1:20128", RouterModels: []string{"code-fast", "code-pro"}}
+	b, _, err := brain.Pick(inv, "code-pro", brain.WithEffort(brain.EffortHigh))
+	if err != nil {
+		t.Fatalf("erro ao escolher modelo com effort: %v", err)
+	}
+	if b.Effort() != brain.EffortHigh {
+		t.Errorf("Effort() = %q, quer %q", b.Effort(), brain.EffortHigh)
+	}
+}
+
+func TestPick_SelecaoInteligentePorEsforco(t *testing.T) {
+	inv := provider.Inventory{RouterURL: "http://127.0.0.1:20128", RouterModels: []string{"code-fast", "code-pro"}}
+	// Com EffortLow, prefere code-fast
+	bLow, _, err := brain.Pick(inv, "", brain.WithEffort(brain.EffortLow))
+	if err != nil {
+		t.Fatalf("erro com effort low: %v", err)
+	}
+	if bLow.Model() != "code-fast" {
+		t.Errorf("EffortLow deveria escolher code-fast, mas escolheu: %s", bLow.Model())
+	}
+
+	// Com EffortHigh, prefere code-pro
+	bHigh, _, err := brain.Pick(inv, "", brain.WithEffort(brain.EffortHigh))
+	if err != nil {
+		t.Fatalf("erro com effort high: %v", err)
+	}
+	if bHigh.Model() != "code-pro" {
+		t.Errorf("EffortHigh deveria escolher code-pro, mas escolheu: %s", bHigh.Model())
+	}
+}

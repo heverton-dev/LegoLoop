@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "mega-pipeline",
-  "name": "Mega Pipeline LegoLoop (5 Sub-Loops)",
-  "description": "Esteira mestre determinística com os 5 sub-loops canônicos: Concepção & Alinhamento -> Engenharia Reversa & Design Pass -> Tríade de Planejamento -> Construção TDD por Épico -> Homologação E2E & Fechamento.",
+  "name": "Mega Pipeline LegoLoop (6 Sub-Loops)",
+  "description": "Esteira mestre determinística com os 6 sub-loops canônicos: Concepção & Alinhamento -> Engenharia Reversa & Design Pass -> Tríade de Planejamento -> Construção TDD por Épico -> Homologação E2E -> Fechamento Canônico Universal.",
   "version": "1.0.0",
   "trigger": {
     "type": "manual"
@@ -97,6 +97,25 @@
       "output": {
         "artifact": "docs/reports/REPORT_FINAL.md",
         "gate": "file_exists('docs/reports/REPORT_FINAL.md')"
+      }
+    },
+    {
+      "id": "l6-fechar-canonico",
+      "type": "subloop",
+      "ref": "fechar",
+      "depends_on": [
+        "l5-homologue"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast"
+      },
+      "inputs": {
+        "report": "file('docs/reports/REPORT_FINAL.md')"
+      },
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "file_exists('bin/legoloop.exe')"
       }
     }
   ]

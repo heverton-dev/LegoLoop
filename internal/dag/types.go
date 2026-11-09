@@ -23,6 +23,10 @@ const (
 	TypeScript NodeType = "script"
 	// TypeSubloop referencia outro loop do acervo (Ref = nome do loop); roda isolado e estéril.
 	TypeSubloop NodeType = "subloop"
+	// TypeStopGate representa uma barreira de auditoria humana na esteira.
+	TypeStopGate NodeType = "stop_gate"
+	// TypeUnitTask representa uma tarefa de unidade cognitiva de engenharia.
+	TypeUnitTask NodeType = "unit_task"
 )
 
 // ExecMode define onde a peça roda: na pasta do projeto ou em workspace isolado.
@@ -103,17 +107,33 @@ type HandoffContract struct {
 
 // Node é uma peça Lego do pipeline.
 type Node struct {
-	ID         string            `json:"id"`
-	Type       NodeType          `json:"type"`
-	Ref        string            `json:"ref,omitempty"`
-	DependsOn  []string          `json:"depends_on,omitempty"`
-	Command    []string          `json:"command,omitempty"`
-	TimeoutSec int               `json:"timeout_sec,omitempty"`
-	Routing    RoutingConfig     `json:"routing"`
-	Inputs     map[string]string `json:"inputs,omitempty"`
-	Output     HandoffContract   `json:"output"`
-	Execution  *Execution        `json:"execution,omitempty"`
-	Slots      *Slots            `json:"slots,omitempty"`
+	ID                  string            `json:"id"`
+	Name                string            `json:"name,omitempty"`
+	Type                NodeType          `json:"type"`
+	Nature              string            `json:"nature,omitempty"`
+	CognitiveComplexity string            `json:"cognitive_complexity,omitempty"`
+	Ref                 string            `json:"ref,omitempty"`
+	DependsOn           []string          `json:"depends_on,omitempty"`
+	Dependencies        []string          `json:"dependencies,omitempty"`
+	Command             []string          `json:"command,omitempty"`
+	TimeoutSec          int               `json:"timeout_sec,omitempty"`
+	Routing             RoutingConfig     `json:"routing"`
+	Inputs              map[string]string `json:"inputs,omitempty"`
+	Output              HandoffContract   `json:"output"`
+	Execution           *Execution        `json:"execution,omitempty"`
+	Slots               *Slots            `json:"slots,omitempty"`
+	Isolation           map[string]any    `json:"isolation,omitempty"`
+	TokenBudget         map[string]any    `json:"token_budget,omitempty"`
+	Tooling             map[string]any    `json:"tooling,omitempty"`
+	ContextIn           []string          `json:"context_in,omitempty"`
+	ContextOut          []string          `json:"context_out,omitempty"`
+	TestSeam            map[string]string `json:"test_seam,omitempty"`
+	Verification        map[string]any    `json:"verification,omitempty"`
+	Limits              map[string]any    `json:"limits,omitempty"`
+	RollbackStrategy    string            `json:"rollback_strategy,omitempty"`
+	SpecRef             string            `json:"spec_ref,omitempty"`
+	StopGate            any               `json:"stop_gate,omitempty"`
+	Status              string            `json:"status,omitempty"`
 }
 
 // EffectiveMode devolve o modo de execução, assumindo inline quando não declarado.
@@ -132,13 +152,16 @@ func (n Node) HasSlots() bool {
 
 // DAG é o pipeline validado. Só é obtido via Parse, garantindo invariantes.
 type DAG struct {
-	Schema      string   `json:"$schema,omitempty"`
-	ID          string   `json:"id,omitempty"`
-	Name        string   `json:"name"`
-	Description string   `json:"description,omitempty"`
-	Version     string   `json:"version,omitempty"`
-	Trigger     *Trigger `json:"trigger,omitempty"`
-	Nodes       []Node   `json:"nodes"`
+	Schema             string         `json:"$schema,omitempty"`
+	ID                 string         `json:"id,omitempty"`
+	Name               string         `json:"name"`
+	Description        string         `json:"description,omitempty"`
+	Version            string         `json:"version,omitempty"`
+	Date               string         `json:"date,omitempty"`
+	UpstreamSignatures map[string]any `json:"upstream_signatures,omitempty"`
+	ExecutionStrategy  map[string]any `json:"execution_strategy,omitempty"`
+	Trigger            *Trigger       `json:"trigger,omitempty"`
+	Nodes              []Node         `json:"nodes"`
 
 	gates    map[string]*gate.Expr
 	layers   [][]string

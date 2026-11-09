@@ -1,0 +1,17 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Pipeline LegoLoop Cartoon Shorts",
+  "nome_base": "2026-11-09_PIPELINE-CARTOON-SHORTS",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-origem-forense.md",
+    "02-meso-arquitetura-threejs-audio.md",
+    "03-micro-motor-roteiro-tts.md",
+    "04-pratica-execucao-triade.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "cartoon-shorts-v1",
+  "ultima_compilacao": "2026-11-09"
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "legoloop-canal-redc",
+  "name": "Mega-Pipeline REDC (Engenharia Reversa Profunda de Canais e Clonagem)",
+  "description": "Engenharia reversa profunda de canais e vídeos virais, geração de dossiê DNA, catálogo de métodos em pipelines e gerador de vídeos com Brand Swap.",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_catalogar_clusterizar",
+      "type": "script",
+      "command": ["powershell", "-NoProfile", "-Command", "Test-Path internal/redc/catalog.go"],
+      "output": {
+        "artifact": "internal/redc/catalog.go",
+        "gate": "file_exists('internal/redc/catalog.go')"
+      }
+    },
+    {
+      "id": "n02_deep_redc_dna",
+      "type": "script",
+      "depends_on": ["n01_catalogar_clusterizar"],
+      "command": ["powershell", "-NoProfile", "-Command", "Test-Path internal/redc/dna.go"],
+      "output": {
+        "artifact": "internal/redc/dna.go",
+        "gate": "file_exists('internal/redc/dna.go')"
+      }
+    },
+    {
+      "id": "n03_gerar_pipelines_metodos",
+      "type": "script",
+      "depends_on": ["n02_deep_redc_dna"],
+      "command": ["powershell", "-NoProfile", "-Command", "Test-Path internal/redc/pipeline_gen.go"],
+      "output": {
+        "artifact": "internal/redc/pipeline_gen.go",
+        "gate": "file_exists('internal/redc/pipeline_gen.go')"
+      }
+    },
+    {
+      "id": "n04_gerador_brand_swap",
+      "type": "script",
+      "depends_on": ["n02_deep_redc_dna"],
+      "command": ["powershell", "-NoProfile", "-Command", "Test-Path internal/redc/brand_swap.go"],
+      "output": {
+        "artifact": "internal/redc/brand_swap.go",
+        "gate": "file_exists('internal/redc/brand_swap.go')"
+      }
+    }
+  ]
+}

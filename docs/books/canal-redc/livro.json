@@ -1,0 +1,16 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Mega-Pipeline REDC - Engenharia Reversa Profunda de Canais e Clonagem",
+  "nome_base": "2026-11-07_LIVRO_LEGOLOOP_CANAL_REDC",
+  "pasta_partes": "partes",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-visao-geral.md",
+    "02-meso-dossie-dna.md",
+    "03-meso-pipelines-metodos.md",
+    "04-micro-brand-swap.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "canal-redc-v1",
+  "ultima_compilacao": "2026-11-07"
+}

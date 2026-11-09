@@ -5,7 +5,7 @@ package gate
 var contentCalls = map[string]bool{
 	"word_count": true, "line_count": true, "has_pattern": true,
 	"has_binary_criteria": true, "has_acceptance_criteria": true, "schema_valid": true,
-	"interactive": true, "prompt": true,
+	"interactive": true, "prompt": true, "no_stubs": true,
 }
 
 // ChecksContent diz se o gate só pode passar quando o conteúdo do artefato (ou a aprovação de uma pessoa)

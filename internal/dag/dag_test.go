@@ -254,3 +254,86 @@ func TestRoutingEffortValidation(t *testing.T) {
 		}
 	}
 }
+
+func TestParseStopGateNode(t *testing.T) {
+	src := `{
+		"name": "stopgate-test",
+		"version": "1.0.0",
+		"nodes": [
+			{
+				"id": "step_01",
+				"type": "script",
+				"command": ["go", "test", "./..."],
+				"routing": {"mode": "suggested", "model": "code-fast"},
+				"output": {"artifact": "res.txt", "gate": "exit_code == 0"}
+			},
+			{
+				"id": "sg_approval",
+				"type": "stop_gate",
+				"depends_on": ["step_01"],
+				"routing": {"mode": "suggested", "model": "code-pro"},
+				"output": {"artifact": "res_approved.txt", "gate": "file_exists('res.txt') && prompt('Aprovar etapa?')"}
+			}
+		]
+	}`
+	d, err := Parse([]byte(src))
+	if err != nil {
+		t.Fatalf("Parse com stop_gate falhou: %v", err)
+	}
+	if len(d.Nodes) != 2 || d.Nodes[1].Type != TypeStopGate {
+		t.Fatalf("nó stop_gate não decodificado: %+v", d.Nodes[1])
+	}
+}
+
+func TestParse_PreservaMetadadosCognitivos(t *testing.T) {
+	src := `{
+		"name": "dag-cognitivo-test",
+		"version": "1.0.0",
+		"date": "2026-11-09",
+		"upstream_signatures": {
+			"intent": "hash-intent",
+			"spec": "hash-spec"
+		},
+		"execution_strategy": {
+			"supervision_level": "micro",
+			"concurrency": {"mode": "sequential"}
+		},
+		"nodes": [
+			{
+				"id": "TICK-01",
+				"name": "nome_do_no",
+				"nature": "micro",
+				"cognitive_complexity": "simples",
+				"type": "unit_task",
+				"status": "PENDING",
+				"spec_ref": "AC-E01.1",
+				"routing": {"mode": "suggested", "model": "code-fast"},
+				"isolation": {"workspace": "local", "executor": "orchestrix_hermetic"},
+				"context_in": ["docs/specs/spec.md"],
+				"context_out": ["internal/service.go"],
+				"test_seam": {"signature": "TestService"},
+				"verification": {"test_command": "go test ./..."},
+				"token_budget": {"max_prompt_tokens": 8000},
+				"tooling": {"runtime": "powershell"},
+				"command": ["go", "test", "./..."],
+				"output": {"artifact": "res.txt", "gate": "exit_code == 0"}
+			}
+		]
+	}`
+	d, err := Parse([]byte(src))
+	if err != nil {
+		t.Fatalf("Parse com metadados cognitivos falhou: %v", err)
+	}
+	if d.Date != "2026-11-09" {
+		t.Errorf("date não preservado: got %q", d.Date)
+	}
+	if d.Nodes[0].Nature != "micro" {
+		t.Errorf("nature não preservado: got %q", d.Nodes[0].Nature)
+	}
+	if d.Nodes[0].CognitiveComplexity != "simples" {
+		t.Errorf("cognitive_complexity não preservado: got %q", d.Nodes[0].CognitiveComplexity)
+	}
+	if len(d.Nodes[0].ContextIn) != 1 || d.Nodes[0].ContextIn[0] != "docs/specs/spec.md" {
+		t.Errorf("context_in não preservado: %+v", d.Nodes[0].ContextIn)
+	}
+}

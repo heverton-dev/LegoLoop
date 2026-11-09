@@ -87,8 +87,8 @@ func TestFabricarCerebro_OllamaSemRouterFabricaDePontaAPonta(t *testing.T) {
 	if modelo.Load().(string) != "qwen2.5" || calls.Load() == 0 {
 		t.Errorf("o Ollama deveria conduzir a fabricação (modelo=%v chamadas=%d)", modelo.Load(), calls.Load())
 	}
-	if len(r.files(t)) != 9 {
-		t.Errorf("devia gravar 9 arquivos: %v", r.files(t))
+	if len(r.files(t)) != 10 {
+		t.Errorf("devia gravar 10 arquivos: %v", r.files(t))
 	}
 }
 

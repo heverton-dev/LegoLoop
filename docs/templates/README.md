@@ -1,12 +1,12 @@
-# 📐 Diretório de Templates Canônicos do LegoLoop (SSOT)
+# 📐 Diretório de Templates Canônicos do LegoLoop (SSOT) — v2.2.0
 
 Este diretório centraliza os modelos oficiais (**Single Source of Truth**) para os artefatos de governança, esteira e peças atômicas do ecossistema LegoLoop.
 
-**O que mudou em relação à V1.** A V1 declarava "Padrão Ouro" e "100% universal" sem prova. A V2 troca promessa por verificação: cada template é aceito pelo componente do repositório que o lê (`dag.Parse`, `gate.Compile`, scanner de `assets`, `loop.Store`), os formatos de peça são os **nativos** de cada harness, e a seção 7 lista os comandos que reproduzem essas verificações. Os templates continuam agnósticos a harness no que é contrato (INTENT, SPEC, PLAN, ROUTE, DAG); onde a peça é, por natureza, de um harness (hook e MCP), o formato é o do harness.
+**O que mudou na v2.2.0.** A v2.2.0 consolida a governança Merkle, linhagem tripartite (`initiative_id` $\rightarrow$ `epic_id` $\rightarrow$ `id`), concorrência estruturada (`worker_allocation: per_epic`), resiliência por nó (`retry_policy` com backoff e fallback), orçamentos de token bidirecionais (`max_input_tokens`, `max_output_tokens`), blindagem de escrita (`isolation.write_boundary: strict`), telemetria factual post-mortem (`telemetry`), e elevação integral de todas as peças satélites (MCP, Hook, Skill, Script, Gate e Loop) aos padrões de fronteira da indústria agêntica (Anthropic MCP 2024-2025, Claude Code Hooks e `agentskills.io`).
 
 ---
 
-## 1. A Cascata de Governança em 4 Estágios
+## 1. A Cascata de Governança em 4 Estágios (v2.2.0)
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -19,27 +19,29 @@ Este diretório centraliza os modelos oficiais (**Single Source of Truth**) para
 └──────────────┴──────────────┴──────────────┴────────────────────────────────┘
 ```
 
-1. **[`TEMPLATE_INTENT.md`](TEMPLATE_INTENT.md):** Alinhamento de intenção com a Entrevista Socrática (Addy Osmani, adaptada em PT-BR) em funil até confiança ≥ 95%. Responde "por quê"; não contém contratos.
+1. **[`TEMPLATE_INTENT.md`](TEMPLATE_INTENT.md):** Alinhamento de intenção com a Entrevista Socrática (Addy Osmani, adaptada em PT-BR) em funil até confiança ≥ 95%. Responde "por quê"; ancorado na Iniciativa (`I01`, `I02`...).
 2. **[`TEMPLATE_SPEC.md`](TEMPLATE_SPEC.md):** Premissas e Boundaries (Addy Osmani) + Costuras de Teste (Matt Pocock) + Critérios Binários BDD `AC-XX` (AIDD-Spec). Todo épico tem ao menos um critério de caminho de falha, e há critérios não funcionais `AC-NF`.
-3. **[`TEMPLATE_PLAN.md`](TEMPLATE_PLAN.md):** Fatiamento vertical com 4 níveis de supervisão humana (`nano`, `micro`, `epic`, `autonomous`). É o espelho legível do ROUTE.
-4. **[`TEMPLATE_ROUTE.json`](TEMPLATE_ROUTE.json):** Matriz isomórfica de nós para execução por agentes, com isolamento de duas camadas e contingência dupla (harness + modelo). É o espelho executável do PLAN.
-
-> **Regra de espelho.** PLAN e ROUTE têm o mesmo conjunto de IDs, dependências, naturezas, limites (timeout, teto de tokens, rollback) e roteamento. Divergência entre os dois é defeito. Os exemplos dos dois templates coincidem campo a campo e isso é verificado (seção 7).
+3. **[`TEMPLATE_PLAN.md`](TEMPLATE_PLAN.md):** Fatiamento vertical com 4 níveis de supervisão humana (`nano`, `micro`, `epic`, `autonomous`), linhagem de iniciativa e épico, limites estritos de token e write boundary. É o espelho legível do ROUTE.
+4. **[`TEMPLATE_ROUTE.json`](TEMPLATE_ROUTE.json):** Matriz isomórfica de nós para execução por agentes com Merkle root, concorrência tipada, retentativas automáticas, orçamentos bidirecionais de token e contrato de telemetria. É o espelho executável do PLAN.
 
 ---
 
-## 2. A Sextilha Canônica de Peças
+## 2. A Sextilha Canônica de Peças (v2.2.0)
 
-Cada peça usa o formato que o repositório (ou o harness) realmente lê. Um template que nenhum componente reconhece não é template, é decoração.
+Cada peça usa o formato que o repositório (ou o harness) realmente lê, agora elevado aos padrões de fronteira da indústria:
 
 | Tipo de Peça | Arquivo de Template | Formato real | Quem lê (no código) |
 |:---|:---|:---|:---|
-| **1. Skill** | [`TEMPLATE_PIECE_SKILL.md`](TEMPLATE_PIECE_SKILL.md) | `SKILL.md` com frontmatter `name`, `description`, `consumes`, `produces`, `artifact`, `gate`, `suggested_model` | `internal/assets/skills.go`, grafo `internal/graph` |
-| **2. Script** | [`TEMPLATE_PIECE_SCRIPT.ps1`](TEMPLATE_PIECE_SCRIPT.ps1) | PowerShell 5.1+, UTF-8 **com BOM** | `internal/assets/scripts.go` (raízes `scripts/`, `tools/`, `.aidd/scripts`, `.claude/scripts`) |
-| **3. Hook** | [`TEMPLATE_PIECE_HOOK.json`](TEMPLATE_PIECE_HOOK.json) | Trecho de `settings.json`: `hooks.<Evento>[{matcher, hooks:[{type, command, timeout}]}]` | `internal/assets/hooks.go` |
-| **4. MCP** | [`TEMPLATE_PIECE_MCP.json`](TEMPLATE_PIECE_MCP.json) | Trecho de `.mcp.json`: `mcpServers.<nome>{command, args, env}` | `internal/assets/mcps.go` |
-| **5. Gate** | [`TEMPLATE_PIECE_GATE.json`](TEMPLATE_PIECE_GATE.json) | Receitas cuja `expression` é DSL de `internal/gate`, para colar em `output.gate` ou `slots.gates` | `gate.Compile` (nenhum loader de arquivo: é material de autoria) |
-| **6. Loop** | [`TEMPLATE_PIECE_LOOP.json`](TEMPLATE_PIECE_LOOP.json) | DAG v2 / `loop.Loop` (`nodes` com `depends_on`, `routing`, `output.{artifact,gate}`) | `dag.Parse`, `loop.Store`, `legoloop validate` e `legoloop run` |
+| **1. Skill** | [`TEMPLATE_PIECE_SKILL.md`](TEMPLATE_PIECE_SKILL.md) | `SKILL.md` com frontmatter `name`, `description`, `compatibility`, `allowed-tools`, `consumes`, `produces`, `artifact`, `gate`, `suggested_model` | `internal/assets/skills.go`, grafo `internal/graph` |
+| **2. Script** | [`TEMPLATE_PIECE_SCRIPT.ps1`](TEMPLATE_PIECE_SCRIPT.ps1) | PowerShell 5.1+, UTF-8 **com BOM**, suporte a `-Json` e telemetria | `internal/assets/scripts.go` (raízes `scripts/`, `tools/`, `.aidd/scripts`, `.claude/scripts`) |
+| **3. Hook** | [`TEMPLATE_PIECE_HOOK.json`](TEMPLATE_PIECE_HOOK.json) | Trecho de `settings.json`: `hooks.PreToolUse` e `hooks.PostToolUse` com saída de bloqueio exit 2 e formatador | `internal/assets/hooks.go` |
+| **4. MCP** | [`TEMPLATE_PIECE_MCP.json`](TEMPLATE_PIECE_MCP.json) | Trecho de `.mcp.json`: `mcpServers.<nome>{command, args, env, autoApprove}` com `uvx` / `npx` e proibição de stdout | `internal/assets/mcps.go` |
+| **5. Gate** | [`TEMPLATE_PIECE_GATE.json`](TEMPLATE_PIECE_GATE.json) | Receitas de gate binário v2.2.0 com thresholds e retry policy tipada | `gate.Compile` (DSL determinístico de `internal/gate`) |
+| **6. Loop** | [`TEMPLATE_PIECE_LOOP.json`](TEMPLATE_PIECE_LOOP.json) | DAG v2 / `loop.Loop` (`nodes` com `depends_on`, `routing`, `execution`, `output.{artifact,gate}`) | `dag.Parse`, `loop.Store`, `legoloop validate` e `legoloop run` |
+
+### Regra Taxonômica de Nomenclatura (Namespace Canônico)
+* **Funções Nativas da Plataforma:** Exclusivamente as 10 ferramentas do LegoLoop utilizam o prefixo `legoloop-*` (`legoloop-fabricar`, `legoloop-matriz`, `legoloop-listar`, `legoloop-refinar`, `legoloop-remover`, `legoloop-compor`, `legoloop-legopress`, `legoloop-piece-upgrader`, `legoloop-mega-pipeline`, `legoloop-loop-map`).
+* **Peças de Terceiros e de Domínio:** Peças elevadas ou criadas para tarefas de projeto mantêm seu nome semântico próprio (ex: `react-form-validator`, `python-cleaner`) com incremento de versão (`v2.0.0`) e badge Ouro, preservando a identidade e autoria original sem poluir o namespace da plataforma.
 
 ### Checklist de qualidade por tipo
 * **Skill:** `name` igual ao nome do diretório; `description` ≤ 300 caracteres começando pelo gatilho de uso e dizendo quando NÃO usar; Target Files fechado; regras negativas; comandos de verificação com exit code; critério de parada. O campo `commands:` da V1 não era lido por nenhum componente e foi removido.

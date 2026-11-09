@@ -1,0 +1,445 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "video-edition",
+  "version": "1.0.0",
+  "date": "2026-11-08",
+  "session_id": "intv_1794143944778492400",
+  "intent_ref": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_INTENT_VIDEO_EDITION.md",
+  "spec_ref": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_SPEC_VIDEO_EDITION.md",
+  "plan_ref": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_PLAN_VIDEO_EDITION.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_INTENT_VIDEO_EDITION.md",
+      "sha256": "5b9b02043773bf03bc91aeb287c31e876edcae61d6ccb8e39ce5c70a12b9fa70"
+    },
+    "spec": {
+      "path": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_SPEC_VIDEO_EDITION.md",
+      "sha256": "9303d90a9e3b5e786165736a3f28c79b0384d9bf30924a970394fb5fd3c82646"
+    },
+    "plan": {
+      "path": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_PLAN_VIDEO_EDITION.md",
+      "sha256": "9d73b9681eb95d12da99a622d34a4fb8594a9e5d32ae3a15f98201c378ce3240"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Ingestao, Sincronia e Extirpacao de Notas de Edicao",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videorea/types.go"
+        ],
+        "spec_anchor": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_SPEC_VIDEO_EDITION.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/videorea/spoken_notes_test.go:TestSpokenNotesExtraction",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/videorea/types.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/videorea/..."]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Calculo de Cortes com Folga Pre-Fala (+40ms) e Marcadores FCPXML",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 400
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videorea/types.go"
+        ],
+        "spec_anchor": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_SPEC_VIDEO_EDITION.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": "internal/videorea/cuts_test.go:TestPreSpeechMargin",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/videorea/types.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/videorea/..."]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Rastreamento Facial YuNet com Olhos a 35% e Casamento com Motion",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 400
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videorea/types.go"
+        ],
+        "spec_anchor": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_SPEC_VIDEO_EDITION.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/videorea/camera_test.go:TestCameraFramingEyesHeight",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/videorea/types.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/videorea/..."]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Alinhamento de SFX nos Frames de Frenagem e Ducking a -18dB",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 400
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videorea/types.go"
+        ],
+        "spec_anchor": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_SPEC_VIDEO_EDITION.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": "internal/videorea/sfx_test.go:TestSFXDuckingAndAlignment",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/videorea/types.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/videorea/..."]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Geracao de Timeline FCPXML Aberta e Render Direto MP4",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 400
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/videorea/types.go"
+        ],
+        "spec_anchor": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_SPEC_VIDEO_EDITION.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/videorea/delivery_test.go:TestHybridDeliveryOutput",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/videorea/types.go"
+        ],
+        "verify": [
+          ["go", "test", "-v", "./internal/videorea/..."]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Validacao Topologica do Grafo DAG e Linter de Linhas",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 400
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "loops/video-edition/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_SPEC_VIDEO_EDITION.md#AC-NF.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-NF.1",
+      "test_target": "tools/funclen",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "loops/video-edition/pipeline.dag.json"
+        ],
+        "verify": [
+          ["go", "run", "./tools/funclen", "internal/videorea"]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    }
+  ]
+}

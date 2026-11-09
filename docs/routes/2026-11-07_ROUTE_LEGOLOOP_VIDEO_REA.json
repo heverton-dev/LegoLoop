@@ -1,0 +1,490 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "legoloop-video-rea",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "session_id": "217415b3-cbf6-432f-bbe6-b267fa3fddea",
+  "intent_ref": "docs/intents/2026-11-07_INTENT_LEGOLOOP_VIDEO_REA.md",
+  "spec_ref": "docs/specs/2026-11-07_SPEC_LEGOLOOP_VIDEO_REA.md",
+  "plan_ref": "docs/plans/2026-11-07_PLAN_LEGOLOOP_VIDEO_REA.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-07_INTENT_LEGOLOOP_VIDEO_REA.md",
+      "sha256": "d02cebbf2cf58fef7293e27e6d84fd7f32e8b2d9f4879c3b438cda6b92515f96"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-07_SPEC_LEGOLOOP_VIDEO_REA.md",
+      "sha256": "a8e3e9818a0f3b675ca944e825fcf51fd54e16f5cf463b20dc3e442d52ec88c8"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-07_PLAN_LEGOLOOP_VIDEO_REA.md",
+      "sha256": "ae012099e61d24bee8d61d571813ef5017298b3c9c2dc40908ab18c2febfaa5b"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "name": "videorea_crawler_detect",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "dependencies": [],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "sonnet",
+        "reason": "Detecção de URLs e metadados de plataformas de vídeo"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "docs/specs/2026-11-07_SPEC_LEGOLOOP_VIDEO_REA.md"
+      ],
+      "context_out": [
+        "internal/videorea/crawler.go",
+        "internal/videorea/crawler_test.go"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestDetectPlatform(t *testing.T)",
+        "file": "internal/videorea/crawler_test.go"
+      },
+      "verification": {
+        "test_command": "go test -v ./internal/videorea -run TestDetectPlatform",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 120,
+        "max_context_bytes": 100000,
+        "max_prompt_tokens": 15000,
+        "max_completion_tokens": 4000
+      },
+      "spec_ref": "AC-E01.1",
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-01.2",
+      "name": "videorea_url_sanitizer",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "dependencies": ["TICK-01.1"],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "haiku",
+        "reason": "Sanitização de URLs malformadas e tratamento de erros"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "internal/videorea/crawler.go"
+      ],
+      "context_out": [
+        "internal/videorea/crawler.go",
+        "internal/videorea/crawler_test.go"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestInvalidURLHandling(t *testing.T)",
+        "file": "internal/videorea/crawler_test.go"
+      },
+      "verification": {
+        "test_command": "go test -v ./internal/videorea -run TestInvalidURLHandling",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 60,
+        "max_context_bytes": 50000,
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000
+      },
+      "spec_ref": "AC-E01.2",
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-02.1",
+      "name": "videorea_forensics_prompts",
+      "nature": "micro",
+      "cognitive_complexity": "media",
+      "type": "unit_task",
+      "dependencies": ["TICK-01.2"],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "sonnet",
+        "reason": "Dissecação forense de prompts explícitos e dedução de prompts ocultos"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "internal/videorea/types.go"
+      ],
+      "context_out": [
+        "internal/videorea/forensics.go",
+        "internal/videorea/forensics_test.go"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestExtractForensicsPrompts(t *testing.T)",
+        "file": "internal/videorea/forensics_test.go"
+      },
+      "verification": {
+        "test_command": "go test -v ./internal/videorea -run TestExtractForensicsPrompts",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 180,
+        "max_context_bytes": 100000,
+        "max_prompt_tokens": 20000,
+        "max_completion_tokens": 5000
+      },
+      "spec_ref": "AC-E02.1",
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-02.2",
+      "name": "videorea_forensics_ocr",
+      "nature": "micro",
+      "cognitive_complexity": "media",
+      "type": "unit_task",
+      "dependencies": ["TICK-02.1"],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "sonnet",
+        "reason": "Inspeção de assets e extração OCR de telas de código"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "internal/videorea/forensics.go"
+      ],
+      "context_out": [
+        "internal/videorea/forensics.go",
+        "internal/videorea/forensics_test.go"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestInspectAssetsAndOCR(t *testing.T)",
+        "file": "internal/videorea/forensics_test.go"
+      },
+      "verification": {
+        "test_command": "go test -v ./internal/videorea -run TestInspectAssetsAndOCR",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 180,
+        "max_context_bytes": 100000,
+        "max_prompt_tokens": 20000,
+        "max_completion_tokens": 5000
+      },
+      "spec_ref": "AC-E02.2",
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-03.1",
+      "name": "videorea_matrix_curator",
+      "nature": "micro",
+      "cognitive_complexity": "media",
+      "type": "unit_task",
+      "dependencies": ["TICK-02.2"],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "sonnet",
+        "reason": "Curadoria contra matriz de peças locais e cálculo de soberania"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "internal/videorea/types.go"
+      ],
+      "context_out": [
+        "internal/videorea/curator.go",
+        "internal/videorea/curator_test.go"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestCurateAgainstMatrix(t *testing.T)",
+        "file": "internal/videorea/curator_test.go"
+      },
+      "verification": {
+        "test_command": "go test -v ./internal/videorea -run TestCurateAgainstMatrix",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 180,
+        "max_context_bytes": 100000,
+        "max_prompt_tokens": 20000,
+        "max_completion_tokens": 5000
+      },
+      "spec_ref": "AC-E03.1",
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-03.2",
+      "name": "videorea_canonical_naming",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "dependencies": ["TICK-03.1"],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "haiku",
+        "reason": "Normalização de slugs com prefixo obrigatório legoloop-*"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "internal/videorea/curator.go"
+      ],
+      "context_out": [
+        "internal/videorea/curator.go",
+        "internal/videorea/curator_test.go"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestCanonicalNaming(t *testing.T)",
+        "file": "internal/videorea/curator_test.go"
+      },
+      "verification": {
+        "test_command": "go test -v ./internal/videorea -run TestCanonicalNaming",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 60,
+        "max_context_bytes": 50000,
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000
+      },
+      "spec_ref": "AC-E03.2",
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-04.1",
+      "name": "videorea_stopgate_curation",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "stop_gate",
+      "dependencies": ["TICK-03.2"],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "haiku",
+        "reason": "Stop-gate de auditoria e validação da curadoria humana"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "internal/videorea/curator.go"
+      ],
+      "context_out": [
+        "internal/videorea/gate.go",
+        "internal/videorea/gate_test.go"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestStopGateCuration(t *testing.T)",
+        "file": "internal/videorea/gate_test.go"
+      },
+      "verification": {
+        "test_command": "go test -v ./internal/videorea -run TestStopGateCuration",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 60,
+        "max_context_bytes": 50000,
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000
+      },
+      "spec_ref": "AC-E04.1",
+      "stop_gate": {
+        "approver": "human",
+        "timeout_action": "pause",
+        "fallback_plan": null
+      }
+    },
+    {
+      "id": "TICK-04.2",
+      "name": "videorea_triad_and_fixture",
+      "nature": "micro",
+      "cognitive_complexity": "media",
+      "type": "unit_task",
+      "dependencies": ["TICK-04.1"],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "sonnet",
+        "reason": "Geração da Tríade ISO de Governança e sintetização de Golden Fixture de 3s"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "internal/videorea/curator.go"
+      ],
+      "context_out": [
+        "internal/videorea/factory_bridge.go",
+        "internal/videorea/factory_bridge_test.go"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestGenerateGovernanceAndFixture(t *testing.T)",
+        "file": "internal/videorea/factory_bridge_test.go"
+      },
+      "verification": {
+        "test_command": "go test -v ./internal/videorea -run TestGenerateGovernanceAndFixture",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 180,
+        "max_context_bytes": 100000,
+        "max_prompt_tokens": 20000,
+        "max_completion_tokens": 5000
+      },
+      "spec_ref": "AC-E04.2",
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-05.1",
+      "name": "videorea_dag_and_cli",
+      "nature": "macro",
+      "cognitive_complexity": "media",
+      "type": "unit_task",
+      "dependencies": ["TICK-04.2"],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "sonnet",
+        "reason": "Criação do DAG loops/video-rea e subcomando CLI legoloop video-rea"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "internal/videorea/types.go"
+      ],
+      "context_out": [
+        "loops/video-rea/pipeline.dag.json",
+        "internal/cli/video_rea.go",
+        "internal/cli/video_rea_test.go"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestVideoReaCLI(t *testing.T)",
+        "file": "internal/cli/video_rea_test.go"
+      },
+      "verification": {
+        "test_command": "go test -v ./internal/cli -run TestVideoReaCLI",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 180,
+        "max_context_bytes": 100000,
+        "max_prompt_tokens": 20000,
+        "max_completion_tokens": 5000
+      },
+      "spec_ref": "AC-E05.1",
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-05.2",
+      "name": "videorea_book_and_skill",
+      "nature": "macro",
+      "cognitive_complexity": "media",
+      "type": "unit_task",
+      "dependencies": ["TICK-05.1"],
+      "routing": {
+        "mode": "suggested",
+        "suggested_model": "sonnet",
+        "reason": "Livro didático LegoPress em docs/books/video-rea e skill canônica no cofre"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [
+        "docs/books/_modelo_livro.typst"
+      ],
+      "context_out": [
+        "docs/books/video-rea/livro.json",
+        "skills/legoloop-video-rea/SKILL.md"
+      ],
+      "test_seam": {
+        "type": "highest_seam",
+        "signature": "TestVideoReaBookCompilation(t *testing.T)",
+        "file": "internal/videorea/factory_bridge_test.go"
+      },
+      "verification": {
+        "test_command": "bash docs/books/compilar.sh video-rea",
+        "exit_code": 0
+      },
+      "limits": {
+        "max_duration_sec": 240,
+        "max_context_bytes": 150000,
+        "max_prompt_tokens": 25000,
+        "max_completion_tokens": 6000
+      },
+      "spec_ref": "AC-E05.2",
+      "stop_gate": null
+    }
+  ],
+  "gates": {
+    "gate_test_coverage": {
+      "expression": "coverage >= 0.85",
+      "severity": "blocker"
+    },
+    "gate_funclen": {
+      "expression": "max_function_lines <= 35",
+      "severity": "blocker"
+    },
+    "gate_zero_stubs": {
+      "expression": "stub_count == 0",
+      "severity": "blocker"
+    }
+  }
+}

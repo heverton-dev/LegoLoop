@@ -1,0 +1,515 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "video-001",
+  "version": "0.1.0",
+  "date": "2026-11-08",
+  "session_id": "intv_1794159641384160400",
+  "intent_ref": "docs/intents/2026-11-08_INTENT_VIDEO_001.md",
+  "spec_ref": "docs/specs/2026-11-08_SPEC_VIDEO_001.md",
+  "plan_ref": "docs/plans/2026-11-08_PLAN_VIDEO_001.md",
+  "initiative_ref": "I04",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-08_INTENT_VIDEO_001.md",
+      "sha256": "d60249fa9fb1a401a060ea95ac67b162eea8407c17758403a1dd9379ff67c311"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-08_SPEC_VIDEO_001.md",
+      "sha256": "03334f1c3fa0edd11d6f7d49b863f38151ee0bfdf69816546b7273af3a432e3c"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-08_PLAN_VIDEO_001.md",
+      "sha256": "cf70528af97fa9c00f74fc6d8107e443ff2931d290d5f69ba7ed8c231c2da11c"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "I04",
+      "epic_id": "E01",
+      "label": "Alinhar roteiro às palavras transcritas (função pura)",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "scripts/alinhar_roteiro.py"
+        ],
+        "spec_anchor": "docs/specs/2026-11-08_SPEC_VIDEO_001.md#AC-2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-2",
+      "test_target": "scripts/test_alinhar_roteiro.py",
+      "outputs": {
+        "artifacts": [
+          "scripts/alinhar_roteiro.py",
+          "scripts/test_alinhar_roteiro.py"
+        ],
+        "verification": [
+          "python",
+          "-m",
+          "pytest",
+          "scripts/test_alinhar_roteiro.py",
+          "-q"
+        ],
+        "gate": "exit_code == 0 && file_exists('scripts/alinhar_roteiro.py')"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "I04",
+      "epic_id": "E01",
+      "label": "Nós de extração de áudio e transcrição local com whisper-cli",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/videorea/video-001/loop/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-08_SPEC_VIDEO_001.md#AC-1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-1",
+      "test_target": "scripts/test_dag_transcricao.py",
+      "outputs": {
+        "artifacts": [
+          "docs/videorea/video-001/loop/pipeline.dag.json"
+        ],
+        "verification": [
+          "python",
+          "-m",
+          "pytest",
+          "scripts/test_dag_transcricao.py",
+          "-q"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/videorea/video-001/loop/pipeline.dag.json')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "I04",
+      "epic_id": "E02",
+      "label": "Nós de plano, gate humano, render HyperFrames, montagem e verificação",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/videorea/video-001/loop/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-08_SPEC_VIDEO_001.md#AC-3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-3, AC-4, AC-6, AC-7",
+      "test_target": "scripts/test_dag_gates.py",
+      "outputs": {
+        "artifacts": [
+          "docs/videorea/video-001/loop/pipeline.dag.json"
+        ],
+        "verification": [
+          "legoloop",
+          "validate",
+          "docs/videorea/video-001/loop/pipeline.dag.json"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/videorea/video-001/loop/pipeline.dag.json')"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "I04",
+      "epic_id": "E02",
+      "label": "Golden Fixture de 3s 1080p60 e execução ponta a ponta",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "script",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/videorea/video-001/loop/fixture_3s.mp4"
+        ],
+        "spec_anchor": "docs/specs/2026-11-08_SPEC_VIDEO_001.md#AC-5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-5",
+      "test_target": "SG-DAG-FIXTURE",
+      "outputs": {
+        "artifacts": [
+          "docs/videorea/video-001/loop/fixture_3s.mp4"
+        ],
+        "verification": [
+          "ffprobe",
+          "-v",
+          "error",
+          "-show_entries",
+          "stream=width,height,r_frame_rate",
+          "-of",
+          "json",
+          "docs/videorea/video-001/loop/fixture_3s.mp4"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/videorea/video-001/loop/fixture_3s.mp4')"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "I04",
+      "epic_id": "E03",
+      "label": "Skill canônica e distribuição aos harnesses",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "script",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/videorea/video-001/skill/SKILL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-08_SPEC_VIDEO_001.md#AC-7",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-7",
+      "test_target": "legoloop instalar-skills",
+      "outputs": {
+        "artifacts": [
+          "docs/videorea/video-001/skill/SKILL.md"
+        ],
+        "verification": [
+          "legoloop",
+          "instalar-skills"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/videorea/video-001/skill/SKILL.md')"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "I04",
+      "epic_id": "E03",
+      "label": "Livro Didático LegoPress e auditoria geométrica",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "script",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/videorea/video-001/book/livro.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-08_SPEC_VIDEO_001.md#AC-7",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-7",
+      "test_target": "legoloop legopress auditar",
+      "outputs": {
+        "artifacts": [
+          "docs/videorea/video-001/book/livro.json"
+        ],
+        "verification": [
+          "legoloop",
+          "legopress",
+          "auditar"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/videorea/video-001/book/livro.json')"
+      }
+    },
+    {
+      "id": "TICK-03.3",
+      "initiative_id": "I04",
+      "epic_id": "E03",
+      "label": "Canonização e fechamento com telemetria",
+      "nature": "micro",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "COMPLETED",
+      "execution_mode": "script",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "bin/legoloop.exe"
+        ],
+        "spec_anchor": "docs/specs/2026-11-08_SPEC_VIDEO_001.md#AC-6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-6, AC-7",
+      "test_target": "legoloop fechar",
+      "outputs": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verification": [
+          "go",
+          "build",
+          "-o",
+          "bin/legoloop.exe",
+          "./cmd/legoloop"
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      }
+    }
+  ]
+}

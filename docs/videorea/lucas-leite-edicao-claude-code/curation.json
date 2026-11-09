@@ -1,0 +1,268 @@
+{
+  "suggested_name": "legoloop-video-edition",
+  "original_cost": "R$ 329,00/mes (SaaS + Softwares Proprietarios)",
+  "sovereign_cost": "R$ 0,00/mes",
+  "replacements": {
+    "Adobe Premiere Pro": "FFmpeg Engine + Timeline FCPXML",
+    "Claude Pro + Claude Code": "9Router Local / Modelos Abertos Gratuitos",
+    "Epidemic Sound": "Biblioteca Local de SFX Curada (CC0 / Freesound)",
+    "Whisper API Comercial": "Whisper Local (whisper.cpp / ffmpeg silenceremove)"
+  },
+  "substituted_tools": [
+    {
+      "original": {
+        "name": "Adobe Premiere Pro",
+        "category": "video_editor_nle",
+        "is_free": false,
+        "license_type": "proprietary_subscription",
+        "cost_tier": "R$ 124,00/mes",
+        "detection": "explicit_mention",
+        "source_evidence": "Etapa 3: cortes e revisao fina na timeline do Premiere",
+        "timestamp": "02:54"
+      },
+      "replacement": {
+        "name": "FFmpeg Engine + Timeline FCPXML",
+        "tier": "Tier Ouro (LegoLoop)",
+        "cost": "R$ 0,00",
+        "license": "open_source_lgpl",
+        "rationale": "Cortes automaticos milissegundo a milissegundo e exportacao aberta FCPXML sem assinatura Adobe"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "C:\\ProgramData\\chocolatey\\bin\\ffmpeg.exe",
+        "fit_status": "FIT_OURO",
+        "fit_solution": "Encaixe perfeito: binario FFmpeg instalado e homologado no PATH.",
+        "gold_standard": "FFmpeg Engine + Timeline FCPXML"
+      }
+    },
+    {
+      "original": {
+        "name": "Claude Pro + Claude Code",
+        "category": "commercial_llm_service",
+        "is_free": false,
+        "license_type": "proprietary_subscription",
+        "cost_tier": "R$ 110,00/mes (Pro)",
+        "detection": "explicit_mention",
+        "source_evidence": "Claude (assinatura Pro) + Claude Code instalado no computador",
+        "timestamp": "00:59"
+      },
+      "replacement": {
+        "name": "9Router Local / Modelos Abertos Gratuitos",
+        "tier": "Tier Ouro (LegoLoop)",
+        "cost": "R$ 0,00",
+        "license": "open_source_mit",
+        "rationale": "Roteamento inteligente para modelos abertos locais e gateways comunitarios sem mensalidade fixa"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "Claude CLI / agy",
+        "fit_status": "FIT_FROUXO_DEFASADO",
+        "fit_solution": "Configurar o endpoint seguro do 9Router na VPS para roteamento resiliente de modelos abertos, eliminando a dependência do plano Pro comercial e evitando rate-limits.",
+        "gold_standard": "9Router Local / Modelos Abertos Gratuitos",
+        "install_command": "setx NINEROUTER_URL https://9router.vpsconexao.org"
+      }
+    },
+    {
+      "original": {
+        "name": "Epidemic Sound",
+        "category": "commercial_audio_library",
+        "is_free": false,
+        "license_type": "proprietary_subscription",
+        "cost_tier": "R$ 75,00/mes",
+        "detection": "explicit_mention",
+        "source_evidence": "Epidemic Sound: biblioteca musical e efeitos sonoros com link de afiliado",
+        "timestamp": "05:06"
+      },
+      "replacement": {
+        "name": "Biblioteca Local de SFX Curada (CC0 / Freesound)",
+        "tier": "Tier Ouro (LegoLoop)",
+        "cost": "R$ 0,00",
+        "license": "creative_commons_zero",
+        "rationale": "Efeitos sonoros e risers classificados localmente por categorias sem risco de copyright ou mensalidade"
+      },
+      "diagnosis": {
+        "installed_on_host": false,
+        "fit_status": "MISSING_AQUISICAO",
+        "fit_solution": "Sincronizar o pack local de SFX CC0 para obter biblioteca de efeitos sonoros sem mensalidades.",
+        "gold_standard": "Biblioteca Local de SFX Curada (CC0 / Freesound)",
+        "install_command": "legoloop sync-sfx-pack --tier ouro"
+      }
+    },
+    {
+      "original": {
+        "name": "Whisper API Comercial",
+        "category": "cloud_transcription_api",
+        "is_free": false,
+        "license_type": "proprietary_pay_per_minute",
+        "cost_tier": "R$ 20,00/mes (API comercial)",
+        "detection": "explicit_mention",
+        "source_evidence": "Transcricao em nuvem cobrada por hora de audio",
+        "timestamp": "02:26"
+      },
+      "replacement": {
+        "name": "Whisper Local (whisper.cpp / ffmpeg silenceremove)",
+        "tier": "Tier Ouro (LegoLoop)",
+        "cost": "R$ 0,00",
+        "license": "open_source_mit",
+        "rationale": "Transcricao local acelerada por hardware sem custo por hora de audio nem envio de dados privados"
+      },
+      "diagnosis": {
+        "installed_on_host": false,
+        "fit_status": "MISSING_AQUISICAO",
+        "fit_solution": "Instalar whisper.cpp ou usar silenceremove local para dispensar custos de API por hora de audio.",
+        "gold_standard": "Whisper Local (whisper.cpp / ffmpeg silenceremove)",
+        "install_command": "winget install whisper.cpp || choco install whisper"
+      }
+    }
+  ],
+  "adopted_tools": [
+    {
+      "adopted": {
+        "name": "WhisperX",
+        "category": "transcription_word_alignment",
+        "is_free": true,
+        "license_type": "open_source_bsd",
+        "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+        "detection": "explicit_mention",
+        "source_evidence": "WhisperX: transcricao gratuita com alinhamento preciso por palavra",
+        "timestamp": "02:26",
+        "repository_url": "https://github.com/m-bain/whisperX",
+        "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/decisoes.md#L21"
+      },
+      "diagnosis": {
+        "installed_on_host": false,
+        "fit_status": "MISSING_AQUISICAO",
+        "fit_solution": "Instalar WhisperX via pip para habilitar o alinhamento temporal milissegundo a milissegundo por palavra.",
+        "gold_standard": "WhisperX (Padrão Ouro de alinhamento por palavra)",
+        "install_command": "pip install whisperx"
+      }
+    },
+    {
+      "adopted": {
+        "name": "HyperFrames",
+        "category": "motion_graphics_code",
+        "is_free": true,
+        "license_type": "open_source_mit",
+        "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+        "detection": "explicit_mention",
+        "source_evidence": "HyperFrames: animacoes feitas com codigo HTML CSS GSAP renderizadas via CLI",
+        "timestamp": "04:16",
+        "repository_url": "https://github.com/hyperframes/hyperframes",
+        "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/hyperframes.md"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "C:\\Users\\trcnologia\\.bun\\bin\\hyperframes.exe",
+        "fit_status": "FIT_OURO",
+        "fit_solution": "Encaixe perfeito: motor HyperFrames ativo no ambiente bun para motion graphics procedural.",
+        "gold_standard": "HyperFrames CLI Engine"
+      }
+    },
+    {
+      "adopted": {
+        "name": "YuNet (OpenCV)",
+        "category": "facial_detection_tracking",
+        "is_free": true,
+        "license_type": "open_source_apache2",
+        "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+        "detection": "explicit_mention",
+        "source_evidence": "YuNet: rastreio de rosto leve que roda local para movimento inteligente de camera",
+        "timestamp": "04:44",
+        "repository_url": "https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet",
+        "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/etapa-camera.md"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "Python runtime (cv2 / OpenCV)",
+        "fit_status": "FIT_OURO",
+        "fit_solution": "Encaixe perfeito: modulo OpenCV com suporte a YuNet disponivel no Python para rastreio facial.",
+        "gold_standard": "YuNet Face Tracker (OpenCV Zoo)"
+      }
+    },
+    {
+      "adopted": {
+        "name": "Skill Fluxo de Edicao",
+        "category": "editing_workflow_framework",
+        "is_free": true,
+        "license_type": "open_source_mit",
+        "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+        "detection": "explicit_link",
+        "source_evidence": "Skill gratuita 'Fluxo de edicao' compartilhada no GitHub sob licenca MIT",
+        "timestamp": "08:01",
+        "repository_url": "https://github.com/LeiteZ/fluxo-de-edicao",
+        "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/SKILL.md"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/SKILL.md",
+        "fit_status": "FIT_OURO",
+        "fit_solution": "Encaixe perfeito: skill e guias de 8 etapas clonados e prontos no scratch local.",
+        "gold_standard": "Framework de 8 Etapas do Autor (MIT)"
+      }
+    },
+    {
+      "adopted": {
+        "name": "Python Helper Scripts",
+        "category": "state_inspection_scripts",
+        "is_free": true,
+        "license_type": "open_source_script",
+        "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+        "detection": "implicit_code",
+        "source_evidence": "ver.py status e ver.py cortes para inspecionar estado sem consumir tokens de LLM",
+        "timestamp": "05:37",
+        "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/principios-do-fluxo.md#L18",
+        "reconstructed_snippet": "ver.py \u003cpasta\u003e status"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/principios-do-fluxo.md",
+        "fit_status": "FIT_OURO",
+        "fit_solution": "Encaixe perfeito: scripts de inspecao de estado ver.py disponiveis no scratch para economia de tokens.",
+        "gold_standard": "ver.py status / cortes (Economia de Tokens)"
+      }
+    },
+    {
+      "adopted": {
+        "name": "FFmpeg CLI",
+        "category": "media_slicing_conversion",
+        "is_free": true,
+        "license_type": "open_source_lgpl",
+        "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+        "detection": "implicit_terminal",
+        "source_evidence": "Separacao de audio 48k e cortes de precisao em linha de comando",
+        "timestamp": "02:26",
+        "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/etapa-iniciar-preparar.md",
+        "reconstructed_snippet": "ffmpeg -i raw.mp4 -vn audio.wav"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "C:\\ProgramData\\chocolatey\\bin\\ffmpeg.exe",
+        "fit_status": "FIT_OURO",
+        "fit_solution": "Encaixe perfeito: binario FFmpeg instalado e homologado no PATH.",
+        "gold_standard": "FFmpeg CLI v7.1+"
+      }
+    },
+    {
+      "adopted": {
+        "name": "Python / yt-dlp",
+        "category": "asset_download_management",
+        "is_free": true,
+        "license_type": "open_source_unlicense",
+        "cost_tier": "R$ 0,00 (Gratuito/Aberto)",
+        "detection": "implicit_terminal",
+        "source_evidence": "Download de assets e gerenciamento de dependencias",
+        "timestamp": "04:03",
+        "local_artifact_path": "docs/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/guias/etapa-assets.md",
+        "reconstructed_snippet": "pip install yt-dlp opencv-python hyperframes"
+      },
+      "diagnosis": {
+        "installed_on_host": true,
+        "host_location": "C:\\Users\\trcnologia\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\yt-dlp.exe",
+        "fit_status": "FIT_OURO",
+        "fit_solution": "Encaixe perfeito: ferramenta de download de assets disponivel no ambiente Python Scripts.",
+        "gold_standard": "yt-dlp Core"
+      }
+    }
+  ],
+  "approved": true
+}

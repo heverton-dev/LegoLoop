@@ -1,0 +1,71 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "fechar",
+  "name": "Pipeline Universal de Fechamento e Canonização (legoloop-fechar)",
+  "description": "Sub-loop canônico em 8 etapas para canonizar e fechar qualquer pipeline aprovado no LegoLoop: Manual, Livro LegoPress, Skill nos harnesses, DAG validado, Rebuild do binário, Governança, Grafo semântico e Portões de qualidade.",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "etapa-manual",
+      "type": "script",
+      "command": ["legoloop", "fechar", "video-motion", "--dry-run", "--skip-build"],
+      "output": {
+        "artifact": "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md",
+        "gate": "file_exists('docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md')"
+      }
+    },
+    {
+      "id": "etapa-livro",
+      "type": "script",
+      "depends_on": ["etapa-manual"],
+      "command": ["legoloop", "legopress", "auditar", "docs/books/video-rea/2026-11-07_PIPELINE-VIDEO-REA.pdf"],
+      "output": {
+        "artifact": "docs/books/video-rea/livro.json",
+        "gate": "file_exists('docs/books/video-rea/livro.json')"
+      }
+    },
+    {
+      "id": "etapa-skill",
+      "type": "script",
+      "depends_on": ["etapa-livro"],
+      "command": ["legoloop", "instalar-skills", "--dry-run"],
+      "output": {
+        "artifact": "skills/legoloop-fechar/SKILL.md",
+        "gate": "file_exists('skills/legoloop-fechar/SKILL.md')"
+      }
+    },
+    {
+      "id": "etapa-dag",
+      "type": "script",
+      "depends_on": ["etapa-skill"],
+      "command": ["legoloop", "validate", "loops/video-motion/pipeline.dag.json"],
+      "output": {
+        "artifact": "loops/video-motion/pipeline.dag.json",
+        "gate": "file_exists('loops/video-motion/pipeline.dag.json')"
+      }
+    },
+    {
+      "id": "etapa-rebuild",
+      "type": "script",
+      "depends_on": ["etapa-dag"],
+      "command": ["legoloop", "version"],
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "file_exists('bin/legoloop.exe')"
+      }
+    },
+    {
+      "id": "etapa-governanca",
+      "type": "script",
+      "depends_on": ["etapa-rebuild"],
+      "command": ["legoloop", "doctor", "--json"],
+      "output": {
+        "artifact": "AGENTS.md",
+        "gate": "file_exists('AGENTS.md')"
+      }
+    }
+  ]
+}

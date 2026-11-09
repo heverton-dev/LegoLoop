@@ -1,0 +1,381 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "name": "video-edition",
+  "version": "1.0.0",
+  "description": "Pipeline executável de edição determinística de vídeo por código (Lucas Leite) com isolamento hermético em scratch/ e Stop-Gates humanos.",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_iniciar_preparar",
+      "type": "script",
+      "command": [
+        "ffmpeg",
+        "-i",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/raw_video.mp4",
+        "-vn",
+        "-acodec",
+        "pcm_s16le",
+        "-ar",
+        "48000",
+        "-ac",
+        "2",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "video": "var.raw_video"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav')"
+      }
+    },
+    {
+      "id": "n02_transcricao_alinhamento",
+      "type": "script",
+      "command": [
+        "whisperx",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav",
+        "--output_format",
+        "json",
+        "--output_dir",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch"
+      ],
+      "depends_on": [
+        "n01_iniciar_preparar"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "audio": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json')"
+      }
+    },
+    {
+      "id": "n03_decisao_cortes",
+      "type": "script",
+      "command": [
+        "python",
+        "scripts/corte_silencio.py",
+        "--input",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json",
+        "--threshold",
+        "0.4",
+        "--margin",
+        "0.04"
+      ],
+      "depends_on": [
+        "n02_transcricao_alinhamento"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "code-fast"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "transcript": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json')"
+      }
+    },
+    {
+      "id": "n04_sg_revisao_corte",
+      "type": "stop_gate",
+      "depends_on": [
+        "n03_decisao_cortes"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "inputs": {
+        "cuts": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json') && prompt('Aprovar cortes de silencio e selecao de takes?')"
+      }
+    },
+    {
+      "id": "n05_motion_mapa",
+      "type": "skill",
+      "ref": "skills/aidd-impeccable",
+      "depends_on": [
+        "n04_sg_revisao_corte"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "cuts": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json')"
+      }
+    },
+    {
+      "id": "n06_sg_revisao_motion",
+      "type": "stop_gate",
+      "depends_on": [
+        "n05_motion_mapa"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "inputs": {
+        "storyboard": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json') && prompt('Aprovar plano de animacoes cineticas e overlays?')"
+      }
+    },
+    {
+      "id": "n07_camera_yunet",
+      "type": "script",
+      "command": [
+        "python",
+        "scripts/yunet_tracking.py",
+        "--video",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/raw_video.mp4",
+        "--cuts",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json",
+        "--motion",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json"
+      ],
+      "depends_on": [
+        "n06_sg_revisao_motion"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "cuts": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json')",
+        "motion": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json')"
+      }
+    },
+    {
+      "id": "n08_assets_download",
+      "type": "script",
+      "command": [
+        "yt-dlp",
+        "--batch-file",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/asset_urls.txt",
+        "-P",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/assets",
+        "--write-info-json"
+      ],
+      "depends_on": [
+        "n06_sg_revisao_motion"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "motion": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json')"
+      }
+    },
+    {
+      "id": "n09_motion_render",
+      "type": "script",
+      "command": [
+        "bun",
+        "run",
+        "hyperframes",
+        "render",
+        "--composition",
+        "video_overlays",
+        "--out",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4"
+      ],
+      "depends_on": [
+        "n08_assets_download"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "assets": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4')"
+      }
+    },
+    {
+      "id": "n10_efeitos_sonoros_sfx",
+      "type": "script",
+      "command": [
+        "python",
+        "scripts/mix_sfx.py",
+        "--camera",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json",
+        "--motion",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4",
+        "--sfx-lib",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx",
+        "--ducking",
+        "-18dB"
+      ],
+      "depends_on": [
+        "n07_camera_yunet",
+        "n09_motion_render"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "camera": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json')",
+        "motion": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav')"
+      }
+    },
+    {
+      "id": "n11_entrega_final_hibrida",
+      "type": "script",
+      "command": [
+        "python",
+        "scripts/export_fcpxml.py",
+        "--timeline",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/timeline_state.json",
+        "--out-xml",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml",
+        "--out-mp4",
+        "docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.mp4"
+      ],
+      "depends_on": [
+        "n10_efeitos_sonoros_sfx"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "sfx": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml')"
+      }
+    },
+    {
+      "id": "n12_sg_entrega_final",
+      "type": "stop_gate",
+      "depends_on": [
+        "n11_entrega_final_hibrida"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "inputs": {
+        "fcpxml": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml')"
+      },
+      "output": {
+        "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/delivery_approved.json",
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml') && prompt('Aprovar entrega final do video?')"
+      }
+    }
+  ]
+}

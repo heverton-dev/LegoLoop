@@ -82,6 +82,7 @@ func gravar(t *testing.T, c cofre, p processo.Processo) {
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Path: doc("plans", pr.PlanNome), Data: []byte(pr.Plan)},
 		{Path: doc("routes", pr.RouteNome), Data: pr.Route},
+		{Path: doc("dags", pr.DAGNome), Data: pr.DAG},
 		{Path: doc("intents", "2026-11-05_INTENT_"+slugDe(p.Nome)+".md"), Data: []byte("# INTENT: " + p.Nome + "\n\nTexto original.\n")},
 	}
 	st := processo.Store{Roots: processo.Roots{Vault: c.vault, Docs: c.docs}}
@@ -687,5 +688,26 @@ func testRaizesVazias(t *testing.T) {
 		if _, err := compor.Run(context.Background(), req, d); !errors.Is(err, processo.ErrPlano) {
 			t.Errorf("%s: erro %v; esperava ErrPlano", rotulo, err)
 		}
+	}
+}
+
+func TestCompor_RegeraDAGIso(t *testing.T) {
+	c := semear(t, nomeA, nomeB)
+	req := compor.Request{Nome: nomeA, Ligacao: compor.Ligacao{Composto: nomeB + "@1.0.0"}}
+	res, err := compor.Run(context.Background(), req, depsDe(c, nil, seguir))
+	if err != nil {
+		t.Fatalf("compor.Run: %v", err)
+	}
+	var achouDAGIso bool
+	for _, a := range res.Arquivos {
+		if strings.Contains(a.Caminho, filepath.Join("docs", "dags")) {
+			achouDAGIso = true
+			if b, err := os.ReadFile(a.Caminho); err != nil || len(b) == 0 {
+				t.Fatalf("arquivo DAG ISO em %s não pode estar vazio", a.Caminho)
+			}
+		}
+	}
+	if !achouDAGIso {
+		t.Errorf("compor deve regerar e persistir docs/dags: %+v", res.Arquivos)
 	}
 }

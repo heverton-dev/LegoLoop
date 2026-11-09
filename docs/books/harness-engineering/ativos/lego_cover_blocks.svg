@@ -1,0 +1,297 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="100%" height="100%">
+  <defs>
+    <filter id="coverShadow" x="-15%" y="-15%" width="135%" height="145%">
+      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+    <linearGradient id="top_blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="front_blue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="20%" stop-color="#3b82f6"/>
+      <stop offset="40%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="side_blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="studCyl_blue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="30%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="studCap_blue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#bfdbfe"/>
+      <stop offset="60%" stop-color="#93c5fd"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="top_green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="front_green" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="20%" stop-color="#10b981"/>
+      <stop offset="40%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="side_green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065f46"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="studCyl_green" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="30%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="studCap_green" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a7f3d0"/>
+      <stop offset="60%" stop-color="#6ee7b7"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="top_amber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="front_amber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="20%" stop-color="#f59e0b"/>
+      <stop offset="40%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="side_amber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#92400e"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+    <linearGradient id="studCyl_amber" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="30%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="studCap_amber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="60%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="top_red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    <linearGradient id="front_red" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="20%" stop-color="#ef4444"/>
+      <stop offset="40%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="side_red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#991b1b"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <linearGradient id="studCyl_red" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fca5a5"/>
+      <stop offset="30%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="studCap_red" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fecaca"/>
+      <stop offset="60%" stop-color="#fca5a5"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    <linearGradient id="top_violet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="front_violet" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="20%" stop-color="#8b5cf6"/>
+      <stop offset="40%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="side_violet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5b21b6"/>
+      <stop offset="100%" stop-color="#4c1d95"/>
+    </linearGradient>
+    <linearGradient id="studCyl_violet" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="30%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="studCap_violet" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ddd6fe"/>
+      <stop offset="60%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <g filter="url(#coverShadow)">
+    <!-- Bloco green (60,140) -->
+    <g>
+      <polygon points="60,140 98,114 268,114 230,140" fill="url(#top_green)" stroke="#a7f3d0" stroke-width="0.7"/>
+      <polygon points="230,140 268,114 268,166 230,192" fill="url(#side_green)" stroke="#022c22" stroke-width="0.7"/>
+      <g transform="translate(99.7, 121.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#022c22" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_green)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_green)" stroke="#a7f3d0" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#a7f3d0" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(116.8, 133.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#022c22" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_green)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_green)" stroke="#a7f3d0" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#a7f3d0" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(156.4, 121.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#022c22" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_green)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_green)" stroke="#a7f3d0" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#a7f3d0" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(173.5, 133.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#022c22" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_green)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_green)" stroke="#a7f3d0" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#a7f3d0" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(213.1, 121.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#022c22" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_green)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_green)" stroke="#a7f3d0" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#a7f3d0" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(230.2, 133.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#022c22" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_green)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_green)" stroke="#a7f3d0" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#a7f3d0" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <rect x="60" y="140" width="170" height="52" rx="2.5" fill="url(#front_green)" stroke="#047857" stroke-width="0.8"/>
+      <line x1="61" y1="141" x2="229" y2="141" stroke="#a7f3d0" stroke-width="1.8" opacity="0.9"/>
+      <line x1="61" y1="191" x2="229" y2="191" stroke="#022c22" stroke-width="2.0" opacity="0.7"/>
+      <text x="145.0" y="172.0" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">BUILD</text>
+    </g>
+    <!-- Bloco blue (270,140) -->
+    <g>
+      <polygon points="270,140 308,114 478,114 440,140" fill="url(#top_blue)" stroke="#bfdbfe" stroke-width="0.7"/>
+      <polygon points="440,140 478,114 478,166 440,192" fill="url(#side_blue)" stroke="#0f172a" stroke-width="0.7"/>
+      <g transform="translate(309.7, 121.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#0f172a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_blue)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_blue)" stroke="#bfdbfe" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#bfdbfe" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(326.8, 133.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#0f172a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_blue)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_blue)" stroke="#bfdbfe" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#bfdbfe" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(366.4, 121.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#0f172a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_blue)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_blue)" stroke="#bfdbfe" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#bfdbfe" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(383.5, 133.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#0f172a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_blue)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_blue)" stroke="#bfdbfe" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#bfdbfe" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(423.1, 121.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#0f172a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_blue)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_blue)" stroke="#bfdbfe" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#bfdbfe" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(440.2, 133.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#0f172a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_blue)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_blue)" stroke="#bfdbfe" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#bfdbfe" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <rect x="270" y="140" width="170" height="52" rx="2.5" fill="url(#front_blue)" stroke="#1d4ed8" stroke-width="0.8"/>
+      <line x1="271" y1="141" x2="439" y2="141" stroke="#bfdbfe" stroke-width="1.8" opacity="0.9"/>
+      <line x1="271" y1="191" x2="439" y2="191" stroke="#0f172a" stroke-width="2.0" opacity="0.7"/>
+      <text x="355.0" y="172.0" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">SCALE</text>
+    </g>
+    <!-- Bloco red (165,75) -->
+    <g>
+      <polygon points="165,75 203,49 373,49 335,75" fill="url(#top_red)" stroke="#fecaca" stroke-width="0.7"/>
+      <polygon points="335,75 373,49 373,101 335,127" fill="url(#side_red)" stroke="#450a0a" stroke-width="0.7"/>
+      <g transform="translate(204.7, 56.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#450a0a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_red)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_red)" stroke="#fecaca" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fecaca" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(221.8, 68.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#450a0a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_red)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_red)" stroke="#fecaca" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fecaca" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(261.4, 56.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#450a0a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_red)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_red)" stroke="#fecaca" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fecaca" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(278.5, 68.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#450a0a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_red)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_red)" stroke="#fecaca" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fecaca" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(318.1, 56.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#450a0a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_red)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_red)" stroke="#fecaca" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fecaca" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(335.2, 68.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#450a0a" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_red)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_red)" stroke="#fecaca" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fecaca" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <rect x="165" y="75" width="170" height="52" rx="2.5" fill="url(#front_red)" stroke="#b91c1c" stroke-width="0.8"/>
+      <line x1="166" y1="76" x2="334" y2="76" stroke="#fecaca" stroke-width="1.8" opacity="0.9"/>
+      <line x1="166" y1="126" x2="334" y2="126" stroke="#450a0a" stroke-width="2.0" opacity="0.7"/>
+      <text x="250.0" y="107.0" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">LEGOLOOP</text>
+    </g>
+    <!-- Bloco amber (375,75) -->
+    <g>
+      <polygon points="375,75 413,49 513,49 475,75" fill="url(#top_amber)" stroke="#fef3c7" stroke-width="0.7"/>
+      <polygon points="475,75 513,49 513,101 475,127" fill="url(#side_amber)" stroke="#451a03" stroke-width="0.7"/>
+      <g transform="translate(411.4, 56.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#451a03" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_amber)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_amber)" stroke="#fef3c7" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fef3c7" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(428.5, 68.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#451a03" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_amber)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_amber)" stroke="#fef3c7" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fef3c7" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(461.4, 56.8)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#451a03" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_amber)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_amber)" stroke="#fef3c7" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fef3c7" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <g transform="translate(478.5, 68.5)">
+        <ellipse cx="0" cy="0" rx="12.5" ry="5.2" fill="#451a03" opacity="0.3"/>
+        <path d="M -12.5 -9.0 L -12.5 0 A 12.5 5.2 0 0 0 12.5 0 L 12.5 -9.0 Z" fill="url(#studCyl_amber)"/>
+        <ellipse cx="0" cy="-9.0" rx="12.5" ry="5.2" fill="url(#studCap_amber)" stroke="#fef3c7" stroke-width="0.6"/>
+        <ellipse cx="0" cy="-9.0" rx="7.5" ry="3.1" fill="none" stroke="#fef3c7" stroke-width="1.0" opacity="0.9"/>
+      </g>
+      <rect x="375" y="75" width="100" height="52" rx="2.5" fill="url(#front_amber)" stroke="#b45309" stroke-width="0.8"/>
+      <line x1="376" y1="76" x2="474" y2="76" stroke="#fef3c7" stroke-width="1.8" opacity="0.9"/>
+      <line x1="376" y1="126" x2="474" y2="126" stroke="#451a03" stroke-width="2.0" opacity="0.7"/>
+      <text x="425.0" y="107.0" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">TDD</text>
+    </g>
+  </g>
+</svg>

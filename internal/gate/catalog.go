@@ -20,6 +20,7 @@ var docs = map[string]Doc{
 	"schema_valid":            {Signature: "schema_valid(schema, alvo)", Description: "Verdadeiro se o arquivo JSON no caminho alvo cumpre o JSON Schema informado."},
 	"interactive":             {Signature: "interactive(pergunta)", Description: "Pausa a execução e solicita confirmação humana (Stop-Gate interativo)."},
 	"prompt":                  {Signature: "prompt(pergunta)", Description: "Alias de interactive(pergunta) para Stop-Gates humanos."},
+	"no_stubs":                {Signature: "no_stubs(caminho)", Description: "Verdadeiro se o arquivo existe e não contém stubs vazios, TODOs ou mocks simulados."},
 }
 
 // Catalog lista os gates embutidos em ordem alfabética.

@@ -43,6 +43,7 @@ func builtins() map[string]builtin {
 		"schema_valid":            {[]valKind{kStr, kStr}, kBool, schemaValid},
 		"interactive":             {[]valKind{kStr}, kBool, interactivePrompt},
 		"prompt":                  {[]valKind{kStr}, kBool, interactivePrompt},
+		"no_stubs":                {[]valKind{kStr}, kBool, noStubs},
 	}
 }
 
@@ -201,4 +202,18 @@ func interactivePrompt(env Env, args []value, _ *regexp.Regexp) (value, error) {
 		return value{kind: kBool, b: false}, fmt.Errorf("gate: prompt falhou: %w", err)
 	}
 	return value{kind: kBool, b: ok}, nil
+}
+
+var stubRe = regexp.MustCompile(`(?i)(?:\bTODO\b|\bpass\b|\bimplementar depois\b|\bmock simulado\b)`)
+
+func noStubs(env Env, args []value, _ *regexp.Regexp) (value, error) {
+	data, err := readGateFile(env, args[0].s)
+	if err != nil {
+		return value{kind: kBool, b: false}, nil
+	}
+	trimmed := bytes.TrimSpace(data)
+	if len(trimmed) == 0 || stubRe.Match(trimmed) {
+		return value{kind: kBool, b: false}, nil
+	}
+	return value{kind: kBool, b: true}, nil
 }

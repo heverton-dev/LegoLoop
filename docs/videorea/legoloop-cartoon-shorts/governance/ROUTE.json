@@ -1,0 +1,237 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "legoloop-cartoon-shorts",
+  "version": "1.0.0",
+  "date": "2026-11-09",
+  "session_id": "intv_1794238593016059900",
+  "intent_ref": "docs/intents/2026-11-09_INTENT_LEGOLOOP_CARTOON_SHORTS.md",
+  "spec_ref": "docs/specs/2026-11-09_SPEC_LEGOLOOP_CARTOON_SHORTS.md",
+  "plan_ref": "docs/plans/2026-11-09_PLAN_LEGOLOOP_CARTOON_SHORTS.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-09_INTENT_LEGOLOOP_CARTOON_SHORTS.md",
+      "sha256": "6ef659ca8a52b2aa64cb8cd88fddec0444400c9a9088bca7aa9c5a358f05cf9f"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-09_SPEC_LEGOLOOP_CARTOON_SHORTS.md",
+      "sha256": "5aacc736641d9a342a57c510e76455f28978032b18f30d699942f22ebc5cba3f"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-09_PLAN_LEGOLOOP_CARTOON_SHORTS.md",
+      "sha256": "ad2c69d7bc1d3fae4d1a1c4a1e15ba94b8c47868a0f6be196c9860105dc9e7e7"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Geração de Roteiro 3.7 palavras/s com Tags de Emoção",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "cognitive_effort": "medium",
+        "temperature": 0.2
+      },
+      "spec_coverage": [
+        "AC-E01.1",
+        "AC-E01.2"
+      ],
+      "write_allowed_paths": [
+        "internal/videorea/script_engine.go",
+        "internal/videorea/script_engine_test.go"
+      ],
+      "run_command": "go test -count=1 -run TestBuildCartoonScript ./internal/videorea/...",
+      "stop_gate": false
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Síntese de Áudio Neural com Anotações de Emoção",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 500
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "cognitive_effort": "low",
+        "temperature": 0.1
+      },
+      "spec_coverage": [
+        "AC-E02.1",
+        "AC-E02.2"
+      ],
+      "write_allowed_paths": [
+        "internal/videorea/tts_edge.go",
+        "internal/videorea/tts_edge_test.go"
+      ],
+      "run_command": "go test -count=1 -run TestSynthesizeEdgeTTS ./internal/videorea/...",
+      "stop_gate": false
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Renderização Visual 1080x1920 e Muxing Determinístico",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 240,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 24000,
+        "max_output_tokens": 800
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "cognitive_effort": "high",
+        "temperature": 0.2
+      },
+      "spec_coverage": [
+        "AC-E03.1",
+        "AC-E03.2"
+      ],
+      "write_allowed_paths": [
+        "internal/videorea/cartoon_render.go",
+        "internal/videorea/cartoon_render_test.go"
+      ],
+      "run_command": "go test -count=1 -run TestRenderCartoonScenes ./internal/videorea/...",
+      "stop_gate": false
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Exposição CLI, Studio Player e Skill de Chat",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 12000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "cognitive_effort": "medium",
+        "temperature": 0.1
+      },
+      "spec_coverage": [
+        "AC-E04.1",
+        "AC-E04.2"
+      ],
+      "write_allowed_paths": [
+        "internal/cli/cartoon_shorts.go",
+        "internal/cli/cartoon_shorts_test.go"
+      ],
+      "run_command": "go test -count=1 -run TestCartoonShortsCLI ./internal/cli/...",
+      "stop_gate": false
+    }
+  ]
+}
