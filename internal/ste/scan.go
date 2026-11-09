@@ -22,38 +22,32 @@ type definicaoHarness struct {
 	regraRel string
 }
 
+func defHarness(id HarnessID, nome, base string) definicaoHarness {
+	return definicaoHarness{
+		id:       id,
+		nome:     nome,
+		baseRel:  base,
+		regraRel: filepath.Join(base, "rules", "stept-rules.md"),
+	}
+}
+
 func catalogoDefinicoes() []definicaoHarness {
+	gemini := definicaoHarness{
+		id:       HarnessGemini,
+		nome:     "Google Gemini / Antigravity",
+		baseRel:  ".gemini",
+		regraRel: filepath.Join(".gemini", "config", "rules", "stept-rules.md"),
+	}
+	opencode := defHarness(HarnessOpenCode, "OpenCode", filepath.Join(".config", "opencode"))
 	return []definicaoHarness{
-		{
-			id:       HarnessGemini,
-			nome:     "Google Gemini / Antigravity",
-			baseRel:  ".gemini",
-			regraRel: filepath.Join(".gemini", "config", "rules", "stept-rules.md"),
-		},
-		{
-			id:       HarnessClaude,
-			nome:     "Claude Code",
-			baseRel:  ".claude",
-			regraRel: filepath.Join(".claude", "rules", "stept-rules.md"),
-		},
-		{
-			id:       HarnessOMP,
-			nome:     "OMP CLI",
-			baseRel:  ".omp",
-			regraRel: filepath.Join(".omp", "rules", "stept-rules.md"),
-		},
-		{
-			id:       HarnessOpenCode,
-			nome:     "OpenCode",
-			baseRel:  filepath.Join(".config", "opencode"),
-			regraRel: filepath.Join(".config", "opencode", "rules", "stept-rules.md"),
-		},
-		{
-			id:       HarnessMimo,
-			nome:     "MimoCode",
-			baseRel:  ".mimocode",
-			regraRel: filepath.Join(".mimocode", "rules", "stept-rules.md"),
-		},
+		gemini,
+		defHarness(HarnessClaude, "Claude Code", ".claude"),
+		defHarness(HarnessOMP, "OMP CLI", ".omp"),
+		opencode,
+		defHarness(HarnessMimo, "MimoCode", ".mimocode"),
+		defHarness(HarnessCursor, "Cursor IDE", ".cursor"),
+		defHarness(HarnessWindsurf, "Windsurf IDE", ".windsurf"),
+		defHarness(HarnessVSCode, "VS Code", ".vscode"),
 	}
 }
 

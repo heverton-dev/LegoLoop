@@ -22,10 +22,12 @@ type Violation struct {
 }
 
 type glossario struct {
-	Versao      int                 `json:"versao"`
-	MaxPalavras int                 `json:"max_palavras"`
-	Ambiguas    []string            `json:"ambiguas"`
-	Termos      map[string][]string `json:"termos"` // termo preferido -> sinônimos proibidos
+	Versao                  int                 `json:"versao"`
+	MaxPalavras             int                 `json:"max_palavras"`
+	MaxPalavrasProcedimento int                 `json:"max_palavras_procedimento"`
+	MaxPalavrasDescricao    int                 `json:"max_palavras_descricao"`
+	Ambiguas                []string            `json:"ambiguas"`
+	Termos                  map[string][]string `json:"termos"` // termo preferido -> sinônimos proibidos
 }
 
 // proibido liga um sinônimo proibido ao termo que o substitui.
@@ -36,16 +38,34 @@ type proibido struct {
 }
 
 var (
-	gl        = mustGlossario()
-	ambiguas  = compilar(gl.Ambiguas)
-	proibidos = compilarProibidos(gl.Termos)
-	fimFrase  = regexp.MustCompile(`[.!?]+(?:\s+|$)|\n+`)
+	gl           = mustGlossario()
+	ambiguas     = compilar(gl.Ambiguas)
+	proibidos    = compilarProibidos(gl.Termos)
+	fimFrase     = regexp.MustCompile(`[.!?]+(?:\s+|$)|\n+`)
+	reVozPassiva = regexp.MustCompile(`(?i)\b(?:é|são|foi|foram|será|serão|sendo|sido)\s+(?:[a-zà-ú]+(?:ado|ada|ados|adas|ido|ida|idos|idas)|feito|feita|feitos|feitas|escrito|escrita|escritos|escritas|aberto|aberta|abertos|abertas)\b`)
+	imperativos  = map[string]bool{
+		"grave": true, "crie": true, "remova": true, "execute": true,
+		"rode": true, "leia": true, "abra": true, "feche": true,
+		"escreva": true, "edite": true, "compile": true, "instale": true,
+		"valide": true, "verifique": true, "teste": true, "envie": true,
+		"configure": true, "defina": true, "gere": true, "atualize": true,
+		"adicione": true, "apague": true, "limpe": true, "pare": true,
+		"inicie": true, "dê": true, "use": true, "mude": true,
+		"veja": true, "liste": true, "substitua": true, "insira": true,
+		"marque": true, "faça": true, "mostre": true, "copie": true,
+	}
 )
 
 func mustGlossario() glossario {
 	var g glossario
 	if err := json.Unmarshal(glossarioJSON, &g); err != nil || g.MaxPalavras <= 0 {
 		panic(fmt.Sprintf("ste: glossario.json inválido: %v", err))
+	}
+	if g.MaxPalavrasProcedimento <= 0 {
+		g.MaxPalavrasProcedimento = g.MaxPalavras
+	}
+	if g.MaxPalavrasDescricao <= 0 {
+		g.MaxPalavrasDescricao = 25
 	}
 	return g
 }
@@ -95,15 +115,56 @@ func palavras(frase string) int {
 	return n
 }
 
-// Lint aplica o perfil STE-PT a uma mensagem e devolve as violações, na ordem em que aparecem.
-func Lint(msg string) []Violation {
+func isInstrucao(frase string) bool {
+	for _, f := range strings.Fields(frase) {
+		clean := strings.ToLower(strings.Trim(f, `*·-_.:,;"'`))
+		if clean == "" {
+			continue
+		}
+		return imperativos[clean]
+	}
+	return false
+}
+
+func lintFrases(msg string) []Violation {
 	var out []Violation
 	for _, f := range frases(msg) {
-		if n := palavras(f); n > gl.MaxPalavras {
-			out = append(out, Violation{Msg: fmt.Sprintf("frase com %d palavras (máximo %d): %q", n, gl.MaxPalavras, f), Regra: "frase-longa"})
+		n := palavras(f)
+		max := gl.MaxPalavrasDescricao
+		tipo := "descrição"
+		if isInstrucao(f) {
+			max = gl.MaxPalavrasProcedimento
+			tipo = "instrução"
+		}
+		if n > max {
+			out = append(out, Violation{
+				Msg:   fmt.Sprintf("%s com %d palavras (máximo %d): %q", tipo, n, max, f),
+				Regra: "frase-longa",
+			})
 		}
 	}
-	return append(out, lintTermos(msg)...)
+	return out
+}
+
+func lintVozPassiva(msg string) []Violation {
+	var out []Violation
+	for _, m := range reVozPassiva.FindAllString(msg, -1) {
+		out = append(out, Violation{
+			Msg:   fmt.Sprintf("voz passiva %q detectada: use voz ativa com o ator explícito", m),
+			Regra: "voz-passiva",
+		})
+	}
+	return out
+}
+
+// Lint aplica o perfil STE-PT a uma mensagem e devolve as violações, na ordem em que aparecem.
+func Lint(msg string) []Violation {
+	return append(lintFrases(msg), lintTermos(msg)...)
+}
+
+// LintStrict aplica o perfil completo ASD-STE100 (80%), incluindo checagem de voz ativa.
+func LintStrict(msg string) []Violation {
+	return append(Lint(msg), lintVozPassiva(msg)...)
 }
 
 func lintTermos(msg string) []Violation {

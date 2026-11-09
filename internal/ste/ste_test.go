@@ -170,3 +170,47 @@ func TestSTE_CatalogoDoProdutoNaoTemViolacao(t *testing.T) {
 		t.Fatalf("o catálogo do produto tem violações: %v", vs)
 	}
 }
+
+func TestSTE_DiferenciacaoProcedimentoDescricao(t *testing.T) {
+	// 25 palavras exatas sem ponto:
+	desc25Base := "O motor processa o arquivo de dados e salva todos os registros com integridade no disco sem qualquer tipo de falha grave no sistema local"
+	desc25 := desc25Base + "."
+	desc26 := desc25Base + " extra."
+	// 20 palavras exatas sem ponto:
+	inst20Base := "Grave o arquivo do processo no cofre e atualize a referência no grafo semântico agora com toda a atenção devida"
+	inst20 := inst20Base + "."
+	inst21 := inst20Base + " extra."
+
+	if temRegra(Lint(desc25), "frase-longa") {
+		t.Errorf("descrição com 25 palavras deveria passar: %v", Lint(desc25))
+	}
+	if !temRegra(Lint(desc26), "frase-longa") {
+		t.Errorf("descrição com 26 palavras deveria violar 'frase-longa'")
+	}
+	if temRegra(Lint(inst20), "frase-longa") {
+		t.Errorf("instrução com 20 palavras deveria passar: %v", Lint(inst20))
+	}
+	if !temRegra(Lint(inst21), "frase-longa") {
+		t.Errorf("instrução com 21 palavras deveria violar 'frase-longa'")
+	}
+}
+
+func TestSTE_NovosTermosHedging(t *testing.T) {
+	for _, termo := range []string{"potencialmente", "vale a pena", "tentará", "parece que"} {
+		msg := "O sistema " + termo + " grava o arquivo."
+		if !temRegra(Lint(msg), "ambigua") {
+			t.Errorf("termo de incerteza %q deveria violar 'ambigua'", termo)
+		}
+	}
+}
+
+func TestSTE_LintStrictVozPassiva(t *testing.T) {
+	passiva := "O arquivo foi gravado pelo sistema."
+	if !temRegra(LintStrict(passiva), "voz-passiva") {
+		t.Errorf("frase com voz passiva %q deveria violar 'voz-passiva'", passiva)
+	}
+	ativa := "O sistema gravou o arquivo."
+	if temRegra(LintStrict(ativa), "voz-passiva") {
+		t.Errorf("frase com voz ativa %q não deveria violar 'voz-passiva'", ativa)
+	}
+}

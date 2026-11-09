@@ -59,6 +59,10 @@
         "docs/videorea/legoloop-cartoon-shorts/scratch/script.json"
       ],
       "status": "PENDING",
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/script_engine_test.go"
+      },
       "command": [
         "go",
         "test",
@@ -103,6 +107,10 @@
         "docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3"
       ],
       "status": "PENDING",
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/tts_edge_test.go"
+      },
       "command": [
         "go",
         "test",
@@ -148,6 +156,10 @@
         "docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4"
       ],
       "status": "PENDING",
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/cartoon_render_test.go"
+      },
       "command": [
         "go",
         "test",

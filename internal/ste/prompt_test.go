@@ -72,4 +72,48 @@ func TestPromptRegra(t *testing.T) {
 			t.Errorf("prompt stept DEVE exigir teto de 1 a 3 linhas")
 		}
 	})
+
+	t.Run("ModoHibrido contem as 7 normas do ASD-STE100", func(t *testing.T) {
+		perfil := ste.ConfigPerfil{
+			Modo:     ste.ModoHibrido,
+			Pausa:    ste.PausaDestrutivo,
+			Thinking: "caveman",
+		}
+		prompt := ste.PromptRegra(perfil)
+
+		regrasASD := []string{
+			"ASD-STE100",
+			"COMPRIMENTO DE FRASE",
+			"UMA AÇÃO POR FRASE",
+			"VOZ ATIVA E SUJEITO EXPLÍCITO",
+			"ZERO DRIFT DE SINÔNIMOS",
+			"ZERO HEDGING",
+			"PRESERVAÇÃO DE ARTIGOS",
+			"JARGÃO TÉCNICO PERMITIDO",
+		}
+
+		for _, r := range regrasASD {
+			if !strings.Contains(strings.ToUpper(prompt), strings.ToUpper(r)) {
+				t.Errorf("prompt deve conter a norma ASD-STE100 %q", r)
+			}
+		}
+	})
+
+	t.Run("ModoPuro contem ASD-STE100 e nao contem Triade", func(t *testing.T) {
+		perfil := ste.ConfigPerfil{
+			Modo:  ste.ModoPuro,
+			Pausa: ste.PausaDestrutivo,
+		}
+		prompt := ste.PromptRegra(perfil)
+
+		if !strings.Contains(prompt, "CONTRATO DE RESPOSTA PURO") {
+			t.Errorf("prompt puro deve conter CONTRATO DE RESPOSTA PURO")
+		}
+		if !strings.Contains(prompt, "ASD-STE100") {
+			t.Errorf("prompt puro deve conter normas ASD-STE100")
+		}
+		if strings.Contains(prompt, "TRÍADE STE-PT") {
+			t.Errorf("prompt puro NÃO deve conter TRÍADE STE-PT")
+		}
+	})
 }

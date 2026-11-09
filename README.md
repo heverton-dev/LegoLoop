@@ -1,7 +1,7 @@
 # 🧩 LegoLoop
 
-> **The Composable Looping & Harness Fabric**  
-> *Transforme suas skills, MCPs e modelos em esteiras visuais no estilo N8N com Orchestrix cirúrgicas de altíssima economia de tokens.*
+> **The Composable Looping & Industrial Harness Fabric**  
+> *Fundição Autônoma de Software e esteiras determinísticas com Orchestrix cirúrgicas de altíssima economia de tokens, Protocolos Industriais e 6 Motores de Fronteira N10.*
 
 ---
 
@@ -11,13 +11,17 @@ Os agentes de IA tradicionais sofrem de dois problemas fatais:
 1. **Inchaço de Contexto:** Conversas monolíticas chegam a 150k tokens, acumulam ruído e estouram as cotas de modelos.
 2. **Engessamento:** Os fluxos de trabalho são rígidos e não se adaptam às ferramentas que o desenvolvedor realmente possui na máquina.
 
-O **LegoLoop** resolve isso tratando tudo como **peças Lego**:
-* **Canvas Visual (N8N Style):** Ligue nós de Concepção, Engenharia Reversa, Design e TDD com arrastar e soltar.
-* **Orchestrix Cirúrgica por Bloco:** Cada nó roda isolado com contexto zero (2k a 5k tokens), lê apenas o artefato do disco e morre ao concluir.
-* **Fábrica & Ciclo de Vida de Processos:** Ciclo completo governado por 5 verbos canônicos: **Fabricar** (`legoloop fabricar`), **Matriz de Peças** (`legoloop matriz`), **Listar** (`legoloop listar`), **Refinar** (`legoloop refinar`), **Remover** (`legoloop remover`) e **Compor** (`legoloop compor`). Pela CLI, pelo Chat (skills universais) ou pelo Studio visual.
+O **LegoLoop** resolve isso tratando tudo como **peças Lego** sob governança industrial:
+* **Canvas Visual (Looping Studio):** Ligue nós de Concepção, Engenharia Reversa, Design e TDD com arrastar e soltar em `http://127.0.0.1:7878`.
+* **Orchestrix Cirúrgica por Bloco:** Cada nó roda isolado com contexto estéril (2k a 5k tokens), lê apenas o artefato contratado do disco e morre ao concluir.
+* **As 3 Superfícies de Criação de Pipelines:**
+  1. **Terminal CLI:** Comandos industriais diretos (`legoloop fabricar`, `legoloop matriz`, `legoloop listar`, etc.).
+  2. **Agente em Linguagem Natural:** 14 skills canônicas universais nos 5 harnesses (`/legoloop-fabricar`, `/legoloop-fechar`, etc.).
+  3. **Studio LegoLoop (Dupla Superfície):** Modo Cockpit com telemetria profunda para engenharia e Modo Autopilot com cartões executivos simples para operadores leigos.
+* **Ciclo de Vida Canônico:** Esteiras completas governadas pelos verbos **Fabricar** (`fabricar`), **Matriz de Peças** (`matriz`), **Listar** (`listar`), **Refinar** (`refinar`), **Remover** (`remover`), **Compor** (`compor`) e **Fechar** (`fechar`).
+* **Protocolos Industriais & 5 Prisões Mecânicas:** STANAG 2014, ASD-STE100, EARS, FMEA, Readback ICAO, Andon Cord/Jidoka e SBAR com isolamento de contexto e validação rígida de schemas.
 * **Cérebros Plugáveis & Resilientes:** Suporte multi-provedor (9Router VPS, Gemini via harness `agy`, Ollama local) para conduzir entrevistas socráticas e geração da Tríade.
-* **Canonização de SO sem Quebras:** Centraliza seus ativos em `~/.aidd/canonical/` e substitui duplicatas exatas por links (symlink; hardlink quando o Windows não permite symlink sem admin), com ~80% menos espaço em disco e rollback.
-* **Convergência Total:** Integra as regras do **Ecossistema AIDD**, o motor de alta performance do **SYMBIONT** e a blindagem de modelos do **9Router**.
+* **Canonização de SO sem Quebras:** Centraliza seus ativos em `~/.aidd/canonical/` e substitui duplicatas exatas por links com ~80% menos espaço em disco e rollback.
 
 ---
 
@@ -91,18 +95,20 @@ legoloop canonize --root DIR --apply              # substitui duplicatas exatas 
 
 # Fábrica & Ciclo de Vida de Processos
 legoloop fabricar "extrator de audio" --yes       # cria processo (skill + loop + dag + docs)
-legoloop matriz --tier ouro                       # consulta matriz de peças e vocabulário
+legoloop matriz ver --tier ouro                   # consulta matriz de peças e vocabulário
 legoloop listar                                   # lista processos do cofre e vínculos
-legoloop refinar "extrator-audio" --trocar aidd-rea
+legoloop refinar "extrator-audio" --etapa e1 --peca aidd-rea
 legoloop remover "extrator-audio" --dry-run
 legoloop compor "esteira-master" "extrator-audio"
-legoloop instalar-skills                          # distribui as 10 skills canônicas nos harnesses
+legoloop fechar "extrator-audio" --dry-run        # canonização determinística em 9 etapas
+legoloop instalar-skills                          # distribui as 14 skills canônicas nos harnesses
 
 # Mega-Pipelines Audiovisuais & Engenharia Reversa de Canais
 legoloop canal redc <dir> --canal meu-canal --json   # analisa 100 vídeos e extrai Dossiê DNA
 legoloop canal gerar meu-canal --tema "Novo Tema"     # gera vídeo estrutural com Brand Swap
 legoloop video-motion                                # pipeline determinístico de edição e motion
 legoloop video-rea                                   # pipeline universal de engenharia reversa audiovisual
+legoloop cartoon-shorts --theme "Origem da Pizza"    # pipeline determinístico de cartoon shorts
 
 # Execução e Studio Visual
 legoloop route --from Artifact:URL --to Artifact:Spec
@@ -122,20 +128,21 @@ legoloop stept [status|set|on|off|scan|manual]   # auditoria e alternância de g
 
 ## 🏭 Fábrica & Ciclo de Vida de Processos
 
-O LegoLoop cobre todo o ciclo de vida de esteiras autônomas através de **5 verbos canônicos**:
+O LegoLoop cobre todo o ciclo de vida de esteiras autônomas através de **7 verbos canônicos**:
 
 1. **`fabricar`:** Concepção e criação completa de novos processos em **cinco camadas**: Clarificação (entrevista socrática até 95% de confiança) → Varredura dos discos → Fusão (curadoria no vocabulário fechado) → Tríade (INTENT, SPEC, PLAN e ROUTE) → Template e gravação atômica.
-2. **`matriz`:** Classificação das peças em vocabulário rígido, pontuação de reputação/aptidão e detecção de defasagem técnica.
+2. **`matriz`:** Classificação das peças em vocabulário rígido, pontuação de reputação/aptidão e detecção de defasagem técnica (`gerar`, `status`, `vocab`, `perfil`, `ver`).
 3. **`listar`:** Auditoria de integridade do cofre `~/.aidd/canonical/`, inventário de vínculos ativos nos 5 harnesses e diagnóstico de lacunas.
 4. **`refinar`:** Substituição segura e atômica de peças e passos obsoletos, com elevação semântica de versão e preservação de backup.
 5. **`remover`:** Remoção atômica de processos com desvinculação limpa de atalhos e hardlinks nos harnesses, com suporte a `--dry-run` e rollback.
-6. **`compor`:** Encaixe de processos existentes como sub-loops modulares dentro de esteiras maiores.
+6. **`compor`:** Encaixe de processos existentes como sub-loops modulares dentro de esteiras maiores com prevenção de ciclos.
+7. **`fechar`:** Cadeia mecânica obrigatória de canonização em 9 etapas: Manual, Livro LegoPress, Skill nos harnesses, Validação DAG, Rebuild do binário, Governança viva, Reindexação semântica, Portões de qualidade e Relatório final com telemetria estrita.
 
-| Porta | Como Operar |
+| Superfície | Como Operar |
 |---|---|
-| **CLI** | Comandos dedicados (`fabricar`, `matriz`, `listar`, `refinar`, `remover`, `compor`, `instalar-skills`). Saída estruturada via `--json` para scripts |
-| **Chat** | Skills canônicas dedicadas (`/legoloop-fabricar`, `/legoloop-matriz`, `/legoloop-listar`, `/legoloop-refinar`, `/legoloop-remover`, `/legoloop-compor`) com stop-gates humanos |
-| **Studio** | Interface visual completa com botões **+ Novo Processo** e **Processos** na topbar, suporte a Cartão STE-PT com avisos de risco destacados, visualização de camadas e Inspetor interativo |
+| **CLI Industrial** | Comandos dedicados (`fabricar`, `matriz`, `listar`, `refinar`, `remover`, `compor`, `fechar`, `instalar-skills`). Saída estruturada via `--json` para scripts |
+| **Agente em Linguagem Natural** | 14 Skills canônicas dedicadas (`/legoloop-fabricar`, `/legoloop-matriz`, `/legoloop-listar`, `/legoloop-refinar`, `/legoloop-remover`, `/legoloop-compor`, `/legoloop-fechar`, etc.) |
+| **Studio (Dupla Superfície)** | Interface visual completa com botões **+ Novo Processo** e **Processos** na topbar: Modo Cockpit para PhDs e Modo Autopilot com Cartões Executivos limpos para operadores |
 
 **O que é gerado na fabricação:** `SKILL.md` (Chat) e `.loop.json` + `.dag.json` (Studio e CLI, `legoloop run <caminho>`) no cofre `~/.aidd/canonical/`, mais `INTENT`, `SPEC`, `PLAN`, `ROUTE` e `TEMPLATE` em `docs/`. Tudo conforme os templates v2 e validado por `legoloop validate`.
 
@@ -165,6 +172,34 @@ O LegoLoop cobre todo o ciclo de vida de esteiras autônomas através de **5 ver
   * **Fase 1 (Forense & Matriz Original):** Extração de transcrição e OCR rápido em `dossier.json`, alimentando a nova camada `original_matrix.json` (stack real do autor, ferramentas pagas vs gratuitas explícitas e comandos implícitos de terminal/código).
   * **Fase 2 (Curadoria & Soberania):** Substituição de ferramentas comerciais por peças Tier Ouro do cofre e **Adoção Soberana Imediata** de utilitários gratuitos vazados no vídeo (custo R$ 0,00).
   * **Fase 3 & 4 (Governança, Livro e Loop):** Fabricação da Tríade ISO local (`governance/`), Livro Didático LegoPress (`book/`), DAG com Golden Fixture de 3s (`loop/`), com projeção canônica na raiz (`loops/` e `skills/`) mediante aprovação do Stop-Gate humano.
+
+## 🏭 Fundição Autônoma N10 & Protocolos Industriais
+
+O LegoLoop opera como uma fundição de engenharia com blindagem de grau aeroespacial e automotivo:
+
+### Os 7 Protocolos Industriais
+1. **STANAG 2014:** Ordens estruturadas de missão (Situação, Missão, Execução, Administração, Comando/Sinal).
+2. **ASD-STE100 (Simplified Technical English) a 80%:** Frases curtas (<20 palavras), voz ativa, sem ambiguidades, 1 instrução por sentença.
+3. **EARS (Easy Approach to Requirements Syntax):** Critérios de aceitação binários em formato Ubíquo, Orientado a Evento, Orientado a Estado ou Opcional.
+4. **FMEA (Failure Mode and Effects Analysis):** Matriz de risco RPN prévia (Severidade × Ocorrência × Detecção) antes de tocar em código.
+5. **ICAO Readback/Hearback:** Confirmação explícita no terminal com exibição de blast radius antes de comandos destrutivos.
+6. **Poka-Yoke & Disjuntor Andon Cord (Jidoka):** Interrupção automática imediata ao menor erro mecânico para impedir efeito cascata.
+7. **SBAR (Situation, Background, Assessment, Recommendation):** Formato universal de escalada de incidentes e rotação de contexto.
+
+### As 5 Prisões Mecânicas
+1. **Path Jail:** Proibição de escape de diretório (`..`, symlinks externos, caminhos absolutos desautorizados).
+2. **Schema Validation:** Validação mecânica estrita de todos os JSONs contra esquemas formais em `schemas/`.
+3. **Exit-Code Gate:** Passos só avançam com confirmação mecânica de `exit_code == 0` do sistema operacional.
+4. **Sterile Context:** Cada bloco executa isolado sem herança poluída de prompt, consumindo estritamente `context_in` e emitindo `context_out`.
+5. **Test Mutation:** Teste unitário só é certificado se a mutação forçada do código o fizer falhar.
+
+### Os 6 Motores de Fronteira N10
+1. **Mutation Testing:** Testagem de mutação sintática de código.
+2. **Git Worktrees com AST:** Execução isolada em branches efêmeras com merge por AST limpo.
+3. **Memória Episódica de Anticorpos SBAR:** Cofre persistente de vacinas contra erros já diagnosticados.
+4. **Cascade Speculative Execution:** Execução antecipada e paralela de nós prováveis.
+5. **Flight Recorder:** Gravador de caixa preta com telemetria determinística de tempo, memória e tokens.
+6. **Fuzzing Nativo:** Fuzzing embutido em Go para estresse contínuo de parsers e validadores.
 
 ## 🛡️ Governança & Alternador STE-PT (`legoloop stept`)
 

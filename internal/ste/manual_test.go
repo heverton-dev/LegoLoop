@@ -17,8 +17,21 @@ func TestTextoManual(t *testing.T) {
 	if !strings.Contains(manual, "┌") || !strings.Contains(manual, "└") {
 		t.Errorf("manual deve conter moldura formatada estilo gw:\n%s", manual)
 	}
-	if !strings.Contains(manual, "hibrido") || !strings.Contains(manual, "caveman") {
-		t.Errorf("manual deve descrever modos disponiveis:\n%s", manual)
+	if !strings.Contains(manual, "hibrido") || !strings.Contains(manual, "caveman") || !strings.Contains(manual, "puro") {
+		t.Errorf("manual deve descrever modos disponiveis incluindo puro:\n%s", manual)
+	}
+
+	// Alinhamento milimétrico de todas as linhas da moldura
+	linhas := strings.Split(strings.TrimRight(manual, "\n"), "\n")
+	larguraEsperada := 0
+	for i, l := range linhas {
+		tamRune := len([]rune(l))
+		if i == 0 {
+			larguraEsperada = tamRune
+		}
+		if tamRune != larguraEsperada {
+			t.Errorf("linha %d fora de alinhamento (largura %d, esperada %d):\n%q", i+1, tamRune, larguraEsperada, l)
+		}
 	}
 }
 

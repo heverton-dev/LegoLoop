@@ -1,0 +1,393 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",  "id": "legoloop-fechar",
+
+  "name": "legoloop-fechar",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "description": "Pipeline canônico de canonização determinística em 9 etapas com telemetria estrita de tempo, recursos e custos",
+  "upstream_signatures": {
+    "intent": "e037061d1ea1787c80ee98ca4666cfb749629b3a4a905a96328a9b31d9fa499c",
+    "spec": "01b2a758e5f2fe4e8be320a4ca22495fc9f6ee40498dbfb9df881db22b31128c",
+    "plan": "b2c65910fa4a9bfe00df3400a0cae5f29916694e9fe9a64593bc14d548f02f90",
+    "route": "docs/routes/2026-11-07_ROUTE_FECHAR_CANONICO.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_manual_check",
+      "name": "Auditoria e Geração do Manual Operacional",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "docs/templates/TEMPLATE_MANUAL.md"
+      ],
+      "context_out": [
+        "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "fechar",
+        "legoloop-video-motion",
+        "--dry-run",
+        "--skip-build"
+      ],
+      "output": {
+        "artifact": "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md",
+        "gate": "file_exists('docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
+      }
+    },
+    {
+      "id": "n02_book_legopress",
+      "name": "Auditoria Geométrica do Livro LegoPress",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n01_manual_check"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md"
+      ],
+      "context_out": [
+        "docs/books/video-rea/livro.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "legopress",
+        "auditar",
+        "docs/books/video-rea/2026-11-07_PIPELINE-VIDEO-REA.pdf"
+      ],
+      "output": {
+        "artifact": "docs/books/video-rea/livro.json",
+        "gate": "file_exists('docs/books/video-rea/livro.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
+      }
+    },
+    {
+      "id": "n03_skill_harnesses",
+      "name": "Instalação e Vínculo Universal de Skills nos Harnesses",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n02_book_legopress"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "docs/books/video-rea/livro.json"
+      ],
+      "context_out": [
+        "skills/legoloop-fechar/SKILL.md"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "instalar-skills",
+        "--dry-run"
+      ],
+      "output": {
+        "artifact": "skills/legoloop-fechar/SKILL.md",
+        "gate": "file_exists('skills/legoloop-fechar/SKILL.md')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
+      }
+    },
+    {
+      "id": "n04_dag_validation",
+      "name": "Validação Estrutural e Topológica do Grafo DAG",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n03_skill_harnesses"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "loops/legoloop-video-motion/pipeline.dag.json"
+      ],
+      "context_out": [
+        "loops/legoloop-video-motion/pipeline.dag.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "validate",
+        "loops/legoloop-video-motion/pipeline.dag.json"
+      ],
+      "output": {
+        "artifact": "loops/legoloop-video-motion/pipeline.dag.json",
+        "gate": "file_exists('loops/legoloop-video-motion/pipeline.dag.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
+      }
+    },
+    {
+      "id": "n05_rebuild_binary",
+      "name": "Recompilação e Instalação Fresca do Binário",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n04_dag_validation"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "loops/legoloop-video-motion/pipeline.dag.json"
+      ],
+      "context_out": [
+        "bin/legoloop.exe"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "version"
+      ],
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "file_exists('bin/legoloop.exe')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
+      }
+    },
+    {
+      "id": "n06_governance_sync",
+      "name": "Sincronização da Governança Viva (AGENTS, MEMORY, README)",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n05_rebuild_binary"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "bin/legoloop.exe"
+      ],
+      "context_out": [
+        "AGENTS.md"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "doctor",
+        "--json"
+      ],
+      "output": {
+        "artifact": "AGENTS.md",
+        "gate": "file_exists('AGENTS.md')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
+      }
+    },
+    {
+      "id": "n07_report_telemetry",
+      "name": "Emissão de Relatório de Conclusão com Telemetria e Custos",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n06_governance_sync"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "AGENTS.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_REPORT.md"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "fechar",
+        "legoloop-video-motion",
+        "--dry-run"
+      ],
+      "output": {
+        "artifact": "docs/templates/TEMPLATE_REPORT.md",
+        "gate": "file_exists('docs/templates/TEMPLATE_REPORT.md')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
+      }
+    }
+  ]
+}

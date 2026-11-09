@@ -77,6 +77,10 @@
       "output": {
         "artifact": "scratch/videorea/raw.json",
         "gate": "file_exists('scratch/videorea/raw.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -128,6 +132,10 @@
       "output": {
         "artifact": "scratch/videorea/dossier.json",
         "gate": "file_exists('scratch/videorea/dossier.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -179,6 +187,10 @@
       "output": {
         "artifact": "scratch/videorea/curation.json",
         "gate": "file_exists('scratch/videorea/curation.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -229,6 +241,10 @@
       "output": {
         "artifact": "scratch/videorea/curation_approved.json",
         "gate": "file_exists('scratch/videorea/curation_approved.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -280,6 +296,10 @@
       "output": {
         "artifact": "scratch/videorea/governance_manifest.json",
         "gate": "file_exists('scratch/videorea/governance_manifest.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -329,6 +349,10 @@
       "output": {
         "artifact": "scratch/videorea/livro_manifest.json",
         "gate": "file_exists('scratch/videorea/livro_manifest.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     }
   ]

@@ -1,0 +1,19 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "LegoLoop N10 Foundry: Edição Executiva",
+  "subtitulo": "Cabine de Passageiro, ROI e Guia Estratégico para Líderes",
+  "nome_base": "2026-11-09_N10-FOUNDRY-EXECUTIVO",
+  "pasta_partes": "partes",
+  "template": "../ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-o-novo-paradigma.md",
+    "02-meso-seguranca-aeroespacial-no-software.md",
+    "03-meso-retorno-sobre-investimento-roi.md",
+    "04-micro-guia-do-operador-leigo.md",
+    "05-epilogo-soberania-digital.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "n10-foundry-exec-v1",
+  "ultima_compilacao": "2026-11-09"
+}

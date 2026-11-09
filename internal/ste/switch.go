@@ -18,6 +18,7 @@ const (
 	ModoStept   Modo = "stept"
 	ModoCaveman Modo = "caveman"
 	ModoHibrido Modo = "hibrido"
+	ModoPuro    Modo = "puro"
 )
 
 // Pausa define a política de interrupção antes de ações com efeito.
@@ -38,6 +39,9 @@ const (
 	HarnessOMP      HarnessID = "omp"
 	HarnessOpenCode HarnessID = "opencode"
 	HarnessMimo     HarnessID = "mimo"
+	HarnessCursor   HarnessID = "cursor"
+	HarnessWindsurf HarnessID = "windsurf"
+	HarnessVSCode   HarnessID = "vscode"
 )
 
 // ConfigPerfil define a configuração de governança de um harness ou padrão.
@@ -67,7 +71,7 @@ type HarnessStatus struct {
 // Validate valida se modo e pausa são conhecidos e aceitáveis.
 func (c ConfigPerfil) Validate() error {
 	switch c.Modo {
-	case ModoOff, ModoStept, ModoCaveman, ModoHibrido:
+	case ModoOff, ModoStept, ModoCaveman, ModoHibrido, ModoPuro:
 	default:
 		return ErrInvalido
 	}
@@ -99,7 +103,7 @@ func NovoConfig() *Config {
 // ValidarHarness verifica se o identificador de harness é aceito.
 func ValidarHarness(h HarnessID) bool {
 	switch h {
-	case HarnessGemini, HarnessClaude, HarnessOMP, HarnessOpenCode, HarnessMimo:
+	case HarnessGemini, HarnessClaude, HarnessOMP, HarnessOpenCode, HarnessMimo, HarnessCursor, HarnessWindsurf, HarnessVSCode:
 		return true
 	default:
 		return false

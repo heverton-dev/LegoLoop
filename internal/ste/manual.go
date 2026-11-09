@@ -15,77 +15,100 @@ func TextoManual() string {
 	b.WriteString(secaoPausas())
 	b.WriteString(secaoHarnesses())
 	b.WriteString(secaoInstalacao())
-	b.WriteString("└─────────────────────────────────────────────────────────────────────────────────┘\n")
+	b.WriteString("└" + strings.Repeat("─", 81) + "┘\n")
 	return b.String()
 }
 
+func formatLinhaBox(texto string) string {
+	runes := []rune(texto)
+	const maxConteudo = 79
+	if len(runes) > maxConteudo {
+		runes = runes[:maxConteudo]
+	}
+	pad := maxConteudo - len(runes)
+	return "│  " + string(runes) + strings.Repeat(" ", pad) + "│\n"
+}
+
 func topoManual() string {
-	return `┌─────────────────────────────────────────────────────────────────────────────────┐
-│  MANUAL DE USO DO ALTERNADOR UNIVERSAL STE-PT (Go Native)                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  Uso: stept <comando> [opções]  ou  legoloop stept <comando> [opções]          │
-│                                                                                 │
-`
+	var b strings.Builder
+	b.WriteString("┌" + strings.Repeat("─", 81) + "┐\n")
+	b.WriteString(formatLinhaBox("MANUAL DE USO DO ALTERNADOR UNIVERSAL STE-PT (Go Native)"))
+	b.WriteString("├" + strings.Repeat("─", 81) + "┤\n")
+	b.WriteString(formatLinhaBox("Uso: stept <comando> [opções]  ou  legoloop stept <comando> [opções]"))
+	b.WriteString(formatLinhaBox(""))
+	return b.String()
 }
 
 func secaoEstado() string {
-	return `│  ESTADO & SINCRONIZAÇÃO                                                         │
-│    stept                               Sem argumentos: equivale a stept status  │
-│    stept status                        Matriz viva de harnesses e governança    │
-│    stept status --json                 Mesma matriz em JSON estruturado         │
-│    stept scan                          Varre harnesses no SO (sem gravar)       │
-│    stept manual | help | -h            Exibe este manual operacional formatado  │
-│                                                                                 │
-`
+	var b strings.Builder
+	b.WriteString(formatLinhaBox("ESTADO & SINCRONIZAÇÃO"))
+	b.WriteString(formatLinhaBox("  stept                               Sem argumentos: equivale a stept status"))
+	b.WriteString(formatLinhaBox("  stept status                        Matriz viva de harnesses e governança"))
+	b.WriteString(formatLinhaBox("  stept status --json                 Mesma matriz em JSON estruturado"))
+	b.WriteString(formatLinhaBox("  stept scan                          Varre harnesses no SO (sem gravar)"))
+	b.WriteString(formatLinhaBox("  stept scan --json                   Lista harnesses instalados em JSON"))
+	b.WriteString(formatLinhaBox("  stept manual | help | -h            Exibe este manual operacional formatado"))
+	b.WriteString(formatLinhaBox(""))
+	return b.String()
 }
 
 func secaoControle() string {
-	return `│  CONTROLE DE GOVERNANÇA (MODOS & POLÍTICAS)                                     │
-│    stept on                            Ativa modo hibrido globalmente (Padrão)  │
-│    stept on --harness <id>             Ativa modo hibrido em um harness         │
-│    stept off                           Desativa governança e remove regras      │
-│    stept off --harness <id>            Desativa e remove regras de um harness   │
-│    stept set --modo <modo>             Altera o modo global padrão              │
-│    stept set --harness <id> --modo <m> Define override para um harness          │
-│        --pausa <nunca|destrutivo|sempre>  Define a política de interrupção      │
-│                                                                                 │
-`
+	var b strings.Builder
+	b.WriteString(formatLinhaBox("CONTROLE DE GOVERNANÇA (MODOS & POLÍTICAS)"))
+	b.WriteString(formatLinhaBox("  stept on                            Ativa modo hibrido globalmente (Padrão)"))
+	b.WriteString(formatLinhaBox("  stept on --harness <id>             Ativa modo hibrido em um harness"))
+	b.WriteString(formatLinhaBox("  stept off                           Desativa governança e remove regras"))
+	b.WriteString(formatLinhaBox("  stept off --harness <id>            Desativa e remove regras de um harness"))
+	b.WriteString(formatLinhaBox("  stept set --modo <modo>             Altera modo global (puro|hibrido|stept)"))
+	b.WriteString(formatLinhaBox("  stept set --harness <id> --modo <m> Define override de modo para um harness"))
+	b.WriteString(formatLinhaBox("  stept set --pausa <politica>        Define a política de interrupção padrão"))
+	b.WriteString(formatLinhaBox("  stept set --harness <id> --pausa <p>Define override de pausa para um harness"))
+	b.WriteString(formatLinhaBox(""))
+	return b.String()
 }
 
 func secaoModos() string {
-	return `│  MODOS DISPONÍVEIS                                                              │
-│    hibrido     Padrão Ouro: Caveman Thinking + Cartão STE-PT obrigatório        │
-│    caveman     Economia máxima: Thinking e Output telegráficos ultra-curtos     │
-│    stept       Governança formal: Cartão ASD-STE100 estruturado em ações        │
-│    off         Desativado: Exclui stept-rules.md sem deixar resíduos            │
-│                                                                                 │
-`
+	var b strings.Builder
+	b.WriteString(formatLinhaBox("MODOS DISPONÍVEIS"))
+	b.WriteString(formatLinhaBox("  puro        ASD-STE100 Puro: Linguagem técnica direta sem Tríade [S][T][E]"))
+	b.WriteString(formatLinhaBox("  hibrido     Padrão Ouro: Caveman Thinking + ASD-STE100 + Tríade em código"))
+	b.WriteString(formatLinhaBox("  stept       Governança Estrita: Tríade [S][T][E] obrigatória em ações"))
+	b.WriteString(formatLinhaBox("  caveman     Economia Máxima: Thinking e Output telegráficos ultra-curtos"))
+	b.WriteString(formatLinhaBox("  off         Desativado: Exclui stept-rules.md sem deixar resíduos no disco"))
+	b.WriteString(formatLinhaBox(""))
+	return b.String()
 }
 
 func secaoPausas() string {
-	return `│  POLÍTICAS DE PAUSA                                                             │
-│    destrutivo  Pausa e pede confirmação apenas em ações de risco (Padrão)       │
-│    sempre      Pausa antes de qualquer comando com efeito                       │
-│    nunca       Exibe o cartão informativo e segue sem interromper               │
-│                                                                                 │
-`
+	var b strings.Builder
+	b.WriteString(formatLinhaBox("POLÍTICAS DE PAUSA"))
+	b.WriteString(formatLinhaBox("  destrutivo  Pausa e pede confirmação apenas em ações de risco (Padrão)"))
+	b.WriteString(formatLinhaBox("  sempre      Pausa antes de qualquer comando com efeito no sistema"))
+	b.WriteString(formatLinhaBox("  nunca       Exibe o cartão informativo e segue sem interromper a execução"))
+	b.WriteString(formatLinhaBox(""))
+	return b.String()
 }
 
 func secaoHarnesses() string {
-	return `│  HARNESSES SUPORTADOS                                                           │
-│    gemini      Google Gemini / Antigravity (~/.gemini/config/rules)             │
-│    claude      Claude Code (~/.claude/rules)                                    │
-│    omp         OMP CLI (~/.omp/rules)                                           │
-│    opencode    OpenCode (~/.config/opencode/rules)                              │
-│    mimo        MimoCode (~/.mimocode/rules)                                     │
-│                                                                                 │
-`
+	var b strings.Builder
+	b.WriteString(formatLinhaBox("HARNESSES SUPORTADOS (UNIVERSAL)"))
+	b.WriteString(formatLinhaBox("  gemini      Google Gemini / Antigravity (~/.gemini/config/rules)"))
+	b.WriteString(formatLinhaBox("  claude      Claude Code (~/.claude/rules)"))
+	b.WriteString(formatLinhaBox("  cursor      Cursor IDE (~/.cursor/rules)"))
+	b.WriteString(formatLinhaBox("  windsurf    Windsurf IDE (~/.windsurf/rules)"))
+	b.WriteString(formatLinhaBox("  vscode      VS Code (~/.vscode/rules)"))
+	b.WriteString(formatLinhaBox("  opencode    OpenCode (~/.config/opencode/rules)"))
+	b.WriteString(formatLinhaBox("  mimo        MimoCode / MemoCode (~/.mimocode/rules)"))
+	b.WriteString(formatLinhaBox("  omp         OMP CLI (~/.omp/rules)"))
+	b.WriteString(formatLinhaBox(""))
+	return b.String()
 }
 
 func secaoInstalacao() string {
-	return `│  INSTALAÇÃO STANDALONE                                                          │
-│    stept install                       Instala binário no PATH de usuário       │
-`
+	var b strings.Builder
+	b.WriteString(formatLinhaBox("INSTALAÇÃO STANDALONE"))
+	b.WriteString(formatLinhaBox("  stept install                       Instala binário no PATH de usuário"))
+	return b.String()
 }
 
 // RenderTabelaBox formata a matriz de harnesses em tabela compacta com bordas Unicode idêntica ao gw.

@@ -1,7 +1,26 @@
 {
-  "versao": 1,
+  "versao": 2,
   "max_palavras": 20,
-  "ambiguas": ["talvez", "geralmente", "normalmente", "provavelmente", "em geral", "pode ser", "às vezes", "quase sempre", "acho que"],
+  "max_palavras_procedimento": 20,
+  "max_palavras_descricao": 25,
+  "ambiguas": [
+    "talvez",
+    "geralmente",
+    "normalmente",
+    "provavelmente",
+    "em geral",
+    "pode ser",
+    "às vezes",
+    "quase sempre",
+    "acho que",
+    "vale a pena",
+    "potencialmente",
+    "tentará",
+    "tentaremos",
+    "parece que",
+    "quem sabe",
+    "é possível que"
+  ],
   "termos": {
     "processo": ["esteira", "fluxo", "workflow"],
     "peça": ["componente"],

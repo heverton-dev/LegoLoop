@@ -16,6 +16,7 @@ func TestConfigPerfil_Validate(t *testing.T) {
 		{Modo: ste.ModoStept, Pausa: ste.PausaDestrutivo},
 		{Modo: ste.ModoCaveman, Pausa: ste.PausaSempre},
 		{Modo: ste.ModoHibrido, Pausa: ste.PausaDestrutivo, Thinking: "caveman"},
+		{Modo: ste.ModoPuro, Pausa: ste.PausaDestrutivo},
 	}
 
 	for _, p := range casosValidos {

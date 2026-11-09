@@ -85,6 +85,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -139,6 +143,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -195,6 +203,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -241,6 +253,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json') && prompt('Aprovar cortes de silencio e selecao de takes?')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -288,6 +304,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -334,6 +354,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json') && prompt('Aprovar plano de animacoes cineticas e overlays?')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -392,6 +416,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -446,6 +474,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -502,6 +534,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -563,6 +599,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -619,6 +659,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     },
     {
@@ -665,6 +709,10 @@
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/delivery_approved.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml') && prompt('Aprovar entrega final do video?')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
       }
     }
   ]

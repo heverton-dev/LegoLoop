@@ -13,17 +13,33 @@ func PromptRegra(perfil ConfigPerfil) string {
 	var b strings.Builder
 	b.WriteString("# 🛡️ REGRAS DE GOVERNANÇA E ECONOMIA STE-PT\n\n")
 	b.WriteString(blocoInputImperativo())
-	if perfil.Modo == ModoCaveman || perfil.Modo == ModoHibrido || perfil.Modo == ModoStept {
+	if perfil.Modo == ModoCaveman || perfil.Modo == ModoHibrido || perfil.Modo == ModoStept || perfil.Modo == ModoPuro {
 		b.WriteString(blocoCavemanThinking())
 	}
 	if perfil.Modo == ModoCaveman {
 		b.WriteString(blocoOutputCaveman())
 	}
+	if perfil.Modo == ModoPuro {
+		b.WriteString(blocoOutputPuro())
+		b.WriteString(blocoNormasASDSTE())
+		b.WriteString(blocoRegrasConcisao(perfil.Pausa))
+	}
 	if perfil.Modo == ModoHibrido || perfil.Modo == ModoStept {
 		b.WriteString(blocoOutputTriade())
+		b.WriteString(blocoNormasASDSTE())
 		b.WriteString(blocoRegrasConcisao(perfil.Pausa))
 	}
 	return b.String()
+}
+
+func blocoOutputPuro() string {
+	return `## 3. CONTRATO DE RESPOSTA PURO (ASD-STE100 DIRETO)
+O agente DEVE responder diretamente no padrão industrial ASD-STE100 sem utilizar os cabeçalhos artificiais da Tríade [S] [T] [E]:
+- Responda com clareza máxima, frases curtas e voz ativa direta.
+- PROIBIDO introduzir blocos artificiais [S], [T] ou [E] em respostas puras.
+- Preserve a precisão cirúrgica e o vocabulário técnico controlado.
+
+`
 }
 
 func blocoInputImperativo() string {
@@ -90,9 +106,23 @@ func diretivaPausa(pausa Pausa) string {
 	}
 }
 
+func blocoNormasASDSTE() string {
+	return `## 4. ESCRITA TÉCNICA INDUSTRIAL (ASD-STE100 80%)
+O agente DEVE submeter toda a redação no chat output às 7 regras industriais em Português do Brasil (PT-BR):
+1. COMPRIMENTO DE FRASE: Máximo de 20 palavras por frase em instruções ou procedimentos. Máximo de 25 palavras em descrições.
+2. UMA AÇÃO POR FRASE: Coloque apenas uma instrução, fato ou condição por frase. Proibido agrupar regras em um único parágrafo.
+3. VOZ ATIVA E SUJEITO EXPLÍCITO: Use voz ativa. Nomeie sempre o ator exato (ex: "O motor processa o payload", NUNCA "O payload é processado").
+4. ZERO DRIFT DE SINÔNIMOS: Escolha um termo técnico exato para cada entidade e use-o do início ao fim (proibido alternar sinônimos).
+5. ZERO HEDGING: Proibido termos vagos de incerteza ("pode potencialmente", "vale a pena considerar", "talvez", "tentará"). Seja determinístico.
+6. PRESERVAÇÃO DE ARTIGOS: Mantenha os artigos (o, a, os, as, um, uma) no chat output para evitar ambiguidade telegráfica.
+7. JARGÃO TÉCNICO PERMITIDO: Mantenha termos da engenharia de software (ex: API, DAG, Go, Zod, Git), submetendo todos os verbos e estruturas sintáticas à regra industrial.
+
+`
+}
+
 func blocoRegrasConcisao(pausa Pausa) string {
 	var b strings.Builder
-	b.WriteString("## 4. DIRETIVAS DE CONCISÃO & PAUSA\n")
+	b.WriteString("## 5. DIRETIVAS DE CONCISÃO & PAUSA\n")
 	b.WriteString("- PROIBIDO introduções, preâmbulos, saudações ou explicações prolixas antes de [S].\n")
 	b.WriteString("- Quando o usuário responder confirmações (ex.: '1', 'seguir', 'sim', 'STEPT 1'), vá DIRETO à execução e responda com o formato PÓS-AÇÃO ou próximo PRÉ-AÇÃO.\n")
 	b.WriteString("- Respostas estritamente limitadas a 1 a 3 linhas por bloco.\n")

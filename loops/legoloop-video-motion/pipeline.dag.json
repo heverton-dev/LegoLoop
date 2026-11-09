@@ -77,6 +77,10 @@
       "output": {
         "artifact": "scratch/videomotion/words.json",
         "gate": "file_exists('scratch/videomotion/words.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
       }
     },
     {
@@ -128,6 +132,10 @@
       "output": {
         "artifact": "scratch/videomotion/punched_words.json",
         "gate": "file_exists('scratch/videomotion/punched_words.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
       }
     },
     {
@@ -179,6 +187,10 @@
       "output": {
         "artifact": "scratch/videomotion/assets",
         "gate": "file_exists('scratch/videomotion/assets')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
       }
     },
     {
@@ -230,6 +242,10 @@
       "output": {
         "artifact": "scratch/videomotion/typography.json",
         "gate": "file_exists('scratch/videomotion/typography.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
       }
     },
     {
@@ -281,6 +297,10 @@
       "output": {
         "artifact": "scratch/videomotion/cards",
         "gate": "file_exists('scratch/videomotion/cards')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
       }
     },
     {
@@ -332,6 +352,10 @@
       "output": {
         "artifact": "dist/motion_render.mp4",
         "gate": "file_exists('dist/motion_render.mp4')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
       }
     }
   ]

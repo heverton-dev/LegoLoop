@@ -4,6 +4,12 @@
   "version": "1.0.0",
   "date": "2026-11-09",
   "description": "Pipeline canônico da Fundição Autônoma de Software LegoLoop com Protocolos Industriais e Motores de Fronteira N10",
+  "upstream_signatures": {
+    "intent": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "spec": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+    "plan": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
+    "route": "docs/routes/2026-11-09_ROUTE_N10_FOUNDRY.json"
+  },
   "execution_strategy": {
     "supervision_level": "micro",
     "max_parallel_workers": 2,
@@ -30,6 +36,14 @@
         "model": "code-fast",
         "effort": "medium"
       },
+      "context_in": [],
+      "context_out": [
+        "schemas/dag.v1.json"
+      ],
+      "test_seam": {
+        "type": "schema_gate",
+        "target": "exit_code == 0 && file_exists('schemas/dag.v1.json')"
+      },
       "output": {
         "artifact": "schemas/dag.v1.json",
         "gate": "exit_code == 0 && file_exists('schemas/dag.v1.json')"
@@ -45,6 +59,16 @@
         "mode": "manual",
         "model": "code-fast",
         "effort": "medium"
+      },
+      "context_in": [
+        "schemas/dag.v1.json"
+      ],
+      "context_out": [
+        "internal/runner/retry.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "exit_code == 0 && file_exists('internal/runner/retry.go')"
       },
       "output": {
         "artifact": "internal/runner/retry.go",
@@ -62,6 +86,16 @@
         "model": "code-pro",
         "effort": "high"
       },
+      "context_in": [
+        "internal/runner/retry.go"
+      ],
+      "context_out": [
+        "internal/runner/redteam_blueteam.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "exit_code == 0 && file_exists('internal/runner/redteam_blueteam.go')"
+      },
       "output": {
         "artifact": "internal/runner/redteam_blueteam.go",
         "gate": "exit_code == 0 && file_exists('internal/runner/redteam_blueteam.go')"
@@ -77,6 +111,16 @@
         "mode": "manual",
         "model": "code-fast",
         "effort": "medium"
+      },
+      "context_in": [
+        "internal/runner/redteam_blueteam.go"
+      ],
+      "context_out": [
+        "internal/cli/autopilot.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "exit_code == 0 && file_exists('internal/cli/autopilot.go')"
       },
       "output": {
         "artifact": "internal/cli/autopilot.go",

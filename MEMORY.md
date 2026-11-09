@@ -487,7 +487,46 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Fechamento Canônico:** Manual operacional em `docs/manuals/2026-11-09_MANUAL_FUNCAO_N10_FOUNDRY_HARNESS_LEGOLOOP.md`, Livro Didático em `docs/books/n10-foundry/`, Skill Canônica em `skills/legoloop-n10-foundry/SKILL.md`, DAG em `loops/legoloop-n10-foundry/` e relatório oficial em `docs/reports/2026-11-09_REPORT_N10_FOUNDRY_GLOBAL.md`.
   - **Portões Mecânicos:** 100% PASS em `go test -count=1 ./...`, `go vet` limpo, `gofmt` vazio, `funclen` conforme e binário `bin/legoloop.exe` instalado no PATH.
 
+- **09/11/2026** — 🛡️ **Elevação do Motor STE-PT ao Padrão ASD-STE100 (80%) com TDD Estrito:**
+  - **Demandas e Regras Industriais:** Implementação das 7 normas de redação técnica aeroespacial/industrial (comprimento 20/25, uma ação por frase, voz ativa com sujeito explícito, zero drift léxico, zero hedging, preservação de artigos e jargão técnico permitido a 80%).
+  - **Evolução em `internal/ste`:**
+    - `glossario.json`: Atualizado para versão 2 com limites diferenciados (`max_palavras_procedimento: 20`, `max_palavras_descricao: 25`) e expansão de locuções de incerteza ("vale a pena", "potencialmente", "tentará", "parece que").
+    - `ste.go`: Adicionado `isInstrucao()` para detecção de imperativos/procedimentos, `lintFrases()` com tetos dinâmicos 20/25, `lintVozPassiva()` identificando passiva analítica e `LintStrict()` para conformidade total.
+    - `prompt.go`: Seção `## 4. ESCRITA TÉCNICA INDUSTRIAL (ASD-STE100 80%)` injetada obrigatoriamente nos perfis Híbrido e STE-PT de todos os harnesses.
+    - `ste_test.go` e `prompt_test.go`: Testes unitários TDD cobrindo diferenciação 20/25 palavras, termos de hedging, voz passiva estrita e integridade dos prompts.
+  - **Portões Mecânicos:** 100% PASS em toda a suíte (`go test -count=1 ./...`), `gofmt` limpo, `go vet` limpo, `funclen` conforme (0 funções > 35 linhas) e binário `bin/legoloop.exe` recompilado e instalado no PATH. Reindexação do grafo semântico via `codebase-memory-mcp`.
+
+- **09/11/2026** — 🔄 **Alinhamento de Arquitetura Global: Erradicação de Legados & Sincronização de Documentação Viva:**
+  - **Varredura Global & Saneamento de Pipelines (Fase 1 & 2):**
+    - Todos os pipelines legados em `loops/` (`addy-osmani.loop.json`, `impeccable-design.loop.json`, `matt-pocock.loop.json`, `fechar.loop.json`, `mega-pipeline.loop.json`, `legoloop-canal-redc/pipeline.dag.json` e `legoloop-canal-redc.loop.json`, `legoloop-video-master/pipeline.dag.json` e `legoloop-video-master.loop.json`, `legoloop-n10-foundry/legoloop-n10-foundry.loop.json`) foram atualizados para o padrão de Harness N10.
+    - Incorporação de `$schema` canônico (`schemas/dag.v1.json`), `upstream_signatures` criptográficas (hashes SHA-256), `execution_strategy` com política de rollback em falhas, nós com `nature` (`micro`, `nano`, `macro`), `cognitive_complexity`, `isolation`, tetos `token_budget`, proveniência estrita `context_in`/`context_out` (Anti-Fantasma FMEA-01/SYS-01) e acoplamento a costuras de teste (`test_seam`).
+    - Validação mecânica global de 100% dos manifestos em `loops/` via `legoloop validate`.
+  - **Mapa dos Motores Centrais & Taxonomia Canônica (Fase 3):**
+    - Consolidação dos 7 Verbos Canônicos do ciclo de vida: **`fabricar`**, **`matriz`**, **`listar`**, **`refinar`**, **`remover`**, **`compor`** e **`fechar`**.
+    - Catálogo durável dos 6 Motores Globais de Fronteira N10:
+      1. *Mutation Testing* (`redteam_blueteam.go`): bloqueia reward-hacking e mutações não autorizadas em suítes de teste.
+      2. *Git Worktrees com AST* (`worktree.go`): orquestração paralela em worktrees efêmeras com fusão sintática limpa.
+      3. *Memória Episódica de Anticorpos SBAR* (`antibodies.go`): injeção de contexto imunológico contra regressões conhecidas.
+      4. *Cascade Speculative Execution* (`speculative.go`): hot-swap de provedores e enriquecimento negativo em tempo de execução.
+      5. *Flight Recorder* (`telemetry.go`): telemetria estruturada OTel GenAI com cálculo automático de FPY.
+      6. *Fuzzing Nativo* (`fuzz_test.go`): estresse contínuo com `testing.F` para robustez de parsers.
+    - Arquitetura de Dupla Superfície: Modo Cockpit para PhDs e Engenharia profunda vs Modo Autopilot para Leigos com Cartões de Decisão Executivos (`internal/cli/autopilot.go`).
+  - **Sincronização de Documentação & Regras:**
+    - `README.md`: Atualizado com a visão geral da fundição N10, as 3 superfícies de criação e os 7 Protocolos Industriais.
+
+- **09/11/2026** — 🌐 **Modo Puro ASD-STE100, Universalidade Total de Harnesses & Manual Operacional Milimétrico:**
+  - **Demanda:** Criação do comando `legoloop stept set --modo puro` (ASD-STE100 direto sem Tríade [S][T][E] forçada), expansão da universalidade para 8 ambientes e diagramação rigorosa do comando `legoloop stept manual`.
+  - **Implementação Técnica em `internal/ste`:**
+    - `switch.go`: Introduzido `ModoPuro Modo = "puro"`, e novos harnesses `cursor`, `windsurf`, `vscode` com validação de perfil e herança de configuração.
+    - `scan.go`: Helper `defHarness()` mantendo `funclen <= 35` linhas e catálogo dinâmico cobrindo Antigravity, Claude Code, OMP CLI, OpenCode, MimoCode, Cursor, Windsurf e VS Code.
+    - `prompt.go`: `blocoOutputPuro()` injetando o contrato de resposta direta ASD-STE100 sem rótulos artificiais.
+    - `manual.go`: Gerador `formatLinhaBox()` garantindo alinhamento de 83 runes por linha sem truncamentos em moldura Unicode, documentando todos os comandos, políticas e modos.
+    - `stept-cli`: Repositório standalone sincronizado e binário `bin/stept.exe` recompilado com sucesso.
+  - **Portões Mecânicos:** 100% PASS em `ste` e `cli`, `funclen` conforme, `gofmt` limpo, `go vet` limpo, `bin/legoloop.exe` instalado no PATH (`legoloop stept set --modo puro` operacional) e grafo reindexado via `codebase-memory-mcp`.
+    - `AGENTS.md`: Atualizado com as 5 Prisões Mecânicas e os 7 Protocolos Industriais como leis invioláveis de conduta.
+  - **Portões Mecânicos:** 100% PASS em toda a suíte de testes (`go test -count=1 ./...`), `go vet` limpo, `gofmt` com saída vazia, `funclen` conforme e binário `bin/legoloop.exe` recompilado e instalado no PATH.
+
 ## Estado Atual do Repositório
 - **Status da Branch:** `docs/livros-loops-autores` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
-- **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/`, `schemas/` e `AGENTS.md`.
+- **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/`, `schemas/`, `AGENTS.md` e `README.md`.

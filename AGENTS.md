@@ -4,7 +4,7 @@
 
 ---
 
-## 1. Leis Invioláveis (Zero Tolerância)
+## 1. Leis Invioláveis (Zero Tolerância) & As 5 Prisões Mecânicas
 
 1. **Zero Stubs:** Nunca crie funções vazias com `TODO`, `pass`, `// implementar depois` ou mocks simulados. O código entregue deve ser real, testado e funcional.
 2. **Graph-First Obrigatório (Lei #14):**
@@ -62,18 +62,39 @@
 
 ---
 
-## 2. Comandos & Rotas de Governança
+## 2. Os 7 Protocolos Industriais e as 5 Prisões Mecânicas
+
+### 🔒 As 5 Prisões Mecânicas (Invioláveis em Runtime)
+1. **Path Jail:** Proibição absoluta de escape de diretório (`..`, symlinks externos, caminhos absolutos desautorizados). Operações em disco limitadas à raiz sanitizada.
+2. **Schema Validation:** Todos os manifestos JSON (`pipeline.dag.json`, `route.v2.json`, `spec.v1.json`, `livro.json`) validados estritamente contra JSON Schema formal (`schemas/dag.v1.json`, etc.).
+3. **Exit-Code Gate:** Passos automatizados só avançam com confirmação mecânica de `exit_code == 0` do sistema operacional.
+4. **Sterile Context:** Cada bloco executa isolado sem herança poluída de prompt, consumindo estritamente `context_in` e emitindo `context_out`.
+5. **Test Mutation:** Teste unitário só é certificado se a mutação forçada do código sob teste o fizer falhar mecanicamente (Green-Red-Green comprovado).
+
+### 📐 Os 7 Protocolos Industriais
+1. **STANAG 2014:** Ordens estruturadas de missão (Situação, Missão, Execução, Administração, Comando/Sinal).
+2. **ASD-STE100 (Simplified Technical English) a 80%:** Frases curtas (<20 palavras), voz ativa, sem ambiguidades, 1 instrução por sentença.
+3. **EARS (Easy Approach to Requirements Syntax):** Critérios de aceitação binários em formato Ubíquo, Orientado a Evento, Orientado a Estado ou Opcional.
+4. **FMEA (Failure Mode and Effects Analysis):** Matriz de risco RPN prévia (Severidade × Ocorrência × Detecção) antes de tocar em código.
+5. **ICAO Readback/Hearback:** Confirmação explícita no terminal com exibição de blast radius antes de comandos destrutivos.
+6. **Poka-Yoke & Disjuntor Andon Cord (Jidoka):** Interrupção automática imediata ao menor erro mecânico para impedir efeito cascata.
+7. **SBAR (Situation, Background, Assessment, Recommendation):** Formato universal de escalada de incidentes e rotação de contexto.
+
+---
+
+## 3. Comandos & Rotas de Governança
 
 * **Validar conformidade e testes:** `go test -count=1 ./...` e `go test -count=1 -tags e2e ./internal/e2e/...` (ou `npm test` quando houver front-end com testes JS; a lógica pura do Studio roda em `node`).
-* **Fábrica & Ciclo de Vida dos 6 Verbos de Processo:**
+* **Fábrica & Ciclo de Vida dos 7 Verbos de Processo:**
   * **Fabricar (criação completa):** `legoloop fabricar "<nome>" [--yes] [--goal T] [--model M] [--category build|reverse|web|mobile] [--dry-run] [--json]` (Chat: `/legoloop-fabricar`; Studio: **+ Novo Processo**). **Não confundir com `legoloop canonize`** (desduplicação por SHA-256).
-  * **Matriz de Peças (reputação/aptidão):** `legoloop matriz [--tier ouro|prata|bronze] [--json]` (Chat: `/legoloop-matriz`).
+  * **Matriz de Peças (reputação/aptidão):** `legoloop matriz ver [--tier ouro|prata|bronze] [--json]` (Chat: `/legoloop-matriz`).
   * **Listar (inventário e vínculos):** `legoloop listar [--json]` (Chat: `/legoloop-listar`; Studio: **Processos**).
-  * **Refinar (substituição atômica de passos):** `legoloop refinar "<nome>" [--trocar P] [--json]` (Chat: `/legoloop-refinar`).
+  * **Refinar (substituição atômica de passos):** `legoloop refinar "<nome>" --etapa ID [--peca P] [--json]` (Chat: `/legoloop-refinar`).
   * **Remover (desvinculação com rollback):** `legoloop remover "<nome>" [--dry-run] [--force] [--json]` (Chat: `/legoloop-remover`).
   * **Compor (sub-loops hierárquicos):** `legoloop compor "<alvo>" "<sub-loop>" [--pos N] [--json]` (Chat: `/legoloop-compor`).
   * **Fechar (canonização determinística em 9 etapas com telemetria):** `legoloop fechar "<slug>" [--dry-run] [--skip-build] [--json]` (Chat: `/legoloop-fechar`).
   * **Video-REA (engenharia reversa e dissecação com Matriz Original e Adoção Soberana):** `legoloop video-rea [run|ingest|forensics|curate|gate|govern|book] <args>` (Chat: `/legoloop-video-rea`).
+  * **Cartoon-Shorts (pipeline determinístico 1080x1920 30fps):** `legoloop cartoon-shorts --theme "<tema>"` (Chat: `/legoloop-cartoon-shorts`).
 * **Instalação Canônica das Skills:** `legoloop instalar-skills [--vault DIR] [--dry-run] [--json]` (distribui as 14 skills canônicas embutidas para o cofre e cria vínculos nos harnesses).
 * **Demanda N10 Foundry Harness & Motores Globais (09/11/2026):** [Manual Operacional](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/manuals/2026-11-09_MANUAL_FUNCAO_N10_FOUNDRY_HARNESS_LEGOLOOP.md) · [Livro Didático](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/books/n10-foundry/livro.json) · [Skill](file:///C:/Users/trcnologia/Desktop/LegoLoop/skills/legoloop-n10-foundry/SKILL.md) · [DAG](file:///C:/Users/trcnologia/Desktop/LegoLoop/loops/legoloop-n10-foundry/pipeline.dag.json) · [Relatório final](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports/2026-11-09_REPORT_N10_FOUNDRY_GLOBAL.md)
 * **Demanda Target Workspace & Matriz Original Video-REA (08/11/2026):** [INTENT](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/intents/2026-11-08_INTENT_VIDEO_BUNDLE.md) · [SPEC](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/specs/2026-11-08_SPEC_VIDEO_BUNDLE.md) · [PLAN](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/plans/2026-11-08_PLAN_VIDEO_BUNDLE.md) · [ROUTE](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/routes/2026-11-08_ROUTE_VIDEO_BUNDLE.json) · [Relatório final](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports/2026-11-08_REPORT_VIDEO_BUNDLE.md)

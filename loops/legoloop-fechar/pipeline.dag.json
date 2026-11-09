@@ -75,6 +75,10 @@
       "output": {
         "artifact": "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md",
         "gate": "file_exists('docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
       }
     },
     {
@@ -123,6 +127,10 @@
       "output": {
         "artifact": "docs/books/video-rea/livro.json",
         "gate": "file_exists('docs/books/video-rea/livro.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
       }
     },
     {
@@ -170,6 +178,10 @@
       "output": {
         "artifact": "skills/legoloop-fechar/SKILL.md",
         "gate": "file_exists('skills/legoloop-fechar/SKILL.md')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
       }
     },
     {
@@ -217,6 +229,10 @@
       "output": {
         "artifact": "loops/legoloop-video-motion/pipeline.dag.json",
         "gate": "file_exists('loops/legoloop-video-motion/pipeline.dag.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
       }
     },
     {
@@ -263,6 +279,10 @@
       "output": {
         "artifact": "bin/legoloop.exe",
         "gate": "file_exists('bin/legoloop.exe')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
       }
     },
     {
@@ -310,6 +330,10 @@
       "output": {
         "artifact": "AGENTS.md",
         "gate": "file_exists('AGENTS.md')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
       }
     },
     {
@@ -358,6 +382,10 @@
       "output": {
         "artifact": "docs/templates/TEMPLATE_REPORT.md",
         "gate": "file_exists('docs/templates/TEMPLATE_REPORT.md')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/fechar/fechar_test.go"
       }
     }
   ]

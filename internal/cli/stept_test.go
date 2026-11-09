@@ -100,5 +100,18 @@ func TestCLIStept(t *testing.T) {
 		if !strings.Contains(out, "┌") || !strings.Contains(out, "└") {
 			t.Errorf("manual deve conter moldura formatada estilo gw:\n%s", out)
 		}
+		if !strings.Contains(out, "puro") || !strings.Contains(out, "Cursor") {
+			t.Errorf("manual deve conter modo puro e harness cursor:\n%s", out)
+		}
+	})
+
+	t.Run("stept set --modo puro ativa o modo puro", func(t *testing.T) {
+		code, out, errOut := execCmd("set", "--modo", "puro")
+		if code != 0 {
+			t.Fatalf("set --modo puro falhou com code %d: %s", code, errOut)
+		}
+		if !strings.Contains(out, "puro") {
+			t.Errorf("saida do set nao refletiu modo puro:\n%s", out)
+		}
 	})
 }
