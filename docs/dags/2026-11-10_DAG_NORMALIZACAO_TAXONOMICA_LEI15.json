@@ -1151,7 +1151,7 @@
         "run",
         "./tools/ticketgate",
         "-pkgs",
-        "./internal/studio/...",
+        "./...",
         "-tax",
         "internal/studio",
         "-tax-max",
@@ -1202,7 +1202,7 @@
       "type": "unit_task",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./internal/studio/... -tax internal/studio -tax-max 164 -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/studio -tax-max 164 -gold"
       }
     },
     {
@@ -1211,7 +1211,7 @@
         "run",
         "./tools/ticketgate",
         "-pkgs",
-        "./internal/dag/...,./internal/graph/...",
+        "./...",
         "-tax",
         "internal/dag,internal/graph",
         "-tax-max",
@@ -1276,7 +1276,7 @@
       "type": "unit_task",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./internal/dag/...,./internal/graph/... -tax internal/dag,internal/graph -tax-max 38 -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/dag,internal/graph -tax-max 38 -gold"
       }
     },
     {
@@ -1345,7 +1345,7 @@
         "run",
         "./tools/ticketgate",
         "-pkgs",
-        "./internal/cli/...,./internal/fabricar/...,./internal/refinar/...",
+        "./...",
         "-tax",
         "internal/cli,internal/fabricar,internal/refinar",
         "-tax-max",
@@ -1398,7 +1398,7 @@
       "type": "unit_task",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./internal/cli/...,./internal/fabricar/...,./internal/refinar/... -tax internal/cli,internal/fabricar,internal/refinar -tax-max 87 -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/cli,internal/fabricar,internal/refinar -tax-max 87 -gold"
       }
     },
     {
@@ -1407,7 +1407,7 @@
         "run",
         "./tools/ticketgate",
         "-pkgs",
-        "./internal/assets/...,./internal/board/...,./internal/orchestrix/...,./internal/suggest/...",
+        "./...",
         "-tax",
         "internal/assets,internal/board,internal/orchestrix,internal/suggest",
         "-tax-max",
@@ -1461,7 +1461,7 @@
       "type": "unit_task",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./internal/assets/...,./internal/board/...,./internal/orchestrix/...,./internal/suggest/... -tax internal/assets,internal/board,internal/orchestrix,internal/suggest -tax-max 64 -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/assets,internal/board,internal/orchestrix,internal/suggest -tax-max 64 -gold"
       }
     },
     {
@@ -1470,7 +1470,7 @@
         "run",
         "./tools/ticketgate",
         "-pkgs",
-        "./internal/runner/...,./internal/videorea/...",
+        "./...",
         "-tax",
         "internal/runner,internal/videorea",
         "-tax-max",
@@ -1522,7 +1522,7 @@
       "type": "unit_task",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./internal/runner/...,./internal/videorea/... -tax internal/runner,internal/videorea -tax-max 28 -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/runner,internal/videorea -tax-max 28 -gold"
       }
     },
     {
