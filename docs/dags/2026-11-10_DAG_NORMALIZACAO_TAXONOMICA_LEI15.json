@@ -764,7 +764,9 @@
         "internal/fabricar/camada4.go",
         "internal/fabricar/engine.go",
         "internal/compor/compor.go",
-        "internal/fabricar/engine_test.go"
+        "internal/fabricar/engine_test.go",
+        "internal/compor/compor_test.go",
+        "internal/fabricar/materialize_test.go"
       ],
       "depends_on": [
         "TICK-01.2"
