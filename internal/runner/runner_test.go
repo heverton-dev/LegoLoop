@@ -380,7 +380,7 @@ func TestInteractivePromptContextCancellation(t *testing.T) {
 	select {
 	case rep := <-done:
 		if rep.OK {
-			t.Fatal("esperava pipeline reprovado após cancelamento")
+			t.Fatal("esperava Processo reprovado após cancelamento")
 		}
 	case <-time.After(3 * time.Second):
 		t.Fatal("runner travou durante cancelamento em prompt interativo")

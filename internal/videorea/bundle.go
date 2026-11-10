@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 )
 
@@ -59,17 +60,16 @@ func NewTargetBundle(baseDir, slug string) (*TargetBundle, error) {
 }
 
 // Materialize cria a árvore física de pastas no sistema de arquivos.
+// Percorre todo campo string cujo nome termina em "Dir" (BaseDir, ScratchDir etc.).
 func (b *TargetBundle) Materialize() error {
-	dirs := []string{
-		b.BaseDir,
-		b.ScratchDir,
-		b.GovernanceDir,
-		b.BookDir,
-		b.LoopDir,
-		b.SkillDir,
-	}
-	for _, d := range dirs {
-		if err := os.MkdirAll(d, 0o755); err != nil {
+	v := reflect.ValueOf(b).Elem()
+	t := v.Type()
+	for i := 0; i < t.NumField(); i++ {
+		f := t.Field(i)
+		if f.Type.Kind() != reflect.String || !strings.HasSuffix(f.Name, "Dir") {
+			continue
+		}
+		if err := os.MkdirAll(v.Field(i).String(), 0o755); err != nil {
 			return err
 		}
 	}

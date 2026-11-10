@@ -66,7 +66,7 @@ func TestFlightRecordOTel(t *testing.T) {
 
 	rec := runner.FlightRecord{
 		Timestamp:    time.Now().UTC().Format(time.RFC3339),
-		PipelineName: "test-pipeline",
+		PipelineName: "test-processo",
 		TotalTokens: runner.TokenUsage{
 			Input:  1500,
 			Output: 400,

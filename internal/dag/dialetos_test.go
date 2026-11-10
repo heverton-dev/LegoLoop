@@ -12,13 +12,11 @@ func TestLeitorDoisDialetos(t *testing.T) {
 		nome, src string
 		ok        bool
 	}{
-		{"nó subloop antigo", v2(`{"type":"manual"}`, noScript, sub("subloop", "outro")), true},
 		{"nó subprocesso novo", v2(`{"type":"manual"}`, noScript, sub("subprocesso", "outro")), true},
 		{"subprocesso ref inválida", v2(`{"type":"manual"}`, noScript, sub("subprocesso", "../x")), false},
-		{"trigger loop_end antigo", v2(`{"type":"loop_end","loop":"alvo"}`, noScript), true},
 		{"trigger processo_fim novo", v2(`{"type":"processo_fim","processo":"alvo"}`, noScript), true},
-		{"processo_fim com campo loop", v2(`{"type":"processo_fim","loop":"alvo"}`, noScript), true},
-		{"loop_end com campo processo", v2(`{"type":"loop_end","processo":"alvo"}`, noScript), true},
+		{"processo_fim com o campo antigo", v2(`{"type":"processo_fim","loop":"alvo"}`, noScript), true},
+		{"gatilho antigo com campo processo", v2(`{"type":"loop_end","processo":"alvo"}`, noScript), true},
 		{"campos divergentes", v2(`{"type":"processo_fim","loop":"a","processo":"b"}`, noScript), false},
 		{"processo_fim sem alvo", v2(`{"type":"processo_fim"}`, noScript), false},
 		{"processo inválido", v2(`{"type":"processo_fim","processo":"a b"}`, noScript), false},
@@ -37,7 +35,7 @@ func TestLeitorNormalizaParaRepresentacaoAntiga(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if d.Trigger.Type != TriggerLoopEnd || d.Trigger.Loop != "alvo" || d.Trigger.Processo != "" {
+	if d.Trigger.Type != gatilhoFimInterno || *d.Trigger.alvo() != "alvo" || d.Trigger.Processo != "" {
 		t.Errorf("trigger não normalizado: %+v", d.Trigger)
 	}
 }

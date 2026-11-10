@@ -26,7 +26,7 @@ func TestAndonCordCircuitBreaker(t *testing.T) {
 	exec := &failTwiceExecutor{}
 	node := dag.Node{
 		ID:     "step_andon",
-		Type:   dag.TypeUnitTask,
+		Type:   dag.TypeScript,
 		Output: dag.HandoffContract{Artifact: "out.txt", Gate: "exit_code == 0"},
 	}
 

@@ -19,7 +19,7 @@ func guardDAG(t *testing.T, extra string) *dag.DAG {
 	return d
 }
 
-// Recursos do contrato v2 agora são todos executados pelo runner: slots, isolated e subloop (TICK-1107).
+// Recursos do contrato v2 agora são todos executados pelo runner: slots, isolated e subprocesso (TICK-1107).
 func TestRunSupportsAllV2Features(t *testing.T) {
 	cases := map[string]string{
 		"slots":    `,"slots":{"gates":["exit_code == 0"]}`,
@@ -36,17 +36,17 @@ func TestRunSupportsAllV2Features(t *testing.T) {
 		}
 	}
 	sub, err := dag.Parse([]byte(`{"name":"g","version":"2.0.0","trigger":{"type":"manual"},"nodes":[{"id":"s",
-	"type":"subloop","ref":"outro-loop","routing":{"mode":"manual","model":"none"},
+	"type":"subprocesso","ref":"outro-processo","routing":{"mode":"manual","model":"none"},
 	"output":{"artifact":"s.md","gate":"true"}}]}`))
 	if err != nil {
 		t.Fatal(err)
 	}
 	ex := &fakeExec{}
 	if _, err := Run(context.Background(), sub, Options{Workdir: t.TempDir(), Executor: ex}); err != nil {
-		t.Fatalf("subloop deve executar normalmente via executor: %v", err)
+		t.Fatalf("subprocesso deve executar normalmente via executor: %v", err)
 	}
 	if len(ex.order) != 1 || ex.order[0] != "s" {
-		t.Fatalf("subloop deveria ter sido despachado para o executor, ordem: %v", ex.order)
+		t.Fatalf("subprocesso deveria ter sido despachado para o executor, ordem: %v", ex.order)
 	}
 	// inline explícito e v1 continuam executando
 	if _, err := Run(context.Background(), guardDAG(t, `,"execution":{"mode":"inline"}`),

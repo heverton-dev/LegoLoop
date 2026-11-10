@@ -29,7 +29,7 @@ func NewIndex(catalog []Block) (*Index, error) {
 			return nil, err
 		}
 		if _, dup := idx.byID[b.ID]; dup {
-			return nil, fmt.Errorf("graph: bloco duplicado %q", b.ID)
+			return nil, fmt.Errorf("graph: peça duplicada %q", b.ID)
 		}
 		idx.byID[b.ID] = b
 		idx.blocks = append(idx.blocks, b)
@@ -46,19 +46,19 @@ func NewIndex(catalog []Block) (*Index, error) {
 
 func validateBlock(b Block) error {
 	if !blockIDRe.MatchString(b.ID) {
-		return fmt.Errorf("graph: id de bloco inválido %q", b.ID)
+		return fmt.Errorf("graph: id de peça inválido %q", b.ID)
 	}
 	isTrigger := strings.HasPrefix(b.Kind, "trigger_")
 	if b.Cost <= 0 || (len(b.Consumes) == 0 && !isTrigger) {
-		return fmt.Errorf("graph: bloco %q exige custo > 0 e ao menos uma entrada", b.ID)
+		return fmt.Errorf("graph: peça %q exige custo > 0 e ao menos uma entrada", b.ID)
 	}
 	for _, t := range append([]ArtifactType{b.Produces}, b.Consumes...) {
 		if _, err := ParseArtifactType(string(t)); err != nil {
-			return fmt.Errorf("graph: bloco %q: %w", b.ID, err)
+			return fmt.Errorf("graph: peça %q: %w", b.ID, err)
 		}
 	}
 	if _, err := gate.Compile(b.Gate); err != nil {
-		return fmt.Errorf("graph: bloco %q: %w", b.ID, err)
+		return fmt.Errorf("graph: peça %q: %w", b.ID, err)
 	}
 	return nil
 }
@@ -66,29 +66,29 @@ func validateBlock(b Block) error {
 // Blocks devolve o catálogo ordenado por ID.
 func (idx *Index) Blocks() []Block { return slices.Clone(idx.blocks) }
 
-// Block busca um bloco por ID.
+// Block busca uma peça por ID.
 func (idx *Index) Block(id string) (Block, bool) {
 	b, ok := idx.byID[id]
 	return b, ok
 }
 
-// Consumers lista blocos que aceitam o tipo como entrada.
+// Consumers lista as peças que aceitam o tipo como entrada.
 func (idx *Index) Consumers(t ArtifactType) []Block { return slices.Clone(idx.consumers[t]) }
 
 // CanConnect informa se a saída de `from` encaixa numa entrada de `to`.
 func (idx *Index) CanConnect(from, to string) (bool, error) {
 	a, ok := idx.byID[from]
 	if !ok {
-		return false, fmt.Errorf("graph: bloco %q inexistente", from)
+		return false, fmt.Errorf("graph: peça %q inexistente", from)
 	}
 	b, ok := idx.byID[to]
 	if !ok {
-		return false, fmt.Errorf("graph: bloco %q inexistente", to)
+		return false, fmt.Errorf("graph: peça %q inexistente", to)
 	}
 	return slices.Contains(b.Consumes, a.Produces), nil
 }
 
-// Matrix devolve, para cada bloco, os IDs dos blocos aos quais ele pode se conectar.
+// Matrix devolve, para cada peça, os IDs das peças às quais ela pode se conectar.
 func (idx *Index) Matrix() map[string][]string {
 	m := make(map[string][]string, len(idx.blocks))
 	for _, b := range idx.blocks {
@@ -101,8 +101,8 @@ func (idx *Index) Matrix() map[string][]string {
 	return m
 }
 
-// Route calcula (Dijkstra) a sequência de blocos de menor custo que transforma `from` em `to`.
-// Empates são resolvidos pelo ID do bloco, garantindo resultado determinístico.
+// Route calcula (Dijkstra) a sequência de peças de menor custo que transforma `from` em `to`.
+// Empates são resolvidos pelo ID da peça, garantindo resultado determinístico.
 func (idx *Index) Route(from, to ArtifactType) ([]Block, int, error) {
 	for _, t := range []ArtifactType{from, to} {
 		if _, err := ParseArtifactType(string(t)); err != nil {
@@ -125,7 +125,7 @@ func (idx *Index) Route(from, to ArtifactType) ([]Block, int, error) {
 	return nil, 0, errors.New("graph: nenhuma rota entre " + string(from) + " e " + string(to))
 }
 
-// edge registra qual bloco produziu um tipo e a partir de qual tipo de entrada.
+// edge registra qual peça produziu um tipo e a partir de qual tipo de entrada.
 type edge struct {
 	block Block
 	from  ArtifactType

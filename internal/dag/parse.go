@@ -34,7 +34,7 @@ func sensitiveDirs() []string {
 }
 
 // ErrDialetoMisto indica um DAG que mistura os dois dialetos de forma contraditória
-// (ex.: trigger com loop e processo divergentes).
+// (ex.: trigger com alvos divergentes nos dois dialetos).
 var ErrDialetoMisto = errors.New("dag: mistura inválida dos dialetos antigo e novo")
 
 // CycleError indica deadlock: os nós listados formam (ou dependem de) um ciclo.
@@ -60,7 +60,7 @@ func Parse(data []byte) (*DAG, error) {
 	}
 	d.normalizarDialeto()
 	if d.Trigger != nil && d.Trigger.Conflito {
-		return nil, fmt.Errorf("%w: os campos loop e processo do trigger divergem", ErrDialetoMisto)
+		return nil, fmt.Errorf("%w: o trigger traz alvos divergentes nos dois dialetos", ErrDialetoMisto)
 	}
 	if err := d.validate(); err != nil {
 		return nil, err
@@ -155,14 +155,14 @@ func validateNode(n Node) error {
 				return err
 			}
 		}
-	case TypeSubloop:
+	case tipoComposto:
 		if !idRe.MatchString(n.Ref) {
-			return fmt.Errorf("subloop exige ref com o nome de um loop válido, recebeu %q", n.Ref)
+			return fmt.Errorf("subprocesso exige ref com o nome de um Processo válido, recebeu %q", n.Ref)
 		}
 	case TypeStopGate:
 		// stop_gate não exige ref nem command; atua como barreira humana através de seu gate.
 	case "mcp":
-		return errors.New("nó MCP ainda não é executável: não há cliente MCP (fase 2)")
+		return errors.New("nó MCP ainda não é executável: não há cliente MCP (etapa 2)")
 	default:
 		return fmt.Errorf("tipo desconhecido %q", n.Type)
 	}
@@ -218,13 +218,13 @@ func validateOutput(n Node) error {
 	return nil
 }
 
-// validateSubArtifact: sub_artifact só existe no nó subloop e segue a mesma regra de caminho do artifact.
+// validateSubArtifact: sub_artifact só existe no nó subprocesso e segue a mesma regra de caminho do artifact.
 func validateSubArtifact(n Node) error {
 	if n.Output.SubArtifact == "" {
 		return nil
 	}
-	if n.Type != TypeSubloop {
-		return fmt.Errorf("sub_artifact só vale no nó subloop (tipo %q)", n.Type)
+	if n.Type != tipoComposto {
+		return fmt.Errorf("sub_artifact só vale no nó subprocesso (tipo %q)", n.Type)
 	}
 	return validatePath("sub_artifact", n.Output.SubArtifact)
 }
@@ -233,7 +233,7 @@ func validateSubArtifact(n Node) error {
 // projeto, sem ":", sem nome curto 8.3 e fora dos diretórios sensíveis.
 func ValidateArtifact(artifact string) error { return validateArtifact(artifact) }
 
-// validatePath exige caminho relativo ao projeto, sem ":" (letra de unidade e fluxos NTFS),
+// validatePath exige caminho relativo ao projeto, sem ":" (letra de unidade e streams NTFS),
 // sem nomes curtos 8.3 e fora dos diretórios sensíveis.
 func validatePath(label, p string) error {
 	native := filepath.FromSlash(p)
@@ -344,17 +344,18 @@ func sortedKeys(m map[string]int) []string {
 func (d *DAG) normalizarDialeto() {
 	for i := range d.Nodes {
 		if d.Nodes[i].Type == TypeSubprocesso {
-			d.Nodes[i].Type = TypeSubloop
+			d.Nodes[i].Type = tipoComposto
 		}
 	}
 	if t := d.Trigger; t != nil {
 		if t.Type == TriggerProcessoFim {
-			t.Type = TriggerLoopEnd
+			t.Type = gatilhoFimInterno
 		}
 		if t.Processo != "" {
-			if t.Loop == "" {
-				t.Loop = t.Processo
-			} else if t.Loop != t.Processo {
+			alvo := t.alvo()
+			if *alvo == "" {
+				*alvo = t.Processo
+			} else if *alvo != t.Processo {
 				t.Conflito = true
 			}
 			t.Processo = ""

@@ -24,14 +24,14 @@ func TestContextProvenanceValidation(t *testing.T) {
 			"nodes": [
 				{
 					"id": "n01",
-					"type": "unit_task",
+					"type": "script", "command": ["go", "version"],
 					"routing": {"mode": "manual", "model": "flash"},
 					"output": {"artifact": "out1.txt", "gate": "exit_code == 0"},
 					"context_out": ["out1.txt"]
 				},
 				{
 					"id": "n02",
-					"type": "unit_task",
+					"type": "script", "command": ["go", "version"],
 					"depends_on": ["n01"],
 					"routing": {"mode": "manual", "model": "flash"},
 					"context_in": ["phantom.go"],
@@ -59,14 +59,14 @@ func TestContextProvenanceValidation(t *testing.T) {
 			"nodes": [
 				{
 					"id": "n01",
-					"type": "unit_task",
+					"type": "script", "command": ["go", "version"],
 					"routing": {"mode": "manual", "model": "flash"},
 					"output": {"artifact": "generated.go", "gate": "exit_code == 0"},
 					"context_out": ["generated.go"]
 				},
 				{
 					"id": "n02",
-					"type": "unit_task",
+					"type": "script", "command": ["go", "version"],
 					"depends_on": ["n01"],
 					"routing": {"mode": "manual", "model": "flash"},
 					"context_in": ["generated.go"],
@@ -93,7 +93,7 @@ func TestContextProvenanceValidation(t *testing.T) {
 			"nodes": [
 				{
 					"id": "n01",
-					"type": "unit_task",
+					"type": "script", "command": ["go", "version"],
 					"routing": {"mode": "manual", "model": "flash"},
 					"context_in": ["existing.go"],
 					"output": {"artifact": "out.txt", "gate": "exit_code == 0"}

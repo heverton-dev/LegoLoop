@@ -8,7 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/board"
 	"legoloop/internal/runner"
 )
 
@@ -42,26 +41,20 @@ func initTestGitRepo(t *testing.T) string {
 	return dir
 }
 
-func TestIssueLifecycleWorktree(t *testing.T) {
+func TestTicketLifecycleWorktree(t *testing.T) {
 	repoDir := initTestGitRepo(t)
 	defer os.RemoveAll(repoDir)
-
-	card := board.Card{
-		Number: 42,
-		Title:  "Implement Wave Runner",
-		Body:   "Touches internal/runner/lifecycle.go",
-	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	wtDir, branch, cleanup, err := runner.PrepareIssueWorktree(ctx, repoDir, card)
+	wtDir, branch, cleanup, err := runner.PrepareTicketWorktree(ctx, repoDir, 42, "Implement Wave Runner")
 	if err != nil {
-		t.Fatalf("falha ao criar issue worktree: %v", err)
+		t.Fatalf("falha ao criar worktree do Ticket: %v", err)
 	}
 	defer cleanup()
 
-	if branch != "issue-42-implement-wave-runner" {
+	if branch != "ticket-42-implement-wave-runner" {
 		t.Fatalf("branch incorreta: %s", branch)
 	}
 
@@ -77,7 +70,7 @@ func TestIssueLifecycleWorktree(t *testing.T) {
 		t.Fatalf("falha ao criar arquivo no worktree: %v", err)
 	}
 
-	err = runner.CommitIssueWorktree(ctx, wtDir, "feat(runner): implement issue lifecycle")
+	err = runner.CommitTicketWorktree(ctx, wtDir, "feat(runner): implement ticket lifecycle")
 	if err != nil {
 		t.Fatalf("falha ao commitar no worktree: %v", err)
 	}

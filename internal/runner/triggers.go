@@ -122,7 +122,7 @@ func (w *FileWatcher) Watch(ctx context.Context, onChange func(path string)) err
 	}
 }
 
-// TriggerScheduler gerencia os gatilhos formais do contrato de loop.
+// TriggerScheduler gerencia os gatilhos formais do contrato de Processo.
 type TriggerScheduler struct {
 	workdir string
 }

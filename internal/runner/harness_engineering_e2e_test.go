@@ -30,7 +30,7 @@ func (e *e2eHarnessExecutor) Execute(ctx context.Context, n dag.Node, workdir st
 
 func TestHarnessEngineeringE2E(t *testing.T) {
 	dagJSON := `{
-		"name": "harness-engineering-pipeline-e2e",
+		"name": "harness-engineering-processo-e2e",
 		"version": "1.0.0",
 		"nodes": [
 			{
@@ -116,7 +116,7 @@ func TestHarnessEngineeringE2E(t *testing.T) {
 			t.Fatalf("Run: %v", err)
 		}
 		if !rep.OK {
-			t.Fatalf("Pipeline deveria passar com sucesso total, relatório: %+v", rep)
+			t.Fatalf("Processo deveria passar com sucesso total, relatório: %+v", rep)
 		}
 		if len(rep.Nodes) != 2 {
 			t.Fatalf("esperava 2 nós reportados, obteve %d", len(rep.Nodes))
@@ -151,7 +151,7 @@ func TestHarnessEngineeringE2E(t *testing.T) {
 			t.Fatalf("Run: %v", err)
 		}
 		if rep.OK {
-			t.Fatal("Pipeline deveria reprovar por Schema Enforcement")
+			t.Fatal("Processo deveria reprovar por Schema Enforcement")
 		}
 		if rep.Nodes[0].Status != StatusGateFailed {
 			t.Fatalf("node_spec deveria ter StatusGateFailed, obteve: %v", rep.Nodes[0].Status)
@@ -184,7 +184,7 @@ func TestHarnessEngineeringE2E(t *testing.T) {
 			t.Fatalf("Run: %v", err)
 		}
 		if rep.OK {
-			t.Fatal("Pipeline deveria reprovar após rejeição humana no gate")
+			t.Fatal("Processo deveria reprovar após rejeição humana no gate")
 		}
 		if rep.Nodes[0].Status != StatusPassed {
 			t.Fatalf("node_spec deveria passar: %v", rep.Nodes[0].Status)

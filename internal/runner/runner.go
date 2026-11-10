@@ -66,7 +66,7 @@ type NodeReport struct {
 	Error    string        `json:"error,omitempty"`
 }
 
-// Report consolida a execução do pipeline.
+// Report consolida a execução do Processo.
 type Report struct {
 	OK     bool         `json:"ok"`
 	Nodes  []NodeReport `json:"nodes"`

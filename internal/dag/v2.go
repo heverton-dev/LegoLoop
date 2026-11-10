@@ -10,7 +10,7 @@ import (
 	"legoloop/internal/gate"
 )
 
-// majorVersion lê o componente maior de version; vazio equivale a 1 (contrato legado).
+// majorVersion lê o número maior de version; vazio equivale a 1 (contrato legado).
 func majorVersion(v string) (int, error) {
 	if v == "" {
 		return 1, nil
@@ -45,11 +45,11 @@ func (d *DAG) checkTrigger() error {
 	return nil
 }
 
-// checkWatchedPath impede o loop infinito: nenhuma peça pode gravar dentro do que o trigger vigia.
+// checkWatchedPath impede o disparo infinito: nenhuma peça pode gravar dentro do que o trigger vigia.
 func (d *DAG) checkWatchedPath(watched string) error {
 	for _, n := range d.Nodes {
 		if overlaps(watched, n.Output.Artifact) {
-			return fmt.Errorf("dag: nó %q grava %q dentro do caminho vigiado %q (loop infinito)", n.ID, n.Output.Artifact, watched)
+			return fmt.Errorf("dag: nó %q grava %q dentro do caminho vigiado %q (disparo infinito)", n.ID, n.Output.Artifact, watched)
 		}
 	}
 	return nil
@@ -57,7 +57,7 @@ func (d *DAG) checkWatchedPath(watched string) error {
 
 func validateTrigger(t Trigger) error {
 	if t.Conflito {
-		return errors.New("trigger: os campos loop e processo divergem")
+		return errors.New("trigger: alvos divergentes nos dois dialetos")
 	}
 	switch t.Type {
 	case TriggerManual:
@@ -72,23 +72,23 @@ func validateTrigger(t Trigger) error {
 			return err
 		}
 		return validatePath("trigger file_change: path", t.Path)
-	case TriggerLoopEnd:
-		if err := t.stray("loop"); err != nil {
+	case gatilhoFimInterno:
+		if err := t.stray(campoAlvo); err != nil {
 			return err
 		}
-		if !idRe.MatchString(t.Loop) {
-			return fmt.Errorf("trigger loop_end exige loop válido, recebeu %q", t.Loop)
+		if alvo := *t.alvo(); !idRe.MatchString(alvo) {
+			return fmt.Errorf("trigger %s exige processo válido, recebeu %q", t.Type, alvo)
 		}
 		return nil
 	case "webhook", "git_event":
-		return fmt.Errorf("trigger %q é da fase 2 e ainda não está disponível", t.Type)
+		return fmt.Errorf("trigger %q é da etapa 2 e ainda não está disponível", t.Type)
 	}
 	return fmt.Errorf("trigger desconhecido %q", t.Type)
 }
 
 // stray recusa campos que não pertencem ao tipo do trigger.
 func (t Trigger) stray(allowed string) error {
-	fields := []struct{ name, value string }{{"cron", t.Cron}, {"path", t.Path}, {"loop", t.Loop}}
+	fields := []struct{ name, value string }{{"cron", t.Cron}, {"path", t.Path}, {campoAlvo, *t.alvo()}}
 	for _, f := range fields {
 		if f.value != "" && f.name != allowed {
 			return fmt.Errorf("trigger %s não aceita o campo %q", t.Type, f.name)

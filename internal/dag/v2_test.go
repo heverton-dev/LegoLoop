@@ -73,7 +73,7 @@ func TestV2ValidTriggers(t *testing.T) {
 		"cron faixa+passo":   `{"type":"cron","cron":"0-30/10 8-18 * * 0-7"}`,
 		"file_change":        `{"type":"file_change","path":"docs"}`,
 		"file_change nested": `{"type":"file_change","path":"src/entrada.md"}`,
-		"loop_end":           `{"type":"loop_end","loop":"clinica-vet"}`,
+		"processo_fim":       `{"type":"processo_fim","processo":"clinica-vet"}`,
 	}
 	for name, trig := range cases {
 		d, err := Parse([]byte(v2(trig, n2("a", "", "OUT/a.md", ""))))
@@ -119,22 +119,22 @@ func TestFileChangeTriggerValidation(t *testing.T) {
 	parseErr(t, "file_change sem path", v2(`{"type":"file_change"}`, node), "path")
 }
 
-func TestLoopEndTriggerValidation(t *testing.T) {
+func TestProcessoFimTriggerValidation(t *testing.T) {
 	node := n2("a", "", "A.md", "")
-	parseErr(t, "sem loop", v2(`{"type":"loop_end"}`, node), "loop")
-	parseErr(t, "loop inválido", v2(`{"type":"loop_end","loop":"a b"}`, node), "loop")
+	parseErr(t, "sem processo", v2(`{"type":"processo_fim"}`, node), "processo")
+	parseErr(t, "processo inválido", v2(`{"type":"processo_fim","processo":"a b"}`, node), "processo")
 }
 
-// R-TRG-3: tipos da fase 2 e desconhecidos são recusados com mensagem clara.
+// R-TRG-3: tipos da etapa 2 e desconhecidos são recusados com mensagem clara.
 func TestTriggerPhase2AndUnknown(t *testing.T) {
 	node := n2("a", "", "A.md", "")
-	parseErr(t, "webhook", v2(`{"type":"webhook"}`, node), "fase 2")
-	parseErr(t, "git_event", v2(`{"type":"git_event"}`, node), "fase 2")
+	parseErr(t, "webhook", v2(`{"type":"webhook"}`, node), "etapa 2")
+	parseErr(t, "git_event", v2(`{"type":"git_event"}`, node), "etapa 2")
 	parseErr(t, "desconhecido", v2(`{"type":"telepatia"}`, node), "telepatia")
 	parseErr(t, "manual com campo de cron", v2(`{"type":"manual","cron":"* * * * *"}`, node), "manual")
 	parseErr(t, "cron com path", v2(`{"type":"cron","cron":"* * * * *","path":"x"}`, node), "cron")
 	parseErr(t, "file_change com cron", v2(`{"type":"file_change","path":"x","cron":"* * * * *"}`, node), "file_change")
-	parseErr(t, "loop_end com path", v2(`{"type":"loop_end","loop":"x","path":"y"}`, node), "loop_end")
+	parseErr(t, "processo_fim com path", v2(`{"type":"processo_fim","processo":"x","path":"y"}`, node), "path")
 }
 
 // R-NODE-7: execution.mode válido; inline proibido em camada paralela com artefatos sobrepostos.
@@ -221,28 +221,28 @@ func TestSlotsInvalid(t *testing.T) {
 	parseErr(t, "campo desconhecido", v2(trig, n2("a", "", "A.md", `"slots":{"evil":[]}`)), "evil")
 }
 
-// R-MCP-3 e R-LOOP-2: mcp não executa; subloop exige referência válida.
+// R-MCP-3: mcp não executa. O nó subprocesso exige referência válida.
 func TestMCPNodeRejectedExplicitly(t *testing.T) {
 	src := v2(`{"type":"manual"}`, `{"id":"a","type":"mcp","ref":"rea",
 	"routing":{"mode":"manual","model":"m"},"output":{"artifact":"A.md","gate":"true"}}`)
 	parseErr(t, "mcp", src, "MCP")
 }
 
-func TestSubloopNode(t *testing.T) {
+func TestSubprocessoNode(t *testing.T) {
 	mk := func(ref string) string {
 		r := ""
 		if ref != "" {
 			r = `"ref":"` + ref + `",`
 		}
-		return v2(`{"type":"manual"}`, `{"id":"a","type":"subloop",`+r+
+		return v2(`{"type":"manual"}`, `{"id":"a","type":"subprocesso",`+r+
 			`"routing":{"mode":"manual","model":"m"},"output":{"artifact":"A.md","gate":"true"}}`)
 	}
 	d, err := Parse([]byte(mk("clinica-vet")))
 	if err != nil || d.Node("a").Type != TypeSubloop {
-		t.Fatalf("subloop válido: %v", err)
+		t.Fatalf("subprocesso válido: %v", err)
 	}
-	parseErr(t, "subloop sem ref", mk(""), "subloop")
-	parseErr(t, "subloop ref inválida", mk("../fora"), "subloop")
+	parseErr(t, "subprocesso sem ref", mk(""), "subprocesso")
+	parseErr(t, "subprocesso ref inválida", mk("../fora"), "subprocesso")
 }
 
 // Slots são opcionais: ausente, vazio ou listas vazias são escolhas válidas do usuário,

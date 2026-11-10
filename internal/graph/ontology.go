@@ -1,10 +1,10 @@
-// Package graph é a malha semântica: ontologia de artefatos, catálogo de blocos Lego
+// Package graph é a malha semântica: ontologia de artefatos, catálogo de peças Lego
 // (consome/produz), índice de compatibilidade de portas e cálculo de rota ótima.
 package graph
 
 import "fmt"
 
-// ArtifactType é o tipo de uma porta (entrada ou saída) de bloco.
+// ArtifactType é o tipo de uma porta (entrada ou saída) de peça.
 type ArtifactType string
 
 const (
@@ -19,7 +19,7 @@ const (
 	Audit            ArtifactType = "Artifact:Audit"
 )
 
-// ArtifactTypes lista a ontologia completa, na ordem do fluxo.
+// ArtifactTypes lista a ontologia completa, na ordem do Processo.
 func ArtifactTypes() []ArtifactType {
 	return []ArtifactType{Idea, URL, RenderedPage, ReverseStructure, DesignTokens, Briefing, Spec, Code, Audit}
 }
@@ -49,13 +49,13 @@ type Block struct {
 	SuggestedModel string         `json:"suggested_model,omitempty"`
 }
 
-// ControlBlocks retorna os blocos estruturais de controle de fluxo algorítmico (N8N pattern).
+// ControlBlocks retorna as peças estruturais de controle de execução (N8N pattern).
 func ControlBlocks() []Block {
 	return []Block{
 		{ID: "flow-if", Label: "IF / Condicional", Ref: "core/flow-if", Kind: "flow_if",
 			Consumes: []ArtifactType{Briefing, Spec, Code, Audit}, Produces: Code,
 			Artifact: "DECISION.json", Gate: "file_exists('DECISION.json')", Cost: 1},
-		{ID: "flow-loop", Label: "Loop / Recursão", Ref: "core/flow-loop", Kind: "flow_loop",
+		{ID: "flow-loop", Label: "Repetição / Recursão", Ref: "core/flow-loop", Kind: "flow_loop",
 			Consumes: []ArtifactType{Briefing, Spec, Code, Audit}, Produces: Code,
 			Artifact: "ITERATION.json", Gate: "file_exists('ITERATION.json')", Cost: 1},
 		{ID: "flow-merge", Label: "Merge / Barreira", Ref: "core/flow-merge", Kind: "flow_merge",
@@ -88,7 +88,7 @@ func ControlBlocks() []Block {
 	}
 }
 
-// TriggerBlocks retorna os gatilhos formais do contrato DAG v2 para o início de esteiras no Studio.
+// TriggerBlocks retorna os gatilhos formais do contrato DAG v2 para o início de Processos no Studio.
 func TriggerBlocks() []Block {
 	return []Block{
 		{ID: "trigger-manual", Label: "Disparo Manual", Ref: "core/trigger-manual", Kind: "trigger_manual",
@@ -100,22 +100,22 @@ func TriggerBlocks() []Block {
 		{ID: "trigger-file-change", Label: "Observador de Arquivo", Ref: "core/trigger-file-change", Kind: "trigger_file_change",
 			Consumes: []ArtifactType{}, Produces: Idea,
 			Artifact: "TRIGGER_FILE.json", Gate: "file_exists('TRIGGER_FILE.json')", Cost: 1},
-		{ID: "trigger-loop-end", Label: "Encadeamento de Loop", Ref: "core/trigger-loop-end", Kind: "trigger_loop_end",
+		{ID: "trigger-loop-end", Label: "Encadeamento de Processo", Ref: "core/trigger-loop-end", Kind: "trigger_loop_end",
 			Consumes: []ArtifactType{}, Produces: Idea,
-			Artifact: "TRIGGER_LOOP.json", Gate: "file_exists('TRIGGER_LOOP.json')", Cost: 1},
+			Artifact: "TRIGGER_PROCESSO.json", Gate: "file_exists('TRIGGER_PROCESSO.json')", Cost: 1},
 		{ID: "github-board-trigger", Label: "Trigger: GitHub Board Kanban", Ref: "core/trigger-github-board", Kind: "trigger_board",
 			Consumes: []ArtifactType{}, Produces: Spec,
 			Artifact: "WAVE_PLAN.json", Gate: "file_exists('WAVE_PLAN.json')", Cost: 2, SuggestedModel: "flash"},
 	}
 }
 
-// FullCatalog retorna o catálogo completo incluindo blocos AIDD, blocos de controle e triggers.
+// FullCatalog retorna o catálogo completo incluindo peças AIDD, peças de controle e triggers.
 func FullCatalog() []Block {
 	res := append(DefaultCatalog(), ControlBlocks()...)
 	return append(res, TriggerBlocks()...)
 }
 
-// DefaultCatalog é o baú canônico de blocos do ecossistema AIDD (custo ≈ k tokens).
+// DefaultCatalog é o baú canônico de peças do ecossistema AIDD (custo ≈ k tokens).
 func DefaultCatalog() []Block {
 	return []Block{
 		{ID: "interview", Label: "Interview", Ref: "skills/interview", Consumes: []ArtifactType{Idea}, Produces: Briefing,

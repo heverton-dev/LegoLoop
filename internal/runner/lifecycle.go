@@ -8,15 +8,13 @@ import (
 	"regexp"
 	"strings"
 	"time"
-
-	"legoloop/internal/board"
 )
 
 var nonAlphanumericSlug = regexp.MustCompile(`[^a-z0-9]+`)
 
-// generateIssueBranchName gera uma branch padronizada como issue-42-implement-wave-runner.
-func generateIssueBranchName(card board.Card) string {
-	slug := strings.ToLower(card.Title)
+// generateTicketBranchName gera uma branch padronizada como ticket-42-implement-wave-runner.
+func generateTicketBranchName(number int, title string) string {
+	slug := strings.ToLower(title)
 	slug = nonAlphanumericSlug.ReplaceAllString(slug, "-")
 	slug = strings.Trim(slug, "-")
 	if len(slug) > 40 {
@@ -24,17 +22,17 @@ func generateIssueBranchName(card board.Card) string {
 		slug = strings.TrimRight(slug, "-")
 	}
 	if slug == "" {
-		slug = "task"
+		slug = "sem-titulo"
 	}
-	return fmt.Sprintf("issue-%d-%s", card.Number, slug)
+	return fmt.Sprintf("ticket-%d-%s", number, slug)
 }
 
-// PrepareIssueWorktree provisiona um worktree com branch dedicada para uma issue do GitHub.
+// PrepareTicketWorktree provisiona um worktree com branch dedicada para um Ticket.
 // Retorna o diretório do worktree, o nome da branch gerada e uma função de cleanup seguro.
-func PrepareIssueWorktree(ctx context.Context, repoDir string, card board.Card) (string, string, func(), error) {
-	branch := generateIssueBranchName(card)
+func PrepareTicketWorktree(ctx context.Context, repoDir string, number int, title string) (string, string, func(), error) {
+	branch := generateTicketBranchName(number, title)
 
-	tmpDir, err := os.MkdirTemp("", fmt.Sprintf("legoloop-issue-%d-*", card.Number))
+	tmpDir, err := os.MkdirTemp("", fmt.Sprintf("legoloop-ticket-%d-*", number))
 	if err != nil {
 		return "", "", nil, fmt.Errorf("falha ao criar pasta temporária para worktree: %w", err)
 	}
@@ -59,8 +57,8 @@ func PrepareIssueWorktree(ctx context.Context, repoDir string, card board.Card) 
 	return tmpDir, branch, cleanup, nil
 }
 
-// CommitIssueWorktree adiciona todas as alterações e executa o commit dentro do worktree.
-func CommitIssueWorktree(ctx context.Context, worktreeDir, message string) error {
+// CommitTicketWorktree adiciona todas as alterações e executa o commit dentro do worktree.
+func CommitTicketWorktree(ctx context.Context, worktreeDir, message string) error {
 	cmdCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 

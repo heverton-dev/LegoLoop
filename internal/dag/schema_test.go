@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+
+	"legoloop/internal/caminhos"
 )
 
 // Validador mínimo de JSON Schema Draft-07. Implementa só as palavras-chave
@@ -136,36 +138,42 @@ func validarContra(t *testing.T, schema map[string]any, raw []byte) []string {
 	return validarSchema(schema, doc, "$")
 }
 
-func arquivosLoops(t *testing.T) []string {
+// arquivosProcessos lista os JSON das pastas de Processos do repositório (os dois dialetos).
+func arquivosProcessos(t *testing.T) []string {
 	t.Helper()
 	var out []string
-	raiz := filepath.Join("..", "..", "loops")
-	err := filepath.WalkDir(raiz, func(p string, d fs.DirEntry, err error) error {
+	pastas := caminhos.DirsLeitura(filepath.Join("..", ".."))
+	if len(pastas) == 0 {
+		t.Fatal("nenhuma pasta de Processos na raiz do repositório")
+	}
+	for _, raiz := range pastas {
+		err := filepath.WalkDir(raiz, func(p string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if !d.IsDir() && strings.HasSuffix(p, ".json") {
+				out = append(out, p)
+			}
+			return nil
+		})
 		if err != nil {
-			return err
+			t.Fatal(err)
 		}
-		if !d.IsDir() && strings.HasSuffix(p, ".json") {
-			out = append(out, p)
-		}
-		return nil
-	})
-	if err != nil {
-		t.Fatal(err)
 	}
 	return out
 }
 
-// Gate do TICK-01.3: todo Processo de loops/ valida contra v1 e contra v2.
-func TestSchemasV1eV2ValidamLoops(t *testing.T) {
+// Gate do TICK-01.3: todo Processo do repositório valida contra v1 e contra v2.
+func TestSchemasV1eV2ValidamProcessos(t *testing.T) {
 	v1, v2 := carregarSchema(t, "dag.v1.json"), carregarSchema(t, "dag.v2.json")
 	validados := 0
-	for _, f := range arquivosLoops(t) {
+	for _, f := range arquivosProcessos(t) {
 		raw, err := os.ReadFile(f)
 		if err != nil {
 			t.Fatal(err)
 		}
-		// Arquivo que o parser recusa não é Processo válido (ex.: o legado
-		// ai-motion-graphics.loop.json, fora do teste dourado): fica de fora.
+		// Arquivo que o parser recusa não é Processo válido (ex.: o documento
+		// legado do Studio ai-motion-graphics, fora do teste dourado): fica de fora.
 		if _, err := Parse(raw); err != nil {
 			t.Logf("fora do gate (Parse recusa): %s: %v", filepath.Base(f), err)
 			continue
@@ -177,10 +185,10 @@ func TestSchemasV1eV2ValidamLoops(t *testing.T) {
 			}
 		}
 	}
-	// 24 arquivos JSON em loops/: 23 passam no parser (inclui os 15 do teste
-	// dourado) e 1 legado é recusado.
+	// 24 arquivos JSON na pasta de Processos: 23 passam no parser (inclui os 15
+	// do teste dourado) e 1 legado é recusado.
 	if validados != 23 {
-		t.Fatalf("validei %d Processos de loops/, esperado 23", validados)
+		t.Fatalf("validei %d Processos do repositório, esperado 23", validados)
 	}
 }
 

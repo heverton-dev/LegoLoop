@@ -162,7 +162,7 @@ func TestSecurityValidation(t *testing.T) {
 	cases := map[string]string{
 		"hook git":            strings.Replace(base, `"OUT_a.md"`, `".git/hooks/pre-commit"`, 1),
 		"settings claude":     strings.Replace(base, `"OUT_a.md"`, `".claude/settings.json"`, 1),
-		"tasks vscode":        strings.Replace(base, `"OUT_a.md"`, `".VSCode/tasks.json"`, 1),
+		"settings vscode":     strings.Replace(base, `"OUT_a.md"`, `".VSCode/settings.json"`, 1),
 		"workflow github":     strings.Replace(base, `"OUT_a.md"`, `"sub/.github/workflows/x.yml"`, 1),
 		"comando relativo":    strings.Replace(base, `["go","version"]`, `["tools/x.exe"]`, 1),
 		"comando relativo \\": strings.Replace(base, `["go","version"]`, `["tools\\x.exe"]`, 1),

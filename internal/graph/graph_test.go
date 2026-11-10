@@ -62,10 +62,10 @@ func TestCompatibilityIndex(t *testing.T) {
 		}
 	}
 	if _, err := idx.CanConnect("nao-existe", "rea"); err == nil {
-		t.Fatal("bloco inexistente deveria falhar")
+		t.Fatal("peça inexistente deveria falhar")
 	}
 	if _, err := idx.CanConnect("rea", "nao-existe"); err == nil {
-		t.Fatal("bloco inexistente deveria falhar")
+		t.Fatal("peça inexistente deveria falhar")
 	}
 	m := idx.Matrix()
 	if !reflect.DeepEqual(m["obscura"], []string{"rea"}) {
@@ -187,7 +187,7 @@ func TestHumanGateBlock(t *testing.T) {
 		}
 	}
 	if found == nil {
-		t.Fatalf("bloco human-gate não encontrado em ControlBlocks()")
+		t.Fatalf("peça human-gate não encontrado em ControlBlocks()")
 	}
 	if found.Kind != "flow_human_gate" {
 		t.Errorf("Kind esperado flow_human_gate, obtido %s", found.Kind)
@@ -207,7 +207,7 @@ func TestVaultBlock(t *testing.T) {
 		}
 	}
 	if found == nil {
-		t.Fatalf("bloco env-vault não encontrado em ControlBlocks()")
+		t.Fatalf("peça env-vault não encontrado em ControlBlocks()")
 	}
 	if found.Kind != "security_vault" {
 		t.Errorf("Kind esperado security_vault, obtido %s", found.Kind)
@@ -234,10 +234,10 @@ func TestGitBlocks(t *testing.T) {
 			}
 		}
 		if found == nil {
-			t.Fatalf("bloco %s não encontrado em ControlBlocks()", id)
+			t.Fatalf("peça %s não encontrada em ControlBlocks()", id)
 		}
 		if found.Kind != expectedKind {
-			t.Errorf("bloco %s: Kind esperado %s, obtido %s", id, expectedKind, found.Kind)
+			t.Errorf("peça %s: Kind esperado %s, obtido %s", id, expectedKind, found.Kind)
 		}
 	}
 }
@@ -259,13 +259,13 @@ func TestDeployBlocks(t *testing.T) {
 			}
 		}
 		if found == nil {
-			t.Fatalf("bloco %s não encontrado em ControlBlocks()", id)
+			t.Fatalf("peça %s não encontrada em ControlBlocks()", id)
 		}
 		if found.Kind != expectedKind {
-			t.Errorf("bloco %s: Kind esperado %s, obtido %s", id, expectedKind, found.Kind)
+			t.Errorf("peça %s: Kind esperado %s, obtido %s", id, expectedKind, found.Kind)
 		}
 		if found.Produces != Audit {
-			t.Errorf("bloco %s deve produzir Audit, obtido %v", id, found.Produces)
+			t.Errorf("peça %s deve produzir Audit, obtido %v", id, found.Produces)
 		}
 	}
 }

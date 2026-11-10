@@ -21,13 +21,14 @@ const (
 	TypeSkill NodeType = "skill"
 	// TypeScript executa um comando local sem shell.
 	TypeScript NodeType = "script"
-	// TypeSubloop referencia outro loop do acervo (Ref = nome do loop); roda isolado e estéril.
+	// Nó subprocesso no dialeto antigo: referencia outro Processo do acervo (Ref = nome do
+	// Processo) e roda isolado e estéril. É a representação interna depois do Parse.
 	TypeSubloop NodeType = "subloop"
-	// TypeSubprocesso é o nome novo de TypeSubloop; o leitor converte no Parse.
+	// TypeSubprocesso é o nome novo do tipo acima; o leitor converte no Parse.
 	TypeSubprocesso NodeType = "subprocesso"
-	// TypeStopGate representa uma barreira de auditoria humana na esteira.
+	// TypeStopGate representa uma barreira de auditoria humana no Processo.
 	TypeStopGate NodeType = "stop_gate"
-	// TypeUnitTask representa uma tarefa de unidade cognitiva de engenharia.
+	// Nó de Ticket: unidade cognitiva de engenharia.
 	TypeUnitTask NodeType = "unit_task"
 )
 
@@ -61,7 +62,7 @@ type Slots struct {
 	Hooks   Hooks      `json:"hooks,omitzero"`
 }
 
-// TriggerType é o gatilho que dispara o loop.
+// TriggerType é o gatilho que dispara o Processo.
 type TriggerType string
 
 const (
@@ -69,21 +70,34 @@ const (
 	TriggerCron       TriggerType = "cron"
 	TriggerFileChange TriggerType = "file_change"
 	TriggerLoopEnd    TriggerType = "loop_end"
-	// TriggerProcessoFim é o nome novo de TriggerLoopEnd; o leitor converte no Parse.
+	// TriggerProcessoFim é o nome novo do gatilho acima; o leitor converte no Parse.
 	TriggerProcessoFim TriggerType = "processo_fim"
 )
 
-// Trigger é o gatilho único de um loop (DAG v2). Cada tipo aceita só o seu campo.
+// Representação interna depois do Parse: o leitor converte o dialeto novo nestes valores, que
+// os pacotes consumidores comparam com as constantes exportadas do dialeto antigo.
+const (
+	tipoComposto      = TypeSubloop
+	gatilhoFimInterno = TriggerLoopEnd
+)
+
+// campoAlvo é a chave JSON do Processo alvo no dialeto antigo do trigger.
+const campoAlvo = "loop"
+
+// Trigger é o gatilho único de um Processo (DAG v2). Cada tipo aceita só o seu campo.
 type Trigger struct {
 	Type TriggerType `json:"type"`
 	Cron string      `json:"cron,omitempty"`
 	Path string      `json:"path,omitempty"`
 	Loop string      `json:"loop,omitempty"`
-	// Processo é o campo novo de Loop; o leitor move o valor para Loop no Parse.
+	// Processo é o campo novo do alvo; o leitor move o valor para o campo antigo no Parse.
 	Processo string `json:"processo,omitempty"`
-	// Conflito marca trigger com loop e processo diferentes; a validação recusa.
+	// Conflito marca trigger com alvos diferentes nos dois dialetos; a validação recusa.
 	Conflito bool `json:"-"`
 }
+
+// alvo devolve o endereço do Processo alvo na representação interna (campo do dialeto antigo).
+func (t *Trigger) alvo() *string { return &t.Loop }
 
 // EffortLevel define o teto de raciocínio cognitivo do nó (Harness Engineering).
 type EffortLevel string
@@ -106,14 +120,15 @@ type RoutingConfig struct {
 // HandoffContract é a saída imutável do nó e sua condição de saída.
 type HandoffContract struct {
 	Artifact string `json:"artifact"`
-	// SubArtifact só vale no nó subloop: o caminho do artefato final dentro do diretório do sub-loop. O
-	// orchestrix lê esse caminho no sub-loop e grava em Artifact no pai. Vazio = o mesmo caminho de Artifact.
+	// SubArtifact só vale no nó subprocesso: o caminho do artefato final dentro do diretório do
+	// subprocesso. O orchestrix lê esse caminho no subprocesso e grava em Artifact no pai.
+	// Vazio = o mesmo caminho de Artifact.
 	SubArtifact string `json:"sub_artifact,omitempty"`
 	Schema      string `json:"schema,omitempty"`
 	Gate        string `json:"gate"`
 }
 
-// Node é uma peça Lego do pipeline.
+// Node é uma peça Lego do Processo.
 type Node struct {
 	ID                  string            `json:"id"`
 	Name                string            `json:"name,omitempty"`
@@ -158,7 +173,7 @@ func (n Node) HasSlots() bool {
 	return s != nil && len(s.Gates)+len(s.Scripts)+len(s.Hooks.Pre)+len(s.Hooks.Post) > 0
 }
 
-// DAG é o pipeline validado. Só é obtido via Parse, garantindo invariantes.
+// DAG é o Processo validado. Só é obtido via Parse, garantindo invariantes.
 type DAG struct {
 	Schema             string         `json:"$schema,omitempty"`
 	ID                 string         `json:"id,omitempty"`
@@ -177,7 +192,7 @@ type DAG struct {
 	warnings []string
 }
 
-// EffectiveTrigger devolve o gatilho do loop; DAG v1 sem trigger é tratado como manual.
+// EffectiveTrigger devolve o gatilho do Processo; DAG v1 sem trigger é tratado como manual.
 func (d *DAG) EffectiveTrigger() Trigger {
 	if d.Trigger == nil {
 		return Trigger{Type: TriggerManual}
