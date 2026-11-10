@@ -34,8 +34,8 @@ func TestConverterGeraDAGValido(t *testing.T) {
 	if err != nil {
 		t.Fatalf("DAG gerado não valida: %v", err)
 	}
-	if len(d.Nodes) != 39 {
-		t.Errorf("nós = %d, esperado 39", len(d.Nodes))
+	if len(d.Nodes) != 56 {
+		t.Errorf("nós = %d, esperado 56", len(d.Nodes))
 	}
 }
 
