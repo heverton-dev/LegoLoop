@@ -29,6 +29,12 @@
   "name": "legoloop-normalizacao-taxonomica-lei15",
   "nodes": [
     {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./tools/taxlinter/..."
+      ],
       "context_in": [
         "tools/taxlinter/main.go",
         "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
@@ -53,7 +59,7 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-00.1.json",
-        "gate": "file_exists('scratch/tax_triagem.json')"
+        "gate": "exit_code == 0 && file_exists('scratch/tax_triagem.json')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -70,7 +76,7 @@
         "mcps_required": false,
         "runtime": "powershell"
       },
-      "type": "unit_task"
+      "type": "script"
     },
     {
       "command": [
@@ -254,7 +260,7 @@
         "mcps_required": false,
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "script",
       "verification": {
         "exit_code": 0,
         "test_command": "go test -count=1 ./tools/taxlinter/..."
