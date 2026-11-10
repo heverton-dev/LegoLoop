@@ -103,6 +103,7 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 	for attempt := 0; ; attempt++ {
 		report, failure, tokens, err := o.unitAttempt(ctx, n, w, plan, prompt, seeded)
 		res.Tokens = addUsage(res.Tokens, tokens)
+		res.Notes = append(res.Notes, fmt.Sprintf("tentativa %d: US$ %.2f, %d tokens de saída", attempt+1, tokens.CostUSD, tokens.Output))
 		res.ExitCode = report.ExitCode
 		if err != nil {
 			return res, unitReport{}, err
@@ -135,7 +136,7 @@ const maxUnitRetries = 2
 
 // addUsage soma o consumo de tokens de duas chamadas.
 func addUsage(a, b runner.TokenUsage) runner.TokenUsage {
-	return runner.TokenUsage{Input: a.Input + b.Input, Output: a.Output + b.Output, ReportedInput: a.ReportedInput + b.ReportedInput}
+	return runner.TokenUsage{Input: a.Input + b.Input, Output: a.Output + b.Output, ReportedInput: a.ReportedInput + b.ReportedInput, CostUSD: a.CostUSD + b.CostUSD}
 }
 
 // retryPrompt repete o prompt base e anexa a falha da tentativa anterior.
@@ -146,7 +147,7 @@ func retryPrompt(base, failure string) string {
 // unitAttempt roda o claude, o command e o gate uma vez. A falha do gate volta em failure
 // (texto vazio = gate aprovado). Erro de boundary, link ou execução volta em err e não retenta.
 func (o *Orchestrix) unitAttempt(ctx context.Context, n dag.Node, w *Worktree, plan unitPlan, prompt string, seeded map[string][]byte) (unitReport, string, runner.TokenUsage, error) {
-	text, usage, err := o.callClaudeTools(ctx, plan.model, prompt, w.Dir, nil)
+	text, usage, err := o.callClaudeToolsLim(ctx, plan.model, prompt, w.Dir, nil, unitLimitsFor(n))
 	if err != nil {
 		return unitReport{}, "", usage, err
 	}
@@ -250,7 +251,7 @@ func (o *Orchestrix) unitModel(n dag.Node) (string, error) {
 
 // unitModelAliases traduz os combos do 9Router usados nos DAGs para modelos do claude CLI.
 // O unit_task só executa claude CLI com ferramentas fechadas; combo do 9Router não roda aqui.
-var unitModelAliases = map[string]string{"code-fast": "sonnet", "code-pro": "opus", "flash": "haiku"}
+var unitModelAliases = map[string]string{"code-fast": "sonnet", "code-pro": "sonnet", "flash": "haiku"}
 
 // unitAlias devolve o modelo do claude CLI para um alias; nome sem alias volta igual.
 func unitAlias(m string) string {

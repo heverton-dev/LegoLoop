@@ -97,7 +97,7 @@ func TestUnitModelAliasesRouterCombos(t *testing.T) {
 	o := unitOrchestrix("n1.txt=x")
 	cases := []struct{ model, fallback, want string }{
 		{"code-fast", "flash", "sonnet"},
-		{"code-pro", "flash", "opus"},
+		{"code-pro", "flash", "sonnet"},
 		{"sonnet", "sonnet", "sonnet"},
 	}
 	for _, c := range cases {

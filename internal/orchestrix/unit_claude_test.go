@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"legoloop/internal/dag"
 	"legoloop/internal/provider"
 )
 
@@ -41,7 +42,7 @@ func TestCallClaudeToolsExactArgs(t *testing.T) {
 	}
 	wantArgs := "-p|--model|sonnet|--output-format|json|--no-session-persistence|--strict-mcp-config|--safe-mode|" +
 		"--setting-sources|user|--tools|Read,Edit,Write,Glob,Grep|--allowed-tools|Read,Edit,Write,Glob,Grep|" +
-		"--disallowed-tools|Agent,Task|--disable-slash-commands"
+		"--disallowed-tools|Agent,Task|--disable-slash-commands|--effort|medium|--max-budget-usd|2.50"
 	if !strings.Contains(text, "argv="+wantArgs+"\n") {
 		t.Fatalf("argumentos inexatos:\n%s\nesperado: %s", text, wantArgs)
 	}
@@ -58,14 +59,14 @@ func TestCallClaudeToolsExactArgs(t *testing.T) {
 }
 
 func TestCallClaudeToolsNeverGrantsAgentsOrBash(t *testing.T) {
-	args := strings.Join(unitClaudeArgs("sonnet", unitTools), " ")
+	args := strings.Join(unitClaudeArgs("sonnet", unitTools, unitLimitsFor(dag.Node{})), " ")
 	for _, bad := range []string{"Bash", "WebFetch", "WebSearch"} {
 		if strings.Contains(args, bad) {
 			t.Errorf("argumentos concedem %s: %s", bad, args)
 		}
 	}
 	// Agent e Task só aparecem em --disallowed-tools.
-	if strings.Count(args, "Agent") != 1 || !strings.HasSuffix(strings.Split(args, "--disallowed-tools ")[1], "Agent,Task --disable-slash-commands") {
+	if strings.Count(args, "Agent") != 1 || !strings.HasSuffix(strings.Split(args, "--disallowed-tools ")[1], "Agent,Task --disable-slash-commands --effort medium --max-budget-usd 2.50") {
 		t.Errorf("Agent fora de --disallowed-tools: %s", args)
 	}
 }
@@ -101,5 +102,27 @@ func TestCallClaudeToolsPropagatesFailure(t *testing.T) {
 	if _, _, err := o.callClaudeTools(context.Background(), "sonnet", "x", t.TempDir(), nil); err == nil ||
 		!strings.Contains(err.Error(), "Credit balance") {
 		t.Fatalf("err = %v", err)
+	}
+}
+
+func TestUnitLimitsFollowNature(t *testing.T) {
+	cases := []struct {
+		nature string
+		effort string
+		budget string
+	}{{"micro", "low", "0.80"}, {"nano", "low", "0.80"}, {"macro", "medium", "2.50"}, {"", "medium", "2.50"}}
+	for _, c := range cases {
+		lim := unitLimitsFor(dag.Node{Nature: c.nature})
+		args := strings.Join(unitClaudeArgs("sonnet", unitTools, lim), " ")
+		if !strings.Contains(args, "--effort "+c.effort) || !strings.Contains(args, "--max-budget-usd "+c.budget) {
+			t.Errorf("nature %q: args = %s", c.nature, args)
+		}
+	}
+}
+
+func TestParseClaudeOutputReadsCost(t *testing.T) {
+	r := parseClaudeOutput([]byte(`{"result":"ok","total_cost_usd":0.4321,"usage":{"input_tokens":3,"output_tokens":9}}`))
+	if r.usage.CostUSD != 0.4321 || r.usage.Output != 9 {
+		t.Fatalf("usage = %+v", r.usage)
 	}
 }

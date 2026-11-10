@@ -22,10 +22,12 @@ type TokenUsage struct {
 	Output int `json:"output"`
 	// ReportedInput é o valor bruto do provedor quando difere do real (9Router soma +2000).
 	ReportedInput int `json:"reported_input,omitempty"`
+	// CostUSD é o custo real que o provedor reporta (claude CLI: total_cost_usd).
+	CostUSD float64 `json:"cost_usd,omitempty"`
 }
 
 func (t TokenUsage) add(o TokenUsage) TokenUsage {
-	return TokenUsage{Input: t.Input + o.Input, Output: t.Output + o.Output, ReportedInput: t.ReportedInput + o.ReportedInput}
+	return TokenUsage{Input: t.Input + o.Input, Output: t.Output + o.Output, ReportedInput: t.ReportedInput + o.ReportedInput, CostUSD: t.CostUSD + o.CostUSD}
 }
 
 // Result é o retorno de uma execução isolada de nó.

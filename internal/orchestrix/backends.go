@@ -147,9 +147,10 @@ func (r claudeResult) reason() string {
 
 func parseClaudeOutput(out []byte) claudeResult {
 	var r struct {
-		Result   string `json:"result"`
-		IsError  bool   `json:"is_error"`
-		Terminal string `json:"terminal_reason"`
+		Result   string  `json:"result"`
+		IsError  bool    `json:"is_error"`
+		Terminal string  `json:"terminal_reason"`
+		CostUSD  float64 `json:"total_cost_usd"`
 		Usage    struct {
 			Input  int `json:"input_tokens"`
 			Output int `json:"output_tokens"`
@@ -159,7 +160,7 @@ func parseClaudeOutput(out []byte) claudeResult {
 		return claudeResult{text: string(out)}
 	}
 	return claudeResult{text: r.Result, isError: r.IsError, terminal: r.Terminal,
-		usage: runner.TokenUsage{Input: r.Usage.Input, Output: r.Usage.Output}}
+		usage: runner.TokenUsage{Input: r.Usage.Input, Output: r.Usage.Output, CostUSD: r.CostUSD}}
 }
 
 // runScript executa o comando SEM shell (args literais, imunes a injeção) e só com
