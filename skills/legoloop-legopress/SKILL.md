@@ -8,7 +8,7 @@ gate: exit_code == 0
 suggested_model: sonnet
 ---
 
-# 📚 legoloop-legopress — Esteira Industrial de Livros Técnicos do LegoLoop
+# 📚 legoloop-legopress — Processo Industrial de Livros Técnicos do LegoLoop
 
 > **Autor:** LegoLoop  
 > **Versão:** 1.0.0  
@@ -21,7 +21,7 @@ suggested_model: sonnet
 **Quando usar:** O usuário deseja criar uma nova obra técnica, livro físico ou e-book, corrigir a diagramação visual de um livro gerado, sincronizar partes com o código do Git, ou transformar documentação em material didático de alto padrão editorial (170x240mm).  
 **Quando NÃO usar:** Criar processos comuns de código (use `/legoloop-fabricar`), compor processos hierárquicos (use `/legoloop-compor`) ou rodar auditorias gerais da matriz (use `/legoloop-matriz`).
 
-Esta skill conduz a interface no chat e os stop-gates humanos. **Toda a lógica e compilação mora no comando `legoloop legopress`**: particionamento em Macro/Meso/Micro, orquestração Typst + Pandoc, purificação contra IA-slop e auditoria mecânica via PyMuPDF.
+Esta skill conduz a interface no chat e os stop-gates humanos. **Toda a lógica e compilação mora no comando `legoloop legopress`**: particionamento em Amplo/Meso/Micro, orquestração Typst + Pandoc, purificação contra IA-slop e auditoria mecânica via PyMuPDF.
 
 * **Consumes (Entradas Obrigatórias):**
   - O pedido do usuário, o manifesto `livro.json`, o arquivo PDF ou os diffs do repositório Git.

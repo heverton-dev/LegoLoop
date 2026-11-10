@@ -1,6 +1,6 @@
 ---
 name: legoloop-video-motion
-description: Use quando o usuário quiser EXECUTAR O PIPELINE DETERMINÍSTICO DE MOTION VIDEO (edição automatizada, silêncios +40ms, punch RMS, cartões de vidro 3D, tipografia Anton cinética e broadcast bundle multi-aspecto), via /legoloop-video-motion. NÃO use para dissecar vídeos externos ou criar livros didáticos avulsos.
+description: Use quando o usuário quiser EXECUTAR O PROCESSO DETERMINÍSTICO DE MOTION VIDEO (edição automatizada, silêncios +40ms, punch RMS, cartões de vidro 3D, tipografia Anton cinética e broadcast bundle multi-aspecto), via /legoloop-video-motion. NÃO use para dissecar vídeos externos ou criar livros didáticos avulsos.
 consumes: Artifact:Media
 produces: Artifact:BroadcastBundle
 artifact: dist/<job_id>/bundle_manifest.json
@@ -8,7 +8,7 @@ gate: exit_code == 0
 suggested_model: code-fast
 ---
 
-# 🎬 legoloop-video-motion — Pipeline Canônico de Motion Video e Edição por Código
+# 🎬 legoloop-video-motion — Processo Canônico de Motion Video e Edição por Código
 
 > **Autor:** LegoLoop  
 > **Versão:** 1.0.0  
@@ -56,5 +56,5 @@ suggested_model: code-fast
    - Empacotar bundle broadcast: `legoloop video-motion bundle --preview scratch/qa_sheet.jpg --out dist/`
 3. **Execução Orquestrada via DAG:**
    ```bash
-   legoloop run loops/video-motion/pipeline.dag.json --allow-scripts --yes
+   legoloop run processos/video-motion/processo.dag.json --allow-scripts --yes
    ```

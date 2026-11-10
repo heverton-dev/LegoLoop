@@ -1,6 +1,6 @@
 ---
 name: legoloop-fabricar
-description: Use quando o usuário quiser CRIAR um processo novo (skill, loop e DAG, com INTENT, SPEC, PLAN e ROUTE) a partir de uma ideia, via /legoloop-fabricar. NÃO use para desduplicar arquivos, rodar um processo existente ou editar uma skill.
+description: Use quando o usuário quiser CRIAR um processo novo (skill, documento do Studio e DAG, com INTENT, SPEC, PLAN e ROUTE) a partir de uma ideia, via /legoloop-fabricar. NÃO use para canonizar arquivos, rodar um processo existente ou editar uma skill.
 consumes: Artifact:Idea
 produces: Artifact:Spec
 artifact: ~/.aidd/canonical/skills/legoloop-<nome>/SKILL.md
@@ -18,15 +18,15 @@ suggested_model: sonnet
 
 ## 1. Contexto & Contratos de I/O
 
-**Quando usar:** o usuário descreve, em linguagem natural, um processo novo que quer ter como skill, loop e DAG.  
-**Quando NÃO usar:** desduplicar ou canonizar arquivos (isso é outro comando do LegoLoop), rodar um processo que já existe, ou editar uma skill existente.
+**Quando usar:** o usuário descreve, em linguagem natural, um processo novo que quer ter como skill, documento do Studio e DAG.  
+**Quando NÃO usar:** canonizar arquivos (isso é outro comando do LegoLoop), rodar um processo que já existe, ou editar uma skill existente.
 
 Esta skill só conduz a conversa e o gate humano. **Toda a lógica mora no comando `legoloop fabricar`**: varredura dos discos, fusão das peças, geração da Tríade e gravação atômica. Não a reproduza em prompt.
 
 * **Consumes (Entradas Obrigatórias):**
   - o pedido do usuário (a ideia do processo)
 * **Produces (Saídas Mecânicas):**
-  - `~/.aidd/canonical/skills/legoloop-<nome>/SKILL.md`, `~/.aidd/canonical/loops/legoloop-<nome>.loop.json` e `.dag.json`
+  - `~/.aidd/canonical/skills/legoloop-<nome>/SKILL.md`, o documento do Studio `legoloop-<nome>.studio.json` e `.dag.json` na pasta de Processos do Cofre
   - `docs/intents`, `docs/specs`, `docs/plans`, `docs/routes` e `docs/templates` do projeto
 * **Target Files (escopo de escrita permitido):**
   - nenhum arquivo é escrito por esta skill; só o comando `legoloop fabricar` grava
@@ -47,7 +47,7 @@ Códigos de saída: `0` sucesso. `2` nome ou categoria inválidos (corrija com o
 
 > [!CAUTION]
 > **REGRAS NEGATIVAS INVIOLÁVEIS:**
-1. **NUNCA** grave `SKILL.md`, `.loop.json`, `.dag.json` ou documentos à mão; quem grava é o comando.
+1. **NUNCA** grave `SKILL.md`, `.studio.json`, `.dag.json` ou documentos à mão; quem grava é o comando.
 2. **NUNCA** execute o comando de gravação antes do "sim" explícito do stop-gate.
 3. **NUNCA** use `--force`, `--trust-removable`, `--link-harness`, `--aceitar-rascunho` ou `--sem-entrevista` por iniciativa própria; só se o usuário pedir.
 4. **NUNCA** invente um modelo: use apenas os que `legoloop doctor` lista.
@@ -59,8 +59,8 @@ Códigos de saída: `0` sucesso. `2` nome ou categoria inválidos (corrija com o
 ## 3. Comandos de Verificação & Testes de Terminal
 
 ```bash
-# O processo gerado precisa ser um grafo válido (exit code 0 obrigatório)
-legoloop validate ~/.aidd/canonical/loops/legoloop-<nome>.dag.json
+# O processo gerado precisa ser um DAG válido (exit code 0 obrigatório)
+legoloop validate <caminho do .dag.json gerado>
 ```
 
 ---

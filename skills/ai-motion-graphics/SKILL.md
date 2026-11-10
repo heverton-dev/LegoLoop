@@ -14,7 +14,7 @@ metadata:
   category: "build"
 ---
 
-# 🧩 ai-motion-graphics — Pipeline Soberano de Motion Graphics com 10 GitHub Repos
+# 🧩 ai-motion-graphics — Processo Soberano de Motion Graphics com 10 GitHub Repos
 
 > **Autor:** LegoLoop (derivado de Matt Penny — "10 GitHub Repos to 10x Your AI Motion Graphics")  
 > **Versão:** 2.2.0  
@@ -26,22 +26,22 @@ metadata:
 ## 1. Contexto & Contratos de I/O
 
 **Quando usar:** O operador deseja criar motion graphics em MP4 (explicativos, lançamentos de produto, pixel art) a partir de pedido em linguagem natural, usando repos open-source especializados com renderização automática Playwright+FFmpeg.  
-**Quando NÃO usar:** Para editar vídeos existentes (use `legoloop-video-motion`), engenharia reversa de vídeos (use `legoloop-video-rea`), ou conteúdo fora da esteira audiovisual (use `legoloop-legopress`).
+**Quando NÃO usar:** Para editar vídeos existentes (use `legoloop-video-motion`), engenharia reversa de vídeos (use `legoloop-video-rea`), ou conteúdo fora do Processo audiovisual (use `legoloop-legopress`).
 
-Esta peça opera estritamente sob os seguintes contratos de entrada e saída:
+Esta Peça opera estritamente sob os seguintes contratos de entrada e saída:
 
 * **Consumes (Entradas Obrigatórias):**
   - Request JSON com `prompt`, `scenario`, `resolution`, `duration`
 * **Produces (Saídas Mecânicas):**
   - MP4 renderizado com codec h264, resolução e duração conforme Request
-  - `loops/ai-motion-graphics/pipeline.dag.json` validado
+  - `processos/ai-motion-graphics/processo.dag.json` validado
 * **Target Files (Escopo de escrita permitido / Blast Radius):**
-  - `internal/motion/`, `scripts/beat_detect.py`, `skills/ai-motion-graphics/`, `docs/books/ai-motion-graphics/`, `loops/ai-motion-graphics/`, `docs/videorea/ai-motion-graphics-10-repos/`
+  - `internal/motion/`, `scripts/beat_detect.py`, `skills/ai-motion-graphics/`, `docs/books/ai-motion-graphics/`, `processos/ai-motion-graphics/`, `docs/videorea/ai-motion-graphics-10-repos/`
 
 ```json
 {
   "consumes": ["Request{prompt, scenario, resolution, duration}"],
-  "produces": ["output.mp4", "loops/ai-motion-graphics/pipeline.dag.json"],
+  "produces": ["output.mp4", "processos/ai-motion-graphics/processo.dag.json"],
   "gate": "has_binary_criteria('output.mp4')"
 }
 ```
@@ -62,7 +62,7 @@ Esta peça opera estritamente sob os seguintes contratos de entrada e saída:
 > [!CAUTION]
 > **REGRAS NEGATIVAS INVIOLÁVEIS:**
 > 1. **NUNCA** gere código incompleto com `TODO`, `pass`, `// implementar depois` ou mocks simulados (Zero Stubs).
-> 2. **NUNCA** avance sem confirmação do operador na seleção híbrida de repos (fluxo HITL).
+> 2. **NUNCA** avance sem confirmação do operador na seleção híbrida de repos (Etapa HITL).
 > 3. **NUNCA** escreva fora dos Target Files declarados na seção 1 (violação de write boundary).
 > 4. **NUNCA** renderize com Playwright `headless: false` em CI ou smoke tests.
 > 5. **NUNCA** declare MP4 entregue sem `ffprobe` confirmar codec h264 e duração esperada.
@@ -86,7 +86,7 @@ gofmt -l internal/motion/
 go run ./tools/funclen internal
 
 # Validação do DAG
-legoloop validate loops/ai-motion-graphics/pipeline.dag.json
+legoloop validate processos/ai-motion-graphics/processo.dag.json
 
 # Verificação do MP4 entregue
 ffprobe -v quiet -show_entries format=duration -show_entries stream=codec_name,width,height -of json output.mp4
@@ -96,7 +96,7 @@ ffprobe -v quiet -show_entries format=duration -show_entries stream=codec_name,w
 
 ## 4. Critério de Parada (Stopping Checklist)
 
-A execução desta peça é considerada concluída com sucesso quando:
+A execução desta Peça é considerada concluída com sucesso quando:
 - [ ] O comando de teste unitário passou com exit code 0 comprovado no terminal (32 testes).
 - [ ] O artefato MP4 existe fisicamente no disco e `ffprobe` confirma h264 + duração.
 - [ ] A expressão `gate` do frontmatter avalia como verdadeira pelo motor de validação.

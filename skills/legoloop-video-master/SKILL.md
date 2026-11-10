@@ -5,8 +5,8 @@ compatibility: Windows/Linux, PowerShell 5.1+, Go 1.23+, FFmpeg, Node.js
 allowed-tools: read_file write_file edit_file run_command
 consumes: Artifact:Spec
 produces: Artifact:Code
-artifact: loops/legoloop-video-master/pipeline.dag.json
-gate: file_exists('loops/legoloop-video-master/pipeline.dag.json')
+artifact: processos/legoloop-video-master/processo.dag.json
+gate: file_exists('processos/legoloop-video-master/processo.dag.json')
 suggested_model: code-pro
 metadata:
   version: "2.2.0"
@@ -14,7 +14,7 @@ metadata:
   category: "build"
 ---
 
-# 🧩 legoloop-video-master — Mega-Pipeline Soberano de Produção Audiovisual
+# 🧩 legoloop-video-master — Mega Processo Soberano de Produção Audiovisual
 
 > **Autor:** LegoLoop REA Engine  
 > **Versão:** 2.2.0  
@@ -34,11 +34,11 @@ Esta peça opera estritamente sob os seguintes contratos de entrada e saída:
   - `docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json`
   - `docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json`
 * **Produces (Saídas Mecânicas):**
-  - `loops/legoloop-video-master/pipeline.dag.json`
+  - `processos/legoloop-video-master/processo.dag.json`
   - `docs/books/video-master/livro.json`
   - `testdata/fixtures/video_master_fixture_3s.mp4`
 * **Target Files (Escopo de escrita permitido / Blast Radius):**
-  - `loops/legoloop-video-master/*`
+  - `processos/legoloop-video-master/*`
   - `docs/books/video-master/*`
   - `skills/legoloop-video-master/*`
   - `testdata/fixtures/*`
@@ -46,15 +46,15 @@ Esta peça opera estritamente sob os seguintes contratos de entrada e saída:
 ```json
 {
   "consumes": ["docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"],
-  "produces": ["loops/legoloop-video-master/pipeline.dag.json"],
-  "gate": "file_exists('loops/legoloop-video-master/pipeline.dag.json')"
+  "produces": ["processos/legoloop-video-master/processo.dag.json"],
+  "gate": "file_exists('processos/legoloop-video-master/processo.dag.json')"
 }
 ```
 
 ### Procedimento Determinístico de Execução
 1. Inspecionar o dossiê forense e validar os 4 pilares tecnológicos contratados.
 2. Garantir que as substituições soberanas de custo zero estejam ativas (Remotion, FFmpeg, Whisper local, Three.js).
-3. Executar o DAG validando a ausência de ciclos e portas de saída únicas por nó.
+3. Executar o DAG validando a ausência de ciclos e portas de saída únicas por Nó.
 4. Auditar a integridade geométrica do livro técnico gerado via LegoPress.
 
 ---
@@ -76,8 +76,8 @@ Esta peça opera estritamente sob os seguintes contratos de entrada e saída:
 Toda alteração produzida por esta peça deve ser imediatamente verificada pelos comandos executáveis abaixo:
 
 ```bash
-# Validação do grafo acíclico DAG
-legoloop validate loops/legoloop-video-master/pipeline.dag.json
+# Validação do DAG acíclico
+legoloop validate processos/legoloop-video-master/processo.dag.json
 
 # Verificação mecânica de integridade dos testes
 go test -count=1 ./...
@@ -90,7 +90,7 @@ legoloop legopress auditar docs/books/video-master/livro.json
 
 ## 4. Critério de Parada (Stopping Checklist)
 
-- [x] Grafo acíclico validado sem ciclos e com 4 camadas resolvidas.
+- [x] DAG acíclico validado sem ciclos e com 4 camadas resolvidas.
 - [x] Golden Fixture de 3s presente em `testdata/fixtures/video_master_fixture_3s.mp4`.
 - [x] Livro didático estruturado e auditado pelo LegoPress.
 - [x] Suíte de testes do ecossistema 100% verde.

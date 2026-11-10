@@ -8,7 +8,7 @@ gate: exit_code == 0
 suggested_model: code-pro
 ---
 
-# 🎨 legoloop-cartoon-shorts — Pipeline Soberano de Shorts Animados Cartoon
+# 🎨 legoloop-cartoon-shorts — Processo Soberano de Shorts Animados Cartoon
 
 > **Autor:** LegoLoop  
 > **Versão:** 1.0.0  
@@ -34,7 +34,7 @@ suggested_model: code-pro
 
 > [!CAUTION]
 > **REGRAS NEGATIVAS INVIOLÁVEIS:**
-> 1. **NUNCA** utilizar serviços de nuvem pagos (ElevenLabs, Claude Pro pago, Midjourney, Runway). Todo o pipeline opera a custo R$ 0,00 via 9Router local, Edge-TTS e Three.js/FFmpeg local.
+> 1. **NUNCA** utilizar serviços de nuvem pagos (ElevenLabs, Claude Pro pago, Midjourney, Runway). Todo o Processo opera a custo R$ 0,00 via 9Router local, Edge-TTS e Three.js/FFmpeg local.
 > 2. **NUNCA** permitir que a trilha musical ultrapasse 50% do nível da voz (-6 dB Gated RMS). A voz deve permanecer cristalina e inteligível em 100% da duração.
 > 3. **NUNCA** gerar vídeos com duração arbitrária. A duração padrão recomendada é de **20 a 30 segundos** (máximo 60s) para manter retenção máxima nas redes sociais.
 > 4. **NUNCA** gravar arquivos fora do diretório de workspace isolado (`docs/videorea/legoloop-cartoon-shorts/scratch/`).
@@ -53,10 +53,10 @@ suggested_model: code-pro
    legoloop cartoon-shorts --theme "Minas Gerais" --dry-run
    ```
 
-3. **Execução via Grafo DAG no Looping Engine:**
+3. **Execução via DAG no Engine:**
    ```bash
-   legoloop run loops/legoloop-cartoon-shorts/pipeline.dag.json
+   legoloop run processos/legoloop-cartoon-shorts/processo.dag.json
    ```
 
 4. **Invocação via Chat dos Agentes:**
-   Basta digitar `/legoloop-cartoon-shorts <tema>` em qualquer conversa. O agente ativará o pipeline determinístico e entregará o MP4 compilado.
+   Basta digitar `/legoloop-cartoon-shorts <tema>` em qualquer conversa. O agente ativará o Processo determinístico e entregará o MP4 compilado.

@@ -3,7 +3,7 @@ name: legoloop-remover
 description: Use quando o usuário quiser REMOVER um processo do cofre e limpar seus vínculos nos harnesses com segurança, via /legoloop-remover. NÃO use para listar, refinar ou compor processos.
 consumes: Artifact:Process
 produces: Artifact:Vault
-artifact: ~/.aidd/canonical/loops/<nome>.processo.json
+artifact: ~/.aidd/canonical/processos/<nome>.processo.json
 gate: exit_code == 0
 suggested_model: sonnet
 ---
@@ -18,8 +18,8 @@ suggested_model: sonnet
 
 ## 1. Contexto & Contratos de I/O
 
-**Quando usar:** o usuário deseja excluir permanentemente um processo do cofre (`legoloop-*`), removendo seus loops, pipelines, documentos de governança e desfazendo todos os links nos harnesses.  
-**Quando NÃO usar:** para remover arquivos isolados de código, desduplicar arquivos (`canonize`) ou desinstalar harnesses.
+**Quando usar:** o usuário deseja excluir permanentemente um processo do cofre (`legoloop-*`), removendo seus documentos do Studio, DAGs, documentos de governança e desfazendo todos os links nos harnesses.  
+**Quando NÃO usar:** para remover arquivos isolados de código, canonizar arquivos (`canonize`) ou desinstalar harnesses.
 
 Esta skill protege contra exclusões acidentais ou quebras de dependência. **Toda a lógica reside no comando `legoloop remover`**: verificação de integridade referencial (`ErrEmUso`), confirmação interativa e remoção atômica com rollback.
 

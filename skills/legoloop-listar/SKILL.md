@@ -18,7 +18,7 @@ suggested_model: sonnet
 
 ## 1. Contexto & Contratos de I/O
 
-**Quando usar:** o usuário deseja inspecionar todos os processos fabricados no cofre, verificar versões, natureza declarada, harnesses onde estão vinculados, processos compostos (sub-loops), dependências de uso e peças faltantes (lacunas).  
+**Quando usar:** o usuário deseja inspecionar todos os processos fabricados no cofre, verificar versões, natureza declarada, harnesses onde estão vinculados, processos compostos (subprocessos), dependências de uso e peças faltantes (lacunas).  
 **Quando NÃO usar:** para fabricar processos novos, alterar etapas, remover ou compor processos.
 
 Esta skill apenas apresenta dados consultados. **Toda a lógica reside no comando `legoloop listar`**: inspeção do cofre, mapeamento de vínculos e sugestão de resolução de lacunas.

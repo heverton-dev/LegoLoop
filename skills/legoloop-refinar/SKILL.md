@@ -3,7 +3,7 @@ name: legoloop-refinar
 description: Use quando o usuário quiser REFINAR uma etapa de um processo existente no cofre (trocar peça, atualizar título ou casos de uso, elevando a versão), via /legoloop-refinar. NÃO use para criar processos do zero ou compor novos processos.
 consumes: Artifact:Process
 produces: Artifact:Process
-artifact: ~/.aidd/canonical/loops/<nome>.processo.json
+artifact: ~/.aidd/canonical/processos/<nome>.processo.json
 gate: exit_code == 0
 suggested_model: sonnet
 ---
@@ -28,7 +28,7 @@ Esta skill conduz o diálogo e o stop-gate de confirmação. **Toda a lógica re
   - identificador da etapa (`--etapa <ID>`)
   - novos parâmetros opcionais (`--peca <nome>`, `--caso <caso>`, `--titulo <texto>`)
 * **Produces (Saídas Mecânicas):**
-  - nova versão atômica do processo (`loops/<nome>.processo.json`, `.loop.json`, `.dag.json`, Tríade de docs e skill)
+  - nova versão atômica do processo (`processos/<nome>.processo.json`, `.studio.json`, `.dag.json`, Tríade de docs e skill)
 * **Target Files (escopo de escrita permitido):**
   - nenhum arquivo é alterado manualmente; apenas o comando `legoloop refinar` grava
 

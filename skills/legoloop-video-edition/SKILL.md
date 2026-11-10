@@ -1,12 +1,12 @@
 ---
 name: legoloop-video-edition
-description: Use quando precisar executar ou orquestrar o pipeline autoral de edição audiovisual assistida por IA (metodologia Lucas Leite), com cortes semânticos por frase, alinhamento fonético com folga pré-fala (+40ms), extirpação automática de notas de edição faladas, enquadramento facial inteligente YuNet (altura dos olhos a 35%), motion design procedural via Remotion, sonorização sincronizada com ducking de voz (-18dB) e entrega híbrida não-destrutiva (FCPXML + MP4 direto).
+description: Use quando precisar executar ou orquestrar o Processo autoral de edição audiovisual assistida por IA (metodologia Lucas Leite), com cortes semânticos por frase, alinhamento fonético com folga pré-fala (+40ms), extirpação automática de notas de edição faladas, enquadramento facial inteligente YuNet (altura dos olhos a 35%), motion design procedural via Remotion, sonorização sincronizada com ducking de voz (-18dB) e entrega híbrida não-destrutiva (FCPXML + MP4 direto).
 tags: [audiovisual, video-rea, video-edition, remotion, ffmpeg, yunet, claude-code, lucas-leite]
 ---
 
 # 🎬 Skill Universal: `legoloop-video-edition`
 
-Pipeline canônico de edição audiovisual assistida por IA, dissecado via engenharia reversa metódica do processo autoral de **Lucas Leite** e canonizado sob governança LegoLoop v2.2.0.
+Processo canônico de edição audiovisual assistida por IA, dissecado via engenharia reversa metódica do método autoral de **Lucas Leite** e canonizado sob governança LegoLoop v2.2.0.
 
 ---
 
@@ -14,13 +14,13 @@ Pipeline canônico de edição audiovisual assistida por IA, dissecado via engen
 
 * **Linha de Comando (CLI):**  
   ```bash
-  legoloop run loops/video-edition/pipeline.dag.json --var input_video="caminho/do/video.mp4"
+  legoloop run processos/video-edition/processo.dag.json --var input_video="caminho/do/video.mp4"
   ```
 * **Chat Interativo:**  
   * `/legoloop-video-edition`
   * `/video-edition`
   * *"editar vídeo com claude code"*
-  * *"aplicar pipeline lucas leite"*
+  * *"aplicar Processo lucas leite"*
 
 ---
 
@@ -31,11 +31,11 @@ Pipeline canônico de edição audiovisual assistida por IA, dissecado via engen
 3. **Extirpação de Notas de Edição:** Trechos onde o apresentador fala orientações de montagem (*"nota de edição...", "corta isso...", "fim da nota"*) são detectados no texto e expurgados automaticamente antes da montagem da timeline.
 4. **Câmera Pós-Motion & Eye-Level Estabilizado:** O enquadramento via YuNet é processado após a definição dos cartões gráficos, mantendo a linha dos olhos do apresentador fixa em 35% do topo do quadro.
 5. **Ducking & SFX na Frenagem:** Efeitos sonoros (*whoosh*, *impact*, *click*) têm seu pico de energia alinhado ao frame exato da frenagem do elemento visual. Áudios de apoio sofrem ducking automático de -18dB sob a fala do locutor.
-6. **Entrega Híbrida Não-Destrutiva:** O pipeline gera simultaneamente o render direto MP4 e a timeline aberta em FCPXML/EDL com marcadores de capítulo e cartões em camadas separadas para ajuste fino no DaVinci Resolve ou Premiere.
+6. **Entrega Híbrida Não-Destrutiva:** O Processo gera simultaneamente o render direto MP4 e a timeline aberta em FCPXML/EDL com marcadores de capítulo e cartões em camadas separadas para ajuste fino no DaVinci Resolve ou Premiere.
 
 ---
 
-## 3. Topologia do Pipeline DAG (12 Nós em 11 Camadas)
+## 3. Topologia do Processo DAG (12 Nós em 11 Camadas)
 
 ```
 [n01_iniciar_preparar]

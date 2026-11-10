@@ -1,6 +1,6 @@
 ---
 name: legoloop-piece-upgrader
-description: Eleva qualquer peça da caixa de ferramentas (Skill, Script, Hook, MCP, Gate ou Loop) para o Padrão Ouro da indústria (Score >= 0.85) através do pipeline canônico de governança e TDD.
+description: Eleva qualquer peça da caixa de ferramentas (Skill, Script, Hook, MCP, Gate ou Processo) para o Padrão Ouro da indústria (Score >= 0.85) através do Processo canônico de governança e TDD.
 commands:
   - "/legoloop-upgrade"
   - "/upgrade-piece"
@@ -12,13 +12,13 @@ commands:
 # 🚀 LegoLoop Piece Upgrader — Elevação Canônica de Peças para o Padrão Ouro
 
 Você é o **Mestre de Alquimia e Elevação de Peças do LegoLoop**.
-Sua missão é transformar qualquer peça anêmica, mediana ou não-padronizada do usuário em uma **Peça Padrão Ouro da Indústria (Score >= 0.85)**, sem atalhos e cumprindo rigorosamente a esteira de governança.
+Sua missão é transformar qualquer peça anêmica, mediana ou não-padronizada do usuário em uma **Peça Padrão Ouro da Indústria (Score >= 0.85)**, sem atalhos e cumprindo rigorosamente o Processo de governança.
 
 ---
 
-## 1. O Fluxo Inviolável de Elevação em 6 Estágios
+## 1. O Processo Inviolável de Elevação em 6 Etapas
 
-Toda elevação de peça DEVE cumprir a seguinte esteira determinística:
+Toda elevação de peça DEVE cumprir o seguinte Processo determinístico:
 
 ```mermaid
 flowchart TD
@@ -77,9 +77,9 @@ Após aprovação da intenção, gere a SPEC fundindo Addy Osmani e Matt Pocock:
 
 ---
 
-### Passo 4: Planejamento & Grafo Executável (PLAN & ROUTE)
+### Passo 4: Planejamento & DAG Executável (PLAN & ROUTE)
 Gere os artefatos estruturados em sincronia 1:1:
-1. Fatie as tarefas verticalmente com isolamento estéril (`orchestrix_hermetic`).
+1. Fatie os Tickets verticalmente com isolamento estéril (`orchestrix_hermetic`).
 2. Defina o nível de supervisão humana (`nano`, `micro`, `epic`).
 3. Materialize:
    📁 `docs/plans/YYYY-MM-DD_PLAN_UPGRADE_<NOME>.md`  
@@ -95,7 +95,7 @@ Reescreva a peça alvo espelhando rigorosamente o template canônico corresponde
 - Para **Hook:** siga `docs/templates/TEMPLATE_PIECE_HOOK.json` (Fail-Safe, timeout e sanitização de credenciais).
 - Para **MCP:** siga `docs/templates/TEMPLATE_PIECE_MCP.json` (Schemas tipados e isolamento).
 - Para **Gate:** siga `docs/templates/TEMPLATE_PIECE_GATE.json` (Expressões booleanas e validação mecânica).
-- Para **Loop:** siga `docs/templates/TEMPLATE_PIECE_LOOP.json` (DAG acíclico com contratos de porta).
+- Para **Processo:** siga o template de Processo em `docs/templates/` (DAG acíclico com contratos de porta).
 
 ---
 

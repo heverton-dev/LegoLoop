@@ -1,14 +1,14 @@
 ---
 name: legoloop-compor
-description: Use quando o usuário quiser COMPOR um processo como sub-etapa reutilizável (sub-loop) de outro processo existente, via /legoloop-compor. NÃO use para criar processos do zero ou remover processos.
+description: Use quando o usuário quiser COMPOR um processo como etapa reutilizável (subprocesso) de outro processo existente, via /legoloop-compor. NÃO use para criar processos do zero ou remover processos.
 consumes: Artifact:Process
 produces: Artifact:Process
-artifact: ~/.aidd/canonical/loops/<nome>.processo.json
+artifact: ~/.aidd/canonical/processos/<nome>.processo.json
 gate: exit_code == 0
 suggested_model: sonnet
 ---
 
-# 🧩 legoloop-compor — Composição de Processos em Sub-Loops do LegoLoop
+# 🧩 legoloop-compor — Composição de Processos em Subprocessos do LegoLoop
 
 > **Autor:** LegoLoop  
 > **Versão:** 1.0.0  
@@ -18,7 +18,7 @@ suggested_model: sonnet
 
 ## 1. Contexto & Contratos de I/O
 
-**Quando usar:** o usuário deseja integrar um processo filho existente (`legoloop-b@versao`) como uma etapa encadeada dentro de um processo pai (`legoloop-a`), reaproveitando o DAG e isolando seus artefatos em `out/<subloop>/`.  
+**Quando usar:** o usuário deseja integrar um processo filho existente (`legoloop-b@versao`) como uma etapa encadeada dentro de um processo pai (`legoloop-a`), reaproveitando o DAG e isolando seus artefatos em `out/<subprocesso>/`.  
 **Quando NÃO usar:** para fabricar processos novos do zero, listar ou remover processos.
 
 Esta skill conduz a composição hierárquica segura. **Toda a lógica reside no comando `legoloop compor`**: validação de ciclo (`ErrCiclo`), isolamento de sub-artefatos e atualização coerente da Tríade de governança.
@@ -28,7 +28,7 @@ Esta skill conduz a composição hierárquica segura. **Toda a lógica reside no
   - processo filho e versão (`<subprocesso@versão>`)
   - dependência opcional (`--depende <ID_etapa_anterior>`)
 * **Produces (Saídas Mecânicas):**
-  - processo pai atualizado contendo a nova etapa do tipo `subloop`, com elevação de versão
+  - processo pai atualizado contendo a nova etapa do tipo `subprocesso`, com elevação de versão
 * **Target Files (escopo de escrita permitido):**
   - nenhum arquivo é alterado manualmente; apenas o comando `legoloop compor` grava
 
@@ -51,7 +51,7 @@ Esta skill conduz a composição hierárquica segura. **Toda a lógica reside no
 
 > [!CAUTION]
 > **REGRAS NEGATIVAS INVIOLÁVEIS:**
-> 1. **NUNCA** crie nós de sub-loop manualmente nos arquivos `.dag.json` ou `.loop.json`; utilize exclusivamente `legoloop compor`.
+> 1. **NUNCA** crie Nós de subprocesso manualmente nos arquivos `.dag.json` ou `.studio.json`; utilize exclusivamente `legoloop compor`.
 > 2. **NUNCA** ignore erros de ciclo (`ErrCiclo`): dependências circulares entre processos são estritamente proibidas.
 > 3. **NUNCA** execute a gravação definitiva sem prévia aprovação humana do diff.
 
@@ -59,5 +59,5 @@ Esta skill conduz a composição hierárquica segura. **Toda a lógica reside no
 
 ## 3. Comandos de Verificação & Testes de Terminal
 
-- `legoloop compor legoloop-pipeline legoloop-extrator@1.0.0`
-- `legoloop compor legoloop-pipeline legoloop-extrator@1.0.0 --depende e01 --yes`
+- `legoloop compor legoloop-mestre legoloop-extrator@1.0.0`
+- `legoloop compor legoloop-mestre legoloop-extrator@1.0.0 --depende e01 --yes`

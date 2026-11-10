@@ -6,7 +6,7 @@ description: "Use quando precisar operar, auditar ou evoluir a Fundição Autôn
 # ♾️ LegoLoop N10 Foundry — A Fundição Autônoma de Software
 
 Esta skill governa a operação de engenharia em nível N10 da fábrica de software LegoLoop.  
-Ela aplica determinismo rigoroso em todas as fases da cascata de valor: **INTENT ➔ SPEC ➔ PLAN ➔ ROUTE ➔ BUILD (TDD) ➔ HOMOLOGAÇÃO**.
+Ela aplica determinismo rigoroso em todas as Etapas da cascata de valor: **INTENT ➔ SPEC ➔ PLAN ➔ ROUTE ➔ BUILD (TDD) ➔ HOMOLOGAÇÃO**.
 
 ---
 
@@ -17,8 +17,8 @@ Ela aplica determinismo rigoroso em todas as fases da cascata de valor: **INTENT
 3. **EARS Requisitos:** Toda regra de negócio escrita em templates `WHEN...`, `WHILE...` ou `IF... THEN...`.
 4. **FMEA Pré-Voo:** Matriz de riscos gerada antes de qualquer mutação. Severidade $\ge 3$ exige teste Poka-Yoke prévio.
 5. **ICAO Readback/Hearback:** Ações destrutivas exibem cartão com `TARGET`, `MUTATION`, `BLAST RADIUS` e `ROLLBACK`, exigindo confirmação `HEARBACK APPROVED`.
-6. **Toyota Jidoka (Andon Cord):** Limite máximo de 2 tentativas por nó. Na segunda falha com mesma assinatura, puxa o Andon Cord.
-7. **Escalonamento SBAR:** Falhas de nó emitem relatório estruturado em `[S] SITUATION`, `[B] BACKGROUND`, `[A] ASSESSMENT` e `[R] RECOMMENDATION`.
+6. **Toyota Jidoka (Andon Cord):** Limite máximo de 2 tentativas por Nó. Na segunda falha com mesma assinatura, puxa o Andon Cord.
+7. **Escalonamento SBAR:** Falhas de Nó emitem relatório estruturado em `[S] SITUATION`, `[B] BACKGROUND`, `[A] ASSESSMENT` e `[R] RECOMMENDATION`.
 
 ---
 
@@ -37,11 +37,11 @@ Ela aplica determinismo rigoroso em todas as fases da cascata de valor: **INTENT
 
 ```bash
 # Validar contrato e proveniência semântica:
-legoloop validate pipeline.dag.json
+legoloop validate processo.dag.json
 
 # Executar com isolamento Orchestrix e Andon Cord:
-legoloop run pipeline.dag.json --parallel 2 --json
+legoloop run processo.dag.json --parallel 2 --json
 
-# Abrir o Looping Studio Visual:
+# Abrir o Studio Visual:
 legoloop studio --addr 127.0.0.1:7878
 ```

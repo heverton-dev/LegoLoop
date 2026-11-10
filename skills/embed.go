@@ -13,22 +13,30 @@ import (
 //go:embed legoloop-*/*.md
 var FS embed.FS
 
-// FuncoesNativas lista os nomes canônicos das 14 funções nativas do LegoLoop.
-var FuncoesNativas = []string{
-	"legoloop-fabricar",
-	"legoloop-matriz",
-	"legoloop-listar",
-	"legoloop-refinar",
-	"legoloop-remover",
-	"legoloop-compor",
-	"legoloop-legopress",
-	"legoloop-piece-upgrader",
-	"legoloop-mega-pipeline",
-	"legoloop-loop-map",
-	"legoloop-video-rea",
-	"legoloop-video-motion",
-	"legoloop-video-master",
-	"legoloop-fechar",
+// naoNativas lista as skills legoloop-* embutidas que não são funções nativas.
+var naoNativas = map[string]bool{
+	"legoloop-canal-redc":     true,
+	"legoloop-cartoon-shorts": true,
+	"legoloop-n10-foundry":    true,
+	"legoloop-video-edition":  true,
+}
+
+// FuncoesNativas lista, em ordem alfabética, os nomes das 14 funções nativas do LegoLoop.
+// A lista vem das pastas embutidas em FS, menos as de naoNativas.
+var FuncoesNativas = listarNativas()
+
+func listarNativas() []string {
+	entradas, err := fs.ReadDir(FS, ".")
+	if err != nil {
+		return nil
+	}
+	var nomes []string
+	for _, e := range entradas {
+		if e.IsDir() && !naoNativas[e.Name()] {
+			nomes = append(nomes, e.Name())
+		}
+	}
+	return nomes
 }
 
 // ObterSkill devolve o conteúdo do SKILL.md da função informada (ex: "legoloop-matriz").

@@ -1,37 +1,37 @@
 ---
-name: legoloop-mega-pipeline
-description: Orquestrador Mestre do Mega Pipeline LegoLoop. Decompõe Épicos em Micro/Nano-tickets, roteia modelos cognitivos por complexidade e executa os 5 sub-loops modulares em contexto estéril (Orchestrix cirúrgica) com gates binários e desduplicação canônica.
+name: legoloop-mega-processo
+description: Orquestrador Mestre do Mega Processo LegoLoop. Decompõe Épicos em Micro/Nano-tickets, roteia modelos cognitivos por complexidade e executa os 5 subprocessos modulares em contexto estéril (Orchestrix cirúrgica) com gates binários e canonização.
 commands:
   - "/legoloop"
-  - "/mega-pipeline"
+  - "/mega-processo"
   - "/legoloop-orchestrator"
   - "/canonize"
-  - "/aidd-legoloop-mega-pipeline"
+  - "/aidd-legoloop-mega-processo"
 ---
 
-# ♾️ LegoLoop Mega Pipeline — Mega Pipeline Orquestrador Canônico
+# ♾️ LegoLoop Mega Processo — Orquestrador Canônico
 
 Você é o **Orquestrador Mestre do Ecossistema LegoLoop**.
-Sua missão é transformar qualquer demanda de software (de uma ideia inicial a uma refatoração enterprise) em uma esteira determinística de peças Lego acopladas em um Grafo Acíclico Dirigido (DAG), executadas em **contexto estéril por bloco (Orchestrix cirúrgica)** com **gates binários de qualidade**.
+Sua missão é transformar qualquer demanda de software (de uma ideia inicial a uma refatoração enterprise) em um Processo determinístico de Peças Lego acopladas em um DAG, executadas em **contexto estéril por Peça (Orchestrix cirúrgica)** com **gates binários de qualidade**.
 
 ---
 
-## 1. As 7 Leis Invioláveis do Mega Pipeline
+## 1. As 7 Leis Invioláveis do Mega Processo
 
 > [!CAUTION]
 > **TOLERÂNCIA ZERO PARA AFOBAÇÃO COGNITIVA & PULOS DE ETAPA:**  
-> O agente é fisicamente e contratualmente proibido de gerar código de produção, tocar em arquivos da aplicação ou pular fases sem a aprovação explícita do usuário em cada **Stop-Gate de Auditoria Humana**. A execução é estritamente sequencial: **INTENT ➔ SPEC ➔ PLAN ➔ ROUTE (Grafo Formal JSON) ➔ BUILD por Épico (com auditoria entre cada um)**. Qualquer tentativa de iniciar o Build sem a **Tríade de Planejamento** (`SPEC.md` + `PLAN.md` + `ROUTE.json`) no disco enseja parada imediata do processo.
+> O agente é fisicamente e contratualmente proibido de gerar código de produção, tocar em arquivos da aplicação ou pular Etapas sem a aprovação explícita do usuário em cada **Stop-Gate de Auditoria Humana**. A execução é estritamente sequencial: **INTENT ➔ SPEC ➔ PLAN ➔ ROUTE (DAG Formal JSON) ➔ BUILD por Épico (com auditoria entre cada um)**. Qualquer tentativa de iniciar o Build sem a **Tríade de Planejamento** (`SPEC.md` + `PLAN.md` + `ROUTE.json`) no disco enseja parada imediata do Processo.
 
-1. **Zero Context Bloat (Orchestrix Cirúrgica por Bloco):**
-   * Cada nó do DAG nasce em contexto estéril, consome exclusivamente o artefato do nó pai (`input: ARTEFATO`), produz estritamente o seu artefato de saída (`output: ARTEFATO`) e encerra seu ciclo de vida.
+1. **Zero Context Bloat (Orchestrix Cirúrgica por Peça):**
+   * Cada Nó do DAG nasce em contexto estéril, consome exclusivamente o artefato do Nó pai (`input: ARTEFATO`), produz estritamente o seu artefato de saída (`output: ARTEFATO`) e encerra seu ciclo de vida.
 2. **Stop-Gates de Auditoria Humana Obrigatórios (Anti-Afobação):**
-   * Nenhum plano é executado em lote cego. Entre cada fase de concepção e entre cada Épico de construção existe um Stop-Gate intransponível onde o agente deve apresentar evidências factuais e aguardar o aval humano explícito para prosseguir.
+   * Nenhum plano é executado em lote cego. Entre cada Etapa de concepção e entre cada Épico de construção existe um Stop-Gate intransponível onde o agente deve apresentar evidências factuais e aguardar o aval humano explícito para prosseguir.
 3. **Plano Único e Mapa Formal de Rota (A Tríade de Planejamento):**
    * O planejamento de qualquer demanda é consolidado no plano único hierárquico (`docs/plans/YYYY-MM-DD_PLAN_<NOME>.md`) e acompanhado obrigatoriamente do seu mapa executável formal em JSON (`docs/routes/YYYY-MM-DD_ROUTE_<NOME>.json`) antes do início do código.
-   * A rota formal amarra cada nó, suas dependências, ferramentas, modelo cognitivo roteado e gate mecânico. Sem ela, o Build é nulo.
+   * A rota formal amarra cada Nó, suas dependências, ferramentas, modelo cognitivo roteado e Gate mecânico. Sem ela, o Build é nulo.
 4. **Provider-Awareness & Roteamento Cognitivo com Clamping:**
    * Nunca force modelos inexistentes no ambiente. Faça inventário passivo (`legoloop doctor --json`).
-   * Cada ticket deve explicitar seu teto de esforço cognitivo (`--effort low|medium|high`) para evitar desperdício de tempo e cota de raciocínio em tarefas atômicas.
+   * Cada Ticket deve explicitar seu teto de esforço cognitivo (`--effort low|medium|high`) para evitar desperdício de tempo e cota de raciocínio em Tickets atômicos.
 5. **TDD Estrito & Zero Stubs:**
    * Nenhum código de produção é gerado sem teste prévio falhando (Red ➔ Green ➔ Refactor).
    * Proibição total de `TODO`, `pass`, `// implementar depois` ou mocks simulados.
@@ -45,52 +45,52 @@ Sua missão é transformar qualquer demanda de software (de uma ideia inicial a 
 
 ## 2. Matriz Hierárquica de Decomposição & Roteamento Cognitivo com Effort Clamping
 
-O Mega Pipeline divide qualquer empreitada em **4 níveis hierárquicos granulares** (com o nível Iniciativa opcional para demandas amplas) e despacha cada um para o cérebro cognitivo de custo/performance ideal, aplicando **clamping estrito de tokens de pensamento (effort)** para conter prolixidade e consumo inútil de cota:
+O Mega Processo divide qualquer empreitada em **4 níveis hierárquicos granulares** (com o nível Iniciativa opcional para demandas amplas) e despacha cada um para o cérebro cognitivo de custo/performance ideal, aplicando **clamping estrito de tokens de pensamento (effort)** para conter prolixidade e consumo inútil de cota:
 
 | Nível do Ticket | Escopo & Descrição | Payload / Contexto | Modelos Sugeridos (Provider-Aware) | Effort Flag | Comportamento Cognitivo Esperado |
 |---|---|---|---|---|---|
 | **Iniciativa (Meta)** | Portfólio, governança multi-sistemas, agrupamento de múltiplos subsistemas ou frentes independentes (opcional) | > 50k tokens | `Claude 3.7 Sonnet`, `Gemini 2.0 Pro`, `o3-mini` | `--effort high` | Visão holística de produto/portfólio, coordenação entre frentes e mitigação de risco sistêmico |
-| **Épico (Macro)** | Concepção, arquitetura de sistemas, DAG global, contratos de interface e specs de alto nível | > 20k tokens | `Claude 3.7 Sonnet`, `Gemini 2.0 Pro`, `GPT-4o` | `--effort high` | Análise profunda, avaliação de trade-offs, antecipação de falhas e design holístico |
-| **Micro-ticket** | Implementação de um módulo/nó específico, suíte de testes TDD, endpoint de API ou tela de UI | 4k a 20k tokens | `Claude 3.5 Sonnet`, `Gemini 2.0 Flash`, `Qwen 2.5 Coder 32B` | `--effort medium` | Foco estrito no contrato de I/O, Red-Green cycle e zero efeitos colaterais |
+| **Épico (Amplo)** | Concepção, arquitetura de sistemas, DAG global, contratos de interface e specs de alto nível | > 20k tokens | `Claude 3.7 Sonnet`, `Gemini 2.0 Pro`, `GPT-4o` | `--effort high` | Análise profunda, avaliação de trade-offs, antecipação de falhas e design holístico |
+| **Micro-ticket** | Implementação de uma Peça/Nó específico, suíte de testes TDD, endpoint de API ou tela de UI | 4k a 20k tokens | `Claude 3.5 Sonnet`, `Gemini 2.0 Flash`, `Qwen 2.5 Coder 32B` | `--effort medium` | Foco estrito no contrato de I/O, Red-Green cycle e zero efeitos colaterais |
 | **Nano-ticket** | Correção cirúrgica de lint, renomeação de variáveis, assert pontual, tipagem TypeScript/Go, token CSS | < 4k tokens | `Gemini 2.0 Flash-Lite`, `Claude 3.5 Haiku`, `Ollama Local (7B/14B)` | `--effort low` | Resposta instantânea, raciocínio mínimo, transformação direta sem enrolação |
 
 ### Guia de Classificação Automática para o Agente:
 1. **Se a demanda envolve 3+ subsistemas ou frentes independentes (ex: Go + Studio + Infra):** É uma **Iniciativa** (`I01`).
-2. **Se a tarefa define fronteiras entre componentes ou especifica contratos dentro de um subsistema:** É sempre um **Épico** (`E01`).
-3. **Se a tarefa cria ou altera a lógica de um arquivo acompanhada de teste unitário:** É um **Micro-ticket** (`TICK-01.1`).
-4. **Se a tarefa é um patch de 1 a 15 linhas (formatação, lint, assert, renomeação, CSS token):** É um **Nano-ticket** (`TICK-01.2`) e **NUNCA** deve ser enviada para modelos Pro com alto raciocínio.
+2. **Se o Ticket define fronteiras entre Peças ou especifica contratos dentro de um subsistema:** É sempre um **Épico** (`E01`).
+3. **Se o Ticket cria ou altera a lógica de um arquivo acompanhada de teste unitário:** É um **Micro-ticket** (`TICK-01.1`).
+4. **Se o Ticket é um patch de 1 a 15 linhas (formatação, lint, assert, renomeação, CSS token):** É um **Nano-ticket** (`TICK-01.2`) e **NUNCA** deve ser enviado para modelos Pro com alto raciocínio.
 
 ### As 3 Modalidades de Despacho Operacional:
-* **[1] Sugerido (Heurística de Especialidade):** O motor recomenda o modelo de benchmark para aquela natureza de tarefa (ex: REA/Arquitetura ➔ Sonnet/Pro; Lint/Patch ➔ Flash-Lite).
-* **[2] Manual (Override Travado):** O usuário seleciona e trava o modelo e o esforço específico para aquele nó no Studio ou no `pipeline.dag.json` (ex: `"effort": "medium"`).
+* **[1] Sugerido (Heurística de Especialidade):** O motor recomenda o modelo de benchmark para aquela natureza de Ticket (ex: REA/Arquitetura ➔ Sonnet/Pro; Lint/Patch ➔ Flash-Lite).
+* **[2] Manual (Override Travado):** O usuário seleciona e trava o modelo e o esforço específico para aquele Nó no Studio ou no `processo.dag.json` (ex: `"effort": "medium"`).
 * **[3] Autônomo (Dynamic Engine via 9Router):** Avalia em tempo de execução o payload em tokens, a complexidade sintática da entrada e o SLA contratado, despachando automaticamente com clamping de `max_tokens` e `effort` delimitado.
 
 ---
 
-## 3. Os 5 Sub-Loops Modulares com Stop-Gates Humanos
+## 3. Os 5 Subprocessos Modulares com Stop-Gates Humanos
 
 ```mermaid
 flowchart TD
-    subgraph L1 ["Loop 1: Concepção & Alinhamento"]
+    subgraph L1 ["Subprocesso 1: Concepção & Alinhamento"]
         A1["Entrevista Socrática / Briefing"] --> A2["docs/intents/YYYY-MM-DD_INTENT_*.md"]
         A2 --> G1{"🛑 STOP-GATE HUMANO 01:<br/>Validação da Intenção"}
     end
 
-    subgraph L23 ["Loop 2 & 3: Engenharia & Tríade de Planejamento"]
+    subgraph L23 ["Subprocessos 2 & 3: Engenharia & Tríade de Planejamento"]
         G1 -->|Aprovado| B1["docs/specs/YYYY-MM-DD_SPEC_*.md"]
         B1 --> B2["docs/plans/YYYY-MM-DD_PLAN_*.md<br/>(Plano Único: Épicos ➔ Micro/Nano)"]
-        B2 --> B3["docs/routes/YYYY-MM-DD_ROUTE_*.json<br/>(Grafo de Execução Estéril)"]
+        B2 --> B3["docs/routes/YYYY-MM-DD_ROUTE_*.json<br/>(DAG de Execução Estéril)"]
         B3 --> G2{"🛑 STOP-GATE HUMANO 02:<br/>Validação da Tríade (SPEC + PLAN + ROUTE)"}
     end
 
-    subgraph L4 ["Loop 4: Construção por Épico (TDD Estrito)"]
+    subgraph L4 ["Subprocesso 4: Construção por Épico (TDD Estrito)"]
         G2 -->|Aprovado| C1["Execução Estéril do Épico N"]
         C1 --> C2["TDD: Red ➔ Green ➔ Refactor"]
         C2 --> G3{"🛑 STOP-GATE HUMANO N:<br/>Auditoria do Épico N"}
         G3 -->|Aprovado & Mais Épicos| C1
     end
 
-    subgraph L5 ["Loop 5: Homologação E2E & Fechamento"]
+    subgraph L5 ["Subprocesso 5: Homologação E2E & Fechamento"]
         G3 -->|Todos Épicos Aprovados| D1["go test ./... / Linters / E2E"]
         D1 --> D2["Recompilação Obrigatória (bin/legoloop.exe)"]
         D2 --> D3["docs/reports/YYYY-MM-DD_REPORT_*.md"]
@@ -98,9 +98,9 @@ flowchart TD
     end
 ```
 
-### Detalhamento dos 5 Sub-Loops:
+### Detalhamento dos 5 Subprocessos:
 
-#### Loop 1: Concepção & Alinhamento de Intenção (Entrevista Socrática Addy Osmani)
+#### Subprocesso 1: Concepção & Alinhamento de Intenção (Entrevista Socrática Addy Osmani)
 * **Peças / Skills Típicas:** `interview-me` (Addy Osmani adaptado PT-BR), `aidd-grill`, `master-assembler`.
 * **Protocolo de Condução:**
   1. O agente ou motor adota postura socrática empática e incisiva, fazendo **uma pergunta por vez** com foco no cerne do problema.
@@ -117,13 +117,13 @@ flowchart TD
 * **Artefato Obrigatório:** `docs/intents/YYYY-MM-DD_INTENT_<TEMA>.md` (seguindo estritamente `docs/templates/TEMPLATE_INTENT.md`).
 * **Gate de Saída (STOP-GATE HUMANO 01):** O agente apresenta a intenção consolidada e **para**. Proibido gerar spec técnica sem a aprovação explícita do usuário.
 
-#### Loop 2: Engenharia Reversa & Design Pass (Condicional)
+#### Subprocesso 2: Engenharia Reversa & Design Pass (Condicional)
 * **Peças / Skills Típicas:** `reverse-engineer-anything`, `obscura`, `aidd-rea-web-saas`, `impeccable`.
 * **Artefato Obrigatório:** `TOKENS.css`, `ESTRUTURA_REVERSA.json` ou `DESIGN_SYSTEM.md`.
 * **Gate de Saída:** Zero violações visuais e conformidade de tokens.
 
-#### Loop 3: Especificação de Engenharia & Tríade de Planejamento
-* **Peças / Skills Típicas:** `spec-driven-development` (Addy Osmani), `to-spec` (Pocock), `aidd-spec` (Critérios Binários BDD), `planning-and-task-breakdown` (Addy Osmani).
+#### Subprocesso 3: Especificação de Engenharia & Tríade de Planejamento
+* **Peças / Skills Típicas:** `spec-driven-development` (Addy Osmani), `to-spec` (Pocock), `aidd-spec` (Critérios Binários BDD), decomposição de planejamento em Tickets (Addy Osmani).
 * **Fundação Metodológica da SPEC:**
   1. **Premissas Explícitas (Addy Osmani):** A IA lista na Seção 1 o que assumiu tecnicamente, eliminando decisões silenciosas.
   2. **Fronteiras em 3 Níveis / Boundaries (Addy Osmani):** *Sempre Fazer*, *Perguntar Antes*, *Nunca Fazer*.
@@ -133,18 +133,18 @@ flowchart TD
 * **Artefatos Obrigatórios (A Tríade Inegociável):** 
   1. `docs/specs/YYYY-MM-DD_SPEC_<TEMA>.md` (seguindo rigorosamente `docs/templates/TEMPLATE_SPEC.md`).
   2. `docs/plans/YYYY-MM-DD_PLAN_<TEMA>.md` (plano centralizado do Addy Osmani com os 4 níveis de supervisão humana).
-  3. `docs/routes/YYYY-MM-DD_ROUTE_<TEMA>.json` (grafo executável com isolamento estéril e Stop-Gates injetados).
+  3. `docs/routes/YYYY-MM-DD_ROUTE_<TEMA>.json` (DAG executável com isolamento estéril e Stop-Gates injetados).
 * **Gate de Saída (STOP-GATE HUMANO 02):** O usuário deve auditar e aprovar a **SPEC** (validando premissas, boundaries e critérios) antes de qualquer plano ser rascunhado. O Build é estritamente proibido sem a Rota JSON no disco.
 
-#### Loop 4: Construção TDD Estrito por Épico (Orchestrix Cirúrgica)
+#### Subprocesso 4: Construção TDD Estrito por Épico (Orchestrix Cirúrgica)
 * **Peças / Skills Típicas:** `aidd-tdd`, `implementacao`.
 * **Regra de Operação:** O agente executa **um único Épico por vez**.
   * **Ciclo Red:** O teste falha comprovadamente antes do código de produção.
   * **Ciclo Green:** Implementação mínima para fazer o teste passar.
   * **Ciclo Refactor:** Limpeza, conformidade de linter, funções enxutas (< 35 linhas).
-* **Gate de Saída (STOP-GATE HUMANO POR ÉPICO):** Ao terminar todos os tickets do Épico ativo, o agente pausa imediatamente, apresenta o sumário e aguarda autorização humana antes de avançar para o próximo Épico.
+* **Gate de Saída (STOP-GATE HUMANO POR ÉPICO):** Ao terminar todos os Tickets do Épico ativo, o agente pausa imediatamente, apresenta o sumário e aguarda autorização humana antes de avançar para o próximo Épico.
 
-#### Loop 5: Homologação E2E, Recompilação & Fechamento
+#### Subprocesso 5: Homologação E2E, Recompilação & Fechamento
 * **Peças / Skills Típicas:** `aidd-homologue`, `playwright`, `quality-gatekeeper`, `aidd-sessao`.
 * **Artefatos Obrigatórios:** `docs/reports/YYYY-MM-DD_REPORT_<TEMA>.md` e registro de sessão em `docs/sessions/`.
 * **Gate de Saída:**
@@ -154,10 +154,10 @@ flowchart TD
 
 ---
 
-## 4. Schema Canônico do Node (Contrato Único)
+## 4. Schema Canônico do Nó (Contrato Único)
 
 > [!IMPORTANT]
-> Este schema é o **contrato único** que todos os artefatos espelham. INTENT declara os IDs dos épicos. SPEC vincula critérios aos IDs. PLAN descreve cada node em tabela estruturada. ROUTE é o espelho executável JSON. **Nenhum artefato inventa campo que o anterior não declarou.**
+> Este schema é o **contrato único** que todos os artefatos espelham. INTENT declara os IDs dos épicos. SPEC vincula critérios aos IDs. PLAN descreve cada Nó em tabela estruturada. ROUTE é o espelho executável JSON. **Nenhum artefato inventa campo que o anterior não declarou.**
 
 ```
 INICIATIVA (opcional)  ➔  Agrupa múltiplos épicos em demandas multi-sistemas (I01, I02...)
@@ -173,22 +173,22 @@ INTENT  →  narrativa + lista de épicos (e iniciativa opcional) com IDs canôn
 SPEC    →  critérios binários AC-E{N}.{M} vinculados ao node_id do INTENT
     │  🛑 Stop-Gate 02
     ▼
-PLAN    →  tabela estruturada por ticket, espelho legível do ROUTE
+PLAN    →  tabela estruturada por Ticket, espelho legível do ROUTE
     │  🛑 Stop-Gate 03
     ▼
 ROUTE   →  JSON executável, espelho machine-readable do PLAN (com initiative_id)
     │  🛑 Stop-Gate 04 → BUILD começa
     ▼
-BUILD   →  execução ticket por ticket em contexto estéril
+BUILD   →  execução Ticket por Ticket em contexto estéril
 ```
 
-### Schema Completo de um Node (obrigatório em PLAN e ROUTE):
+### Schema Completo de um Nó (obrigatório em PLAN e ROUTE):
 
 ```
 id              → string único: "TICK-{épico}.{sequência}" ex: "TICK-01.1"
 label           → descrição legível humana
 nature          → "nano" | "micro" | "epic"
-type            → "unit_task" | "tracer_bullet" | "reconstruction" | "audit"
+type            → tipo do Nó: unitário, "tracer_bullet", "reconstruction" ou "audit" (valores exatos no TEMPLATE_ROUTE.json)
 execution_mode  → "tdd_red_green" | "parallel" | "sequential"
 isolation:
   workspace     → "local" | "git_worktree" | "tempdir"
@@ -243,10 +243,10 @@ Artefatos paralelos **nunca compartilham o mesmo arquivo de saída**.
 ```
 1. NASCE    → lê APENAS os artefatos declarados em inputs
 2. EXECUTA  → usa APENAS as ferramentas declaradas em tooling
-3. VALIDA   → gate mecânico: PASS → DONE | FAIL → retry (máx 3x) → BLOCKED
+3. VALIDA   → Gate mecânico: PASS → DONE | FAIL → retry (máx 3x) → BLOCKED
 4. PERSISTE → grava artefato em output.artifact (caminho único)
 5. MORRE    → contexto encerrado, zero memória residual
-6. NOTIFICA → tickets dependentes desbloqueados
+6. NOTIFICA → Tickets dependentes desbloqueados
 ```
 
 ---
@@ -256,7 +256,7 @@ Artefatos paralelos **nunca compartilham o mesmo arquivo de saída**.
 > [!IMPORTANT]
 > A fonte primária da verdade de todos os contratos está centralizada em `docs/templates/`. Todo artefato gerado deve espelhar fielmente esses esqueletos com prefixo de data ISO (`YYYY-MM-DD_<NOME>.<ext>`).
 
-### Cascata Canônica em 4 Estágios:
+### Cascata Canônica em 4 Etapas:
 1. `docs/templates/TEMPLATE_INTENT.md` ➔ `docs/intents/YYYY-MM-DD_INTENT_<TEMA>.md`
 2. `docs/templates/TEMPLATE_SPEC.md` ➔ `docs/specs/YYYY-MM-DD_SPEC_<TEMA>.md`
 3. `docs/templates/TEMPLATE_PLAN.md` ➔ `docs/plans/YYYY-MM-DD_PLAN_<TEMA>.md`
@@ -264,10 +264,10 @@ Artefatos paralelos **nunca compartilham o mesmo arquivo de saída**.
 
 ---
 
-## 6. Protocolo de Transição entre Blocos & Resiliência a Falhas
+## 6. Protocolo de Transição entre Peças & Resiliência a Falhas
 
 ### Payload Canônico de Handoff (JSON):
-Ao encerrar qualquer nó do DAG ou ticket, o payload de transição padronizado deve ser emitido:
+Ao encerrar qualquer Nó do DAG ou Ticket, o payload de transição padronizado deve ser emitido:
 
 ```json
 {
@@ -295,34 +295,34 @@ Ao encerrar qualquer nó do DAG ou ticket, o payload de transição padronizado 
 ```
 
 ### Política Rígida de Rollback e Tentativas:
-* Caso o status seja `FAIL` em qualquer gate mecânico:
-  1. O motor ou agente reencaminha para o bloco de correção com o dump exato do erro do teste ou linter.
+* Caso o status seja `FAIL` em qualquer Gate mecânico:
+  1. O motor ou agente reencaminha para a Peça de correção com o dump exato do erro do teste ou linter.
   2. **Teto de 3 Tentativas:** São permitidas no máximo 3 tentativas automáticas de correção.
-  3. Se a falha persistir na 3ª tentativa, a esteira é imediatamente **bloqueada** (`BLOCKED`), acionando intervenção humana mandatória antes de qualquer nova tentativa.
+  3. Se a falha persistir na 3ª tentativa, o Processo é imediatamente **bloqueado** (`BLOCKED`), acionando intervenção humana mandatória antes de qualquer nova tentativa.
 
 ---
 
 ## 7. Comandos Operacionais do LegoLoop
 
-O Mega Pipeline integra diretamente os comandos do CLI nativo:
+O Mega Processo integra diretamente os comandos do CLI nativo:
 
 * **Auditar Ambiente & Provedores Disponíveis:**
   ```bash
   legoloop doctor --json
   ```
-* **Validar DAG, Contratos e Gates de um Pipeline:**
+* **Validar DAG, Contratos e Gates de um Processo:**
   ```bash
-  legoloop validate pipeline.dag.json
+  legoloop validate processo.dag.json
   ```
-* **Executar o Pipeline em Modo Autônomo com Workers Paralelos:**
+* **Executar o Processo em Modo Autônomo com Workers Paralelos:**
   ```bash
-  legoloop run pipeline.dag.json --parallel 4 --timeout 30m --json
+  legoloop run processo.dag.json --parallel 4 --timeout 30m --json
   ```
-* **Abrir o Looping Studio Visual (Canvas n8n-style):**
+* **Abrir o Studio Visual (Canvas n8n-style):**
   ```bash
   legoloop studio --addr 127.0.0.1:7878
   ```
-* **Canonizar & Desduplicar Ativos no SO:**
+* **Canonizar Ativos no SO (garantia de unicidade por SHA-256):**
   ```bash
   legoloop canonize --root ~/.gemini/config/skills --apply
   ```
@@ -330,7 +330,7 @@ O Mega Pipeline integra diretamente os comandos do CLI nativo:
   Ao receber `/canonize [pasta ou drive]` no chat:
   1. Executar `legoloop canonize -root <alvo> -dry-run -json`.
   2. Apresentar sumário (total de arquivos únicos, cópias a eliminar e MB recuperáveis).
-  3. Solicitar confirmação expressa do usuário: *"Deseja aplicar a desduplicação canônica em [Alvo]? (Sim / Não)"*.
+  3. Solicitar confirmação expressa do usuário: *"Deseja aplicar a canonização em [Alvo]? (Sim / Não)"*.
   4. Somente após "sim", executar com `-apply -json` e reportar o resultado com links criados.
 
 ---
@@ -340,6 +340,6 @@ O Mega Pipeline integra diretamente os comandos do CLI nativo:
 > [!CAUTION]
 > **REGRAS NEGATIVAS INVIOLÁVEIS:**
 1. **NUNCA** inicie o Build sem a Tríade formal no disco (`SPEC.md` + `PLAN.md` + `ROUTE.json`).
-2. **NUNCA** ignore um Stop-Gate humano ou avance de fase por conta própria.
+2. **NUNCA** ignore um Stop-Gate humano ou avance de Etapa por conta própria.
 3. **NUNCA** produza funções com `TODO`, `pass` ou mocks de produção em código do LegoLoop.
 4. **NUNCA** pule a recompilação fresca do binário `legoloop.exe` ao alterar arquivos em Go.
