@@ -1,6 +1,7 @@
 package assets
 
 import (
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 )
@@ -57,7 +58,7 @@ func (s *Scanner) scaffoldHookSources() []hookSource {
 func (s *Scanner) scaffoldLoopRoots() []root {
 	var roots []root
 	for _, d := range s.scaffoldDirs() {
-		sub := filepath.Join(d, "loops")
+		sub := caminhos.DirLoopsEm(d)
 		if st, err := os.Stat(sub); err == nil && st.IsDir() {
 			roots = append(roots, root{dir: sub, scope: "scaffold", origin: "aidd"})
 		}

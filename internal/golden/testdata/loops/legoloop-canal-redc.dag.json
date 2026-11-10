@@ -1,0 +1,216 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "name": "legoloop-canal-redc",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "description": "Engenharia reversa profunda de canais e vídeos virais, geração de dossiê DNA, catálogo de métodos em pipelines e gerador de vídeos com Brand Swap.",
+  "upstream_signatures": {
+    "intent": "05deac970437ef94a69af587e9d386b20654aab3d14b82ba16d06ccc822277e9",
+    "spec": "a61ce6fe42757cb168b30e77dc1f63c11bc07eb7538376cc8a000c761f3516bb",
+    "plan": "803e184d5e36c4cbe63ecbbfa0833c82f3027b358c581d02c516daa5f0a90b34",
+    "route": "docs/routes/2026-11-07_ROUTE_CANAL_REDC.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": true
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_catalogar_clusterizar",
+      "name": "Catalogação e Clusterização de Canais",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "token_budget": {
+        "input_tokens": 3000,
+        "output_tokens": 1000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [],
+      "context_out": [
+        "internal/redc/catalog.go"
+      ],
+      "command": [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        "Test-Path internal/redc/catalog.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "file_exists('internal/redc/catalog.go')"
+      },
+      "output": {
+        "artifact": "internal/redc/catalog.go",
+        "gate": "file_exists('internal/redc/catalog.go')"
+      }
+    },
+    {
+      "id": "n02_deep_redc_dna",
+      "name": "Engenharia Reversa Profunda & DNA",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "script",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "depends_on": [
+        "n01_catalogar_clusterizar"
+      ],
+      "context_in": [
+        "internal/redc/catalog.go"
+      ],
+      "context_out": [
+        "internal/redc/dna.go"
+      ],
+      "command": [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        "Test-Path internal/redc/dna.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "file_exists('internal/redc/dna.go')"
+      },
+      "output": {
+        "artifact": "internal/redc/dna.go",
+        "gate": "file_exists('internal/redc/dna.go')"
+      }
+    },
+    {
+      "id": "n03_gerar_pipelines_metodos",
+      "name": "Gerador de Pipelines & Métodos",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "script",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "depends_on": [
+        "n02_deep_redc_dna"
+      ],
+      "context_in": [
+        "internal/redc/dna.go"
+      ],
+      "context_out": [
+        "internal/redc/pipeline_gen.go"
+      ],
+      "command": [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        "Test-Path internal/redc/pipeline_gen.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "file_exists('internal/redc/pipeline_gen.go')"
+      },
+      "output": {
+        "artifact": "internal/redc/pipeline_gen.go",
+        "gate": "file_exists('internal/redc/pipeline_gen.go')"
+      }
+    },
+    {
+      "id": "n04_gerador_brand_swap",
+      "name": "Gerador de Vídeos com Brand Swap",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "script",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "depends_on": [
+        "n02_deep_redc_dna"
+      ],
+      "context_in": [
+        "internal/redc/dna.go"
+      ],
+      "context_out": [
+        "internal/redc/brand_swap.go"
+      ],
+      "command": [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        "Test-Path internal/redc/brand_swap.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "file_exists('internal/redc/brand_swap.go')"
+      },
+      "output": {
+        "artifact": "internal/redc/brand_swap.go",
+        "gate": "file_exists('internal/redc/brand_swap.go')"
+      }
+    }
+  ]
+}

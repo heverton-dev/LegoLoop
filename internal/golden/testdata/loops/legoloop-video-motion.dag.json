@@ -1,0 +1,362 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "name": "legoloop-video-motion",
+  "version": "1.0.0",
+  "date": "2026-11-07",
+  "description": "Pipeline canônico de motion design determinístico para vídeos com silêncios +40ms, tipografia cinética e cartões 3D",
+  "upstream_signatures": {
+    "intent": "9812a677fbca05619985ea15858022b7c02bda6396919db45873919e86bf79e8",
+    "spec": "ec6576b22ba8fe6cb30d24bf51a37c9a419eb9338f977c0500e2ea024f9e1189",
+    "plan": "2b6b66e138a0c20beceb43f9ba6be91e528dbe4cbf5e59b9a695d7eb8f1eeae3",
+    "route": "docs/routes/2026-11-07_ROUTE_VIDEO_MOTION_PIPELINE.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_silence_clock",
+      "name": "Detecção de Silêncios e Fatiamento de Pausas com Folga de 40ms",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md"
+      ],
+      "context_out": [
+        "scratch/videomotion/words.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-motion",
+        "silence",
+        "--input",
+        "input.mp4",
+        "--out",
+        "scratch/videomotion/words.json"
+      ],
+      "output": {
+        "artifact": "scratch/videomotion/words.json",
+        "gate": "file_exists('scratch/videomotion/words.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
+      }
+    },
+    {
+      "id": "n02_punch_detector",
+      "name": "Detecção de Palavras de Impacto e RMS de Punch Visual",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n01_silence_clock"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "scratch/videomotion/words.json"
+      ],
+      "context_out": [
+        "scratch/videomotion/punched_words.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-motion",
+        "punch",
+        "--words",
+        "scratch/videomotion/words.json",
+        "--out",
+        "scratch/videomotion/punched_words.json"
+      ],
+      "output": {
+        "artifact": "scratch/videomotion/punched_words.json",
+        "gate": "file_exists('scratch/videomotion/punched_words.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
+      }
+    },
+    {
+      "id": "n03_asset_synthesis",
+      "name": "Síntese de Ilustrações Vetoriais SVG e Cartões 3D",
+      "nature": "micro",
+      "cognitive_complexity": "media",
+      "type": "script",
+      "depends_on": [
+        "n02_punch_detector"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 12000,
+        "max_completion_tokens": 3000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "scratch/videomotion/punched_words.json"
+      ],
+      "context_out": [
+        "scratch/videomotion/assets"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-motion",
+        "assets",
+        "--words",
+        "scratch/videomotion/punched_words.json",
+        "--out",
+        "scratch/videomotion/assets"
+      ],
+      "output": {
+        "artifact": "scratch/videomotion/assets",
+        "gate": "file_exists('scratch/videomotion/assets')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
+      }
+    },
+    {
+      "id": "n04_kinetic_typography",
+      "name": "Tipografia Cinética Anton com Realce e Efeito Mola",
+      "nature": "micro",
+      "cognitive_complexity": "media",
+      "type": "script",
+      "depends_on": [
+        "n03_asset_synthesis"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "scratch/videomotion/assets"
+      ],
+      "context_out": [
+        "scratch/videomotion/typography.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-motion",
+        "typography",
+        "--words",
+        "scratch/videomotion/punched_words.json",
+        "--out",
+        "scratch/videomotion/typography.json"
+      ],
+      "output": {
+        "artifact": "scratch/videomotion/typography.json",
+        "gate": "file_exists('scratch/videomotion/typography.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
+      }
+    },
+    {
+      "id": "n05_3d_glass_cards",
+      "name": "Renderização dos Cartões de Vidro com Oclusão Tridimensional",
+      "nature": "micro",
+      "cognitive_complexity": "media",
+      "type": "script",
+      "depends_on": [
+        "n04_kinetic_typography"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "scratch/videomotion/typography.json"
+      ],
+      "context_out": [
+        "scratch/videomotion/cards"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-motion",
+        "glass",
+        "--assets",
+        "scratch/videomotion/assets",
+        "--out",
+        "scratch/videomotion/cards"
+      ],
+      "output": {
+        "artifact": "scratch/videomotion/cards",
+        "gate": "file_exists('scratch/videomotion/cards')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
+      }
+    },
+    {
+      "id": "n06_multi_aspect_render",
+      "name": "Composição Multi-Aspecto (9:16 vertical e 16:9 widescreen)",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n05_3d_glass_cards"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "scratch/videomotion/cards"
+      ],
+      "context_out": [
+        "dist/motion_render.mp4"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-motion",
+        "render",
+        "--cards",
+        "scratch/videomotion/cards",
+        "--out",
+        "dist/motion_render.mp4"
+      ],
+      "output": {
+        "artifact": "dist/motion_render.mp4",
+        "gate": "file_exists('dist/motion_render.mp4')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videomotion/videomotion_test.go"
+      }
+    }
+  ]
+}

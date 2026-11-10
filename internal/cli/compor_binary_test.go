@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"encoding/json"
+	"legoloop/internal/caminhos"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -85,8 +86,8 @@ func compArquivos(t *testing.T, p processo.Processo, vault, proj string, data ti
 	doc := func(sub, file string) string { return filepath.Join(proj, "docs", sub, file) }
 	return []processo.File{
 		{Path: filepath.Join(vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(vault, "loops", p.Nome+".loop.json"), Data: pr.Loop},
-		{Path: filepath.Join(vault, "loops", p.Nome+".dag.json"), Data: pr.DAG},
+		{Path: filepath.Join(vault, caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Loop},
+		{Path: filepath.Join(vault, caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(vault, p.Nome), Data: pj},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Path: doc("plans", pr.PlanNome), Data: []byte(pr.Plan)},
@@ -113,7 +114,7 @@ func TestComporBinario(t *testing.T) {
 	if !strings.Contains(r.errb, "COMPOR legoloop-a") || strings.Contains(r.out, "COMPOR") {
 		t.Errorf("com --json, o plano e o cartão vão para o stderr:\n%s", r.errb)
 	}
-	dagA := filepath.Join(vault, "loops", "legoloop-a.dag.json")
+	dagA := filepath.Join(vault, caminhos.DirLoops, "legoloop-a.dag.json")
 	if v := runBinaryEm(t, bin, router, root, proj, "validate", dagA); v.code != 0 || !strings.Contains(v.out, "e04") {
 		t.Fatalf("validate: código %d\n%s%s", v.code, v.out, v.errb)
 	}

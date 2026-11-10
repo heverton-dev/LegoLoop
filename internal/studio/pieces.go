@@ -2,6 +2,7 @@ package studio
 
 import (
 	"fmt"
+	"legoloop/internal/caminhos"
 	"path/filepath"
 	"strings"
 
@@ -271,7 +272,7 @@ func refArgv(res Resolver, ref string, kind assets.Kind) ([]string, string) {
 		return nil, msg
 	}
 	if kind == assets.KindHook && assets.ContainsSecret(it.Command) {
-		return nil, fmt.Sprintf("o hook %q tem credencial no comando e ela iria para o pipeline.dag.json; use um comando próprio sem segredo", it.Name)
+		return nil, fmt.Sprintf("o hook %q tem credencial no comando e ela iria para o %s; use um comando próprio sem segredo", it.Name, caminhos.ArquivoDAG)
 	}
 	argv, err := assets.ArgvFor(it)
 	return argv, errMsg(err)

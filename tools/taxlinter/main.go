@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -9,7 +8,6 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"legoloop/internal/taxonomy"
@@ -30,8 +28,6 @@ var ignoredPrefixes = []string{
 	"internal/taxonomy",
 }
 
-var jsonKeyRegex = regexp.MustCompile(`"([^"]+)"\s*:`)
-
 func shouldIgnore(relPath string) bool {
 	normalized := filepath.ToSlash(relPath)
 	for _, p := range ignoredPrefixes {
@@ -44,17 +40,7 @@ func shouldIgnore(relPath string) bool {
 
 func isScannableExt(path string) bool {
 	ext := strings.ToLower(filepath.Ext(path))
-	return ext == ".go" || ext == ".json" || ext == ".md"
-}
-
-func isTechnicalLiteral(val string) bool {
-	if strings.Contains(val, "/") || strings.Contains(val, "\\") || strings.Contains(val, "-") {
-		return true
-	}
-	if strings.Contains(val, ".") || strings.HasPrefix(val, ".") || strings.HasSuffix(val, ".json") || strings.HasSuffix(val, ".go") {
-		return true
-	}
-	return false
+	return ext == ".go" || ext == ".json" || ext == ".md" || ext == ".typ"
 }
 
 func scanGoFile(filePath string) ([]TaxonomyFileViolation, error) {
@@ -65,10 +51,7 @@ func scanGoFile(filePath string) ([]TaxonomyFileViolation, error) {
 	}
 	var violations []TaxonomyFileViolation
 	checkText := func(text string, pos token.Pos) {
-		vs, err := taxonomy.ValidateText(text)
-		if err != nil {
-			return
-		}
+		vs := validateNormalized(text)
 		position := fset.Position(pos)
 		for _, v := range vs {
 			v.Line = position.Line + v.Line - 1
@@ -84,79 +67,28 @@ func scanGoFile(filePath string) ([]TaxonomyFileViolation, error) {
 		if _, ok := n.(*ast.ImportSpec); ok {
 			return false
 		}
+		if id, ok := n.(*ast.Ident); ok {
+			checkText(id.Name, id.Pos())
+		}
 		if lit, ok := n.(*ast.BasicLit); ok && lit.Kind == token.STRING {
-			val := strings.Trim(lit.Value, "`\"")
-			if !isTechnicalLiteral(val) {
-				checkText(val, lit.Pos())
-			}
+			checkText(strings.Trim(lit.Value, "`\""), lit.Pos())
 		}
 		return true
 	})
 	return violations, nil
 }
 
-func scanJSONKeys(filePath string) ([]TaxonomyFileViolation, error) {
-	f, err := os.Open(filePath)
+// scanLines valida o arquivo inteiro, linha a linha: chaves, valores, corpo e código.
+func scanLines(filePath string) ([]TaxonomyFileViolation, error) {
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
 	var violations []TaxonomyFileViolation
-	scanner := bufio.NewScanner(f)
-	lineNum := 0
-	for scanner.Scan() {
-		lineNum++
-		matches := jsonKeyRegex.FindAllStringSubmatch(scanner.Text(), -1)
-		for _, m := range matches {
-			if len(m) > 1 {
-				key := m[1]
-				if canon, ok := taxonomy.CheckForbidden(key); ok {
-					violations = append(violations, TaxonomyFileViolation{
-						FilePath: filePath,
-						Violation: taxonomy.TaxonomyViolation{
-							ForbiddenTerm: key,
-							ApprovedTerm:  canon,
-							Line:          lineNum,
-							Column:        1,
-						},
-					})
-				}
-			}
-		}
+	for _, v := range validateNormalized(string(data)) {
+		violations = append(violations, TaxonomyFileViolation{FilePath: filePath, Violation: v})
 	}
-	return violations, scanner.Err()
-}
-
-func scanMarkdownHeadings(filePath string) ([]TaxonomyFileViolation, error) {
-	f, err := os.Open(filePath)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	var violations []TaxonomyFileViolation
-	scanner := bufio.NewScanner(f)
-	lineNum := 0
-	inCodeBlock := false
-	for scanner.Scan() {
-		lineNum++
-		line := strings.TrimSpace(scanner.Text())
-		if strings.HasPrefix(line, "```") {
-			inCodeBlock = !inCodeBlock
-			continue
-		}
-		if inCodeBlock {
-			continue
-		}
-		if strings.HasPrefix(line, "#") {
-			heading := strings.TrimLeft(line, "# \t")
-			vs, _ := taxonomy.ValidateText(heading)
-			for _, v := range vs {
-				v.Line = lineNum
-				violations = append(violations, TaxonomyFileViolation{FilePath: filePath, Violation: v})
-			}
-		}
-	}
-	return violations, scanner.Err()
+	return violations, nil
 }
 
 func scanFile(filePath string) ([]TaxonomyFileViolation, error) {
@@ -164,10 +96,8 @@ func scanFile(filePath string) ([]TaxonomyFileViolation, error) {
 	switch ext {
 	case ".go":
 		return scanGoFile(filePath)
-	case ".json":
-		return scanJSONKeys(filePath)
-	case ".md":
-		return scanMarkdownHeadings(filePath)
+	case ".json", ".md", ".typ":
+		return scanLines(filePath)
 	default:
 		return nil, nil
 	}

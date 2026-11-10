@@ -41,7 +41,7 @@ func writePlanStrategy(b *strings.Builder, m planMeta) {
 	b.WriteString("## 1. Estratégia de Execução & Governança de Loteamento\n\n")
 	b.WriteString("* **Engine:** `orchestrix_hermetic` (execução isolada por bloco, sem context bloat)\n")
 	fmt.Fprintf(b, "* **Nível de Supervisão:** `%s`\n", m.Level)
-	b.WriteString("* **Permissão de Subagentes:** `false` (AGENTS.md, regra 4: agentes de harness proibidos; subprocessos estéreis)\n")
+	b.WriteString("* **Permissão de Subagentes:** `false` ou `ephemeral` (AGENTS.md, regra 4: agente de harness proibido; subagente efêmero só com as seis condições)\n")
 	b.WriteString("* **TDD Estrito:** `true` (Red ➔ Green ➔ Refactor obrigatório antes de qualquer código de produção)\n")
 	fmt.Fprintf(b, "* **Limite de Workers Paralelos:** `2`\n* **Timeout Padrão por Bloco:** `%ds`\n", defaultTimeout)
 	b.WriteString("* **Política de Rollback:** global `abort_pipeline`; por nó `stash_changes`\n\n---\n\n")
@@ -117,7 +117,7 @@ func writePlanTicket(b *strings.Builder, n routeNode) {
 	fmt.Fprintf(b, "* **Iniciativa:** `%s` | **Épico:** `%s` | **Nature:** `%s` | **Tipo:** `%s` | **Modo de Execução:** `%s` | **Status:** `%s`\n",
 		deref(n.InitiativeID), deref(n.EpicID), n.Nature, n.Type, n.ExecutionMode, n.Status)
 	fmt.Fprintf(b, "* **Dependências:** `%s`\n", jsonOf(n.DependsOn))
-	fmt.Fprintf(b, "* **Isolamento:** Workspace `%s` · Executor `%s` · Subagentes `%t` · Write Boundary `%s`\n",
+	fmt.Fprintf(b, "* **Isolamento:** Workspace `%s` · Executor `%s` · Subagentes `%v` · Write Boundary `%s`\n",
 		n.Isolation.Workspace, n.Isolation.Executor, n.Isolation.SubagentsAllowed, n.Isolation.WriteBoundary)
 	fmt.Fprintf(b, "* **Roteamento:** Harness `%s` · Modelo `%s` · Effort `%s` · Fallback Harness `%s` · Modelo `%s`\n",
 		n.Routing.Harness, n.Routing.Model, *n.Routing.Effort, n.Routing.Fallback.Harness, n.Routing.Fallback.Model)

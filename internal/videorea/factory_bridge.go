@@ -3,6 +3,7 @@ package videorea
 import (
 	"encoding/json"
 	"fmt"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"time"
@@ -58,7 +59,7 @@ func GenerateExecutionPackageStage(spec *SpecDraft, report *CurationReport, base
 	}
 	planFile := filepath.Join(govDir, fmt.Sprintf("%s_PLAN_%s.md", date, spec.Slug))
 	routeFile := filepath.Join(govDir, fmt.Sprintf("%s_ROUTE_%s.json", date, spec.Slug))
-	dagFile := filepath.Join(loopDir, "pipeline.dag.json")
+	dagFile := caminhos.CaminhoDAG(loopDir)
 	if err := writeExecutionFiles(planFile, routeFile, dagFile, spec.Slug); err != nil {
 		return nil, err
 	}

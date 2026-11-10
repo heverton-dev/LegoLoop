@@ -1,0 +1,365 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "name": "legoloop-video-rea",
+  "version": "1.0.0",
+  "date": "2026-11-09",
+  "description": "Pipeline canônico de engenharia reversa audiovisual com Matriz Original, curadoria de ferramentas e adoção de peças gratuitas",
+  "upstream_signatures": {
+    "intent": "d02cebbf2cf58fef7293e27e6d84fd7f32e8b2d9f4879c3b438cda6b92515f96",
+    "spec": "a8e3e9818a0f3b675ca944e825fcf51fd54e16f5cf463b20dc3e442d52ec88c8",
+    "plan": "ae012099e61d24bee8d61d571813ef5017298b3c9c2dc40908ab18c2febfaa5b",
+    "route": "docs/routes/2026-11-07_ROUTE_LEGOLOOP_VIDEO_REA.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_crawler_ingest",
+      "name": "Ingestão e Download de Metadados e Áudio Bruto",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "docs/specs/2026-11-07_SPEC_LEGOLOOP_VIDEO_REA.md"
+      ],
+      "context_out": [
+        "docs/videorea/${SLUG}/scratch/raw.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-rea",
+        "ingest",
+        "--url",
+        "${VIDEO_URL}",
+        "--out",
+        "docs/videorea/${SLUG}/scratch/raw.json"
+      ],
+      "output": {
+        "artifact": "docs/videorea/${SLUG}/scratch/raw.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/raw.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
+      }
+    },
+    {
+      "id": "n02_forensics_dissection",
+      "name": "Dissecação Forense, Transcrição Whisper e Cortes",
+      "nature": "micro",
+      "cognitive_complexity": "media",
+      "type": "script",
+      "depends_on": [
+        "n01_crawler_ingest"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 12000,
+        "max_completion_tokens": 3000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "docs/videorea/${SLUG}/scratch/raw.json"
+      ],
+      "context_out": [
+        "docs/videorea/${SLUG}/scratch/dossier.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-rea",
+        "forensics",
+        "--input",
+        "docs/videorea/${SLUG}/scratch/raw.json",
+        "--out",
+        "docs/videorea/${SLUG}/scratch/dossier.json"
+      ],
+      "output": {
+        "artifact": "docs/videorea/${SLUG}/scratch/dossier.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
+      }
+    },
+    {
+      "id": "n03_matrix_curation",
+      "name": "Curadoria da Matriz Original e Adoção de Ferramentas",
+      "nature": "micro",
+      "cognitive_complexity": "media",
+      "type": "script",
+      "depends_on": [
+        "n02_forensics_dissection"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 3000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "docs/videorea/${SLUG}/scratch/dossier.json"
+      ],
+      "context_out": [
+        "docs/videorea/${SLUG}/scratch/curation.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-rea",
+        "curate",
+        "--dossier",
+        "docs/videorea/${SLUG}/scratch/dossier.json",
+        "--out",
+        "docs/videorea/${SLUG}/scratch/curation.json"
+      ],
+      "output": {
+        "artifact": "docs/videorea/${SLUG}/scratch/curation.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
+      }
+    },
+    {
+      "id": "n04_stopgate_approval",
+      "name": "Stop-Gate Humano de Aprovação da Curadoria",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n03_matrix_curation"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "haiku",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 6000,
+        "max_completion_tokens": 1000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "inline"
+      },
+      "context_in": [
+        "docs/videorea/${SLUG}/scratch/curation.json"
+      ],
+      "context_out": [
+        "docs/videorea/${SLUG}/scratch/curation.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-rea",
+        "gate",
+        "--report",
+        "docs/videorea/${SLUG}/scratch/curation.json",
+        "--approve",
+        "--out",
+        "docs/videorea/${SLUG}/scratch/curation_approved.json"
+      ],
+      "output": {
+        "artifact": "docs/videorea/${SLUG}/scratch/curation_approved.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation_approved.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
+      }
+    },
+    {
+      "id": "n05_governance_factory",
+      "name": "Fábrica e Materialização dos Artefatos de Governança",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n04_stopgate_approval"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 3000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "docs/videorea/${SLUG}/scratch/curation_approved.json"
+      ],
+      "context_out": [
+        "docs/videorea/${SLUG}/scratch/governance_manifest.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-rea",
+        "govern",
+        "--approval",
+        "docs/videorea/${SLUG}/scratch/curation_approved.json",
+        "--bundle",
+        "docs/videorea",
+        "--out",
+        "docs/videorea/${SLUG}/scratch/governance_manifest.json"
+      ],
+      "output": {
+        "artifact": "docs/videorea/${SLUG}/scratch/governance_manifest.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/governance_manifest.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
+      }
+    },
+    {
+      "id": "n06_legopress_book",
+      "name": "Compilação e Auditoria do Livro Didático LegoPress",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "script",
+      "depends_on": [
+        "n05_governance_factory"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "context_in": [
+        "docs/videorea/${SLUG}/scratch/governance_manifest.json"
+      ],
+      "context_out": [
+        "docs/videorea/${SLUG}/scratch/livro_manifest.json"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "video-rea",
+        "book",
+        "--bundle",
+        "docs/videorea",
+        "--out",
+        "docs/videorea/${SLUG}/scratch/livro_manifest.json"
+      ],
+      "output": {
+        "artifact": "docs/videorea/${SLUG}/scratch/livro_manifest.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/livro_manifest.json')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/videorea/videorea_test.go"
+      }
+    }
+  ]
+}

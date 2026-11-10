@@ -2,6 +2,7 @@ package processo_test
 
 import (
 	"errors"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -18,7 +19,7 @@ func TestPersistenciaIdaEVolta(t *testing.T) {
 		t.Fatal(err)
 	}
 	path := processo.CaminhoNoCofre(t.TempDir(), p.Nome)
-	if filepath.Base(path) != p.Nome+".processo.json" || filepath.Base(filepath.Dir(path)) != "loops" {
+	if filepath.Base(path) != p.Nome+".processo.json" || filepath.Base(filepath.Dir(path)) != caminhos.DirLoops {
 		t.Fatalf("caminho no cofre errado: %s", path)
 	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {

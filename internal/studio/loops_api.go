@@ -3,8 +3,8 @@ package studio
 import (
 	"encoding/json"
 	"errors"
+	"legoloop/internal/caminhos"
 	"net/http"
-	"path/filepath"
 
 	"legoloop/internal/loop"
 )
@@ -17,7 +17,7 @@ func (s *Server) loopStore() (*loop.Store, error) {
 	if err != nil {
 		return nil, err
 	}
-	dir := filepath.Join(v, "loops")
+	dir := caminhos.DirLoopsEm(v)
 	store, err := loop.NewStore(dir)
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (s *Server) handleLoopsList(w http.ResponseWriter, r *http.Request) {
 		seen[l.ID] = true
 	}
 	if s.ProjectDir != "" {
-		if pStore, err := loop.NewStore(filepath.Join(s.ProjectDir, "loops")); err == nil {
+		if pStore, err := loop.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); err == nil {
 			if pList, err := pStore.List(); err == nil {
 				for _, l := range pList {
 					if !seen[l.ID] {
@@ -56,7 +56,7 @@ func (s *Server) handleLoopsList(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"loops": list})
+	writeJSON(w, http.StatusOK, map[string]any{caminhos.ChaveAPILoops: list})
 }
 
 func (s *Server) handleLoopsGet(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +68,7 @@ func (s *Server) handleLoopsGet(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	lp, err := store.Get(id)
 	if err != nil && s.ProjectDir != "" {
-		if pStore, pErr := loop.NewStore(filepath.Join(s.ProjectDir, "loops")); pErr == nil {
+		if pStore, pErr := loop.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); pErr == nil {
 			if pLoop, pGetErr := pStore.Get(id); pGetErr == nil {
 				lp = pLoop
 				err = nil

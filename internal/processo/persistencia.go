@@ -3,6 +3,7 @@ package processo
 import (
 	"encoding/json"
 	"fmt"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 )
@@ -12,7 +13,7 @@ const sufixoProcesso = ".processo.json"
 
 // CaminhoNoCofre devolve onde o processo fica no cofre. É o arquivo que listar, refinar e compor leem.
 func CaminhoNoCofre(vault, nome string) string {
-	return filepath.Join(vault, "loops", nome+sufixoProcesso)
+	return filepath.Join(vault, caminhos.DirLoops, nome+sufixoProcesso)
 }
 
 // Marshal valida o processo e o serializa em JSON indentado, com quebra de linha no fim.

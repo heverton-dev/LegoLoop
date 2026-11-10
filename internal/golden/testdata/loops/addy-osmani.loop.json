@@ -1,0 +1,331 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "addy-osmani",
+  "name": "Pipeline de Web Performance & Engenharia Addy Osmani (8 Sub-Loops)",
+  "description": "Pipeline canônico de engenharia e performance web baseado nas 25 skills e playbooks de Addy Osmani: Alinhamento & Contexto -> Especificação & Restrições (CONSTRAINTS.md) -> Decomposição Tracer-Bullet -> Construção TDD -> Runtime Real & Web Vitals -> Auditoria 5 Eixos & Hardening OWASP -> Observabilidade & Ship.",
+  "version": "1.0.0",
+  "date": "2026-11-09",
+  "upstream_signatures": {
+    "intent": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "spec": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+    "plan": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
+    "route": "docs/routes/2026-11-07_ROUTE_OSMANI_PERF.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": true
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "subloop-1-alinhar-contexto",
+      "name": "Alinhamento & Contexto",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [],
+      "context_out": [
+        "docs/intents/INTENT.md"
+      ],
+      "test_seam": {
+        "type": "contract_gate",
+        "target": "file_exists('docs/intents/INTENT.md')"
+      },
+      "output": {
+        "artifact": "docs/intents/INTENT.md",
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      }
+    },
+    {
+      "id": "subloop-2-especificar-restricoes",
+      "name": "Especificação & Restrições",
+      "nature": "micro",
+      "cognitive_complexity": "alto",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-1-alinhar-contexto"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-pro",
+        "effort": "high"
+      },
+      "token_budget": {
+        "input_tokens": 6000,
+        "output_tokens": 2500
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "intencao": "file('docs/intents/INTENT.md')"
+      },
+      "context_in": [
+        "docs/intents/INTENT.md"
+      ],
+      "context_out": [
+        "docs/specs/SPEC.md"
+      ],
+      "test_seam": {
+        "type": "contract_gate",
+        "target": "file_exists('docs/specs/SPEC.md')"
+      },
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      }
+    },
+    {
+      "id": "subloop-3-planejar-tickets",
+      "name": "Decomposição Tracer-Bullet",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-2-especificar-restricoes"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast",
+        "effort": "medium"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/plans/PLAN.md"
+      ],
+      "test_seam": {
+        "type": "contract_gate",
+        "target": "file_exists('docs/plans/PLAN.md')"
+      },
+      "output": {
+        "artifact": "docs/plans/PLAN.md",
+        "gate": "file_exists('docs/plans/PLAN.md')"
+      }
+    },
+    {
+      "id": "subloop-4-construir-tdd",
+      "name": "Construção TDD Cirúrgica",
+      "nature": "macro",
+      "cognitive_complexity": "alto",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-3-planejar-tickets"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "qwen2.5-coder:7b"
+      },
+      "token_budget": {
+        "input_tokens": 8000,
+        "output_tokens": 3000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "plano": "file('docs/plans/PLAN.md')"
+      },
+      "context_in": [
+        "docs/plans/PLAN.md"
+      ],
+      "context_out": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "file_exists('docs/reports/TDD_REPORT.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/TDD_REPORT.md",
+        "gate": "file_exists('docs/reports/TDD_REPORT.md')"
+      }
+    },
+    {
+      "id": "subloop-5-runtime-webperf",
+      "name": "Runtime Real & Web Vitals",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-4-construir-tdd"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-pro",
+        "effort": "medium"
+      },
+      "token_budget": {
+        "input_tokens": 6000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "tdd": "file('docs/reports/TDD_REPORT.md')"
+      },
+      "context_in": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "context_out": [
+        "docs/reports/PERF_REPORT.md"
+      ],
+      "test_seam": {
+        "type": "metric_gate",
+        "target": "file_exists('docs/reports/PERF_REPORT.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/PERF_REPORT.md",
+        "gate": "file_exists('docs/reports/PERF_REPORT.md')"
+      }
+    },
+    {
+      "id": "subloop-6-review-hardening",
+      "name": "Auditoria 5 Eixos & Hardening",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-5-runtime-webperf"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "token_budget": {
+        "input_tokens": 6000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "perf": "file('docs/reports/PERF_REPORT.md')"
+      },
+      "context_in": [
+        "docs/reports/PERF_REPORT.md"
+      ],
+      "context_out": [
+        "docs/reports/CODE_REVIEW.md"
+      ],
+      "test_seam": {
+        "type": "security_gate",
+        "target": "file_exists('docs/reports/CODE_REVIEW.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/CODE_REVIEW.md",
+        "gate": "file_exists('docs/reports/CODE_REVIEW.md')"
+      }
+    },
+    {
+      "id": "subloop-7-observabilidade-ship",
+      "name": "Observabilidade & Ship",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "skill",
+      "ref": "skills/aidd-osmani",
+      "depends_on": [
+        "subloop-6-review-hardening"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-pro",
+        "effort": "low"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "review": "file('docs/reports/CODE_REVIEW.md')"
+      },
+      "context_in": [
+        "docs/reports/CODE_REVIEW.md"
+      ],
+      "context_out": [
+        "docs/reports/SHIP_REPORT.md"
+      ],
+      "test_seam": {
+        "type": "release_gate",
+        "target": "file_exists('docs/reports/SHIP_REPORT.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/SHIP_REPORT.md",
+        "gate": "file_exists('docs/reports/SHIP_REPORT.md')"
+      }
+    }
+  ]
+}

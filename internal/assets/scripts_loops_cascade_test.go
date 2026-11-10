@@ -2,6 +2,7 @@ package assets_test
 
 import (
 	"context"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"testing"
@@ -16,7 +17,7 @@ func TestCascadeScriptsAndLoopsAcrossDiscoveredProjects(t *testing.T) {
 	// Projeto C com script em tools/ e loop em loops/
 	projC := filepath.Join(desktop, "projeto-c")
 	toolsDir := filepath.Join(projC, "tools")
-	loopsDir := filepath.Join(projC, "loops")
+	loopsDir := caminhos.DirLoopsEm(projC)
 	if err := os.MkdirAll(toolsDir, 0755); err != nil {
 		t.Fatal(err)
 	}

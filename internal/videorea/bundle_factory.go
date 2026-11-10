@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 
@@ -341,16 +342,16 @@ func buildBookOperacao(slug string) string {
 Comandos de execução via CLI legoloop, triggers cognitivos e telemetria de produção para o processo %s:
 
 `+"```bash"+`
-legoloop run loops/%s/pipeline.dag.json --workdir docs/videorea/%s/scratch
+legoloop run %s/%s/%s --workdir docs/videorea/%s/scratch
 `+"```"+`
 
 A telemetria de cada execução é gravada no formato padrão ISO com rastreabilidade auditável de tokens, tempo de CPU e custos financeiros.
-`, slug, slug, slug)
+`, slug, caminhos.DirLoops, slug, caminhos.ArquivoDAG, slug)
 }
 
 func writeLocalLoop(b *TargetBundle, r *CurationReport) error {
 	dagJSON := buildCanonicalDAG(b.Slug, r.SuggestedName)
-	if err := os.WriteFile(filepath.Join(b.LoopDir, "pipeline.dag.json"), []byte(dagJSON), 0o644); err != nil {
+	if err := os.WriteFile(caminhos.CaminhoDAG(b.LoopDir), []byte(dagJSON), 0o644); err != nil {
 		return err
 	}
 	_, err := SynthesizeGoldenFixture(3.0, b.LoopDir)
@@ -396,7 +397,7 @@ Pipeline operacional gerado via engenharia reversa com governança LegoLoop v2.2
 }
 
 func projectCanonical(b *TargetBundle, repoRoot string) error {
-	if err := copyFile(filepath.Join(b.LoopDir, "pipeline.dag.json"), filepath.Join(repoRoot, "loops", b.Slug, "pipeline.dag.json")); err != nil {
+	if err := copyFile(caminhos.CaminhoDAG(b.LoopDir), filepath.Join(repoRoot, caminhos.DirLoops, b.Slug, caminhos.ArquivoDAG)); err != nil {
 		return err
 	}
 	if err := copyFile(filepath.Join(b.SkillDir, "SKILL.md"), filepath.Join(repoRoot, "skills", b.Slug, "SKILL.md")); err != nil {

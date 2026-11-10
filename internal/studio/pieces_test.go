@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"legoloop/internal/caminhos"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -114,7 +115,7 @@ func TestSuggestForCatalogBlock(t *testing.T) {
 	if len(b.Hooks.Post) != 1 || b.Hooks.Post[0].Name != "Stop" {
 		t.Errorf("hooks pós = %+v", b.Hooks.Post)
 	}
-	// o hook com credencial nunca é sugerido (iria parar no pipeline.dag.json)
+	// o hook com credencial nunca é sugerido (iria parar no arquivo DAG)
 	for _, h := range append(append([]itemRef{}, b.Hooks.Pre...), b.Hooks.Post...) {
 		if strings.HasPrefix(h.Name, "PreToolUse") {
 			t.Errorf("hook com credencial sugerido: %+v", h)
@@ -198,7 +199,7 @@ func TestComposeResolvesSlotsOnTheServerAndMasksPathsInTheResponse(t *testing.T)
 	if code, _, raw := post(t, s, "/api/materialize", body); code != 200 {
 		t.Fatalf("materialize: %d %s", code, raw)
 	}
-	data, err := os.ReadFile(filepath.Join(s.ProjectDir, "pipeline.dag.json"))
+	data, err := os.ReadFile(caminhos.CaminhoDAG(s.ProjectDir))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -274,7 +275,7 @@ func TestComposeGenericSkillPieceBetweenTypedBlocks(t *testing.T) {
 	if code != 200 || !res.OK {
 		t.Fatalf("materialize: %d %s", code, raw)
 	}
-	data, _ := os.ReadFile(filepath.Join(s.ProjectDir, "pipeline.dag.json"))
+	data, _ := os.ReadFile(caminhos.CaminhoDAG(s.ProjectDir))
 	d, err := dag.Parse(data)
 	if err != nil {
 		t.Fatal(err)
@@ -302,7 +303,7 @@ func TestComposeGenericPieceUsesCustomGateAndRootInput(t *testing.T) {
 	if code, res, raw := post(t, s, "/api/materialize", body); code != 200 || !res.OK {
 		t.Fatalf("materialize: %d %s", code, raw)
 	}
-	data, _ := os.ReadFile(filepath.Join(s.ProjectDir, "pipeline.dag.json"))
+	data, _ := os.ReadFile(caminhos.CaminhoDAG(s.ProjectDir))
 	d, _ := dag.Parse(data)
 	n := d.Node("n1")
 	if n.Output.Gate != "word_count('X.md') > 5" || n.Inputs["input"] != "var.input" {
@@ -317,7 +318,7 @@ func TestComposeGenericScriptPieceBecomesAScriptNode(t *testing.T) {
 	if code, res, raw := post(t, s, "/api/materialize", body); code != 200 || !res.OK {
 		t.Fatalf("materialize: %d %s", code, raw)
 	}
-	data, _ := os.ReadFile(filepath.Join(s.ProjectDir, "pipeline.dag.json"))
+	data, _ := os.ReadFile(caminhos.CaminhoDAG(s.ProjectDir))
 	d, _ := dag.Parse(data)
 	n := d.Node("n1")
 	if n.Type != dag.TypeScript || len(n.Command) != 2 || n.Command[0] != "bash" {
@@ -361,7 +362,7 @@ func TestComposePieceNeedsTheInventory(t *testing.T) {
 
 func TestComposeSubloopSuccess(t *testing.T) {
 	s, home, _ := newAssetsServer(t)
-	loopsDir := filepath.Join(home, ".aidd", "canonical", "loops")
+	loopsDir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
 	store, err := loop.NewStore(loopsDir)
 	if err != nil {
 		t.Fatal(err)

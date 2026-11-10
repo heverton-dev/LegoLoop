@@ -2,6 +2,7 @@ package assets_test
 
 import (
 	"context"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"testing"
@@ -21,7 +22,7 @@ func TestScaffoldsLayer(t *testing.T) {
 	_ = os.WriteFile(filepath.Join(scaffoldSkill, "SKILL.md"), []byte("---\nname: Starter Setup\ndescription: skill de scaffold\n---\n"), 0644)
 
 	// 2. Loop de scaffold
-	scaffoldLoopDir := filepath.Join(scaffoldsDir, "starter-kit", "loops")
+	scaffoldLoopDir := filepath.Join(scaffoldsDir, "starter-kit", caminhos.DirLoops)
 	if err := os.MkdirAll(scaffoldLoopDir, 0755); err != nil {
 		t.Fatal(err)
 	}

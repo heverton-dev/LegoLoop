@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"legoloop/internal/caminhos"
 	"net"
 	"net/http"
 	"os"
@@ -35,7 +36,7 @@ import (
 var staticFS embed.FS
 
 // PipelineFile é o contrato gravado pelo botão "Materializar Esteira".
-const PipelineFile = "pipeline.dag.json"
+const PipelineFile = caminhos.ArquivoDAG
 
 // inventoryTTL evita sondar a rede a cada clique no canvas.
 const inventoryTTL = 10 * time.Second

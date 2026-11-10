@@ -9,6 +9,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"legoloop/internal/caminhos"
 	"os"
 	"strings"
 	"text/tabwriter"
@@ -50,8 +51,8 @@ const usage = `Uso: legoloop <comando> [opções]
 Comandos:
   doctor     [--json]                        inventário de harnesses, modelos e chaves (Cofre de Segredos)
   canonize   --root DIR... (--dry-run|--apply) [--vault DIR] [--workers N] [--json]
-  validate   <pipeline.dag.json>             valida contrato, gates e ciclos
-  run        <pipeline.dag.json> [--workdir DIR] [--parallel N] [--timeout DUR]
+  validate   <` + caminhos.ArquivoDAG + `>             valida contrato, gates e ciclos
+  run        <` + caminhos.ArquivoDAG + `> [--workdir DIR] [--parallel N] [--timeout DUR]
              [--skills DIR] [--var chave=valor]... [--json]
   route      --from Artifact:X --to Artifact:Y  rota ótima no grafo semântico
   studio     [--addr 127.0.0.1:7878] [--project DIR]  abre o Looping Studio
@@ -218,7 +219,7 @@ func humanBytes(n int64) string {
 // readFileArg lê no máximo dag.MaxDAGBytes (+1 para detectar excesso).
 func readFileArg(path string) ([]byte, error) {
 	if path == "" {
-		return nil, errors.New("informe o arquivo pipeline.dag.json")
+		return nil, errors.New("informe o arquivo " + caminhos.ArquivoDAG)
 	}
 	f, err := os.Open(path)
 	if err != nil {

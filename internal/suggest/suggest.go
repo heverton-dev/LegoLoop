@@ -109,7 +109,7 @@ func gateSuggestions(ctx Context) []Gate {
 // runnable diz se o item vira um comando que o contrato aceita (sem shell, executável válido).
 func runnable(it assets.Item) bool {
 	if it.Kind == assets.KindHook && assets.ContainsSecret(it.Command) {
-		return false // a credencial iria para o pipeline.dag.json
+		return false // a credencial iria para o arquivo DAG
 	}
 	argv, err := assets.ArgvFor(it)
 	return err == nil && dag.ValidateCommand(argv) == nil

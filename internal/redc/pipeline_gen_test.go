@@ -1,6 +1,7 @@
 package redc_test
 
 import (
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"testing"
@@ -29,8 +30,8 @@ func TestGenerateMethodPipelines_Success(t *testing.T) {
 		t.Errorf("esperava arquivos de pipeline criados")
 	}
 
-	expectedDag := filepath.Join(tempDir, "docs", "channels", "canal-alvo", "pipelines", "engenharia-reversa-viral", "pipeline.dag.json")
+	expectedDag := filepath.Join(tempDir, "docs", "channels", "canal-alvo", "pipelines", "engenharia-reversa-viral", caminhos.ArquivoDAG)
 	if _, err := os.Stat(expectedDag); os.IsNotExist(err) {
-		t.Errorf("arquivo esperado pipeline.dag.json nao foi encontrado: %s", expectedDag)
+		t.Errorf("arquivo esperado %s nao foi encontrado: %s", caminhos.ArquivoDAG, expectedDag)
 	}
 }

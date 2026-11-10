@@ -1,0 +1,404 @@
+{
+  "addy-osmani.loop.json": {
+    "name": "Pipeline de Web Performance \u0026 Engenharia Addy Osmani (8 Sub-Loops)",
+    "version": "1.0.0",
+    "nodes": 7,
+    "layers": [
+      [
+        "subloop-1-alinhar-contexto"
+      ],
+      [
+        "subloop-2-especificar-restricoes"
+      ],
+      [
+        "subloop-3-planejar-tickets"
+      ],
+      [
+        "subloop-4-construir-tdd"
+      ],
+      [
+        "subloop-5-runtime-webperf"
+      ],
+      [
+        "subloop-6-review-hardening"
+      ],
+      [
+        "subloop-7-observabilidade-ship"
+      ]
+    ]
+  },
+  "ai-motion-graphics.dag.json": {
+    "name": "ai-motion-graphics",
+    "version": "1.0.0",
+    "nodes": 17,
+    "layers": [
+      [
+        "t01_types"
+      ],
+      [
+        "t02_suggest"
+      ],
+      [
+        "t03_vet_e01"
+      ],
+      [
+        "sg_e01"
+      ],
+      [
+        "t04_build"
+      ],
+      [
+        "t05_vet_e02"
+      ],
+      [
+        "sg_e02"
+      ],
+      [
+        "t06_render"
+      ],
+      [
+        "t07_encode"
+      ],
+      [
+        "t08_vet_e03"
+      ],
+      [
+        "sg_e03"
+      ],
+      [
+        "t09_sync"
+      ],
+      [
+        "t10_vet_e04"
+      ],
+      [
+        "sg_e04"
+      ],
+      [
+        "t11_skill"
+      ],
+      [
+        "t12_book"
+      ],
+      [
+        "sg_final"
+      ]
+    ]
+  },
+  "fechar.loop.json": {
+    "name": "Pipeline Universal de Fechamento e Canonização (legoloop-fechar)",
+    "version": "1.0.0",
+    "nodes": 6,
+    "layers": [
+      [
+        "etapa-manual"
+      ],
+      [
+        "etapa-livro"
+      ],
+      [
+        "etapa-skill"
+      ],
+      [
+        "etapa-dag"
+      ],
+      [
+        "etapa-rebuild"
+      ],
+      [
+        "etapa-governanca"
+      ]
+    ]
+  },
+  "impeccable-design.loop.json": {
+    "name": "Pipeline de Design Impeccable (6 Sub-Loops)",
+    "version": "1.0.0",
+    "nodes": 6,
+    "layers": [
+      [
+        "subloop-avaliar"
+      ],
+      [
+        "subloop-construir"
+      ],
+      [
+        "subloop-melhorar"
+      ],
+      [
+        "subloop-refinar"
+      ],
+      [
+        "subloop-corrigir"
+      ],
+      [
+        "subloop-iterar-documentar"
+      ]
+    ]
+  },
+  "lauren-tan.loop.json": {
+    "name": "Pipeline Lauren Tan pstack (6 Sub-Loops)",
+    "version": "1.0.0",
+    "nodes": 6,
+    "layers": [
+      [
+        "subloop-1-intencao-dominio"
+      ],
+      [
+        "subloop-2-arquitetura-exploracao"
+      ],
+      [
+        "subloop-3-decomposicao-verificavel"
+      ],
+      [
+        "subloop-4-construcao-tdd"
+      ],
+      [
+        "subloop-5-verificacao-artefato-real"
+      ],
+      [
+        "subloop-6-unslop-ship"
+      ]
+    ]
+  },
+  "legoloop-canal-redc.dag.json": {
+    "name": "legoloop-canal-redc",
+    "version": "1.0.0",
+    "nodes": 4,
+    "layers": [
+      [
+        "n01_catalogar_clusterizar"
+      ],
+      [
+        "n02_deep_redc_dna"
+      ],
+      [
+        "n03_gerar_pipelines_metodos",
+        "n04_gerador_brand_swap"
+      ]
+    ]
+  },
+  "legoloop-cartoon-shorts.dag.json": {
+    "name": "legoloop-cartoon-shorts",
+    "version": "1.0.0",
+    "nodes": 3,
+    "layers": [
+      [
+        "n01_script_engine"
+      ],
+      [
+        "n02_edge_tts"
+      ],
+      [
+        "n03_threejs_render"
+      ]
+    ]
+  },
+  "legoloop-fechar.dag.json": {
+    "name": "legoloop-fechar",
+    "version": "1.0.0",
+    "nodes": 7,
+    "layers": [
+      [
+        "n01_manual_check"
+      ],
+      [
+        "n02_book_legopress"
+      ],
+      [
+        "n03_skill_harnesses"
+      ],
+      [
+        "n04_dag_validation"
+      ],
+      [
+        "n05_rebuild_binary"
+      ],
+      [
+        "n06_governance_sync"
+      ],
+      [
+        "n07_report_telemetry"
+      ]
+    ]
+  },
+  "legoloop-n10-foundry.dag.json": {
+    "name": "legoloop-n10-foundry",
+    "version": "1.0.0",
+    "nodes": 4,
+    "layers": [
+      [
+        "n01_contracts_and_schemas"
+      ],
+      [
+        "n02_andon_and_sbar"
+      ],
+      [
+        "n03_n10_frontier_engines"
+      ],
+      [
+        "n04_double_surface"
+      ]
+    ]
+  },
+  "legoloop-video-edition.dag.json": {
+    "name": "legoloop-video-edition",
+    "version": "1.0.0",
+    "nodes": 12,
+    "layers": [
+      [
+        "n01_iniciar_preparar"
+      ],
+      [
+        "n02_transcricao_alinhamento"
+      ],
+      [
+        "n03_decisao_cortes"
+      ],
+      [
+        "n04_sg_revisao_corte"
+      ],
+      [
+        "n05_motion_mapa"
+      ],
+      [
+        "n06_sg_revisao_motion"
+      ],
+      [
+        "n07_camera_yunet",
+        "n08_assets_download"
+      ],
+      [
+        "n09_motion_render"
+      ],
+      [
+        "n10_efeitos_sonoros_sfx"
+      ],
+      [
+        "n11_entrega_final_hibrida"
+      ],
+      [
+        "n12_sg_entrega_final"
+      ]
+    ]
+  },
+  "legoloop-video-master.dag.json": {
+    "name": "legoloop-video-master",
+    "version": "1.0.0",
+    "nodes": 5,
+    "layers": [
+      [
+        "n01_forensics_intake"
+      ],
+      [
+        "n02_motion_3d_engine",
+        "n03_whiteboard_svg_engine"
+      ],
+      [
+        "n04_auto_editor_reels"
+      ],
+      [
+        "n05_channel_clone_book"
+      ]
+    ]
+  },
+  "legoloop-video-motion.dag.json": {
+    "name": "legoloop-video-motion",
+    "version": "1.0.0",
+    "nodes": 6,
+    "layers": [
+      [
+        "n01_silence_clock"
+      ],
+      [
+        "n02_punch_detector"
+      ],
+      [
+        "n03_asset_synthesis"
+      ],
+      [
+        "n04_kinetic_typography"
+      ],
+      [
+        "n05_3d_glass_cards"
+      ],
+      [
+        "n06_multi_aspect_render"
+      ]
+    ]
+  },
+  "legoloop-video-rea.dag.json": {
+    "name": "legoloop-video-rea",
+    "version": "1.0.0",
+    "nodes": 6,
+    "layers": [
+      [
+        "n01_crawler_ingest"
+      ],
+      [
+        "n02_forensics_dissection"
+      ],
+      [
+        "n03_matrix_curation"
+      ],
+      [
+        "n04_stopgate_approval"
+      ],
+      [
+        "n05_governance_factory"
+      ],
+      [
+        "n06_legopress_book"
+      ]
+    ]
+  },
+  "matt-pocock.loop.json": {
+    "name": "Pipeline de Rigor Matt Pocock (6 Sub-Loops)",
+    "version": "1.0.0",
+    "nodes": 6,
+    "layers": [
+      [
+        "subloop-1-alinhar-dominio"
+      ],
+      [
+        "subloop-2-especificar"
+      ],
+      [
+        "subloop-3-planejar-tickets"
+      ],
+      [
+        "subloop-4-construir-tdd"
+      ],
+      [
+        "subloop-5-review-auditar"
+      ],
+      [
+        "subloop-6-retro-ambiente"
+      ]
+    ]
+  },
+  "mega-pipeline.loop.json": {
+    "name": "Mega Pipeline LegoLoop (6 Sub-Loops)",
+    "version": "1.0.0",
+    "nodes": 6,
+    "layers": [
+      [
+        "l1-concepcao"
+      ],
+      [
+        "l2-design"
+      ],
+      [
+        "l3-triade"
+      ],
+      [
+        "l4-tdd"
+      ],
+      [
+        "l5-homologue"
+      ],
+      [
+        "l6-fechar-canonico"
+      ]
+    ]
+  }
+}

@@ -1,6 +1,7 @@
 package fechar_test
 
 import (
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"strings"
@@ -147,14 +148,28 @@ func TestExecutarNoveEtapasEGerarReportComTelemetria(t *testing.T) {
 }
 
 func TestFecharDAG_AuditaParidadeSHA256(t *testing.T) {
+	casos := []struct {
+		nome, pasta, arquivo string
+	}{
+		{"dialeto antigo", caminhos.DirLoops, caminhos.ArquivoDAG},
+		{"dialeto novo", caminhos.DirProcessos, caminhos.ArquivoProcessoDAG},
+	}
+	for _, c := range casos {
+		t.Run(c.nome, func(t *testing.T) {
+			testarParidadeSHA256(t, c.pasta, c.arquivo)
+		})
+	}
+}
+
+func testarParidadeSHA256(t *testing.T, pasta, arquivo string) {
 	dir := t.TempDir()
 	dagsDir := filepath.Join(dir, "docs", "dags")
-	loopsDir := filepath.Join(dir, "loops", "teste")
+	loopsDir := filepath.Join(dir, pasta, "teste")
 	_ = os.MkdirAll(dagsDir, 0o755)
 	_ = os.MkdirAll(loopsDir, 0o755)
 
 	dagIso := filepath.Join(dagsDir, "2026-11-09_DAG_TESTE.json")
-	loopDag := filepath.Join(loopsDir, "pipeline.dag.json")
+	loopDag := filepath.Join(loopsDir, arquivo)
 
 	// Caso 1: Idênticos -> Sucesso
 	_ = os.WriteFile(dagIso, []byte(`{"name":"teste","version":"1.0.0"}`), 0o644)

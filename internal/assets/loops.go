@@ -3,6 +3,7 @@ package assets
 import (
 	"context"
 	"encoding/json"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -18,14 +19,14 @@ func (s *Scanner) loopRoots(ctx context.Context) []root {
 	}
 	if s.cfg.Home != "" {
 		roots = append(roots,
-			root{dir: filepath.Join(s.cfg.Home, ".aidd", "canonical", "loops"), scope: "global", origin: "acervo"},
-			root{dir: filepath.Join(s.cfg.Home, ".aidd", "loops"), scope: "global", origin: "acervo"},
+			root{dir: filepath.Join(s.cfg.Home, ".aidd", "canonical", caminhos.DirLoops), scope: "global", origin: "acervo"},
+			root{dir: filepath.Join(s.cfg.Home, ".aidd", caminhos.DirLoops), scope: "global", origin: "acervo"},
 		)
 	}
 	roots = append(roots, s.scaffoldLoopRoots()...)
 	for _, p := range s.allProjects(ctx) {
 		roots = append(roots, root{dir: p, scope: "project", origin: "project"})
-		sub := filepath.Join(p, "loops")
+		sub := caminhos.DirLoopsEm(p)
 		if st, err := os.Stat(sub); err == nil && st.IsDir() {
 			roots = append(roots, root{dir: sub, scope: "project", origin: "project"})
 		}

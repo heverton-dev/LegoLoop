@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"io/fs"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"sort"
@@ -55,8 +56,8 @@ func newEnv(t *testing.T) env {
 		store: processo.Store{Roots: processo.Roots{Vault: vault, Docs: docs}, FS: processo.OSFS()},
 		files: []processo.File{
 			{Kind: "skill", Path: filepath.Join(vault, "skills", "legoloop-x", "SKILL.md"), Data: []byte("skill")},
-			{Kind: "loop", Path: filepath.Join(vault, "loops", "legoloop-x.loop.json"), Data: []byte("loop")},
-			{Kind: "dag", Path: filepath.Join(vault, "loops", "legoloop-x.dag.json"), Data: []byte("dag")},
+			{Kind: "loop", Path: filepath.Join(vault, caminhos.DirLoops, "legoloop-x.loop.json"), Data: []byte("loop")},
+			{Kind: "dag", Path: filepath.Join(vault, caminhos.DirLoops, "legoloop-x.dag.json"), Data: []byte("dag")},
 			{Kind: "intent", Path: d("intents/2026-11-04_INTENT_X.md"), Data: []byte("intent")},
 			{Kind: "spec", Path: d("specs/2026-11-04_SPEC_X.md"), Data: []byte("spec")},
 			{Kind: "plan", Path: d("plans/2026-11-04_PLAN_X.md"), Data: []byte("plan")},

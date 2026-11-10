@@ -1,6 +1,7 @@
 package studio
 
 import (
+	"legoloop/internal/caminhos"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -14,7 +15,7 @@ func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInLoopStore(t *tes
 	s, _ := newServer(t)
 	vaultDir := t.TempDir()
 	s.Vault = vaultDir
-	loopStore, err := loop.NewStore(filepath.Join(vaultDir, "loops"))
+	loopStore, err := loop.NewStore(caminhos.DirLoopsEm(vaultDir))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,10 +37,10 @@ func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInLoopStore(t *tes
 		t.Fatalf("status = %d; body = %s", rec.Code, rec.Body.String())
 	}
 
-	// 1. pipeline.dag.json deve existir no ProjectDir
+	// 1. o arquivo DAG deve existir no ProjectDir
 	dagFile := filepath.Join(s.ProjectDir, PipelineFile)
 	if _, err := os.Stat(dagFile); err != nil {
-		t.Fatalf("pipeline.dag.json não foi gravado: %v", err)
+		t.Fatalf("%s não foi gravado: %v", caminhos.ArquivoDAG, err)
 	}
 
 	// 2. Skill orquestradora deve existir no Vault (< 20 linhas)

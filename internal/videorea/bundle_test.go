@@ -2,6 +2,7 @@ package videorea_test
 
 import (
 	"encoding/json"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"testing"
@@ -85,7 +86,7 @@ func TestTargetBundleMaterializeAndProject(t *testing.T) {
 		filepath.Join(bundle.BookDir, "livro.json"),
 		filepath.Join(bundle.BookDir, "partes", "00-frontmatter.md"),
 		filepath.Join(bundle.BookDir, "partes", "01-fundacao.md"),
-		filepath.Join(bundle.LoopDir, "pipeline.dag.json"),
+		caminhos.CaminhoDAG(bundle.LoopDir),
 		filepath.Join(bundle.LoopDir, "fixture_3s.mp4"),
 		filepath.Join(bundle.SkillDir, "SKILL.md"),
 		bundle.OriginalMatrixPath,
@@ -97,7 +98,7 @@ func TestTargetBundleMaterializeAndProject(t *testing.T) {
 	}
 
 	// 3. Verificar Projeção Canônica na raiz do LegoLoop
-	canonicalDAG := filepath.Join(tempRoot, "loops", slug, "pipeline.dag.json")
+	canonicalDAG := filepath.Join(tempRoot, caminhos.DirLoops, slug, caminhos.ArquivoDAG)
 	if _, err := os.Stat(canonicalDAG); os.IsNotExist(err) {
 		t.Errorf("projeção canônica do DAG não encontrada: %s", canonicalDAG)
 	}
@@ -176,10 +177,10 @@ func TestTargetBundle_DAGValidoEAntiStub(t *testing.T) {
 	}
 
 	// 1. DAG gerado deve ser válido segundo o parser oficial do LegoLoop
-	dagPath := filepath.Join(bundle.LoopDir, "pipeline.dag.json")
+	dagPath := caminhos.CaminhoDAG(bundle.LoopDir)
 	dagData, err := os.ReadFile(dagPath)
 	if err != nil {
-		t.Fatalf("lendo pipeline.dag.json: %v", err)
+		t.Fatalf("lendo %s: %v", caminhos.ArquivoDAG, err)
 	}
 	parsedDAG, err := dag.Parse(dagData)
 	if err != nil {

@@ -1,6 +1,7 @@
 package processo_test
 
 import (
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -23,7 +24,7 @@ func TestCofreProcessos(t *testing.T) {
 
 	t.Run("lê v2, v1 e anota erro em json corrompido", func(t *testing.T) {
 		vault := t.TempDir()
-		loopsDir := filepath.Join(vault, "loops")
+		loopsDir := caminhos.DirLoopsEm(vault)
 		if err := os.MkdirAll(loopsDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
@@ -90,7 +91,7 @@ func TestCofreProcessos(t *testing.T) {
 
 	t.Run("loop v1 sem campo version devolve versão interrogacao", func(t *testing.T) {
 		vault := t.TempDir()
-		loopsDir := filepath.Join(vault, "loops")
+		loopsDir := caminhos.DirLoopsEm(vault)
 		if err := os.MkdirAll(loopsDir, 0o755); err != nil {
 			t.Fatal(err)
 		}

@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"legoloop/internal/caminhos"
 	"os"
 	"path"
 	"path/filepath"
@@ -264,7 +265,7 @@ func lerProcesso(vault, nome string) (processo.Processo, error) {
 			return processo.Processo{}, err
 		}
 		msg := ste.Msg("compor.nao_existe", nome, vault)
-		if _, err := os.Stat(filepath.Join(vault, "loops", nome+".loop.json")); err == nil {
+		if _, err := os.Stat(filepath.Join(vault, caminhos.DirLoops, nome+".loop.json")); err == nil {
 			msg = ste.Msg("compor.so_v1", nome)
 		}
 		return processo.Processo{}, fmt.Errorf("%w: %s", ErrNaoExiste, msg)
@@ -471,8 +472,8 @@ func montar(p processo.Processo, e processo.Etapa, now time.Time, roots processo
 		{Kind: "PLAN", Path: filepath.Join(docs, "plans", pr.PlanNome), Data: []byte(pr.Plan)},
 		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
 		{Kind: "DAG_ISO", Path: filepath.Join(docs, "dags", pr.DAGNome), Data: pr.DAG},
-		{Kind: "DAG", Path: vault("loops", p.Nome+".dag.json"), Data: pr.DAG},
-		{Kind: "loop", Path: vault("loops", p.Nome+".loop.json"), Data: pr.Loop},
+		{Kind: "DAG", Path: vault(caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
+		{Kind: "loop", Path: vault(caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Loop},
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 	})

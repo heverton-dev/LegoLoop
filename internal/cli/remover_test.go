@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"io/fs"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"strings"
@@ -43,8 +44,8 @@ func completarCofreRemover(t *testing.T, vault string) {
 	t.Helper()
 	for _, n := range []string{"legoloop-a", "legoloop-b"} {
 		gravarArq(t, filepath.Join(vault, "skills", n, "SKILL.md"), "# "+n+"\n")
-		gravarArq(t, filepath.Join(vault, "loops", n+".loop.json"), "{}")
-		gravarArq(t, filepath.Join(vault, "loops", n+".dag.json"), "{}")
+		gravarArq(t, filepath.Join(vault, caminhos.DirLoops, n+".loop.json"), "{}")
+		gravarArq(t, filepath.Join(vault, caminhos.DirLoops, n+".dag.json"), "{}")
 	}
 }
 
@@ -103,7 +104,7 @@ func TestRemoverBinario(t *testing.T) {
 			t.Errorf("sobrou %s", p)
 		}
 	}
-	if !existeRem(filepath.Join(vault, "loops", "legoloop-velho.loop.json")) {
+	if !existeRem(filepath.Join(vault, caminhos.DirLoops, "legoloop-velho.loop.json")) {
 		t.Error("remover apagou um processo que não era o pedido")
 	}
 }

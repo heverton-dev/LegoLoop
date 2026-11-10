@@ -21,6 +21,10 @@ func TestMain(m *testing.M) {
 	switch os.Getenv("LEGOLOOP_HELPER") {
 	case "claude":
 		helperClaude()
+	case "claude-unit":
+		helperClaudeUnit()
+	case "claude-tools":
+		helperClaudeTools()
 	case "script":
 		helperScript()
 	case "substep":

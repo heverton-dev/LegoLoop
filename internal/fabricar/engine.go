@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"legoloop/internal/caminhos"
 	"path/filepath"
 	"strings"
 	"time"
@@ -157,8 +158,8 @@ func preflight(d Deps, name string, force bool) error {
 	}
 	probe := []PlannedFile{
 		{Path: filepath.Join(d.Roots.Vault, "skills", name, "SKILL.md")},
-		{Path: filepath.Join(d.Roots.Vault, "loops", name+".loop.json")},
-		{Path: filepath.Join(d.Roots.Vault, "loops", name+".dag.json")},
+		{Path: filepath.Join(d.Roots.Vault, caminhos.DirLoops, name+".loop.json")},
+		{Path: filepath.Join(d.Roots.Vault, caminhos.DirLoops, name+".dag.json")},
 		{Path: processo.CaminhoNoCofre(d.Roots.Vault, name)},
 	}
 	if found := processo.Existentes(d.FS, probe); len(found) > 0 {

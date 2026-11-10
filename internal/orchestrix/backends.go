@@ -246,7 +246,8 @@ func (o *Orchestrix) spawn(ctx context.Context, bin string, args []string, dir s
 // NoDefaultCurrentDirectoryInExePath impede o cmd.exe (shims .cmd) de achar binários no cwd.
 func sterileEnv(getenv func(string) string) []string {
 	keys := []string{"PATH", "PATHEXT", "SYSTEMROOT", "SYSTEMDRIVE", "WINDIR", "COMSPEC",
-		"HOME", "USERPROFILE", "APPDATA", "LOCALAPPDATA", "TEMP", "TMP", "TMPDIR", "LANG"}
+		"HOME", "USERPROFILE", "APPDATA", "LOCALAPPDATA", "TEMP", "TMP", "TMPDIR", "LANG",
+		"CLAUDE_CONFIG_DIR"}
 	env := []string{"NoDefaultCurrentDirectoryInExePath=1"}
 	for _, k := range keys {
 		if v := getenv(k); v != "" {

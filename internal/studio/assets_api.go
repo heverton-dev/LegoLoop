@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"legoloop/internal/caminhos"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -181,7 +182,7 @@ func (s *Server) loopItems() []assets.Item {
 		out = appendLoopItems(out, seen, list, "acervo", "global")
 	}
 	if s.ProjectDir != "" {
-		if pStore, err := loop.NewStore(filepath.Join(s.ProjectDir, "loops")); err == nil {
+		if pStore, err := loop.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); err == nil {
 			if list, err := pStore.List(); err == nil {
 				out = appendLoopItems(out, seen, list, "project", "project")
 			}
@@ -311,7 +312,7 @@ func (s *Server) resolver(ctx context.Context) Resolver {
 }
 
 // maskDAG troca caminhos locais por ~ e <projeto> no DAG devolvido ao navegador. Só a resposta é
-// mascarada: o pipeline.dag.json gravado em disco guarda os caminhos reais, que o runner precisa.
+// mascarada: o arquivo DAG gravado em disco guarda os caminhos reais, que o runner precisa.
 func (s *Server) maskDAG(raw json.RawMessage) json.RawMessage {
 	if len(raw) == 0 {
 		return raw

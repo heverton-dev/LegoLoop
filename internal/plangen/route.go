@@ -31,7 +31,7 @@ type routeRouting struct {
 type routeIsolation struct {
 	Workspace        string `json:"workspace"`
 	Executor         string `json:"executor"`
-	SubagentsAllowed bool   `json:"subagents_allowed"`
+	SubagentsAllowed any    `json:"subagents_allowed"` // false ou "ephemeral" (AGENTS.md, regra 4)
 	WriteBoundary    string `json:"write_boundary"`
 }
 
@@ -81,6 +81,7 @@ type routeNode struct {
 	EpicID           *string          `json:"epic_id"`
 	Label            string           `json:"label"`
 	Nature           string           `json:"nature"`
+	Extreme          bool             `json:"extreme"` // true libera Opus, só com aprovação humana
 	Type             string           `json:"type"`
 	Ref              *string          `json:"ref"`
 	Status           string           `json:"status"`
@@ -218,7 +219,7 @@ func tokenBudgetFor(nature string) (tokenBudget, routeRouting) {
 	effort, model, out := "high", "code-pro", 600
 	in := 16000
 	if nature == "nano" {
-		effort, model, out = "low", "code-nano", 300
+		effort, model, out = "low", "code-fast", 300
 		in = 8000
 	} else if nature == "macro" {
 		effort, model, out = "medium", "code-fast", 1200

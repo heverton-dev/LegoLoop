@@ -42,6 +42,7 @@
       "epic_id": "E01",
       "label": "Entrevista Socrática & Alinhamento de Intenção",
       "nature": "micro",
+      "extreme": false,
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -118,6 +119,7 @@
       "epic_id": "E01",
       "label": "Fatiamento Hierárquico em Tríade (Macro, Meso, Micro)",
       "nature": "nano",
+      "extreme": false,
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -144,7 +146,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-nano",
+        "model": "code-fast",
         "effort": "low",
         "fallback": {
           "harness": "antigravity",
@@ -198,6 +200,7 @@
       "epic_id": "E01",
       "label": "Redação Estéril e Purificação Didática sem IA-Slop",
       "nature": "micro",
+      "extreme": false,
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -278,6 +281,7 @@
       "epic_id": "E01",
       "label": "Compilação Typst + Pandoc no Formato 170x240mm",
       "nature": "micro",
+      "extreme": false,
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -304,7 +308,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-nano",
+        "model": "code-fast",
         "effort": "low",
         "fallback": {
           "harness": "antigravity",
@@ -359,6 +363,7 @@
       "epic_id": "E01",
       "label": "Auditoria Mecânica com PyMuPDF (Zero Quebras & Linha Única)",
       "nature": "micro",
+      "extreme": false,
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -439,6 +444,7 @@
       "epic_id": "E01",
       "label": "Stop-Gate Humano: Aprovação Final do Livro e Publicação",
       "nature": "nano",
+      "extreme": false,
       "type": "stop_gate",
       "ref": null,
       "status": "PENDING",
@@ -465,7 +471,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-nano",
+        "model": "code-fast",
         "effort": "low",
         "fallback": {
           "harness": "antigravity",

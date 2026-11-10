@@ -56,6 +56,9 @@ func (d *DAG) checkWatchedPath(watched string) error {
 }
 
 func validateTrigger(t Trigger) error {
+	if t.Conflito {
+		return errors.New("trigger: os campos loop e processo divergem")
+	}
 	switch t.Type {
 	case TriggerManual:
 		return t.stray("")

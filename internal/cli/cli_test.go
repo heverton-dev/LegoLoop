@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"legoloop/internal/caminhos"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -129,7 +130,7 @@ const pipelineScript = `{"name":"p","nodes":[
 
 func TestValidateAndRun(t *testing.T) {
 	work := t.TempDir()
-	p := filepath.Join(work, "pipeline.dag.json")
+	p := caminhos.CaminhoDAG(work)
 	os.WriteFile(p, []byte(pipelineScript), 0o644)
 	d, out, _ := deps(t)
 	if code := run(t, d, "validate", p); code != 0 || !strings.Contains(out.String(), "camada 1") {
@@ -149,7 +150,7 @@ func TestValidateAndRun(t *testing.T) {
 
 func TestRunFailureExitCode(t *testing.T) {
 	work := t.TempDir()
-	p := filepath.Join(work, "pipeline.dag.json")
+	p := caminhos.CaminhoDAG(work)
 	os.WriteFile(p, []byte(strings.Replace(pipelineScript, `go1\\.`, `nunca-casa`, 1)), 0o644)
 	d, out, _ := deps(t)
 	if code := run(t, d, "run", p, "--workdir", work, "--json", "--var", "idea=x", "--allow-scripts"); code != 1 {
@@ -292,7 +293,7 @@ func TestHumanBytes(t *testing.T) {
 // SEC-01: sem --allow-scripts o nó script não executa e o motivo é explicado.
 func TestRunRefusesScriptsWithoutConsent(t *testing.T) {
 	work := t.TempDir()
-	p := filepath.Join(work, "pipeline.dag.json")
+	p := caminhos.CaminhoDAG(work)
 	os.WriteFile(p, []byte(pipelineScript), 0o644)
 	d, out, _ := deps(t)
 	if code := run(t, d, "run", p, "--workdir", work); code != 1 {
@@ -380,7 +381,7 @@ func TestForgeServesAndTriggersInitialScan(t *testing.T) {
 
 func TestRunInteractiveFlags(t *testing.T) {
 	work := t.TempDir()
-	p := filepath.Join(work, "pipeline.dag.json")
+	p := caminhos.CaminhoDAG(work)
 	dagJSON := `{
 		"name": "cli-interactive-test",
 		"nodes": [{

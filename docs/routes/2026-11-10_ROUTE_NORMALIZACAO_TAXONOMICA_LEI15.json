@@ -1,0 +1,2885 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "NORMALIZACAO_TAXONOMICA_LEI15",
+  "version": "1.0.0",
+  "date": "2026-11-10",
+  "session_id": "9520cb21-e300-42c1-83f2-c6fab90c3188",
+  "intent_ref": "docs/intents/2026-11-10_INTENT_NORMALIZACAO_TAXONOMICA_LEI15.md",
+  "spec_ref": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md",
+  "plan_ref": "docs/plans/2026-11-10_PLAN_NORMALIZACAO_TAXONOMICA_LEI15.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-10_INTENT_NORMALIZACAO_TAXONOMICA_LEI15.md",
+      "sha256": "9f8fc0269474483fdad64b7093ecc567ee933011180ff2e6692e0f507b2cee79"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md",
+      "sha256": "cbbb5d8d4075c08b5aa46afc5a96d9b817ad4b9d03fea24e0d74f429230272ea"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-10_PLAN_NORMALIZACAO_TAXONOMICA_LEI15.md",
+      "sha256": "1420ec1a08f0ba19a8360d81cbec4f33a6541c505ff1b8e1a912aab3b2c318db"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "stash_changes",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    },
+    "routing_order": [
+      "9router",
+      "agy",
+      "mimo",
+      "opencode",
+      "claude",
+      "ollama"
+    ],
+    "claude_model_tiers": {
+      "nano": "haiku",
+      "micro": "sonnet",
+      "macro": "sonnet",
+      "extreme": "opus"
+    },
+    "agy_lanes": {
+      "default": 2,
+      "min": 1,
+      "ticket_pinned_to_lane": true,
+      "account_switch_by_code": false,
+      "on_429": "next_harness",
+      "kill_switch_patterns": [
+        "service disabled",
+        "Terms of Service"
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-00.1",
+      "initiative_id": null,
+      "epic_id": "E00",
+      "label": "Classificar cada violação como texto ou contrato",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "tools/taxlinter/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E00.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E00.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "scratch/tax_triagem.json"
+        ],
+        "verify": [],
+        "gate": "file_exists('scratch/tax_triagem.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-00.2",
+      "initiative_id": null,
+      "epic_id": "E00",
+      "label": "Teste dourado dos loops existentes",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "loops/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E00.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E00.2",
+      "test_target": "internal/golden/golden_test.go:TestLoopsDouradosValidam",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/golden/golden_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/golden/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-00.3",
+      "initiative_id": null,
+      "epic_id": "E00",
+      "label": "Atualizar governança: subagente efêmero, exceção de marca, contrato do ROUTE e combo code-fast",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "AGENTS.md",
+          "docs/templates/TEMPLATE_PLAN.md",
+          "docs/templates/TEMPLATE_ROUTE.json",
+          "internal/plangen/route.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E00.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E00.3",
+      "test_target": "docs/templates/templates_test.go:TestContratoSubagenteEfemero",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "AGENTS.md",
+          "docs/templates/TEMPLATE_PLAN.md",
+          "docs/templates/TEMPLATE_ROUTE.json",
+          "internal/plangen/route.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./docs/templates/...",
+            "./internal/plangen/..."
+          ]
+        ],
+        "gate": "exit_code == 0 && has_pattern('AGENTS.md', 'efêmero')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-00.4",
+      "initiative_id": null,
+      "epic_id": "E00",
+      "label": "Ampliar o taxlinter (identificadores, valores, corpo, .typ, literais) e gerar o baseline real",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-00.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "tools/taxlinter/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E00.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E00.4",
+      "test_target": "tools/taxlinter/linter_test.go:TestScanCoberturaAmpliada",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "tools/taxlinter/main.go",
+          "tools/taxlinter/linter_test.go",
+          "scratch/tax_baseline.txt"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./tools/taxlinter/..."
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('scratch/tax_baseline.txt')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-00.5",
+      "initiative_id": null,
+      "epic_id": "E00",
+      "label": "Peça ticketgate: bateria única de verificação",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "tools/funclen/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E00.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E00.5",
+      "test_target": "tools/ticketgate/main_test.go:TestGofmtSujoFalha",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "tools/ticketgate/main.go",
+          "tools/ticketgate/main_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./tools/ticketgate/..."
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('tools/ticketgate/main.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E00",
+      "initiative_id": null,
+      "epic_id": "E00",
+      "label": "Stop-Gate Humano (SG-E00)",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-00.1",
+        "TICK-00.2",
+        "TICK-00.3",
+        "TICK-00.4",
+        "TICK-00.5"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Triagem e baseline aprovados? Autoriza iniciar a compatibilidade e os geradores?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.1",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Centralizar a resolução de nomes de arquivo e diretório",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "SG-E00"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/paths/paths_test.go:TestResolucaoUnica",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/paths/paths.go",
+          "internal/paths/paths_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Leitor dual de DAG nos dois dialetos",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/dag/parse.go",
+          "internal/dag/types.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": "internal/dag/parse_dual_test.go:TestParseDoisDialetos",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/dag/parse.go",
+          "internal/dag/types.go",
+          "internal/dag/parse_dual_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/dag/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.3",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Schema dag.v2 aceita os dois dialetos",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "schemas/dag.v1.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/gate/schemas_dir_test.go:TestSchemaV2AceitaDialetos",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "schemas/dag.v2.json",
+          "internal/gate/schemas_dir_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/gate/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.4",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Comando legoloop migrar idempotente com backup",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/dag/parse.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E01.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.4",
+      "test_target": "internal/migrar/migrar_test.go:TestMigrarIdaEVolta",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/migrar/migrar.go",
+          "internal/migrar/migrar_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/migrar/...,./internal/cli/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.5",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Paridade SHA-256 do fechar aceita os dois nomes",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fechar/fechar.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E01.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.5",
+      "test_target": "internal/fechar/fechar_test.go:TestParidadeDoisNomes",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fechar/fechar.go",
+          "internal/fechar/fechar_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/fechar/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.6",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Projeção ROUTE para DAG (tools/route2dag) e DAG espelho desta ROUTE",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/routes/2026-11-10_ROUTE_NORMALIZACAO_TAXONOMICA_LEI15.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E01.6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.6",
+      "test_target": "tools/route2dag/main_test.go:TestProjecaoValidaNoParser",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "tools/route2dag/main.go",
+          "tools/route2dag/main_test.go",
+          "docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./tools/route2dag/...,./internal/dag/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Geradores fabricar e compor gravam os nomes canônicos",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/camada4.go",
+          "internal/fabricar/engine.go",
+          "internal/compor/compor.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/fabricar/engine_test.go:TestGravaNomesCanonicos",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/camada4.go",
+          "internal/fabricar/engine.go",
+          "internal/compor/compor.go",
+          "internal/fabricar/engine_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/fabricar/...,./internal/compor/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Normalizar os templates",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E00"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/templates/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": "docs/templates/templates_test.go:TestTemplatesSemTermoProibido",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/templates/templates_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./docs/templates/...",
+            "-tax",
+            "docs/templates",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.3",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Normalizar os prompts do fabricar e da entrevista",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/fabricar/",
+          "internal/interview/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E02.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.3",
+      "test_target": "internal/fabricar/prompts_test.go:TestSaidaLLMSemTermoProibido",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/fabricar/prompts_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/fabricar/...,./internal/interview/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.4",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Normalizar a ajuda e as mensagens da CLI",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/cli.go",
+          "internal/cli/commands.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E02.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.4",
+      "test_target": "internal/cli/cli_test.go:TestAjudaSemTermoProibido",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/cli.go",
+          "internal/cli/commands.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/cli/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.5",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Normalizar as skills e reinstalar",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.4"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "skills/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E02.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.5",
+      "test_target": "internal/assets/skills_taxonomia_test.go:TestSkillsSemTermoProibido",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/assets/...",
+            "-tax",
+            "skills",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano (SG-E02)",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3",
+        "TICK-01.4",
+        "TICK-01.5",
+        "TICK-01.6",
+        "TICK-02.1",
+        "TICK-02.2",
+        "TICK-02.3",
+        "TICK-02.4",
+        "TICK-02.5"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Novos Processos nascem sem termo proibido? Autoriza a refatoração interna?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Normalizar internal/studio e as rotas da API",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/studio/...",
+            "-tax",
+            "internal/studio",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Normalizar internal/dag e internal/graph",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/dag/",
+          "internal/graph/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/dag/...,./internal/graph/...",
+            "-tax",
+            "internal/dag,internal/graph",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.3",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Renomear internal/loop para internal/studiodoc",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/loop/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E03.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.3",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studiodoc/"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./...",
+            "-tax",
+            "internal/studiodoc",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.4",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Normalizar internal/cli, internal/fabricar e internal/refinar",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/",
+          "internal/fabricar/",
+          "internal/refinar/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E03.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.4",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/cli/...,./internal/fabricar/...,./internal/refinar/...",
+            "-tax",
+            "internal/cli,internal/fabricar,internal/refinar",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.5",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Normalizar internal/assets, board, orchestrix e suggest",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/assets/",
+          "internal/board/",
+          "internal/orchestrix/",
+          "internal/suggest/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E03.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.5",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/assets/...,./internal/board/...,./internal/orchestrix/...,./internal/suggest/...",
+            "-tax",
+            "internal/assets,internal/board,internal/orchestrix,internal/suggest",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.6",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Normalizar internal/runner, internal/videorea e demais pastas",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/runner/",
+          "internal/videorea/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E03.6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.6",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/runner/...,./internal/videorea/...",
+            "-tax",
+            "internal/runner,internal/videorea",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.7",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Verificação global de taxonomia do código interno",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2",
+        "TICK-03.3",
+        "TICK-03.4",
+        "TICK-03.5",
+        "TICK-03.6"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E03.7",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.7",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./...",
+            "-tax",
+            "internal,cmd",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano (SG-E03)",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-03.7"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Código interno normalizado e loops intactos? Autoriza mover dados e diretórios?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Renomear loops/ para processos/ e migrar os 15 itens para os nomes novos",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "loops/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "processos/"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('processos/legoloop-fechar/processo.dag.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E04-COFRE",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Stop-Gate Humano (SG-E04-COFRE)",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-01.4"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Backup do Cofre confirmado? Autoriza migrar os 6 loops reais?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.2",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Migrar os 6 loops do Cofre real com backup",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E04-COFRE"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E04.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/migrar/..."
+          ]
+        ],
+        "gate": "exit_code == 0 && prompt('Os 6 loops do Cofre validam e o backup existe?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.3",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Atualizar referências em docs, manuais e livros e recompilar os livros",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-04.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E04.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.3",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-livros",
+            "docs/books,docs/videorea"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.4",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Marcar o leitor dos nomes antigos como depreciado sem removê-lo",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/dag/parse.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E04.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.4",
+      "test_target": "internal/dag/parse_dual_test.go:TestAvisoDepreciacao",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/dag/parse.go",
+          "internal/dag/parse_dual_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/dag/...,./internal/cli/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.1",
+      "initiative_id": null,
+      "epic_id": "E05",
+      "label": "Executor de subagente efêmero sobre claude -p",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/orchestrix/",
+          "internal/runner/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E05.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.1",
+      "test_target": "internal/orchestrix/executor_efemero_test.go:TestFerramentaForaDaListaRecusada",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/executor_efemero.go",
+          "internal/orchestrix/executor_efemero_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.2",
+      "initiative_id": null,
+      "epic_id": "E05",
+      "label": "Roteador com ordem de harness e failover sem troca de conta",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-05.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/orchestrix/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E05.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.2",
+      "test_target": "internal/orchestrix/router_test.go:TestOrdemEFailover429",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/router.go",
+          "internal/orchestrix/router_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.3",
+      "initiative_id": null,
+      "epic_id": "E05",
+      "label": "Raias fixas do agy com alarme de Terms of Service",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-05.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/orchestrix/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E05.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.3",
+      "test_target": "internal/orchestrix/raias_test.go:TestRaiaFixaEAlarme",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/raias.go",
+          "internal/orchestrix/raias_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.4",
+      "initiative_id": null,
+      "epic_id": "E05",
+      "label": "Modelo e esforço por natureza com a marca extreme",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-05.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/plangen/route.go",
+          "schemas/route.v2.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E05.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.4",
+      "test_target": "internal/orchestrix/modelo_test.go:TestExtremeExigeStopGate",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/modelo.go",
+          "internal/orchestrix/modelo_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...,./internal/plangen/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.5",
+      "initiative_id": null,
+      "epic_id": "E05",
+      "label": "Paralelismo e execução assíncrona com detecção de conflito de arquivo",
+      "nature": "macro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "TICK-05.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/runner/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E05.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.5",
+      "test_target": "internal/runner/conflito_test.go:TestMesmoArquivoNaoRodaJunto",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/runner/conflito.go",
+          "internal/runner/conflito_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/runner/...,./internal/orchestrix/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.6",
+      "initiative_id": null,
+      "epic_id": "E05",
+      "label": "Telemetria de tokens, tempo e custo por ticket e por harness",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-05.4",
+        "TICK-05.5"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/orchestrix/"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E05.6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.6",
+      "test_target": "internal/orchestrix/telemetria_test.go:TestBalancoNoReport",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/telemetria.go",
+          "internal/orchestrix/telemetria_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...",
+            "-gold"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-06.1",
+      "initiative_id": null,
+      "epic_id": "E06",
+      "label": "Cadeia de fechamento e gate global do taxlinter",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.3",
+        "TICK-04.4",
+        "TICK-05.6"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "agy",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "AGENTS.md",
+          "tools/taxlinter/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E06.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E06.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./...",
+            "-tax",
+            "internal,cmd,processos,skills,docs/templates",
+            "-gold",
+            "-build"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": null,
+      "epic_id": null,
+      "label": "Homologação Final (Regressão Global e Recompilação Fresca)",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-06.1"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Homologação final aprovada? Autoriza commit e push?')"
+      },
+      "telemetry": null
+    }
+  ]
+}

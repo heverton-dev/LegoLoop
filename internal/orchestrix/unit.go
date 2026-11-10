@@ -1,0 +1,106 @@
+package orchestrix
+
+import (
+	"errors"
+	"fmt"
+	"os"
+	"path"
+	"path/filepath"
+	"sort"
+	"strings"
+
+	"legoloop/internal/dag"
+)
+
+// allowedWrites devolve os caminhos que um unit_task pode alterar:
+// output.artifacts (context_out) e o arquivo de teste do test_seam.
+func allowedWrites(n dag.Node) []string {
+	out := append([]string{}, n.ContextOut...)
+	if f := n.TestSeam["file"]; f != "" {
+		out = append(out, f)
+	}
+	return out
+}
+
+// normRel normaliza um caminho relativo com barras e recusa absoluto e "..".
+func normRel(p string) (string, error) {
+	slash := strings.ReplaceAll(p, `\`, "/")
+	if slash == "" || path.IsAbs(slash) || filepath.IsAbs(p) || strings.Contains(slash, ":") {
+		return "", fmt.Errorf("caminho %q não é relativo ao projeto", p)
+	}
+	clean := path.Clean(slash)
+	if clean == ".." || strings.HasPrefix(clean, "../") || clean == "." {
+		return "", fmt.Errorf("caminho %q sai do projeto", p)
+	}
+	return clean, nil
+}
+
+// checkBoundary aplica o write_boundary strict: todo caminho alterado precisa estar
+// na lista de permitidos. Devolve todos os desvios juntos.
+func checkBoundary(changed, allowed []string) error {
+	ok := map[string]bool{}
+	for _, a := range allowed {
+		n, err := normRel(a)
+		if err != nil {
+			return fmt.Errorf("saída permitida inválida: %w", err)
+		}
+		ok[n] = true
+	}
+	var errs []error
+	for _, c := range changed {
+		n, err := normRel(c)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+		if !ok[n] {
+			errs = append(errs, fmt.Errorf("write_boundary: %q fora das saídas permitidas", n))
+		}
+	}
+	return errors.Join(errs...)
+}
+
+// buildUnitPrompt monta o prompt estéril de um unit_task: só os artefatos do ticket.
+func buildUnitPrompt(n dag.Node, work *os.Root) (string, error) {
+	var b strings.Builder
+	fmt.Fprintf(&b, "# Orchestrix isolada — unit_task %s\n\n", n.ID)
+	b.WriteString("Você executa um único ticket, sem histórico. Edite só os arquivos permitidos abaixo. ")
+	b.WriteString("Não use sub-agentes. Não faça commit.\n\n")
+	if n.SpecRef != "" {
+		fmt.Fprintf(&b, "Critério de aceitação: %s\n", n.SpecRef)
+	}
+	if sig := n.TestSeam["signature"]; sig != "" {
+		fmt.Fprintf(&b, "Teste-alvo (TDD Red-Green): %s em %s\n", sig, n.TestSeam["file"])
+	}
+	fmt.Fprintf(&b, "Condição de saída (gate): `%s`\n", n.Output.Gate)
+	if len(n.Command) > 0 {
+		fmt.Fprintf(&b, "Verificação: `%s`\n", strings.Join(n.Command, " "))
+	}
+	b.WriteString("\n## Arquivos permitidos para escrita\n\n")
+	allowed := allowedWrites(n)
+	sort.Strings(allowed)
+	for _, a := range allowed {
+		fmt.Fprintf(&b, "- %s\n", a)
+	}
+	return appendContext(&b, n, work)
+}
+
+// appendContext injeta cada arquivo de context_in. Arquivo ausente (ainda a criar) é marcado.
+func appendContext(b *strings.Builder, n dag.Node, work *os.Root) (string, error) {
+	for _, f := range n.ContextIn {
+		rel, err := normRel(f)
+		if err != nil {
+			return "", fmt.Errorf("context_in: %w", err)
+		}
+		data, err := readLimited(work, filepath.FromSlash(rel))
+		switch {
+		case errors.Is(err, os.ErrNotExist):
+			fmt.Fprintf(b, "\n## Contexto: %s\n\n(arquivo ainda não existe)\n", rel)
+		case err != nil:
+			return "", fmt.Errorf("context_in %q: %w", rel, err)
+		default:
+			fmt.Fprintf(b, "\n## Contexto: %s\n\n%s\n", rel, data)
+		}
+	}
+	return b.String(), nil
+}

@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"legoloop/internal/caminhos"
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -200,7 +200,7 @@ func TestMaterializeWritesPipeline(t *testing.T) {
 	if rec.Code != 200 {
 		t.Fatalf("status %d: %s", rec.Code, rec.Body.String())
 	}
-	data, err := os.ReadFile(filepath.Join(s.ProjectDir, "pipeline.dag.json"))
+	data, err := os.ReadFile(caminhos.CaminhoDAG(s.ProjectDir))
 	if err != nil {
 		t.Fatal(err)
 	}

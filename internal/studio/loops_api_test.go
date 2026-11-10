@@ -2,6 +2,7 @@ package studio
 
 import (
 	"encoding/json"
+	"legoloop/internal/caminhos"
 	"net/http"
 	"path/filepath"
 	"testing"
@@ -12,7 +13,7 @@ import (
 
 func TestLoopsAPICRUD(t *testing.T) {
 	s, home, _ := newAssetsServer(t)
-	loopsDir := filepath.Join(home, ".aidd", "canonical", "loops")
+	loopsDir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
 	store, err := loop.NewStore(loopsDir)
 	if err != nil {
 		t.Fatal(err)
@@ -24,12 +25,10 @@ func TestLoopsAPICRUD(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET /api/loops esperado 200, obteve %d", rec.Code)
 	}
-	var res struct {
-		Loops []loop.Summary `json:"loops"`
-	}
+	var res map[string][]loop.Summary
 	decode(t, rec, &res)
-	if len(res.Loops) != 0 {
-		t.Fatalf("esperava 0 loops, obteve %d", len(res.Loops))
+	if got := res[caminhos.ChaveAPILoops]; len(got) != 0 {
+		t.Fatalf("esperava 0 loops, obteve %d", len(got))
 	}
 
 	// 2. Salvar novo loop
@@ -74,9 +73,10 @@ func TestLoopsAPICRUD(t *testing.T) {
 
 	// 5. Listar deve ter 2 loops
 	rec = do(t, s.Handler(), "GET", "/api/loops", "")
+	res = nil
 	decode(t, rec, &res)
-	if len(res.Loops) != 2 {
-		t.Fatalf("esperava 2 loops após duplicação, obteve %d", len(res.Loops))
+	if got := res[caminhos.ChaveAPILoops]; len(got) != 2 {
+		t.Fatalf("esperava 2 loops após duplicação, obteve %d", len(got))
 	}
 
 	// 6. Deletar cópia

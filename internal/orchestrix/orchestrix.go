@@ -34,6 +34,8 @@ type Orchestrix struct {
 	ExtraEnv []string
 	// AllowScripts é o consentimento explícito (--allow-scripts) para nós script.
 	AllowScripts bool
+	// AllowUnitTasks é o consentimento explícito (--allow-unit-tasks) para nós unit_task.
+	AllowUnitTasks bool
 	// LoopStore é o acervo de sub-loops (pode ser nil caso o acervo não esteja carregado).
 	LoopStore *loop.Store
 	// MaxOutputBytes limita stdout de subprocessos (0 = maxResponseBytes).
@@ -51,6 +53,8 @@ func (o *Orchestrix) Execute(ctx context.Context, n dag.Node, workdir string) (r
 		return o.runSkill(ctx, n, workdir)
 	case dag.TypeSubloop:
 		return o.runSubloop(ctx, n, workdir)
+	case dag.TypeUnitTask:
+		return o.runUnitTask(ctx, n, workdir)
 	}
 	return runner.Result{}, fmt.Errorf("orchestrix: tipo de nó não suportado %q", n.Type)
 }

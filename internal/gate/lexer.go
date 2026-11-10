@@ -1,4 +1,4 @@
-// Package gate compila e avalia expressões de Gate (Pass/Fail) do pipeline.dag.json.
+// Package gate compila e avalia expressões de Gate (Pass/Fail) do arquivo DAG.
 //
 // Gramática:
 //

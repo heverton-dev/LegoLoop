@@ -1,0 +1,288 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "impeccable-design",
+  "name": "Pipeline de Design Impeccable (6 Sub-Loops)",
+  "description": "Pipeline mestre de UI/UX composto pelos 6 sub-loops modulares do Impeccable: Avaliar, Construir, Melhorar, Refinar, Corrigir e Iterar/Documentar.",
+  "version": "1.0.0",
+  "date": "2026-11-09",
+  "upstream_signatures": {
+    "intent": "9812a677fbca05619985ea15858022b7c02bda6396919db45873919e86bf79e8",
+    "spec": "ec6576b22ba8fe6cb30d24bf51a37c9a419eb9338f977c0500e2ea024f9e1189",
+    "plan": "2b6b66e138a0c20beceb43f9ba6be91e528dbe4cbf5e59b9a695d7eb8f1eeae3",
+    "route": "docs/routes/2026-11-07_ROUTE_IMPECCABLE_DESIGN.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": true
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "subloop-avaliar",
+      "name": "Avaliação de UI/UX e Diagnóstico",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "context_in": [],
+      "context_out": [
+        "docs/reports/AUDITORIA_DESIGN.md"
+      ],
+      "test_seam": {
+        "type": "contract_gate",
+        "target": "file_exists('docs/reports/AUDITORIA_DESIGN.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/AUDITORIA_DESIGN.md",
+        "gate": "file_exists('docs/reports/AUDITORIA_DESIGN.md')"
+      }
+    },
+    {
+      "id": "subloop-construir",
+      "name": "Construção da Direção Visual",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-avaliar"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "auditoria": "file('docs/reports/AUDITORIA_DESIGN.md')"
+      },
+      "context_in": [
+        "docs/reports/AUDITORIA_DESIGN.md"
+      ],
+      "context_out": [
+        "docs/specs/DIRECAO_VISUAL.md"
+      ],
+      "test_seam": {
+        "type": "contract_gate",
+        "target": "file_exists('docs/specs/DIRECAO_VISUAL.md')"
+      },
+      "output": {
+        "artifact": "docs/specs/DIRECAO_VISUAL.md",
+        "gate": "file_exists('docs/specs/DIRECAO_VISUAL.md')"
+      }
+    },
+    {
+      "id": "subloop-melhorar",
+      "name": "Design Tokens & Sistema de Cores",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-construir"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast",
+        "effort": "medium"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "direcao": "file('docs/specs/DIRECAO_VISUAL.md')"
+      },
+      "context_in": [
+        "docs/specs/DIRECAO_VISUAL.md"
+      ],
+      "context_out": [
+        "src/styles/theme.css"
+      ],
+      "test_seam": {
+        "type": "contract_gate",
+        "target": "file_exists('src/styles/theme.css')"
+      },
+      "output": {
+        "artifact": "src/styles/theme.css",
+        "gate": "file_exists('src/styles/theme.css')"
+      }
+    },
+    {
+      "id": "subloop-refinar",
+      "name": "Refinamento & Hardening UI",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-melhorar"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast",
+        "effort": "medium"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "tema": "file('src/styles/theme.css')"
+      },
+      "context_in": [
+        "src/styles/theme.css"
+      ],
+      "context_out": [
+        "docs/reports/HARDENING_UI.md"
+      ],
+      "test_seam": {
+        "type": "contract_gate",
+        "target": "file_exists('docs/reports/HARDENING_UI.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/HARDENING_UI.md",
+        "gate": "file_exists('docs/reports/HARDENING_UI.md')"
+      }
+    },
+    {
+      "id": "subloop-corrigir",
+      "name": "Correções de Acessibilidade & Responsividade",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-refinar"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast",
+        "effort": "medium"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "hardening": "file('docs/reports/HARDENING_UI.md')"
+      },
+      "context_in": [
+        "docs/reports/HARDENING_UI.md"
+      ],
+      "context_out": [
+        "docs/reports/RESPONSIVE_VERIFICATION.md"
+      ],
+      "test_seam": {
+        "type": "contract_gate",
+        "target": "file_exists('docs/reports/RESPONSIVE_VERIFICATION.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/RESPONSIVE_VERIFICATION.md",
+        "gate": "file_exists('docs/reports/RESPONSIVE_VERIFICATION.md')"
+      }
+    },
+    {
+      "id": "subloop-iterar-documentar",
+      "name": "Documentação do Design System",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "skill",
+      "ref": "skills/impeccable",
+      "depends_on": [
+        "subloop-corrigir"
+      ],
+      "routing": {
+        "mode": "auto",
+        "combo": "code-fast",
+        "effort": "low"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "verificacao": "file('docs/reports/RESPONSIVE_VERIFICATION.md')"
+      },
+      "context_in": [
+        "docs/reports/RESPONSIVE_VERIFICATION.md"
+      ],
+      "context_out": [
+        "DESIGN.md"
+      ],
+      "test_seam": {
+        "type": "contract_gate",
+        "target": "file_exists('DESIGN.md')"
+      },
+      "output": {
+        "artifact": "DESIGN.md",
+        "gate": "file_exists('DESIGN.md')"
+      }
+    }
+  ]
+}

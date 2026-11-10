@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -46,7 +47,7 @@ func TestProcessoRealBinarioGravaOProcessoEAsSeisVisoesCoerentes(t *testing.T) {
 			t.Errorf("etapa %s sem peça ou com gate só de existência: %+v", e.ID, e)
 		}
 	}
-	assertDAGComAsEtapas(t, filepath.Join(vault, "loops", "legoloop-extrair-audio.dag.json"), ids)
+	assertDAGComAsEtapas(t, filepath.Join(vault, caminhos.DirLoops, "legoloop-extrair-audio.dag.json"), ids)
 	plan := firstGlob(t, filepath.Join(proj, "docs", "plans", "*_PLAN_EXTRAIR_AUDIO.md"))
 	spec := firstGlob(t, filepath.Join(proj, "docs", "specs", "*_SPEC_EXTRAIR_AUDIO.md"))
 	for _, id := range ids {

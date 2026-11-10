@@ -22,6 +22,8 @@ const MaxTimeoutSec = 24 * 60 * 60
 
 var (
 	idRe = regexp.MustCompile(`^[A-Za-z0-9_-]{1,64}$`)
+	// nodeIDRe valida o id de nó: aceita ponto no meio (TICK-01.1), nunca no início nem no fim.
+	nodeIDRe = regexp.MustCompile(`^[A-Za-z0-9_-]([A-Za-z0-9_.-]{0,62}[A-Za-z0-9_-])?$`)
 	// shortNameRe detecta nomes curtos 8.3 do NTFS (GIT~1 ⇒ .git).
 	shortNameRe = regexp.MustCompile(`~[0-9]`)
 )
@@ -52,13 +54,14 @@ func Parse(data []byte) (*DAG, error) {
 	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
 		return nil, errors.New("dag: conteúdo extra após o objeto JSON")
 	}
+	d.normalizarDialeto()
 	if err := d.validate(); err != nil {
 		return nil, err
 	}
 	return &d, nil
 }
 
-// Marshal serializa o DAG indentado (formato gravado em pipeline.dag.json).
+// Marshal serializa o DAG indentado (formato gravado no arquivo DAG do Processo).
 func (d *DAG) Marshal() ([]byte, error) {
 	return json.MarshalIndent(d, "", "  ")
 }
@@ -111,7 +114,7 @@ func (d *DAG) indexNode(i int) error {
 		d.Nodes[i].DependsOn = d.Nodes[i].Dependencies
 	}
 	n := d.Nodes[i]
-	if !idRe.MatchString(n.ID) {
+	if !nodeIDRe.MatchString(n.ID) {
 		return fmt.Errorf("dag: id inválido %q", n.ID)
 	}
 	if _, dup := d.byID[n.ID]; dup {
@@ -327,4 +330,27 @@ func sortedKeys(m map[string]int) []string {
 	}
 	sort.Strings(out)
 	return out
+}
+
+// normalizarDialeto converte o dialeto novo (subprocesso, processo_fim, campo processo) na
+// representação interna do dialeto antigo. O leitor aceita os dois; a gravação segue o antigo.
+func (d *DAG) normalizarDialeto() {
+	for i := range d.Nodes {
+		if d.Nodes[i].Type == TypeSubprocesso {
+			d.Nodes[i].Type = TypeSubloop
+		}
+	}
+	if t := d.Trigger; t != nil {
+		if t.Type == TriggerProcessoFim {
+			t.Type = TriggerLoopEnd
+		}
+		if t.Processo != "" {
+			if t.Loop == "" {
+				t.Loop = t.Processo
+			} else if t.Loop != t.Processo {
+				t.Conflito = true
+			}
+			t.Processo = ""
+		}
+	}
 }

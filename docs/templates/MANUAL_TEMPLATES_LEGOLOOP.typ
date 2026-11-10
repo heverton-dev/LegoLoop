@@ -352,7 +352,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
     - *Identificador Canônico:* Padrão `TICK-NN.M`.
     - *Natureza:* `nano` (ajustes mínimos), `micro` (unidade com TDD), `macro` (integração de subsistema).
     - *Modo de Execução:* `tdd_red_green`, `sequential` ou `parallel`.
-    - *Isolamento e Roteamento Cognitivo:* Proibição expressa de subagentes (`subagents_allowed: false`), definição de modelo primário (ex: Claude Sonnet via 9Router) e modelo de contingência/fallback.
+    - *Isolamento e Roteamento Cognitivo:* Agente de harness proibido; subagente efêmero só com `subagents_allowed: "ephemeral"` (AGENTS.md, regra 4), definição de modelo primário (ex: Claude Sonnet via 9Router) e modelo de contingência/fallback.
     - *Contratos de Tooling e I/O:* Arquivos que podem ser tocados (`source_files`, `test_files`). O agente é impedido de modificar arquivos fora dessa lista fechada.
     - *Comando de Verificação e Gate DSL:* Script ou comando que atesta o sucesso com `exit_code == 0`.
     - *Rastreabilidade Estrita:* Referência obrigatória ao critério de aceite correspondente (`Spec Ref: AC-XX.Y`).
@@ -384,7 +384,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
   - Consiste num JSON validado por schema (`https://legoloop.dev/schemas/route.v2.json`) contendo a lista de `nodes`.
   - Cada nó possui uma estrutura isomórfica rigorosa testada em `templates.RouteKeys()`:
     - `id`, `label`, `nature`, `type` (`unit_task`, `subloop`, `stop_gate`), `ref`, `status`.
-    - `isolation`: `workspace` (`local`, `git_worktree`, `tempdir`), `executor` (`orchestrix_hermetic`), `subagents_allowed` (sempre `false`).
+    - `isolation`: `workspace` (`local`, `git_worktree`, `tempdir`), `executor` (`orchestrix_hermetic`), `subagents_allowed` (`false` ou `"ephemeral"`), e o campo `extreme` do nó.
     - `timeout_sec` e `token_budget` (`max_output_tokens` máximo de 600 tokens para impedir context bloat).
     - `depends_on`: Grafo explícito de dependências sem ciclos.
     - `routing`: Seleção cirúrgica de modelo (ex: Sonnet para raciocínio complexo, Flash para tarefas mecânicas) com fallback.

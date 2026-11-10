@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"legoloop/internal/caminhos"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -157,6 +158,7 @@ type runFlags struct {
 	vars            listFlag
 	asJSON          bool
 	allowScripts    bool
+	allowUnitTasks  bool
 	autoApprove     bool
 	nonInteractive  bool
 }
@@ -171,6 +173,7 @@ func parseRunFlags(args []string, d Deps) (runFlags, error) {
 	fs.Var(&f.vars, "var", "variável chave=valor (repetível)")
 	fs.BoolVar(&f.asJSON, "json", false, "saída JSON")
 	fs.BoolVar(&f.allowScripts, "allow-scripts", false, "permite nós script (executam comandos locais)")
+	fs.BoolVar(&f.allowUnitTasks, "allow-unit-tasks", false, "permite nós unit_task (claude com ferramentas em worktree git)")
 	fs.BoolVar(&f.autoApprove, "yes", false, "aprova automaticamente Stop-Gates interativos")
 	fs.BoolVar(&f.autoApprove, "y", false, "alias de --yes")
 	fs.BoolVar(&f.nonInteractive, "non-interactive", false, "rejeita Stop-Gates interativos se requerer interação")
@@ -226,6 +229,7 @@ func cmdRun(ctx context.Context, args []string, d Deps) int {
 		return fail(d, err)
 	}
 	ox.AllowScripts = f.allowScripts
+	ox.AllowUnitTasks = f.allowUnitTasks
 	rep, err := runner.Run(ctx, p, f.runnerOptions(ox, f.prompter(d)))
 	if err != nil {
 		return fail(d, err)
@@ -271,7 +275,7 @@ func newOrchestrix(ctx context.Context, d Deps, skills string, vars map[string]s
 	}
 	// O acervo de loops do cofre executa os nós subloop (etapa que compõe outro processo). Só liga se a pasta
 	// existe: o run não cria pasta no cofre.
-	if loops := filepath.Join(dir, "loops"); dirExists(loops) {
+	if loops := caminhos.DirLoopsEm(dir); dirExists(loops) {
 		if ox.LoopStore, err = loop.NewStore(loops); err != nil {
 			return nil, err
 		}
@@ -341,7 +345,7 @@ const assetScanInterval = 30 * time.Second
 func cmdStudio(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("studio", d)
 	addr := fs.String("addr", "127.0.0.1:7878", "endereço de escuta (somente loopback)")
-	project := fs.String("project", ".", "projeto onde pipeline.dag.json é gravado")
+	project := fs.String("project", ".", "projeto onde "+caminhos.ArquivoDAG+" é gravado")
 	var canonRoots listFlag
 	fs.Var(&canonRoots, "canon-root", "raiz extra da canonização na interface (repetível)")
 	if err := fs.Parse(args); err != nil {
@@ -372,7 +376,7 @@ func cmdStudio(ctx context.Context, args []string, d Deps) int {
 func cmdForge(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("forge", d)
 	addr := fs.String("addr", "127.0.0.1:7878", "endereço de escuta (somente loopback)")
-	project := fs.String("project", ".", "projeto onde pipeline.dag.json é gravado")
+	project := fs.String("project", ".", "projeto onde "+caminhos.ArquivoDAG+" é gravado")
 	var canonRoots listFlag
 	fs.Var(&canonRoots, "canon-root", "raiz extra da canonização na interface (repetível)")
 	if err := fs.Parse(args); err != nil {

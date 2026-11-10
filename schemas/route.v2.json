@@ -45,14 +45,20 @@
         "properties": {
           "id": { "type": "string" },
           "initiative_id": { "type": ["string", "null"] },
-          "epic_id": { "type": "string" },
+          "epic_id": { "type": ["string", "null"] },
           "label": { "type": "string" },
           "nature": { "type": "string", "enum": ["nano", "micro", "macro", "epic"] },
           "type": { "type": "string" },
           "ref": { "type": ["string", "null"] },
           "status": { "type": "string" },
           "execution_mode": { "type": "string" },
-          "isolation": { "type": "object" },
+          "extreme": { "type": "boolean" },
+          "isolation": {
+            "type": "object",
+            "properties": {
+              "subagents_allowed": { "enum": [false, "ephemeral"] }
+            }
+          },
           "timeout_sec": { "type": "integer" },
           "token_budget": { "type": "object" },
           "depends_on": { "type": "array", "items": { "type": "string" } },
@@ -62,8 +68,8 @@
           "inputs": { "type": "object" },
           "context_in": { "type": "array", "items": { "type": "string" } },
           "context_out": { "type": "array", "items": { "type": "string" } },
-          "spec_ref": { "type": "string" },
-          "test_target": { "type": "string" },
+          "spec_ref": { "type": ["string", "null"] },
+          "test_target": { "type": ["string", "null"] },
           "test_seam": { "type": "object" },
           "verification": { "type": "object" },
           "output": { "type": "object" },

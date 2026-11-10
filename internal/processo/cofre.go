@@ -3,6 +3,7 @@ package processo
 import (
 	"encoding/json"
 	"errors"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -29,7 +30,7 @@ type ProcessoCofre struct {
 
 // ProcessosDoCofre lê loops/ do cofre e devolve os processos ordenados por nome.
 func ProcessosDoCofre(vault string) ([]ProcessoCofre, error) {
-	entradas, err := os.ReadDir(filepath.Join(vault, "loops"))
+	entradas, err := os.ReadDir(caminhos.DirLoopsEm(vault))
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			return []ProcessoCofre{}, nil
@@ -78,7 +79,7 @@ func lerProcessoCofre(vault, nome string) ProcessoCofre {
 		return proc
 	}
 	proc.Origem, proc.Natureza = "v1", NaturezaDesconhecida
-	proc.Versao = versaoLoopV1(filepath.Join(vault, "loops", nome+sufixoLoopV1))
+	proc.Versao = versaoLoopV1(filepath.Join(vault, caminhos.DirLoops, nome+sufixoLoopV1))
 	return proc
 }
 

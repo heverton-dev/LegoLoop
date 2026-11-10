@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"strings"
@@ -141,7 +142,7 @@ func TestRunFabricar(t *testing.T) {
 	t.Run("o dag gerado passa no validate", func(t *testing.T) {
 		r := newFabRig(t)
 		run(t, r.d, r.args("extrator de audio", "--yes", "--sem-entrevista")...)
-		dagPath := filepath.Join(r.vault, "loops", "legoloop-extrator-de-audio.dag.json")
+		dagPath := filepath.Join(r.vault, caminhos.DirLoops, "legoloop-extrator-de-audio.dag.json")
 		d2, _, errb := deps(t)
 		if code := run(t, d2, "validate", dagPath); code != 0 {
 			t.Fatalf("validate exit %d: %s", code, errb)

@@ -18,7 +18,14 @@
    * Não repita artefatos ou diffs no corpo da mensagem se já estiverem salvos no disco.
 4. **Orchestrix Cirúrgica por Bloco & Banimento de Subagentes:**
    * Nunca carregue ferramentas ou MCPs desnecessários para a tarefa atual.
-   * Proibido usar subagentes de harness (`invoke_subagent`) que clonam o system prompt inteiro (queima de tokens). Toda execução pós-plano deve seguir o mapa formal em `docs/routes/` com execução estéril por bloco.
+   * Proibido usar agente de harness (`invoke_subagent`, fork, workflow livre) que clona o system prompt inteiro (queima de tokens). Toda execução pós-plano deve seguir o mapa formal em `docs/routes/` com execução estéril por bloco.
+   * Exceção: o subagente efêmero (`isolation.subagents_allowed: "ephemeral"`) é permitido quando cumpre as seis condições:
+     1. O contexto contém só os artefatos do ticket.
+     2. O ticket lista as ferramentas permitidas.
+     3. Um subagente executa um ticket.
+     4. A saída fica em disco e passa pelo gate mecânico.
+     5. O subagente não cria sub-subagentes.
+     6. O `write_boundary` é `strict`.
    * Execute cada nó em contexto estéril; leia apenas o artefato de entrada e produza o artefato de saída contratado.
 5. **TDD Estrito & Recompilação Fresca:**
    * O teste unitário deve falhar antes de qualquer implementação de código de produção (Red-Green-Refactor).
@@ -82,6 +89,7 @@
      | Deduplicação por hash SHA-256 | Canonizar | desduplicar, normalizar hash, deduplicar |
      | Homologação e conclusão | Fechar | concluir processo, encerrar ciclo, finalizar entrega |
 
+   * Exceção de marca: o nome do projeto "LegoLoop" fica mantido. O termo "loop" dentro da marca não conta como violação.
    * A tabela completa (16 domínios) vive no dicionário. Em divergência, o dicionário vence.
    * Portão de qualidade de cada ticket: `go run ./tools/taxlinter internal cmd loops skills docs/templates` (exit 1 com violação). O portão cobre os alvos já normalizados. Alvo com violação herdada exige ticket de normalização antes de entrar no portão.
 

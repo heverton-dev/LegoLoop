@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -137,8 +138,8 @@ func caminhosWorkspace(workspace, nome string) []string {
 	return []string{
 		filepath.Join(workspace, "skills", nome),
 		filepath.Join(workspace, "skills", sem),
-		filepath.Join(workspace, "loops", nome),
-		filepath.Join(workspace, "loops", sem),
+		filepath.Join(workspace, caminhos.DirLoops, nome),
+		filepath.Join(workspace, caminhos.DirLoops, sem),
 		filepath.Join(workspace, "docs", "books", nome),
 		filepath.Join(workspace, "docs", "books", sem),
 		filepath.Join(workspace, "docs", "videorea", nome),
@@ -149,8 +150,8 @@ func caminhosWorkspace(workspace, nome string) []string {
 func caminhosCofre(vault, nome string) []string {
 	return []string{
 		filepath.Join(vault, "skills", nome),
-		filepath.Join(vault, "loops", nome+".loop.json"),
-		filepath.Join(vault, "loops", nome+".dag.json"),
+		filepath.Join(vault, caminhos.DirLoops, nome+".loop.json"),
+		filepath.Join(vault, caminhos.DirLoops, nome+".dag.json"),
 		processo.CaminhoNoCofre(vault, nome),
 	}
 }

@@ -1,0 +1,2283 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-10",
+  "description": "Espelho executável da ROUTE NORMALIZACAO_TAXONOMICA_LEI15",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "commit_on_node_pass": false,
+      "git_strategy": "stash_changes",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-normalizacao-taxonomica-lei15",
+  "nodes": [
+    {
+      "context_in": [
+        "tools/taxlinter/main.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "scratch/tax_triagem.json"
+      ],
+      "depends_on": [],
+      "id": "TICK-00.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_00_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-00.1.json",
+        "gate": "file_exists('scratch/tax_triagem.json')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E00.1",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/golden/..."
+      ],
+      "context_in": [
+        "loops/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/golden/golden_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-00.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_00_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-00.2.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E00.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/golden/golden_test.go",
+        "signature": "TestLoopsDouradosValidam",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/golden/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./docs/templates/...",
+        "./internal/plangen/..."
+      ],
+      "context_in": [
+        "AGENTS.md",
+        "docs/templates/TEMPLATE_PLAN.md",
+        "docs/templates/TEMPLATE_ROUTE.json",
+        "internal/plangen/route.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "AGENTS.md",
+        "docs/templates/TEMPLATE_PLAN.md",
+        "docs/templates/TEMPLATE_ROUTE.json",
+        "internal/plangen/route.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-00.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_00_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-00.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 has_pattern('AGENTS.md', 'efêmero')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E00.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestContratoSubagenteEfemero",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./docs/templates/... ./internal/plangen/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./tools/taxlinter/..."
+      ],
+      "context_in": [
+        "tools/taxlinter/main.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "tools/taxlinter/main.go",
+        "tools/taxlinter/linter_test.go",
+        "scratch/tax_baseline.txt"
+      ],
+      "depends_on": [
+        "TICK-00.1"
+      ],
+      "id": "TICK-00.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_00_4",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-00.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('scratch/tax_baseline.txt')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E00.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "tools/taxlinter/linter_test.go",
+        "signature": "TestScanCoberturaAmpliada",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./tools/taxlinter/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./tools/ticketgate/..."
+      ],
+      "context_in": [
+        "tools/funclen/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "tools/ticketgate/main.go",
+        "tools/ticketgate/main_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-00.5",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_00_5",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-00.5.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('tools/ticketgate/main.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E00.5",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "tools/ticketgate/main_test.go",
+        "signature": "TestGofmtSujoFalha",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./tools/ticketgate/..."
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-00.1",
+        "TICK-00.2",
+        "TICK-00.3",
+        "TICK-00.4",
+        "TICK-00.5"
+      ],
+      "id": "SG-E00",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e00",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E00.json",
+        "gate": "prompt('Triagem e baseline aprovados? Autoriza iniciar a compatibilidade e os geradores?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/paths/paths.go",
+        "internal/paths/paths_test.go"
+      ],
+      "depends_on": [
+        "SG-E00"
+      ],
+      "id": "TICK-01.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_01_1",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.1.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/paths/paths_test.go",
+        "signature": "TestResolucaoUnica",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/dag/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/dag/parse.go",
+        "internal/dag/types.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/dag/parse.go",
+        "internal/dag/types.go",
+        "internal/dag/parse_dual_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "id": "TICK-01.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_01_2",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.2.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/dag/parse_dual_test.go",
+        "signature": "TestParseDoisDialetos",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/dag/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/gate/...",
+        "-gold"
+      ],
+      "context_in": [
+        "schemas/dag.v1.json",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "schemas/dag.v2.json",
+        "internal/gate/schemas_dir_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "id": "TICK-01.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.3.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E01.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/gate/schemas_dir_test.go",
+        "signature": "TestSchemaV2AceitaDialetos",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/gate/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/migrar/...,./internal/cli/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/dag/parse.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/migrar/migrar.go",
+        "internal/migrar/migrar_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "id": "TICK-01.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_01_4",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.4.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/migrar/migrar_test.go",
+        "signature": "TestMigrarIdaEVolta",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/migrar/...,./internal/cli/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/fechar/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/fechar/fechar.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/fechar/fechar.go",
+        "internal/fechar/fechar_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "id": "TICK-01.5",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_5",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.5.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E01.5",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/fechar/fechar_test.go",
+        "signature": "TestParidadeDoisNomes",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/fechar/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./tools/route2dag/...,./internal/dag/...",
+        "-gold"
+      ],
+      "context_in": [
+        "docs/routes/2026-11-10_ROUTE_NORMALIZACAO_TAXONOMICA_LEI15.json",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "tools/route2dag/main.go",
+        "tools/route2dag/main_test.go",
+        "docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json"
+      ],
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "id": "TICK-01.6",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_01_6",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.6.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.6",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "tools/route2dag/main_test.go",
+        "signature": "TestProjecaoValidaNoParser",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./tools/route2dag/...,./internal/dag/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/fabricar/...,./internal/compor/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/fabricar/camada4.go",
+        "internal/fabricar/engine.go",
+        "internal/compor/compor.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/fabricar/camada4.go",
+        "internal/fabricar/engine.go",
+        "internal/compor/compor.go",
+        "internal/fabricar/engine_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "id": "TICK-02.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.1.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/fabricar/engine_test.go",
+        "signature": "TestGravaNomesCanonicos",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/fabricar/...,./internal/compor/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...",
+        "-tax",
+        "docs/templates",
+        "-gold"
+      ],
+      "context_in": [
+        "docs/templates/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "docs/templates/templates_test.go"
+      ],
+      "depends_on": [
+        "SG-E00"
+      ],
+      "id": "TICK-02.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.2.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E02.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestTemplatesSemTermoProibido",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/... -tax docs/templates -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/fabricar/...,./internal/interview/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/fabricar/",
+        "internal/interview/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/fabricar/prompts_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-02.2"
+      ],
+      "id": "TICK-02.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_02_3",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.3.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/fabricar/prompts_test.go",
+        "signature": "TestSaidaLLMSemTermoProibido",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/fabricar/...,./internal/interview/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/cli/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/cli/cli.go",
+        "internal/cli/commands.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/cli/cli.go",
+        "internal/cli/commands.go"
+      ],
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "id": "TICK-02.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_02_4",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.4.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E02.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/cli/cli_test.go",
+        "signature": "TestAjudaSemTermoProibido",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/cli/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/assets/...",
+        "-tax",
+        "skills",
+        "-gold"
+      ],
+      "context_in": [
+        "skills/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [],
+      "depends_on": [
+        "TICK-02.4"
+      ],
+      "id": "TICK-02.5",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_5",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.5.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E02.5",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/assets/skills_taxonomia_test.go",
+        "signature": "TestSkillsSemTermoProibido",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/assets/... -tax skills -gold"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3",
+        "TICK-01.4",
+        "TICK-01.5",
+        "TICK-01.6",
+        "TICK-02.1",
+        "TICK-02.2",
+        "TICK-02.3",
+        "TICK-02.4",
+        "TICK-02.5"
+      ],
+      "id": "SG-E02",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e02",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E02.json",
+        "gate": "prompt('Novos Processos nascem sem termo proibido? Autoriza a refatoração interna?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/studio/...",
+        "-tax",
+        "internal/studio",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/studio/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [],
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "id": "TICK-03.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_03_1",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.1.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/studio/... -tax internal/studio -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/dag/...,./internal/graph/...",
+        "-tax",
+        "internal/dag,internal/graph",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/dag/",
+        "internal/graph/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [],
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "id": "TICK-03.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_03_2",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.2.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.2",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/dag/...,./internal/graph/... -tax internal/dag,internal/graph -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./...",
+        "-tax",
+        "internal/studiodoc",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/loop/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/studiodoc/"
+      ],
+      "depends_on": [
+        "SG-E02"
+      ],
+      "id": "TICK-03.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_03_3",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.3.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.3",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/studiodoc -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/cli/...,./internal/fabricar/...,./internal/refinar/...",
+        "-tax",
+        "internal/cli,internal/fabricar,internal/refinar",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/cli/",
+        "internal/fabricar/",
+        "internal/refinar/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [],
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "id": "TICK-03.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.4.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E03.4",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/cli/...,./internal/fabricar/...,./internal/refinar/... -tax internal/cli,internal/fabricar,internal/refinar -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/assets/...,./internal/board/...,./internal/orchestrix/...,./internal/suggest/...",
+        "-tax",
+        "internal/assets,internal/board,internal/orchestrix,internal/suggest",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/assets/",
+        "internal/board/",
+        "internal/orchestrix/",
+        "internal/suggest/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [],
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "id": "TICK-03.5",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_5",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.5.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E03.5",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/assets/...,./internal/board/...,./internal/orchestrix/...,./internal/suggest/... -tax internal/assets,internal/board,internal/orchestrix,internal/suggest -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/runner/...,./internal/videorea/...",
+        "-tax",
+        "internal/runner,internal/videorea",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/runner/",
+        "internal/videorea/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [],
+      "depends_on": [
+        "TICK-03.3"
+      ],
+      "id": "TICK-03.6",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_6",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.6.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E03.6",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/runner/...,./internal/videorea/... -tax internal/runner,internal/videorea -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./...",
+        "-tax",
+        "internal,cmd",
+        "-gold"
+      ],
+      "context_in": [
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [],
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2",
+        "TICK-03.3",
+        "TICK-03.4",
+        "TICK-03.5",
+        "TICK-03.6"
+      ],
+      "id": "TICK-03.7",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_03_7",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.7.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E03.7",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal,cmd -gold"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-03.7"
+      ],
+      "id": "SG-E03",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e03",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E03.json",
+        "gate": "prompt('Código interno normalizado e loops intactos? Autoriza mover dados e diretórios?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./...",
+        "-gold"
+      ],
+      "context_in": [
+        "loops/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "processos/"
+      ],
+      "depends_on": [
+        "SG-E03"
+      ],
+      "id": "TICK-04.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_04_1",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('processos/legoloop-fechar/processo.dag.json')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -gold"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-01.4"
+      ],
+      "id": "SG-E04-COFRE",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e04_cofre",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E04-COFRE.json",
+        "gate": "prompt('Backup do Cofre confirmado? Autoriza migrar os 6 loops reais?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/migrar/..."
+      ],
+      "context_in": [
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [],
+      "depends_on": [
+        "SG-E04-COFRE"
+      ],
+      "id": "TICK-04.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 prompt('Os 6 loops do Cofre validam e o backup existe?')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E04.2",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/migrar/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-livros",
+        "docs/books,docs/videorea"
+      ],
+      "context_in": [
+        "docs/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "docs/"
+      ],
+      "depends_on": [
+        "TICK-04.1"
+      ],
+      "id": "TICK-04.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_04_3",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.3.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E04.3",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -livros docs/books,docs/videorea"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/dag/...,./internal/cli/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/dag/parse.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/dag/parse.go",
+        "internal/dag/parse_dual_test.go"
+      ],
+      "depends_on": [
+        "TICK-04.2"
+      ],
+      "id": "TICK-04.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_04_4",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.4.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E04.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/dag/parse_dual_test.go",
+        "signature": "TestAvisoDepreciacao",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/dag/...,./internal/cli/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/orchestrix/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/orchestrix/",
+        "internal/runner/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/orchestrix/executor_efemero.go",
+        "internal/orchestrix/executor_efemero_test.go"
+      ],
+      "depends_on": [
+        "SG-E03"
+      ],
+      "id": "TICK-05.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_05_1",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.1.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E05.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/orchestrix/executor_efemero_test.go",
+        "signature": "TestFerramentaForaDaListaRecusada",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/orchestrix/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/orchestrix/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/orchestrix/router.go",
+        "internal/orchestrix/router_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.1"
+      ],
+      "id": "TICK-05.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_05_2",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.2.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E05.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/orchestrix/router_test.go",
+        "signature": "TestOrdemEFailover429",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/orchestrix/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/orchestrix/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/orchestrix/raias.go",
+        "internal/orchestrix/raias_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.2"
+      ],
+      "id": "TICK-05.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_05_3",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.3.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E05.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/orchestrix/raias_test.go",
+        "signature": "TestRaiaFixaEAlarme",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/orchestrix/...,./internal/plangen/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/plangen/route.go",
+        "schemas/route.v2.json",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/orchestrix/modelo.go",
+        "internal/orchestrix/modelo_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.3"
+      ],
+      "id": "TICK-05.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_05_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.4.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E05.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/orchestrix/modelo_test.go",
+        "signature": "TestExtremeExigeStopGate",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/...,./internal/plangen/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/runner/...,./internal/orchestrix/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/runner/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/runner/conflito.go",
+        "internal/runner/conflito_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.3"
+      ],
+      "id": "TICK-05.5",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_05_5",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.5.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E05.5",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/runner/conflito_test.go",
+        "signature": "TestMesmoArquivoNaoRodaJunto",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/runner/...,./internal/orchestrix/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/orchestrix/...",
+        "-gold"
+      ],
+      "context_in": [
+        "internal/orchestrix/",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "internal/orchestrix/telemetria.go",
+        "internal/orchestrix/telemetria_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.4",
+        "TICK-05.5"
+      ],
+      "id": "TICK-05.6",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_05_6",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.6.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E05.6",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/orchestrix/telemetria_test.go",
+        "signature": "TestBalancoNoReport",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -gold"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./...",
+        "-tax",
+        "internal,cmd,processos,skills,docs/templates",
+        "-gold",
+        "-build"
+      ],
+      "context_in": [
+        "AGENTS.md",
+        "tools/taxlinter/main.go",
+        "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
+      ],
+      "context_out": [
+        "bin/legoloop.exe"
+      ],
+      "depends_on": [
+        "TICK-04.3",
+        "TICK-04.4",
+        "TICK-05.6"
+      ],
+      "id": "TICK-06.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_06_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-06.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E06.1",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal,cmd,processos,skills,docs/templates -gold -build"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-06.1"
+      ],
+      "id": "SG-FINAL",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "name": "sg_final",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-FINAL.json",
+        "gate": "prompt('Homologação final aprovada? Autoriza commit e push?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    }
+  ],
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "9f8fc0269474483fdad64b7093ecc567ee933011180ff2e6692e0f507b2cee79",
+    "plan": "1420ec1a08f0ba19a8360d81cbec4f33a6541c505ff1b8e1a912aab3b2c318db",
+    "spec": "cbbb5d8d4075c08b5aa46afc5a96d9b817ad4b9d03fea24e0d74f429230272ea"
+  },
+  "version": "1.0.0"
+}

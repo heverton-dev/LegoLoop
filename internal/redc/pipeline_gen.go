@@ -3,6 +3,7 @@ package redc
 import (
 	"encoding/json"
 	"fmt"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 )
@@ -31,7 +32,7 @@ func writeMethodDAG(dir string, c MethodCluster) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("redc: erro ao serializar dag do metodo %s: %w", c.Slug, err)
 	}
-	dagPath := filepath.Join(dir, "pipeline.dag.json")
+	dagPath := caminhos.CaminhoDAG(dir)
 	if err := os.WriteFile(dagPath, b, 0644); err != nil {
 		return "", fmt.Errorf("redc: erro ao gravar %s: %w", dagPath, err)
 	}

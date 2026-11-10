@@ -1,0 +1,10 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "invalido-ciclo",
+  "name": "invalido-ciclo",
+  "version": "1.0.0",
+  "nodes": [
+    {"id": "a", "type": "stop_gate", "depends_on": ["b"]},
+    {"id": "b", "type": "stop_gate", "depends_on": ["a"]}
+  ]
+}

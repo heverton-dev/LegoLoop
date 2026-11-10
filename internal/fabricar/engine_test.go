@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -182,7 +183,7 @@ func assertThreeMeans(t *testing.T, r *rig, res *fabricar.Result) {
 	if sk := snap.Of(assets.KindSkill); len(sk) != 1 || sk[0].Name != res.CanonicalName {
 		t.Errorf("o assets.Scanner real deve listar a skill: %+v", sk)
 	}
-	st, err := loop.NewStore(filepath.Join(r.deps.Roots.Vault, "loops"))
+	st, err := loop.NewStore(caminhos.DirLoopsEm(r.deps.Roots.Vault))
 	if err != nil {
 		t.Fatal(err)
 	}

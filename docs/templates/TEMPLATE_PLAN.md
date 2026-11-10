@@ -25,7 +25,7 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 
 * **Engine:** `orchestrix_hermetic` (execução isolada por bloco, sem context bloat)
 * **Nível de Supervisão:** `{{nano | micro | epic | autonomous}}`
-* **Permissão de Subagentes:** `false` (AGENTS.md, regra 4: agentes de harness proibidos; subprocessos estéreis)
+* **Permissão de Subagentes:** `false` ou `ephemeral` (AGENTS.md, regra 4: agente de harness proibido; subagente efêmero só com as seis condições)
 * **TDD Estrito:** `true` (Red ➔ Green ➔ Refactor obrigatório antes de qualquer código de produção)
 * **Limite de Workers Paralelos:** `2`
 * **Timeout Padrão por Bloco:** `180s`
@@ -54,8 +54,9 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 * **Isolamento:**
   * **Workspace:** `local` (ou `git_worktree` / `tempdir`)
   * **Executor:** `orchestrix_hermetic` (subprocesso estéril)
-  * **Subagentes Permitidos:** `false`
+  * **Subagentes Permitidos:** `false` (ou `ephemeral`, com a lista de ferramentas em Tooling > Allowlist)
   * **Write Boundary:** `strict`
+  * **Extreme:** `false` (`true` libera Opus, só com aprovação humana)
 * **Roteamento Cognitivo:**
   * **Modo:** `suggested`
   * **Primário:** Harness `9router` · Modelo `code-pro` · Effort `high`
@@ -83,7 +84,7 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 * **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E01` | **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["TICK-01.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
-* **Roteamento:** Harness `9router` · Modelo `code-nano` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`
+* **Roteamento:** Harness `9router` · Modelo `code-fast` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `8000` tokens · Teto de saída `300` tokens · Rollback `stash_changes`
 * **Inputs:** `internal/pkg/service.go` · Spec Anchor `docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E01.2`

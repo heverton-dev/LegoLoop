@@ -3,6 +3,7 @@ package templates_test
 import (
 	"context"
 	"encoding/json"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -157,7 +158,7 @@ func TestPiecesAreRecognizedByInventory(t *testing.T) {
 	put(t, home, ".aidd/scripts/TEMPLATE_PIECE_SCRIPT.ps1", read(t, "TEMPLATE_PIECE_SCRIPT.ps1"))
 	put(t, home, "loops/exemplo-loop-spec-plano.loop.json", read(t, "TEMPLATE_PIECE_LOOP.json"))
 
-	sc := assets.NewScanner(assets.Config{Home: home, LoopsDir: filepath.Join(home, "loops"),
+	sc := assets.NewScanner(assets.Config{Home: home, LoopsDir: caminhos.DirLoopsEm(home),
 		LookPath: func(string) (string, error) { return "", os.ErrNotExist }, Getenv: func(string) string { return "" }})
 	snap := sc.Scan(context.Background())
 	for _, k := range []assets.Kind{assets.KindSkill, assets.KindHook, assets.KindMCP, assets.KindScript, assets.KindLoop} {
@@ -285,5 +286,29 @@ func TestQuintetoTemplatesConformidade(t *testing.T) {
 	}
 	if len(d.Nodes) == 0 {
 		t.Errorf("TEMPLATE_DAG.json deve conter nós de exemplo")
+	}
+}
+
+func TestGovernanceAC_E00_3(t *testing.T) {
+	k, err := templates.RouteKeys()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Contains(k.Node, "extreme") {
+		t.Error("o template de ROUTE deve ter o campo extreme no nó")
+	}
+	for _, n := range []string{"TEMPLATE_ROUTE.json", "TEMPLATE_ROUTE_LEGOPRESS.json", "TEMPLATE_DAG_LEGOPRESS.json", "TEMPLATE_PLAN.md"} {
+		if strings.Contains(string(read(t, n)), "code-nano") {
+			t.Errorf("%s ainda usa o combo code-nano, que não existe no 9Router", n)
+		}
+	}
+	schema, err := os.ReadFile(filepath.Join("..", "..", "schemas", "route.v2.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{`"ephemeral"`, `"extreme"`} {
+		if !strings.Contains(string(schema), want) {
+			t.Errorf("schemas/route.v2.json deve aceitar %s", want)
+		}
 	}
 }

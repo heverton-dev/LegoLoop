@@ -118,7 +118,8 @@ O diagnóstico é `legoloop upgrade <arquivo> --diagnose`; a validação pós-re
 * `status`: `PENDING` | `RUNNING` | `PASSED` | `FAILED` | `SKIPPED` | `BLOCKED`
 * `execution_mode`: `tdd_red_green` | `sequential` | `parallel`
 * `isolation.workspace`: `local` | `git_worktree` | `tempdir`; `isolation.executor`: `orchestrix_hermetic` | `local_process`
-* `isolation.subagents_allowed`: **sempre `false`** (AGENTS.md, regra 4). O campo existe para tornar a proibição explícita e auditável.
+* `isolation.subagents_allowed`: `false` (padrão) ou `"ephemeral"` (AGENTS.md, regra 4: subagente efêmero só com as seis condições; a lista de ferramentas fica em `tooling.mcps_allowed`). Agente de harness continua proibido.
+* `extreme` (por nó): `false` (padrão) ou `true`. `true` libera Opus e exige aprovação humana.
 * `rollback_strategy` (por nó) e `rollback_on_failure` (global): `abort_pipeline` | `stash_changes` | `skip_optional`
 * `routing.mode`: `suggested` | `manual` | `auto`; `routing.effort`: `low` | `medium` | `high` | `null`
 * `defects[]`: `{ "id", "severity": "blocker|major|minor", "summary", "resolved" }`, preenchido durante a execução

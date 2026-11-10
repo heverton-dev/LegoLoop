@@ -2,6 +2,7 @@ package cli
 
 import (
 	"encoding/json"
+	"legoloop/internal/caminhos"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -89,7 +90,7 @@ func TestComporProcessosReais(t *testing.T) {
 	if r.code != 0 || !strings.Contains(r.out, "Processo legoloop-cp-b@1.0.0 ligado a legoloop-cp-a na etapa e03") {
 		t.Fatalf("compor: código %d\nstdout:\n%s\nstderr:\n%s", r.code, r.out, r.errb)
 	}
-	dagA := filepath.Join(vault, "loops", "legoloop-cp-a.dag.json")
+	dagA := filepath.Join(vault, caminhos.DirLoops, "legoloop-cp-a.dag.json")
 	if v := runBinaryEm(t, bin, router, root, proj, "validate", dagA); v.code != 0 {
 		t.Fatalf("validate: código %d\n%s%s", v.code, v.out, v.errb)
 	}

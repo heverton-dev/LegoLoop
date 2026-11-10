@@ -42,7 +42,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-nano",
+        "model": "code-fast",
         "effort": "low",
         "fallback": "flash-lite"
       },
@@ -93,7 +93,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-nano",
+        "model": "code-fast",
         "effort": "low",
         "fallback": "flash-lite"
       },

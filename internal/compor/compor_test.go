@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/fs"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -76,8 +77,8 @@ func gravar(t *testing.T, c cofre, p processo.Processo) {
 	doc := func(sub, file string) string { return filepath.Join(c.docs, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(c.vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(c.vault, "loops", p.Nome+".loop.json"), Data: pr.Loop},
-		{Path: filepath.Join(c.vault, "loops", p.Nome+".dag.json"), Data: pr.DAG},
+		{Path: filepath.Join(c.vault, caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Loop},
+		{Path: filepath.Join(c.vault, caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(c.vault, p.Nome), Data: pj},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Path: doc("plans", pr.PlanNome), Data: []byte(pr.Plan)},
@@ -256,7 +257,7 @@ func testOutroDia(t *testing.T) {
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 	}
-	b, err := os.ReadFile(filepath.Join(c.vault, "loops", nomeA+".loop.json"))
+	b, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+".loop.json"))
 	if err != nil || json.Unmarshal(b, &lp) != nil || !lp.CreatedAt.Equal(inicio) || !lp.UpdatedAt.Equal(inicio.Add(48*time.Hour)) {
 		t.Errorf("loop: criado %v, atualizado %v (%v); esperava a criação mantida", lp.CreatedAt, lp.UpdatedAt, err)
 	}
@@ -332,7 +333,7 @@ func arvoreDe(t *testing.T, c cofre, nome string) map[string]string {
 
 func conferirDAG(t *testing.T, c cofre) {
 	t.Helper()
-	b, err := os.ReadFile(filepath.Join(c.vault, "loops", nomeA+".dag.json"))
+	b, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+".dag.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -347,7 +348,7 @@ func conferirDAG(t *testing.T, c cofre) {
 	var lp struct {
 		Nodes []dag.Node `json:"nodes"`
 	}
-	lb, err := os.ReadFile(filepath.Join(c.vault, "loops", nomeA+".loop.json"))
+	lb, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+".loop.json"))
 	if err != nil || json.Unmarshal(lb, &lp) != nil || len(lp.Nodes) != 4 || lp.Nodes[3].Type != dag.TypeSubloop {
 		t.Errorf("o loop de a não tem o subloop: %v", err)
 	}
@@ -632,7 +633,7 @@ func testMesmoArtefato(t *testing.T) {
 	if strings.Contains(e.Gate, "'out/02_verificar.md'") || a.Etapas[1].Produz != velha.Produz || a.Etapas[1].Gate != velha.Gate {
 		t.Errorf("o gate da etapa nova não pode conferir o arquivo de a, e a e02 de a não muda: %+v", a.Etapas)
 	}
-	b, err := os.ReadFile(filepath.Join(c.vault, "loops", nomeA+".dag.json"))
+	b, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+".dag.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

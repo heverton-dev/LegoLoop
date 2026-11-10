@@ -2,6 +2,7 @@ package studio
 
 import (
 	"encoding/json"
+	"legoloop/internal/caminhos"
 	"net/http"
 	"path/filepath"
 	"testing"
@@ -12,7 +13,7 @@ import (
 
 func TestProcessosAndDAGCanonicalRoutes(t *testing.T) {
 	s, home, _ := newAssetsServer(t)
-	loopsDir := filepath.Join(home, ".aidd", "canonical", "loops")
+	loopsDir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
 	store, err := loop.NewStore(loopsDir)
 	if err != nil {
 		t.Fatal(err)

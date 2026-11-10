@@ -265,7 +265,7 @@ func TestMCPNeighborsAreDeduplicatedAndCapped(t *testing.T) {
 	}
 }
 
-// Um comando com credencial nunca é sugerido: ele iria literalmente para o pipeline.dag.json.
+// Um comando com credencial nunca é sugerido: ele iria literalmente para o arquivo DAG.
 func TestHooksWithCredentialsAreNeverSuggested(t *testing.T) {
 	idx := index(t)
 	items := []assets.Item{

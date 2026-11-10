@@ -3,6 +3,7 @@ package listar_test
 import (
 	"context"
 	"errors"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -58,10 +59,10 @@ func cofreDeTres(t *testing.T) (vault, home string) {
 	sub := processo.Etapa{ID: "E02", Titulo: "Sub", Tipo: "construir", Compoe: "legoloop-a@1.2.0", Depende: []string{"E01"},
 		Produz: processo.Artefato{Caminho: "out/E02.md", Tipo: "markdown"}, Gate: "file_exists('out/E02.md')"}
 	gravar(t, vault, proc("legoloop-b", "1.0.0", "software", etapa("E01"), sub))
-	escrever(t, filepath.Join(vault, "loops", "legoloop-velho.loop.json"), `{"id":"legoloop-velho","name":"legoloop-velho","version":"0.3.0"}`)
-	escrever(t, filepath.Join(vault, "loops", "legoloop-a.loop.json"), `{"id":"legoloop-a","version":"1.2.0"}`)
-	escrever(t, filepath.Join(vault, "loops", "nova-esteira.loop.json"), `{"id":"nova-esteira","version":"2.0.0"}`)
-	if err := os.MkdirAll(filepath.Join(vault, "loops", "legoloop-pasta.loop.json"), 0o755); err != nil {
+	escrever(t, filepath.Join(vault, caminhos.DirLoops, "legoloop-velho.loop.json"), `{"id":"legoloop-velho","name":"legoloop-velho","version":"0.3.0"}`)
+	escrever(t, filepath.Join(vault, caminhos.DirLoops, "legoloop-a.loop.json"), `{"id":"legoloop-a","version":"1.2.0"}`)
+	escrever(t, filepath.Join(vault, caminhos.DirLoops, "nova-esteira.loop.json"), `{"id":"nova-esteira","version":"2.0.0"}`)
+	if err := os.MkdirAll(filepath.Join(vault, caminhos.DirLoops, "legoloop-pasta.loop.json"), 0o755); err != nil {
 		t.Fatal(err)
 	}
 	for _, h := range []string{"claude", "codex", "gemini"} {

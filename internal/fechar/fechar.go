@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"strings"
@@ -194,11 +195,11 @@ func fecharSkill(d *Deps, slug, canon string, dry bool) (string, error) {
 }
 
 func fecharDAG(d *Deps, slug, canon string, dry bool) (string, error) {
-	dir := filepath.Join(d.RepoDir, "loops", slug)
+	dir := resolverDirProcesso(d.RepoDir, slug)
 	if !dry {
 		_ = os.MkdirAll(dir, 0o755)
 	}
-	dagPath := filepath.Join(dir, "pipeline.dag.json")
+	dagPath := caminhos.CaminhoDAGLeitura(dir)
 	if _, err := os.Stat(dagPath); os.IsNotExist(err) && !dry {
 		content := fmt.Sprintf(`{"name": %q, "version": "1.0.0", "nodes": []}`, canon)
 		_ = os.WriteFile(dagPath, []byte(content), 0o644)
@@ -207,6 +208,19 @@ func fecharDAG(d *Deps, slug, canon string, dry bool) (string, error) {
 		return dagPath, err
 	}
 	return dagPath, nil
+}
+
+// resolverDirProcesso devolve a pasta existente do Processo nos dois dialetos,
+// com preferência para o novo. Sem pasta existente, devolve a do dialeto
+// antigo, que é o dialeto de gravação.
+func resolverDirProcesso(repoDir, slug string) string {
+	for _, base := range caminhos.DirsLeitura(repoDir) {
+		dir := filepath.Join(base, slug)
+		if info, err := os.Stat(dir); err == nil && info.IsDir() {
+			return dir
+		}
+	}
+	return filepath.Join(caminhos.DirLoopsEm(repoDir), slug)
 }
 
 func auditDAGParity(repoDir, slug, loopDAGPath string) error {

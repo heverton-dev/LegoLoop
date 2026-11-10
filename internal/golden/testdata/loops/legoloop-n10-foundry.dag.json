@@ -1,0 +1,131 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "name": "legoloop-n10-foundry",
+  "version": "1.0.0",
+  "date": "2026-11-09",
+  "description": "Pipeline canônico da Fundição Autônoma de Software LegoLoop com Protocolos Industriais e Motores de Fronteira N10",
+  "upstream_signatures": {
+    "intent": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "spec": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+    "plan": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
+    "route": "docs/routes/2026-11-09_ROUTE_N10_FOUNDRY.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 2,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_and_pause",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": true
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_contracts_and_schemas",
+      "name": "Saneamento de Schemas e Proveniência de Contexto",
+      "type": "unit_task",
+      "nature": "micro",
+      "routing": {
+        "mode": "manual",
+        "model": "code-fast",
+        "effort": "medium"
+      },
+      "context_in": [],
+      "context_out": [
+        "schemas/dag.v1.json"
+      ],
+      "test_seam": {
+        "type": "schema_gate",
+        "target": "exit_code == 0 && file_exists('schemas/dag.v1.json')"
+      },
+      "output": {
+        "artifact": "schemas/dag.v1.json",
+        "gate": "exit_code == 0 && file_exists('schemas/dag.v1.json')"
+      }
+    },
+    {
+      "id": "n02_andon_and_sbar",
+      "name": "Disjuntor Jidoka Andon Cord e Formatador SBAR",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": ["n01_contracts_and_schemas"],
+      "routing": {
+        "mode": "manual",
+        "model": "code-fast",
+        "effort": "medium"
+      },
+      "context_in": [
+        "schemas/dag.v1.json"
+      ],
+      "context_out": [
+        "internal/runner/retry.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "exit_code == 0 && file_exists('internal/runner/retry.go')"
+      },
+      "output": {
+        "artifact": "internal/runner/retry.go",
+        "gate": "exit_code == 0 && file_exists('internal/runner/retry.go')"
+      }
+    },
+    {
+      "id": "n03_n10_frontier_engines",
+      "name": "Motores de Fronteira Industrial N10",
+      "type": "unit_task",
+      "nature": "macro",
+      "depends_on": ["n02_andon_and_sbar"],
+      "routing": {
+        "mode": "manual",
+        "model": "code-pro",
+        "effort": "high"
+      },
+      "context_in": [
+        "internal/runner/retry.go"
+      ],
+      "context_out": [
+        "internal/runner/redteam_blueteam.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "exit_code == 0 && file_exists('internal/runner/redteam_blueteam.go')"
+      },
+      "output": {
+        "artifact": "internal/runner/redteam_blueteam.go",
+        "gate": "exit_code == 0 && file_exists('internal/runner/redteam_blueteam.go')"
+      }
+    },
+    {
+      "id": "n04_double_surface",
+      "name": "Dupla Superfície Autopilot e LegoPress",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": ["n03_n10_frontier_engines"],
+      "routing": {
+        "mode": "manual",
+        "model": "code-fast",
+        "effort": "medium"
+      },
+      "context_in": [
+        "internal/runner/redteam_blueteam.go"
+      ],
+      "context_out": [
+        "internal/cli/autopilot.go"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "exit_code == 0 && file_exists('internal/cli/autopilot.go')"
+      },
+      "output": {
+        "artifact": "internal/cli/autopilot.go",
+        "gate": "exit_code == 0 && file_exists('internal/cli/autopilot.go')"
+      }
+    }
+  ]
+}

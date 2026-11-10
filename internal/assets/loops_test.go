@@ -2,6 +2,7 @@ package assets_test
 
 import (
 	"context"
+	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"testing"
@@ -11,7 +12,7 @@ import (
 
 func TestScanLoops(t *testing.T) {
 	dir := t.TempDir()
-	loopsDir := filepath.Join(dir, "loops")
+	loopsDir := caminhos.DirLoopsEm(dir)
 	if err := os.MkdirAll(loopsDir, 0700); err != nil {
 		t.Fatal(err)
 	}

@@ -1,4 +1,4 @@
-// Package dag define o contrato pipeline.dag.json (SPEC.md §3), seu parser estrito
+// Package dag define o contrato do arquivo DAG (SPEC.md §3), seu parser estrito
 // e a validação estrutural (IDs, dependências, ciclos, handoffs e gates).
 package dag
 
@@ -23,6 +23,8 @@ const (
 	TypeScript NodeType = "script"
 	// TypeSubloop referencia outro loop do acervo (Ref = nome do loop); roda isolado e estéril.
 	TypeSubloop NodeType = "subloop"
+	// TypeSubprocesso é o nome novo de TypeSubloop; o leitor converte no Parse.
+	TypeSubprocesso NodeType = "subprocesso"
 	// TypeStopGate representa uma barreira de auditoria humana na esteira.
 	TypeStopGate NodeType = "stop_gate"
 	// TypeUnitTask representa uma tarefa de unidade cognitiva de engenharia.
@@ -67,6 +69,8 @@ const (
 	TriggerCron       TriggerType = "cron"
 	TriggerFileChange TriggerType = "file_change"
 	TriggerLoopEnd    TriggerType = "loop_end"
+	// TriggerProcessoFim é o nome novo de TriggerLoopEnd; o leitor converte no Parse.
+	TriggerProcessoFim TriggerType = "processo_fim"
 )
 
 // Trigger é o gatilho único de um loop (DAG v2). Cada tipo aceita só o seu campo.
@@ -75,6 +79,10 @@ type Trigger struct {
 	Cron string      `json:"cron,omitempty"`
 	Path string      `json:"path,omitempty"`
 	Loop string      `json:"loop,omitempty"`
+	// Processo é o campo novo de Loop; o leitor move o valor para Loop no Parse.
+	Processo string `json:"processo,omitempty"`
+	// Conflito marca trigger com loop e processo diferentes; a validação recusa.
+	Conflito bool `json:"-"`
 }
 
 // EffortLevel define o teto de raciocínio cognitivo do nó (Harness Engineering).
