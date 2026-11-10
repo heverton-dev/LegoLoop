@@ -75,6 +75,8 @@ func buildUnitPrompt(n dag.Node, work *os.Root) (string, error) {
 	fmt.Fprintf(&b, "Condição de saída (gate): `%s`\n", n.Output.Gate)
 	if len(n.Command) > 0 {
 		fmt.Fprintf(&b, "Verificação: `%s`\n", strings.Join(n.Command, " "))
+		b.WriteString("Você trabalha sem shell: não rode a verificação. A Orchestrix roda a verificação depois da sua edição. ")
+		b.WriteString("Edite os arquivos permitidos até a verificação passar. Não encerre sem editar.\n")
 	}
 	b.WriteString("\n## Arquivos permitidos para escrita\n\n")
 	allowed := allowedWrites(n)

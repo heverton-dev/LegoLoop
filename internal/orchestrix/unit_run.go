@@ -94,7 +94,11 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 	if err != nil {
 		return runner.Result{}, unitReport{}, err
 	}
-	text, usage, err := o.callClaudeTools(ctx, plan.model, plan.prompt, w.Dir, nil)
+	prompt, err := o.promptWithRed(ctx, n, w.Dir, plan.prompt)
+	if err != nil {
+		return runner.Result{}, unitReport{}, err
+	}
+	text, usage, err := o.callClaudeTools(ctx, plan.model, prompt, w.Dir, nil)
 	res := runner.Result{Tokens: usage, Model: "unit_task/" + plan.model}
 	if err != nil {
 		return res, unitReport{}, err
@@ -147,6 +151,27 @@ func (o *Orchestrix) unitCommand(ctx context.Context, n dag.Node, dir string) ([
 		return nil, 0, err
 	}
 	return o.spawn(ctx, bin, o.expandArgs(n.Command[1:]), dir, nil)
+}
+
+// maxRedBytes limita a saída vermelha do command que entra no prompt (fica a cauda).
+const maxRedBytes = 20000
+
+// promptWithRed roda o command na worktree antes do claude (Red do TDD) e anexa a falha ao prompt.
+func (o *Orchestrix) promptWithRed(ctx context.Context, n dag.Node, dir, prompt string) (string, error) {
+	out, code, err := o.unitCommand(ctx, n, dir)
+	if err != nil {
+		return "", err
+	}
+	return withRedOutput(prompt, out, code), nil
+}
+
+// withRedOutput anexa a saída do command ao prompt só quando ele falhou e imprimiu algo.
+func withRedOutput(prompt string, out []byte, code int) string {
+	text := tailText(out, maxRedBytes)
+	if code == 0 || text == "" {
+		return prompt
+	}
+	return prompt + "\n## Saída da verificação (falha atual)\n\n```\n" + text + "\n```\n"
 }
 
 // maxCmdTail limita a saída do command que entra na mensagem de erro do gate.

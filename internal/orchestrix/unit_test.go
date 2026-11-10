@@ -161,3 +161,38 @@ func TestTailText(t *testing.T) {
 		t.Errorf("cauda = %q", got)
 	}
 }
+
+func TestWithRedOutput(t *testing.T) {
+	base := "PROMPT"
+	if got := withRedOutput(base, []byte("ok"), 0); got != base {
+		t.Errorf("command verde não deve alterar o prompt: %q", got)
+	}
+	if got := withRedOutput(base, nil, 1); got != base {
+		t.Errorf("saída vazia não deve alterar o prompt: %q", got)
+	}
+	got := withRedOutput(base, []byte("a.md:1:1: termo proibido"), 1)
+	if !strings.HasPrefix(got, base) || !strings.Contains(got, "termo proibido") || !strings.Contains(got, "falha atual") {
+		t.Errorf("prompt = %q", got)
+	}
+	big := withRedOutput(base, []byte(strings.Repeat("x", 90000)+"FIM"), 1)
+	if len(big) > len(base)+maxRedBytes+400 || !strings.Contains(big, "FIM") {
+		t.Errorf("saída vermelha não foi limitada pela cauda: %d bytes", len(big))
+	}
+}
+
+func TestUnitPromptSaysNoShell(t *testing.T) {
+	root, err := os.OpenRoot(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer root.Close()
+	n := nodeUnit()
+	n.Command = []string{"go", "test", "./..."}
+	p, err := buildUnitPrompt(n, root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(p, "sem shell") || !strings.Contains(p, "depois da sua edição") {
+		t.Fatalf("prompt = %q", p)
+	}
+}
