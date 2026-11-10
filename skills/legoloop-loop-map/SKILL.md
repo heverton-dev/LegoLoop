@@ -1,10 +1,10 @@
 ---
-name: legoloop-mapa-processo
+name: legoloop-loop-map
 description: Mapeia e canoniza autores, frameworks e skills no LegoLoop em Manual, Processo DAG e Template com TDD e stop gates.
 commands:
   - "/legoloop-map"
-  - "/mapa-processo"
-  - "/aidd-mapa-processo"
+  - "/loop-map"
+  - "/aidd-loop-map"
 ---
 
 # 🗺️ LegoLoop Mapa de Processo — Orquestrador de Canonização de Processos & Frameworks

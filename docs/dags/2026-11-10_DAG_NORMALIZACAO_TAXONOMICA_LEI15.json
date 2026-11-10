@@ -1035,6 +1035,8 @@
         "./internal/assets/...",
         "-tax",
         "skills",
+        "-tax-max",
+        "6",
         "-gold"
       ],
       "context_in": [
@@ -1106,7 +1108,7 @@
       "type": "unit_task",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./internal/assets/... -tax skills -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/assets/... -tax skills -tax-max 6 -gold"
       }
     },
     {

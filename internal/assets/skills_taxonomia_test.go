@@ -50,6 +50,32 @@ func pluralProibido(w string) string {
 	return ""
 }
 
+// semContratoDoFrontmatter esvazia o name e os itens de commands do frontmatter e mantém as linhas.
+func semContratoDoFrontmatter(texto string) string {
+	linhas := strings.Split(texto, "\n")
+	if len(linhas) == 0 || strings.TrimSpace(linhas[0]) != "---" {
+		return texto
+	}
+	emCommands := false
+	for i := 1; i < len(linhas); i++ {
+		l := linhas[i]
+		if strings.TrimSpace(l) == "---" {
+			break
+		}
+		switch {
+		case strings.HasPrefix(l, "name:"):
+			linhas[i], emCommands = "", false
+		case strings.HasPrefix(l, "commands:"):
+			linhas[i], emCommands = "", true
+		case emCommands && strings.HasPrefix(l, " "):
+			linhas[i] = ""
+		default:
+			emCommands = false
+		}
+	}
+	return strings.Join(linhas, "\n")
+}
+
 func TestDetectorDeTermoProibido(t *testing.T) {
 	for _, ruim := range []string{"um loop", "dois Pipelines", "legoloop-loop-map", "cada fase", "a unit_task"} {
 		if len(termosProibidos(ruim)) == 0 {
@@ -75,8 +101,23 @@ func TestSkillsSemTermoProibido(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if achados := termosProibidos(string(data)); len(achados) > 0 {
+		if achados := termosProibidos(semContratoDoFrontmatter(string(data))); len(achados) > 0 {
 			t.Errorf("%s tem %d termo(s) proibido(s) (linha:termo): %v", arq, len(achados), achados)
 		}
+	}
+}
+
+// O name e os commands do frontmatter são contrato (identificam a skill): não entram na checagem.
+func TestSemContratoDoFrontmatter(t *testing.T) {
+	entrada := "---\nname: legoloop-loop-map\ndescription: um loop ruim\ncommands:\n  - \"/loop-map\"\n---\nCorpo com loop\n"
+	got := semContratoDoFrontmatter(entrada)
+	if strings.Contains(got, "legoloop-loop-map") || strings.Contains(got, "/loop-map") {
+		t.Errorf("contrato do frontmatter deveria sair: %q", got)
+	}
+	if !strings.Contains(got, "description: um loop ruim") || !strings.Contains(got, "Corpo com loop") {
+		t.Errorf("descrição e corpo precisam ficar: %q", got)
+	}
+	if strings.Count(got, "\n") != strings.Count(entrada, "\n") {
+		t.Errorf("o número de linhas precisa se manter")
 	}
 }

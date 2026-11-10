@@ -1345,6 +1345,8 @@
             "./internal/assets/...",
             "-tax",
             "skills",
+            "-tax-max",
+            "6",
             "-gold"
           ]
         ],
