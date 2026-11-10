@@ -1,0 +1,463 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "MATRIZ_PAPEIS",
+  "version": "1.0.0",
+  "date": "2026-11-10",
+  "session_id": "b92a1402-a673-42dc-b9a5-2b06b573ed56",
+  "intent_ref": "docs/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md",
+  "spec_ref": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md",
+  "plan_ref": "docs/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md",
+      "sha256": "b0ea96eed0008352b3f848d496a94c0d024b741525e234a2b394c0024c148ab4"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md",
+      "sha256": "b75ca8f41d970b5e89c39e28fb4922c23e8ea13c41fb558342de9a80b4f7e13e"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md",
+      "sha256": "84671226ccd985fef8aa2264f87ec4eeeb591c822f036dd27067c8f066bcfcf1"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Implementar Catalogo dos 18 Papeis e Validador em Go",
+      "nature": "micro",
+      "extreme": false,
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "high",
+        "fallback": {
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/taxonomy/roles.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E01.1"
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/taxonomy/roles_test.go:TestValidarPapel",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/taxonomy/roles.go",
+          "internal/taxonomy/roles_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/taxonomy/..."
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/taxonomy/roles.go') && file_exists('internal/taxonomy/roles_test.go')"
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Sincronizar Dicionario JSON e Schemas Oficiais",
+      "nature": "nano",
+      "extreme": false,
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "fallback": {
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
+          "schemas/dag.v1.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E01.1"
+      },
+      "spec_ref": "AC-E01.1",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
+          "schemas/dag.v1.json"
+        ],
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/taxlinter",
+            "internal",
+            "cmd",
+            "loops",
+            "skills",
+            "docs/templates"
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Atualizar Contrato da Peca e Validacao na Matriz",
+      "nature": "micro",
+      "extreme": false,
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "high",
+        "fallback": {
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/matriz/matriz.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E02.1"
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/matriz/matriz_test.go:TestPecaValidateRoles",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/matriz/matriz.go",
+          "internal/matriz/matriz_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/matriz/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Adicionar Filtros --papel e --guilda na CLI da Matriz",
+      "nature": "micro",
+      "extreme": false,
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "high",
+        "fallback": {
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/matriz.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E02.2"
+      },
+      "spec_ref": "AC-E02.2",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "cmd/legoloop/matriz.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./cmd/legoloop/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Implementar Algoritmo de Casamento em 2 Niveis no Fabricar",
+      "nature": "micro",
+      "extreme": false,
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "effort": "high",
+        "fallback": {
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/generator/generator.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E03.1"
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/generator/generator_test.go:TestCasamentoPapeis",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/generator/generator.go",
+          "internal/generator/generator_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/generator/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Verificacao Integrada e Recompilacao Fresca",
+      "nature": "nano",
+      "extreme": false,
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "model": "flash",
+        "fallback": {
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "bin/legoloop.exe"
+        ],
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      },
+      "spec_ref": "AC-E03.2",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      }
+    }
+  ]
+}

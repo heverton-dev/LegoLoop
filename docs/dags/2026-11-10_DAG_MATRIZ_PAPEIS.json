@@ -1,0 +1,398 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-10",
+  "description": "Espelho executável da ROUTE MATRIZ_PAPEIS",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "commit_on_node_pass": true,
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "micro",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-matriz-papeis",
+  "nodes": [
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/taxonomy/..."
+      ],
+      "context_in": [
+        "internal/taxonomy/roles.go",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "internal/taxonomy/roles.go",
+        "internal/taxonomy/roles_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-01.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/taxonomy/roles.go') \u0026\u0026 file_exists('internal/taxonomy/roles_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/taxonomy/roles_test.go",
+        "signature": "TestValidarPapel",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "antigravity",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/taxonomy/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/taxlinter",
+        "internal",
+        "cmd",
+        "loops",
+        "skills",
+        "docs/templates"
+      ],
+      "context_in": [
+        "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
+        "schemas/dag.v1.json",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
+        "schemas/dag.v1.json"
+      ],
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "id": "TICK-01.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_01_2",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.2.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "antigravity",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/taxlinter internal cmd loops skills docs/templates"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/matriz/..."
+      ],
+      "context_in": [
+        "internal/matriz/matriz.go",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "internal/matriz/matriz.go",
+        "internal/matriz/matriz_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "id": "TICK-02.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.1.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/matriz/matriz_test.go",
+        "signature": "TestPecaValidateRoles",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "antigravity",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/matriz/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./cmd/legoloop/..."
+      ],
+      "context_in": [
+        "cmd/legoloop/matriz.go",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "cmd/legoloop/matriz.go"
+      ],
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "id": "TICK-02.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.2.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "spec_ref": "AC-E02.2",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "antigravity",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./cmd/legoloop/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/generator/..."
+      ],
+      "context_in": [
+        "internal/generator/generator.go",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "internal/generator/generator.go",
+        "internal/generator/generator_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.2"
+      ],
+      "id": "TICK-03.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.1.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/generator/generator_test.go",
+        "signature": "TestCasamentoPapeis",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "antigravity",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/generator/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "bin/legoloop.exe",
+        "./cmd/legoloop"
+      ],
+      "context_in": [
+        "bin/legoloop.exe",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "bin/legoloop.exe"
+      ],
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "id": "TICK-03.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_03_2",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "flash"
+      },
+      "spec_ref": "AC-E03.2",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "antigravity",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go build -o bin/legoloop.exe ./cmd/legoloop"
+      }
+    }
+  ],
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "b0ea96eed0008352b3f848d496a94c0d024b741525e234a2b394c0024c148ab4",
+    "plan": "84671226ccd985fef8aa2264f87ec4eeeb591c822f036dd27067c8f066bcfcf1",
+    "spec": "b75ca8f41d970b5e89c39e28fb4922c23e8ea13c41fb558342de9a80b4f7e13e"
+  },
+  "version": "1.0.0"
+}

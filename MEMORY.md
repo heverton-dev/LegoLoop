@@ -523,10 +523,23 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
     - `manual.go`: Gerador `formatLinhaBox()` garantindo alinhamento de 83 runes por linha sem truncamentos em moldura Unicode, documentando todos os comandos, políticas e modos.
     - `stept-cli`: Repositório standalone sincronizado e binário `bin/stept.exe` recompilado com sucesso.
   - **Portões Mecânicos:** 100% PASS em `ste` e `cli`, `funclen` conforme, `gofmt` limpo, `go vet` limpo, `bin/legoloop.exe` instalado no PATH (`legoloop stept set --modo puro` operacional) e grafo reindexado via `codebase-memory-mcp`.
-    - `AGENTS.md`: Atualizado com as 5 Prisões Mecânicas e os 7 Protocolos Industriais como leis invioláveis de conduta.
-  - **Portões Mecânicos:** 100% PASS em toda a suíte de testes (`go test -count=1 ./...`), `go vet` limpo, `gofmt` com saída vazia, `funclen` conforme e binário `bin/legoloop.exe` recompilado e instalado no PATH.
+
+- **10/11/2026** — 🏷️ **Sessão b92a1402: Concepção da Matriz de Papéis Canônicos e Materialização do Quinteto ISO (Stand-by):**
+  - **Sessão:** `b92a1402-a673-42dc-b9a5-2b06b573ed56`
+  - **Decisão Arquitetural & Analogia da Fábrica:**
+    - A Linha de Montagem é o DAG; a Estação de Trabalho é o Nó; o Crachá é o Papel; a Ferramenta é a Peça; o Almoxarifado é a Matriz.
+    - Modelo ortogonal em 7 Guildas e 18 Crachás Canônicos cobrindo 100% do ciclo de vida AIDD (Governança, Engenharia Reversa, Construção, Infra/Ops, Audiovisual, Qualidade, Publicação).
+    - Contrato da Peça: `papel_primario` obrigatório + `papeis_secundarios` opcionais para desempate determinístico no comando `legoloop fabricar`.
+    - Disjuntor Poka-Yoke: erro sentinela e código de saída 1 para papéis desconhecidos fora da SSOT.
+  - **Quinteto de Governança ISO Materializado:**
+    - `INTENT`: [docs/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md](docs/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md) (100% alinhado na entrevista socrática).
+    - `SPEC`: [docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md](docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md) (Contratos formais Go em `taxonomy` e `matriz`, critérios BDD).
+    - `PLAN`: [docs/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md](docs/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md) (6 tickets verticais em 3 épicos).
+    - `ROUTE`: [docs/routes/2026-11-10_ROUTE_MATRIZ_PAPEIS.json](docs/routes/2026-11-10_ROUTE_MATRIZ_PAPEIS.json) (Espelho 1:1 com assinaturas SHA-256).
+    - `DAG`: [docs/dags/2026-11-10_DAG_MATRIZ_PAPEIS.json](docs/dags/2026-11-10_DAG_MATRIZ_PAPEIS.json) (Projetado mecanicamente via `route2dag`).
+  - **Status:** Colocado em stand-by formal pelo usuário antes da execução do Épico 01, aguardando alinhamento com implementações concomitantes.
 
 ## Estado Atual do Repositório
-- **Status da Branch:** `docs/livros-loops-autores` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
+- **Status da Branch:** `main` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
 - **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/`, `schemas/`, `AGENTS.md` e `README.md`.
