@@ -117,3 +117,20 @@ func TestDAGsDeDocsValidam(t *testing.T) {
 		}
 	}
 }
+
+// Nó script da ROUTE (verificação de artefato pronto) vira nó script do DAG com command.
+func TestProjetarNoScript(t *testing.T) {
+	n := routeNode{ID: "T-1", Type: "script", Nature: "micro", Status: "PENDING"}
+	n.Output.Verify = [][]string{{"go", "test", "./x/..."}}
+	n.Output.Gate = "exit_code == 0"
+	nd, err := projetarNo(n)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if nd["type"] != "script" {
+		t.Errorf("type = %v", nd["type"])
+	}
+	if cmd, _ := nd["command"].([]string); len(cmd) != 3 || cmd[0] != "go" {
+		t.Errorf("command = %v", nd["command"])
+	}
+}

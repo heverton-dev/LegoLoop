@@ -59,7 +59,7 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-00.1.json",
-        "gate": "exit_code == 0 && file_exists('scratch/tax_triagem.json')"
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('scratch/tax_triagem.json')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -76,7 +76,11 @@
         "mcps_required": false,
         "runtime": "powershell"
       },
-      "type": "script"
+      "type": "script",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./tools/taxlinter/..."
+      }
     },
     {
       "command": [

@@ -289,6 +289,78 @@ func TestQuintetoTemplatesConformidade(t *testing.T) {
 	}
 }
 
+// regra4 devolve o texto da regra 4 do AGENTS.md (até a regra 5).
+func regra4(t *testing.T) string {
+	t.Helper()
+	md := string(read(t, filepath.Join("..", "..", "AGENTS.md")))
+	i := strings.Index(md, "4. **Orchestrix")
+	j := strings.Index(md, "5. **TDD")
+	if i < 0 || j < i {
+		t.Fatal("regra 4 do AGENTS.md não localizada")
+	}
+	return md[i:j]
+}
+
+func TestContratoSubagenteEfemero(t *testing.T) {
+	r := regra4(t)
+	if !strings.Contains(r, "efêmero") || !strings.Contains(r, `subagents_allowed: "ephemeral"`) {
+		t.Error("a regra 4 deve declarar o subagente efêmero com subagents_allowed: \"ephemeral\"")
+	}
+	exc := r[strings.Index(r, "Exceção"):]
+	for _, n := range []string{"1.", "2.", "3.", "4.", "5.", "6."} {
+		if !regexp.MustCompile(`(?m)^\s+` + regexp.QuoteMeta(n) + ` `).MatchString(exc) {
+			t.Errorf("a regra 4 deve listar a condição %s", n)
+		}
+	}
+	if regexp.MustCompile(`(?m)^\s+7\. `).MatchString(exc) {
+		t.Error("a regra 4 deve listar exatamente seis condições")
+	}
+	if !strings.Contains(exc, "`strict`") {
+		t.Error("a sexta condição deve exigir write_boundary strict")
+	}
+	agents := string(read(t, filepath.Join("..", "..", "AGENTS.md")))
+	if !strings.Contains(agents, "Exceção de marca") || !strings.Contains(agents, `"LegoLoop"`) {
+		t.Error("o item 12 do AGENTS.md deve declarar a exceção de marca LegoLoop")
+	}
+}
+
+func TestContratoSubagenteEfemeroNosTemplates(t *testing.T) {
+	var r struct {
+		Nodes []struct {
+			ID        string         `json:"id"`
+			Extreme   *bool          `json:"extreme"`
+			Isolation map[string]any `json:"isolation"`
+		} `json:"nodes"`
+	}
+	if err := json.Unmarshal(templates.Route(), &r); err != nil {
+		t.Fatal(err)
+	}
+	for _, n := range r.Nodes {
+		if n.Extreme == nil {
+			t.Errorf("nó %s sem o campo extreme", n.ID)
+		}
+		switch v := n.Isolation["subagents_allowed"].(type) {
+		case bool:
+			if v {
+				t.Errorf("nó %s: subagents_allowed true é proibido", n.ID)
+			}
+		case string:
+			if v != "ephemeral" || n.Isolation["write_boundary"] != "strict" {
+				t.Errorf("nó %s: ephemeral exige write_boundary strict", n.ID)
+			}
+		default:
+			t.Errorf("nó %s: subagents_allowed ausente ou inválido", n.ID)
+		}
+	}
+	if !strings.Contains(templates.Plan(), "`ephemeral`") {
+		t.Error("TEMPLATE_PLAN.md deve documentar o valor ephemeral")
+	}
+	src := string(read(t, filepath.Join("..", "..", "internal", "plangen", "route.go")))
+	if !strings.Contains(src, "SubagentsAllowed any") || strings.Contains(src, "code-nano") {
+		t.Error("plangen/route.go deve aceitar ephemeral e não usar code-nano")
+	}
+}
+
 func TestGovernanceAC_E00_3(t *testing.T) {
 	k, err := templates.RouteKeys()
 	if err != nil {

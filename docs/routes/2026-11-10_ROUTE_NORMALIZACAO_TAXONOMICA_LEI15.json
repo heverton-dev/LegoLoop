@@ -79,7 +79,7 @@
       "epic_id": "E00",
       "label": "Classificar cada violação como texto ou contrato",
       "nature": "micro",
-      "type": "unit_task",
+      "type": "script",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -130,8 +130,15 @@
         "artifacts": [
           "scratch/tax_triagem.json"
         ],
-        "verify": [],
-        "gate": "file_exists('scratch/tax_triagem.json')"
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./tools/taxlinter/..."
+          ]
+        ],
+        "gate": "exit_code == 0 && file_exists('scratch/tax_triagem.json')"
       },
       "telemetry": null
     },
@@ -286,7 +293,7 @@
       "epic_id": "E00",
       "label": "Ampliar o taxlinter (identificadores, valores, corpo, .typ, literais) e gerar o baseline real",
       "nature": "macro",
-      "type": "unit_task",
+      "type": "script",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "tdd_red_green",

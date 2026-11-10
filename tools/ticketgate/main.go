@@ -93,14 +93,20 @@ func runSteps(steps []step, out io.Writer) int {
 	return failed
 }
 
-func main() {
-	cfg, err := parseArgs(os.Args[1:], os.Stderr)
+// run executa a bateria e devolve o exit code: 0 passou, 1 falhou, 2 erro de uso.
+func run(args []string, out, errOut io.Writer) int {
+	cfg, err := parseArgs(args, errOut)
 	if err != nil {
-		os.Exit(2)
+		return 2
 	}
-	if n := runSteps(buildSteps(cfg), os.Stdout); n > 0 {
-		fmt.Fprintf(os.Stdout, "ticketgate: %d passo(s) falharam\n", n)
-		os.Exit(1)
+	if n := runSteps(buildSteps(cfg), out); n > 0 {
+		fmt.Fprintf(out, "ticketgate: %d passo(s) falharam\n", n)
+		return 1
 	}
-	fmt.Println("ticketgate: todos os passos passaram")
+	fmt.Fprintln(out, "ticketgate: todos os passos passaram")
+	return 0
+}
+
+func main() {
+	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
 }

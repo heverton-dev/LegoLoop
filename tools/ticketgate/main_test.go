@@ -27,6 +27,50 @@ func TestGofmtFalhaComArquivoSujo(t *testing.T) {
 	}
 }
 
+// soGofmtReal mantém gofmt real e troca os demais subprocessos por sucesso.
+func soGofmtReal(t *testing.T) {
+	t.Helper()
+	orig := execCmd
+	t.Cleanup(func() { execCmd = orig })
+	execCmd = func(dir, name string, args ...string) (string, error) {
+		if name == "gofmt" {
+			return orig(dir, name, args...)
+		}
+		return "", nil
+	}
+}
+
+func pacote(t *testing.T, arquivo, conteudo string) string {
+	t.Helper()
+	root := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(root, "pkg"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	write(t, filepath.Join(root, "pkg"), arquivo, conteudo)
+	return root
+}
+
+// AC-E00.5: pacote sujo dá exit 1 citando o arquivo; pacote limpo dá exit 0.
+func TestGofmtSujoFalha(t *testing.T) {
+	soGofmtReal(t)
+	sujo := pacote(t, "ruim.go", "package pkg\nfunc  F( ){}\n")
+	var out bytes.Buffer
+	if code := run([]string{"-root", sujo, "-pkgs", "./pkg/..."}, &out, &out); code != 1 {
+		t.Fatalf("pacote sujo: exit=%d, queria 1; saída=%q", code, out.String())
+	}
+	if !strings.Contains(out.String(), "ruim.go") {
+		t.Fatalf("saída deveria citar ruim.go: %q", out.String())
+	}
+	limpo := pacote(t, "bom.go", "package pkg\n\nfunc F() {}\n")
+	out.Reset()
+	if code := run([]string{"-root", limpo, "-pkgs", "./pkg/..."}, &out, &out); code != 0 {
+		t.Fatalf("pacote limpo: exit=%d, queria 0; saída=%q", code, out.String())
+	}
+	if code := run([]string{"-inexistente"}, &out, &out); code != 2 {
+		t.Fatalf("erro de uso: exit=%d, queria 2", code)
+	}
+}
+
 func TestGofmtPassaComArquivoLimpo(t *testing.T) {
 	dir := t.TempDir()
 	write(t, dir, "bom.go", "package x\n\nfunc F() {}\n")
