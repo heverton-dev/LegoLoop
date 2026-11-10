@@ -22,7 +22,7 @@ metadata:
 > **Taxonomia:** Peças de terceiros ou de domínio preservam seu nome semântico próprio (`meu-validador`, `data-cleaner`); o prefixo `legoloop-*` é reservado exclusivamente às funções nativas da plataforma.
 
 <!--
-GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
+GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 - O frontmatter segue a especificação aberta agentskills.io compatível com Claude Code, Cursor e Antigravity:
   `name` deve ser igual ao nome do diretório da skill (kebab-case, max 64 caracteres);
   `description` deve definir claramente QUANDO USAR e QUANDO NÃO USAR (gatilho de ativação progressiva);
@@ -62,7 +62,7 @@ Esta peça opera estritamente sob os seguintes contratos de entrada e saída:
 1. {{Ler a entrada contratada e confirmar que existe; se faltar, interromper imediatamente e reportar.}}
 2. {{Executar a transformação principal em pequenos passos observáveis.}}
 3. {{Gravar a saída estritamente dentro dos Target Files autorizados.}}
-4. {{Rodar os comandos da seção 3 e só então declarar a tarefa concluída com evidências factuais.}}
+4. {{Rodar os comandos da seção 3 e só então declarar o Ticket concluído com evidências factuais.}}
 
 ---
 

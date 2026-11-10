@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
-  "id": "exemplo-loop-spec-plano",
-  "name": "exemplo-loop-spec-plano",
-  "description": "Loop modular canônico v2.2.0: transforma uma INTENT aprovada em SPEC com critérios binários e em PLAN, com Stop-Gate humano antes do BUILD.",
+  "id": "exemplo-processo-spec-plano",
+  "name": "exemplo-processo-spec-plano",
+  "description": "Processo modular canônico v2.2.0: transforma uma INTENT aprovada em SPEC com critérios binários e em PLAN, com Stop-Gate humano antes do BUILD.",
   "version": "2.2.0",
   "trigger": {
     "type": "manual"

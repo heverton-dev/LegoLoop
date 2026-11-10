@@ -33,6 +33,10 @@ func sensitiveDirs() []string {
 	return []string{".git", ".claude", ".vscode", ".github", ".idea", ".husky", ".gemini", ".cursor", ".agents"}
 }
 
+// ErrDialetoMisto indica um DAG que mistura os dois dialetos de forma contraditória
+// (ex.: trigger com loop e processo divergentes).
+var ErrDialetoMisto = errors.New("dag: mistura inválida dos dialetos antigo e novo")
+
 // CycleError indica deadlock: os nós listados formam (ou dependem de) um ciclo.
 type CycleError struct{ Nodes []string }
 
@@ -55,6 +59,9 @@ func Parse(data []byte) (*DAG, error) {
 		return nil, errors.New("dag: conteúdo extra após o objeto JSON")
 	}
 	d.normalizarDialeto()
+	if d.Trigger != nil && d.Trigger.Conflito {
+		return nil, fmt.Errorf("%w: os campos loop e processo do trigger divergem", ErrDialetoMisto)
+	}
 	if err := d.validate(); err != nil {
 		return nil, err
 	}

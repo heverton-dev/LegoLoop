@@ -62,7 +62,7 @@
     {
       "id": "human-stop-gate",
       "kind": "human",
-      "description": "Pausa a esteira determinística e exige autorização humana explícita (Stop-Gate Humano).",
+      "description": "Pausa o Processo determinístico e exige autorização humana explícita (Stop-Gate Humano).",
       "verify": [],
       "expression": "prompt('{{PERGUNTA_AO_HUMANO}}')",
       "timeout_sec": 0,

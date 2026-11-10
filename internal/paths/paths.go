@@ -35,3 +35,15 @@ func DirLoopsEm(base string) string {
 func CaminhoDAG(dir string) string {
 	return caminhos.CaminhoDAG(dir)
 }
+
+// DirsLeitura lista as pastas de Processos existentes sob a base, com o
+// dialeto novo antes do antigo.
+func DirsLeitura(base string) []string {
+	return caminhos.DirsLeitura(base)
+}
+
+// CaminhoDAGLeitura resolve o arquivo DAG para leitura, com preferência para o
+// nome do dialeto novo quando ele existe.
+func CaminhoDAGLeitura(dir string) string {
+	return caminhos.CaminhoDAGLeitura(dir)
+}

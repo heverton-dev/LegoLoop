@@ -15,7 +15,18 @@ import (
 	"legoloop/internal/assets"
 	"legoloop/internal/dag"
 	"legoloop/internal/gate"
-	"legoloop/internal/loop"
+	studio "legoloop/internal/loop"
+	"legoloop/internal/taxonomy"
+)
+
+// Nomes reais em disco da Peça de Processo. Ficam em um só lugar.
+const (
+	arquivoProcesso = "TEMPLATE_PIECE_LOOP.json"
+	idExemplo       = "exemplo-processo-spec-plano"
+	sufixoStudio    = ".loop.json"
+	dirDocumentos   = "loops"
+	// limiteTaxonomia é o mesmo teto do gate do ticket (-tax-max).
+	limiteTaxonomia = 38
 )
 
 func read(t *testing.T, name string) []byte {
@@ -28,7 +39,7 @@ func read(t *testing.T, name string) []byte {
 }
 
 func TestJSONTemplatesAreValid(t *testing.T) {
-	for _, n := range []string{"TEMPLATE_ROUTE.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_MCP.json", "TEMPLATE_PIECE_LOOP.json", "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG.json"} {
+	for _, n := range []string{"TEMPLATE_ROUTE.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_MCP.json", arquivoProcesso, "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG.json"} {
 		var v any
 		if err := json.Unmarshal(read(t, n), &v); err != nil {
 			t.Errorf("%s não é JSON válido: %v", n, err)
@@ -101,9 +112,15 @@ func TestEveryGateExpressionCompiles(t *testing.T) {
 	for _, r := range rec.Recipes {
 		exprs = append(exprs, r.Expression)
 	}
-	var lp loop.Loop
-	_ = json.Unmarshal(read(t, "TEMPLATE_PIECE_LOOP.json"), &lp)
-	for _, n := range lp.Nodes {
+	var doc struct {
+		Nodes []struct {
+			Output struct {
+				Gate string `json:"gate"`
+			} `json:"output"`
+		} `json:"nodes"`
+	}
+	_ = json.Unmarshal(read(t, arquivoProcesso), &doc)
+	for _, n := range doc.Nodes {
 		exprs = append(exprs, n.Output.Gate)
 	}
 	re := regexp.MustCompile("Gate \\(DSL\\):\\*\\* `([^`]+)`")
@@ -120,21 +137,21 @@ func TestEveryGateExpressionCompiles(t *testing.T) {
 	}
 }
 
-func TestLoopTemplateIsValidDAGAndLoop(t *testing.T) {
-	data := read(t, "TEMPLATE_PIECE_LOOP.json")
+func TestProcessoTemplateIsValidDAGAndDocument(t *testing.T) {
+	data := read(t, arquivoProcesso)
 	if _, err := dag.Parse(data); err != nil {
 		t.Fatalf("dag.Parse: %v", err)
 	}
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, "exemplo-loop-spec-plano.loop.json"), data, 0o600); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, idExemplo+sufixoStudio), data, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	st, err := loop.NewStore(dir)
+	st, err := studio.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if lp, err := st.Get("exemplo-loop-spec-plano"); err != nil || len(lp.Nodes) != 2 {
-		t.Fatalf("loop.Store.Get: %v %+v", err, lp)
+	if doc, err := st.Get(idExemplo); err != nil || len(doc.Nodes) != 2 {
+		t.Fatalf("Store.Get: %v %+v", err, doc)
 	}
 }
 
@@ -156,7 +173,7 @@ func TestPiecesAreRecognizedByInventory(t *testing.T) {
 	put(t, home, ".cursor/mcp.json", read(t, "TEMPLATE_PIECE_MCP.json"))
 	put(t, home, ".claude/skills/skill-teste/SKILL.md", []byte(skill))
 	put(t, home, ".aidd/scripts/TEMPLATE_PIECE_SCRIPT.ps1", read(t, "TEMPLATE_PIECE_SCRIPT.ps1"))
-	put(t, home, "loops/exemplo-loop-spec-plano.loop.json", read(t, "TEMPLATE_PIECE_LOOP.json"))
+	put(t, home, dirDocumentos+"/"+idExemplo+sufixoStudio, read(t, arquivoProcesso))
 
 	sc := assets.NewScanner(assets.Config{Home: home, LoopsDir: caminhos.DirLoopsEm(home),
 		LookPath: func(string) (string, error) { return "", os.ErrNotExist }, Getenv: func(string) string { return "" }})
@@ -215,7 +232,7 @@ func itoa(n int) string {
 }
 
 func TestNativeFragmentsHaveNoPlaceholdersAndScriptHasBOM(t *testing.T) {
-	for _, n := range []string{"TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_LOOP.json"} {
+	for _, n := range []string{"TEMPLATE_PIECE_HOOK.json", arquivoProcesso} {
 		if strings.Contains(string(read(t, n)), "{{") {
 			t.Errorf("%s deve ser exemplo válido, sem placeholders", n)
 		}
@@ -358,6 +375,45 @@ func TestContratoSubagenteEfemeroNosTemplates(t *testing.T) {
 	src := string(read(t, filepath.Join("..", "..", "internal", "plangen", "route.go")))
 	if !strings.Contains(src, "SubagentsAllowed any") || strings.Contains(src, "code-nano") {
 		t.Error("plangen/route.go deve aceitar ephemeral e não usar code-nano")
+	}
+}
+
+// termoProibido diz se a palavra, ou o seu plural simples, é sinônimo proibido.
+func termoProibido(w string) bool {
+	w = strings.ToLower(w)
+	if _, ok := taxonomy.CheckForbidden(w); ok {
+		return true
+	}
+	if len(w) > 2 && strings.HasSuffix(w, "s") {
+		_, ok := taxonomy.CheckForbidden(w[:len(w)-1])
+		return ok
+	}
+	return false
+}
+
+// TestTemplatesSemTermoProibido cobre o AC-E02.2: o texto dos templates usa só os
+// termos canônicos. O que sobra são nomes de contrato (tipos e arquivos em disco).
+func TestTemplatesSemTermoProibido(t *testing.T) {
+	palavra := regexp.MustCompile(`\p{L}+`)
+	total := 0
+	for _, padrao := range []string{"*.md", "*.json", "*.typ"} {
+		arquivos, err := filepath.Glob(padrao)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, a := range arquivos {
+			n := 0
+			for _, w := range palavra.FindAllString(string(read(t, a)), -1) {
+				if termoProibido(w) {
+					n++
+				}
+			}
+			t.Logf("%s: %d termo(s) proibido(s)", a, n)
+			total += n
+		}
+	}
+	if total > limiteTaxonomia {
+		t.Errorf("%d termos proibidos nos templates; o limite é %d", total, limiteTaxonomia)
 	}
 }
 

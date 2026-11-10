@@ -123,6 +123,9 @@ func TestLoopsDouradosValidam(t *testing.T) {
 		if len(d.Nodes) == 0 {
 			t.Errorf("%s validou sem nós", filepath.Base(f))
 		}
+		if len(d.Layers()) == 0 {
+			t.Errorf("%s validou sem camadas de execução", filepath.Base(f))
+		}
 		broken := strings.Replace(string(data), `"nodes"`, `"nodez"`, 1)
 		if broken == string(data) {
 			t.Errorf("%s: mutação não alterou o fixture", filepath.Base(f))

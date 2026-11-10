@@ -11,7 +11,7 @@
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 
 <!--
-GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
+GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 - Toda premissa, fronteira, contrato e critério precisa ser verificável. Frase vaga = critério reprovado.
 - Antes de escrever contratos e ACs, leia o código existente do alvo: reuse pacotes já presentes em vez de reinventar.
 - Em demandas amplas, múltiplos Épicos podem ser agrupados opcionalmente sob uma Iniciativa (ex: I01 — Nome).
@@ -33,7 +33,7 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 
 ## 2. Fronteiras de Ação & Regras de Governança (Boundaries — Addy Osmani)
 
-O pipeline e os agentes devem respeitar estritamente o sistema de fronteiras em 3 níveis:
+O Processo e os agentes devem respeitar estritamente o sistema de fronteiras em 3 níveis:
 * **Sempre Fazer:**
   * Desenvolver via TDD estrito (teste unitário falhando antes do código de produção).
   * Manter funções pequenas, enxutas e de responsabilidade única (< 35 linhas).
@@ -43,7 +43,7 @@ O pipeline e os agentes devem respeitar estritamente o sistema de fronteiras em 
 * **Perguntar Antes:**
   * Adicionar qualquer nova dependência externa no `go.mod`.
   * Alterar schemas persistidos no disco que possam quebrar retrocompatibilidade.
-  * Alterar contratos públicos de CLI, de API do Studio ou de `pipeline.dag.json` / `ROUTE.json`.
+  * Alterar contratos públicos de CLI, de API do Studio, do DAG do Processo ou de `ROUTE.json`.
   * Modificar regras globais no `AGENTS.md`.
 * **Nunca Fazer:**
   * Criar funções vazias com `TODO`, `pass`, `// implementar depois` ou mocks simulados em código de produção (Lei #1: Zero Stubs). Dublês de teste ficam em `_test.go`, apenas nas bordas (E/S, LLM, relógio).
@@ -67,7 +67,7 @@ flowchart TD
     end
 
     subgraph Nucleo ["Núcleo / Engine"]
-        M1["Módulo A"] --> M2["Módulo B"]
+        M1["Peça A"] --> M2["Peça B"]
     end
 
     subgraph Saida ["Camada de Saída"]
@@ -82,7 +82,7 @@ flowchart TD
 * **Costura Primária (Highest Seam):** {{Assinatura exata da função ou interface pública onde a suíte bate para validar o comportamento fim a fim, incluindo as dependências injetáveis.}}
 * **Justificativa:** {{Por que esta costura minimiza o acoplamento interno e evita testes frágeis.}}
 * **Costuras Secundárias (opcionais):** {{Funções puras ou bordas que merecem teste próprio, como normalização de entrada e parsers.}}
-* **Dublês Permitidos (somente nas bordas):** {{Ex: LLM, relógio, sistema de arquivos, rede. Nunca dublê de módulo interno.}}
+* **Dublês Permitidos (somente nas bordas):** {{Ex: LLM, relógio, sistema de arquivos, rede. Nunca dublê de Peça interna.}}
 
 ---
 

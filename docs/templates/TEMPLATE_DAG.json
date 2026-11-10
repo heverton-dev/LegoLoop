@@ -78,9 +78,9 @@
         "spec": "file('output/spec_processed.json')"
       },
       "output": {
-        "artifact": "output/subloop_result.json",
+        "artifact": "output/processo_filho_resultado.json",
         "sub_artifact": "dist/bundle_manifest.json",
-        "gate": "file_exists('output/subloop_result.json')"
+        "gate": "file_exists('output/processo_filho_resultado.json')"
       }
     },
     {
@@ -100,11 +100,11 @@
         "mode": "inline"
       },
       "inputs": {
-        "result": "file('output/subloop_result.json')"
+        "result": "file('output/processo_filho_resultado.json')"
       },
       "output": {
         "artifact": "output/approved_checkpoint.json",
-        "gate": "file_exists('output/subloop_result.json') && prompt('Aprovar resultado para entrega final?')"
+        "gate": "file_exists('output/processo_filho_resultado.json') && prompt('Aprovar resultado para entrega final?')"
       }
     },
     {
@@ -114,7 +114,7 @@
         "powershell",
         "-NoProfile",
         "-Command",
-        "Copy-Item output/subloop_result.json dist/final_delivery.json"
+        "Copy-Item output/processo_filho_resultado.json dist/final_delivery.json"
       ],
       "depends_on": [
         "n04_sg_aprovacao"

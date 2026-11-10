@@ -22,12 +22,40 @@ func TestResolucaoUnica(t *testing.T) {
 	if got, want := CaminhoDAG("d"), filepath.Join("d", ArquivoDAG); got != want {
 		t.Errorf("CaminhoDAG = %q, esperado %q", got, want)
 	}
+	verificaLeituraDual(t)
 	achados, err := literaisFora(filepath.Join(".."), PacoteCentral)
 	if err != nil {
 		t.Fatal(err)
 	}
 	for _, a := range achados {
 		t.Errorf("literal de nome fora de internal/%s: %s", PacoteCentral, a)
+	}
+}
+
+// verificaLeituraDual confere que a fachada prefere o dialeto novo na leitura
+// e cai no antigo quando o novo não existe.
+func verificaLeituraDual(t *testing.T) {
+	t.Helper()
+	base := t.TempDir()
+	if got := CaminhoDAGLeitura(base); got != CaminhoDAG(base) {
+		t.Errorf("CaminhoDAGLeitura sem arquivo novo = %q, esperado %q", got, CaminhoDAG(base))
+	}
+	novo := filepath.Join(base, ArquivoProcessoDAG)
+	if err := os.WriteFile(novo, []byte("{}"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if got := CaminhoDAGLeitura(base); got != novo {
+		t.Errorf("CaminhoDAGLeitura com arquivo novo = %q, esperado %q", got, novo)
+	}
+	for _, d := range []string{DirLoops, DirProcessos} {
+		if err := os.MkdirAll(filepath.Join(base, d), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	want := []string{filepath.Join(base, DirProcessos), DirLoopsEm(base)}
+	got := DirsLeitura(base)
+	if len(got) != 2 || got[0] != want[0] || got[1] != want[1] {
+		t.Errorf("DirsLeitura = %v, esperado %v", got, want)
 	}
 }
 

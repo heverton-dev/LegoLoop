@@ -141,7 +141,7 @@ Na versão inicial (V1) do ecossistema, os templates existiam sob rótulos entus
 - *Poluição de Contexto (Context Bloat):* Agentes chamados de forma genérica liam centenas de linhas irrelevantes, queimavam cotas de tokens desnecessárias e falhavam por perda de atenção ao misturar o "porquê", o "o quê" e o "como" num único emaranhado textual.
 
 == 1.2 A Transição da V1 para a V2: Troca de Promessa por Verificação
-Os templates canônicos da V2 nasceram em novembro de 2026 com uma premissa fundamental: *se um template não é lido, validado e compilado por um componente real do repositório, ele não é engenharia; é apenas decoração.*
+Os templates canônicos da V2 nasceram em novembro de 2026 com uma premissa fundamental: *se um template não é lido, validado e compilado por uma Peça real do repositório, ele não é engenharia; é apenas decoração.*
 
 #callout(
   "A Intenção Fundamental de Criação dos Templates V2",
@@ -150,7 +150,7 @@ Os templates canônicos da V2 nasceram em novembro de 2026 com uma premissa fund
     Os templates nasceram para:
     1. *Fixar o Single Source of Truth (SSOT):* Centralizar em `docs/templates/` a gramática definitiva de todo o repositório, embutida diretamente no binário `legoloop` via `go:embed`.
     2. *Impor Isomorfismo 1:1:* Garantir que todo plano aprovado por um humano tenha um espelho exato, auditável e compilável em JSON lido pelo orquestrador de execução.
-    3. *Instituir a Execução Estéril por Bloco:* Permitir que cada nó do pipeline rode em isolamento hermético (`orchestrix_hermetic`), sem poluição de contexto e sem subagentes parasitas.
+    3. *Instituir a Execução Estéril por Ticket:* Permitir que cada nó do Processo rode em isolamento hermético (`orchestrix_hermetic`), sem poluição de contexto e sem subagentes parasitas.
     4. *Garantir o Padrão Zero Stubs e TDD Rigoroso:* Todo artefato produzido pelos templates deve ser testado, funcional, com critérios binários `AC-*` e livre de placeholders não preenchidos.
   ],
   border-color: rgb("#0284c7"),
@@ -162,7 +162,7 @@ Os templates canônicos da V2 nasceram em novembro de 2026 com uma premissa fund
 
 = 2. Visão Sistêmica do Ecossistema
 
-O repositório divide seus templates canônicos em dois pilares complementares: a *Cascata Canônica de 4 Estágios* (que rege o fluxo de ponta a ponta de qualquer demanda) e a *Sextilha Canônica de Peças Reutilizáveis* (os blocos atômicos com os quais qualquer esteira de automação é montada).
+O repositório divide seus templates canônicos em dois pilares complementares: a *Cascata Canônica de 4 Etapas* (que rege o Processo de ponta a ponta de qualquer demanda) e a *Sextilha Canônica de Peças Reutilizáveis* (as Peças atômicas com as quais qualquer Processo de automação é montado).
 
 #align(center)[
   #block(
@@ -172,7 +172,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
     inset: 12pt,
     width: 95%
   )[
-    #text(weight: "bold", size: 11pt, fill: rgb("#0f172a"))[A CASCATA CANÔNICA EM 4 ESTÁGIOS] \
+    #text(weight: "bold", size: 11pt, fill: rgb("#0f172a"))[A CASCATA CANÔNICA EM 4 ETAPAS] \
     #v(3mm)
     #grid(
       columns: (1fr, 1fr, 1fr, 1fr),
@@ -227,7 +227,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
       [
         #block(fill: rgb("#ffffff"), stroke: 0.5pt + rgb("#cbd5e1"), inset: 6pt, radius: 4pt)[
           *1. SKILL* (`.md`) \
-          #text(size: 8pt)[Habilidade cognitiva de agente com I/O fechado.]
+          #text(size: 8pt)[Instrução cognitiva de agente com I/O fechado.]
         ]
       ],
       [
@@ -256,7 +256,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
       ],
       [
         #block(fill: rgb("#ffffff"), stroke: 0.5pt + rgb("#cbd5e1"), inset: 6pt, radius: 4pt)[
-          *6. LOOP* (`.json`) \
+          *6. PROCESSO* (`.json`) \
           #text(size: 8pt)[Grafo Acíclico Dirigido (DAG) de orquestração.]
         ]
       ]
@@ -266,12 +266,12 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
 
 #pagebreak()
 
-= 3. A Cascata Canônica de 4 Estágios (Análise Pormenorizada)
+= 3. A Cascata Canônica de 4 Etapas (Análise Pormenorizada)
 
 == 3.1 TEMPLATE_INTENT.md — A Declaração de Intenção e "O Porquê"
 
 #question-block("1. Por que nasceu e qual foi a intenção de criá-lo?", [
-  Historicamente, agentes e desenvolvedores iniciavam o código sem saber exatamente *por que* estavam realizando aquela tarefa. Saltava-se diretamente da ideia para o código, gerando escopos inflados, refatorações clandestinas e perda de foco. O `TEMPLATE_INTENT.md` nasceu para forçar uma *pausa socrática*: antes de tocar em qualquer contrato ou arquivo, deve-se provar a dor real, estabelecer quem sofre com o problema, definir o estado atual versus desejado e, crucialmente, declarar *o que NÃO faremos* (Não-Objetivos).
+  Historicamente, agentes e desenvolvedores iniciavam o código sem saber exatamente *por que* estavam realizando aquele Ticket. Saltava-se diretamente da ideia para o código, gerando escopos inflados, refatorações clandestinas e perda de foco. O `TEMPLATE_INTENT.md` nasceu para forçar uma *pausa socrática*: antes de tocar em qualquer contrato ou arquivo, deve-se provar a dor real, estabelecer quem sofre com o problema, definir o estado atual versus desejado e, crucialmente, declarar *o que NÃO faremos* (Não-Objetivos).
 ])
 
 #question-block("2. Para que existe?", [
@@ -283,7 +283,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
   - Possui exatamente 6 seções numeradas obrigatórias:
     1. _Contexto e Motivação_ (Problema real, evidência, dor, quem sofre, antes vs depois).
     2. _Escopo Inegociável_ (Objetivos primários explícitos e lista fechada de proibições).
-    3. _Mapeamento Preliminar de Blocos e Subloops_ (Tabela relacionando blocos a skills, scripts, subloops e stop gates).
+    3. _Mapeamento Preliminar_ (Tabela relacionando Peças a skills, scripts, Processos filhos e stop gates).
     4. _Governança Operacional e Restrições Inegociáveis_ (Gatilho trigger, isolamento, teto de tokens).
     5. _Riscos Mapeados e Planos de Contingência_ (Matriz de risco, impacto e ação mitigadora).
     6. _Critérios de Conclusão da Intenção e Stop-Gate 01_ (Checklist binário de fechamento).
@@ -306,7 +306,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
 == 3.2 TEMPLATE_SPEC.md — A Especificação Executável e "O Quê"
 
 #question-block("1. Por que nasceu e qual foi a intenção de criá-lo?", [
-  Nasceu para resolver a maior causa de falha em engenharia com IA: *especificações vagas e não-testáveis*. Promessas como "o sistema deve ser rápido" ou "o módulo deve ser seguro" são inúteis para um LLM ou para um teste automatizado. O template nasceu da fusão metodológica de Addy Osmani (premissas técnicas e fronteiras de ação rígidas), Matt Pocock (costuras de teste e isolamento de dependências) e AIDD-Spec (critérios binários BDD `AC-*`).
+  Nasceu para resolver a maior causa de falha em engenharia com IA: *especificações vagas e não-testáveis*. Promessas como "o sistema deve ser rápido" ou "a Peça deve ser segura" são inúteis para um LLM ou para um teste automatizado. O template nasceu da fusão metodológica de Addy Osmani (premissas técnicas e fronteiras de ação rígidas), Matt Pocock (costuras de teste e isolamento de dependências) e AIDD-Spec (critérios binários BDD `AC-*`).
 ])
 
 #question-block("2. Para que existe?", [
@@ -344,7 +344,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
 ])
 
 #question-block("2. Para que existe?", [
-  Existe para permitir que o engenheiro humano compreenda, audite e aprove a estratégia de execução do pipeline: níveis de supervisão (`nano`, `micro`, `epic`, `autonomous`), limite de paralelismo, teto de tokens por bloco, timeouts e estratégia de rollback caso um teste falhe.
+  Existe para permitir que o engenheiro humano compreenda, audite e aprove a estratégia de execução do Processo: níveis de supervisão (`nano`, `micro`, `epic`, `autonomous`), limite de paralelismo, teto de tokens por Ticket, timeouts e estratégia de rollback caso um teste falhe.
 ])
 
 #question-block("3. Como é utilizado?", [
@@ -359,7 +359,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
 ])
 
 #question-block("4. Quando e onde é utilizado?", [
-  - *Quando:* Gerado na Fase 3, logo após a homologação da SPEC. Deve ser aprovado pelo usuário no Stop-Gate 03 antes de disparar o código.
+  - *Quando:* Gerado na Etapa 3, logo após a homologação da SPEC. Deve ser aprovado pelo usuário no Stop-Gate 03 antes de disparar o código.
   - *Onde:* Salvo em `docs/plans/YYYY-MM-DD_PLAN_<NOME>.md`. Espelhado 1:1 com `docs/routes/YYYY-MM-DD_ROUTE_<NOME>.json`.
 ])
 
@@ -377,42 +377,42 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
 ])
 
 #question-block("2. Para que existe?", [
-  Existe como o orquestrador executável lido pela CLI do LegoLoop (`legoloop run`) e pelo executor de blocos `orchestrix_hermetic`. Fornece contingência dupla automática (harness primário vs fallback, modelo primário vs fallback), garantia de isolamento hermético e gestão de defeitos em tempo real.
+  Existe como o orquestrador executável lido pela CLI do LegoLoop (`legoloop run`) e pelo executor de Tickets `orchestrix_hermetic`. Fornece contingência dupla automática (harness primário vs fallback, modelo primário vs fallback), garantia de isolamento hermético e gestão de defeitos em tempo real.
 ])
 
 #question-block("3. Como é utilizado?", [
   - Consiste num JSON validado por schema (`https://legoloop.dev/schemas/route.v2.json`) contendo a lista de `nodes`.
   - Cada nó possui uma estrutura isomórfica rigorosa testada em `templates.RouteKeys()`:
-    - `id`, `label`, `nature`, `type` (`unit_task`, `subloop`, `stop_gate`), `ref`, `status`.
+    - `id`, `label`, `nature`, `type` (Ticket, Processo filho ou `stop_gate`), `ref`, `status`.
     - `isolation`: `workspace` (`local`, `git_worktree`, `tempdir`), `executor` (`orchestrix_hermetic`), `subagents_allowed` (`false` ou `"ephemeral"`), e o campo `extreme` do nó.
     - `timeout_sec` e `token_budget` (`max_output_tokens` máximo de 600 tokens para impedir context bloat).
     - `depends_on`: Grafo explícito de dependências sem ciclos.
-    - `routing`: Seleção cirúrgica de modelo (ex: Sonnet para raciocínio complexo, Flash para tarefas mecânicas) com fallback.
+    - `routing`: Seleção cirúrgica de modelo (ex: Sonnet para raciocínio complexo, Flash para Tickets mecânicos) com fallback.
     - `tooling`: Ambiente de execução restrito e MCPs permitidos.
     - `inputs` e `output`: Arquivos de entrada, arquivos alvo fechados e `output.gate` (expressão DSL compilada).
     - `output.verify`: Array de comandos argv (ex: `[["go", "test", "-run", "TestAuth", "./..."]]`) *sem passar por interpretador de shell*, eliminando riscos de injeção.
 ])
 
 #question-block("4. Quando e onde é utilizado?", [
-  - *Quando:* Gerado simultaneamente com o PLAN.md pelo motor `plangen`. É consumido durante a execução da esteira pelo orquestrador.
+  - *Quando:* Gerado simultaneamente com o PLAN.md pelo motor `plangen`. É consumido durante a execução do Processo pelo orquestrador.
   - *Onde:* Salvo em `docs/routes/YYYY-MM-DD_ROUTE_<NOME>.json`. Consumido por `cmd/legoloop`, `internal/orchestrator` e pelo Studio.
 ])
 
 #question-block("5. Por quem é utilizado?", [
   - *Pessoas:* Raramente editado manualmente; inspecionado via LegoLoop Studio.
-  - *Agentes e Motores:* Consumido mecanicamente pelo executor de esteira (`legoloop run`), atualizado dinamicamente nos campos `status` e `defects[]`.
+  - *Agentes e Motores:* Consumido mecanicamente pelo executor de Processo (`legoloop run`), atualizado dinamicamente nos campos `status` e `defects[]`.
 ])
 
 #pagebreak()
 
 = 4. A Sextilha Canônica de Peças Reutilizáveis
 
-Enquanto a cascata governa o ciclo de vida do projeto, a sextilha de peças padroniza as *unidades de trabalho e componentes plugáveis* que operam dentro do LegoLoop.
+Enquanto a cascata governa o ciclo de vida do projeto, a sextilha de peças padroniza as *unidades de trabalho e Peças plugáveis* que operam dentro do LegoLoop.
 
 == 4.1 TEMPLATE_PIECE_SKILL.md — A Peça Cognitiva (Especialista)
 
 #question-block("1. Por que nasceu e qual foi a intenção de criá-lo?", [
-  Na V1, as skills eram documentos desordenados, com textos vagos, sem escopo definido de escrita e com campos fictícios (como `commands:` que nenhum parser consumia). Os agentes alucinavam permissões de escrita em todo o disco. O `TEMPLATE_PIECE_SKILL.md` foi criado para transformar a skill em um *componente com contrato estrito de entrada e saída (I/O)*, com escopo cirúrgico de escrita (`target_files`) e regras negativas inegociáveis.
+  Na V1, as skills eram documentos desordenados, com textos vagos, sem escopo definido de escrita e com campos fictícios (como `commands:` que nenhum parser consumia). Os agentes alucinavam permissões de escrita em todo o disco. O `TEMPLATE_PIECE_SKILL.md` foi criado para transformar a skill em uma *Peça com contrato estrito de entrada e saída (I/O)*, com escopo cirúrgico de escrita (`target_files`) e regras negativas inegociáveis.
 ])
 
 #question-block("2. Para que existe?", [
@@ -425,7 +425,7 @@ Enquanto a cascata governa o ciclo de vida do projeto, a sextilha de peças padr
     - `description`: Máximo de 300 caracteres, iniciando com gatilho de uso ("Use quando...") e proibição de uso ("NÃO use quando...").
     - `consumes` e `produces`: Tipos formais do grafo (ex: `Artifact:Spec` $arrow.r$ `Artifact:Code`).
     - `artifact` e `gate`: Nome do artefato mecânico esperado e validação DSL de aceite.
-    - `suggested_model`: Modelo mais econômico e eficiente para aquela tarefa.
+    - `suggested_model`: Modelo mais econômico e eficiente para aquele Ticket.
   - O corpo do Markdown estabelece: Casos de uso concretos, Target Files fechados, protocolo operacional e regras negativas.
 ])
 
@@ -440,7 +440,7 @@ Enquanto a cascata governa o ciclo de vida do projeto, a sextilha de peças padr
 == 4.2 TEMPLATE_PIECE_SCRIPT.ps1 — A Peça Mecânica (Transformação Determinística)
 
 #question-block("1. Por que nasceu e qual foi a intenção de criá-lo?", [
-  Modelos de linguagem são péssimos e caros para tarefas mecânicas repetitivas (como normalização de quebras de linha, parsing de regex em milhares de arquivos, formatação de dados). Além disso, scripts improvisados em pipelines frequentemente quebram silenciosamente, deixam arquivos temporários órfãos e não tratam erros. Este template nasceu para fornecer um *padrão determinístico de script PowerShell 5.1+ corporativo, idempotente, atômico e confinado à raiz*.
+  Modelos de linguagem são péssimos e caros para Tickets mecânicos repetitivos (como normalização de quebras de linha, parsing de regex em milhares de arquivos, formatação de dados). Além disso, scripts improvisados em Processos frequentemente quebram silenciosamente, deixam arquivos temporários órfãos e não tratam erros. Este template nasceu para fornecer um *padrão determinístico de script PowerShell 5.1+ corporativo, idempotente, atômico e confinado à raiz*.
 ])
 
 #question-block("2. Para que existe?", [
@@ -479,7 +479,7 @@ Enquanto a cascata governa o ciclo de vida do projeto, a sextilha de peças padr
 #question-block("3. Quando, Onde e Por Quem?", [
   - *Quando:* Em tempo real, a cada intenção do agente de editar arquivos ou executar comandos.
   - *Onde:* Configurado em `.claude/settings.json` ou nas configurações do harness em uso.
-  - *Por quem:* Executado pelo motor do harness (ex: Claude Code) acionando scripts de defesa como `guard-secrets.ps1`.
+  - *Por quem:* Executado pelo motor do harness (ex: Claude Code) acionando scripts de defesa contra vazamento de segredos.
 ])
 
 #v(4mm)
@@ -498,7 +498,7 @@ Enquanto a cascata governa o ciclo de vida do projeto, a sextilha de peças padr
 ])
 
 #question-block("3. Quando, Onde e Por Quem?", [
-  - *Quando:* No carregamento inicial do ambiente de desenvolvimento ou ao conectar capacidades externas (ex: REA, Playwright).
+  - *Quando:* No carregamento inicial do ambiente de desenvolvimento ou ao conectar ferramentas externas (ex: REA, Playwright).
   - *Onde:* No arquivo `.mcp.json` na raiz do projeto.
   - *Por quem:* Lido pelo cliente MCP do harness e monitorado pelo scanner de integridade do LegoLoop.
 ])
@@ -508,7 +508,7 @@ Enquanto a cascata governa o ciclo de vida do projeto, a sextilha de peças padr
 == 4.5 TEMPLATE_PIECE_GATE.json — O Juiz Binário e Portões de Parada (DSL)
 
 #question-block("1. Por que e Para Que Nasceu?", [
-  Antes da existência de uma DSL formal de gates, a validação de etapas dependia do próprio modelo dizer se seu trabalho estava bom — um caso clássico de "a raposa cuidando do galinheiro". Os LLMs frequentemente declaravam tarefas prontas mesmo com testes falhando ou arquivos incompletos. O `TEMPLATE_PIECE_GATE.json` nasceu para instituir um *árbitro determinístico mecânico*, onde o sucesso de uma etapa depende de funções booleanas matemáticas puras e verificação de exit codes reais.
+  Antes da existência de uma DSL formal de gates, a validação de etapas dependia do próprio modelo dizer se seu trabalho estava bom — um caso clássico de "a raposa cuidando do galinheiro". Os LLMs frequentemente declaravam Tickets prontos mesmo com testes falhando ou arquivos incompletos. O `TEMPLATE_PIECE_GATE.json` nasceu para instituir um *árbitro determinístico mecânico*, onde o sucesso de uma etapa depende de funções booleanas matemáticas puras e verificação de exit codes reais.
 ])
 
 #question-block("2. Para que existe e Como é utilizado?", [
@@ -519,7 +519,7 @@ Enquanto a cascata governa o ciclo de vida do projeto, a sextilha de peças padr
     3. *Gate de Contrato de Spec:* Exige checklist binário e seções BDD: \
        `has_binary_criteria('SPEC') && has_acceptance_criteria('SPEC')`.
     4. *Gate de Schema JSON:* Valida o documento contra um JSON Schema formal: `schema_valid('SCHEMA', 'JSON')`.
-    5. *Stop-Gate Humano:* Pausa incondicionalmente a esteira e solicita autorização explícita do desenvolvedor: \
+    5. *Stop-Gate Humano:* Pausa incondicionalmente o Processo e solicita autorização explícita do desenvolvedor: \
        `prompt('Pergunta ao humano')`.
   - *Regra Inviolável (AGENTS.md):* Stop-gates humanos não podem ser simulados ou aprovados por IA.
 ])
@@ -532,21 +532,21 @@ Enquanto a cascata governa o ciclo de vida do projeto, a sextilha de peças padr
 
 #v(4mm)
 
-== 4.6 TEMPLATE_PIECE_LOOP.json — O Grafo Acíclico Dirigido (DAG Orquestrador)
+== 4.6 Template de Processo — O Grafo Acíclico Dirigido (DAG Orquestrador)
 
 #question-block("1. Por que e Para Que Nasceu?", [
-  Processos complexos de engenharia de software não são lineares: possuem ramificações, dependências cruzadas e nós que podem rodar em paralelo. Tentar orquestrar isso via prompts encadeados causa perda de estado e caos operacional. O template de Loop nasceu para trazer a *teoria de grafos (DAG - Directed Acyclic Graph) para o coração da engenharia com agentes*.
+  Processos complexos de engenharia de software não são lineares: possuem ramificações, dependências cruzadas e nós que podem rodar em paralelo. Tentar orquestrar isso via prompts encadeados causa perda de estado e caos operacional. O template de Processo nasceu para trazer a *teoria de grafos (DAG - Directed Acyclic Graph) para o coração da engenharia com agentes*.
 ])
 
 #question-block("2. Como é utilizado?", [
-  - Estrutura JSON canônica validada por `internal/dag` (`dag.Parse`) e armazenada por `internal/loop` (`loop.Store`).
-  - Define nós com identificadores únicos, tipo da peça (`skill`, `script`, `subloop`), referências relativas, dependências explícitas (`depends_on`), alocação de modelo cognitivo e contrato de saída com artefato e gate.
+  - Estrutura JSON canônica validada por `internal/dag` (`dag.Parse`) e armazenada pelo repositório de documentos do Studio.
+  - Define nós com identificadores únicos, tipo da Peça (`skill`, `script` ou Processo filho), referências relativas, dependências explícitas (`depends_on`), alocação de modelo cognitivo e contrato de saída com artefato e gate.
   - É validado pelo comando `legoloop validate <arquivo.json>`, garantindo que não existem ciclos infinitos nem referências a nós inexistentes.
 ])
 
 #question-block("3. Quando, Onde e Por Quem?", [
-  - *Quando:* Utilizado para definir loops completos de trabalho (ex: Loop de Fabricação, Loop de Auditoria 4F, Loop de Upgrade de Peças).
-  - *Onde:* Armazenado na pasta de loops do ecossistema e embutido no motor da CLI.
+  - *Quando:* Utilizado para definir Processos completos de trabalho (ex: Processo de Fabricação, Processo de Auditoria 4F, Processo de Upgrade de Peças).
+  - *Onde:* Armazenado na pasta de Processos do ecossistema e embutido no motor da CLI.
   - *Por quem:* Lido e executado pelo motor de execução de DAG do LegoLoop.
 ])
 
@@ -580,12 +580,12 @@ var routeJSON []byte
 Dessa forma, os templates em Markdown e JSON na pasta `docs/templates/` são a *Single Source of Truth absoluta*. Ao compilar o executável, eles são fundidos no binário. Os motores de geração leem as funções `templates.Intent()`, `templates.Spec()`, `templates.Plan()` e `templates.Route()`. Se um arquivo do disco for alterado, os testes unitários acusam a discrepância imediatamente.
 
 == 5.2 Como os Testes Garantem a Imutabilidade (`templates_test.go`)
-O arquivo de teste não apenas verifica texto; ele executa validações funcionais reais usando os módulos de produção do sistema:
+O arquivo de teste não apenas verifica texto; ele executa validações funcionais reais usando as Peças de produção do sistema:
 - *Validação de Sintaxe JSON:* Garante que todos os 5 templates JSON do diretório são documentos JSON perfeitamente parseáveis.
 - *Isomorfismo de Nós:* Valida que todos os nós do `TEMPLATE_ROUTE.json` possuem exatamente as mesmas chaves (`RouteShape`), impedindo nós estruturalmente heterogêneos.
-- *Compilação Integral de Gates:* Extrai todos os 17 gates presentes nos templates (nos nós da ROUTE, no PLAN, nas receitas de GATE e no DAG de LOOP) e os compila através do compilador real `gate.Compile`. Se houver uma única função inexistente ou parêntese incorreto, a suíte de testes do repositório quebra.
-- *Validação de DAG:* O `TEMPLATE_PIECE_LOOP.json` é injetado no parser `dag.Parse` e armazenado em `loop.Store`, garantindo compatibilidade estrita.
-- *Descoberta pelo Scanner de Assets:* O módulo `assets.Discover` varre os templates e comprova que consegue indexar a skill, o hook, o script, o MCP e o loop.
+- *Compilação Integral de Gates:* Extrai todos os 17 gates presentes nos templates (nos nós da ROUTE, no PLAN, nas receitas de GATE e no DAG de Processo) e os compila através do compilador real `gate.Compile`. Se houver uma única função inexistente ou parêntese incorreto, a suíte de testes do repositório quebra.
+- *Validação de DAG:* O template de Processo é injetado no parser `dag.Parse` e armazenado no repositório de documentos do Studio, garantindo compatibilidade estrita.
+- *Descoberta pelo Scanner de Assets:* A Peça `assets.Discover` varre os templates e comprova que consegue indexar a skill, o hook, o script, o MCP e o Processo.
 - *Teste do Script PowerShell:* O script `TEMPLATE_PIECE_SCRIPT.ps1` é executado mecanicamente em ambiente de teste contra 7 cenários adversos, confirmando a obediência aos códigos de saída `0`, `1` e `2`.
 
 #pagebreak()
@@ -622,28 +622,28 @@ Abaixo, a tabela-mestra consolidada respondendo de forma sintética e conclusiva
   [Eliminar especificações vagas e não-testáveis que causam alucinação de IA.],
   [Fixar premissas, fronteiras e critérios BDD binários inegociáveis (`AC-*`).],
   [Fusão Osmani + Pocock; tabela de fronteiras e critérios Given-When-Then.],
-  [Fase 2 (após Intent aprovada); salvo em `docs/specs/`.],
+  [Etapa 2 (após Intent aprovada); salvo em `docs/specs/`.],
   [Motor `specgen.Generate` e revisado pelo humano no Stop-Gate 02.],
 
   [`TEMPLATE_PLAN.md`],
-  [Evitar planos horizontais inoperantes e manter o humano no controle da esteira.],
+  [Evitar planos horizontais inoperantes e manter o humano no controle do Processo.],
   [Apresentar fatiamento vertical legível de tickets rastreáveis à SPEC.],
   [Espelho 1:1 do ROUTE; define épicos, naturezas, isolamento e stop-gates.],
-  [Fase 3 (após Spec aprovada); salvo em `docs/plans/`.],
+  [Etapa 3 (após Spec aprovada); salvo em `docs/plans/`.],
   [Gerado por `plangen.Generate` e assinado pelo usuário no Stop-Gate 03.],
 
   [`TEMPLATE_ROUTE.json`],
   [Substituir instruções em texto livre por matriz rígida executável de máquina.],
   [Orquestrar execução de agentes estéreis com contingência dupla e isolamento.],
   [Grafo JSON de nós com inputs, outputs fechados, comandos argv e gates DSL.],
-  [Fase de Execução; salvo em `docs/routes/`. Lido por `legoloop run`.],
+  [Etapa de Execução; salvo em `docs/routes/`. Lido por `legoloop run`.],
   [Executor `orchestrix_hermetic`, CLI LegoLoop e motor de rota.],
 
   [`TEMPLATE_PIECE_SKILL.md`],
   [Superar skills anêmicas e campos falsos da V1 sem contratos de escrita.],
   [Instruir modelo em especialidade atômica com target files fechados.],
   [Frontmatter YAML lido por `assets`; contratos de I/O e regras negativas.],
-  [Execução de tarefas cognitivas; salvo em `skills/<nome>/SKILL.md`.],
+  [Execução de Tickets cognitivos; salvo em `skills/<nome>/SKILL.md`.],
   [Agentes em contexto estéril e pelo comando `legoloop upgrade`.],
 
   [`TEMPLATE_PIECE_SCRIPT.ps1`],
@@ -676,19 +676,19 @@ Abaixo, a tabela-mestra consolidada respondendo de forma sintética e conclusiva
 
   [`TEMPLATE_PIECE_LOOP.json`],
   [Superar prompts encadeados lineares através da teoria de grafos (DAG).],
-  [Definir pipelines complexos com dependências, timeouts e modelos adequados.],
+  [Definir Processos complexos com dependências, timeouts e modelos adequados.],
   [JSON validado por `dag.Parse`; nós com dependências acíclicas e gates.],
-  [Definição de fluxos complexos reutilizáveis; salvo em diretórios de loop.],
-  [Motor de DAG do LegoLoop (`loop.Store`) e comando `legoloop run`.]
+  [Definição de Processos complexos reutilizáveis; salvo em diretórios de Processos.],
+  [Motor de DAG do LegoLoop e comando `legoloop run`.]
 )
 
 #set text(size: 10pt)
 
 #pagebreak()
 
-= 7. Ciclo de Vida Prático: A Esteira de Fabricação em Ação
+= 7. Ciclo de Vida Prático: O Processo de Fabricação em Ação
 
-Para compreender como esses 10 templates operam em harmonia na vida real, examinemos o fluxo canônico de atendimento de uma demanda no LegoLoop:
+Para compreender como esses 10 templates operam em harmonia na vida real, examinemos o Processo canônico de atendimento de uma demanda no LegoLoop:
 
 #align(center)[
   #block(
@@ -698,35 +698,35 @@ Para compreender como esses 10 templates operam em harmonia na vida real, examin
     inset: 12pt,
     width: 95%
   )[
-    #text(weight: "bold", size: 10.5pt, fill: rgb("#0f172a"))[FLUXO CRONOLÓGICO DA ESTEIRA LEGOLOOP] \
+    #text(weight: "bold", size: 10.5pt, fill: rgb("#0f172a"))[PROCESSO CRONOLÓGICO LEGOLOOP] \
     #v(3mm)
     #grid(
       columns: (1fr),
       gutter: 10pt,
       [
         #rect(fill: rgb("#f0f9ff"), stroke: 0.5pt + rgb("#bae6fd"), width: 100%, inset: 8pt, radius: 4pt)[
-          *Fase 1: Intenção (`TEMPLATE_INTENT.md`)* \
+          *Etapa 1: Intenção (`TEMPLATE_INTENT.md`)* \
           Humano e agente conversam via entrevista socrática. A dor é dissecada. Escopo fechado. Não-objetivos declarados. \
           #text(size: 8.5pt, fill: rgb("#0284c7"))[*Stop-Gate 01:* Confiança $>= 95%$. Usuário aprova a Intent.]
         ]
       ],
       [
         #rect(fill: rgb("#fefce8"), stroke: 0.5pt + rgb("#fef08a"), width: 100%, inset: 8pt, radius: 4pt)[
-          *Fase 2: Especificação Técnica (`TEMPLATE_SPEC.md`)* \
+          *Etapa 2: Especificação Técnica (`TEMPLATE_SPEC.md`)* \
           O motor `specgen` consome a Intent e o código existente. Gera premissas, boundaries e critérios BDD `AC-*`. \
           #text(size: 8.5pt, fill: rgb("#b45309"))[*Stop-Gate 02:* Gate mecânico `has_binary_criteria` + Aprovação humana da arquitetura.]
         ]
       ],
       [
         #rect(fill: rgb("#f0fdf4"), stroke: 0.5pt + rgb("#bbf7d0"), width: 100%, inset: 8pt, radius: 4pt)[
-          *Fase 3: Planejamento e Matriz Isomórfica (`TEMPLATE_PLAN.md` & `TEMPLATE_ROUTE.json`)* \
+          *Etapa 3: Planejamento e Matriz Isomórfica (`TEMPLATE_PLAN.md` & `TEMPLATE_ROUTE.json`)* \
           O motor `plangen` projeta o fatiamento em tickets verticais. Cria o Markdown para humanos e o JSON para a máquina. \
           #text(size: 8.5pt, fill: rgb("#15803d"))[*Stop-Gate 03:* Aprovação humana do plano de voo e dos tetos de custo/tokens.]
         ]
       ],
       [
         #rect(fill: rgb("#faf5ff"), stroke: 0.5pt + rgb("#e9d5ff"), width: 100%, inset: 8pt, radius: 4pt)[
-          *Fase 4: Execução Hermética e TDD (`legoloop run`)* \
+          *Etapa 4: Execução Hermética e TDD (`legoloop run`)* \
           A máquina despacha cada nó da ROUTE para um executor isolado (`orchestrix_hermetic`). \
           Agentes usam as *Skills* necessárias, scripts executam transformações (*Script*), gates barram regressões (*Gate*), hooks protegem segredos (*Hook*). \
           #text(size: 8.5pt, fill: rgb("#7e22ce"))[*Stop-Gate Final:* Suíte de testes `go test` passando + Recompilação fresca do binário.]

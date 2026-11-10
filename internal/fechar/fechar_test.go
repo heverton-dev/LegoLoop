@@ -161,6 +161,49 @@ func TestFecharDAG_AuditaParidadeSHA256(t *testing.T) {
 	}
 }
 
+// TestParidadeDoisNomes cobre AC-E01.5: dois Processos no mesmo repositório,
+// um com o nome antigo do DAG e outro com o novo, passam na auditoria de
+// paridade; divergência no nome novo continua sendo detectada.
+func TestParidadeDoisNomes(t *testing.T) {
+	dir := t.TempDir()
+	dagsDir := filepath.Join(dir, "docs", "dags")
+	if err := os.MkdirAll(dagsDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	conteudo := []byte(`{"name":"x","version":"1.0.0"}`)
+	procs := []struct{ slug, pasta, arquivo string }{
+		{"alfa", caminhos.DirLoops, caminhos.ArquivoDAG},
+		{"beta", caminhos.DirProcessos, caminhos.ArquivoProcessoDAG},
+	}
+	for _, p := range procs {
+		pdir := filepath.Join(dir, p.pasta, p.slug)
+		if err := os.MkdirAll(pdir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		iso := filepath.Join(dagsDir, "2026-11-10_DAG_"+strings.ToUpper(p.slug)+".json")
+		for _, f := range []string{iso, filepath.Join(pdir, p.arquivo)} {
+			if err := os.WriteFile(f, conteudo, 0o644); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	deps := fechar.Deps{RepoDir: dir, SkipBuild: true}
+	for _, p := range procs {
+		res, err := fechar.Executar(nil, fechar.Request{Slug: p.slug}, deps)
+		if err != nil || !res.Sucesso {
+			t.Fatalf("%s (%s): esperava paridade ok: err=%v res=%+v", p.slug, p.arquivo, err, res)
+		}
+	}
+	novo := filepath.Join(dir, caminhos.DirProcessos, "beta", caminhos.ArquivoProcessoDAG)
+	if err := os.WriteFile(novo, []byte(`{"name":"diverge"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	res, _ := fechar.Executar(nil, fechar.Request{Slug: "beta"}, deps)
+	if res.Sucesso || !strings.Contains(res.Etapas[3].Detalhe, "divergente") {
+		t.Fatalf("esperava divergência detectada no nome novo: %+v", res.Etapas[3])
+	}
+}
+
 func testarParidadeSHA256(t *testing.T, pasta, arquivo string) {
 	dir := t.TempDir()
 	dagsDir := filepath.Join(dir, "docs", "dags")

@@ -11,7 +11,7 @@
 > **Template:** TEMPLATE_PLAN.md v2.2.0 (espelha TEMPLATE_ROUTE.json v2.2.0)  
 
 <!--
-GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
+GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 - Este PLAN e o ROUTE são espelhos 1:1: mesmo conjunto de IDs, dependências, naturezas, limites e roteamento.
   Qualquer divergência entre os dois é defeito. Valores do exemplo abaixo coincidem com o exemplo do ROUTE.
 - Cada ticket é uma fatia vertical: entrega comportamento verificável de ponta a ponta, não uma camada.
@@ -23,12 +23,12 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 
 ## 1. Estratégia de Execução & Governança de Loteamento
 
-* **Engine:** `orchestrix_hermetic` (execução isolada por bloco, sem context bloat)
+* **Engine:** `orchestrix_hermetic` (execução isolada por Ticket, sem context bloat)
 * **Nível de Supervisão:** `{{nano | micro | epic | autonomous}}`
 * **Permissão de Subagentes:** `false` ou `ephemeral` (AGENTS.md, regra 4: agente de harness proibido; subagente efêmero só com as seis condições)
 * **TDD Estrito:** `true` (Red ➔ Green ➔ Refactor obrigatório antes de qualquer código de produção)
 * **Limite de Workers Paralelos:** `2`
-* **Timeout Padrão por Bloco:** `180s`
+* **Timeout Padrão por Ticket:** `180s`
 * **Política de Rollback:** global `abort_pipeline`; por nó `stash_changes`
 
 ---
@@ -38,7 +38,7 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 | Épico ID | Nome do Épico | Total Tickets | Critérios de Aceite Cobertos | Natureza Dominante |
 |---|---|---|---|---|
 | **E01** | {{NOME_DO_EPICO_01}} | 2 | `AC-E01.1`, `AC-E01.2` | `micro` |
-| **E02** | {{NOME_DO_EPICO_02}} | 1 | `AC-E02.1` | `macro` |
+| **E02** | {{NOME_DO_EPICO_02}} | 1 | `AC-E02.1` | `micro` |
 
 > Regra de cobertura: a união da coluna "Critérios de Aceite Cobertos" deve ser igual ao conjunto de `AC-*` da SPEC.
 
@@ -105,18 +105,18 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 
 ### Épico 02 — {{NOME_DO_EPICO_02}}
 
-#### Ticket `TICK-02.1` — {{Descrição resumida da ação (subloop especialista)}}
-* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E02` | **Nature:** `macro` | **Tipo:** `subloop` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+#### Ticket `TICK-02.1` — {{Descrição resumida da ação (Processo filho especialista)}}
+* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E02` | **Nature:** `micro` | **Tipo:** `subloop` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["SG-E01"]`
-* **Ref do Subloop:** `exemplo-subloop` (id de um loop do acervo; nunca um caminho)
+* **Ref do Processo filho:** `exemplo-processo-filho` (id de um Processo do acervo; nunca um caminho)
 * **Isolamento:** Workspace `tempdir` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `code-fast` · Effort `medium` · Fallback Harness `ollama` · Modelo `deepseek-coder:6.7b`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `true` · Allowlist `["codebase-memory-mcp:search_code"]`
 * **Limites & Resiliência:** Timeout `300s` · Retries `1` · Entrada `32000` tokens · Teto de saída `1200` tokens · Rollback `stash_changes`
 * **Inputs:** Context Artifacts `["scratch/target_analysis.json"]` · Spec Anchor `docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E02.1`
-* **Outputs:** `scratch/subloop_output.json`
-* **Verificação (argv, sem shell):** nenhuma (o subloop se valida pelo próprio gate)
-* **Gate (DSL):** `file_exists('scratch/subloop_output.json')`
+* **Outputs:** `scratch/processo_filho_saida.json`
+* **Verificação (argv, sem shell):** nenhuma (o Processo filho se valida pelo próprio gate)
+* **Gate (DSL):** `file_exists('scratch/processo_filho_saida.json')`
 * **Spec Ref:** `AC-E02.1`
 
 ---

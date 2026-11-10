@@ -2,7 +2,7 @@
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "name": "legopress-engine",
   "version": "2.2.0",
-  "description": "Pipeline canônico de geração, diagramação e auditoria geométrica de livros técnicos (LegoPress).",
+  "description": "Processo canônico de geração, diagramação e auditoria geométrica de livros técnicos (LegoPress).",
   "trigger": {
     "type": "manual"
   },

@@ -51,8 +51,8 @@ const usage = `Uso: legoloop <comando> [opções]
 Comandos:
   doctor     [--json]                        inventário de harnesses, modelos e chaves (Cofre de Segredos)
   canonize   --root DIR... (--dry-run|--apply) [--vault DIR] [--workers N] [--json]
-  validate   <` + caminhos.ArquivoDAG + `>             valida contrato, gates e ciclos
-  run        <` + caminhos.ArquivoDAG + `> [--workdir DIR] [--parallel N] [--timeout DUR]
+  validate   <` + caminhos.ArquivoProcessoDAG + `>             valida contrato, gates e ciclos
+  run        <` + caminhos.ArquivoProcessoDAG + `> [--workdir DIR] [--parallel N] [--timeout DUR]
              [--skills DIR] [--var chave=valor]... [--json]
   route      --from Artifact:X --to Artifact:Y  rota ótima no grafo semântico
   studio     [--addr 127.0.0.1:7878] [--project DIR]  abre o Looping Studio
@@ -60,7 +60,7 @@ Comandos:
   import     <github-url> [--name N] [--json]         importa e canoniza skill do GitHub
   upgrade    <arquivo> [--diagnose|--apply] [--json]  diagnóstica ou valida elevação para Padrão Ouro
   matrix     [--kind K] [--tier T] [--min N] [--json] DESCONTINUADO: use "matriz ver"
-  fabricar   "<nome>" [--yes] [--goal T] [--model M] [--dry-run] [--json]  cria um processo novo (skill, loop, dag e docs)
+  fabricar   "<nome>" [--yes] [--goal T] [--model M] [--dry-run] [--json]  cria um processo novo (skill, DAG e documentos)
   matriz     gerar|status|vocab|perfil|ver  gera e consulta a matriz de peças (qualidade e perfil de uso)
   listar     [--vault DIR] [--json]  mostra os processos do cofre (versão, natureza, harnesses, usado por)
   refinar    <nome> --etapa ID [--peca P] [--caso C]... [--yes]  muda uma etapa, sobe a versão e guarda a anterior
@@ -71,11 +71,11 @@ Comandos:
   sync-harnesses (--dry-run|--apply)         conecta harnesses ao legoloop mcp-router
   mcp-router                                 inicia servidor MCP STDIO com Lazy discovery
   legopress  [doctor|auditar|criar|editar|atualizar|adequar|preview]  processo industrial de livros técnicos
-  video-motion <subcomando> [opções]          pipeline determinístico de edição e motion vídeo
-  video-capcut <subcomando> [opções]          pipeline soberano de edição talking-head com CapCut e FCPXML
-  video-rea  <subcomando> [opções]             pipeline universal de engenharia reversa audiovisual
-  canal      redc|gerar [opções]              pipeline REDC de canais e clonagem estrutural
-  cartoon-shorts --theme "<tema>" [opções]    pipeline soberano de geração de Cartoon Shorts (1080x1920)
+  video-motion <subcomando> [opções]          processo determinístico de edição e motion vídeo
+  video-capcut <subcomando> [opções]          processo soberano de edição talking-head com CapCut e FCPXML
+  video-rea  <subcomando> [opções]             processo universal de engenharia reversa audiovisual
+  canal      redc|gerar [opções]              processo REDC de canais e clonagem estrutural
+  cartoon-shorts --theme "<tema>" [opções]    processo soberano de geração de Cartoon Shorts (1080x1920)
   fechar     <slug> [--dry-run] [--skip-build] [--json]  cadeia determinística de 8 etapas de canonização e fechamento
   version
 `

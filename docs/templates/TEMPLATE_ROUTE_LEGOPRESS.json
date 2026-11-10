@@ -117,7 +117,7 @@
       "id": "STEP-02-PARTITION",
       "initiative_id": "I04",
       "epic_id": "E01",
-      "label": "Fatiamento Hierárquico em Tríade (Macro, Meso, Micro)",
+      "label": "Fatiamento Hierárquico em Tríade (Grande, Meso, Micro)",
       "nature": "nano",
       "extreme": false,
       "type": "unit_task",

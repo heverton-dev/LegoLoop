@@ -232,7 +232,7 @@
       "spec_ref": null,
       "test_target": null,
       "defects": [],
-      "rollback_strategy": "abort_pipeline",
+      "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [],
         "verify": [],
@@ -244,11 +244,11 @@
       "id": "TICK-02.1",
       "initiative_id": null,
       "epic_id": "E02",
-      "label": "Dissecação via Subloop Especialista",
-      "nature": "macro",
+      "label": "Dissecação via Processo Filho Especialista",
+      "nature": "micro",
       "extreme": false,
       "type": "subloop",
-      "ref": "exemplo-subloop",
+      "ref": "exemplo-processo-filho",
       "status": "PENDING",
       "execution_mode": "sequential",
       "isolation": {
@@ -300,10 +300,10 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "scratch/subloop_output.json"
+          "scratch/processo_filho_saida.json"
         ],
         "verify": [],
-        "gate": "file_exists('scratch/subloop_output.json')"
+        "gate": "file_exists('scratch/processo_filho_saida.json')"
       },
       "telemetry": null
     },
@@ -359,7 +359,7 @@
       "spec_ref": null,
       "test_target": null,
       "defects": [],
-      "rollback_strategy": "abort_pipeline",
+      "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
           "bin/legoloop.exe"

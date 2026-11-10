@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
-  "name": "template-videorea-pipeline",
+  "name": "template-videorea-processo",
   "version": "2.2.0",
-  "description": "Pipeline canônico de engenharia reversa e edição determinística de vídeo por código (Video as Code) com isolamento hermético e Stop-Gates humanos.",
+  "description": "Processo canônico de engenharia reversa e edição determinística de vídeo por código (Video as Code) com isolamento hermético e Stop-Gates humanos.",
   "trigger": {
     "type": "manual"
   },

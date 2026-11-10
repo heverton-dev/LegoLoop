@@ -11,8 +11,44 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
 	"strings"
 )
+
+// init faz execCmd achar o gofmt do GOROOT quando ele não está no PATH.
+// O nome lógico "gofmt" continua o mesmo para quem substitui execCmd.
+func init() {
+	base := execCmd
+	execCmd = func(dir, name string, args ...string) (string, error) {
+		return base(dir, resolveTool(name), args...)
+	}
+}
+
+// resolveTool devolve o caminho do gofmt em $GOROOT/bin se o PATH não o tem.
+func resolveTool(name string) string {
+	if name != "gofmt" {
+		return name
+	}
+	if _, err := exec.LookPath(name); err == nil {
+		return name
+	}
+	goroot := strings.TrimSpace(os.Getenv("GOROOT"))
+	if goroot == "" {
+		if out, err := exec.Command("go", "env", "GOROOT").Output(); err == nil {
+			goroot = strings.TrimSpace(string(out))
+		}
+	}
+	if goroot == "" {
+		return name
+	}
+	exe := "gofmt"
+	if runtime.GOOS == "windows" {
+		exe += ".exe"
+	}
+	return filepath.Join(goroot, "bin", exe)
+}
 
 type config struct {
 	Root   string

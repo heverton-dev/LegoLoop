@@ -10,7 +10,7 @@
 > **Referências:** [INTENT]({{LINK_INTENT}}) · [SPEC]({{LINK_SPEC}}) · [PLAN]({{LINK_PLAN}}) · [ROUTE]({{LINK_ROUTE}})
 
 <!--
-GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
+GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 - Todo {{PLACEHOLDER}} deve ser preenchido ou substituído por dados factuais auditáveis.
 - A telemetria DEVE conter os números reais orçados e os medidos factualmente.
 - Se algum indicador não for aplicável, declare 0 ou N/A com justificativa explícita.
@@ -21,7 +21,7 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 
 ## 1. Resumo Executivo
 * **Objetivo Alcançado:** {{Descrição direta do objetivo completado e problema resolvido.}}
-* **Impacto Arquitetural:** {{Quais subsistemas, pacotes Go, loops ou skills foram alterados ou criados.}}
+* **Impacto Arquitetural:** {{Quais subsistemas, pacotes Go, Processos ou skills foram alterados ou criados.}}
 * **Veredito Geral:** {{APROVADO_SEM_RESSALVAS | APROVADO_COM_DEBITO_TECNICO | REPROVADO}}
 
 ---
@@ -48,7 +48,7 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 | **Modelos Cognitivos Utilizados** | {{MODELOS_PLANEJADOS}} | {{MODELOS_UTILIZADOS}} | N/A | {{CONFORME_ROTA}} |
 
 ### 2.3 Balanço Financeiro & Custo (USD / BRL)
-| Componente Financeiro | Orçado (USD) | Realizado (USD) | Custo em BRL (R$) | Saldo / Status |
+| Item Financeiro | Orçado (USD) | Realizado (USD) | Custo em BRL (R$) | Saldo / Status |
 | :--- | :---: | :---: | :---: | :---: |
 | **Custo de Entrada (Input Tokens)** | ${{CUSTO_IN_ORCADO_USD}} | ${{CUSTO_IN_REAL_USD}} | R$ {{CUSTO_IN_REAL_BRL}} | {{SALDO_IN}} |
 | **Custo de Saída (Output Tokens)** | ${{CUSTO_OUT_ORCADO_USD}} | ${{CUSTO_OUT_REAL_USD}} | R$ {{CUSTO_OUT_REAL_BRL}} | {{SALDO_OUT}} |
@@ -60,8 +60,8 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 
 ### 2.4 Análise de Eficiência & Gargalos
 * **Taxa de Acerto no Primeiro Tiro (First-Shot Pass Rate):** {{NN}}% (testes que passaram sem retentativa).
-* **Gargalos Detectados:** {{Descrição sucinta de timeout, compilação demorada ou loops corrigidos.}}
-* **Economia Gerada:** {{Explicação do ganho por prompt caching, VSA estrita ou isolamento por bloco.}}
+* **Gargalos Detectados:** {{Descrição sucinta de timeout, compilação demorada ou ciclos de correção.}}
+* **Economia Gerada:** {{Explicação do ganho por prompt caching, VSA estrita ou isolamento por Ticket.}}
 
 ---
 
@@ -78,7 +78,7 @@ GUIA DE PREENCHIMENTO (apague este bloco ao concluir)
 * **Skills & Governança:** `{{ARQUIVOS_SKILL}}`.
 
 ### Épico 03 — {{NOME_DO_EPICO_03}}
-* **Integrações & Grafos:** `{{GRAFOS_OU_LOOPS}}`.
+* **Integrações & Grafos:** `{{GRAFOS_OU_PROCESSOS}}`.
 * **Universalização nos Harnesses:** {{Vínculos nos harnesses claude, gemini, cursor, codex, etc.}}.
 
 ---

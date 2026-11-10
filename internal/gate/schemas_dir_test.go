@@ -4,8 +4,61 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+
+	"legoloop/internal/gate"
 )
+
+func lerSchemaV2(t *testing.T, nome string) []byte {
+	t.Helper()
+	data, err := os.ReadFile(filepath.Join("..", "..", "schemas", nome))
+	if err != nil {
+		t.Fatalf("falha ao ler %s: %v", nome, err)
+	}
+	return data
+}
+
+func TestSchemaV2AceitaDialetos(t *testing.T) {
+	v1 := lerSchemaV2(t, "dag.v1.json")
+	v2 := lerSchemaV2(t, "dag.v2.json")
+
+	dags, err := filepath.Glob(filepath.Join("..", "..", "loops", "*", "pipeline.dag.json"))
+	if err != nil || len(dags) == 0 {
+		t.Fatalf("nenhum DAG encontrado em loops/: %v", err)
+	}
+	for _, d := range dags {
+		data, err := os.ReadFile(d)
+		if err != nil {
+			t.Fatalf("falha ao ler %s: %v", d, err)
+		}
+		if !gate.ValidateJSONSchema(v1, data) {
+			t.Errorf("%s não valida contra v1", d)
+		}
+		if !gate.ValidateJSONSchema(v2, data) {
+			t.Errorf("%s não valida contra v2", d)
+		}
+	}
+
+	novo := []byte(`{"name":"x","trigger":{"type":"processo_fim","processo":"a"},"nodes":[{"id":"TICK-01.3","type":"subprocesso","routing":{"mode":"auto"},"output":{"artifact":"a.md","gate":"g"}}]}`)
+	if !gate.ValidateJSONSchema(v2, novo) {
+		t.Error("dialeto novo não valida contra v2")
+	}
+	if gate.ValidateJSONSchema(v2, []byte(`{"name":"x"}`)) {
+		t.Error("DAG sem nodes deveria falhar em v2")
+	}
+
+	var s map[string]any
+	if err := json.Unmarshal(v2, &s); err != nil {
+		t.Fatal(err)
+	}
+	texto := string(v2)
+	for _, termo := range []string{`"subprocesso"`, `"subloop"`, `"processo_fim"`, `"loop_end"`, `"processo"`} {
+		if !strings.Contains(texto, termo) {
+			t.Errorf("schema v2 não contém %s", termo)
+		}
+	}
+}
 
 func TestSchemasDirectoryConformity(t *testing.T) {
 	schemaFiles := []string{

@@ -15,6 +15,7 @@ import (
 	"legoloop/internal/assets"
 	"legoloop/internal/gate"
 	"legoloop/internal/provider"
+	"legoloop/internal/taxonomy"
 )
 
 func deps(t *testing.T) (Deps, *bytes.Buffer, *bytes.Buffer) {
@@ -49,6 +50,21 @@ func TestHelpAndUnknown(t *testing.T) {
 	}
 	if code := run(t, d, "version"); code != 0 || !strings.Contains(out.String(), "legoloop") {
 		t.Fatal("version")
+	}
+}
+
+// TestAjudaSemTermoProibido (AC-E02.4): a ajuda não usa nenhum sinônimo proibido da taxonomia.
+func TestAjudaSemTermoProibido(t *testing.T) {
+	d, out, _ := deps(t)
+	if code := run(t, d, "help"); code != 0 {
+		t.Fatalf("help: code=%d", code)
+	}
+	vs, err := taxonomy.ValidateText(out.String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, v := range vs {
+		t.Errorf("termo proibido %q na ajuda (linha %d, coluna %d): use %q", v.ForbiddenTerm, v.Line, v.Column, v.ApprovedTerm)
 	}
 }
 
