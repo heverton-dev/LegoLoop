@@ -1771,7 +1771,7 @@
       "nature": "macro",
       "type": "unit_task",
       "ref": null,
-      "status": "PENDING",
+      "status": "PASSED",
       "execution_mode": "sequential",
       "isolation": {
         "workspace": "local",
@@ -1809,7 +1809,7 @@
       },
       "inputs": {
         "source_files": [
-          "internal/loop/"
+          "internal/studiodoc/"
         ],
         "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E03.3",
         "context_artifacts": []
@@ -3049,11 +3049,11 @@
           "internal/legopress/types_test.go",
           "internal/listar/listar.go",
           "internal/listar/listar_test.go",
-          "internal/loop/cycle_test.go",
-          "internal/loop/hierarchy.go",
-          "internal/loop/ports.go",
-          "internal/loop/ports_test.go",
-          "internal/loop/sanitize.go"
+          "internal/studiodoc/cycle_test.go",
+          "internal/studiodoc/hierarchy.go",
+          "internal/studiodoc/ports.go",
+          "internal/studiodoc/ports_test.go",
+          "internal/studiodoc/sanitize.go"
         ],
         "verify": [
           [
@@ -3063,7 +3063,7 @@
             "-pkgs",
             "./...",
             "-tax",
-            "internal/legopress/double_surface_test.go,internal/legopress/partitioner.go,internal/legopress/partitioner_test.go,internal/legopress/transmuter_test.go,internal/legopress/types_test.go,internal/listar/listar.go,internal/listar/listar_test.go,internal/loop/cycle_test.go,internal/loop/hierarchy.go,internal/loop/ports.go,internal/loop/ports_test.go,internal/loop/sanitize.go",
+            "internal/legopress/double_surface_test.go,internal/legopress/partitioner.go,internal/legopress/partitioner_test.go,internal/legopress/transmuter_test.go,internal/legopress/types_test.go,internal/listar/listar.go,internal/listar/listar_test.go,internal/studiodoc/cycle_test.go,internal/studiodoc/hierarchy.go,internal/studiodoc/ports.go,internal/studiodoc/ports_test.go,internal/studiodoc/sanitize.go",
             "-tax-max",
             "32",
             "-gold"
@@ -3128,10 +3128,10 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "internal/loop/sanitize_test.go",
-          "internal/loop/store.go",
-          "internal/loop/store_test.go",
-          "internal/loop/types.go",
+          "internal/studiodoc/sanitize_test.go",
+          "internal/studiodoc/store.go",
+          "internal/studiodoc/store_test.go",
+          "internal/studiodoc/types.go",
           "internal/matriz/catalogador.go",
           "internal/matriz/catalogador_test.go",
           "internal/matriz/frontmatter.go",
@@ -3149,7 +3149,7 @@
             "-pkgs",
             "./...",
             "-tax",
-            "internal/loop/sanitize_test.go,internal/loop/store.go,internal/loop/store_test.go,internal/loop/types.go,internal/matriz/catalogador.go,internal/matriz/catalogador_test.go,internal/matriz/frontmatter.go,internal/matriz/generate.go,internal/matriz/perfil.go,internal/matriz/stale.go,internal/migrar/migrar.go,internal/migrar/migrar_test.go",
+            "internal/studiodoc/sanitize_test.go,internal/studiodoc/store.go,internal/studiodoc/store_test.go,internal/studiodoc/types.go,internal/matriz/catalogador.go,internal/matriz/catalogador_test.go,internal/matriz/frontmatter.go,internal/matriz/generate.go,internal/matriz/perfil.go,internal/matriz/stale.go,internal/migrar/migrar.go,internal/migrar/migrar_test.go",
             "-tax-max",
             "5",
             "-gold"

@@ -20,9 +20,9 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/loop"
 	"legoloop/internal/processo"
 	"legoloop/internal/ste"
+	"legoloop/internal/studiodoc"
 )
 
 var (
@@ -513,7 +513,7 @@ func projetar(p processo.Processo, now, dataDocs time.Time) (*processo.Projecoes
 
 // manterCriacao devolve o loop com created_at igual à criação do processo: só updated_at leva a data do compor.
 func manterCriacao(loopJSON []byte, criado time.Time) ([]byte, error) {
-	var lp loop.Loop
+	var lp studiodoc.Loop
 	if err := json.Unmarshal(loopJSON, &lp); err != nil {
 		return nil, err
 	}

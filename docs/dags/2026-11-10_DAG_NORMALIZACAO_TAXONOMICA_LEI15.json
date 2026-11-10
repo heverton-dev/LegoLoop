@@ -1439,7 +1439,7 @@
         "-gold"
       ],
       "context_in": [
-        "internal/loop/",
+        "internal/studiodoc/",
         "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
       ],
       "context_out": [
@@ -1474,7 +1474,7 @@
         "model": "code-pro"
       },
       "spec_ref": "AC-E03.3",
-      "status": "PENDING",
+      "status": "PASSED",
       "tooling": {
         "harness": "9router",
         "mcps_allowed": [],
@@ -2452,7 +2452,7 @@
         "-pkgs",
         "./...",
         "-tax",
-        "internal/legopress/double_surface_test.go,internal/legopress/partitioner.go,internal/legopress/partitioner_test.go,internal/legopress/transmuter_test.go,internal/legopress/types_test.go,internal/listar/listar.go,internal/listar/listar_test.go,internal/loop/cycle_test.go,internal/loop/hierarchy.go,internal/loop/ports.go,internal/loop/ports_test.go,internal/loop/sanitize.go",
+        "internal/legopress/double_surface_test.go,internal/legopress/partitioner.go,internal/legopress/partitioner_test.go,internal/legopress/transmuter_test.go,internal/legopress/types_test.go,internal/listar/listar.go,internal/listar/listar_test.go,internal/studiodoc/cycle_test.go,internal/studiodoc/hierarchy.go,internal/studiodoc/ports.go,internal/studiodoc/ports_test.go,internal/studiodoc/sanitize.go",
         "-tax-max",
         "32",
         "-gold"
@@ -2468,11 +2468,11 @@
         "internal/legopress/types_test.go",
         "internal/listar/listar.go",
         "internal/listar/listar_test.go",
-        "internal/loop/cycle_test.go",
-        "internal/loop/hierarchy.go",
-        "internal/loop/ports.go",
-        "internal/loop/ports_test.go",
-        "internal/loop/sanitize.go"
+        "internal/studiodoc/cycle_test.go",
+        "internal/studiodoc/hierarchy.go",
+        "internal/studiodoc/ports.go",
+        "internal/studiodoc/ports_test.go",
+        "internal/studiodoc/sanitize.go"
       ],
       "depends_on": [
         "TICK-03.7-c"
@@ -2513,7 +2513,7 @@
       "type": "unit_task",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/legopress/double_surface_test.go,internal/legopress/partitioner.go,internal/legopress/partitioner_test.go,internal/legopress/transmuter_test.go,internal/legopress/types_test.go,internal/listar/listar.go,internal/listar/listar_test.go,internal/loop/cycle_test.go,internal/loop/hierarchy.go,internal/loop/ports.go,internal/loop/ports_test.go,internal/loop/sanitize.go -tax-max 32 -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/legopress/double_surface_test.go,internal/legopress/partitioner.go,internal/legopress/partitioner_test.go,internal/legopress/transmuter_test.go,internal/legopress/types_test.go,internal/listar/listar.go,internal/listar/listar_test.go,internal/studiodoc/cycle_test.go,internal/studiodoc/hierarchy.go,internal/studiodoc/ports.go,internal/studiodoc/ports_test.go,internal/studiodoc/sanitize.go -tax-max 32 -gold"
       }
     },
     {
@@ -2524,7 +2524,7 @@
         "-pkgs",
         "./...",
         "-tax",
-        "internal/loop/sanitize_test.go,internal/loop/store.go,internal/loop/store_test.go,internal/loop/types.go,internal/matriz/catalogador.go,internal/matriz/catalogador_test.go,internal/matriz/frontmatter.go,internal/matriz/generate.go,internal/matriz/perfil.go,internal/matriz/stale.go,internal/migrar/migrar.go,internal/migrar/migrar_test.go",
+        "internal/studiodoc/sanitize_test.go,internal/studiodoc/store.go,internal/studiodoc/store_test.go,internal/studiodoc/types.go,internal/matriz/catalogador.go,internal/matriz/catalogador_test.go,internal/matriz/frontmatter.go,internal/matriz/generate.go,internal/matriz/perfil.go,internal/matriz/stale.go,internal/migrar/migrar.go,internal/migrar/migrar_test.go",
         "-tax-max",
         "5",
         "-gold"
@@ -2533,10 +2533,10 @@
         "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
       ],
       "context_out": [
-        "internal/loop/sanitize_test.go",
-        "internal/loop/store.go",
-        "internal/loop/store_test.go",
-        "internal/loop/types.go",
+        "internal/studiodoc/sanitize_test.go",
+        "internal/studiodoc/store.go",
+        "internal/studiodoc/store_test.go",
+        "internal/studiodoc/types.go",
         "internal/matriz/catalogador.go",
         "internal/matriz/catalogador_test.go",
         "internal/matriz/frontmatter.go",
@@ -2585,7 +2585,7 @@
       "type": "unit_task",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/loop/sanitize_test.go,internal/loop/store.go,internal/loop/store_test.go,internal/loop/types.go,internal/matriz/catalogador.go,internal/matriz/catalogador_test.go,internal/matriz/frontmatter.go,internal/matriz/generate.go,internal/matriz/perfil.go,internal/matriz/stale.go,internal/migrar/migrar.go,internal/migrar/migrar_test.go -tax-max 5 -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/studiodoc/sanitize_test.go,internal/studiodoc/store.go,internal/studiodoc/store_test.go,internal/studiodoc/types.go,internal/matriz/catalogador.go,internal/matriz/catalogador_test.go,internal/matriz/frontmatter.go,internal/matriz/generate.go,internal/matriz/perfil.go,internal/matriz/stale.go,internal/migrar/migrar.go,internal/migrar/migrar_test.go -tax-max 5 -gold"
       }
     },
     {

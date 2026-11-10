@@ -15,7 +15,7 @@ import (
 	"legoloop/internal/assets"
 	"legoloop/internal/dag"
 	"legoloop/internal/gate"
-	studio "legoloop/internal/loop"
+	studio "legoloop/internal/studiodoc"
 	"legoloop/internal/taxonomy"
 )
 

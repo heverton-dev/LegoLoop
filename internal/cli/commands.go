@@ -19,11 +19,11 @@ import (
 	"legoloop/internal/dag"
 	"legoloop/internal/gate"
 	"legoloop/internal/graph"
-	"legoloop/internal/loop"
 	"legoloop/internal/orchestrix"
 	"legoloop/internal/provider"
 	"legoloop/internal/runner"
 	"legoloop/internal/studio"
+	"legoloop/internal/studiodoc"
 )
 
 // cmdCanonize implementa TICK-104: --dry-run (só plano) ou --apply (links reais).
@@ -276,7 +276,7 @@ func newOrchestrix(ctx context.Context, d Deps, skills string, vars map[string]s
 	// O acervo de loops do cofre executa os nós subloop (etapa que compõe outro processo). Só liga se a pasta
 	// existe: o run não cria pasta no cofre.
 	if loops := caminhos.DirLoopsEm(dir); dirExists(loops) {
-		if ox.LoopStore, err = loop.NewStore(loops); err != nil {
+		if ox.LoopStore, err = studiodoc.NewStore(loops); err != nil {
 			return nil, err
 		}
 	}

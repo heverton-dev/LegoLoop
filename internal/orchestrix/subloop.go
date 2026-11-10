@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"legoloop/internal/dag"
-	"legoloop/internal/loop"
 	"legoloop/internal/runner"
+	"legoloop/internal/studiodoc"
 )
 
 // runSubloop executa o sub-loop em diretório isolado e estéril (R-LOOP-4).
@@ -49,7 +49,7 @@ func (o *Orchestrix) runSubloop(ctx context.Context, n dag.Node, workdir string)
 	return o.finalizeSubloop(n, workdir, subWorkdir, subReport)
 }
 
-func parseSubDAG(lp *loop.Loop) (*dag.DAG, error) {
+func parseSubDAG(lp *studiodoc.Loop) (*dag.DAG, error) {
 	raw, err := json.Marshal(struct {
 		ID      string       `json:"id,omitempty"`
 		Name    string       `json:"name"`
@@ -63,7 +63,7 @@ func parseSubDAG(lp *loop.Loop) (*dag.DAG, error) {
 	return dag.Parse(raw)
 }
 
-func (o *Orchestrix) transferInputs(n dag.Node, lp *loop.Loop, srcDir, dstDir string) error {
+func (o *Orchestrix) transferInputs(n dag.Node, lp *studiodoc.Loop, srcDir, dstDir string) error {
 	toCopy := make(map[string]bool)
 	for _, art := range n.Inputs {
 		if art != "" {
@@ -71,10 +71,10 @@ func (o *Orchestrix) transferInputs(n dag.Node, lp *loop.Loop, srcDir, dstDir st
 		}
 	}
 	if len(toCopy) == 0 {
-		ports, err := loop.DerivePorts(lp)
+		ports, err := studiodoc.DerivePorts(lp)
 		if err == nil {
 			for _, c := range ports.Consumes {
-				if c != "" && c != loop.AnyArtifact {
+				if c != "" && c != studiodoc.AnyArtifact {
 					toCopy[filepath.Clean(c)] = true
 				}
 			}

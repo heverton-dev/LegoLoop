@@ -8,13 +8,13 @@ import (
 	"testing"
 
 	"legoloop/internal/dag"
-	"legoloop/internal/loop"
+	"legoloop/internal/studiodoc"
 )
 
 func TestLoopsAPICRUD(t *testing.T) {
 	s, home, _ := newAssetsServer(t)
 	loopsDir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
-	store, err := loop.NewStore(loopsDir)
+	store, err := studiodoc.NewStore(loopsDir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -25,14 +25,14 @@ func TestLoopsAPICRUD(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET /api/loops esperado 200, obteve %d", rec.Code)
 	}
-	var res map[string][]loop.Summary
+	var res map[string][]studiodoc.Summary
 	decode(t, rec, &res)
 	if got := res[caminhos.ChaveAPILoops]; len(got) != 0 {
 		t.Fatalf("esperava 0 loops, obteve %d", len(got))
 	}
 
 	// 2. Salvar novo loop
-	lp := loop.Loop{
+	lp := studiodoc.Loop{
 		ID:          "meu-loop",
 		Name:        "Meu Loop",
 		Description: "Um loop de teste",
@@ -59,7 +59,7 @@ func TestLoopsAPICRUD(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET /api/loops/meu-loop esperado 200, obteve %d", rec.Code)
 	}
-	var got loop.Loop
+	var got studiodoc.Loop
 	decode(t, rec, &got)
 	if got.ID != "meu-loop" || got.Name != "Meu Loop" {
 		t.Fatalf("loop divergente: %+v", got)
@@ -96,7 +96,7 @@ func TestLoopsAPICRUD(t *testing.T) {
 	if recFork.Code != http.StatusOK {
 		t.Fatalf("POST /api/loops/meu-loop/fork esperado 200, obteve %d: %s", recFork.Code, recFork.Body.String())
 	}
-	var forked loop.Loop
+	var forked studiodoc.Loop
 	decode(t, recFork, &forked)
 	if forked.ID != "meu-loop-fork" {
 		t.Fatalf("ID forked incorreto: %s", forked.ID)

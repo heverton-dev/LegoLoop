@@ -6,10 +6,10 @@ import (
 	"legoloop/internal/caminhos"
 	"net/http"
 
-	"legoloop/internal/loop"
+	"legoloop/internal/studiodoc"
 )
 
-func (s *Server) loopStore() (*loop.Store, error) {
+func (s *Server) loopStore() (*studiodoc.Store, error) {
 	if s.Loops != nil {
 		return s.Loops, nil
 	}
@@ -18,7 +18,7 @@ func (s *Server) loopStore() (*loop.Store, error) {
 		return nil, err
 	}
 	dir := caminhos.DirLoopsEm(v)
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		return nil, err
 	}
@@ -38,14 +38,14 @@ func (s *Server) handleLoopsList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if list == nil {
-		list = []loop.Summary{}
+		list = []studiodoc.Summary{}
 	}
 	seen := map[string]bool{}
 	for _, l := range list {
 		seen[l.ID] = true
 	}
 	if s.ProjectDir != "" {
-		if pStore, err := loop.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); err == nil {
+		if pStore, err := studiodoc.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); err == nil {
 			if pList, err := pStore.List(); err == nil {
 				for _, l := range pList {
 					if !seen[l.ID] {
@@ -68,7 +68,7 @@ func (s *Server) handleLoopsGet(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	lp, err := store.Get(id)
 	if err != nil && s.ProjectDir != "" {
-		if pStore, pErr := loop.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); pErr == nil {
+		if pStore, pErr := studiodoc.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); pErr == nil {
 			if pLoop, pGetErr := pStore.Get(id); pGetErr == nil {
 				lp = pLoop
 				err = nil
@@ -76,7 +76,7 @@ func (s *Server) handleLoopsGet(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if err != nil {
-		if errors.Is(err, loop.ErrNotFound) || errors.Is(err, loop.ErrInvalidID) {
+		if errors.Is(err, studiodoc.ErrNotFound) || errors.Is(err, studiodoc.ErrInvalidID) {
 			http.Error(w, "loop não encontrado", http.StatusNotFound)
 			return
 		}
@@ -92,15 +92,15 @@ func (s *Server) handleLoopsSave(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var lp loop.Loop
+	var lp studiodoc.Loop
 	if err := json.NewDecoder(r.Body).Decode(&lp); err != nil {
 		http.Error(w, "JSON inválido: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 	if lp.ID == "" {
-		lp.ID = loop.ToKebabCase(lp.Name)
+		lp.ID = studiodoc.ToKebabCase(lp.Name)
 	} else {
-		lp.ID = loop.ToKebabCase(lp.ID)
+		lp.ID = studiodoc.ToKebabCase(lp.ID)
 	}
 	if err := store.Save(&lp); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -127,9 +127,9 @@ func (s *Server) handleLoopsDuplicate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "JSON inválido: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	targetID := loop.ToKebabCase(req.ID)
+	targetID := studiodoc.ToKebabCase(req.ID)
 	if targetID == "" {
-		targetID = loop.ToKebabCase(req.Name)
+		targetID = studiodoc.ToKebabCase(req.Name)
 	}
 	dup, err := store.Duplicate(id, targetID, req.Name)
 	if err != nil {
@@ -150,7 +150,7 @@ func (s *Server) handleLoopsDelete(w http.ResponseWriter, r *http.Request) {
 	}
 	id := r.PathValue("id")
 	if err := store.Remove(id); err != nil {
-		if errors.Is(err, loop.ErrNotFound) {
+		if errors.Is(err, studiodoc.ErrNotFound) {
 			http.Error(w, "loop não encontrado", http.StatusNotFound)
 			return
 		}

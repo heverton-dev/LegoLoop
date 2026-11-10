@@ -8,13 +8,13 @@ import (
 	"testing"
 
 	"legoloop/internal/dag"
-	"legoloop/internal/loop"
+	"legoloop/internal/studiodoc"
 )
 
 func TestProcessosAndDAGCanonicalRoutes(t *testing.T) {
 	s, home, _ := newAssetsServer(t)
 	loopsDir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
-	store, err := loop.NewStore(loopsDir)
+	store, err := studiodoc.NewStore(loopsDir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func TestProcessosAndDAGCanonicalRoutes(t *testing.T) {
 	}
 
 	// 2. POST /api/processos para criar novo processo
-	lp := loop.Loop{
+	lp := studiodoc.Loop{
 		ID:          "proc-canonico",
 		Name:        "Processo Canônico",
 		Description: "Um processo canônico ASD-STE100",

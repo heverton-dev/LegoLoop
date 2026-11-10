@@ -18,8 +18,8 @@ import (
 
 	"legoloop/internal/assets"
 	"legoloop/internal/canon"
-	"legoloop/internal/loop"
 	"legoloop/internal/reputation"
+	"legoloop/internal/studiodoc"
 )
 
 // maxListItems limita cada resposta de lista; o total real vai em "total".
@@ -182,7 +182,7 @@ func (s *Server) loopItems() []assets.Item {
 		out = appendLoopItems(out, seen, list, "acervo", "global")
 	}
 	if s.ProjectDir != "" {
-		if pStore, err := loop.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); err == nil {
+		if pStore, err := studiodoc.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); err == nil {
 			if list, err := pStore.List(); err == nil {
 				out = appendLoopItems(out, seen, list, "project", "project")
 			}
@@ -192,7 +192,7 @@ func (s *Server) loopItems() []assets.Item {
 }
 
 // appendLoopItems converte os resumos em itens do inventário, pulando ids já vistos.
-func appendLoopItems(out []assets.Item, seen map[string]bool, list []loop.Summary, origin, scope string) []assets.Item {
+func appendLoopItems(out []assets.Item, seen map[string]bool, list []studiodoc.Summary, origin, scope string) []assets.Item {
 	for _, l := range list {
 		if seen[l.ID] {
 			continue

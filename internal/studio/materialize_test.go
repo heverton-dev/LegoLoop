@@ -8,14 +8,14 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/loop"
+	"legoloop/internal/studiodoc"
 )
 
 func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInLoopStore(t *testing.T) {
 	s, _ := newServer(t)
 	vaultDir := t.TempDir()
 	s.Vault = vaultDir
-	loopStore, err := loop.NewStore(caminhos.DirLoopsEm(vaultDir))
+	loopStore, err := studiodoc.NewStore(caminhos.DirLoopsEm(vaultDir))
 	if err != nil {
 		t.Fatal(err)
 	}

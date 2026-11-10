@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"legoloop/internal/dag"
-	"legoloop/internal/loop"
 	"legoloop/internal/processo"
+	"legoloop/internal/studiodoc"
 )
 
 var agora = time.Date(2026, 11, 4, 10, 0, 0, 0, time.UTC)
@@ -253,7 +253,7 @@ func TestProjecoesCoerentesDagELoopSaoValidos(t *testing.T) {
 	if d.Nodes[1].Output.Artifact != "out/e02.md" || d.Nodes[1].Output.Gate != "file_exists('out/e02.md')" {
 		t.Errorf("handoff do nó e02: %+v", d.Nodes[1].Output)
 	}
-	var lp loop.Loop
+	var lp studiodoc.Loop
 	if err := json.Unmarshal(pr.Loop, &lp); err != nil || lp.ID != "legoloop-build-engine" || len(lp.Nodes) != 4 {
 		t.Errorf("loop: %v %+v", err, lp)
 	}
@@ -443,7 +443,7 @@ func TestProjecoesCoerentesNoDoDagTemEntradasEVersao(t *testing.T) {
 	if d.Nodes[0].Inputs != nil {
 		t.Errorf("etapa sem dependência não consome nada: %v", d.Nodes[0].Inputs)
 	}
-	var lp loop.Loop
+	var lp studiodoc.Loop
 	_ = json.Unmarshal(pr.Loop, &lp)
 	if d.Version != "1.0.0" || lp.Version != "1.0.0" || !lp.CreatedAt.Equal(agora) {
 		t.Errorf("a versão do processo vai ao DAG e ao loop, e a data vem do relógio injetado: %q %q %v", d.Version, lp.Version, lp.CreatedAt)

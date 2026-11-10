@@ -1,16 +1,16 @@
-package loop_test
+package studiodoc_test
 
 import (
 	"testing"
 
 	"legoloop/internal/dag"
 	"legoloop/internal/graph"
-	"legoloop/internal/loop"
+	"legoloop/internal/studiodoc"
 )
 
 func TestDerivePortsClassicLoop(t *testing.T) {
 	// Loop clássico: interview (Consumes Idea, Produces Briefing) -> aidd-spec (Consumes Briefing, Produces Spec)
-	lp := &loop.Loop{
+	lp := &studiodoc.Loop{
 		ID:      "idea-to-spec",
 		Name:    "Idea to Spec",
 		Version: "2.0.0",
@@ -46,7 +46,7 @@ func TestDerivePortsClassicLoop(t *testing.T) {
 		},
 	}
 
-	ports, err := loop.DerivePorts(lp)
+	ports, err := studiodoc.DerivePorts(lp)
 	if err != nil {
 		t.Fatalf("DerivePorts falhou: %v", err)
 	}
@@ -67,7 +67,7 @@ func TestDerivePortsClassicLoop(t *testing.T) {
 
 func TestDerivePortsCustomGenericLoop(t *testing.T) {
 	// Loop genérico com artefato customizado
-	lp := &loop.Loop{
+	lp := &studiodoc.Loop{
 		ID:      "custom-pipeline",
 		Name:    "Custom Pipeline",
 		Version: "2.0.0",
@@ -89,7 +89,7 @@ func TestDerivePortsCustomGenericLoop(t *testing.T) {
 		},
 	}
 
-	ports, err := loop.DerivePorts(lp)
+	ports, err := studiodoc.DerivePorts(lp)
 	if err != nil {
 		t.Fatalf("DerivePorts falhou: %v", err)
 	}
@@ -106,7 +106,7 @@ func TestDerivePortsCustomGenericLoop(t *testing.T) {
 }
 
 func TestDerivePortsEmptyLoop(t *testing.T) {
-	lp := &loop.Loop{
+	lp := &studiodoc.Loop{
 		ID:      "empty",
 		Name:    "Empty",
 		Version: "2.0.0",
@@ -114,7 +114,7 @@ func TestDerivePortsEmptyLoop(t *testing.T) {
 		Nodes:   nil,
 	}
 
-	_, err := loop.DerivePorts(lp)
+	_, err := studiodoc.DerivePorts(lp)
 	if err == nil {
 		t.Fatal("esperava erro para loop sem nós")
 	}

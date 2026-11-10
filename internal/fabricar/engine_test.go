@@ -20,9 +20,9 @@ import (
 	"legoloop/internal/fabricar"
 	"legoloop/internal/gate"
 	"legoloop/internal/interview"
-	"legoloop/internal/loop"
 	"legoloop/internal/matriz"
 	"legoloop/internal/reputation"
+	"legoloop/internal/studiodoc"
 )
 
 var fabNow = time.Date(2026, 11, 3, 10, 0, 0, 0, time.UTC)
@@ -183,7 +183,7 @@ func assertThreeMeans(t *testing.T, r *rig, res *fabricar.Result) {
 	if sk := snap.Of(assets.KindSkill); len(sk) != 1 || sk[0].Name != res.CanonicalName {
 		t.Errorf("o assets.Scanner real deve listar a skill: %+v", sk)
 	}
-	st, err := loop.NewStore(caminhos.DirLoopsEm(r.deps.Roots.Vault))
+	st, err := studiodoc.NewStore(caminhos.DirLoopsEm(r.deps.Roots.Vault))
 	if err != nil {
 		t.Fatal(err)
 	}

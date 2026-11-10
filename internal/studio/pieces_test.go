@@ -14,7 +14,7 @@ import (
 	"legoloop/internal/assets"
 	"legoloop/internal/dag"
 	"legoloop/internal/graph"
-	"legoloop/internal/loop"
+	"legoloop/internal/studiodoc"
 )
 
 // piecesFixture monta HOME e projeto com uma skill, um script, dois hooks (um com credencial) e um MCP.
@@ -363,13 +363,13 @@ func TestComposePieceNeedsTheInventory(t *testing.T) {
 func TestComposeSubloopSuccess(t *testing.T) {
 	s, home, _ := newAssetsServer(t)
 	loopsDir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
-	store, err := loop.NewStore(loopsDir)
+	store, err := studiodoc.NewStore(loopsDir)
 	if err != nil {
 		t.Fatal(err)
 	}
 	s.Loops = store
 
-	lp := &loop.Loop{
+	lp := &studiodoc.Loop{
 		ID:      "sub-pipe",
 		Name:    "Sub Pipe",
 		Version: "2.0.0",

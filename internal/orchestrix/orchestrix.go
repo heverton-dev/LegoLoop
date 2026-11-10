@@ -15,9 +15,9 @@ import (
 	"strings"
 
 	"legoloop/internal/dag"
-	"legoloop/internal/loop"
 	"legoloop/internal/provider"
 	"legoloop/internal/runner"
+	"legoloop/internal/studiodoc"
 )
 
 // Orchestrix é o despachante. Implementa runner.Executor.
@@ -37,7 +37,7 @@ type Orchestrix struct {
 	// AllowUnitTasks é o consentimento explícito (--allow-unit-tasks) para nós unit_task.
 	AllowUnitTasks bool
 	// LoopStore é o acervo de sub-loops (pode ser nil caso o acervo não esteja carregado).
-	LoopStore *loop.Store
+	LoopStore *studiodoc.Store
 	// MaxOutputBytes limita stdout de subprocessos (0 = maxResponseBytes).
 	MaxOutputBytes int
 }

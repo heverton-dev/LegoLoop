@@ -8,21 +8,21 @@ import (
 	"testing"
 
 	"legoloop/internal/dag"
-	"legoloop/internal/loop"
 	"legoloop/internal/orchestrix"
 	"legoloop/internal/provider"
 	"legoloop/internal/runner"
+	"legoloop/internal/studiodoc"
 )
 
 func TestRunSubloopSuccess(t *testing.T) {
 	loopsDir := t.TempDir()
-	store, err := loop.NewStore(loopsDir)
+	store, err := studiodoc.NewStore(loopsDir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Subloop com 2 nós: n1 (intermediário) e n2 (final)
-	sub := &loop.Loop{
+	sub := &studiodoc.Loop{
 		ID:      "pesquisa-mercado",
 		Name:    "Pesquisa de Mercado",
 		Version: "2.0.0",
@@ -128,7 +128,7 @@ func TestRunSubloopSuccess(t *testing.T) {
 
 func TestRunSubloopNotFound(t *testing.T) {
 	loopsDir := t.TempDir()
-	store, err := loop.NewStore(loopsDir)
+	store, err := studiodoc.NewStore(loopsDir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -157,12 +157,12 @@ func TestRunSubloopNotFound(t *testing.T) {
 
 func TestRunSubloopInputTransfer(t *testing.T) {
 	loopsDir := t.TempDir()
-	store, err := loop.NewStore(loopsDir)
+	store, err := studiodoc.NewStore(loopsDir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	sub := &loop.Loop{
+	sub := &studiodoc.Loop{
 		ID:      "echo-input",
 		Name:    "Echo Input",
 		Version: "2.0.0",

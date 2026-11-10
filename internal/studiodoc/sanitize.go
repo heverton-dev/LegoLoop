@@ -1,4 +1,4 @@
-package loop
+package studiodoc
 
 import (
 	"strings"

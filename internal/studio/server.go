@@ -24,12 +24,12 @@ import (
 	"legoloop/internal/fabricar"
 	"legoloop/internal/graph"
 	"legoloop/internal/interview"
-	"legoloop/internal/loop"
 	"legoloop/internal/plangen"
 	"legoloop/internal/processo"
 	"legoloop/internal/provider"
 	"legoloop/internal/reputation"
 	"legoloop/internal/specgen"
+	"legoloop/internal/studiodoc"
 )
 
 //go:embed static
@@ -57,7 +57,7 @@ type Server struct {
 	// Vault é o cofre canônico; vazio usa ~/.aidd/canonical.
 	Vault string
 	// Loops é o acervo de sub-loops; nil inicializa em ~/.aidd/canonical/loops.
-	Loops *loop.Store
+	Loops *studiodoc.Store
 	// CanonRoots são raízes extras da canonização, definidas pelo operador. O cliente nunca envia caminhos.
 	CanonRoots []string
 
@@ -337,7 +337,7 @@ func (s *Server) registerLoop(d *dag.DAG) {
 	if s.Loops == nil || d == nil {
 		return
 	}
-	_ = s.Loops.Save(&loop.Loop{
+	_ = s.Loops.Save(&studiodoc.Loop{
 		ID:          d.Name,
 		Name:        d.Name,
 		Description: d.Description,

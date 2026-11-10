@@ -8,19 +8,19 @@ import (
 	"testing"
 
 	"legoloop/internal/dag"
-	"legoloop/internal/loop"
 	"legoloop/internal/orchestrix"
 	"legoloop/internal/runner"
+	"legoloop/internal/studiodoc"
 )
 
 // subloopFinal grava um sub-loop de um nó que escreve FINAL.txt no diretório dele.
 func subloopFinal(t *testing.T) *orchestrix.Orchestrix {
 	t.Helper()
-	store, err := loop.NewStore(t.TempDir())
+	store, err := studiodoc.NewStore(t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}
-	sub := &loop.Loop{
+	sub := &studiodoc.Loop{
 		ID: "sub-final", Name: "Sub Final", Version: "1.0.0", Trigger: &dag.Trigger{Type: dag.TriggerManual},
 		Nodes: []dag.Node{{
 			ID: "n1", Type: dag.TypeScript, Command: []string{os.Args[0], "FINAL.txt"},

@@ -1,4 +1,4 @@
-package loop_test
+package studiodoc_test
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"legoloop/internal/dag"
-	"legoloop/internal/loop"
+	"legoloop/internal/studiodoc"
 )
 
 func makeSubloopNode(id, loopRef string) dag.Node {
@@ -27,7 +27,7 @@ func makeSubloopNode(id, loopRef string) dag.Node {
 
 func TestCheckSubloopsNoSubloops(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,7 +44,7 @@ func TestCheckSubloopsNoSubloops(t *testing.T) {
 
 func TestCheckSubloopsLinearValid(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -56,7 +56,7 @@ func TestCheckSubloopsLinearValid(t *testing.T) {
 	}
 
 	// B chama C
-	b := &loop.Loop{
+	b := &studiodoc.Loop{
 		ID:      "loop-b",
 		Name:    "Loop B",
 		Version: "2.0.0",
@@ -68,7 +68,7 @@ func TestCheckSubloopsLinearValid(t *testing.T) {
 	}
 
 	// A chama B
-	a := &loop.Loop{
+	a := &studiodoc.Loop{
 		ID:      "loop-a",
 		Name:    "Loop A",
 		Version: "2.0.0",
@@ -86,12 +86,12 @@ func TestCheckSubloopsLinearValid(t *testing.T) {
 
 func TestCheckSubloopsDirectSelfCycle(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	a := &loop.Loop{
+	a := &studiodoc.Loop{
 		ID:      "loop-a",
 		Name:    "Loop A",
 		Version: "2.0.0",
@@ -113,13 +113,13 @@ func TestCheckSubloopsDirectSelfCycle(t *testing.T) {
 
 func TestCheckSubloopsMutualCycle(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// A chama B
-	a := &loop.Loop{
+	a := &studiodoc.Loop{
 		ID:      "loop-a",
 		Name:    "Loop A",
 		Version: "2.0.0",
@@ -127,7 +127,7 @@ func TestCheckSubloopsMutualCycle(t *testing.T) {
 		Nodes:   []dag.Node{makeSubloopNode("na", "loop-b")},
 	}
 	// B chama A
-	b := &loop.Loop{
+	b := &studiodoc.Loop{
 		ID:      "loop-b",
 		Name:    "Loop B",
 		Version: "2.0.0",
@@ -153,7 +153,7 @@ func TestCheckSubloopsMutualCycle(t *testing.T) {
 
 func TestCheckSubloopsMaxDepthExceeded(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -168,7 +168,7 @@ func TestCheckSubloopsMaxDepthExceeded(t *testing.T) {
 	prev := "loop-leaf"
 	for i := 9; i >= 1; i-- {
 		id := fmt.Sprintf("loop-%d", i)
-		l := &loop.Loop{
+		l := &studiodoc.Loop{
 			ID:      id,
 			Name:    fmt.Sprintf("Loop %d", i),
 			Version: "2.0.0",
@@ -197,12 +197,12 @@ func TestCheckSubloopsMaxDepthExceeded(t *testing.T) {
 
 func TestCheckSubloopsMissingRef(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	a := &loop.Loop{
+	a := &studiodoc.Loop{
 		ID:      "loop-a",
 		Name:    "Loop A",
 		Version: "2.0.0",

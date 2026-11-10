@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"legoloop/internal/fabricar"
-	"legoloop/internal/loop"
+	"legoloop/internal/studiodoc"
 )
 
 var canonicalRe = regexp.MustCompile(`^legoloop-[a-z0-9]+(-[a-z0-9]+)*$`)
@@ -61,7 +61,7 @@ func assertInvariants(t *testing.T, in string) {
 	if !canonicalRe.MatchString(got) || len(got) > 64 {
 		t.Fatalf("fora da forma canônica: %q -> %q", in, got)
 	}
-	if err := loop.ValidateID(got); err != nil {
+	if err := studiodoc.ValidateID(got); err != nil {
 		t.Fatalf("loop.ValidateID rejeitou %q: %v", got, err)
 	}
 	again, err := fabricar.NormalizeProcessName(got)

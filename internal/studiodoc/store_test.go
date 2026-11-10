@@ -1,4 +1,4 @@
-package loop_test
+package studiodoc_test
 
 import (
 	"errors"
@@ -7,11 +7,11 @@ import (
 	"testing"
 
 	"legoloop/internal/dag"
-	"legoloop/internal/loop"
+	"legoloop/internal/studiodoc"
 )
 
-func sampleValidLoop(id, name string) *loop.Loop {
-	return &loop.Loop{
+func sampleValidLoop(id, name string) *studiodoc.Loop {
+	return &studiodoc.Loop{
 		ID:          id,
 		Name:        name,
 		Description: "Loop de teste",
@@ -37,7 +37,7 @@ func sampleValidLoop(id, name string) *loop.Loop {
 
 func TestStoreSaveAndGet(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
@@ -67,13 +67,13 @@ func TestStoreSaveAndGet(t *testing.T) {
 
 func TestStoreSaveInvalidDAG(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
 
 	// Loop com nó sem trigger e com dependência inexistente
-	bad := &loop.Loop{
+	bad := &studiodoc.Loop{
 		ID:      "invalido",
 		Name:    "Inválido",
 		Version: "2.0.0",
@@ -94,7 +94,7 @@ func TestStoreSaveInvalidDAG(t *testing.T) {
 
 func TestStoreSaveInvalidID(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
@@ -119,7 +119,7 @@ func TestStoreSaveInvalidID(t *testing.T) {
 
 func TestStoreList(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
@@ -149,7 +149,7 @@ func TestStoreList(t *testing.T) {
 
 func TestStoreDuplicate(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
@@ -180,7 +180,7 @@ func TestStoreDuplicate(t *testing.T) {
 
 func TestStoreRemove(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
@@ -195,7 +195,7 @@ func TestStoreRemove(t *testing.T) {
 	}
 
 	_, err = store.Get("apagar")
-	if !errors.Is(err, loop.ErrNotFound) {
+	if !errors.Is(err, studiodoc.ErrNotFound) {
 		t.Fatalf("esperava ErrNotFound após remover, obteve %v", err)
 	}
 
@@ -208,19 +208,19 @@ func TestStoreRemove(t *testing.T) {
 	}
 
 	// Remove de ID inexistente dá ErrNotFound
-	if err := store.Remove("inexistente"); !errors.Is(err, loop.ErrNotFound) {
+	if err := store.Remove("inexistente"); !errors.Is(err, studiodoc.ErrNotFound) {
 		t.Fatalf("esperava ErrNotFound, obteve %v", err)
 	}
 	// Remove com ID inválido dá ErrInvalidID
-	if err := store.Remove("../bad"); !errors.Is(err, loop.ErrInvalidID) {
+	if err := store.Remove("../bad"); !errors.Is(err, studiodoc.ErrInvalidID) {
 		t.Fatalf("esperava ErrInvalidID, obteve %v", err)
 	}
 	// Get com ID inválido dá ErrInvalidID
-	if _, err := store.Get("../bad"); !errors.Is(err, loop.ErrInvalidID) {
+	if _, err := store.Get("../bad"); !errors.Is(err, studiodoc.ErrInvalidID) {
 		t.Fatalf("esperava ErrInvalidID, obteve %v", err)
 	}
 	// Duplicate inexistente dá erro
-	if _, err := store.Duplicate("inexistente", "novo", "Novo"); !errors.Is(err, loop.ErrNotFound) {
+	if _, err := store.Duplicate("inexistente", "novo", "Novo"); !errors.Is(err, studiodoc.ErrNotFound) {
 		t.Fatalf("esperava ErrNotFound, obteve %v", err)
 	}
 	// Duplicate com novo ID inválido dá erro
@@ -231,7 +231,7 @@ func TestStoreRemove(t *testing.T) {
 
 func TestStoreListIgnoresNonLoopFilesAndCorruptFiles(t *testing.T) {
 	dir := t.TempDir()
-	store, err := loop.NewStore(dir)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
