@@ -829,6 +829,20 @@
         "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
       ],
       "context_out": [
+        "docs/templates/MANUAL_TEMPLATES_LEGOLOOP.typ",
+        "docs/templates/README.md",
+        "docs/templates/TEMPLATE_DAG.json",
+        "docs/templates/TEMPLATE_DAG_LEGOPRESS.json",
+        "docs/templates/TEMPLATE_DAG_VIDEOREA.json",
+        "docs/templates/TEMPLATE_INTENT.md",
+        "docs/templates/TEMPLATE_PIECE_GATE.json",
+        "docs/templates/TEMPLATE_PIECE_LOOP.json",
+        "docs/templates/TEMPLATE_PIECE_SKILL.md",
+        "docs/templates/TEMPLATE_PLAN.md",
+        "docs/templates/TEMPLATE_REPORT.md",
+        "docs/templates/TEMPLATE_ROUTE.json",
+        "docs/templates/TEMPLATE_ROUTE_LEGOPRESS.json",
+        "docs/templates/TEMPLATE_SPEC.md",
         "docs/templates/templates_test.go"
       ],
       "depends_on": [
@@ -1179,7 +1193,20 @@
         "internal/graph/",
         "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
       ],
-      "context_out": [],
+      "context_out": [
+        "internal/dag/dag_test.go",
+        "internal/dag/dialetos_test.go",
+        "internal/dag/parse.go",
+        "internal/dag/provenance_test.go",
+        "internal/dag/schema_test.go",
+        "internal/dag/subartifact_test.go",
+        "internal/dag/types.go",
+        "internal/dag/v2.go",
+        "internal/dag/v2_test.go",
+        "internal/graph/graph_test.go",
+        "internal/graph/index.go",
+        "internal/graph/ontology.go"
+      ],
       "depends_on": [
         "TICK-03.3"
       ],

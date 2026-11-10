@@ -1073,6 +1073,20 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
+          "docs/templates/MANUAL_TEMPLATES_LEGOLOOP.typ",
+          "docs/templates/README.md",
+          "docs/templates/TEMPLATE_DAG.json",
+          "docs/templates/TEMPLATE_DAG_LEGOPRESS.json",
+          "docs/templates/TEMPLATE_DAG_VIDEOREA.json",
+          "docs/templates/TEMPLATE_INTENT.md",
+          "docs/templates/TEMPLATE_PIECE_GATE.json",
+          "docs/templates/TEMPLATE_PIECE_LOOP.json",
+          "docs/templates/TEMPLATE_PIECE_SKILL.md",
+          "docs/templates/TEMPLATE_PLAN.md",
+          "docs/templates/TEMPLATE_REPORT.md",
+          "docs/templates/TEMPLATE_ROUTE.json",
+          "docs/templates/TEMPLATE_ROUTE_LEGOPRESS.json",
+          "docs/templates/TEMPLATE_SPEC.md",
           "docs/templates/templates_test.go"
         ],
         "verify": [
@@ -1294,7 +1308,9 @@
       },
       "spec_ref": "AC-E02.5",
       "test_target": "internal/assets/skills_taxonomia_test.go:TestSkillsSemTermoProibido",
-      "defects": [],
+      "defects": [
+        "DIVIDIR: 19 arquivos com violação excedem o limite de 15 por nó (write_boundary strict)"
+      ],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [],
@@ -1434,7 +1450,9 @@
       },
       "spec_ref": "AC-E03.1",
       "test_target": null,
-      "defects": [],
+      "defects": [
+        "DIVIDIR: 26 arquivos com violação excedem o limite de 15 por nó (write_boundary strict)"
+      ],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [],
@@ -1511,7 +1529,20 @@
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
-        "artifacts": [],
+        "artifacts": [
+          "internal/dag/dag_test.go",
+          "internal/dag/dialetos_test.go",
+          "internal/dag/parse.go",
+          "internal/dag/provenance_test.go",
+          "internal/dag/schema_test.go",
+          "internal/dag/subartifact_test.go",
+          "internal/dag/types.go",
+          "internal/dag/v2.go",
+          "internal/dag/v2_test.go",
+          "internal/graph/graph_test.go",
+          "internal/graph/index.go",
+          "internal/graph/ontology.go"
+        ],
         "verify": [
           [
             "go",
@@ -1658,7 +1689,9 @@
       },
       "spec_ref": "AC-E03.4",
       "test_target": null,
-      "defects": [],
+      "defects": [
+        "DIVIDIR: 54 arquivos com violação excedem o limite de 15 por nó (write_boundary strict)"
+      ],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [],
@@ -1734,7 +1767,9 @@
       },
       "spec_ref": "AC-E03.5",
       "test_target": null,
-      "defects": [],
+      "defects": [
+        "DIVIDIR: 36 arquivos com violação excedem o limite de 15 por nó (write_boundary strict)"
+      ],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [],
@@ -1808,7 +1843,9 @@
       },
       "spec_ref": "AC-E03.6",
       "test_target": null,
-      "defects": [],
+      "defects": [
+        "DIVIDIR: 20 arquivos com violação excedem o limite de 15 por nó (write_boundary strict)"
+      ],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [],
@@ -1884,7 +1921,9 @@
       },
       "spec_ref": "AC-E03.7",
       "test_target": null,
-      "defects": [],
+      "defects": [
+        "DIVIDIR: 257 arquivos com violação excedem o limite de 15 por nó (write_boundary strict)"
+      ],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [],
