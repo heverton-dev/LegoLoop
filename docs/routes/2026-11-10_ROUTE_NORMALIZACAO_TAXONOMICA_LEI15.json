@@ -1312,12 +1312,30 @@
       },
       "spec_ref": "AC-E02.5",
       "test_target": "internal/assets/skills_taxonomia_test.go:TestSkillsSemTermoProibido",
-      "defects": [
-        "DIVIDIR: 19 arquivos com violação excedem o limite de 15 por nó (write_boundary strict)"
-      ],
+      "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
-        "artifacts": [],
+        "artifacts": [
+          "skills/ai-motion-graphics/SKILL.md",
+          "skills/embed.go",
+          "skills/legoloop-canal-redc/SKILL.md",
+          "skills/legoloop-cartoon-shorts/SKILL.md",
+          "skills/legoloop-compor/SKILL.md",
+          "skills/legoloop-fabricar/SKILL.md",
+          "skills/legoloop-fechar/SKILL.md",
+          "skills/legoloop-legopress/SKILL.md",
+          "skills/legoloop-listar/SKILL.md",
+          "skills/legoloop-loop-map/SKILL.md",
+          "skills/legoloop-mega-pipeline/SKILL.md",
+          "skills/legoloop-n10-foundry/SKILL.md",
+          "skills/legoloop-piece-upgrader/SKILL.md",
+          "skills/legoloop-refinar/SKILL.md",
+          "skills/legoloop-remover/SKILL.md",
+          "skills/legoloop-video-edition/SKILL.md",
+          "skills/legoloop-video-master/SKILL.md",
+          "skills/legoloop-video-motion/SKILL.md",
+          "skills/legoloop-video-rea/SKILL.md"
+        ],
         "verify": [
           [
             "go",

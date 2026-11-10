@@ -1041,7 +1041,27 @@
         "skills/",
         "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
       ],
-      "context_out": [],
+      "context_out": [
+        "skills/ai-motion-graphics/SKILL.md",
+        "skills/embed.go",
+        "skills/legoloop-canal-redc/SKILL.md",
+        "skills/legoloop-cartoon-shorts/SKILL.md",
+        "skills/legoloop-compor/SKILL.md",
+        "skills/legoloop-fabricar/SKILL.md",
+        "skills/legoloop-fechar/SKILL.md",
+        "skills/legoloop-legopress/SKILL.md",
+        "skills/legoloop-listar/SKILL.md",
+        "skills/legoloop-loop-map/SKILL.md",
+        "skills/legoloop-mega-pipeline/SKILL.md",
+        "skills/legoloop-n10-foundry/SKILL.md",
+        "skills/legoloop-piece-upgrader/SKILL.md",
+        "skills/legoloop-refinar/SKILL.md",
+        "skills/legoloop-remover/SKILL.md",
+        "skills/legoloop-video-edition/SKILL.md",
+        "skills/legoloop-video-master/SKILL.md",
+        "skills/legoloop-video-motion/SKILL.md",
+        "skills/legoloop-video-rea/SKILL.md"
+      ],
       "depends_on": [
         "TICK-02.4"
       ],
