@@ -1,12 +1,14 @@
 package orchestrix
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"legoloop/internal/dag"
+	"legoloop/internal/runner"
 )
 
 func nodeUnit() dag.Node {
@@ -110,5 +112,32 @@ func TestUnitModelAliasesRouterCombos(t *testing.T) {
 	n.Routing = dag.RoutingConfig{Mode: dag.ModeManual, Model: "inexistente"}
 	if _, err := o.unitModel(n); err == nil {
 		t.Fatal("modelo sem alias e fora do inventário deveria falhar")
+	}
+}
+
+type fixedPrompter struct{ ok bool }
+
+func (p fixedPrompter) Prompt(string) (bool, error) { return p.ok, nil }
+
+// stop_gate: o Execute não faz nada; o runner decide pelo prompt humano.
+func TestStopGateNodeFollowsHumanPrompt(t *testing.T) {
+	const gateDAG = `{"name":"sg","nodes":[{"id":"SG","type":"stop_gate","routing":{"mode":"manual","model":"human/operator"},
+ "output":{"artifact":"out/SG.json","gate":"prompt('Aprova?')"}}]}`
+	for _, c := range []struct {
+		aprova bool
+		ok     bool
+	}{{true, true}, {false, false}} {
+		d, err := dag.Parse([]byte(gateDAG))
+		if err != nil {
+			t.Fatal(err)
+		}
+		rep, err := runner.Run(context.Background(), d, runner.Options{Workdir: t.TempDir(), Parallelism: 1,
+			Executor: &Orchestrix{}, Prompter: fixedPrompter{c.aprova}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if rep.OK != c.ok {
+			t.Errorf("aprova=%v: OK = %v; nós = %+v", c.aprova, rep.OK, rep.Nodes)
+		}
 	}
 }

@@ -55,6 +55,9 @@ func (o *Orchestrix) Execute(ctx context.Context, n dag.Node, workdir string) (r
 		return o.runSubloop(ctx, n, workdir)
 	case dag.TypeUnitTask:
 		return o.runUnitTask(ctx, n, workdir)
+	case dag.TypeStopGate:
+		// Barreira humana: o Execute não faz nada. O runner avalia o prompt do gate depois.
+		return runner.Result{Model: "stop_gate/human"}, nil
 	}
 	return runner.Result{}, fmt.Errorf("orchestrix: tipo de nó não suportado %q", n.Type)
 }
