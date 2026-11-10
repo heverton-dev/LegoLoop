@@ -349,3 +349,51 @@ func TestUnitTaskRejectsBadDirContextIn(t *testing.T) {
 		t.Fatalf("worktree vazou: %d", c)
 	}
 }
+
+// helperClaudeRetry falha na primeira tentativa (só escreve tentativa1.txt) e acerta quando o
+// prompt traz a falha da tentativa anterior.
+func helperClaudeRetry() {
+	in, _ := io.ReadAll(os.Stdin)
+	file := "tentativa1.txt"
+	if strings.Contains(string(in), "Tentativa anterior falhou") {
+		file = "n1.txt"
+	}
+	_ = os.WriteFile(file, []byte("ok\n"), 0o644)
+	out, _ := json.Marshal(map[string]any{"type": "result", "result": "feito",
+		"usage": map[string]int{"input_tokens": 5, "output_tokens": 2}})
+	os.Stdout.Write(out)
+	os.Exit(0)
+}
+
+func TestUnitTaskRetriesWithGateFailure(t *testing.T) {
+	repo := newRepoT(t)
+	n := unitNode("n1", "out/n1.json", "exit_code == 0 && file_exists('n1.txt')", nil)
+	n.ContextOut = []string{"n1.txt", "tentativa1.txt"}
+	o := unitOrchestrix("")
+	o.ExtraEnv = []string{"LEGOLOOP_HELPER=claude-retry"}
+	res, err := o.Execute(context.Background(), n, repo)
+	if err != nil {
+		t.Fatalf("a segunda tentativa deveria passar: %v", err)
+	}
+	if res.Tokens.Input != 10 {
+		t.Errorf("tokens devem somar as tentativas: %+v", res.Tokens)
+	}
+	if got := readT(t, repo, "n1.txt"); got != "ok\n" {
+		t.Errorf("n1.txt = %q", got)
+	}
+}
+
+func TestUnitTaskStopsAfterMaxRetries(t *testing.T) {
+	repo := newRepoT(t)
+	n := unitNode("n1", "out/n1.json", "file_exists('nunca.txt')", nil)
+	res, err := unitOrchestrix("n1.txt=x").Execute(context.Background(), n, repo)
+	if err == nil || !strings.Contains(err.Error(), "reprovou") {
+		t.Fatalf("err = %v", err)
+	}
+	if want := 5 * (1 + maxUnitRetries); res.Tokens.Input != want {
+		t.Errorf("tokens = %d, esperado %d (1 + %d retentativas)", res.Tokens.Input, want, maxUnitRetries)
+	}
+	if pathExists(filepath.Join(repo, "n1.txt")) {
+		t.Fatal("nó reprovado aplicou arquivo")
+	}
+}

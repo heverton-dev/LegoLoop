@@ -38,6 +38,8 @@ func TestMain(m *testing.M) {
 	case "flood":
 		os.Stdout.Write([]byte(strings.Repeat("x", 4096)))
 		os.Exit(0)
+	case "claude-retry":
+		helperClaudeRetry()
 	case "fail-out":
 		fmt.Print("SAIDA-DO-COMMAND\n")
 		os.Exit(1)

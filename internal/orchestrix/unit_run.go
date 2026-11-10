@@ -98,31 +98,77 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 	if err != nil {
 		return runner.Result{}, unitReport{}, err
 	}
+	res := runner.Result{Model: "unit_task/" + plan.model}
+	base := prompt
+	for attempt := 0; ; attempt++ {
+		report, failure, tokens, err := o.unitAttempt(ctx, n, w, plan, prompt, seeded)
+		res.Tokens = addUsage(res.Tokens, tokens)
+		res.ExitCode = report.ExitCode
+		if err != nil {
+			return res, unitReport{}, err
+		}
+		if failure == "" {
+			return res, report, nil
+		}
+		if attempt >= maxUnitRetries {
+			return res, unitReport{}, fmt.Errorf("%s (após %d tentativa(s))", failure, attempt+1)
+		}
+		dropProvisionalArtifact(w, n)
+		prompt = retryPrompt(base, failure)
+	}
+}
+
+// dropProvisionalArtifact remove da worktree o artefato provisório que o gate gravou.
+// Sem isso a próxima tentativa o enxergaria como alteração fora do write_boundary.
+func dropProvisionalArtifact(w *Worktree, n dag.Node) {
+	if n.Output.Artifact == "" {
+		return
+	}
+	if root, err := os.OpenRoot(w.Dir); err == nil {
+		defer root.Close()
+		_ = root.Remove(filepath.FromSlash(n.Output.Artifact))
+	}
+}
+
+// maxUnitRetries é o número de novas tentativas do claude, na mesma worktree, após falha do gate.
+const maxUnitRetries = 2
+
+// addUsage soma o consumo de tokens de duas chamadas.
+func addUsage(a, b runner.TokenUsage) runner.TokenUsage {
+	return runner.TokenUsage{Input: a.Input + b.Input, Output: a.Output + b.Output, ReportedInput: a.ReportedInput + b.ReportedInput}
+}
+
+// retryPrompt repete o prompt base e anexa a falha da tentativa anterior.
+func retryPrompt(base, failure string) string {
+	return base + "\n## Tentativa anterior falhou\n\n" + failure + "\n\nCorrija os arquivos permitidos. As suas edições anteriores continuam na pasta de trabalho.\n"
+}
+
+// unitAttempt roda o claude, o command e o gate uma vez. A falha do gate volta em failure
+// (texto vazio = gate aprovado). Erro de boundary, link ou execução volta em err e não retenta.
+func (o *Orchestrix) unitAttempt(ctx context.Context, n dag.Node, w *Worktree, plan unitPlan, prompt string, seeded map[string][]byte) (unitReport, string, runner.TokenUsage, error) {
 	text, usage, err := o.callClaudeTools(ctx, plan.model, prompt, w.Dir, nil)
-	res := runner.Result{Tokens: usage, Model: "unit_task/" + plan.model}
 	if err != nil {
-		return res, unitReport{}, err
+		return unitReport{}, "", usage, err
 	}
 	changed, err := unitChanged(ctx, n, w, seeded)
 	if err != nil {
-		return res, unitReport{}, err
+		return unitReport{}, "", usage, err
 	}
 	cmdOut, code, err := o.unitCommand(ctx, n, w.Dir)
 	if err != nil {
-		return res, unitReport{}, err
+		return unitReport{}, "", usage, err
 	}
-	res.ExitCode = code
 	report := unitReport{Node: n.ID, Model: plan.model, Changed: changed, ExitCode: code,
 		Gate: n.Output.Gate, Passed: true, Summary: firstLine(text)}
 	ok, err := o.unitGate(w, n, plan.expr, report)
 	if err != nil {
-		return res, unitReport{}, fmt.Errorf("gate %q: %w", n.Output.Gate, err)
+		return report, "", usage, fmt.Errorf("gate %q: %w", n.Output.Gate, err)
 	}
 	if !ok {
-		return res, unitReport{}, fmt.Errorf("gate %q reprovou (exit_code=%d); worktree descartada; claude respondeu: %s; saída do command: %s",
-			n.Output.Gate, code, firstLine(text), tailText(cmdOut, maxCmdTail))
+		return report, fmt.Sprintf("gate %q reprovou (exit_code=%d); worktree descartada; claude respondeu: %s; saída do command: %s",
+			n.Output.Gate, code, firstLine(text), tailText(cmdOut, maxCmdTail)), usage, nil
 	}
-	return res, report, nil
+	return report, "", usage, nil
 }
 
 // unitGate avalia o gate com a worktree como raiz. O relatório provisório entra na worktree
