@@ -261,3 +261,91 @@ func TestUnitTaskRejectsGitContextIn(t *testing.T) {
 		}
 	}
 }
+
+// Saída em caminho ignorado pelo git (ex.: scratch/) precisa ser detectada e aplicada.
+func TestUnitTaskAppliesGitIgnoredOutput(t *testing.T) {
+	repo := newRepoT(t)
+	writeT(t, repo, ".gitignore", "scratch/\n")
+	gitT(t, repo, "add", "-A")
+	gitT(t, repo, "commit", "-q", "-m", "ignore")
+	n := unitNode("n1", "out/n1.json", "exit_code == 0 && file_exists('scratch/x.json')", nil)
+	n.ContextOut = []string{"scratch/x.json"}
+	if _, err := unitOrchestrix("scratch/x.json=ok").Execute(context.Background(), n, repo); err != nil {
+		t.Fatal(err)
+	}
+	if got := readT(t, repo, "scratch/x.json"); got != "ok\n" {
+		t.Fatalf("saída ignorada não aplicada: %q", got)
+	}
+}
+
+// Arquivo ignorado fora de allowedWrites não entra na lista nem reprova o nó.
+func TestUnitTaskIgnoredOutsideAllowedIsNotApplied(t *testing.T) {
+	repo := newRepoT(t)
+	writeT(t, repo, ".gitignore", "scratch/\n")
+	gitT(t, repo, "add", "-A")
+	gitT(t, repo, "commit", "-q", "-m", "ignore")
+	n := unitNode("n1", "out/n1.json", "exit_code == 0", nil)
+	if _, err := unitOrchestrix("n1.txt=ok|scratch/lixo.json=x").Execute(context.Background(), n, repo); err != nil {
+		t.Fatal(err)
+	}
+	if pathExists(filepath.Join(repo, "scratch", "lixo.json")) {
+		t.Fatal("arquivo ignorado fora do boundary foi aplicado")
+	}
+}
+
+// Gate reprovado precisa mostrar o que o claude respondeu, para o diagnóstico.
+func TestUnitTaskGateFailureShowsClaudeSummary(t *testing.T) {
+	repo := newRepoT(t)
+	n := unitNode("n1", "out/n1.json", "file_exists('nao_existe.txt')", nil)
+	_, err := unitOrchestrix("n1.txt=ok").Execute(context.Background(), n, repo)
+	if err == nil || !strings.Contains(err.Error(), "feito") {
+		t.Fatalf("erro deveria citar a resposta do claude: %v", err)
+	}
+}
+
+// Pasta em context_in: o conteúdo rastreado já está na worktree; o prompt só cita a pasta.
+func TestUnitTaskAcceptsDirContextIn(t *testing.T) {
+	repo := newRepoT(t)
+	for _, f := range []string{"docs/", "docs"} {
+		n := unitNode("n1", "out/n1.json", "exit_code == 0 && file_exists('n1.txt')", nil)
+		n.ContextIn = []string{f}
+		if _, err := unitOrchestrix("n1.txt=ok").Execute(context.Background(), n, repo); err != nil {
+			t.Fatalf("context_in %q: %v", f, err)
+		}
+		_ = os.Remove(filepath.Join(repo, "n1.txt"))
+		_ = os.RemoveAll(filepath.Join(repo, "out"))
+	}
+}
+
+func TestUnitPromptNamesDirWithoutInjecting(t *testing.T) {
+	repo := newRepoT(t)
+	root, err := os.OpenRoot(repo)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer root.Close()
+	n := unitNode("n1", "out/n1.json", "exit_code == 0", nil)
+	n.ContextIn = []string{"docs/"}
+	p, err := buildUnitPrompt(n, root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(p, "Pasta de contexto: docs") || strings.Contains(p, "b\n") {
+		t.Fatalf("prompt = %q", p)
+	}
+}
+
+func TestUnitTaskRejectsBadDirContextIn(t *testing.T) {
+	repo := newRepoT(t)
+	linkT(t, filepath.Join(repo, "lnk"), filepath.Join(repo, "docs"))
+	for _, f := range []string{".git/", "lnk/", "../fora/", "docs/../../fora/"} {
+		n := unitNode("n1", "out/n1.json", "exit_code == 0", nil)
+		n.ContextIn = []string{f}
+		if _, err := unitOrchestrix("n1.txt=ok").Execute(context.Background(), n, repo); err == nil {
+			t.Errorf("pasta %q em context_in deveria reprovar", f)
+		}
+	}
+	if c := worktreeCount(t, repo); c != 1 {
+		t.Fatalf("worktree vazou: %d", c)
+	}
+}

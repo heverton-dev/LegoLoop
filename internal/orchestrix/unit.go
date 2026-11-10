@@ -85,12 +85,33 @@ func buildUnitPrompt(n dag.Node, work *os.Root) (string, error) {
 	return appendContext(&b, n, work)
 }
 
+// contextIsDir informa se o context_in é uma pasta. Recusa ".git" e link ou junction no caminho.
+func contextIsDir(work *os.Root, rel string) (bool, error) {
+	if first, _, _ := strings.Cut(rel, "/"); strings.EqualFold(first, ".git") {
+		return false, errors.New("caminho dentro de .git")
+	}
+	if err := checkNoLinks(work, rel); err != nil {
+		return false, err
+	}
+	info, err := work.Lstat(filepath.FromSlash(rel))
+	if err != nil {
+		return false, nil
+	}
+	return info.IsDir(), nil
+}
+
 // appendContext injeta cada arquivo de context_in. Arquivo ausente (ainda a criar) é marcado.
 func appendContext(b *strings.Builder, n dag.Node, work *os.Root) (string, error) {
 	for _, f := range n.ContextIn {
 		rel, err := normRel(f)
 		if err != nil {
 			return "", fmt.Errorf("context_in: %w", err)
+		}
+		if dir, err := contextIsDir(work, rel); err != nil {
+			return "", fmt.Errorf("context_in %q: %w", rel, err)
+		} else if dir {
+			fmt.Fprintf(b, "\n## Contexto: pasta\n\nPasta de contexto: %s (explore com Glob, Grep e Read)\n", rel)
+			continue
 		}
 		data, err := readLimited(work, filepath.FromSlash(rel))
 		switch {

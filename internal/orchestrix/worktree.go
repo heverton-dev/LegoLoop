@@ -76,6 +76,33 @@ func (w *Worktree) Changed(ctx context.Context) ([]string, error) {
 	return parsePorcelainZ(out)
 }
 
+// IgnoredAmong lista os arquivos ignorados pelo git que existem na worktree e casam com
+// os caminhos permitidos. O status comum não os mostra. Só caminhos literais, nunca padrão.
+func (w *Worktree) IgnoredAmong(ctx context.Context, allowed []string) ([]string, error) {
+	args := []string{"ls-files", "--others", "--ignored", "--exclude-standard", "-z", "--"}
+	for _, a := range allowed {
+		rel, err := normRel(a)
+		if err != nil {
+			return nil, err
+		}
+		args = append(args, ":(literal)"+rel)
+	}
+	if len(args) == 6 {
+		return nil, nil
+	}
+	out, err := gitRun(ctx, w.Dir, args...)
+	if err != nil {
+		return nil, err
+	}
+	var paths []string
+	for p := range strings.SplitSeq(string(out), "\x00") {
+		if p != "" {
+			paths = append(paths, p)
+		}
+	}
+	return paths, nil
+}
+
 // parsePorcelainZ lê a saída de `git status --porcelain -z`.
 // Cada registro é "XY caminho\0"; renomeação e cópia acrescentam "origem\0".
 func parsePorcelainZ(out []byte) ([]string, error) {

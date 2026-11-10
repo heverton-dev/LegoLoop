@@ -115,7 +115,8 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 		return res, unitReport{}, fmt.Errorf("gate %q: %w", n.Output.Gate, err)
 	}
 	if !ok {
-		return res, unitReport{}, fmt.Errorf("gate %q reprovou (exit_code=%d); worktree descartada", n.Output.Gate, code)
+		return res, unitReport{}, fmt.Errorf("gate %q reprovou (exit_code=%d); worktree descartada; claude respondeu: %s",
+			n.Output.Gate, code, firstLine(text))
 	}
 	return res, report, nil
 }
@@ -151,7 +152,9 @@ func (o *Orchestrix) unitCommand(ctx context.Context, n dag.Node, dir string) (i
 
 // unitModel escolhe o primeiro modelo do roteamento que o claude CLI executa.
 func (o *Orchestrix) unitModel(n dag.Node) (string, error) {
-	routes, err := o.routes(n.Routing)
+	r := n.Routing
+	r.Model, r.Fallback = unitAlias(r.Model), unitAlias(r.Fallback)
+	routes, err := o.routes(r)
 	if err != nil {
 		return "", err
 	}
@@ -161,6 +164,18 @@ func (o *Orchestrix) unitModel(n dag.Node) (string, error) {
 		}
 	}
 	return "", errors.New("unit_task exige um modelo do claude CLI no roteamento")
+}
+
+// unitModelAliases traduz os combos do 9Router usados nos DAGs para modelos do claude CLI.
+// O unit_task só executa claude CLI com ferramentas fechadas; combo do 9Router não roda aqui.
+var unitModelAliases = map[string]string{"code-fast": "sonnet", "code-pro": "opus", "flash": "haiku"}
+
+// unitAlias devolve o modelo do claude CLI para um alias; nome sem alias volta igual.
+func unitAlias(m string) string {
+	if a, ok := unitModelAliases[m]; ok {
+		return a
+	}
+	return m
 }
 
 // requireRepoRoot exige que workdir seja a raiz do repositório git: a worktree espelha a raiz.

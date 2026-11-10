@@ -104,6 +104,45 @@ func TestInvalidFixtureFails(t *testing.T) {
 	}
 }
 
+// AC-E00.2: os 15 loops validam e um loop inválido plantado falha (mutação).
+func TestLoopsDouradosValidam(t *testing.T) {
+	fs := fixtures(t)
+	if len(fs) != wantFixture {
+		t.Fatalf("fixtures = %d, esperado %d", len(fs), wantFixture)
+	}
+	for _, f := range fs {
+		data, err := os.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		d, err := dag.Parse(data)
+		if err != nil {
+			t.Errorf("%s deveria validar: %v", filepath.Base(f), err)
+			continue
+		}
+		if len(d.Nodes) == 0 {
+			t.Errorf("%s validou sem nós", filepath.Base(f))
+		}
+		broken := strings.Replace(string(data), `"nodes"`, `"nodez"`, 1)
+		if broken == string(data) {
+			t.Errorf("%s: mutação não alterou o fixture", filepath.Base(f))
+			continue
+		}
+		if _, err := dag.Parse([]byte(broken)); err == nil {
+			t.Errorf("%s mutado deveria falhar", filepath.Base(f))
+		}
+	}
+	invalid, err := filepath.Glob(filepath.Join(invalidDir, "*.json"))
+	if err != nil || len(invalid) == 0 {
+		t.Fatalf("fixtures inválidas ausentes: %v", err)
+	}
+	for _, f := range invalid {
+		if _, err := parseFile(t, f); err == nil {
+			t.Errorf("%s inválido deveria falhar", filepath.Base(f))
+		}
+	}
+}
+
 // Mutação: o teste dourado precisa detectar um fixture quebrado.
 func TestGoldenDetectsBrokenFixture(t *testing.T) {
 	fs := fixtures(t)

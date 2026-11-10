@@ -31,6 +31,9 @@ func seedContext(w *Worktree, n dag.Node) (map[string][]byte, error) {
 	seeded := map[string][]byte{}
 	for _, f := range n.ContextIn {
 		rel, data, err := readSeed(src, f)
+		if errors.Is(err, errSeedDir) {
+			continue
+		}
 		if err != nil {
 			return nil, fmt.Errorf("context_in %q: %w", f, err)
 		}
@@ -44,6 +47,9 @@ func seedContext(w *Worktree, n dag.Node) (map[string][]byte, error) {
 	}
 	return seeded, nil
 }
+
+// errSeedDir sinaliza que o context_in é uma pasta: a worktree já traz o conteúdo rastreado.
+var errSeedDir = errors.New("context_in é pasta")
 
 // readSeed valida um caminho de context_in e lê o arquivo; data nulo = arquivo ausente.
 func readSeed(src *os.Root, f string) (string, []byte, error) {
@@ -65,6 +71,9 @@ func readSeed(src *os.Root, f string) (string, []byte, error) {
 	if err != nil {
 		return "", nil, err
 	}
+	if info.IsDir() {
+		return rel, nil, errSeedDir
+	}
 	if !info.Mode().IsRegular() {
 		return "", nil, errors.New("não é arquivo regular")
 	}
@@ -82,14 +91,31 @@ func unitChanged(ctx context.Context, n dag.Node, w *Worktree, seeded map[string
 	if err != nil {
 		return nil, err
 	}
+	ignored, err := w.IgnoredAmong(ctx, allowedWrites(n))
+	if err != nil {
+		return nil, err
+	}
 	var changed []string
-	for _, c := range all {
+	for _, c := range dedupe(append(all, ignored...)) {
 		if !seededUnchanged(w.Dir, c, seeded) {
 			changed = append(changed, c)
 		}
 	}
 	sort.Strings(changed)
 	return changed, errors.Join(w.CheckLinks(changed), checkBoundary(changed, allowedWrites(n)))
+}
+
+// dedupe remove caminhos repetidos e mantém a ordem.
+func dedupe(in []string) []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, p := range in {
+		if !seen[p] {
+			seen[p] = true
+			out = append(out, p)
+		}
+	}
+	return out
 }
 
 // seededUnchanged informa se o caminho foi semeado e o conteúdo na worktree continua idêntico.

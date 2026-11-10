@@ -90,3 +90,25 @@ func TestBuildUnitPromptRecusaContextoForaDoProjeto(t *testing.T) {
 		t.Fatal("context_in com .. deveria falhar")
 	}
 }
+
+func TestUnitModelAliasesRouterCombos(t *testing.T) {
+	o := unitOrchestrix("n1.txt=x")
+	cases := []struct{ model, fallback, want string }{
+		{"code-fast", "flash", "sonnet"},
+		{"code-pro", "flash", "opus"},
+		{"sonnet", "sonnet", "sonnet"},
+	}
+	for _, c := range cases {
+		n := unitNode("n1", "out/n1.json", "exit_code == 0", nil)
+		n.Routing = dag.RoutingConfig{Mode: dag.ModeSuggested, Model: c.model, Fallback: c.fallback}
+		got, err := o.unitModel(n)
+		if err != nil || got != c.want {
+			t.Errorf("%s/%s: modelo = %q, err = %v; esperado %q", c.model, c.fallback, got, err, c.want)
+		}
+	}
+	n := unitNode("n1", "out/n1.json", "exit_code == 0", nil)
+	n.Routing = dag.RoutingConfig{Mode: dag.ModeManual, Model: "inexistente"}
+	if _, err := o.unitModel(n); err == nil {
+		t.Fatal("modelo sem alias e fora do inventário deveria falhar")
+	}
+}
