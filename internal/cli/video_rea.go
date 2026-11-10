@@ -35,7 +35,7 @@ func cmdVideoRea(ctx context.Context, args []string, d Deps) int {
 	subArgs := args[1:]
 	switch subcmd {
 	case "ingest":
-		return runIngest(subArgs, d)
+		return runIngest(ctx, subArgs, d)
 	case "forensics":
 		return runForensics(ctx, subArgs, d)
 	case "curate":
@@ -67,20 +67,42 @@ func resolveBrain(ctx context.Context, modelFlag, effortFlag string, d Deps) (br
 	return b, err
 }
 
-func runIngest(args []string, d Deps) int {
+func runIngest(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("video-rea ingest", d)
 	rawURL := fs.String("url", "", "URL do video")
 	out := fs.String("out", "", "arquivo de saida")
+	dest := fs.String("dest", "", "pasta scratch do bundle (padrão: pasta do --out)")
 	if err := fs.Parse(args); err != nil || *rawURL == "" {
 		fmt.Fprintf(d.Stderr, "erro: --url é obrigatório\n")
 		return 2
 	}
-	if _, err := videorea.DetectPlatform(*rawURL); err != nil {
-		fmt.Fprintf(d.Stderr, "erro na plataforma: %v\n", err)
+	vInput, err := ingestVideo(ctx, *rawURL, *out, *dest, d)
+	if err != nil {
+		fmt.Fprintf(d.Stderr, "erro na ingestão: %v\n", err)
 		return 1
 	}
-	vInput := videorea.VideoInput{URL: *rawURL}
 	return saveJSONOutput(vInput, *out, d)
+}
+
+func ingestVideo(ctx context.Context, rawURL, out, dest string, d Deps) (*videorea.VideoInput, error) {
+	platform, err := videorea.DetectPlatform(rawURL)
+	if err != nil {
+		return nil, err
+	}
+	if platform == videorea.PlatformLocal {
+		return &videorea.VideoInput{URL: rawURL, Platform: platform}, nil
+	}
+	if dest == "" {
+		dest = filepath.Join("scratch", "videorea")
+		if out != "" {
+			dest = filepath.Dir(out)
+		}
+	}
+	var runner videorea.Runner = videorea.ExecRunner{}
+	if d.VideoRunner != nil {
+		runner = d.VideoRunner
+	}
+	return videorea.DownloadWithRunner(ctx, runner, rawURL, dest)
 }
 
 func runForensics(ctx context.Context, args []string, d Deps) int {
@@ -126,6 +148,10 @@ func executeForensics(ctx context.Context, b brain.Brain, inPath, tr, trFile, de
 	dossier, err := videorea.ExtractForensicsWithBrain(ctx, vInput, text, desc, b)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro extraindo forense: %v\n", err)
+		return 1
+	}
+	if err := dossier.ValidateStrict(); err != nil {
+		fmt.Fprintf(d.Stderr, "erro validando dossiê: %v\n", err)
 		return 1
 	}
 	return saveJSONOutput(dossier, out, d)

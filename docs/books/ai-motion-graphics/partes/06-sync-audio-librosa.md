@@ -12,9 +12,21 @@ Todo visual change que acontece no beat da música torna o vídeo "premium". É 
 
 ## Fallback Gracioso
 
-- Áudio ausente → sem sync, sem erro
-- Arquivo corrompido → sem sync, sem erro
-- Pipeline continua normalmente
+O contrato de áudio tem dois modos. O pedido declara o modo.
+
+### Modo Broadcast (Shorts, Reels, Standalone)
+
+- O áudio integrado a -14 LUFS é obrigatório.
+- Áudio ausente quebra o gate. O Processo para com erro.
+- Arquivo corrompido quebra o gate.
+
+### Modo Motion Overlay (camadas transparentes para DaVinci Resolve)
+
+- A trilha de áudio é opcional.
+- Áudio ausente produz um MP4 com canal mudo. O gate não quebra.
+- Arquivo corrompido produz um MP4 com canal mudo, sem sync e sem erro.
+
+Os dois modos resolvem a contradição entre o contrato BDD de -14 LUFS (`harness-engineering`) e o fallback silencioso (`ai-motion-graphics`).
 
 ## Exemplo (120 BPM)
 

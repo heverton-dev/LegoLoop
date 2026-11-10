@@ -1,8 +1,11 @@
 package videorea
 
 import (
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // TargetBundle encapsula o espaço de trabalho isolado de um vídeo.
@@ -19,9 +22,28 @@ type TargetBundle struct {
 	SkillDir           string `json:"skill_dir"`
 }
 
-// NewTargetBundle calcula a hierarquia completa de diretórios para o alvo.
-func NewTargetBundle(baseDir, slug string) *TargetBundle {
-	base := filepath.Join(baseDir, slug)
+// ErrBundleEscape sinaliza slug que escapa da raiz do bundle.
+var ErrBundleEscape = errors.New("videorea: slug escapa da raiz do bundle")
+
+// SanitizeBundlePath confina o slug dentro de baseDir (Path Jail).
+func SanitizeBundlePath(baseDir, slug string) (string, error) {
+	if slug == "" || slug == "." || strings.ContainsAny(slug, `/\`) || strings.Contains(slug, "..") || filepath.IsAbs(slug) || filepath.VolumeName(slug) != "" {
+		return "", fmt.Errorf("%w: %q", ErrBundleEscape, slug)
+	}
+	root := filepath.Clean(baseDir)
+	target := filepath.Clean(filepath.Join(root, slug))
+	if !strings.HasPrefix(target, root+string(filepath.Separator)) {
+		return "", fmt.Errorf("%w: %q", ErrBundleEscape, slug)
+	}
+	return target, nil
+}
+
+// NewTargetBundle calcula a hierarquia completa de diretórios para o alvo, confinada em baseDir.
+func NewTargetBundle(baseDir, slug string) (*TargetBundle, error) {
+	base, err := SanitizeBundlePath(baseDir, slug)
+	if err != nil {
+		return nil, err
+	}
 	return &TargetBundle{
 		Slug:               slug,
 		BaseDir:            base,
@@ -33,7 +55,7 @@ func NewTargetBundle(baseDir, slug string) *TargetBundle {
 		BookDir:            filepath.Join(base, "book"),
 		LoopDir:            filepath.Join(base, "loop"),
 		SkillDir:           filepath.Join(base, "skill"),
-	}
+	}, nil
 }
 
 // Materialize cria a árvore física de pastas no sistema de arquivos.

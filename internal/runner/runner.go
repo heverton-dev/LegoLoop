@@ -80,9 +80,10 @@ type Options struct {
 	DefaultTimeout time.Duration
 	Executor       Executor
 	AllowScripts   bool
-	AutoApprove    bool          // --yes: aprova automaticamente gates interativos
-	NonInteractive bool          // --non-interactive: rejeita se não houver TTY
-	Prompter       gate.Prompter // prompter para Stop-Gates interativos
+	AutoApprove    bool              // --yes: aprova automaticamente gates interativos
+	NonInteractive bool              // --non-interactive: rejeita se não houver TTY
+	Prompter       gate.Prompter     // prompter para Stop-Gates interativos
+	Vars           map[string]string // variáveis ${NOME} expandidas nos gates file_exists
 	OnNodeStart    func(nodeID string)
 	OnNodeFinish   func(nr NodeReport)
 }
@@ -162,104 +163,104 @@ func (r *run) node(parent context.Context, id string) NodeReport {
 	if r.opts.OnNodeStart != nil {
 		r.opts.OnNodeStart(id)
 	}
+	nr := r.execNode(parent, id)
+	if r.opts.OnNodeFinish != nil {
+		r.opts.OnNodeFinish(nr)
+	}
+	return nr
+}
 
+// hasSlotScripts informa se o nó declara hooks ou scripts em slots (exigem consentimento, R-RUN-2).
+func hasSlotScripts(n dag.Node) bool {
+	return n.Slots != nil && (len(n.Slots.Hooks.Pre) > 0 || len(n.Slots.Scripts) > 0 || len(n.Slots.Hooks.Post) > 0)
+}
+
+// execNode executa um nó e devolve o relatório; o chamador dispara OnNodeFinish.
+func (r *run) execNode(parent context.Context, id string) NodeReport {
 	n := *r.d.Node(id)
 	ctx, cancel := r.nodeContext(parent, n)
 	defer cancel()
 	start := time.Now()
-
-	// Valida consentimento de scripts/hooks em slots (R-RUN-2)
-	if n.Slots != nil && (len(n.Slots.Hooks.Pre) > 0 || len(n.Slots.Scripts) > 0 || len(n.Slots.Hooks.Post) > 0) {
-		if !r.opts.AllowScripts {
-			nr := NodeReport{ID: id, Status: StatusError, Error: "execução de hooks/scripts em slots requer consentimento (--allow-scripts)", Duration: time.Since(start)}
-			if r.opts.OnNodeFinish != nil {
-				r.opts.OnNodeFinish(nr)
-			}
-			return nr
-		}
+	fail := func(msg string) NodeReport {
+		return NodeReport{ID: id, Status: StatusError, Error: msg, Duration: time.Since(start)}
 	}
-
+	if hasSlotScripts(n) && !r.opts.AllowScripts {
+		return fail("execução de hooks/scripts em slots requer consentimento (--allow-scripts)")
+	}
 	workdir := r.opts.Workdir
 	if n.EffectiveMode() == dag.ExecIsolated {
 		isoDir, cleanup, err := prepareIsolation(ctx, r.opts.Workdir, n)
 		if err != nil {
-			nr := NodeReport{ID: id, Status: StatusError, Error: "isolamento falhou: " + err.Error(), Duration: time.Since(start)}
-			if r.opts.OnNodeFinish != nil {
-				r.opts.OnNodeFinish(nr)
-			}
-			return nr
+			return fail("isolamento falhou: " + err.Error())
 		}
 		defer cleanup()
 		workdir = isoDir
 	}
-
-	// Executa Hooks.Pre do slot
 	if n.Slots != nil && len(n.Slots.Hooks.Pre) > 0 {
 		if preErr := executeSlotCommands(ctx, n.Slots.Hooks.Pre, workdir); preErr != nil {
-			nr := NodeReport{ID: id, Status: StatusError, Error: "slot hook pre falhou: " + preErr.Error(), Duration: time.Since(start)}
-			if r.opts.OnNodeFinish != nil {
-				r.opts.OnNodeFinish(nr)
-			}
-			return nr
+			return fail("slot hook pre falhou: " + preErr.Error())
 		}
 	}
-
 	res, err := r.opts.Executor.Execute(ctx, n, workdir)
 	nr := NodeReport{ID: id, Duration: time.Since(start), ExitCode: res.ExitCode, Tokens: res.Tokens,
 		Model: res.Model, Notes: res.Notes}
-
-	// Executa Scripts e Hooks.Post do slot
-	if err == nil && res.ExitCode == 0 && n.Slots != nil {
-		if len(n.Slots.Scripts) > 0 {
-			if scrErr := executeSlotCommands(ctx, n.Slots.Scripts, workdir); scrErr != nil {
-				nr.Status, nr.Error = StatusError, "slot script falhou: "+scrErr.Error()
-				if r.opts.OnNodeFinish != nil {
-					r.opts.OnNodeFinish(nr)
-				}
-				return nr
-			}
-		}
-		if len(n.Slots.Hooks.Post) > 0 {
-			if postErr := executeSlotCommands(ctx, n.Slots.Hooks.Post, workdir); postErr != nil {
-				nr.Status, nr.Error = StatusError, "slot hook post falhou: "+postErr.Error()
-				if r.opts.OnNodeFinish != nil {
-					r.opts.OnNodeFinish(nr)
-				}
-				return nr
-			}
-		}
+	if err == nil && res.ExitCode == 0 && r.postExec(ctx, n, workdir, &nr) {
+		return nr
 	}
+	r.finalStatus(ctx, parent, &nr, n, res.ExitCode, err)
+	return nr
+}
 
-	// Schema Enforcement contratual (SPEC §2.1)
-	if n.Output.Schema != "" && err == nil && res.ExitCode == 0 {
+// postExec roda scripts/hooks post, o schema e a promoção do artefato; true = nr já é final (falhou).
+func (r *run) postExec(ctx context.Context, n dag.Node, workdir string, nr *NodeReport) bool {
+	if msg := runPostSlots(ctx, n, workdir); msg != "" {
+		nr.Status, nr.Error = StatusError, msg
+		return true
+	}
+	if n.Output.Schema != "" {
 		if okSchema, schemaErr := r.evalSchema(n, workdir); !okSchema {
 			nr.Status, nr.Error = StatusGateFailed, schemaErr
-			if r.opts.OnNodeFinish != nil {
-				r.opts.OnNodeFinish(nr)
-			}
-			return nr
+			return true
 		}
 	}
-
-	if n.EffectiveMode() == dag.ExecIsolated && err == nil && res.ExitCode == 0 {
+	if n.EffectiveMode() == dag.ExecIsolated {
 		if promErr := promoteArtifact(workdir, r.opts.Workdir, n.Output.Artifact); promErr != nil {
 			nr.Status, nr.Error = StatusError, promErr.Error()
-			if r.opts.OnNodeFinish != nil {
-				r.opts.OnNodeFinish(nr)
-			}
-			return nr
+			return true
 		}
 	}
+	return false
+}
 
+// runPostSlots executa Scripts e Hooks.Post do slot; devolve a mensagem de erro ou vazio.
+func runPostSlots(ctx context.Context, n dag.Node, workdir string) string {
+	if n.Slots == nil {
+		return ""
+	}
+	if len(n.Slots.Scripts) > 0 {
+		if err := executeSlotCommands(ctx, n.Slots.Scripts, workdir); err != nil {
+			return "slot script falhou: " + err.Error()
+		}
+	}
+	if len(n.Slots.Hooks.Post) > 0 {
+		if err := executeSlotCommands(ctx, n.Slots.Hooks.Post, workdir); err != nil {
+			return "slot hook post falhou: " + err.Error()
+		}
+	}
+	return ""
+}
+
+// finalStatus classifica o nó por erro, timeout ou gate (inclusive os gates dos slots).
+func (r *run) finalStatus(ctx, parent context.Context, nr *NodeReport, n dag.Node, exitCode int, err error) {
 	switch {
 	case err != nil && errors.Is(ctx.Err(), context.DeadlineExceeded) && parent.Err() == nil:
 		nr.Status, nr.Error = StatusTimeout, err.Error()
 	case err != nil:
 		nr.Status, nr.Error = StatusError, err.Error()
 	default:
-		nr.Status, nr.Error = r.evalGate(id, res.ExitCode)
+		nr.Status, nr.Error = r.evalGate(nr.ID, exitCode)
 		if nr.Status == StatusPassed && n.Slots != nil && len(n.Slots.Gates) > 0 {
-			okSlot, slotMsg, slotErr := evalSlotGates(n.Slots, r.root, res.ExitCode)
+			okSlot, slotMsg, slotErr := evalSlotGates(n.Slots, r.root, exitCode)
 			if slotErr != nil {
 				nr.Status, nr.Error = StatusGateFailed, slotErr.Error()
 			} else if !okSlot {
@@ -267,11 +268,6 @@ func (r *run) node(parent context.Context, id string) NodeReport {
 			}
 		}
 	}
-
-	if r.opts.OnNodeFinish != nil {
-		r.opts.OnNodeFinish(nr)
-	}
-	return nr
 }
 
 func (r *run) nodeContext(parent context.Context, n dag.Node) (context.Context, context.CancelFunc) {
@@ -286,7 +282,7 @@ func (r *run) nodeContext(parent context.Context, n dag.Node) (context.Context, 
 }
 
 func (r *run) evalGate(id string, exitCode int) (Status, string) {
-	ok, err := r.d.Gate(id).Eval(gate.Env{Root: r.root, ExitCode: exitCode, Prompter: r.prompter()})
+	ok, err := r.d.Gate(id).Eval(gate.Env{Root: r.root, ExitCode: exitCode, Prompter: r.prompter(), Vars: r.opts.Vars})
 	if err != nil {
 		return StatusGateFailed, err.Error()
 	}

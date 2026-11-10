@@ -20,7 +20,10 @@ func MaterializeAndProjectWithBrain(ctx context.Context, report *CurationReport,
 	if report == nil || !report.Approved {
 		return nil, ErrGateRejected
 	}
-	bundle := NewTargetBundle(baseDir, report.SuggestedName)
+	bundle, err := NewTargetBundle(baseDir, report.SuggestedName)
+	if err != nil {
+		return nil, err
+	}
 	if err := bundle.Materialize(); err != nil {
 		return nil, err
 	}

@@ -7,11 +7,6 @@ import (
 	"testing"
 )
 
-// frameEncoder is the seam for FFmpeg — injectable for testing.
-type frameEncoder interface {
-	Encode(frames []string, audioPath string, outPath string, resolution string) error
-}
-
 // stubEncoder is a test double at the boundary.
 type stubEncoder struct {
 	err error

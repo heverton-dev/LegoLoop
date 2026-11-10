@@ -1,0 +1,42 @@
+{
+  "frontmatter": {
+    "id_sessao": "eccf5f47-186f-4f5b-a1e1-6291c8400b20",
+    "harness_utilizado": "antigravity-cli",
+    "projeto": "LegoLoop",
+    "branch": "master",
+    "tokens_input": 0,
+    "tokens_input_formatado": "0",
+    "tokens_thinking": 0,
+    "tokens_thinking_formatado": "0",
+    "tokens_output": 0,
+    "tokens_output_formatado": "0",
+    "tokens_cache_read": 0,
+    "tokens_cache_read_formatado": "0",
+    "resumo_tokens": "Input: 0 | Thinking: 0 | Output: 0",
+    "total_turnos": 1,
+    "data_sessao": "10/11/2026",
+    "atualizado_em": "2026-11-10T09:56:34Z"
+  },
+  "id_sessao": "eccf5f47-186f-4f5b-a1e1-6291c8400b20",
+  "harness_utilizado": "antigravity-cli",
+  "projeto": "LegoLoop",
+  "branch": "master",
+  "tokens_input": 0,
+  "tokens_input_formatado": "0",
+  "tokens_thinking": 0,
+  "tokens_thinking_formatado": "0",
+  "tokens_output": 0,
+  "tokens_output_formatado": "0",
+  "tokens_cache_read": 0,
+  "tokens_cache_read_formatado": "0",
+  "total_turnos": 1,
+  "transcript_source": "C:\\Users\\trcnologia\\.gemini\\antigravity-cli\\brain\\eccf5f47-186f-4f5b-a1e1-6291c8400b20\\.system_generated\\logs\\transcript_full.jsonl",
+  "dialogos": [
+    {
+      "turn": 1,
+      "timestamp": "2026-11-10T08:49:15Z",
+      "user_prompt": "recentemente utilizei um comando que extraia todo o projeto em um arquivo de texto para que um agente fizesse a análise completa do projeto, qual foi este comando?",
+      "model_response": ""
+    }
+  ]
+}

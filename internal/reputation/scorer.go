@@ -68,18 +68,37 @@ var (
 
 // ScorePiece avalia deterministicamente qualquer peça a partir do seu conteúdo textual e caminho.
 func ScorePiece(ref, name, content string, successRuns, totalRuns int) PieceRating {
-	rating := PieceRating{
-		Ref:  ref,
-		Name: name,
+	rating := PieceRating{Ref: ref, Name: name}
+
+	rigor, reasons := scoreRigor(content)
+	contracts, contractReasons := scoreContracts(content)
+	reasons = append(reasons, contractReasons...)
+	provenance, author, provReasons := scoreProvenance(strings.ToLower(content), strings.ToLower(ref))
+	reasons = append(reasons, provReasons...)
+	rating.Author = author
+	history, histReasons := scoreHistory(successRuns, totalRuns)
+	reasons = append(reasons, histReasons...)
+
+	total := (rigor * WeightRigor) +
+		(contracts * WeightContracts) +
+		(provenance * WeightProvenance) +
+		(history * WeightHistory)
+	rating.TotalScore = roundTwo(total)
+	rating.Tier, rating.BadgeColor = tierFor(rating.TotalScore)
+	rating.Dimensions = ScoreDimensions{
+		Rigor:      roundTwo(rigor),
+		Contracts:  roundTwo(contracts),
+		Provenance: roundTwo(provenance),
+		History:    roundTwo(history),
 	}
+	rating.Justification = reasons
+	return rating
+}
 
-	lowerContent := strings.ToLower(content)
-	lowerRef := strings.ToLower(ref)
-
-	// 1. Rigor Metodológico (Weight: 0.35)
+// scoreRigor mede o Rigor Metodológico (peso 0.35).
+func scoreRigor(content string) (float64, []string) {
 	rigor := 0.0
 	var reasons []string
-
 	if reNegativeGuardrails.MatchString(content) {
 		rigor += 0.35
 		reasons = append(reasons, "Possui guardrails negativos e regras explícitas de não-fazer")
@@ -92,12 +111,13 @@ func ScorePiece(ref, name, content string, successRuns, totalRuns int) PieceRati
 		rigor += 0.30
 		reasons = append(reasons, "Implementa critérios formais de parada e Stop-Gates")
 	}
-	if rigor > 1.0 {
-		rigor = 1.0
-	}
+	return math.Min(rigor, 1.0), reasons
+}
 
-	// 2. Contratos & Tipagem (Weight: 0.30)
+// scoreContracts mede Contratos & Tipagem (peso 0.30).
+func scoreContracts(content string) (float64, []string) {
 	contracts := 0.0
+	var reasons []string
 	if reIOContracts.MatchString(content) {
 		contracts += 0.50
 		reasons = append(reasons, "Declara entradas e saídas explícitas (I/O)")
@@ -106,70 +126,40 @@ func ScorePiece(ref, name, content string, successRuns, totalRuns int) PieceRati
 		contracts += 0.50
 		reasons = append(reasons, "Possui schemas tipados ou blocos de código formal")
 	}
-	if contracts > 1.0 {
-		contracts = 1.0
-	}
+	return math.Min(contracts, 1.0), reasons
+}
 
-	// 3. Proveniência & Reputação (Weight: 0.20)
-	provenance := 0.50 // Base neutra para qualquer desenvolvedor
-	authorFound := "Comunidade / Próprio Usuário"
-
+// scoreProvenance mede Proveniência & Reputação (peso 0.20); base neutra de 0.50.
+func scoreProvenance(lowerContent, lowerRef string) (float64, string, []string) {
 	for author, score := range knownAuthors {
 		if strings.Contains(lowerContent, author) || strings.Contains(lowerRef, author) {
-			provenance = score
-			authorFound = casesTitle(author)
-			reasons = append(reasons, "Autoria reconhecida por padrões de excelência: "+authorFound)
-			break
+			found := casesTitle(author)
+			return score, found, []string{"Autoria reconhecida por padrões de excelência: " + found}
 		}
 	}
-	rating.Author = authorFound
+	return 0.50, "Comunidade / Próprio Usuário", nil
+}
 
-	// 4. Histórico Local Adaptativo (Weight: 0.15)
-	history := 0.50 // Neutro se nunca executado
-	if totalRuns > 0 {
-		rate := float64(successRuns) / float64(totalRuns)
-		history = math.Min(1.0, math.Max(0.0, rate))
-		reasons = append(reasons, "Histórico factual nesta máquina com taxa de sucesso comprovada")
+// scoreHistory mede o Histórico Local Adaptativo (peso 0.15); neutro se nunca executado.
+func scoreHistory(successRuns, totalRuns int) (float64, []string) {
+	if totalRuns <= 0 {
+		return 0.50, nil
 	}
+	rate := float64(successRuns) / float64(totalRuns)
+	return math.Min(1.0, math.Max(0.0, rate)), []string{"Histórico factual nesta máquina com taxa de sucesso comprovada"}
+}
 
-	// Total Ponderado
-	total := (rigor * WeightRigor) +
-		(contracts * WeightContracts) +
-		(provenance * WeightProvenance) +
-		(history * WeightHistory)
-
-	roundedTotal := roundTwo(total)
-
-	var tier Tier
-	var badgeColor string
-
+func tierFor(total float64) (Tier, string) {
 	switch {
-	case roundedTotal >= 0.85:
-		tier = TierOuro
-		badgeColor = "#F59E0B" // Dourado
-	case roundedTotal >= 0.60:
-		tier = TierPrata
-		badgeColor = "#94A3B8" // Prata / Slate
-	case roundedTotal >= 0.35:
-		tier = TierBronze
-		badgeColor = "#F97316" // Laranja / Bronze
+	case total >= 0.85:
+		return TierOuro, "#F59E0B" // Dourado
+	case total >= 0.60:
+		return TierPrata, "#94A3B8" // Prata / Slate
+	case total >= 0.35:
+		return TierBronze, "#F97316" // Laranja / Bronze
 	default:
-		tier = TierToxica
-		badgeColor = "#EF4444" // Vermelho Alerta
+		return TierToxica, "#EF4444" // Vermelho Alerta
 	}
-
-	rating.Dimensions = ScoreDimensions{
-		Rigor:      roundTwo(rigor),
-		Contracts:  roundTwo(contracts),
-		Provenance: roundTwo(provenance),
-		History:    roundTwo(history),
-	}
-	rating.TotalScore = roundedTotal
-	rating.Tier = tier
-	rating.BadgeColor = badgeColor
-	rating.Justification = reasons
-
-	return rating
 }
 
 // ScoreFile avalia um arquivo físico no disco.

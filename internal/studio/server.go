@@ -19,6 +19,7 @@ import (
 
 	"legoloop/internal/assets"
 	"legoloop/internal/brain"
+	"legoloop/internal/dag"
 	"legoloop/internal/fabricar"
 	"legoloop/internal/graph"
 	"legoloop/internal/interview"
@@ -87,13 +88,23 @@ type Server struct {
 
 // Handler monta o roteador com o middleware de segurança.
 func (s *Server) Handler() http.Handler {
-	static, _ := fs.Sub(staticFS, "static")
 	mux := http.NewServeMux()
+	s.registerStaticRoutes(mux)
+	s.registerAPIRoutes(mux)
+	s.registerProcessoRoutes(mux)
+	return s.secure(mux)
+}
+
+func (s *Server) registerStaticRoutes(mux *http.ServeMux) {
+	static, _ := fs.Sub(staticFS, "static")
 	files := http.FileServerFS(static)
 	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /processos.js", "GET /style.css", "GET /components/"} {
 		mux.Handle(p, files)
 	}
 	mux.HandleFunc("GET /inventario", handlePage("inventario.html"))
+}
+
+func (s *Server) registerAPIRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/suggest", s.handleSuggest)
 	mux.HandleFunc("GET /api/assets", s.handleAssets)
 	mux.HandleFunc("GET /api/assets/{kind}", s.handleAssetsKind)
@@ -103,22 +114,12 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/canonize/apply", s.handleCanonizeApply)
 	mux.HandleFunc("GET /api/blocks", s.handleBlocks)
 	mux.HandleFunc("GET /api/inventory", s.handleInventory)
-	mux.HandleFunc("GET /api/loops", s.handleLoopsList)
-	mux.HandleFunc("GET /api/loops/{id}", s.handleLoopsGet)
-	mux.HandleFunc("POST /api/loops", s.handleLoopsSave)
-	mux.HandleFunc("POST /api/loops/{id}/duplicate", s.handleLoopsDuplicate)
-	mux.HandleFunc("POST /api/loops/{id}/fork", s.handleLoopsDuplicate)
-	mux.HandleFunc("DELETE /api/loops/{id}", s.handleLoopsDelete)
 	mux.HandleFunc("POST /api/assets/translate", s.handleAssetTranslate)
 	mux.HandleFunc("GET /api/assets/compatible", s.handleAssetCompatible)
 	mux.HandleFunc("POST /api/assets/reveal", s.handleAssetReveal)
 	mux.HandleFunc("POST /api/assets/import", s.handleAssetImport)
 	mux.HandleFunc("POST /api/canonize/piece", s.handleCanonizePiece)
 	mux.HandleFunc("POST /api/fabricar/run", s.handleFabricarRun)
-	mux.HandleFunc("GET /api/processos", s.handleProcessosListar)
-	mux.HandleFunc("POST /api/processos/refinar", s.handleProcessosRefinar)
-	mux.HandleFunc("POST /api/processos/remover", s.handleProcessosRemover)
-	mux.HandleFunc("POST /api/processos/compor", s.handleProcessosCompor)
 	mux.HandleFunc("POST /api/assets/{kind}/{id}/favorite", s.handlePieceFavorite)
 	mux.HandleFunc("POST /api/assets/{kind}/{id}/upgrade", s.handlePieceUpgrade)
 	mux.HandleFunc("DELETE /api/assets/{kind}/{id}", s.handlePieceDelete)
@@ -134,7 +135,40 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/interview/finalize", s.handleInterviewFinalize)
 	mux.HandleFunc("POST /api/spec/generate", s.handleSpecGenerate)
 	mux.HandleFunc("POST /api/plan/generate", s.handlePlanGenerate)
-	return s.secure(mux)
+}
+
+func (s *Server) registerProcessoRoutes(mux *http.ServeMux) {
+	// Canonical Processos & DAG APIs (ASD-STE100)
+	mux.HandleFunc("GET /api/processos", s.handleProcessosListar)
+	mux.HandleFunc("GET /api/processos/{id}", s.handleLoopsGet)
+	mux.HandleFunc("POST /api/processos", s.handleLoopsSave)
+	mux.HandleFunc("POST /api/processos/{id}/duplicate", s.handleLoopsDuplicate)
+	mux.HandleFunc("POST /api/processos/{id}/fork", s.handleLoopsDuplicate)
+	mux.HandleFunc("DELETE /api/processos/{id}", s.handleLoopsDelete)
+	mux.HandleFunc("POST /api/processos/refinar", s.handleProcessosRefinar)
+	mux.HandleFunc("POST /api/processos/remover", s.handleProcessosRemover)
+	mux.HandleFunc("POST /api/processos/compor", s.handleProcessosCompor)
+	mux.HandleFunc("GET /api/dag", s.handleDAGStatus)
+	mux.HandleFunc("GET /api/dag/{id}", s.handleDAGGet)
+
+	// Rotas legadas (deprecadas em favor de /api/processos e /api/dag)
+	mux.HandleFunc("GET /api/loops", s.handleLoopsList)
+	mux.HandleFunc("GET /api/loops/{id}", s.handleLoopsGet)
+	mux.HandleFunc("POST /api/loops", s.handleLoopsSave)
+	mux.HandleFunc("POST /api/loops/{id}/duplicate", s.handleLoopsDuplicate)
+	mux.HandleFunc("POST /api/loops/{id}/fork", s.handleLoopsDuplicate)
+	mux.HandleFunc("DELETE /api/loops/{id}", s.handleLoopsDelete)
+}
+
+func (s *Server) handleDAGStatus(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]any{
+		"status": "idle",
+		"engine": "orchestrix",
+	})
+}
+
+func (s *Server) handleDAGGet(w http.ResponseWriter, r *http.Request) {
+	s.handleLoopsGet(w, r)
 }
 
 // ListenAndServe escuta apenas em loopback e encerra graciosamente quando ctx termina.
@@ -258,7 +292,16 @@ func (s *Server) handleMaterialize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// R-RUN-3: Grava a skill orquestradora (< 20 linhas) no cofre canônico
+	s.writeOrchestratorSkill(d)
+	s.registerLoop(d)
+
+	res.Path = PipelineFile
+	res.DAG = s.maskDAG(res.DAG) // o arquivo gravado tem os caminhos reais; a resposta, não
+	writeJSON(w, http.StatusOK, res)
+}
+
+// writeOrchestratorSkill grava a skill orquestradora (< 20 linhas) no Cofre canônico (R-RUN-3).
+func (s *Server) writeOrchestratorSkill(d *dag.DAG) {
 	vault := s.Vault
 	if vault == "" {
 		home := s.Home
@@ -269,11 +312,12 @@ func (s *Server) handleMaterialize(w http.ResponseWriter, r *http.Request) {
 			vault = filepath.Join(home, ".aidd", "canonical")
 		}
 	}
-	if vault != "" && d != nil {
-		skillDir := filepath.Join(vault, "skills", "loop-"+d.Name)
-		_ = os.MkdirAll(skillDir, 0o755)
-		skillPath := filepath.Join(skillDir, "SKILL.md")
-		skillContent := fmt.Sprintf(`---
+	if vault == "" || d == nil {
+		return
+	}
+	skillDir := filepath.Join(vault, "skills", "loop-"+d.Name)
+	_ = os.MkdirAll(skillDir, 0o755)
+	skillContent := fmt.Sprintf(`---
 name: loop-%s
 description: Executa o loop LegoLoop %s
 ---
@@ -284,25 +328,22 @@ Execute esta esteira autônoma via LegoLoop:
 legoloop run
 `+"```"+`
 `, d.Name, d.Name, d.Name)
-		_ = os.WriteFile(skillPath, []byte(skillContent), 0o644)
-	}
+	_ = os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte(skillContent), 0o644)
+}
 
-	// R-RUN-3: Registra o loop no acervo se disponível
-	if s.Loops != nil && d != nil {
-		loopObj := &loop.Loop{
-			ID:          d.Name,
-			Name:        d.Name,
-			Description: d.Description,
-			Version:     d.Version,
-			Trigger:     d.Trigger,
-			Nodes:       d.Nodes,
-		}
-		_ = s.Loops.Save(loopObj)
+// registerLoop registra o loop no acervo, se disponível (R-RUN-3).
+func (s *Server) registerLoop(d *dag.DAG) {
+	if s.Loops == nil || d == nil {
+		return
 	}
-
-	res.Path = PipelineFile
-	res.DAG = s.maskDAG(res.DAG) // o arquivo gravado tem os caminhos reais; a resposta, não
-	writeJSON(w, http.StatusOK, res)
+	_ = s.Loops.Save(&loop.Loop{
+		ID:          d.Name,
+		Name:        d.Name,
+		Description: d.Description,
+		Version:     d.Version,
+		Trigger:     d.Trigger,
+		Nodes:       d.Nodes,
+	})
 }
 
 // writeAtomic grava via arquivo temporário + rename, confinado ao diretório do projeto.

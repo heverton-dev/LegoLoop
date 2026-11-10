@@ -135,38 +135,38 @@ func (s *TriggerScheduler) Listen(ctx context.Context, trg dag.Trigger, onTrigge
 	switch trg.Type {
 	case dag.TriggerManual, "":
 		return onTrigger()
-
 	case dag.TriggerFileChange:
 		w := NewFileWatcher(s.workdir, trg.Path, 100*time.Millisecond)
 		return w.Watch(ctx, func(path string) {
 			_ = onTrigger()
 		})
-
 	case dag.TriggerCron:
-		for {
-			next, err := NextCronTime(trg.Cron, time.Now())
-			if err != nil {
-				return err
-			}
-			delay := time.Until(next)
-			timer := time.NewTimer(delay)
-			select {
-			case <-ctx.Done():
-				timer.Stop()
-				return ctx.Err()
-			case <-timer.C:
-				if err := onTrigger(); err != nil {
-					return err
-				}
-			}
-		}
-
+		return listenCron(ctx, trg.Cron, onTrigger)
 	case dag.TriggerLoopEnd:
 		// Em modo standalone, aguarda cancelamento do contexto
 		<-ctx.Done()
 		return ctx.Err()
-
 	default:
 		return fmt.Errorf("tipo de trigger não suportado no runtime: %q", trg.Type)
+	}
+}
+
+// listenCron dispara onTrigger em cada instante da expressão cron até o contexto terminar.
+func listenCron(ctx context.Context, cron string, onTrigger func() error) error {
+	for {
+		next, err := NextCronTime(cron, time.Now())
+		if err != nil {
+			return err
+		}
+		timer := time.NewTimer(time.Until(next))
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return ctx.Err()
+		case <-timer.C:
+			if err := onTrigger(); err != nil {
+				return err
+			}
+		}
 	}
 }

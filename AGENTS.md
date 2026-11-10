@@ -59,6 +59,31 @@
      7. **Reindexação do Grafo Semântico:** via `codebase-memory-mcp cli index_repository`.
      8. **Portões Mecânicos de Qualidade & Commit/Push:** testes 100% verdes, gofmt limpo, go vet sem warnings, funclen <= 35 linhas, commit e push rastreáveis.
      9. **Relatório de Conclusão & Telemetria Estrita:** em `docs/reports/` (`YYYY-MM-DD_REPORT_<NOME>.md`) compilado conforme `TEMPLATE_REPORT.md` com balanço auditável de tempo, recursos/tokens e custo financeiro USD/BRL orçado vs realizado.
+12. **Inviolabilidade Taxonômica ASD-STE100 (Lei #15):**
+   * Regra 1: um termo, um significado; um significado, um termo. Zero sinônimo em raciocínio, planos, comandos de terminal, código, JSON e Markdown.
+   * SSOT: `docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json` (embutido em `internal/taxonomy`). O `tools/taxlinter` aplica a lei.
+
+     | Conceito | Termo canônico | Sinônimos proibidos |
+     | :--- | :--- | :--- |
+     | Fluxo de alto nível | Processo | esteira, fluxo, pipeline, loop |
+     | Grafo de execução | DAG | grafo de execução, árvore de execução, cadeia de dependência |
+     | Unidade reutilizável | Peça | componente, bloco, módulo, brick |
+     | Instrução de agente | Skill | habilidade, capacidade, macro, prompt de agente |
+     | Vértice de execução unitária | Nó | etapa de grafo, passo de grafo, task |
+     | Unidade de planejamento | Ticket | tarefa, card, issue |
+     | Passo interativo CLI | Etapa | fase, estágio |
+     | Armazém canônico (`~/.aidd/canonical/`) | Cofre | repositório central, banco canônico, storage |
+     | Armazém de credenciais | Cofre de Segredos | keystore, cofre de senhas, secrets |
+     | Tabela de aptidão e reputação | Matriz | tabela de aptidão, grade |
+     | Catálogo físico em disco | Inventário | catálogo físico, almoxarifado |
+     | Barreira mecânica binária | Gate | portão automático, trava automática |
+     | Ponto de aprovação humana | Stop-Gate | portão humano, aprovação manual, checkpoint humano |
+     | Criação de processo | Fabricar | criar processo, gerar pipeline, construir processo |
+     | Deduplicação por hash SHA-256 | Canonizar | desduplicar, normalizar hash, deduplicar |
+     | Homologação e conclusão | Fechar | concluir processo, encerrar ciclo, finalizar entrega |
+
+   * A tabela completa (16 domínios) vive no dicionário. Em divergência, o dicionário vence.
+   * Portão de qualidade de cada ticket: `go run ./tools/taxlinter internal cmd loops skills docs/templates` (exit 1 com violação). O portão cobre os alvos já normalizados. Alvo com violação herdada exige ticket de normalização antes de entrar no portão.
 
 ---
 

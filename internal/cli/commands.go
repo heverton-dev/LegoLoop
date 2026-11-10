@@ -255,6 +255,7 @@ func (f runFlags) runnerOptions(ox *orchestrix.Orchestrix, prompter gate.Prompte
 		AutoApprove:    f.autoApprove,
 		NonInteractive: f.nonInteractive,
 		Prompter:       prompter,
+		Vars:           ox.Vars,
 	}
 }
 

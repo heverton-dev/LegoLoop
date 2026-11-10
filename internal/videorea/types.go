@@ -12,6 +12,9 @@ var (
 	// ErrEmptyDossier sinaliza ausência de conteúdo na extração forense.
 	ErrEmptyDossier = errors.New("videorea: dossiê forense vazio")
 
+	// ErrIncompleteDossier sinaliza dossiê sem nenhum achado forense válido.
+	ErrIncompleteDossier = errors.New("dossier sem achados forenses válidos")
+
 	// ErrGateRejected sinaliza rejeição no stop-gate humano.
 	ErrGateRejected = errors.New("videorea: operação rejeitada no stop-gate")
 )
@@ -32,6 +35,9 @@ type VideoInput struct {
 	Title       string            `json:"title,omitempty"`
 	Description string            `json:"description,omitempty"`
 	RawVideo    string            `json:"raw_video,omitempty"`
+	Duration    float64           `json:"duration,omitempty"`
+	AudioPath   string            `json:"audio_path,omitempty"`
+	Platform    Platform          `json:"platform,omitempty"`
 	AuthCookie  string            `json:"auth_cookie,omitempty"`
 	Headers     map[string]string `json:"headers,omitempty"`
 }
@@ -48,6 +54,15 @@ type ForensicsDossier struct {
 	HiddenTools     []string `json:"hidden_tools"`
 	OCRFindings     []string `json:"ocr_findings"`
 	SuggestedSlugs  []string `json:"suggested_slugs"`
+}
+
+// ValidateStrict rejeita o dossiê que não traz nenhum achado forense.
+func (d *ForensicsDossier) ValidateStrict() error {
+	if len(d.ToolsIdentified) == 0 && len(d.HiddenTools) == 0 && len(d.ExplicitPrompts) == 0 &&
+		len(d.HiddenPrompts) == 0 && len(d.OCRFindings) == 0 {
+		return ErrIncompleteDossier
+	}
+	return nil
 }
 
 // DetectionType categoriza o método de descoberta de uma ferramenta.

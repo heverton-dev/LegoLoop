@@ -56,7 +56,7 @@ func Report() string { return reportMD }
 // DAGVideoREA devolve o TEMPLATE_DAG_VIDEOREA.json.
 func DAGVideoREA() []byte { return slices.Clone(dagVideoReaJSON) }
 
-// DAG devolve o TEMPLATE_DAG.json universal para qualquer pipeline.
+// DAG devolve o TEMPLATE_DAG.json universal para qualquer processo.
 func DAG() []byte { return slices.Clone(dagJSON) }
 
 var (

@@ -13,9 +13,23 @@ import (
 	"legoloop/internal/provider"
 )
 
+// fakeYtdlp substitui o yt-dlp: devolve metadados fixos e grava o áudio no destino pedido.
+type fakeYtdlp struct{}
+
+func (fakeYtdlp) Run(_ context.Context, _ string, args ...string) ([]byte, error) {
+	for i, a := range args {
+		if a == "-o" && i+1 < len(args) {
+			if err := os.WriteFile(filepath.Join(filepath.Dir(args[i+1]), "audio.aac"), []byte("aac"), 0o644); err != nil {
+				return nil, err
+			}
+		}
+	}
+	return []byte(`{"title":"","description":"","duration":42}`), nil
+}
+
 func TestVideoReaCLI_HelpAndInvalid(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
 
 	// 1. Help
 	exit := cli.Run(context.Background(), []string{"video-rea", "--help"}, deps)
@@ -35,7 +49,7 @@ func TestVideoReaCLI_HelpAndInvalid(t *testing.T) {
 func TestVideoReaCLI_ForensicsTranscriptFile(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
 
 	videoJSON := filepath.Join(tempDir, "video.json")
 	if exit := cli.Run(context.Background(), []string{
@@ -94,7 +108,7 @@ func TestVideoReaCLI_ForensicsTranscriptFile(t *testing.T) {
 func TestVideoReaCLI_PipelineReal(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
 
 	// 1. Ingest
 	videoJSON := filepath.Join(tempDir, "video.json")
@@ -208,7 +222,7 @@ func TestVideoReaCLI_PipelineReal(t *testing.T) {
 func TestVideoReaCLI_CurateNomeCanônico(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
 
 	videoJSON := filepath.Join(tempDir, "video.json")
 	if exit := cli.Run(context.Background(), []string{
@@ -260,8 +274,9 @@ func TestVideoReaCLI_SuporteAModelEEffort(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
 	deps := cli.Deps{
-		Stdout: &stdout,
-		Stderr: &stderr,
+		Stdout:      &stdout,
+		Stderr:      &stderr,
+		VideoRunner: fakeYtdlp{},
 		Discover: func(context.Context) provider.Inventory {
 			return provider.Inventory{
 				RouterURL:    "http://127.0.0.1:20128",
@@ -284,7 +299,7 @@ func TestVideoReaCLI_SuporteAModelEEffort(t *testing.T) {
 	exit := cli.Run(context.Background(), []string{
 		"video-rea", "forensics",
 		"--input", videoJSON,
-		"--transcript", "Testando extração com cérebro alocado.",
+		"--transcript", "Testando extração com cérebro alocado usando MiniMax H3 e Claude Code.",
 		"--model", "fast-brain",
 		"--effort", "high",
 		"--out", dossierJSON,
@@ -299,7 +314,7 @@ func TestVideoReaCLI_SuporteAModelEEffort(t *testing.T) {
 	exit = cli.Run(context.Background(), []string{
 		"video-rea", "run",
 		"--url", "https://youtu.be/W7E7Ln0z6aY",
-		"--transcript", "Pipeline completo com modelo roteado.",
+		"--transcript", "Pipeline completo com modelo roteado usando MiniMax H3 e Claude Code.",
 		"--model", "deep-brain",
 		"--effort", "medium",
 		"--bundle", filepath.Join(tempDir, "bundle"),
@@ -321,5 +336,24 @@ func TestVideoReaCLI_SuporteAModelEEffort(t *testing.T) {
 	}, deps)
 	if exit != 1 || !strings.Contains(stderr.String(), "erro ao selecionar cérebro") {
 		t.Errorf("esperava exit 1 com erro de cérebro, obteve %d: %s", exit, stderr.String())
+	}
+}
+
+func TestVideoReaCLI_ForensicsRejeitaDossieSemAchados(t *testing.T) {
+	tempDir := t.TempDir()
+	var stdout, stderr bytes.Buffer
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
+	videoJSON := filepath.Join(tempDir, "video.json")
+	if exit := cli.Run(context.Background(), []string{"video-rea", "ingest", "--url", "https://youtu.be/abc", "--out", videoJSON}, deps); exit != 0 {
+		t.Fatalf("ingest falhou: %s", stderr.String())
+	}
+	out := filepath.Join(tempDir, "dossier.json")
+	exit := cli.Run(context.Background(), []string{"video-rea", "forensics", "--input", videoJSON,
+		"--transcript", "Bom dia, hoje o tempo está agradável.", "--out", out}, deps)
+	if exit != 1 || !strings.Contains(stderr.String(), "sem achados forenses") {
+		t.Fatalf("dossiê vazio deve sair com 1: exit=%d stderr=%s", exit, stderr.String())
+	}
+	if _, err := os.Stat(out); err == nil {
+		t.Error("dossiê inválido não pode ser gravado")
 	}
 }

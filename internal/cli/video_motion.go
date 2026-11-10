@@ -17,7 +17,7 @@ Subcomandos:
   assets    --words <file> --out <file>    orquestra geração de B-roll com cache e fallback
   preview   --assets <file> --out <file>   gera a folha de contato QA (qa_sheet.jpg) em 2s
   bundle    --preview <file> --out <file>  exporta o pacote broadcast (MP4, SRT, VTT, Copy, FCPXML)
-  run       <arquivo> [--aspect <prop>]    executa a esteira completa
+  run       <arquivo> [--aspect <prop>]    executa o processo completo
 `
 
 func cmdVideoMotion(ctx context.Context, args []string, d Deps) int {

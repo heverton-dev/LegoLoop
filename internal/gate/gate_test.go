@@ -291,3 +291,15 @@ func TestInteractivePromptGate(t *testing.T) {
 		t.Fatalf("Eval com alias prompt falhou: got=%v, err=%v", ok, err)
 	}
 }
+
+func TestFileExistsExpandsVars(t *testing.T) {
+	env := newEnv(t, map[string]string{"docs/videorea/meu-slug/scratch/raw.json": "{}"}, 0)
+	env.Vars = map[string]string{"SLUG": "meu-slug"}
+	if !evalExpr(t, "file_exists('docs/videorea/${SLUG}/scratch/raw.json')", env) {
+		t.Error("${SLUG} deve ser expandido a partir de Env.Vars")
+	}
+	env.Vars = map[string]string{"SLUG": "outro"}
+	if evalExpr(t, "file_exists('docs/videorea/${SLUG}/scratch/raw.json')", env) {
+		t.Error("slug diferente não pode encontrar o arquivo")
+	}
+}

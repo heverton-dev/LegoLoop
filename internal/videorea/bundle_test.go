@@ -14,7 +14,10 @@ func TestTargetBundlePaths(t *testing.T) {
 	baseDir := filepath.Join("docs", "videorea")
 	slug := "legoloop-video-tutorial-3d"
 
-	bundle := videorea.NewTargetBundle(baseDir, slug)
+	bundle, err := videorea.NewTargetBundle(baseDir, slug)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if bundle.Slug != slug {
 		t.Fatalf("esperava slug %q, obteve %q", slug, bundle.Slug)
 	}
@@ -199,5 +202,26 @@ func TestTargetBundle_DAGValidoEAntiStub(t *testing.T) {
 			content, _ := os.ReadFile(p)
 			t.Errorf("arquivo %s é um stub esquelético (< 200 bytes, tam: %d):\n%s", gf, info.Size(), string(content))
 		}
+	}
+}
+
+func TestBundlePathJailSecurity(t *testing.T) {
+	base := t.TempDir()
+	invalid := []string{"../../escapes", "..", "a/../../b", "", "/abs", "a/b", `a\b`}
+	for _, slug := range invalid {
+		if _, err := videorea.SanitizeBundlePath(base, slug); err == nil {
+			t.Errorf("slug %q deve ser rejeitado", slug)
+		}
+		if _, err := videorea.NewTargetBundle(base, slug); err == nil {
+			t.Errorf("NewTargetBundle com slug %q deve falhar", slug)
+		}
+	}
+	got, err := videorea.SanitizeBundlePath(base, "meu-video")
+	if err != nil || got != filepath.Join(base, "meu-video") {
+		t.Fatalf("slug válido: %q %v", got, err)
+	}
+	b, err := videorea.NewTargetBundle(base, "meu-video")
+	if err != nil || b.ScratchDir != filepath.Join(base, "meu-video", "scratch") {
+		t.Fatalf("bundle válido: %+v %v", b, err)
 	}
 }

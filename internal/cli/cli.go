@@ -15,6 +15,7 @@ import (
 
 	"legoloop/internal/dag"
 	"legoloop/internal/provider"
+	"legoloop/internal/videorea"
 )
 
 // Version é a versão do binário.
@@ -33,6 +34,8 @@ type Deps struct {
 	Fabricar *FabricarDeps
 	// Matriz injeta varredura, cérebro e relógio do comando matriz (nil = ambiente real; usado em testes).
 	Matriz *MatrizDeps
+	// VideoRunner injeta o executor do yt-dlp do video-rea ingest (nil = yt-dlp real; usado em testes).
+	VideoRunner videorea.Runner
 }
 
 func (d Deps) discover(ctx context.Context) provider.Inventory {
@@ -45,7 +48,7 @@ func (d Deps) discover(ctx context.Context) provider.Inventory {
 const usage = `Uso: legoloop <comando> [opções]
 
 Comandos:
-  doctor     [--json]                        inventário de harnesses, modelos e chaves
+  doctor     [--json]                        inventário de harnesses, modelos e chaves (Cofre de Segredos)
   canonize   --root DIR... (--dry-run|--apply) [--vault DIR] [--workers N] [--json]
   validate   <pipeline.dag.json>             valida contrato, gates e ciclos
   run        <pipeline.dag.json> [--workdir DIR] [--parallel N] [--timeout DUR]
@@ -66,7 +69,7 @@ Comandos:
   stept      [status|set|on|off|scan] [--harness H] [--modo M] [--pausa P] [--json]  alternador de governança STE-PT
   sync-harnesses (--dry-run|--apply)         conecta harnesses ao legoloop mcp-router
   mcp-router                                 inicia servidor MCP STDIO com Lazy discovery
-  legopress  [doctor|auditar|criar|editar|atualizar|adequar|preview]  esteira industrial de livros técnicos
+  legopress  [doctor|auditar|criar|editar|atualizar|adequar|preview]  processo industrial de livros técnicos
   video-motion <subcomando> [opções]          pipeline determinístico de edição e motion vídeo
   video-capcut <subcomando> [opções]          pipeline soberano de edição talking-head com CapCut e FCPXML
   video-rea  <subcomando> [opções]             pipeline universal de engenharia reversa audiovisual

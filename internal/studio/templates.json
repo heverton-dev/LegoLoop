@@ -1,0 +1,541 @@
+[
+  {
+    "id": "greenfield",
+    "name": "Greenfield Development",
+    "description": "Esteira padrão de desenvolvimento do zero: Briefing -\u003e Spec -\u003e Tickets -\u003e Implementação TDD.",
+    "category": "Engenharia",
+    "icon": "plant",
+    "composition": {
+      "name": "greenfield-esteira",
+      "nodes": [
+        {
+          "id": "interview",
+          "block": "interview",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "qwen2.5-coder:7b"
+          }
+        },
+        {
+          "id": "spec",
+          "block": "aidd-spec",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-pro"
+          }
+        },
+        {
+          "id": "tickets",
+          "block": "aidd-tickets",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "interview",
+          "to": "spec"
+        },
+        {
+          "from": "spec",
+          "to": "tickets"
+        }
+      ]
+    }
+  },
+  {
+    "id": "reverse-engineering",
+    "name": "Engenharia Reversa (REA Clone-to-Craft)",
+    "description": "Desconstrução e dissecação profunda de alvo web/nativo com tokens de design e reconstrução canônica.",
+    "category": "Análise",
+    "icon": "search",
+    "composition": {
+      "name": "rea-pipeline",
+      "nodes": [
+        {
+          "id": "router",
+          "block": "aidd-rea-router",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "dissector",
+          "block": "aidd-reconstruct",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "haiku"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "router",
+          "to": "dissector"
+        }
+      ]
+    }
+  },
+  {
+    "id": "security-audit",
+    "name": "Auditoria de Segurança \u0026 Hardening",
+    "description": "Verificação estrita de privilégios, varredura de segredos, checagem CSP e conformidade de portas.",
+    "category": "Segurança",
+    "icon": "shield",
+    "composition": {
+      "name": "security-audit-esteira",
+      "nodes": [
+        {
+          "id": "audit-scan",
+          "block": "interview",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-pro"
+          }
+        },
+        {
+          "id": "audit-report",
+          "block": "aidd-spec",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "llama3.1:8b"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "audit-scan",
+          "to": "audit-report"
+        }
+      ]
+    }
+  },
+  {
+    "id": "mega-pipeline",
+    "name": "Mega Pipeline AIDD (5 Sub-Loops)",
+    "description": "Esteira mestre com os 5 sub-loops canonicos: Concepcao -\u003e Design -\u003e Triade de Planejamento -\u003e TDD -\u003e Homologacao.",
+    "category": "Orquestracao",
+    "icon": "template",
+    "composition": {
+      "name": "mega-pipeline-esteira",
+      "nodes": [
+        {
+          "id": "l1-concepcao",
+          "block": "aidd-grill",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "haiku"
+          }
+        },
+        {
+          "id": "l2-design",
+          "block": "impeccable",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "l3-triade",
+          "block": "aidd-spec",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-pro"
+          }
+        },
+        {
+          "id": "l4-tdd",
+          "block": "aidd-tdd",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "llama3.1:8b"
+          }
+        },
+        {
+          "id": "l5-homologue",
+          "block": "code-review",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "l1-concepcao",
+          "to": "l2-design"
+        },
+        {
+          "from": "l2-design",
+          "to": "l3-triade"
+        },
+        {
+          "from": "l3-triade",
+          "to": "l4-tdd"
+        },
+        {
+          "from": "l4-tdd",
+          "to": "l5-homologue"
+        }
+      ]
+    }
+  },
+  {
+    "id": "impeccable-design",
+    "name": "Pipeline de Design Impeccable (6 Sub-Loops)",
+    "description": "Esteira completa de UI/UX: Avaliar -\u003e Construir -\u003e Melhorar -\u003e Refinar -\u003e Corrigir -\u003e Iterar \u0026 Documentar.",
+    "category": "Design",
+    "icon": "palette",
+    "composition": {
+      "name": "impeccable-design-esteira",
+      "nodes": [
+        {
+          "id": "subloop-avaliar",
+          "block": "impeccable",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "subloop-construir",
+          "block": "impeccable",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "haiku"
+          }
+        },
+        {
+          "id": "subloop-melhorar",
+          "block": "impeccable",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "subloop-refinar",
+          "block": "impeccable",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "subloop-corrigir",
+          "block": "impeccable",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "subloop-documentar",
+          "block": "impeccable",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "subloop-avaliar",
+          "to": "subloop-construir"
+        },
+        {
+          "from": "subloop-construir",
+          "to": "subloop-melhorar"
+        },
+        {
+          "from": "subloop-melhorar",
+          "to": "subloop-refinar"
+        },
+        {
+          "from": "subloop-refinar",
+          "to": "subloop-corrigir"
+        },
+        {
+          "from": "subloop-corrigir",
+          "to": "subloop-documentar"
+        }
+      ]
+    }
+  },
+  {
+    "id": "matt-pocock",
+    "name": "Pipeline Matt Pocock (6 Sub-Loops)",
+    "description": "Esteira de rigor de engenharia: Grilling \u0026 Dominio -\u003e Especificacao -\u003e Tickets em Grafo -\u003e TDD Estrito -\u003e Code Review 2 Eixos -\u003e Retroalimentacao.",
+    "category": "Engenharia",
+    "icon": "git",
+    "composition": {
+      "name": "matt-pocock-esteira",
+      "nodes": [
+        {
+          "id": "subloop-grill-dominio",
+          "block": "aidd-pocock",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "haiku"
+          }
+        },
+        {
+          "id": "subloop-especificar",
+          "block": "aidd-pocock",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-pro"
+          }
+        },
+        {
+          "id": "subloop-tickets-grafo",
+          "block": "aidd-pocock",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "subloop-tdd-construir",
+          "block": "aidd-pocock",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "qwen2.5-coder:7b"
+          }
+        },
+        {
+          "id": "subloop-review-auditar",
+          "block": "aidd-pocock",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "subloop-retro-ambiente",
+          "block": "aidd-pocock",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "subloop-grill-dominio",
+          "to": "subloop-especificar"
+        },
+        {
+          "from": "subloop-especificar",
+          "to": "subloop-tickets-grafo"
+        },
+        {
+          "from": "subloop-tickets-grafo",
+          "to": "subloop-tdd-construir"
+        },
+        {
+          "from": "subloop-tdd-construir",
+          "to": "subloop-review-auditar"
+        },
+        {
+          "from": "subloop-review-auditar",
+          "to": "subloop-retro-ambiente"
+        }
+      ]
+    }
+  },
+  {
+    "id": "addy-osmani",
+    "name": "Addy Osmani Web Performance \u0026 Rigor Loop",
+    "description": "Esteira canônica de engenharia web focada em Web Vitals, TDD estrito, DevTools em runtime, auditoria 5 eixos e observabilidade.",
+    "category": "performance",
+    "icon": "trigger",
+    "composition": {
+      "name": "addy-osmani-loop",
+      "nodes": [
+        {
+          "id": "subloop-alinhar-contexto",
+          "block": "aidd-osmani",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "haiku"
+          }
+        },
+        {
+          "id": "subloop-especificar-restricoes",
+          "block": "aidd-osmani",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-pro"
+          }
+        },
+        {
+          "id": "subloop-planejar-tickets",
+          "block": "aidd-osmani",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "subloop-construir-tdd",
+          "block": "aidd-osmani",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "qwen2.5-coder:7b"
+          }
+        },
+        {
+          "id": "subloop-runtime-webperf",
+          "block": "aidd-osmani",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-pro"
+          }
+        },
+        {
+          "id": "subloop-review-hardening",
+          "block": "aidd-osmani",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "haiku"
+          }
+        },
+        {
+          "id": "subloop-observabilidade-ship",
+          "block": "aidd-osmani",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-pro"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "subloop-alinhar-contexto",
+          "to": "subloop-especificar-restricoes"
+        },
+        {
+          "from": "subloop-especificar-restricoes",
+          "to": "subloop-planejar-tickets"
+        },
+        {
+          "from": "subloop-planejar-tickets",
+          "to": "subloop-construir-tdd"
+        },
+        {
+          "from": "subloop-construir-tdd",
+          "to": "subloop-runtime-webperf"
+        },
+        {
+          "from": "subloop-runtime-webperf",
+          "to": "subloop-review-hardening"
+        },
+        {
+          "from": "subloop-review-hardening",
+          "to": "subloop-observabilidade-ship"
+        }
+      ]
+    }
+  },
+  {
+    "id": "lauren-tan",
+    "name": "Pipeline Lauren Tan pstack (6 Sub-Loops)",
+    "description": "Pipeline de rigor de engenharia baseado no método Lauren Tan (pstack / poteto-mode): Intenção -\u003e Arquitetura -\u003e Decomposição -\u003e Construção TDD -\u003e Verificação no Artefato Real -\u003e Higiene \u0026 Ship.",
+    "category": "Engenharia",
+    "icon": "shield",
+    "composition": {
+      "name": "lauren-tan-esteira",
+      "nodes": [
+        {
+          "id": "inquiry",
+          "block": "aidd-lauren",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "haiku"
+          }
+        },
+        {
+          "id": "architect",
+          "block": "aidd-lauren",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "code-pro"
+          }
+        },
+        {
+          "id": "plan",
+          "block": "aidd-lauren",
+          "routing": {
+            "mode": "auto",
+            "combo": "code-fast"
+          }
+        },
+        {
+          "id": "craft",
+          "block": "aidd-lauren",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "code-pro"
+          }
+        },
+        {
+          "id": "verify",
+          "block": "aidd-lauren",
+          "routing": {
+            "mode": "suggested",
+            "model": "sonnet",
+            "fallback": "qwen2.5-coder:7b"
+          }
+        },
+        {
+          "id": "unslop-ship",
+          "block": "aidd-lauren",
+          "routing": {
+            "mode": "auto",
+            "combo": "fast"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "inquiry",
+          "to": "architect"
+        },
+        {
+          "from": "architect",
+          "to": "plan"
+        },
+        {
+          "from": "plan",
+          "to": "craft"
+        },
+        {
+          "from": "craft",
+          "to": "verify"
+        },
+        {
+          "from": "verify",
+          "to": "unslop-ship"
+        }
+      ]
+    }
+  }
+]

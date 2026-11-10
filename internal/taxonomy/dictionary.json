@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "name": "Dicionário Canônico ASD-STE100 LegoLoop",
+  "description": "SSOT terminológico com mapeamento unívoco (um termo, um significado; um significado, um termo). Zero sinonímia.",
+  "terms": [
+    {
+      "approved_term": "Processo",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Entidade de fluxo de alto nível que orquestra passos e intenções de negócio.",
+      "forbidden_synonyms": ["esteira", "fluxo", "pipeline", "loop"],
+      "context_domain": "workflow"
+    },
+    {
+      "approved_term": "DAG",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Grafo acíclico dirigido de execução determinística de nós e dependências.",
+      "forbidden_synonyms": ["grafo de execução", "árvore de execução", "cadeia de dependência"],
+      "context_domain": "execution_graph"
+    },
+    {
+      "approved_term": "Peça",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Unidade modular e reutilizável de construção do catálogo LegoLoop.",
+      "forbidden_synonyms": ["componente", "bloco", "módulo", "brick"],
+      "context_domain": "building_block"
+    },
+    {
+      "approved_term": "Skill",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Instrução canônica estruturada (SKILL.md) consumida por agentes nos harnesses.",
+      "forbidden_synonyms": ["habilidade", "capacidade", "macro", "prompt de agente"],
+      "context_domain": "agent_instruction"
+    },
+    {
+      "approved_term": "Nó",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Vértice de execução unitária em uma rota ou DAG.",
+      "forbidden_synonyms": ["etapa de grafo", "passo de grafo", "task"],
+      "context_domain": "graph_node"
+    },
+    {
+      "approved_term": "Ticket",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Fatia vertical e atômica de planejamento e implementação em um PLAN.",
+      "forbidden_synonyms": ["tarefa", "card", "issue"],
+      "context_domain": "plan_unit"
+    },
+    {
+      "approved_term": "Etapa",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Passo sequencial interativo na linha de comando ou CLI.",
+      "forbidden_synonyms": ["fase", "estágio"],
+      "context_domain": "cli_step"
+    },
+    {
+      "approved_term": "Cofre",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Repositório canônico local (~/.aidd/canonical) de processos, peças e manifestos.",
+      "forbidden_synonyms": ["repositório central", "banco canônico", "storage"],
+      "context_domain": "canonical_vault"
+    },
+    {
+      "approved_term": "Cofre de Segredos",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Armazenamento encriptado e isolado de chaves de API e credenciais sensíveis.",
+      "forbidden_synonyms": ["keystore", "cofre de senhas", "secrets"],
+      "context_domain": "secrets_vault"
+    },
+    {
+      "approved_term": "Matriz",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Tabela canônica de aptidão, perfil e reputação de peças e processos.",
+      "forbidden_synonyms": ["tabela de aptidão", "grade"],
+      "context_domain": "scoring_matrix"
+    },
+    {
+      "approved_term": "Inventário",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Catálogo factual de arquivos e recursos físicos presentes em disco.",
+      "forbidden_synonyms": ["catálogo físico", "almoxarifado"],
+      "context_domain": "physical_inventory"
+    },
+    {
+      "approved_term": "Gate",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Barreira mecânica automatizada de verificação com critério binário (0 ou 1).",
+      "forbidden_synonyms": ["portão automático", "trava automática"],
+      "context_domain": "machine_gate"
+    },
+    {
+      "approved_term": "Stop-Gate",
+      "grammatical_class": "substantivo",
+      "strict_definition": "Ponto de interrupção obrigatório com exigência de autorização humana explícita.",
+      "forbidden_synonyms": ["portão humano", "aprovação manual", "checkpoint humano"],
+      "context_domain": "human_gate"
+    },
+    {
+      "approved_term": "Fabricar",
+      "grammatical_class": "verbo",
+      "strict_definition": "Verbo canônico de criação completa de um processo e seus artefatos.",
+      "forbidden_synonyms": ["criar processo", "gerar pipeline", "construir processo"],
+      "context_domain": "lifecycle_create"
+    },
+    {
+      "approved_term": "Canonizar",
+      "grammatical_class": "verbo",
+      "strict_definition": "Verbo canônico de deduplicação e garantia de unicidade por SHA-256 no cofre.",
+      "forbidden_synonyms": ["desduplicar", "normalizar hash", "deduplicar"],
+      "context_domain": "lifecycle_dedup"
+    },
+    {
+      "approved_term": "Fechar",
+      "grammatical_class": "verbo",
+      "strict_definition": "Verbo canônico de homologação, manualização e conclusão de uma entrega.",
+      "forbidden_synonyms": ["concluir processo", "encerrar ciclo", "finalizar entrega"],
+      "context_domain": "lifecycle_close"
+    }
+  ]
+}

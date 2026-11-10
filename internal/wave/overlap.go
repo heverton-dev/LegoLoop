@@ -16,37 +16,14 @@ var filePathRegex = regexp.MustCompile(`[\w\-\.\/]+\.[a-zA-Z0-9]+`)
 func ExtractAffectedFiles(card board.Card) []string {
 	seen := make(map[string]struct{})
 
-	scanText := func(text string) {
-		matches := filePathRegex.FindAllString(text, -1)
-		for _, m := range matches {
-			cleaned := strings.Trim(m, "`'\".,;:()[]{}<>")
-			cleaned = filepath.ToSlash(cleaned)
-
-			// Ignora números soltos, URLs e artefatos de markdown irrelevantes
-			if strings.HasPrefix(cleaned, "http://") || strings.HasPrefix(cleaned, "https://") {
-				continue
-			}
-			if !strings.Contains(cleaned, ".") {
-				continue
-			}
-			ext := filepath.Ext(cleaned)
-			if ext == "" || len(ext) < 2 {
-				continue
-			}
-
-			// Filtra arquivos típicos de código/documentação
-			seen[cleaned] = struct{}{}
-		}
-	}
-
 	// 1. Inspeciona o corpo
 	if card.Body != "" {
-		scanText(card.Body)
+		scanFilePaths(card.Body, seen)
 	}
 
 	// 2. Se nada foi achado no corpo, inspeciona o título como fallback
 	if len(seen) == 0 && card.Title != "" {
-		scanText(card.Title)
+		scanFilePaths(card.Title, seen)
 	}
 
 	var files []string
@@ -70,4 +47,24 @@ func HasOverlap(filesA, filesB []string) bool {
 		}
 	}
 	return false
+}
+
+// scanFilePaths acrescenta a seen cada caminho de arquivo plausível encontrado no texto.
+func scanFilePaths(text string, seen map[string]struct{}) {
+	for _, m := range filePathRegex.FindAllString(text, -1) {
+		cleaned := filepath.ToSlash(strings.Trim(m, "`'\".,;:()[]{}<>"))
+
+		// Ignora números soltos, URLs e artefatos de markdown irrelevantes
+		if strings.HasPrefix(cleaned, "http://") || strings.HasPrefix(cleaned, "https://") {
+			continue
+		}
+		if !strings.Contains(cleaned, ".") {
+			continue
+		}
+		if ext := filepath.Ext(cleaned); ext == "" || len(ext) < 2 {
+			continue
+		}
+		// Filtra arquivos típicos de código/documentação
+		seen[cleaned] = struct{}{}
+	}
 }

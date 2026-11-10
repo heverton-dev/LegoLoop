@@ -17,6 +17,8 @@ type Env struct {
 	Root     RootFS
 	ExitCode int
 	Prompter Prompter
+	// Vars expande ${NOME} nos caminhos de file_exists (vazio = sem expansão).
+	Vars map[string]string
 }
 
 // Expr é uma expressão de gate compilada e com tipos verificados.

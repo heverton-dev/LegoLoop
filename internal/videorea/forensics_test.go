@@ -2,6 +2,7 @@ package videorea_test
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -195,5 +196,24 @@ func TestExtractForensics_NormalizaQuebraDeLinhaWindows(t *testing.T) {
 	}
 	if strings.Contains(dossier.TranscribedText, "\r") {
 		t.Errorf("transcricao nao deve conter CR: %q", dossier.TranscribedText)
+	}
+}
+
+func TestDossierValidateStrict(t *testing.T) {
+	empty := &videorea.ForensicsDossier{VideoURL: "https://youtu.be/x"}
+	if err := empty.ValidateStrict(); !errors.Is(err, videorea.ErrIncompleteDossier) {
+		t.Fatalf("dossiê sem achados deve falhar com ErrIncompleteDossier, obteve %v", err)
+	}
+	campos := map[string]*videorea.ForensicsDossier{
+		"tools":    {ToolsIdentified: []string{"x"}},
+		"hidden":   {HiddenTools: []string{"x"}},
+		"explicit": {ExplicitPrompts: []string{"x"}},
+		"hprompt":  {HiddenPrompts: []string{"x"}},
+		"ocr":      {OCRFindings: []string{"x"}},
+	}
+	for nome, d := range campos {
+		if err := d.ValidateStrict(); err != nil {
+			t.Errorf("%s: achado válido deve passar, obteve %v", nome, err)
+		}
 	}
 }

@@ -62,7 +62,7 @@
         "docs/specs/2026-11-07_SPEC_LEGOLOOP_VIDEO_REA.md"
       ],
       "context_out": [
-        "scratch/videorea/raw.json"
+        "docs/videorea/${SLUG}/scratch/raw.json"
       ],
       "status": "COMPLETED",
       "command": [
@@ -72,11 +72,11 @@
         "--url",
         "${VIDEO_URL}",
         "--out",
-        "scratch/videorea/raw.json"
+        "docs/videorea/${SLUG}/scratch/raw.json"
       ],
       "output": {
-        "artifact": "scratch/videorea/raw.json",
-        "gate": "file_exists('scratch/videorea/raw.json')"
+        "artifact": "docs/videorea/${SLUG}/scratch/raw.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/raw.json')"
       },
       "test_seam": {
         "type": "unit_test_gate",
@@ -114,10 +114,10 @@
         "mode": "isolated"
       },
       "context_in": [
-        "scratch/videorea/raw.json"
+        "docs/videorea/${SLUG}/scratch/raw.json"
       ],
       "context_out": [
-        "scratch/videorea/dossier.json"
+        "docs/videorea/${SLUG}/scratch/dossier.json"
       ],
       "status": "COMPLETED",
       "command": [
@@ -125,13 +125,13 @@
         "video-rea",
         "forensics",
         "--input",
-        "scratch/videorea/raw.json",
+        "docs/videorea/${SLUG}/scratch/raw.json",
         "--out",
-        "scratch/videorea/dossier.json"
+        "docs/videorea/${SLUG}/scratch/dossier.json"
       ],
       "output": {
-        "artifact": "scratch/videorea/dossier.json",
-        "gate": "file_exists('scratch/videorea/dossier.json')"
+        "artifact": "docs/videorea/${SLUG}/scratch/dossier.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json')"
       },
       "test_seam": {
         "type": "unit_test_gate",
@@ -169,10 +169,10 @@
         "mode": "isolated"
       },
       "context_in": [
-        "scratch/videorea/dossier.json"
+        "docs/videorea/${SLUG}/scratch/dossier.json"
       ],
       "context_out": [
-        "scratch/videorea/curation.json"
+        "docs/videorea/${SLUG}/scratch/curation.json"
       ],
       "status": "COMPLETED",
       "command": [
@@ -180,13 +180,13 @@
         "video-rea",
         "curate",
         "--dossier",
-        "scratch/videorea/dossier.json",
+        "docs/videorea/${SLUG}/scratch/dossier.json",
         "--out",
-        "scratch/videorea/curation.json"
+        "docs/videorea/${SLUG}/scratch/curation.json"
       ],
       "output": {
-        "artifact": "scratch/videorea/curation.json",
-        "gate": "file_exists('scratch/videorea/curation.json')"
+        "artifact": "docs/videorea/${SLUG}/scratch/curation.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json')"
       },
       "test_seam": {
         "type": "unit_test_gate",
@@ -224,10 +224,10 @@
         "mode": "inline"
       },
       "context_in": [
-        "scratch/videorea/curation.json"
+        "docs/videorea/${SLUG}/scratch/curation.json"
       ],
       "context_out": [
-        "scratch/videorea/curation.json"
+        "docs/videorea/${SLUG}/scratch/curation.json"
       ],
       "status": "COMPLETED",
       "command": [
@@ -235,14 +235,14 @@
         "video-rea",
         "gate",
         "--report",
-        "scratch/videorea/curation.json",
+        "docs/videorea/${SLUG}/scratch/curation.json",
         "--approve",
         "--out",
-        "scratch/videorea/curation_approved.json"
+        "docs/videorea/${SLUG}/scratch/curation_approved.json"
       ],
       "output": {
-        "artifact": "scratch/videorea/curation_approved.json",
-        "gate": "file_exists('scratch/videorea/curation_approved.json')"
+        "artifact": "docs/videorea/${SLUG}/scratch/curation_approved.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation_approved.json')"
       },
       "test_seam": {
         "type": "unit_test_gate",
@@ -280,10 +280,10 @@
         "mode": "isolated"
       },
       "context_in": [
-        "scratch/videorea/curation_approved.json"
+        "docs/videorea/${SLUG}/scratch/curation_approved.json"
       ],
       "context_out": [
-        "scratch/videorea/governance_manifest.json"
+        "docs/videorea/${SLUG}/scratch/governance_manifest.json"
       ],
       "status": "COMPLETED",
       "command": [
@@ -291,15 +291,15 @@
         "video-rea",
         "govern",
         "--approval",
-        "scratch/videorea/curation_approved.json",
+        "docs/videorea/${SLUG}/scratch/curation_approved.json",
         "--bundle",
         "docs/videorea",
         "--out",
-        "scratch/videorea/governance_manifest.json"
+        "docs/videorea/${SLUG}/scratch/governance_manifest.json"
       ],
       "output": {
-        "artifact": "scratch/videorea/governance_manifest.json",
-        "gate": "file_exists('scratch/videorea/governance_manifest.json')"
+        "artifact": "docs/videorea/${SLUG}/scratch/governance_manifest.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/governance_manifest.json')"
       },
       "test_seam": {
         "type": "unit_test_gate",
@@ -337,10 +337,10 @@
         "mode": "isolated"
       },
       "context_in": [
-        "scratch/videorea/governance_manifest.json"
+        "docs/videorea/${SLUG}/scratch/governance_manifest.json"
       ],
       "context_out": [
-        "scratch/videorea/livro_manifest.json"
+        "docs/videorea/${SLUG}/scratch/livro_manifest.json"
       ],
       "status": "COMPLETED",
       "command": [
@@ -350,11 +350,11 @@
         "--bundle",
         "docs/videorea",
         "--out",
-        "scratch/videorea/livro_manifest.json"
+        "docs/videorea/${SLUG}/scratch/livro_manifest.json"
       ],
       "output": {
-        "artifact": "scratch/videorea/livro_manifest.json",
-        "gate": "file_exists('scratch/videorea/livro_manifest.json')"
+        "artifact": "docs/videorea/${SLUG}/scratch/livro_manifest.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/livro_manifest.json')"
       },
       "test_seam": {
         "type": "unit_test_gate",

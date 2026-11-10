@@ -1,0 +1,48 @@
+{
+  "frontmatter": {
+    "id_sessao": "3cbd5290-3d8c-4455-aa3d-8a5df48a82d6",
+    "harness_utilizado": "antigravity-cli",
+    "projeto": "LegoLoop",
+    "branch": "master",
+    "tokens_input": 267703,
+    "tokens_input_formatado": "267.703",
+    "tokens_thinking": 2131,
+    "tokens_thinking_formatado": "2.131",
+    "tokens_output": 19266,
+    "tokens_output_formatado": "19.266",
+    "tokens_cache_read": 2320020,
+    "tokens_cache_read_formatado": "2.320.020",
+    "resumo_tokens": "Input: 267.703 | Thinking: 2.131 | Output: 19.266",
+    "total_turnos": 2,
+    "data_sessao": "01/11/2026",
+    "atualizado_em": "2026-11-10T09:56:34Z"
+  },
+  "id_sessao": "3cbd5290-3d8c-4455-aa3d-8a5df48a82d6",
+  "harness_utilizado": "antigravity-cli",
+  "projeto": "LegoLoop",
+  "branch": "master",
+  "tokens_input": 267703,
+  "tokens_input_formatado": "267.703",
+  "tokens_thinking": 2131,
+  "tokens_thinking_formatado": "2.131",
+  "tokens_output": 19266,
+  "tokens_output_formatado": "19.266",
+  "tokens_cache_read": 2320020,
+  "tokens_cache_read_formatado": "2.320.020",
+  "total_turnos": 2,
+  "transcript_source": "C:\\Users\\trcnologia\\.gemini\\antigravity-cli\\brain\\3cbd5290-3d8c-4455-aa3d-8a5df48a82d6\\.system_generated\\logs\\transcript_full.jsonl",
+  "dialogos": [
+    {
+      "turn": 1,
+      "timestamp": "2026-11-01T18:17:08Z",
+      "user_prompt": "siga  para oan\n  ### 🛑 STOP-GATE DE AUDITORIA HUMANA",
+      "model_response": "Iniciando execução do **Épico 18 & 19** conforme aprovado no Stop-Gate. Validando suíte de testes do Studio...\n\nValidando o teste TDD `TestCanvasEventWiring` (fase Red)...\n\nValidando o teste TDD `TestCanvasEventWiring` (fase Green)...\n\nExecutando toda a suíte de testes de `internal/studio/...` sem cache...\n\nExecutando a suíte completa de testes de todos os pacotes Go (`go test ./...`)...\n\n### ✅ Execução Concluída — Épicos 18 & 19 (Zero Emojis & Restauração do Canvas)\n\nA execução estéril dos micro e nano-tickets foi finalizada com sucesso seguindo TDD Estrito:\n\n| Ticket | Escopo | Arquivo Alvo | Status |\n| :--- | :--- | :--- | :--- |\n| **TICK-1801** | Pan 2D contínuo (Espaço, botão do meio, fundo) & Trackpad/Wheel com `deltaX`/`deltaY` | [app.js](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/static/app.js) | **Verde** |\n| **TICK-1802** | Correção de ID dos nós no DOM, captura segura de ponteiro (`setPointerCapture`) e drag estável | [app.js](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/static/app.js) | **Verde** |\n| **TICK-1803** | Atalho `Ctrl+0` (`fitToScreen`), `Delete`/`Backspace` para nós e arestas com re-render | [app.js](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/static/app.js) | **Verde** |\n| **TICK-1901** | Barreira mecânica anti-emojis via teste unitário Go | [emojis_test.go](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/emojis_test.go) | **Verde** |\n| **TICK-1902** | Erradicação de emojis e adoção de biblioteca SVG inline | [icons.js](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/static/icons.js), [index.html](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/static/index.html) | **Verde** |\n| **TICK-1903** | Taxonomia estrutural de cores corporativas por categoria de nó | [style.css](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/static/style.css) | **Verde** |\n\n---\n\n### 🧪 Evidências de Governança\n* **Suíte de Testes:** `go test ./...` 100% aprovada.\n* **Recompilação Fresca:** `bin/legoloop.exe` recompilado e atualizado.\n* **Relatório Consolidado:** [2026-11-01_REPORT_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports/2026-11-01_REPORT_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md)."
+    },
+    {
+      "turn": 2,
+      "timestamp": "2026-11-01T19:51:50Z",
+      "user_prompt": "siga",
+      "model_response": ""
+    }
+  ]
+}

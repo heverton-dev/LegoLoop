@@ -86,57 +86,22 @@ func (s *Server) handleMCPInstall(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]any{"error": "corpo inválido: " + err.Error()})
 		return
 	}
-
 	if !req.Consent {
 		writeJSON(w, http.StatusBadRequest, map[string]any{
 			"error": "instalação de MCP requer consentimento explícito do usuário (R-MCP-2)",
 		})
 		return
 	}
-
-	var found *MCPCatalogEntry
-	for _, entry := range builtinMCPCatalog {
-		if strings.EqualFold(entry.Name, req.Name) {
-			found = &entry
-			break
-		}
-	}
-
+	found := findMCPEntry(req.Name)
 	if found == nil {
 		writeJSON(w, http.StatusNotFound, map[string]any{"error": fmt.Sprintf("MCP %q não encontrado no catálogo", req.Name)})
 		return
 	}
-
-	// Registra o servidor MCP no arquivo .mcp.json do projeto
 	mcpFilePath := filepath.Join(s.ProjectDir, ".mcp.json")
-	type projectMCPFile struct {
-		MCPServers map[string]map[string]any `json:"mcpServers"`
-	}
-
-	var mcpConfig projectMCPFile
-	if data, err := os.ReadFile(mcpFilePath); err == nil {
-		_ = json.Unmarshal(data, &mcpConfig)
-	}
-	if mcpConfig.MCPServers == nil {
-		mcpConfig.MCPServers = make(map[string]map[string]any)
-	}
-
-	mcpConfig.MCPServers[found.Name] = map[string]any{
-		"command": found.Command,
-		"args":    found.Args,
-	}
-
-	data, err := json.MarshalIndent(mcpConfig, "", "  ")
-	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, map[string]any{"error": "falha ao serializar .mcp.json: " + err.Error()})
+	if err := registerMCPServer(mcpFilePath, found); err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]any{"error": err.Error()})
 		return
 	}
-
-	if err := os.WriteFile(mcpFilePath, data, 0o644); err != nil {
-		writeJSON(w, http.StatusInternalServerError, map[string]any{"error": "falha ao gravar .mcp.json: " + err.Error()})
-		return
-	}
-
 	writeJSON(w, http.StatusOK, map[string]any{
 		"ok":      true,
 		"name":    found.Name,
@@ -144,4 +109,38 @@ func (s *Server) handleMCPInstall(w http.ResponseWriter, r *http.Request) {
 		"command": found.Command,
 		"file":    mcpFilePath,
 	})
+}
+
+func findMCPEntry(name string) *MCPCatalogEntry {
+	for _, entry := range builtinMCPCatalog {
+		if strings.EqualFold(entry.Name, name) {
+			e := entry
+			return &e
+		}
+	}
+	return nil
+}
+
+type projectMCPFile struct {
+	MCPServers map[string]map[string]any `json:"mcpServers"`
+}
+
+// registerMCPServer grava o servidor MCP no .mcp.json do projeto, preservando os existentes.
+func registerMCPServer(path string, found *MCPCatalogEntry) error {
+	var mcpConfig projectMCPFile
+	if data, err := os.ReadFile(path); err == nil {
+		_ = json.Unmarshal(data, &mcpConfig)
+	}
+	if mcpConfig.MCPServers == nil {
+		mcpConfig.MCPServers = make(map[string]map[string]any)
+	}
+	mcpConfig.MCPServers[found.Name] = map[string]any{"command": found.Command, "args": found.Args}
+	data, err := json.MarshalIndent(mcpConfig, "", "  ")
+	if err != nil {
+		return fmt.Errorf("falha ao serializar .mcp.json: %w", err)
+	}
+	if err := os.WriteFile(path, data, 0o644); err != nil {
+		return fmt.Errorf("falha ao gravar .mcp.json: %w", err)
+	}
+	return nil
 }

@@ -17,14 +17,18 @@ func (s *Server) handlePieceFavorite(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "método não permitido", http.StatusMethodNotAllowed)
 		return
 	}
-	kind := r.PathValue("kind")
-	id := r.PathValue("id")
+	kind, id := r.PathValue("kind"), r.PathValue("id")
 	if kind == "" || id == "" {
 		http.Error(w, "kind e id são obrigatórios", http.StatusBadRequest)
 		return
 	}
+	newStatus := s.toggleFavorite(kind + ":" + id)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]any{"kind": kind, "id": id, "favorited": newStatus})
+}
 
-	// Persiste a preferência no cofre canônico
+// toggleFavorite alterna a chave em favorites.json do Cofre canônico e devolve o novo estado.
+func (s *Server) toggleFavorite(key string) bool {
 	vaultDir := s.Vault
 	if vaultDir == "" {
 		home := s.Home
@@ -34,27 +38,28 @@ func (s *Server) handlePieceFavorite(w http.ResponseWriter, r *http.Request) {
 		vaultDir = filepath.Join(home, ".aidd", "canonical")
 	}
 	_ = os.MkdirAll(vaultDir, 0755)
-
 	favFile := filepath.Join(vaultDir, "favorites.json")
 	favs := make(map[string]bool)
-
 	if data, err := os.ReadFile(favFile); err == nil {
 		_ = json.Unmarshal(data, &favs)
 	}
-
-	key := kind + ":" + id
-	newStatus := !favs[key]
-	favs[key] = newStatus
-
+	favs[key] = !favs[key]
 	favBytes, _ := json.MarshalIndent(favs, "", "  ")
 	_ = os.WriteFile(favFile, favBytes, 0644)
+	return favs[key]
+}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{
-		"kind":      kind,
-		"id":        id,
-		"favorited": newStatus,
-	})
+// findPiecePath localiza o arquivo físico da peça no inventário (vazio se ausente).
+func (s *Server) findPiecePath(kind, id string) string {
+	if s.Assets == nil {
+		return ""
+	}
+	for _, item := range s.Assets.Snapshot().Items {
+		if strings.EqualFold(string(item.Kind), kind) && (strings.EqualFold(item.ID, id) || strings.EqualFold(item.Name, id)) {
+			return item.Path
+		}
+	}
+	return ""
 }
 
 // handlePieceUpgrade dispara o início do sub-loop de elevação para Padrão Ouro.
@@ -63,49 +68,26 @@ func (s *Server) handlePieceUpgrade(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "método não permitido", http.StatusMethodNotAllowed)
 		return
 	}
-	kind := r.PathValue("kind")
-	id := r.PathValue("id")
+	kind, id := r.PathValue("kind"), r.PathValue("id")
 	if kind == "" || id == "" {
 		http.Error(w, "kind e id são obrigatórios", http.StatusBadRequest)
 		return
 	}
-
-	// 1. Localizar arquivo físico da peça
-	piecePath := ""
-	if s.Assets != nil {
-		for _, item := range s.Assets.Snapshot().Items {
-			if strings.EqualFold(string(item.Kind), kind) && (strings.EqualFold(item.ID, id) || strings.EqualFold(item.Name, id)) {
-				piecePath = item.Path
-				break
-			}
+	rating := reputation.PieceRating{Ref: id, Name: id, TotalScore: 0.50, Tier: reputation.TierBronze}
+	if piecePath := s.findPiecePath(kind, id); piecePath != "" {
+		if scored, err := reputation.ScoreFile(piecePath); err == nil {
+			rating = scored
 		}
 	}
-
-	// Diagnóstico matricial
-	rating := reputation.PieceRating{
-		Ref:        id,
-		Name:       id,
-		TotalScore: 0.50,
-		Tier:       reputation.TierBronze,
-	}
-
-	if piecePath != "" {
-		if r, err := reputation.ScoreFile(piecePath); err == nil {
-			rating = r
-		}
-	}
-
-	// 2. Iniciar entrevista socrática de elevação com o Addy Osmani
+	// Inicia a entrevista socrática de elevação com o Addy Osmani
 	engine := s.getInterviewEngine(r.Context())
 	initialIdea := fmt.Sprintf("Elevar a peça %s/%s (Score Atual: %.2f - Tier: %s) para o Padrão Ouro (Score >= 0.85).",
 		kind, id, rating.TotalScore, rating.Tier)
-
 	sess, turn, err := engine.Start(r.Context(), initialIdea)
 	if err != nil {
 		http.Error(w, "falha ao iniciar entrevista de elevação: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]any{
 		"status":          "UPGRADE_INITIATED",
@@ -123,28 +105,26 @@ func (s *Server) handlePieceDelete(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "método não permitido", http.StatusMethodNotAllowed)
 		return
 	}
-	kind := r.PathValue("kind")
-	id := r.PathValue("id")
+	kind, id := r.PathValue("kind"), r.PathValue("id")
 	mode := r.URL.Query().Get("mode") // "local" ou "full"
 	if mode == "" {
 		mode = "local"
 	}
-
-	targetPath := ""
-	if s.Assets != nil {
-		for _, item := range s.Assets.Snapshot().Items {
-			if strings.EqualFold(string(item.Kind), kind) && (strings.EqualFold(item.ID, id) || strings.EqualFold(item.Name, id)) {
-				targetPath = item.Path
-				break
-			}
-		}
-	}
-
+	targetPath := s.findPiecePath(kind, id)
 	if targetPath == "" {
 		http.Error(w, "peça não encontrada no inventário", http.StatusNotFound)
 		return
 	}
+	if status, msg := s.eliminatePiece(mode, targetPath, id); status != 0 {
+		http.Error(w, msg, status)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]any{"status": "DELETED", "mode": mode, "eliminated": id})
+}
 
+// eliminatePiece aplica o modo de eliminação; devolve status HTTP != 0 e mensagem se falhar.
+func (s *Server) eliminatePiece(mode, targetPath, id string) (int, string) {
 	switch mode {
 	case "full":
 		// Eliminação completa do disco (expurgo profundo)
@@ -153,8 +133,7 @@ func (s *Server) handlePieceDelete(w http.ResponseWriter, r *http.Request) {
 			targetDir = filepath.Dir(targetPath)
 		}
 		if err := os.RemoveAll(targetDir); err != nil {
-			http.Error(w, "falha ao eliminar arquivo físico: "+err.Error(), http.StatusInternalServerError)
-			return
+			return http.StatusInternalServerError, "falha ao eliminar arquivo físico: " + err.Error()
 		}
 	case "local":
 		// Eliminação a nível de projeto (remove do índice local)
@@ -162,14 +141,7 @@ func (s *Server) handlePieceDelete(w http.ResponseWriter, r *http.Request) {
 			_ = os.Remove(targetPath)
 		}
 	default:
-		http.Error(w, "modo de eliminação inválido (use 'local' ou 'full')", http.StatusBadRequest)
-		return
+		return http.StatusBadRequest, "modo de eliminação inválido (use 'local' ou 'full')"
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{
-		"status":     "DELETED",
-		"mode":       mode,
-		"eliminated": id,
-	})
+	return 0, ""
 }

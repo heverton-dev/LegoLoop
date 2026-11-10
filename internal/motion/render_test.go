@@ -6,11 +6,6 @@ import (
 	"testing"
 )
 
-// frameCapturer is the seam for Playwright — injectable for testing.
-type frameCapturer interface {
-	Capture(html string, fps int, durationSec float64, resolution string, outDir string) ([]string, error)
-}
-
 // stubCapturer is a test double at the boundary.
 type stubCapturer struct {
 	frames []string

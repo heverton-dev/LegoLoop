@@ -28,3 +28,8 @@ func (l *librosaDetector) Detect(audioPath string) ([]float64, error) {
 	// Returns JSON array of beat timestamps.
 	return nil, nil
 }
+
+// beatDetector is the seam for Librosa — injectable for testing.
+type beatDetector interface {
+	Detect(audioPath string) ([]float64, error)
+}

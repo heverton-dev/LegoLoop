@@ -54,3 +54,8 @@ func ffmpegArgs(frames []string, audioPath string, outPath string, resolution st
 	args = append(args, outPath)
 	return args
 }
+
+// frameEncoder is the seam for FFmpeg — injectable for testing.
+type frameEncoder interface {
+	Encode(frames []string, audioPath string, outPath string, resolution string) error
+}

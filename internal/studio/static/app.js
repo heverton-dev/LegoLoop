@@ -376,7 +376,7 @@ function updateEmpty() {
 
 function serializeCanvasSnapshot() {
   return {
-    name: $("pipeline-name")?.value || "esteira",
+    name: $("pipeline-name")?.value || "novo-dag",
     nodes: Array.from(state.nodes.values()).map((n) => JSON.parse(JSON.stringify(n))),
     edges: JSON.parse(JSON.stringify(state.edges)),
     status: new Map(state.status),
@@ -412,7 +412,7 @@ async function enterSubloop(subloopId, subloopLabel) {
   state.navStack.push(currentSnap);
 
   try {
-    const resp = await fetch(`/api/loops/${encodeURIComponent(subloopId)}`);
+    const resp = await fetch(`/api/processos/${encodeURIComponent(subloopId)}`);
     if (!resp.ok) {
       toast("Não foi possível carregar o sub-grafo do acervo", true);
       state.navStack.pop();
@@ -900,7 +900,7 @@ function autoLayout() {
   });
   renderEdges();
   fitToScreen();
-  toast("Esteira organizada automaticamente!");
+  toast("DAG organizado automaticamente!");
 }
 
 function toggleAccordion(name) {
@@ -1220,7 +1220,7 @@ function renderIssues(issues) {
   box.hidden = issues.length === 0;
   $("issues-list").replaceChildren(...issues.map((i) => {
     const li = el("li");
-    li.append(el("span", "issues__where", i.node || i.edge || "esteira"), el("span", "", i.message));
+    li.append(el("span", "issues__where", i.node || i.edge || "DAG"), el("span", "", i.message));
     return li;
   }));
 }
@@ -1243,7 +1243,7 @@ async function validate() {
     return false;
   }
   applyValidation(data);
-  toast(data.ok ? "Esteira válida: todos os encaixes conferem." : `${data.issues.length} problema(s) encontrado(s).`, !data.ok);
+  toast(data.ok ? "DAG válido: todos os encaixes conferem." : `${data.issues.length} problema(s) encontrado(s).`, !data.ok);
   return Boolean(data.ok);
 }
 
@@ -1254,7 +1254,7 @@ async function materialize() {
     toast(data.error || "Corrija os problemas antes de materializar.", true);
     return false;
   }
-  toast(`Esteira materializada em ${data.path}.`);
+  toast(`DAG materializado em ${data.path}.`);
   return true;
 }
 
@@ -1826,7 +1826,7 @@ function initRunModal() {
     if (hasScripts) {
       const agreed = await confirmDialog({
         title: "Autorizar Execução de Scripts?",
-        message: "Esta esteira possui nós do tipo script que executarão comandos no sistema operacional. Você autoriza a execução?",
+        message: "Este DAG possui nós do tipo script que executarão comandos no sistema operacional. Você autoriza a execução?",
         confirmLabel: "Autorizar e Executar",
         danger: true,
       });
@@ -1838,7 +1838,7 @@ function initRunModal() {
     }
 
     const dag = compileDAG();
-    nameEl.textContent = dag.name || "nova-esteira";
+    nameEl.textContent = dag.name || "novo-dag";
     badge.textContent = "Iniciando...";
     badge.className = "modal-badge badge--ready";
     tokensTotalEl.textContent = "0";
@@ -1905,7 +1905,7 @@ function initRunModal() {
             case "dag_start": {
               badge.textContent = "Executando...";
               badge.className = "modal-badge badge--running";
-              appendLog(`[${new Date().toLocaleTimeString()}] Esteira "${evData.dag}" iniciada (${evData.nodes_total} nós).`);
+              appendLog(`[${new Date().toLocaleTimeString()}] DAG "${evData.dag}" iniciado (${evData.nodes_total} nós).`);
 
               const telemStatus = $("telemetry-global-status");
               if (telemStatus) {
@@ -2009,7 +2009,7 @@ function initRunModal() {
               }
 
               appendLog(`[${new Date().toLocaleTimeString()}] Execucao finalizada: ${ok ? "SUCESSO" : "COM FALHAS"}`);
-              toast(ok ? "Esteira executada com sucesso!" : "Esteira finalizou com falhas.", !ok);
+              toast(ok ? "DAG executado com sucesso!" : "DAG finalizou com falhas.", !ok);
               break;
             }
 
@@ -2101,7 +2101,7 @@ function initTemplatesModal() {
         card.addEventListener("click", async () => {
           if (state.nodes.size > 0) {
             const confirmed = await confirmDialog({
-              title: "Substituir esteira pelo Template?",
+              title: "Substituir DAG pelo Template?",
               message: `Os nós atuais serão removidos e substituídos pelo template "${tmpl.name}".`,
               confirmLabel: "Carregar Template",
               danger: true,
@@ -2318,8 +2318,8 @@ async function fabricarRun(ui, flow, opts = {}) {
 async function fabricarPlot(result) {
   if (fabricarNeedsReplaceConfirm(state.nodes.size)) {
     const ok = await confirmDialog({
-      title: "Substituir a esteira do Canvas?",
-      message: `O Canvas tem ${state.nodes.size} nó(s). Plotar "${result.canonical_name}" substitui essa esteira (Ctrl+Z desfaz).`,
+      title: "Substituir o DAG do Canvas?",
+      message: `O Canvas tem ${state.nodes.size} nó(s). Plotar "${result.canonical_name}" substitui esse DAG (Ctrl+Z desfaz).`,
       confirmLabel: "Substituir", danger: true,
     });
     if (!ok) {
@@ -2327,7 +2327,7 @@ async function fabricarPlot(result) {
       return;
     }
   }
-  const res = await api(`/api/loops/${encodeURIComponent(result.canonical_name)}`);
+  const res = await api(`/api/processos/${encodeURIComponent(result.canonical_name)}`);
   const model = fabricarPlotModel(result, res.ok ? res.data : null);
   fabricarApplyPlot(model);
   if (!state.items.loop.some((i) => i.name === model.loopEntry.name)) {

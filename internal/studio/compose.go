@@ -190,43 +190,55 @@ func buildDAG(c Composition, infos map[string]nodeInfo, slots map[string]*dag.Sl
 	}
 	d := dag.DAG{Schema: "https://legoloop.dev/schemas/dag.v1.json", Name: c.Name, Version: "2.0.0", Trigger: c.Trigger}
 	if d.Trigger == nil {
-		for _, n := range c.Nodes {
-			if info, ok := infos[n.ID]; ok && info.Block != nil {
-				switch info.Block.Kind {
-				case "trigger_cron":
-					d.Trigger = &dag.Trigger{Type: dag.TriggerCron, Cron: "0 * * * *"}
-				case "trigger_file_change":
-					d.Trigger = &dag.Trigger{Type: dag.TriggerFileChange, Path: "docs"}
-				case "trigger_loop_end":
-					d.Trigger = &dag.Trigger{Type: dag.TriggerLoopEnd, Loop: "upstream"}
-				case "trigger_manual", "trigger_board":
-					d.Trigger = &dag.Trigger{Type: dag.TriggerManual}
-				}
-				if d.Trigger != nil {
-					break
-				}
-			}
-		}
-		if d.Trigger == nil {
-			d.Trigger = &dag.Trigger{Type: dag.TriggerManual}
-		}
+		d.Trigger = inferTrigger(c, infos)
 	}
 	for _, n := range c.Nodes {
 		info := infos[n.ID]
-		inputs := map[string]string{}
-		for _, from := range incoming[n.ID] {
-			inputs[from] = "file('" + infos[from].Artifact + "')"
-		}
-		if len(inputs) == 0 {
-			if info.Block == nil || len(info.Block.Consumes) > 0 {
-				inputs[info.rootInput()] = "var." + info.rootInput()
-			}
-		}
 		d.Nodes = append(d.Nodes, dag.Node{
 			ID: n.ID, Type: info.Type, Ref: info.Ref, Command: info.Command, DependsOn: incoming[n.ID],
-			Routing: n.Routing, Inputs: inputs, Execution: n.Execution, Slots: slots[n.ID],
+			Routing: n.Routing, Inputs: nodeInputs(n.ID, info, incoming[n.ID], infos), Execution: n.Execution, Slots: slots[n.ID],
 			Output: dag.HandoffContract{Artifact: info.Artifact, Gate: info.Gate},
 		})
 	}
 	return d
+}
+
+// inferTrigger deduz o gatilho do primeiro bloco de gatilho da composição; padrão manual.
+func inferTrigger(c Composition, infos map[string]nodeInfo) *dag.Trigger {
+	for _, n := range c.Nodes {
+		info, ok := infos[n.ID]
+		if !ok || info.Block == nil {
+			continue
+		}
+		if t := triggerForKind(info.Block.Kind); t != nil {
+			return t
+		}
+	}
+	return &dag.Trigger{Type: dag.TriggerManual}
+}
+
+func triggerForKind(kind string) *dag.Trigger {
+	switch kind {
+	case "trigger_cron":
+		return &dag.Trigger{Type: dag.TriggerCron, Cron: "0 * * * *"}
+	case "trigger_file_change":
+		return &dag.Trigger{Type: dag.TriggerFileChange, Path: "docs"}
+	case "trigger_loop_end":
+		return &dag.Trigger{Type: dag.TriggerLoopEnd, Loop: "upstream"}
+	case "trigger_manual", "trigger_board":
+		return &dag.Trigger{Type: dag.TriggerManual}
+	}
+	return nil
+}
+
+// nodeInputs liga cada aresta de entrada ao artefato do nó de origem; sem arestas, usa a entrada raiz.
+func nodeInputs(id string, info nodeInfo, from []string, infos map[string]nodeInfo) map[string]string {
+	inputs := map[string]string{}
+	for _, f := range from {
+		inputs[f] = "file('" + infos[f].Artifact + "')"
+	}
+	if len(inputs) == 0 && (info.Block == nil || len(info.Block.Consumes) > 0) {
+		inputs[info.rootInput()] = "var." + info.rootInput()
+	}
+	return inputs
 }

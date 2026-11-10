@@ -1,4 +1,4 @@
-// Package vault gerencia credenciais e segredos de forma segura com criptografia
+// Package vault gerencia credenciais e segredos de forma segura no Cofre de Segredos com criptografia
 // AES-256-GCM, mascaramento estrito em logs e injeção em nós de execução.
 package vault
 
@@ -18,7 +18,7 @@ import (
 	"sync"
 )
 
-// Vault gerencia pares chave-valor criptografados em memória e persistidos em disco.
+// Vault gerencia pares chave-valor criptografados do Cofre de Segredos em memória e persistidos em disco.
 type Vault struct {
 	mu          sync.RWMutex
 	storagePath string
@@ -26,7 +26,7 @@ type Vault struct {
 	secrets     map[string]string
 }
 
-// New cria uma nova instância do cofre. Se storagePath for vazio, opera apenas em memória.
+// New cria uma nova instância do Cofre de Segredos. Se storagePath for vazio, opera apenas em memória.
 func New(storagePath string, masterKey string) (*Vault, error) {
 	if masterKey == "" {
 		return nil, errors.New("vault: chave mestra não pode ser vazia")
@@ -47,7 +47,7 @@ func deriveKey(masterKey string) []byte {
 	return hash[:]
 }
 
-// Set adiciona ou atualiza um segredo no cofre.
+// Set adiciona ou atualiza um segredo no Cofre de Segredos.
 func (v *Vault) Set(key, value string) error {
 	v.mu.Lock()
 	defer v.mu.Unlock()
@@ -155,7 +155,7 @@ func (v *Vault) MaskSecrets(raw string) string {
 
 var envVarRegex = regexp.MustCompile(`\$\{([a-zA-Z0-9_]+)\}`)
 
-// ResolveEnv substitui variáveis no formato ${VAR_NAME} pelos valores do cofre ou variáveis do SO.
+// ResolveEnv substitui variáveis no formato ${VAR_NAME} pelos valores do Cofre de Segredos ou variáveis do SO.
 func (v *Vault) ResolveEnv(tmpl string) string {
 	v.mu.RLock()
 	defer v.mu.RUnlock()

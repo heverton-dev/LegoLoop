@@ -142,7 +142,6 @@ func skillPiece(res Resolver, ref string) (nodeInfo, string) {
 		Type:  dag.TypeSkill,
 		Ref:   "skills/" + filepath.Base(filepath.Dir(it.Path)),
 	}
-
 	// Promoção ontológica se a skill possui metadados de contrato
 	if it.Meta != nil {
 		if art := it.Meta["artifact"]; art != "" {
@@ -151,38 +150,39 @@ func skillPiece(res Resolver, ref string) (nodeInfo, string) {
 		if g := it.Meta["gate"]; g != "" {
 			info.Gate = g
 		}
+		info.Block = skillBlock(it, info)
+	}
+	return info, ""
+}
 
-		var consumes []graph.ArtifactType
-		if cons := it.Meta["consumes"]; cons != "" {
-			for _, c := range strings.Split(cons, ",") {
-				if t, err := graph.ParseArtifactType(strings.TrimSpace(c)); err == nil {
-					consumes = append(consumes, t)
-				}
-			}
-		}
-		var produces graph.ArtifactType
-		if prod := it.Meta["produces"]; prod != "" {
-			if t, err := graph.ParseArtifactType(strings.TrimSpace(prod)); err == nil {
-				produces = t
-			}
-		}
-
-		if len(consumes) > 0 || produces != "" {
-			info.Block = &graph.Block{
-				ID:             it.ID,
-				Label:          it.Name,
-				Ref:            info.Ref,
-				Kind:           "skill",
-				Consumes:       consumes,
-				Produces:       produces,
-				Artifact:       info.Artifact,
-				Gate:           info.Gate,
-				SuggestedModel: it.Meta["suggested_model"],
-			}
+// skillBlock monta o bloco do grafo a partir de consumes/produces; nil se o contrato é vazio.
+func skillBlock(it assets.Item, info nodeInfo) *graph.Block {
+	var consumes []graph.ArtifactType
+	for _, c := range strings.Split(it.Meta["consumes"], ",") {
+		if t, err := graph.ParseArtifactType(strings.TrimSpace(c)); err == nil {
+			consumes = append(consumes, t)
 		}
 	}
-
-	return info, ""
+	var produces graph.ArtifactType
+	if prod := it.Meta["produces"]; prod != "" {
+		if t, err := graph.ParseArtifactType(strings.TrimSpace(prod)); err == nil {
+			produces = t
+		}
+	}
+	if len(consumes) == 0 && produces == "" {
+		return nil
+	}
+	return &graph.Block{
+		ID:             it.ID,
+		Label:          it.Name,
+		Ref:            info.Ref,
+		Kind:           "skill",
+		Consumes:       consumes,
+		Produces:       produces,
+		Artifact:       info.Artifact,
+		Gate:           info.Gate,
+		SuggestedModel: it.Meta["suggested_model"],
+	}
 }
 
 func scriptPiece(res Resolver, ref string) (nodeInfo, string) {

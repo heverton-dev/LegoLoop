@@ -8,7 +8,7 @@
   },
   "nodes": [
     {
-      "id": "node_01_ingestao",
+      "id": "n01_ingestao",
       "type": "script",
       "command": [
         "powershell",
@@ -35,11 +35,11 @@
       }
     },
     {
-      "id": "node_02_cognicao",
+      "id": "n02_cognicao",
       "type": "skill",
       "ref": "skills/aidd-spec",
       "depends_on": [
-        "node_01_ingestao"
+        "n01_ingestao"
       ],
       "routing": {
         "mode": "suggested",
@@ -60,11 +60,11 @@
       }
     },
     {
-      "id": "node_03_subprocesso",
+      "id": "n03_subprocesso",
       "type": "subloop",
       "ref": "video-motion",
       "depends_on": [
-        "node_02_cognicao"
+        "n02_cognicao"
       ],
       "routing": {
         "mode": "auto",
@@ -84,10 +84,10 @@
       }
     },
     {
-      "id": "node_04_sg_aprovacao",
+      "id": "n04_sg_aprovacao",
       "type": "stop_gate",
       "depends_on": [
-        "node_03_subprocesso"
+        "n03_subprocesso"
       ],
       "routing": {
         "mode": "suggested",
@@ -108,7 +108,7 @@
       }
     },
     {
-      "id": "node_05_entrega_final",
+      "id": "n05_entrega_final",
       "type": "script",
       "command": [
         "powershell",
@@ -117,7 +117,7 @@
         "Copy-Item output/subloop_result.json dist/final_delivery.json"
       ],
       "depends_on": [
-        "node_04_sg_aprovacao"
+        "n04_sg_aprovacao"
       ],
       "routing": {
         "mode": "suggested",

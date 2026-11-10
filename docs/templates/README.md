@@ -84,7 +84,7 @@ O motor `internal/reputation` dá a cada peça real uma nota de $0.00$ a $1.00$,
 
 ---
 
-## 4. Sub-Loop de Elevação de Peças (Upgrade)
+## 4. Sub-Processo de Elevação de Peças (Upgrade)
 
 Qualquer peça em nível Bronze ou Prata pode ser elevada acionando a esteira canônica:
 `Diagnóstico de Gaps` ➔ `Entrevista Socrática` ➔ `SPEC` ➔ `PLAN` ➔ `ROUTE` ➔ `BUILD TDD` ➔ `Peça elevada`.

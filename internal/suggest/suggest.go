@@ -198,38 +198,39 @@ func neighborSuggestions(ctx Context, idx *graph.Index, snap assets.Snapshot) []
 	}
 	typed := []Neighbor{}
 	for _, b := range blocks {
-		isInst := installed[strings.ToLower(path.Base(b.Ref))]
 		rating := reputation.ScorePiece(b.Ref, b.Label, b.Gate, 1, 1)
 		typed = append(typed, Neighbor{
 			Kind:      "block",
 			ID:        b.ID,
 			Name:      b.Label,
-			Installed: isInst,
+			Installed: installed[strings.ToLower(path.Base(b.Ref))],
 			Rating:    &rating,
 		})
 	}
-	sort.SliceStable(typed, func(i, j int) bool {
-		if typed[i].Installed != typed[j].Installed {
-			return typed[i].Installed
-		}
-		// Desempate por Score de Reputação (maior score primeiro)
-		scoreI, scoreJ := 0.0, 0.0
-		if typed[i].Rating != nil {
-			scoreI = typed[i].Rating.TotalScore
-		}
-		if typed[j].Rating != nil {
-			scoreJ = typed[j].Rating.TotalScore
-		}
-		if scoreI != scoreJ {
-			return scoreI > scoreJ
-		}
-		return strings.ToLower(typed[i].Name) < strings.ToLower(typed[j].Name)
-	})
+	sort.SliceStable(typed, func(i, j int) bool { return neighborLess(typed[i], typed[j]) })
 	if len(typed) > MaxNeighbors {
 		typed = typed[:MaxNeighbors]
 	}
 	out := append(typed, mcpNeighbors(snap.Of(assets.KindMCP))...)
 	return append(out, loopNeighbors(snap.Of(assets.KindLoop))...)
+}
+
+// neighborLess ordena instalados primeiro, depois maior Score de Reputação, depois nome.
+func neighborLess(a, b Neighbor) bool {
+	if a.Installed != b.Installed {
+		return a.Installed
+	}
+	if sa, sb := neighborScore(a), neighborScore(b); sa != sb {
+		return sa > sb
+	}
+	return strings.ToLower(a.Name) < strings.ToLower(b.Name)
+}
+
+func neighborScore(n Neighbor) float64 {
+	if n.Rating == nil {
+		return 0.0
+	}
+	return n.Rating.TotalScore
 }
 
 func mcpNeighbors(mcps []assets.Item) []Neighbor {

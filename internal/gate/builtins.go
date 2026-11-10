@@ -111,8 +111,21 @@ func (c callNode) eval(env Env) (value, error) {
 	return c.b.fn(env, vals, c.re)
 }
 
+// expandGateVars substitui ${NOME} por Env.Vars; nome ausente mantém o texto original.
+func expandGateVars(env Env, path string) string {
+	if len(env.Vars) == 0 {
+		return path
+	}
+	return os.Expand(path, func(k string) string {
+		if v, ok := env.Vars[k]; ok {
+			return v
+		}
+		return "${" + k + "}"
+	})
+}
+
 func fileExists(env Env, args []value, _ *regexp.Regexp) (value, error) {
-	info, err := env.Root.Stat(filepath.FromSlash(args[0].s))
+	info, err := env.Root.Stat(filepath.FromSlash(expandGateVars(env, args[0].s)))
 	if errors.Is(err, fs.ErrNotExist) {
 		return value{kind: kBool}, nil
 	}

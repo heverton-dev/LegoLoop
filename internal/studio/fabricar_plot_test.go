@@ -106,7 +106,7 @@ func TestFabricarInspectorHasAProcessPanel(t *testing.T) {
 	if !strings.Contains(insp, `"process"`) {
 		t.Error("inspector.js deve tratar a seleção do tipo process (a Tríade do processo fabricado)")
 	}
-	if !strings.Contains(app, "fabricarPlotModel") || !strings.Contains(app, "/api/loops/") {
+	if !strings.Contains(app, "fabricarPlotModel") || !strings.Contains(app, "/api/processos/") {
 		t.Error("app.js deve buscar o loop gerado e plotá-lo com fabricarPlotModel após fabricar")
 	}
 	for i, line := range strings.Split(insp, "\n") {

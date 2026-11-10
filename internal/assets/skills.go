@@ -166,50 +166,44 @@ func parseFrontmatter(data []byte) (name, desc string, ont map[string]string) {
 	return name, desc, ont
 }
 
+type ontologyRule struct {
+	keys                                 []string
+	consumes, produces, artifact, gateEx string
+}
+
+// ontologyRules mapeia palavras do nome da skill ao contrato; a primeira regra que casa vence.
+var ontologyRules = []ontologyRule{
+	{[]string{"mega-pipeline", "megapipeline"}, "Artifact:Idea", "Artifact:Audit", "MEGA_REPORT.md", "file_exists('MEGA_REPORT.md')"},
+	{[]string{"interview", "grill", "briefing"}, "Artifact:Idea", "Artifact:Briefing", "BRIEFING.md", "file_exists('BRIEFING.md')"},
+	{[]string{"spec"}, "Artifact:Briefing", "Artifact:Spec", "SPEC.md", "file_exists('SPEC.md')"},
+	{[]string{"ticket", "plan"}, "Artifact:Spec", "Artifact:Spec", "PLAN.md", "file_exists('PLAN.md')"},
+	{[]string{"tdd", "implementacao"}, "Artifact:Spec", "Artifact:Code", "CODE.patch", "exit_code == 0"},
+	{[]string{"homolog", "audit"}, "Artifact:Code", "Artifact:Audit", "REPORT.md", "file_exists('REPORT.md')"},
+	{[]string{"rea", "obscura"}, "Artifact:URL", "Artifact:ReverseStructure", "ESTRUTURA_REVERSA.json", "file_exists('ESTRUTURA_REVERSA.json')"},
+	{[]string{"impeccable"}, "Artifact:ReverseStructure", "Artifact:DesignTokens", "DESIGN.md", "file_exists('DESIGN.md')"},
+}
+
+func (r ontologyRule) matches(lower string) bool {
+	for _, k := range r.keys {
+		if strings.Contains(lower, k) {
+			return true
+		}
+	}
+	return false
+}
+
 // inferOntologyFallback preenche heurística ontológica para skills canônicas sem contrato explícito.
 func inferOntologyFallback(name, desc string, ont map[string]string) {
 	lower := strings.ToLower(name)
-	switch {
-	case strings.Contains(lower, "mega-pipeline") || strings.Contains(lower, "megapipeline"):
-		setDefault(ont, "consumes", "Artifact:Idea")
-		setDefault(ont, "produces", "Artifact:Audit")
-		setDefault(ont, "artifact", "MEGA_REPORT.md")
-		setDefault(ont, "gate", "file_exists('MEGA_REPORT.md')")
-	case strings.Contains(lower, "interview") || strings.Contains(lower, "grill") || strings.Contains(lower, "briefing"):
-		setDefault(ont, "consumes", "Artifact:Idea")
-		setDefault(ont, "produces", "Artifact:Briefing")
-		setDefault(ont, "artifact", "BRIEFING.md")
-		setDefault(ont, "gate", "file_exists('BRIEFING.md')")
-	case strings.Contains(lower, "spec"):
-		setDefault(ont, "consumes", "Artifact:Briefing")
-		setDefault(ont, "produces", "Artifact:Spec")
-		setDefault(ont, "artifact", "SPEC.md")
-		setDefault(ont, "gate", "file_exists('SPEC.md')")
-	case strings.Contains(lower, "ticket") || strings.Contains(lower, "plan"):
-		setDefault(ont, "consumes", "Artifact:Spec")
-		setDefault(ont, "produces", "Artifact:Spec")
-		setDefault(ont, "artifact", "PLAN.md")
-		setDefault(ont, "gate", "file_exists('PLAN.md')")
-	case strings.Contains(lower, "tdd") || strings.Contains(lower, "implementacao"):
-		setDefault(ont, "consumes", "Artifact:Spec")
-		setDefault(ont, "produces", "Artifact:Code")
-		setDefault(ont, "artifact", "CODE.patch")
-		setDefault(ont, "gate", "exit_code == 0")
-	case strings.Contains(lower, "homolog") || strings.Contains(lower, "audit"):
-		setDefault(ont, "consumes", "Artifact:Code")
-		setDefault(ont, "produces", "Artifact:Audit")
-		setDefault(ont, "artifact", "REPORT.md")
-		setDefault(ont, "gate", "file_exists('REPORT.md')")
-	case strings.Contains(lower, "rea") || strings.Contains(lower, "obscura"):
-		setDefault(ont, "consumes", "Artifact:URL")
-		setDefault(ont, "produces", "Artifact:ReverseStructure")
-		setDefault(ont, "artifact", "ESTRUTURA_REVERSA.json")
-		setDefault(ont, "gate", "file_exists('ESTRUTURA_REVERSA.json')")
-	case strings.Contains(lower, "impeccable"):
-		setDefault(ont, "consumes", "Artifact:ReverseStructure")
-		setDefault(ont, "produces", "Artifact:DesignTokens")
-		setDefault(ont, "artifact", "DESIGN.md")
-		setDefault(ont, "gate", "file_exists('DESIGN.md')")
+	for _, r := range ontologyRules {
+		if !r.matches(lower) {
+			continue
+		}
+		setDefault(ont, "consumes", r.consumes)
+		setDefault(ont, "produces", r.produces)
+		setDefault(ont, "artifact", r.artifact)
+		setDefault(ont, "gate", r.gateEx)
+		return
 	}
 }
 

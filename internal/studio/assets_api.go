@@ -178,48 +178,38 @@ func (s *Server) loopItems() []assets.Item {
 	seen := map[string]bool{}
 	if store, err := s.loopStore(); err == nil {
 		list, _ := store.List()
-		for _, l := range list {
-			seen[l.ID] = true
-			out = append(out, assets.Item{
-				ID:          l.ID,
-				Kind:        assets.KindLoop,
-				Name:        l.Name,
-				Description: l.Description,
-				Origin:      "acervo",
-				Scope:       "global",
-				Meta: map[string]string{
-					"nodes":    strconv.Itoa(l.NodesCount),
-					"artifact": l.FinalArtifact,
-					"trigger":  l.TriggerType,
-				},
-			})
-		}
+		out = appendLoopItems(out, seen, list, "acervo", "global")
 	}
 	if s.ProjectDir != "" {
-		projLoops := filepath.Join(s.ProjectDir, "loops")
-		if pStore, err := loop.NewStore(projLoops); err == nil {
+		if pStore, err := loop.NewStore(filepath.Join(s.ProjectDir, "loops")); err == nil {
 			if list, err := pStore.List(); err == nil {
-				for _, l := range list {
-					if seen[l.ID] {
-						continue
-					}
-					seen[l.ID] = true
-					out = append(out, assets.Item{
-						ID:          l.ID,
-						Kind:        assets.KindLoop,
-						Name:        l.Name,
-						Description: l.Description,
-						Origin:      "project",
-						Scope:       "project",
-						Meta: map[string]string{
-							"nodes":    strconv.Itoa(l.NodesCount),
-							"artifact": l.FinalArtifact,
-							"trigger":  l.TriggerType,
-						},
-					})
-				}
+				out = appendLoopItems(out, seen, list, "project", "project")
 			}
 		}
+	}
+	return out
+}
+
+// appendLoopItems converte os resumos em itens do inventário, pulando ids já vistos.
+func appendLoopItems(out []assets.Item, seen map[string]bool, list []loop.Summary, origin, scope string) []assets.Item {
+	for _, l := range list {
+		if seen[l.ID] {
+			continue
+		}
+		seen[l.ID] = true
+		out = append(out, assets.Item{
+			ID:          l.ID,
+			Kind:        assets.KindLoop,
+			Name:        l.Name,
+			Description: l.Description,
+			Origin:      origin,
+			Scope:       scope,
+			Meta: map[string]string{
+				"nodes":    strconv.Itoa(l.NodesCount),
+				"artifact": l.FinalArtifact,
+				"trigger":  l.TriggerType,
+			},
+		})
 	}
 	return out
 }
@@ -589,21 +579,7 @@ func (s *Server) handleAssetImport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	targetDir := s.Vault
-	if targetDir == "" {
-		home := s.Home
-		if home == "" {
-			home, _ = os.UserHomeDir()
-		}
-		if home != "" {
-			geminiSkills := filepath.Join(home, ".gemini", "config")
-			if fi, err := os.Stat(geminiSkills); err == nil && fi.IsDir() {
-				targetDir = geminiSkills
-			} else {
-				targetDir = filepath.Join(home, ".aidd", "canonical")
-			}
-		}
-	}
+	targetDir := s.importTargetDir()
 
 	res, err := canon.ImportSkillFromURL(r.Context(), req.URL, req.Name, targetDir)
 	if err != nil {
@@ -619,4 +595,23 @@ func (s *Server) handleAssetImport(w http.ResponseWriter, r *http.Request) {
 		"target_dir":  s.displayPath(res.TargetDir),
 		"files_count": res.FilesCount,
 	})
+}
+
+// importTargetDir resolve o destino da importação: Vault, senão ~/.gemini/config (se existir), senão o Cofre canônico.
+func (s *Server) importTargetDir() string {
+	if s.Vault != "" {
+		return s.Vault
+	}
+	home := s.Home
+	if home == "" {
+		home, _ = os.UserHomeDir()
+	}
+	if home == "" {
+		return ""
+	}
+	geminiSkills := filepath.Join(home, ".gemini", "config")
+	if fi, err := os.Stat(geminiSkills); err == nil && fi.IsDir() {
+		return geminiSkills
+	}
+	return filepath.Join(home, ".aidd", "canonical")
 }

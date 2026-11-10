@@ -63,7 +63,7 @@ flowchart TD
     subgraph Estagio4["Estágio 4: Verificação em Lote"]
         direction TB
         D1["Captura em Lote (Mobile 375px + Desktop)"] --> D2["polish: Acabamento Fino"]
-        D2 --> D3["Revisão pelo impeccabe-finish-reviewer"]
+        D2 --> D3["Revisão pelo impeccable-finish-reviewer"]
     end
 
     subgraph Estagio5["Estágio 5: Documentação & Entrega"]

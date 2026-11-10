@@ -3,7 +3,7 @@
     "id_sessao": "b573a453-6e4a-4c14-b6aa-0c7a87a6ec41",
     "harness_utilizado": "antigravity-cli",
     "projeto": "LegoLoop",
-    "branch": "unknown",
+    "branch": "master",
     "tokens_input": 354504,
     "tokens_input_formatado": "354.504",
     "tokens_thinking": 2296,
@@ -15,12 +15,12 @@
     "resumo_tokens": "Input: 354.504 | Thinking: 2.296 | Output: 36.489",
     "total_turnos": 2,
     "data_sessao": "02/11/2026",
-    "atualizado_em": "2026-11-02T23:13:25Z"
+    "atualizado_em": "2026-11-10T09:56:34Z"
   },
   "id_sessao": "b573a453-6e4a-4c14-b6aa-0c7a87a6ec41",
   "harness_utilizado": "antigravity-cli",
   "projeto": "LegoLoop",
-  "branch": "unknown",
+  "branch": "master",
   "tokens_input": 354504,
   "tokens_input_formatado": "354.504",
   "tokens_thinking": 2296,
@@ -30,7 +30,6 @@
   "tokens_cache_read": 7819681,
   "tokens_cache_read_formatado": "7.819.681",
   "total_turnos": 2,
-  "total_turns": 2,
   "transcript_source": "C:\\Users\\trcnologia\\.gemini\\antigravity-cli\\brain\\b573a453-6e4a-4c14-b6aa-0c7a87a6ec41\\.system_generated\\logs\\transcript_full.jsonl",
   "dialogos": [
     {

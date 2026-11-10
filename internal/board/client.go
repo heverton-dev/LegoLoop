@@ -43,51 +43,62 @@ func (c *Client) FetchReadyCards(ctx context.Context) ([]Card, error) {
 	if c.cfg.Guard.IsHalted() {
 		return nil, ErrRateLimitExhausted
 	}
+	resp, err := c.doCardsRequest(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
 
+	if err := c.auditRateLimit(resp); err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("resposta inesperada da API (%d): %s", resp.StatusCode, string(bodyBytes))
+	}
+	var allCards []Card
+	if err := json.NewDecoder(resp.Body).Decode(&allCards); err != nil {
+		return nil, fmt.Errorf("falha ao deserializar resposta de cards: %w", err)
+	}
+	return filterReady(allCards), nil
+}
+
+func (c *Client) doCardsRequest(ctx context.Context) (*http.Response, error) {
 	reqURL := fmt.Sprintf("%s/cards", strings.TrimRight(c.cfg.BaseURL, "/"))
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao criar requisição de cards: %w", err)
 	}
-
 	if c.cfg.Token != "" {
 		req.Header.Set("Authorization", "Bearer "+c.cfg.Token)
 	}
 	req.Header.Set("Accept", "application/vnd.github+json")
-
 	resp, err := c.cfg.HTTPCli.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("erro na chamada HTTP de cards: %w", err)
 	}
-	defer resp.Body.Close()
+	return resp, nil
+}
 
-	// Audita rate limit headers caso existam
-	if remainingStr := resp.Header.Get("X-RateLimit-Remaining"); remainingStr != "" {
-		remaining, _ := strconv.Atoi(remainingStr)
-		resetUnix, _ := strconv.ParseInt(resp.Header.Get("X-RateLimit-Reset"), 10, 64)
-		if err := c.cfg.Guard.Check(remaining, resetUnix); err != nil {
-			return nil, err
-		}
+// auditRateLimit audita os headers de rate limit caso existam.
+func (c *Client) auditRateLimit(resp *http.Response) error {
+	remainingStr := resp.Header.Get("X-RateLimit-Remaining")
+	if remainingStr == "" {
+		return nil
 	}
+	remaining, _ := strconv.Atoi(remainingStr)
+	resetUnix, _ := strconv.ParseInt(resp.Header.Get("X-RateLimit-Reset"), 10, 64)
+	return c.cfg.Guard.Check(remaining, resetUnix)
+}
 
-	if resp.StatusCode != http.StatusOK {
-		bodyBytes, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("resposta inesperada da API (%d): %s", resp.StatusCode, string(bodyBytes))
-	}
-
-	var allCards []Card
-	if err := json.NewDecoder(resp.Body).Decode(&allCards); err != nil {
-		return nil, fmt.Errorf("falha ao deserializar resposta de cards: %w", err)
-	}
-
-	var readyCards []Card
-	for _, card := range allCards {
+func filterReady(cards []Card) []Card {
+	var ready []Card
+	for _, card := range cards {
 		if card.Status == StatusReady {
-			readyCards = append(readyCards, card)
+			ready = append(ready, card)
 		}
 	}
-
-	return readyCards, nil
+	return ready
 }
 
 // MoveCard atualiza o status de um card no quadro.

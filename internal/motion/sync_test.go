@@ -6,11 +6,6 @@ import (
 	"testing"
 )
 
-// beatDetector is the seam for Librosa — injectable for testing.
-type beatDetector interface {
-	Detect(audioPath string) ([]float64, error)
-}
-
 // stubDetector is a test double at the boundary.
 type stubDetector struct {
 	beats []float64

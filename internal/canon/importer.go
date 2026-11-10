@@ -42,22 +42,30 @@ func ParseGitHubURL(raw string) (GitHubInfo, error) {
 	if err != nil {
 		return GitHubInfo{}, fmt.Errorf("url inválida: %w", err)
 	}
+	parts, err := validateGitHubPath(u)
+	if err != nil {
+		return GitHubInfo{}, err
+	}
+	return githubInfoFromParts(parts), nil
+}
 
+// validateGitHubPath exige host github.com, rejeita traversal e devolve os segmentos do caminho.
+func validateGitHubPath(u *url.URL) ([]string, error) {
 	host := strings.ToLower(u.Host)
 	if host != "github.com" && host != "www.github.com" {
-		return GitHubInfo{}, fmt.Errorf("apenas URLs do github.com são aceitas, obteve %q", u.Host)
+		return nil, fmt.Errorf("apenas URLs do github.com são aceitas, obteve %q", u.Host)
 	}
-
 	if strings.Contains(u.Path, "..") {
-		return GitHubInfo{}, errors.New("path traversal não permitido")
+		return nil, errors.New("path traversal não permitido")
 	}
-
-	trimmedPath := strings.Trim(u.Path, "/")
-	parts := strings.Split(trimmedPath, "/")
+	parts := strings.Split(strings.Trim(u.Path, "/"), "/")
 	if len(parts) < 2 {
-		return GitHubInfo{}, errors.New("a URL deve conter pelo menos /owner/repo")
+		return nil, errors.New("a URL deve conter pelo menos /owner/repo")
 	}
+	return parts, nil
+}
 
+func githubInfoFromParts(parts []string) GitHubInfo {
 	info := GitHubInfo{
 		Owner: parts[0],
 		Repo:  strings.TrimSuffix(parts[1], ".git"),
@@ -76,7 +84,7 @@ func ParseGitHubURL(raw string) (GitHubInfo, error) {
 		info.SuggestedName = info.Repo
 	}
 
-	return info, nil
+	return info
 }
 
 // InstallAndCanonizeSkill copia os arquivos da skill para a pasta global canônica e calcula o SHA-256.
@@ -97,8 +105,22 @@ func InstallAndCanonizeSkill(srcDir string, skillName string, destRoot string) (
 	}
 
 	hasher := sha256.New()
-	filesCount := 0
+	filesCount, err := copyTreeHashed(srcDir, targetDir, hasher)
+	if err != nil {
+		return ImportResult{}, fmt.Errorf("falha ao copiar arquivos para canonização: %w", err)
+	}
 
+	return ImportResult{
+		Name:       cleanName,
+		TargetDir:  targetDir,
+		SHA256:     hex.EncodeToString(hasher.Sum(nil)),
+		FilesCount: filesCount,
+	}, nil
+}
+
+// copyTreeHashed copia srcDir para targetDir (ignora .git) alimentando o hash com cada byte copiado.
+func copyTreeHashed(srcDir, targetDir string, hasher io.Writer) (int, error) {
+	filesCount := 0
 	err := filepath.Walk(srcDir, func(path string, d os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -109,50 +131,35 @@ func InstallAndCanonizeSkill(srcDir string, skillName string, destRoot string) (
 			}
 			return nil
 		}
-
 		rel, err := filepath.Rel(srcDir, path)
 		if err != nil {
 			return err
 		}
-
-		destPath := filepath.Join(targetDir, rel)
-		if err := os.MkdirAll(filepath.Dir(destPath), 0755); err != nil {
+		if err := copyFileHashed(path, filepath.Join(targetDir, rel), hasher); err != nil {
 			return err
 		}
-
-		srcFile, err := os.Open(path)
-		if err != nil {
-			return err
-		}
-		defer srcFile.Close()
-
-		destFile, err := os.OpenFile(destPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
-		if err != nil {
-			return err
-		}
-		defer destFile.Close()
-
-		mw := io.MultiWriter(destFile, hasher)
-		if _, err := io.Copy(mw, srcFile); err != nil {
-			return err
-		}
-
 		filesCount++
 		return nil
 	})
+	return filesCount, err
+}
 
-	if err != nil {
-		return ImportResult{}, fmt.Errorf("falha ao copiar arquivos para canonização: %w", err)
+func copyFileHashed(srcPath, destPath string, hasher io.Writer) error {
+	if err := os.MkdirAll(filepath.Dir(destPath), 0755); err != nil {
+		return err
 	}
-
-	calculatedHash := hex.EncodeToString(hasher.Sum(nil))
-
-	return ImportResult{
-		Name:       cleanName,
-		TargetDir:  targetDir,
-		SHA256:     calculatedHash,
-		FilesCount: filesCount,
-	}, nil
+	srcFile, err := os.Open(srcPath)
+	if err != nil {
+		return err
+	}
+	defer srcFile.Close()
+	destFile, err := os.OpenFile(destPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer destFile.Close()
+	_, err = io.Copy(io.MultiWriter(destFile, hasher), srcFile)
+	return err
 }
 
 // ImportSkillFromURL clona a skill do GitHub e a instala no diretório global canônico.
@@ -173,18 +180,8 @@ func ImportSkillFromURL(ctx context.Context, rawURL string, customName string, d
 	}
 	defer os.RemoveAll(tmpDir)
 
-	repoURL := fmt.Sprintf("https://github.com/%s/%s.git", info.Owner, info.Repo)
-
-	cloneCtx, cancel := context.WithTimeout(ctx, 45*time.Second)
-	defer cancel()
-
-	cmd := exec.CommandContext(cloneCtx, "git", "clone", "--depth", "1", repoURL, tmpDir)
-	if info.Branch != "" {
-		cmd = exec.CommandContext(cloneCtx, "git", "clone", "--depth", "1", "--branch", info.Branch, repoURL, tmpDir)
-	}
-
-	if output, err := cmd.CombinedOutput(); err != nil {
-		return ImportResult{}, fmt.Errorf("falha ao clonar repositório %s: %s (%w)", repoURL, string(output), err)
+	if err := cloneRepo(ctx, info, tmpDir); err != nil {
+		return ImportResult{}, err
 	}
 
 	sourceSkillDir := tmpDir
@@ -198,4 +195,21 @@ func ImportSkillFromURL(ctx context.Context, rawURL string, customName string, d
 	}
 
 	return InstallAndCanonizeSkill(sourceSkillDir, skillName, destRoot)
+}
+
+// cloneRepo clona o repositório (raso, na branch pedida) em tmpDir com timeout de 45s.
+func cloneRepo(ctx context.Context, info GitHubInfo, tmpDir string) error {
+	repoURL := fmt.Sprintf("https://github.com/%s/%s.git", info.Owner, info.Repo)
+	cloneCtx, cancel := context.WithTimeout(ctx, 45*time.Second)
+	defer cancel()
+
+	args := []string{"clone", "--depth", "1"}
+	if info.Branch != "" {
+		args = append(args, "--branch", info.Branch)
+	}
+	args = append(args, repoURL, tmpDir)
+	if output, err := exec.CommandContext(cloneCtx, "git", args...).CombinedOutput(); err != nil {
+		return fmt.Errorf("falha ao clonar repositório %s: %s (%w)", repoURL, string(output), err)
+	}
+	return nil
 }
