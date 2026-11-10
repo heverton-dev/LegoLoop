@@ -37,14 +37,18 @@ func normRel(p string) (string, error) {
 
 // checkBoundary aplica o write_boundary strict: todo caminho alterado precisa estar
 // na lista de permitidos. Devolve todos os desvios juntos.
+// Um caminho permitido terminando com barra ("dir/") ou sem barra representa diretório
+// se os arquivos alterados estiverem sob ele.
 func checkBoundary(changed, allowed []string) error {
-	ok := map[string]bool{}
+	exact := map[string]bool{}
+	var prefixes []string
 	for _, a := range allowed {
 		n, err := normRel(a)
 		if err != nil {
 			return fmt.Errorf("saída permitida inválida: %w", err)
 		}
-		ok[n] = true
+		exact[n] = true
+		prefixes = append(prefixes, n+"/")
 	}
 	var errs []error
 	for _, c := range changed {
@@ -53,11 +57,20 @@ func checkBoundary(changed, allowed []string) error {
 			errs = append(errs, err)
 			continue
 		}
-		if !ok[n] {
+		if !exact[n] && !hasDirPrefix(n, prefixes) {
 			errs = append(errs, fmt.Errorf("write_boundary: %q fora das saídas permitidas", n))
 		}
 	}
 	return errors.Join(errs...)
+}
+
+func hasDirPrefix(p string, prefixes []string) bool {
+	for _, pfx := range prefixes {
+		if strings.HasPrefix(p, pfx) {
+			return true
+		}
+	}
+	return false
 }
 
 // buildUnitPrompt monta o prompt estéril de um unit_task: só os artefatos do ticket.

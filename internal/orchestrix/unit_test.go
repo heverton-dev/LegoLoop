@@ -30,6 +30,33 @@ func TestCheckBoundaryAceitaPermitidos(t *testing.T) {
 	}
 }
 
+func TestCheckBoundaryAceitaDiretorio(t *testing.T) {
+	allowed := []string{"internal/studiodoc/", "scratch/videomotion/assets"}
+	changed := []string{
+		"internal/studiodoc/hierarchy.go",
+		"internal/studiodoc/ports.go",
+		"scratch/videomotion/assets/icon.png",
+	}
+	if err := checkBoundary(changed, allowed); err != nil {
+		t.Fatalf("deveria aceitar arquivos dentro de diretório permitido: %v", err)
+	}
+}
+
+func TestCheckBoundaryDiretorioRecusaFora(t *testing.T) {
+	allowed := []string{"internal/studiodoc/"}
+	changed := []string{
+		"internal/studiodoc.go",
+		"internal/outro/hierarchy.go",
+	}
+	err := checkBoundary(changed, allowed)
+	if err == nil {
+		t.Fatal("deveria recusar arquivos fora do diretório")
+	}
+	if !strings.Contains(err.Error(), "internal/studiodoc.go") || !strings.Contains(err.Error(), "internal/outro/hierarchy.go") {
+		t.Fatalf("deveria listar os arquivos recusados: %v", err)
+	}
+}
+
 // Mutação: cada desvio precisa reprovar o nó.
 func TestCheckBoundaryRecusaDesvios(t *testing.T) {
 	allowed := allowedWrites(nodeUnit())
