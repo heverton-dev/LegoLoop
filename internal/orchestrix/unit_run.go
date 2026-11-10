@@ -103,7 +103,7 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 	if err != nil {
 		return res, unitReport{}, err
 	}
-	code, err := o.unitCommand(ctx, n, w.Dir)
+	cmdOut, code, err := o.unitCommand(ctx, n, w.Dir)
 	if err != nil {
 		return res, unitReport{}, err
 	}
@@ -115,8 +115,8 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 		return res, unitReport{}, fmt.Errorf("gate %q: %w", n.Output.Gate, err)
 	}
 	if !ok {
-		return res, unitReport{}, fmt.Errorf("gate %q reprovou (exit_code=%d); worktree descartada; claude respondeu: %s",
-			n.Output.Gate, code, firstLine(text))
+		return res, unitReport{}, fmt.Errorf("gate %q reprovou (exit_code=%d); worktree descartada; claude respondeu: %s; saída do command: %s",
+			n.Output.Gate, code, firstLine(text), tailText(cmdOut, maxCmdTail))
 	}
 	return res, report, nil
 }
@@ -138,16 +138,27 @@ func (o *Orchestrix) unitGate(w *Worktree, n dag.Node, expr *gate.Expr, report u
 }
 
 // unitCommand roda o command do nó na worktree, sem shell. Sem command o código de saída é 0.
-func (o *Orchestrix) unitCommand(ctx context.Context, n dag.Node, dir string) (int, error) {
+func (o *Orchestrix) unitCommand(ctx context.Context, n dag.Node, dir string) ([]byte, int, error) {
 	if len(n.Command) == 0 {
-		return 0, nil
+		return nil, 0, nil
 	}
 	bin, err := resolveExecutable(n.Command[0])
 	if err != nil {
-		return 0, err
+		return nil, 0, err
 	}
-	_, code, err := o.spawn(ctx, bin, o.expandArgs(n.Command[1:]), dir, nil)
-	return code, err
+	return o.spawn(ctx, bin, o.expandArgs(n.Command[1:]), dir, nil)
+}
+
+// maxCmdTail limita a saída do command que entra na mensagem de erro do gate.
+const maxCmdTail = 1500
+
+// tailText devolve os últimos max bytes do texto, sem espaços nas pontas.
+func tailText(b []byte, max int) string {
+	s := strings.TrimSpace(string(b))
+	if len(s) > max {
+		s = "..." + s[len(s)-max:]
+	}
+	return s
 }
 
 // unitModel escolhe o primeiro modelo do roteamento que o claude CLI executa.

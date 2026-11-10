@@ -141,3 +141,23 @@ func TestStopGateNodeFollowsHumanPrompt(t *testing.T) {
 		}
 	}
 }
+
+func TestUnitCommandDevolveSaida(t *testing.T) {
+	o := &Orchestrix{ExtraEnv: []string{"LEGOLOOP_HELPER=fail-out"}}
+	n := nodeUnit()
+	n.Command = []string{os.Args[0]}
+	out, code, err := o.unitCommand(context.Background(), n, t.TempDir())
+	if err != nil || code != 1 || !strings.Contains(string(out), "SAIDA-DO-COMMAND") {
+		t.Fatalf("out = %q, code = %d, err = %v", out, code, err)
+	}
+}
+
+func TestTailText(t *testing.T) {
+	if got := tailText([]byte("  curto\n"), 10); got != "curto" {
+		t.Errorf("curto = %q", got)
+	}
+	got := tailText([]byte(strings.Repeat("a", 50)+"FIM"), 10)
+	if !strings.HasSuffix(got, "FIM") || len(got) > 14 {
+		t.Errorf("cauda = %q", got)
+	}
+}
