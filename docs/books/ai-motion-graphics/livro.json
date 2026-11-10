@@ -1,0 +1,20 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "AI Motion Graphics: Pipeline Soberano com 10 GitHub Repos",
+  "nome_base": "2026-11-09_AI-MOTION-GRAPHICS",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-introducao.md",
+    "02-os-dez-repos.md",
+    "03-arquitetura-do-pipeline.md",
+    "04-selecao-hibrida.md",
+    "05-renderizacao-playwright-ffmpeg.md",
+    "06-sync-audio-librosa.md",
+    "07-guia-operacional.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "",
+  "ultima_compilacao": "2026-11-09"
+}

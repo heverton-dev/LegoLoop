@@ -1,0 +1,164 @@
+{
+  "schema": "legoloop.videorea.curation.v1",
+  "generated_at": "2026-11-09T00:00:00Z",
+  "video_id": "aD9X6Lc3dVk",
+  "slug": "ai-motion-graphics-10-repos",
+  "host_os": "Windows (win32)",
+  "host_date": "2026-11-09",
+  "sovereignty_goal": "R$ 0,00/mês — all 10 repos are already open-source. Eliminate paid community dependency.",
+  "tools": [
+    {
+      "id": "lemo-opuscar",
+      "name": "Lemo Opuscar",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": false,
+      "host_location": null,
+      "fit_status": "action_required",
+      "fit_solution": "Clone repo into workspace. Pure prompt/skill collection — no runtime needed.",
+      "install_command": "git clone https://github.com/lemomo-ai/lemo-opuscar.git",
+      "alternative_to": null
+    },
+    {
+      "id": "threejs",
+      "name": "Three.js",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": false,
+      "host_location": null,
+      "fit_status": "action_required",
+      "fit_solution": "npm install three in project. MIT license, zero cost.",
+      "install_command": "npm install three",
+      "alternative_to": null
+    },
+    {
+      "id": "pixelfx",
+      "name": "PixelFX",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": false,
+      "host_location": null,
+      "fit_status": "action_required",
+      "fit_solution": "Clone repo. HTML Canvas-based, runs in browser.",
+      "install_command": "git clone https://github.com/patch-gg/pixelfx.git",
+      "alternative_to": null
+    },
+    {
+      "id": "blender-mcp",
+      "name": "Blender MCP",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": false,
+      "host_location": null,
+      "fit_status": "action_required",
+      "fit_solution": "Install Blender (free) then install MCP addon. Requires ~300MB disk.",
+      "install_command": "winget install BlenderFoundation.Blender",
+      "alternative_to": null,
+      "note": "Blender itself is NOT on host. Must install Blender first."
+    },
+    {
+      "id": "prompt-packs",
+      "name": "Prompt Packs",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": false,
+      "host_location": null,
+      "fit_status": "action_required",
+      "fit_solution": "Clone both repos. Pure prompt collections — no runtime.",
+      "install_command": "git clone https://github.com/yihui-dev/awesome-opus5-5-videos.git && git clone https://github.com/joeseesun/opus-video-prompts.git",
+      "alternative_to": null
+    },
+    {
+      "id": "claude-animation-base",
+      "name": "Claude Animation Base",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": false,
+      "host_location": null,
+      "fit_status": "action_required",
+      "fit_solution": "Clone repo. HTML/CSS/JS assets + animation guides.",
+      "install_command": "git clone https://github.com/JohnHeibel/ClaudeAnimationBase.git",
+      "alternative_to": null
+    },
+    {
+      "id": "react-three-rapier",
+      "name": "React Rapier (react-three-rapier)",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": false,
+      "host_location": null,
+      "fit_status": "action_required",
+      "fit_solution": "npm install in React project. MIT license.",
+      "install_command": "npm install @react-three/rapier",
+      "alternative_to": null
+    },
+    {
+      "id": "react-postprocessing",
+      "name": "React Postprocessing",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": false,
+      "host_location": null,
+      "fit_status": "action_required",
+      "fit_solution": "npm install in React project. MIT license.",
+      "install_command": "npm install @react-three/postprocessing",
+      "alternative_to": null
+    },
+    {
+      "id": "librosa",
+      "name": "Librosa",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": true,
+      "host_location": "Python 3.13/3.14 site-packages",
+      "fit_status": "ready",
+      "fit_solution": "Already installed (librosa 0.11.0 + numpy 2.5.2).",
+      "install_command": "pip install librosa",
+      "alternative_to": null
+    },
+    {
+      "id": "video-shotcraft",
+      "name": "Video ShotCraft",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "gold_standard": true,
+      "installed_on_host": false,
+      "host_location": null,
+      "fit_status": "action_required",
+      "fit_solution": "Clone repo. Template/prompt collection — no runtime.",
+      "install_command": "git clone https://github.com/Vincentwei1021/video-shotcraft.git",
+      "alternative_to": null
+    }
+  ],
+  "host_runtimes": {
+    "nodejs": {"version": "v26.7.0", "status": "ready"},
+    "npm": {"version": "12.0.2", "status": "ready"},
+    "python": {"version": "3.14.7", "status": "ready"},
+    "ffmpeg": {"version": "7.1", "status": "ready"},
+    "blender": {"version": null, "status": "missing"},
+    "git": {"status": "assumed_available"}
+  },
+  "proprietary_alternatives": [
+    {
+      "original": "Applied AI Mastermind (skill selector + 87 skills)",
+      "cost_usd": "unknown (paid community)",
+      "alternative": "The 10 open-source repos themselves + LegoLoop skill ecosystem",
+      "alternative_cost_usd": 0,
+      "fit_solution": "LegoLoop fabricar/legoloop-video-rea already provides skill selection and pipeline orchestration natively."
+    }
+  ],
+  "cost_summary": {
+    "total_monthly_usd": 0,
+    "total_monthly_brl": 0,
+    "note": "All tools are free and open-source. Only investment is disk space and setup time."
+  }
+}

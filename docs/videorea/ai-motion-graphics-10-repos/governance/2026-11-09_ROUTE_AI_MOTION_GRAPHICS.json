@@ -1,0 +1,1027 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "AI Motion Graphics",
+  "version": "1.0.0",
+  "date": "2026-11-09",
+  "session_id": "ses_ffe5e3d81734fffeURpuQcduSB",
+  "intent_ref": "docs/intents/2026-11-09_INTENT_AI_MOTION_GRAPHICS.md",
+  "spec_ref": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md",
+  "plan_ref": "docs/plans/2026-11-09_PLAN_AI_MOTION_GRAPHICS.md",
+  "initiative_ref": "I-AIMG",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-09_INTENT_AI_MOTION_GRAPHICS.md",
+      "sha256": "141be4530f797b60bc3288513d7214d0def9c86cefbf3766d4e990a5ac9948b9"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md",
+      "sha256": "7d7dc391758f09c5efa8d4c6695ff026d6d973d45a8861da9dd34b7818f1bdd6"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-09_PLAN_AI_MOTION_GRAPHICS.md",
+      "sha256": "c434bfeac394277063e83965a1088a1f86cc6224ce1ecb88e90fc808229820f7"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E01",
+      "label": "Tipos, contrato e validação de Request",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/types.go"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/motion/types_test.go:TestRequestValidate",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/types.go", "internal/motion/types_test.go"],
+        "verify": [["go", "test", "-v", "./internal/motion/..."]],
+        "gate": "exit_code == 0 && file_exists('internal/motion/types.go') && file_exists('internal/motion/types_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E01",
+      "label": "Motor de sugestão de repos por cenário",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["TICK-01.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/suggest.go"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/motion/suggest_test.go:TestSuggestRepos",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/suggest.go", "internal/motion/suggest_test.go"],
+        "verify": [["go", "test", "-v", "./internal/motion/..."]],
+        "gate": "exit_code == 0 && file_exists('internal/motion/suggest.go') && file_exists('internal/motion/suggest_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.3",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E01",
+      "label": "Verificação estática do motor de seleção",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": ["TICK-01.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/suggest.go", "internal/motion/types.go"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/suggest.go", "internal/motion/types.go"],
+        "verify": [["go", "vet", "./internal/motion/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano do Épico 01",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": ["TICK-01.1", "TICK-01.2", "TICK-01.3"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E02",
+      "label": "Gerador HTML/WebGL com Three.js",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["SG-E01"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/build.go"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/motion/build_test.go:TestBuildHTML",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/build.go", "internal/motion/build_test.go"],
+        "verify": [["go", "test", "-v", "./internal/motion/..."]],
+        "gate": "exit_code == 0 && file_exists('internal/motion/build.go') && file_exists('internal/motion/build_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E02",
+      "label": "Verificação estática do gerador HTML",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": ["TICK-02.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/build.go"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/build.go"],
+        "verify": [["go", "vet", "./internal/motion/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano do Épico 02",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": ["TICK-02.1", "TICK-02.2"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o Épico 03?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E03",
+      "label": "Captura de frames via Playwright",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["SG-E02"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/render.go"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/motion/render_test.go:TestCaptureFrames",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/render.go", "internal/motion/render_test.go"],
+        "verify": [["go", "test", "-v", "./internal/motion/..."]],
+        "gate": "exit_code == 0 && file_exists('internal/motion/render.go') && file_exists('internal/motion/render_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E03",
+      "label": "Conversão frames → MP4 via FFmpeg",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["TICK-03.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/encode.go"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": "internal/motion/encode_test.go:TestFramesToMP4",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/encode.go", "internal/motion/encode_test.go"],
+        "verify": [["go", "test", "-v", "./internal/motion/..."]],
+        "gate": "exit_code == 0 && file_exists('internal/motion/encode.go') && file_exists('internal/motion/encode_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.3",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E03",
+      "label": "Teste de integração com limite de tempo",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": ["TICK-03.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/render.go", "internal/motion/encode.go"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-NF.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-NF.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/render_test.go", "internal/motion/encode_test.go"],
+        "verify": [["go", "test", "-v", "-timeout", "300s", "./internal/motion/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano do Épico 03",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": ["TICK-03.1", "TICK-03.2", "TICK-03.3"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o Épico 04?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E04",
+      "label": "Detecção de beats via Librosa",
+      "nature": "micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["SG-E03"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/sync.go", "scripts/beat_detect.py"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.1",
+      "test_target": "internal/motion/sync_test.go:TestDetectBeats",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/sync.go", "internal/motion/sync_test.go", "scripts/beat_detect.py"],
+        "verify": [["go", "test", "-v", "./internal/motion/..."]],
+        "gate": "exit_code == 0 && file_exists('internal/motion/sync.go') && file_exists('scripts/beat_detect.py')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.2",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E04",
+      "label": "Verificação estática do sync de áudio",
+      "nature": "nano",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": ["TICK-04.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/motion/sync.go"],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E04.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/motion/sync.go"],
+        "verify": [["go", "vet", "./internal/motion/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E04",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E04",
+      "label": "Stop-Gate Humano do Épico 04",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": ["TICK-04.1", "TICK-04.2"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 04 aprovadas? Autoriza iniciar o Épico 05?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.1",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E05",
+      "label": "Skill canônica universal",
+      "nature": "macro",
+      "type": "subloop",
+      "ref": "legoloop-instalar-skills",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": ["SG-E04"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "ollama",
+          "model": "deepseek-coder:6.7b"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E05.1",
+        "context_artifacts": ["docs/videorea/ai-motion-graphics-10-repos/dossier.json"]
+      },
+      "spec_ref": "AC-E05.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["skills/ai-motion-graphics/SKILL.md"],
+        "verify": [["legoloop", "instalar-skills", "--dry-run", "--json"]],
+        "gate": "exit_code == 0 && file_exists('skills/ai-motion-graphics/SKILL.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.2",
+      "initiative_id": "I-AIMG",
+      "epic_id": "E05",
+      "label": "Livro Didático LegoPress",
+      "nature": "macro",
+      "type": "subloop",
+      "ref": "legoloop-legopress",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 32000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": ["TICK-05.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": {
+          "harness": "ollama",
+          "model": "deepseek-coder:6.7b"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E05.2",
+        "context_artifacts": ["docs/videorea/ai-motion-graphics-10-repos/curation.json"]
+      },
+      "spec_ref": "AC-E05.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["docs/books/ai-motion-graphics/"],
+        "verify": [["legoloop", "legopress", "auditar"]],
+        "gate": "exit_code == 0 && file_exists('docs/books/ai-motion-graphics/livro.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": "I-AIMG",
+      "epic_id": null,
+      "label": "Homologação Final (Regressão Global e Recompilação Fresca)",
+      "nature": "nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": ["TICK-05.1", "TICK-05.2"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["cmd/legoloop/main.go"],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": ["bin/legoloop.exe"],
+        "verify": [
+          ["go", "test", "-count=1", "./..."],
+          ["go", "vet", "./..."],
+          ["go", "build", "-o", "bin/legoloop.exe", "./cmd/legoloop"]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "schema": "legoloop.videorea.dossier.v1",
+  "generated_at": "2026-11-09T00:00:00Z",
+  "source": {
+    "url": "https://www.youtube.com/watch?v=aD9X6Lc3dVk",
+    "platform": "youtube",
+    "video_id": "aD9X6Lc3dVk",
+    "title": "10 GitHub Repos to 10x Your AI Motion Graphics",
+    "channel": "Matt Penny | Applied AI",
+    "uploader": "Matt Penny | Applied AI",
+    "upload_date": "2026-11-09",
+    "duration_seconds": 784,
+    "duration_string": "13:04",
+    "view_count": 1063,
+    "like_count": 120,
+    "language": "en-US",
+    "category": "Education",
+    "tags": [
+      "claude code",
+      "claude motion graphics",
+      "how to create motion graphics",
+      "motion graphics with ai",
+      "ai motion graphics",
+      "opus 5.5"
+    ]
+  },
+  "chapters": [
+    {"start": "0:00", "label": "Intro"},
+    {"start": "0:44", "label": "Repo 1 — Lemo Opuscar"},
+    {"start": "2:34", "label": "Repo 2 — Three.js"},
+    {"start": "4:00", "label": "Repo 3 — PixelFX"},
+    {"start": "4:53", "label": "Repo 4 — Blender MCP"},
+    {"start": "7:04", "label": "Repo 5 — Prompt Packs"},
+    {"start": "8:13", "label": "Repo 6 — Claude Animation Base"},
+    {"start": "8:58", "label": "Repo 7 — React Rapier"},
+    {"start": "9:56", "label": "Repo 8 — React Postprocessing"},
+    {"start": "10:49", "label": "Repo 9 — Librosa"},
+    {"start": "11:38", "label": "Repo 10 — Video ShotCraft"}
+  ],
+  "repos_mentioned": [
+    {
+      "index": 1,
+      "name": "Lemo Opuscar",
+      "github": "https://github.com/lemomo-ai/lemo-opuscar",
+      "timestamp": "0:44",
+      "summary": "66 film styles for Claude (paper cuts, 80s anime, ink wash, retro terminal, isometric infographics). User picks style or lets Claude choose.",
+      "use_cases": ["tech explainers", "title sequences", "documentary openers", "storytelling"],
+      "tech_stack": ["Claude", "HTML/CSS/JS"]
+    },
+    {
+      "index": 2,
+      "name": "Three.js",
+      "github": "https://github.com/mrdoob/three.js",
+      "timestamp": "2:34",
+      "summary": "3D graphics for the web — 3D bar charts, procedural 3D models, particle effects (galaxies), camera fly-throughs. Adds premium depth vs flat 2D.",
+      "use_cases": ["3D infographics", "data visualization", "particle effects", "3D scene fly-throughs"],
+      "tech_stack": ["Three.js", "WebGL", "JavaScript"]
+    },
+    {
+      "index": 3,
+      "name": "PixelFX",
+      "github": "https://github.com/patch-gg/pixelfx",
+      "timestamp": "4:00",
+      "summary": "Pixel art motion graphics with built-in effect library (explosions, weather, fire, fireworks, northern lights, lightning). Supports reference-image input.",
+      "use_cases": ["pixel art scenes", "weather explainers", "cinematic pixel effects", "science explainers"],
+      "tech_stack": ["HTML/CSS/JS", "Canvas"]
+    },
+    {
+      "index": 4,
+      "name": "Blender MCP",
+      "github": "https://github.com/ahujasid/mcp-for-blender",
+      "timestamp": "4:53",
+      "summary": "MCP server letting Claude control Blender — full 3D scenes, shaders, materials, camera animation. Professional-grade CGI used in Marvel films. One-shot prompt capable.",
+      "use_cases": ["3D comparisons", "exploded views", "product visualization", "scientific explainers", "professional CGI"],
+      "tech_stack": ["Blender", "MCP", "Python"]
+    },
+    {
+      "index": 5,
+      "name": "Prompt Packs (awesome-opus5-5-videos + opus-video-prompts)",
+      "github": [
+        "https://github.com/yihui-dev/awesome-opus5-5-videos",
+        "https://github.com/joeseesun/opus-video-prompts"
+      ],
+      "timestamp": "7:04",
+      "summary": "Collections of prompts for creating videos in specific styles using HTML, WebGL, Three.js. Mosaic effects, flat explainers, proven UI-element-driven motion.",
+      "use_cases": ["stylized explainers", "mosaic animations", "UI-driven motion graphics", "flat design explainers"],
+      "tech_stack": ["HTML", "WebGL", "Three.js"]
+    },
+    {
+      "index": 6,
+      "name": "Claude Animation Base",
+      "github": "https://github.com/JohnHeibel/ClaudeAnimationBase",
+      "timestamp": "8:13",
+      "summary": "Claude bot mascot ('Clawd') with built-in emotions, animation guides, timing, storyboarding. For cute explainer videos (popular on Instagram).",
+      "use_cases": ["AI topic explainers", "social media content", "mascot-driven storytelling"],
+      "tech_stack": ["Claude", "HTML/CSS/JS", "SVG"]
+    },
+    {
+      "index": 7,
+      "name": "React Rapier (react-three-rapier)",
+      "github": "https://github.com/pmndrs/react-three-rapier",
+      "timestamp": "8:58",
+      "summary": "Real physics engine (React + Three.js). Jenga towers, domino chains, Galton boards (binomial distribution). Adds realism for science/math explainers.",
+      "use_cases": ["physics simulations", "science explainers", "math visualizations", "product demos with physics"],
+      "tech_stack": ["React", "Three.js", "Rapier", "WebGL"]
+    },
+    {
+      "index": 8,
+      "name": "React Postprocessing",
+      "github": "https://github.com/pmndrs/react-postprocessing",
+      "timestamp": "9:56",
+      "summary": "Light and post-processing effects: glow, depth of field, film grain, lens coloring, glitch. Frame-by-frame filter stack. Premium look for explainers.",
+      "use_cases": ["glow effects", "depth of field", "film grain", "lens effects", "premium lighting"],
+      "tech_stack": ["React", "Three.js", "WebGL", "GLSL"]
+    },
+    {
+      "index": 9,
+      "name": "Librosa",
+      "github": "https://github.com/librosa/librosa",
+      "timestamp": "10:49",
+      "summary": "Audio analysis — beat detection to sync motion graphics with music. Essential for product launch videos where every visual change hits on the beat.",
+      "use_cases": ["beat-synced animations", "product launch videos", "music visualization", "rhythmic editing"],
+      "tech_stack": ["Python", "librosa", "NumPy"]
+    },
+    {
+      "index": 10,
+      "name": "Video ShotCraft",
+      "github": "https://github.com/Vincentwei1021/video-shotcraft",
+      "timestamp": "11:38",
+      "summary": "124 promo video recipes/templates for product launches. Claude selects best template and applies it. Human-created creative patterns, AI-driven execution.",
+      "use_cases": ["product launch videos", "promo content", "template-driven production"],
+      "tech_stack": ["Claude", "HTML/CSS/JS", "templates"]
+    }
+  ],
+  "author_promotions": [
+    {
+      "type": "community",
+      "name": "Applied AI Mastermind",
+      "claim": "AI video creation skills, software, tools, and $400k+ savings on AI tools",
+      "url": "https://go.its-applied-ai.com/go/d6h3jt0"
+    },
+    {
+      "type": "tool",
+      "name": "Skill Selector",
+      "claim": "Selects best skill from 87+ tested for a given motion graphics request",
+      "availability": "inside Applied AI Mastermind"
+    }
+  ],
+  "key_insights": [
+    "Claude alone produces 'AI slop' — repos add domain-specific magic dust",
+    "One-shot prompting is the workflow: paste repo URL + describe desired video",
+    "Style variety matters: 66 film styles, pixel art, 3D, physics, mascot, promo templates",
+    "Quality comes from human-curated assets (templates, styles, shaders) + AI selection/execution",
+    "Audio-visual sync (beat detection) is the hidden differentiator for premium feel",
+    "Blender MCP is the most powerful single repo — professional-grade CGI from one prompt",
+    "Post-processing (glow, DoF, grain) elevates flat renders to premium",
+    "124 promo templates make product launch videos reproducible"
+  ],
+  "ocr_candidates": [],
+  "transcript_file": "scratch/transcript.txt"
+}

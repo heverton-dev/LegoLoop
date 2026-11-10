@@ -154,3 +154,66 @@ func TestRunIsolatedWithGitWorktree(t *testing.T) {
 		t.Fatalf("arquivo lixo leak.tmp vazou para o repositório principal!")
 	}
 }
+
+type contextInCheckingExec struct {
+	foundInputs []string
+}
+
+func (c *contextInCheckingExec) Execute(ctx context.Context, n dag.Node, workdir string) (Result, error) {
+	for _, in := range n.ContextIn {
+		p := filepath.Join(workdir, in)
+		if _, err := os.Stat(p); err == nil {
+			c.foundInputs = append(c.foundInputs, in)
+		}
+	}
+	artPath := filepath.Join(workdir, n.Output.Artifact)
+	_ = os.WriteFile(artPath, []byte("ok"), 0o644)
+	return Result{ExitCode: 0, Model: "test/context-check"}, nil
+}
+
+func TestRunIsolatedInjectsContextIn(t *testing.T) {
+	repoDir := t.TempDir()
+	_ = exec.Command("git", "init", repoDir).Run()
+	_ = exec.Command("git", "-C", repoDir, "config", "user.name", "Test").Run()
+	_ = exec.Command("git", "-C", repoDir, "config", "user.email", "test@example.com").Run()
+	_ = os.WriteFile(filepath.Join(repoDir, "README.md"), []byte("# init"), 0o644)
+	_ = exec.Command("git", "-C", repoDir, "add", "README.md").Run()
+	_ = exec.Command("git", "-C", repoDir, "commit", "-m", "init").Run()
+
+	scratchDir := filepath.Join(repoDir, "scratch")
+	_ = os.MkdirAll(scratchDir, 0o755)
+	untrackedInput := filepath.Join(scratchDir, "untracked_input.json")
+	if err := os.WriteFile(untrackedInput, []byte(`{"hello":"world"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	src := `{"name":"test-context-in","version":"2.0.0","trigger":{"type":"manual"},"nodes":[{
+		"id":"node-consumer",
+		"type":"script",
+		"command":["echo","done"],
+		"execution":{"mode":"isolated"},
+		"context_in":["scratch/untracked_input.json"],
+		"routing":{"mode":"manual","model":"none"},
+		"output":{"artifact":"out.txt","gate":"file_exists('out.txt')"}
+	}]}`
+
+	d, err := dag.Parse([]byte(src))
+	if err != nil {
+		t.Fatalf("parse falhou: %v", err)
+	}
+
+	checker := &contextInCheckingExec{}
+	rep, err := Run(context.Background(), d, Options{
+		Workdir:  repoDir,
+		Executor: checker,
+	})
+	if err != nil {
+		t.Fatalf("Run falhou: %v", err)
+	}
+	if !rep.OK {
+		t.Fatalf("rep falhou: %+v", rep)
+	}
+	if len(checker.foundInputs) != 1 || checker.foundInputs[0] != "scratch/untracked_input.json" {
+		t.Fatalf("context_in untracked_input.json NÃO foi injetado no ambiente isolado! Encontrados: %v", checker.foundInputs)
+	}
+}

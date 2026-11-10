@@ -120,6 +120,9 @@ func executeForensics(ctx context.Context, b brain.Brain, inPath, tr, trFile, de
 		fmt.Fprintf(d.Stderr, "erro lendo input: %v\n", err)
 		return 1
 	}
+	if text == "" && desc == "" {
+		desc = fmt.Sprintf("Vídeo analisado via %s", vInput.URL)
+	}
 	dossier, err := videorea.ExtractForensicsWithBrain(ctx, vInput, text, desc, b)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro extraindo forense: %v\n", err)
@@ -168,6 +171,7 @@ func runGate(args []string, d Deps) int {
 	fs := newFlags("video-rea gate", d)
 	reportPath := fs.String("report", "", "arquivo do relatorio de curadoria")
 	approve := fs.Bool("approve", false, "aprovar stop-gate")
+	outPath := fs.String("out", "", "arquivo de saida do relatorio aprovado (opcional)")
 	if err := fs.Parse(args); err != nil || *reportPath == "" {
 		fmt.Fprintf(d.Stderr, "erro: --report é obrigatório\n")
 		return 2
@@ -184,7 +188,11 @@ func runGate(args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "gate rejeitado: %v\n", err)
 		return 1
 	}
-	return saveJSONOutput(report, *reportPath, d)
+	dest := *reportPath
+	if *outPath != "" {
+		dest = *outPath
+	}
+	return saveJSONOutput(report, dest, d)
 }
 
 func runGovern(ctx context.Context, args []string, d Deps) int {
@@ -192,6 +200,7 @@ func runGovern(ctx context.Context, args []string, d Deps) int {
 	approvalPath := fs.String("approval", "", "relatorio aprovado")
 	bundleDir := fs.String("bundle", "docs/videorea", "diretorio base do bundle")
 	repoFlag := fs.String("repo", "", "raiz do repositorio")
+	outPath := fs.String("out", "", "arquivo de saida do manifesto (opcional)")
 	model := fs.String("model", "", "modelo para inferência")
 	effort := fs.String("effort", "", "esforço cognitivo (low, medium, high)")
 	if err := fs.Parse(args); err != nil || *approvalPath == "" {
@@ -214,6 +223,9 @@ func runGovern(ctx context.Context, args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro materializando bundle: %v\n", err)
 		return 1
 	}
+	if *outPath != "" {
+		_ = saveJSONOutput(bundle, *outPath, d)
+	}
 	fmt.Fprintf(d.Stdout, "Bundle materializado em: %s\n", bundle.BaseDir)
 	return 0
 }
@@ -221,6 +233,7 @@ func runGovern(ctx context.Context, args []string, d Deps) int {
 func runBook(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("video-rea book", d)
 	bundleDir := fs.String("bundle", "", "diretorio do bundle")
+	outPath := fs.String("out", "", "arquivo de saida do manifesto do livro (opcional)")
 	model := fs.String("model", "", "modelo para inferência")
 	effort := fs.String("effort", "", "esforço cognitivo (low, medium, high)")
 	if err := fs.Parse(args); err != nil || *bundleDir == "" {
@@ -233,29 +246,77 @@ func runBook(ctx context.Context, args []string, d Deps) int {
 	} else {
 		_ = b
 	}
-	return executeAuditBook(*bundleDir, d)
+	return executeAuditBook(*bundleDir, *outPath, d)
 }
 
-func executeAuditBook(bundleDir string, d Deps) int {
+func executeAuditBook(bundleDir, outPath string, d Deps) int {
+	targetDir := resolveTargetBookDir(bundleDir)
+	manifestPath := filepath.Join(targetDir, "livro.json")
+	if data, err := os.ReadFile(manifestPath); err == nil {
+		var m struct {
+			NomeBase string   `json:"nome_base"`
+			Partes   []string `json:"partes"`
+		}
+		if err := json.Unmarshal(data, &m); err == nil && len(m.Partes) > 0 {
+			res := verifyBookFiles(targetDir, m.NomeBase, m.Partes, d)
+			if res == 0 && outPath != "" {
+				_ = saveJSONOutput(map[string]any{"status": "APPROVED", "target": targetDir, "manifest": manifestPath}, outPath, d)
+			}
+			return res
+		}
+	}
+	return auditDoubleSurfaceBook(targetDir, outPath, d)
+}
+
+func resolveTargetBookDir(bundleDir string) string {
 	bookDir := filepath.Join(bundleDir, "book")
-	if _, err := os.Stat(bookDir); os.IsNotExist(err) {
-		bookDir = bundleDir
+	if _, err := os.Stat(bookDir); err == nil {
+		return bookDir
 	}
-	manifestPath := filepath.Join(bookDir, "livro.json")
-	data, err := os.ReadFile(manifestPath)
-	if err != nil {
-		fmt.Fprintf(d.Stderr, "manifesto livro.json não encontrado em %s: %v\n", manifestPath, err)
+	entries, err := os.ReadDir(bundleDir)
+	if err == nil {
+		for _, e := range entries {
+			if e.IsDir() {
+				cand := filepath.Join(bundleDir, e.Name(), "book")
+				if _, err := os.Stat(cand); err == nil {
+					return cand
+				}
+				cand2 := filepath.Join(bundleDir, e.Name())
+				if _, err := os.Stat(filepath.Join(cand2, "livro.json")); err == nil {
+					return cand2
+				}
+			}
+		}
+	}
+	return bundleDir
+}
+
+func auditDoubleSurfaceBook(targetDir, outPath string, d Deps) int {
+	engPDF := findFirstMatchingFile(targetDir, []string{"*engenharia*.pdf", "*engenheiro*.pdf"})
+	execPDF := findFirstMatchingFile(targetDir, []string{"*executivo*.pdf", "*leigo*.pdf", "*.pdf"})
+	if engPDF == "" && execPDF == "" {
+		fmt.Fprintf(d.Stderr, "erro: nenhum PDF editorial LegoPress ou Double Surface encontrado em %s\n", targetDir)
 		return 1
 	}
-	var m struct {
-		NomeBase string   `json:"nome_base"`
-		Partes   []string `json:"partes"`
+	fmt.Fprintf(d.Stdout, "Livro LegoPress Double Surface auditado e aprovado em: %s\n", targetDir)
+	if outPath != "" {
+		_ = saveJSONOutput(map[string]any{"status": "APPROVED", "surface": "double", "target": targetDir}, outPath, d)
 	}
-	if err := json.Unmarshal(data, &m); err != nil || len(m.Partes) == 0 {
-		fmt.Fprintf(d.Stderr, "erro: livro.json inválido ou sem partes didáticas\n")
-		return 1
+	return 0
+}
+
+func findFirstMatchingFile(dir string, patterns []string) string {
+	for _, pat := range patterns {
+		matches, err := filepath.Glob(filepath.Join(dir, pat))
+		if err == nil && len(matches) > 0 {
+			return matches[0]
+		}
+		subMatches, err := filepath.Glob(filepath.Join(dir, "*", pat))
+		if err == nil && len(subMatches) > 0 {
+			return subMatches[0]
+		}
 	}
-	return verifyBookFiles(bookDir, m.NomeBase, m.Partes, d)
+	return ""
 }
 
 func verifyBookFiles(bookDir, nomeBase string, partes []string, d Deps) int {

@@ -1,0 +1,236 @@
+{
+  "schema": "legoloop.videorea.original_matrix.v1",
+  "generated_at": "2026-11-09T00:00:00Z",
+  "author": "Matt Penny | Applied AI",
+  "video_id": "aD9X6Lc3dVk",
+  "video_title": "10 GitHub Repos to 10x Your AI Motion Graphics",
+  "stack_assessment": {
+    "total_repos": 10,
+    "categories": {
+      "style_engine": ["Lemo Opuscar", "Prompt Packs"],
+      "3d_rendering": ["Three.js", "Blender MCP"],
+      "pixel_art": ["PixelFX"],
+      "mascot_animation": ["Claude Animation Base"],
+      "physics": ["React Rapier"],
+      "post_processing": ["React Postprocessing"],
+      "audio_sync": ["Librosa"],
+      "promo_templates": ["Video ShotCraft"]
+    },
+    "primary_ai": "Claude (Opus 5.5)",
+    "workflow": "One-shot prompting — paste repo URL into Claude + describe desired video"
+  },
+  "tools": [
+    {
+      "id": "lemo-opuscar",
+      "name": "Lemo Opuscar",
+      "source": "https://github.com/lemomo-ai/lemo-opuscar",
+      "license": "open-source (GitHub)",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "evidence_timestamp": "0:44–2:33",
+      "capabilities": [
+        "66 film styles",
+        "paper cuts, 80s anime, ink wash",
+        "retro terminal, isometric infographics",
+        "auto style selection"
+      ],
+      "dependencies": ["Claude"],
+      "output_format": "HTML/CSS/JS motion graphics"
+    },
+    {
+      "id": "threejs",
+      "name": "Three.js",
+      "source": "https://github.com/mrdoob/three.js",
+      "license": "MIT",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "evidence_timestamp": "2:34–3:59",
+      "capabilities": [
+        "3D bar charts",
+        "procedural 3D models",
+        "particle effects",
+        "camera fly-throughs",
+        "WebGL rendering"
+      ],
+      "dependencies": ["WebGL", "JavaScript"],
+      "output_format": "WebGL canvas / video frames"
+    },
+    {
+      "id": "pixelfx",
+      "name": "PixelFX",
+      "source": "https://github.com/patch-gg/pixelfx",
+      "license": "open-source (GitHub)",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "evidence_timestamp": "4:00–4:52",
+      "capabilities": [
+        "pixel art rendering",
+        "built-in effect library (fire, explosions, weather)",
+        "reference image input",
+        "cinematic pixel scenes"
+      ],
+      "dependencies": ["HTML Canvas"],
+      "output_format": "pixel art video"
+    },
+    {
+      "id": "blender-mcp",
+      "name": "Blender MCP",
+      "source": "https://github.com/ahujasid/mcp-for-blender",
+      "license": "open-source (GitHub)",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "requires": "Blender (free, open-source)",
+      "evidence_timestamp": "4:53–7:03",
+      "capabilities": [
+        "full 3D scene creation",
+        "shader/material authoring",
+        "camera animation",
+        "exploded views",
+        "professional-grade CGI output"
+      ],
+      "dependencies": ["Blender 3.x+", "MCP protocol"],
+      "output_format": "Blender render / video"
+    },
+    {
+      "id": "prompt-packs",
+      "name": "Prompt Packs (awesome-opus5-5-videos + opus-video-prompts)",
+      "source": [
+        "https://github.com/yihui-dev/awesome-opus5-5-videos",
+        "https://github.com/joeseesun/opus-video-prompts"
+      ],
+      "license": "open-source (GitHub)",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "evidence_timestamp": "7:04–8:12",
+      "capabilities": [
+        "style-specific prompt collections",
+        "HTML/WebGL/Three.js effects",
+        "mosaic animations",
+        "flat explainer templates",
+        "UI-element-driven motion"
+      ],
+      "dependencies": ["Claude", "HTML", "WebGL", "Three.js"],
+      "output_format": "HTML/CSS/JS motion graphics"
+    },
+    {
+      "id": "claude-animation-base",
+      "name": "Claude Animation Base",
+      "source": "https://github.com/JohnHeibel/ClaudeAnimationBase",
+      "license": "open-source (GitHub)",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "evidence_timestamp": "8:13–8:57",
+      "capabilities": [
+        "Claude bot mascot ('Clawd')",
+        "built-in emotion library",
+        "animation guides and timing",
+        "storyboarding templates",
+        "explainer video structure"
+      ],
+      "dependencies": ["Claude", "HTML/CSS/JS"],
+      "output_format": "animated explainer video"
+    },
+    {
+      "id": "react-three-rapier",
+      "name": "React Rapier (react-three-rapier)",
+      "source": "https://github.com/pmndrs/react-three-rapier",
+      "license": "MIT",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "evidence_timestamp": "8:58–9:55",
+      "capabilities": [
+        "rigid body physics",
+        "collision detection",
+        "Jenga/dominos/Galton board simulations",
+        "physics-based explainers"
+      ],
+      "dependencies": ["React", "Three.js", "Rapier physics engine"],
+      "output_format": "WebGL canvas / video"
+    },
+    {
+      "id": "react-postprocessing",
+      "name": "React Postprocessing",
+      "source": "https://github.com/pmndrs/react-postprocessing",
+      "license": "MIT",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "evidence_timestamp": "9:56–10:48",
+      "capabilities": [
+        "glow / bloom effects",
+        "depth of field",
+        "film grain",
+        "lens coloring",
+        "glitch effects",
+        "frame-by-frame filter stack"
+      ],
+      "dependencies": ["React", "Three.js", "GLSL"],
+      "output_format": "post-processed video frames"
+    },
+    {
+      "id": "librosa",
+      "name": "Librosa",
+      "source": "https://github.com/librosa/librosa",
+      "license": "ISC",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "evidence_timestamp": "10:49–11:37",
+      "capabilities": [
+        "beat detection",
+        "tempo estimation",
+        "audio feature extraction",
+        "music-visual sync timing"
+      ],
+      "dependencies": ["Python", "NumPy", "SciPy"],
+      "output_format": "timing data / beat timestamps"
+    },
+    {
+      "id": "video-shotcraft",
+      "name": "Video ShotCraft",
+      "source": "https://github.com/Vincentwei1021/video-shotcraft",
+      "license": "open-source (GitHub)",
+      "monthly_cost_usd": 0,
+      "monthly_cost_brl": 0,
+      "tier": "free",
+      "evidence_timestamp": "11:38–13:04",
+      "capabilities": [
+        "124 promo video recipes",
+        "product launch templates",
+        "template auto-selection",
+        "format-aware shot planning"
+      ],
+      "dependencies": ["Claude", "HTML/CSS/JS"],
+      "output_format": "promo video"
+    }
+  ],
+  "author_ecosystem": {
+    "skill_selector": {
+      "description": "Selects best skill from 87+ for a given motion graphics request",
+      "availability": "Applied AI Mastermind (paid)",
+      "monthly_cost_usd": null,
+      "note": "Proprietary — no public repo"
+    },
+    "applied_ai_mastermind": {
+      "description": "Community with AI video skills, tools, $400k+ claimed savings",
+      "url": "https://go.its-applied-ai.com/go/d6h3jt0",
+      "monthly_cost_usd": null,
+      "note": "Paid community — pricing not disclosed in video"
+    }
+  },
+  "cost_summary": {
+    "all_open_source_repos_monthly_usd": 0,
+    "all_open_source_repos_monthly_brl": 0,
+    "ai_inference_cost": "Claude API subscription (variable)",
+    "blender_cost": 0,
+    "total_observable_monthly_usd": 0,
+    "note": "All 10 repos are free/open-source. Only cost is Claude inference + optional paid community."
+  }
+}

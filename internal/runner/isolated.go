@@ -16,23 +16,32 @@ import (
 
 // prepareIsolation provisiona um ambiente hermético e efêmero para execução do nó:
 // se o diretório do projeto for um repositório git, usa `git worktree add --detach`;
-// caso contrário, cria uma cópia temporária (R-NODE-8).
+// caso contrário, cria uma cópia temporária (R-NODE-8). Em seguida, injeta context_in.
 func prepareIsolation(ctx context.Context, workdir string, n dag.Node) (string, func(), error) {
+	isoDir, cleanup, err := createIsolationEnv(ctx, workdir)
+	if err != nil {
+		return "", nil, err
+	}
+	if err := injectContextIn(workdir, isoDir, n.ContextIn); err != nil {
+		cleanup()
+		return "", nil, fmt.Errorf("falha ao injetar context_in: %w", err)
+	}
+	return isoDir, cleanup, nil
+}
+
+func createIsolationEnv(ctx context.Context, workdir string) (string, func(), error) {
 	if isGitRepo(workdir) {
-		isolatedDir, cleanup, err := createGitWorktree(ctx, workdir)
-		if err == nil {
+		if isolatedDir, cleanup, err := createGitWorktree(ctx, workdir); err == nil {
 			return isolatedDir, cleanup, nil
 		}
-		// Se git worktree falhou (ex: repo recém-iniciado sem commits), faz fallback para temp copy
 	}
-
 	return createTempCopy(workdir)
 }
 
 func isGitRepo(dir string) bool {
 	gitDir := filepath.Join(dir, ".git")
 	info, err := os.Stat(gitDir)
-	return err == nil && (info.IsDir() || !info.IsDir()) // .git pode ser dir ou arquivo (submódulo/worktree)
+	return err == nil && (info.IsDir() || !info.IsDir())
 }
 
 func createGitWorktree(ctx context.Context, workdir string) (string, func(), error) {
@@ -40,7 +49,6 @@ func createGitWorktree(ctx context.Context, workdir string) (string, func(), err
 	if err != nil {
 		return "", nil, err
 	}
-
 	cmdCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
@@ -49,14 +57,12 @@ func createGitWorktree(ctx context.Context, workdir string) (string, func(), err
 		_ = os.RemoveAll(tmpDir)
 		return "", nil, fmt.Errorf("git worktree add falhou: %s (%w)", strings.TrimSpace(string(out)), err)
 	}
-
 	cleanup := func() {
 		cleanCtx, cleanCancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cleanCancel()
 		_ = exec.CommandContext(cleanCtx, "git", "-C", workdir, "worktree", "remove", "--force", tmpDir).Run()
 		_ = os.RemoveAll(tmpDir)
 	}
-
 	return tmpDir, cleanup, nil
 }
 
@@ -65,44 +71,78 @@ func createTempCopy(workdir string) (string, func(), error) {
 	if err != nil {
 		return "", nil, err
 	}
-
-	// Copia arquivos do workdir para tmpDir, pulando diretórios pesados e .git
-	err = filepath.WalkDir(workdir, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		rel, err := filepath.Rel(workdir, path)
-		if err != nil {
-			return err
-		}
-		if rel == "." {
-			return nil
-		}
-
-		// Pula diretórios ignorados
-		name := d.Name()
-		if d.IsDir() && (name == ".git" || name == "node_modules" || name == "bin" || name == ".gemini" || name == ".claude") {
-			return filepath.SkipDir
-		}
-
-		target := filepath.Join(tmpDir, rel)
-		if d.IsDir() {
-			return os.MkdirAll(target, 0o755)
-		}
-
-		return copyFile(path, target)
-	})
-
-	if err != nil {
+	if err := copyWorkspaceFiles(workdir, tmpDir); err != nil {
 		_ = os.RemoveAll(tmpDir)
 		return "", nil, fmt.Errorf("falha ao copiar workspace para ambiente isolado: %w", err)
 	}
+	return tmpDir, func() { _ = os.RemoveAll(tmpDir) }, nil
+}
 
-	cleanup := func() {
-		_ = os.RemoveAll(tmpDir)
+func copyWorkspaceFiles(src, dst string) error {
+	return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		rel, err := filepath.Rel(src, path)
+		if err != nil || rel == "." {
+			return err
+		}
+		if d.IsDir() && isIgnoredDir(d.Name()) {
+			return filepath.SkipDir
+		}
+		target := filepath.Join(dst, rel)
+		if d.IsDir() {
+			return os.MkdirAll(target, 0o755)
+		}
+		return copyFile(path, target)
+	})
+}
+
+func isIgnoredDir(name string) bool {
+	return name == ".git" || name == "node_modules" || name == "bin" || name == ".gemini" || name == ".claude"
+}
+
+func injectContextIn(srcWorkdir, dstWorkdir string, contextIn []string) error {
+	for _, inRel := range contextIn {
+		clean := filepath.Clean(inRel)
+		if strings.HasPrefix(clean, "..") || filepath.IsAbs(clean) {
+			continue
+		}
+		src := filepath.Join(srcWorkdir, clean)
+		dst := filepath.Join(dstWorkdir, clean)
+		if err := copyPath(src, dst); err != nil {
+			return err
+		}
 	}
+	return nil
+}
 
-	return tmpDir, cleanup, nil
+func copyPath(src, dst string) error {
+	info, err := os.Stat(src)
+	if err != nil {
+		return nil
+	}
+	if info.IsDir() {
+		return copyDir(src, dst)
+	}
+	return copyFile(src, dst)
+}
+
+func copyDir(src, dst string) error {
+	return filepath.WalkDir(src, func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		rel, err := filepath.Rel(src, p)
+		if err != nil || rel == "." {
+			return err
+		}
+		target := filepath.Join(dst, rel)
+		if d.IsDir() {
+			return os.MkdirAll(target, 0o755)
+		}
+		return copyFile(p, target)
+	})
 }
 
 func copyFile(src, dst string) error {

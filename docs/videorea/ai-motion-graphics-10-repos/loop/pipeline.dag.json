@@ -1,0 +1,903 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "name": "ai-motion-graphics",
+  "version": "1.0.0",
+  "date": "2026-11-09",
+  "description": "Pipeline soberano de motion graphics com 10 GitHub repos open-source",
+  "upstream_signatures": {
+    "intent": "141be4530f797b60bc3288513d7214d0def9c86cefbf3766d4e990a5ac9948b9",
+    "spec": "7d7dc391758f09c5efa8d4c6695ff026d6d973d45a8861da9dd34b7818f1bdd6",
+    "plan": "c434bfeac394277063e83965a1088a1f86cc6224ce1ecb88e90fc808229820f7",
+    "route": "docs/routes/2026-11-09_ROUTE_AI_MOTION_GRAPHICS.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "t01_types",
+      "name": "Tipos, contrato e validação de Request",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 600
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [],
+      "context_in": [
+        "internal/motion/types.go"
+      ],
+      "context_out": [
+        "internal/motion/types.go",
+        "internal/motion/types_test.go"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/types.go",
+        "gate": "exit_code == 0 && file_exists('internal/motion/types.go') && file_exists('internal/motion/types_test.go')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/types_test.go:TestRequestValidate"
+      }
+    },
+    {
+      "id": "t02_suggest",
+      "name": "Motor de sugestão de repos por cenário",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 600
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t01_types"
+      ],
+      "context_in": [
+        "internal/motion/suggest.go"
+      ],
+      "context_out": [
+        "internal/motion/suggest.go",
+        "internal/motion/suggest_test.go"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/suggest.go",
+        "gate": "exit_code == 0 && file_exists('internal/motion/suggest.go') && file_exists('internal/motion/suggest_test.go')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/suggest_test.go:TestSuggestRepos"
+      }
+    },
+    {
+      "id": "t03_vet_e01",
+      "name": "Verificação estática do motor de seleção",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 300
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t02_suggest"
+      ],
+      "context_in": [
+        "internal/motion/suggest.go",
+        "internal/motion/types.go"
+      ],
+      "context_out": [],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "vet",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/types_test.go",
+        "gate": "exit_code == 0"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/types_test.go"
+      }
+    },
+    {
+      "id": "sg_e01",
+      "name": "Stop-Gate Humano do Épico 01",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "stop_gate",
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 0,
+        "max_completion_tokens": 0
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t01_types",
+        "t02_suggest",
+        "t03_vet_e01"
+      ],
+      "context_in": [],
+      "context_out": [],
+      "status": "APPROVED",
+      "command": [],
+      "output": {
+        "artifact": "docs/reports/2026-11-09_REPORT_AI_MOTION_GRAPHICS.md",
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o Épico 02?')"
+      },
+      "test_seam": null
+    },
+    {
+      "id": "t04_build",
+      "name": "Gerador HTML/WebGL com Three.js",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 600
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "sg_e01"
+      ],
+      "context_in": [
+        "internal/motion/build.go"
+      ],
+      "context_out": [
+        "internal/motion/build.go",
+        "internal/motion/build_test.go"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/build.go",
+        "gate": "exit_code == 0 && file_exists('internal/motion/build.go') && file_exists('internal/motion/build_test.go')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/build_test.go:TestBuildHTML"
+      }
+    },
+    {
+      "id": "t05_vet_e02",
+      "name": "Verificação estática do gerador HTML",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 300
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t04_build"
+      ],
+      "context_in": [
+        "internal/motion/build.go"
+      ],
+      "context_out": [],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "vet",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/build_test.go",
+        "gate": "exit_code == 0"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/build_test.go"
+      }
+    },
+    {
+      "id": "sg_e02",
+      "name": "Stop-Gate Humano do Épico 02",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "stop_gate",
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 0,
+        "max_completion_tokens": 0
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t04_build",
+        "t05_vet_e02"
+      ],
+      "context_in": [],
+      "context_out": [],
+      "status": "APPROVED",
+      "command": [],
+      "output": {
+        "artifact": "docs/intents/2026-11-09_INTENT_AI_MOTION_GRAPHICS.md",
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o Épico 03?')"
+      },
+      "test_seam": null
+    },
+    {
+      "id": "t06_render",
+      "name": "Captura de frames via Playwright",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 600
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "sg_e02"
+      ],
+      "context_in": [
+        "internal/motion/render.go"
+      ],
+      "context_out": [
+        "internal/motion/render.go",
+        "internal/motion/render_test.go"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/render.go",
+        "gate": "exit_code == 0 && file_exists('internal/motion/render.go') && file_exists('internal/motion/render_test.go')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/render_test.go:TestCaptureFrames"
+      }
+    },
+    {
+      "id": "t07_encode",
+      "name": "Conversão frames → MP4 via FFmpeg",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 600
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t06_render"
+      ],
+      "context_in": [
+        "internal/motion/encode.go"
+      ],
+      "context_out": [
+        "internal/motion/encode.go",
+        "internal/motion/encode_test.go"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/encode.go",
+        "gate": "exit_code == 0 && file_exists('internal/motion/encode.go') && file_exists('internal/motion/encode_test.go')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/encode_test.go:TestFramesToMP4"
+      }
+    },
+    {
+      "id": "t08_vet_e03",
+      "name": "Teste de integração com limite de tempo",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 300
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t07_encode"
+      ],
+      "context_in": [
+        "internal/motion/render.go",
+        "internal/motion/encode.go"
+      ],
+      "context_out": [
+        "internal/motion/render_test.go",
+        "internal/motion/encode_test.go"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "-timeout",
+        "300s",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/encode_test.go",
+        "gate": "exit_code == 0"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/render_test.go"
+      }
+    },
+    {
+      "id": "sg_e03",
+      "name": "Stop-Gate Humano do Épico 03",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "stop_gate",
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 0,
+        "max_completion_tokens": 0
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t06_render",
+        "t07_encode",
+        "t08_vet_e03"
+      ],
+      "context_in": [],
+      "context_out": [],
+      "status": "APPROVED",
+      "command": [],
+      "output": {
+        "artifact": "docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md",
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o Épico 04?')"
+      },
+      "test_seam": null
+    },
+    {
+      "id": "t09_sync",
+      "name": "Detecção de beats via Librosa",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 600
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "sg_e03"
+      ],
+      "context_in": [
+        "internal/motion/sync.go",
+        "scripts/beat_detect.py"
+      ],
+      "context_out": [
+        "internal/motion/sync.go",
+        "internal/motion/sync_test.go",
+        "scripts/beat_detect.py"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/sync.go",
+        "gate": "exit_code == 0 && file_exists('internal/motion/sync.go') && file_exists('scripts/beat_detect.py')"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/sync_test.go:TestDetectBeats"
+      }
+    },
+    {
+      "id": "t10_vet_e04",
+      "name": "Verificação estática do sync de áudio",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-nano",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 300
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t09_sync"
+      ],
+      "context_in": [
+        "internal/motion/sync.go"
+      ],
+      "context_out": [],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "vet",
+        "./internal/motion/..."
+      ],
+      "output": {
+        "artifact": "internal/motion/sync_test.go",
+        "gate": "exit_code == 0"
+      },
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "internal/motion/sync_test.go"
+      }
+    },
+    {
+      "id": "sg_e04",
+      "name": "Stop-Gate Humano do Épico 04",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "stop_gate",
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 0,
+        "max_completion_tokens": 0
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t09_sync",
+        "t10_vet_e04"
+      ],
+      "context_in": [],
+      "context_out": [],
+      "status": "APPROVED",
+      "command": [],
+      "output": {
+        "artifact": "docs/plans/2026-11-09_PLAN_AI_MOTION_GRAPHICS.md",
+        "gate": "prompt('Evidências do Épico 04 aprovadas? Autoriza iniciar o Épico 05?')"
+      },
+      "test_seam": null
+    },
+    {
+      "id": "t11_skill",
+      "name": "Skill canônica universal",
+      "nature": "macro",
+      "cognitive_complexity": "media",
+      "type": "subloop",
+      "ref": "legoloop-instalar-skills",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": "deepseek-coder:6.7b"
+      },
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 32000,
+        "max_completion_tokens": 1200
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "sg_e04"
+      ],
+      "context_in": [
+        "docs/videorea/ai-motion-graphics-10-repos/dossier.json"
+      ],
+      "context_out": [
+        "skills/ai-motion-graphics/SKILL.md"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "instalar-skills",
+        "--dry-run",
+        "--json"
+      ],
+      "output": {
+        "artifact": "skills/ai-motion-graphics/SKILL.md",
+        "gate": "exit_code == 0 && file_exists('skills/ai-motion-graphics/SKILL.md')"
+      },
+      "test_seam": null
+    },
+    {
+      "id": "t12_book",
+      "name": "Livro Didático LegoPress",
+      "nature": "macro",
+      "cognitive_complexity": "media",
+      "type": "subloop",
+      "ref": "legoloop-legopress",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": "deepseek-coder:6.7b"
+      },
+      "isolation": {
+        "workspace": "tempdir",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 32000,
+        "max_completion_tokens": 1200
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t11_skill"
+      ],
+      "context_in": [
+        "docs/videorea/ai-motion-graphics-10-repos/curation.json"
+      ],
+      "context_out": [
+        "docs/books/ai-motion-graphics/"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "legoloop",
+        "legopress",
+        "auditar"
+      ],
+      "output": {
+        "artifact": "docs/books/ai-motion-graphics-engenheiro/livro.json",
+        "gate": "exit_code == 0 && file_exists('docs/books/ai-motion-graphics/livro.json')"
+      },
+      "test_seam": null
+    },
+    {
+      "id": "sg_final",
+      "name": "Homologação Final (Regressão Global e Recompilação Fresca)",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "type": "stop_gate",
+      "routing": {
+        "mode": "manual",
+        "model": "script/local",
+        "fallback": "flash"
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_prompt_tokens": 0,
+        "max_completion_tokens": 0
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "depends_on": [
+        "t11_skill",
+        "t12_book"
+      ],
+      "context_in": [
+        "cmd/legoloop/main.go"
+      ],
+      "context_out": [
+        "bin/legoloop.exe"
+      ],
+      "status": "COMPLETED",
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "bin/legoloop.exe",
+        "./cmd/legoloop"
+      ],
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "test_seam": null
+    }
+  ]
+}

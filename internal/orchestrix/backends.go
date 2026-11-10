@@ -168,11 +168,12 @@ func (o *Orchestrix) runScript(ctx context.Context, n dag.Node, workdir string) 
 	if !o.AllowScripts {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q é script (%s); rode com --allow-scripts se confia neste pipeline", n.ID, n.Command[0])
 	}
-	bin, err := exec.LookPath(n.Command[0])
+	bin, err := resolveExecutable(n.Command[0])
 	if err != nil {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
 	}
-	out, code, err := o.spawn(ctx, bin, n.Command[1:], workdir, nil)
+	args := o.expandArgs(n.Command[1:])
+	out, code, err := o.spawn(ctx, bin, args, workdir, nil)
 	if err != nil {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
 	}
@@ -185,6 +186,31 @@ func (o *Orchestrix) runScript(ctx context.Context, n dag.Node, workdir string) 
 		err = writeArtifact(root, n.Output.Artifact, out)
 	}
 	return runner.Result{ExitCode: code, Model: "script/" + n.Command[0]}, err
+}
+
+func resolveExecutable(name string) (string, error) {
+	if name == "legoloop" {
+		if exe, err := os.Executable(); err == nil && strings.Contains(strings.ToLower(exe), "legoloop") {
+			return exe, nil
+		}
+	}
+	return exec.LookPath(name)
+}
+
+func (o *Orchestrix) expandArgs(args []string) []string {
+	if len(args) == 0 {
+		return args
+	}
+	out := make([]string, len(args))
+	for i, a := range args {
+		out[i] = os.Expand(a, func(k string) string {
+			if v, ok := o.Vars[k]; ok {
+				return v
+			}
+			return os.Getenv(k)
+		})
+	}
+	return out
 }
 
 // spawnWaitDelay: após cancelamento/saída, quanto esperar por netos que seguram os pipes.

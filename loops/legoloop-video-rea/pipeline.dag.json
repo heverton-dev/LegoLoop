@@ -236,7 +236,9 @@
         "gate",
         "--report",
         "scratch/videorea/curation.json",
-        "--approve"
+        "--approve",
+        "--out",
+        "scratch/videorea/curation_approved.json"
       ],
       "output": {
         "artifact": "scratch/videorea/curation_approved.json",
@@ -291,7 +293,9 @@
         "--approval",
         "scratch/videorea/curation_approved.json",
         "--bundle",
-        "docs/videorea"
+        "docs/videorea",
+        "--out",
+        "scratch/videorea/governance_manifest.json"
       ],
       "output": {
         "artifact": "scratch/videorea/governance_manifest.json",
@@ -344,7 +348,9 @@
         "video-rea",
         "book",
         "--bundle",
-        "docs/videorea"
+        "docs/videorea",
+        "--out",
+        "scratch/videorea/livro_manifest.json"
       ],
       "output": {
         "artifact": "scratch/videorea/livro_manifest.json",

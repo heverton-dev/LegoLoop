@@ -34,6 +34,9 @@ func TestMain(m *testing.M) {
 	case "flood":
 		os.Stdout.Write([]byte(strings.Repeat("x", 4096)))
 		os.Exit(0)
+	case "echo-args":
+		fmt.Print(strings.Join(os.Args[1:], " "))
+		os.Exit(0)
 	default:
 		os.Exit(m.Run())
 	}
@@ -288,5 +291,35 @@ func TestUnknownNodeType(t *testing.T) {
 	o := &Orchestrix{}
 	if _, err := o.Execute(context.Background(), dag.Node{Type: "mcp"}, t.TempDir()); err == nil {
 		t.Fatal("tipo desconhecido deveria falhar")
+	}
+}
+
+func TestScriptVariableInterpolation(t *testing.T) {
+	work := t.TempDir()
+	o := &Orchestrix{
+		ExtraEnv:     []string{"LEGOLOOP_HELPER=echo-args"},
+		AllowScripts: true,
+		Vars:         map[string]string{"VIDEO_URL": "https://youtube.com/watch?v=123", "NAME": "shorts"},
+	}
+	n := dag.Node{
+		ID:      "ingest",
+		Type:    dag.TypeScript,
+		Command: []string{os.Args[0], "--url", "${VIDEO_URL}", "--name", "${NAME}"},
+		Output:  dag.HandoffContract{Artifact: "out.txt", Gate: "true"},
+	}
+	res, err := o.Execute(context.Background(), n, work)
+	if err != nil {
+		t.Fatalf("erro inesperado: %v", err)
+	}
+	if res.ExitCode != 0 {
+		t.Fatalf("exit code esperado 0, obteve %d", res.ExitCode)
+	}
+	content, err := os.ReadFile(filepath.Join(work, "out.txt"))
+	if err != nil {
+		t.Fatalf("falha ao ler artefato: %v", err)
+	}
+	want := "--url https://youtube.com/watch?v=123 --name shorts"
+	if string(content) != want {
+		t.Fatalf("interpolação falhou!\nquer: %q\nobteve: %q", want, string(content))
 	}
 }
