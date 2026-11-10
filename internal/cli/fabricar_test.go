@@ -129,7 +129,7 @@ func TestRunFabricar(t *testing.T) {
 				t.Errorf("sem progresso %s:\n%s", want, r.out)
 			}
 		}
-		for _, want := range []string{"legoloop-extrator-de-audio", "SKILL.md", ".loop.json", ".dag.json", "INTENT", "SPEC", "PLAN", "ROUTE", "TEMPLATE"} {
+		for _, want := range []string{"legoloop-extrator-de-audio", "SKILL.md", ".studio.json", ".dag.json", "INTENT", "SPEC", "PLAN", "ROUTE", "TEMPLATE"} {
 			if !strings.Contains(r.out.String(), want) {
 				t.Errorf("saída sem %q:\n%s", want, r.out)
 			}

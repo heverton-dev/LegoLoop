@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
 )
 
@@ -29,7 +30,11 @@ func (s *Store) filePath(id string) (string, error) {
 	if err := ValidateID(id); err != nil {
 		return "", err
 	}
-	return filepath.Join(s.dir, id+".loop.json"), nil
+	novo := filepath.Join(s.dir, id+caminhos.SufixoStudio)
+	if info, err := os.Stat(novo); err == nil && info.Mode().IsRegular() {
+		return novo, nil
+	}
+	return filepath.Join(s.dir, id+caminhos.SufixoLoop), nil
 }
 
 func validateLoopDAG(l *Loop) error {
@@ -120,11 +125,13 @@ func (s *Store) List() ([]Summary, error) {
 		return nil, err
 	}
 	var list []Summary
+	vistos := map[string]bool{}
 	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ".loop.json") {
+		id := idDeArquivo(e)
+		if id == "" || vistos[id] {
 			continue
 		}
-		id := strings.TrimSuffix(e.Name(), ".loop.json")
+		vistos[id] = true
 		lp, err := s.Get(id)
 		if err != nil {
 			continue
@@ -135,6 +142,19 @@ func (s *Store) List() ([]Summary, error) {
 		return list[i].Name < list[j].Name
 	})
 	return list, nil
+}
+
+func idDeArquivo(e os.DirEntry) string {
+	if e.IsDir() {
+		return ""
+	}
+	if strings.HasSuffix(e.Name(), caminhos.SufixoStudio) {
+		return strings.TrimSuffix(e.Name(), caminhos.SufixoStudio)
+	}
+	if strings.HasSuffix(e.Name(), caminhos.SufixoLoop) {
+		return strings.TrimSuffix(e.Name(), caminhos.SufixoLoop)
+	}
+	return ""
 }
 
 // Summary constrói o resumo do loop para exibição.

@@ -17,6 +17,8 @@ const (
 	ArquivoDAG = "pipeline.dag.json"
 	// ChaveAPILoops é a chave JSON da lista de Processos na API do Studio.
 	ChaveAPILoops = "loops"
+	// SufixoLoop é a extensão do documento do Studio no dialeto antigo.
+	SufixoLoop = ".loop.json"
 )
 
 const (
@@ -24,6 +26,8 @@ const (
 	DirProcessos = "processos"
 	// ArquivoProcessoDAG é o arquivo do contrato DAG no dialeto novo.
 	ArquivoProcessoDAG = "processo.dag.json"
+	// SufixoStudio é a extensão do documento do Studio no dialeto novo.
+	SufixoStudio = ".studio.json"
 )
 
 // DirLoopsEm resolve a pasta dos Processos sob a base informada.

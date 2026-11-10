@@ -265,7 +265,7 @@ func lerProcesso(vault, nome string) (processo.Processo, error) {
 			return processo.Processo{}, err
 		}
 		msg := ste.Msg("compor.nao_existe", nome, vault)
-		if _, err := os.Stat(filepath.Join(vault, caminhos.DirLoops, nome+".loop.json")); err == nil {
+		if temLegado(vault, nome) {
 			msg = ste.Msg("compor.so_v1", nome)
 		}
 		return processo.Processo{}, fmt.Errorf("%w: %s", ErrNaoExiste, msg)
@@ -275,6 +275,16 @@ func lerProcesso(vault, nome string) (processo.Processo, error) {
 		err = fmt.Errorf("%w: o arquivo de %s guarda o processo %s", processo.ErrInvalido, nome, p.Nome)
 	}
 	return p, err
+}
+
+func temLegado(vault, nome string) bool {
+	if _, err := os.Stat(filepath.Join(vault, caminhos.DirLoops, nome+caminhos.SufixoLoop)); err == nil {
+		return true
+	}
+	if _, err := os.Stat(filepath.Join(vault, caminhos.DirLoops, nome+caminhos.SufixoStudio)); err == nil {
+		return true
+	}
+	return false
 }
 
 // semCiclo recusa a ligação quando o composto já chega, direta ou transitivamente, ao processo que o recebe.
@@ -473,7 +483,7 @@ func montar(p processo.Processo, e processo.Etapa, now time.Time, roots processo
 		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
 		{Kind: "DAG_ISO", Path: filepath.Join(docs, "dags", pr.DAGNome), Data: pr.DAG},
 		{Kind: "DAG", Path: vault(caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
-		{Kind: "loop", Path: vault(caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Loop},
+		{Kind: "loop", Path: vault(caminhos.DirLoops, p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 	})

@@ -11,10 +11,14 @@ const (
 	DirLoops = caminhos.DirLoops
 	// ArquivoDAG é o arquivo do contrato DAG no dialeto antigo.
 	ArquivoDAG = caminhos.ArquivoDAG
+	// SufixoLoop é a extensão do documento do Studio no dialeto antigo.
+	SufixoLoop = caminhos.SufixoLoop
 	// DirProcessos é a pasta dos Processos no dialeto novo.
 	DirProcessos = caminhos.DirProcessos
 	// ArquivoProcessoDAG é o arquivo do contrato DAG no dialeto novo.
 	ArquivoProcessoDAG = caminhos.ArquivoProcessoDAG
+	// SufixoStudio é a extensão do documento do Studio no dialeto novo.
+	SufixoStudio = caminhos.SufixoStudio
 )
 
 // PacoteCentral é o caminho, relativo a internal/, do único pacote autorizado

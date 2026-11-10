@@ -167,7 +167,7 @@ Nomes canônicos aprovados pelo usuário em 2026-11-10:
 
 ### Épico 02 — Geradores, templates, prompts, CLI e skills
 
-* [ ] `AC-E02.1`: **Geradores com nomes novos**
+* [x] `AC-E02.1`: **Geradores com nomes novos**
   * **Dado que:** `fabricar` e `compor` rodam em `t.TempDir()`.
   * **Quando:** gravam o Processo.
   * **Então:** o documento do Studio é `<nome>.studio.json`, `.dag.json` e `.processo.json` ficam intactos, e o artefato passa em `legoloop validate`.

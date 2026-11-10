@@ -797,7 +797,7 @@
         "model": "code-fast"
       },
       "spec_ref": "AC-E02.1",
-      "status": "PENDING",
+      "status": "PASSED",
       "test_seam": {
         "file": "internal/fabricar/engine_test.go",
         "signature": "TestGravaNomesCanonicos",

@@ -379,3 +379,28 @@ func TestFabricar_MatrixWithoutAptPieceStopsAtTheGapWithoutWriting(t *testing.T)
 		t.Errorf("a lacuna não pode gravar nada: %d arquivos", r.written(t))
 	}
 }
+
+func TestGravaNomesCanonicos(t *testing.T) {
+	r := newRig(t, goodPieces())
+	res := r.run(t)
+	if !strings.HasSuffix(res.Artifacts.LoopPath, ".studio.json") {
+		t.Fatalf("LoopPath deve terminar com .studio.json: %s", res.Artifacts.LoopPath)
+	}
+	if _, err := os.Stat(res.Artifacts.LoopPath); err != nil {
+		t.Errorf("arquivo .studio.json ausente: %v", err)
+	}
+	oldLoopPath := filepath.Join(r.deps.Roots.Vault, caminhos.DirLoops, res.CanonicalName+".loop.json")
+	if _, err := os.Stat(oldLoopPath); err == nil {
+		t.Errorf("arquivo antigo .loop.json não deve ser gravado: %s", oldLoopPath)
+	}
+	if _, err := os.Stat(res.Artifacts.DagPath); err != nil {
+		t.Errorf("arquivo .dag.json ausente: %v", err)
+	}
+	if _, err := os.Stat(res.Artifacts.ProcessoPath); err != nil {
+		t.Errorf("arquivo .processo.json ausente: %v", err)
+	}
+	var out, errb bytes.Buffer
+	if code := cli.Run(context.Background(), []string{"validate", res.Artifacts.DagPath}, cli.Deps{Stdout: &out, Stderr: &errb}); code != 0 {
+		t.Errorf("legoloop validate falhou (%d): %s", code, errb.String())
+	}
+}

@@ -77,7 +77,7 @@ func gravar(t *testing.T, c cofre, p processo.Processo) {
 	doc := func(sub, file string) string { return filepath.Join(c.docs, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(c.vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(c.vault, caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Loop},
+		{Path: filepath.Join(c.vault, caminhos.DirLoops, p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
 		{Path: filepath.Join(c.vault, caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(c.vault, p.Nome), Data: pj},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
@@ -257,7 +257,7 @@ func testOutroDia(t *testing.T) {
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 	}
-	b, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+".loop.json"))
+	b, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+caminhos.SufixoStudio))
 	if err != nil || json.Unmarshal(b, &lp) != nil || !lp.CreatedAt.Equal(inicio) || !lp.UpdatedAt.Equal(inicio.Add(48*time.Hour)) {
 		t.Errorf("loop: criado %v, atualizado %v (%v); esperava a criação mantida", lp.CreatedAt, lp.UpdatedAt, err)
 	}
@@ -348,7 +348,7 @@ func conferirDAG(t *testing.T, c cofre) {
 	var lp struct {
 		Nodes []dag.Node `json:"nodes"`
 	}
-	lb, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+".loop.json"))
+	lb, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+caminhos.SufixoStudio))
 	if err != nil || json.Unmarshal(lb, &lp) != nil || len(lp.Nodes) != 4 || lp.Nodes[3].Type != dag.TypeSubloop {
 		t.Errorf("o loop de a não tem o subloop: %v", err)
 	}

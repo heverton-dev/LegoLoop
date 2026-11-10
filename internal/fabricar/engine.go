@@ -158,7 +158,8 @@ func preflight(d Deps, name string, force bool) error {
 	}
 	probe := []PlannedFile{
 		{Path: filepath.Join(d.Roots.Vault, "skills", name, "SKILL.md")},
-		{Path: filepath.Join(d.Roots.Vault, caminhos.DirLoops, name+".loop.json")},
+		{Path: filepath.Join(d.Roots.Vault, caminhos.DirLoops, name+caminhos.SufixoStudio)},
+		{Path: filepath.Join(d.Roots.Vault, caminhos.DirLoops, name+caminhos.SufixoLoop)},
 		{Path: filepath.Join(d.Roots.Vault, caminhos.DirLoops, name+".dag.json")},
 		{Path: processo.CaminhoNoCofre(d.Roots.Vault, name)},
 	}

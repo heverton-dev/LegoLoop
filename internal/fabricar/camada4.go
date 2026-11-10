@@ -113,7 +113,7 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, inte
 	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
 	return []PlannedFile{
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Kind: "loop", Path: vault(caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Loop},
+		{Kind: "loop", Path: vault(caminhos.DirLoops, p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
 		{Kind: "dag", Path: vault(caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 		{Kind: "intent", Path: docs("intents", intent.Name), Data: intent.Data},

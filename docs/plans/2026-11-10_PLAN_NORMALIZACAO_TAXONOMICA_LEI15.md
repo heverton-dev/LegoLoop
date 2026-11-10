@@ -117,7 +117,7 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 
 | Ticket | Ação | Nature / Modelo | Dep. | Gate |
 | :--- | :--- | :--- | :--- | :--- |
-| `TICK-02.1` | `fabricar` e `compor` gravam os nomes canônicos novos (`camada4.go:115`, `engine.go:160`, `compor.go:475`). | `micro` Sonnet | `TICK-01.2` | Artefato gerado em `t.TempDir()` passa no `taxlinter` e em `legoloop validate` |
+| `TICK-02.1` | `fabricar` e `compor` gravam os nomes canônicos novos (`camada4.go:115`, `engine.go:160`, `compor.go:475`) [CONCLUÍDO]. | `micro` Sonnet | `TICK-01.2` | Artefato gerado em `t.TempDir()` passa no `taxlinter` e em `legoloop validate` |
 | `TICK-02.2` | Normalizar `docs/templates/*` e o `templates_test.go`. | `micro` Sonnet | `SG-E00` | `taxlinter docs/templates` exit 0 e `go test ./docs/templates/...` verde |
 | `TICK-02.3` | Normalizar os prompts do `fabricar` e da entrevista (10 arquivos). Teste com LLM falso: a saída gerada não contém termo proibido. | `macro` Sonnet | `TICK-02.1`, `TICK-02.2` | Teste do LLM falso verde e mutação do prompt faz o teste falhar |
 | `TICK-02.4` | Normalizar o texto de ajuda e as mensagens da CLI (`cli.go:53`, `commands.go:344`, `commands.go:375` e demais). | `nano` Haiku | `TICK-01.2` | `taxlinter internal/cli` exit 0 nos textos de ajuda |
