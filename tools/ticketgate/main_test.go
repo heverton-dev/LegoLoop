@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"errors"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -161,5 +162,26 @@ func TestParseArgs(t *testing.T) {
 	}
 	if _, err := parseArgs([]string{"-inexistente"}, &bytes.Buffer{}); err == nil {
 		t.Fatal("flag desconhecida deveria falhar")
+	}
+}
+
+func TestTaxMaxToleraAteOLimite(t *testing.T) {
+	dir := t.TempDir()
+	write(t, dir, "a.md", "# Título\n\nUma est"+"eira aqui.\n")
+	if out, err := taxStep(config{Root: "../..", Tax: []string{dir}, TaxMax: 1}).Run(); err != nil {
+		t.Fatalf("1 violação com limite 1 deveria passar: %v %q", err, out)
+	}
+	if out, err := taxStep(config{Root: "../..", Tax: []string{dir}, TaxMax: 0}).Run(); err == nil {
+		t.Fatalf("1 violação com limite 0 deveria falhar: %q", out)
+	}
+}
+
+func TestParseArgsTaxMax(t *testing.T) {
+	c, err := parseArgs([]string{"-tax", "x", "-tax-max", "38"}, io.Discard)
+	if err != nil || c.TaxMax != 38 {
+		t.Fatalf("TaxMax = %d, err = %v", c.TaxMax, err)
+	}
+	if _, err := parseArgs([]string{"-tax-max", "-1"}, io.Discard); err == nil {
+		t.Fatal("limite negativo deveria falhar")
 	}
 }

@@ -1098,6 +1098,8 @@
             "./docs/templates/...",
             "-tax",
             "docs/templates",
+            "-tax-max",
+            "38",
             "-gold"
           ]
         ],
@@ -1465,6 +1467,8 @@
             "./internal/studio/...",
             "-tax",
             "internal/studio",
+            "-tax-max",
+            "164",
             "-gold"
           ]
         ],
@@ -1552,6 +1556,8 @@
             "./internal/dag/...,./internal/graph/...",
             "-tax",
             "internal/dag,internal/graph",
+            "-tax-max",
+            "38",
             "-gold"
           ]
         ],
@@ -1704,6 +1710,8 @@
             "./internal/cli/...,./internal/fabricar/...,./internal/refinar/...",
             "-tax",
             "internal/cli,internal/fabricar,internal/refinar",
+            "-tax-max",
+            "87",
             "-gold"
           ]
         ],
@@ -1782,6 +1790,8 @@
             "./internal/assets/...,./internal/board/...,./internal/orchestrix/...,./internal/suggest/...",
             "-tax",
             "internal/assets,internal/board,internal/orchestrix,internal/suggest",
+            "-tax-max",
+            "64",
             "-gold"
           ]
         ],
@@ -1858,6 +1868,8 @@
             "./internal/runner/...,./internal/videorea/...",
             "-tax",
             "internal/runner,internal/videorea",
+            "-tax-max",
+            "28",
             "-gold"
           ]
         ],

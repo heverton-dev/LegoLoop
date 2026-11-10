@@ -1,10 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -170,10 +172,37 @@ func printViolations(violations []TaxonomyFileViolation) {
 	}
 }
 
-func main() {
-	targets := os.Args[1:]
+// parseArgs separa a flag -max dos alvos. Sem -max o limite é 0.
+func parseArgs(args []string) ([]string, int, error) {
+	fs := flag.NewFlagSet("taxlinter", flag.ContinueOnError)
+	fs.SetOutput(io.Discard)
+	max := fs.Int("max", 0, "tolera até N violações (exit 0)")
+	if err := fs.Parse(args); err != nil {
+		return nil, 0, err
+	}
+	if *max < 0 {
+		return nil, 0, fmt.Errorf("-max deve ser maior ou igual a 0")
+	}
+	targets := fs.Args()
 	if len(targets) == 0 {
 		targets = []string{"."}
+	}
+	return targets, *max, nil
+}
+
+// exitCode devolve 0 quando as violações não passam do limite e 1 quando passam.
+func exitCode(n, max int) int {
+	if n > max {
+		return 1
+	}
+	return 0
+}
+
+func main() {
+	targets, max, err := parseArgs(os.Args[1:])
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERRO NO TAXLINTER: %v\n", err)
+		os.Exit(2)
 	}
 	violations, err := runLinter(targets)
 	if err != nil {
@@ -182,8 +211,11 @@ func main() {
 	}
 	if len(violations) > 0 {
 		printViolations(violations)
-		os.Exit(1)
+		if max > 0 {
+			fmt.Fprintf(os.Stderr, "limite -max %d: %d violacao(oes)\n", max, len(violations))
+		}
+	} else {
+		fmt.Println("Linter taxonomico ASD-STE100: zero violacoes.")
 	}
-	fmt.Println("Linter taxonomico ASD-STE100: zero violacoes.")
-	os.Exit(0)
+	os.Exit(exitCode(len(violations), max))
 }

@@ -1,6 +1,6 @@
 // Comando ticketgate é o Gate padrão de cada Ticket: uma bateria única de verificação.
 //
-// Uso: go run ./tools/ticketgate [-pkgs a,b] [-tax a,b] [-gold] [-build] [-livros a,b]
+// Uso: go run ./tools/ticketgate [-pkgs a,b] [-tax a,b] [-tax-max N] [-gold] [-build] [-livros a,b]
 //
 // O DAG aceita um único command por nó. Esta peça reúne a bateria em um único argv e
 // falha com exit 1 se qualquer passo falhar. O exit 2 indica erro de uso.
@@ -18,6 +18,7 @@ type config struct {
 	Root   string
 	Pkgs   []string
 	Tax    []string
+	TaxMax int
 	Gold   bool
 	Build  bool
 	Livros []string
@@ -45,6 +46,7 @@ func parseArgs(args []string, errOut io.Writer) (config, error) {
 	fs.SetOutput(errOut)
 	pkgs := fs.String("pkgs", "", "pacotes Go separados por vírgula (ex.: ./internal/dag/...)")
 	tax := fs.String("tax", "", "pastas para o taxlinter, separadas por vírgula")
+	taxMax := fs.Int("tax-max", 0, "tolera até N violações no taxlinter (padrão 0)")
 	gold := fs.Bool("gold", false, "roda o teste dourado (./internal/golden/...)")
 	build := fs.Bool("build", false, "roda go build ./...")
 	livros := fs.String("livros", "", "pastas com PDFs para legopress auditar")
@@ -53,7 +55,10 @@ func parseArgs(args []string, errOut io.Writer) (config, error) {
 	if err := fs.Parse(args); err != nil {
 		return config{}, err
 	}
-	return config{Root: *root, Pkgs: splitList(*pkgs), Tax: splitList(*tax),
+	if *taxMax < 0 {
+		return config{}, fmt.Errorf("-tax-max deve ser maior ou igual a 0")
+	}
+	return config{Root: *root, Pkgs: splitList(*pkgs), Tax: splitList(*tax), TaxMax: *taxMax,
 		Gold: *gold, Build: *build, Livros: splitList(*livros), Bin: *bin}, nil
 }
 

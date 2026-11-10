@@ -122,3 +122,26 @@ func TestPalavrasLegitimasNaoViolam(t *testing.T) {
 		t.Fatalf("falso positivo: %v", got)
 	}
 }
+
+func TestParseArgsMax(t *testing.T) {
+	targets, max, err := parseArgs([]string{"-max", "38", "docs/templates", "skills"})
+	if err != nil || max != 38 || len(targets) != 2 || targets[0] != "docs/templates" {
+		t.Fatalf("targets = %v, max = %d, err = %v", targets, max, err)
+	}
+	targets, max, err = parseArgs([]string{"internal"})
+	if err != nil || max != 0 || len(targets) != 1 {
+		t.Fatalf("sem -max: targets = %v, max = %d, err = %v", targets, max, err)
+	}
+	if _, _, err := parseArgs([]string{"-max", "-3", "x"}); err == nil {
+		t.Fatal("limite negativo deveria falhar")
+	}
+}
+
+func TestExitCode(t *testing.T) {
+	cases := []struct{ n, max, want int }{{0, 0, 0}, {1, 0, 1}, {38, 38, 0}, {39, 38, 1}}
+	for _, c := range cases {
+		if got := exitCode(c.n, c.max); got != c.want {
+			t.Errorf("exitCode(%d,%d) = %d, esperado %d", c.n, c.max, got, c.want)
+		}
+	}
+}

@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -51,7 +52,11 @@ func goldStep(c config) step {
 func buildStep(c config) step { return cmdStep("go build ./...", c.Root, "go", "build", "./...") }
 
 func taxStep(c config) step {
-	args := append([]string{"run", "./tools/taxlinter"}, c.Tax...)
+	args := []string{"run", "./tools/taxlinter"}
+	if c.TaxMax > 0 {
+		args = append(args, "-max", strconv.Itoa(c.TaxMax))
+	}
+	args = append(args, c.Tax...)
 	return cmdStep("taxlinter "+strings.Join(c.Tax, " "), c.Root, "go", args...)
 }
 
