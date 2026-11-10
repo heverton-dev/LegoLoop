@@ -29,7 +29,7 @@ func (fakeYtdlp) Run(_ context.Context, _ string, args ...string) ([]byte, error
 
 func TestVideoReaCLI_HelpAndInvalid(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}, Discover: noModels}
 
 	// 1. Help
 	exit := cli.Run(context.Background(), []string{"video-rea", "--help"}, deps)
@@ -49,7 +49,7 @@ func TestVideoReaCLI_HelpAndInvalid(t *testing.T) {
 func TestVideoReaCLI_ForensicsTranscriptFile(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}, Discover: noModels}
 
 	videoJSON := filepath.Join(tempDir, "video.json")
 	if exit := cli.Run(context.Background(), []string{
@@ -108,7 +108,7 @@ func TestVideoReaCLI_ForensicsTranscriptFile(t *testing.T) {
 func TestVideoReaCLI_PipelineReal(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}, Discover: noModels}
 
 	// 1. Ingest
 	videoJSON := filepath.Join(tempDir, "video.json")
@@ -222,7 +222,7 @@ func TestVideoReaCLI_PipelineReal(t *testing.T) {
 func TestVideoReaCLI_CurateNomeCanônico(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}, Discover: noModels}
 
 	videoJSON := filepath.Join(tempDir, "video.json")
 	if exit := cli.Run(context.Background(), []string{
@@ -342,7 +342,7 @@ func TestVideoReaCLI_SuporteAModelEEffort(t *testing.T) {
 func TestVideoReaCLI_ForensicsRejeitaDossieSemAchados(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}, Discover: noModels}
 	videoJSON := filepath.Join(tempDir, "video.json")
 	if exit := cli.Run(context.Background(), []string{"video-rea", "ingest", "--url", "https://youtu.be/abc", "--out", videoJSON}, deps); exit != 0 {
 		t.Fatalf("ingest falhou: %s", stderr.String())
@@ -357,3 +357,6 @@ func TestVideoReaCLI_ForensicsRejeitaDossieSemAchados(t *testing.T) {
 		t.Error("dossiê inválido não pode ser gravado")
 	}
 }
+
+// noModels evita a sondagem de rede do inventário real: sem modelos, o cérebro fica nulo.
+func noModels(context.Context) provider.Inventory { return provider.Inventory{} }
