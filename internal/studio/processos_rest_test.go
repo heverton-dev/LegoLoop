@@ -32,7 +32,7 @@ func TestProcessosAndDAGCanonicalRoutes(t *testing.T) {
 	}
 
 	// 2. POST /api/processos para criar novo processo
-	lp := studiodoc.Loop{
+	lp := studiodoc.Processo{
 		ID:          "proc-canonico",
 		Name:        "Processo Canônico",
 		Description: "Um processo canônico ASD-STE100",

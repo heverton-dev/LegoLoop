@@ -369,7 +369,7 @@ func TestComposeSubloopSuccess(t *testing.T) {
 	}
 	s.Loops = store
 
-	lp := &studiodoc.Loop{
+	lp := &studiodoc.Processo{
 		ID:      "sub-pipe",
 		Name:    "Sub Pipe",
 		Version: "2.0.0",

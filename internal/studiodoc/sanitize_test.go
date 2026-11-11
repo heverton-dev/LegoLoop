@@ -35,7 +35,7 @@ func TestStoreSaveNormalizesToKebab(t *testing.T) {
 	}
 
 	rawName := "Meu Fluxo Especial V1"
-	lp := &Loop{
+	lp := &Processo{
 		ID:   ToKebabCase(rawName),
 		Name: rawName,
 		Nodes: []dag.Node{

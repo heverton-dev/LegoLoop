@@ -92,7 +92,7 @@ func (s *Server) handleLoopsSave(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var lp studiodoc.Loop
+	var lp studiodoc.Processo
 	if err := json.NewDecoder(r.Body).Decode(&lp); err != nil {
 		http.Error(w, "JSON inválido: "+err.Error(), http.StatusBadRequest)
 		return

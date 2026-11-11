@@ -56,7 +56,7 @@ func TestCheckSubloopsLinearValid(t *testing.T) {
 	}
 
 	// B chama C
-	b := &studiodoc.Loop{
+	b := &studiodoc.Processo{
 		ID:      "loop-b",
 		Name:    "Loop B",
 		Version: "2.0.0",
@@ -68,7 +68,7 @@ func TestCheckSubloopsLinearValid(t *testing.T) {
 	}
 
 	// A chama B
-	a := &studiodoc.Loop{
+	a := &studiodoc.Processo{
 		ID:      "loop-a",
 		Name:    "Loop A",
 		Version: "2.0.0",
@@ -91,7 +91,7 @@ func TestCheckSubloopsDirectSelfCycle(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	a := &studiodoc.Loop{
+	a := &studiodoc.Processo{
 		ID:      "loop-a",
 		Name:    "Loop A",
 		Version: "2.0.0",
@@ -119,7 +119,7 @@ func TestCheckSubloopsMutualCycle(t *testing.T) {
 	}
 
 	// A chama B
-	a := &studiodoc.Loop{
+	a := &studiodoc.Processo{
 		ID:      "loop-a",
 		Name:    "Loop A",
 		Version: "2.0.0",
@@ -127,7 +127,7 @@ func TestCheckSubloopsMutualCycle(t *testing.T) {
 		Nodes:   []dag.Node{makeSubloopNode("na", "loop-b")},
 	}
 	// B chama A
-	b := &studiodoc.Loop{
+	b := &studiodoc.Processo{
 		ID:      "loop-b",
 		Name:    "Loop B",
 		Version: "2.0.0",
@@ -168,7 +168,7 @@ func TestCheckSubloopsMaxDepthExceeded(t *testing.T) {
 	prev := "loop-leaf"
 	for i := 9; i >= 1; i-- {
 		id := fmt.Sprintf("loop-%d", i)
-		l := &studiodoc.Loop{
+		l := &studiodoc.Processo{
 			ID:      id,
 			Name:    fmt.Sprintf("Loop %d", i),
 			Version: "2.0.0",
@@ -202,7 +202,7 @@ func TestCheckSubloopsMissingRef(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	a := &studiodoc.Loop{
+	a := &studiodoc.Processo{
 		ID:      "loop-a",
 		Name:    "Loop A",
 		Version: "2.0.0",

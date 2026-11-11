@@ -21,7 +21,7 @@ type Ports struct {
 const AnyArtifact = "Artifact:Any"
 
 // DerivePorts infere as portas do sub-loop a partir do artefato final e das raízes.
-func DerivePorts(l *Loop) (*Ports, error) {
+func DerivePorts(l *Processo) (*Ports, error) {
 	if len(l.Nodes) == 0 {
 		return nil, errors.New("loop não possui nós")
 	}

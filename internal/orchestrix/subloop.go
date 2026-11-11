@@ -49,7 +49,7 @@ func (o *Orchestrix) runSubloop(ctx context.Context, n dag.Node, workdir string)
 	return o.finalizeSubloop(n, workdir, subWorkdir, subReport)
 }
 
-func parseSubDAG(lp *studiodoc.Loop) (*dag.DAG, error) {
+func parseSubDAG(lp *studiodoc.Processo) (*dag.DAG, error) {
 	raw, err := json.Marshal(struct {
 		ID      string       `json:"id,omitempty"`
 		Name    string       `json:"name"`
@@ -63,7 +63,7 @@ func parseSubDAG(lp *studiodoc.Loop) (*dag.DAG, error) {
 	return dag.Parse(raw)
 }
 
-func (o *Orchestrix) transferInputs(n dag.Node, lp *studiodoc.Loop, srcDir, dstDir string) error {
+func (o *Orchestrix) transferInputs(n dag.Node, lp *studiodoc.Processo, srcDir, dstDir string) error {
 	toCopy := make(map[string]bool)
 	for _, art := range n.Inputs {
 		if art != "" {

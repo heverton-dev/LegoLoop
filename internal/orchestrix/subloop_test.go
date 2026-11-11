@@ -22,7 +22,7 @@ func TestRunSubloopSuccess(t *testing.T) {
 	}
 
 	// Subloop com 2 nós: n1 (intermediário) e n2 (final)
-	sub := &studiodoc.Loop{
+	sub := &studiodoc.Processo{
 		ID:      "pesquisa-mercado",
 		Name:    "Pesquisa de Mercado",
 		Version: "2.0.0",
@@ -162,7 +162,7 @@ func TestRunSubloopInputTransfer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sub := &studiodoc.Loop{
+	sub := &studiodoc.Processo{
 		ID:      "echo-input",
 		Name:    "Echo Input",
 		Version: "2.0.0",

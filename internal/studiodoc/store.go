@@ -37,7 +37,7 @@ func (s *Store) filePath(id string) (string, error) {
 	return filepath.Join(s.dir, id+caminhos.SufixoLoop), nil
 }
 
-func validateLoopDAG(l *Loop) error {
+func validateLoopDAG(l *Processo) error {
 	v := struct {
 		ID          string       `json:"id,omitempty"`
 		Name        string       `json:"name"`
@@ -64,7 +64,7 @@ func validateLoopDAG(l *Loop) error {
 }
 
 // Save valida estruturalmente o loop como DAG e salva atomicamente.
-func (s *Store) Save(l *Loop) error {
+func (s *Store) Save(l *Processo) error {
 	if err := ValidateID(l.ID); err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func writeAtomic(dest string, data []byte) error {
 }
 
 // Get lê e decodifica um loop do acervo pelo identificador.
-func (s *Store) Get(id string) (*Loop, error) {
+func (s *Store) Get(id string) (*Processo, error) {
 	p, err := s.filePath(id)
 	if err != nil {
 		return nil, err
@@ -111,7 +111,7 @@ func (s *Store) Get(id string) (*Loop, error) {
 		}
 		return nil, err
 	}
-	var lp Loop
+	var lp Processo
 	if err := json.Unmarshal(data, &lp); err != nil {
 		return nil, fmt.Errorf("decodificar loop: %w", err)
 	}
@@ -158,7 +158,7 @@ func idDeArquivo(e os.DirEntry) string {
 }
 
 // Summary constrói o resumo do loop para exibição.
-func (l *Loop) Summary() Summary {
+func (l *Processo) Summary() Summary {
 	finalArt := ""
 	if len(l.Nodes) > 0 {
 		finalArt = l.Nodes[len(l.Nodes)-1].Output.Artifact
@@ -179,7 +179,7 @@ func (l *Loop) Summary() Summary {
 }
 
 // Duplicate cria uma cópia independente de um loop com novo identificador e nome.
-func (s *Store) Duplicate(id, newID, newName string) (*Loop, error) {
+func (s *Store) Duplicate(id, newID, newName string) (*Processo, error) {
 	orig, err := s.Get(id)
 	if err != nil {
 		return nil, err

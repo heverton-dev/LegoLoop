@@ -157,7 +157,7 @@ func marshalDAG(d dag.DAG) ([]byte, error) {
 }
 
 func marshalLoop(p Processo, d dag.DAG, now time.Time) ([]byte, error) {
-	lp := studiodoc.Loop{ID: p.Nome, Name: p.Nome, Description: d.Description, Version: p.Versao,
+	lp := studiodoc.Processo{ID: p.Nome, Name: p.Nome, Description: d.Description, Version: p.Versao,
 		Trigger: d.Trigger, Nodes: d.Nodes, CreatedAt: now.UTC(), UpdatedAt: now.UTC()}
 	data, err := json.MarshalIndent(lp, "", "  ")
 	if err != nil {

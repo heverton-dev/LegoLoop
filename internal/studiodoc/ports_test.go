@@ -10,7 +10,7 @@ import (
 
 func TestDerivePortsClassicLoop(t *testing.T) {
 	// Loop clássico: interview (Consumes Idea, Produces Briefing) -> aidd-spec (Consumes Briefing, Produces Spec)
-	lp := &studiodoc.Loop{
+	lp := &studiodoc.Processo{
 		ID:      "idea-to-spec",
 		Name:    "Idea to Spec",
 		Version: "2.0.0",
@@ -67,7 +67,7 @@ func TestDerivePortsClassicLoop(t *testing.T) {
 
 func TestDerivePortsCustomGenericLoop(t *testing.T) {
 	// Loop genérico com artefato customizado
-	lp := &studiodoc.Loop{
+	lp := &studiodoc.Processo{
 		ID:      "custom-pipeline",
 		Name:    "Custom Pipeline",
 		Version: "2.0.0",
@@ -106,7 +106,7 @@ func TestDerivePortsCustomGenericLoop(t *testing.T) {
 }
 
 func TestDerivePortsEmptyLoop(t *testing.T) {
-	lp := &studiodoc.Loop{
+	lp := &studiodoc.Processo{
 		ID:      "empty",
 		Name:    "Empty",
 		Version: "2.0.0",

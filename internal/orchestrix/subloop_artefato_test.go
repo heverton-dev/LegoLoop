@@ -20,7 +20,7 @@ func subloopFinal(t *testing.T) *orchestrix.Orchestrix {
 	if err != nil {
 		t.Fatal(err)
 	}
-	sub := &studiodoc.Loop{
+	sub := &studiodoc.Processo{
 		ID: "sub-final", Name: "Sub Final", Version: "1.0.0", Trigger: &dag.Trigger{Type: dag.TriggerManual},
 		Nodes: []dag.Node{{
 			ID: "n1", Type: dag.TypeScript, Command: []string{os.Args[0], "FINAL.txt"},

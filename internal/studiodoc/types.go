@@ -24,8 +24,8 @@ func ValidateID(id string) error {
 	return nil
 }
 
-// Loop representa um loop salvo no acervo (.loop.json).
-type Loop struct {
+// Processo representa um loop salvo no acervo (.loop.json).
+type Processo struct {
 	ID          string       `json:"id"`
 	Name        string       `json:"name"`
 	Description string       `json:"description,omitempty"`

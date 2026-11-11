@@ -10,8 +10,8 @@ import (
 	"legoloop/internal/studiodoc"
 )
 
-func sampleValidLoop(id, name string) *studiodoc.Loop {
-	return &studiodoc.Loop{
+func sampleValidLoop(id, name string) *studiodoc.Processo {
+	return &studiodoc.Processo{
 		ID:          id,
 		Name:        name,
 		Description: "Loop de teste",
@@ -73,7 +73,7 @@ func TestStoreSaveInvalidDAG(t *testing.T) {
 	}
 
 	// Loop com nó sem trigger e com dependência inexistente
-	bad := &studiodoc.Loop{
+	bad := &studiodoc.Processo{
 		ID:      "invalido",
 		Name:    "Inválido",
 		Version: "2.0.0",

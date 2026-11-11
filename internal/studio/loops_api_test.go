@@ -32,7 +32,7 @@ func TestLoopsAPICRUD(t *testing.T) {
 	}
 
 	// 2. Salvar novo loop
-	lp := studiodoc.Loop{
+	lp := studiodoc.Processo{
 		ID:          "meu-loop",
 		Name:        "Meu Loop",
 		Description: "Um loop de teste",
@@ -59,7 +59,7 @@ func TestLoopsAPICRUD(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET /api/loops/meu-loop esperado 200, obteve %d", rec.Code)
 	}
-	var got studiodoc.Loop
+	var got studiodoc.Processo
 	decode(t, rec, &got)
 	if got.ID != "meu-loop" || got.Name != "Meu Loop" {
 		t.Fatalf("loop divergente: %+v", got)
@@ -96,7 +96,7 @@ func TestLoopsAPICRUD(t *testing.T) {
 	if recFork.Code != http.StatusOK {
 		t.Fatalf("POST /api/loops/meu-loop/fork esperado 200, obteve %d: %s", recFork.Code, recFork.Body.String())
 	}
-	var forked studiodoc.Loop
+	var forked studiodoc.Processo
 	decode(t, recFork, &forked)
 	if forked.ID != "meu-loop-fork" {
 		t.Fatalf("ID forked incorreto: %s", forked.ID)

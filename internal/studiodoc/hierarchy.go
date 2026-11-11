@@ -11,12 +11,12 @@ import (
 const MaxSubloopDepth = 8
 
 // ValidateHierarchy inspeciona as dependências de sub-loops detectando ciclos e limites de profundidade.
-func (s *Store) ValidateHierarchy(root *Loop) error {
+func (s *Store) ValidateHierarchy(root *Processo) error {
 	visited := []string{root.ID}
 	return s.walkSubloops(root, visited)
 }
 
-func (s *Store) walkSubloops(cur *Loop, stack []string) error {
+func (s *Store) walkSubloops(cur *Processo, stack []string) error {
 	if len(stack) > MaxSubloopDepth {
 		return fmt.Errorf("profundidade de sub-loops excede o limite máximo de %d: %s",
 			MaxSubloopDepth, strings.Join(stack, " -> "))

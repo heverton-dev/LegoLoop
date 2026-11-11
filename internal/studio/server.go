@@ -337,7 +337,7 @@ func (s *Server) registerLoop(d *dag.DAG) {
 	if s.Loops == nil || d == nil {
 		return
 	}
-	_ = s.Loops.Save(&studiodoc.Loop{
+	_ = s.Loops.Save(&studiodoc.Processo{
 		ID:          d.Name,
 		Name:        d.Name,
 		Description: d.Description,
