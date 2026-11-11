@@ -59,7 +59,7 @@ func (db *AntibodiesDB) Find(pkg, errSig string) (*Antibody, bool) {
 	return nil, false
 }
 
-// InjectPreventiveContext gera um bloco de advertência preventiva com os anticorpos do pacote.
+// InjectPreventiveContext gera um texto de advertência preventiva com os anticorpos do pacote.
 func (db *AntibodiesDB) InjectPreventiveContext(pkg string) string {
 	db.mu.RLock()
 	defer db.mu.RUnlock()

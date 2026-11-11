@@ -1,8 +1,6 @@
 // Package caminhos centraliza os nomes de pasta e de arquivo do contrato de
 // Processo em disco. Nenhum outro pacote grava esses literais: todos leem
-// daqui. A gravação segue o dialeto antigo (loops/ e pipeline.dag.json). A
-// leitura aceita os dois dialetos (TICK-01.2): o antigo e o novo
-// (processos/ e processo.dag.json), com preferência para o novo.
+// daqui. A leitura aceita os dois dialetos, com preferência para o novo.
 package caminhos
 
 import (
@@ -11,14 +9,10 @@ import (
 )
 
 const (
-	// DirLoops é a pasta dos Processos no Cofre, no projeto e no acervo.
-	DirLoops = "loops"
-	// ArquivoDAG é o arquivo do contrato DAG dentro da pasta de um Processo.
-	ArquivoDAG = "pipeline.dag.json"
-	// ChaveAPILoops é a chave JSON da lista de Processos na API do Studio.
+	DirLoops      = "loops"
+	ArquivoDAG    = "pipeline.dag.json"
 	ChaveAPILoops = "loops"
-	// SufixoLoop é a extensão do documento do Studio no dialeto antigo.
-	SufixoLoop = ".loop.json"
+	SufixoLoop    = ".loop.json"
 )
 
 const (
@@ -30,7 +24,6 @@ const (
 	SufixoStudio = ".studio.json"
 )
 
-// DirLoopsEm resolve a pasta dos Processos sob a base informada.
 func DirLoopsEm(base string) string {
 	return filepath.Join(base, DirLoops)
 }

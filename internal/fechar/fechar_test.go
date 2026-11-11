@@ -207,16 +207,16 @@ func TestParidadeDoisNomes(t *testing.T) {
 func testarParidadeSHA256(t *testing.T, pasta, arquivo string) {
 	dir := t.TempDir()
 	dagsDir := filepath.Join(dir, "docs", "dags")
-	loopsDir := filepath.Join(dir, pasta, "teste")
+	procDir := filepath.Join(dir, pasta, "teste")
 	_ = os.MkdirAll(dagsDir, 0o755)
-	_ = os.MkdirAll(loopsDir, 0o755)
+	_ = os.MkdirAll(procDir, 0o755)
 
 	dagIso := filepath.Join(dagsDir, "2026-11-09_DAG_TESTE.json")
-	loopDag := filepath.Join(loopsDir, arquivo)
+	procDag := filepath.Join(procDir, arquivo)
 
 	// Caso 1: Idênticos -> Sucesso
 	_ = os.WriteFile(dagIso, []byte(`{"name":"teste","version":"1.0.0"}`), 0o644)
-	_ = os.WriteFile(loopDag, []byte(`{"name":"teste","version":"1.0.0"}`), 0o644)
+	_ = os.WriteFile(procDag, []byte(`{"name":"teste","version":"1.0.0"}`), 0o644)
 
 	deps := fechar.Deps{RepoDir: dir, SkipBuild: true}
 	req := fechar.Request{Slug: "teste"}
@@ -226,7 +226,7 @@ func testarParidadeSHA256(t *testing.T, pasta, arquivo string) {
 	}
 
 	// Caso 2: Divergentes -> Erro na etapa 4
-	_ = os.WriteFile(loopDag, []byte(`{"name":"teste-divergente"}`), 0o644)
+	_ = os.WriteFile(procDag, []byte(`{"name":"teste-divergente"}`), 0o644)
 	resDiv, _ := fechar.Executar(nil, req, deps)
 	if resDiv.Sucesso {
 		t.Fatalf("esperava falha quando DAGs divergem em SHA-256")

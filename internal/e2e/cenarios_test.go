@@ -118,12 +118,12 @@ Schemas e payloads definidos no padrão canônico.
 const e2eMirrorReply = `HIPÓTESE: processo de referência
 CONFIANÇA: 98%
 ESPELHO CANÔNICO:
-- Resultado Esperado: fluxo automatizado ponta a ponta
+- Resultado Esperado: execução automatizada ponta a ponta
 - Quem se Beneficia: time de engenharia e operações
 - Por que Agora: ganho de escala e governança determinística
-- Critério de Sucesso: esteira completa aprovada com zero falhas
+- Critério de Sucesso: execução completa aprovada com zero falhas
 - Restrições Inegociáveis: hermetismo absoluto e zero stubs
-- Fora de Escopo: alterações fora dos módulos autorizados`
+- Fora de Escopo: alterações fora das peças autorizadas`
 
 func (f *fakeE2EBrain) Chat(_ context.Context, msgs []interview.Message) (string, error) {
 	if len(msgs) == 0 {
@@ -169,12 +169,12 @@ func fakeClarification() *fabricar.Clarification {
 		Confidence: 98,
 		Turns:      1,
 		Mirror: interview.Mirror{
-			Outcome:     "fluxo automatizado ponta a ponta",
+			Outcome:     "execução automatizada ponta a ponta",
 			User:        "time de engenharia e operações",
 			WhyNow:      "ganho de escala e governança determinística",
-			Success:     "esteira completa aprovada com zero falhas",
+			Success:     "execução completa aprovada com zero falhas",
 			Constraints: []string{"hermetismo absoluto e zero stubs"},
-			OutOfScope:  []string{"alterações fora dos módulos autorizados"},
+			OutOfScope:  []string{"alterações fora das peças autorizadas"},
 		},
 	}
 }
@@ -381,7 +381,7 @@ func TestE2ECenarios(t *testing.T) {
 	cenarios := []cenarioRef{
 		{
 			nome:      "build-engine",
-			objetivo:  "Compilar e testar pipeline central de software com rigor de compilação",
+			objetivo:  "Compilar e testar núcleo central de software com rigor de compilação",
 			categoria: fabricar.CategoryBuild,
 			porta:     "cli",
 			cerebro:   "code-pro",

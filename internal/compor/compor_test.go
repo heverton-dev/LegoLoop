@@ -59,6 +59,8 @@ func processoDe(nome string, n int) processo.Processo {
 
 type cofre struct{ vault, docs string }
 
+func pastaDoCofre(vault string) string { return caminhos.DirLoopsEm(vault) }
+
 func slugDe(nome string) string {
 	return strings.ToUpper(strings.ReplaceAll(strings.TrimPrefix(nome, "legoloop-"), "-", "_"))
 }
@@ -77,8 +79,8 @@ func gravar(t *testing.T, c cofre, p processo.Processo) {
 	doc := func(sub, file string) string { return filepath.Join(c.docs, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(c.vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(c.vault, caminhos.DirLoops, p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
-		{Path: filepath.Join(c.vault, caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
+		{Path: filepath.Join(pastaDoCofre(c.vault), p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
+		{Path: filepath.Join(pastaDoCofre(c.vault), p.Nome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(c.vault, p.Nome), Data: pj},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Path: doc("plans", pr.PlanNome), Data: []byte(pr.Plan)},
@@ -170,7 +172,7 @@ func lerProcesso(t *testing.T, c cofre, nome string) processo.Processo {
 }
 
 func TestCompor(t *testing.T) {
-	t.Run("ligar b@1.0.0 em a: etapa composta, DAG com subloop, versão 1.1.0", testLigar)
+	t.Run("ligar b@1.0.0 em a: etapa composta, DAG com subprocesso, versão 1.1.0", testLigar)
 	t.Run("ciclo direto: a em b depois de b em a", testCicloDireto)
 	t.Run("ciclo transitivo: a->b->c->a", testCicloTransitivo)
 	t.Run("ligar o processo nele mesmo é ciclo", testAutoCiclo)
@@ -230,7 +232,7 @@ func testLigar(t *testing.T) {
 	}
 }
 
-// testOutroDia: o compor feito dias depois mantém os nomes de SPEC, PLAN, ROUTE e INTENT e a criação do loop.
+// testOutroDia: o compor feito dias depois mantém os nomes de SPEC, PLAN, ROUTE e INTENT e a criação do documento.
 func testOutroDia(t *testing.T) {
 	c := semear(t, nomeA, nomeB)
 	nomes := func() []string {
@@ -257,9 +259,9 @@ func testOutroDia(t *testing.T) {
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 	}
-	b, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+caminhos.SufixoStudio))
+	b, err := os.ReadFile(filepath.Join(pastaDoCofre(c.vault), nomeA+caminhos.SufixoStudio))
 	if err != nil || json.Unmarshal(b, &lp) != nil || !lp.CreatedAt.Equal(inicio) || !lp.UpdatedAt.Equal(inicio.Add(48*time.Hour)) {
-		t.Errorf("loop: criado %v, atualizado %v (%v); esperava a criação mantida", lp.CreatedAt, lp.UpdatedAt, err)
+		t.Errorf("studio: criado %v, atualizado %v (%v); esperava a criação mantida", lp.CreatedAt, lp.UpdatedAt, err)
 	}
 }
 
@@ -333,7 +335,7 @@ func arvoreDe(t *testing.T, c cofre, nome string) map[string]string {
 
 func conferirDAG(t *testing.T, c cofre) {
 	t.Helper()
-	b, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+".dag.json"))
+	b, err := os.ReadFile(filepath.Join(pastaDoCofre(c.vault), nomeA+".dag.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -348,9 +350,9 @@ func conferirDAG(t *testing.T, c cofre) {
 	var lp struct {
 		Nodes []dag.Node `json:"nodes"`
 	}
-	lb, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+caminhos.SufixoStudio))
+	lb, err := os.ReadFile(filepath.Join(pastaDoCofre(c.vault), nomeA+caminhos.SufixoStudio))
 	if err != nil || json.Unmarshal(lb, &lp) != nil || len(lp.Nodes) != 4 || lp.Nodes[3].Type != dag.TypeSubloop {
-		t.Errorf("o loop de a não tem o subloop: %v", err)
+		t.Errorf("o documento de a não tem a etapa composta: %v", err)
 	}
 }
 
@@ -404,7 +406,6 @@ func testInexistente(t *testing.T) {
 	c := semear(t, nomeA, nomeB)
 	esperarFalha(t, c, nomeA, "legoloop-zzz@1.0.0", compor.ErrNaoExiste, "legoloop-zzz", "não existe", "legoloop listar")
 	esperarFalha(t, c, "legoloop-zzz", nomeB+"@1.0.0", compor.ErrNaoExiste, "legoloop-zzz")
-	// processo da v1: só o .loop.json, sem o .processo.json
 	if err := os.Remove(processo.CaminhoNoCofre(c.vault, nomeB)); err != nil {
 		t.Fatal(err)
 	}
@@ -633,7 +634,7 @@ func testMesmoArtefato(t *testing.T) {
 	if strings.Contains(e.Gate, "'out/02_verificar.md'") || a.Etapas[1].Produz != velha.Produz || a.Etapas[1].Gate != velha.Gate {
 		t.Errorf("o gate da etapa nova não pode conferir o arquivo de a, e a e02 de a não muda: %+v", a.Etapas)
 	}
-	b, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirLoops, nomeA+".dag.json"))
+	b, err := os.ReadFile(filepath.Join(pastaDoCofre(c.vault), nomeA+".dag.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -642,7 +643,7 @@ func testMesmoArtefato(t *testing.T) {
 		t.Fatalf("o DAG gravado não é válido: %v", err)
 	}
 	if o := d.Nodes[2].Output; o.Artifact != e.Produz.Caminho || o.SubArtifact != "out/02_verificar.md" || o.Gate != quer {
-		t.Errorf("nó do subloop: %+v", o)
+		t.Errorf("nó composto: %+v", o)
 	}
 }
 
@@ -650,15 +651,15 @@ func testCartao(t *testing.T) {
 	c := semear(t, nomeA, nomeB)
 	var texto, diff string
 	confirm := func(pl compor.Plano, _ func(compor.Ligacao) (compor.Plano, error)) (bool, error) {
-		card := pl.Cartao()
-		if vs := ste.LintCartao(card); len(vs) != 0 {
+		cartao := pl.Cartao()
+		if vs := ste.LintCartao(cartao); len(vs) != 0 {
 			t.Errorf("o cartão viola o STE-PT: %v", vs)
 		}
-		if len(card.Parametros) != 2 || card.Parametros[0].Nome != "titulo" || card.Parametros[1].Nome != "depende" ||
-			card.Parametros[1].Valor != "e03" {
-			t.Errorf("parâmetros do personalizar: %+v", card.Parametros)
+		if len(cartao.Parametros) != 2 || cartao.Parametros[0].Nome != "titulo" || cartao.Parametros[1].Nome != "depende" ||
+			cartao.Parametros[1].Valor != "e03" {
+			t.Errorf("parâmetros do personalizar: %+v", cartao.Parametros)
 		}
-		texto, diff = card.Render(), pl.Diff()
+		texto, diff = cartao.Render(), pl.Diff()
 		return false, nil
 	}
 	req := compor.Request{Nome: nomeA, Ligacao: compor.Ligacao{Composto: nomeB + "@1.0.0"}}

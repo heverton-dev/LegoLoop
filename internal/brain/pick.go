@@ -72,7 +72,7 @@ func preferredByEffort(models []provider.Model, effort Effort) provider.Model {
 	return preferred(models)
 }
 
-// preferred é o primeiro modelo da lista; no claude CLI prefere o sonnet (bom custo e capacidade).
+// preferred é o primeiro modelo da lista; no claude CLI prefere o sonnet (bom custo e qualidade).
 func preferred(models []provider.Model) provider.Model {
 	first := models[0]
 	if first.Source != provider.SourceClaudeCLI {

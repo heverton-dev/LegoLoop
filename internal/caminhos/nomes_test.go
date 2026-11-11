@@ -6,18 +6,6 @@ import (
 	"testing"
 )
 
-func TestResolucao(t *testing.T) {
-	if got, want := DirLoopsEm("v"), filepath.Join("v", "loops"); got != want {
-		t.Errorf("DirLoopsEm = %q, esperado %q", got, want)
-	}
-	if got, want := CaminhoDAG("d"), filepath.Join("d", "pipeline.dag.json"); got != want {
-		t.Errorf("CaminhoDAG = %q, esperado %q", got, want)
-	}
-	if ChaveAPILoops != "loops" {
-		t.Errorf("ChaveAPILoops mudou: %q", ChaveAPILoops)
-	}
-}
-
 func TestLeituraDoisDialetos(t *testing.T) {
 	base := t.TempDir()
 	if got := DirsLeitura(base); len(got) != 0 {

@@ -14,8 +14,7 @@ import (
 	"legoloop/internal/processo"
 )
 
-// ErrDAGDivergente sinaliza divergência de hash SHA-256 entre docs/dags e loops/.
-var ErrDAGDivergente = errors.New("fechar: hash SHA-256 divergente entre docs/dags e loops/")
+var ErrDAGDivergente = errors.New("fechar: hash SHA-256 divergente entre docs/dags e a pasta de Processos")
 
 // Deps encapsula as bordas e dependências externas do fechamento.
 type Deps struct {
@@ -76,7 +75,7 @@ func executarEtapas(ctx context.Context, d *Deps, slug, canon string, dry bool, 
 	runEtapa(res, 3, "Skill Canônica Universal", func() (string, error) {
 		return fecharSkill(d, slug, canon, dry)
 	})
-	runEtapa(res, 4, "Loop & Grafo DAG", func() (string, error) {
+	runEtapa(res, 4, "Processo & Grafo DAG", func() (string, error) {
 		return fecharDAG(d, slug, canon, dry)
 	})
 	runEtapa(res, 5, "Recompilação Fresca do Binário", func() (string, error) {
@@ -148,11 +147,11 @@ Opera sob a política de Zero Stubs com integridade e reprodutibilidade determin
 ## 2. Comandos e Interfaces
 * **CLI:** legoloop %s [opções]
 * **Chat:** /legoloop-%s
-* **Studio Web:** Card de processo no dashboard local.
+* **Studio Web:** Ticket de processo no dashboard local.
 
 ---
 
-## 3. Fluxo Operacional
+## 3. Uso Operacional
 1. **Entrada e Validação:** Parsing de parâmetros e seleção cognitiva via internal/brain.
 2. **Execução Hermética:** Processamento em contexto estéril com isolamento em scratch/.
 3. **Portão de Saída:** Auditoria mecânica antes de qualquer emissão de artefatos.
@@ -223,14 +222,14 @@ func resolverDirProcesso(repoDir, slug string) string {
 	return filepath.Join(caminhos.DirLoopsEm(repoDir), slug)
 }
 
-func auditDAGParity(repoDir, slug, loopDAGPath string) error {
+func auditDAGParity(repoDir, slug, procDAGPath string) error {
 	dagsDir := filepath.Join(repoDir, "docs", "dags")
 	pattern := filepath.Join(dagsDir, fmt.Sprintf("*_DAG_%s.json", upperSlug(slug)))
 	matches, _ := filepath.Glob(pattern)
 	if len(matches) == 0 {
 		return nil
 	}
-	par, err := processo.CheckParity(matches[len(matches)-1], loopDAGPath)
+	par, err := processo.CheckParity(matches[len(matches)-1], procDAGPath)
 	if err != nil {
 		return err
 	}

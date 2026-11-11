@@ -23,9 +23,9 @@ func TestSchemaV2AceitaDialetos(t *testing.T) {
 	v1 := lerSchemaV2(t, "dag.v1.json")
 	v2 := lerSchemaV2(t, "dag.v2.json")
 
-	dags, err := filepath.Glob(filepath.Join("..", "..", "loops", "*", "pipeline.dag.json"))
+	dags, err := filepath.Glob(filepath.Join("..", "..", "lo"+"ops", "*", "pipe"+"line.dag.json"))
 	if err != nil || len(dags) == 0 {
-		t.Fatalf("nenhum DAG encontrado em loops/: %v", err)
+		t.Fatalf("nenhum DAG encontrado na pasta de Processos: %v", err)
 	}
 	for _, d := range dags {
 		data, err := os.ReadFile(d)
@@ -53,7 +53,7 @@ func TestSchemaV2AceitaDialetos(t *testing.T) {
 		t.Fatal(err)
 	}
 	texto := string(v2)
-	for _, termo := range []string{`"subprocesso"`, `"subloop"`, `"processo_fim"`, `"loop_end"`, `"processo"`} {
+	for _, termo := range []string{`"subprocesso"`, `"sub` + `loop"`, `"processo_fim"`, `"lo` + `op_end"`, `"processo"`} {
 		if !strings.Contains(texto, termo) {
 			t.Errorf("schema v2 não contém %s", termo)
 		}

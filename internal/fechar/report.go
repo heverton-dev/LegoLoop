@@ -37,7 +37,7 @@ func renderCabecalho(slug, canon string, res *Result, d time.Time) string {
 
 func renderResumo(canon string, res *Result) string {
 	return fmt.Sprintf("## 1. Resumo Executivo\n\n"+
-		"O processo `%s` foi canonizado com sucesso através do Pipeline Final de Fechamento em 9 etapas encadeadas. "+
+		"O processo `%s` foi canonizado com sucesso através do Fechamento Final em 9 etapas encadeadas. "+
 		"Todos os artefatos de governança viva, livros didáticos, skills, manuais, binários e índices foram validados.\n\n---\n\n",
 		canon)
 }
@@ -103,7 +103,7 @@ func renderTabelaCusto(t *TelemetriaOrcamento) string {
 		desvioCusto = ((t.CustoGastoUSD - t.CustoEstimadoUSD) / t.CustoEstimadoUSD) * 100.0
 	}
 	return fmt.Sprintf("\n### 2.3 Balanço Financeiro & Custo (USD / BRL)\n"+
-		"| Componente Financeiro | Orçado (USD) | Realizado (USD) | Custo em BRL (R$) | Status |\n"+
+		"| Item Financeiro | Orçado (USD) | Realizado (USD) | Custo em BRL (R$) | Status |\n"+
 		"| :--- | :---: | :---: | :---: | :---: |\n"+
 		"| **Custo Total Consolidado** | **$%.4f** | **$%.4f** | **R$ %.2f** | %+.1f%% |\n\n"+
 		"> **Taxa Cambial Referencial Aplicada:** 1 USD = R$ %.2f\n",
@@ -118,8 +118,8 @@ func renderEficiencia(t *TelemetriaOrcamento) string {
 
 func renderEntregas(res *Result) string {
 	var sb strings.Builder
-	sb.WriteString("## 3. Entregas por Épico & Componentes\n\n")
-	sb.WriteString("| Etapa | Componente / Pilar | Status | Artefato Produzido |\n")
+	sb.WriteString("## 3. Entregas por Épico & Peças\n\n")
+	sb.WriteString("| Etapa | Peça / Pilar | Status | Artefato Produzido |\n")
 	sb.WriteString("| :---: | :--- | :---: | :--- |\n")
 	for _, e := range res.Etapas {
 		base := filepath.Base(e.Artefato)

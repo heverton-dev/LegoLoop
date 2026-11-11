@@ -1,5 +1,5 @@
 // Package compor liga um processo do cofre como etapa de outro. A etapa nova executa o processo composto
-// (nó subloop no DAG). Antes de gravar, recusa o ciclo entre processos (ErrCiclo), o processo inexistente e a
+// Antes de gravar, recusa o ciclo entre processos (ErrCiclo), o processo inexistente e a
 // versão que não confere. Mostra o plano, pede a confirmação, guarda cada original como .legoloop-bak, sobe a
 // versão e grava tudo de uma vez. É uma fatia independente: depende só do núcleo (processo, ste) e nunca de
 // outra função.
@@ -73,7 +73,7 @@ func init() {
 		"compor.cartao_aviso":       "O programa troca %d arquivos. Cada original fica guardado como .legoloop-bak.",
 		"compor.cartao_etapa":       "O programa cria a etapa %s, que executa o processo %s.",
 		"compor.cartao_versao":      "O programa sobe a versão de %s para %s e guarda %s no histórico.",
-		"compor.cartao_gera":        "O programa gera de novo INTENT, SPEC, PLAN, ROUTE, DAG, loop e skill.",
+		"compor.cartao_gera":        "O programa gera de novo INTENT, SPEC, PLAN, ROUTE, DAG, documento do Studio e skill.",
 		"compor.cartao_se_errado":   "Se um passo falhar, o programa desfaz tudo. O processo volta à versão %s. Para voltar depois, restaure cada arquivo .legoloop-bak.",
 		"compor.efeito_troca":       "troca %s",
 		"compor.efeito_novo":        "grava %s",
@@ -257,7 +257,7 @@ func lerPar(vault, nome, alvo, versao string) (processo.Processo, processo.Proce
 	return a, b, nil
 }
 
-// lerProcesso lê loops/<nome>.processo.json. Processo da v1 (só o .loop.json) não entra na composição.
+// lerProcesso lê <nome>.processo.json. Processo da v1 não entra na composição.
 func lerProcesso(vault, nome string) (processo.Processo, error) {
 	caminho := processo.CaminhoNoCofre(vault, nome)
 	if _, err := os.Stat(caminho); err != nil {
@@ -277,12 +277,15 @@ func lerProcesso(vault, nome string) (processo.Processo, error) {
 	return p, err
 }
 
+func pastaProcessos(vault string) string {
+	return caminhos.DirLoopsEm(vault)
+}
+
 func temLegado(vault, nome string) bool {
-	if _, err := os.Stat(filepath.Join(vault, caminhos.DirLoops, nome+caminhos.SufixoLoop)); err == nil {
-		return true
-	}
-	if _, err := os.Stat(filepath.Join(vault, caminhos.DirLoops, nome+caminhos.SufixoStudio)); err == nil {
-		return true
+	for _, sufixo := range []string{caminhos.SufixoLoop, caminhos.SufixoStudio} {
+		if _, err := os.Stat(filepath.Join(pastaProcessos(vault), nome+sufixo)); err == nil {
+			return true
+		}
 	}
 	return false
 }
@@ -335,7 +338,7 @@ func erroPedido(id string, args ...any) error {
 }
 
 // novaEtapa cria a etapa que executa b. Ela entra no fim de a, com o próximo id eNN. Produz o artefato e usa o
-// gate da etapa final de b: o subloop roda b num diretório isolado e só devolve esse artefato.
+// gate da etapa final de b.
 func novaEtapa(a, b processo.Processo, l Ligacao) (processo.Etapa, error) {
 	for _, e := range a.Etapas {
 		if usado, _, _ := strings.Cut(e.Compoe, "@"); usado == b.Nome {
@@ -436,13 +439,13 @@ func comEtapa(a processo.Processo, e processo.Etapa) (processo.Processo, error) 
 
 // noPai devolve o caminho do artefato de b no processo que recebe a etapa: out/<nome-de-b>/<arquivo>. O
 // fabricar grava sempre out/NN_<tipo>.md, então dois processos reais repetem os nomes; no pai, o artefato de b
-// fica numa pasta só dele. O subloop lê o artefato no caminho de dentro de b (a origem) e grava neste.
+// fica numa pasta só dele.
 func noPai(nomeB, origem string) string {
 	return path.Join("out", nomeB, path.Base(origem))
 }
 
 // gateNoPai troca, no gate da etapa final de b, o literal com o caminho de dentro de b pelo caminho no pai: o
-// gate do nó subloop é conferido no diretório do pai.
+// gate é conferido no diretório do pai.
 func gateNoPai(gate, origem, destino string) string {
 	return strings.ReplaceAll(gate, "'"+origem+"'", "'"+destino+"'")
 }
@@ -482,14 +485,14 @@ func montar(p processo.Processo, e processo.Etapa, now time.Time, roots processo
 		{Kind: "PLAN", Path: filepath.Join(docs, "plans", pr.PlanNome), Data: []byte(pr.Plan)},
 		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
 		{Kind: "DAG_ISO", Path: filepath.Join(docs, "dags", pr.DAGNome), Data: pr.DAG},
-		{Kind: "DAG", Path: vault(caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
-		{Kind: "loop", Path: vault(caminhos.DirLoops, p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
+		{Kind: "DAG", Path: filepath.Join(pastaProcessos(roots.Vault), p.Nome+".dag.json"), Data: pr.DAG},
+		{Kind: "studio", Path: filepath.Join(pastaProcessos(roots.Vault), p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 	})
 }
 
-// projetar usa a data do compor para o loop e a data da SPEC que já existe para SPEC, PLAN e ROUTE: assim os
+// projetar usa a data do compor para o documento do Studio e a data da SPEC que já existe para SPEC, PLAN e ROUTE: assim os
 // três documentos mantêm o nome no projeto.
 func projetar(p processo.Processo, now, dataDocs time.Time) (*processo.Projecoes, error) {
 	pr, err := processo.Projetar(p, now)
@@ -511,10 +514,10 @@ func projetar(p processo.Processo, now, dataDocs time.Time) (*processo.Projecoes
 	return pr, nil
 }
 
-// manterCriacao devolve o loop com created_at igual à criação do processo: só updated_at leva a data do compor.
-func manterCriacao(loopJSON []byte, criado time.Time) ([]byte, error) {
+// manterCriacao devolve o documento do Studio com created_at igual à criação do processo: só updated_at leva a data do compor.
+func manterCriacao(docJSON []byte, criado time.Time) ([]byte, error) {
 	var lp studiodoc.Processo
-	if err := json.Unmarshal(loopJSON, &lp); err != nil {
+	if err := json.Unmarshal(docJSON, &lp); err != nil {
 		return nil, err
 	}
 	lp.CreatedAt = criado.UTC()

@@ -121,7 +121,6 @@ type EtapaStatus struct {
 	Detalhe  string        `json:"detalhe,omitempty"`
 }
 
-// Result resume a execução do pipeline de fechamento.
 type Result struct {
 	Slug       string              `json:"slug"`
 	CanonName  string              `json:"canonical_name"`
