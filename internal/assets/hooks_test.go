@@ -83,7 +83,7 @@ func TestGuardHooksRecognition(t *testing.T) {
       {"matcher": "Bash", "hooks": [{"type": "command", "command": "python3 .claude/hooks/guard-worktree-path.py"}]}
     ],
     "PreCommit": [
-      {"hooks": [{"type": "command", "command": "python3 .claude/hooks/guard-secrets.py --key=sk-123456"}]},
+      {"hooks": [{"type": "command", "command": "python3 .claude/hooks/guard-segredos.py --key=sk-123456"}]},
       {"hooks": [{"type": "command", "command": "python3 .claude/hooks/guard-protected-push.py"}]}
     ]
   }

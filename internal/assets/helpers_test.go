@@ -72,13 +72,13 @@ func mustFind(t *testing.T, items []Item, name string) Item {
 	return it
 }
 
-func mustNotLeak(t *testing.T, items []Item, secrets ...string) {
+func mustNotLeak(t *testing.T, items []Item, segredos ...string) {
 	t.Helper()
 	b, err := json.Marshal(items)
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, s := range secrets {
+	for _, s := range segredos {
 		if strings.Contains(string(b), s) {
 			t.Errorf("segredo %q vazou para o inventário: %s", s, b)
 		}

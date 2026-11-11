@@ -10,25 +10,24 @@ import (
 	"legoloop/internal/assets"
 )
 
-func TestCascadeScriptsAndLoopsAcrossDiscoveredProjects(t *testing.T) {
+func TestCascadeScriptsAndProcessosAcrossDiscoveredProjects(t *testing.T) {
 	home := t.TempDir()
 	desktop := filepath.Join(home, "Desktop")
 
-	// Projeto C com script em tools/ e loop em loops/
 	projC := filepath.Join(desktop, "projeto-c")
 	toolsDir := filepath.Join(projC, "tools")
-	loopsDir := caminhos.DirLoopsEm(projC)
+	processosDir := filepath.Join(projC, caminhos.DirProcessos)
 	if err := os.MkdirAll(toolsDir, 0755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.MkdirAll(loopsDir, 0755); err != nil {
+	if err := os.MkdirAll(processosDir, 0755); err != nil {
 		t.Fatal(err)
 	}
 	_ = os.WriteFile(filepath.Join(projC, "go.mod"), []byte("module c"), 0644)
 	_ = os.WriteFile(filepath.Join(toolsDir, "lint.ps1"), []byte("Write-Host lint"), 0644)
-	_ = os.WriteFile(filepath.Join(loopsDir, "build.loop.json"), []byte(`{
-		"id": "build-loop",
-		"name": "Build Loop",
+	_ = os.WriteFile(filepath.Join(processosDir, "build"+caminhos.SufixoStudio), []byte(`{
+		"id": "build-processo",
+		"name": "Build Processo",
 		"version": "2.0.0",
 		"trigger": {"type": "manual"},
 		"nodes": [{"id": "n1", "output": {"artifact": "BUILD.log"}}]
@@ -42,7 +41,6 @@ func TestCascadeScriptsAndLoopsAcrossDiscoveredProjects(t *testing.T) {
 	scanner := assets.NewScanner(cfg)
 	snap := scanner.Scan(context.Background())
 
-	// 1. Verifica script em tools/ com scope "project"
 	var foundScript bool
 	for _, it := range snap.Of(assets.KindScript) {
 		if it.Name == "lint.ps1" && it.Scope == "project" {
@@ -53,14 +51,13 @@ func TestCascadeScriptsAndLoopsAcrossDiscoveredProjects(t *testing.T) {
 		t.Fatal("script 'lint.ps1' de tools/ do projeto-c não foi inventariado com scope 'project'")
 	}
 
-	// 2. Verifica loop em loops/ com scope "project"
-	var foundLoop bool
-	for _, it := range snap.Of(assets.KindLoop) {
-		if it.Name == "Build Loop" && it.Scope == "project" {
-			foundLoop = true
+	var foundProcesso bool
+	for _, it := range snap.Of(kindProcesso) {
+		if it.Name == "Build Processo" && it.Scope == "project" {
+			foundProcesso = true
 		}
 	}
-	if !foundLoop {
-		t.Fatal("loop 'Build Loop' do projeto-c não foi inventariado com scope 'project'")
+	if !foundProcesso {
+		t.Fatal("Processo 'Build Processo' do projeto-c não foi inventariado com scope 'project'")
 	}
 }

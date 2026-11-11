@@ -51,7 +51,7 @@ func matchCompatibility(target, it Item, tConsumes, tProduces string) (Compatibl
 }
 
 func matchAuxiliaryCompatibility(target, it Item) (CompatibleItem, bool) {
-	if it.Kind == KindMCP && (target.Kind == KindSkill || target.Kind == KindLoop) {
+	if it.Kind == KindMCP && (target.Kind == KindSkill || target.Kind == kindProcesso) {
 		return CompatibleItem{
 			Item:   it,
 			Role:   "tool",

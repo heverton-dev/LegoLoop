@@ -6,7 +6,7 @@ import (
 )
 
 // Só nomes e metadados seguros: env, args, headers e query de URL NUNCA entram no inventário.
-func TestScanMCPsNeverLeaksSecrets(t *testing.T) {
+func TestScanMCPsNeverLeaksSegredos(t *testing.T) {
 	cfg, home, project := testCfg(t)
 	write(t, filepath.Join(home, ".claude.json"), `{
 	  "mcpServers": {

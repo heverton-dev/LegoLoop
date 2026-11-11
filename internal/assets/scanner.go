@@ -46,7 +46,7 @@ func (s *Scanner) Scan(ctx context.Context) Snapshot {
 	s.mu.Unlock()
 
 	scans := []func(context.Context) []Item{
-		s.scanSkills, s.scanMCPs, s.scanScripts, s.scanHooks, s.scanGates, s.scanHarnesses, s.scanBinaries, s.scanLoops,
+		s.scanSkills, s.scanMCPs, s.scanScripts, s.scanHooks, s.scanGates, s.scanHarnesses, s.scanBinaries, s.scanProcessos,
 	}
 	parts := make([][]Item, len(scans))
 	var wg sync.WaitGroup

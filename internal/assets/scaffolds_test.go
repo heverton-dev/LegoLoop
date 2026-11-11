@@ -21,14 +21,13 @@ func TestScaffoldsLayer(t *testing.T) {
 	}
 	_ = os.WriteFile(filepath.Join(scaffoldSkill, "SKILL.md"), []byte("---\nname: Starter Setup\ndescription: skill de scaffold\n---\n"), 0644)
 
-	// 2. Loop de scaffold
-	scaffoldLoopDir := filepath.Join(scaffoldsDir, "starter-kit", caminhos.DirLoops)
-	if err := os.MkdirAll(scaffoldLoopDir, 0755); err != nil {
+	scaffoldProcessoDir := filepath.Join(scaffoldsDir, "starter-kit", caminhos.DirProcessos)
+	if err := os.MkdirAll(scaffoldProcessoDir, 0755); err != nil {
 		t.Fatal(err)
 	}
-	_ = os.WriteFile(filepath.Join(scaffoldLoopDir, "starter.loop.json"), []byte(`{
-		"id": "starter-loop",
-		"name": "Starter Loop",
+	_ = os.WriteFile(filepath.Join(scaffoldProcessoDir, "starter"+caminhos.SufixoStudio), []byte(`{
+		"id": "starter-processo",
+		"name": "Starter Processo",
 		"version": "2.0.0",
 		"trigger": {"type": "manual"},
 		"nodes": [{"id": "n1", "output": {"artifact": "A.md"}}]
@@ -62,18 +61,17 @@ func TestScaffoldsLayer(t *testing.T) {
 		t.Fatal("skill de scaffold não foi inventariada")
 	}
 
-	// Verifica se o loop de scaffold foi inventariado com scope "scaffold"
-	var foundLoop bool
-	for _, it := range snap.Of(assets.KindLoop) {
-		if it.Name == "Starter Loop" {
-			foundLoop = true
+	var foundProcesso bool
+	for _, it := range snap.Of(kindProcesso) {
+		if it.Name == "Starter Processo" {
+			foundProcesso = true
 			if it.Scope != "scaffold" {
-				t.Errorf("escopo de loop esperado 'scaffold', obteve %s", it.Scope)
+				t.Errorf("escopo de Processo esperado 'scaffold', obteve %s", it.Scope)
 			}
 		}
 	}
-	if !foundLoop {
-		t.Fatal("loop de scaffold não foi inventariado")
+	if !foundProcesso {
+		t.Fatal("Processo de scaffold não foi inventariado")
 	}
 
 	// Verifica se o hook de scaffold foi inventariado com scope "scaffold"

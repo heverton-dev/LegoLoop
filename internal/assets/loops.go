@@ -12,32 +12,47 @@ import (
 	"legoloop/internal/dag"
 )
 
-func (s *Scanner) loopRoots(ctx context.Context) []root {
+const sufixoAntigo = caminhos.SufixoLoop
+
+var kindProcesso = Kinds()[len(Kinds())-1]
+
+func isProcessoDoc(name string) bool {
+	return strings.HasSuffix(name, sufixoAntigo) || strings.HasSuffix(name, caminhos.SufixoStudio)
+}
+
+func trimProcessoDoc(name string) string {
+	for _, suf := range []string{sufixoAntigo, caminhos.SufixoStudio} {
+		name = strings.TrimSuffix(name, suf)
+	}
+	return name
+}
+
+func (s *Scanner) processoRoots(ctx context.Context) []root {
 	var roots []root
-	if s.cfg.LoopsDir != "" {
-		roots = append(roots, root{dir: s.cfg.LoopsDir, scope: "global", origin: "acervo"})
+	if dir := s.cfg.LoopsDir; dir != "" {
+		roots = append(roots, root{dir: dir, scope: "global", origin: "acervo"})
 	}
 	if s.cfg.Home != "" {
-		roots = append(roots,
-			root{dir: filepath.Join(s.cfg.Home, ".aidd", "canonical", caminhos.DirLoops), scope: "global", origin: "acervo"},
-			root{dir: filepath.Join(s.cfg.Home, ".aidd", caminhos.DirLoops), scope: "global", origin: "acervo"},
-		)
+		for _, base := range []string{filepath.Join(s.cfg.Home, ".aidd", "canonical"), filepath.Join(s.cfg.Home, ".aidd")} {
+			for _, dir := range caminhos.DirsLeitura(base) {
+				roots = append(roots, root{dir: dir, scope: "global", origin: "acervo"})
+			}
+		}
 	}
-	roots = append(roots, s.scaffoldLoopRoots()...)
+	roots = append(roots, s.scaffoldProcessoRoots()...)
 	for _, p := range s.allProjects(ctx) {
 		roots = append(roots, root{dir: p, scope: "project", origin: "project"})
-		sub := caminhos.DirLoopsEm(p)
-		if st, err := os.Stat(sub); err == nil && st.IsDir() {
+		for _, sub := range caminhos.DirsLeitura(p) {
 			roots = append(roots, root{dir: sub, scope: "project", origin: "project"})
 		}
 	}
 	return roots
 }
 
-func (s *Scanner) scanLoops(ctx context.Context) []Item {
+func (s *Scanner) scanProcessos(ctx context.Context) []Item {
 	var items []Item
 	seen := map[string]bool{}
-	for _, r := range s.loopRoots(ctx) {
+	for _, r := range s.processoRoots(ctx) {
 		entries, err := os.ReadDir(r.dir)
 		if err != nil {
 			continue
@@ -46,7 +61,7 @@ func (s *Scanner) scanLoops(ctx context.Context) []Item {
 			if ctx.Err() != nil {
 				return items
 			}
-			if e.IsDir() || !strings.HasSuffix(e.Name(), ".loop.json") {
+			if e.IsDir() || !isProcessoDoc(e.Name()) {
 				continue
 			}
 			p := filepath.Join(r.dir, e.Name())
@@ -54,42 +69,42 @@ func (s *Scanner) scanLoops(ctx context.Context) []Item {
 				continue
 			}
 			seen[p] = true
-			items = append(items, s.load(KindLoop, p, func(path string) []Item {
-				return parseLoopItem(path, r)
+			items = append(items, s.load(kindProcesso, p, func(path string) []Item {
+				return parseProcessoItem(path, r)
 			})...)
 		}
 	}
 	return items
 }
 
-func parseLoopItem(path string, r root) []Item {
+func parseProcessoItem(path string, r root) []Item {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil
 	}
-	var lp struct {
+	var doc struct {
 		ID          string       `json:"id"`
 		Name        string       `json:"name"`
 		Description string       `json:"description"`
 		Trigger     *dag.Trigger `json:"trigger"`
 		Nodes       []dag.Node   `json:"nodes"`
 	}
-	if err := json.Unmarshal(data, &lp); err != nil {
+	if err := json.Unmarshal(data, &doc); err != nil {
 		return nil
 	}
-	id := lp.ID
+	id := doc.ID
 	if id == "" {
-		id = strings.TrimSuffix(filepath.Base(path), ".loop.json")
+		id = trimProcessoDoc(filepath.Base(path))
 	}
-	name := lp.Name
+	name := doc.Name
 	if name == "" {
 		name = id
 	}
-	meta := buildLoopMeta(lp.Nodes, lp.Trigger)
+	meta := buildProcessoMeta(doc.Nodes, doc.Trigger)
 	return []Item{{
-		Kind:        KindLoop,
+		Kind:        kindProcesso,
 		Name:        name,
-		Description: lp.Description,
+		Description: doc.Description,
 		Path:        path,
 		Scope:       r.scope,
 		Origin:      r.origin,
@@ -97,7 +112,7 @@ func parseLoopItem(path string, r root) []Item {
 	}}
 }
 
-func buildLoopMeta(nodes []dag.Node, trg *dag.Trigger) map[string]string {
+func buildProcessoMeta(nodes []dag.Node, trg *dag.Trigger) map[string]string {
 	meta := map[string]string{
 		"nodes": strconv.Itoa(len(nodes)),
 	}

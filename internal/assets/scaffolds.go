@@ -54,12 +54,10 @@ func (s *Scanner) scaffoldHookSources() []hookSource {
 	return sources
 }
 
-// scaffoldLoopRoots devolve raízes de loops de scaffolds com scope "scaffold".
-func (s *Scanner) scaffoldLoopRoots() []root {
+func (s *Scanner) scaffoldProcessoRoots() []root {
 	var roots []root
 	for _, d := range s.scaffoldDirs() {
-		sub := caminhos.DirLoopsEm(d)
-		if st, err := os.Stat(sub); err == nil && st.IsDir() {
+		for _, sub := range caminhos.DirsLeitura(d) {
 			roots = append(roots, root{dir: sub, scope: "scaffold", origin: "aidd"})
 		}
 	}
