@@ -14,7 +14,7 @@ func TestBuildOriginalMatrix_Categorization(t *testing.T) {
 			"ffmpeg -i input.mp4 -vf silenceremove=stop_periods=-1 output.mp4",
 			"pip install yt-dlp opencv-python",
 		},
-		ExplicitPrompts: []string{"futuristic glass card UI"},
+		ExplicitPrompts: []string{"futuristic glass panel UI"},
 	}
 
 	matrix, err := videorea.BuildOriginalMatrix(dossier)
@@ -87,7 +87,7 @@ func TestCurateAgainstOriginalMatrix_AdoptsFreeTools(t *testing.T) {
 
 func TestLucasLeiteVideo_ForensicsAndOriginalMatrix(t *testing.T) {
 	dossier := &videorea.ForensicsDossier{
-		Title: "Como eu edito meus videos com Claude Code (fluxo completo)",
+		Title: "Como eu edito meus videos com Claude Code (Processo completo)",
 		ToolsIdentified: []string{
 			"Claude", "Premiere", "Epidemic Sound", "HyperFrames", "YuNet", "WhisperX",
 		},
@@ -95,7 +95,7 @@ func TestLucasLeiteVideo_ForensicsAndOriginalMatrix(t *testing.T) {
 			"ver.py <pasta> status",
 			"ffmpeg -i raw.mp4 -vn audio.wav",
 		},
-		ExplicitPrompts: []string{"fluxo de edicao com o Claude Code"},
+		ExplicitPrompts: []string{"Processo de edicao com o Claude Code"},
 	}
 
 	matrix, err := videorea.BuildOriginalMatrix(dossier)
@@ -146,7 +146,7 @@ func TestLucasLeiteVideo_ForensicsAndOriginalMatrix(t *testing.T) {
 
 	for _, adopted := range report.AdoptedTools {
 		if adopted.Adopted.Name == "" {
-			t.Errorf("ferramenta adotada sem nome no bloco adopted")
+			t.Errorf("ferramenta adotada sem nome na lista adopted")
 		}
 		if adopted.Diagnosis.FitStatus == "" || adopted.Diagnosis.GoldStandard == "" || adopted.Diagnosis.FitSolution == "" {
 			t.Errorf("ferramenta adotada %s sem Diagnosis ou FitSolution completos", adopted.Adopted.Name)

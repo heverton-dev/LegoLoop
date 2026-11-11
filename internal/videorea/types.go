@@ -130,7 +130,7 @@ type OriginalMatrix struct {
 	OriginalSteps    []string       `json:"original_steps"`
 }
 
-// LegoFitStatus qualifica o encaixe de uma ferramenta local contra as exigências do pipeline.
+// LegoFitStatus qualifica o encaixe de uma ferramenta local contra as exigências do Processo.
 type LegoFitStatus string
 
 const (
@@ -187,20 +187,19 @@ type ExecutionPackageDraft struct {
 	FixturePath string `json:"fixture_path"`
 }
 
-// PipelineStage enumera as fases sequenciais do pipeline de engenharia reversa.
-type PipelineStage string
+type ProcessoStage string
 
 const (
-	StageForensics PipelineStage = "forensics"
-	StageCurated   PipelineStage = "curated"
-	StageInterview PipelineStage = "interview"
-	StageIntent    PipelineStage = "intent"
-	StageSpec      PipelineStage = "spec"
-	StageRoute     PipelineStage = "route"
-	StageDAG       PipelineStage = "dag_fixture"
-	StageSkill     PipelineStage = "skill"
-	StageBook      PipelineStage = "book"
-	StageClosed    PipelineStage = "closed"
+	StageForensics ProcessoStage = "forensics"
+	StageCurated   ProcessoStage = "curated"
+	StageInterview ProcessoStage = "interview"
+	StageIntent    ProcessoStage = "intent"
+	StageSpec      ProcessoStage = "spec"
+	StageRoute     ProcessoStage = "route"
+	StageDAG       ProcessoStage = "dag_fixture"
+	StageSkill     ProcessoStage = "skill"
+	StageBook      ProcessoStage = "book"
+	StageClosed    ProcessoStage = "closed"
 )
 
 // StopGateType identifica cada portão de auditoria humana obrigatório.

@@ -36,8 +36,8 @@ func TestTargetBundlePaths(t *testing.T) {
 	if bundle.BookDir != filepath.Join(expectedBase, "book") {
 		t.Errorf("BookDir incorreto: %s", bundle.BookDir)
 	}
-	if bundle.LoopDir != filepath.Join(expectedBase, "loop") {
-		t.Errorf("LoopDir incorreto: %s", bundle.LoopDir)
+	if filepath.Dir(bundle.ProcessoDir()) != expectedBase {
+		t.Errorf("ProcessoDir incorreto: %s", bundle.ProcessoDir())
 	}
 	if bundle.OriginalMatrixPath != filepath.Join(expectedBase, "original_matrix.json") {
 		t.Errorf("OriginalMatrixPath incorreto: %s", bundle.OriginalMatrixPath)
@@ -72,7 +72,7 @@ func TestTargetBundleMaterializeAndProject(t *testing.T) {
 		bundle.ScratchDir,
 		bundle.GovernanceDir,
 		bundle.BookDir,
-		bundle.LoopDir,
+		bundle.ProcessoDir(),
 		bundle.SkillDir,
 	}
 	for _, d := range dirsToCheck {
@@ -86,8 +86,8 @@ func TestTargetBundleMaterializeAndProject(t *testing.T) {
 		filepath.Join(bundle.BookDir, "livro.json"),
 		filepath.Join(bundle.BookDir, "partes", "00-frontmatter.md"),
 		filepath.Join(bundle.BookDir, "partes", "01-fundacao.md"),
-		caminhos.CaminhoDAG(bundle.LoopDir),
-		filepath.Join(bundle.LoopDir, "fixture_3s.mp4"),
+		caminhos.CaminhoDAG(bundle.ProcessoDir()),
+		filepath.Join(bundle.ProcessoDir(), "fixture_3s.mp4"),
 		filepath.Join(bundle.SkillDir, "SKILL.md"),
 		bundle.OriginalMatrixPath,
 	}
@@ -98,7 +98,7 @@ func TestTargetBundleMaterializeAndProject(t *testing.T) {
 	}
 
 	// 3. Verificar Projeção Canônica na raiz do LegoLoop
-	canonicalDAG := filepath.Join(tempRoot, caminhos.DirLoops, slug, caminhos.ArquivoDAG)
+	canonicalDAG := filepath.Join(tempRoot, caminhos.DirProcessos, slug, caminhos.ArquivoDAG)
 	if _, err := os.Stat(canonicalDAG); os.IsNotExist(err) {
 		t.Errorf("projeção canônica do DAG não encontrada: %s", canonicalDAG)
 	}
@@ -177,7 +177,7 @@ func TestTargetBundle_DAGValidoEAntiStub(t *testing.T) {
 	}
 
 	// 1. DAG gerado deve ser válido segundo o parser oficial do LegoLoop
-	dagPath := caminhos.CaminhoDAG(bundle.LoopDir)
+	dagPath := caminhos.CaminhoDAG(bundle.ProcessoDir())
 	dagData, err := os.ReadFile(dagPath)
 	if err != nil {
 		t.Fatalf("lendo %s: %v", caminhos.ArquivoDAG, err)

@@ -16,7 +16,7 @@ func TestExtractForensicsPrompts(t *testing.T) {
 	input := videorea.VideoInput{
 		URL: "https://www.youtube.com/watch?v=FJZkfjM8WhI",
 	}
-	transcript := "Neste video vamos usar o Higgsfield e animar cartoes 3D com blur 16px e corte a 40ms. Use o prompt: futuristic glass card UI."
+	transcript := "Neste video vamos usar o Higgsfield e animar cartoes 3D com blur 16px e corte a 40ms. Use o prompt: futuristic glass panel UI."
 	description := "Assets e skills gratis na descricao. Model: claude-3-5-sonnet. Pika Labs integration."
 
 	dossier, err := videorea.ExtractForensics(input, transcript, description)
@@ -38,7 +38,7 @@ func TestExtractForensicsPrompts(t *testing.T) {
 func TestInspectAssetsAndOCR(t *testing.T) {
 	ocrFrames := []string{
 		"ffmpeg -i input.mp4 -af silenceremove=stop_periods=-1:stop_duration=0.4:stop_threshold=-30dB",
-		"const glassCard = styled.div`backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.37);`",
+		"const glassPanel = styled.div`backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.37);`",
 	}
 
 	dossier := &videorea.ForensicsDossier{

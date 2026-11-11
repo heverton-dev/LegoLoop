@@ -172,7 +172,7 @@ func diagnoseRouter() ToolDiagnosis {
 func diagnoseLocalScript(name string) ToolDiagnosis {
 	return ToolDiagnosis{
 		InstalledOnHost: true, HostLocation: "Target Workspace Local (scratch)", FitStatus: FitOuro,
-		FitSolution:  "Encaixe perfeito: script autoral extraido e funcional no scratch local para consumo da esteira.",
+		FitSolution:  "Encaixe perfeito: script autoral extraido e funcional no scratch local para consumo do Processo.",
 		GoldStandard: "Script autoral do criador adaptado para LegoLoop",
 	}
 }

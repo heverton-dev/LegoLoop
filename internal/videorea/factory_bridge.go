@@ -53,17 +53,17 @@ func GenerateExecutionPackageStage(spec *SpecDraft, report *CurationReport, base
 	}
 	date := time.Now().Format("2006-01-02")
 	govDir := filepath.Join(baseDir, "governance")
-	loopDir := filepath.Join(baseDir, "loop")
-	if err := makeDirs(govDir, loopDir); err != nil {
+	processoDir := filepath.Join(baseDir, "processo")
+	if err := makeDirs(govDir, processoDir); err != nil {
 		return nil, err
 	}
 	planFile := filepath.Join(govDir, fmt.Sprintf("%s_PLAN_%s.md", date, spec.Slug))
 	routeFile := filepath.Join(govDir, fmt.Sprintf("%s_ROUTE_%s.json", date, spec.Slug))
-	dagFile := caminhos.CaminhoDAG(loopDir)
+	dagFile := caminhos.CaminhoDAG(processoDir)
 	if err := writeExecutionFiles(planFile, routeFile, dagFile, spec.Slug); err != nil {
 		return nil, err
 	}
-	fixPath, err := SynthesizeGoldenFixture(3.0, loopDir)
+	fixPath, err := SynthesizeGoldenFixture(3.0, processoDir)
 	if err != nil {
 		return nil, err
 	}

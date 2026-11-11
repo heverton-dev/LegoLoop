@@ -120,7 +120,7 @@ func matchSovereignSubstitution(tool OriginalTool) SubstitutedTool {
 }
 
 func buildCurationReport(title, origCost string, repl map[string]string, subs []SubstitutedTool, adopted []AdoptedTool, orig *OriginalMatrix) *CurationReport {
-	primaryName := "legoloop-video-pipeline"
+	primaryName := "legoloop-video-processo"
 	suggested := SuggestCanonicalNames(title)
 	if len(suggested) > 0 {
 		primaryName = suggested[0]

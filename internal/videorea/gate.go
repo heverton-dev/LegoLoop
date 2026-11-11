@@ -1,6 +1,6 @@
 package videorea
 
-// EvaluateStopGate valida a decisão do operador em qualquer stop-gate do pipeline.
+// EvaluateStopGate valida a decisão do operador em qualquer stop-gate do Processo.
 func EvaluateStopGate(gate StopGateType, approved bool, notes string) (*StopGateDecision, error) {
 	d := &StopGateDecision{
 		Gate:     gate,

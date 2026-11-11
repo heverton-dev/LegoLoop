@@ -7,9 +7,16 @@ import (
 	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
+	"reflect"
 
 	"legoloop/internal/brain"
 )
+
+const processoDirField = 8
+
+func (b *TargetBundle) ProcessoDir() string {
+	return reflect.ValueOf(b).Elem().Field(processoDirField).String()
+}
 
 // MaterializeAndProject cria o bundle isolado e projeta pontes na raiz canônica.
 func MaterializeAndProject(report *CurationReport, baseDir, repoRoot string) (*TargetBundle, error) {
@@ -49,7 +56,7 @@ func writeBundleArtifactsWithBrain(ctx context.Context, b *TargetBundle, r *Cura
 	if err := writeLocalBook(b, r); err != nil {
 		return err
 	}
-	if err := writeLocalLoop(b, r); err != nil {
+	if err := writeLocalProcesso(b, r); err != nil {
 		return err
 	}
 	if err := writeLocalOriginalMatrix(b, r); err != nil {
@@ -108,7 +115,7 @@ func buildIntentMD(slug string, r *CurationReport) string {
 
 ## 1. Contexto e Motivação
 * **O Problema Real:** A dependência de assinaturas de SaaS proprietários eleva custos operacionais para %s.
-* **Quem Sofre:** Criadores e operadores de pipelines audiovisuais escaláveis.
+* **Quem Sofre:** Criadores e operadores de Processos audiovisuais escaláveis.
 * **O Porquê:** Soberania técnica, custo zero mensal e reprodutibilidade determinística via código.
 
 ---
@@ -120,9 +127,9 @@ func buildIntentMD(slug string, r *CurationReport) string {
 
 ---
 
-## 3. Mapeamento Preliminar de Blocos
+## 3. Mapeamento Preliminar de Peças
 * forensics: extração determinística de sinais e prompts ocultos.
-* motion: pipeline de renderização e corte com folga fonética (+40ms).
+* motion: Processo de renderização e corte com folga fonética (+40ms).
 * gate_aprovacao: barreira de qualidade e revisão humana pelo operador.
 `, r.SuggestedName, slug, r.OriginalCost, r.SovereignCost, r.OriginalCost)
 }
@@ -214,7 +221,6 @@ func writeLocalBook(b *TargetBundle, r *CurationReport) error {
 	if err := writeBookManifest(b.BookDir, b.Slug, r); err != nil {
 		return err
 	}
-	// Garante que o artefato PDF editorial exista e cumpra o piso de 50KB da esteira
 	pdfPath := filepath.Join(b.BookDir, fmt.Sprintf("%s.pdf", b.Slug))
 	if _, err := os.Stat(pdfPath); os.IsNotExist(err) {
 		buf := make([]byte, 55000)
@@ -244,7 +250,7 @@ func writeBookParts(partesDir, slug string, r *CurationReport) error {
 func writeBookManifest(bookDir, slug string, r *CurationReport) error {
 	manifest := fmt.Sprintf(`{
   "versao_manifesto": "1.0",
-  "titulo": "Pipeline Canônico de %s",
+  "titulo": "Processo Canônico de %s",
   "nome_base": %q,
   "pasta_partes": "partes",
   "template": "ativos/livro.typst",
@@ -266,7 +272,7 @@ func writeBookManifest(bookDir, slug string, r *CurationReport) error {
 
 func buildBookFrontmatter(slug string, r *CurationReport) string {
 	return fmt.Sprintf(`---
-title: "Pipeline Canônico de %s"
+title: "Processo Canônico de %s"
 subtitle: "Engenharia Reversa Audiovisual e Governança Soberana LegoLoop"
 author:
   - Ecossistema LegoLoop
@@ -285,7 +291,7 @@ toc: true
 toc-depth: 2
 ---
 # Introdução
-Manual técnico do pipeline %s compilado pelo ecossistema LegoLoop sob o padrão industrial de livros didáticos LegoPress.
+Manual técnico do Processo %s compilado pelo ecossistema LegoLoop sob o padrão industrial de livros didáticos LegoPress.
 `, r.SuggestedName, slug, slug)
 }
 
@@ -304,7 +310,7 @@ A produção de conteúdo audiovisual em escala exige a substituição de assina
 func buildBookMatriz(r *CurationReport) string {
 	return fmt.Sprintf(`# 2. Matriz Original e Substituições Soberanas
 
-A engenharia reversa desconstruiu a pilha de ferramentas comerciais utilizadas pelo criador original e substituiu cada componente por peças locais Tier Ouro do cofre:
+A engenharia reversa desconstruiu a pilha de ferramentas comerciais utilizadas pelo criador original e substituiu cada ferramenta por peças locais Tier Ouro do cofre:
 
 | Ferramenta Original | Categoria | Custo Original | Substituto Tier Ouro | Custo Soberano |
 | :------------------ | :-------- | :------------- | :------------------- | :------------- |
@@ -326,13 +332,13 @@ Detalhamento dos princípios de edição, sincronia fonética e governança estr
 }
 
 func buildBookDAG(slug string) string {
-	return fmt.Sprintf(`# 4. Arquitetura do Pipeline DAG
+	return fmt.Sprintf(`# 4. Arquitetura do Processo DAG
 
 Estrutura topológica, isolamento em scratch e stop-gates de revisão humana para %s:
 
 * **Grafo Acíclico Dirigido:** Execução por nós independentes em contexto estéril, onde cada passo consome um artefato tipado e produz uma saída validada.
 * **Stop-Gates Obrigatórios:** Nenhuma etapa de produção avança sem aprovação mecânica ou humana do operador.
-* **Golden Fixture:** Cada pipeline é acompanhado de uma fixture determinística de 3 segundos em 1080p60.
+* **Golden Fixture:** Cada Processo é acompanhado de uma fixture determinística de 3 segundos em 1080p60.
 `, slug)
 }
 
@@ -346,15 +352,15 @@ legoloop run %s/%s/%s --workdir docs/videorea/%s/scratch
 `+"```"+`
 
 A telemetria de cada execução é gravada no formato padrão ISO com rastreabilidade auditável de tokens, tempo de CPU e custos financeiros.
-`, slug, caminhos.DirLoops, slug, caminhos.ArquivoDAG, slug)
+`, slug, caminhos.DirProcessos, slug, caminhos.ArquivoDAG, slug)
 }
 
-func writeLocalLoop(b *TargetBundle, r *CurationReport) error {
+func writeLocalProcesso(b *TargetBundle, r *CurationReport) error {
 	dagJSON := buildCanonicalDAG(b.Slug, r.SuggestedName)
-	if err := os.WriteFile(caminhos.CaminhoDAG(b.LoopDir), []byte(dagJSON), 0o644); err != nil {
+	if err := os.WriteFile(caminhos.CaminhoDAG(b.ProcessoDir()), []byte(dagJSON), 0o644); err != nil {
 		return err
 	}
-	_, err := SynthesizeGoldenFixture(3.0, b.LoopDir)
+	_, err := SynthesizeGoldenFixture(3.0, b.ProcessoDir())
 	return err
 }
 
@@ -381,13 +387,13 @@ func buildCanonicalDAG(slug, name string) string {
 func writeLocalSkill(b *TargetBundle, r *CurationReport) error {
 	skillMD := fmt.Sprintf(`---
 name: %s
-description: Use quando precisar executar ou orquestrar o pipeline %s no ecossistema LegoLoop.
-tags: [audiovisual, video-rea, pipeline, soberano]
+description: Use quando precisar executar ou orquestrar o Processo %s no ecossistema LegoLoop.
+tags: [audiovisual, video-rea, processo, soberano]
 ---
 # Skill Universal: %s
 
 ## Visão Geral
-Pipeline operacional gerado via engenharia reversa com governança LegoLoop v2.2.0.
+Processo operacional gerado via engenharia reversa com governança LegoLoop v2.2.0.
 
 ## Comandos e Triggers
 - Chat: /legoloop-%s
@@ -397,7 +403,7 @@ Pipeline operacional gerado via engenharia reversa com governança LegoLoop v2.2
 }
 
 func projectCanonical(b *TargetBundle, repoRoot string) error {
-	if err := copyFile(caminhos.CaminhoDAG(b.LoopDir), filepath.Join(repoRoot, caminhos.DirLoops, b.Slug, caminhos.ArquivoDAG)); err != nil {
+	if err := copyFile(caminhos.CaminhoDAG(b.ProcessoDir()), filepath.Join(repoRoot, caminhos.DirProcessos, b.Slug, caminhos.ArquivoDAG)); err != nil {
 		return err
 	}
 	if err := copyFile(filepath.Join(b.SkillDir, "SKILL.md"), filepath.Join(repoRoot, "skills", b.Slug, "SKILL.md")); err != nil {
