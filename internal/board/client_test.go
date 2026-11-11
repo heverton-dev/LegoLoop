@@ -11,8 +11,7 @@ import (
 	"legoloop/internal/board"
 )
 
-func TestClient_FetchReadyCards_Success(t *testing.T) {
-	// Cria servidor HTTP de teste simulando a API do GitHub com headers de rate-limit
+func TestClient_FetchReadyTickets_Success(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-RateLimit-Remaining", "4500")
 		w.Header().Set("X-RateLimit-Reset", strconv.FormatInt(time.Now().Add(1*time.Hour).Unix(), 10))
@@ -20,7 +19,7 @@ func TestClient_FetchReadyCards_Success(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`[
 			{
-				"id": "node_card_1",
+				"id": "node_ticket_1",
 				"number": 10,
 				"title": "Fix memory leak in scanner",
 				"body": "Touches internal/assets/scanner.go",
@@ -28,7 +27,7 @@ func TestClient_FetchReadyCards_Success(t *testing.T) {
 				"labels": ["bug"]
 			},
 			{
-				"id": "node_card_2",
+				"id": "node_ticket_2",
 				"number": 11,
 				"title": "Add docs for routing",
 				"body": "Touches docs/routes/README.md",
@@ -46,21 +45,21 @@ func TestClient_FetchReadyCards_Success(t *testing.T) {
 		HTTPCli: server.Client(),
 	})
 
-	cards, err := client.FetchReadyCards(context.Background())
+	tickets, err := client.FetchReadyTickets(context.Background())
 	if err != nil {
-		t.Fatalf("falha ao buscar cards em Ready: %v", err)
+		t.Fatalf("falha ao buscar tickets em Ready: %v", err)
 	}
 
-	if len(cards) != 1 {
-		t.Fatalf("esperava 1 card em Ready, obteve %d", len(cards))
+	if len(tickets) != 1 {
+		t.Fatalf("esperava 1 ticket em Ready, obteve %d", len(tickets))
 	}
 
-	if cards[0].Number != 10 || cards[0].Status != board.StatusReady {
-		t.Fatalf("card incorreto: %+v", cards[0])
+	if tickets[0].Number != 10 || tickets[0].Status != board.StatusReady {
+		t.Fatalf("ticket incorreto: %+v", tickets[0])
 	}
 }
 
-func TestClient_FetchReadyCards_RateLimitHalt(t *testing.T) {
+func TestClient_FetchReadyTickets_RateLimitHalt(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Simula cota esgotada (apenas 20 requisições restantes)
 		w.Header().Set("X-RateLimit-Remaining", "20")
@@ -79,7 +78,7 @@ func TestClient_FetchReadyCards_RateLimitHalt(t *testing.T) {
 		HTTPCli: server.Client(),
 	})
 
-	_, err := client.FetchReadyCards(context.Background())
+	_, err := client.FetchReadyTickets(context.Background())
 	if err == nil {
 		t.Fatalf("esperava erro de rate limit devido ao cabeçalho X-RateLimit-Remaining")
 	}

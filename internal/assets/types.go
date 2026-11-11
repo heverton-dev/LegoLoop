@@ -1,5 +1,5 @@
 // Package assets inventaria o que o usuário tem na máquina e que pode virar peça, slot ou
-// ferramenta de um loop: skills, MCPs, scripts, hooks, gates, harnesses e binários.
+// ferramenta de um Processo: skills, MCPs, scripts, hooks, gates, harnesses e binários.
 //
 // Regras: só biblioteca padrão; leitura apenas (nada é executado nem alterado); segredos
 // (env, args, headers, query de URL) nunca entram no inventário.

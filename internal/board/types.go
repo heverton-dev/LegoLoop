@@ -1,6 +1,6 @@
 package board
 
-// Status representa o estado de um Card no quadro Kanban do GitHub Project.
+// Status representa o estado de um Ticket no quadro Kanban do GitHub Project.
 type Status string
 
 const (
@@ -13,8 +13,8 @@ const (
 	StatusBlocked  Status = "Blocked"
 )
 
-// Card representa uma issue/card mapeada de uma coluna do GitHub Project v2.
-type Card struct {
+// Ticket representa um item mapeado de uma coluna do GitHub Project v2.
+type Ticket struct {
 	ID        string   `json:"id"`
 	Number    int      `json:"number"`
 	Title     string   `json:"title"`
@@ -26,21 +26,23 @@ type Card struct {
 	PRNumber  int      `json:"pr_number,omitempty"`
 }
 
-// Wave representa um lote de cards que podem ser executados concorrentemente sem conflito.
+type Card = Ticket
+
+// Wave representa um lote de tickets que podem ser executados concorrentemente sem conflito.
 type Wave struct {
-	Index int    `json:"index"`
-	Cards []Card `json:"cards"`
+	Index int      `json:"index"`
+	Cards []Ticket `json:"tickets"`
 }
 
 // BoardState captura a fotografia instantânea das colunas do projeto.
 type BoardState struct {
-	TotalCards int               `json:"total_cards"`
-	Columns    map[Status][]Card `json:"columns"`
+	TotalTickets int                 `json:"total_tickets"`
+	Columns      map[Status][]Ticket `json:"columns"`
 }
 
 // BoardClient define a interface de interação com o GitHub Projects v2.
 type BoardClient interface {
-	FetchReadyCards() ([]Card, error)
-	MoveCard(cardID string, toStatus Status) error
+	FetchReadyTickets() ([]Ticket, error)
+	MoveTicket(ticketID string, toStatus Status) error
 	CheckQuota() (remaining int, resetTime int64, err error)
 }

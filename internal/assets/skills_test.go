@@ -126,9 +126,9 @@ gate: file_exists('SPEC.md')
 `)
 
 	// 2. Skill canônica sem frontmatter que deve receber inferência heurística
-	write(t, filepath.Join(root, "aidd-legoloop-mega-pipeline", "SKILL.md"), `---
-name: aidd-legoloop-mega-pipeline
-description: Orquestrador Mestre do Mega Pipeline
+	write(t, filepath.Join(root, "aidd-legoloop-interview", "SKILL.md"), `---
+name: aidd-legoloop-interview
+description: Entrevista guiada
 ---
 `)
 
@@ -140,8 +140,8 @@ description: Orquestrador Mestre do Mega Pipeline
 		t.Errorf("explicit metadata ontológica incorreta: %+v", exp.Meta)
 	}
 
-	mega := mustFind(t, items, "aidd-legoloop-mega-pipeline")
-	if mega.Meta["consumes"] == "" || mega.Meta["produces"] == "" || mega.Meta["artifact"] == "" || mega.Meta["gate"] == "" {
-		t.Errorf("aidd-legoloop-mega-pipeline não recebeu inferência ontológica: %+v", mega.Meta)
+	inferida := mustFind(t, items, "aidd-legoloop-interview")
+	if inferida.Meta["consumes"] == "" || inferida.Meta["produces"] == "" || inferida.Meta["artifact"] == "" || inferida.Meta["gate"] == "" {
+		t.Errorf("aidd-legoloop-interview não recebeu inferência ontológica: %+v", inferida.Meta)
 	}
 }

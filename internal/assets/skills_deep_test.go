@@ -9,17 +9,15 @@ import (
 
 func TestFindSkillFilesRecursiveInMonorepo(t *testing.T) {
 	tmp := t.TempDir()
-	// Monorepo macro-skill
-	macro := filepath.Join(tmp, "aidd-osmani")
-	if err := os.MkdirAll(macro, 0755); err != nil {
+	raiz := filepath.Join(tmp, "aidd-osmani")
+	if err := os.MkdirAll(raiz, 0755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(macro, "SKILL.md"), []byte("---\nname: macro\n---\nMacro"), 0600); err != nil {
+	if err := os.WriteFile(filepath.Join(raiz, "SKILL.md"), []byte("---\nname: raiz\n---\nRaiz"), 0600); err != nil {
 		t.Fatal(err)
 	}
 
-	// Sub-skill aninhada em upstream/skills/spec
-	specSkill := filepath.Join(macro, "upstream", "skills", "spec")
+	specSkill := filepath.Join(raiz, "upstream", "skills", "spec")
 	if err := os.MkdirAll(specSkill, 0755); err != nil {
 		t.Fatal(err)
 	}

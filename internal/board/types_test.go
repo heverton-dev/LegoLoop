@@ -2,49 +2,51 @@ package board_test
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 
 	"legoloop/internal/board"
 )
 
-func TestCardSerialization(t *testing.T) {
-	card := board.Card{
-		ID:        "card-123",
+func TestTicketSerialization(t *testing.T) {
+	ticket := board.Ticket{
+		ID:        "ticket-123",
 		Number:    42,
 		Title:     "Implement GitHub Board Ingestor",
 		Body:      "Closes #42. Touches internal/board/types.go",
 		Status:    board.StatusReady,
 		Labels:    []string{"feature", "core"},
 		Assignees: []string{"developer-ai"},
-		Branch:    "issue-42-github-ingestor",
+		Branch:    "ticket-42-github-ingestor",
 		PRNumber:  101,
 	}
 
-	data, err := json.Marshal(card)
+	data, err := json.Marshal(ticket)
 	if err != nil {
-		t.Fatalf("falha ao serializar Card: %v", err)
+		t.Fatalf("falha ao serializar Ticket: %v", err)
 	}
 
-	var parsed board.Card
+	var parsed board.Ticket
 	if err := json.Unmarshal(data, &parsed); err != nil {
-		t.Fatalf("falha ao deserializar Card: %v", err)
+		t.Fatalf("falha ao deserializar Ticket: %v", err)
 	}
 
-	if parsed.ID != "card-123" || parsed.Number != 42 || parsed.Status != board.StatusReady {
-		t.Fatalf("card deserializado incorreto: %+v", parsed)
+	if parsed.ID != "ticket-123" || parsed.Number != 42 || parsed.Status != board.StatusReady {
+		t.Fatalf("ticket deserializado incorreto: %+v", parsed)
 	}
 }
 
 func TestWaveSerialization(t *testing.T) {
-	wave := board.Wave{
-		Index: 0,
-		Cards: []board.Card{
-			{Number: 1, Title: "Ticket A"},
-			{Number: 2, Title: "Ticket B"},
-		},
+	var wave board.Wave
+	entrada := `{"index":0,"tickets":[{"number":1,"title":"Ticket A"},{"number":2,"title":"Ticket B"}]}`
+	if err := json.Unmarshal([]byte(entrada), &wave); err != nil {
+		t.Fatal(err)
 	}
-
-	if len(wave.Cards) != 2 || wave.Index != 0 {
+	saida, err := json.Marshal(wave)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if wave.Index != 0 || strings.Count(string(saida), `"title"`) != 2 {
 		t.Fatalf("wave inconsistente: %+v", wave)
 	}
 }

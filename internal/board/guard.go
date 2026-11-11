@@ -30,7 +30,7 @@ func NewTokenBucketGuard(threshold int) *TokenBucketGuard {
 }
 
 // Check avalia a quota restante e o timestamp de reset.
-// Se a cota for inferior ao limiar, congela a esteira em estado halted e retorna ErrRateLimitExhausted.
+// Se a cota for inferior ao limiar, congela o guard em estado halted e retorna ErrRateLimitExhausted.
 func (g *TokenBucketGuard) Check(remaining int, resetUnix int64) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()

@@ -213,7 +213,7 @@ func setDefault(m map[string]string, k, v string) {
 	}
 }
 
-// descriptionValue lê a descrição simples ou em bloco (> | >- |-), devolvendo a última linha consumida.
+// descriptionValue lê a descrição simples ou multilinha (> | >- |-), devolvendo a última linha consumida.
 func descriptionValue(lines []string, i int, val string) (string, int) {
 	v := strings.TrimSpace(val)
 	if v != ">" && v != "|" && v != ">-" && v != "|-" {
