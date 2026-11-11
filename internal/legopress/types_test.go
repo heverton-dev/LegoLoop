@@ -13,7 +13,7 @@ func TestManifestValidation_Valid(t *testing.T) {
 		Author:   "Heverton",
 		Format:   "170x240mm",
 		Parts: []legopress.Part{
-			{ID: "P01", Title: "Macro", File: "partes/01-macro.md", Level: 1},
+			{ID: "P01", Title: "Visao", File: "partes/01-visao.md", Level: 1},
 			{ID: "P02", Title: "Meso", File: "partes/02-meso.md", Level: 1},
 		},
 		OutputPDF: "livro.pdf",
@@ -28,7 +28,7 @@ func TestManifestValidation_EmptyTitle(t *testing.T) {
 	manifest := legopress.Manifest{
 		Title: "",
 		Parts: []legopress.Part{
-			{ID: "P01", Title: "Macro", File: "partes/01-macro.md"},
+			{ID: "P01", Title: "Visao", File: "partes/01-visao.md"},
 		},
 	}
 
@@ -57,7 +57,7 @@ func TestManifestValidation_EmptyPartFile(t *testing.T) {
 	manifest := legopress.Manifest{
 		Title: "Livro Incompleto",
 		Parts: []legopress.Part{
-			{ID: "P01", Title: "Macro", File: "   "},
+			{ID: "P01", Title: "Visao", File: "   "},
 		},
 	}
 

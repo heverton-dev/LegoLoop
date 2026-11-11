@@ -11,7 +11,7 @@ func TestPartitionHierarchy_Valid(t *testing.T) {
 		{Title: "A Crise dos Chatbots Monoliticos", ContentType: "concept"},
 		{Title: "Os Cinco Verbos Canonicos", ContentType: "process"},
 		{Title: "O Motor de Execucao em Go", ContentType: "code"},
-		{Title: "Receitas de Esteiras Reais", ContentType: "recipe"},
+		{Title: "Receitas de Processos Reais", ContentType: "recipe"},
 	}
 
 	partitioner := legopress.NewPartitioner()
@@ -24,9 +24,8 @@ func TestPartitionHierarchy_Valid(t *testing.T) {
 		t.Fatalf("esperava 4 partes particionadas, obteve: %d", len(parts))
 	}
 
-	// Verificar classificacao hierarquica
-	if parts[0].Level != 1 { // Macro
-		t.Errorf("esperava conceito em nivel 1 (Macro), obteve: %d", parts[0].Level)
+	if parts[0].Level != 1 {
+		t.Errorf("esperava conceito em nivel 1, obteve: %d", parts[0].Level)
 	}
 	if parts[1].Level != 2 { // Meso
 		t.Errorf("esperava processo em nivel 2 (Meso), obteve: %d", parts[1].Level)

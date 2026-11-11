@@ -36,7 +36,7 @@ type Item struct {
 	Natureza  string     `json:"natureza"`
 	Harnesses []string   `json:"harnesses"`
 	UsadoPor  []string   `json:"usado_por"`
-	Origem    string     `json:"origem"`              // "v2" (tem .processo.json) ou "v1" (só o .loop.json)
+	Origem    string     `json:"origem"`              // "v2" (tem .processo.json) ou "v1" (só o documento do Studio)
 	Erro      string     `json:"erro,omitempty"`      // o .processo.json não pôde ser lido
 	Lacunas   []string   `json:"lacunas,omitempty"`   // etapas sem peça
 	Sugestoes []Sugestao `json:"sugestoes,omitempty"` // peças que podem cobrir a lacuna com perfil definir
@@ -51,7 +51,7 @@ type Resultado struct {
 // MensagemVazio é o texto para o cofre sem processos.
 func MensagemVazio(vault string) string { return ste.Msg("listar.vazio", vault) }
 
-// Run lê loops/ do cofre e monta a lista. Um .processo.json inválido aparece com Erro e não para a lista.
+// Run lê os processos do cofre e monta a lista. Um .processo.json inválido aparece com Erro e não para a lista.
 func Run(ctx context.Context, d Deps) (Resultado, error) {
 	vault := d.Store.Roots.Vault
 	res := Resultado{Vault: vault, Processos: []Item{}}

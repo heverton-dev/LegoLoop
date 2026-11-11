@@ -14,7 +14,7 @@ func TestDoubleSurfaceBookCompilation(t *testing.T) {
 	res, err := legopress.GenerateDoubleSurface(
 		"Automação Audiovisual Soberana",
 		"Visão geral executiva da fundição de vídeo local.",
-		"Detalhes de AST, contratos de seam e FMEA da pipeline.",
+		"Detalhes de AST, contratos de seam e FMEA do processo.",
 		"Redução de custos de API em 100% com payback imediato.",
 		tmpDir,
 	)

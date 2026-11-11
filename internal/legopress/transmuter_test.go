@@ -32,7 +32,7 @@ Espero que isso tenha ajudado! Se precisar de mais alguma coisa, estou à dispos
 	manifest := legopress.Manifest{
 		Title: "LegoLoop Book",
 		Parts: []legopress.Part{
-			{ID: "P01", Title: "Macro", File: "partes/01-macro.md"},
+			{ID: "P01", Title: "Visao", File: "partes/01-visao.md"},
 			{ID: "P04", Title: "Micro", File: "partes/04-micro-o-motor-e-governanca.md"},
 		},
 	}

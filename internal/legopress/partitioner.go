@@ -43,7 +43,7 @@ func (p *Partitioner) Partition(topics []RawTopic) ([]Part, error) {
 
 func classifyLevel(contentType string) int {
 	switch strings.ToLower(strings.TrimSpace(contentType)) {
-	case "concept", "intro", "manifesto", "macro":
+	case "concept", "intro", "manifesto":
 		return 1
 	case "code", "architecture", "internals", "micro", "governance":
 		return 3
