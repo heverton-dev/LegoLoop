@@ -10,7 +10,7 @@ func init() {
 	for id, msg := range map[string]string{
 		"remover.cartao.acao":    "Remover o processo %s do cofre.",
 		"remover.cartao.aviso":   "Esta ação não tem volta. Os arquivos apagados não vão para a lixeira.",
-		"remover.cartao.passo_a": "Apagar %d itens do cofre: a skill, o loop, o DAG e o processo.",
+		"remover.cartao.passo_a": "Apagar %d itens do cofre: a skill, o documento do Studio, o DAG e o processo.",
 		"remover.cartao.passo_b": "Apagar %d vínculos nos harnesses: %s.",
 		"remover.cartao.efeito":  "Os documentos do projeto em docs/ ficam como estão.",
 		"remover.cartao.desfaz":  "Se algo falhar, o processo continua no cofre. Rode legoloop remover de novo.",

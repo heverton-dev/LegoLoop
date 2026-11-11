@@ -12,37 +12,37 @@ func PromptRegra(perfil ConfigPerfil) string {
 	}
 	var b strings.Builder
 	b.WriteString("# 🛡️ REGRAS DE GOVERNANÇA E ECONOMIA STE-PT\n\n")
-	b.WriteString(blocoInputImperativo())
+	b.WriteString(pecaInputImperativo())
 	if perfil.Modo == ModoCaveman || perfil.Modo == ModoHibrido || perfil.Modo == ModoStept || perfil.Modo == ModoPuro {
-		b.WriteString(blocoCavemanThinking())
+		b.WriteString(pecaCavemanThinking())
 	}
 	if perfil.Modo == ModoCaveman {
-		b.WriteString(blocoOutputCaveman())
+		b.WriteString(pecaOutputCaveman())
 	}
 	if perfil.Modo == ModoPuro {
-		b.WriteString(blocoOutputPuro())
-		b.WriteString(blocoNormasASDSTE())
-		b.WriteString(blocoRegrasConcisao(perfil.Pausa))
+		b.WriteString(pecaOutputPuro())
+		b.WriteString(pecaNormasASDSTE())
+		b.WriteString(pecaRegrasConcisao(perfil.Pausa))
 	}
 	if perfil.Modo == ModoHibrido || perfil.Modo == ModoStept {
-		b.WriteString(blocoOutputTriade())
-		b.WriteString(blocoNormasASDSTE())
-		b.WriteString(blocoRegrasConcisao(perfil.Pausa))
+		b.WriteString(pecaOutputTriade())
+		b.WriteString(pecaNormasASDSTE())
+		b.WriteString(pecaRegrasConcisao(perfil.Pausa))
 	}
 	return b.String()
 }
 
-func blocoOutputPuro() string {
+func pecaOutputPuro() string {
 	return `## 3. CONTRATO DE RESPOSTA PURO (ASD-STE100 DIRETO)
 O agente DEVE responder diretamente no padrão industrial ASD-STE100 sem utilizar os cabeçalhos artificiais da Tríade [S] [T] [E]:
 - Responda com clareza máxima, frases curtas e voz ativa direta.
-- PROIBIDO introduzir blocos artificiais [S], [T] ou [E] em respostas puras.
+- PROIBIDO introduzir seções artificiais [S], [T] ou [E] em respostas puras.
 - Preserve a precisão cirúrgica e o vocabulário técnico controlado.
 
 `
 }
 
-func blocoInputImperativo() string {
+func pecaInputImperativo() string {
 	return `## 1. INPUT IMPERATIVO (Economia de Contexto)
 - Isole comandos imperativos e substantivos de ação do usuário.
 - Ignore saudações e conversas laterais irrelevantes para a execução técnica.
@@ -51,17 +51,17 @@ func blocoInputImperativo() string {
 `
 }
 
-func blocoCavemanThinking() string {
+func pecaCavemanThinking() string {
 	return `## 2. CAVEMAN THINKING (Raciocínio Interno Econômico)
 - Use estilo telegráfico extremo no pensamento interno (sem artigos ou preposições).
-- Frases de no máximo 3 a 5 linhas para tarefas pontuais.
+- Frases de no máximo 3 a 5 linhas para pedidos pontuais.
 - Nunca carregue arquivos de log inteiros no contexto do pensamento.
 - Abreviar termos técnicos e ir direto à decisão de código.
 
 `
 }
 
-func blocoOutputCaveman() string {
+func pecaOutputCaveman() string {
 	return `## 3. OUTPUT TELEGRÁFICO (Modo Caveman)
 - Respostas ultra-curtas, secas e telegráficas no chat.
 - Limite de saída estrito: direto ao ponto e sem enrolação.
@@ -70,9 +70,9 @@ func blocoOutputCaveman() string {
 `
 }
 
-func blocoOutputTriade() string {
+func pecaOutputTriade() string {
 	return `## 3. CONTRATO DE RESPOSTA OBRIGATÓRIO (TRÍADE STE-PT & CARTÃO DE AÇÃO STE-PT)
-TODA resposta técnica DEVE seguir a hierarquia de negrito limpa, compacta (quebra direta sem linhas em branco extras) e sem blocos de código artificiais:
+TODA resposta técnica DEVE seguir a hierarquia de negrito limpa, compacta (quebra direta sem linhas em branco extras) e sem cercas de código artificiais:
 
 ### FORMATO PRÉ-AÇÃO (Antes de alterar código ou executar comandos com efeito):
 **[S] Situação:** <Cenário factual do problema ou contexto encontrado>
@@ -106,7 +106,7 @@ func diretivaPausa(pausa Pausa) string {
 	}
 }
 
-func blocoNormasASDSTE() string {
+func pecaNormasASDSTE() string {
 	return `## 4. ESCRITA TÉCNICA INDUSTRIAL (ASD-STE100 80%)
 O agente DEVE submeter toda a redação no chat output às 7 regras industriais em Português do Brasil (PT-BR):
 1. COMPRIMENTO DE FRASE: Máximo de 20 palavras por frase em instruções ou procedimentos. Máximo de 25 palavras em descrições.
@@ -120,12 +120,12 @@ O agente DEVE submeter toda a redação no chat output às 7 regras industriais 
 `
 }
 
-func blocoRegrasConcisao(pausa Pausa) string {
+func pecaRegrasConcisao(pausa Pausa) string {
 	var b strings.Builder
 	b.WriteString("## 5. DIRETIVAS DE CONCISÃO & PAUSA\n")
 	b.WriteString("- PROIBIDO introduções, preâmbulos, saudações ou explicações prolixas antes de [S].\n")
 	b.WriteString("- Quando o usuário responder confirmações (ex.: '1', 'seguir', 'sim', 'STEPT 1'), vá DIRETO à execução e responda com o formato PÓS-AÇÃO ou próximo PRÉ-AÇÃO.\n")
-	b.WriteString("- Respostas estritamente limitadas a 1 a 3 linhas por bloco.\n")
+	b.WriteString("- Respostas estritamente limitadas a 1 a 3 linhas por seção.\n")
 	b.WriteString("- PROIBIDO re-resumir artefatos ou diffs após a entrega.\n")
 	fmt.Fprintf(&b, "- **Diretiva de Pausa:** %s\n\n", diretivaPausa(pausa))
 	return b.String()

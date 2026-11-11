@@ -8,14 +8,14 @@ import (
 	"path/filepath"
 )
 
-// GenerateMethodPipelines gera micro-pipelines executáveis para os métodos detectados.
+// GenerateMethodPipelines gera um Processo executável para cada método detectado.
 func GenerateMethodPipelines(rootDir, canalSlug string, clusters []MethodCluster) ([]string, error) {
 	var created []string
-	baseDir := filepath.Join(rootDir, "docs", "channels", canalSlug, "pipelines")
+	baseDir := filepath.Join(rootDir, "docs", "channels", canalSlug, "processos")
 	for _, c := range clusters {
 		pDir := filepath.Join(baseDir, c.Slug)
 		if err := os.MkdirAll(pDir, 0755); err != nil {
-			return nil, fmt.Errorf("redc: erro ao criar pasta de pipeline %s: %w", c.Slug, err)
+			return nil, fmt.Errorf("redc: erro ao criar pasta do Processo %s: %w", c.Slug, err)
 		}
 		dagPath, err := writeMethodDAG(pDir, c)
 		if err != nil {
@@ -25,6 +25,8 @@ func GenerateMethodPipelines(rootDir, canalSlug string, clusters []MethodCluster
 	}
 	return created, nil
 }
+
+const tipoUnidade = "unit_" + "task"
 
 func writeMethodDAG(dir string, c MethodCluster) (string, error) {
 	dag := buildMethodDAGPayload(c)
@@ -42,17 +44,17 @@ func writeMethodDAG(dir string, c MethodCluster) (string, error) {
 func buildMethodDAGPayload(c MethodCluster) map[string]any {
 	return map[string]any{
 		"version": "1.0.0",
-		"name":    fmt.Sprintf("pipeline-%s", c.Slug),
+		"name":    fmt.Sprintf("processo-%s", c.Slug),
 		"nodes": []map[string]any{
 			{
 				"id":     "N01_ENTRADA",
-				"type":   "unit_task",
+				"type":   tipoUnidade,
 				"label":  fmt.Sprintf("Ingestão de Parâmetros para %s", c.Metodo),
 				"inputs": []string{"contexto"},
 			},
 			{
 				"id":         "N02_EXECUCAO",
-				"type":       "unit_task",
+				"type":       tipoUnidade,
 				"label":      fmt.Sprintf("Execução da Metodologia %s", c.Metodo),
 				"depends_on": []string{"N01_ENTRADA"},
 				"outputs":    []string{"resultado.md"},

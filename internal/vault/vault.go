@@ -20,14 +20,14 @@ import (
 
 // Vault gerencia pares chave-valor criptografados do Cofre de Segredos em memória e persistidos em disco.
 type Vault struct {
-	mu          sync.RWMutex
-	storagePath string
-	key         []byte
-	secrets     map[string]string
+	mu       sync.RWMutex
+	caminho  string
+	key      []byte
+	segredos map[string]string
 }
 
-// New cria uma nova instância do Cofre de Segredos. Se storagePath for vazio, opera apenas em memória.
-func New(storagePath string, masterKey string) (*Vault, error) {
+// New cria uma nova instância do Cofre de Segredos. Se caminho for vazio, opera apenas em memória.
+func New(caminho string, masterKey string) (*Vault, error) {
 	if masterKey == "" {
 		return nil, errors.New("vault: chave mestra não pode ser vazia")
 	}
@@ -35,9 +35,9 @@ func New(storagePath string, masterKey string) (*Vault, error) {
 	derivedKey := deriveKey(masterKey)
 
 	return &Vault{
-		storagePath: storagePath,
-		key:         derivedKey,
-		secrets:     make(map[string]string),
+		caminho:  caminho,
+		key:      derivedKey,
+		segredos: make(map[string]string),
 	}, nil
 }
 
@@ -55,7 +55,7 @@ func (v *Vault) Set(key, value string) error {
 	if key == "" {
 		return errors.New("vault: chave não pode ser vazia")
 	}
-	v.secrets[key] = value
+	v.segredos[key] = value
 	return nil
 }
 
@@ -64,7 +64,7 @@ func (v *Vault) Get(key string) (string, bool) {
 	v.mu.RLock()
 	defer v.mu.RUnlock()
 
-	val, ok := v.secrets[key]
+	val, ok := v.segredos[key]
 	return val, ok
 }
 
@@ -73,8 +73,8 @@ func (v *Vault) ListKeys() []string {
 	v.mu.RLock()
 	defer v.mu.RUnlock()
 
-	keys := make([]string, 0, len(v.secrets))
-	for k := range v.secrets {
+	keys := make([]string, 0, len(v.segredos))
+	for k := range v.segredos {
 		keys = append(keys, k)
 	}
 	return keys
@@ -85,11 +85,11 @@ func (v *Vault) Save() error {
 	v.mu.RLock()
 	defer v.mu.RUnlock()
 
-	if v.storagePath == "" {
+	if v.caminho == "" {
 		return nil
 	}
 
-	payload, err := json.Marshal(v.secrets)
+	payload, err := json.Marshal(v.segredos)
 	if err != nil {
 		return fmt.Errorf("vault: falha na serialização json: %w", err)
 	}
@@ -99,12 +99,12 @@ func (v *Vault) Save() error {
 		return fmt.Errorf("vault: falha na criptografia: %w", err)
 	}
 
-	dir := filepath.Dir(v.storagePath)
+	dir := filepath.Dir(v.caminho)
 	if err := os.MkdirAll(dir, 0755); err != nil {
-		return fmt.Errorf("vault: falha ao criar diretório do storage: %w", err)
+		return fmt.Errorf("vault: falha ao criar diretório do arquivo: %w", err)
 	}
 
-	if err := os.WriteFile(v.storagePath, encrypted, 0600); err != nil {
+	if err := os.WriteFile(v.caminho, encrypted, 0600); err != nil {
 		return fmt.Errorf("vault: falha ao gravar arquivo seguro: %w", err)
 	}
 
@@ -116,11 +116,11 @@ func (v *Vault) Load() error {
 	v.mu.Lock()
 	defer v.mu.Unlock()
 
-	if v.storagePath == "" {
-		return errors.New("vault: storagePath não configurado")
+	if v.caminho == "" {
+		return errors.New("vault: caminho não configurado")
 	}
 
-	raw, err := os.ReadFile(v.storagePath)
+	raw, err := os.ReadFile(v.caminho)
 	if err != nil {
 		return fmt.Errorf("vault: falha ao ler arquivo: %w", err)
 	}
@@ -135,7 +135,7 @@ func (v *Vault) Load() error {
 		return fmt.Errorf("vault: dados decriptografados inválidos: %w", err)
 	}
 
-	v.secrets = data
+	v.segredos = data
 	return nil
 }
 
@@ -145,7 +145,7 @@ func (v *Vault) MaskSecrets(raw string) string {
 	defer v.mu.RUnlock()
 
 	result := raw
-	for _, val := range v.secrets {
+	for _, val := range v.segredos {
 		if len(val) >= 4 { // Apenas valores com comprimento mínimo razoável para evitar falsos positivos
 			result = strings.ReplaceAll(result, val, "***MASKED***")
 		}
@@ -162,7 +162,7 @@ func (v *Vault) ResolveEnv(tmpl string) string {
 
 	return envVarRegex.ReplaceAllStringFunc(tmpl, func(match string) string {
 		varName := match[2 : len(match)-1]
-		if val, ok := v.secrets[varName]; ok {
+		if val, ok := v.segredos[varName]; ok {
 			return val
 		}
 		if sysVal := os.Getenv(varName); sysVal != "" {

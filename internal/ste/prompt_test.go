@@ -35,7 +35,7 @@ func TestPromptRegra(t *testing.T) {
 		}
 		prompt := ste.PromptRegra(perfil)
 
-		blocosObrigatorios := []string{
+		secoesObrigatorias := []string{
 			"INPUT IMPERATIVO",
 			"CAVEMAN THINKING",
 			"TRÍADE STE-PT",
@@ -48,9 +48,9 @@ func TestPromptRegra(t *testing.T) {
 			"ações destrutivas",
 		}
 
-		for _, b := range blocosObrigatorios {
+		for _, b := range secoesObrigatorias {
 			if !strings.Contains(strings.ToUpper(prompt), strings.ToUpper(b)) {
-				t.Errorf("prompt hibrido nao contem bloco obrigatorio %q", b)
+				t.Errorf("prompt hibrido nao contem secao obrigatoria %q", b)
 			}
 		}
 	})

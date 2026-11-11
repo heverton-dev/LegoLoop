@@ -48,10 +48,10 @@ func TestRegra8_MutacoesDeliberadas(t *testing.T) {
 
 		// Se mutar removendo Caveman Thinking ou Cartão
 		if !strings.Contains(prompt, "CAVEMAN THINKING") {
-			t.Errorf("M3 detectado: bloco CAVEMAN THINKING ausente")
+			t.Errorf("M3 detectado: seção CAVEMAN THINKING ausente")
 		}
 		if !strings.Contains(prompt, "CARTÃO DE AÇÃO STE-PT") {
-			t.Errorf("M3 detectado: bloco CARTÃO DE AÇÃO STE-PT ausente")
+			t.Errorf("M3 detectado: seção CARTÃO DE AÇÃO STE-PT ausente")
 		}
 	})
 

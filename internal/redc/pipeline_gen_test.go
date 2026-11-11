@@ -23,14 +23,14 @@ func TestGenerateMethodPipelines_Success(t *testing.T) {
 
 	created, err := redc.GenerateMethodPipelines(tempDir, "canal-alvo", clusters)
 	if err != nil {
-		t.Fatalf("esperava sucesso ao gerar pipelines de metodos, obteve: %v", err)
+		t.Fatalf("esperava sucesso ao gerar Processos de metodos, obteve: %v", err)
 	}
 
 	if len(created) == 0 {
-		t.Errorf("esperava arquivos de pipeline criados")
+		t.Errorf("esperava arquivos de Processo criados")
 	}
 
-	expectedDag := filepath.Join(tempDir, "docs", "channels", "canal-alvo", "pipelines", "engenharia-reversa-viral", caminhos.ArquivoDAG)
+	expectedDag := filepath.Join(tempDir, "docs", "channels", "canal-alvo", "processos", "engenharia-reversa-viral", caminhos.ArquivoDAG)
 	if _, err := os.Stat(expectedDag); os.IsNotExist(err) {
 		t.Errorf("arquivo esperado %s nao foi encontrado: %s", caminhos.ArquivoDAG, expectedDag)
 	}

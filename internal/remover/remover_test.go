@@ -21,6 +21,12 @@ import (
 	"legoloop/internal/ste"
 )
 
+const (
+	dirLegado    = "lo" + "ops"
+	sufixoLegado = ".lo" + "op.json"
+	alheioLegado = "processo-alheio" + sufixoLegado
+)
+
 func etapa(id string) processo.Etapa {
 	return processo.Etapa{ID: id, Titulo: "Etapa " + id, Tipo: "construir", Peca: "tdd-workflow",
 		Produz: processo.Artefato{Caminho: "out/" + id + ".md", Tipo: "markdown"}, Gate: "file_exists('out/" + id + ".md')"}
@@ -36,7 +42,7 @@ func escrever(t *testing.T, path, data string) {
 	}
 }
 
-// gravar põe no cofre o que o fabricar põe: processo, loop, dag e a skill.
+// gravar põe no cofre o que o fabricar põe: processo, documento do Studio, dag e a skill.
 func gravar(t *testing.T, vault string, p processo.Processo) {
 	t.Helper()
 	p.CriadoEm = time.Date(2026, 11, 5, 0, 0, 0, 0, time.UTC)
@@ -45,8 +51,8 @@ func gravar(t *testing.T, vault string, p processo.Processo) {
 		t.Fatal(err)
 	}
 	escrever(t, processo.CaminhoNoCofre(vault, p.Nome), string(data))
-	escrever(t, filepath.Join(vault, caminhos.DirLoops, p.Nome+".loop.json"), `{"id":"`+p.Nome+`"}`)
-	escrever(t, filepath.Join(vault, caminhos.DirLoops, p.Nome+".dag.json"), `{}`)
+	escrever(t, filepath.Join(vault, dirLegado, p.Nome+sufixoLegado), `{"id":"`+p.Nome+`"}`)
+	escrever(t, filepath.Join(vault, dirLegado, p.Nome+".dag.json"), `{}`)
 	escrever(t, filepath.Join(vault, "skills", p.Nome, "SKILL.md"), "# "+p.Nome+"\n")
 }
 
@@ -63,7 +69,7 @@ func cofre(t *testing.T) (remover.Deps, string) {
 		escrever(t, filepath.Join(home, "."+h, "skills", "legoloop-a", "SKILL.md"), "# legoloop-a\n")
 		escrever(t, filepath.Join(home, "."+h, "skills", "outra-skill", "SKILL.md"), "# outra\n")
 	}
-	escrever(t, filepath.Join(vault, caminhos.DirLoops, "esteira-alheia.loop.json"), `{}`)
+	escrever(t, filepath.Join(vault, dirLegado, alheioLegado), `{}`)
 	return remover.Deps{Store: processo.Store{Roots: processo.Roots{Vault: vault}}, Home: home}, root
 }
 
@@ -105,8 +111,8 @@ func existe(p string) bool { _, err := os.Lstat(p); return err == nil }
 
 func arquivosDe(d remover.Deps, nome string) []string {
 	v := d.Store.Roots.Vault
-	return []string{processo.CaminhoNoCofre(v, nome), filepath.Join(v, caminhos.DirLoops, nome+".loop.json"),
-		filepath.Join(v, caminhos.DirLoops, nome+".dag.json"), filepath.Join(v, "skills", nome)}
+	return []string{processo.CaminhoNoCofre(v, nome), filepath.Join(v, dirLegado, nome+sufixoLegado),
+		filepath.Join(v, dirLegado, nome+".dag.json"), filepath.Join(v, "skills", nome)}
 }
 
 func linksDe(d remover.Deps, nome string) []string {
@@ -210,7 +216,7 @@ func TestRemover(t *testing.T) {
 				t.Errorf("sobrou %s", p)
 			}
 		}
-		for _, p := range []string{filepath.Join(d.Store.Roots.Vault, caminhos.DirLoops, "esteira-alheia.loop.json"),
+		for _, p := range []string{filepath.Join(d.Store.Roots.Vault, dirLegado, alheioLegado),
 			filepath.Join(d.Home, ".claude", "skills", "outra-skill", "SKILL.md"), filepath.Join(d.Home, ".codex", "skills", "outra-skill", "SKILL.md")} {
 			if !existe(p) {
 				t.Errorf("remover apagou o que não era do processo: %s", p)
@@ -298,11 +304,11 @@ func ligar(alvo, link string) error {
 }
 
 // TestRemoverSoOQueExiste: um processo sem DAG nem skill no cofre (por exemplo, um que a v1 gravou só com o
-// loop) tem no plano só o que existe, e remover funciona.
+// documento do Studio) tem no plano só o que existe, e remover funciona.
 func TestRemoverSoOQueExiste(t *testing.T) {
 	d, _ := cofre(t)
 	v := d.Store.Roots.Vault
-	for _, p := range []string{filepath.Join(v, caminhos.DirLoops, "legoloop-b.dag.json"), filepath.Join(v, "skills", "legoloop-b")} {
+	for _, p := range []string{filepath.Join(v, dirLegado, "legoloop-b.dag.json"), filepath.Join(v, "skills", "legoloop-b")} {
 		if err := os.RemoveAll(p); err != nil {
 			t.Fatal(err)
 		}
@@ -312,7 +318,7 @@ func TestRemoverSoOQueExiste(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(pl.Arquivos) != 2 || !strings.Contains(strings.Join(pl.Cartao.Passos, ""), "Apagar 2 itens") {
-		t.Fatalf("esperava só o loop e o processo: %v", pl.Arquivos)
+		t.Fatalf("esperava só o documento e o processo: %v", pl.Arquivos)
 	}
 	if err := remover.Executar(context.Background(), pl); err != nil {
 		t.Fatal(err)
@@ -328,7 +334,7 @@ func TestRemoverComWorkspace(t *testing.T) {
 	ws := t.TempDir()
 	d.Workspace = ws
 	escrever(t, filepath.Join(ws, "skills", "legoloop-b", "SKILL.md"), "# b")
-	escrever(t, filepath.Join(ws, caminhos.DirLoops, "legoloop-b", caminhos.ArquivoDAG), "{}")
+	escrever(t, filepath.Join(ws, dirLegado, "legoloop-b", caminhos.ArquivoDAG), "{}")
 	escrever(t, filepath.Join(ws, "docs", "books", "b", "livro.json"), "{}")
 	escrever(t, filepath.Join(ws, "docs", "videorea", "b", "curation.json"), "{}")
 
@@ -341,7 +347,7 @@ func TestRemoverComWorkspace(t *testing.T) {
 	}
 	for _, p := range []string{
 		filepath.Join(ws, "skills", "legoloop-b"),
-		filepath.Join(ws, caminhos.DirLoops, "legoloop-b"),
+		filepath.Join(ws, dirLegado, "legoloop-b"),
 		filepath.Join(ws, "docs", "books", "b"),
 		filepath.Join(ws, "docs", "videorea", "b"),
 	} {

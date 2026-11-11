@@ -124,7 +124,7 @@ func scoreContracts(content string) (float64, []string) {
 	}
 	if reSchemas.MatchString(content) {
 		contracts += 0.50
-		reasons = append(reasons, "Possui schemas tipados ou blocos de código formal")
+		reasons = append(reasons, "Possui schemas tipados ou trechos de código formal")
 	}
 	return math.Min(contracts, 1.0), reasons
 }
