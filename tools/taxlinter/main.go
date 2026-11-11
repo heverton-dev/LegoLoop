@@ -56,6 +56,9 @@ func scanGoFile(filePath string) ([]TaxonomyFileViolation, error) {
 		vs := validateNormalized(text)
 		position := fset.Position(pos)
 		for _, v := range vs {
+			if isAllowedException(filePath, v.ForbiddenTerm) {
+				continue
+			}
 			v.Line = position.Line + v.Line - 1
 			violations = append(violations, TaxonomyFileViolation{FilePath: filePath, Violation: v})
 		}
@@ -88,6 +91,9 @@ func scanLines(filePath string) ([]TaxonomyFileViolation, error) {
 	}
 	var violations []TaxonomyFileViolation
 	for _, v := range validateNormalized(string(data)) {
+		if isAllowedException(filePath, v.ForbiddenTerm) {
+			continue
+		}
 		violations = append(violations, TaxonomyFileViolation{FilePath: filePath, Violation: v})
 	}
 	return violations, nil

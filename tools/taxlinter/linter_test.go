@@ -145,3 +145,15 @@ func TestExitCode(t *testing.T) {
 		}
 	}
 }
+
+func TestAllowedExceptions(t *testing.T) {
+	if !isAllowedException("internal/orchestrix/unit_claude.go", "task") {
+		t.Fatal("esperava true para unit_claude.go e task")
+	}
+	if isAllowedException("internal/orchestrix/unit_claude.go", "loop") {
+		t.Fatal("esperava false para unit_claude.go e loop")
+	}
+	if isAllowedException("internal/cli/outro.go", "task") {
+		t.Fatal("esperava false para internal/cli/outro.go e task")
+	}
+}

@@ -1,0 +1,103 @@
+{
+  "version": "1.0.0",
+  "name": "Exceções Taxonômicas ASD-STE100 de Contrato Externo",
+  "description": "Registro de exceções com escopo mínimo (por arquivo e termo) para contratos externos de protocolo, CLI e schemas formais que não podem sofrer renomeação sem quebra externa.",
+  "exceptions": [
+    {
+      "file": "internal/orchestrix/unit_claude.go",
+      "forbidden_term": "task",
+      "approved_term": "Nó",
+      "context_domain": "graph_node",
+      "reason": "Ferramenta nativa Task da CLI do Claude Code em unitDeniedTools (contrato externo de segurança para banimento de subagentes).",
+      "proof": "unit_claude.go:18 var unitDeniedTools = []string{\"Agent\", \"Task\"}; flag passada ao Claude Code: --disallowed-tools Agent,Task"
+    },
+    {
+      "file": "internal/orchestrix/orchestrix.go",
+      "forbidden_term": "task",
+      "approved_term": "Nó",
+      "context_domain": "graph_node",
+      "reason": "Tipo de nó unit_task no DAG JSON e flag de segurança AllowUnitTasks.",
+      "proof": "dag.TypeUnitTask = \"unit_task\" em internal/dag/types.go:32; schemas/dag.v1.json; schemas/dag.v2.json; CLI flag --allow-unit-tasks em internal/cli/commands.go:176"
+    },
+    {
+      "file": "internal/orchestrix/orchestrix.go",
+      "forbidden_term": "loop",
+      "approved_term": "Processo",
+      "context_domain": "workflow",
+      "reason": "Tipo de nó subloop no DAG JSON e campo de injeção de acervo LoopStore.",
+      "proof": "dag.TypeSubloop = \"subloop\" em internal/dag/types.go:26; schemas/dag.v1.json; schemas/dag.v2.json; ox.LoopStore = store em internal/cli/commands.go:230"
+    },
+    {
+      "file": "internal/orchestrix/subloop.go",
+      "forbidden_term": "loop",
+      "approved_term": "Processo",
+      "context_domain": "workflow",
+      "reason": "Protocolo estável subloop (tipo de nó DAG TypeSubloop, modelo de execução runner subloop/<ref> e campo LoopStore).",
+      "proof": "runner.Result.Model = \"subloop/\" + n.Ref consumido por compor_binary_test.go:154, compor_real_binary_test.go:125, golden.json e Studio app.js"
+    },
+    {
+      "file": "internal/orchestrix/subloop_test.go",
+      "forbidden_term": "loop",
+      "approved_term": "Processo",
+      "context_domain": "workflow",
+      "reason": "Testes unitários do protocolo subloop com fixtures DAG type: subloop e modelo subloop.",
+      "proof": "subloop_test.go testa o motor contra o schema v1/v2 com type: subloop"
+    },
+    {
+      "file": "internal/orchestrix/subloop_artefato_test.go",
+      "forbidden_term": "loop",
+      "approved_term": "Processo",
+      "context_domain": "workflow",
+      "reason": "Testes unitários de isolamento e fronteira de artefato de subprocesso (protocolo subloop).",
+      "proof": "subloop_artefato_test.go valida isolamento de diretório e verificação do modelo subloop/sub-final"
+    },
+    {
+      "file": "internal/orchestrix/unit.go",
+      "forbidden_term": "task",
+      "approved_term": "Nó",
+      "context_domain": "graph_node",
+      "reason": "Tipo unit_task em prompt de execução estéril e título do ticket.",
+      "proof": "buildUnitPrompt monta cabeçalho com unit_task conforme contrato com executor efêmero"
+    },
+    {
+      "file": "internal/orchestrix/prompt.go",
+      "forbidden_term": "tarefa",
+      "approved_term": "Ticket",
+      "context_domain": "plan_unit",
+      "reason": "Contrato com dublê de integração em internal/cli/compor_real_binary_test.go:44 que identifica despacho de nós pelo texto 'executor de tarefa única'.",
+      "proof": "internal/cli/compor_real_binary_test.go:44: if strings.Contains(primeira, \"executor de tarefa única\")"
+    },
+    {
+      "file": "internal/orchestrix/unit_run.go",
+      "forbidden_term": "task",
+      "approved_term": "Nó",
+      "context_domain": "graph_node",
+      "reason": "Motor de execução runUnitTask e validação de consentimento AllowUnitTasks.",
+      "proof": "unit_run.go:66 func (o *Orchestrix) runUnitTask(...); unit_run.go:70 if !o.AllowUnitTasks"
+    },
+    {
+      "file": "internal/orchestrix/unit_run_test.go",
+      "forbidden_term": "task",
+      "approved_term": "Nó",
+      "context_domain": "graph_node",
+      "reason": "Testes unitários do motor runUnitTask e permissões de worktree de unit_task.",
+      "proof": "unit_run_test.go valida execução estéril de nós unit_task em worktrees git"
+    },
+    {
+      "file": "internal/orchestrix/unit_claude_test.go",
+      "forbidden_term": "task",
+      "approved_term": "Nó",
+      "context_domain": "graph_node",
+      "reason": "Testes de montagem de argumentos para a CLI do Claude Code com unit_task e negação da tool Task.",
+      "proof": "unit_claude_test.go testa unitClaudeArgs e unitDeniedTools = [Agent, Task]"
+    },
+    {
+      "file": "internal/orchestrix/unit_test.go",
+      "forbidden_term": "task",
+      "approved_term": "Nó",
+      "context_domain": "graph_node",
+      "reason": "Testes de write_boundary e caminhos permitidos de nós unit_task.",
+      "proof": "unit_test.go valida allowedWrites(dag.Node{Type: TypeUnitTask})"
+    }
+  ]
+}
