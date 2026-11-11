@@ -23,11 +23,11 @@ const (
 	MaxNeighbors = 12
 	// MaxMCPNeighbors limita os MCPs do inventário sugeridos como vizinhos.
 	MaxMCPNeighbors = 8
-	// MaxLoopNeighbors limita os loops do acervo sugeridos como vizinhos.
-	MaxLoopNeighbors = 8
+	// MaxProcessoNeighbors limita os Processos do acervo sugeridos como vizinhos.
+	MaxProcessoNeighbors = 8
 )
 
-// Context descreve a peça para a qual se pedem sugestões. Block é o bloco tipado do catálogo
+// Context descreve a peça para a qual se pedem sugestões. Block é a Peça tipada do catálogo
 // (nil para peça genérica, cuja saída é "Qualquer"); Artifact é o nome do artefato de saída.
 type Context struct {
 	Block    *graph.Block
@@ -97,7 +97,7 @@ func gateSuggestions(ctx Context) []Gate {
 	}
 	out := []Gate{}
 	for _, g := range cands {
-		if own == "" || !strings.Contains(own, g.Expr) { // o gate próprio do bloco já cobre
+		if own == "" || !strings.Contains(own, g.Expr) { // o gate próprio da Peça já cobre
 			out = append(out, g)
 		}
 	}
@@ -212,7 +212,7 @@ func neighborSuggestions(ctx Context, idx *graph.Index, snap assets.Snapshot) []
 		typed = typed[:MaxNeighbors]
 	}
 	out := append(typed, mcpNeighbors(snap.Of(assets.KindMCP))...)
-	return append(out, loopNeighbors(snap.Of(assets.KindLoop))...)
+	return append(out, processoNeighbors(snap.Of(assets.KindLoop))...)
 }
 
 // neighborLess ordena instalados primeiro, depois maior Score de Reputação, depois nome.
@@ -247,12 +247,12 @@ func mcpNeighbors(mcps []assets.Item) []Neighbor {
 	return out
 }
 
-func loopNeighbors(loops []assets.Item) []Neighbor {
-	sorted := sortByName(append([]assets.Item(nil), loops...))
+func processoNeighbors(processos []assets.Item) []Neighbor {
+	sorted := sortByName(append([]assets.Item(nil), processos...))
 	out := []Neighbor{}
 	seen := map[string]bool{}
 	for _, l := range sorted {
-		if seen[l.Name] || len(out) >= MaxLoopNeighbors {
+		if seen[l.Name] || len(out) >= MaxProcessoNeighbors {
 			continue
 		}
 		seen[l.Name] = true

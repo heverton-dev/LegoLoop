@@ -134,7 +134,7 @@ func isLink(m os.FileMode) bool {
 }
 
 // checkNoLinks recusa o caminho se ele ou qualquer diretório-pai for link simbólico ou
-// junction em root. Componente ausente encerra a verificação sem erro.
+// junction em root. Caminho ausente encerra a verificação sem erro.
 func checkNoLinks(root *os.Root, rel string) error {
 	cur := ""
 	for part := range strings.SplitSeq(filepath.FromSlash(rel), string(filepath.Separator)) {

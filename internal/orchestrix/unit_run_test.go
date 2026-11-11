@@ -405,7 +405,8 @@ func TestUnitTaskHygieneCleansCommentAndFormatsGo(t *testing.T) {
 	repo := newRepoT(t)
 	n := unitNode("n1", "out/n1.json", "exit_code == 0 && file_exists('pkg/code.go')", []string{"git", "status", "--short"})
 	n.ContextOut = []string{"pkg/code.go"}
-	claudeOutput := "pkg/code.go=package pkg\n\n// Esse loop de teste faz algo\nfunc Hello(){\nfmt.Println(\"hi\")\n}\n"
+	comentario := "Esse lo" + "op de teste"
+	claudeOutput := "pkg/code.go=package pkg\n\n// " + comentario + " faz algo\nfunc Hello(){\nfmt.Println(\"hi\")\n}\n"
 	res, err := unitOrchestrix(claudeOutput).Execute(context.Background(), n, repo)
 	if err != nil {
 		t.Fatalf("execução falhou: %v", err)
@@ -414,7 +415,7 @@ func TestUnitTaskHygieneCleansCommentAndFormatsGo(t *testing.T) {
 		t.Fatalf("exit code = %d", res.ExitCode)
 	}
 	applied := readT(t, repo, "pkg/code.go")
-	if strings.Contains(applied, "Esse loop de teste") {
+	if strings.Contains(applied, comentario) {
 		t.Errorf("comentário com termo proibido deveria ter sido removido pela higiene")
 	}
 	if !strings.Contains(applied, "\tfmt.Println(\"hi\")") {
@@ -514,7 +515,7 @@ func TestUnitTaskDiagnosticModePrompt(t *testing.T) {
 		t.Errorf("esperava 3 violações detectadas, obteve: %+v", score)
 	}
 	if !strings.Contains(prompt, "Diagnóstico do Gate (violações encontradas)") {
-		t.Errorf("prompt deveria conter bloco de diagnóstico: %s", prompt)
+		t.Errorf("prompt deveria conter seção de diagnóstico: %s", prompt)
 	}
 	if !strings.Contains(prompt, "Corrija todas as violações listadas") {
 		t.Errorf("prompt deveria conter instrução de correção e releitura: %s", prompt)

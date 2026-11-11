@@ -15,7 +15,6 @@ import (
 	"legoloop/internal/runner"
 )
 
-// unitReport é o conteúdo JSON de output.artifact de um unit_task aprovado.
 type unitReport struct {
 	Node     string   `json:"node"`
 	Model    string   `json:"model"`
@@ -36,7 +35,6 @@ type attemptResult struct {
 	err     error
 }
 
-// unitPlan reúne o que o unit_task valida antes de criar a worktree.
 type unitPlan struct {
 	model  string
 	expr   *gate.Expr
@@ -61,14 +59,13 @@ func (o *Orchestrix) prepareUnit(ctx context.Context, n dag.Node, workdir string
 	return unitPlan{model: model, expr: expr, prompt: prompt}, err
 }
 
-// runUnitTask executa um unit_task: worktree efêmera, claude com ferramentas fechadas,
 // write_boundary, command, gate do nó e, só se o gate passar, aplicação no workdir principal.
 func (o *Orchestrix) runUnitTask(ctx context.Context, n dag.Node, workdir string) (runner.Result, error) {
 	fail := func(err error) (runner.Result, error) {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
 	}
 	if !o.AllowUnitTasks {
-		return runner.Result{}, fmt.Errorf("orchestrix: nó %q é unit_task; rode com --allow-unit-tasks se confia neste pipeline", n.ID)
+		return runner.Result{}, fmt.Errorf("orchestrix: nó %q é unit_task; rode com --allow-unit-tasks se confia neste Processo", n.ID)
 	}
 	main, err := os.OpenRoot(workdir)
 	if err != nil {
@@ -321,7 +318,6 @@ func (o *Orchestrix) unitModel(n dag.Node) (string, error) {
 }
 
 // unitModelAliases traduz os combos do 9Router usados nos DAGs para modelos do claude CLI.
-// O unit_task só executa claude CLI com ferramentas fechadas; combo do 9Router não roda aqui.
 var unitModelAliases = map[string]string{"code-fast": "sonnet", "code-pro": "sonnet", "flash": "haiku"}
 
 // unitAlias devolve o modelo do claude CLI para um alias; nome sem alias volta igual.

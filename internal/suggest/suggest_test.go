@@ -23,7 +23,7 @@ func blockCtx(t *testing.T, idx *graph.Index, id string) Context {
 	t.Helper()
 	b, ok := idx.Block(id)
 	if !ok {
-		t.Fatalf("bloco %q não existe", id)
+		t.Fatalf("Peça %q não existe", id)
 	}
 	return Context{Block: &b, Artifact: b.Artifact}
 }
@@ -67,7 +67,7 @@ func TestGatesForSpecBlockExcludeOwnGateAndAlwaysCompile(t *testing.T) {
 		}
 	}
 	if has(got, "has_binary_criteria('SPEC.md')") {
-		t.Error("o gate próprio do bloco não deve ser sugerido de novo")
+		t.Error("o gate próprio da Peça não deve ser sugerido de novo")
 	}
 	for _, g := range r.Gates {
 		if _, err := gate.Compile(g.Expr); err != nil {
@@ -81,7 +81,6 @@ func TestGatesForSpecBlockExcludeOwnGateAndAlwaysCompile(t *testing.T) {
 
 func TestGatesDependOnArtifactTypeAndExtension(t *testing.T) {
 	idx := index(t)
-	// JSON: só existência (o gate próprio do bloco rea já é esse ⇒ nada sobra: estado vazio explícito)
 	if r := Suggest(blockCtx(t, idx, "rea"), idx, snap()); len(r.Gates) != 0 {
 		t.Errorf("rea (json, gate próprio file_exists) não deveria sugerir nada: %v", exprs(r.Gates))
 	}
@@ -189,7 +188,6 @@ func TestNeighborsForTypedBlockListInstalledFirstThenMCPs(t *testing.T) {
 
 func TestNeighborsMarkMissingSkillsAndSortThemLast(t *testing.T) {
 	idx := index(t)
-	// peça genérica aceita qualquer bloco; só 'aidd-tdd' está instalada
 	skills := []assets.Item{{ID: "k1", Kind: assets.KindSkill, Name: "aidd-tdd"}}
 	r := Suggest(Context{Kind: "skill", Artifact: "A.md"}, idx, snap(skills...))
 	var blocks []Neighbor
@@ -224,7 +222,7 @@ func TestNeighborsAreCappedWithALargeCatalog(t *testing.T) {
 	var catalog []graph.Block
 	for i := range MaxNeighbors + 5 {
 		catalog = append(catalog, graph.Block{
-			ID: fmt.Sprintf("b%02d", i), Label: fmt.Sprintf("Bloco %02d", i), Ref: fmt.Sprintf("skills/b%02d", i),
+			ID: fmt.Sprintf("b%02d", i), Label: fmt.Sprintf("Peça %02d", i), Ref: fmt.Sprintf("skills/b%02d", i),
 			Consumes: []graph.ArtifactType{graph.Idea}, Produces: graph.Briefing,
 			Artifact: fmt.Sprintf("B%02d.md", i), Gate: fmt.Sprintf("file_exists('B%02d.md')", i), Cost: 1,
 		})
@@ -294,23 +292,23 @@ func TestContainsSecretMatchesTheRedactionRules(t *testing.T) {
 	}
 }
 
-func TestLoopNeighborsAreSuggested(t *testing.T) {
+func TestProcessoNeighborsAreSuggested(t *testing.T) {
 	idx := index(t)
-	loopItem := assets.Item{
-		ID:          "loop-pesquisa",
+	item := assets.Item{
+		ID:          "proc-pesquisa",
 		Kind:        assets.KindLoop,
 		Name:        "Pesquisa de Mercado",
-		Description: "Loop salvo no acervo",
+		Description: "Processo salvo no acervo",
 	}
-	r := Suggest(Context{Kind: "skill", Artifact: "A.md"}, idx, snap(loopItem))
+	r := Suggest(Context{Kind: "skill", Artifact: "A.md"}, idx, snap(item))
 	var found bool
 	for _, n := range r.Neighbors {
-		if n.Kind == "loop" && n.ID == "loop-pesquisa" && n.Name == "Pesquisa de Mercado" && n.Installed {
+		if n.Kind == "loop" && n.ID == "proc-pesquisa" && n.Name == "Pesquisa de Mercado" && n.Installed {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Fatalf("sub-loop não encontrado nos vizinhos sugeridos: %+v", r.Neighbors)
+		t.Fatalf("subprocesso não encontrado nos vizinhos sugeridos: %+v", r.Neighbors)
 	}
 }
