@@ -7,12 +7,12 @@ package paths
 import "legoloop/internal/caminhos"
 
 const (
-	// DirLoops é a pasta dos Processos no dialeto antigo.
-	DirLoops = caminhos.DirLoops
+	// DirAntigo é a pasta dos Processos no dialeto antigo.
+	DirAntigo = caminhos.DirLoops
 	// ArquivoDAG é o arquivo do contrato DAG no dialeto antigo.
 	ArquivoDAG = caminhos.ArquivoDAG
-	// SufixoLoop é a extensão do documento do Studio no dialeto antigo.
-	SufixoLoop = caminhos.SufixoLoop
+	// SufixoAntigo é a extensão do documento do Studio no dialeto antigo.
+	SufixoAntigo = caminhos.SufixoLoop
 	// DirProcessos é a pasta dos Processos no dialeto novo.
 	DirProcessos = caminhos.DirProcessos
 	// ArquivoProcessoDAG é o arquivo do contrato DAG no dialeto novo.
@@ -27,11 +27,11 @@ const PacoteCentral = "caminhos"
 
 // Literais devolve os valores que só o pacote central pode declarar.
 func Literais() []string {
-	return []string{DirLoops, ArquivoDAG}
+	return []string{DirAntigo, ArquivoDAG}
 }
 
-// DirLoopsEm resolve a pasta dos Processos sob a base informada.
-func DirLoopsEm(base string) string {
+// DirAntigoEm resolve a pasta dos Processos sob a base informada.
+func DirAntigoEm(base string) string {
 	return caminhos.DirLoopsEm(base)
 }
 

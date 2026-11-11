@@ -92,7 +92,7 @@ func lastOfEpic(tickets []Ticket, i int) bool {
 func rewire(nodes []routeNode, order []string, gateOf, boundary map[string]string) {
 	for i := range nodes {
 		n := &nodes[i]
-		if n.Type != "unit_task" {
+		if n.Type != tipoUnidade {
 			continue
 		}
 		for j, d := range n.DependsOn {

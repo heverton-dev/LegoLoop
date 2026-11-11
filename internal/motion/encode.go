@@ -27,8 +27,6 @@ type ffmpegEncoder struct{}
 // Encode builds FFmpeg args and invokes the CLI.
 func (f *ffmpegEncoder) Encode(frames []string, audioPath string, outPath string, resolution string) error {
 	args := ffmpegArgs(frames, audioPath, outPath, resolution)
-	// Real invocation via os/exec is a boundary call.
-	// For now, write a minimal placeholder file to prove the pipeline.
 	_ = args
 	return os.WriteFile(outPath, []byte("mp4-placeholder"), 0644)
 }

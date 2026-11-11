@@ -13,7 +13,7 @@ import (
 	"legoloop/internal/interview"
 )
 
-// SupervisionLevel define o nível de intervenção humana (Human-in-the-Loop).
+// SupervisionLevel define o nível de intervenção humana.
 type SupervisionLevel string
 
 const (
@@ -50,7 +50,7 @@ type PlanResult struct {
 	Warnings         []string         `json:"warnings,omitempty"`
 }
 
-// Generator orquestra a decomposição socrática em tarefas fatiadas verticalmente.
+// Generator orquestra a decomposição socrática em Tickets fatiados verticalmente.
 type Generator struct {
 	llm interview.LLMClient
 	// Now fornece a data dos documentos; nil usa time.Now. Injetável para geração determinística.
@@ -69,10 +69,9 @@ func NewGenerator(llm interview.LLMClient) *Generator {
 	return &Generator{llm: llm}
 }
 
-// PromptPlanSystem adaptado de Addy Osmani (planning-and-task-breakdown) para PT-BR.
-// O PLAN.md e o ROUTE.json são montados pelo motor a partir dos tickets, seguindo TEMPLATE_PLAN.md e
+// PromptPlanSystem é o prompt de sistema da decomposição. O PLAN.md e o ROUTE.json são montados pelo motor a partir dos tickets, seguindo TEMPLATE_PLAN.md e
 // TEMPLATE_ROUTE.json (docs/templates); o modelo só decompõe, no formato abaixo.
-const PromptPlanSystem = `Você é o Arquiteto de Planejamento e Decomposição de Tarefas do LegoLoop (método Addy Osmani).
+const PromptPlanSystem = `Você é o Arquiteto de Planejamento e Decomposição de Tickets do LegoLoop (método Addy Osmani).
 Sua missão é transformar a ESPECIFICAÇÃO TÉCNICA em um PLANO DE AÇÃO ATÔMICO com FATIAMENTO VERTICAL (Vertical Slicing) estrito.
 
 REGRAS INVIOLÁVEIS DO ADDY OSMANI:

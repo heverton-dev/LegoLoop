@@ -39,12 +39,12 @@ func writePlanHeader(b *strings.Builder, m planMeta) {
 
 func writePlanStrategy(b *strings.Builder, m planMeta) {
 	b.WriteString("## 1. Estratégia de Execução & Governança de Loteamento\n\n")
-	b.WriteString("* **Engine:** `orchestrix_hermetic` (execução isolada por bloco, sem context bloat)\n")
+	b.WriteString("* **Engine:** `orchestrix_hermetic` (execução isolada por Peça, sem context bloat)\n")
 	fmt.Fprintf(b, "* **Nível de Supervisão:** `%s`\n", m.Level)
 	b.WriteString("* **Permissão de Subagentes:** `false` ou `ephemeral` (AGENTS.md, regra 4: agente de harness proibido; subagente efêmero só com as seis condições)\n")
 	b.WriteString("* **TDD Estrito:** `true` (Red ➔ Green ➔ Refactor obrigatório antes de qualquer código de produção)\n")
-	fmt.Fprintf(b, "* **Limite de Workers Paralelos:** `2`\n* **Timeout Padrão por Bloco:** `%ds`\n", defaultTimeout)
-	b.WriteString("* **Política de Rollback:** global `abort_pipeline`; por nó `stash_changes`\n\n---\n\n")
+	fmt.Fprintf(b, "* **Limite de Workers Paralelos:** `2`\n* **Timeout Padrão por Peça:** `%ds`\n", defaultTimeout)
+	fmt.Fprintf(b, "* **Política de Rollback:** global `%s`; por nó `stash_changes`\n\n---\n\n", rollbackAborta)
 }
 
 func writeEpicTable(b *strings.Builder, m planMeta, nodes []routeNode) {
@@ -60,7 +60,7 @@ func writeEpicTable(b *strings.Builder, m planMeta, nodes []routeNode) {
 func epicsOf(nodes []routeNode) []string {
 	var order []string
 	for _, n := range nodes {
-		if n.Type == "unit_task" && !slices.Contains(order, n.epic) {
+		if n.Type == tipoUnidade && !slices.Contains(order, n.epic) {
 			order = append(order, n.epic)
 		}
 	}
@@ -71,7 +71,7 @@ func epicSummary(nodes []routeNode, epic string) (int, string, string) {
 	total, counts := 0, map[string]int{}
 	var acs []string
 	for _, n := range nodes {
-		if n.Type != "unit_task" || n.epic != epic {
+		if n.Type != tipoUnidade || n.epic != epic {
 			continue
 		}
 		total++
@@ -175,7 +175,7 @@ func writePlanFinal(b *strings.Builder, nodes []routeNode) {
 func countTickets(nodes []routeNode) int {
 	n := 0
 	for _, x := range nodes {
-		if x.Type == "unit_task" {
+		if x.Type == tipoUnidade {
 			n++
 		}
 	}

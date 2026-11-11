@@ -41,7 +41,6 @@ func TestConcurrencyStrategy_Validation(t *testing.T) {
 }
 
 func TestConcurrencyStrategy_GracefulDegradation(t *testing.T) {
-	// Se o harness não tem capacidade para subagentes, degrada para serial (1)
 	degraded := plangen.ConcurrencyStrategy{
 		Mode:                 "hybrid",
 		MaxParallelSubagents: 4,
@@ -51,7 +50,6 @@ func TestConcurrencyStrategy_GracefulDegradation(t *testing.T) {
 		t.Fatalf("esperava paralelismo efetivo 1 em caso de harness_capability 'none', obteve %d", eff)
 	}
 
-	// Se o modo for serial, degrada para 1 mesmo com capacidade de subagente
 	serial := plangen.ConcurrencyStrategy{
 		Mode:                 "serial",
 		MaxParallelSubagents: 4,
@@ -61,7 +59,6 @@ func TestConcurrencyStrategy_GracefulDegradation(t *testing.T) {
 		t.Fatalf("esperava paralelismo efetivo 1 para mode 'serial', obteve %d", eff)
 	}
 
-	// Caso com capacidade total: devolve o valor configurado
 	capable := plangen.ConcurrencyStrategy{
 		Mode:                 "hybrid",
 		MaxParallelSubagents: 3,

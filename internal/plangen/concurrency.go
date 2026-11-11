@@ -25,7 +25,7 @@ func ValidateConcurrency(c ConcurrencyStrategy) error {
 		return fmt.Errorf("%w: %d", ErrConcurrencyLimit, c.MaxParallelSubagents)
 	}
 	if c.HarnessCapability != "" && !slices.Contains(allowedCapabilities, c.HarnessCapability) {
-		return fmt.Errorf("plangen: capacidade de harness inválida: %q", c.HarnessCapability)
+		return fmt.Errorf("plangen: harness_capability inválido: %q", c.HarnessCapability)
 	}
 	return nil
 }

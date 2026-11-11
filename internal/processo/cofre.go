@@ -3,7 +3,7 @@ package processo
 import (
 	"encoding/json"
 	"errors"
-	"legoloop/internal/caminhos"
+	"legoloop/internal/paths"
 	"os"
 	"path/filepath"
 	"slices"
@@ -14,11 +14,11 @@ import (
 const NaturezaDesconhecida = "desconhecida"
 
 const (
-	sufixoLoopV1    = ".loop.json"
+	sufixoV1        = paths.SufixoAntigo
 	prefixoProcesso = "legoloop-"
 )
 
-// ProcessoCofre representa um processo descoberto na pasta loops/ do cofre.
+// ProcessoCofre representa um processo descoberto na pasta de Processos do cofre.
 type ProcessoCofre struct {
 	Nome     string
 	Versao   string
@@ -28,9 +28,9 @@ type ProcessoCofre struct {
 	Etapas   []Etapa
 }
 
-// ProcessosDoCofre lê loops/ do cofre e devolve os processos ordenados por nome.
+// ProcessosDoCofre lê a pasta de Processos do cofre e devolve os processos ordenados por nome.
 func ProcessosDoCofre(vault string) ([]ProcessoCofre, error) {
-	entradas, err := os.ReadDir(caminhos.DirLoopsEm(vault))
+	entradas, err := os.ReadDir(paths.DirAntigoEm(vault))
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			return []ProcessoCofre{}, nil
@@ -52,7 +52,7 @@ func nomesProcessos(entradas []os.DirEntry) []string {
 		if e.IsDir() || !strings.HasPrefix(n, prefixoProcesso) {
 			continue
 		}
-		for _, suf := range []string{sufixoProcesso, sufixoLoopV1} {
+		for _, suf := range []string{sufixoProcesso, sufixoV1} {
 			if base, ok := strings.CutSuffix(n, suf); ok && base != strings.TrimSuffix(prefixoProcesso, "-") {
 				vistos[base] = true
 			}
@@ -79,11 +79,11 @@ func lerProcessoCofre(vault, nome string) ProcessoCofre {
 		return proc
 	}
 	proc.Origem, proc.Natureza = "v1", NaturezaDesconhecida
-	proc.Versao = versaoLoopV1(filepath.Join(vault, caminhos.DirLoops, nome+sufixoLoopV1))
+	proc.Versao = versaoV1(filepath.Join(paths.DirAntigoEm(vault), nome+sufixoV1))
 	return proc
 }
 
-func versaoLoopV1(path string) string {
+func versaoV1(path string) string {
 	var lp struct {
 		Version string `json:"version"`
 	}

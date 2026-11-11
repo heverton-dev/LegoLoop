@@ -1,4 +1,4 @@
-// Package motion implements the AI Motion Graphics pipeline:
+// Package motion implements the AI Motion Graphics flow:
 // repo selection, HTML/WebGL generation, Playwright+FFmpeg rendering,
 // and Librosa audio sync.
 package motion
@@ -26,7 +26,7 @@ const (
 	ScenarioPixelArt      Scenario = "pixel_art"
 )
 
-// Request represents the operator's pipeline request.
+// Request represents the operator's request.
 type Request struct {
 	Prompt     string   `json:"prompt"`
 	Scenario   Scenario `json:"scenario"`

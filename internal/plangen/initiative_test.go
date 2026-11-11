@@ -29,7 +29,7 @@ Iniciativa: I01 — Plataforma Central
 	tickets := []Ticket{
 		{
 			ID:            "TICK-01.1",
-			Title:         "Tarefa com Iniciativa",
+			Title:         "Ticket com Iniciativa",
 			EpicID:        "E01",
 			InitiativeID:  "I01",
 			Nature:        "micro",
@@ -87,7 +87,7 @@ Referência da Intenção: docs/intents/2026-11-07_INTENT_LEGADO.md
 	tickets := []Ticket{
 		{
 			ID:            "TICK-01.1",
-			Title:         "Tarefa Legada",
+			Title:         "Ticket Legado",
 			EpicID:        "E01",
 			Nature:        "micro",
 			ExecutionMode: "sequential",

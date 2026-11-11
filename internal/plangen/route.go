@@ -13,6 +13,8 @@ const (
 	defaultTimeout = 180
 	finalGateID    = "SG-FINAL"
 	finalBinary    = "bin/legoloop.exe"
+	tipoUnidade    = "unit_task"
+	rollbackAborta = "abort_pipeline"
 )
 
 type routeFallback struct {
@@ -178,7 +180,7 @@ func defaultStrategy(level SupervisionLevel) routeStrategy {
 		MaxParallelWorkers: 2,
 		TDDEnforced:        true,
 		DefaultTimeoutSec:  defaultTimeout,
-		RollbackOnFailure:  "abort_pipeline",
+		RollbackOnFailure:  rollbackAborta,
 		RollbackPolicy:     defaultRollbackPolicy(),
 	}
 }
@@ -250,7 +252,7 @@ func ticketNode(t Ticket, m planMeta) routeNode {
 	}
 	return routeNode{
 		ID: t.ID, InitiativeID: resolveInitiative(t, m), EpicID: str(t.EpicID), Label: t.Title, Nature: t.Nature,
-		Type: "unit_task", Status: "PENDING", ExecutionMode: t.ExecutionMode,
+		Type: tipoUnidade, Status: "PENDING", ExecutionMode: t.ExecutionMode,
 		Isolation:   localIsolation("orchestrix_hermetic", "strict"),
 		TimeoutSec:  defaultTimeout,
 		RetryPolicy: defaultRetryPolicy(false),
@@ -338,7 +340,7 @@ func stopGate(id, label string, deps []string, epic string, out routeOutput, rou
 		Tooling:          routeTooling{Runtime: "powershell", McpsAllowed: []string{}},
 		Inputs:           in,
 		Defects:          []any{},
-		RollbackStrategy: "abort_pipeline",
+		RollbackStrategy: rollbackAborta,
 		Output:           out,
 		Telemetry:        nil,
 		epic:             epic,

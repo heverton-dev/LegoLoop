@@ -16,8 +16,8 @@ import (
 // internal/ declara os literais de nome fora do pacote central, e a fachada
 // resolve os mesmos caminhos do pacote central.
 func TestResolucaoUnica(t *testing.T) {
-	if got, want := DirLoopsEm("v"), filepath.Join("v", DirLoops); got != want {
-		t.Errorf("DirLoopsEm = %q, esperado %q", got, want)
+	if got, want := DirAntigoEm("v"), filepath.Join("v", DirAntigo); got != want {
+		t.Errorf("DirAntigoEm = %q, esperado %q", got, want)
 	}
 	if got, want := CaminhoDAG("d"), filepath.Join("d", ArquivoDAG); got != want {
 		t.Errorf("CaminhoDAG = %q, esperado %q", got, want)
@@ -47,12 +47,12 @@ func verificaLeituraDual(t *testing.T) {
 	if got := CaminhoDAGLeitura(base); got != novo {
 		t.Errorf("CaminhoDAGLeitura com arquivo novo = %q, esperado %q", got, novo)
 	}
-	for _, d := range []string{DirLoops, DirProcessos} {
+	for _, d := range []string{DirAntigo, DirProcessos} {
 		if err := os.MkdirAll(filepath.Join(base, d), 0o755); err != nil {
 			t.Fatal(err)
 		}
 	}
-	want := []string{filepath.Join(base, DirProcessos), DirLoopsEm(base)}
+	want := []string{filepath.Join(base, DirProcessos), DirAntigoEm(base)}
 	got := DirsLeitura(base)
 	if len(got) != 2 || got[0] != want[0] || got[1] != want[1] {
 		t.Errorf("DirsLeitura = %v, esperado %v", got, want)
