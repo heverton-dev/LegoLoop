@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-// sufixoProcesso é o fim do arquivo do processo no cofre: loops/<nome>.processo.json, ao lado do DAG e do loop.
+// sufixoProcesso é o fim do arquivo do processo no cofre, ao lado do DAG e do documento do Studio.
 const sufixoProcesso = ".processo.json"
 
 // CaminhoNoCofre devolve onde o processo fica no cofre. É o arquivo que listar, refinar e compor leem.

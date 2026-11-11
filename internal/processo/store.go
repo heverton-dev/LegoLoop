@@ -48,7 +48,7 @@ func (osFS) Rename(a, b string) error           { return os.Rename(a, b) }
 func (osFS) RemoveAll(p string) error           { return os.RemoveAll(p) }
 func (osFS) Stat(n string) (os.FileInfo, error) { return os.Stat(n) }
 
-// File é um arquivo a gravar. Kind é livre: intent, spec, plan, route, template, skill, loop, dag...
+// File é um arquivo a gravar. Kind é livre: intent, spec, plan, route, template, skill, studio, dag...
 type File struct {
 	Kind string
 	Path string

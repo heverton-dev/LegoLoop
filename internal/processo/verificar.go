@@ -29,7 +29,7 @@ func (pr *Projecoes) Verificar(p Processo) error {
 	if err != nil {
 		return err
 	}
-	for _, nome := range []string{"dag", "loop", "route", "plan", "skill", "spec"} {
+	for _, nome := range []string{"dag", "studio", "route", "plan", "skill", "spec"} {
 		if !slices.Equal(vistas[nome], quero) {
 			return fmt.Errorf("%w: %s lista %v, mas o processo tem %v", ErrIncoerente, nome, vistas[nome], quero)
 		}
@@ -43,7 +43,7 @@ func (pr *Projecoes) ids() (map[string][]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	loopIDs, err := idsDeNos(pr.Loop, "loop")
+	studioIDs, err := idsDeNos(pr.Loop, "studio")
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (pr *Projecoes) ids() (map[string][]string, error) {
 		return nil, err
 	}
 	return map[string][]string{
-		"dag": dagIDs, "loop": loopIDs, "route": routeIDs,
+		"dag": dagIDs, "studio": studioIDs, "route": routeIDs,
 		"plan": primeiros(rePlan, pr.Plan), "skill": primeiros(reSkill, pr.Skill), "spec": primeiros(reSpec, pr.Spec),
 	}, nil
 }
@@ -73,7 +73,7 @@ func idsDeNos(data []byte, nome string) ([]string, error) {
 	return out, nil
 }
 
-// idsDaRoute lê os tickets (nós unit_task); o id da etapa é o primeiro trecho de código do rótulo.
+// idsDaRoute lê os tickets; o id da etapa é o primeiro trecho de código do rótulo.
 func idsDaRoute(data []byte) ([]string, error) {
 	var d struct {
 		Nodes []struct{ Type, Label string } `json:"nodes"`
@@ -83,7 +83,7 @@ func idsDaRoute(data []byte) ([]string, error) {
 	}
 	var out []string
 	for _, n := range d.Nodes {
-		if n.Type != "unit_task" {
+		if n.Type == "stop_gate" {
 			continue
 		}
 		if m := reLabelRoute.FindStringSubmatch(n.Label); m != nil {

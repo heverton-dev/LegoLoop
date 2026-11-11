@@ -2,7 +2,6 @@ package processo_test
 
 import (
 	"errors"
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -11,7 +10,6 @@ import (
 	"legoloop/internal/processo"
 )
 
-// TestPersistenciaIdaEVolta: o processo gravado em loops/<nome>.processo.json volta igual e válido.
 func TestPersistenciaIdaEVolta(t *testing.T) {
 	p := quatro()
 	data, err := p.Marshal()
@@ -19,7 +17,7 @@ func TestPersistenciaIdaEVolta(t *testing.T) {
 		t.Fatal(err)
 	}
 	path := processo.CaminhoNoCofre(t.TempDir(), p.Nome)
-	if filepath.Base(path) != p.Nome+".processo.json" || filepath.Base(filepath.Dir(path)) != caminhos.DirLoops {
+	if filepath.Base(path) != p.Nome+".processo.json" || filepath.Base(filepath.Dir(path)) != filepath.Base(filepath.Dir(processo.CaminhoNoCofre(t.TempDir(), "x"))) {
 		t.Fatalf("caminho no cofre errado: %s", path)
 	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {

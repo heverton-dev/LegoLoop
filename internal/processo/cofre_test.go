@@ -1,7 +1,6 @@
 package processo_test
 
 import (
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -12,7 +11,7 @@ import (
 )
 
 func TestCofreProcessos(t *testing.T) {
-	t.Run("cofre sem loops devolve vazio sem erro", func(t *testing.T) {
+	t.Run("cofre sem Processos devolve vazio sem erro", func(t *testing.T) {
 		procs, err := processo.ProcessosDoCofre(t.TempDir())
 		if err != nil {
 			t.Fatalf("erro inesperado: %v", err)
@@ -24,8 +23,8 @@ func TestCofreProcessos(t *testing.T) {
 
 	t.Run("lê v2, v1 e anota erro em json corrompido", func(t *testing.T) {
 		vault := t.TempDir()
-		loopsDir := caminhos.DirLoopsEm(vault)
-		if err := os.MkdirAll(loopsDir, 0o755); err != nil {
+		pasta := filepath.Dir(processo.CaminhoNoCofre(vault, "legoloop-x"))
+		if err := os.MkdirAll(pasta, 0o755); err != nil {
 			t.Fatal(err)
 		}
 
@@ -49,8 +48,8 @@ func TestCofreProcessos(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		// v1 (só loop.json)
-		if err := os.WriteFile(filepath.Join(loopsDir, "legoloop-beta.loop.json"), []byte(`{"version":"0.5.0"}`), 0o644); err != nil {
+		// v1 (só o documento antigo)
+		if err := os.WriteFile(filepath.Join(pasta, "legoloop-beta.loop.json"), []byte(`{"version":"0.5.0"}`), 0o644); err != nil {
 			t.Fatal(err)
 		}
 
@@ -59,13 +58,13 @@ func TestCofreProcessos(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		// esteira não legoloop (deve ser ignorada)
-		if err := os.WriteFile(filepath.Join(loopsDir, "outra-esteira.loop.json"), []byte(`{}`), 0o644); err != nil {
+		// Processo sem prefixo legoloop (deve ser ignorado)
+		if err := os.WriteFile(filepath.Join(pasta, "outro-processo.loop.json"), []byte(`{}`), 0o644); err != nil {
 			t.Fatal(err)
 		}
 
 		// subdiretório (deve ser ignorado)
-		if err := os.MkdirAll(filepath.Join(loopsDir, "legoloop-dir.loop.json"), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Join(pasta, "legoloop-dir.loop.json"), 0o755); err != nil {
 			t.Fatal(err)
 		}
 
@@ -89,13 +88,13 @@ func TestCofreProcessos(t *testing.T) {
 		}
 	})
 
-	t.Run("loop v1 sem campo version devolve versão interrogacao", func(t *testing.T) {
+	t.Run("Processo v1 sem campo version devolve versão interrogacao", func(t *testing.T) {
 		vault := t.TempDir()
-		loopsDir := caminhos.DirLoopsEm(vault)
-		if err := os.MkdirAll(loopsDir, 0o755); err != nil {
+		pasta := filepath.Dir(processo.CaminhoNoCofre(vault, "legoloop-x"))
+		if err := os.MkdirAll(pasta, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := os.WriteFile(filepath.Join(loopsDir, "legoloop-semver.loop.json"), []byte(`{"id":"legoloop-semver"}`), 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(pasta, "legoloop-semver.loop.json"), []byte(`{"id":"legoloop-semver"}`), 0o644); err != nil {
 			t.Fatal(err)
 		}
 		procs, err := processo.ProcessosDoCofre(vault)

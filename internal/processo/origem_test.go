@@ -19,8 +19,6 @@ func composta(origem string) processo.Processo {
 	return p
 }
 
-// TestOrigemViraSubArtifactDoNo: a etapa composta com origem grava no pai em Produz.Caminho e lê no
-// sub-loop pela origem; o nó do DAG e o do loop levam os dois caminhos.
 func TestOrigemViraSubArtifactDoNo(t *testing.T) {
 	pr := projetar(t, composta("out/e03.md"))
 	d, err := dag.Parse(pr.DAG)
@@ -35,11 +33,10 @@ func TestOrigemViraSubArtifactDoNo(t *testing.T) {
 		t.Errorf("a etapa seguinte lê o caminho do pai: %q", got)
 	}
 	if !strings.Contains(string(pr.Loop), `"sub_artifact": "out/e03.md"`) {
-		t.Errorf("o loop leva o sub_artifact:\n%s", pr.Loop)
+		t.Errorf("o documento do Studio leva o sub_artifact:\n%s", pr.Loop)
 	}
 }
 
-// TestOrigemVaziaMantemOContratoAntigo: sem origem, o nó não tem sub_artifact e o processo.json não tem origem.
 func TestOrigemVaziaMantemOContratoAntigo(t *testing.T) {
 	p := composta("")
 	pr := projetar(t, p)

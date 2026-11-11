@@ -32,7 +32,7 @@ func acharRaizModulo(t *testing.T) string {
 		}
 		pai := filepath.Dir(dir)
 		if pai == dir {
-			t.Fatal("raiz do módulo (go.mod) não encontrada subindo a partir de " + arquivo)
+			t.Fatal("raiz do repositório (go.mod) não encontrada subindo a partir de " + arquivo)
 		}
 		dir = pai
 	}

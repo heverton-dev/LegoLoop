@@ -21,7 +21,7 @@ var agora = time.Date(2026, 11, 4, 10, 0, 0, 0, time.UTC)
 // quatro é um processo de 4 etapas encadeadas, com títulos e peças distintos.
 func quatro() processo.Processo {
 	p := valido()
-	titulos := map[string]string{"e01": "Clarificar o pedido", "e02": "Construir o módulo", "e03": "Verificar o módulo", "e04": "Documentar o módulo"}
+	titulos := map[string]string{"e01": "Clarificar o pedido", "e02": "Construir o artefato", "e03": "Verificar o artefato", "e04": "Documentar o artefato"}
 	pecas := map[string]string{"e01": "aidd-grill", "e02": "aidd-tdd", "e03": "aidd-qa", "e04": "aidd-docs"}
 	p.Etapas = nil
 	for i, id := range []string{"e01", "e02", "e03", "e04"} {
@@ -69,7 +69,7 @@ func idsRoute(t *testing.T, b []byte) []string {
 	re := regexp.MustCompile("^`([^`]+)` — ")
 	var out []string
 	for _, n := range d.Nodes {
-		if n.Type == "unit_task" {
+		if n.Type != "stop_gate" {
 			out = append(out, re.FindStringSubmatch(n.Label)[1])
 		}
 	}
@@ -96,7 +96,7 @@ func TestProjecoesCoerentesSeisArquivosContamAMesmaHistoria(t *testing.T) {
 	pr := projetar(t, quatro())
 	quero := []string{"e01", "e02", "e03", "e04"}
 	vistas := map[string][]string{
-		"dag": idsDag(t, pr.DAG), "loop": idsDag(t, pr.Loop), "route": idsRoute(t, pr.Route),
+		"dag": idsDag(t, pr.DAG), "studio": idsDag(t, pr.Loop), "route": idsRoute(t, pr.Route),
 		"plan": idsPlan(pr.Plan), "skill": idsSkill(pr.Skill), "spec": idsSpec(pr.Spec),
 	}
 	for nome, got := range vistas {
@@ -164,7 +164,7 @@ func corromper(t *testing.T, pr *processo.Projecoes, qual string) {
 		out, _ := json.Marshal(d)
 		return out
 	}
-	tiraBloco := func(md string) string { // remove as linhas que citam `e03`
+	tiraTrecho := func(md string) string {
 		var keep []string
 		for _, l := range strings.Split(md, "\n") {
 			if !strings.Contains(l, "`e03`") {
@@ -176,23 +176,23 @@ func corromper(t *testing.T, pr *processo.Projecoes, qual string) {
 	switch qual {
 	case "dag":
 		pr.DAG = tiraNo(pr.DAG)
-	case "loop":
+	case "studio":
 		pr.Loop = tiraNo(pr.Loop)
 	case "route":
 		pr.Route = tiraNo(pr.Route)
 	case "plan":
-		pr.Plan = tiraBloco(pr.Plan)
+		pr.Plan = tiraTrecho(pr.Plan)
 	case "skill":
-		pr.Skill = tiraBloco(pr.Skill)
+		pr.Skill = tiraTrecho(pr.Skill)
 	case "spec":
-		pr.Spec = tiraBloco(pr.Spec)
+		pr.Spec = tiraTrecho(pr.Spec)
 	}
 }
 
 func asString(v any) string { s, _ := v.(string); return s }
 
 func TestProjecoesCoerentesRemoverEtapaDeUmaSoProjecaoFalha(t *testing.T) {
-	for _, qual := range []string{"dag", "loop", "route", "plan", "skill", "spec"} {
+	for _, qual := range []string{"dag", "studio", "route", "plan", "skill", "spec"} {
 		t.Run(qual, func(t *testing.T) {
 			pr := projetar(t, quatro())
 			corromper(t, pr, qual)
@@ -241,7 +241,7 @@ func TestProjecoesCoerentesDeterministicas(t *testing.T) {
 	}
 }
 
-func TestProjecoesCoerentesDagELoopSaoValidos(t *testing.T) {
+func TestProjecoesCoerentesDagEStudioSaoValidos(t *testing.T) {
 	pr := projetar(t, quatro())
 	d, err := dag.Parse(pr.DAG)
 	if err != nil {
@@ -255,7 +255,7 @@ func TestProjecoesCoerentesDagELoopSaoValidos(t *testing.T) {
 	}
 	var lp studiodoc.Processo
 	if err := json.Unmarshal(pr.Loop, &lp); err != nil || lp.ID != "legoloop-build-engine" || len(lp.Nodes) != 4 {
-		t.Errorf("loop: %v %+v", err, lp)
+		t.Errorf("studio: %v %+v", err, lp)
 	}
 }
 
@@ -272,7 +272,7 @@ func TestProjecoesCoerentesRouteLigaAsDependenciasDasEtapas(t *testing.T) {
 	var tickets []string
 	deps := map[string][]string{}
 	for _, n := range d.Nodes {
-		if n.Type == "unit_task" {
+		if n.Type != "stop_gate" {
 			tickets = append(tickets, n.ID)
 			deps[n.ID] = n.DependsOn
 		}
@@ -318,7 +318,7 @@ func TestProjecoesCoerentesEtapaComposta(t *testing.T) {
 		t.Fatal(err)
 	}
 	if d.Nodes[2].Type != dag.TypeSubloop || d.Nodes[2].Ref != "legoloop-outro" {
-		t.Errorf("etapa composta vira subloop: %+v", d.Nodes[2])
+		t.Errorf("etapa composta vira subprocesso: %+v", d.Nodes[2])
 	}
 	if !strings.Contains(pr.Plan, "processo `legoloop-outro@1.2.0`") {
 		t.Error("o PLAN deve dizer qual processo a etapa compõe")

@@ -49,7 +49,7 @@ func CheckParity(pathA, pathB string) (bool, error) {
 	return hex.EncodeToString(hashA[:]) == hex.EncodeToString(hashB[:]), nil
 }
 
-// Projetar gera SPEC, PLAN, ROUTE, DAG, loop e SKILL a partir do processo e confere a coerência entre eles.
+// Projetar gera SPEC, PLAN, ROUTE, DAG, documento do Studio e SKILL a partir do processo e confere a coerência entre eles.
 // PLAN e ROUTE passam pelo plangen numa pasta temporária; nada é escrito no projeto nem no cofre.
 func Projetar(p Processo, now time.Time) (*Projecoes, error) {
 	ord, err := validarProjecao(p)
@@ -61,7 +61,7 @@ func Projetar(p Processo, now time.Time) (*Projecoes, error) {
 	if err != nil {
 		return nil, err
 	}
-	loopJSON, err := marshalLoop(p, d, now)
+	studioJSON, err := marshalStudio(p, d, now)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func Projetar(p Processo, now time.Time) (*Projecoes, error) {
 		return nil, err
 	}
 	dagNome := strings.Replace(strings.Replace(pl.specNome, "SPEC", "DAG", 1), ".md", ".json", 1)
-	pr := &Projecoes{Spec: spec, Plan: pl.plan, Route: pl.route, DAG: dagJSON, Loop: loopJSON, Skill: projetarSkill(p, ord),
+	pr := &Projecoes{Spec: spec, Plan: pl.plan, Route: pl.route, DAG: dagJSON, Loop: studioJSON, Skill: projetarSkill(p, ord),
 		Avisos: pl.avisos, SpecNome: pl.specNome, PlanNome: pl.planNome, RouteNome: pl.routeNome, DAGNome: dagNome}
 	if err := pr.Verificar(p); err != nil {
 		return nil, err
@@ -156,7 +156,7 @@ func marshalDAG(d dag.DAG) ([]byte, error) {
 	return append(data, '\n'), nil
 }
 
-func marshalLoop(p Processo, d dag.DAG, now time.Time) ([]byte, error) {
+func marshalStudio(p Processo, d dag.DAG, now time.Time) ([]byte, error) {
 	lp := studiodoc.Processo{ID: p.Nome, Name: p.Nome, Description: d.Description, Version: p.Versao,
 		Trigger: d.Trigger, Nodes: d.Nodes, CreatedAt: now.UTC(), UpdatedAt: now.UTC()}
 	data, err := json.MarshalIndent(lp, "", "  ")
@@ -218,7 +218,7 @@ func projetarPlano(p Processo, ord []Etapa, spec string, now time.Time) (planoPr
 	if err != nil {
 		return planoProjetado{}, err
 	}
-	res, err := plangen.Render(stage, specPath, ticketsDe(ord, "legoloop validate ~/.aidd/canonical/loops/"+p.Nome+".dag.json"), plangen.SupervisionEpic, now)
+	res, err := plangen.Render(stage, specPath, ticketsDe(ord, "legoloop validate "+dagNoCofre(p.Nome)), plangen.SupervisionEpic, now)
 	if err != nil {
 		return planoProjetado{}, err
 	}

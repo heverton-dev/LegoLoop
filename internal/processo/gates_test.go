@@ -243,7 +243,7 @@ func TestGateTrivialRouteUsaOGateDaEtapa(t *testing.T) {
 	}
 	achou := false
 	for _, n := range d.Nodes {
-		if n.Type == "unit_task" && strings.Contains(n.Label, "`e02`") {
+		if n.Type != "stop_gate" && strings.Contains(n.Label, "`e02`") {
 			achou = true
 			if n.Output.Gate != g {
 				t.Errorf("o ticket da etapa deve usar o gate da etapa:\n%s\nquando era\n%s", n.Output.Gate, g)

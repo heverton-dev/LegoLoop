@@ -34,7 +34,7 @@ type Artefato struct {
 	Esquema string `json:"esquema,omitempty"` // JSON: caminho do JSON Schema que o artefato deve cumprir
 }
 
-// Etapa é a unidade única do processo. SPEC, PLAN, ROUTE, DAG, loop e skill são projeções dela.
+// Etapa é a unidade única do processo. SPEC, PLAN, ROUTE, DAG, documento do Studio e skill são projeções dela.
 type Etapa struct {
 	ID     string   `json:"id"`
 	Titulo string   `json:"titulo"`

@@ -21,9 +21,14 @@ func projetarSpec(p Processo, ord []Etapa) string {
 	b.WriteString("## 3. Visão Geral, Arquitetura & Costuras de Teste (Test Seams — Pocock)\nAs etapas rodam em ordem de dependência; cada uma grava um artefato e passa por um gate.\n\n")
 	writeSpecContratos(&b, ord)
 	writeSpecCriterios(&b, p, ord)
-	fmt.Fprintf(&b, "## 6. Comandos Operacionais & Critério de Conclusão Global (Addy Osmani)\n* Validar: `legoloop validate ~/.aidd/canonical/loops/%s.dag.json`\n\n", p.Nome)
+	fmt.Fprintf(&b, "## 6. Comandos Operacionais & Critério de Conclusão Global (Addy Osmani)\n* Validar: `legoloop validate %s`\n\n", dagNoCofre(p.Nome))
 	b.WriteString("🛑 **STOP-GATE 02 DE AUDITORIA HUMANA:**\n")
 	return b.String()
+}
+
+func dagNoCofre(nome string) string {
+	arquivo := strings.TrimSuffix(CaminhoNoCofre("~/.aidd/canonical", nome), sufixoProcesso)
+	return strings.ReplaceAll(arquivo, "\\", "/") + ".dag.json"
 }
 
 func writeSpecContratos(b *strings.Builder, ord []Etapa) {
@@ -50,13 +55,13 @@ func writeSpecCriterios(b *strings.Builder, p Processo, ord []Etapa) {
 // negativas e critério de parada. O mapeamento etapa → peça mora na linha de cada etapa.
 func projetarSkill(p Processo, ord []Etapa) string {
 	last := ord[len(ord)-1]
-	desc := limite(limpo(fmt.Sprintf("Use quando precisar executar o processo %s: %s. NÃO use para outros fluxos.", p.Nome, p.Objetivo)), maxDescSkill)
+	desc := limite(limpo(fmt.Sprintf("Use quando precisar executar o processo %s: %s. NÃO use para outros Processos.", p.Nome, p.Objetivo)), maxDescSkill)
 	var b strings.Builder
 	fmt.Fprintf(&b, "---\nname: %s\ndescription: %s\nconsumes: Artifact:Idea\nproduces: %s\nartifact: %s\ngate: %s\nsuggested_model: %s\n---\n\n",
 		p.Nome, desc, produzPadrao, last.Produz.Caminho, limpo(last.Gate), modeloPadrao)
-	dagPath := "~/.aidd/canonical/loops/" + p.Nome + ".dag.json"
+	dagPath := dagNoCofre(p.Nome)
 	fmt.Fprintf(&b, "# 🧩 %s — %s\n\n> **Versão:** %s  \n> **Gerada por:** `legoloop fabricar`  \n\n---\n\n", p.Nome, limpo(p.Objetivo), p.Versao)
-	fmt.Fprintf(&b, "## 1. Contexto & Contratos de I/O\n\n**Quando usar:** quando o objetivo for: %s  \n**Quando NÃO usar:** para qualquer outro fluxo.\n\n", limpo(p.Objetivo))
+	fmt.Fprintf(&b, "## 1. Contexto & Contratos de I/O\n\n**Quando usar:** quando o objetivo for: %s  \n**Quando NÃO usar:** para qualquer outro Processo.\n\n", limpo(p.Objetivo))
 	b.WriteString("* **Produces (Saídas Mecânicas):**\n")
 	for _, e := range ord {
 		fmt.Fprintf(&b, "  - `%s`\n", e.Produz.Caminho)
