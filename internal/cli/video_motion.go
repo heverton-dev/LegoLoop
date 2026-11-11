@@ -9,7 +9,7 @@ import (
 
 const videoMotionUsage = `Uso: legoloop video-motion <subcomando> [opções]
 
-Pipeline determinístico de edição e motion vídeo para redes sociais e documentários.
+Processo determinístico de edição e motion vídeo para redes sociais e documentários.
 
 Subcomandos:
   silence   --input <file> --out <file>    detecta silêncios e preserva fonemas de ataque (+40ms)
@@ -135,6 +135,6 @@ func runMotionRun(ctx context.Context, args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
 		return 1
 	}
-	fmt.Fprintf(d.Stdout, "[VideoMotion] pipeline executado para %s\n", target)
+	fmt.Fprintf(d.Stdout, "[VideoMotion] Processo executado para %s\n", target)
 	return 0
 }

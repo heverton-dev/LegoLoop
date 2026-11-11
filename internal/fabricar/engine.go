@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"legoloop/internal/caminhos"
+	"legoloop/internal/paths"
 	"path/filepath"
 	"strings"
 	"time"
@@ -104,7 +104,7 @@ func lineAsker(in io.Reader, out io.Writer) AskFunc {
 }
 
 // Fabricar conduz o pedido pelas camadas e materializa o processo `legoloop-<slug>`: SKILL.md (Chat),
-// .loop.json (Studio) e .dag.json (CLI), mais INTENT, SPEC, PLAN, ROUTE e TEMPLATE em docs/.
+// documento do Studio e .dag.json (CLI), mais INTENT, SPEC, PLAN, ROUTE e TEMPLATE em docs/.
 // Nada é gravado antes de a Tríade estar pronta, e a gravação é atômica: falha de LLM não deixa artefato parcial.
 func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if err := ctx.Err(); err != nil {
@@ -158,9 +158,9 @@ func preflight(d Deps, name string, force bool) error {
 	}
 	probe := []PlannedFile{
 		{Path: filepath.Join(d.Roots.Vault, "skills", name, "SKILL.md")},
-		{Path: filepath.Join(d.Roots.Vault, caminhos.DirLoops, name+caminhos.SufixoStudio)},
-		{Path: filepath.Join(d.Roots.Vault, caminhos.DirLoops, name+caminhos.SufixoLoop)},
-		{Path: filepath.Join(d.Roots.Vault, caminhos.DirLoops, name+".dag.json")},
+		{Path: filepath.Join(d.Roots.Vault, paths.DirAntigo, name+paths.SufixoStudio)},
+		{Path: filepath.Join(d.Roots.Vault, paths.DirAntigo, name+paths.SufixoAntigo)},
+		{Path: filepath.Join(d.Roots.Vault, paths.DirAntigo, name+".dag.json")},
 		{Path: processo.CaminhoNoCofre(d.Roots.Vault, name)},
 	}
 	if found := processo.Existentes(d.FS, probe); len(found) > 0 {
@@ -240,9 +240,9 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 }
 
 func filePaths(files []PlannedFile) []string {
-	paths := make([]string, len(files))
+	lista := make([]string, len(files))
 	for i, f := range files {
-		paths[i] = f.Path
+		lista[i] = f.Path
 	}
-	return paths
+	return lista
 }

@@ -2,7 +2,7 @@ package fabricar
 
 import (
 	"fmt"
-	"legoloop/internal/caminhos"
+	"legoloop/internal/paths"
 	"path/filepath"
 	"strings"
 	"time"
@@ -27,7 +27,7 @@ type namedFile struct {
 }
 
 // projetar é a Camada 4. O Processo nasce das necessidades e da Fusão (ProcessoDe), e SPEC, PLAN, ROUTE,
-// DAG, loop e skill são projeções dele, conferidas entre si por processo.Projetar. Etapa sem peça para aqui:
+// DAG, documento do Studio e skill são projeções dele, conferidas entre si por processo.Projetar. Etapa sem peça para aqui:
 // o erro é ErrLacuna e o Processo volta junto, para o dry-run montar o relatório da lacuna.
 func projetar(name, objetivo string, c consulta, now time.Time) (processo.Processo, *processo.Projecoes, error) {
 	p, err := ProcessoDe(name, objetivo, c.needs, c.m, now)
@@ -102,8 +102,6 @@ func intentDe(name string, clar Clarification, natureza string, now time.Time) n
 
 func upperSnake(slug string) string { return strings.ToUpper(strings.ReplaceAll(slug, "-", "_")) }
 
-// plannedFiles monta a lista final: no cofre, a skill, o loop, o DAG e o processo.json; em docs/, o INTENT, as
-// projeções SPEC, PLAN e ROUTE e o TEMPLATE. Tudo é gravado junto, numa única operação atômica.
 func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, intent namedFile) ([]PlannedFile, error) {
 	pj, err := p.Marshal()
 	if err != nil {
@@ -113,8 +111,8 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, inte
 	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
 	return []PlannedFile{
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Kind: "loop", Path: vault(caminhos.DirLoops, p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
-		{Kind: "dag", Path: vault(caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
+		{Kind: "loop", Path: vault(paths.DirAntigo, p.Nome+paths.SufixoStudio), Data: pr.Loop},
+		{Kind: "dag", Path: vault(paths.DirAntigo, p.Nome+".dag.json"), Data: pr.DAG},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 		{Kind: "intent", Path: docs("intents", intent.Name), Data: intent.Data},
 		{Kind: "spec", Path: docs("specs", pr.SpecNome), Data: []byte(pr.Spec)},

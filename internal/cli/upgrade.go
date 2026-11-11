@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strings"
 
+	"legoloop/internal/paths"
 	"legoloop/internal/reputation"
 )
 
@@ -112,7 +113,7 @@ func templateHint(path string) string {
 	const dir = "docs/templates/"
 	name := strings.ToLower(filepath.Base(path))
 	switch ext := filepath.Ext(name); {
-	case strings.HasSuffix(name, ".loop.json"):
+	case strings.HasSuffix(name, paths.SufixoAntigo):
 		return dir + "TEMPLATE_PIECE_LOOP.json"
 	case ext == ".md":
 		return dir + "TEMPLATE_PIECE_SKILL.md"

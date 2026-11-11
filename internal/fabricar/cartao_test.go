@@ -118,12 +118,12 @@ func TestCartaoPlanoUnico(t *testing.T) {
 		c := &captura{ok: true}
 		r.deps.Aprovar = c.aprovar(r, t)
 		r.run(t)
-		card := c.planos[0].Cartao()
-		if v := ste.LintCartao(card); len(v) != 0 {
-			t.Errorf("violações STE-PT: %v\n%s", v, card.Render())
+		ficha := c.planos[0].Cartao()
+		if v := ste.LintCartao(ficha); len(v) != 0 {
+			t.Errorf("violações STE-PT: %v\n%s", v, ficha.Render())
 		}
-		if len(card.Parametros) == 0 || card.Parametros[0].Nome != "harnesses" {
-			t.Errorf("o cartão deve oferecer os harnesses para personalizar: %+v", card.Parametros)
+		if len(ficha.Parametros) == 0 || ficha.Parametros[0].Nome != "harnesses" {
+			t.Errorf("o cartão deve oferecer os harnesses para personalizar: %+v", ficha.Parametros)
 		}
 	})
 }

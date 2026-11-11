@@ -105,7 +105,7 @@ func TestVideoReaCLI_ForensicsTranscriptFile(t *testing.T) {
 	}
 }
 
-func TestVideoReaCLI_PipelineReal(t *testing.T) {
+func TestVideoReaCLI_ProcessoReal(t *testing.T) {
 	tempDir := t.TempDir()
 	var stdout, stderr bytes.Buffer
 	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, VideoRunner: fakeYtdlp{}, Discover: noModels}
@@ -204,7 +204,6 @@ func TestVideoReaCLI_PipelineReal(t *testing.T) {
 		t.Fatalf("book falhou (exit %d): %s", exit, stderr.String())
 	}
 
-	// 7. Run (Full Pipeline)
 	stdout.Reset()
 	stderr.Reset()
 	runBundleDir := filepath.Join(tempDir, "run_bundle")
@@ -314,7 +313,7 @@ func TestVideoReaCLI_SuporteAModelEEffort(t *testing.T) {
 	exit = cli.Run(context.Background(), []string{
 		"video-rea", "run",
 		"--url", "https://youtu.be/W7E7Ln0z6aY",
-		"--transcript", "Pipeline completo com modelo roteado usando MiniMax H3 e Claude Code.",
+		"--transcript", "Processo completo com modelo roteado usando MiniMax H3 e Claude Code.",
 		"--model", "deep-brain",
 		"--effort", "medium",
 		"--bundle", filepath.Join(tempDir, "bundle"),

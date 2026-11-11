@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -14,6 +13,7 @@ import (
 	"testing"
 	"time"
 
+	"legoloop/internal/paths"
 	"legoloop/internal/processo"
 )
 
@@ -54,8 +54,8 @@ func refinSemear(t *testing.T) (root, vault, proj string) {
 	doc := func(sub, file string) string { return filepath.Join(proj, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(vault, "skills", refinNome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(vault, caminhos.DirLoops, refinNome+".loop.json"), Data: pr.Loop},
-		{Path: filepath.Join(vault, caminhos.DirLoops, refinNome+".dag.json"), Data: pr.DAG},
+		{Path: filepath.Join(vault, paths.DirAntigo, refinNome+paths.SufixoAntigo), Data: pr.Loop},
+		{Path: filepath.Join(vault, paths.DirAntigo, refinNome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(vault, refinNome), Data: pj},
 		{Path: doc("intents", "2026-11-05_INTENT_X.md"), Data: []byte("# INTENT: x\n\nTexto original da entrevista.\n")},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
@@ -125,7 +125,7 @@ func TestRefinarBinario(t *testing.T) {
 		if r.code != 0 {
 			t.Fatalf("exit %d\n%s\n%s", r.code, r.out, r.errb)
 		}
-		for _, quer := range []string{"INTENT ", "SPEC ", "PLAN ", "ROUTE ", "DAG ", "loop ", "skill ", "versão 1.0.0 para 1.1.0",
+		for _, quer := range []string{"INTENT ", "SPEC ", "PLAN ", "ROUTE ", "DAG ", "skill ", "versão 1.0.0 para 1.1.0",
 			"AÇÃO: Refinar o processo legoloop-x", "AVISO:", ".legoloop-bak", "Segue sem perguntar", "Processo legoloop-x refinado",
 			"ARQUIVO   ESTADO  CAMINHO", "legoloop-x.processo.json.legoloop-bak"} {
 			if !strings.Contains(r.out, quer) {
@@ -136,7 +136,7 @@ func TestRefinarBinario(t *testing.T) {
 		if p.Versao != "1.1.0" || !slices.Equal(p.Historico, []string{"1.0.0"}) || p.Etapas[1].Peca != "aidd-tdd" || !slices.Equal(p.Etapas[1].Casos, []string{"tdd"}) {
 			t.Errorf("processo depois do refinar: %+v", p)
 		}
-		bak := filepath.Join(vault, caminhos.DirLoops, refinNome+".processo.json.legoloop-bak")
+		bak := filepath.Join(vault, paths.DirAntigo, refinNome+".processo.json.legoloop-bak")
 		if b, err := os.ReadFile(bak); err != nil || !strings.Contains(string(b), `"versao": "1.0.0"`) {
 			t.Errorf("o backup não guarda a versão 1.0.0: %v\n%s", err, b)
 		}

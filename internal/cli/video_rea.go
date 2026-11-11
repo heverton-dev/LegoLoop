@@ -14,7 +14,7 @@ import (
 
 const videoReaUsage = `Uso: legoloop video-rea <subcomando> [opções]
 
-Pipeline universal de engenharia reversa audiovisual, dissecação forense e fábrica de governança.
+Processo universal de engenharia reversa audiovisual, dissecação forense e fábrica de governança.
 
 Subcomandos:
   ingest    --url <url> --out <file>        raspa e extrai metadados de YouTube, Instagram e TikTok
@@ -23,7 +23,7 @@ Subcomandos:
   gate      --report <file> [--approve]     executa o stop-gate humano de validação da curadoria
   govern    --approval <file> [--bundle <dir>] [--model <m>] [--effort <low|medium|high>] gera o Target Workspace isolado e projeção canônica
   book      --bundle <dir> [--model <m>] [--effort <low|medium|high>] compila o Livro Didático LegoPress e audita geometria
-  run       --url <url> [--bundle <dir>] [--model <m>] [--effort <low|medium|high>] executa o pipeline completo criando o bundle do vídeo
+  run       --url <url> [--bundle <dir>] [--model <m>] [--effort <low|medium|high>] executa o Processo completo criando o bundle do vídeo
 `
 
 func cmdVideoRea(ctx context.Context, args []string, d Deps) int {
@@ -47,7 +47,7 @@ func cmdVideoRea(ctx context.Context, args []string, d Deps) int {
 	case "book":
 		return runBook(ctx, subArgs, d)
 	case "run":
-		return runFullPipeline(ctx, subArgs, d)
+		return runProcessoCompleto(ctx, subArgs, d)
 	default:
 		fmt.Fprintf(d.Stderr, "subcomando desconhecido %q\n\n%s", subcmd, videoReaUsage)
 		return 2
@@ -171,7 +171,7 @@ func resolveInlineOrFile(inline, path string) (string, error) {
 func runCurate(args []string, d Deps) int {
 	fs := newFlags("video-rea curate", d)
 	dossierPath := fs.String("dossier", "", "arquivo do dossie")
-	name := fs.String("name", "", "nome canônico do pipeline (slug legoloop-*)")
+	name := fs.String("name", "", "nome canônico do Processo (slug legoloop-*)")
 	out := fs.String("out", "", "arquivo de saida da curadoria")
 	if err := fs.Parse(args); err != nil || *dossierPath == "" {
 		fmt.Fprintf(d.Stderr, "erro: --dossier é obrigatório\n")
@@ -363,7 +363,7 @@ func verifyBookFiles(bookDir, nomeBase string, partes []string, d Deps) int {
 	return 0
 }
 
-func runFullPipeline(ctx context.Context, args []string, d Deps) int {
+func runProcessoCompleto(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("video-rea run", d)
 	name := fs.String("name", "", "nome canônico (slug)")
 	title := fs.String("title", "", "título do vídeo")
@@ -419,7 +419,7 @@ func executeFullVideoREA(ctx context.Context, vInput videorea.VideoInput, transc
 		fmt.Fprintf(d.Stderr, "erro materialização: %v\n", err)
 		return 1
 	}
-	fmt.Fprintf(d.Stdout, "Pipeline VideoREA concluído com sucesso: %s\n", bundle.BaseDir)
+	fmt.Fprintf(d.Stdout, "Processo VideoREA concluído com sucesso: %s\n", bundle.BaseDir)
 	return 0
 }
 

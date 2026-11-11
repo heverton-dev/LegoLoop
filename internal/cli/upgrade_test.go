@@ -51,7 +51,7 @@ by Addy Osmani
 - Produces: B.md
 
 ## Schemas
-` + "```go\ntype Task struct { ID string }\n```" + `
+` + "```go\ntype Item struct { ID string }\n```" + `
 
 ## Testes e Verificação
 - go test -v ./...

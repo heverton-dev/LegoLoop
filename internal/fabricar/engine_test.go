@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -21,6 +20,7 @@ import (
 	"legoloop/internal/gate"
 	"legoloop/internal/interview"
 	"legoloop/internal/matriz"
+	"legoloop/internal/paths"
 	"legoloop/internal/reputation"
 	"legoloop/internal/studiodoc"
 )
@@ -183,12 +183,12 @@ func assertThreeMeans(t *testing.T, r *rig, res *fabricar.Result) {
 	if sk := snap.Of(assets.KindSkill); len(sk) != 1 || sk[0].Name != res.CanonicalName {
 		t.Errorf("o assets.Scanner real deve listar a skill: %+v", sk)
 	}
-	st, err := studiodoc.NewStore(caminhos.DirLoopsEm(r.deps.Roots.Vault))
+	st, err := studiodoc.NewStore(paths.DirAntigoEm(r.deps.Roots.Vault))
 	if err != nil {
 		t.Fatal(err)
 	}
 	if lp, err := st.Get(res.CanonicalName); err != nil || len(lp.Nodes) != 2 {
-		t.Errorf("loop.Store.Get: %v %+v", err, lp)
+		t.Errorf("studiodoc.Store.Get: %v %+v", err, lp)
 	}
 	if _, err := dag.Parse([]byte(read(t, res.Artifacts.DagPath))); err != nil {
 		t.Errorf("dag.Parse: %v", err)
@@ -389,9 +389,9 @@ func TestGravaNomesCanonicos(t *testing.T) {
 	if _, err := os.Stat(res.Artifacts.LoopPath); err != nil {
 		t.Errorf("arquivo .studio.json ausente: %v", err)
 	}
-	oldLoopPath := filepath.Join(r.deps.Roots.Vault, caminhos.DirLoops, res.CanonicalName+".loop.json")
-	if _, err := os.Stat(oldLoopPath); err == nil {
-		t.Errorf("arquivo antigo .loop.json não deve ser gravado: %s", oldLoopPath)
+	antigo := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName+paths.SufixoAntigo)
+	if _, err := os.Stat(antigo); err == nil {
+		t.Errorf("arquivo do dialeto antigo não deve ser gravado: %s", antigo)
 	}
 	if _, err := os.Stat(res.Artifacts.DagPath); err != nil {
 		t.Errorf("arquivo .dag.json ausente: %v", err)

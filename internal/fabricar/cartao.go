@@ -89,7 +89,7 @@ func (p Plano) Cartao() ste.Cartao {
 	}
 	c := ste.Cartao{
 		Acao:        "Gravar o processo novo",
-		Passos:      []string{fmt.Sprintf("O programa grava %d arquivos: skill, loop, DAG e os documentos.", len(p.Arquivos))},
+		Passos:      []string{fmt.Sprintf("O programa grava %d arquivos: skill, documento do Studio, DAG e os documentos.", len(p.Arquivos))},
 		SeDerErrado: "Se um passo falhar, o programa desfaz tudo. Nenhum arquivo fica pela metade. Para remover depois, apague a pasta do processo no cofre e os links.",
 	}
 	for _, a := range p.Arquivos {
