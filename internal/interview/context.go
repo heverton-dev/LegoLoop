@@ -79,7 +79,7 @@ func cutUTF8(s string, max int) (string, bool) {
 const noOutsideTech = "NÃO sugira tecnologia, ferramenta ou serviço que o contexto do projeto não cite. " +
 	"Se o contexto não diz como algo é feito, pergunte ao usuário em vez de supor."
 
-// Render monta o bloco de contexto que se soma ao prompt do sistema.
+// Render monta a Peça de contexto que se soma ao prompt do sistema.
 func (c Context) Render() string {
 	var b strings.Builder
 	b.WriteString("CONTEXTO DO PROJETO (use-o para fazer perguntas específicas):\n")

@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "matt-pocock",
-  "name": "Pipeline de Rigor Matt Pocock (6 Sub-Loops)",
-  "description": "Pipeline determinístico de engenharia baseado no método Matt Pocock: Grilling & Alinhamento de Domínio -> Desvio Empírico/Protótipo -> Especificação & Tickets em Grafo -> Construção TDD Cirúrgica -> Code Review de 2 Eixos -> Retroalimentação do Ambiente.",
+  "name": "Processo de Rigor Matt Pocock (6 etapas)",
+  "description": "Processo determinístico de engenharia baseado no método Matt Pocock: Grilling & Alinhamento de Domínio -> Desvio Empírico/Protótipo -> Especificação & Tickets em Grafo -> Construção TDD Cirúrgica -> Code Review de 2 Eixos -> Retroalimentação do Ambiente.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {
@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -39,7 +39,7 @@
   },
   "nodes": [
     {
-      "id": "subloop-1-alinhar-dominio",
+      "id": "etapa-1-alinhar-dominio",
       "name": "Grilling & Alinhamento de Domínio",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -74,14 +74,14 @@
       }
     },
     {
-      "id": "subloop-2-especificar",
+      "id": "etapa-2-especificar",
       "name": "Especificação & Restrições Invariantes",
       "nature": "micro",
       "cognitive_complexity": "alto",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-1-alinhar-dominio"
+        "etapa-1-alinhar-dominio"
       ],
       "routing": {
         "mode": "auto",
@@ -116,14 +116,14 @@
       }
     },
     {
-      "id": "subloop-3-planejar-tickets",
+      "id": "etapa-3-planejar-tickets",
       "name": "Tickets em Grafo Acíclico (DAG)",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-2-especificar"
+        "etapa-2-especificar"
       ],
       "routing": {
         "mode": "auto",
@@ -158,14 +158,14 @@
       }
     },
     {
-      "id": "subloop-4-construir-tdd",
+      "id": "etapa-4-construir-tdd",
       "name": "Construção TDD Cirúrgica (Zero Stubs)",
-      "nature": "macro",
+      "nature": "micro",
       "cognitive_complexity": "alto",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-3-planejar-tickets"
+        "etapa-3-planejar-tickets"
       ],
       "routing": {
         "mode": "suggested",
@@ -201,14 +201,14 @@
       }
     },
     {
-      "id": "subloop-5-review-auditar",
+      "id": "etapa-5-review-auditar",
       "name": "Code Review de 2 Eixos & Hardening",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-4-construir-tdd"
+        "etapa-4-construir-tdd"
       ],
       "routing": {
         "mode": "auto",
@@ -243,14 +243,14 @@
       }
     },
     {
-      "id": "subloop-6-retro-ambiente",
+      "id": "etapa-6-retro-ambiente",
       "name": "Retroalimentação do Ambiente & Governança",
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-5-review-auditar"
+        "etapa-5-review-auditar"
       ],
       "routing": {
         "mode": "auto",

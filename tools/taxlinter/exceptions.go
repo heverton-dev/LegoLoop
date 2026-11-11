@@ -43,6 +43,19 @@ var allowedExceptions = map[string]map[string]bool{
 	"internal/orchestrix/unit_test.go": {
 		"task": true,
 	},
+	"internal/legopress/auditor_test.go": {
+		"pipeline": true,
+	},
+	"internal/golden/testdata/loops/legoloop-video-motion.dag.json": {
+		"card":     true,
+		"pipeline": true,
+	},
+	"internal/golden/testdata/loops/mega-pipeline.loop.json": {
+		"pipeline": true,
+	},
+	"internal/interview/intent_render.go": {
+		"task": true,
+	},
 }
 
 // isAllowedException confere se o par (arquivo, termo) é uma exceção de contrato externo.

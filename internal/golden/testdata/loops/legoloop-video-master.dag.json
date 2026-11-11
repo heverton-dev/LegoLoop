@@ -3,7 +3,7 @@
   "name": "legoloop-video-master",
   "version": "1.0.0",
   "date": "2026-11-07",
-  "description": "Mega-pipeline unificado em 4 pilares tecnológicos: Motion Graphics 3D com código, Whiteboard SVG no piloto automático, Auto-Editor de Reels e Engenharia Reversa de Canais.",
+  "description": "Mega-processo unificado em 4 pilares tecnológicos: Motion Graphics 3D com código, Whiteboard SVG no piloto automático, Auto-Editor de Reels e Engenharia Reversa de Canais.",
   "upstream_signatures": {
     "intent": "d21e75d797cf88effdd2d82c38e794e5836425123dccd49254f099cad2012584",
     "spec": "2e9145e1b3ac57c83401e526f756b3b535396b8df0f635b9c505baafd0950da3",
@@ -25,7 +25,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",

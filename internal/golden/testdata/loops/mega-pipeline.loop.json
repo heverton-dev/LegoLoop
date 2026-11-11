@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "mega-pipeline",
-  "name": "Mega Pipeline LegoLoop (6 Sub-Loops)",
-  "description": "Esteira mestre determinística com os 6 sub-loops canônicos: Concepção & Alinhamento -> Engenharia Reversa & Design Pass -> Tríade de Planejamento -> Construção TDD por Épico -> Homologação E2E -> Fechamento Canônico Universal.",
+  "name": "Mega Processo LegoLoop (6 Subprocessos)",
+  "description": "Processo mestre determinístico com os 6 subprocessos canônicos: Concepção & Alinhamento -> Engenharia Reversa & Design Pass -> Tríade de Planejamento -> Construção TDD por Épico -> Homologação E2E -> Fechamento Canônico Universal.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {
@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 600,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -160,7 +160,7 @@
     {
       "id": "l4-tdd",
       "name": "Construção TDD por Épico",
-      "nature": "macro",
+      "nature": "micro",
       "cognitive_complexity": "alto",
       "type": "skill",
       "ref": "skills/aidd-tdd",
@@ -247,7 +247,7 @@
       "name": "Fechamento Canônico Universal",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "subloop",
+      "type": "subprocesso",
       "ref": "fechar",
       "depends_on": [
         "l5-homologue"

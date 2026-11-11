@@ -9,10 +9,10 @@ import (
 	"legoloop/internal/interview"
 )
 
-const mirrorResp = `HIPÓTESE: Esteira Go automatizada.
+const mirrorResp = `HIPÓTESE: Processo Go automatizado.
 CONFIANÇA: 98%
 ESPELHO CANÔNICO:
-- Resultado Esperado: Pipeline automatizado de validação Go
+- Resultado Esperado: Processo automatizado de validação Go
 - Quem se Beneficia: Desenvolvedores do backend
 - Por que Agora: Reduzir regressões em produção
 - Critério de Sucesso: Testes rodam em menos de 2 minutos
@@ -22,14 +22,14 @@ ESPELHO CANÔNICO:
 func materialize(t *testing.T, tweak func(*interview.Session)) string {
 	t.Helper()
 	engine := interview.NewEngine(&mockLLM{responses: []string{mirrorResp}})
-	sess, _, err := engine.Start(t.Context(), "Esteira de testes")
+	sess, _, err := engine.Start(t.Context(), "Processo de testes")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if tweak != nil {
 		tweak(sess)
 	}
-	path, err := engine.MaterializeIntent(sess.ID, t.TempDir(), "2026-11-02_INTENT_ESTEIRA_TESTES.md")
+	path, err := engine.MaterializeIntent(sess.ID, t.TempDir(), "2026-11-02_INTENT_PROCESSO_TESTES.md")
 	if err != nil {
 		t.Fatalf("MaterializeIntent: %v", err)
 	}
@@ -54,11 +54,11 @@ func TestMaterializeIntent_FollowsTemplateStructure(t *testing.T) {
 		t.Errorf("a INTENT gerada deixou placeholders sem preencher:\n%s", doc)
 	}
 	for _, want := range []string{
-		"# 🎯 INTENT: Esteira de testes",
+		"# 🎯 INTENT: Processo de testes",
 		"**Template:** TEMPLATE_INTENT.md v" + templates.Version,
 		"**Confiança da Entrevista:** 98%",
 		"STOP-GATE 01",
-		"docs/specs/2026-11-02_SPEC_ESTEIRA_TESTES.md",
+		"docs/specs/2026-11-02_SPEC_PROCESSO_TESTES.md",
 	} {
 		if !strings.Contains(doc, want) {
 			t.Errorf("a INTENT gerada não contém %q", want)
@@ -69,7 +69,7 @@ func TestMaterializeIntent_FollowsTemplateStructure(t *testing.T) {
 func TestMaterializeIntent_CarriesMirrorIntoTemplateSections(t *testing.T) {
 	doc := materialize(t, nil)
 	for _, want := range []string{
-		"Pipeline automatizado de validação Go", "Desenvolvedores do backend", "Reduzir regressões em produção",
+		"Processo automatizado de validação Go", "Desenvolvedores do backend", "Reduzir regressões em produção",
 		"Testes rodam em menos de 2 minutos", "Sem subagentes", "Segredos só por variável de ambiente",
 		"Deploy em produção", "Notificações por e-mail",
 	} {

@@ -3,7 +3,7 @@
   "name": "legoloop-video-rea",
   "version": "1.0.0",
   "date": "2026-11-09",
-  "description": "Pipeline canônico de engenharia reversa audiovisual com Matriz Original, curadoria de ferramentas e adoção de peças gratuitas",
+  "description": "Processo canônico de engenharia reversa audiovisual com Matriz Original, curadoria de ferramentas e adoção de peças gratuitas",
   "upstream_signatures": {
     "intent": "d02cebbf2cf58fef7293e27e6d84fd7f32e8b2d9f4879c3b438cda6b92515f96",
     "spec": "a8e3e9818a0f3b675ca944e825fcf51fd54e16f5cf463b20dc3e442d52ec88c8",
@@ -25,7 +25,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort"
   },
   "trigger": {
     "type": "manual"

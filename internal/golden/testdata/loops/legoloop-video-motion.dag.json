@@ -3,7 +3,7 @@
   "name": "legoloop-video-motion",
   "version": "1.0.0",
   "date": "2026-11-07",
-  "description": "Pipeline canônico de motion design determinístico para vídeos com silêncios +40ms, tipografia cinética e cartões 3D",
+  "description": "Processo canônico de motion design determinístico para vídeos com silêncios +40ms, tipografia cinética e cartões 3D",
   "upstream_signatures": {
     "intent": "9812a677fbca05619985ea15858022b7c02bda6396919db45873919e86bf79e8",
     "spec": "ec6576b22ba8fe6cb30d24bf51a37c9a419eb9338f977c0500e2ea024f9e1189",
@@ -25,7 +25,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort"
   },
   "trigger": {
     "type": "manual"

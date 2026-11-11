@@ -42,7 +42,7 @@ func TestContextoPromptCarregaProjetoPecasEObjetivo(t *testing.T) {
 	writeDoc(t, dir, "AGENTS.md", "# Regras\nGo, stdlib only. Sem dependências externas.")
 	llm := &recLLM{reply: lowTurn}
 	eng := NewEngine(llm).WithContext(Context{
-		Goal:   "refinar a etapa de BUILD do mega-pipeline",
+		Goal:   "refinar a etapa de BUILD do mega-processo",
 		Docs:   LoadProjectContext(dir),
 		Pieces: []string{"legoloop-tdd", "go-build-check"},
 	})
@@ -53,7 +53,7 @@ func TestContextoPromptCarregaProjetoPecasEObjetivo(t *testing.T) {
 		t.Fatalf("esperava 1 chamada, houve %d", len(llm.calls))
 	}
 	got := allText(llm.calls[0])
-	for _, want := range []string{"Go, stdlib only", "AGENTS.md", "legoloop-tdd", "go-build-check", "refinar a etapa de BUILD do mega-pipeline"} {
+	for _, want := range []string{"Go, stdlib only", "AGENTS.md", "legoloop-tdd", "go-build-check", "refinar a etapa de BUILD do mega-processo"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("o prompt não contém %q:\n%s", want, got)
 		}

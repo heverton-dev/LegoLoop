@@ -17,7 +17,7 @@ REGRAS DE CONDUÇÃO:
 
 ESPELHO CANÔNICO:
 - Resultado Esperado: [descrição clara do produto/funcionalidade entregue]
-- Quem se Beneficia: [personas ou módulos impactados]
+- Quem se Beneficia: [personas ou Peças impactadas]
 - Por que Agora: [motivação ou dor a resolver]
 - Critério de Sucesso: [critério verificável de conclusão]
 - Restrições Inegociáveis: [regras técnicas estritas, segurança, etc.]

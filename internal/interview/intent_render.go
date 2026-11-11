@@ -15,8 +15,8 @@ type IntentView struct {
 	Confidence int
 	Mirror     *Mirror
 	SpecRel    string // caminho do próximo documento, relativo à raiz do projeto
-	// Natureza do processo (vocabulário). Vazia ou "software" mantém os blocos e critérios de engenharia de
-	// software; qualquer outra natureza usa blocos e critérios sem comandos de Go.
+	// Natureza do processo (vocabulário). Vazia ou "software" mantém as Peças e critérios de engenharia de
+	// software; qualquer outra natureza usa Peças e critérios sem comandos de Go.
 	Natureza string
 }
 
@@ -94,7 +94,7 @@ func writeIntentScope(b *strings.Builder, v IntentView) {
 	fmt.Fprintf(b, "* [ ] Objetivo 1: %s\n", orDefault(m.Outcome, notInformed))
 	fmt.Fprintf(b, "* [ ] Objetivo 2: %s\n\n", orDefault(m.Success, notInformed))
 	b.WriteString("### O que NÃO ESTÁ no Escopo (Não-Objetivos / Out-of-Scope):\n")
-	b.WriteString("* ⛔ Não faremos refatorações oportunistas fora dos módulos declarados em `Alvo`.\n")
+	b.WriteString("* ⛔ Não faremos refatorações oportunistas fora das Peças declaradas em `Alvo`.\n")
 	b.WriteString("* ⛔ Não alteraremos contratos públicos de API/JSON sem spec formal prévia.\n")
 	b.WriteString("* ⛔ Não criaremos dependências externas novas além das já autorizadas no projeto.\n")
 	for _, o := range m.OutOfScope {
@@ -107,32 +107,32 @@ func writeIntentScope(b *strings.Builder, v IntentView) {
 
 func writeIntentBlocks(b *strings.Builder, natureza string) {
 	b.WriteString("## 3. Mapeamento Preliminar de Blocos e Subloops\n")
-	b.WriteString("Identificação das capacidades que a futura esteira precisará acionar. Tipos permitidos: `skill`, `script`, `subloop`, `unit_task`, `ui_task`, `stop_gate`.\n\n")
-	b.WriteString("| Identificador | Tipo da Peça | Especialidade / Skill / Subloop | Papel na Esteira |\n| :--- | :--- | :--- | :--- |\n")
-	b.WriteString("| `BLOCO-01` | `skill` | `skills/aidd-spec` | Elaborar a especificação formal com critérios BDD. |\n")
+	b.WriteString("Identificação das Skills que o futuro Processo precisará acionar. Tipos permitidos: os tipos de nó do DAG e do ROUTE, descritos no README, seção 6.\n\n")
+	b.WriteString("| Identificador | Tipo da Peça | Especialidade / Skill | Papel no Processo |\n| :--- | :--- | :--- | :--- |\n")
+	b.WriteString("| `PECA-01` | `skill` | `skills/aidd-spec` | Elaborar a especificação formal com critérios BDD. |\n")
 	if !ehSoftware(natureza) {
-		writeBlocosGenericos(b)
+		writePecasGenericas(b)
 		return
 	}
-	b.WriteString("| `BLOCO-02` | `unit_task` | Código de produção | Implementação da lógica via TDD Red-Green. |\n")
-	b.WriteString("| `BLOCO-03` | `script` | `go test ./...` | Regressão mecânica e integridade. |\n")
-	b.WriteString("| `BLOCO-04` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5). |\n\n---\n\n")
+	b.WriteString("| `PECA-02` | `unit_task` | Código de produção | Implementação da lógica via TDD Red-Green. |\n")
+	b.WriteString("| `PECA-03` | `script` | `go test ./...` | Regressão mecânica e integridade. |\n")
+	b.WriteString("| `PECA-04` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5). |\n\n---\n\n")
 }
 
 // ehSoftware: natureza vazia (INTENT antigo ou entrevista sem natureza) e "software" usam o texto de engenharia de software.
 func ehSoftware(natureza string) bool { return natureza == "" || natureza == "software" }
 
-// writeBlocosGenericos completa a tabela de blocos de um processo que não é de software: sem comandos de Go.
-func writeBlocosGenericos(b *strings.Builder) {
-	b.WriteString("| `BLOCO-02` | `unit_task` | Execução das etapas | Cada etapa grava o seu artefato e passa por um gate de conteúdo. |\n")
-	b.WriteString("| `BLOCO-03` | `script` | `legoloop validate` | Validação mecânica do grafo do processo. |\n")
-	b.WriteString("| `BLOCO-04` | `stop_gate` | Aprovação humana | Pausa antes de qualquer gravação definitiva. |\n\n---\n\n")
+// writePecasGenericas completa a tabela de Peças de um processo que não é de software: sem comandos de Go.
+func writePecasGenericas(b *strings.Builder) {
+	b.WriteString("| `PECA-02` | `unit_task` | Execução das etapas | Cada etapa grava o seu artefato e passa por um gate de conteúdo. |\n")
+	b.WriteString("| `PECA-03` | `script` | `legoloop validate` | Validação mecânica do grafo do processo. |\n")
+	b.WriteString("| `PECA-04` | `stop_gate` | Aprovação humana | Pausa antes de qualquer gravação definitiva. |\n\n---\n\n")
 }
 
 func writeIntentGovernance(b *strings.Builder, v IntentView) {
 	m := v.Mirror
 	b.WriteString("## 4. Governança Operacional e Restrições Inegociáveis\n")
-	b.WriteString("* **Gatilho Operacional de Disparo (Trigger):** `manual`  \n  *(Define como este fluxo acordará no dia a dia quando estiver construído.)*\n")
+	b.WriteString("* **Gatilho Operacional de Disparo (Trigger):** `manual`  \n  *(Define como este Processo acordará no dia a dia quando estiver construído.)*\n")
 	b.WriteString("* **Nível de Risco & Blast Radius:** A definir no Stop-Gate 01\n")
 	b.WriteString("* **Política de Privacidade & Orçamento Cognitivo:** A definir no Stop-Gate 01\n")
 	fmt.Fprintf(b, "* **Contrato de Evidência Factual (Definition of Done Visual/Real):** %s\n", orDefault(m.Success, notInformed))
@@ -154,7 +154,7 @@ func writeIntentCriteria(b *strings.Builder, v IntentView) {
 	b.WriteString("Cada critério precisa ter uma forma mecânica de prova.\n\n")
 	b.WriteString("| # | Critério | Como se prova | Comando / Evidência |\n| :--- | :--- | :--- | :--- |\n")
 	if ehSoftware(v.Natureza) {
-		b.WriteString("| 1 | Todas as invariantes da esteira passam com zero stubs e zero mocks provisórios. | Suíte verde e busca por stubs vazia | `go test ./...` com exit code 0 |\n")
+		b.WriteString("| 1 | Todas as invariantes do Processo passam com zero stubs e zero mocks provisórios. | Suíte verde e busca por stubs vazia | `go test ./...` com exit code 0 |\n")
 		b.WriteString("| 2 | Cobertura de testes mantida ou expandida (TDD Red-Green). | Teste novo falhando antes do código | Relatório de testes do ticket |\n")
 	} else {
 		b.WriteString("| 1 | Cada etapa grava o artefato prometido, e o gate de conteúdo dela passa. | Gate da etapa avaliado sobre o artefato | `legoloop run` com exit code 0 |\n")
@@ -167,7 +167,7 @@ func writeIntentCriteria(b *strings.Builder, v IntentView) {
 func writeIntentHandoff(b *strings.Builder, v IntentView) {
 	b.WriteString("## 6. Handoff de Governança\n")
 	fmt.Fprintf(b, "* **Próximo Documento Mandatório:** [`%s`](../specs/%s)\n", v.SpecRel, specBase(v.SpecRel))
-	b.WriteString("* **Gate de Transição:** Este Intent só é considerado aprovado após a validação humana explícita (*Human-in-the-Loop Gate*) no chat e com confiança da entrevista ≥ 95%, antes de qualquer linha de especificação ser redigida.\n\n---\n\n")
+	b.WriteString("* **Gate de Transição:** Este Intent só é considerado aprovado após a validação humana explícita (*Gate Humano*) no chat e com confiança da entrevista ≥ 95%, antes de qualquer linha de especificação ser redigida.\n\n---\n\n")
 	b.WriteString("🛑 **STOP-GATE 01 DE AUDITORIA HUMANA:**  \n")
 	fmt.Fprintf(b, "*A intenção consolidada com %d%% de certeza factual atende à sua expectativa?*  \n", v.Confidence)
 	b.WriteString("*Somente após a aprovação explícita do usuário, deve-se gerar a SPEC (`TEMPLATE_SPEC.md`).*\n")

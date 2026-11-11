@@ -24,20 +24,20 @@ func (m *mockLLM) Chat(ctx context.Context, msgs []interview.Message) (string, e
 }
 
 func TestInterviewEngine_FullFlow(t *testing.T) {
-	mockResp1 := `HIPÓTESE: O usuário deseja criar uma esteira de automação de testes com notificações.
+	mockResp1 := `HIPÓTESE: O usuário deseja criar um Processo de automação de testes com notificações.
 CONFIANÇA: 60%
-PERGUNTA: Quais ferramentas de teste específicas você pretende executar no pipeline?
+PERGUNTA: Quais ferramentas de teste específicas você pretende executar no Processo?
 PALPITE: go test ./... e golangci-lint`
 
-	mockResp2 := `HIPÓTESE: O usuário quer uma esteira Go completa com testes e notificações via Slack.
+	mockResp2 := `HIPÓTESE: O usuário quer um Processo Go completo com testes e notificações via Slack.
 CONFIANÇA: 85%
 PERGUNTA: As notificações devem ser disparadas apenas em caso de falha ou também no sucesso?
 PALPITE: Apenas em caso de falha para evitar ruído`
 
-	mockResp3 := `HIPÓTESE: Esteira Go automatizada rodando testes/linter com alerta no Slack apenas em caso de falha.
+	mockResp3 := `HIPÓTESE: Processo Go automatizado rodando testes/linter com alerta no Slack apenas em caso de falha.
 CONFIANÇA: 98%
 ESPELHO CANÔNICO:
-- Resultado Esperado: Pipeline automatizado de validação Go com webhook do Slack
+- Resultado Esperado: Processo automatizado de validação Go com webhook do Slack
 - Quem se Beneficia: Desenvolvedores da equipe de backend
 - Por que Agora: Reduzir tempo de revisão e evitar regressões em produção
 - Critério de Sucesso: Testes rodam em < 2min e falhas geram alerta no canal #alerts
@@ -88,17 +88,17 @@ ESPELHO CANÔNICO:
 	if turn3.Mirror == nil {
 		t.Fatal("esperava Mirror preenchido na conclusão")
 	}
-	if turn3.Mirror.Outcome != "Pipeline automatizado de validação Go com webhook do Slack" {
+	if turn3.Mirror.Outcome != "Processo automatizado de validação Go com webhook do Slack" {
 		t.Errorf("Outcome inesperado: %s", turn3.Mirror.Outcome)
 	}
 
 	// Testar Materialização do INTENT.md
 	tempDir := t.TempDir()
-	path, err := engine.MaterializeIntent(sess.ID, tempDir, "2026-11-02_INTENT_ESTEIRA_TESTES.md")
+	path, err := engine.MaterializeIntent(sess.ID, tempDir, "2026-11-02_INTENT_PROCESSO_TESTES.md")
 	if err != nil {
 		t.Fatalf("MaterializeIntent falhou: %v", err)
 	}
-	if !strings.HasSuffix(path, "2026-11-02_INTENT_ESTEIRA_TESTES.md") {
+	if !strings.HasSuffix(path, "2026-11-02_INTENT_PROCESSO_TESTES.md") {
 		t.Errorf("caminho de arquivo inesperado: %s", path)
 	}
 
@@ -110,7 +110,7 @@ ESPELHO CANÔNICO:
 	if !strings.Contains(cStr, "# 🎯 INTENT:") {
 		t.Errorf("arquivo não contém título INTENT: %s", cStr)
 	}
-	if !strings.Contains(cStr, "Pipeline automatizado de validação Go com webhook do Slack") {
+	if !strings.Contains(cStr, "Processo automatizado de validação Go com webhook do Slack") {
 		t.Errorf("arquivo não contém o Outcome esperado: %s", cStr)
 	}
 	if !strings.Contains(cStr, "STOP-GATE 01") {
@@ -140,7 +140,7 @@ PALPITE:    SVG puro pela facilidade de eventos DOM.`
 }
 
 func TestParseTurnResult_MarkdownEmDestaque(t *testing.T) {
-	raw := "**CONFIANÇA**: 60%\n\n**PALPITE**: pipeline 100% local\n\n" +
+	raw := "**CONFIANÇA**: 60%\n\n**PALPITE**: Processo 100% local\n\n" +
 		"**PERGUNTA**: Você pretende usar algum framework específico para a geração?"
 
 	turn := interview.ParseTurnResult(raw)
@@ -180,9 +180,9 @@ func TestParseTurnResult_EspelhoEmMarkdown(t *testing.T) {
 }
 
 func TestParseTurnResult_EspelhoComBulletEstrela(t *testing.T) {
-	raw := "**HIPÓTESE**: pipeline local\n\n**CONFIANÇA**: 90%\n\n**PERGUNTA**: falta algo?\n\n" +
+	raw := "**HIPÓTESE**: Processo local\n\n**CONFIANÇA**: 90%\n\n**PERGUNTA**: falta algo?\n\n" +
 		"**ESPELHO CANÔNICO**:\n\n" +
-		"* **Resultado Esperado**: pipeline offline 1080p\n" +
+		"* **Resultado Esperado**: Processo offline 1080p\n" +
 		"* **Quem se Beneficia**: criadores sem GPU\n" +
 		"* **Por que Agora**: IA pagas encareceram\n" +
 		"* **Critério de Sucesso**: MP4/H.264 leve e offline\n" +
@@ -197,7 +197,7 @@ func TestParseTurnResult_EspelhoComBulletEstrela(t *testing.T) {
 	if turn.Confidence < 95 {
 		t.Errorf("esperava última confiança 95%%, obteve %d", turn.Confidence)
 	}
-	if turn.Mirror == nil || turn.Mirror.Outcome != "pipeline offline 1080p" {
+	if turn.Mirror == nil || turn.Mirror.Outcome != "Processo offline 1080p" {
 		t.Errorf("espelho não extraído: %+v", turn.Mirror)
 	}
 	if turn.Mirror != nil && len(turn.Mirror.Constraints) == 0 {
