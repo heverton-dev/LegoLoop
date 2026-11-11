@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	ErrNotFound  = errors.New("loop não encontrado")
-	ErrInvalidID = errors.New("identificador de loop inválido")
-	ErrExists    = errors.New("loop já existe")
+	ErrNotFound  = errors.New("Processo não encontrado")
+	ErrInvalidID = errors.New("identificador de Processo inválido")
+	ErrExists    = errors.New("Processo já existe")
 )
 
 var idRegex = regexp.MustCompile(`^[a-z0-9][a-z0-9_-]{1,63}$`)

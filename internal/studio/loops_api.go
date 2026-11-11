@@ -77,7 +77,7 @@ func (s *Server) handleLoopsGet(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		if errors.Is(err, studiodoc.ErrNotFound) || errors.Is(err, studiodoc.ErrInvalidID) {
-			http.Error(w, "loop não encontrado", http.StatusNotFound)
+			http.Error(w, "Processo não encontrado", http.StatusNotFound)
 			return
 		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -151,7 +151,7 @@ func (s *Server) handleLoopsDelete(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	if err := store.Remove(id); err != nil {
 		if errors.Is(err, studiodoc.ErrNotFound) {
-			http.Error(w, "loop não encontrado", http.StatusNotFound)
+			http.Error(w, "Processo não encontrado", http.StatusNotFound)
 			return
 		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
