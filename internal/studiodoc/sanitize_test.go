@@ -11,12 +11,12 @@ func TestToKebabCase(t *testing.T) {
 		input    string
 		expected string
 	}{
-		{"Meu Novo Loop 2026", "meu-novo-loop-2026"},
+		{"Meu Novo Processo 2026", "meu-novo-processo-2026"},
 		{"Criar_Código & Testes! V1", "criar-codigo-testes-v1"},
-		{"  --loop---teste--  ", "loop-teste"},
+		{"  --processo---teste--  ", "processo-teste"},
 		{"Kebab-Ja-Pronto", "kebab-ja-pronto"},
 		{"AÇÃO/REAÇÃO", "acao-reacao"},
-		{"", "unnamed-loop"},
+		{"", "processo-sem-nome"},
 	}
 
 	for _, tc := range cases {
@@ -34,7 +34,7 @@ func TestStoreSaveNormalizesToKebab(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	rawName := "Meu Fluxo Especial V1"
+	rawName := "Meu Processo Especial V1"
 	lp := &Processo{
 		ID:   ToKebabCase(rawName),
 		Name: rawName,
@@ -59,15 +59,15 @@ func TestStoreSaveNormalizesToKebab(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if lp.ID != "meu-fluxo-especial-v1" {
+	if lp.ID != "meu-processo-especial-v1" {
 		t.Errorf("lp.ID não foi normalizado para kebab-case: %q", lp.ID)
 	}
 
-	loaded, err := st.Get("meu-fluxo-especial-v1")
+	loaded, err := st.Get("meu-processo-especial-v1")
 	if err != nil {
-		t.Fatalf("não conseguiu carregar loop pelo id kebab: %v", err)
+		t.Fatalf("não conseguiu carregar Processo pelo id kebab: %v", err)
 	}
-	if loaded.ID != "meu-fluxo-especial-v1" {
+	if loaded.ID != "meu-processo-especial-v1" {
 		t.Errorf("loaded.ID = %q", loaded.ID)
 	}
 }

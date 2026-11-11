@@ -18,6 +18,9 @@ import (
 
 // TestMain transforma o binário de teste num harness real quando LEGOLOOP_HELPER está definido.
 func TestMain(m *testing.M) {
+	if len(os.Args) > 1 && os.Args[1] == "gate-step" {
+		helperGateStep()
+	}
 	switch os.Getenv("LEGOLOOP_HELPER") {
 	case "claude":
 		helperClaude()
@@ -330,5 +333,30 @@ func TestScriptVariableInterpolation(t *testing.T) {
 	want := "--url https://youtube.com/watch?v=123 --name shorts"
 	if string(content) != want {
 		t.Fatalf("interpolação falhou!\nquer: %q\nobteve: %q", want, string(content))
+	}
+}
+
+func helperGateStep() {
+	mode := os.Getenv("GATE_MODE")
+	switch mode {
+	case "improve":
+		if pathExists("edited.txt") {
+			fmt.Println("[FALHA] taxlinter: exit status 1\n=== VIOLACOES TAXONOMICAS ASD-STE100 ENCONTRADAS (2) ===\nedited.txt:1:1: erro\nticketgate: 1 passo(s) falharam")
+			os.Exit(1)
+		}
+		fmt.Println("[FALHA] taxlinter: exit status 1\n=== VIOLACOES TAXONOMICAS ASD-STE100 ENCONTRADAS (10) ===\na.txt:1:1: erro\nticketgate: 1 passo(s) falharam")
+		os.Exit(1)
+	case "worse":
+		if pathExists("edited.txt") {
+			fmt.Println("=== VIOLACOES TAXONOMICAS ASD-STE100 ENCONTRADAS (15) ===")
+			os.Exit(1)
+		}
+		fmt.Println("=== VIOLACOES TAXONOMICAS ASD-STE100 ENCONTRADAS (10) ===")
+		os.Exit(1)
+	case "diag":
+		fmt.Println("=== DIAGNOSTICO ENCONTRADO (3) ===\ndiag.go:1:1: erro diagnosticado")
+		os.Exit(1)
+	default:
+		os.Exit(0)
 	}
 }

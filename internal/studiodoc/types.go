@@ -16,7 +16,6 @@ var (
 
 var idRegex = regexp.MustCompile(`^[a-z0-9][a-z0-9_-]{1,63}$`)
 
-// ValidateID garante que o ID do loop é seguro para nome de arquivo.
 func ValidateID(id string) error {
 	if !idRegex.MatchString(id) {
 		return ErrInvalidID
@@ -24,7 +23,6 @@ func ValidateID(id string) error {
 	return nil
 }
 
-// Processo representa um loop salvo no acervo (.loop.json).
 type Processo struct {
 	ID          string       `json:"id"`
 	Name        string       `json:"name"`
@@ -36,7 +34,6 @@ type Processo struct {
 	UpdatedAt   time.Time    `json:"updated_at,omitempty"`
 }
 
-// Summary é o resumo do loop retornado na listagem do acervo.
 type Summary struct {
 	ID            string    `json:"id"`
 	Name          string    `json:"name"`

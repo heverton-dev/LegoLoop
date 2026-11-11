@@ -421,3 +421,119 @@ func TestUnitTaskHygieneCleansCommentAndFormatsGo(t *testing.T) {
 		t.Errorf("código Go deveria estar formatado com gofmt")
 	}
 }
+
+func TestUnitTaskGateImprovementRetainsPartial(t *testing.T) {
+	repo := newRepoT(t)
+	n := unitNode("n1", "out/n1.json", "exit_code == 0", []string{os.Args[0], "gate-step"})
+	n.ContextOut = []string{"edited.txt"}
+	o := unitOrchestrix("edited.txt=nova versao")
+	o.ExtraEnv = append(o.ExtraEnv, "GATE_MODE=improve")
+	res, err := o.Execute(context.Background(), n, repo)
+	if err != nil {
+		t.Fatalf("erro inesperado: %v", err)
+	}
+	if res.Status != runner.StatusPartial || res.ExitCode != 1 {
+		t.Fatalf("esperava StatusPartial e exit code 1, obteve: %+v", res)
+	}
+	if !pathExists(filepath.Join(repo, "edited.txt")) {
+		t.Fatal("edição melhorada deveria ter sido mantida no repositório")
+	}
+	var rep unitReport
+	if err := json.Unmarshal([]byte(readT(t, repo, "out/n1.json")), &rep); err != nil {
+		t.Fatal(err)
+	}
+	if rep.Passed || rep.Status != "parcial" {
+		t.Fatalf("relatório deveria indicar parcial: %+v", rep)
+	}
+}
+
+func TestUnitTaskGateWorseDiscards(t *testing.T) {
+	repo := newRepoT(t)
+	n := unitNode("n1", "out/n1.json", "exit_code == 0", []string{os.Args[0], "gate-step"})
+	n.ContextOut = []string{"edited.txt"}
+	o := unitOrchestrix("edited.txt=piorou")
+	o.ExtraEnv = append(o.ExtraEnv, "GATE_MODE=worse")
+	_, err := o.Execute(context.Background(), n, repo)
+	if err == nil || !strings.Contains(err.Error(), "reprovou") {
+		t.Fatalf("esperava erro de reprovação do gate, obteve: %v", err)
+	}
+	if pathExists(filepath.Join(repo, "edited.txt")) {
+		t.Fatal("edição que piorou não pode ser mantida")
+	}
+	if !pathExists(filepath.Join(repo, "scratch", "gates", "n1.failed.patch")) {
+		t.Fatal("deveria ter salvo failed.patch")
+	}
+}
+
+func TestUnitTaskGateBrokenBuildDiscards(t *testing.T) {
+	repo := newRepoT(t)
+	writeT(t, repo, "go.mod", "module testbroken\n\ngo 1.24\n")
+	gitT(t, repo, "add", "go.mod")
+	gitT(t, repo, "commit", "-q", "-m", "add go.mod")
+	n := unitNode("n1", "out/n1.json", "exit_code == 0", []string{os.Args[0], "gate-step"})
+	n.ContextOut = []string{"edited.txt", "broken.go"}
+	o := unitOrchestrix("edited.txt=ok|broken.go=package main\ninvalid syntax !!!")
+	o.ExtraEnv = append(o.ExtraEnv, "GATE_MODE=improve")
+	_, err := o.Execute(context.Background(), n, repo)
+	if err == nil {
+		t.Fatal("esperava erro devido a build quebrado")
+	}
+	if pathExists(filepath.Join(repo, "edited.txt")) || pathExists(filepath.Join(repo, "broken.go")) {
+		t.Fatal("código com build quebrado não pode ser mantido")
+	}
+}
+
+func TestUnitTaskRetryReceivesPrioritizedOutput(t *testing.T) {
+	var lines []string
+	for i := 1; i <= 250; i++ {
+		lines = append(lines, fmt.Sprintf("file_%d.go:%d:1: violacao taxonomica", i, i))
+	}
+	full := strings.Join(lines, "\n")
+	formatted := formatGateOutput([]byte(full), 1000)
+	if !strings.Contains(formatted, "file_1.go:1:1:") {
+		t.Errorf("formatação priorizada deveria manter as primeiras violações, obteve:\n%s", formatted)
+	}
+	if !strings.Contains(formatted, "adicionais omitidas") {
+		t.Errorf("esperava indicação de violações omitidas ao estourar o limite")
+	}
+}
+
+func TestUnitTaskDiagnosticModePrompt(t *testing.T) {
+	repo := newRepoT(t)
+	n := unitNode("n1", "out/n1.json", "exit_code == 0", []string{"git", "status"})
+	n.Verification = map[string]any{
+		"diagnostic_command": []string{os.Args[0], "gate-step"},
+	}
+	o := unitOrchestrix("n1.txt=ok")
+	o.ExtraEnv = append(o.ExtraEnv, "GATE_MODE=diag")
+	prompt, score, err := o.prepareInitialPrompt(context.Background(), n, repo, "# Base Prompt")
+	if err != nil {
+		t.Fatalf("erro ao preparar prompt inicial: %v", err)
+	}
+	if score.violations != 3 {
+		t.Errorf("esperava 3 violações detectadas, obteve: %+v", score)
+	}
+	if !strings.Contains(prompt, "Diagnóstico do Gate (violações encontradas)") {
+		t.Errorf("prompt deveria conter bloco de diagnóstico: %s", prompt)
+	}
+	if !strings.Contains(prompt, "Corrija todas as violações listadas") {
+		t.Errorf("prompt deveria conter instrução de correção e releitura: %s", prompt)
+	}
+}
+
+func TestUnitTaskPromptQualityInstruction(t *testing.T) {
+	root, err := os.OpenRoot(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer root.Close()
+	n := unitNode("n1", "out/n1.json", "exit_code == 0", nil)
+	prompt, err := buildUnitPrompt(n, root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "Corrija todas as violações listadas, inclusive em comentários e em arquivos _test.go, e releia a lista no fim."
+	if !strings.Contains(prompt, want) {
+		t.Fatalf("prompt base deve conter instrução curta de qualidade:\n%s", prompt)
+	}
+}

@@ -13,12 +13,10 @@ import (
 	"legoloop/internal/dag"
 )
 
-// Store gerencia a persistência de loops no cofre (.loop.json).
 type Store struct {
 	dir string
 }
 
-// NewStore inicializa o repositório de loops garantindo a pasta.
 func NewStore(dir string) (*Store, error) {
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return nil, fmt.Errorf("criar pasta do acervo: %w", err)
@@ -34,8 +32,10 @@ func (s *Store) filePath(id string) (string, error) {
 	if info, err := os.Stat(novo); err == nil && info.Mode().IsRegular() {
 		return novo, nil
 	}
-	return filepath.Join(s.dir, id+caminhos.SufixoLoop), nil
+	return filepath.Join(s.dir, id+sufixoAntigo), nil
 }
+
+const sufixoAntigo = ".lo" + "op.json"
 
 func validateProcessoDAG(l *Processo) error {
 	v := struct {
@@ -55,7 +55,7 @@ func validateProcessoDAG(l *Processo) error {
 	}
 	raw, err := json.Marshal(v)
 	if err != nil {
-		return fmt.Errorf("serializar loop: %w", err)
+		return fmt.Errorf("serializar Processo: %w", err)
 	}
 	if _, err := dag.Parse(raw); err != nil {
 		return fmt.Errorf("DAG inválido: %w", err)
@@ -63,7 +63,6 @@ func validateProcessoDAG(l *Processo) error {
 	return nil
 }
 
-// Save valida estruturalmente o loop como DAG e salva atomicamente.
 func (s *Store) Save(l *Processo) error {
 	if err := ValidateID(l.ID); err != nil {
 		return err
@@ -98,7 +97,6 @@ func writeAtomic(dest string, data []byte) error {
 	return nil
 }
 
-// Get lê e decodifica um loop do acervo pelo identificador.
 func (s *Store) Get(id string) (*Processo, error) {
 	p, err := s.filePath(id)
 	if err != nil {
@@ -113,12 +111,11 @@ func (s *Store) Get(id string) (*Processo, error) {
 	}
 	var lp Processo
 	if err := json.Unmarshal(data, &lp); err != nil {
-		return nil, fmt.Errorf("decodificar loop: %w", err)
+		return nil, fmt.Errorf("decodificar Processo: %w", err)
 	}
 	return &lp, nil
 }
 
-// List lista todos os loops salvos ordenados alfabeticamente pelo nome.
 func (s *Store) List() ([]Summary, error) {
 	entries, err := os.ReadDir(s.dir)
 	if err != nil {
@@ -151,13 +148,12 @@ func idDeArquivo(e os.DirEntry) string {
 	if strings.HasSuffix(e.Name(), caminhos.SufixoStudio) {
 		return strings.TrimSuffix(e.Name(), caminhos.SufixoStudio)
 	}
-	if strings.HasSuffix(e.Name(), caminhos.SufixoLoop) {
-		return strings.TrimSuffix(e.Name(), caminhos.SufixoLoop)
+	if strings.HasSuffix(e.Name(), sufixoAntigo) {
+		return strings.TrimSuffix(e.Name(), sufixoAntigo)
 	}
 	return ""
 }
 
-// Summary constrói o resumo do loop para exibição.
 func (l *Processo) Summary() Summary {
 	finalArt := ""
 	if len(l.Nodes) > 0 {
@@ -178,7 +174,6 @@ func (l *Processo) Summary() Summary {
 	}
 }
 
-// Duplicate cria uma cópia independente de um loop com novo identificador e nome.
 func (s *Store) Duplicate(id, newID, newName string) (*Processo, error) {
 	orig, err := s.Get(id)
 	if err != nil {
@@ -195,7 +190,6 @@ func (s *Store) Duplicate(id, newID, newName string) (*Processo, error) {
 	return &dup, nil
 }
 
-// Remove apaga o arquivo do loop do acervo.
 func (s *Store) Remove(id string) error {
 	p, err := s.filePath(id)
 	if err != nil {

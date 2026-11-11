@@ -8,8 +8,7 @@ import (
 	"legoloop/internal/studiodoc"
 )
 
-func TestDerivePortsClassicLoop(t *testing.T) {
-	// Loop clássico: interview (Consumes Idea, Produces Briefing) -> aidd-spec (Consumes Briefing, Produces Spec)
+func TestDerivePortsClassicProcesso(t *testing.T) {
 	lp := &studiodoc.Processo{
 		ID:      "idea-to-spec",
 		Name:    "Idea to Spec",
@@ -65,11 +64,10 @@ func TestDerivePortsClassicLoop(t *testing.T) {
 	}
 }
 
-func TestDerivePortsCustomGenericLoop(t *testing.T) {
-	// Loop genérico com artefato customizado
+func TestDerivePortsCustomGenericProcesso(t *testing.T) {
 	lp := &studiodoc.Processo{
-		ID:      "custom-pipeline",
-		Name:    "Custom Pipeline",
+		ID:      "custom-processo",
+		Name:    "Custom Processo",
 		Version: "2.0.0",
 		Trigger: &dag.Trigger{Type: dag.TriggerManual},
 		Nodes: []dag.Node{
@@ -105,7 +103,7 @@ func TestDerivePortsCustomGenericLoop(t *testing.T) {
 	}
 }
 
-func TestDerivePortsEmptyLoop(t *testing.T) {
+func TestDerivePortsEmptyProcesso(t *testing.T) {
 	lp := &studiodoc.Processo{
 		ID:      "empty",
 		Name:    "Empty",
@@ -116,6 +114,6 @@ func TestDerivePortsEmptyLoop(t *testing.T) {
 
 	_, err := studiodoc.DerivePorts(lp)
 	if err == nil {
-		t.Fatal("esperava erro para loop sem nós")
+		t.Fatal("esperava erro para Processo sem nós")
 	}
 }

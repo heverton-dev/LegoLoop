@@ -38,6 +38,8 @@ type Result struct {
 	Model string
 	// Notes registra tentativas descartadas (ex.: failover do modelo sugerido).
 	Notes []string
+	// Status indica desfecho especial quando diferente de passed (ex.: StatusPartial).
+	Status Status
 }
 
 // Executor executa um único nó em contexto estéril, gravando o artefato no workdir.
@@ -54,6 +56,7 @@ const (
 	StatusError      Status = "error"
 	StatusTimeout    Status = "timeout"
 	StatusSkipped    Status = "skipped"
+	StatusPartial    Status = "parcial"
 )
 
 // NodeReport é a telemetria de um nó.
@@ -177,6 +180,18 @@ func hasSlotScripts(n dag.Node) bool {
 	return n.Slots != nil && (len(n.Slots.Hooks.Pre) > 0 || len(n.Slots.Scripts) > 0 || len(n.Slots.Hooks.Post) > 0)
 }
 
+// prepareNodeDir resolve o diretório isolado ou herda o workdir do runner.
+func (r *run) prepareNodeDir(ctx context.Context, n dag.Node) (string, func(), error) {
+	if n.EffectiveMode() != dag.ExecIsolated {
+		return r.opts.Workdir, nil, nil
+	}
+	isoDir, cleanup, err := prepareIsolation(ctx, r.opts.Workdir, n)
+	if err != nil {
+		return "", nil, fmt.Errorf("isolamento falhou: %w", err)
+	}
+	return isoDir, cleanup, nil
+}
+
 // execNode executa um nó e devolve o relatório; o chamador dispara OnNodeFinish.
 func (r *run) execNode(parent context.Context, id string) NodeReport {
 	n := *r.d.Node(id)
@@ -189,14 +204,12 @@ func (r *run) execNode(parent context.Context, id string) NodeReport {
 	if hasSlotScripts(n) && !r.opts.AllowScripts {
 		return fail("execução de hooks/scripts em slots requer consentimento (--allow-scripts)")
 	}
-	workdir := r.opts.Workdir
-	if n.EffectiveMode() == dag.ExecIsolated {
-		isoDir, cleanup, err := prepareIsolation(ctx, r.opts.Workdir, n)
-		if err != nil {
-			return fail("isolamento falhou: " + err.Error())
-		}
+	workdir, cleanup, err := r.prepareNodeDir(ctx, n)
+	if err != nil {
+		return fail(err.Error())
+	}
+	if cleanup != nil {
 		defer cleanup()
-		workdir = isoDir
 	}
 	if n.Slots != nil && len(n.Slots.Hooks.Pre) > 0 {
 		if preErr := executeSlotCommands(ctx, n.Slots.Hooks.Pre, workdir); preErr != nil {
@@ -206,11 +219,22 @@ func (r *run) execNode(parent context.Context, id string) NodeReport {
 	res, err := r.opts.Executor.Execute(ctx, n, workdir)
 	nr := NodeReport{ID: id, Duration: time.Since(start), ExitCode: res.ExitCode, Tokens: res.Tokens,
 		Model: res.Model, Notes: res.Notes}
+	if res.Status == StatusPartial {
+		nr.Status, nr.Error = StatusPartial, errString(err)
+		return nr
+	}
 	if err == nil && res.ExitCode == 0 && r.postExec(ctx, n, workdir, &nr) {
 		return nr
 	}
 	r.finalStatus(ctx, parent, &nr, n, res.ExitCode, err)
 	return nr
+}
+
+func errString(err error) string {
+	if err == nil {
+		return ""
+	}
+	return err.Error()
 }
 
 // postExec roda scripts/hooks post, o schema e a promoção do artefato; true = nr já é final (falhou).

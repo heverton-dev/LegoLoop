@@ -23,7 +23,17 @@ type unitReport struct {
 	ExitCode int      `json:"exit_code"`
 	Gate     string   `json:"gate"`
 	Passed   bool     `json:"passed"`
+	Status   string   `json:"status,omitempty"`
 	Summary  string   `json:"summary,omitempty"`
+}
+
+type attemptResult struct {
+	report  unitReport
+	failure string
+	cmdOut  []byte
+	code    int
+	usage   runner.TokenUsage
+	err     error
 }
 
 // unitPlan reúne o que o unit_task valida antes de criar a worktree.
@@ -94,30 +104,50 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 	if err != nil {
 		return runner.Result{}, unitReport{}, err
 	}
-	prompt, err := o.promptWithRed(ctx, n, w.Dir, plan.prompt)
+	prompt, initialScore, err := o.prepareInitialPrompt(ctx, n, w.Dir, plan.prompt)
 	if err != nil {
 		return runner.Result{}, unitReport{}, err
 	}
 	res := runner.Result{Model: "unit_task/" + plan.model}
 	base := prompt
+	var last attemptResult
 	for attempt := 0; ; attempt++ {
-		report, failure, tokens, err := o.unitAttempt(ctx, n, w, plan, prompt, seeded)
-		res.Tokens = addUsage(res.Tokens, tokens)
-		res.Notes = append(res.Notes, fmt.Sprintf("tentativa %d: US$ %.2f, %d tokens de saída", attempt+1, tokens.CostUSD, tokens.Output))
-		res.ExitCode = report.ExitCode
-		if err != nil {
-			return res, unitReport{}, err
+		att := o.unitAttempt(ctx, n, w, plan, prompt, seeded)
+		res.Tokens = addUsage(res.Tokens, att.usage)
+		res.Notes = append(res.Notes, fmt.Sprintf("tentativa %d: US$ %.2f, %d tokens de saída", attempt+1, att.usage.CostUSD, att.usage.Output))
+		res.ExitCode = att.code
+		last = att
+		if att.err != nil {
+			return res, unitReport{}, att.err
 		}
-		if failure == "" {
-			return res, report, nil
+		if att.failure == "" {
+			return res, att.report, nil
 		}
 		if attempt >= maxUnitRetries {
-			saveFailedPatch(w, n)
-			return res, unitReport{}, fmt.Errorf("%s (após %d tentativa(s))", failure, attempt+1)
+			return o.handleExhaustedRetries(ctx, n, w, res, last, initialScore)
 		}
 		dropProvisionalArtifact(w, n)
-		prompt = retryPrompt(base, failure)
+		prompt = retryPrompt(base, att.failure)
 	}
+}
+
+func (o *Orchestrix) handleExhaustedRetries(ctx context.Context, n dag.Node, w *Worktree, res runner.Result, last attemptResult, initial gateScore) (runner.Result, unitReport, error) {
+	final := extractGateScore(last.cmdOut, last.code)
+	if isGateImprovement(initial, final) {
+		if err := checkBoundary(last.report.Changed, allowedWrites(n)); err == nil {
+			if err := checkBuild(ctx, w.Dir); err == nil {
+				rep := last.report
+				rep.Passed = false
+				rep.Status = "parcial"
+				res.Status = runner.StatusPartial
+				res.ExitCode = 1
+				res.Notes = append(res.Notes, fmt.Sprintf("retenção parcial: violações reduzidas (%+v -> %+v)", initial, final))
+				return res, rep, nil
+			}
+		}
+	}
+	saveFailedPatch(w, n)
+	return res, unitReport{}, fmt.Errorf("%s (após %d tentativa(s))", last.failure, 1+maxUnitRetries)
 }
 
 // dropProvisionalArtifact remove da worktree o artefato provisório que o gate gravou.
@@ -142,38 +172,41 @@ func addUsage(a, b runner.TokenUsage) runner.TokenUsage {
 
 // retryPrompt repete o prompt base e anexa a falha da tentativa anterior.
 func retryPrompt(base, failure string) string {
-	return base + "\n## Tentativa anterior falhou\n\n" + failure + "\n\nCorrija os arquivos permitidos. As suas edições anteriores continuam na pasta de trabalho.\n"
+	return base + "\n## Tentativa anterior falhou\n\n" + failure +
+		"\n\nCorrija todas as violações listadas, inclusive em comentários e em arquivos _test.go, e releia a lista no fim. As suas edições anteriores continuam na pasta de trabalho.\n"
 }
 
 // unitAttempt roda o claude, o command e o gate uma vez. A falha do gate volta em failure
 // (texto vazio = gate aprovado). Erro de boundary, link ou execução volta em err e não retenta.
-func (o *Orchestrix) unitAttempt(ctx context.Context, n dag.Node, w *Worktree, plan unitPlan, prompt string, seeded map[string][]byte) (unitReport, string, runner.TokenUsage, error) {
+func (o *Orchestrix) unitAttempt(ctx context.Context, n dag.Node, w *Worktree, plan unitPlan, prompt string, seeded map[string][]byte) attemptResult {
 	text, usage, err := o.callClaudeToolsLim(ctx, plan.model, prompt, w.Dir, nil, unitLimitsFor(n))
 	if err != nil {
-		return unitReport{}, "", usage, err
+		return attemptResult{usage: usage, err: err}
 	}
 	changed, err := unitChanged(ctx, n, w, seeded)
 	if err != nil {
-		return unitReport{}, "", usage, err
+		return attemptResult{usage: usage, err: err}
 	}
 	if err := o.applyHygiene(ctx, w.Dir, changed); err != nil {
-		return unitReport{}, "", usage, err
+		return attemptResult{usage: usage, err: err}
 	}
 	cmdOut, code, err := o.unitCommand(ctx, n, w.Dir)
 	if err != nil {
-		return unitReport{}, "", usage, err
+		return attemptResult{usage: usage, err: err}
 	}
 	report := unitReport{Node: n.ID, Model: plan.model, Changed: changed, ExitCode: code,
-		Gate: n.Output.Gate, Passed: true, Summary: firstLine(text)}
+		Gate: n.Output.Gate, Passed: true, Status: "ok", Summary: firstLine(text)}
 	ok, err := o.unitGate(w, n, plan.expr, report)
 	if err != nil {
-		return report, "", usage, fmt.Errorf("gate %q: %w", n.Output.Gate, err)
+		return attemptResult{report: report, usage: usage, err: fmt.Errorf("gate %q: %w", n.Output.Gate, err)}
 	}
 	if !ok {
-		return report, fmt.Sprintf("gate %q reprovou (exit_code=%d); worktree descartada; claude respondeu: %s; saída do command: %s",
-			n.Output.Gate, code, firstLine(text), tailText(cmdOut, maxCmdTail)), usage, nil
+		gateDetail := formatGateOutput(cmdOut, maxGateOutputBytes)
+		msg := fmt.Sprintf("gate %q reprovou (exit_code=%d); claude respondeu: %s\nSaída do gate:\n%s",
+			n.Output.Gate, code, firstLine(text), gateDetail)
+		return attemptResult{report: report, failure: msg, cmdOut: cmdOut, code: code, usage: usage}
 	}
-	return report, "", usage, nil
+	return attemptResult{report: report, usage: usage}
 }
 
 // unitGate avalia o gate com a worktree como raiz. O relatório provisório entra na worktree
@@ -204,8 +237,40 @@ func (o *Orchestrix) unitCommand(ctx context.Context, n dag.Node, dir string) ([
 	return o.spawn(ctx, bin, o.expandArgs(n.Command[1:]), dir, nil)
 }
 
-// maxRedBytes limita a saída vermelha do command que entra no prompt (fica a cauda).
+// maxRedBytes limita a saída vermelha do command que entra no prompt.
 const maxRedBytes = 20000
+
+func (o *Orchestrix) prepareInitialPrompt(ctx context.Context, n dag.Node, dir, prompt string) (string, gateScore, error) {
+	diagCmd := diagnosticCommand(n)
+	if len(diagCmd) > 0 {
+		bin, err := resolveExecutable(diagCmd[0])
+		if err != nil {
+			return "", gateScore{}, err
+		}
+		out, code, err := o.spawn(ctx, bin, o.expandArgs(diagCmd[1:]), dir, nil)
+		if err != nil {
+			return "", gateScore{}, err
+		}
+		score := extractGateScore(out, code)
+		return withDiagOutput(prompt, out), score, nil
+	}
+	out, code, err := o.unitCommand(ctx, n, dir)
+	if err != nil {
+		return "", gateScore{}, err
+	}
+	score := extractGateScore(out, code)
+	return withRedOutput(prompt, out, code), score, nil
+}
+
+func withDiagOutput(prompt string, out []byte) string {
+	text := formatGateOutput(out, maxRedBytes)
+	if text == "" {
+		return prompt
+	}
+	return prompt + "\n## Diagnóstico do Gate (violações encontradas)\n\n" +
+		"Corrija todas as violações listadas, inclusive em comentários e em arquivos _test.go, e releia a lista no fim.\n\n" +
+		"```\n" + text + "\n```\n"
+}
 
 // promptWithRed roda o command na worktree antes do claude (Red do TDD) e anexa a falha ao prompt.
 func (o *Orchestrix) promptWithRed(ctx context.Context, n dag.Node, dir, prompt string) (string, error) {
@@ -218,11 +283,13 @@ func (o *Orchestrix) promptWithRed(ctx context.Context, n dag.Node, dir, prompt 
 
 // withRedOutput anexa a saída do command ao prompt só quando ele falhou e imprimiu algo.
 func withRedOutput(prompt string, out []byte, code int) string {
-	text := tailText(out, maxRedBytes)
+	text := formatGateOutput(out, maxRedBytes)
 	if code == 0 || text == "" {
 		return prompt
 	}
-	return prompt + "\n## Saída da verificação (falha atual)\n\n```\n" + text + "\n```\n"
+	return prompt + "\n## Saída da verificação (falha atual)\n\n" +
+		"Corrija todas as violações listadas, inclusive em comentários e em arquivos _test.go, e releia a lista no fim.\n\n" +
+		"```\n" + text + "\n```\n"
 }
 
 // maxCmdTail limita a saída do command que entra na mensagem de erro do gate.

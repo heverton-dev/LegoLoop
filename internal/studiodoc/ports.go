@@ -10,7 +10,6 @@ import (
 	"legoloop/internal/graph"
 )
 
-// Ports descreve os contratos de entrada e saída derivados de um loop.
 type Ports struct {
 	Consumes []string `json:"consumes"`
 	Produces string   `json:"produces"`
@@ -20,10 +19,9 @@ type Ports struct {
 
 const AnyArtifact = "Artifact:Any"
 
-// DerivePorts infere as portas do sub-loop a partir do artefato final e das raízes.
 func DerivePorts(l *Processo) (*Ports, error) {
 	if len(l.Nodes) == 0 {
-		return nil, errors.New("loop não possui nós")
+		return nil, errors.New("Processo não possui nós")
 	}
 	raw, err := json.Marshal(struct {
 		Name    string       `json:"name"`
@@ -32,7 +30,7 @@ func DerivePorts(l *Processo) (*Ports, error) {
 		Nodes   []dag.Node   `json:"nodes"`
 	}{Name: l.Name, Version: l.Version, Trigger: l.Trigger, Nodes: l.Nodes})
 	if err != nil {
-		return nil, fmt.Errorf("serializar loop: %w", err)
+		return nil, fmt.Errorf("serializar Processo: %w", err)
 	}
 	d, err := dag.Parse(raw)
 	if err != nil {

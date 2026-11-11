@@ -4,17 +4,19 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
 	"legoloop/internal/studiodoc"
 )
 
-func sampleValidLoop(id, name string) *studiodoc.Processo {
+func sampleValidProcesso(id, name string) *studiodoc.Processo {
 	return &studiodoc.Processo{
 		ID:          id,
 		Name:        name,
-		Description: "Loop de teste",
+		Description: "Processo de teste",
 		Version:     "2.0.0",
 		Trigger:     &dag.Trigger{Type: dag.TriggerManual},
 		Nodes: []dag.Node{
@@ -42,7 +44,7 @@ func TestStoreSaveAndGet(t *testing.T) {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
 
-	lp := sampleValidLoop("pesquisa-mercado", "Pesquisa de Mercado")
+	lp := sampleValidProcesso("pesquisa-mercado", "Pesquisa de Mercado")
 	if err := store.Save(lp); err != nil {
 		t.Fatalf("Save falhou: %v", err)
 	}
@@ -58,10 +60,12 @@ func TestStoreSaveAndGet(t *testing.T) {
 		t.Fatalf("nós divergentes: got %+v", got.Nodes)
 	}
 
-	// Verifica se gravou no disco como .loop.json
-	expectedPath := filepath.Join(dir, "pesquisa-mercado.loop.json")
-	if _, err := os.Stat(expectedPath); err != nil {
-		t.Fatalf("arquivo .loop.json não foi criado em %s: %v", expectedPath, err)
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 1 || !strings.HasPrefix(entries[0].Name(), "pesquisa-mercado.") {
+		t.Fatalf("arquivo do Processo não foi criado em %s: %v", dir, entries)
 	}
 }
 
@@ -72,7 +76,6 @@ func TestStoreSaveInvalidDAG(t *testing.T) {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
 
-	// Loop com nó sem trigger e com dependência inexistente
 	bad := &studiodoc.Processo{
 		ID:      "invalido",
 		Name:    "Inválido",
@@ -88,7 +91,7 @@ func TestStoreSaveInvalidDAG(t *testing.T) {
 	}
 
 	if err := store.Save(bad); err == nil {
-		t.Fatal("esperava erro ao salvar loop com DAG inválido")
+		t.Fatal("esperava erro ao salvar Processo com DAG inválido")
 	}
 }
 
@@ -110,7 +113,7 @@ func TestStoreSaveInvalidID(t *testing.T) {
 	}
 
 	for _, badID := range invalidIDs {
-		lp := sampleValidLoop(badID, "Teste")
+		lp := sampleValidProcesso(badID, "Teste")
 		if err := store.Save(lp); err == nil {
 			t.Errorf("esperava erro ao salvar com ID inválido %q", badID)
 		}
@@ -124,8 +127,8 @@ func TestStoreList(t *testing.T) {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
 
-	l1 := sampleValidLoop("beta-loop", "Beta Loop")
-	l2 := sampleValidLoop("alpha-loop", "Alpha Loop")
+	l1 := sampleValidProcesso("beta-proc", "Beta Processo")
+	l2 := sampleValidProcesso("alpha-proc", "Alpha Processo")
 
 	if err := store.Save(l1); err != nil {
 		t.Fatal(err)
@@ -142,7 +145,7 @@ func TestStoreList(t *testing.T) {
 		t.Fatalf("esperava 2 itens, obteve %d", len(list))
 	}
 	// Deve ordenar por Name alfabético
-	if list[0].ID != "alpha-loop" || list[1].ID != "beta-loop" {
+	if list[0].ID != "alpha-proc" || list[1].ID != "beta-proc" {
 		t.Fatalf("ordenação inesperada: %+v", list)
 	}
 }
@@ -154,7 +157,7 @@ func TestStoreDuplicate(t *testing.T) {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
 
-	orig := sampleValidLoop("orig", "Original")
+	orig := sampleValidProcesso("orig", "Original")
 	if err := store.Save(orig); err != nil {
 		t.Fatal(err)
 	}
@@ -185,7 +188,7 @@ func TestStoreRemove(t *testing.T) {
 		t.Fatalf("NewStore falhou: %v", err)
 	}
 
-	lp := sampleValidLoop("apagar", "Para Apagar")
+	lp := sampleValidProcesso("apagar", "Para Apagar")
 	if err := store.Save(lp); err != nil {
 		t.Fatal(err)
 	}
@@ -229,21 +232,18 @@ func TestStoreRemove(t *testing.T) {
 	}
 }
 
-func TestStoreListIgnoresNonLoopFilesAndCorruptFiles(t *testing.T) {
+func TestStoreListIgnoresForeignFilesAndCorruptFiles(t *testing.T) {
 	dir := t.TempDir()
 	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// Arquivo comum não .loop.json
 	_ = os.WriteFile(filepath.Join(dir, "README.md"), []byte("ignorar"), 0600)
-	// Pasta interna
 	_ = os.Mkdir(filepath.Join(dir, "subfolder"), 0700)
-	// Arquivo .loop.json corrompido
-	_ = os.WriteFile(filepath.Join(dir, "corrompido.loop.json"), []byte("{invalid json"), 0600)
+	_ = os.WriteFile(filepath.Join(dir, "corrompido"+caminhos.SufixoStudio), []byte("{invalid json"), 0600)
 
-	lp := sampleValidLoop("valido", "Válido")
+	lp := sampleValidProcesso("valido", "Válido")
 	if err := store.Save(lp); err != nil {
 		t.Fatal(err)
 	}
@@ -253,6 +253,6 @@ func TestStoreListIgnoresNonLoopFilesAndCorruptFiles(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(list) != 1 || list[0].ID != "valido" {
-		t.Fatalf("esperava apenas 1 loop válido, obteve %+v", list)
+		t.Fatalf("esperava apenas 1 Processo válido, obteve %+v", list)
 	}
 }

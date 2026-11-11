@@ -35,7 +35,7 @@ func ToKebabCase(s string) string {
 	}
 	res := strings.Trim(b.String(), "-")
 	if res == "" {
-		return "unnamed-loop"
+		return "processo-sem-nome"
 	}
 	return res
 }
