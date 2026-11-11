@@ -1,17 +1,190 @@
 {
-  "addy-osmani": {"version": "1.0.0", "nodes": 7, "widths": [1, 1, 1, 1, 1, 1, 1]},
-  "ai-motion-graphics": {"version": "1.0.0", "nodes": 17, "widths": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]},
-  "fechar": {"version": "1.0.0", "nodes": 6, "widths": [1, 1, 1, 1, 1, 1]},
-  "impeccable-design": {"version": "1.0.0", "nodes": 6, "widths": [1, 1, 1, 1, 1, 1]},
-  "lauren-tan": {"version": "1.0.0", "nodes": 6, "widths": [1, 1, 1, 1, 1, 1]},
-  "legoloop-canal-redc": {"version": "1.0.0", "nodes": 4, "widths": [1, 1, 2]},
-  "legoloop-cartoon-shorts": {"version": "1.0.0", "nodes": 3, "widths": [1, 1, 1]},
-  "legoloop-fechar": {"version": "1.0.0", "nodes": 7, "widths": [1, 1, 1, 1, 1, 1, 1]},
-  "legoloop-n10-foundry": {"version": "1.0.0", "nodes": 4, "widths": [1, 1, 1, 1]},
-  "legoloop-video-edition": {"version": "1.0.0", "nodes": 12, "widths": [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1]},
-  "legoloop-video-master": {"version": "1.0.0", "nodes": 5, "widths": [1, 2, 1, 1]},
-  "legoloop-video-motion": {"version": "1.0.0", "nodes": 6, "widths": [1, 1, 1, 1, 1, 1]},
-  "legoloop-video-rea": {"version": "1.0.0", "nodes": 6, "widths": [1, 1, 1, 1, 1, 1]},
-  "matt-pocock": {"version": "1.0.0", "nodes": 6, "widths": [1, 1, 1, 1, 1, 1]},
-  "mega": {"version": "1.0.0", "nodes": 6, "widths": [1, 1, 1, 1, 1, 1]}
+  "addy-osmani": {
+    "version": "1.0.0",
+    "nodes": 7,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "ai-motion-graphics": {
+    "version": "1.0.0",
+    "nodes": 17,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "fechar": {
+    "version": "1.0.0",
+    "nodes": 6,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "impeccable-design": {
+    "version": "1.0.0",
+    "nodes": 6,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "lauren-tan": {
+    "version": "1.0.0",
+    "nodes": 6,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "legoloop-canal-redc": {
+    "version": "1.0.0",
+    "nodes": 4,
+    "widths": [
+      1,
+      1,
+      2
+    ]
+  },
+  "legoloop-cartoon-shorts": {
+    "version": "1.0.0",
+    "nodes": 3,
+    "widths": [
+      1,
+      1,
+      1
+    ]
+  },
+  "legoloop-fechar": {
+    "version": "1.0.0",
+    "nodes": 7,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "legoloop-n10-foundry": {
+    "version": "1.0.0",
+    "nodes": 4,
+    "widths": [
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "legoloop-video-edition": {
+    "version": "1.0.0",
+    "nodes": 12,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "legoloop-video-master": {
+    "version": "1.0.0",
+    "nodes": 5,
+    "widths": [
+      1,
+      2,
+      1,
+      1
+    ]
+  },
+  "legoloop-video-motion": {
+    "version": "1.0.0",
+    "nodes": 6,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "legoloop-video-rea": {
+    "version": "1.0.0",
+    "nodes": 6,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "matt-pocock": {
+    "version": "1.0.0",
+    "nodes": 6,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "mega": {
+    "version": "1.0.0",
+    "nodes": 6,
+    "widths": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  }
 }
