@@ -72,7 +72,7 @@ func post(t *testing.T, s *Server, path, body string) (int, ValidationResult, st
 	return rec.Code, res, rec.Body.String()
 }
 
-func firstIssue(res ValidationResult) string {
+func primeiroProblema(res ValidationResult) string {
 	if len(res.Issues) == 0 {
 		return ""
 	}
@@ -205,7 +205,7 @@ func TestComposeResolvesSlotsOnTheServerAndMasksPathsInTheResponse(t *testing.T)
 	}
 	d, err := dag.Parse(data)
 	if err != nil {
-		t.Fatalf("pipeline gravado inválido: %v", err)
+		t.Fatalf("DAG gravado inválido: %v", err)
 	}
 	n := d.Node("n1")
 	if n.Slots == nil || n.EffectiveMode() != dag.ExecIsolated {
@@ -248,7 +248,7 @@ func TestComposeSlotErrorsAreReportedOnTheNode(t *testing.T) {
 			continue
 		}
 		if res.Issues[0].Node != "n1" && !strings.Contains(raw, "slot") {
-			t.Errorf("%s: issue sem nó nem menção ao slot: %s", name, raw)
+			t.Errorf("%s: problema sem nó nem menção ao slot: %s", name, raw)
 		}
 	}
 }
@@ -256,7 +256,7 @@ func TestComposeSlotErrorsAreReportedOnTheNode(t *testing.T) {
 func TestComposeRejectsInvalidExecutionMode(t *testing.T) {
 	s, _, _ := piecesFixture(t)
 	_, res, _ := post(t, s, "/api/validate", comp([]string{nodeJSON("n1", "interview", `,"execution":{"mode":"yolo"}`)}, ""))
-	if res.OK || !strings.Contains(firstIssue(res), "execution") {
+	if res.OK || !strings.Contains(primeiroProblema(res), "execution") {
 		t.Errorf("modo inválido deveria reprovar: %+v", res)
 	}
 }
@@ -341,8 +341,8 @@ func TestComposePieceErrors(t *testing.T) {
 		"sem artefato":             {one(fmt.Sprintf(`{"kind":"skill","ref":%q}`, skill)), "artefato"},
 		"artefato com aspas":       {one(fmt.Sprintf(`{"kind":"skill","ref":%q,"artifact":"a'b.md"}`, skill)), "artefato"},
 		"artefato fora do projeto": {one(fmt.Sprintf(`{"kind":"skill","ref":%q,"artifact":"../x.md"}`, skill)), "artifact"},
-		"bloco e peça juntos":      {comp([]string{`{"id":"n1","block":"interview","piece":{"kind":"skill","ref":"x","artifact":"A.md"},"routing":{"mode":"manual","model":"sonnet"}}`}, ""), "bloco"},
-		"nem bloco nem peça":       {comp([]string{`{"id":"n1","routing":{"mode":"manual","model":"sonnet"}}`}, ""), "bloco"},
+		"catálogo e peça juntos":   {comp([]string{`{"id":"n1","block":"interview","piece":{"kind":"skill","ref":"x","artifact":"A.md"},"routing":{"mode":"manual","model":"sonnet"}}`}, ""), "catálogo"},
+		"nem catálogo nem peça":    {comp([]string{`{"id":"n1","routing":{"mode":"manual","model":"sonnet"}}`}, ""), "catálogo"},
 	}
 	for name, c := range cases {
 		code, res, raw := post(t, s, "/api/validate", c.body)
@@ -360,14 +360,14 @@ func TestComposePieceNeedsTheInventory(t *testing.T) {
 	}
 }
 
-func TestComposeSubloopSuccess(t *testing.T) {
+func TestComposeSubprocessoSuccess(t *testing.T) {
 	s, home, _ := newAssetsServer(t)
-	loopsDir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
-	store, err := studiodoc.NewStore(loopsDir)
+	dir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	s.Loops = store
+	s.Processos = store
 
 	lp := &studiodoc.Processo{
 		ID:      "sub-pipe",
@@ -390,30 +390,29 @@ func TestComposeSubloopSuccess(t *testing.T) {
 	s.Assets.Refresh(context.Background())
 
 	// Acha o ID público no inventário
-	var loopItem assets.Item
+	var item assets.Item
 	for _, it := range s.Assets.Snapshot().Of(assets.KindLoop) {
 		if it.Name == "Sub Pipe" {
-			loopItem = it
+			item = it
 			break
 		}
 	}
-	if loopItem.ID == "" {
-		t.Fatal("loop não encontrado no inventário de assets")
+	if item.ID == "" {
+		t.Fatal("Processo não encontrado no inventário de assets")
 	}
 
-	body := comp([]string{pieceJSON("n1", fmt.Sprintf(`{"kind":"subloop","ref":%q,"artifact":"SUB_OUT.md"}`, loopItem.ID), "")}, "")
+	body := comp([]string{pieceJSON("n1", fmt.Sprintf(`{"kind":"subloop","ref":%q,"artifact":"SUB_OUT.md"}`, item.ID), "")}, "")
 	code, res, raw := post(t, s, "/api/validate", body)
 	if code != 200 || !res.OK {
-		t.Fatalf("esperava validação com sucesso do subloop: %d %s", code, raw)
+		t.Fatalf("esperava validação com sucesso do subprocesso: %d %s", code, raw)
 	}
 	if !strings.Contains(raw, `"type":"subloop"`) || !strings.Contains(raw, `"ref":"sub-pipe"`) {
-		t.Fatalf("DAG gerado não contém nó subloop correto: %s", raw)
+		t.Fatalf("DAG gerado não contém nó de subprocesso correto: %s", raw)
 	}
 }
 
 func TestBoardTriggerPiece(t *testing.T) {
 	s, _, _ := piecesFixture(t)
-	// Inicializa o index com FullCatalog para conter o bloco github-board-trigger
 	fullIdx, err := graph.NewIndex(graph.FullCatalog())
 	if err != nil {
 		t.Fatalf("falha ao criar index com FullCatalog: %v", err)
@@ -433,7 +432,7 @@ func TestBoardTriggerPiece(t *testing.T) {
 func TestTriggerBlocksCatalog(t *testing.T) {
 	trigs := graph.TriggerBlocks()
 	if len(trigs) < 5 {
-		t.Fatalf("esperava ao menos 5 blocos de trigger, obteve %d", len(trigs))
+		t.Fatalf("esperava ao menos 5 peças de trigger, obteve %d", len(trigs))
 	}
 	expectedIDs := map[string]bool{
 		"trigger-manual":       false,
@@ -447,7 +446,7 @@ func TestTriggerBlocksCatalog(t *testing.T) {
 			expectedIDs[b.ID] = true
 		}
 		if !strings.HasPrefix(b.Kind, "trigger_") {
-			t.Errorf("bloco trigger %q deve ter Kind iniciando com 'trigger_', obteve %q", b.ID, b.Kind)
+			t.Errorf("peça trigger %q deve ter Kind iniciando com 'trigger_', obteve %q", b.ID, b.Kind)
 		}
 	}
 	for id, found := range expectedIDs {

@@ -10,24 +10,27 @@ import (
 )
 
 func (s *Server) loopStore() (*studiodoc.Store, error) {
-	if s.Loops != nil {
-		return s.Loops, nil
+	return s.acervoStore()
+}
+
+func (s *Server) acervoStore() (*studiodoc.Store, error) {
+	if s.Processos != nil {
+		return s.Processos, nil
 	}
 	v, err := s.vault()
 	if err != nil {
 		return nil, err
 	}
-	dir := caminhos.DirLoopsEm(v)
-	store, err := studiodoc.NewStore(dir)
+	store, err := studiodoc.NewStore(caminhos.DirLoopsEm(v))
 	if err != nil {
 		return nil, err
 	}
-	s.Loops = store
+	s.Processos = store
 	return store, nil
 }
 
-func (s *Server) handleLoopsList(w http.ResponseWriter, r *http.Request) {
-	store, err := s.loopStore()
+func (s *Server) handleProcessosLista(w http.ResponseWriter, r *http.Request) {
+	store, err := s.acervoStore()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -59,18 +62,18 @@ func (s *Server) handleLoopsList(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{caminhos.ChaveAPILoops: list})
 }
 
-func (s *Server) handleLoopsGet(w http.ResponseWriter, r *http.Request) {
-	store, err := s.loopStore()
+func (s *Server) handleProcessosObter(w http.ResponseWriter, r *http.Request) {
+	store, err := s.acervoStore()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	id := r.PathValue("id")
-	lp, err := store.Get(id)
+	doc, err := store.Get(id)
 	if err != nil && s.ProjectDir != "" {
 		if pStore, pErr := studiodoc.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); pErr == nil {
-			if pLoop, pGetErr := pStore.Get(id); pGetErr == nil {
-				lp = pLoop
+			if pDoc, pGetErr := pStore.Get(id); pGetErr == nil {
+				doc = pDoc
 				err = nil
 			}
 		}
@@ -83,37 +86,37 @@ func (s *Server) handleLoopsGet(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	writeJSON(w, http.StatusOK, lp)
+	writeJSON(w, http.StatusOK, doc)
 }
 
-func (s *Server) handleLoopsSave(w http.ResponseWriter, r *http.Request) {
-	store, err := s.loopStore()
+func (s *Server) handleProcessosGravar(w http.ResponseWriter, r *http.Request) {
+	store, err := s.acervoStore()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var lp studiodoc.Processo
-	if err := json.NewDecoder(r.Body).Decode(&lp); err != nil {
+	var doc studiodoc.Processo
+	if err := json.NewDecoder(r.Body).Decode(&doc); err != nil {
 		http.Error(w, "JSON inválido: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	if lp.ID == "" {
-		lp.ID = studiodoc.ToKebabCase(lp.Name)
+	if doc.ID == "" {
+		doc.ID = studiodoc.ToKebabCase(doc.Name)
 	} else {
-		lp.ID = studiodoc.ToKebabCase(lp.ID)
+		doc.ID = studiodoc.ToKebabCase(doc.ID)
 	}
-	if err := store.Save(&lp); err != nil {
+	if err := store.Save(&doc); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	if s.Assets != nil {
 		s.Assets.Refresh(r.Context())
 	}
-	writeJSON(w, http.StatusOK, lp)
+	writeJSON(w, http.StatusOK, doc)
 }
 
-func (s *Server) handleLoopsDuplicate(w http.ResponseWriter, r *http.Request) {
-	store, err := s.loopStore()
+func (s *Server) handleProcessosDuplicar(w http.ResponseWriter, r *http.Request) {
+	store, err := s.acervoStore()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -142,8 +145,8 @@ func (s *Server) handleLoopsDuplicate(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, dup)
 }
 
-func (s *Server) handleLoopsDelete(w http.ResponseWriter, r *http.Request) {
-	store, err := s.loopStore()
+func (s *Server) handleProcessosExcluir(w http.ResponseWriter, r *http.Request) {
+	store, err := s.acervoStore()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

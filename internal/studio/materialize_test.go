@@ -11,20 +11,20 @@ import (
 	"legoloop/internal/studiodoc"
 )
 
-func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInLoopStore(t *testing.T) {
+func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInProcessoStore(t *testing.T) {
 	s, _ := newServer(t)
 	vaultDir := t.TempDir()
 	s.Vault = vaultDir
-	loopStore, err := studiodoc.NewStore(caminhos.DirLoopsEm(vaultDir))
+	acervo, err := studiodoc.NewStore(caminhos.DirLoopsEm(vaultDir))
 	if err != nil {
 		t.Fatal(err)
 	}
-	s.Loops = loopStore
+	s.Processos = acervo
 
 	h := s.Handler()
 
 	body := `{
-		"name": "minha-esteira",
+		"name": "meu-processo",
 		"nodes": [
 			{"id":"n1","block":"interview","routing":{"mode":"suggested","model":"sonnet","fallback":"qwen2.5-coder:7b"}},
 			{"id":"n2","block":"aidd-spec","routing":{"mode":"auto","combo":"code-pro"}}
@@ -38,13 +38,13 @@ func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInLoopStore(t *tes
 	}
 
 	// 1. o arquivo DAG deve existir no ProjectDir
-	dagFile := filepath.Join(s.ProjectDir, PipelineFile)
+	dagFile := filepath.Join(s.ProjectDir, ArquivoDAGGravado)
 	if _, err := os.Stat(dagFile); err != nil {
 		t.Fatalf("%s não foi gravado: %v", caminhos.ArquivoDAG, err)
 	}
 
 	// 2. Skill orquestradora deve existir no Vault (< 20 linhas)
-	skillFile := filepath.Join(vaultDir, "skills", "loop-minha-esteira", "SKILL.md")
+	skillFile := filepath.Join(vaultDir, "skills", "loop-meu-processo", "SKILL.md")
 	content, err := os.ReadFile(skillFile)
 	if err != nil {
 		t.Fatalf("SKILL.md orquestradora não foi gerada: %v", err)
@@ -57,12 +57,11 @@ func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInLoopStore(t *tes
 		t.Fatalf("skill orquestradora deve invocar legoloop run: %s", string(content))
 	}
 
-	// 3. Loop deve estar registrado no Store do acervo
-	saved, err := s.Loops.Get("minha-esteira")
+	saved, err := s.Processos.Get("meu-processo")
 	if err != nil {
-		t.Fatalf("loop não foi salvo no acervo: %v", err)
+		t.Fatalf("Processo não foi salvo no acervo: %v", err)
 	}
-	if saved.Name != "minha-esteira" {
-		t.Errorf("nome do loop salvo = %q", saved.Name)
+	if saved.Name != "meu-processo" {
+		t.Errorf("nome do Processo salvo = %q", saved.Name)
 	}
 }

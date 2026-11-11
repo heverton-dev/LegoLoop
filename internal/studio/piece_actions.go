@@ -62,7 +62,7 @@ func (s *Server) findPiecePath(kind, id string) string {
 	return ""
 }
 
-// handlePieceUpgrade dispara o início do sub-loop de elevação para Padrão Ouro.
+// handlePieceUpgrade dispara o início do subprocesso de elevação para Padrão Ouro.
 func (s *Server) handlePieceUpgrade(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "método não permitido", http.StatusMethodNotAllowed)
@@ -90,12 +90,12 @@ func (s *Server) handlePieceUpgrade(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]any{
-		"status":          "UPGRADE_INITIATED",
-		"target_piece":    id,
-		"current_rating":  rating,
-		"session":         sess,
-		"first_turn":      turn,
-		"pipeline_target": "docs/intents/INTENT_UPGRADE_" + strings.ToUpper(id) + ".md",
+		"status":         "UPGRADE_INITIATED",
+		"target_piece":   id,
+		"current_rating": rating,
+		"session":        sess,
+		"first_turn":     turn,
+		"processo_alvo":  "docs/intents/INTENT_UPGRADE_" + strings.ToUpper(id) + ".md",
 	})
 }
 

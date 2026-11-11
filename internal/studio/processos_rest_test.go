@@ -13,12 +13,12 @@ import (
 
 func TestProcessosAndDAGCanonicalRoutes(t *testing.T) {
 	s, home, _ := newAssetsServer(t)
-	loopsDir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
-	store, err := studiodoc.NewStore(loopsDir)
+	dir := filepath.Join(home, ".aidd", "canonical", caminhos.DirLoops)
+	store, err := studiodoc.NewStore(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	s.Loops = store
+	s.Processos = store
 
 	// 1. GET /api/dag status
 	rec := do(t, s.Handler(), "GET", "/api/dag", "")

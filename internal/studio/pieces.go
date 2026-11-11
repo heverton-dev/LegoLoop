@@ -25,7 +25,7 @@ type noInventory struct{}
 
 func (noInventory) ByID(string) (assets.Item, bool) { return assets.Item{}, false }
 
-// nodeInfo é o que o compose precisa saber de um nó, venha de um bloco do catálogo ou de uma
+// nodeInfo é o que o compose precisa saber de um nó, venha de uma peça do catálogo ou de uma
 // peça do inventário.
 type nodeInfo struct {
 	Label    string
@@ -56,17 +56,17 @@ func (n nodeInfo) rootInput() string {
 func resolveNode(idx *graph.Index, res Resolver, n CompNode) (nodeInfo, string) {
 	switch {
 	case n.Block != "" && n.Piece != nil:
-		return nodeInfo{}, "informe um bloco do catálogo OU uma peça do inventário, não os dois"
+		return nodeInfo{}, "informe uma peça do catálogo OU uma peça do inventário, não os dois"
 	case n.Block != "":
 		b, ok := idx.Block(n.Block)
 		if !ok {
-			return nodeInfo{}, fmt.Sprintf("bloco %q não existe no catálogo", n.Block)
+			return nodeInfo{}, fmt.Sprintf("peça %q não existe no catálogo", n.Block)
 		}
 		return nodeInfo{Label: b.Label, Ref: b.Ref, Type: dag.TypeSkill, Artifact: b.Artifact, Gate: b.Gate, Block: &b}, ""
 	case n.Piece != nil:
 		return resolvePiece(res, *n.Piece)
 	}
-	return nodeInfo{}, "o nó precisa de um bloco do catálogo ou de uma peça do inventário"
+	return nodeInfo{}, "o nó precisa de uma peça do catálogo ou de uma peça do inventário"
 }
 
 func resolvePiece(res Resolver, p CompPiece) (nodeInfo, string) {
@@ -84,7 +84,7 @@ func resolvePiece(res Resolver, p CompPiece) (nodeInfo, string) {
 			}
 		}
 	}
-	if msg := artifactIssue(art); msg != "" {
+	if msg := artefatoInvalido(art); msg != "" {
 		return nodeInfo{}, msg
 	}
 	gateExpr := p.Gate
@@ -114,17 +114,17 @@ func pieceByKind(res Resolver, p CompPiece) (nodeInfo, string) {
 	case "script":
 		return scriptPiece(res, p.Ref)
 	case "mcp":
-		return nodeInfo{}, "peça MCP ainda não é executável: não há cliente MCP (fase 2)"
+		return nodeInfo{}, "peça MCP ainda não é executável: não há cliente MCP (etapa 2)"
 	case "subloop":
-		return subloopPiece(res, p.Ref)
+		return subprocessoPeca(res, p.Ref)
 	}
 	return nodeInfo{}, fmt.Sprintf("tipo de peça desconhecido %q", p.Kind)
 }
 
-func subloopPiece(res Resolver, ref string) (nodeInfo, string) {
+func subprocessoPeca(res Resolver, ref string) (nodeInfo, string) {
 	it, msg := lookup(res, ref, assets.KindLoop)
 	if msg != "" {
-		return nodeInfo{}, fmt.Sprintf("sub-loop %q não encontrado no acervo (%s)", ref, msg)
+		return nodeInfo{}, fmt.Sprintf("subprocesso %q não encontrado no acervo (%s)", ref, msg)
 	}
 	refName := it.Name
 	if it.Path != "" {
@@ -156,7 +156,7 @@ func skillPiece(res Resolver, ref string) (nodeInfo, string) {
 	return info, ""
 }
 
-// skillBlock monta o bloco do grafo a partir de consumes/produces; nil se o contrato é vazio.
+// skillBlock monta a peça do grafo a partir de consumes/produces; nil se o contrato é vazio.
 func skillBlock(it assets.Item, info nodeInfo) *graph.Block {
 	var consumes []graph.ArtifactType
 	for _, c := range strings.Split(it.Meta["consumes"], ",") {
@@ -198,8 +198,8 @@ func scriptPiece(res Resolver, ref string) (nodeInfo, string) {
 	return nodeInfo{Label: it.Name, Type: dag.TypeScript, Command: argv}, ""
 }
 
-// artifactIssue valida o nome do artefato: precisa existir e não pode quebrar o gate padrão.
-func artifactIssue(a string) string {
+// artefatoInvalido valida o nome do artefato: precisa existir e não pode quebrar o gate padrão.
+func artefatoInvalido(a string) string {
 	switch {
 	case a == "":
 		return "a peça genérica precisa de um nome de artefato de saída"

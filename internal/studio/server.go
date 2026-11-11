@@ -35,8 +35,8 @@ import (
 //go:embed static
 var staticFS embed.FS
 
-// PipelineFile é o contrato gravado pelo botão "Materializar Esteira".
-const PipelineFile = caminhos.ArquivoDAG
+// ArquivoDAGGravado é o contrato gravado pelo botão "Materializar Processo".
+const ArquivoDAGGravado = caminhos.ArquivoDAG
 
 // inventoryTTL evita sondar a rede a cada clique no canvas.
 const inventoryTTL = 10 * time.Second
@@ -56,8 +56,8 @@ type Server struct {
 	Home string
 	// Vault é o cofre canônico; vazio usa ~/.aidd/canonical.
 	Vault string
-	// Loops é o acervo de sub-loops; nil inicializa em ~/.aidd/canonical/loops.
-	Loops *studiodoc.Store
+	// Processos é o acervo de Processos; nil inicializa no Cofre canônico.
+	Processos *studiodoc.Store
 	// CanonRoots são raízes extras da canonização, definidas pelo operador. O cliente nunca envia caminhos.
 	CanonRoots []string
 
@@ -141,24 +141,30 @@ func (s *Server) registerAPIRoutes(mux *http.ServeMux) {
 func (s *Server) registerProcessoRoutes(mux *http.ServeMux) {
 	// Canonical Processos & DAG APIs (ASD-STE100)
 	mux.HandleFunc("GET /api/processos", s.handleProcessosListar)
-	mux.HandleFunc("GET /api/processos/{id}", s.handleLoopsGet)
-	mux.HandleFunc("POST /api/processos", s.handleLoopsSave)
-	mux.HandleFunc("POST /api/processos/{id}/duplicate", s.handleLoopsDuplicate)
-	mux.HandleFunc("POST /api/processos/{id}/fork", s.handleLoopsDuplicate)
-	mux.HandleFunc("DELETE /api/processos/{id}", s.handleLoopsDelete)
+	mux.HandleFunc("GET /api/processos/{id}", s.handleProcessosObter)
+	mux.HandleFunc("POST /api/processos", s.handleProcessosGravar)
+	mux.HandleFunc("POST /api/processos/{id}/duplicate", s.handleProcessosDuplicar)
+	mux.HandleFunc("POST /api/processos/{id}/fork", s.handleProcessosDuplicar)
+	mux.HandleFunc("DELETE /api/processos/{id}", s.handleProcessosExcluir)
 	mux.HandleFunc("POST /api/processos/refinar", s.handleProcessosRefinar)
 	mux.HandleFunc("POST /api/processos/remover", s.handleProcessosRemover)
 	mux.HandleFunc("POST /api/processos/compor", s.handleProcessosCompor)
 	mux.HandleFunc("GET /api/dag", s.handleDAGStatus)
 	mux.HandleFunc("GET /api/dag/{id}", s.handleDAGGet)
 
-	// Rotas legadas (deprecadas em favor de /api/processos e /api/dag)
-	mux.HandleFunc("GET /api/loops", s.handleLoopsList)
-	mux.HandleFunc("GET /api/loops/{id}", s.handleLoopsGet)
-	mux.HandleFunc("POST /api/loops", s.handleLoopsSave)
-	mux.HandleFunc("POST /api/loops/{id}/duplicate", s.handleLoopsDuplicate)
-	mux.HandleFunc("POST /api/loops/{id}/fork", s.handleLoopsDuplicate)
-	mux.HandleFunc("DELETE /api/loops/{id}", s.handleLoopsDelete)
+	mux.HandleFunc("GET /api/loops", deprecada(s.handleProcessosLista))
+	mux.HandleFunc("GET /api/loops/{id}", deprecada(s.handleProcessosObter))
+	mux.HandleFunc("POST /api/loops", deprecada(s.handleProcessosGravar))
+	mux.HandleFunc("POST /api/loops/{id}/duplicate", deprecada(s.handleProcessosDuplicar))
+	mux.HandleFunc("POST /api/loops/{id}/fork", deprecada(s.handleProcessosDuplicar))
+	mux.HandleFunc("DELETE /api/loops/{id}", deprecada(s.handleProcessosExcluir))
+}
+
+func deprecada(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Deprecation", "true")
+		h(w, r)
+	}
 }
 
 func (s *Server) handleDAGStatus(w http.ResponseWriter, r *http.Request) {
@@ -169,7 +175,7 @@ func (s *Server) handleDAGStatus(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleDAGGet(w http.ResponseWriter, r *http.Request) {
-	s.handleLoopsGet(w, r)
+	s.handleProcessosObter(w, r)
 }
 
 // ListenAndServe escuta apenas em loopback e encerra graciosamente quando ctx termina.
@@ -286,17 +292,17 @@ func (s *Server) handleMaterialize(w http.ResponseWriter, r *http.Request) {
 	}
 	data, err := d.Marshal()
 	if err == nil {
-		err = writeAtomic(s.ProjectDir, PipelineFile, data)
+		err = writeAtomic(s.ProjectDir, ArquivoDAGGravado, data)
 	}
 	if err != nil {
-		writeError(w, http.StatusInternalServerError, "falha ao gravar "+PipelineFile)
+		writeError(w, http.StatusInternalServerError, "falha ao gravar "+ArquivoDAGGravado)
 		return
 	}
 
 	s.writeOrchestratorSkill(d)
-	s.registerLoop(d)
+	s.registrarProcesso(d)
 
-	res.Path = PipelineFile
+	res.Path = ArquivoDAGGravado
 	res.DAG = s.maskDAG(res.DAG) // o arquivo gravado tem os caminhos reais; a resposta, não
 	writeJSON(w, http.StatusOK, res)
 }
@@ -320,11 +326,11 @@ func (s *Server) writeOrchestratorSkill(d *dag.DAG) {
 	_ = os.MkdirAll(skillDir, 0o755)
 	skillContent := fmt.Sprintf(`---
 name: loop-%s
-description: Executa o loop LegoLoop %s
+description: Executa o Processo %s
 ---
-# Loop %s
+# Processo %s
 
-Execute esta esteira autônoma via LegoLoop:
+Execute este Processo autônomo via LegoLoop:
 `+"```bash"+`
 legoloop run
 `+"```"+`
@@ -332,12 +338,12 @@ legoloop run
 	_ = os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte(skillContent), 0o644)
 }
 
-// registerLoop registra o loop no acervo, se disponível (R-RUN-3).
-func (s *Server) registerLoop(d *dag.DAG) {
-	if s.Loops == nil || d == nil {
+// registrarProcesso registra o Processo no acervo, se disponível (R-RUN-3).
+func (s *Server) registrarProcesso(d *dag.DAG) {
+	if s.Processos == nil || d == nil {
 		return
 	}
-	_ = s.Loops.Save(&studiodoc.Processo{
+	_ = s.Processos.Save(&studiodoc.Processo{
 		ID:          d.Name,
 		Name:        d.Name,
 		Description: d.Description,

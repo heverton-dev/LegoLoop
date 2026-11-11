@@ -16,7 +16,7 @@ type runDAGRequest struct {
 	AllowScripts bool            `json:"allow_scripts"`
 }
 
-// handleRunDAG executa o pipeline via SSE, transmitindo progresso por nó em tempo real (R-RUN-1).
+// handleRunDAG executa o Processo via SSE, transmitindo progresso por nó em tempo real (R-RUN-1).
 // Requer consentimento prévio para execução de scripts (R-RUN-2).
 func (s *Server) handleRunDAG(w http.ResponseWriter, r *http.Request) {
 	req, d, ok := parseRunPayload(w, r)
@@ -89,7 +89,7 @@ func (s *Server) dispatchRunExecution(r *http.Request, d *dag.DAG, allowScripts 
 	exec := &orchestrix.Orchestrix{
 		Inventory:    s.inventory(r.Context()),
 		AllowScripts: allowScripts,
-		LoopStore:    s.Loops,
+		LoopStore:    s.Processos,
 	}
 	start := time.Now()
 	rep, err := runner.Run(r.Context(), d, s.runOptions(exec, send))
