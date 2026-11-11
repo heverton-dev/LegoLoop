@@ -235,7 +235,7 @@ func nomes(ts []Termo) string {
 	return strings.Join(out, ", ")
 }
 
-// neutraliza impede que o texto da peça feche o bloco <dado> antes da hora.
+// neutraliza impede que o texto da peça feche a seção <dado> antes da hora.
 func neutraliza(s string) string {
 	return strings.NewReplacer("</dado>", "[/dado]", "<dado>", "[dado]").Replace(s)
 }

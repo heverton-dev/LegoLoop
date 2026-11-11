@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// frontmatter devolve os campos de lista do bloco "---" no topo do texto. Entende "[a, b]", "a, b" e
+// frontmatter devolve os campos de lista da seção "---" no topo do texto. Entende "[a, b]", "a, b" e
 // listas "- item" nas linhas seguintes. Só nos interessam os campos do perfil de uso.
 func frontmatter(texto string) map[string][]string {
 	linhas := strings.Split(strings.ReplaceAll(texto, "\r\n", "\n"), "\n")

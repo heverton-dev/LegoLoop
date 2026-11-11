@@ -54,9 +54,24 @@ type Summary struct {
 	Arquivos       []string       `json:"arquivos"`                         // arquivos gravados, relativos ao cofre
 }
 
+var kindProcesso = tipoDeProcesso()
+
+func tipoDeProcesso() assets.Kind {
+	conhecidos := map[assets.Kind]bool{
+		assets.KindSkill: true, assets.KindMCP: true, assets.KindScript: true, assets.KindHook: true,
+		assets.KindGate: true, assets.KindHarness: true, assets.KindBinary: true,
+	}
+	for _, k := range assets.Kinds() {
+		if !conhecidos[k] {
+			return k
+		}
+	}
+	return ""
+}
+
 var tiposCatalogados = map[assets.Kind]bool{
 	assets.KindSkill: true, assets.KindMCP: true, assets.KindScript: true,
-	assets.KindHook: true, assets.KindGate: true, assets.KindLoop: true,
+	assets.KindHook: true, assets.KindGate: true, kindProcesso: true,
 }
 
 // Generate varre as peças, pontua, cataloga e grava a matriz geral e a matriz por tipo numa só operação atômica.
@@ -252,8 +267,8 @@ func refDe(it assets.Item, home string) string {
 // inteiro, que pode guardar segredo; esses nunca são lidos.
 func leConteudo(k assets.Kind) bool { return k != assets.KindMCP && k != assets.KindHook }
 
-// vaiAoCerebro diz se o texto vai ao catalogador (e portanto ao modelo): só skills e loops.
-func vaiAoCerebro(k assets.Kind) bool { return k == assets.KindSkill || k == assets.KindLoop }
+// vaiAoCerebro diz se o texto vai ao catalogador (e portanto ao modelo): só skills e Processos.
+func vaiAoCerebro(k assets.Kind) bool { return k == assets.KindSkill || k == kindProcesso }
 
 // identidade devolve a Ref e o hash da peça. Só lê o arquivo quando o tipo permite e a varredura não trouxe o
 // sha256; nesse caso devolve também o texto lido, para a catalogação não ler duas vezes.
@@ -314,7 +329,7 @@ var camposPorTipo = map[assets.Kind][]string{
 	assets.KindSkill: {"consumes", "produces", "artifact", "gate", "suggested_model"},
 	assets.KindMCP:   {"transport", "command", "host"},
 	assets.KindHook:  {"matcher"},
-	assets.KindLoop:  {"trigger", "artifact"},
+	kindProcesso:     {"trigger", "artifact"},
 }
 
 func tipado(it assets.Item) map[string]any {

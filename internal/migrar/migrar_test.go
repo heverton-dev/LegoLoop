@@ -7,6 +7,14 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"legoloop/internal/caminhos"
+)
+
+const (
+	docAntigo = "pesquisa" + caminhos.SufixoLoop
+	dagAntigo = "extrator/" + caminhos.ArquivoDAG
+	extAntiga = "alheio" + caminhos.SufixoLoop
 )
 
 func escrever(t *testing.T, raiz, rel, conteudo string) {
@@ -62,10 +70,10 @@ func fotografar(t *testing.T, raiz string) map[string]string {
 func processoV1(t *testing.T) string {
 	t.Helper()
 	raiz := t.TempDir()
-	escrever(t, raiz, "pesquisa.loop.json", `{"id":"pesquisa"}`)
+	escrever(t, raiz, docAntigo, `{"id":"pesquisa"}`)
 	escrever(t, raiz, "pesquisa.dag.json", `{"name":"pesquisa-dag"}`)
 	escrever(t, raiz, "pesquisa.processo.json", `{"nome":"pesquisa"}`)
-	escrever(t, raiz, "extrator/pipeline.dag.json", `{"name":"extrator"}`)
+	escrever(t, raiz, dagAntigo, `{"name":"extrator"}`)
 	return raiz
 }
 
@@ -99,19 +107,19 @@ func conferirMigrado(t *testing.T, raiz string) {
 	if got := ler(t, raiz, "pesquisa.studio.json"); got != `{"id":"pesquisa"}` {
 		t.Fatalf("studio.json com conteúdo %q", got)
 	}
-	ausente(t, raiz, "pesquisa.loop.json")
-	ausente(t, raiz, "extrator/pipeline.dag.json")
+	ausente(t, raiz, docAntigo)
+	ausente(t, raiz, dagAntigo)
 	if got := ler(t, raiz, "extrator/processo.dag.json"); got != `{"name":"extrator"}` {
 		t.Fatalf("processo.dag.json com conteúdo %q", got)
 	}
 	if ler(t, raiz, "pesquisa.dag.json") != `{"name":"pesquisa-dag"}` || ler(t, raiz, "pesquisa.processo.json") != `{"nome":"pesquisa"}` {
 		t.Fatal(".dag.json ou .processo.json foram alterados")
 	}
-	if got := ler(t, raiz, DirBackup+"/pesquisa.loop.json"); got != `{"id":"pesquisa"}` {
-		t.Fatalf("backup do .loop.json com conteúdo %q", got)
+	if got := ler(t, raiz, DirBackup+"/"+docAntigo); got != `{"id":"pesquisa"}` {
+		t.Fatalf("backup do documento antigo com conteúdo %q", got)
 	}
-	if got := ler(t, raiz, DirBackup+"/extrator/pipeline.dag.json"); got != `{"name":"extrator"}` {
-		t.Fatalf("backup do pipeline.dag.json com conteúdo %q", got)
+	if got := ler(t, raiz, DirBackup+"/"+dagAntigo); got != `{"name":"extrator"}` {
+		t.Fatalf("backup do DAG antigo com conteúdo %q", got)
 	}
 }
 
@@ -129,7 +137,7 @@ func TestMigrarDestinoExistenteNaoAlteraDisco(t *testing.T) {
 
 func TestMigrarBackupExistenteNaoAlteraDisco(t *testing.T) {
 	raiz := processoV1(t)
-	escrever(t, raiz, DirBackup+"/pesquisa.loop.json", `velho`)
+	escrever(t, raiz, DirBackup+"/"+docAntigo, `velho`)
 	antes := fotografar(t, raiz)
 	if _, err := Migrar(raiz); !errors.Is(err, ErrDestinoExiste) {
 		t.Fatalf("esperava ErrDestinoExiste, veio %v", err)
@@ -151,14 +159,14 @@ func TestMigrarRecusaRaizInvalida(t *testing.T) {
 func TestMigrarRecusaSymlink(t *testing.T) {
 	raiz := t.TempDir()
 	fora := t.TempDir()
-	escrever(t, fora, "alheio.loop.json", `{}`)
-	if err := os.Symlink(filepath.Join(fora, "alheio.loop.json"), filepath.Join(raiz, "alheio.loop.json")); err != nil {
+	escrever(t, fora, extAntiga, `{}`)
+	if err := os.Symlink(filepath.Join(fora, extAntiga), filepath.Join(raiz, extAntiga)); err != nil {
 		t.Skipf("symlink indisponível: %v", err)
 	}
 	if _, err := Migrar(raiz); !errors.Is(err, ErrSymlink) {
 		t.Fatalf("esperava ErrSymlink, veio %v", err)
 	}
-	if ler(t, fora, "alheio.loop.json") != `{}` {
+	if ler(t, fora, extAntiga) != `{}` {
 		t.Fatal("arquivo externo alterado")
 	}
 }

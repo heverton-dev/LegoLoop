@@ -1,5 +1,5 @@
 // Package migrar converte um Processo v1 para os nomes canônicos (TICK-01.4):
-// <nome>.loop.json vira <nome>.studio.json e pipeline.dag.json vira
+// o documento do Studio vira <nome>.studio.json e o DAG antigo vira
 // processo.dag.json. Os arquivos .dag.json e .processo.json não mudam. Antes de
 // mover, a migração copia cada original para a pasta de backup. A operação é
 // idempotente: sem origem pendente, nada muda no disco.
@@ -17,7 +17,7 @@ import (
 )
 
 // SufixoV1 é o sufixo do documento do Studio no dialeto antigo.
-const SufixoV1 = ".loop.json"
+const SufixoV1 = caminhos.SufixoLoop
 
 // SufixoStudio é o sufixo do documento do Studio no dialeto novo.
 const SufixoStudio = ".studio.json"
@@ -141,7 +141,7 @@ func planejarEntrada(raiz string, e os.DirEntry) (Movimento, bool, error) {
 	return Movimento{}, false, nil
 }
 
-// planejarPasta procura pipeline.dag.json dentro de uma pasta de Processo.
+// planejarPasta procura o DAG antigo dentro de uma pasta de Processo.
 func planejarPasta(raiz, pasta string) (Movimento, bool, error) {
 	origem := pasta + "/" + caminhos.ArquivoDAG
 	info, err := os.Lstat(filepath.Join(raiz, filepath.FromSlash(origem)))

@@ -32,7 +32,7 @@ func (s Stale) Defasada() bool {
 }
 
 // Staleness compara a matriz com as peças atuais sem reprocessar conteúdo: usa o sha256 que a varredura
-// já trouxe e só lê o arquivo de script, gate e loop (pequeno) para o hash. Não chama nota nem cérebro.
+// já trouxe e só lê o arquivo de script, gate e Processo (pequeno) para o hash. Não chama nota nem cérebro.
 // reg == nil significa que não há matriz.
 func Staleness(ctx context.Context, reg *Registro, items []assets.Item, d Deps) (Stale, error) {
 	if reg == nil {

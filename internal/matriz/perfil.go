@@ -28,7 +28,7 @@ type Peca struct {
 	Ref       string
 	Nome      string
 	Descricao string
-	Tipo      string // skill | mcp | hook | script | gate | loop
+	Tipo      string // skill | mcp | hook | script | gate | processo
 	Conteudo  string // texto lido da peça (frontmatter e corpo)
 }
 
