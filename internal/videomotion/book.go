@@ -15,7 +15,7 @@ var (
 // DidacticBookConfig parametriza a criação do manual em formato de livro.
 type DidacticBookConfig struct {
 	OutputDir    string
-	PipelineName string
+	ProcessoName string
 	Version      string
 }
 
@@ -34,10 +34,10 @@ type LegoPressBookManifest struct {
 
 // GenerateDidacticBook cria o livro didático canônico na pasta docs/books/<nome>.
 func GenerateDidacticBook(cfg DidacticBookConfig) (string, error) {
-	if cfg.OutputDir == "" || cfg.PipelineName == "" {
+	if cfg.OutputDir == "" || cfg.ProcessoName == "" {
 		return "", ErrInvalidBookConfig
 	}
-	bookDir := filepath.Join(cfg.OutputDir, cfg.PipelineName)
+	bookDir := filepath.Join(cfg.OutputDir, cfg.ProcessoName)
 	partesDir := filepath.Join(bookDir, "partes")
 	if err := os.MkdirAll(partesDir, 0755); err != nil {
 		return "", err
@@ -71,25 +71,25 @@ func writeManifest(bookDir string, manifest LegoPressBookManifest) (string, erro
 func buildBookChapters(cfg DidacticBookConfig) (LegoPressBookManifest, map[string]string) {
 	manifest := LegoPressBookManifest{
 		VersaoManifesto: "1.0",
-		Titulo:          "Pipeline Canônico de Motion Video",
-		NomeBase:        "2026-11-07_PIPELINE-MOTION-VIDEO",
+		Titulo:          "Processo Canônico de Motion Video",
+		NomeBase:        "2026-11-07_PROCESSO-MOTION-VIDEO",
 		PastaPartes:     "partes",
 		Template:        "ativos/livro.typst",
 		Partes: []string{
 			"00-frontmatter.md",
-			"01-macro-fundacao.md",
+			"01-fundacao.md",
 			"02-meso-arquitetura-4-pilares.md",
 			"03-micro-passo-a-passo.md",
 			"04-pratica-receitas-multi-aspecto.md",
 			"05-rotina-diff-updater.md",
 		},
 		Revisoes:         []string{},
-		HashFonte:        cfg.PipelineName + "-v" + cfg.Version,
+		HashFonte:        cfg.ProcessoName + "-v" + cfg.Version,
 		UltimaCompilacao: "2026-11-07",
 	}
 	chapters := map[string]string{
 		"00-frontmatter.md":                    cap0Content,
-		"01-macro-fundacao.md":                 cap1Content,
+		"01-fundacao.md":                       cap1Content,
 		"02-meso-arquitetura-4-pilares.md":     cap2Content,
 		"03-micro-passo-a-passo.md":            cap3Content,
 		"04-pratica-receitas-multi-aspecto.md": cap4Content,
@@ -99,7 +99,7 @@ func buildBookChapters(cfg DidacticBookConfig) (LegoPressBookManifest, map[strin
 }
 
 const cap0Content = `---
-title: "Pipeline Canônico de Motion Video"
+title: "Processo Canônico de Motion Video"
 subtitle: "Engenharia Reversa de Motion Design, Sincronia Fonética e Renderização por Código"
 author:
   - Ecossistema LegoLoop
@@ -108,8 +108,8 @@ lang: pt-BR
 institute: "LegoLoop Foundation"
 eyebrow: "MANUAL OPERACIONAL DIDÁTICO · VIDEO AS CODE"
 cover-title: "Motion Video"
-cover-accent: "Pipeline Canônico por Código"
-cover-caption: "OS SEIS NÓS DO PIPELINE video-motion"
+cover-accent: "Processo Canônico por Código"
+cover-caption: "OS SEIS NÓS DO PROCESSO video-motion"
 cover-stages:
   - "Silêncio & Ataque +40ms"
   - "Matriz Words & Punch RMS"
@@ -120,11 +120,11 @@ cover-stages:
 header-mark: "MOTION VIDEO"
 accent: "2563eb"
 tagline: |
-  Do tutorial ao código executável: pipeline determinístico, multi-aspecto e com zero dependência proprietária
+  Do tutorial ao código executável: processo determinístico, multi-aspecto e com zero dependência proprietária
 toc: true
 toc-depth: 2
 abstract: |
-  Este livro é o manual técnico e didático oficial do pipeline video-motion do LegoLoop.
+  Este livro é o manual técnico e didático oficial do processo video-motion do LegoLoop.
 ---
 
 # Como ler este livro
@@ -133,7 +133,7 @@ abstract: |
 
 | Parte | Nível | Conteúdo |
 | :--- | :--- | :--- |
-| **I** | Macro | Fundação filosófica e determinismo estrito |
+| **I** | Geral | Fundação filosófica e determinismo estrito |
 | **II** | Meso | Arquitetura dos quatro pilares técnicos |
 | **III** | Micro | Guia prático de execução e stop-gates de QA |
 | **IV** | Prática | Receitas multi-aspecto e broadcast bundle |
@@ -142,7 +142,7 @@ abstract: |
 
 const cap1Content = `# Parte I — Fundação e Princípio Determinístico
 
-O pipeline Video Motion foi concebido sob a Lei Fundamental de Engenharia do LegoLoop:
+O processo Video Motion foi concebido sob a Lei Fundamental de Engenharia do LegoLoop:
 **Tudo o que puder ser determinístico NUNCA deve ser deixado para a probabilidade de uma IA generativa.**
 
 Cortes, alinhamento fonético, curvas de aceleração visual (springs e easings), cálculo de decibéis RMS e
@@ -159,7 +159,7 @@ const cap2Content = `# Parte II — A Arquitetura dos 4 Pilares
 
 const cap3Content = `# Parte III — Guia Prático de Execução
 
-Execute a esteira com o comando canônico:
+Execute o processo com o comando canônico:
 ` + "```bash" + `
 legoloop video-motion run --input video.mp4 --aspect 9:16 --output dist/
 ` + "```" + `
@@ -175,7 +175,7 @@ const cap4Content = `# Parte IV — Receitas Multi-Aspect Ratio
 
 const cap5Content = `# Parte V — Rotina de Atualização por Diff (LegoPress)
 
-Sempre que o código ou o DAG do pipeline sofrer alterações no repositório, o comando LegoPress sincroniza
+Sempre que o código ou o DAG do processo sofrer alterações no repositório, o comando LegoPress sincroniza
 o livro didático de forma incremental:
 ` + "```bash" + `
 legoloop legopress atualizar docs/books/video-motion/

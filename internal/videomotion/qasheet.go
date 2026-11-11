@@ -19,7 +19,7 @@ type QASheetPlan struct {
 	Rows         int
 }
 
-// PlanQASheet seleciona os 12 frames-chave do vídeo para a grade 4x3.
+// PlanQASheet seleciona os 12 frames-chave do vídeo para a matriz 4x3.
 func PlanQASheet(durationMs int64, beatTimesMs []int64) (*QASheetPlan, error) {
 	if durationMs < 1000 {
 		return nil, ErrVideoTooShortForQA

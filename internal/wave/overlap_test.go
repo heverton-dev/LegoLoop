@@ -10,10 +10,10 @@ import (
 )
 
 func TestExtractAffectedFiles(t *testing.T) {
-	card := board.Card{
+	ticket := board.Ticket{
 		Number: 42,
 		Title:  "Refactor scanner and update dag types",
-		Body: `This ticket addresses performance issues in the scanner.
+		Body: `This ticket addresses performance problems in the scanner.
 Files affected:
 - internal/assets/scanner.go
 - ` + "`internal/dag/types.go`" + `
@@ -21,7 +21,7 @@ Files affected:
 Also touches docs/specs/SPEC.md.`,
 	}
 
-	files := wave.ExtractAffectedFiles(card)
+	files := wave.ExtractAffectedFiles(ticket)
 	sort.Strings(files)
 
 	expected := []string{
@@ -37,13 +37,13 @@ Also touches docs/specs/SPEC.md.`,
 }
 
 func TestExtractAffectedFiles_FallbackToTitle(t *testing.T) {
-	card := board.Card{
+	ticket := board.Ticket{
 		Number: 99,
 		Title:  "Fix bug in internal/board/guard.go",
 		Body:   "Simple fix with no explicit file list.",
 	}
 
-	files := wave.ExtractAffectedFiles(card)
+	files := wave.ExtractAffectedFiles(ticket)
 	expected := []string{"internal/board/guard.go"}
 
 	if !reflect.DeepEqual(files, expected) {

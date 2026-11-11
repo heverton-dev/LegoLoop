@@ -12,18 +12,16 @@ import (
 // Regex para detectar referências a arquivos com extensões comuns ou caminhos de diretório.
 var filePathRegex = regexp.MustCompile(`[\w\-\.\/]+\.[a-zA-Z0-9]+`)
 
-// ExtractAffectedFiles inspeciona o corpo e o título de um Card para identificar quais arquivos do repositório serão tocados.
-func ExtractAffectedFiles(card board.Card) []string {
+// ExtractAffectedFiles inspeciona o corpo e o título de um Ticket para identificar quais arquivos do repositório serão tocados.
+func ExtractAffectedFiles(ticket board.Ticket) []string {
 	seen := make(map[string]struct{})
 
-	// 1. Inspeciona o corpo
-	if card.Body != "" {
-		scanFilePaths(card.Body, seen)
+	if ticket.Body != "" {
+		scanFilePaths(ticket.Body, seen)
 	}
 
-	// 2. Se nada foi achado no corpo, inspeciona o título como fallback
-	if len(seen) == 0 && card.Title != "" {
-		scanFilePaths(card.Title, seen)
+	if len(seen) == 0 && ticket.Title != "" {
+		scanFilePaths(ticket.Title, seen)
 	}
 
 	var files []string

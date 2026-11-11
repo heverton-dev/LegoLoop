@@ -14,7 +14,7 @@ func TestGenerateDidacticBook(t *testing.T) {
 
 	cfg := videomotion.DidacticBookConfig{
 		OutputDir:    tempDir,
-		PipelineName: "video-motion",
+		ProcessoName: "video-motion",
 		Version:      "1.0.0",
 	}
 

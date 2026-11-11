@@ -30,7 +30,7 @@ type WordsTimeline struct {
 	TotalDurationMs int64      `json:"total_duration_ms"`
 }
 
-// ParseAndValidateWords lê o fluxo JSON e valida a consistência temporal das palavras.
+// ParseAndValidateWords lê o JSON e valida a consistência temporal das palavras.
 func ParseAndValidateWords(r io.Reader) (*WordsTimeline, error) {
 	var raw []WordItem
 	dec := json.NewDecoder(r)

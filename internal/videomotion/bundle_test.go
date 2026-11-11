@@ -22,7 +22,7 @@ func TestGenerateBroadcastBundle(t *testing.T) {
 		JobID:       "job_test_01",
 		OutputDir:   tempDir,
 		Title:       "LegoLoop Motion Video",
-		CTA:         "Comente 'LEGO' para receber a esteira completa!",
+		CTA:         "Comente 'LEGO' para receber o processo completo!",
 		Words:       words,
 		AspectRatio: videomotion.AspectVertical,
 	}

@@ -58,7 +58,7 @@ func BuildGlassCard(spec GlassCardSpec) (*GlassCardComposition, error) {
 	}, nil
 }
 
-// GenerateCSS produz o bloco de estilos CSS puro para Remotion/Web-Canvas.
+// GenerateCSS produz os estilos CSS puro para Remotion/Web-Canvas.
 func (c *GlassCardComposition) GenerateCSS() string {
 	return fmt.Sprintf(
 		"width: %dpx; height: %dpx; border-radius: %dpx; backdrop-filter: blur(%dpx); border: 1px solid %s; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);",

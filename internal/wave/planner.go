@@ -5,11 +5,11 @@ import (
 )
 
 type waveSlot struct {
-	cards        []board.Card
+	tickets      []board.Ticket
 	occupiedSets [][]string
 }
 
-// accepts informa se o cartão não tem overlap com nenhum cartão já no slot.
+// accepts informa se o ticket não tem overlap com nenhum ticket já no slot.
 func (w *waveSlot) accepts(files []string) bool {
 	for _, existing := range w.occupiedSets {
 		if HasOverlap(files, existing) {
@@ -19,32 +19,31 @@ func (w *waveSlot) accepts(files []string) bool {
 	return true
 }
 
-// PlanWaves organiza uma lista de cartões em lotes ordenados de execução concorrente segura (waves).
-// Cartões que tocam nos mesmos arquivos nunca são colocados na mesma onda.
-func PlanWaves(cards []board.Card) []board.Wave {
-	if len(cards) == 0 {
+// PlanWaves organiza uma lista de tickets em lotes ordenados de execução concorrente segura (waves).
+// Tickets que tocam nos mesmos arquivos nunca são colocados na mesma onda.
+func PlanWaves(tickets []board.Ticket) []board.Wave {
+	if len(tickets) == 0 {
 		return nil
 	}
 	var slots []*waveSlot
-	for _, card := range cards {
-		cardFiles := ExtractAffectedFiles(card)
-		// Primeiro slot compatível; se conflitar com todos, abre uma nova onda
+	for _, ticket := range tickets {
+		ticketFiles := ExtractAffectedFiles(ticket)
 		placed := false
 		for _, slot := range slots {
-			if slot.accepts(cardFiles) {
-				slot.cards = append(slot.cards, card)
-				slot.occupiedSets = append(slot.occupiedSets, cardFiles)
+			if slot.accepts(ticketFiles) {
+				slot.tickets = append(slot.tickets, ticket)
+				slot.occupiedSets = append(slot.occupiedSets, ticketFiles)
 				placed = true
 				break
 			}
 		}
 		if !placed {
-			slots = append(slots, &waveSlot{cards: []board.Card{card}, occupiedSets: [][]string{cardFiles}})
+			slots = append(slots, &waveSlot{tickets: []board.Ticket{ticket}, occupiedSets: [][]string{ticketFiles}})
 		}
 	}
 	result := make([]board.Wave, len(slots))
 	for i, slot := range slots {
-		result[i] = board.Wave{Index: i, Cards: slot.cards}
+		result[i] = board.Wave{Index: i, Cards: slot.tickets}
 	}
 	return result
 }
