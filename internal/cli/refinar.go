@@ -137,8 +137,8 @@ func imprimirRefinar(d Deps, res *refinar.Resultado, asJSON bool) int {
 func (p *prompter) aprovarRefino(pl refinar.Plano, replan func(refinar.Mudanca) (refinar.Plano, error)) (bool, error) {
 	fmt.Fprintf(p.w, "\n%s", pl.Diff())
 	for invalidas := 0; invalidas < maxInvalid; {
-		card := pl.Cartao()
-		fmt.Fprintf(p.w, "\n%s", card.Render())
+		cartao := pl.Cartao()
+		fmt.Fprintf(p.w, "\n%s", cartao.Render())
 		in, err := p.line("> ")
 		if err != nil {
 			return false, err
@@ -151,7 +151,7 @@ func (p *prompter) aprovarRefino(pl refinar.Plano, replan func(refinar.Mudanca) 
 		case dec == ste.Seguir:
 			return true, nil
 		case dec == ste.Personalizar:
-			if pl, err = p.personalizarRefino(card, pl, replan); err != nil {
+			if pl, err = p.personalizarRefino(cartao, pl, replan); err != nil {
 				return false, err
 			}
 			fmt.Fprintf(p.w, "\n%s", pl.Diff())
@@ -164,9 +164,9 @@ func (p *prompter) aprovarRefino(pl refinar.Plano, replan func(refinar.Mudanca) 
 
 // personalizarRefino pergunta o novo valor de cada parâmetro (Enter mantém) e devolve o plano recalculado. Se a
 // mudança nova não vale, mostra o motivo e mantém o plano anterior.
-func (p *prompter) personalizarRefino(card ste.Cartao, pl refinar.Plano, replan func(refinar.Mudanca) (refinar.Plano, error)) (refinar.Plano, error) {
+func (p *prompter) personalizarRefino(cartao ste.Cartao, pl refinar.Plano, replan func(refinar.Mudanca) (refinar.Plano, error)) (refinar.Plano, error) {
 	m := pl.Mudanca
-	for _, par := range card.Parametros {
+	for _, par := range cartao.Parametros {
 		fmt.Fprintln(p.w, par.Ajuda)
 		in, err := p.line(fmt.Sprintf("%s [%s]: ", par.Nome, par.Valor))
 		if err != nil {

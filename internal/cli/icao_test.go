@@ -9,7 +9,7 @@ import (
 )
 
 func TestICAOReadbackPrompter(t *testing.T) {
-	card := cli.ICAOCard{
+	conf := cli.ICAOConfirmacao{
 		TargetResource:  "internal/videorea/crawler.go",
 		MutationCommand: "rm internal/videorea/crawler.go",
 		BlastRadius:     "1 arquivo de produção",
@@ -20,7 +20,7 @@ func TestICAOReadbackPrompter(t *testing.T) {
 		in := strings.NewReader("HEARBACK APPROVED\n")
 		var out bytes.Buffer
 
-		approved, err := cli.PromptICAO(&out, in, card)
+		approved, err := cli.PromptICAO(&out, in, conf)
 		if err != nil {
 			t.Fatalf("erro inesperado: %v", err)
 		}
@@ -38,7 +38,7 @@ func TestICAOReadbackPrompter(t *testing.T) {
 		in := strings.NewReader("qualquer outra coisa\n")
 		var out bytes.Buffer
 
-		approved, err := cli.PromptICAO(&out, in, card)
+		approved, err := cli.PromptICAO(&out, in, conf)
 		if err != nil {
 			t.Fatalf("erro inesperado: %v", err)
 		}

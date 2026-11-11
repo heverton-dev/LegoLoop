@@ -35,8 +35,8 @@ func TestContextoCLILeAgentsEObjetivo(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(r.doc, "AGENTS.md"), []byte("Go, stdlib only"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	r.fabricar(t, "--goal", "refinar a etapa de BUILD do mega-pipeline")
-	for _, want := range []string{"Go, stdlib only", "refinar a etapa de BUILD do mega-pipeline"} {
+	r.fabricar(t, "--goal", "refinar a etapa de BUILD do mega-processo")
+	for _, want := range []string{"Go, stdlib only", "refinar a etapa de BUILD do mega-processo"} {
 		if !strings.Contains(spy.system, want) {
 			t.Errorf("o prompt do sistema não contém %q:\n%s", want, spy.system)
 		}
@@ -45,9 +45,9 @@ func TestContextoCLILeAgentsEObjetivo(t *testing.T) {
 
 func TestContextoCLIObjetivoCaiNoNome(t *testing.T) {
 	for _, c := range []struct{ goal, name, want string }{
-		{"  refinar o build ", "meu-fluxo", "refinar o build"},
-		{"", "meu-fluxo", "meu-fluxo"},
-		{"   ", " meu-fluxo ", "meu-fluxo"},
+		{"  refinar o build ", "meu-processo", "refinar o build"},
+		{"", "meu-processo", "meu-processo"},
+		{"   ", " meu-processo ", "meu-processo"},
 	} {
 		if got := goalOf(fabricar.Request{Goal: c.goal, RawName: c.name}); got != c.want {
 			t.Errorf("goalOf(%q, %q) = %q, queria %q", c.goal, c.name, got, c.want)

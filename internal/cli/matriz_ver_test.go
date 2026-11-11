@@ -208,7 +208,7 @@ func TestMatrizVer_FalhasDeUsoSaem2EListamOAceito(t *testing.T) {
 		quer string
 	}{
 		{[]string{"--tier", "platina"}, "ouro, prata, bronze, toxica"},
-		{[]string{"--tipo", "xyz"}, "skill, mcp, script, hook, gate, loop"},
+		{[]string{"--tipo", "xyz"}, "skill, mcp, script, hook, gate, processo"},
 		{[]string{"--origem", "xyz"}, "declarado, inferido, confirmado, nenhuma"},
 		{[]string{"--natureza", "inventada"}, "legoloop matriz vocab listar"},
 		{[]string{"--etapa", "software"}, "legoloop matriz vocab listar"},

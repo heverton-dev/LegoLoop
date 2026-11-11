@@ -43,7 +43,11 @@ func TestLegoPressCLI_Doctor(t *testing.T) {
 }
 
 func TestLegoPressCLI_Auditar(t *testing.T) {
-	pdfPath := filepath.Join("..", "..", "docs", "books", "video-rea", "2026-11-07_PIPELINE-VIDEO-REA.pdf")
+	pdfs, err := filepath.Glob(filepath.Join("..", "..", "docs", "books", "video-rea", "*.pdf"))
+	if err != nil || len(pdfs) != 1 {
+		t.Fatalf("esperava exatamente um PDF homologado, obteve %v (erro: %v)", pdfs, err)
+	}
+	pdfPath := pdfs[0]
 
 	var stdout, stderr bytes.Buffer
 	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}

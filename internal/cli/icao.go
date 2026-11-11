@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-// ICAOCard descreve a trava de ação destrutiva no padrão da aviação civil (ICAO Readback/Hearback).
-type ICAOCard struct {
+// ICAOConfirmacao descreve a trava de ação destrutiva no padrão da aviação civil (ICAO Readback/Hearback).
+type ICAOConfirmacao struct {
 	TargetResource  string `json:"target_resource"`
 	MutationCommand string `json:"mutation_command"`
 	BlastRadius     string `json:"blast_radius"`
@@ -16,7 +16,7 @@ type ICAOCard struct {
 }
 
 // Render formata o cartão ICAO em texto legível para confirmação no terminal.
-func (c ICAOCard) Render() string {
+func (c ICAOConfirmacao) Render() string {
 	return fmt.Sprintf(
 		"✈️ [ICAO READBACK // CONFIRMAÇÃO DE AÇÃO DESTRUTIVA]\n"+
 			"· TARGET RESOURCE:  %s\n"+
@@ -31,8 +31,8 @@ func (c ICAOCard) Render() string {
 }
 
 // PromptICAO exibe o cartão ICAO e aguarda confirmação estrita (HEARBACK APPROVED, s ou sim).
-func PromptICAO(w io.Writer, r io.Reader, card ICAOCard) (bool, error) {
-	fmt.Fprintf(w, "\n%s\nPara autorizar a mutação, confirme com HEARBACK APPROVED: ", card.Render())
+func PromptICAO(w io.Writer, r io.Reader, conf ICAOConfirmacao) (bool, error) {
+	fmt.Fprintf(w, "\n%s\nPara autorizar a mutação, confirme com HEARBACK APPROVED: ", conf.Render())
 	scanner := bufio.NewScanner(r)
 	if !scanner.Scan() {
 		if err := scanner.Err(); err != nil {

@@ -16,7 +16,7 @@ import (
 )
 
 // cofreListar monta o cofre do AC-E03.1: legoloop-a vinculado a claude e codex, legoloop-b que compõe a, e
-// legoloop-velho da v1 (só o .loop.json). Devolve o HOME (o cofre fica em HOME/vault).
+// legoloop-velho da v1 (só o documento do Studio). Devolve o HOME (o cofre fica em HOME/vault).
 func cofreListar(t *testing.T) (home, vault string) {
 	t.Helper()
 	home = t.TempDir()
@@ -36,7 +36,7 @@ func cofreListar(t *testing.T) (home, vault string) {
 		}
 		gravarArq(t, processo.CaminhoNoCofre(vault, p.Nome), string(data))
 	}
-	gravarArq(t, filepath.Join(vault, caminhos.DirLoops, "legoloop-velho.loop.json"), `{"id":"legoloop-velho","version":"0.3.0"}`)
+	gravarArq(t, filepath.Join(vault, caminhos.DirLoops, "legoloop-velho"+caminhos.SufixoLoop), `{"id":"legoloop-velho","version":"0.3.0"}`)
 	for _, h := range []string{"claude", "codex"} {
 		gravarArq(t, filepath.Join(home, "."+h, "skills", "legoloop-a", "SKILL.md"), "# a\n")
 	}
@@ -155,7 +155,7 @@ func TestListarCLI(t *testing.T) {
 	})
 	t.Run("cofre padrão no HOME", func(t *testing.T) {
 		h := t.TempDir()
-		gravarArq(t, filepath.Join(h, ".aidd", "canonical", caminhos.DirLoops, "legoloop-velho.loop.json"), `{"version":"0.1.0"}`)
+		gravarArq(t, filepath.Join(h, ".aidd", "canonical", caminhos.DirLoops, "legoloop-velho"+caminhos.SufixoLoop), `{"version":"0.1.0"}`)
 		code, out, _ := rodarListar(h)
 		if code != 0 || !strings.Contains(out, "legoloop-velho") {
 			t.Fatalf("exit %d; o cofre padrão é HOME/.aidd/canonical:\n%s", code, out)

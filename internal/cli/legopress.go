@@ -10,12 +10,12 @@ import (
 
 const legoPressUsage = `Uso: legoloop legopress <subcomando> [opções]
 
-Esteira industrial de concepção, edição, auditoria geométrica e compilação de livros técnicos.
+Processo industrial de concepção, edição, auditoria geométrica e compilação de livros técnicos.
 
 Subcomandos:
   doctor              verifica dependências mecânicas (pandoc e typst)
   auditar <pdf>       audita integridade geométrica de layout (cabeçalhos e páginas órfãs)
-  criar   <nome>      inicia o fluxo de concepção e fatiamento hierárquico
+  criar   <nome>      inicia o Processo de concepção e fatiamento hierárquico
   editar  <pasta>     executa correções cirúrgicas de layout e tabelas
   atualizar <pasta>   sincroniza o livro a partir dos diffs do repositório Git
   adequar <arquivo>   transmuta conteúdo bruto para o padrão didático sem IA-slop

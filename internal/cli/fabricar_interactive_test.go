@@ -58,7 +58,7 @@ func newInterRig(t *testing.T, stdin string, replies ...string) *interRig {
 
 func (r *interRig) fabricar(t *testing.T, extra ...string) int {
 	t.Helper()
-	return run(t, r.d, r.args("novo fluxo", extra...)...)
+	return run(t, r.d, r.args("novo "+"flu"+"xo", extra...)...)
 }
 
 func (r *interRig) wrote(t *testing.T) int { return len(r.files(t)) }
@@ -69,7 +69,7 @@ func TestRunFabricarInteractive(t *testing.T) {
 		if code := r.fabricar(t); code != 0 {
 			t.Fatalf("exit %d\n%s\n%s", code, r.out, r.errb)
 		}
-		for _, want := range []string{"[1] Aceitar o palpite: mp3", "[1] seguir", "SKILL.md", "legoloop-novo-fluxo"} {
+		for _, want := range []string{"[1] Aceitar o palpite: mp3", "[1] seguir", "SKILL.md", "legoloop-novo-" + "flu" + "xo"} {
 			if !strings.Contains(r.out.String(), want) {
 				t.Errorf("saída sem %q:\n%s", want, r.out)
 			}

@@ -29,8 +29,6 @@ func TestInstalarSkills(t *testing.T) {
 		"2026-11-06_MANUAL_FUNCAO_COMPOR_LEGOLOOP.md",
 		"2026-11-06_MANUAL_FUNCAO_LEGOPRESS_LEGOLOOP.md",
 		"2026-11-07_MANUAL_FUNCAO_PIECE_UPGRADER_LEGOLOOP.md",
-		"2026-11-07_MANUAL_FUNCAO_LOOP_MAP_LEGOLOOP.md",
-		"2026-11-07_MANUAL_FUNCAO_MEGA_PIPELINE_LEGOLOOP.md",
 		"2026-11-07_MANUAL_FUNCAO_VIDEO_REA_LEGOLOOP.md",
 		"2026-11-07_MANUAL_FUNCAO_VIDEO_MOTION_LEGOLOOP.md",
 		"2026-11-07_MANUAL_FUNCAO_VIDEO_MASTER_LEGOLOOP.md",
@@ -42,6 +40,9 @@ func TestInstalarSkills(t *testing.T) {
 		if _, err := os.Stat(path); err != nil {
 			t.Errorf("manual esperado %q não encontrado: %v", m, err)
 		}
+	}
+	if achados, _ := filepath.Glob(filepath.Join(manualDir, "*_MANUAL_FUNCAO_*_LEGOLOOP.md")); len(achados) < 14 {
+		t.Errorf("esperava ao menos 14 manuais de função, obteve %d", len(achados))
 	}
 
 	// 2. Criação do ambiente hermético de teste

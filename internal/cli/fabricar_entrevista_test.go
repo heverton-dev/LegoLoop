@@ -121,7 +121,7 @@ func (r *interRig) fabricarComEntrevista(t *testing.T, sessao string, extra ...s
 	r.out.Reset()
 	r.errb.Reset()
 	args := append([]string{"--yes", "--entrevista", sessao}, extra...)
-	return run(t, r.d, r.args("novo fluxo", args...)...)
+	return run(t, r.d, r.args("novo processo", args...)...)
 }
 
 func TestEntrevistaPassoAPassoFabricarCarregaOEspelho(t *testing.T) {
@@ -169,7 +169,7 @@ func TestEntrevistaPassoAPassoYesExigeEntrevistaOuOptOut(t *testing.T) {
 	run1 := func(extra ...string) int {
 		r.out.Reset()
 		r.errb.Reset()
-		return run(t, r.d, r.args("novo fluxo", append([]string{"--yes"}, extra...)...)...)
+		return run(t, r.d, r.args("novo processo", append([]string{"--yes"}, extra...)...)...)
 	}
 	if code := run1(); code != 2 {
 		t.Fatalf("--yes sem entrevista: exit %d, queria 2", code)
@@ -227,7 +227,7 @@ func wroteDocs(t *testing.T, r *interRig) int {
 
 func TestEntrevistaIntentMaterializaINTENT(t *testing.T) {
 	r := newInterRig(t, "", lowReply, doneReply)
-	p, code := r.entrevista(t, "iniciar", "pipeline local de vídeo offline")
+	p, code := r.entrevista(t, "iniciar", "processo local de vídeo offline")
 	if code != 0 {
 		t.Fatalf("iniciar: exit %d\n%s", code, r.errb)
 	}

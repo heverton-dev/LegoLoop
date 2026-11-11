@@ -18,7 +18,7 @@ func init() {
 }
 
 var (
-	tiposVer   = []string{"skill", "mcp", "script", "hook", "gate", "loop"}
+	tiposVer   = []string{"skill", "mcp", "script", "hook", "gate", "processo"}
 	tiersVer   = []string{"ouro", "prata", "bronze", "toxica"}
 	origensVer = []string{"declarado", "inferido", "confirmado", "nenhuma"}
 )
@@ -71,7 +71,7 @@ func parseVer(args []string, d Deps) (o verOpts, code int, ok bool) {
 	fs := newFlags("matriz ver", d)
 	fs.StringVar(&o.vault, "vault", "", "cofre canônico (padrão ~/.aidd/canonical)")
 	fs.StringVar(&o.registro, "registro", "", "caminho de um registry_matrix.json (padrão: o do cofre)")
-	fs.StringVar(&o.tipo, "tipo", "", "skill, mcp, script, hook, gate ou loop")
+	fs.StringVar(&o.tipo, "tipo", "", "skill, mcp, script, hook, gate ou processo")
 	fs.StringVar(&o.tier, "tier", "", "ouro, prata, bronze ou toxica")
 	fs.Float64Var(&o.min, "min", 0, "nota mínima, de 0 a 1")
 	fs.StringVar(&o.natureza, "natureza", "", "natureza do vocabulário")
@@ -154,7 +154,7 @@ func tipoPorRef(ref string) string {
 	}{
 		{"script", strings.HasSuffix(r, ".ps1") || strings.HasSuffix(r, ".sh") || strings.HasSuffix(r, ".bat") || strings.HasSuffix(r, ".cmd") || strings.Contains(r, "scripts")},
 		{"skill", strings.Contains(r, "skill")}, {"hook", strings.Contains(r, "hook")}, {"mcp", strings.Contains(r, "mcp")},
-		{"gate", strings.Contains(r, "gate")}, {"loop", strings.Contains(r, "loop") || strings.HasSuffix(r, ".dag.json")},
+		{"gate", strings.Contains(r, "gate")}, {"processo", strings.Contains(r, "processo") || strings.HasSuffix(r, ".dag.json")},
 	} {
 		if t.cond {
 			return t.tipo
