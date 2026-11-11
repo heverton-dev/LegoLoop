@@ -62,7 +62,7 @@ func assertInvariants(t *testing.T, in string) {
 		t.Fatalf("fora da forma canônica: %q -> %q", in, got)
 	}
 	if err := studiodoc.ValidateID(got); err != nil {
-		t.Fatalf("loop.ValidateID rejeitou %q: %v", got, err)
+		t.Fatalf("studiodoc.ValidateID rejeitou %q: %v", got, err)
 	}
 	again, err := fabricar.NormalizeProcessName(got)
 	if err != nil || again != got {
@@ -71,7 +71,7 @@ func assertInvariants(t *testing.T, in string) {
 }
 
 func TestNormalizeProcessName_Idempotent(t *testing.T) {
-	for _, in := range []string{"Meu Fluxo", "legoloop-x", "ÀÉ", "a--b__c", "  x  ", strings.Repeat("é", 100), "legoloop legoloop-x"} {
+	for _, in := range []string{"Meu Processo", "legoloop-x", "ÀÉ", "a--b__c", "  x  ", strings.Repeat("é", 100), "legoloop legoloop-x"} {
 		assertInvariants(t, in)
 	}
 }

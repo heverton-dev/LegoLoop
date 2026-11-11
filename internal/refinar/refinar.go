@@ -1,5 +1,5 @@
 // Package refinar muda uma etapa de um processo do cofre. Mostra o que muda em INTENT, SPEC, PLAN, ROUTE, DAG,
-// loop e skill, pede a confirmação, guarda cada original como .legoloop-bak, sobe a versão e grava tudo de uma
+// documento do Studio e skill, pede a confirmação, guarda cada original como .legoloop-bak, sobe a versão e grava tudo de uma
 // vez. É uma fatia independente: depende só do núcleo (processo, ste) e da matriz, nunca de outra função.
 package refinar
 
@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"legoloop/internal/caminhos"
+	"legoloop/internal/paths"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -69,7 +69,7 @@ func init() {
 		"refinar.cartao_aviso":      "O programa troca %d arquivos. Cada original fica guardado como .legoloop-bak.",
 		"refinar.cartao_etapa":      "O programa muda a etapa %s: %s.",
 		"refinar.cartao_versao":     "O programa sobe a versão de %s para %s e guarda %s no histórico.",
-		"refinar.cartao_gera":       "O programa gera de novo INTENT, SPEC, PLAN, ROUTE, DAG, loop e skill.",
+		"refinar.cartao_gera":       "O programa gera de novo INTENT, SPEC, PLAN, ROUTE, DAG, documento do Studio e skill.",
 		"refinar.cartao_se_errado":  "Se um passo falhar, o programa desfaz tudo. O processo volta à versão %s. Para voltar depois, restaure cada arquivo .legoloop-bak.",
 		"refinar.efeito_troca":      "troca %s",
 		"refinar.efeito_novo":       "grava %s",
@@ -107,8 +107,8 @@ type Deps struct {
 	Clock   func() time.Time
 }
 
-// Arquivo é um dos arquivos que o refinar regera. Tipo é INTENT, SPEC, PLAN, ROUTE, DAG, loop, skill ou
-// processo. Estado é troca, novo ou igual; só troca e novo são gravados.
+// Arquivo é um dos arquivos que o refinar regera. Tipo é INTENT, SPEC, PLAN, ROUTE, DAG, skill, processo ou o
+// documento do Studio. Estado é troca, novo ou igual; só troca e novo são gravados.
 type Arquivo struct {
 	Tipo    string   `json:"tipo"`
 	Caminho string   `json:"caminho"`
@@ -224,7 +224,7 @@ func planejar(req Request, d Deps) (Plano, error) {
 		Avisos:  avisosDaPeca(roots.Vault, depois.Peca, antes.Peca), files: files}, nil
 }
 
-// lerProcesso lê loops/<nome>.processo.json. Processo da v1 (só o .loop.json) não se refina.
+// lerProcesso lê o .processo.json do cofre. Processo da v1 (só o documento do Studio) não se refina.
 func lerProcesso(vault, nome string) (processo.Processo, error) {
 	caminho := processo.CaminhoNoCofre(vault, nome)
 	if _, err := os.Stat(caminho); err != nil {
@@ -232,7 +232,7 @@ func lerProcesso(vault, nome string) (processo.Processo, error) {
 			return processo.Processo{}, err
 		}
 		msg := ste.Msg("refinar.nao_existe", nome, vault)
-		if _, err := os.Stat(filepath.Join(vault, caminhos.DirLoops, nome+".loop.json")); err == nil {
+		if _, err := os.Stat(filepath.Join(vault, paths.DirAntigo, nome+paths.SufixoAntigo)); err == nil {
 			msg = ste.Msg("refinar.so_v1", nome)
 		}
 		return processo.Processo{}, fmt.Errorf("%w: %s", ErrNaoExiste, msg)
@@ -356,15 +356,15 @@ func montar(p processo.Processo, m Mudanca, now time.Time, roots processo.Roots)
 		{Kind: "SPEC", Path: filepath.Join(docs, "specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Kind: "PLAN", Path: filepath.Join(docs, "plans", pr.PlanNome), Data: []byte(pr.Plan)},
 		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
-		{Kind: "DAG", Path: vault(caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
-		{Kind: "loop", Path: vault(caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Loop},
+		{Kind: "DAG", Path: vault(paths.DirAntigo, p.Nome+".dag.json"), Data: pr.DAG},
+		{Kind: "loop", Path: vault(paths.DirAntigo, p.Nome+paths.SufixoAntigo), Data: pr.Loop},
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 	}
 	return comparar(todos)
 }
 
-// projetar usa a data do refinar para o loop e a data da SPEC que já existe para SPEC, PLAN e ROUTE: assim os
+// projetar usa a data do refinar para o documento do Studio e a data da SPEC que já existe para SPEC, PLAN e ROUTE: assim os
 // três documentos mantêm o nome, e o ROUTE continua citando a SPEC que está no projeto.
 func projetar(p processo.Processo, now, dataDocs time.Time) (*processo.Projecoes, error) {
 	pr, err := processo.Projetar(p, now)
@@ -386,10 +386,10 @@ func projetar(p processo.Processo, now, dataDocs time.Time) (*processo.Projecoes
 	return pr, nil
 }
 
-// manterCriacao devolve o loop com created_at igual à criação do processo: só updated_at leva a data do refinar.
-func manterCriacao(loopJSON []byte, criado time.Time) ([]byte, error) {
+// manterCriacao devolve o documento do Studio com created_at igual à criação do processo: só updated_at leva a data do refinar.
+func manterCriacao(studioJSON []byte, criado time.Time) ([]byte, error) {
 	var lp studiodoc.Processo
-	if err := json.Unmarshal(loopJSON, &lp); err != nil {
+	if err := json.Unmarshal(studioJSON, &lp); err != nil {
 		return nil, err
 	}
 	lp.CreatedAt = criado.UTC()

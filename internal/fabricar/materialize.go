@@ -45,7 +45,7 @@ type CanonicalArtifacts struct {
 	LoopPath     string   `json:"loop_path"`
 	DagPath      string   `json:"dag_path"`
 	DagIsoPath   string   `json:"dag_iso_path"`
-	ProcessoPath string   `json:"processo_path"` // loops/<nome>.processo.json: o que listar, refinar e compor leem
+	ProcessoPath string   `json:"processo_path"` // <nome>.processo.json no cofre: o que listar, refinar e compor leem
 	SkillLinks   []string `json:"skill_links"`   // links nas pastas dos harnesses (no dry-run, os que seriam criados; vazio com --no-link)
 }
 

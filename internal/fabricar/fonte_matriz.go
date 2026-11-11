@@ -66,7 +66,7 @@ func dataDaMatriz(generatedAt, path string) time.Time {
 
 // confiaveis tira as skills que a Fusão não pode usar, cada uma com um aviso: nome que não serve de peça
 // (sempre) e skill em mídia removível ou de rede (salvo trust). Só skills são julgadas: são as únicas peças
-// que a Fusão usa (MCPs, hooks e loops nunca viram passo).
+// que a Fusão usa (MCPs e hooks nunca viram passo).
 func confiaveis(es []matriz.Entrada, trust bool) (kept []matriz.Entrada, cortes []string) {
 	for _, e := range es {
 		switch {

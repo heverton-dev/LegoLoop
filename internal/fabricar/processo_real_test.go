@@ -44,7 +44,7 @@ func TestProcessoRealGravaOProcessoEOTemplateContaAMesmaHistoria(t *testing.T) {
 }
 
 // TestProcessoRealNaturezaDoIntentEDoProcessoConcordam: com a natureza dados confirmada na entrevista, o
-// processo.json é de dados e o INTENT usa os blocos sem comandos de Go. Os dois nascem da mesma natureza.
+// processo.json é de dados e o INTENT usa as peças sem comandos de Go. Os dois nascem da mesma natureza.
 func TestProcessoRealNaturezaDoIntentEDoProcessoConcordam(t *testing.T) {
 	r := newRig(t, pecasDeDados())
 	r.deps.Interview = &fabricar.Clarification{Mirror: espelhoPrecos(), Confidence: 98, Reached: true, Interviewed: true, Natureza: "dados"}

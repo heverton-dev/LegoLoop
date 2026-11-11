@@ -43,7 +43,7 @@ type Report struct {
 	Cartao ste.Cartao `json:"cartao"`
 }
 
-// buildReport constrói o relatório canônico após as 5 camadas da esteira de fabricação.
+// buildReport constrói o relatório canônico após as 5 camadas da fabricação.
 func buildReport(d Deps, clar Clarification, c consulta, p processo.Processo, files []PlannedFile, plano Plano) *Report {
 	rep := &Report{}
 	rep.Clarificacao.Espelho = clar.Mirror

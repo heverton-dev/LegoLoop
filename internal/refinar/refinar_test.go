@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"legoloop/internal/caminhos"
+	"legoloop/internal/paths"
 	"os"
 	"path/filepath"
 	"slices"
@@ -55,7 +55,7 @@ func slugDe(nome string) string {
 	return strings.ToUpper(strings.ReplaceAll(strings.TrimPrefix(nome, "legoloop-"), "-", "_"))
 }
 
-// semear grava o processo como o fabricar grava: skill, loop, DAG e processo.json no cofre; INTENT, SPEC,
+// semear grava o processo como o fabricar grava: skill, documento do Studio, DAG e processo.json no cofre; INTENT, SPEC,
 // PLAN e ROUTE em docs/. comIntent=false deixa o INTENT de fora.
 func semear(t *testing.T, p processo.Processo, data time.Time, comIntent bool) cofre {
 	t.Helper()
@@ -72,8 +72,8 @@ func semear(t *testing.T, p processo.Processo, data time.Time, comIntent bool) c
 	doc := func(sub, file string) string { return filepath.Join(c.docs, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(c.vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(c.vault, caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Loop},
-		{Path: filepath.Join(c.vault, caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
+		{Path: filepath.Join(c.vault, paths.DirAntigo, p.Nome+paths.SufixoAntigo), Data: pr.Loop},
+		{Path: filepath.Join(c.vault, paths.DirAntigo, p.Nome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(c.vault, p.Nome), Data: pj},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Path: doc("plans", pr.PlanNome), Data: []byte(pr.Plan)},
@@ -237,7 +237,7 @@ func testCasosLimpos(t *testing.T) {
 	}
 }
 
-// testSoCasos: mudar só os casos sobe a versão e troca SPEC, skill, loop, DAG e processo; PLAN e ROUTE não
+// testSoCasos: mudar só os casos sobe a versão e troca SPEC, skill, documento do Studio, DAG e processo; PLAN e ROUTE não
 // mudam, ficam fora da gravação e não ganham .legoloop-bak.
 func testSoCasos(t *testing.T) {
 	c := semear(t, processoDeTeste(), inicio, true)
@@ -378,20 +378,20 @@ func conferirBackups(t *testing.T, antes map[string]string, res *refinar.Resulta
 func conferirProjecoes(t *testing.T, c cofre) {
 	t.Helper()
 	skill := ler(t, filepath.Join(c.vault, "skills", nome, "SKILL.md"))
-	loopJSON := ler(t, filepath.Join(c.vault, caminhos.DirLoops, nome+".loop.json"))
-	dagJSON := ler(t, filepath.Join(c.vault, caminhos.DirLoops, nome+".dag.json"))
+	studioJSON := ler(t, filepath.Join(c.vault, paths.DirAntigo, nome+paths.SufixoAntigo))
+	dagJSON := ler(t, filepath.Join(c.vault, paths.DirAntigo, nome+".dag.json"))
 	for rotulo, quer := range map[string]struct{ texto, termo string }{
 		"skill traz a peça nova":   {skill, "aidd-qa"},
 		"skill traz a versão nova": {skill, "1.1.0"},
-		"loop traz a versão nova":  {loopJSON, `"version": "1.1.0"`},
+		"studio traz a versão":     {studioJSON, `"version": "1.1.0"`},
 		"dag liga a peça nova":     {dagJSON, "skills/aidd-qa"},
 	} {
 		if !strings.Contains(quer.texto, quer.termo) {
 			t.Errorf("%s: falta %q", rotulo, quer.termo)
 		}
 	}
-	if !strings.Contains(loopJSON, `"created_at": "2026-11-05T10:00:00Z"`) || !strings.Contains(loopJSON, `"updated_at": "2026-11-06T10:00:00Z"`) {
-		t.Errorf("o loop deve manter created_at e levar a data do refinar em updated_at:\n%s", loopJSON)
+	if !strings.Contains(studioJSON, `"created_at": "2026-11-05T10:00:00Z"`) || !strings.Contains(studioJSON, `"updated_at": "2026-11-06T10:00:00Z"`) {
+		t.Errorf("o documento deve manter created_at e levar a data do refinar em updated_at:\n%s", studioJSON)
 	}
 	if strings.Contains(dagJSON, "skills/aidd-tdd") {
 		t.Error("o DAG ainda cita a peça antiga")
@@ -595,8 +595,8 @@ func testDataAntiga(t *testing.T) {
 	if !strings.Contains(route, "2026-10-01_SPEC_X.md") || strings.Contains(route, "2026-11-06_SPEC_X.md") {
 		t.Error("o ROUTE tem de citar a SPEC que existe, com o nome antigo")
 	}
-	if loopJSON := ler(t, filepath.Join(c.vault, caminhos.DirLoops, nome+".loop.json")); !strings.Contains(loopJSON, "2026-11-06") {
-		t.Error("o loop deve levar a data do refinar em updated_at")
+	if studioJSON := ler(t, filepath.Join(c.vault, paths.DirAntigo, nome+paths.SufixoAntigo)); !strings.Contains(studioJSON, "2026-11-06") {
+		t.Error("o documento deve levar a data do refinar em updated_at")
 	}
 }
 
@@ -712,14 +712,14 @@ func testCartao(t *testing.T) {
 	c := semear(t, processoDeTeste(), inicio, true)
 	var texto string
 	confirm := func(pl refinar.Plano, _ func(refinar.Mudanca) (refinar.Plano, error)) (bool, error) {
-		card := pl.Cartao()
-		if vs := ste.LintCartao(card); len(vs) != 0 {
+		ficha := pl.Cartao()
+		if vs := ste.LintCartao(ficha); len(vs) != 0 {
 			t.Errorf("o cartão viola o STE-PT: %v", vs)
 		}
-		texto = card.Render()
-		if len(card.Parametros) != 2 || card.Parametros[0].Nome != "peca" || card.Parametros[0].Valor != "aidd-qa" ||
-			card.Parametros[1].Nome != "casos" || card.Parametros[1].Valor != "verificacao-de-qualidade" {
-			t.Errorf("parâmetros do personalizar: %+v", card.Parametros)
+		texto = ficha.Render()
+		if len(ficha.Parametros) != 2 || ficha.Parametros[0].Nome != "peca" || ficha.Parametros[0].Valor != "aidd-qa" ||
+			ficha.Parametros[1].Nome != "casos" || ficha.Parametros[1].Valor != "verificacao-de-qualidade" {
+			t.Errorf("parâmetros do personalizar: %+v", ficha.Parametros)
 		}
 		return false, nil
 	}

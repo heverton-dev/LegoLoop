@@ -11,7 +11,7 @@ var ErrInvalidName = errors.New("fabricar: nome inválido")
 
 const (
 	namePrefix = "legoloop-"
-	maxNameLen = 64 // limite de loop.ValidateID
+	maxNameLen = 64 // limite de studiodoc.ValidateID
 )
 
 // translit mapeia letras latinas acentuadas (Latin-1 e Latin Extended-A) para ASCII.

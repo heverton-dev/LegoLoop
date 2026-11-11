@@ -10,7 +10,7 @@ import (
 )
 
 // MergeByFit é a Camada 3 pela aptidão ao caso de uso: para cada etapa pedida escolhe a peça mais apta da matriz
-// (matriz.Rank), e o Score só desempata. Só skills entram (MCPs, hooks, scripts e loops nunca são herdados);
+// (matriz.Rank), e o Score só desempata. Só skills entram (MCPs, hooks e scripts nunca são herdados);
 // cópias idênticas (mesmo hash) valem uma só. A mesma peça em duas etapas vira um passo só. Sem nenhuma peça
 // apta valem os passos padrão. Peça excluída por uso (quando_nao_usar ou natureza) é avisada com o motivo.
 func MergeByFit(n matriz.Needs, es []matriz.Entrada, opts MergeOptions) Merged {
