@@ -1,4 +1,4 @@
-// Package orchestrix implementa a Orchestrix Cirúrgica por Bloco: cada nó nasce num
+// Package orchestrix implementa a Orchestrix Cirúrgica: cada nó nasce num
 // processo/requisição efêmero, recebe um prompt único montado apenas a partir dos
 // artefatos de entrada, grava seu handoff no disco e morre. Nenhum histórico é herdado.
 package orchestrix
@@ -174,7 +174,7 @@ func writeArtifact(root *os.Root, name string, data []byte) error {
 	return nil
 }
 
-// ensureRealDirs percorre o caminho componente a componente: cria o que falta e
+// ensureRealDirs percorre o caminho segmento a segmento: cria o que falta e
 // recusa qualquer pai que seja link ANTES de criar algo através dele.
 func ensureRealDirs(root *os.Root, dir string) error {
 	cur := ""

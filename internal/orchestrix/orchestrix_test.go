@@ -122,7 +122,7 @@ func readArtifact(t *testing.T, workdir string) string {
 func TestClaudeCLIIsolatedProcess(t *testing.T) {
 	t.Setenv("LEGOLOOP_SECRET_LEAK", "vazou")
 	work := t.TempDir()
-	os.WriteFile(filepath.Join(work, "IDEIA.md"), []byte("app de tarefas"), 0o644)
+	os.WriteFile(filepath.Join(work, "IDEIA.md"), []byte("app de afazeres"), 0o644)
 	o := &Orchestrix{
 		Inventory: provider.Inventory{CLIs: []provider.CLI{{Name: "claude", Path: os.Args[0]}}},
 		SkillsDir: skillsDir(t),
@@ -136,7 +136,7 @@ func TestClaudeCLIIsolatedProcess(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := readArtifact(t, work)
-	for _, want := range []string{"# BRIEFING", "Entreviste o usuário.", "clone do trello", "app de tarefas", "literal", "out/BRIEFING.md"} {
+	for _, want := range []string{"# BRIEFING", "Entreviste o usuário.", "clone do trello", "app de afazeres", "literal", "out/BRIEFING.md"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("artefato sem %q:\n%s", want, got)
 		}

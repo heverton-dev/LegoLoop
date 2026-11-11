@@ -167,7 +167,7 @@ func parseClaudeOutput(out []byte) claudeResult {
 // consentimento explícito. Se o script não gravar o artefato, o stdout vira o artefato.
 func (o *Orchestrix) runScript(ctx context.Context, n dag.Node, workdir string) (runner.Result, error) {
 	if !o.AllowScripts {
-		return runner.Result{}, fmt.Errorf("orchestrix: nó %q é script (%s); rode com --allow-scripts se confia neste pipeline", n.ID, n.Command[0])
+		return runner.Result{}, fmt.Errorf("orchestrix: nó %q é script (%s); rode com --allow-scripts se confia neste processo", n.ID, n.Command[0])
 	}
 	bin, err := resolveExecutable(n.Command[0])
 	if err != nil {

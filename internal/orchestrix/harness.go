@@ -23,7 +23,7 @@ const maxArgPromptBytes = 24 << 10
 // promptFile é o anexo gravado no sandbox para harnesses que aceitam arquivos.
 const promptFile = "prompt.md"
 
-const harnessTask = "Execute exatamente a tarefa descrita no arquivo anexado prompt.md."
+const harnessInstrucao = "Execute exatamente a instrução descrita no arquivo anexado prompt.md."
 
 // harnessSpec descreve como um harness recebe o prompt e como sua saída é lida.
 type harnessSpec struct {
@@ -106,12 +106,12 @@ func ompArgs(model, prompt string, effort dag.EffortLevel) ([]string, bool, erro
 	if effort != "" {
 		args = append(args, "--effort", string(effort))
 	}
-	return append(withModel(args, "--model", model), "@"+promptFile, harnessTask), true, nil
+	return append(withModel(args, "--model", model), "@"+promptFile, harnessInstrucao), true, nil
 }
 
 // opencodeArgs serve opencode e mimo (mimocode é um fork com a mesma CLI).
 func opencodeArgs(model, prompt string, effort dag.EffortLevel) ([]string, bool, error) {
-	args := withModel([]string{"run", harnessTask, "--format", "json", "--pure"}, "-m", model)
+	args := withModel([]string{"run", harnessInstrucao, "--format", "json", "--pure"}, "-m", model)
 	if effort != "" {
 		args = append(args, "--effort", string(effort))
 	}

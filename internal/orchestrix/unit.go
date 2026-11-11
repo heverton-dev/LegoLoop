@@ -92,7 +92,7 @@ func buildUnitPrompt(n dag.Node, work *os.Root) (string, error) {
 		b.WriteString("Edite os arquivos permitidos até a verificação passar. Não encerre sem editar.\n")
 	}
 	b.WriteString("\n## Higiene de Código (lauren-unslop-ship)\n\n")
-	b.WriteString("- Remova comentários narrativos supérfluos, especialmente aqueles que contenham termos proibidos pela taxonomia (ex: 'loop', 'componente', 'pipeline', etc.). A regra canônica é: remova o comentário narrativo em vez de renomear o termo ou mantê-lo.\n")
+	b.WriteString("- Remova comentários narrativos supérfluos, especialmente aqueles que contenham termos proibidos pela taxonomia. A regra canônica é: remova o comentário narrativo em vez de renomear o termo ou mantê-lo.\n")
 	b.WriteString("- Corrija todas as violações listadas, inclusive em comentários e em arquivos _test.go, e releia a lista no fim.\n")
 	b.WriteString("- Não adicione comentários novos desnecessários (unslop, no-comments).\n")
 	b.WriteString("- Mantenha o código estritamente formatado com gofmt.\n")
