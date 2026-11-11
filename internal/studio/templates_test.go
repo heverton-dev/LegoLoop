@@ -30,7 +30,7 @@ func TestTemplatesEndpointReturnsAtLeastThreeValidTemplates(t *testing.T) {
 		"greenfield":          false,
 		"reverse-engineering": false,
 		"security-audit":      false,
-		"mega-pipeline":       false,
+		"mega-processo":       false,
 		"impeccable-design":   false,
 		"matt-pocock":         false,
 		"addy-osmani":         false,

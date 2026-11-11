@@ -177,7 +177,7 @@ func TestValidateDetectsProblems(t *testing.T) {
 	cases := map[string]string{
 		"incompatível":              `{"name":"x","nodes":[{"id":"a","block":"interview","routing":{"mode":"manual","model":"sonnet"}},{"id":"b","block":"aidd-tdd","routing":{"mode":"manual","model":"sonnet"}}],"edges":[{"from":"a","to":"b"}]}`,
 		"ciclo":                     `{"name":"x","nodes":[{"id":"a","block":"aidd-tdd","routing":{"mode":"manual","model":"sonnet"}},{"id":"b","block":"code-review","routing":{"mode":"manual","model":"sonnet"}}],"edges":[{"from":"a","to":"b"},{"from":"b","to":"a"}]}`,
-		"bloco inexistente":         `{"name":"x","nodes":[{"id":"a","block":"virus","routing":{"mode":"manual","model":"sonnet"}}],"edges":[]}`,
+		"Peça inexistente":          `{"name":"x","nodes":[{"id":"a","block":"virus","routing":{"mode":"manual","model":"sonnet"}}],"edges":[]}`,
 		"artefato colidindo":        `{"name":"x","nodes":[{"id":"a","block":"interview","routing":{"mode":"manual","model":"sonnet"}},{"id":"b","block":"aidd-grill","routing":{"mode":"manual","model":"sonnet"}}],"edges":[]}`,
 		"aresta órfã":               `{"name":"x","nodes":[{"id":"a","block":"interview","routing":{"mode":"manual","model":"sonnet"}}],"edges":[{"from":"a","to":"zz"}]}`,
 		"aresta duplicada":          `{"name":"x","nodes":[{"id":"a","block":"interview","routing":{"mode":"manual","model":"sonnet"}},{"id":"b","block":"aidd-spec","routing":{"mode":"manual","model":"sonnet"}}],"edges":[{"from":"a","to":"b"},{"from":"a","to":"b"}]}`,
@@ -194,7 +194,7 @@ func TestValidateDetectsProblems(t *testing.T) {
 	}
 }
 
-func TestMaterializeWritesPipeline(t *testing.T) {
+func TestMaterializeWritesProcesso(t *testing.T) {
 	s, _ := newServer(t)
 	rec := do(t, s.Handler(), "POST", "/api/materialize", validComp)
 	if rec.Code != 200 {
@@ -206,7 +206,7 @@ func TestMaterializeWritesPipeline(t *testing.T) {
 	}
 	d, err := dag.Parse(data)
 	if err != nil || d.Name != "greenfield" || len(d.Nodes) != 2 {
-		t.Fatalf("pipeline gravado inválido: %v", err)
+		t.Fatalf("Processo gravado inválido: %v", err)
 	}
 	bad := do(t, s.Handler(), "POST", "/api/materialize", `{"name":"x","nodes":[],"edges":[]}`)
 	if bad.Code != 422 {
@@ -379,10 +379,9 @@ func TestLegoItemModalWebComponentDelivery(t *testing.T) {
 	}
 	palBody := recPal.Body.String()
 	if !strings.Contains(palBody, "consumes: b.consumes") || !strings.Contains(palBody, "artifact: b.artifact") {
-		t.Fatalf("palette.js descarta campos de contrato do bloco")
+		t.Fatalf("palette.js descarta campos de contrato da Peça")
 	}
 
-	// 6. API /api/blocks entrega blocos completos com contrato (usando FullCatalog)
 	fullIdx, err := graph.NewIndex(graph.FullCatalog())
 	if err != nil {
 		t.Fatalf("falha ao criar index FullCatalog: %v", err)
@@ -434,13 +433,13 @@ func TestLegoItemModalWebComponentDelivery(t *testing.T) {
 			if b.ID == id {
 				found = true
 				if b.Kind != expectedKind {
-					t.Fatalf("bloco %s tem kind incorreto: got %s, want %s", id, b.Kind, expectedKind)
+					t.Fatalf("Peça %s tem kind incorreto: got %s, want %s", id, b.Kind, expectedKind)
 				}
 				break
 			}
 		}
 		if !found {
-			t.Fatalf("bloco %s do Épico 21 não encontrado em /api/blocks", id)
+			t.Fatalf("Peça %s do Épico 21 não encontrado em /api/blocks", id)
 		}
 	}
 }

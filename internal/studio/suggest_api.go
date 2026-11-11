@@ -7,7 +7,6 @@ import (
 	"legoloop/internal/suggest"
 )
 
-// suggestKinds são os tipos de peça do inventário que aceitam sugestões.
 var suggestKinds = map[string]bool{"skill": true, "script": true, "mcp": true, "subloop": true}
 
 type suggestResponse struct {
@@ -52,7 +51,7 @@ func (s *Server) suggestContext(block, kind, artifact string) (suggest.Context, 
 	case block != "":
 		b, ok := s.Index.Block(block)
 		if !ok {
-			return suggest.Context{}, http.StatusNotFound, "bloco não existe no catálogo"
+			return suggest.Context{}, http.StatusNotFound, "Peça não existe no catálogo"
 		}
 		return suggest.Context{Block: &b, Artifact: b.Artifact}, 0, ""
 	case kind == "":

@@ -2,11 +2,11 @@
   {
     "id": "greenfield",
     "name": "Greenfield Development",
-    "description": "Esteira padrão de desenvolvimento do zero: Briefing -\u003e Spec -\u003e Tickets -\u003e Implementação TDD.",
+    "description": "Processo padrão de desenvolvimento do zero: Briefing -\u003e Spec -\u003e Tickets -\u003e Implementação TDD.",
     "category": "Engenharia",
     "icon": "plant",
     "composition": {
-      "name": "greenfield-esteira",
+      "name": "greenfield-processo",
       "nodes": [
         {
           "id": "interview",
@@ -53,7 +53,7 @@
     "category": "Análise",
     "icon": "search",
     "composition": {
-      "name": "rea-pipeline",
+      "name": "rea-processo",
       "nodes": [
         {
           "id": "router",
@@ -88,7 +88,7 @@
     "category": "Segurança",
     "icon": "shield",
     "composition": {
-      "name": "security-audit-esteira",
+      "name": "security-audit-processo",
       "nodes": [
         {
           "id": "audit-scan",
@@ -117,13 +117,13 @@
     }
   },
   {
-    "id": "mega-pipeline",
-    "name": "Mega Pipeline AIDD (5 Sub-Loops)",
-    "description": "Esteira mestre com os 5 sub-loops canonicos: Concepcao -\u003e Design -\u003e Triade de Planejamento -\u003e TDD -\u003e Homologacao.",
+    "id": "mega-processo",
+    "name": "Mega Processo AIDD (5 Subprocessos)",
+    "description": "Processo mestre com os 5 subprocessos canonicos: Concepcao -\u003e Design -\u003e Triade de Planejamento -\u003e TDD -\u003e Homologacao.",
     "category": "Orquestracao",
     "icon": "template",
     "composition": {
-      "name": "mega-pipeline-esteira",
+      "name": "mega-processo-completo",
       "nodes": [
         {
           "id": "l1-concepcao",
@@ -190,15 +190,15 @@
   },
   {
     "id": "impeccable-design",
-    "name": "Pipeline de Design Impeccable (6 Sub-Loops)",
-    "description": "Esteira completa de UI/UX: Avaliar -\u003e Construir -\u003e Melhorar -\u003e Refinar -\u003e Corrigir -\u003e Iterar \u0026 Documentar.",
+    "name": "Processo de Design Impeccable (6 Subprocessos)",
+    "description": "Processo completo de UI/UX: Avaliar -\u003e Construir -\u003e Melhorar -\u003e Refinar -\u003e Corrigir -\u003e Iterar \u0026 Documentar.",
     "category": "Design",
     "icon": "palette",
     "composition": {
-      "name": "impeccable-design-esteira",
+      "name": "impeccable-design-processo",
       "nodes": [
         {
-          "id": "subloop-avaliar",
+          "id": "etapa-avaliar",
           "block": "impeccable",
           "routing": {
             "mode": "auto",
@@ -206,7 +206,7 @@
           }
         },
         {
-          "id": "subloop-construir",
+          "id": "etapa-construir",
           "block": "impeccable",
           "routing": {
             "mode": "suggested",
@@ -215,7 +215,7 @@
           }
         },
         {
-          "id": "subloop-melhorar",
+          "id": "etapa-melhorar",
           "block": "impeccable",
           "routing": {
             "mode": "auto",
@@ -223,7 +223,7 @@
           }
         },
         {
-          "id": "subloop-refinar",
+          "id": "etapa-refinar",
           "block": "impeccable",
           "routing": {
             "mode": "auto",
@@ -231,7 +231,7 @@
           }
         },
         {
-          "id": "subloop-corrigir",
+          "id": "etapa-corrigir",
           "block": "impeccable",
           "routing": {
             "mode": "auto",
@@ -239,7 +239,7 @@
           }
         },
         {
-          "id": "subloop-documentar",
+          "id": "etapa-documentar",
           "block": "impeccable",
           "routing": {
             "mode": "auto",
@@ -249,39 +249,39 @@
       ],
       "edges": [
         {
-          "from": "subloop-avaliar",
-          "to": "subloop-construir"
+          "from": "etapa-avaliar",
+          "to": "etapa-construir"
         },
         {
-          "from": "subloop-construir",
-          "to": "subloop-melhorar"
+          "from": "etapa-construir",
+          "to": "etapa-melhorar"
         },
         {
-          "from": "subloop-melhorar",
-          "to": "subloop-refinar"
+          "from": "etapa-melhorar",
+          "to": "etapa-refinar"
         },
         {
-          "from": "subloop-refinar",
-          "to": "subloop-corrigir"
+          "from": "etapa-refinar",
+          "to": "etapa-corrigir"
         },
         {
-          "from": "subloop-corrigir",
-          "to": "subloop-documentar"
+          "from": "etapa-corrigir",
+          "to": "etapa-documentar"
         }
       ]
     }
   },
   {
     "id": "matt-pocock",
-    "name": "Pipeline Matt Pocock (6 Sub-Loops)",
-    "description": "Esteira de rigor de engenharia: Grilling \u0026 Dominio -\u003e Especificacao -\u003e Tickets em Grafo -\u003e TDD Estrito -\u003e Code Review 2 Eixos -\u003e Retroalimentacao.",
+    "name": "Processo Matt Pocock (6 Subprocessos)",
+    "description": "Processo de rigor de engenharia: Grilling \u0026 Dominio -\u003e Especificacao -\u003e Tickets em Grafo -\u003e TDD Estrito -\u003e Code Review 2 Eixos -\u003e Retroalimentacao.",
     "category": "Engenharia",
     "icon": "git",
     "composition": {
-      "name": "matt-pocock-esteira",
+      "name": "matt-pocock-processo",
       "nodes": [
         {
-          "id": "subloop-grill-dominio",
+          "id": "etapa-grill-dominio",
           "block": "aidd-pocock",
           "routing": {
             "mode": "suggested",
@@ -290,7 +290,7 @@
           }
         },
         {
-          "id": "subloop-especificar",
+          "id": "etapa-especificar",
           "block": "aidd-pocock",
           "routing": {
             "mode": "auto",
@@ -298,7 +298,7 @@
           }
         },
         {
-          "id": "subloop-tickets-grafo",
+          "id": "etapa-tickets-grafo",
           "block": "aidd-pocock",
           "routing": {
             "mode": "auto",
@@ -306,7 +306,7 @@
           }
         },
         {
-          "id": "subloop-tdd-construir",
+          "id": "etapa-tdd-construir",
           "block": "aidd-pocock",
           "routing": {
             "mode": "suggested",
@@ -315,7 +315,7 @@
           }
         },
         {
-          "id": "subloop-review-auditar",
+          "id": "etapa-review-auditar",
           "block": "aidd-pocock",
           "routing": {
             "mode": "auto",
@@ -323,7 +323,7 @@
           }
         },
         {
-          "id": "subloop-retro-ambiente",
+          "id": "etapa-retro-ambiente",
           "block": "aidd-pocock",
           "routing": {
             "mode": "auto",
@@ -333,39 +333,39 @@
       ],
       "edges": [
         {
-          "from": "subloop-grill-dominio",
-          "to": "subloop-especificar"
+          "from": "etapa-grill-dominio",
+          "to": "etapa-especificar"
         },
         {
-          "from": "subloop-especificar",
-          "to": "subloop-tickets-grafo"
+          "from": "etapa-especificar",
+          "to": "etapa-tickets-grafo"
         },
         {
-          "from": "subloop-tickets-grafo",
-          "to": "subloop-tdd-construir"
+          "from": "etapa-tickets-grafo",
+          "to": "etapa-tdd-construir"
         },
         {
-          "from": "subloop-tdd-construir",
-          "to": "subloop-review-auditar"
+          "from": "etapa-tdd-construir",
+          "to": "etapa-review-auditar"
         },
         {
-          "from": "subloop-review-auditar",
-          "to": "subloop-retro-ambiente"
+          "from": "etapa-review-auditar",
+          "to": "etapa-retro-ambiente"
         }
       ]
     }
   },
   {
     "id": "addy-osmani",
-    "name": "Addy Osmani Web Performance \u0026 Rigor Loop",
-    "description": "Esteira canônica de engenharia web focada em Web Vitals, TDD estrito, DevTools em runtime, auditoria 5 eixos e observabilidade.",
+    "name": "Addy Osmani Web Performance \u0026 Rigor",
+    "description": "Processo canônico de engenharia web focada em Web Vitals, TDD estrito, DevTools em runtime, auditoria 5 eixos e observabilidade.",
     "category": "performance",
     "icon": "trigger",
     "composition": {
-      "name": "addy-osmani-loop",
+      "name": "addy-osmani-processo",
       "nodes": [
         {
-          "id": "subloop-alinhar-contexto",
+          "id": "etapa-alinhar-contexto",
           "block": "aidd-osmani",
           "routing": {
             "mode": "suggested",
@@ -374,7 +374,7 @@
           }
         },
         {
-          "id": "subloop-especificar-restricoes",
+          "id": "etapa-especificar-restricoes",
           "block": "aidd-osmani",
           "routing": {
             "mode": "auto",
@@ -382,7 +382,7 @@
           }
         },
         {
-          "id": "subloop-planejar-tickets",
+          "id": "etapa-planejar-tickets",
           "block": "aidd-osmani",
           "routing": {
             "mode": "auto",
@@ -390,7 +390,7 @@
           }
         },
         {
-          "id": "subloop-construir-tdd",
+          "id": "etapa-construir-tdd",
           "block": "aidd-osmani",
           "routing": {
             "mode": "suggested",
@@ -399,7 +399,7 @@
           }
         },
         {
-          "id": "subloop-runtime-webperf",
+          "id": "etapa-runtime-webperf",
           "block": "aidd-osmani",
           "routing": {
             "mode": "auto",
@@ -407,7 +407,7 @@
           }
         },
         {
-          "id": "subloop-review-hardening",
+          "id": "etapa-review-hardening",
           "block": "aidd-osmani",
           "routing": {
             "mode": "suggested",
@@ -416,7 +416,7 @@
           }
         },
         {
-          "id": "subloop-observabilidade-ship",
+          "id": "etapa-observabilidade-ship",
           "block": "aidd-osmani",
           "routing": {
             "mode": "auto",
@@ -426,40 +426,40 @@
       ],
       "edges": [
         {
-          "from": "subloop-alinhar-contexto",
-          "to": "subloop-especificar-restricoes"
+          "from": "etapa-alinhar-contexto",
+          "to": "etapa-especificar-restricoes"
         },
         {
-          "from": "subloop-especificar-restricoes",
-          "to": "subloop-planejar-tickets"
+          "from": "etapa-especificar-restricoes",
+          "to": "etapa-planejar-tickets"
         },
         {
-          "from": "subloop-planejar-tickets",
-          "to": "subloop-construir-tdd"
+          "from": "etapa-planejar-tickets",
+          "to": "etapa-construir-tdd"
         },
         {
-          "from": "subloop-construir-tdd",
-          "to": "subloop-runtime-webperf"
+          "from": "etapa-construir-tdd",
+          "to": "etapa-runtime-webperf"
         },
         {
-          "from": "subloop-runtime-webperf",
-          "to": "subloop-review-hardening"
+          "from": "etapa-runtime-webperf",
+          "to": "etapa-review-hardening"
         },
         {
-          "from": "subloop-review-hardening",
-          "to": "subloop-observabilidade-ship"
+          "from": "etapa-review-hardening",
+          "to": "etapa-observabilidade-ship"
         }
       ]
     }
   },
   {
     "id": "lauren-tan",
-    "name": "Pipeline Lauren Tan pstack (6 Sub-Loops)",
-    "description": "Pipeline de rigor de engenharia baseado no método Lauren Tan (pstack / poteto-mode): Intenção -\u003e Arquitetura -\u003e Decomposição -\u003e Construção TDD -\u003e Verificação no Artefato Real -\u003e Higiene \u0026 Ship.",
+    "name": "Processo Lauren Tan pstack (6 Subprocessos)",
+    "description": "Processo de rigor de engenharia baseado no método Lauren Tan (pstack / poteto-mode): Intenção -\u003e Arquitetura -\u003e Decomposição -\u003e Construção TDD -\u003e Verificação no Artefato Real -\u003e Higiene \u0026 Ship.",
     "category": "Engenharia",
     "icon": "shield",
     "composition": {
-      "name": "lauren-tan-esteira",
+      "name": "lauren-tan-processo",
       "nodes": [
         {
           "id": "inquiry",

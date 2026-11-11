@@ -56,13 +56,13 @@ func TestPaletteModelCategoriesCountsAndSearch(t *testing.T) {
 		}
 	}
 	if strings.Join(r.Skills, ",") != "Interview,AIDD Spec,outra-skill" || !r.FirstIsContract {
-		t.Errorf("skills (blocos do catálogo primeiro, sem duplicar o inventário) = %v", r.Skills)
+		t.Errorf("skills (Peças do catálogo primeiro, sem duplicar o inventário) = %v", r.Skills)
 	}
 	if strings.Join(r.All, "|") != "#Skills:3|Interview|AIDD Spec|outra-skill|#MCPs:1|rea|#Scripts:1|limpa.sh|#Hooks:1|Stop|#Gates:1|file_exists" {
 		t.Errorf("Todas (agrupada, sem grupos vazios) = %v", r.All)
 	}
 	if r.Loop != 0 || r.None != 0 {
-		t.Errorf("loop=%d none=%d", r.Loop, r.None)
+		t.Errorf("processo=%d none=%d", r.Loop, r.None)
 	}
 	if strings.Join(r.Outra, ",") != "outra-skill" || strings.Join(r.Spec, ",") != "AIDD Spec" {
 		t.Errorf("busca: outra=%v spec=%v", r.Outra, r.Spec)

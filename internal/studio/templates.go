@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Template representa uma esteira pré-fabricada pronta para uso no Canvas (R-UI-5).
+// Template representa um Processo pré-fabricado pronto para uso no Canvas (R-UI-5).
 type Template struct {
 	ID          string      `json:"id"`
 	Name        string      `json:"name"`
