@@ -91,6 +91,10 @@ func buildUnitPrompt(n dag.Node, work *os.Root) (string, error) {
 		b.WriteString("Você trabalha sem shell: não rode a verificação. A Orchestrix roda a verificação depois da sua edição. ")
 		b.WriteString("Edite os arquivos permitidos até a verificação passar. Não encerre sem editar.\n")
 	}
+	b.WriteString("\n## Higiene de Código (lauren-unslop-ship)\n\n")
+	b.WriteString("- Remova comentários narrativos supérfluos, especialmente aqueles que contenham termos proibidos pela taxonomia (ex: 'loop', 'componente', 'pipeline', etc.). A regra canônica é: remova o comentário narrativo em vez de renomear o termo ou mantê-lo.\n")
+	b.WriteString("- Não adicione comentários novos desnecessários (unslop, no-comments).\n")
+	b.WriteString("- Mantenha o código estritamente formatado com gofmt.\n")
 	b.WriteString("\n## Arquivos permitidos para escrita\n\n")
 	allowed := allowedWrites(n)
 	sort.Strings(allowed)

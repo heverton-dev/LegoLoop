@@ -396,4 +396,28 @@ func TestUnitTaskStopsAfterMaxRetries(t *testing.T) {
 	if pathExists(filepath.Join(repo, "n1.txt")) {
 		t.Fatal("nó reprovado aplicou arquivo")
 	}
+	if !pathExists(filepath.Join(repo, "scratch", "gates", "n1.failed.patch")) {
+		t.Errorf("deveria ter salvo patch das tentativas que falharam")
+	}
+}
+
+func TestUnitTaskHygieneCleansCommentAndFormatsGo(t *testing.T) {
+	repo := newRepoT(t)
+	n := unitNode("n1", "out/n1.json", "exit_code == 0 && file_exists('pkg/code.go')", []string{"git", "status", "--short"})
+	n.ContextOut = []string{"pkg/code.go"}
+	claudeOutput := "pkg/code.go=package pkg\n\n// Esse loop de teste faz algo\nfunc Hello(){\nfmt.Println(\"hi\")\n}\n"
+	res, err := unitOrchestrix(claudeOutput).Execute(context.Background(), n, repo)
+	if err != nil {
+		t.Fatalf("execução falhou: %v", err)
+	}
+	if res.ExitCode != 0 {
+		t.Fatalf("exit code = %d", res.ExitCode)
+	}
+	applied := readT(t, repo, "pkg/code.go")
+	if strings.Contains(applied, "Esse loop de teste") {
+		t.Errorf("comentário com termo proibido deveria ter sido removido pela higiene")
+	}
+	if !strings.Contains(applied, "\tfmt.Println(\"hi\")") {
+		t.Errorf("código Go deveria estar formatado com gofmt")
+	}
 }

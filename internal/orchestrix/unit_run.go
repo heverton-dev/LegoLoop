@@ -112,6 +112,7 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 			return res, report, nil
 		}
 		if attempt >= maxUnitRetries {
+			saveFailedPatch(w, n)
 			return res, unitReport{}, fmt.Errorf("%s (após %d tentativa(s))", failure, attempt+1)
 		}
 		dropProvisionalArtifact(w, n)
@@ -153,6 +154,9 @@ func (o *Orchestrix) unitAttempt(ctx context.Context, n dag.Node, w *Worktree, p
 	}
 	changed, err := unitChanged(ctx, n, w, seeded)
 	if err != nil {
+		return unitReport{}, "", usage, err
+	}
+	if err := o.applyHygiene(ctx, w.Dir, changed); err != nil {
 		return unitReport{}, "", usage, err
 	}
 	cmdOut, code, err := o.unitCommand(ctx, n, w.Dir)
@@ -282,4 +286,20 @@ func firstLine(s string) string {
 		line = line[:200]
 	}
 	return line
+}
+
+// saveFailedPatch salva o patch das alterações parciais quando todas as tentativas esgotam.
+func saveFailedPatch(w *Worktree, n dag.Node) {
+	if w == nil || n.ID == "" {
+		return
+	}
+	ctx := context.Background()
+	_, _ = gitRun(ctx, w.Dir, "add", "-N", ".")
+	out, err := gitRun(ctx, w.Dir, "diff", "HEAD")
+	if err != nil || len(strings.TrimSpace(string(out))) == 0 {
+		return
+	}
+	dest := filepath.Join(w.Repo, "scratch", "gates", n.ID+".failed.patch")
+	_ = os.MkdirAll(filepath.Dir(dest), 0o755)
+	_ = os.WriteFile(dest, out, 0o644)
 }
