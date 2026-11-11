@@ -74,10 +74,6 @@ func fabricarDois(t *testing.T, bin string, router *httptest.Server, root, vault
 	}
 }
 
-// TestComporProcessosReais prova AC-E03.4 com dois processos do fabricar real, que gravam os mesmos caminhos
-// (out/01_construir.md e out/02_verificar.md): o compor liga b em a, o DAG valida, o run executa o subloop e o
-// artefato de b chega em out/legoloop-cp-b/ sem tocar o de a. O ciclo, o processo inexistente e a versão
-// errada saem com 1 e a árvore fica idêntica.
 func TestComporProcessosReais(t *testing.T) {
 	bin := buildBinary(t)
 	rr := &routerReal{}
@@ -113,8 +109,6 @@ func TestComporProcessosReais(t *testing.T) {
 	refinIgual(t, antes, refinArvore(t, root))
 }
 
-// realRodar roda o DAG de a: e01 e e02 de a pelo router, e03 é o subloop de b (mais duas chamadas). O artefato
-// de b chega em out/legoloop-cp-b/02_verificar.md e o out/02_verificar.md de a continua o de a.
 func realRodar(t *testing.T, bin string, router *httptest.Server, root, proj, vault, dagA string, rr *routerReal) {
 	t.Helper()
 	pecaNoCofre(t, vault)
@@ -129,7 +123,7 @@ func realRodar(t *testing.T, bin string, router *httptest.Server, root, proj, va
 	}
 	i := slices.IndexFunc(rep.Nodes, func(n struct{ ID, Status, Model string }) bool { return n.ID == "e03" })
 	if i < 0 || rep.Nodes[i].Status != "passed" || rep.Nodes[i].Model != "subloop/legoloop-cp-b" || len(rep.Nodes) != 3 {
-		t.Fatalf("o nó e03 não rodou o subloop de b: %+v", rep.Nodes)
+		t.Fatalf("o nó e03 não rodou o subprocesso de b: %+v", rep.Nodes)
 	}
 	deB, errB := os.ReadFile(filepath.Join(work, "out", "legoloop-cp-b", "02_verificar.md"))
 	deA, errA := os.ReadFile(filepath.Join(work, "out", "02_verificar.md"))

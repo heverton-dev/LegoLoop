@@ -77,9 +77,9 @@ func executeREDC(origem, canalSlug, root string, asJSON bool, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro ao gravar repc: %v\n", err)
 		return 1
 	}
-	createdPipes, err := redc.GenerateMethodPipelines(root, canalSlug, clusters)
+	createdProcs, err := redc.GenerateMethodPipelines(root, canalSlug, clusters)
 	if err != nil {
-		fmt.Fprintf(d.Stderr, "erro ao gerar pipelines: %v\n", err)
+		fmt.Fprintf(d.Stderr, "erro ao fabricar Processos: %v\n", err)
 		return 1
 	}
 	report := redc.ChannelReport{
@@ -88,7 +88,7 @@ func executeREDC(origem, canalSlug, root string, asJSON bool, d Deps) int {
 		AmostraDeepREDC: len(dna.TopGanchos),
 		MetodosUnicos:   len(clusters),
 		DiretorioSaida:  filepath.Join(root, "docs", "channels", canalSlug),
-		ArquivosCriados: append(createdREPC, createdPipes...),
+		ArquivosCriados: append(createdREPC, createdProcs...),
 	}
 	return printCanalReport(report, asJSON, d)
 }

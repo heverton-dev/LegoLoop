@@ -131,8 +131,8 @@ func imprimirCompor(d Deps, res *compor.Resultado, asJSON bool) int {
 func (p *prompter) aprovarComposicao(pl compor.Plano, replan func(compor.Ligacao) (compor.Plano, error)) (bool, error) {
 	fmt.Fprintf(p.w, "\n%s", pl.Diff())
 	for invalidas := 0; invalidas < maxInvalid; {
-		card := pl.Cartao()
-		fmt.Fprintf(p.w, "\n%s", card.Render())
+		ficha := pl.Cartao()
+		fmt.Fprintf(p.w, "\n%s", ficha.Render())
 		in, err := p.line("> ")
 		if err != nil {
 			return false, err
@@ -145,7 +145,7 @@ func (p *prompter) aprovarComposicao(pl compor.Plano, replan func(compor.Ligacao
 		case dec == ste.Seguir:
 			return true, nil
 		case dec == ste.Personalizar:
-			if pl, err = p.personalizarComposicao(card, pl, replan); err != nil {
+			if pl, err = p.personalizarComposicao(ficha, pl, replan); err != nil {
 				return false, err
 			}
 			fmt.Fprintf(p.w, "\n%s", pl.Diff())
@@ -158,9 +158,9 @@ func (p *prompter) aprovarComposicao(pl compor.Plano, replan func(compor.Ligacao
 
 // personalizarComposicao pergunta o novo valor de cada parâmetro (Enter mantém) e devolve o plano recalculado.
 // Se a ligação nova não vale, mostra o motivo e mantém o plano anterior.
-func (p *prompter) personalizarComposicao(card ste.Cartao, pl compor.Plano, replan func(compor.Ligacao) (compor.Plano, error)) (compor.Plano, error) {
+func (p *prompter) personalizarComposicao(ficha ste.Cartao, pl compor.Plano, replan func(compor.Ligacao) (compor.Plano, error)) (compor.Plano, error) {
 	l := pl.Ligacao
-	for _, par := range card.Parametros {
+	for _, par := range ficha.Parametros {
 		fmt.Fprintln(p.w, par.Ajuda)
 		in, err := p.line(fmt.Sprintf("%s [%s]: ", par.Nome, par.Valor))
 		if err != nil {

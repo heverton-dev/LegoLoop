@@ -17,7 +17,7 @@ import (
 	"legoloop/internal/processo"
 )
 
-// compRouter é um 9Router em loopback que lista sonnet e code-fast. Assim os nós de skill (modelo sonnet)
+// compRouter é um 9Router local que lista sonnet e code-fast. Assim os nós de skill (modelo sonnet)
 // rodam no router falso, sem rede e sem o claude CLI. Cada resposta vira o artefato do nó.
 func compRouter(t *testing.T, chamadas *atomic.Int32) *httptest.Server {
 	t.Helper()
@@ -95,8 +95,6 @@ func compArquivos(t *testing.T, p processo.Processo, vault, proj string, data ti
 	}
 }
 
-// TestComporBinario prova AC-E03.4 pelo executável: liga b@1.0.0 em a, valida e roda o DAG (o subloop executa
-// b), recusa o ciclo e o processo inexistente sem mudar a árvore, e o listar mostra b usado por a.
 func TestComporBinario(t *testing.T) {
 	bin := buildBinary(t)
 	var chamadas atomic.Int32
@@ -139,7 +137,6 @@ func TestComporBinario(t *testing.T) {
 	refinIgual(t, antes, refinArvore(t, root))
 }
 
-// compRodar roda o DAG de a com o router falso: o nó e04 é o subloop de b e grava o artefato final de b.
 func compRodar(t *testing.T, bin string, router *httptest.Server, root, proj, vault, dagA string, chamadas *atomic.Int32) {
 	t.Helper()
 	work := t.TempDir()
@@ -155,7 +152,7 @@ func compRodar(t *testing.T, bin string, router *httptest.Server, root, proj, va
 	}
 	i := slices.IndexFunc(rep.Nodes, func(n struct{ ID, Status, Model string }) bool { return n.ID == "e04" })
 	if i < 0 || rep.Nodes[i].Status != "passed" || rep.Nodes[i].Model != "subloop/legoloop-b" {
-		t.Fatalf("o nó e04 não rodou o subloop de b: %+v", rep.Nodes)
+		t.Fatalf("o nó e04 não rodou o subprocesso de b: %+v", rep.Nodes)
 	}
 	for _, n := range rep.Nodes {
 		if n.ID != "e04" && !strings.HasPrefix(n.Model, "9router/") {
@@ -164,7 +161,7 @@ func compRodar(t *testing.T, bin string, router *httptest.Server, root, proj, va
 	}
 	// TICK-03.4b: o artefato de b chega ao pai em out/<b>/<arquivo>, não no caminho que ele tem dentro de b
 	if _, err := os.Stat(filepath.Join(work, "out", "legoloop-b", "e02.md")); err != nil || chamadas.Load() != 5 {
-		t.Errorf("artefato do subloop: %v; chamadas ao router: %d (esperava 3 de a e 2 de b)", err, chamadas.Load())
+		t.Errorf("artefato do subprocesso:%v; chamadas ao router: %d (esperava 3 de a e 2 de b)", err, chamadas.Load())
 	}
 	if _, err := os.Stat(filepath.Join(work, "out", "b", "e02.md")); err == nil {
 		t.Error("o caminho de dentro de b não pode aparecer no pai")

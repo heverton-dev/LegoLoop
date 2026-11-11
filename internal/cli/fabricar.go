@@ -64,7 +64,7 @@ func newFabricarFlags(o *fabricarOpts) *flag.FlagSet {
 
 const fabricarUsage = `Uso: legoloop fabricar "<nome do processo>" [opções]
 
-Cria o processo legoloop-<nome>: skill (Chat), loop (Studio) e DAG (CLI), mais os documentos
+Cria o processo legoloop-<nome>: skill (Chat), documento do Studio e DAG (CLI), mais os documentos
 de governança (INTENT, SPEC, PLAN, ROUTE e TEMPLATE). Não confundir com canonize, que desduplica.
 
 Opções:
@@ -276,7 +276,7 @@ func reportFabricar(d Deps, res *fabricar.Result, o fabricarOpts) int {
 		fmt.Fprintf(d.Stdout, "\n✓ Processo %s criado\n", res.CanonicalName)
 	}
 	a := res.Artifacts
-	rows := [][2]string{{"skill (Chat)", a.SkillPath}, {"loop (Studio)", a.LoopPath}, {"dag (CLI)", a.DagPath},
+	rows := [][2]string{{"skill (Chat)", a.SkillPath}, {"documento (Studio)", a.LoopPath}, {"dag (CLI)", a.DagPath},
 		{"INTENT", a.IntentPath}, {"SPEC", a.SpecPath}, {"PLAN", a.PlanPath}, {"ROUTE", a.RoutePath}, {"TEMPLATE", a.TemplatePath}}
 	for _, r := range rows {
 		fmt.Fprintf(d.Stdout, "  %-14s %s\n", r[0], r[1])

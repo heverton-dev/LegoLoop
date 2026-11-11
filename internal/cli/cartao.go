@@ -14,8 +14,8 @@ import (
 func (p *prompter) aprovar(plano fabricar.Plano, replan func([]string) fabricar.Plano) (bool, error) {
 	invalidas := 0
 	for invalidas < maxInvalid {
-		card := plano.Cartao()
-		fmt.Fprintf(p.w, "\n%s", card.Render())
+		ficha := plano.Cartao()
+		fmt.Fprintf(p.w, "\n%s", ficha.Render())
 		in, err := p.line("> ")
 		if err != nil {
 			return false, err
@@ -28,7 +28,7 @@ func (p *prompter) aprovar(plano fabricar.Plano, replan func([]string) fabricar.
 		case dec == ste.Seguir:
 			return p.pausasExtras(plano)
 		case dec == ste.Personalizar:
-			if plano, err = p.personalizar(card, plano, replan); err != nil {
+			if plano, err = p.personalizar(ficha, plano, replan); err != nil {
 				return false, err
 			}
 		default:
@@ -39,8 +39,8 @@ func (p *prompter) aprovar(plano fabricar.Plano, replan func([]string) fabricar.
 }
 
 // personalizar pergunta o novo valor de cada parâmetro (Enter mantém) e devolve o plano recalculado.
-func (p *prompter) personalizar(card ste.Cartao, plano fabricar.Plano, replan func([]string) fabricar.Plano) (fabricar.Plano, error) {
-	for _, par := range card.Parametros {
+func (p *prompter) personalizar(ficha ste.Cartao, plano fabricar.Plano, replan func([]string) fabricar.Plano) (fabricar.Plano, error) {
+	for _, par := range ficha.Parametros {
 		fmt.Fprintf(p.w, "%s\n", par.Ajuda)
 		in, err := p.line(fmt.Sprintf("%s [%s]: ", par.Nome, par.Valor))
 		if err != nil {

@@ -84,12 +84,12 @@ func TestCartaoPlanoUnicoCLI(t *testing.T) {
 		if err := os.MkdirAll(filepath.Join(r.d.Home, ".claude"), 0o755); err != nil {
 			t.Fatal(err)
 		}
-		code := run(t, r.d, r.args("novo fluxo", "--yes", "--sem-entrevista")...)
+		code := run(t, r.d, r.args("novo processo", "--yes", "--sem-entrevista")...)
 		out := r.out.String()
 		if code != 0 || !strings.Contains(out, "AÇÃO:") || !strings.Contains(out, "Segue sem perguntar") || strings.Contains(out, "Escolha:") {
 			t.Fatalf("exit %d:\n%s\n%s", code, out, r.errb)
 		}
-		if !existe(filepath.Join(r.d.Home, ".claude", "skills", "legoloop-novo-fluxo")) {
+		if !existe(filepath.Join(r.d.Home, ".claude", "skills", "legoloop-novo-processo")) {
 			t.Error("o link mostrado no cartão devia existir")
 		}
 	})
@@ -99,7 +99,7 @@ func TestCartaoPlanoUnicoCLI(t *testing.T) {
 		if err := os.MkdirAll(filepath.Join(r.d.Home, ".claude"), 0o755); err != nil {
 			t.Fatal(err)
 		}
-		code := run(t, r.d, r.args("novo fluxo", "--yes", "--sem-entrevista", "--no-link")...)
+		code := run(t, r.d, r.args("novo processo", "--yes", "--sem-entrevista", "--no-link")...)
 		if code != 0 || !strings.Contains(r.out.String(), "não liga a skill a nenhum harness") || existe(filepath.Join(r.d.Home, ".claude", "skills")) {
 			t.Fatalf("exit %d:\n%s", code, r.out)
 		}

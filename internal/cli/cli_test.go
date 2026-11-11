@@ -139,7 +139,7 @@ func TestCanonizeFlagErrors(t *testing.T) {
 	}
 }
 
-const pipelineScript = `{"name":"p","nodes":[
+const processoScript = `{"name":"p","nodes":[
  {"id":"a","type":"script","command":["go","version"],"timeout_sec":60,
   "routing":{"mode":"manual","model":"none"},
   "output":{"artifact":"GO_VERSION.txt","gate":"exit_code == 0 && has_pattern('GO_VERSION.txt', 'go1\\.')"}}]}`
@@ -147,7 +147,7 @@ const pipelineScript = `{"name":"p","nodes":[
 func TestValidateAndRun(t *testing.T) {
 	work := t.TempDir()
 	p := caminhos.CaminhoDAG(work)
-	os.WriteFile(p, []byte(pipelineScript), 0o644)
+	os.WriteFile(p, []byte(processoScript), 0o644)
 	d, out, _ := deps(t)
 	if code := run(t, d, "validate", p); code != 0 || !strings.Contains(out.String(), "camada 1") {
 		t.Fatalf("validate code=%d out=%s", code, out.String())
@@ -167,7 +167,7 @@ func TestValidateAndRun(t *testing.T) {
 func TestRunFailureExitCode(t *testing.T) {
 	work := t.TempDir()
 	p := caminhos.CaminhoDAG(work)
-	os.WriteFile(p, []byte(strings.Replace(pipelineScript, `go1\\.`, `nunca-casa`, 1)), 0o644)
+	os.WriteFile(p, []byte(strings.Replace(processoScript, `go1\\.`, `nunca-casa`, 1)), 0o644)
 	d, out, _ := deps(t)
 	if code := run(t, d, "run", p, "--workdir", work, "--json", "--var", "idea=x", "--allow-scripts"); code != 1 {
 		t.Fatalf("gate reprovado deveria sair 1, code=%d", code)
@@ -310,7 +310,7 @@ func TestHumanBytes(t *testing.T) {
 func TestRunRefusesScriptsWithoutConsent(t *testing.T) {
 	work := t.TempDir()
 	p := caminhos.CaminhoDAG(work)
-	os.WriteFile(p, []byte(pipelineScript), 0o644)
+	os.WriteFile(p, []byte(processoScript), 0o644)
 	d, out, _ := deps(t)
 	if code := run(t, d, "run", p, "--workdir", work); code != 1 {
 		t.Fatalf("script rodou sem consentimento: code=%d", code)
@@ -323,7 +323,6 @@ func TestRunRefusesScriptsWithoutConsent(t *testing.T) {
 	}
 }
 
-// SEC-11: pipeline acima do limite é recusado antes de ser carregado inteiro.
 func TestValidateRejectsHugeFile(t *testing.T) {
 	big := filepath.Join(t.TempDir(), "big.json")
 	os.WriteFile(big, make([]byte, 2<<20), 0o644)

@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-// AutopilotDecisionCard formata a decisão humana em linguagem natural para operadores leigos (Dupla Superfície).
-type AutopilotDecisionCard struct {
+// AutopilotDecisionForm formata a decisão humana em linguagem natural para operadores leigos (Dupla Superfície).
+type AutopilotDecisionForm struct {
 	Title         string `json:"title"`
 	Summary       string `json:"summary"`
 	EstimatedTime string `json:"estimated_time"`
@@ -16,7 +16,7 @@ type AutopilotDecisionCard struct {
 }
 
 // Render formata o cartão de decisão executivo em visual limpo e sem jargões de código.
-func (c AutopilotDecisionCard) Render() string {
+func (c AutopilotDecisionForm) Render() string {
 	return fmt.Sprintf(
 		"📋 [CARTÃO DE DECISÃO EXECUTIVO // MODO AUTOPILOT]\n"+
 			"· Ação:           %s\n"+
@@ -31,8 +31,8 @@ func (c AutopilotDecisionCard) Render() string {
 }
 
 // PromptAutopilot solicita confirmação binária amigável [Sim/Não] para leigos.
-func PromptAutopilot(w io.Writer, r io.Reader, card AutopilotDecisionCard) (bool, error) {
-	fmt.Fprintf(w, "\n%s\nDeseja autorizar esta etapa? [Sim/Não]: ", card.Render())
+func PromptAutopilot(w io.Writer, r io.Reader, form AutopilotDecisionForm) (bool, error) {
+	fmt.Fprintf(w, "\n%s\nDeseja autorizar esta etapa? [Sim/Não]: ", form.Render())
 	scanner := bufio.NewScanner(r)
 	if !scanner.Scan() {
 		if err := scanner.Err(); err != nil {

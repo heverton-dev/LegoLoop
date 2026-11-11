@@ -9,9 +9,9 @@ import (
 )
 
 func TestAutopilotUIMode(t *testing.T) {
-	decision := cli.AutopilotDecisionCard{
+	decision := cli.AutopilotDecisionForm{
 		Title:         "Aprovação da Curadoria de Peças",
-		Summary:       "O pipeline identificou 3 ferramentas gratuitas que substituem APIs pagas.",
+		Summary:       "O Processo identificou 3 ferramentas gratuitas que substituem APIs pagas.",
 		EstimatedTime: "1m 30s",
 		EstimatedCost: "$0.00 (100% Soberano)",
 	}

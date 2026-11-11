@@ -13,7 +13,7 @@ import (
 
 const cartoonShortsUsage = `Uso: legoloop cartoon-shorts --theme "<tema>" [opções]
 
-Pipeline canônico soberano de geração de Cartoon Shorts (1080x1920 30fps).
+Processo canônico soberano de geração de Cartoon Shorts (1080x1920 30fps).
 
 Opções:
   --theme    <texto>  tema ou curiosidade histórica (obrigatório)
