@@ -37,7 +37,7 @@ func (s *Store) filePath(id string) (string, error) {
 	return filepath.Join(s.dir, id+caminhos.SufixoLoop), nil
 }
 
-func validateLoopDAG(l *Processo) error {
+func validateProcessoDAG(l *Processo) error {
 	v := struct {
 		ID          string       `json:"id,omitempty"`
 		Name        string       `json:"name"`
@@ -72,7 +72,7 @@ func (s *Store) Save(l *Processo) error {
 	if err != nil {
 		return err
 	}
-	if err := validateLoopDAG(l); err != nil {
+	if err := validateProcessoDAG(l); err != nil {
 		return err
 	}
 	l.UpdatedAt = time.Now().UTC()
