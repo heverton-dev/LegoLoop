@@ -133,7 +133,7 @@ func TestFabricarModalLogic(t *testing.T) {
 	    unforced: fabricarPayload({name:"x", category:"build", model:"m"}, null, false),
 	    ow: [fabricarCanOverwrite(409, {code:"exists"}), fabricarCanOverwrite(409, {code:"busy"}), fabricarCanOverwrite(400, {code:"exists"}), fabricarCanOverwrite(409, null)],
 	    ask: [fabricarNeedsReplaceConfirm(0), fabricarNeedsReplaceConfirm(1), fabricarNeedsReplaceConfirm(7)],
-	    valid: fabricarNameError(""), validOk: fabricarNameError("Meu fluxo"), validBad: fabricarNameError("!!!"),
+	    valid: fabricarNameError(""), validOk: fabricarNameError("Meu processo"), validBad: fabricarNameError("!!!"),
 	  };
 	})()`, "fabricar.js")
 	var r struct {

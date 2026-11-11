@@ -33,9 +33,13 @@ const maxHookDisplay = 200
 
 // Abas do inventário que não vêm do scanner de disco.
 const (
-	kindModel = "model"
-	kindLoop  = "loop"
+	kindModel    = "model"
+	kindProcesso = "loop"
 )
+
+func (s *Server) documentoStore() (*studiodoc.Store, error) {
+	return s.loopStore()
+}
 
 func errNoInventory(w http.ResponseWriter) {
 	writeError(w, http.StatusServiceUnavailable, "inventário indisponível neste servidor")
@@ -97,13 +101,13 @@ func (s *Server) snapshot(ctx context.Context) assets.Snapshot {
 }
 
 func (s *Server) counts(ctx context.Context, snap assets.Snapshot) map[string]int {
-	loopCount := 0
-	if store, err := s.loopStore(); err == nil {
+	total := 0
+	if store, err := s.documentoStore(); err == nil {
 		if list, err := store.List(); err == nil {
-			loopCount = len(list)
+			total = len(list)
 		}
 	}
-	out := map[string]int{kindModel: len(s.inventory(ctx).Models()), kindLoop: loopCount}
+	out := map[string]int{kindModel: len(s.inventory(ctx).Models()), kindProcesso: total}
 	for k, n := range snap.Counts {
 		out[string(k)] = n
 	}
@@ -161,8 +165,8 @@ func (s *Server) itemsOf(ctx context.Context, kind string) ([]assets.Item, bool)
 			out = append(out, assets.Item{Kind: kindModel, Name: m.ID, Origin: string(m.Source), Scope: "system"})
 		}
 		return out, true
-	case kindLoop:
-		return s.loopItems(), true
+	case kindProcesso:
+		return s.processoItems(), true
 	}
 	if !slices.Contains(assets.Kinds(), assets.Kind(kind)) {
 		return nil, false
@@ -174,25 +178,25 @@ func (s *Server) itemsOf(ctx context.Context, kind string) ([]assets.Item, bool)
 	return out, true
 }
 
-func (s *Server) loopItems() []assets.Item {
+func (s *Server) processoItems() []assets.Item {
 	out := []assets.Item{}
 	seen := map[string]bool{}
-	if store, err := s.loopStore(); err == nil {
+	if store, err := s.documentoStore(); err == nil {
 		list, _ := store.List()
-		out = appendLoopItems(out, seen, list, "acervo", "global")
+		out = appendProcessoItems(out, seen, list, "acervo", "global")
 	}
 	if s.ProjectDir != "" {
 		if pStore, err := studiodoc.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); err == nil {
 			if list, err := pStore.List(); err == nil {
-				out = appendLoopItems(out, seen, list, "project", "project")
+				out = appendProcessoItems(out, seen, list, "project", "project")
 			}
 		}
 	}
 	return out
 }
 
-// appendLoopItems converte os resumos em itens do inventário, pulando ids já vistos.
-func appendLoopItems(out []assets.Item, seen map[string]bool, list []studiodoc.Summary, origin, scope string) []assets.Item {
+// appendProcessoItems converte os resumos em itens do inventário, pulando ids já vistos.
+func appendProcessoItems(out []assets.Item, seen map[string]bool, list []studiodoc.Summary, origin, scope string) []assets.Item {
 	for _, l := range list {
 		if seen[l.ID] {
 			continue

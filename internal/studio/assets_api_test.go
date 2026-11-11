@@ -64,12 +64,12 @@ func TestAssetsSummaryCountsEveryTab(t *testing.T) {
 	}
 	var b summaryBody
 	decode(t, rec, &b)
-	for _, k := range []string{"skill", "mcp", "script", "hook", "gate", "harness", "binary", "model", "loop"} {
+	for _, k := range []string{"skill", "mcp", "script", "hook", "gate", "harness", "binary", "model", kindProcesso} {
 		if _, ok := b.Counts[k]; !ok {
 			t.Errorf("contagem de %q ausente: %v", k, b.Counts)
 		}
 	}
-	if b.Counts["skill"] != 1 || b.Counts["gate"] != len(gate.Catalog()) || b.Counts["model"] != 5 || b.Counts["loop"] != 0 || b.Version == 0 {
+	if b.Counts["skill"] != 1 || b.Counts["gate"] != len(gate.Catalog()) || b.Counts["model"] != 5 || b.Counts[kindProcesso] != 0 || b.Version == 0 {
 		t.Errorf("contagens inesperadas: %+v", b)
 	}
 }
@@ -101,17 +101,17 @@ func TestAssetsListByKindHidesAbsolutePaths(t *testing.T) {
 	}
 }
 
-func TestAssetsModelsAndLoopsTabs(t *testing.T) {
+func TestAssetsModelsAndProcessosTabs(t *testing.T) {
 	s, _, _ := newAssetsServer(t)
-	var models, loops listBody
+	var models, processos listBody
 	decode(t, do(t, s.Handler(), "GET", "/api/assets/model", ""), &models)
 	if len(models.Items) != 5 || models.Items[0].Name != "code-pro" || models.Items[0].Origin != "9router" {
 		t.Errorf("modelos = %+v", models.Items)
 	}
-	rec := do(t, s.Handler(), "GET", "/api/assets/loop", "")
-	decode(t, rec, &loops)
-	if rec.Code != 200 || loops.Items == nil || len(loops.Items) != 0 {
-		t.Errorf("a aba Loops lista vazia até o acervo existir: %d %+v", rec.Code, loops)
+	rec := do(t, s.Handler(), "GET", "/api/assets/"+kindProcesso, "")
+	decode(t, rec, &processos)
+	if rec.Code != 200 || processos.Items == nil || len(processos.Items) != 0 {
+		t.Errorf("a aba de Processos lista vazia até o acervo existir: %d %+v", rec.Code, processos)
 	}
 	if strings.Contains(rec.Body.String(), `"items":null`) {
 		t.Error("items deve ser [] e não null")

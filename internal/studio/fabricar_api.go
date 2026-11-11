@@ -28,8 +28,7 @@ type fabricarRunRequest struct {
 	Entrevista string `json:"entrevista,omitempty"`
 }
 
-// handleFabricarRun materializa um processo novo (skill, loop, dag e documentos). Rota distinta de
-// /api/canonize/*, que segue sendo a desduplicação.
+// handleFabricarRun materializa um processo novo (skill, documento do Studio, dag e documentos).
 func (s *Server) handleFabricarRun(w http.ResponseWriter, r *http.Request) {
 	req, rawReq, ok := s.decodeFabricarRequest(w, r)
 	if !ok {

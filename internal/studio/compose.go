@@ -9,7 +9,7 @@ import (
 	"legoloop/internal/provider"
 )
 
-// maxCanvasNodes limita o tamanho de uma esteira vinda do canvas.
+// maxCanvasNodes limita o tamanho de um Processo vindo do canvas.
 const maxCanvasNodes = 200
 
 // Composition é o estado do canvas enviado pelo navegador.
@@ -20,8 +20,7 @@ type Composition struct {
 	Edges   []CompEdge   `json:"edges"`
 }
 
-// CompNode é um nó posicionado no canvas: instancia um bloco do catálogo (Block, contrato tipado)
-// OU uma peça do inventário (Piece, contrato "Qualquer"). Slots e Execution são opcionais.
+// CompNode é um nó posicionado no canvas: Block (contrato tipado) ou Piece (contrato "Qualquer").
 type CompNode struct {
 	ID        string            `json:"id"`
 	Block     string            `json:"block,omitempty"`
@@ -62,8 +61,8 @@ type CompEdge struct {
 	To   string `json:"to"`
 }
 
-// Issue é um problema apontado no canvas (por nó, aresta ou global).
-type Issue struct {
+// Problema é uma falha apontada no canvas (por nó, aresta ou global).
+type Problema struct {
 	Node    string `json:"node,omitempty"`
 	Edge    string `json:"edge,omitempty"`
 	Message string `json:"message"`
@@ -72,7 +71,7 @@ type Issue struct {
 // ValidationResult é a resposta de /api/validate e /api/materialize.
 type ValidationResult struct {
 	OK     bool            `json:"ok"`
-	Issues []Issue         `json:"issues"`
+	Issues []Problema      `json:"issues"`
 	DAG    json.RawMessage `json:"dag,omitempty"`
 	Path   string          `json:"path,omitempty"`
 }
@@ -80,35 +79,35 @@ type ValidationResult struct {
 // compose valida o canvas contra o grafo semântico e o inventário e compila o DAG.
 func compose(idx *graph.Index, inv provider.Inventory, res Resolver, c Composition) (ValidationResult, *dag.DAG) {
 	if len(c.Nodes) == 0 || len(c.Nodes) > maxCanvasNodes {
-		return fail(Issue{Message: fmt.Sprintf("a esteira precisa de 1 a %d nós", maxCanvasNodes)}), nil
+		return fail(Problema{Message: fmt.Sprintf("o Processo precisa de 1 a %d nós", maxCanvasNodes)}), nil
 	}
-	infos, slots, issues := resolveNodes(idx, inv, res, c.Nodes)
-	issues = append(issues, checkEdges(idx, infos, c.Edges)...)
-	if len(issues) > 0 {
-		return fail(issues...), nil
+	infos, slots, problemas := resolveNodes(idx, inv, res, c.Nodes)
+	problemas = append(problemas, checkEdges(idx, infos, c.Edges)...)
+	if len(problemas) > 0 {
+		return fail(problemas...), nil
 	}
 	raw, err := json.Marshal(buildDAG(c, infos, slots))
 	if err != nil {
-		return fail(Issue{Message: err.Error()}), nil
+		return fail(Problema{Message: err.Error()}), nil
 	}
 	d, err := dag.Parse(raw)
 	if err != nil {
-		return fail(Issue{Message: err.Error()}), nil
+		return fail(Problema{Message: err.Error()}), nil
 	}
 	out, _ := d.Marshal()
-	return ValidationResult{OK: true, Issues: []Issue{}, DAG: out}, d
+	return ValidationResult{OK: true, Issues: []Problema{}, DAG: out}, d
 }
 
-func fail(issues ...Issue) ValidationResult {
-	return ValidationResult{OK: false, Issues: issues}
+func fail(problemas ...Problema) ValidationResult {
+	return ValidationResult{OK: false, Issues: problemas}
 }
 
-func resolveNodes(idx *graph.Index, inv provider.Inventory, res Resolver, nodes []CompNode) (map[string]nodeInfo, map[string]*dag.Slots, []Issue) {
+func resolveNodes(idx *graph.Index, inv provider.Inventory, res Resolver, nodes []CompNode) (map[string]nodeInfo, map[string]*dag.Slots, []Problema) {
 	infos := map[string]nodeInfo{}
 	slots := map[string]*dag.Slots{}
 	artifacts := map[string]string{}
-	var issues []Issue
-	add := func(id, msg string) { issues = append(issues, Issue{Node: id, Message: msg}) }
+	var problemas []Problema
+	add := func(id, msg string) { problemas = append(problemas, Problema{Node: id, Message: msg}) }
 	for _, n := range nodes {
 		info, msg := resolveNode(idx, res, n)
 		if msg != "" {
@@ -120,7 +119,7 @@ func resolveNodes(idx *graph.Index, inv provider.Inventory, res Resolver, nodes 
 		}
 		artifacts[info.Artifact] = n.ID
 		infos[n.ID] = info
-		if msg := routingIssue(inv, n.Routing); msg != "" {
+		if msg := routingProblem(inv, n.Routing); msg != "" {
 			add(n.ID, msg)
 		}
 		s, msg := resolveSlots(res, n.Slots)
@@ -129,11 +128,11 @@ func resolveNodes(idx *graph.Index, inv provider.Inventory, res Resolver, nodes 
 		}
 		slots[n.ID] = s
 	}
-	return infos, slots, issues
+	return infos, slots, problemas
 }
 
-// routingIssue aplica a Regra de Ouro ao canvas: só modelos verdes no inventário.
-func routingIssue(inv provider.Inventory, r dag.RoutingConfig) string {
+// routingProblem aplica a Regra de Ouro ao canvas: só modelos verdes no inventário.
+func routingProblem(inv provider.Inventory, r dag.RoutingConfig) string {
 	candidates := []string{r.Model}
 	switch r.Mode {
 	case dag.ModeAuto:
@@ -149,8 +148,8 @@ func routingIssue(inv provider.Inventory, r dag.RoutingConfig) string {
 	return fmt.Sprintf("nenhum modelo de %v está disponível nesta máquina", candidates)
 }
 
-func checkEdges(idx *graph.Index, infos map[string]nodeInfo, edges []CompEdge) []Issue {
-	var issues []Issue
+func checkEdges(idx *graph.Index, infos map[string]nodeInfo, edges []CompEdge) []Problema {
+	var problemas []Problema
 	seen := map[CompEdge]bool{}
 	for _, e := range edges {
 		label := e.From + "→" + e.To
@@ -158,22 +157,21 @@ func checkEdges(idx *graph.Index, infos map[string]nodeInfo, edges []CompEdge) [
 		to, okT := infos[e.To]
 		switch {
 		case seen[e]:
-			issues = append(issues, Issue{Edge: label, Message: "conexão duplicada"})
+			problemas = append(problemas, Problema{Edge: label, Message: "conexão duplicada"})
 		case !okF || !okT:
-			issues = append(issues, Issue{Edge: label, Message: "conexão com nó inexistente"})
+			problemas = append(problemas, Problema{Edge: label, Message: "conexão com nó inexistente"})
 		default:
-			if msg := edgeIssue(idx, from, to); msg != "" {
-				issues = append(issues, Issue{Edge: label, Message: msg})
+			if msg := edgeProblem(idx, from, to); msg != "" {
+				problemas = append(problemas, Problema{Edge: label, Message: msg})
 			}
 		}
 		seen[e] = true
 	}
-	return issues
+	return problemas
 }
 
-// edgeIssue: peça genérica aceita e produz "Qualquer", então liga com tudo; entre blocos tipados
-// vale a matriz de compatibilidade do grafo.
-func edgeIssue(idx *graph.Index, from, to nodeInfo) string {
+// edgeProblem: peça genérica liga com tudo; entre peças tipadas vale a matriz de compatibilidade do grafo.
+func edgeProblem(idx *graph.Index, from, to nodeInfo) string {
 	if from.generic() || to.generic() {
 		return ""
 	}
@@ -203,7 +201,7 @@ func buildDAG(c Composition, infos map[string]nodeInfo, slots map[string]*dag.Sl
 	return d
 }
 
-// inferTrigger deduz o gatilho do primeiro bloco de gatilho da composição; padrão manual.
+// inferTrigger deduz o gatilho do primeiro nó de gatilho da composição; padrão manual.
 func inferTrigger(c Composition, infos map[string]nodeInfo) *dag.Trigger {
 	for _, n := range c.Nodes {
 		info, ok := infos[n.ID]

@@ -30,8 +30,8 @@ func TestInterviewAPI_Endpoints(t *testing.T) {
 
 	mock := &mockStudioLLM{
 		responses: []string{
-			"HIPÓTESE: Criar módulo de pagamento.\nCONFIANÇA: 60%\nPERGUNTA: Pix ou Cartão?\nPALPITE: Pix",
-			"HIPÓTESE: Módulo de pagamento exclusivo Pix com webhook.\nCONFIANÇA: 98%\nESPELHO CANÔNICO:\n- Resultado Esperado: Integração Pix\n- Quem se Beneficia: Clientes\n- Por que Agora: Aumentar conversão\n- Critério de Sucesso: Cobranças geradas e pagas com QR Code\n- Restrições Inegociáveis: Sem log de chaves privadas\n- Fora de Escopo: Boleto e Cartão",
+			"HIPÓTESE: Criar sistema de pagamento.\nCONFIANÇA: 60%\nPERGUNTA: Pix ou Cartão?\nPALPITE: Pix",
+			"HIPÓTESE: Sistema de pagamento exclusivo Pix com webhook.\nCONFIANÇA: 98%\nESPELHO CANÔNICO:\n- Resultado Esperado: Integração Pix\n- Quem se Beneficia: Clientes\n- Por que Agora: Aumentar conversão\n- Critério de Sucesso: Cobranças geradas e pagas com QR Code\n- Restrições Inegociáveis: Sem log de chaves privadas\n- Fora de Escopo: Boleto e Cartão",
 		},
 	}
 	s.Interview = interview.NewEngine(mock)

@@ -11,7 +11,7 @@ import (
 // CA-19.1: Barreira estrita contra emojis em 100% dos arquivos do Studio (HTML, JS, CSS, Templates Go).
 // Lei Inquebrável de Design do LegoLoop: ZERO EMOJIS.
 func TestZeroEmojisInFrontendAndTemplates(t *testing.T) {
-	// Padrão regex cobrindo todos os blocos de emojis do Unicode (incluindo símbolos gráficos e pictográficos)
+	// Padrão regex cobrindo todas as faixas de emojis do Unicode
 	emojiPattern := regexp.MustCompile(`[\x{1F300}-\x{1FAFF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F000}-\x{1F2FF}\x{FE00}-\x{FE0F}]`)
 
 	var filesToCheck []string

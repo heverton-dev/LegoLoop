@@ -30,7 +30,7 @@ func listedSkill(t *testing.T, s *Server, name string) bool {
 	return rec.Code == 200 && strings.Contains(rec.Body.String(), `"`+name+`"`)
 }
 
-func listedLoop(t *testing.T, s *Server, id string) bool {
+func listedProcesso(t *testing.T, s *Server, id string) bool {
 	t.Helper()
 	rec := do(t, s.Handler(), "GET", "/api/loops", "")
 	return rec.Code == 200 && strings.Contains(rec.Body.String(), `"`+id+`"`)
@@ -39,14 +39,14 @@ func listedLoop(t *testing.T, s *Server, id string) bool {
 func TestFabricarRunCatalog(t *testing.T) {
 	s, _, _ := catalogServer(t, &specOnlyLLM{})
 	const name = "legoloop-extrator-de-audio"
-	if listedSkill(t, s, name) || listedLoop(t, s, name) {
+	if listedSkill(t, s, name) || listedProcesso(t, s, name) {
 		t.Fatal("o processo não pode existir antes de fabricar")
 	}
 	if code, body := postFabricar(t, s, okBody); code != 200 {
 		t.Fatalf("fabricar = %d: %s", code, body)
 	}
-	if !listedLoop(t, s, name) {
-		t.Error("GET /api/loops deve listar o loop novo, sem reiniciar o servidor")
+	if !listedProcesso(t, s, name) {
+		t.Error("a listagem deve incluir o processo novo, sem reiniciar o servidor")
 	}
 	if !listedSkill(t, s, name) {
 		t.Error("GET /api/assets/skill deve listar a skill nova: o handler precisa acionar Assets.Refresh")
@@ -145,7 +145,7 @@ func TestFabricarRunFailsCleanly(t *testing.T) {
 			if len(files) != 0 {
 				t.Errorf("falha de LLM não pode deixar artefatos parciais: %v", files)
 			}
-			if listedLoop(t, s, "legoloop-extrator-de-audio") {
+			if listedProcesso(t, s, "legoloop-extrator-de-audio") {
 				t.Error("o catálogo não pode listar um processo que falhou")
 			}
 		})
