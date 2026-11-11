@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "impeccable-design",
-  "name": "Pipeline de Design Impeccable (6 Sub-Loops)",
-  "description": "Pipeline mestre de UI/UX composto pelos 6 sub-loops modulares do Impeccable: Avaliar, Construir, Melhorar, Refinar, Corrigir e Iterar/Documentar.",
+  "name": "Processo de Design Impeccable (6 etapas)",
+  "description": "Processo mestre de UI/UX composto pelas 6 etapas modulares do Impeccable: Avaliar, Construir, Melhorar, Refinar, Corrigir e Iterar/Documentar.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {
@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -39,7 +39,7 @@
   },
   "nodes": [
     {
-      "id": "subloop-avaliar",
+      "id": "etapa-avaliar",
       "name": "Avaliação de UI/UX e Diagnóstico",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -74,14 +74,14 @@
       }
     },
     {
-      "id": "subloop-construir",
+      "id": "etapa-construir",
       "name": "Construção da Direção Visual",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-avaliar"
+        "etapa-avaliar"
       ],
       "routing": {
         "mode": "suggested",
@@ -117,14 +117,14 @@
       }
     },
     {
-      "id": "subloop-melhorar",
+      "id": "etapa-melhorar",
       "name": "Design Tokens & Sistema de Cores",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-construir"
+        "etapa-construir"
       ],
       "routing": {
         "mode": "auto",
@@ -159,14 +159,14 @@
       }
     },
     {
-      "id": "subloop-refinar",
+      "id": "etapa-refinar",
       "name": "Refinamento & Hardening UI",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-melhorar"
+        "etapa-melhorar"
       ],
       "routing": {
         "mode": "auto",
@@ -201,14 +201,14 @@
       }
     },
     {
-      "id": "subloop-corrigir",
+      "id": "etapa-corrigir",
       "name": "Correções de Acessibilidade & Responsividade",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-refinar"
+        "etapa-refinar"
       ],
       "routing": {
         "mode": "auto",
@@ -243,14 +243,14 @@
       }
     },
     {
-      "id": "subloop-iterar-documentar",
+      "id": "etapa-iterar-documentar",
       "name": "Documentação do Design System",
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-corrigir"
+        "etapa-corrigir"
       ],
       "routing": {
         "mode": "auto",

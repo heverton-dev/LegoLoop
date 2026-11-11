@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "fechar",
-  "name": "Pipeline Universal de Fechamento e Canonização (legoloop-fechar)",
-  "description": "Sub-loop canônico em 8 etapas para canonizar e fechar qualquer pipeline aprovado no LegoLoop: Manual, Livro LegoPress, Skill nos harnesses, DAG validado, Rebuild do binário, Governança, Grafo semântico e Portões de qualidade.",
+  "name": "Processo Universal de Fechamento e Canonização (legoloop-fechar)",
+  "description": "Subprocesso canônico em 8 etapas para canonizar e fechar qualquer Processo aprovado no LegoLoop: Manual, Livro LegoPress, Skill nos harnesses, DAG validado, Rebuild do binário, Governança, Grafo semântico e Portões de qualidade.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {
@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -99,7 +99,7 @@
       "context_out": [
         "docs/books/video-rea/livro.json"
       ],
-      "command": ["legoloop", "legopress", "auditar", "docs/books/video-rea/2026-11-07_PIPELINE-VIDEO-REA.pdf"],
+      "command": ["legoloop", "legopress", "auditar", "docs/books/video-rea/2026-11-07_PROCESSO-VIDEO-REA.pdf"],
       "test_seam": {
         "type": "script_exit_gate",
         "target": "file_exists('docs/books/video-rea/livro.json')"
@@ -171,16 +171,16 @@
         "skills/legoloop-fechar/SKILL.md"
       ],
       "context_out": [
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/processo.dag.json"
       ],
-      "command": ["legoloop", "validate", "loops/legoloop-video-motion/pipeline.dag.json"],
+      "command": ["legoloop", "validate", "processos/legoloop-video-motion/processo.dag.json"],
       "test_seam": {
         "type": "script_exit_gate",
-        "target": "file_exists('loops/legoloop-video-motion/pipeline.dag.json')"
+        "target": "file_exists('processos/legoloop-video-motion/processo.dag.json')"
       },
       "output": {
-        "artifact": "loops/legoloop-video-motion/pipeline.dag.json",
-        "gate": "file_exists('loops/legoloop-video-motion/pipeline.dag.json')"
+        "artifact": "processos/legoloop-video-motion/processo.dag.json",
+        "gate": "file_exists('processos/legoloop-video-motion/processo.dag.json')"
       }
     },
     {
@@ -205,7 +205,7 @@
         "subagents_allowed": false
       },
       "context_in": [
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/processo.dag.json"
       ],
       "context_out": [
         "bin/legoloop.exe"

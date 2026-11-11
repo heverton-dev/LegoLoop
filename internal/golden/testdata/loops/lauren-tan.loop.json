@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "lauren-tan",
-  "name": "Pipeline Lauren Tan pstack (6 Sub-Loops)",
-  "description": "Pipeline de rigor de engenharia baseado no método Lauren Tan (pstack / poteto-mode): Intenção & Modelagem de Domínio -> Arquitetura & Exploração -> Decomposição em Unidades Verificáveis -> Construção Rigorosa TDD -> Verificação Formal no Artefato Real -> Higiene de Código (Unslop) & Ship.",
+  "name": "Processo Lauren Tan pstack (6 etapas)",
+  "description": "Processo de rigor de engenharia baseado no método Lauren Tan (pstack / poteto-mode): Intenção & Modelagem de Domínio -> Arquitetura & Exploração -> Decomposição em Unidades Verificáveis -> Construção Rigorosa TDD -> Verificação Formal no Artefato Real -> Higiene de Código (Unslop) & Ship.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {
@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -39,7 +39,7 @@
   },
   "nodes": [
     {
-      "id": "subloop-1-intencao-dominio",
+      "id": "etapa-1-intencao-dominio",
       "name": "Intenção & Modelagem de Domínio",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -72,7 +72,7 @@
       }
     },
     {
-      "id": "subloop-2-arquitetura-exploracao",
+      "id": "etapa-2-arquitetura-exploracao",
       "name": "Arquitetura & Exploração Competitiva",
       "nature": "micro",
       "cognitive_complexity": "alto",
@@ -94,7 +94,7 @@
         "subagents_allowed": false
       },
       "depends_on": [
-        "subloop-1-intencao-dominio"
+        "etapa-1-intencao-dominio"
       ],
       "inputs": {
         "intent": "file('docs/intents/INTENT.md')"
@@ -108,7 +108,7 @@
       }
     },
     {
-      "id": "subloop-3-decomposicao-verificavel",
+      "id": "etapa-3-decomposicao-verificavel",
       "name": "Decomposição em Unidades Verificáveis",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -130,7 +130,7 @@
         "subagents_allowed": false
       },
       "depends_on": [
-        "subloop-2-arquitetura-exploracao"
+        "etapa-2-arquitetura-exploracao"
       ],
       "inputs": {
         "spec": "file('docs/specs/SPEC.md')"
@@ -144,7 +144,7 @@
       }
     },
     {
-      "id": "subloop-4-construcao-tdd",
+      "id": "etapa-4-construcao-tdd",
       "name": "Construção Rigorosa TDD",
       "nature": "micro",
       "cognitive_complexity": "alto",
@@ -166,7 +166,7 @@
         "subagents_allowed": false
       },
       "depends_on": [
-        "subloop-3-decomposicao-verificavel"
+        "etapa-3-decomposicao-verificavel"
       ],
       "inputs": {
         "plan": "file('docs/plans/PLAN.md')"
@@ -180,7 +180,7 @@
       }
     },
     {
-      "id": "subloop-5-verificacao-artefato-real",
+      "id": "etapa-5-verificacao-artefato-real",
       "name": "Verificação Formal no Artefato Real",
       "nature": "micro",
       "cognitive_complexity": "alto",
@@ -202,7 +202,7 @@
         "subagents_allowed": false
       },
       "depends_on": [
-        "subloop-4-construcao-tdd"
+        "etapa-4-construcao-tdd"
       ],
       "inputs": {
         "tdd_report": "file('docs/reports/TDD_REPORT.md')"
@@ -216,7 +216,7 @@
       }
     },
     {
-      "id": "subloop-6-unslop-ship",
+      "id": "etapa-6-unslop-ship",
       "name": "Higiene de Código (Unslop) & Ship",
       "nature": "micro",
       "cognitive_complexity": "baixo",
@@ -238,7 +238,7 @@
         "subagents_allowed": false
       },
       "depends_on": [
-        "subloop-5-verificacao-artefato-real"
+        "etapa-5-verificacao-artefato-real"
       ],
       "inputs": {
         "report": "file('docs/reports/REPORT.md')"

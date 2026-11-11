@@ -3,7 +3,7 @@
   "name": "ai-motion-graphics",
   "version": "1.0.0",
   "date": "2026-11-09",
-  "description": "Pipeline soberano de motion graphics com 10 GitHub repos open-source",
+  "description": "Processo soberano de motion graphics com 10 GitHub repos open-source",
   "upstream_signatures": {
     "intent": "141be4530f797b60bc3288513d7214d0def9c86cefbf3766d4e990a5ac9948b9",
     "spec": "7d7dc391758f09c5efa8d4c6695ff026d6d973d45a8861da9dd34b7818f1bdd6",
@@ -26,7 +26,7 @@
     "max_parallel_workers": 2,
     "tdd_enforced": true,
     "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort"
   },
   "trigger": {
     "type": "manual"
@@ -37,7 +37,7 @@
       "name": "Tipos, contrato e validação de Request",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-pro",
@@ -90,7 +90,7 @@
       "name": "Motor de sugestão de repos por cenário",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-pro",
@@ -145,7 +145,7 @@
       "name": "Verificação estática do motor de seleção",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-nano",
@@ -240,7 +240,7 @@
       "name": "Gerador HTML/WebGL com Three.js",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-pro",
@@ -295,7 +295,7 @@
       "name": "Verificação estática do gerador HTML",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-nano",
@@ -388,7 +388,7 @@
       "name": "Captura de frames via Playwright",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-pro",
@@ -443,7 +443,7 @@
       "name": "Conversão frames → MP4 via FFmpeg",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-pro",
@@ -498,7 +498,7 @@
       "name": "Teste de integração com limite de tempo",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-nano",
@@ -599,7 +599,7 @@
       "name": "Detecção de beats via Librosa",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-pro",
@@ -656,7 +656,7 @@
       "name": "Verificação estática do sync de áudio",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-nano",
@@ -747,9 +747,9 @@
     {
       "id": "t11_skill",
       "name": "Skill canônica universal",
-      "nature": "macro",
+      "nature": "micro",
       "cognitive_complexity": "media",
-      "type": "subloop",
+      "type": "subprocesso",
       "ref": "legoloop-instalar-skills",
       "routing": {
         "mode": "suggested",
@@ -799,9 +799,9 @@
     {
       "id": "t12_book",
       "name": "Livro Didático LegoPress",
-      "nature": "macro",
+      "nature": "micro",
       "cognitive_complexity": "media",
-      "type": "subloop",
+      "type": "subprocesso",
       "ref": "legoloop-legopress",
       "routing": {
         "mode": "suggested",

@@ -3,7 +3,7 @@
   "name": "legoloop-cartoon-shorts",
   "version": "1.0.0",
   "date": "2026-11-09",
-  "description": "Pipeline canônico soberano de geração de Cartoon Shorts (1080x1920 30fps) com roteiro 3.7 palavras/s, voz neural Edge-TTS e renderização Three.js/Playwright a custo R$ 0,00",
+  "description": "Processo canônico soberano de geração de Cartoon Shorts (1080x1920 30fps) com roteiro 3.7 palavras/s, voz neural Edge-TTS e renderização Three.js/Playwright a custo R$ 0,00",
   "upstream_signatures": {
     "intent": "6ef659ca8a52b2aa64cb8cd88fddec0444400c9a9088bca7aa9c5a358f05cf9f",
     "spec": "5aacc736641d9a342a57c510e76455f28978032b18f30d699942f22ebc5cba3f",
@@ -25,7 +25,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort"
   },
   "trigger": {
     "type": "manual"
@@ -36,7 +36,7 @@
       "name": "Geração do Roteiro de Curiosidades com Tags de Emoção",
       "nature": "micro",
       "cognitive_complexity": "medio",
-      "type": "unit_task",
+      "type": "script",
       "routing": {
         "mode": "suggested",
         "model": "code-pro",
@@ -81,7 +81,7 @@
       "name": "Síntese de Voz Soberana Edge-TTS pt-BR",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "script",
       "depends_on": [
         "n01_script_engine"
       ],
@@ -127,9 +127,9 @@
     {
       "id": "n03_threejs_render",
       "name": "Renderização Visual Three.js e Muxing Determinístico FFmpeg",
-      "nature": "macro",
+      "nature": "micro",
       "cognitive_complexity": "complexo",
-      "type": "unit_task",
+      "type": "script",
       "depends_on": [
         "n02_edge_tts"
       ],
@@ -153,7 +153,7 @@
         "docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3"
       ],
       "context_out": [
-        "docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4"
+        "docs/videorea/legoloop-cartoon-shorts/ciclo/fixture_3s.mp4"
       ],
       "status": "PENDING",
       "test_seam": {
@@ -169,8 +169,8 @@
         "./internal/videorea/..."
       ],
       "output": {
-        "artifact": "docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4",
-        "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4')"
+        "artifact": "docs/videorea/legoloop-cartoon-shorts/ciclo/fixture_3s.mp4",
+        "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/ciclo/fixture_3s.mp4')"
       }
     }
   ]

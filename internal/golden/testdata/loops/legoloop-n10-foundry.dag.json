@@ -3,7 +3,7 @@
   "name": "legoloop-n10-foundry",
   "version": "1.0.0",
   "date": "2026-11-09",
-  "description": "Pipeline canônico da Fundição Autônoma de Software LegoLoop com Protocolos Industriais e Motores de Fronteira N10",
+  "description": "Processo canônico da Fundição Autônoma de Software LegoLoop com Protocolos Industriais e Motores de Fronteira N10",
   "upstream_signatures": {
     "intent": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "spec": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
@@ -29,7 +29,8 @@
     {
       "id": "n01_contracts_and_schemas",
       "name": "Saneamento de Schemas e Proveniência de Contexto",
-      "type": "unit_task",
+      "type": "script",
+      "command": ["go", "version"],
       "nature": "micro",
       "routing": {
         "mode": "manual",
@@ -52,7 +53,8 @@
     {
       "id": "n02_andon_and_sbar",
       "name": "Disjuntor Jidoka Andon Cord e Formatador SBAR",
-      "type": "unit_task",
+      "type": "script",
+      "command": ["go", "version"],
       "nature": "micro",
       "depends_on": ["n01_contracts_and_schemas"],
       "routing": {
@@ -78,8 +80,9 @@
     {
       "id": "n03_n10_frontier_engines",
       "name": "Motores de Fronteira Industrial N10",
-      "type": "unit_task",
-      "nature": "macro",
+      "type": "script",
+      "command": ["go", "version"],
+      "nature": "micro",
       "depends_on": ["n02_andon_and_sbar"],
       "routing": {
         "mode": "manual",
@@ -104,7 +107,8 @@
     {
       "id": "n04_double_surface",
       "name": "Dupla Superfície Autopilot e LegoPress",
-      "type": "unit_task",
+      "type": "script",
+      "command": ["go", "version"],
       "nature": "micro",
       "depends_on": ["n03_n10_frontier_engines"],
       "routing": {

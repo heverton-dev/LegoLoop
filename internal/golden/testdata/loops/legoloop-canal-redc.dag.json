@@ -3,7 +3,7 @@
   "name": "legoloop-canal-redc",
   "version": "1.0.0",
   "date": "2026-11-07",
-  "description": "Engenharia reversa profunda de canais e vídeos virais, geração de dossiê DNA, catálogo de métodos em pipelines e gerador de vídeos com Brand Swap.",
+  "description": "Engenharia reversa profunda de canais e vídeos virais, geração de dossiê DNA, catálogo de métodos em Processos e gerador de vídeos com Brand Swap.",
   "upstream_signatures": {
     "intent": "05deac970437ef94a69af587e9d386b20654aab3d14b82ba16d06ccc822277e9",
     "spec": "a61ce6fe42757cb168b30e77dc1f63c11bc07eb7538376cc8a000c761f3516bb",
@@ -25,7 +25,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -123,8 +123,8 @@
       }
     },
     {
-      "id": "n03_gerar_pipelines_metodos",
-      "name": "Gerador de Pipelines & Métodos",
+      "id": "n03_metodos_processos",
+      "name": "Gerador de Processos & Métodos",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "script",
@@ -150,21 +150,21 @@
         "internal/redc/dna.go"
       ],
       "context_out": [
-        "internal/redc/pipeline_gen.go"
+        "internal/redc/processo_gen.go"
       ],
       "command": [
         "powershell",
         "-NoProfile",
         "-Command",
-        "Test-Path internal/redc/pipeline_gen.go"
+        "Test-Path internal/redc/processo_gen.go"
       ],
       "test_seam": {
         "type": "unit_test_gate",
-        "target": "file_exists('internal/redc/pipeline_gen.go')"
+        "target": "file_exists('internal/redc/processo_gen.go')"
       },
       "output": {
-        "artifact": "internal/redc/pipeline_gen.go",
-        "gate": "file_exists('internal/redc/pipeline_gen.go')"
+        "artifact": "internal/redc/processo_gen.go",
+        "gate": "file_exists('internal/redc/processo_gen.go')"
       }
     },
     {

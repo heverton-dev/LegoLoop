@@ -3,7 +3,7 @@
   "name": "legoloop-fechar",
   "version": "1.0.0",
   "date": "2026-11-07",
-  "description": "Pipeline canônico de canonização determinística em 9 etapas com telemetria estrita de tempo, recursos e custos",
+  "description": "Processo canônico de canonização determinística em 9 etapas com telemetria estrita de tempo, recursos e custos",
   "upstream_signatures": {
     "intent": "e037061d1ea1787c80ee98ca4666cfb749629b3a4a905a96328a9b31d9fa499c",
     "spec": "01b2a758e5f2fe4e8be320a4ca22495fc9f6ee40498dbfb9df881db22b31128c",
@@ -25,7 +25,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort"
   },
   "trigger": {
     "type": "manual"
@@ -122,7 +122,7 @@
         "legoloop",
         "legopress",
         "auditar",
-        "docs/books/video-rea/2026-11-07_PIPELINE-VIDEO-REA.pdf"
+        "docs/books/video-rea/2026-11-07_PROCESSO-VIDEO-REA.pdf"
       ],
       "output": {
         "artifact": "docs/books/video-rea/livro.json",
@@ -215,20 +215,20 @@
         "mode": "isolated"
       },
       "context_in": [
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/processo.dag.json"
       ],
       "context_out": [
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/processo.dag.json"
       ],
       "status": "COMPLETED",
       "command": [
         "legoloop",
         "validate",
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/processo.dag.json"
       ],
       "output": {
-        "artifact": "loops/legoloop-video-motion/pipeline.dag.json",
-        "gate": "file_exists('loops/legoloop-video-motion/pipeline.dag.json')"
+        "artifact": "processos/legoloop-video-motion/processo.dag.json",
+        "gate": "file_exists('processos/legoloop-video-motion/processo.dag.json')"
       },
       "test_seam": {
         "type": "unit_test_gate",
@@ -266,7 +266,7 @@
         "mode": "isolated"
       },
       "context_in": [
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/processo.dag.json"
       ],
       "context_out": [
         "bin/legoloop.exe"

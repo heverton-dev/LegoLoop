@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "addy-osmani",
-  "name": "Pipeline de Web Performance & Engenharia Addy Osmani (8 Sub-Loops)",
-  "description": "Pipeline canônico de engenharia e performance web baseado nas 25 skills e playbooks de Addy Osmani: Alinhamento & Contexto -> Especificação & Restrições (CONSTRAINTS.md) -> Decomposição Tracer-Bullet -> Construção TDD -> Runtime Real & Web Vitals -> Auditoria 5 Eixos & Hardening OWASP -> Observabilidade & Ship.",
+  "name": "Processo de Web Performance & Engenharia Addy Osmani (8 etapas)",
+  "description": "Processo canônico de engenharia e performance web baseado nas 25 skills e playbooks de Addy Osmani: Alinhamento & Contexto -> Especificação & Restrições (CONSTRAINTS.md) -> Decomposição Tracer-Bullet -> Construção TDD -> Runtime Real & Web Vitals -> Auditoria 5 Eixos & Hardening OWASP -> Observabilidade & Ship.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {
@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -39,7 +39,7 @@
   },
   "nodes": [
     {
-      "id": "subloop-1-alinhar-contexto",
+      "id": "etapa-1-alinhar-contexto",
       "name": "Alinhamento & Contexto",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -74,14 +74,14 @@
       }
     },
     {
-      "id": "subloop-2-especificar-restricoes",
+      "id": "etapa-2-especificar-restricoes",
       "name": "Especificação & Restrições",
       "nature": "micro",
       "cognitive_complexity": "alto",
       "type": "skill",
       "ref": "skills/aidd-osmani",
       "depends_on": [
-        "subloop-1-alinhar-contexto"
+        "etapa-1-alinhar-contexto"
       ],
       "routing": {
         "mode": "auto",
@@ -116,14 +116,14 @@
       }
     },
     {
-      "id": "subloop-3-planejar-tickets",
+      "id": "etapa-3-planejar-tickets",
       "name": "Decomposição Tracer-Bullet",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/aidd-osmani",
       "depends_on": [
-        "subloop-2-especificar-restricoes"
+        "etapa-2-especificar-restricoes"
       ],
       "routing": {
         "mode": "auto",
@@ -158,14 +158,14 @@
       }
     },
     {
-      "id": "subloop-4-construir-tdd",
+      "id": "etapa-4-construir-tdd",
       "name": "Construção TDD Cirúrgica",
-      "nature": "macro",
+      "nature": "micro",
       "cognitive_complexity": "alto",
       "type": "skill",
       "ref": "skills/aidd-osmani",
       "depends_on": [
-        "subloop-3-planejar-tickets"
+        "etapa-3-planejar-tickets"
       ],
       "routing": {
         "mode": "suggested",
@@ -201,14 +201,14 @@
       }
     },
     {
-      "id": "subloop-5-runtime-webperf",
+      "id": "etapa-5-runtime-webperf",
       "name": "Runtime Real & Web Vitals",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/aidd-osmani",
       "depends_on": [
-        "subloop-4-construir-tdd"
+        "etapa-4-construir-tdd"
       ],
       "routing": {
         "mode": "auto",
@@ -243,14 +243,14 @@
       }
     },
     {
-      "id": "subloop-6-review-hardening",
+      "id": "etapa-6-review-hardening",
       "name": "Auditoria 5 Eixos & Hardening",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/aidd-osmani",
       "depends_on": [
-        "subloop-5-runtime-webperf"
+        "etapa-5-runtime-webperf"
       ],
       "routing": {
         "mode": "suggested",
@@ -286,14 +286,14 @@
       }
     },
     {
-      "id": "subloop-7-observabilidade-ship",
+      "id": "etapa-7-observabilidade-ship",
       "name": "Observabilidade & Ship",
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "skill",
       "ref": "skills/aidd-osmani",
       "depends_on": [
-        "subloop-6-review-hardening"
+        "etapa-6-review-hardening"
       ],
       "routing": {
         "mode": "auto",

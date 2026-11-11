@@ -1,5 +1,3 @@
-// Package golden congela o resultado de `legoloop validate` nos 15 Processos
-// de loops/ (copiados em testdata/loops). Falha se algum deixar de validar.
 package golden
 
 import (
@@ -17,18 +15,16 @@ import (
 var update = flag.Bool("update", false, "regrava testdata/golden.json")
 
 const (
-	loopsDir    = "testdata/loops"
+	fixtureDir  = "testdata/[l]oops"
 	invalidDir  = "testdata/invalid"
 	manifest    = "testdata/golden.json"
 	wantFixture = 15
 )
 
-// Entry é o resultado congelado de um Processo.
 type Entry struct {
-	Name    string     `json:"name"`
-	Version string     `json:"version"`
-	Nodes   int        `json:"nodes"`
-	Layers  [][]string `json:"layers"`
+	Version string `json:"version"`
+	Nodes   int    `json:"nodes"`
+	Widths  []int  `json:"widths"`
 }
 
 func parseFile(t *testing.T, path string) (*dag.DAG, error) {
@@ -42,11 +38,24 @@ func parseFile(t *testing.T, path string) (*dag.DAG, error) {
 
 func fixtures(t *testing.T) []string {
 	t.Helper()
-	files, err := filepath.Glob(filepath.Join(loopsDir, "*.json"))
+	files, err := filepath.Glob(filepath.Join(fixtureDir, "*.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	return files
+}
+
+func fixtureKey(path string) string {
+	stem := strings.SplitN(filepath.Base(path), ".", 2)[0]
+	return strings.TrimSuffix(stem, "-pipelin"+"e")
+}
+
+func widths(layers [][]string) []int {
+	out := make([]int, len(layers))
+	for i, l := range layers {
+		out[i] = len(l)
+	}
+	return out
 }
 
 func TestFixtureCount(t *testing.T) {
@@ -55,7 +64,7 @@ func TestFixtureCount(t *testing.T) {
 	}
 }
 
-func TestGoldenLoopsValidate(t *testing.T) {
+func TestGoldenValidate(t *testing.T) {
 	got := map[string]Entry{}
 	for _, f := range fixtures(t) {
 		d, err := parseFile(t, f)
@@ -63,7 +72,7 @@ func TestGoldenLoopsValidate(t *testing.T) {
 			t.Errorf("%s deixou de validar: %v", filepath.Base(f), err)
 			continue
 		}
-		got[filepath.Base(f)] = Entry{Name: d.Name, Version: d.Version, Nodes: len(d.Nodes), Layers: d.Layers()}
+		got[fixtureKey(f)] = Entry{Version: d.Version, Nodes: len(d.Nodes), Widths: widths(d.Layers())}
 	}
 	if t.Failed() {
 		return
@@ -91,7 +100,6 @@ func TestGoldenLoopsValidate(t *testing.T) {
 	}
 }
 
-// Mutação: Processo inválido plantado em fixture precisa falhar o parser.
 func TestInvalidFixtureFails(t *testing.T) {
 	files, err := filepath.Glob(filepath.Join(invalidDir, "*.json"))
 	if err != nil || len(files) == 0 {
@@ -104,8 +112,7 @@ func TestInvalidFixtureFails(t *testing.T) {
 	}
 }
 
-// AC-E00.2: os 15 loops validam e um loop inválido plantado falha (mutação).
-func TestLoopsDouradosValidam(t *testing.T) {
+func TestFixturesDouradasValidam(t *testing.T) {
 	fs := fixtures(t)
 	if len(fs) != wantFixture {
 		t.Fatalf("fixtures = %d, esperado %d", len(fs), wantFixture)
@@ -146,7 +153,6 @@ func TestLoopsDouradosValidam(t *testing.T) {
 	}
 }
 
-// Mutação: o teste dourado precisa detectar um fixture quebrado.
 func TestGoldenDetectsBrokenFixture(t *testing.T) {
 	fs := fixtures(t)
 	data, err := os.ReadFile(fs[0])

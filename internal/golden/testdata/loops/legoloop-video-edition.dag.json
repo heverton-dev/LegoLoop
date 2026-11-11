@@ -3,7 +3,7 @@
   "name": "legoloop-video-edition",
   "version": "1.0.0",
   "date": "2026-11-08",
-  "description": "Pipeline executável de edição determinística de vídeo por código (Lucas Leite) com isolamento hermético em scratch/ e Stop-Gates humanos.",
+  "description": "Processo executável de edição determinística de vídeo por código (Lucas Leite) com isolamento hermético em scratch/ e Stop-Gates humanos.",
   "upstream_signatures": {
     "intent": "38a39527ec3169f44db5582f3ef7f039a6133a887019e09d17d057754b5dfd17",
     "spec": "86bc57bdfceef5ca66d81b953d602330a6c02ebce75231e3fe0e7fa36f1c4df7",
@@ -25,7 +25,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 600,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort"
   },
   "trigger": {
     "type": "manual"
