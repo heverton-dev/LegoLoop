@@ -1,3 +1,12 @@
+---
+id: SPEC-{{ID_DA_INICIATIVA}}
+status: DRAFT
+date: {{AAAA-MM-DD}}
+schema_version: 2
+upstream: [INTENT-{{ID_DA_INICIATIVA}}]
+covers: [R1, R2]
+---
+
 # 📋 SPEC: {{TEMA_DA_ESPECIFICACAO}}
 
 > **Status:** {{Proposta para Revisão | Aprovado pelo Usuário}}  
@@ -144,6 +153,15 @@ func (c {{Contrato}}) Validate() error {
   * **Dado que:** {{Condição de carga, entrada hostil ou recurso lento}}
   * **Quando:** {{Ação disparada}}
   * **Então:** {{Limite mensurável: tempo, memória, bloqueio de caminho fora da raiz}}
+
+### Rastreabilidade Requisito para Critério
+
+| R | Requisito | AC |
+| :--- | :--- | :--- |
+| `R1` | {{REQUISITO_1}} | `AC-E01.1`, `AC-E01.2` |
+| `R2` | {{REQUISITO_2}} | `AC-E02.1`, `AC-NF.1` |
+
+> Cada `R` tem ao menos um `AC`. O `covers` do front matter lista todos os `R`.
 
 ---
 

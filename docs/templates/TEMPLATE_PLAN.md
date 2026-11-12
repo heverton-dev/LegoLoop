@@ -1,3 +1,12 @@
+---
+id: PLAN-{{ID_DA_INICIATIVA}}
+status: DRAFT
+date: {{AAAA-MM-DD}}
+schema_version: 2
+upstream: [SPEC-{{ID_DA_INICIATIVA}}]
+covers: [AC-E01.1, AC-E01.2, AC-E02.1]
+---
+
 # 🗺️ PLAN: {{TEMA_DO_PLANO}}
 
 > **Status:** {{Em Planejamento | Aprovado pelo Usuário | Em Execução | Concluído}}  
@@ -41,6 +50,11 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 | **E02** | {{NOME_DO_EPICO_02}} | 1 | `AC-E02.1` | `micro` |
 
 > Regra de cobertura: a união da coluna "Critérios de Aceite Cobertos" deve ser igual ao conjunto de `AC-*` da SPEC.
+
+| R | Requisito | AC | Ticket |
+| :--- | :--- | :--- | :--- |
+| `R1` | {{REQUISITO_1}} | `AC-E01.1`, `AC-E01.2` | `TICK-01.1`, `TICK-01.2` |
+| `R2` | {{REQUISITO_2}} | `AC-E02.1` | `TICK-02.1` |
 
 ---
 

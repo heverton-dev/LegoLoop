@@ -9,10 +9,9 @@ import (
 	"legoloop/docs/templates"
 )
 
-// renderPlan materializa o TEMPLATE_PLAN (mesmas seções, mesma ordem). Cada nó vem da mesma fonte do ROUTE,
-// então os dois documentos são espelhos por construção.
 func renderPlan(m planMeta, nodes []routeNode) string {
 	var b strings.Builder
+	writePlanFrontMatter(&b, m)
 	writePlanHeader(&b, m)
 	writePlanStrategy(&b, m)
 	writeEpicTable(&b, m, nodes)
@@ -20,6 +19,11 @@ func renderPlan(m planMeta, nodes []routeNode) string {
 	writePlanNodes(&b, m, nodes)
 	writePlanFinal(&b, nodes)
 	return b.String()
+}
+
+func writePlanFrontMatter(b *strings.Builder, m planMeta) {
+	fmt.Fprintf(b, "---\nid: PLAN-%s\nstatus: DRAFT\ndate: %s\nschema_version: 2\n", m.RouteName, m.Date)
+	fmt.Fprintf(b, "upstream: [%s]\ncovers: [%s]\n---\n\n", strings.TrimSuffix(m.SpecFile, ".md"), strings.Join(m.SpecCriteria, ", "))
 }
 
 func writePlanHeader(b *strings.Builder, m planMeta) {

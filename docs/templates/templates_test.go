@@ -25,7 +25,6 @@ const (
 	idExemplo       = "exemplo-processo-spec-plano"
 	sufixoStudio    = ".loop.json"
 	dirDocumentos   = "loops"
-	// limiteTaxonomia é o mesmo teto do gate do ticket (-tax-max).
 	limiteTaxonomia = 38
 )
 
@@ -206,6 +205,16 @@ func TestPlanMirrorsRoute(t *testing.T) {
 		t.Fatal(err)
 	}
 	plan := templates.Plan()
+	for name, md := range map[string]string{"SPEC": templates.Spec(), "PLAN": plan} {
+		for _, want := range []string{"---\nid: " + name + "-", "\nschema_version: 2\n", "\ncovers: [", "| R | Requisito | AC |", "`R1`", "`AC-"} {
+			if !strings.Contains(md, want) {
+				t.Errorf("%s sem %q", name, want)
+			}
+		}
+		if !strings.HasPrefix(md, "---\n") {
+			t.Errorf("%s deve começar pelo front matter", name)
+		}
+	}
 	for _, n := range r.Nodes {
 		if !strings.Contains(plan, "`"+n.ID+"`") {
 			t.Errorf("o PLAN não cita o nó %s", n.ID)
