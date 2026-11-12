@@ -40,6 +40,29 @@ func materialize(t *testing.T, tweak func(*interview.Session)) string {
 	return string(b)
 }
 
+func TestIntentTemplate(t *testing.T) {
+	const secao = "## 3. Mapeamento Preliminar de Peças"
+	campos := []string{"id: INTENT-", "status: ", "date: ", "schema_version: 2", "upstream: [", "covers: ["}
+	docs := map[string]string{"template": templates.Intent(), "gerado": materialize(t, nil)}
+	for nome, doc := range docs {
+		if !strings.HasPrefix(doc, "---\n") {
+			t.Errorf("%s: o documento deve abrir com front matter", nome)
+		}
+		fim := strings.Index(doc[4:], "\n---\n")
+		if fim < 0 {
+			t.Fatalf("%s: front matter não fechado", nome)
+		}
+		for _, c := range campos {
+			if !strings.Contains(doc[:fim+4], "\n"+c) {
+				t.Errorf("%s: front matter sem o campo %q", nome, c)
+			}
+		}
+		if !strings.Contains(doc, secao) {
+			t.Errorf("%s: falta a seção %q", nome, secao)
+		}
+	}
+}
+
 func TestMaterializeIntent_FollowsTemplateStructure(t *testing.T) {
 	doc := materialize(t, nil)
 	pos := 0

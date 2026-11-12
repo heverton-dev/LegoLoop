@@ -1,10 +1,19 @@
+---
+id: INTENT-{{ID_DA_INICIATIVA}}
+status: DRAFT
+date: {{AAAA-MM-DD}}
+schema_version: 2
+upstream: [INTERVIEW-{{ID_DA_INICIATIVA}}]
+covers: [Q1]
+---
+
 # 🎯 INTENT: {{TITULO_DA_INTENCAO}}
 
 > **Status:** {{DRAFT | UNDER_REVIEW | APPROVED}}  
 > **Data:** {{DATA}}  
 > **Autor:** {{AUTOR}}  
 > **Iniciativa:** {{NOME_OU_ID_DA_INICIATIVA | Opcional para demandas corporativas/multi-sistemas}}  
-> **Alvo:** {{MODULOS_AFETADOS}}  
+> **Alvo:** {{PECAS_AFETADAS}}  
 > **Sessão:** {{UUID_DA_SESSAO}}  
 > **Confiança da Entrevista:** {{NN}}% (mínimo de 95% para sair de DRAFT)  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -45,7 +54,7 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 
 ---
 
-## 3. Mapeamento Preliminar de Blocos e Subloops
+## 3. Mapeamento Preliminar de Peças
 Identificação das Skills que o futuro Processo precisará acionar. Tipos permitidos: os tipos de nó do DAG e do ROUTE, descritos no README, seção 6.
 
 | Identificador | Tipo da Peça | Especialidade / Skill | Papel no Processo |

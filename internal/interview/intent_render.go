@@ -67,6 +67,8 @@ func bullets(items []string, indent, empty string) string {
 func cell(s string) string { return strings.ReplaceAll(s, "|", `\|`) }
 
 func writeIntentHeader(b *strings.Builder, v IntentView) {
+	fmt.Fprintf(b, "---\nid: INTENT-%s\nstatus: %s\ndate: %s\nschema_version: 2\n", v.SessionID, intentStatus(v.Confidence), v.Date)
+	fmt.Fprintf(b, "upstream: [INTERVIEW-%s]\ncovers: [Q1]\n---\n\n", v.SessionID)
 	fmt.Fprintf(b, "# 🎯 INTENT: %s\n\n", v.Theme)
 	fmt.Fprintf(b, "> **Status:** %s  \n", intentStatus(v.Confidence))
 	fmt.Fprintf(b, "> **Data:** %s  \n", v.Date)
@@ -106,7 +108,7 @@ func writeIntentScope(b *strings.Builder, v IntentView) {
 }
 
 func writeIntentBlocks(b *strings.Builder, natureza string) {
-	b.WriteString("## 3. Mapeamento Preliminar de Blocos e Subloops\n")
+	b.WriteString("## 3. Mapeamento Preliminar de Peças\n")
 	b.WriteString("Identificação das Skills que o futuro Processo precisará acionar. Tipos permitidos: os tipos de nó do DAG e do ROUTE, descritos no README, seção 6.\n\n")
 	b.WriteString("| Identificador | Tipo da Peça | Especialidade / Skill | Papel no Processo |\n| :--- | :--- | :--- | :--- |\n")
 	b.WriteString("| `PECA-01` | `skill` | `skills/aidd-spec` | Elaborar a especificação formal com critérios BDD. |\n")
