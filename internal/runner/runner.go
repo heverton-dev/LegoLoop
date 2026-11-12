@@ -89,8 +89,12 @@ type Options struct {
 	NonInteractive bool              // --non-interactive: rejeita se não houver TTY
 	Prompter       gate.Prompter     // prompter para Stop-Gates interativos
 	Vars           map[string]string // variáveis ${NOME} expandidas nos gates file_exists
-	OnNodeStart    func(nodeID string)
-	OnNodeFinish   func(nr NodeReport)
+	// Workers devolve quantos nós a memória comporta, dados os pesos em MB do conjunto (nil = só Parallelism).
+	Workers func(pesosMB []int) int
+	// PesoMB devolve o peso em MB de um nó (nil = 750 MB).
+	PesoMB       func(n dag.Node) int
+	OnNodeStart  func(nodeID string)
+	OnNodeFinish func(nr NodeReport)
 }
 
 // Run executa o DAG. Retorna erro apenas para configuração inválida; falhas de nó
@@ -107,7 +111,7 @@ func Run(ctx context.Context, d *dag.DAG, opts Options) (Report, error) {
 		return Report{}, err
 	}
 	defer root.Close()
-	r := &run{d: d, opts: opts, root: root, sem: make(chan struct{}, parallelism(opts.Parallelism))}
+	r := &run{d: d, opts: opts, root: root, agenda: novaAgenda(parallelism(opts.Parallelism), opts.Workers)}
 	rep := Report{OK: true}
 	for _, layer := range d.Layers() {
 		if !rep.OK {
@@ -144,10 +148,10 @@ func skipped(ids []string) []NodeReport {
 }
 
 type run struct {
-	d    *dag.DAG
-	opts Options
-	root *os.Root
-	sem  chan struct{}
+	d      *dag.DAG
+	opts   Options
+	root   *os.Root
+	agenda *agenda
 }
 
 func (r *run) layer(ctx context.Context, ids []string) []NodeReport {
@@ -155,8 +159,12 @@ func (r *run) layer(ctx context.Context, ids []string) []NodeReport {
 	var wg sync.WaitGroup
 	for i, id := range ids {
 		wg.Go(func() {
-			r.sem <- struct{}{}
-			defer func() { <-r.sem }()
+			n := *r.d.Node(id)
+			if err := r.agenda.entrar(ctx, id, arquivosDe(n), r.pesoMB(n)); err != nil {
+				out[i] = NodeReport{ID: id, Status: StatusError, Error: "cancelado antes de iniciar: " + err.Error()}
+				return
+			}
+			defer r.agenda.sair(id)
 			out[i] = r.node(ctx, id)
 		})
 	}
