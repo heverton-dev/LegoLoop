@@ -14,7 +14,7 @@ covers: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10]
 > **Versão:** 1.0.0  
 > **Autor:** Claude  
 > **Intenção:** [INTENT](../intents/2026-11-12_INTENT_SEXTETO_E_TEMPLATES.md)  
-> **Alvo Primário:** `docs/templates`, `internal/dag`, `internal/artefato`, `internal/capacidade`, `internal/orchestrix`, `tools/route2dag`  
+> **Alvo Primário:** `docs/templates`, `internal/dag`, `internal/artefato`, `internal/roteamento`, `internal/orchestrix`, `tools/route2dag`  
 > **Consome:** INTENT · **Produz:** PLAN e ROUTE  
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 
@@ -65,7 +65,7 @@ flowchart LR
 ```
 
 * `internal/artefato`: lê front matter e valida a cadeia Q, R, AC, nó e `spec_ref`.
-* `internal/capacidade`: classifica o nó, lê o inventário do SO e resolve classe em harness, modelo e esforço.
+* `internal/roteamento`: classifica o nó, lê o inventário do SO e resolve classe em harness, modelo e esforço.
 * `internal/dag`: ganha os campos novos e o modo legado.
 * `tools/route2dag`: copia o roteamento já resolvido da ROUTE para o DAG.
 * `internal/orchestrix/relatorio.go`: gera a parte factual do REPORT.
@@ -77,9 +77,9 @@ flowchart LR
 | Front matter | `internal/artefato/frontmatter_test.go` | `TestFrontMatter` |
 | Rastreabilidade | `internal/artefato/trace_test.go` | `TestCadeiaQuebradaFalha` |
 | Contrato v2 | `internal/dag/schema_v2_test.go` | `TestSchemaV2Estrito`, `TestModoLegado` |
-| Classe | `internal/capacidade/classe_test.go` | `TestClassePorRegra` |
-| Inventário | `internal/capacidade/inventario_test.go` | `TestInventarioPorHarness` |
-| Resolvedor | `internal/capacidade/resolver_test.go` | `TestDegradacaoRegistrada`, `TestExtremeSemModeloViraGate` |
+| Classe | `internal/roteamento/classe_test.go` | `TestClassePorRegra` |
+| Inventário | `internal/roteamento/inventario_test.go` | `TestInventarioPorHarness` |
+| Resolvedor | `internal/roteamento/resolver_test.go` | `TestDegradacaoRegistrada`, `TestExtremeSemModeloViraGate` |
 | Paridade | `tools/route2dag/paridade_test.go` | `TestParidadeRouteDag` |
 | Templates | `docs/templates/templates_test.go` | `TestTemplatesDoSexteto`, `TestPecasAgnosticas` |
 | REPORT | `internal/orchestrix/relatorio_test.go` | `TestRelatorioFactual` |

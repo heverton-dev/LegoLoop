@@ -13,7 +13,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9]
 > **Data:** 2026-11-12  
 > **Autor:** Claude (orquestrador), a pedido do usuário  
 > **Iniciativa:** I2 do Programa Lei #15 (I1 Taxonomia, I2 Sexteto e templates, I3 Roteamento honesto, I4 DISSECAR, I5 MATRIZ_PAPEIS, I6 Migração dos legados)  
-> **Alvo:** `docs/templates`, `internal/dag`, `internal/artefato` (novo), `internal/capacidade` (novo), `internal/orchestrix`, `tools/route2dag`  
+> **Alvo:** `docs/templates`, `internal/dag`, `internal/artefato` (novo), `internal/roteamento` (novo), `internal/orchestrix`, `tools/route2dag`  
 > **Entrevista:** [INTERVIEW](../interviews/2026-11-12_INTERVIEW_SEXTETO_TEMPLATES.md)  
 > **Confiança da Entrevista:** 95%  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -63,7 +63,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9]
 | :--- | :--- | :--- | :--- |
 | `PECA-01` | `unit_task` | Go (`internal/artefato`) | Front matter e validador de rastreabilidade. |
 | `PECA-02` | `unit_task` | Go (`internal/dag`) | Contrato `schema_version: 2` e modo legado. |
-| `PECA-03` | `unit_task` | Go (`internal/capacidade`) | Classe, inventário e resolvedor. |
+| `PECA-03` | `unit_task` | Go (`internal/roteamento`) | Classe, inventário e resolvedor. |
 | `PECA-04` | `unit_task` | Markdown e JSON | Templates do sexteto, REPORT, HANDOFF e peças. |
 | `PECA-05` | `unit_task` | Go (`internal/orchestrix`) | Gerador factual do REPORT. |
 | `PECA-06` | `stop_gate` | Humano | Aprovar a mudança do contrato público do DAG e o fechamento. |
@@ -91,7 +91,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9]
 | :--- | :--- | :--- | :--- |
 | 1 | O DAG v2 carrega todos os campos exigidos e o motor rejeita o que falta. | Teste de validação com mutação | `go test ./internal/dag/...` |
 | 2 | A cadeia Q, R, AC, nó e `spec_ref` é validada. | Teste com cadeia quebrada plantada | `go test ./internal/artefato/...` |
-| 3 | O gerador resolve a classe contra um inventário simulado de cada harness e degrada com registro. | Teste com inventário parcial e vazio | `go test ./internal/capacidade/...` |
+| 3 | O gerador resolve a classe contra um inventário simulado de cada harness e degrada com registro. | Teste com inventário parcial e vazio | `go test ./internal/roteamento/...` |
 | 4 | Todo template é agnóstico em SO, harness e modo. | Teste de templates | `go test ./docs/templates/...` |
 | 5 | O REPORT factual nasce da execução sem edição de agente. | Teste do gerador | `go test ./internal/orchestrix/...` |
 | 6 | Os templates novos não aumentam as violações do linter (linha de base: 35 em `docs/templates`, 2026-11-12). | Linter | `go run ./tools/ticketgate -tax docs/templates -tax-max 35` |

@@ -13,11 +13,11 @@
   "upstream_signatures": {
     "intent": {
       "path": "docs/intents/2026-11-12_INTENT_SEXTETO_E_TEMPLATES.md",
-      "sha256": "58f875f7a364e22f01c70cfc70f88e56436fe9f8c54660b4bbeb1d286713fb23"
+      "sha256": "8b038895d16c270a27be54d705a55be96911da6e37cc72ac893c042efef6f242"
     },
     "spec": {
       "path": "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
-      "sha256": "101d245a79d05ef17d58b71a19578851b997fb2e6f1feaf0f1bb005be5e536e1"
+      "sha256": "2210168cf359004f37e65379349aeb0a573fe53da16e63959495deed72af5af6"
     },
     "plan": {
       "path": "docs/plans/2026-11-12_PLAN_SEXTETO_E_TEMPLATES.md",
@@ -412,13 +412,13 @@
         "context_artifacts": []
       },
       "spec_ref": "AC-I2-01.1",
-      "test_target": "internal/capacidade/classe_test.go:TestClassePorRegra",
+      "test_target": "internal/roteamento/classe_test.go:TestClassePorRegra",
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "internal/capacidade/classe.go",
-          "internal/capacidade/classe_test.go"
+          "internal/roteamento/classe.go",
+          "internal/roteamento/classe_test.go"
         ],
         "verify": [
           [
@@ -426,14 +426,14 @@
             "run",
             "./tools/ticketgate",
             "-pkgs",
-            "./internal/capacidade/...",
+            "./internal/roteamento/...",
             "-tax",
-            "internal/capacidade/classe.go,internal/capacidade/classe_test.go",
+            "internal/roteamento/classe.go,internal/roteamento/classe_test.go",
             "-tax-max",
             "0"
           ]
         ],
-        "gate": "exit_code == 0 && file_exists('internal/capacidade/classe.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/classe.go')"
       },
       "telemetry": null
     },
@@ -486,20 +486,20 @@
         "source_files": [
           "internal/processo/vinculo.go",
           "internal/orchestrix/backends.go",
-          "internal/capacidade/",
+          "internal/roteamento/",
           "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
         ],
         "spec_anchor": "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md#AC-I2-01.2",
         "context_artifacts": []
       },
       "spec_ref": "AC-I2-01.2",
-      "test_target": "internal/capacidade/inventario_test.go:TestInventarioPorHarness",
+      "test_target": "internal/roteamento/inventario_test.go:TestInventarioPorHarness",
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "internal/capacidade/inventario.go",
-          "internal/capacidade/inventario_test.go"
+          "internal/roteamento/inventario.go",
+          "internal/roteamento/inventario_test.go"
         ],
         "verify": [
           [
@@ -507,14 +507,14 @@
             "run",
             "./tools/ticketgate",
             "-pkgs",
-            "./internal/capacidade/...",
+            "./internal/roteamento/...",
             "-tax",
-            "internal/capacidade/inventario.go,internal/capacidade/inventario_test.go",
+            "internal/roteamento/inventario.go,internal/roteamento/inventario_test.go",
             "-tax-max",
             "0"
           ]
         ],
-        "gate": "exit_code == 0 && file_exists('internal/capacidade/inventario.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/inventario.go')"
       },
       "telemetry": null
     },
@@ -565,20 +565,20 @@
       },
       "inputs": {
         "source_files": [
-          "internal/capacidade/",
+          "internal/roteamento/",
           "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
         ],
         "spec_anchor": "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md#AC-I2-01.3",
         "context_artifacts": []
       },
       "spec_ref": "AC-I2-01.3",
-      "test_target": "internal/capacidade/resolver_test.go:TestDegradacaoRegistrada",
+      "test_target": "internal/roteamento/resolver_test.go:TestDegradacaoRegistrada",
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "internal/capacidade/resolver.go",
-          "internal/capacidade/resolver_test.go"
+          "internal/roteamento/resolver.go",
+          "internal/roteamento/resolver_test.go"
         ],
         "verify": [
           [
@@ -586,14 +586,14 @@
             "run",
             "./tools/ticketgate",
             "-pkgs",
-            "./internal/capacidade/...",
+            "./internal/roteamento/...",
             "-tax",
-            "internal/capacidade/resolver.go,internal/capacidade/resolver_test.go",
+            "internal/roteamento/resolver.go,internal/roteamento/resolver_test.go",
             "-tax-max",
             "0"
           ]
         ],
-        "gate": "exit_code == 0 && file_exists('internal/capacidade/resolver.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/resolver.go')"
       },
       "telemetry": null
     },
