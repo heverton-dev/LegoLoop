@@ -248,7 +248,7 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 
 | Épico | Estado | Commit de fechamento |
 | :--- | :--- | :--- |
-| E00, E01, E02 | Implementados em 2026-11-10. `SG-E00` e `SG-E02` aguardam aprovação retroativa do usuário. | ver REPORT |
+| E00, E01, E02 | Implementados em 2026-11-10. `SG-E00` e `SG-E02` aprovados pelo usuário em 2026-11-12 (retroativo). | ver REPORT |
 | E03 | Concluído. `SG-E03` aprovado em 2026-11-12. | `64b1858` |
 | E04 | Não iniciado. `SG-E04-COFRE` bloqueia `TICK-04.2` e `TICK-04.4`. | n/a |
 | E05 | Não iniciado. | n/a |
@@ -256,7 +256,7 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 
 **Divergências aceitas pelo usuário durante a execução:**
 
-1. O E03 rodou antes da aprovação formal de `SG-E00` e `SG-E02`. A aprovação retroativa fica pendente.
+1. O E03 rodou antes da aprovação formal de `SG-E00` e `SG-E02`. O usuário aprovou os dois gates de forma retroativa em 2026-11-12.
 2. Os nós do E03 foram divididos em fatias de até 12 arquivos (`ffadc27`). O DAG e a ROUTE já refletem a divisão.
 3. O roteamento da seção 3 (D4, D5) não foi aplicado como escrito. O DAG declara `routing.mode: suggested`. O `unit_task` traduz `code-fast` e `code-pro` para Sonnet e `flash` para Haiku. A decisão D7 (raias do `agy`) está obsoleta: o `agy` foi banido em 2026-11-10.
 4. O commit por nó foi autorizado pelo usuário. Nenhum push foi feito.

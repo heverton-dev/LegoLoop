@@ -31,8 +31,8 @@ Este registro serve de HANDOFF. A sessão seguinte lê este arquivo e retoma a t
 
 | Gate | Estado | Quem decide |
 | :--- | :--- | :--- |
-| `SG-E00` | Pendente de aprovação retroativa. O E00 já está implementado. | Usuário |
-| `SG-E02` | Pendente de aprovação retroativa. O E02 já está implementado. | Usuário |
+| `SG-E00` | **Aprovado pelo usuário em 2026-11-12** (aprovação retroativa). | Usuário |
+| `SG-E02` | **Aprovado pelo usuário em 2026-11-12** (aprovação retroativa). | Usuário |
 | `SG-E03` | **Aprovado pelo usuário em 2026-11-12.** | Usuário |
 | `SG-E04-COFRE` | Não chegou. Bloqueia `TICK-04.2` e `TICK-04.4`. | Usuário |
 | `SG-FINAL` | Não chegou. | Usuário |
@@ -84,7 +84,7 @@ O PLAN não previa estas mudanças. Elas nasceram de falhas reais da execução.
 
 ## 5. Divergências entre o PLAN e a execução
 
-1. **Ordem dos épicos.** O PLAN manda E00, E01, E02, E03. O `TICK-03.3` depende do `SG-E02`. A execução do E03 ocorreu com `SG-E00` e `SG-E02` sem aprovação formal. O DAG não foi alterado. A execução usou sub-DAGs derivados, sem essas dependências. O usuário aprovará os dois gates retroativamente.
+1. **Ordem dos épicos.** O PLAN manda E00, E01, E02, E03. O `TICK-03.3` depende do `SG-E02`. A execução do E03 ocorreu com `SG-E00` e `SG-E02` sem aprovação formal. O DAG não foi alterado. A execução usou sub-DAGs derivados, sem essas dependências. O usuário aprovou os dois gates de forma retroativa em 2026-11-12.
 2. **Nós derivados.** Os sub-DAGs derivados vivem no scratchpad da sessão e não entram no repositório. Eles só removem nós já feitos e reduzem `depends_on` ao lote. Eles não mudam `command`, `context_in` nem `context_out`.
 3. **Roteamento de modelo.** O DAG declara `routing.mode: suggested` com `code-pro` e `code-fast`. O `unit_task` traduz esses combos pelo mapa `unitModelAliases` (`internal/orchestrix/unit_run.go`): `code-fast` e `code-pro` viram `sonnet`, e `flash` vira `haiku`. Por isso `micro` e `macro` rodam no mesmo modelo. O `unit_task` aceita só modelo do claude CLI. A ordem D4 do PLAN (9Router, Antigravity, Mimocode, OpenCode, Claude Code, Ollama), a marca `extreme` com Opus e a regra D5 por natureza não valem no `unit_task`. A decisão D7 (raias do `agy`) está obsoleta: o `agy` foi banido por ToS em 2026-11-10.
 4. **Paralelismo.** O DAG permite 2 workers. A execução usou `--parallel 1` por falta de memória.
@@ -118,13 +118,12 @@ Os nós que não aparecem não têm custo registrado neste levantamento.
 
 ## 7. Handoff: o que falta
 
-1. Aprovação retroativa de `SG-E00` e `SG-E02` pelo usuário.
-2. `TICK-04.1`: criar `processos/` a partir de `loops/` (sem tocar o Cofre real).
-3. `TICK-04.3`: corrigir os PDFs reprovados em `docs/books` e `docs/videorea`.
-4. `SG-E04-COFRE`, depois `TICK-04.2` e `TICK-04.4`. O Cofre real só muda com o gate e o backup.
-5. `TICK-05.1` a `TICK-05.6`: criar os arquivos do `orchestrix` e do `runner`, com testes novos que uma mutação faz falhar.
-6. `TICK-06.1`: build de `bin/legoloop.exe` e `taxlinter` global com exit 0. Hoje o `taxlinter` mede 318 violações em `internal` e `cmd`, mais as de `processos`, `skills` e `docs/templates`.
-7. `SG-FINAL`.
+1. `TICK-04.1`: criar `processos/` a partir de `loops/` (sem tocar o Cofre real).
+2. `TICK-04.3`: corrigir os PDFs reprovados em `docs/books` e `docs/videorea`.
+3. `SG-E04-COFRE`, depois `TICK-04.2` e `TICK-04.4`. O Cofre real só muda com o gate e o backup.
+4. `TICK-05.1` a `TICK-05.6`: criar os arquivos do `orchestrix` e do `runner`, com testes novos que uma mutação faz falhar.
+5. `TICK-06.1`: build de `bin/legoloop.exe` e `taxlinter` global com exit 0. Hoje o `taxlinter` mede 318 violações em `internal` e `cmd`, mais as de `processos`, `skills` e `docs/templates`.
+6. `SG-FINAL`.
 
 ## 8. Como retomar
 
