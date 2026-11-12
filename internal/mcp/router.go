@@ -56,8 +56,10 @@ type JSONRPCResponse struct {
 
 // Router gerencia o ciclo de vida do Meta-MCP Router via STDIO.
 type Router struct {
-	vault  VaultRegistry
-	runner ProcessRunner
+	vault     VaultRegistry
+	runner    ProcessRunner
+	skills    *SkillEngine
+	skillRoot string
 }
 
 // NewRouter instancia um novo Router.
@@ -141,6 +143,10 @@ func (r *Router) handleToolCall(req JSONRPCRequest) JSONRPCResponse {
 		return r.callMcpSearch(req.ID, params.Arguments)
 	case "call_mcp_tool":
 		return r.callMcpTool(req.ID, params.Arguments)
+	case "skill_search":
+		return r.callSkillSearch(req.ID, params.Arguments)
+	case "call_skill":
+		return r.callSkill(req.ID, params.Arguments)
 	default:
 		return r.toolCallError(req.ID, fmt.Sprintf("unknown tool: %s", params.Name))
 	}
@@ -199,6 +205,14 @@ func (r *Router) toolCallError(id any, msg string) JSONRPCResponse {
 }
 
 func (r *Router) minimalTools() []map[string]any {
+	tools := r.baseTools()
+	if r.skills != nil {
+		tools = append(tools, skillToolDefs()...)
+	}
+	return tools
+}
+
+func (r *Router) baseTools() []map[string]any {
 	return []map[string]any{
 		{
 			"name":        "mcp_search",
