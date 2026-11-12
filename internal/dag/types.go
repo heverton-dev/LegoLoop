@@ -111,6 +111,7 @@ const (
 // RoutingConfig descreve qual cérebro processa o nó.
 type RoutingConfig struct {
 	Mode     Mode        `json:"mode"`
+	Harness  string      `json:"harness,omitempty"`
 	Model    string      `json:"model,omitempty"`
 	Effort   EffortLevel `json:"effort,omitempty"`
 	Fallback string      `json:"fallback,omitempty"`
@@ -180,6 +181,7 @@ type DAG struct {
 	Name               string         `json:"name"`
 	Description        string         `json:"description,omitempty"`
 	Version            string         `json:"version,omitempty"`
+	SchemaVersion      int            `json:"schema_version,omitempty"`
 	Date               string         `json:"date,omitempty"`
 	UpstreamSignatures map[string]any `json:"upstream_signatures,omitempty"`
 	ExecutionStrategy  map[string]any `json:"execution_strategy,omitempty"`

@@ -62,6 +62,9 @@ func Parse(data []byte) (*DAG, error) {
 	if d.Trigger != nil && d.Trigger.Conflito {
 		return nil, fmt.Errorf("%w: o trigger traz alvos divergentes nos dois dialetos", ErrDialetoMisto)
 	}
+	if err := d.checkSchemaV2(); err != nil {
+		return nil, err
+	}
 	if err := d.validate(); err != nil {
 		return nil, err
 	}

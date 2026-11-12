@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "LegoLoop DAG Contract v2",
-  "description": "Contrato formal JSON Schema do DAG de Processo (LegoLoop). Aceita os dois dialetos: o antigo (subloop, loop_end, campo loop) e o novo (subprocesso, processo_fim, campo processo, id de nó com ponto).",
+  "description": "Contrato formal JSON Schema do DAG de Processo (LegoLoop). Aceita o dialeto antigo e o novo. Com schema_version 2, o parser exige os campos do contrato v2.",
   "type": "object",
   "required": ["name", "nodes"],
   "properties": {
@@ -10,6 +10,7 @@
     "name": { "type": "string" },
     "description": { "type": "string" },
     "version": { "type": "string" },
+    "schema_version": { "type": "integer", "enum": [2] },
     "date": { "type": "string" },
     "upstream_signatures": { "type": "object" },
     "execution_strategy": {
@@ -62,6 +63,7 @@
             "required": ["mode"],
             "properties": {
               "mode": { "type": "string", "enum": ["suggested", "manual", "auto"] },
+              "harness": { "type": "string" },
               "model": { "type": "string" },
               "effort": { "type": "string", "enum": ["low", "medium", "high"] },
               "fallback": { "type": "string" }
@@ -87,6 +89,13 @@
             }
           },
           "slots": { "type": "object" },
+          "isolation": { "type": "object" },
+          "limits": { "type": "object" },
+          "tooling": { "type": "object" },
+          "verification": { "type": "object" },
+          "rollback_strategy": { "type": "string" },
+          "spec_ref": { "type": "string" },
+          "status": { "type": "string" },
           "stop_gate": { "type": ["object", "null"] }
         }
       }
