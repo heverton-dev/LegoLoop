@@ -51,15 +51,16 @@ func resolveTool(name string) string {
 }
 
 type config struct {
-	Root   string
-	Pkgs   []string
-	Tax    []string
-	TaxMax int
-	Gold   bool
-	Build  bool
-	Livros []string
-	Trace  []string
-	Bin    string
+	Root      string
+	Pkgs      []string
+	Tax       []string
+	TaxMax    int
+	Gold      bool
+	Build     bool
+	Livros    []string
+	Trace     []string
+	Interview []string
+	Bin       string
 }
 
 // step é um passo da bateria. Run devolve a saída e um erro quando o passo falha.
@@ -88,6 +89,7 @@ func parseArgs(args []string, errOut io.Writer) (config, error) {
 	build := fs.Bool("build", false, "roda go build ./...")
 	livros := fs.String("livros", "", "pastas com PDFs para legopress auditar")
 	trace := fs.String("trace", "", "pastas ou arquivos da cadeia de rastreabilidade, separados por vírgula")
+	interview := fs.String("interview", "", "entrevistas para a regra de prova, separadas por vírgula")
 	root := fs.String("root", ".", "raiz do repositório Go")
 	bin := fs.String("bin", defaultBin(), "binário legoloop")
 	if err := fs.Parse(args); err != nil {
@@ -97,7 +99,7 @@ func parseArgs(args []string, errOut io.Writer) (config, error) {
 		return config{}, fmt.Errorf("-tax-max deve ser maior ou igual a 0")
 	}
 	return config{Root: *root, Pkgs: splitList(*pkgs), Tax: splitList(*tax), TaxMax: *taxMax,
-		Gold: *gold, Build: *build, Livros: splitList(*livros), Trace: splitList(*trace), Bin: *bin}, nil
+		Gold: *gold, Build: *build, Livros: splitList(*livros), Trace: splitList(*trace), Interview: splitList(*interview), Bin: *bin}, nil
 }
 
 func buildSteps(c config) []step {
@@ -120,6 +122,9 @@ func buildSteps(c config) []step {
 	}
 	if len(c.Trace) > 0 {
 		steps = append(steps, traceStep(c))
+	}
+	if len(c.Interview) > 0 {
+		steps = append(steps, interviewStep(c.Root, c.Interview))
 	}
 	return steps
 }
