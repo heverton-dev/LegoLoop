@@ -30,7 +30,7 @@ func PerfilPadrao() PerfilArquivo {
 		SchemaVersion: 1,
 		Candidatos: map[string][]CandidatoVia{
 			ClasseNano:    oficial("haiku", "low"),
-			ClasseMicro:   oficial("sonnet", "low"),
+			ClasseMicro:   oficial("sonnet", "medium"),
 			ClasseGrande:  oficial("sonnet", "high"),
 			ClasseExtreme: oficial("opus", "high"),
 		},

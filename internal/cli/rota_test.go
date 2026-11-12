@@ -79,7 +79,7 @@ func TestRotaGravaRoteamentoResolvido(t *testing.T) {
 		t.Fatalf("nós = %d, esperado 3", len(nos))
 	}
 	esperado := []struct{ classe, modelo, esforco string }{
-		{"nano", "haiku", "low"}, {"micro", "sonnet", "low"}, {roteamento.ClasseGrande, "sonnet", "high"},
+		{"nano", "haiku", "low"}, {"micro", "sonnet", "medium"}, {roteamento.ClasseGrande, "sonnet", "high"},
 	}
 	for i, n := range nos {
 		no := n.(map[string]any)

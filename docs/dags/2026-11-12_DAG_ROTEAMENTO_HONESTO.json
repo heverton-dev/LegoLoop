@@ -1454,7 +1454,7 @@
   "upstream_signatures": {
     "intent": "b7a38651e2475197e8ceb190f44a128e21d2c40c0264703eea3ae8d6b95e7bab",
     "plan": "97af926f2a7af3f9f15b45ac29d64aaa2b521d3645e9259a2160ad708bfa8336",
-    "spec": "074d3b7f3cf7480351f8936c7bb35d129f2e72e1891f4d76d668ba5c35d980d5"
+    "spec": "2b7b46cdd5721059e36cacaa1ca718551a0f77ba9929f4fdcedb1b7d3b842ac2"
   },
   "version": "1.0.0"
 }

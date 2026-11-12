@@ -145,7 +145,7 @@ Ordem de precedência, da mais fraca para a mais forte: padrão embutido no bin�
   "gateways": { "9router": { "habilitado": true } },
   "candidatos": {
     "nano":    [{ "harness": "claude", "via": "oficial", "modelo": "haiku",  "esforco": "low" }],
-    "micro":   [{ "harness": "claude", "via": "oficial", "modelo": "sonnet", "esforco": "low" }],
+    "micro":   [{ "harness": "claude", "via": "oficial", "modelo": "sonnet", "esforco": "medium" }],
     "<classe grande>": [{ "harness": "claude", "via": "oficial", "modelo": "sonnet", "esforco": "high" }],
     "extreme": [{ "harness": "claude", "via": "oficial", "modelo": "opus",   "esforco": "high" }]
   }
