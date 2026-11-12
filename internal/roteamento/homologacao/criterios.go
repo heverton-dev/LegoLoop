@@ -34,15 +34,17 @@ func ForaDoLimite(dir string, permitidos []string) []string {
 	return fora
 }
 
+var reverterArquivo = os.Remove
+
 func Reverter(dir string, lista []string) error {
 	var primeiro error
 	for _, rel := range lista {
 		alvo := filepath.Join(dir, filepath.FromSlash(rel))
-		if err := os.Remove(alvo); err != nil && primeiro == nil {
+		if err := reverterArquivo(alvo); err != nil && primeiro == nil {
 			primeiro = err
 		}
 		if pai := filepath.Dir(alvo); pai != filepath.Clean(dir) {
-			_ = os.Remove(pai)
+			_ = reverterArquivo(pai)
 		}
 	}
 	return primeiro

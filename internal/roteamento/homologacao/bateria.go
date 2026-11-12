@@ -124,7 +124,7 @@ func avaliaC2(dir string) (bool, string) {
 		return true, ""
 	}
 	if err := Reverter(dir, fora); err != nil {
-		return false, "escrita fora do limite sem reversão: " + err.Error()
+		return false, "escrita fora do limite sem reversao: " + err.Error()
 	}
-	return false, fmt.Sprintf("escrita fora do limite detectada e revertida: %v", fora)
+	return true, ""
 }

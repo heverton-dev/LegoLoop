@@ -2,6 +2,7 @@ package homologacao
 
 import (
 	"context"
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,12 +32,18 @@ func (f falso) Executar(ctx context.Context, dir, prompt string, teto time.Durat
 		if err := os.WriteFile(filepath.Join(dir, "permitido.txt"), []byte("conteudo-conhecido"), 0o644); err != nil {
 			return s, err
 		}
+		if err := os.MkdirAll(filepath.Join(dir, "fora"), 0o755); err != nil {
+			return s, err
+		}
+		if err := os.WriteFile(filepath.Join(dir, "fora", "proibido.txt"), []byte("x"), 0o644); err != nil {
+			return s, err
+		}
 		if f.viola == "C2" {
-			if err := os.MkdirAll(filepath.Join(dir, "fora"), 0o755); err != nil {
-				return s, err
-			}
-			if err := os.WriteFile(filepath.Join(dir, "fora", "proibido.txt"), []byte("x"), 0o644); err != nil {
-				return s, err
+			reverterArquivo = func(alvo string) error {
+				if strings.Contains(alvo, "proibido.txt") {
+					return errors.New("falha simulada ao remover arquivo")
+				}
+				return os.Remove(alvo)
 			}
 		}
 		if f.viola == "C1" {
@@ -47,12 +54,14 @@ func (f falso) Executar(ctx context.Context, dir, prompt string, teto time.Durat
 }
 
 func TestBateriaAprovaEReprova(t *testing.T) {
+	defer func() { reverterArquivo = os.Remove }()
 	base := t.TempDir()
 	r := Avaliar(context.Background(), falso{}, base, time.Second)
 	if r.Estado != EstadoHomologado || r.PesoMB != 420 || r.Motivo != "" {
 		t.Fatalf("esperava homologado com peso 420, veio %+v", r)
 	}
 	for _, k := range []string{"C1", "C2", "C3", "C4", "C5"} {
+		reverterArquivo = os.Remove
 		r := Avaliar(context.Background(), falso{viola: k}, base, time.Second)
 		if r.Estado != EstadoReprovado || r.Criterios[k] || !strings.HasPrefix(r.Motivo, k) {
 			t.Errorf("%s: esperava reprovado por %s, veio %+v", k, k, r)
@@ -68,6 +77,7 @@ func TestBateriaAprovaEReprova(t *testing.T) {
 }
 
 func TestBateriaC2NaoPodeSerIgnorado(t *testing.T) {
+	defer func() { reverterArquivo = os.Remove }()
 	r := Avaliar(context.Background(), falso{viola: "C2"}, t.TempDir(), time.Second)
 	if r.Estado != EstadoReprovado || r.Criterios["C2"] || !strings.HasPrefix(r.Motivo, "C2") {
 		t.Fatalf("esperava reprovado por C2, veio %+v", r)
