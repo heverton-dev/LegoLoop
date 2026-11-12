@@ -27,30 +27,33 @@ func diretivaPausaPuro(pausa Pausa) string {
 	}
 }
 
-func stopGateProva(pausa Pausa) string {
+func pausaProva(pausa Pausa) string {
 	switch pausa {
 	case PausaNunca:
-		return "Stop-Gate Humano: desativado. Exiba a decisão e prossiga."
+		return "Pausa: desativada. Exiba a ação e prossiga."
 	case PausaSempre:
-		return "Stop-Gate Humano: antes de toda ação com efeito. [1] seguir | [2] personalizar | [0] cancelar."
+		return "Pausa: antes de toda ação com efeito, peça [1] seguir | [2] personalizar | [0] cancelar."
 	default:
-		return "Stop-Gate Humano: só antes de ação destrutiva ou irreversível. [1] seguir | [2] personalizar | [0] cancelar."
+		return "Pausa: antes de ação destrutiva ou irreversível, peça [1] seguir | [2] personalizar | [0] cancelar."
 	}
 }
 
-// promptProva gera o modo compacto com estrutura fixa e exigência de prova.
+// promptProva gera o modo compacto: prosa curta, veredito primeiro, prova inline.
 func promptProva(pausa Pausa) string {
 	return "# STE-PT modo prova\n" +
 		"Pensamento: telegráfico, no máximo 5 linhas. Não carregue logs inteiros.\n" +
 		"Escrita: PT-BR, voz ativa, uma ação por frase, no máximo 20 palavras. Sem hedging. Um termo por entidade. Mantenha os artigos.\n" +
-		"Estrutura fixa da resposta:\n" +
-		"1. Resultado: 1 frase (feito | bloqueado | decisão pendente).\n" +
-		"2. Fatos comprovados: \"fato | prova: arquivo:linha ou comando e resultado\". Sem prova, escreva \"Não verificado\".\n" +
-		"3. Solução passo a passo: lista numerada.\n" +
-		"4. Sugestão técnica: 1 recomendação com o motivo.\n" +
-		"5. " + stopGateProva(pausa) + "\n" +
-		"Tetos: no máximo 12 linhas e 100 palavras por resposta. Fatos: no máximo 3, 1 linha cada. Solução: no máximo 4 passos. Sugestão: 1 frase.\n" +
-		"Detalhe longo só se o usuário escrever \"detalhe\". Detalhe extenso vai para arquivo; o chat mostra o veredito e o caminho.\n" +
+		"Formato: prosa curta. Sem cabeçalho, tabela, separador ou bloco extra. Vale também para mensagens intermediárias.\n" +
+		"1. Primeira linha: o veredito (Sim, Não, Feito, Bloqueado).\n" +
+		"2. Depois, um fato por linha. O fato que decide leva (prova: arquivo:linha ou comando e resultado).\n" +
+		"3. Sem comando rodado nesta resposta, escreva \"Não verificado\". Citar documento não é prova.\n" +
+		"4. Última linha: \"Recomendação:\" com uma ação.\n" +
+		"5. " + pausaProva(pausa) + "\n" +
+		"Tetos: 10 linhas e 100 palavras. Detalhe longo só se o usuário escrever \"detalhe\"; ele vai para arquivo.\n" +
 		"Resposta \"1\", \"sim\" ou \"seguir\": execute e reporte. Não reapresente o plano.\n" +
-		"Proibido: tabela, bloco extra, recapitulação, preâmbulo, eco da instrução, resumo de diff já entregue.\n"
+		"Exemplo:\n" +
+		"Sim. A correção vem antes.\n" +
+		"O arquivo aponta para um host que não resolve (prova: nslookup falhou).\n" +
+		"O comando cria cópia de segurança antes de alterar.\n" +
+		"Recomendação: execute o comando de correção.\n"
 }

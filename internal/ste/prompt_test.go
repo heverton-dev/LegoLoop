@@ -118,27 +118,6 @@ func TestPromptRegra(t *testing.T) {
 	})
 }
 
-func TestPromptProva(t *testing.T) {
-	t.Parallel()
-	perfil := ste.ConfigPerfil{Modo: ste.ModoProva, Pausa: ste.PausaDestrutivo}
-	prompt := ste.PromptRegra(perfil)
-
-	for _, b := range []string{"Resultado", "Fatos comprovados", "Não verificado", "Solução passo a passo", "Sugestão técnica", "Stop-Gate Humano", "[1] seguir", "destrutiva"} {
-		if !strings.Contains(prompt, b) {
-			t.Errorf("prompt prova nao contem %q", b)
-		}
-	}
-	if strings.Contains(prompt, "TRÍADE") {
-		t.Errorf("prompt prova NÃO deve conter TRÍADE")
-	}
-	if len(prompt) > 1100 {
-		t.Errorf("prompt prova deve ter no maximo 1000 bytes, tem %d", len(prompt))
-	}
-	if !strings.Contains(ste.PromptRegra(ste.ConfigPerfil{Modo: ste.ModoProva, Pausa: ste.PausaSempre}), "toda ação com efeito") {
-		t.Errorf("pausa sempre deve alterar a regra do Stop-Gate")
-	}
-}
-
 func TestPromptPuroSemContradicao(t *testing.T) {
 	t.Parallel()
 	prompt := ste.PromptRegra(ste.ConfigPerfil{Modo: ste.ModoPuro, Pausa: ste.PausaDestrutivo})
@@ -156,13 +135,24 @@ func TestModoProvaValido(t *testing.T) {
 	}
 }
 
-func TestPromptProvaTetos(t *testing.T) {
+func TestPromptProvaProsa(t *testing.T) {
 	t.Parallel()
 	prompt := ste.PromptRegra(ste.ConfigPerfil{Modo: ste.ModoProva, Pausa: ste.PausaDestrutivo})
-	for _, b := range []string{"12 linhas", "100 palavras", "no máximo 3", "no máximo 4 passos", "detalhe", "tabela"} {
+	for _, b := range []string{"veredito", "Recomendação:", "Não verificado", "(prova:", "10 linhas", "100 palavras", "detalhe", "Citar documento não é prova", "Exemplo:", "destrutiva", "[1] seguir"} {
 		if !strings.Contains(prompt, b) {
-			t.Errorf("prompt prova sem teto %q", b)
+			t.Errorf("prompt prova sem %q", b)
 		}
+	}
+	for _, proibido := range []string{"TRÍADE", "Fatos comprovados", "Stop-Gate Humano"} {
+		if strings.Contains(prompt, proibido) {
+			t.Errorf("prompt prova nao deve conter %q", proibido)
+		}
+	}
+	if len(prompt) > 1500 {
+		t.Errorf("prompt prova deve ter no maximo 1500 bytes, tem %d", len(prompt))
+	}
+	if !strings.Contains(ste.PromptRegra(ste.ConfigPerfil{Modo: ste.ModoProva, Pausa: ste.PausaSempre}), "toda ação com efeito") {
+		t.Errorf("pausa sempre deve alterar a regra de pausa")
 	}
 	if ste.PerfilPadraoRetorno().Modo != ste.ModoProva {
 		t.Errorf("modo prova deve ser o padrao")

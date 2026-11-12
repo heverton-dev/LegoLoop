@@ -70,7 +70,7 @@ func secaoControle() string {
 func secaoModos() string {
 	var b strings.Builder
 	b.WriteString(formatLinhaBox("MODOS DISPONÍVEIS"))
-	b.WriteString(formatLinhaBox("  prova       Padrão: 5 blocos fixos, prova obrigatória, ~370 tokens por turno"))
+	b.WriteString(formatLinhaBox("  prova       Padrão: prosa curta, veredito, prova inline, ~380 tokens por turno"))
 	b.WriteString(formatLinhaBox("  puro        ASD-STE100 Puro: Linguagem técnica direta sem Tríade [S][T][E]"))
 	b.WriteString(formatLinhaBox("  hibrido     Caveman Thinking + ASD-STE100 + Tríade [S][T][E] (legado)"))
 	b.WriteString(formatLinhaBox("  stept       Alias de hibrido (mesmo texto), mantido por compatibilidade"))
