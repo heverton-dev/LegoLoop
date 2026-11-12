@@ -32,7 +32,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14]
 | Q11 | O que o critério 2 da bateria exige? | F4, F5, F22 | Só a conferência do motor. A bateria testa que o motor detecta e reverte escrita fora do limite. |
 | Q12 | Como o campo `via` entra no contrato do DAG? | F24, F25 | Obrigatório no `schema_version: 2`. Mudança de contrato público, com Stop-Gate humano `SG-I3-CONTRATO`. |
 | Q13 | Qual é o endereço canônico do 9Router? | F27, F28, F29, F30 | `roteador.signa-docs.com`. Os três harnesses passam a apontar para ele. Cada correção faz backup antes e pede confirmação. |
-| Q14 | O agy entra na bateria? | F26, F31, F32, F33, F34 | Entra, com quatro condições: conta fixa (a já logada, sem troca), binário real chamado direto (sem o `gw`), parada e marca "reprovado" no primeiro sinal de "Terms of Service" ou "service disabled", e aviso de gasto e risco em separado. |
+| Q14 | O agy entra na bateria? | F26, F31, F33, F34 | Entra, com quatro condições: conta fixa (a já logada, sem troca), binário real chamado direto (sem o `gw`), parada e marca "reprovado" no primeiro sinal de "Terms of Service" ou "service disabled", e aviso de gasto e risco em separado. |
 
 Decisões sem pergunta numerada, tomadas pelo usuário durante a entrevista:
 
