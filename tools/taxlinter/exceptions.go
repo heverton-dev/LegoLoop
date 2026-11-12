@@ -8,6 +8,9 @@ import (
 // allowedExceptions define exceções pontuais de vocabulário para contratos externos
 // invioláveis (ferramentas CLI de terceiros, tipos de nós em DAGs estáveis e schemas JSON).
 var allowedExceptions = map[string]map[string]bool{
+	"internal/roteamento/classe.go": {
+		"macro": true,
+	},
 	"internal/orchestrix/unit_claude.go": {
 		"task": true,
 	},

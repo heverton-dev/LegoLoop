@@ -8,7 +8,7 @@ import (
 const (
 	ClasseNano    = "nano"
 	ClasseMicro   = "micro"
-	ClasseGrande  = "mac" + "ro"
+	ClasseGrande  = "macro"
 	ClasseExtreme = "extreme"
 )
 

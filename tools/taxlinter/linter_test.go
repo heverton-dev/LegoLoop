@@ -156,4 +156,13 @@ func TestAllowedExceptions(t *testing.T) {
 	if isAllowedException("internal/cli/outro.go", "task") {
 		t.Fatal("esperava false para internal/cli/outro.go e task")
 	}
+	if !isAllowedException("internal/roteamento/classe.go", "macro") {
+		t.Fatal("esperava true para classe.go e macro")
+	}
+	if isAllowedException("internal/roteamento/classe.go", "loop") {
+		t.Fatal("esperava false para classe.go e loop")
+	}
+	if isAllowedException("internal/roteamento/outro.go", "macro") {
+		t.Fatal("esperava false para outro arquivo de roteamento e macro")
+	}
 }
