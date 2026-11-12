@@ -1,0 +1,1534 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-12",
+  "description": "Espelho executável da ROUTE SEXTETO_E_TEMPLATES",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 1,
+      "mode": "sequential",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 1,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "commit_on_node_pass": false,
+      "git_strategy": "stash_changes",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-sexteto-e-templates",
+  "nodes": [
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/artefato/...",
+        "-tax",
+        "internal/artefato/frontmatter.go,internal/artefato/frontmatter_test.go",
+        "-tax-max",
+        "0"
+      ],
+      "context_in": [
+        "docs/interviews/2026-11-12_INTERVIEW_SEXTETO_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "internal/artefato/frontmatter.go",
+        "internal/artefato/frontmatter_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-I2-00.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_00_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-00.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/artefato/frontmatter.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-00.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/artefato/frontmatter_test.go",
+        "signature": "TestFrontMatter",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/artefato/... -tax internal/artefato/frontmatter.go,internal/artefato/frontmatter_test.go -tax-max 0"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/artefato/...,./tools/ticketgate/...",
+        "-tax",
+        "internal/artefato/trace.go,internal/artefato/trace_test.go,tools/ticketgate/trace.go,tools/ticketgate/trace_test.go,tools/ticketgate/main.go",
+        "-tax-max",
+        "0"
+      ],
+      "context_in": [
+        "internal/artefato/",
+        "tools/ticketgate/",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "internal/artefato/trace.go",
+        "internal/artefato/trace_test.go",
+        "tools/ticketgate/trace.go",
+        "tools/ticketgate/trace_test.go",
+        "tools/ticketgate/main.go"
+      ],
+      "depends_on": [
+        "TICK-I2-00.1"
+      ],
+      "id": "TICK-I2-00.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_i2_00_2",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-00.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/artefato/trace.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "opus",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-00.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/artefato/trace_test.go",
+        "signature": "TestCadeiaQuebradaFalha",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/artefato/...,./tools/ticketgate/... -tax internal/artefato/trace.go,internal/artefato/trace_test.go,tools/ticketgate/trace.go,tools/ticketgate/trace_test.go,tools/ticketgate/main.go -tax-max 0"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-I2-00.1",
+        "TICK-I2-00.2"
+      ],
+      "id": "SG-I2-CONTRATO",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_i2_contrato",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-I2-CONTRATO.json",
+        "gate": "prompt('Aprova mudar o contrato público do DAG (schema_version 2 com modo legado)? O DAG da Lei #15 continua válido em modo legado.')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/dag/...,./internal/golden/...",
+        "-tax",
+        "internal/dag/types.go,internal/dag/parse.go,internal/dag/schema_v2.go,internal/dag/schema_v2_test.go,schemas/dag.v2.json",
+        "-tax-max",
+        "24"
+      ],
+      "context_in": [
+        "internal/dag/",
+        "schemas/dag.v2.json",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "internal/dag/types.go",
+        "internal/dag/parse.go",
+        "internal/dag/schema_v2.go",
+        "internal/dag/schema_v2_test.go",
+        "schemas/dag.v2.json"
+      ],
+      "depends_on": [
+        "SG-I2-CONTRATO"
+      ],
+      "id": "TICK-I2-00.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1600,
+        "max_duration_sec": 600,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_i2_00_3",
+      "nature": "extreme",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-00.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/types.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "mode": "suggested",
+        "model": "opus"
+      },
+      "spec_ref": "AC-I2-00.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/dag/schema_v2_test.go",
+        "signature": "TestSchemaV2Estrito",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/dag/...,./internal/golden/... -tax internal/dag/types.go,internal/dag/parse.go,internal/dag/schema_v2.go,internal/dag/schema_v2_test.go,schemas/dag.v2.json -tax-max 24"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/capacidade/...",
+        "-tax",
+        "internal/capacidade/classe.go,internal/capacidade/classe_test.go",
+        "-tax-max",
+        "0"
+      ],
+      "context_in": [
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "internal/capacidade/classe.go",
+        "internal/capacidade/classe_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-I2-01.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_01_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-01.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/capacidade/classe.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-01.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/capacidade/classe_test.go",
+        "signature": "TestClassePorRegra",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/capacidade/... -tax internal/capacidade/classe.go,internal/capacidade/classe_test.go -tax-max 0"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/capacidade/...",
+        "-tax",
+        "internal/capacidade/inventario.go,internal/capacidade/inventario_test.go",
+        "-tax-max",
+        "0"
+      ],
+      "context_in": [
+        "internal/processo/vinculo.go",
+        "internal/orchestrix/backends.go",
+        "internal/capacidade/",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "internal/capacidade/inventario.go",
+        "internal/capacidade/inventario_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-01.1"
+      ],
+      "id": "TICK-I2-01.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_01_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-01.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/capacidade/inventario.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-01.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/capacidade/inventario_test.go",
+        "signature": "TestInventarioPorHarness",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/capacidade/... -tax internal/capacidade/inventario.go,internal/capacidade/inventario_test.go -tax-max 0"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/capacidade/...",
+        "-tax",
+        "internal/capacidade/resolver.go,internal/capacidade/resolver_test.go",
+        "-tax-max",
+        "0"
+      ],
+      "context_in": [
+        "internal/capacidade/",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "internal/capacidade/resolver.go",
+        "internal/capacidade/resolver_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-01.2"
+      ],
+      "id": "TICK-I2-01.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_01_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-01.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/capacidade/resolver.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-01.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/capacidade/resolver_test.go",
+        "signature": "TestDegradacaoRegistrada",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/capacidade/... -tax internal/capacidade/resolver.go,internal/capacidade/resolver_test.go -tax-max 0"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./tools/route2dag/...,./internal/dag/...",
+        "-tax",
+        "tools/route2dag/main.go,tools/route2dag/paridade_test.go,internal/dag/types.go,schemas/route.v2.json",
+        "-tax-max",
+        "16"
+      ],
+      "context_in": [
+        "tools/route2dag/",
+        "internal/dag/types.go",
+        "schemas/route.v2.json",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "tools/route2dag/main.go",
+        "tools/route2dag/paridade_test.go",
+        "internal/dag/types.go",
+        "schemas/route.v2.json"
+      ],
+      "depends_on": [
+        "TICK-I2-01.3",
+        "TICK-I2-00.3"
+      ],
+      "id": "TICK-I2-01.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_i2_01_4",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-01.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('tools/route2dag/main.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "opus",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-01.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "tools/route2dag/paridade_test.go",
+        "signature": "TestParidadeRouteDag",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./tools/route2dag/...,./internal/dag/... -tax tools/route2dag/main.go,tools/route2dag/paridade_test.go,internal/dag/types.go,schemas/route.v2.json -tax-max 16"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...",
+        "-tax",
+        "docs/templates/TEMPLATE_INTERVIEW.md,docs/templates/templates.go,docs/templates/templates_test.go",
+        "-tax-max",
+        "6"
+      ],
+      "context_in": [
+        "docs/interviews/2026-11-12_INTERVIEW_SEXTETO_TEMPLATES.md",
+        "docs/templates/templates.go",
+        "docs/templates/TEMPLATE_INTENT.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_INTERVIEW.md",
+        "docs/templates/templates.go",
+        "docs/templates/templates_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-00.2"
+      ],
+      "id": "TICK-I2-02.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_02_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-02.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_INTERVIEW.md')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-02.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestTemplatesSemTermoProibido",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/... -tax docs/templates/TEMPLATE_INTERVIEW.md,docs/templates/templates.go,docs/templates/templates_test.go -tax-max 6"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...,./internal/interview/...",
+        "-tax",
+        "docs/templates/TEMPLATE_INTENT.md,docs/templates/templates_test.go,internal/interview/intent_render.go,internal/interview/intent_template_test.go",
+        "-tax-max",
+        "9"
+      ],
+      "context_in": [
+        "docs/templates/TEMPLATE_INTENT.md",
+        "internal/interview/intent_render.go",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_INTENT.md",
+        "docs/templates/templates_test.go",
+        "internal/interview/intent_render.go",
+        "internal/interview/intent_template_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-02.1"
+      ],
+      "id": "TICK-I2-02.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_i2_02_2",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-02.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_INTENT.md')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "opus",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-02.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/interview/intent_template_test.go",
+        "signature": "TestIntentTemplate",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/interview/... -tax docs/templates/TEMPLATE_INTENT.md,docs/templates/templates_test.go,internal/interview/intent_render.go,internal/interview/intent_template_test.go -tax-max 9"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...,./internal/plangen/...",
+        "-tax",
+        "docs/templates/TEMPLATE_SPEC.md,docs/templates/TEMPLATE_PLAN.md,docs/templates/templates_test.go,internal/plangen/plan_md.go,internal/plangen/plangen_test.go",
+        "-tax-max",
+        "10"
+      ],
+      "context_in": [
+        "docs/templates/TEMPLATE_SPEC.md",
+        "docs/templates/TEMPLATE_PLAN.md",
+        "internal/plangen/plan_md.go",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_SPEC.md",
+        "docs/templates/TEMPLATE_PLAN.md",
+        "docs/templates/templates_test.go",
+        "internal/plangen/plan_md.go",
+        "internal/plangen/plangen_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-02.2"
+      ],
+      "id": "TICK-I2-02.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_i2_02_3",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-02.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_SPEC.md')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "opus",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-02.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestPlanMirrorsRoute",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/plangen/... -tax docs/templates/TEMPLATE_SPEC.md,docs/templates/TEMPLATE_PLAN.md,docs/templates/templates_test.go,internal/plangen/plan_md.go,internal/plangen/plangen_test.go -tax-max 10"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...,./internal/plangen/...,./internal/dag/...",
+        "-tax",
+        "docs/templates/TEMPLATE_ROUTE.json,docs/templates/TEMPLATE_DAG.json,docs/templates/templates_test.go,internal/plangen/route.go",
+        "-tax-max",
+        "17"
+      ],
+      "context_in": [
+        "docs/templates/TEMPLATE_ROUTE.json",
+        "docs/templates/TEMPLATE_DAG.json",
+        "internal/plangen/route.go",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_ROUTE.json",
+        "docs/templates/TEMPLATE_DAG.json",
+        "docs/templates/templates_test.go",
+        "internal/plangen/route.go"
+      ],
+      "depends_on": [
+        "TICK-I2-02.3",
+        "TICK-I2-01.4"
+      ],
+      "id": "TICK-I2-02.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_i2_02_4",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-02.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_ROUTE.json')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "opus",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-02.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestProcessoTemplateIsValidDAGAndDocument",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/plangen/...,./internal/dag/... -tax docs/templates/TEMPLATE_ROUTE.json,docs/templates/TEMPLATE_DAG.json,docs/templates/templates_test.go,internal/plangen/route.go -tax-max 17"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...",
+        "-tax",
+        "docs/templates/TEMPLATE_REPORT.md,docs/templates/TEMPLATE_HANDOFF.md,docs/templates/templates.go,docs/templates/templates_test.go",
+        "-tax-max",
+        "7"
+      ],
+      "context_in": [
+        "docs/templates/TEMPLATE_REPORT.md",
+        "docs/templates/templates.go",
+        "docs/reports/2026-11-12_REPORT_EXECUCAO_LEI15.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_REPORT.md",
+        "docs/templates/TEMPLATE_HANDOFF.md",
+        "docs/templates/templates.go",
+        "docs/templates/templates_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-02.4"
+      ],
+      "id": "TICK-I2-03.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_03_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-03.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_REPORT.md')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-03.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestTemplatesSemTermoProibido",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/... -tax docs/templates/TEMPLATE_REPORT.md,docs/templates/TEMPLATE_HANDOFF.md,docs/templates/templates.go,docs/templates/templates_test.go -tax-max 7"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./internal/orchestrix/...",
+        "-tax",
+        "internal/orchestrix/relatorio.go,internal/orchestrix/relatorio_test.go",
+        "-tax-max",
+        "0"
+      ],
+      "context_in": [
+        "internal/orchestrix/",
+        "internal/artefato/",
+        "docs/templates/TEMPLATE_REPORT.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "internal/orchestrix/relatorio.go",
+        "internal/orchestrix/relatorio_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-00.1"
+      ],
+      "id": "TICK-I2-03.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1200,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 32000
+      },
+      "name": "tick_i2_03_2",
+      "nature": "macro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-03.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/orchestrix/relatorio.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "opus",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-03.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/orchestrix/relatorio_test.go",
+        "signature": "TestRelatorioFactual",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -tax internal/orchestrix/relatorio.go,internal/orchestrix/relatorio_test.go -tax-max 0"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate"
+      ],
+      "context_in": [
+        "internal/mcp/router.go",
+        "internal/cli/cli.go",
+        "internal/assets/",
+        "docs/intents/2026-11-06_INTENT_GOVERNANCA_LAZY_UNIVERSAL.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "scratch/i2_audit_lazy_skills.md"
+      ],
+      "depends_on": [],
+      "id": "TICK-I2-04.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_04_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-04.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('scratch/i2_audit_lazy_skills.md')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-04.1",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...,./internal/assets/...",
+        "-tax",
+        "docs/templates/TEMPLATE_PIECE_SKILL.md,docs/templates/templates_test.go",
+        "-tax-max",
+        "6"
+      ],
+      "context_in": [
+        "docs/templates/TEMPLATE_PIECE_SKILL.md",
+        "scratch/i2_audit_lazy_skills.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_PIECE_SKILL.md",
+        "docs/templates/templates_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-04.1",
+        "TICK-I2-03.1"
+      ],
+      "id": "TICK-I2-04.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_04_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-04.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_PIECE_SKILL.md')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-04.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestPiecesAreRecognizedByInventory",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/assets/... -tax docs/templates/TEMPLATE_PIECE_SKILL.md,docs/templates/templates_test.go -tax-max 6"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...,./internal/mcp/...",
+        "-tax",
+        "docs/templates/TEMPLATE_PIECE_MCP.json,docs/templates/templates_test.go",
+        "-tax-max",
+        "9"
+      ],
+      "context_in": [
+        "docs/templates/TEMPLATE_PIECE_MCP.json",
+        "internal/mcp/router.go",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_PIECE_MCP.json",
+        "docs/templates/templates_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-04.2"
+      ],
+      "id": "TICK-I2-04.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_04_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-04.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_PIECE_MCP.json')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-04.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestPiecesAreRecognizedByInventory",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/mcp/... -tax docs/templates/TEMPLATE_PIECE_MCP.json,docs/templates/templates_test.go -tax-max 9"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...",
+        "-tax",
+        "docs/templates/TEMPLATE_PIECE_HOOK.json,docs/templates/templates_test.go",
+        "-tax-max",
+        "9"
+      ],
+      "context_in": [
+        "docs/templates/TEMPLATE_PIECE_HOOK.json",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_PIECE_HOOK.json",
+        "docs/templates/templates_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-04.3"
+      ],
+      "id": "TICK-I2-04.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_04_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-04.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_PIECE_HOOK.json')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-04.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestPiecesAreRecognizedByInventory",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/... -tax docs/templates/TEMPLATE_PIECE_HOOK.json,docs/templates/templates_test.go -tax-max 9"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...",
+        "-tax",
+        "docs/templates/TEMPLATE_PIECE_SCRIPT.ps1,docs/templates/TEMPLATE_PIECE_SCRIPT.sh,docs/templates/templates_test.go",
+        "-tax-max",
+        "6"
+      ],
+      "context_in": [
+        "docs/templates/TEMPLATE_PIECE_SCRIPT.ps1",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_PIECE_SCRIPT.ps1",
+        "docs/templates/TEMPLATE_PIECE_SCRIPT.sh",
+        "docs/templates/templates_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-04.4"
+      ],
+      "id": "TICK-I2-04.5",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_04_5",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-04.5.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_PIECE_SCRIPT.ps1')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-04.5",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestNativeFragmentsHaveNoPlaceholdersAndScriptHasBOM",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/... -tax docs/templates/TEMPLATE_PIECE_SCRIPT.ps1,docs/templates/TEMPLATE_PIECE_SCRIPT.sh,docs/templates/templates_test.go -tax-max 6"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/...,./internal/gate/...",
+        "-tax",
+        "docs/templates/TEMPLATE_PIECE_GATE.json,docs/templates/TEMPLATE_PIECE_PROCESSO.json,docs/templates/templates.go,docs/templates/templates_test.go",
+        "-tax-max",
+        "9"
+      ],
+      "context_in": [
+        "docs/templates/TEMPLATE_PIECE_GATE.json",
+        "docs/templates/TEMPLATE_PIECE_LOOP.json",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/TEMPLATE_PIECE_GATE.json",
+        "docs/templates/TEMPLATE_PIECE_PROCESSO.json",
+        "docs/templates/templates.go",
+        "docs/templates/templates_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-04.5"
+      ],
+      "id": "TICK-I2-04.6",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_04_6",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-04.6.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/TEMPLATE_PIECE_GATE.json')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-04.6",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/templates_test.go",
+        "signature": "TestEveryGateExpressionCompiles",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/gate/... -tax docs/templates/TEMPLATE_PIECE_GATE.json,docs/templates/TEMPLATE_PIECE_PROCESSO.json,docs/templates/templates.go,docs/templates/templates_test.go -tax-max 9"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./docs/templates/..."
+      ],
+      "context_in": [
+        "docs/templates/",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [
+        "docs/templates/sexteto_test.go"
+      ],
+      "depends_on": [
+        "TICK-I2-04.6"
+      ],
+      "id": "TICK-I2-02.5",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_i2_02_5",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-02.5.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/sexteto_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I2-02.5",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "docs/templates/sexteto_test.go",
+        "signature": "TestTemplatesDoSexteto",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "run",
+        "./tools/ticketgate",
+        "-pkgs",
+        "./...",
+        "-tax",
+        "docs/templates",
+        "-tax-max",
+        "35",
+        "-build"
+      ],
+      "context_in": [
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+        "docs/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md"
+      ],
+      "context_out": [],
+      "depends_on": [
+        "TICK-I2-02.5",
+        "TICK-I2-03.2",
+        "TICK-I2-01.4"
+      ],
+      "id": "TICK-I2-05.1",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 900,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_i2_05_1",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-I2-05.1.json",
+        "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "sonnet",
+        "mode": "suggested",
+        "model": "haiku"
+      },
+      "spec_ref": "AC-I2-05.1",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "script",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax docs/templates -tax-max 35 -build"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-I2-05.1"
+      ],
+      "id": "SG-I2-FINAL",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_i2_final",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-I2-FINAL.json",
+        "gate": "prompt('Aprova o fechamento da I2 (sexteto e templates agnósticos)?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    }
+  ],
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "58f875f7a364e22f01c70cfc70f88e56436fe9f8c54660b4bbeb1d286713fb23",
+    "plan": "fd7267b874700118e230131f4770fd616184a79b5c089ac961e0586d4e530cab",
+    "spec": "101d245a79d05ef17d58b71a19578851b997fb2e6f1feaf0f1bb005be5e536e1"
+  },
+  "version": "1.0.0"
+}
