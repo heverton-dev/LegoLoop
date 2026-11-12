@@ -1,3 +1,13 @@
+---
+id: REPORT-{{ID}}
+status: {{DRAFT | UNDER_REVIEW | APPROVED}}
+date: {{AAAA-MM-DD}}
+schema_version: 2
+upstream: [PLAN-{{ID}}]
+covers: [{{IDS_R_E_AC}}]
+interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
+---
+
 # 📋 Relatório de Conclusão: {{TITULO_DA_DEMANDA_OU_PROCESSO}}
 
 > **Status:** {{CONCLUÍDO | PARCIAL | FALHA}}  
@@ -15,6 +25,8 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 - A telemetria DEVE conter os números reais orçados e os medidos factualmente.
 - Se algum indicador não for aplicável, declare 0 ou N/A com justificativa explícita.
 - Nome do arquivo: docs/reports/YYYY-MM-DD_REPORT_<NOME>.md (AGENTS.md, regra 6).
+- PARTE FACTUAL (seções 2 a 5): o motor grava e nenhum agente edita.
+- PARTE INTERPRETATIVA (seções 1 e 6): agente ou humano escreve. O front matter as lista em `interpretative`.
 -->
 
 ---
