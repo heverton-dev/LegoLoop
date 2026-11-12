@@ -15,7 +15,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12]
 > **Iniciativa:** I3 Roteamento honesto (programa Lei #15: I1 Taxonomia, I2 Sexteto e templates, I3 Roteamento honesto, I4 DISSECAR, I5 MATRIZ_PAPEIS, I6 Migração dos legados)  
 > **Alvo:** `internal/roteamento`, `internal/orchestrix`, `internal/dag`, `internal/mcp`, `internal/provider`, `internal/cli`, `tools/route2dag`, `docs/templates`  
 > **Sessão:** 240fe656-1081-4519-b96d-4dd4985fff63  
-> **Confiança da Entrevista:** 95% ([INTERVIEW](../interviews/2026-11-12_INTERVIEW_ROTEAMENTO_HONESTO.md))  
+> **Confiança da Entrevista:** 92%, reaberta em 12/11 ([INTERVIEW](../interviews/2026-11-12_INTERVIEW_ROTEAMENTO_HONESTO.md))  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
 
 ---
@@ -32,7 +32,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12]
 * **O Porquê:** o LegoLoop quer ser agnóstico de harness e de modelo. Sem roteamento honesto, a ROUTE perde o valor como fonte da decisão (Q2 da I2).
 * **Estado Atual vs. Estado Desejado:**
   * **Hoje:** o agente preenche o roteamento à mão. O motor colapsa os combos em `sonnet`. Só o claude CLI roda nó de código.
-  * **Amanhã:** o comando `legoloop rota` grava a ROUTE com harness, modelo, esforço e `via` resolvidos contra o inventário do sistema operacional. O motor executa exatamente o que a ROUTE declara. Todo harness aprovado na bateria de conformidade pode rodar nó de código.
+  * **Amanhã:** o comando `legoloop rota` grava a ROUTE com harness, modelo, esforço e `via` resolvidos contra o inventário do sistema operacional. O motor executa exatamente o que a ROUTE declara. Todo harness instalado nesta máquina (claude, opencode, mimo, omp e agy, F26) passa pela bateria de conformidade, e o aprovado pode rodar nó de código. Cada harness usa o 9Router com o endereço e a versão corretos.
 
 ---
 
@@ -41,7 +41,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12]
 ### O que ESTÁ no Escopo (Objetivos Primários):
 * [ ] Objetivo 1 (Q8, Q9, Q12): o comando `legoloop rota` lê o PLAN, o perfil do usuário (global e por projeto, com padrão embutido) e o inventário, e grava a ROUTE. O contrato v2 do DAG ganha `routing.via`, obrigatório.
 * [ ] Objetivo 2 (Q2, Q4): o motor executa o harness, o modelo, o esforço e o `via` declarados. Ele comuta o gateway por nó, só no processo filho. Em falha, os nós `nano` e `micro` degradam com registro, e os nós de classe grande e `extreme` falham.
-* [ ] Objetivo 3 (Q3, Q10, Q11): a bateria de conformidade homologa harnesses por par harness e `via`. Ela roda na instalação e a cada harness novo, com aviso do teto de gasto e confirmação. O `internal/roteamento` e o `provider.Inventory` viram um inventário só.
+* [ ] Objetivo 3 (Q3, Q10, Q11): a bateria de conformidade homologa TODOS os harnesses instalados, por par harness e `via`. Ela mede o peso de memória de cada um (F16) e verifica o endereço e a versão do 9Router configurado em cada harness (F27 a F30). Ela roda na instalação e a cada harness novo, com aviso do teto de gasto e confirmação. O `internal/roteamento` e o `provider.Inventory` viram um inventário só.
 * [ ] Objetivo 4 (Q5): o `skill-router` entrega `skill_search` e `call_skill` sobre o mesmo cofre do roteador de MCP. O `call_skill` devolve o texto da skill.
 * [ ] Objetivo 5 (Q6, Q7): o motor limita os workers pela memória livre e pelo peso de cada harness. O alarme de banimento marca o harness como reprovado. O E05 da I1 é absorvido: ficam 05.1, 05.5 e 05.6 adaptados. Os nós 05.2 e 05.4 são substituídos. O nó 05.3 é removido.
 * [ ] Objetivo 6 (regra de prova): um validador em Go recusa pergunta de entrevista sem fato citado.
@@ -77,11 +77,12 @@ Identificação das Skills que o futuro Processo precisará acionar.
 * **Política de Privacidade & Orçamento Cognitivo:** nuvem autorizada para o código da iniciativa. Teto de US$ 1,50 por nó. A bateria de conformidade faz chamadas reais só depois da confirmação do usuário (Q10). Segredos: a chave do 9Router vem da variável `NINEROUTER_KEY`. Nenhum artefato grava o valor.
 * **Contrato de Evidência Factual (Definition of Done Visual/Real):** a ROUTE gerada pelo `legoloop rota` traz harness, modelo, esforço e `via` iguais aos do DAG projetado e aos executados. O REPORT factual lista o harness e o modelo reais de cada nó. Um nó em harness não claude passa no gate com o arquivo do `context_out` presente.
 * **Premissas Assumidas (a confirmar no Stop-Gate 01):**
-  * Pelo menos um harness além do claude CLI passa na bateria nesta máquina (F17 está PARCIAL).
-  * O peso de memória de cada harness é mensurável pela bateria (F16 está NÃO REPRODUZIDO).
-  * O mimo, o omp e o opencode usam o 9Router como provider configurado, sem comutação (F8).
+  * Todos os harnesses instalados entram na bateria (decisão do usuário em 12/11). Resta decidir o agy (Q14).
+  * O peso de memória de cada harness só vale depois de medido (F16, decisão do usuário em 12/11).
+  * O opencode e o mimo não têm 9Router funcional hoje: o host configurado não resolve (F27 e F28). O omp usa um servidor desatualizado (F29). A I3 corrige as três configurações. Falta decidir o endereço canônico (Q13).
 * **Riscos e Perguntas em Aberto:**
   * Qual harness passa na bateria é desconhecido até a primeira execução.
+  * Corrigir a configuração de um harness altera arquivos na pasta do usuário. Cada correção faz backup e pede confirmação.
   * O formato exato do arquivo de perfil nasce na SPEC.
   * A bateria gasta dinheiro. O usuário confirma o teto antes.
 
