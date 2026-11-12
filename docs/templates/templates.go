@@ -32,6 +32,12 @@ var routeJSON []byte
 //go:embed TEMPLATE_REPORT.md
 var reportMD string
 
+//go:embed TEMPLATE_INTERVIEW.md
+var interviewMD string
+
+//go:embed TEMPLATE_HANDOFF.md
+var handoffMD string
+
 //go:embed TEMPLATE_DAG_VIDEOREA.json
 var dagVideoReaJSON []byte
 
@@ -52,6 +58,12 @@ func Route() []byte { return slices.Clone(routeJSON) }
 
 // Report devolve o TEMPLATE_REPORT.md.
 func Report() string { return reportMD }
+
+// Interview devolve o TEMPLATE_INTERVIEW.md.
+func Interview() string { return interviewMD }
+
+// Handoff devolve o TEMPLATE_HANDOFF.md.
+func Handoff() string { return handoffMD }
 
 // DAGVideoREA devolve o TEMPLATE_DAG_VIDEOREA.json.
 func DAGVideoREA() []byte { return slices.Clone(dagVideoReaJSON) }

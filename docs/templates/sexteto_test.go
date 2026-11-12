@@ -4,7 +4,28 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+
+	"legoloop/docs/templates"
 )
+
+func TestInterviewEHandoffEmbutidos(t *testing.T) {
+	casos := []struct {
+		arquivo string
+		prefixo string
+		obtido  string
+	}{
+		{"TEMPLATE_INTERVIEW.md", "---\nid: INTERVIEW-", templates.Interview()},
+		{"TEMPLATE_HANDOFF.md", "---\nid: HANDOFF-", templates.Handoff()},
+	}
+	for _, c := range casos {
+		if !strings.HasPrefix(c.obtido, c.prefixo) {
+			t.Errorf("%s embutido deve começar com %q", c.arquivo, c.prefixo)
+		}
+		if c.obtido != string(read(t, c.arquivo)) {
+			t.Errorf("%s embutido difere do arquivo em disco", c.arquivo)
+		}
+	}
+}
 
 func TestTemplatesDoSexteto(t *testing.T) {
 	markdowns := []struct {
