@@ -57,3 +57,12 @@ O usuário também quer que o Orchestrix execute os tickets sobre o Claude Code,
 
 * Consome: decisões D1 a D8. Produz: SPEC, PLAN e ROUTE.
 * Quinteto: INTENT (este arquivo), SPEC, PLAN, ROUTE. O DAG espelho de `docs/dags/` é gerado depois da aprovação da ROUTE.
+
+---
+
+## 7. Registro de Execução (2026-11-12)
+
+* O Épico 03 terminou em 2026-11-11 e o `SG-E03` foi aprovado em 2026-11-12. Os Épicos 00 a 02 estão implementados. Os Épicos 04 a 06 não começaram.
+* A execução diferiu da intenção em quatro pontos: roteamento de modelo só sugerido, `--parallel 1`, três etapas por agente com shell e gate do E03 com limite de violações.
+* O quinteto continua vigente. Falta a entrevista: não existe entrevista da Lei #15 no repositório.
+* Detalhes, commits e custo: [REPORT de execução](../reports/2026-11-12_REPORT_EXECUCAO_LEI15.md).

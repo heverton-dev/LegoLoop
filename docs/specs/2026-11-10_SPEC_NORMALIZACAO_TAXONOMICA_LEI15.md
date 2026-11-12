@@ -306,3 +306,14 @@ A especificação está **100% CONCLUÍDA** quando:
 🛑 **STOP-GATE 02 DE AUDITORIA HUMANA:**  
 *As premissas, as fronteiras, os contratos e os critérios binários acima atendem à sua expectativa?*  
 *A ordem dos artefatos foi invertida nesta demanda: o PLAN nasceu antes da SPEC. A aprovação da SPEC valida os dois.*
+
+---
+
+## 7. Errata de Execução (2026-11-12)
+
+* **Épico 03.** O DAG divide os nós 03.1, 03.4, 03.5, 03.6 e 03.7 em fatias de até 12 arquivos (`ffadc27`). Os critérios BDD do ticket pai valem para todas as fatias.
+* **Gate do E03.** Cada nó roda `go test ./...` completo (`d70c918`) e usa `-tax-max` como limite de violações. O estado final mede 318 violações, abaixo do limite 531.
+* **Taxlinter.** O linter aceita exceções com escopo mínimo para contratos externos (`424e8c9`). Cada exceção cita o contrato que a justifica.
+* **Orchestrix.** O `unit_task` ganhou retentativa na mesma worktree, saída do gate no prompt, limite de custo, `write_boundary` por diretório e passo de higiene antes do gate. Estas mudanças não constam na seção 5. Os commits estão em [REPORT de execução](../reports/2026-11-12_REPORT_EXECUCAO_LEI15.md), seção 4.
+* **Épico 05.** Nenhum critério de aceite foi cumprido. Os arquivos novos não existem. Gate verde sem o arquivo não conta como aceite.
+* **Roteamento.** O critério sobre roteamento D4 e D5 não foi cumprido: o motor executou todos os nós como `unit_task/sonnet`.

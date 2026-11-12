@@ -1,14 +1,15 @@
 # 🗺️ PLAN: Refatoração Completa da Lei #15 (ASD-STE100) e Orchestrix sobre Claude Code
 
-> **Status:** Aprovado pelo Usuário (Stop-Gates 02 e 03, 2026-11-10)  
+> **Status:** Em execução. E00 a E03 concluídos. `SG-E03` aprovado em 2026-11-12. E04 a E06 pendentes. Ver o REPORT de execução.  
 > **Data:** 2026-11-10  
-> **Versão:** 1.0.0-rascunho  
+> **Versão:** 1.1.0  
 > **Autor:** Claude (a pedido do usuário)  
 > **Referência da Auditoria:** `docs/2026-11-10_AUDITORIA_TAXONOMIA_ASD_STE100.md`  
 > **Referência de Governança:** `AGENTS.md` itens 4, 6, 11 e 12  
 > **Intenção:** [docs/intents/2026-11-10_INTENT_NORMALIZACAO_TAXONOMICA_LEI15.md](../intents/2026-11-10_INTENT_NORMALIZACAO_TAXONOMICA_LEI15.md)  
 > **Especificação:** [docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md](../specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md)  
 > **Espelho Executável JSON:** [docs/routes/2026-11-10_ROUTE_NORMALIZACAO_TAXONOMICA_LEI15.json](../routes/2026-11-10_ROUTE_NORMALIZACAO_TAXONOMICA_LEI15.json)  
+> **Registro de Execução:** [docs/reports/2026-11-12_REPORT_EXECUCAO_LEI15.md](../reports/2026-11-12_REPORT_EXECUCAO_LEI15.md)  
 > **Pendências para o BUILD:** nenhuma de aprovação. O DAG espelho em `docs/dags/` nasce no `TICK-01.6`, depois do `TICK-01.2` (o parser precisa aceitar ponto no id).  
 
 ---
@@ -239,3 +240,26 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 🛑 **STOP-GATE 03 DE AUDITORIA HUMANA:**  
 *O plano acima cobre 100% das decisões D1 a D8 e protege os loops existentes com Gates mecânicos?*  
 *Aprovado este documento, gero a SPEC com critérios `AC-*` e o `docs/routes/2026-11-10_ROUTE_NORMALIZACAO_TAXONOMICA_LEI15.json`. O BUILD só começa depois disso.*
+
+
+---
+
+## 9. Registro de Execução (2026-11-12)
+
+| Épico | Estado | Commit de fechamento |
+| :--- | :--- | :--- |
+| E00, E01, E02 | Implementados em 2026-11-10. `SG-E00` e `SG-E02` aguardam aprovação retroativa do usuário. | ver REPORT |
+| E03 | Concluído. `SG-E03` aprovado em 2026-11-12. | `64b1858` |
+| E04 | Não iniciado. `SG-E04-COFRE` bloqueia `TICK-04.2` e `TICK-04.4`. | n/a |
+| E05 | Não iniciado. | n/a |
+| E06 | Não iniciado. `SG-FINAL` é do usuário. | n/a |
+
+**Divergências aceitas pelo usuário durante a execução:**
+
+1. O E03 rodou antes da aprovação formal de `SG-E00` e `SG-E02`. A aprovação retroativa fica pendente.
+2. Os nós do E03 foram divididos em fatias de até 12 arquivos (`ffadc27`). O DAG e a ROUTE já refletem a divisão.
+3. O roteamento da seção 3 (D4, D5) não foi aplicado. O DAG declara `routing.mode: suggested` e o motor executa todo `unit_task` como Sonnet.
+4. O commit por nó foi autorizado pelo usuário. Nenhum push foi feito.
+5. O motor ganhou mudanças não previstas (retentativa, limite de custo, `write_boundary` por diretório, higiene antes do gate, retenção de edições parciais). A lista com commits está no REPORT, seção 4.
+
+**Tabela do Épico 03 (seção 5).** Os tickets `03.1`, `03.4`, `03.5`, `03.6` e `03.7` têm fatias `a`, `b`, `c` e até `h`. O livro-razão nó a nó está no REPORT, seção 3.
