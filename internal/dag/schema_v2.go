@@ -67,6 +67,7 @@ func campoNoAusente(n Node) string {
 		{"spec_ref", n.SpecRef == ""},
 		{"status", n.Status == ""},
 		{"routing.harness", n.Routing.Harness == ""},
+		{"routing.via", n.Routing.Via == ""},
 		{"routing.model", n.Routing.Model == ""},
 		{"routing.effort", n.Routing.Effort == ""},
 	}

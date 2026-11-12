@@ -112,6 +112,7 @@ const (
 type RoutingConfig struct {
 	Mode     Mode        `json:"mode"`
 	Harness  string      `json:"harness,omitempty"`
+	Via      string      `json:"via,omitempty"`
 	Model    string      `json:"model,omitempty"`
 	Effort   EffortLevel `json:"effort,omitempty"`
 	Fallback string      `json:"fallback,omitempty"`

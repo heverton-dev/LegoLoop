@@ -17,7 +17,7 @@ const dagV2Completo = `{
   "nodes": [
     {"id": "TICK-X.1", "name": "no v2", "type": "script", "nature": "nano",
      "command": ["go", "test"],
-     "routing": {"mode": "manual", "harness": "claude", "model": "haiku", "effort": "low"},
+     "routing": {"mode": "manual", "harness": "claude", "via": "oficial", "model": "haiku", "effort": "low"},
      "output": {"artifact": "a.txt", "gate": "file_exists('a.txt')"},
      "context_in": ["a.go"], "context_out": ["a.txt"],
      "isolation": {"write_boundary": ["a.txt"]},
@@ -101,6 +101,23 @@ func TestSchemaV2RecusaVersaoDesconhecida(t *testing.T) {
 	}
 	if erros := validarContra(t, carregarSchema(t, "dag.v2.json"), raw); len(erros) == 0 {
 		t.Error("dag.v2.json deveria recusar schema_version 3")
+	}
+}
+
+func TestViaObrigatorioNoV2(t *testing.T) {
+	d, err := Parse([]byte(dagV2Completo))
+	if err != nil || d.Nodes[0].Routing.Via != "oficial" {
+		t.Fatalf("DAG v2 com routing.via deveria passar e manter o via: %v", err)
+	}
+	m, no := mapaV2(t)
+	delete(no["routing"].(map[string]any), "via")
+	esperarFalhaV2(t, m, `"TICK-X.1"`, "routing.via")
+	legado, err := Parse([]byte(dagLegado))
+	if err != nil {
+		t.Fatalf("DAG sem schema_version e sem via deveria passar: %v", err)
+	}
+	if legado.AvisoLegado() == "" {
+		t.Error("DAG sem schema_version deveria trazer o aviso do modo legado")
 	}
 }
 
