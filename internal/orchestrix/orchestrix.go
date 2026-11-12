@@ -38,6 +38,8 @@ type Orchestrix struct {
 	AllowUnitTasks bool
 	// LoopStore é o acervo de sub-loops (pode ser nil caso o acervo não esteja carregado).
 	LoopStore *studiodoc.Store
+	// EstadoHarness devolve o estado de homologação do par harness e via (nil = nenhum harness homologado).
+	EstadoHarness func(harness, via string) string
 	// MaxOutputBytes limita stdout de subprocessos (0 = maxResponseBytes).
 	MaxOutputBytes int
 }

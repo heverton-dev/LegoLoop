@@ -44,7 +44,7 @@ type unitPlan struct {
 // prepareUnit valida modelo, gate, raiz do repositório e monta o prompt.
 func (o *Orchestrix) prepareUnit(ctx context.Context, n dag.Node, workdir string, main *os.Root) (unitPlan, error) {
 	var p unitPlan
-	model, err := o.unitModel(n)
+	model, err := o.unitModelFor(n)
 	if err != nil {
 		return p, err
 	}
@@ -176,7 +176,7 @@ func retryPrompt(base, failure string) string {
 // unitAttempt roda o claude, o command e o gate uma vez. A falha do gate volta em failure
 // (texto vazio = gate aprovado). Erro de boundary, link ou execução volta em err e não retenta.
 func (o *Orchestrix) unitAttempt(ctx context.Context, n dag.Node, w *Worktree, plan unitPlan, prompt string, seeded map[string][]byte) attemptResult {
-	text, usage, err := o.callClaudeToolsLim(ctx, plan.model, prompt, w.Dir, nil, unitLimitsFor(n))
+	text, usage, err := o.unitCall(ctx, n, plan, prompt, w.Dir)
 	if err != nil {
 		return attemptResult{usage: usage, err: err}
 	}
@@ -299,6 +299,32 @@ func tailText(b []byte, max int) string {
 		s = "..." + s[len(s)-max:]
 	}
 	return s
+}
+
+// unitOutroHarness informa se o nó pede um harness que não seja o claude CLI.
+func unitOutroHarness(n dag.Node) bool {
+	h := n.Routing.Harness
+	return h != "" && h != "claude"
+}
+
+// unitModelFor devolve o modelo do plano: o do roteamento para outro harness, o do claude CLI nos demais.
+func (o *Orchestrix) unitModelFor(n dag.Node) (string, error) {
+	if unitOutroHarness(n) {
+		return n.Routing.Model, nil
+	}
+	return o.unitModel(n)
+}
+
+// unitCall executa o nó no harness do roteamento. Outro harness só roda se estiver homologado.
+func (o *Orchestrix) unitCall(ctx context.Context, n dag.Node, plan unitPlan, prompt, dir string) (string, runner.TokenUsage, error) {
+	if !unitOutroHarness(n) {
+		return o.callClaudeToolsLim(ctx, plan.model, prompt, dir, nil, unitLimitsFor(n))
+	}
+	estado := ""
+	if o.EstadoHarness != nil {
+		estado = o.EstadoHarness(n.Routing.Harness, n.Routing.Via)
+	}
+	return o.callHarnessInDir(ctx, provider.Source(n.Routing.Harness), estado, plan.model, prompt, dir, n.Routing.Effort)
 }
 
 // unitModel escolhe o primeiro modelo do roteamento que o claude CLI executa.
