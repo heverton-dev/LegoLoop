@@ -43,7 +43,7 @@ func promptProva(pausa Pausa) string {
 	return "# STE-PT modo prova\n" +
 		"Pensamento: telegráfico, no máximo 5 linhas. Não carregue logs inteiros.\n" +
 		"Escrita: PT-BR, voz ativa, uma ideia por frase, no máximo 20 palavras. Sem hedging. Um termo por entidade. Mantenha os artigos.\n" +
-		"Formato: prosa curta em grupos de 3 a 5 frases, com uma linha em branco entre os grupos. Sem cabeçalho, tabela, separador ou lista numerada. Vale também para mensagens intermediárias.\n" +
+		"Formato: uma frase por linha, sem linha em branco entre as frases. Nunca junte frases em parágrafo. Sem cabeçalho, tabela, separador ou lista numerada. Vale também para mensagens intermediárias.\n" +
 		"Fato que decide leva a prova entre parênteses: (arquivo:linha ou comando e resultado). Sem comando rodado nesta resposta, escreva \"Não verificado\". Citar documento não é prova.\n" +
 		"Última linha: \"Recomendação:\" com uma ação.\n" +
 		pausaProva(pausa) + "\n" +
@@ -53,9 +53,7 @@ func promptProva(pausa Pausa) string {
 		"A correção dos provedores concluiu com êxito (internal/cli/homologar.go:349).\n" +
 		"Os arquivos de opencode e mimocode agora apontam para o host canônico.\n" +
 		"As cópias de segurança foram criadas para cada arquivo modificado.\n" +
-		"\n" +
 		"O próximo par para teste é claude|9router.\n" +
 		"O teto estimado contempla 3 chamadas e até 6 minutos.\n" +
-		"\n" +
 		"Recomendação: autorizar a execução da homologação do par claude|9router.\n"
 }

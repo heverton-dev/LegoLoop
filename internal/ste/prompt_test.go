@@ -158,3 +158,17 @@ func TestPromptProvaProsa(t *testing.T) {
 		t.Errorf("modo prova deve ser o padrao")
 	}
 }
+
+func TestPromptProvaUmaFrasePorLinha(t *testing.T) {
+	t.Parallel()
+	prompt := ste.PromptRegra(ste.ConfigPerfil{Modo: ste.ModoProva, Pausa: ste.PausaDestrutivo})
+	if !strings.Contains(prompt, "uma frase por linha") || !strings.Contains(prompt, "sem linha em branco") {
+		t.Errorf("prompt prova deve exigir uma frase por linha, sem linha em branco")
+	}
+	if strings.Contains(prompt, "\n\n") {
+		t.Errorf("prompt prova nao deve ter linha em branco, nem no exemplo")
+	}
+	if strings.Contains(prompt, "grupos de 3 a 5") {
+		t.Errorf("prompt prova nao deve mais pedir grupos")
+	}
+}
