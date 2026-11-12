@@ -56,6 +56,10 @@ var allowedExceptions = map[string]map[string]bool{
 	"internal/interview/intent_render.go": {
 		"task": true,
 	},
+	"docs/templates/TEMPLATE_DAG.json": {
+		"pipeline": true,
+		"loop":     true,
+	},
 }
 
 // isAllowedException confere se o par (arquivo, termo) é uma exceção de contrato externo.

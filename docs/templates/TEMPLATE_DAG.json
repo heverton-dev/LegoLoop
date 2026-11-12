@@ -1,15 +1,31 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
   "name": "{{DAG_NAME}}",
   "version": "2.2.0",
+  "date": "{{DATA}}",
   "description": "{{DAG_DESCRIPTION}}",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/{{DATA}}_ROUTE_{{NOME}}.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 2,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
   "trigger": {
     "type": "manual"
   },
   "nodes": [
     {
       "id": "n01_ingestao",
+      "name": "Ingestão do artefato de entrada",
       "type": "script",
+      "nature": "nano",
       "command": [
         "powershell",
         "-NoProfile",
@@ -18,14 +34,34 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "harness": "claude",
+        "model": "haiku",
         "effort": "low",
-        "fallback": "flash"
+        "fallback": "sonnet"
       },
       "timeout_sec": 180,
       "execution": {
         "mode": "isolated"
       },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('output/ingestion_manifest.json')"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "context_in": [],
+      "context_out": [
+        "output/ingestion_manifest.json"
+      ],
       "inputs": {
         "source": "var.input_artifact"
       },
@@ -36,21 +72,45 @@
     },
     {
       "id": "n02_cognicao",
+      "name": "Processamento da especificação",
       "type": "skill",
+      "nature": "micro",
       "ref": "skills/aidd-spec",
       "depends_on": [
         "n01_ingestao"
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
-        "effort": "high",
-        "fallback": "sonnet"
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
       },
       "timeout_sec": 600,
       "execution": {
         "mode": "isolated"
       },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('output/spec_processed.json')"
+      },
+      "spec_ref": "AC-E01.2",
+      "status": "PENDING",
+      "context_in": [
+        "output/ingestion_manifest.json"
+      ],
+      "context_out": [
+        "output/spec_processed.json"
+      ],
       "inputs": {
         "manifest": "file('output/ingestion_manifest.json')"
       },
@@ -61,19 +121,45 @@
     },
     {
       "id": "n03_subprocesso",
+      "name": "Subprocesso especialista",
       "type": "subloop",
+      "nature": "micro",
       "ref": "video-motion",
       "depends_on": [
         "n02_cognicao"
       ],
       "routing": {
         "mode": "auto",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
         "combo": "code-fast"
       },
       "timeout_sec": 900,
       "execution": {
         "mode": "isolated"
       },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1200
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('output/processo_filho_resultado.json')"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "context_in": [
+        "output/spec_processed.json"
+      ],
+      "context_out": [
+        "output/processo_filho_resultado.json"
+      ],
       "inputs": {
         "spec": "file('output/spec_processed.json')"
       },
@@ -85,20 +171,44 @@
     },
     {
       "id": "n04_sg_aprovacao",
+      "name": "Stop-Gate de aprovação",
       "type": "stop_gate",
+      "nature": "nano",
       "depends_on": [
         "n03_subprocesso"
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "harness": "claude",
+        "model": "haiku",
         "effort": "low",
-        "fallback": "flash"
+        "fallback": "sonnet"
       },
       "timeout_sec": 86400,
       "execution": {
         "mode": "inline"
       },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 300
+      },
+      "rollback_strategy": "abort_pipeline",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('output/processo_filho_resultado.json') && prompt('Aprovar resultado para entrega final?')"
+      },
+      "spec_ref": "AC-E02.2",
+      "status": "PENDING",
+      "context_in": [
+        "output/processo_filho_resultado.json"
+      ],
+      "context_out": [
+        "output/approved_checkpoint.json"
+      ],
       "inputs": {
         "result": "file('output/processo_filho_resultado.json')"
       },
@@ -109,7 +219,9 @@
     },
     {
       "id": "n05_entrega_final",
+      "name": "Entrega final",
       "type": "script",
+      "nature": "nano",
       "command": [
         "powershell",
         "-NoProfile",
@@ -121,14 +233,36 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "harness": "claude",
+        "model": "haiku",
         "effort": "low",
-        "fallback": "flash"
+        "fallback": "sonnet"
       },
       "timeout_sec": 120,
       "execution": {
         "mode": "isolated"
       },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('dist/final_delivery.json')"
+      },
+      "spec_ref": "AC-E02.3",
+      "status": "PENDING",
+      "context_in": [
+        "output/approved_checkpoint.json"
+      ],
+      "context_out": [
+        "dist/final_delivery.json"
+      ],
       "inputs": {
         "checkpoint": "file('output/approved_checkpoint.json')"
       },

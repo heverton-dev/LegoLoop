@@ -11,10 +11,12 @@ import (
 const (
 	routeSchemaURL = "https://legoloop.dev/schemas/route.v2.json"
 	defaultTimeout = 180
-	finalGateID    = "SG-FINAL"
-	finalBinary    = "bin/legoloop.exe"
-	tipoUnidade    = "unit_task"
-	rollbackAborta = "abort_pipeline"
+
+	contractVersion = 2
+	finalGateID     = "SG-FINAL"
+	finalBinary     = "bin/legoloop.exe"
+	tipoUnidade     = "unit_task"
+	rollbackAborta  = "abort_pipeline"
 )
 
 type routeFallback struct {
@@ -84,6 +86,7 @@ type routeNode struct {
 	Label            string           `json:"label"`
 	Nature           string           `json:"nature"`
 	Extreme          bool             `json:"extreme"` // true libera Opus, só com aprovação humana
+	ClassRule        string           `json:"class_rule"`
 	Type             string           `json:"type"`
 	Ref              *string          `json:"ref"`
 	Status           string           `json:"status"`
@@ -134,6 +137,7 @@ type routeStrategy struct {
 
 type routeDoc struct {
 	Schema             string              `json:"$schema"`
+	SchemaVersion      int                 `json:"schema_version"`
 	TemplateVersion    string              `json:"template_version"`
 	Name               string              `json:"name"`
 	Version            string              `json:"version"`
@@ -192,7 +196,7 @@ func newRouteDoc(m planMeta, nodes []routeNode) routeDoc {
 		Plan:   *FileSignatureFor(m.BaseDir, m.PlanRel),
 	}
 	return routeDoc{
-		Schema: routeSchemaURL, TemplateVersion: templates.Version, Name: m.RouteName, Version: "1.0.0", Date: m.Date,
+		Schema: routeSchemaURL, SchemaVersion: contractVersion, TemplateVersion: templates.Version, Name: m.RouteName, Version: "1.0.0", Date: m.Date,
 		IntentRef: str(m.IntentRef), SpecRef: m.SpecRel, PlanRef: m.PlanRel, InitiativeRef: str(m.InitiativeRef),
 		UpstreamSignatures: sig,
 		ExecutionStrategy:  defaultStrategy(m.Level),
@@ -252,7 +256,7 @@ func ticketNode(t Ticket, m planMeta) routeNode {
 	}
 	return routeNode{
 		ID: t.ID, InitiativeID: resolveInitiative(t, m), EpicID: str(t.EpicID), Label: t.Title, Nature: t.Nature,
-		Type: tipoUnidade, Status: "PENDING", ExecutionMode: t.ExecutionMode,
+		ClassRule: "nature=" + t.Nature, Type: tipoUnidade, Status: "PENDING", ExecutionMode: t.ExecutionMode,
 		Isolation:   localIsolation("orchestrix_hermetic", "strict"),
 		TimeoutSec:  defaultTimeout,
 		RetryPolicy: defaultRetryPolicy(false),
@@ -331,7 +335,7 @@ func stopGate(id, label string, deps []string, epic string, out routeOutput, rou
 		wb = "strict"
 	}
 	return routeNode{
-		ID: id, InitiativeID: nil, EpicID: str(epic), Label: label, Nature: "nano", Type: "stop_gate", Status: "PENDING", ExecutionMode: "sequential",
+		ID: id, InitiativeID: nil, EpicID: str(epic), Label: label, Nature: "nano", ClassRule: "stop_gate", Type: "stop_gate", Status: "PENDING", ExecutionMode: "sequential",
 		Isolation:   localIsolation("local_process", wb),
 		TimeoutSec:  defaultTimeout,
 		RetryPolicy: defaultRetryPolicy(true),
