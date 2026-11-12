@@ -36,6 +36,8 @@ type Result struct {
 	Tokens   TokenUsage
 	// Model é a rota efetiva ("ollama/llama3.1:8b", "claude-cli/haiku", "script/go").
 	Model string
+	// Harness e Via são o harness e a via realmente usados (vazio = não informado pelo executor).
+	Harness, Via string
 	// Notes registra tentativas descartadas (ex.: failover do modelo sugerido).
 	Notes []string
 	// Status indica desfecho especial quando diferente de passed (ex.: StatusPartial).
@@ -67,6 +69,8 @@ type NodeReport struct {
 	ExitCode int           `json:"exit_code"`
 	Tokens   TokenUsage    `json:"tokens"`
 	Model    string        `json:"model,omitempty"`
+	Harness  string        `json:"harness,omitempty"`
+	Via      string        `json:"via,omitempty"`
 	Notes    []string      `json:"notes,omitempty"`
 	Error    string        `json:"error,omitempty"`
 }
@@ -226,7 +230,7 @@ func (r *run) execNode(parent context.Context, id string) NodeReport {
 	}
 	res, err := r.opts.Executor.Execute(ctx, n, workdir)
 	nr := NodeReport{ID: id, Duration: time.Since(start), ExitCode: res.ExitCode, Tokens: res.Tokens,
-		Model: res.Model, Notes: res.Notes}
+		Model: res.Model, Harness: res.Harness, Via: res.Via, Notes: res.Notes}
 	if res.Status == StatusPartial {
 		nr.Status, nr.Error = StatusPartial, errString(err)
 		return nr

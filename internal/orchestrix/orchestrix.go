@@ -128,7 +128,7 @@ func (o *Orchestrix) runDireto(ctx context.Context, n dag.Node, workdir string) 
 	if err != nil {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, o.semChave(err))
 	}
-	res := runner.Result{Tokens: tokens, Model: harnessDireto + "/" + viaRouter + "/" + n.Routing.Model}
+	res := runner.Result{Tokens: tokens, Model: harnessDireto + "/" + viaRouter + "/" + n.Routing.Model, Harness: harnessDireto, Via: viaRouter}
 	return res, writeArtifact(root, n.Output.Artifact, []byte(text))
 }
 

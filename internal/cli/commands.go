@@ -162,6 +162,8 @@ type runFlags struct {
 	allowUnitTicket bool
 	autoApprove     bool
 	nonInteractive  bool
+	// relatorio é o arquivo da tabela factual (harness, via, modelo e Substituicao por nó); vazio = não grava.
+	relatorio string
 }
 
 func parseRunFlags(args []string, d Deps) (runFlags, error) {
@@ -173,6 +175,7 @@ func parseRunFlags(args []string, d Deps) (runFlags, error) {
 	fs.DurationVar(&f.timeout, "timeout", 30*time.Minute, "timeout padrão por nó")
 	fs.Var(&f.vars, "var", "variável chave=valor (repetível)")
 	fs.BoolVar(&f.asJSON, "json", false, "saída JSON")
+	fs.StringVar(&f.relatorio, "report", "", "grava a tabela factual do REPORT (harness, via e modelo reais) neste arquivo")
 	fs.BoolVar(&f.allowScripts, "allow-scripts", false, "permite nós script (executam comandos locais)")
 	fs.BoolVar(&f.allowUnitTicket, "allow-unit-tasks", false, "permite nós unit_task (claude com ferramentas em worktree git)")
 	fs.BoolVar(&f.autoApprove, "yes", false, "aprova automaticamente Stop-Gates interativos")
@@ -234,6 +237,12 @@ func cmdRun(ctx context.Context, args []string, d Deps) int {
 	rep, err := runner.Run(ctx, p, f.runnerOptions(ox, f.prompter(d)))
 	if err != nil {
 		return fail(d, err)
+	}
+	if f.relatorio != "" {
+		tabela := orchestrix.GerarRelatorioFactual(orchestrix.RelatorioDoRunner(rep, nil), nil)
+		if err := os.WriteFile(f.relatorio, []byte(tabela), 0o644); err != nil {
+			return fail(d, err)
+		}
 	}
 	return reportRun(d, rep, f.asJSON)
 }

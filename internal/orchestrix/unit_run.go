@@ -15,6 +15,9 @@ import (
 	"legoloop/internal/runner"
 )
 
+// prefixoModeloNo precede o modelo no runner.Result de um nó de código.
+const prefixoModeloNo = "unit_task/"
+
 type unitReport struct {
 	Node     string   `json:"node"`
 	Model    string   `json:"model"`
@@ -27,14 +30,15 @@ type unitReport struct {
 }
 
 type attemptResult struct {
-	report  unitReport
-	failure string
-	cmdOut  []byte
-	code    int
-	usage   runner.TokenUsage
-	err     error
-	notes   []string
-	modelo  string
+	report       unitReport
+	failure      string
+	cmdOut       []byte
+	code         int
+	usage        runner.TokenUsage
+	err          error
+	notes        []string
+	modelo       string
+	harness, via string
 }
 
 type unitPlan struct {
@@ -107,7 +111,7 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 	if err != nil {
 		return runner.Result{}, unitReport{}, err
 	}
-	res := runner.Result{Model: "unit_task/" + plan.model}
+	res := runner.Result{Model: prefixoModeloNo + plan.model, Harness: harnessDe(n), Via: n.Routing.Via}
 	base := prompt
 	var last attemptResult
 	for attempt := 0; ; attempt++ {
@@ -115,7 +119,7 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 		res.Tokens = addUsage(res.Tokens, att.usage)
 		res.Notes = append(res.Notes, att.notes...)
 		if att.modelo != "" {
-			res.Model = "unit_task/" + att.modelo
+			res.Model, res.Harness, res.Via = prefixoModeloNo+att.modelo, att.harness, att.via
 		}
 		res.Notes = append(res.Notes, fmt.Sprintf("tentativa %d: US$ %.2f, %d tokens de saída", attempt+1, att.usage.CostUSD, att.usage.Output))
 		res.ExitCode = att.code
@@ -185,18 +189,18 @@ func (o *Orchestrix) unitAttempt(ctx context.Context, n dag.Node, w *Worktree, p
 	call, err := o.despachar(ctx, n, plan, prompt, w.Dir)
 	usage, text := call.usage, call.text
 	if err != nil {
-		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, err: err}
+		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, harness: call.harness, via: call.via, err: err}
 	}
 	changed, err := unitChanged(ctx, n, w, seeded)
 	if err != nil {
-		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, err: err}
+		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, harness: call.harness, via: call.via, err: err}
 	}
 	if err := o.applyHygiene(ctx, w.Dir, changed); err != nil {
-		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, err: err}
+		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, harness: call.harness, via: call.via, err: err}
 	}
 	cmdOut, code, err := o.unitCommand(ctx, n, w.Dir)
 	if err != nil {
-		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, err: err}
+		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, harness: call.harness, via: call.via, err: err}
 	}
 	modelo := plan.model
 	if call.modelo != "" {
@@ -206,15 +210,15 @@ func (o *Orchestrix) unitAttempt(ctx context.Context, n dag.Node, w *Worktree, p
 		Gate: n.Output.Gate, Passed: true, Status: "ok", Summary: firstLine(text)}
 	ok, err := o.unitGate(w, n, plan.expr, report)
 	if err != nil {
-		return attemptResult{report: report, usage: usage, notes: call.notas, modelo: call.modelo, err: fmt.Errorf("gate %q: %w", n.Output.Gate, err)}
+		return attemptResult{report: report, usage: usage, notes: call.notas, modelo: call.modelo, harness: call.harness, via: call.via, err: fmt.Errorf("gate %q: %w", n.Output.Gate, err)}
 	}
 	if !ok {
 		gateDetail := formatGateOutput(cmdOut, maxGateOutputBytes)
 		msg := fmt.Sprintf("gate %q reprovou (exit_code=%d); claude respondeu: %s\nSaída do gate:\n%s",
 			n.Output.Gate, code, firstLine(text), gateDetail)
-		return attemptResult{report: report, failure: msg, cmdOut: cmdOut, code: code, usage: usage, notes: call.notas, modelo: call.modelo}
+		return attemptResult{report: report, failure: msg, cmdOut: cmdOut, code: code, usage: usage, notes: call.notas, modelo: call.modelo, harness: call.harness, via: call.via}
 	}
-	return attemptResult{report: report, usage: usage, notes: call.notas, modelo: call.modelo}
+	return attemptResult{report: report, usage: usage, notes: call.notas, modelo: call.modelo, harness: call.harness, via: call.via}
 }
 
 // unitGate avalia o gate com a worktree como raiz. O relatório provisório entra na worktree

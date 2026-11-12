@@ -20,6 +20,8 @@ type chamada struct {
 	usage  runner.TokenUsage
 	notas  []string
 	modelo string
+	// harness e via ficam vazios quando o candidato declarado respondeu.
+	harness, via string
 }
 
 // despachar roda o nó no candidato declarado. Se ele falhar, a política da classe decide:
@@ -93,5 +95,5 @@ func (o *Orchestrix) registrarSubstituicao(n dag.Node, pedido, usado roteamento.
 	if o.Aviso != nil {
 		o.Aviso("aviso: " + nota)
 	}
-	return chamada{text: text, usage: gasto, notas: []string{nota}, modelo: usado.Modelo}
+	return chamada{text: text, usage: gasto, notas: []string{nota}, modelo: usado.Modelo, harness: usado.Harness, via: string(usado.Via)}
 }

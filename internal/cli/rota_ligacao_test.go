@@ -3,8 +3,10 @@ package cli
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/orchestrix"
 )
 
@@ -38,5 +40,22 @@ func TestRunnerOptionsLigaWorkersEPeso(t *testing.T) {
 	}
 	if got := opts.Workers([]int{750, 750}); got != 2 {
 		t.Fatalf("workers = %d", got)
+	}
+}
+
+func TestRunGravaTabelaFactualComReport(t *testing.T) {
+	work := t.TempDir()
+	p := caminhos.CaminhoDAG(work)
+	if err := os.WriteFile(p, []byte(processoScript), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	saida := filepath.Join(work, "REPORT_FACTUAL.md")
+	d, _, errb := deps(t)
+	if code := run(t, d, "run", p, "--workdir", work, "--allow-scripts", "--report", saida); code != 0 {
+		t.Fatalf("code=%d err=%s", code, errb.String())
+	}
+	b, err := os.ReadFile(saida)
+	if err != nil || !strings.Contains(string(b), "| Nó | Commit | Custo (USD) | Gate | Harness | Via | Modelo | Substituição |") || !strings.Contains(string(b), "| a | - |") {
+		t.Fatalf("tabela factual = %q (%v)", b, err)
 	}
 }
