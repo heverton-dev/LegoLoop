@@ -316,4 +316,4 @@ A especificação está **100% CONCLUÍDA** quando:
 * **Taxlinter.** O linter aceita exceções com escopo mínimo para contratos externos (`424e8c9`). Cada exceção cita o contrato que a justifica.
 * **Orchestrix.** O `unit_task` ganhou retentativa na mesma worktree, saída do gate no prompt, limite de custo, `write_boundary` por diretório e passo de higiene antes do gate. Estas mudanças não constam na seção 5. Os commits estão em [REPORT de execução](../reports/2026-11-12_REPORT_EXECUCAO_LEI15.md), seção 4.
 * **Épico 05.** Nenhum critério de aceite foi cumprido. Os arquivos novos não existem. Gate verde sem o arquivo não conta como aceite.
-* **Roteamento.** O critério sobre roteamento D4 e D5 não foi cumprido: o motor executou todos os nós como `unit_task/sonnet`.
+* **Roteamento.** O critério sobre roteamento D4 e D5 não foi cumprido. O `unit_task` traduz `code-fast` e `code-pro` para `sonnet` e `flash` para `haiku`. Ele não executa Opus nem harness fora do claude CLI.
