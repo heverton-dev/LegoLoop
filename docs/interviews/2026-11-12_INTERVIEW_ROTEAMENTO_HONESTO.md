@@ -86,7 +86,7 @@ Decisões sem pergunta numerada, tomadas pelo usuário durante a entrevista:
 | F31 | O PLAN e o REPORT da I1 registram o agy como banido por ToS desde 2026-11-10. O registro é impreciso: a prova do F33 mostra uma conta desativada, não o harness. | `docs/reports/2026-11-12_REPORT_EXECUCAO_LEI15.md:89` | PARCIAL |
 | F33 | O erro de banimento é da conta `DEV_05`: "disabled in this account for violation of Terms of Service". A conta foi alcançada pelo failover do `gw` em erro 429 (`DEV_03>DEV_05`). Nenhum registro prova que a rotação causou a violação. | `docs/reports/data/2026-11-06_auditoria/agy_rodada_rotacao_gw.jsonl:4` a `:8` | VERIFICADO |
 | F34 | Com a conta `DEV_03` fixa e o binário real, os testes do agy rodaram. | `docs/reports/2026-11-06_REPORT_AUDITORIA_HARNESS_9ROUTER.md:148` | VERIFICADO |
-| F35 | O `SkillEngine` existe em `internal/mcp/skills.go` (`IndexDirectory`, `List`, `Search`) e nenhum arquivo o usa. A auditoria `scratch/i2_audit_lazy_skills.md` registrou só a falta do despachante. | `internal/mcp/skills.go:36` a `:75`; `grep -rn "SkillEngine\|SkillMatch" --include=*.go .` sem uso fora do arquivo | VERIFICADO |
+| F35 | O `SkillEngine` existe em `internal/mcp/skills.go` (`IndexDirectory`, `List`, `Search`) e nenhum arquivo o usa. A auditoria `scratch/i2_audit_lazy_skills.md` registrou só a falta do despachante. | `internal/mcp/skills.go:34`, `:44`, `:66` e `:75`; `grep -rn "SkillEngine\|SkillMatch" --include=*.go .` sem uso fora do arquivo | VERIFICADO |
 | F17 | O Claude Code exige comutação para usar os combos do 9Router. | Ver F9. Falta provar que os outros harnesses rodam o nó de código com o 9Router. A bateria prova isso. | PARCIAL |
 
 Decisões do usuário sobre as premissas do INTENT, em 12/11:
