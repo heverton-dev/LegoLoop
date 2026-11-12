@@ -1,6 +1,6 @@
 ---
 id: SPEC-I3
-status: UNDER_REVIEW
+status: APPROVED
 date: 2026-11-12
 schema_version: 2
 upstream: [INTENT-I3]
@@ -9,7 +9,7 @@ covers: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12]
 
 # 📋 SPEC: Roteamento honesto (Iniciativa I3)
 
-> **Status:** Aguardando aprovação do usuário  
+> **Status:** APPROVED (aprovada pelo usuário em 2026-11-12)  
 > **Data:** 2026-11-12  
 > **Versão:** 1.0.0  
 > **Autor:** Claude  
