@@ -219,9 +219,14 @@ const spawnWaitDelay = 2 * time.Second
 
 // spawn roda um subprocesso efêmero com ambiente estéril e stdout limitado.
 func (o *Orchestrix) spawn(ctx context.Context, bin string, args []string, dir string, stdin io.Reader) ([]byte, int, error) {
+	return o.spawnEnv(ctx, bin, args, dir, stdin, nil)
+}
+
+// spawnEnv é o spawn com variáveis extras só para este filho (o ambiente do pai não muda).
+func (o *Orchestrix) spawnEnv(ctx context.Context, bin string, args []string, dir string, stdin io.Reader, extra []string) ([]byte, int, error) {
 	cmd := exec.CommandContext(ctx, bin, args...)
 	cmd.Dir = dir
-	cmd.Env = append(sterileEnv(os.Getenv), o.ExtraEnv...)
+	cmd.Env = append(append(sterileEnv(os.Getenv), o.ExtraEnv...), extra...)
 	cmd.Stdin = stdin
 	cmd.WaitDelay = spawnWaitDelay
 	stdout := &limitedBuffer{limit: o.MaxOutputBytes}

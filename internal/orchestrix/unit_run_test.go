@@ -19,6 +19,10 @@ import (
 // ("caminho=conteúdo", separados por "|") e devolve um resultado JSON.
 func helperClaudeUnit() {
 	_, _ = io.ReadAll(os.Stdin)
+	if dump := os.Getenv("LEGOLOOP_UNIT_ENVDUMP"); dump != "" {
+		line := "BASE=" + os.Getenv("ANTHROPIC_BASE_URL") + "\nTOKEN=" + os.Getenv("ANTHROPIC_AUTH_TOKEN") + "\n"
+		_ = os.WriteFile(dump, []byte(line), 0o644)
+	}
 	for _, spec := range strings.Split(os.Getenv("LEGOLOOP_UNIT_WRITE"), "|") {
 		rel, content, ok := strings.Cut(spec, "=")
 		if !ok {

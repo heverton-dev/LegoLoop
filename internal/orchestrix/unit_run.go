@@ -309,7 +309,7 @@ func unitOutroHarness(n dag.Node) bool {
 
 // unitModelFor devolve o modelo do plano: o do roteamento para outro harness, o do claude CLI nos demais.
 func (o *Orchestrix) unitModelFor(n dag.Node) (string, error) {
-	if unitOutroHarness(n) {
+	if unitOutroHarness(n) || noViaRouter(n) {
 		return n.Routing.Model, nil
 	}
 	return o.unitModel(n)
@@ -318,7 +318,12 @@ func (o *Orchestrix) unitModelFor(n dag.Node) (string, error) {
 // unitCall executa o nó no harness do roteamento. Outro harness só roda se estiver homologado.
 func (o *Orchestrix) unitCall(ctx context.Context, n dag.Node, plan unitPlan, prompt, dir string) (string, runner.TokenUsage, error) {
 	if !unitOutroHarness(n) {
-		return o.callClaudeToolsLim(ctx, plan.model, prompt, dir, nil, unitLimitsFor(n))
+		env, err := o.envGateway(n)
+		if err != nil {
+			return "", runner.TokenUsage{}, err
+		}
+		text, usage, err := o.callClaudeToolsEnv(ctx, plan.model, prompt, dir, nil, unitLimitsFor(n), env)
+		return text, usage, o.semChave(err)
 	}
 	estado := ""
 	if o.EstadoHarness != nil {

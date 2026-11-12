@@ -66,6 +66,11 @@ func (o *Orchestrix) callClaudeTools(ctx context.Context, model, prompt, worktre
 
 // callClaudeToolsLim é o callClaudeTools com limite de esforço e de gasto explícito.
 func (o *Orchestrix) callClaudeToolsLim(ctx context.Context, model, prompt, worktree string, tools []string, lim unitLimits) (string, runner.TokenUsage, error) {
+	return o.callClaudeToolsEnv(ctx, model, prompt, worktree, tools, lim, nil)
+}
+
+// callClaudeToolsEnv é o callClaudeToolsLim com variáveis extras só para o filho (gateway por nó).
+func (o *Orchestrix) callClaudeToolsEnv(ctx context.Context, model, prompt, worktree string, tools []string, lim unitLimits, extra []string) (string, runner.TokenUsage, error) {
 	if worktree == "" {
 		return "", runner.TokenUsage{}, errors.New("callClaudeTools: worktree vazia")
 	}
@@ -75,7 +80,7 @@ func (o *Orchestrix) callClaudeToolsLim(ctx context.Context, model, prompt, work
 	if err := checkUnitTools(tools); err != nil {
 		return "", runner.TokenUsage{}, fmt.Errorf("callClaudeTools: %w", err)
 	}
-	out, code, err := o.spawn(ctx, o.Inventory.CLIPath("claude"), unitClaudeArgs(model, tools, lim), worktree, strings.NewReader(prompt))
+	out, code, err := o.spawnEnv(ctx, o.Inventory.CLIPath("claude"), unitClaudeArgs(model, tools, lim), worktree, strings.NewReader(prompt), extra)
 	if err != nil {
 		return "", runner.TokenUsage{}, err
 	}
