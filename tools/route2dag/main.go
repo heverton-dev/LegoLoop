@@ -12,6 +12,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -31,6 +32,9 @@ func Projetar(raw []byte) ([]byte, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
+	if out, err = copiarHarness(raw, out); err != nil {
+		return nil, "", err
+	}
 	if err := artefatosUnicos(out); err != nil {
 		return nil, "", err
 	}
@@ -38,6 +42,32 @@ func Projetar(raw []byte) ([]byte, string, error) {
 		return nil, "", fmt.Errorf("route2dag: DAG projetado não valida: %w", err)
 	}
 	return out, nome, nil
+}
+
+func copiarHarness(raw, out []byte) ([]byte, error) {
+	var r route
+	if err := json.Unmarshal(raw, &r); err != nil {
+		return nil, fmt.Errorf("ROUTE inválida: %w", err)
+	}
+	dec := json.NewDecoder(bytes.NewReader(out))
+	dec.UseNumber()
+	var d map[string]any
+	if err := dec.Decode(&d); err != nil {
+		return nil, err
+	}
+	nodes, _ := d["nodes"].([]any)
+	for i, n := range r.Nodes {
+		nd, _ := nodes[i].(map[string]any)
+		rt, _ := nd["routing"].(map[string]any)
+		if rt != nil && n.Type != "stop_gate" {
+			rt["harness"] = n.Routing.Harness
+		}
+	}
+	res, err := json.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return nil, err
+	}
+	return append(res, '\n'), nil
 }
 
 // artefatosUnicos recusa dois nós com o mesmo output.artifact (comparação sem caixa, como no parser).
