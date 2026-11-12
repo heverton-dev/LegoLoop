@@ -14,6 +14,7 @@ import (
 
 	"legoloop/internal/processo"
 	"legoloop/internal/roteamento"
+	"legoloop/internal/roteamento/homologacao"
 )
 
 const rotaTipoNo = "unit_task"
@@ -194,16 +195,8 @@ func rotaAmbiente(ctx context.Context, d Deps, perfil string) (RotaDeps, error) 
 }
 
 func rotaLerHomologacao(caminho string) map[string]roteamento.Homologacao {
-	dados, err := os.ReadFile(caminho)
+	bruto, err := homologacao.Ler(caminho)
 	if err != nil {
-		return nil
-	}
-	var bruto map[string]struct {
-		Estado string `json:"estado"`
-		PesoMB int    `json:"peso_mb"`
-		Motivo string `json:"motivo"`
-	}
-	if json.Unmarshal(dados, &bruto) != nil {
 		return nil
 	}
 	store := map[string]roteamento.Homologacao{}

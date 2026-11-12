@@ -39,6 +39,8 @@ type Deps struct {
 	VideoRunner videorea.Runner
 	// Rota injeta inventário e perfis do comando rota (nil = ambiente real; usado em testes).
 	Rota *RotaDeps
+	// Homologar injeta o harness da bateria e a memória livre do comando homologar (nil = ambiente real; usado em testes).
+	Homologar *HomologarDeps
 }
 
 func (d Deps) discover(ctx context.Context) provider.Inventory {
@@ -64,6 +66,7 @@ Comandos:
   matrix     [--kind K] [--tier T] [--min N] [--json] DESCONTINUADO: use "matriz ver"
   fabricar   "<nome>" [--yes] [--goal T] [--model M] [--dry-run] [--json]  cria um processo novo (skill, DAG e documentos)
   rota       --plan P --out ROUTE [--perfil F] [--json]  gera a ROUTE com harness, via, modelo e esforço resolvidos
+  homologar  [--pares H|V,...] [--yes] [--non-interactive] [--teto DUR] [--json]  mede a conformidade de cada harness e via
   matriz     gerar|status|vocab|perfil|ver  gera e consulta a matriz de peças (qualidade e perfil de uso)
   listar     [--vault DIR] [--json]  mostra os processos do cofre (versão, natureza, harnesses, usado por)
   refinar    <nome> --etapa ID [--peca P] [--caso C]... [--yes]  muda uma etapa, sobe a versão e guarda a anterior
@@ -96,7 +99,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"refinar": cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills,
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar,
-		"rota": cmdRota, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
+		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":
