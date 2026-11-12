@@ -3,6 +3,7 @@ package cli_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -114,4 +115,29 @@ func TestCLIStept(t *testing.T) {
 			t.Errorf("saida do set nao refletiu modo puro:\n%s", out)
 		}
 	})
+}
+
+func TestSteptRespeitaFlagsHomeEJSON(t *testing.T) {
+	home := t.TempDir()
+	var out, errb bytes.Buffer
+	code := cli.Run(context.Background(), []string{"stept", "scan", "--json", "--home", home}, cli.Deps{Stdout: &out, Stderr: &errb})
+	if code != 0 {
+		t.Fatalf("codigo %d: %s", code, errb.String())
+	}
+	if !json.Valid(out.Bytes()) {
+		t.Errorf("--json deve gerar JSON valido, gerou: %q", out.String())
+	}
+}
+
+func TestSteptOnUsaModoProva(t *testing.T) {
+	home := t.TempDir()
+	var out, errb bytes.Buffer
+	code := cli.Run(context.Background(), []string{"stept", "on", "--home", home}, cli.Deps{Stdout: &out, Stderr: &errb})
+	if code != 0 {
+		t.Fatalf("codigo %d: %s", code, errb.String())
+	}
+	dados, err := os.ReadFile(filepath.Join(home, ".stept", "config.json"))
+	if err != nil || !strings.Contains(string(dados), `"prova"`) {
+		t.Errorf("config deve conter modo prova: %s %v", dados, err)
+	}
 }

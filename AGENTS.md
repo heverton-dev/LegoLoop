@@ -50,10 +50,11 @@
    * **Aspas Obrigatórias:** Todo rótulo de nó deve estar entre aspas duplas: `["Label"]`, `{"Decisão"}`.
    * **Arestas Seguras:** Nunca use caminhos de arquivos ou barras (`/`) em rótulos de arestas (`-->|"Aresta Segura"|`).
    * **Tabelas Enxutas:** Alinhamento estrito (`:---`, `:---:`) e colunas concisas para evitar rolagem horizontal na janela do chat.
-10. **Comunicação Canônica STE-PT (Tríade Obrigatória com Bold Limpo):**
-   * Toda interação técnica deve seguir compulsoriamente a Tríade STE-PT compacta, sem blocos de código artificiais e com quebras diretas de linha (dois espaços no final, sem linhas vazias extras):
-   * **Pré-Ação (antes de alterar código):** `**[S] Situação:**`, `**[T] Teoria:**`, `**[E] Execução:**` (com tópicos `· **Ação:**`, `· **Rollback:**`, `· **Decisão:** **[1] seguir** \| **[2] personalizar** \| **[0] cancelar**).
-   * **Pós-Ação (após executar e testar):** `**[S] Situação:**`, `**[T] Tese:**`, `**[E] Evidência:**` (com tópicos `· **Testes:**`, `· **Build:**`, `· **Verificação:**`).
+10. **Comunicação Canônica STE-PT (modo `prova`):**
+   * Fonte única: `internal/ste` (`legoloop stept manual`). Este item resume o contrato e não o substitui.
+   * Estrutura fixa da resposta técnica: **Resultado** (1 frase), **Fatos comprovados** (`fato | prova: arquivo:linha ou comando e resultado`; sem prova, escrever "Não verificado"), **Solução passo a passo**, **Sugestão técnica**, **Stop-Gate Humano** (`[1] seguir | [2] personalizar | [0] cancelar`).
+   * Stop-Gate conforme a pausa ativa: `destrutivo` (padrão), `sempre` ou `nunca`.
+   * A Tríade `[S][T][E]` vale só se o modo ativo for `hibrido` ou `stept`.
    * Proibido preâmbulos, saudações ou re-resumos de arquivos no chat.
 11. **Protocolo Inviolável de Fechamento & Canonização Universal (Zero Entregas pela Metade):**
    * Nenhuma implementação de processo, peça ou pipeline é declarada concluída sem disparar a cadeia obrigatória de fechamento:

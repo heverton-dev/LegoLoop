@@ -97,7 +97,9 @@ func salvarESincronizar(cfg *ste.Config, cfgPath, home string, asJSON bool, d De
 	return 0
 }
 
-func despacharSubcomandoStept(sub string, fs *flag.FlagSet, args []string, d Deps, home, cfgPath string, asJSON bool) int {
+type opcoesStept struct{ harness, modo, pausa string }
+
+func despacharSubcomandoStept(sub string, op opcoesStept, d Deps, home, cfgPath string, asJSON bool) int {
 	if sub == "manual" || sub == "help" || sub == "-h" || sub == "--help" {
 		fmt.Fprint(d.Stdout, ste.TextoManual())
 		return 0
@@ -113,28 +115,23 @@ func despacharSubcomandoStept(sub string, fs *flag.FlagSet, args []string, d Dep
 	case "scan":
 		return executarSteptScan(home, asJSON, d)
 	case "set", "on", "off":
-		return processarComandoMutacao(sub, fs, args, d, cfg, cfgPath, home, asJSON)
+		return processarComandoMutacao(sub, op, d, cfg, cfgPath, home, asJSON)
 	default:
 		fmt.Fprintf(d.Stderr, "subcomando stept desconhecido: %q\n", sub)
 		return 2
 	}
 }
 
-func processarComandoMutacao(sub string, fs *flag.FlagSet, args []string, d Deps, cfg *ste.Config, cfgPath, home string, asJSON bool) int {
-	harness := fs.String("harness", "", "identificador do harness")
-	modoStr := fs.String("modo", "", "modo de governança")
-	pausaStr := fs.String("pausa", "", "política de pausa")
-	_ = fs.Parse(args)
-
-	m := ste.Modo(strings.ToLower(*modoStr))
-	p := ste.Pausa(strings.ToLower(*pausaStr))
+func processarComandoMutacao(sub string, op opcoesStept, d Deps, cfg *ste.Config, cfgPath, home string, asJSON bool) int {
+	m := ste.Modo(strings.ToLower(op.modo))
+	p := ste.Pausa(strings.ToLower(op.pausa))
 	if sub == "on" && m == "" {
-		m = ste.ModoHibrido
+		m = ste.ModoProva
 	}
 	if sub == "off" {
 		m = ste.ModoOff
 	}
-	if err := aplicarPerfilCLI(cfg, *harness, m, p); err != nil {
+	if err := aplicarPerfilCLI(cfg, op.harness, m, p); err != nil {
 		fmt.Fprintf(d.Stderr, "erro na configuração: %v\n", err)
 		return 1
 	}
@@ -144,7 +141,7 @@ func processarComandoMutacao(sub string, fs *flag.FlagSet, args []string, d Deps
 func cmdStept(_ context.Context, args []string, d Deps) int {
 	sub := ""
 	restArgs := args
-	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
+	if len(args) > 0 && (!strings.HasPrefix(args[0], "-") || args[0] == "-h" || args[0] == "--help") {
 		sub = args[0]
 		restArgs = args[1:]
 	}
@@ -153,8 +150,19 @@ func cmdStept(_ context.Context, args []string, d Deps) int {
 	homeFlag := fs.String("home", "", "diretório base")
 	cfgFlag := fs.String("config", "", "caminho do arquivo config.json")
 	asJSON := fs.Bool("json", false, "saída JSON")
+	harness := fs.String("harness", "", "identificador do harness")
+	modoStr := fs.String("modo", "", "modo de governança")
+	pausaStr := fs.String("pausa", "", "política de pausa")
+	if !ehAjuda(sub) && fs.Parse(restArgs) != nil {
+		return 2
+	}
 
 	home := resolveHome(d, *homeFlag)
 	cfgPath := resolveConfigPath(home, *cfgFlag)
-	return despacharSubcomandoStept(sub, fs, restArgs, d, home, cfgPath, *asJSON)
+	op := opcoesStept{harness: *harness, modo: *modoStr, pausa: *pausaStr}
+	return despacharSubcomandoStept(sub, op, d, home, cfgPath, *asJSON)
+}
+
+func ehAjuda(sub string) bool {
+	return sub == "manual" || sub == "help" || sub == "-h" || sub == "--help"
 }

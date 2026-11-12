@@ -19,6 +19,7 @@ const (
 	ModoCaveman Modo = "caveman"
 	ModoHibrido Modo = "hibrido"
 	ModoPuro    Modo = "puro"
+	ModoProva   Modo = "prova"
 )
 
 // Pausa define a política de interrupção antes de ações com efeito.
@@ -71,7 +72,7 @@ type HarnessStatus struct {
 // Validate valida se modo e pausa são conhecidos e aceitáveis.
 func (c ConfigPerfil) Validate() error {
 	switch c.Modo {
-	case ModoOff, ModoStept, ModoCaveman, ModoHibrido, ModoPuro:
+	case ModoOff, ModoStept, ModoCaveman, ModoHibrido, ModoPuro, ModoProva:
 	default:
 		return ErrInvalido
 	}
@@ -86,7 +87,7 @@ func (c ConfigPerfil) Validate() error {
 // PerfilPadraoRetorno devolve a tupla canônica de governança.
 func PerfilPadraoRetorno() ConfigPerfil {
 	return ConfigPerfil{
-		Modo:     ModoHibrido,
+		Modo:     ModoProva,
 		Pausa:    PausaDestrutivo,
 		Thinking: "caveman",
 	}

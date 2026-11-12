@@ -206,9 +206,10 @@ O LegoLoop opera como uma fundição de engenharia com blindagem de grau aeroesp
 O LegoLoop inclui governança determinística e alternador universal de regras para os 5 harnesses do sistema (**Google Gemini/Antigravity**, **Claude Code**, **OMP CLI**, **OpenCode** e **MimoCode**), além do executável standalone `stept.exe` no PATH:
 
 * **Gerenciamento Unificado:** `legoloop stept [status|set|on|off|scan|manual]`
-* **Modos Suportados:** `hibrido` (padrão recomendado), `stept`, `caveman`, `off`.
+* **Modos Suportados:** `prova` (padrão), `puro`, `hibrido` (legado, com a Tríade), `stept` (alias de `hibrido`), `caveman`, `off`. A fonte única do texto das regras é `internal/ste/prompt.go` e `internal/ste/prompt_prova.go`.
 * **Políticas de Pausa:** `destrutivo` (pausa em deleções/resets), `sempre` (pausa em toda alteração com efeito), `nunca` (informativo).
-* **Contrato Canônico da Tríade STE-PT (Hierarquia Visual de Bold Limpa):**
+* **Contrato do modo `prova` (padrão):** Resultado, Fatos comprovados (cada fato com `arquivo:linha` ou comando; sem prova vale "Não verificado"), Solução passo a passo, Sugestão técnica e Stop-Gate Humano.
+* **Contrato Legado da Tríade STE-PT (só nos modos `hibrido` e `stept`):**
   * **Pré-Ação (antes de alterar arquivos):**
     ```markdown
     **[S] Situação:** <Cenário factual do problema ou contexto encontrado>

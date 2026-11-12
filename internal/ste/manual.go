@@ -55,11 +55,11 @@ func secaoEstado() string {
 func secaoControle() string {
 	var b strings.Builder
 	b.WriteString(formatLinhaBox("CONTROLE DE GOVERNANÇA (MODOS & POLÍTICAS)"))
-	b.WriteString(formatLinhaBox("  stept on                            Ativa modo hibrido globalmente (Padrão)"))
-	b.WriteString(formatLinhaBox("  stept on --harness <id>             Ativa modo hibrido em um harness"))
+	b.WriteString(formatLinhaBox("  stept on                            Ativa modo prova globalmente (Padrão)"))
+	b.WriteString(formatLinhaBox("  stept on --harness <id>             Ativa modo prova em um harness"))
 	b.WriteString(formatLinhaBox("  stept off                           Desativa governança e remove regras"))
 	b.WriteString(formatLinhaBox("  stept off --harness <id>            Desativa e remove regras de um harness"))
-	b.WriteString(formatLinhaBox("  stept set --modo <modo>             Altera modo global (puro|hibrido|stept)"))
+	b.WriteString(formatLinhaBox("  stept set --modo <modo>             Altera modo global (prova|puro|hibrido)"))
 	b.WriteString(formatLinhaBox("  stept set --harness <id> --modo <m> Define override de modo para um harness"))
 	b.WriteString(formatLinhaBox("  stept set --pausa <politica>        Define a política de interrupção padrão"))
 	b.WriteString(formatLinhaBox("  stept set --harness <id> --pausa <p>Define override de pausa para um harness"))
@@ -70,9 +70,10 @@ func secaoControle() string {
 func secaoModos() string {
 	var b strings.Builder
 	b.WriteString(formatLinhaBox("MODOS DISPONÍVEIS"))
+	b.WriteString(formatLinhaBox("  prova       Padrão: 5 blocos fixos, prova obrigatória, ~370 tokens por turno"))
 	b.WriteString(formatLinhaBox("  puro        ASD-STE100 Puro: Linguagem técnica direta sem Tríade [S][T][E]"))
-	b.WriteString(formatLinhaBox("  hibrido     Padrão Ouro: Caveman Thinking + ASD-STE100 + Tríade em código"))
-	b.WriteString(formatLinhaBox("  stept       Governança Estrita: Tríade [S][T][E] obrigatória em ações"))
+	b.WriteString(formatLinhaBox("  hibrido     Caveman Thinking + ASD-STE100 + Tríade [S][T][E] (legado)"))
+	b.WriteString(formatLinhaBox("  stept       Alias de hibrido (mesmo texto), mantido por compatibilidade"))
 	b.WriteString(formatLinhaBox("  caveman     Economia Máxima: Thinking e Output telegráficos ultra-curtos"))
 	b.WriteString(formatLinhaBox("  off         Desativado: Exclui stept-rules.md sem deixar resíduos no disco"))
 	b.WriteString(formatLinhaBox(""))

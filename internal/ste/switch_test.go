@@ -98,7 +98,7 @@ func TestConfig_ResolveEHeranca(t *testing.T) {
 	if err != nil {
 		t.Fatalf("esperava retorno de config padrão quando arquivo não existe, obteve erro: %v", err)
 	}
-	if padraoFallback.Padrao.Modo != ste.ModoHibrido {
-		t.Errorf("esperava modo padrão hibrido no fallback, obteve %q", padraoFallback.Padrao.Modo)
+	if padraoFallback.Padrao.Modo != ste.ModoProva {
+		t.Errorf("esperava modo padrão prova no fallback, obteve %q", padraoFallback.Padrao.Modo)
 	}
 }

@@ -10,6 +10,9 @@ func PromptRegra(perfil ConfigPerfil) string {
 	if perfil.Modo == ModoOff {
 		return ""
 	}
+	if perfil.Modo == ModoProva {
+		return promptProva(perfil.Pausa)
+	}
 	var b strings.Builder
 	b.WriteString("# 🛡️ REGRAS DE GOVERNANÇA E ECONOMIA STE-PT\n\n")
 	b.WriteString(pecaInputImperativo())
@@ -22,7 +25,7 @@ func PromptRegra(perfil ConfigPerfil) string {
 	if perfil.Modo == ModoPuro {
 		b.WriteString(pecaOutputPuro())
 		b.WriteString(pecaNormasASDSTE())
-		b.WriteString(pecaRegrasConcisao(perfil.Pausa))
+		b.WriteString(pecaRegrasConcisaoPuro(perfil.Pausa))
 	}
 	if perfil.Modo == ModoHibrido || perfil.Modo == ModoStept {
 		b.WriteString(pecaOutputTriade())
