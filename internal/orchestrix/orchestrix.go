@@ -41,6 +41,10 @@ type Orchestrix struct {
 	LoopStore *studiodoc.Store
 	// EstadoHarness devolve o estado de homologação do par harness e via (nil = nenhum harness homologado).
 	EstadoHarness func(harness, via string) string
+	// Reprovados guarda os pares reprovados em execução (nil = sem registro).
+	Reprovados *RegistroReprovados
+	// AoReprovar persiste a reprovação de um par (nil = nada a persistir).
+	AoReprovar func(harness, via, motivo string)
 	// Elegiveis lista, por classe, os candidatos homologados do perfil, na ordem de preferência.
 	// Nano e micro usam a lista para trocar de candidato quando o declarado falha.
 	Elegiveis map[string][]roteamento.CandidatoVia

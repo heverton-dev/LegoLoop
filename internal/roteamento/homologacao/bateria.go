@@ -48,7 +48,11 @@ func Avaliar(ctx context.Context, h Harness, base string, teto time.Duration) Re
 		return r
 	}
 	defer os.RemoveAll(dir)
-	motivos := rodar(ctx, h, dir, teto, &r)
+	motivos, ban := rodar(ctx, h, dir, teto, &r)
+	if ban != "" {
+		r.Estado, r.Motivo = EstadoReprovado, ban
+		return r
+	}
 	r.Estado = EstadoHomologado
 	for _, k := range ordem {
 		if !r.Criterios[k] {
@@ -59,24 +63,52 @@ func Avaliar(ctx context.Context, h Harness, base string, teto time.Duration) Re
 	return r
 }
 
-func rodar(ctx context.Context, h Harness, dir string, teto time.Duration, r *Resultado) map[string]string {
+func rodar(ctx context.Context, h Harness, dir string, teto time.Duration, r *Resultado) (map[string]string, string) {
 	motivos := map[string]string{}
 	curto := max(teto/10, 10*time.Millisecond)
-	a, errA := h.Executar(ctx, dir, PromptA, teto)
-	b, errB := h.Executar(ctx, dir, PromptB, teto)
-	c, errC := h.Executar(ctx, dir, PromptC, curto)
+	prompts := []string{PromptA, PromptB, PromptC}
+	tetos := []time.Duration{teto, teto, curto}
+	var saidas [3]Saida
+	var erros [3]error
+	ban := ""
+	for i := range prompts {
+		saidas[i], erros[i] = h.Executar(ctx, dir, prompts[i], tetos[i])
+		if t := trechoDaChamada(saidas[i], erros[i]); t != "" {
+			ban = "banimento: " + t
+			medir(r, motivos, dir, curto, saidas[:i], erros[:i])
+			return motivos, ban
+		}
+		r.PesoMB = max(r.PesoMB, saidas[i].PicoMB)
+	}
+	medir(r, motivos, dir, curto, saidas[:], erros[:])
+	return motivos, ban
+}
 
-	r.Criterios["C1"], motivos["C1"] = avaliaC1(errA)
-	r.Criterios["C2"], motivos["C2"] = avaliaC2(dir)
-	r.Criterios["C3"] = a.CustoUSD > 0 || a.Tokens > 0
-	motivos["C3"] = "custo e tokens ausentes"
-	r.Criterios["C4"] = errors.Is(errC, context.DeadlineExceeded) || c.Duracao <= curto+50*time.Millisecond
-	motivos["C4"] = "chamada passou do teto"
-	r.Criterios["C5"] = b.ExitCode != 0 || errB != nil
-	motivos["C5"] = "exit zero diante de erro forçado"
+func trechoDaChamada(s Saida, err error) string {
+	if t := TrechoBanimento(s.Texto); t != "" {
+		return t
+	}
+	if err != nil {
+		return TrechoBanimento(err.Error())
+	}
+	return ""
+}
 
-	r.PesoMB = max(a.PicoMB, b.PicoMB, c.PicoMB)
-	return motivos
+func medir(r *Resultado, motivos map[string]string, dir string, curto time.Duration, saidas []Saida, erros []error) {
+	if len(saidas) > 0 {
+		r.Criterios["C1"], motivos["C1"] = avaliaC1(erros[0])
+		r.Criterios["C2"], motivos["C2"] = avaliaC2(dir)
+		r.Criterios["C3"] = saidas[0].CustoUSD > 0 || saidas[0].Tokens > 0
+		motivos["C3"] = "custo e tokens ausentes"
+	}
+	if len(saidas) > 1 {
+		r.Criterios["C5"] = saidas[1].ExitCode != 0 || erros[1] != nil
+		motivos["C5"] = "exit zero diante de erro forçado"
+	}
+	if len(saidas) > 2 {
+		r.Criterios["C4"] = errors.Is(erros[2], context.DeadlineExceeded) || saidas[2].Duracao <= curto+50*time.Millisecond
+		motivos["C4"] = "chamada passou do teto"
+	}
 }
 
 func avaliaC1(err error) (bool, string) {

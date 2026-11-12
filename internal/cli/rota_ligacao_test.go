@@ -8,6 +8,7 @@ import (
 
 	"legoloop/internal/caminhos"
 	"legoloop/internal/orchestrix"
+	"legoloop/internal/roteamento/homologacao"
 )
 
 func TestLigarRoteamentoLeEstadoDaHomologacao(t *testing.T) {
@@ -57,5 +58,22 @@ func TestRunGravaTabelaFactualComReport(t *testing.T) {
 	b, err := os.ReadFile(saida)
 	if err != nil || !strings.Contains(string(b), "| Nó | Commit | Custo (USD) | Gate | Harness | Via | Modelo | Substituição |") || !strings.Contains(string(b), "| a | - |") {
 		t.Fatalf("tabela factual = %q (%v)", b, err)
+	}
+}
+
+func TestAlarmeDeBanimentoPersisteOParNaHomologacao(t *testing.T) {
+	home := t.TempDir()
+	t.Chdir(t.TempDir())
+	ox := &orchestrix.Orchestrix{}
+	if err := ligarRoteamento(ox, Deps{Home: home}); err != nil {
+		t.Fatal(err)
+	}
+	if ox.Reprovados == nil || ox.AoReprovar == nil {
+		t.Fatal("o alarme não chegou ao motor")
+	}
+	ox.AoReprovar("agy", "oficial", "banimento: terms of service")
+	store, err := homologacao.Ler(homologacao.Caminho(home))
+	if err != nil || store["agy|oficial"].Estado != homologacao.EstadoReprovado {
+		t.Fatalf("store = %+v (%v)", store, err)
 	}
 }

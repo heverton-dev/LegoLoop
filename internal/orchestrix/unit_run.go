@@ -343,11 +343,15 @@ func (o *Orchestrix) chamarNo(ctx context.Context, n dag.Node, model, prompt, di
 		text, usage, err := o.callClaudeToolsEnv(ctx, model, prompt, dir, nil, unitLimitsFor(n), env)
 		return text, usage, o.semChave(err)
 	}
-	estado := ""
-	if o.EstadoHarness != nil {
-		estado = o.EstadoHarness(n.Routing.Harness, n.Routing.Via)
+	estado := o.estadoEfetivo(n.Routing.Harness, n.Routing.Via)
+	text, usage, err := o.callHarnessInDir(ctx, provider.Source(n.Routing.Harness), estado, model, prompt, dir, n.Routing.Effort)
+	if estado == estadoHomologado {
+		o.vigiarBanimento(n.Routing.Harness, n.Routing.Via, text, err)
+		if m := motivoBanimento(text, err); m != "" && err == nil {
+			err = errors.New(m)
+		}
 	}
-	return o.callHarnessInDir(ctx, provider.Source(n.Routing.Harness), estado, model, prompt, dir, n.Routing.Effort)
+	return text, usage, err
 }
 
 // unitModel escolhe o primeiro modelo do roteamento que o claude CLI executa.

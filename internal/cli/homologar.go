@@ -125,7 +125,11 @@ func executarHomologar(ctx context.Context, d Deps, o opcoesHomologar) int {
 	itens := homologarItens(inv, o.pares)
 	chamadas := chamadasPorPar * len(itens)
 	fmt.Fprintf(d.Stdout, "Teto total estimado: %d chamadas, até %s\n", chamadas, time.Duration(chamadas)*o.teto)
-	fmt.Fprintln(d.Stdout, "Aviso: a bateria faz chamadas reais aos modelos e cobra por elas.")
+	chaves := make([]string, 0, len(itens))
+	for _, it := range itens {
+		chaves = append(chaves, it.Par.Chave())
+	}
+	fmt.Fprintln(d.Stdout, "Aviso: "+homologacao.AvisoGasto(chaves))
 	if err := homologarMemoria(d.Homologar); err != nil {
 		return fail(d, err)
 	}
