@@ -122,6 +122,11 @@ func TestEveryGateExpressionCompiles(t *testing.T) {
 	for _, n := range doc.Nodes {
 		exprs = append(exprs, n.Output.Gate)
 	}
+	doc.Nodes = nil
+	_ = json.Unmarshal(read(t, "TEMPLATE_PIECE_PROCESSO.json"), &doc)
+	for _, n := range doc.Nodes {
+		exprs = append(exprs, n.Output.Gate)
+	}
 	re := regexp.MustCompile("Gate \\(DSL\\):\\*\\* `([^`]+)`")
 	for _, m := range re.FindAllStringSubmatch(templates.Plan(), -1) {
 		exprs = append(exprs, m[1])
