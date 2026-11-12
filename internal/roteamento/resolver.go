@@ -26,6 +26,63 @@ func (inv Inventario) tem(c Candidato) bool {
 	return false
 }
 
+type SubstituicaoVia struct {
+	No, Classe    string
+	Pedido, Usado CandidatoVia
+	Motivo        string
+}
+
+type ResolucaoVia struct {
+	No            string
+	Classe        string
+	Usado         CandidatoVia
+	Politica      string
+	StopGate      bool
+	Substituicoes []SubstituicaoVia
+}
+
+func disponivelVia(c CandidatoVia, inv []ItemInv) bool {
+	par := Par{Harness: c.Harness, Via: c.Via}
+	for _, item := range inv {
+		if item.Par != par || item.Estado != EstadoHomologado {
+			continue
+		}
+		for _, m := range item.Modelos {
+			if m == c.Modelo {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func ResolverVia(no, classe string, elegiveis map[string][]CandidatoVia, inv []ItemInv) (ResolucaoVia, error) {
+	if len(inv) == 0 {
+		return ResolucaoVia{}, ErrInventarioVazio
+	}
+	res := ResolucaoVia{No: no, Classe: classe}
+	candidatos := elegiveis[classe]
+	for i, c := range candidatos {
+		if !disponivelVia(c, inv) {
+			continue
+		}
+		res.Usado = c
+		if i > 0 {
+			res.Substituicoes = append(res.Substituicoes, SubstituicaoVia{
+				No:     no,
+				Classe: classe,
+				Pedido: candidatos[0],
+				Usado:  c,
+				Motivo: "primeiro candidato ausente do inventario",
+			})
+		}
+		return res, nil
+	}
+	res.Politica = PoliticaDeFalha(classe)
+	res.StopGate = classe == ClasseExtreme
+	return res, nil
+}
+
 func Resolver(no, classe string, perfil Perfil, inv Inventario) (Resolucao, error) {
 	if len(inv.Harnesses) == 0 {
 		return Resolucao{}, ErrInventarioVazio
