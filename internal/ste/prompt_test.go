@@ -138,18 +138,18 @@ func TestModoProvaValido(t *testing.T) {
 func TestPromptProvaProsa(t *testing.T) {
 	t.Parallel()
 	prompt := ste.PromptRegra(ste.ConfigPerfil{Modo: ste.ModoProva, Pausa: ste.PausaDestrutivo})
-	for _, b := range []string{"veredito", "Recomendação:", "Não verificado", "(prova:", "10 linhas", "100 palavras", "detalhe", "Citar documento não é prova", "Exemplo:", "destrutiva", "[1] seguir"} {
+	for _, b := range []string{"Recomendação:", "Não verificado", "(arquivo:linha", "15 linhas", "130 palavras", "detalhe", "Citar documento não é prova", "Exemplo:", "destrutiva", "[1] seguir"} {
 		if !strings.Contains(prompt, b) {
 			t.Errorf("prompt prova sem %q", b)
 		}
 	}
-	for _, proibido := range []string{"TRÍADE", "Fatos comprovados", "Stop-Gate Humano"} {
+	for _, proibido := range []string{"TRÍADE", "veredito", "Fatos comprovados", "Stop-Gate Humano"} {
 		if strings.Contains(prompt, proibido) {
 			t.Errorf("prompt prova nao deve conter %q", proibido)
 		}
 	}
-	if len(prompt) > 1500 {
-		t.Errorf("prompt prova deve ter no maximo 1500 bytes, tem %d", len(prompt))
+	if len(prompt) > 1700 {
+		t.Errorf("prompt prova deve ter no maximo 1700 bytes, tem %d", len(prompt))
 	}
 	if !strings.Contains(ste.PromptRegra(ste.ConfigPerfil{Modo: ste.ModoProva, Pausa: ste.PausaSempre}), "toda ação com efeito") {
 		t.Errorf("pausa sempre deve alterar a regra de pausa")

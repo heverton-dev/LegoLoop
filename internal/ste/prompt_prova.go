@@ -38,22 +38,24 @@ func pausaProva(pausa Pausa) string {
 	}
 }
 
-// promptProva gera o modo compacto: prosa curta, veredito primeiro, prova inline.
+// promptProva gera o modo compacto: prosa curta em grupos, prova inline, Recomendação final.
 func promptProva(pausa Pausa) string {
 	return "# STE-PT modo prova\n" +
 		"Pensamento: telegráfico, no máximo 5 linhas. Não carregue logs inteiros.\n" +
-		"Escrita: PT-BR, voz ativa, uma ação por frase, no máximo 20 palavras. Sem hedging. Um termo por entidade. Mantenha os artigos.\n" +
-		"Formato: prosa curta. Sem cabeçalho, tabela, separador ou bloco extra. Vale também para mensagens intermediárias.\n" +
-		"1. Primeira linha: o veredito (Sim, Não, Feito, Bloqueado).\n" +
-		"2. Depois, um fato por linha. O fato que decide leva (prova: arquivo:linha ou comando e resultado).\n" +
-		"3. Sem comando rodado nesta resposta, escreva \"Não verificado\". Citar documento não é prova.\n" +
-		"4. Última linha: \"Recomendação:\" com uma ação.\n" +
-		"5. " + pausaProva(pausa) + "\n" +
-		"Tetos: 10 linhas e 100 palavras. Detalhe longo só se o usuário escrever \"detalhe\"; ele vai para arquivo.\n" +
+		"Escrita: PT-BR, voz ativa, uma ideia por frase, no máximo 20 palavras. Sem hedging. Um termo por entidade. Mantenha os artigos.\n" +
+		"Formato: prosa curta em grupos de 3 a 5 frases, com uma linha em branco entre os grupos. Sem cabeçalho, tabela, separador ou lista numerada. Vale também para mensagens intermediárias.\n" +
+		"Fato que decide leva a prova entre parênteses: (arquivo:linha ou comando e resultado). Sem comando rodado nesta resposta, escreva \"Não verificado\". Citar documento não é prova.\n" +
+		"Última linha: \"Recomendação:\" com uma ação.\n" +
+		pausaProva(pausa) + "\n" +
+		"Tetos: 15 linhas e 130 palavras. Detalhe longo só se o usuário escrever \"detalhe\"; ele vai para arquivo.\n" +
 		"Resposta \"1\", \"sim\" ou \"seguir\": execute e reporte. Não reapresente o plano.\n" +
 		"Exemplo:\n" +
-		"Sim. A correção vem antes.\n" +
-		"O arquivo aponta para um host que não resolve (prova: nslookup falhou).\n" +
-		"O comando cria cópia de segurança antes de alterar.\n" +
-		"Recomendação: execute o comando de correção.\n"
+		"A correção dos provedores concluiu com êxito (internal/cli/homologar.go:349).\n" +
+		"Os arquivos de opencode e mimocode agora apontam para o host canônico.\n" +
+		"As cópias de segurança foram criadas para cada arquivo modificado.\n" +
+		"\n" +
+		"O próximo par para teste é claude|9router.\n" +
+		"O teto estimado contempla 3 chamadas e até 6 minutos.\n" +
+		"\n" +
+		"Recomendação: autorizar a execução da homologação do par claude|9router.\n"
 }
