@@ -59,3 +59,20 @@ func TestCarregarCadeia(t *testing.T) {
 		t.Fatalf("órfãos = %v, esperado %v", got, want)
 	}
 }
+
+func TestStopGateComSpecRefCobreAC(t *testing.T) {
+	dag := []byte(`{"nodes":[{"id":"N1","type":"unit_task","spec_ref":"AC-X-1.1"},{"id":"SG-A","type":"stop_gate","spec_ref":"AC-X-1.2"},{"id":"SG-B","type":"stop_gate"}]}`)
+	var c Cadeia
+	if err := c.addDAG(dag); err != nil {
+		t.Fatal(err)
+	}
+	c.ACs = []string{"AC-X-1.1", "AC-X-1.2"}
+	if got := c.Orfaos(); len(got) != 0 {
+		t.Fatalf("órfãos = %v, esperado nenhum", got)
+	}
+	for _, n := range c.Nos {
+		if n.ID == "SG-B" {
+			t.Fatal("Stop-Gate sem spec_ref não entra na cadeia")
+		}
+	}
+}

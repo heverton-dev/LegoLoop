@@ -26,6 +26,9 @@ func projetarNo(n routeNode) (map[string]any, error) {
 	}
 	if n.Type == "stop_gate" {
 		nd["routing"] = map[string]any{"mode": "manual", "model": "human/operator"}
+		if n.SpecRef != nil {
+			nd["spec_ref"] = *n.SpecRef
+		}
 		return nd, nil
 	}
 	nd["routing"] = roteamento(n)

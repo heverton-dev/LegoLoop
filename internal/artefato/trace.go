@@ -115,7 +115,7 @@ func (c *Cadeia) addDAG(dados []byte) error {
 		return err
 	}
 	for _, n := range d.Nodes {
-		if n.Type != "stop_gate" {
+		if n.Type != "stop_gate" || n.SpecRef != "" {
 			c.Nos = append(c.Nos, No{ID: n.ID, SpecRef: n.SpecRef})
 		}
 	}
