@@ -1,0 +1,460 @@
+{
+  "route_version": "2.2.0",
+  "plan_id": "PLAN_DISSECAR",
+  "initiative": "I08 — Verbo e Processo de Dissecação Universal do LegoLoop",
+  "target": "internal/dissecar",
+  "isolation": {
+    "subagents_allowed": "never",
+    "context_mode": "sterile",
+    "write_boundary": "strict"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E01.2",
+      "timeout_sec": 30,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/dissecar/tipos.go",
+        "internal/dissecar/tipos_test.go"
+      ],
+      "context_in": [
+        "docs/specs/2026-11-10_SPEC_DISSECAR.md"
+      ],
+      "context_out": [
+        "internal/dissecar/tipos.go"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "TICK-01.2",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E01.1",
+      "timeout_sec": 30,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/dissecar/resolver.go",
+        "internal/dissecar/resolver_test.go"
+      ],
+      "context_in": [
+        "internal/dissecar/tipos.go"
+      ],
+      "context_out": [
+        "internal/dissecar/resolver.go"
+      ],
+      "dependencies": ["TICK-01.1"]
+    },
+    {
+      "id": "TICK-01.3",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E01.3",
+      "timeout_sec": 45,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/dissecar/extrator.go",
+        "internal/dissecar/extrator_test.go"
+      ],
+      "context_in": [
+        "internal/dissecar/resolver.go"
+      ],
+      "context_out": [
+        "internal/dissecar/extrator.go"
+      ],
+      "dependencies": ["TICK-01.2"]
+    },
+    {
+      "id": "TICK-01.4",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E01.4",
+      "timeout_sec": 30,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/dissecar/extrator_env.go",
+        "internal/dissecar/extrator_env_test.go"
+      ],
+      "context_in": [
+        "internal/dissecar/extrator.go"
+      ],
+      "context_out": [
+        "internal/dissecar/extrator_env.go"
+      ],
+      "dependencies": ["TICK-01.3"]
+    },
+    {
+      "id": "TICK-01.5",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E01.5",
+      "timeout_sec": 30,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/dissecar/governanca.go",
+        "internal/dissecar/governanca_test.go"
+      ],
+      "context_in": [
+        "internal/dissecar/extrator_env.go",
+        "internal/taxonomy"
+      ],
+      "context_out": [
+        "internal/dissecar/governanca.go"
+      ],
+      "dependencies": ["TICK-01.4"]
+    },
+    {
+      "id": "TICK-01.6",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E01.7",
+      "timeout_sec": 45,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/dissecar/sintese_dag.go",
+        "internal/dissecar/sintese_dag_test.go"
+      ],
+      "context_in": [
+        "internal/dissecar/governanca.go"
+      ],
+      "context_out": [
+        "internal/dissecar/sintese_dag.go"
+      ],
+      "dependencies": ["TICK-01.5"]
+    },
+    {
+      "id": "TICK-01.7",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E01.8",
+      "timeout_sec": 45,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/dissecar/sintese_motion.go",
+        "internal/dissecar/sintese_motion_test.go"
+      ],
+      "context_in": [
+        "internal/dissecar/sintese_dag.go"
+      ],
+      "context_out": [
+        "internal/dissecar/sintese_motion.go"
+      ],
+      "dependencies": ["TICK-01.6"]
+    },
+    {
+      "id": "TICK-01.8",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E01.6",
+      "timeout_sec": 45,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/dissecar/dissecar.go",
+        "internal/dissecar/dissecar_test.go"
+      ],
+      "context_in": [
+        "internal/dissecar/sintese_motion.go"
+      ],
+      "context_out": [
+        "internal/dissecar/dissecar.go"
+      ],
+      "dependencies": ["TICK-01.7"]
+    },
+    {
+      "id": "SG-E01",
+      "nature": "deterministic",
+      "type": "stop_gate",
+      "timeout_sec": 0,
+      "routing": {
+        "model": "human"
+      },
+      "dependencies": ["TICK-01.8"]
+    },
+    {
+      "id": "TICK-02.1",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E02.1",
+      "timeout_sec": 45,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/cli/dissecar.go",
+        "internal/cli/dissecar_test.go"
+      ],
+      "context_in": [
+        "internal/dissecar/dissecar.go"
+      ],
+      "context_out": [
+        "internal/cli/dissecar.go"
+      ],
+      "dependencies": ["SG-E01"]
+    },
+    {
+      "id": "TICK-02.2",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E02.2",
+      "timeout_sec": 30,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/cli/dissecar_json_test.go"
+      ],
+      "context_in": [
+        "internal/cli/dissecar.go"
+      ],
+      "context_out": [
+        "internal/cli/dissecar_json_test.go"
+      ],
+      "dependencies": ["TICK-02.1"]
+    },
+    {
+      "id": "TICK-02.3",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E02.3",
+      "timeout_sec": 45,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/cli/commands.go",
+        "internal/cli/dissecar_binary_test.go"
+      ],
+      "context_in": [
+        "internal/cli/dissecar.go"
+      ],
+      "context_out": [
+        "internal/cli/commands.go"
+      ],
+      "dependencies": ["TICK-02.2"]
+    },
+    {
+      "id": "SG-E02",
+      "nature": "deterministic",
+      "type": "stop_gate",
+      "timeout_sec": 0,
+      "routing": {
+        "model": "human"
+      },
+      "dependencies": ["TICK-02.3"]
+    },
+    {
+      "id": "TICK-03.1",
+      "nature": "deterministic",
+      "type": "unit_task",
+      "spec_ref": "AC-E03.1",
+      "timeout_sec": 45,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/studio/dissecar_handler.go",
+        "internal/studio/dissecar_handler_test.go"
+      ],
+      "context_in": [
+        "internal/dissecar/dissecar.go",
+        "internal/studio/server.go"
+      ],
+      "context_out": [
+        "internal/studio/dissecar_handler.go"
+      ],
+      "dependencies": ["SG-E02"]
+    },
+    {
+      "id": "TICK-03.2",
+      "nature": "deterministic",
+      "type": "ui_task",
+      "spec_ref": "AC-E03.2",
+      "timeout_sec": 60,
+      "token_budget": {
+        "max_output_tokens": 2000
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/studio/static/index.html",
+        "internal/studio/static/app.js",
+        "internal/studio/static/style.css"
+      ],
+      "context_in": [
+        "internal/studio/dissecar_handler.go"
+      ],
+      "context_out": [
+        "internal/studio/static/app.js"
+      ],
+      "dependencies": ["TICK-03.1"]
+    },
+    {
+      "id": "TICK-03.3",
+      "nature": "deterministic",
+      "type": "ui_task",
+      "spec_ref": "AC-E03.4",
+      "timeout_sec": 45,
+      "token_budget": {
+        "max_output_tokens": 1500
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "internal/studio/static/components/dissecar-modal.js"
+      ],
+      "context_in": [
+        "internal/studio/static/app.js"
+      ],
+      "context_out": [
+        "internal/studio/static/components/dissecar-modal.js"
+      ],
+      "dependencies": ["TICK-03.2"]
+    },
+    {
+      "id": "SG-E03",
+      "nature": "deterministic",
+      "type": "stop_gate",
+      "timeout_sec": 0,
+      "routing": {
+        "model": "human"
+      },
+      "dependencies": ["TICK-03.3"]
+    },
+    {
+      "id": "TICK-04.1",
+      "nature": "deterministic",
+      "type": "skill",
+      "spec_ref": "AC-E04.1",
+      "timeout_sec": 30,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "skills/legoloop-dissecar/SKILL.md"
+      ],
+      "context_in": [
+        "docs/specs/2026-11-10_SPEC_DISSECAR.md"
+      ],
+      "context_out": [
+        "skills/legoloop-dissecar/SKILL.md"
+      ],
+      "dependencies": ["SG-E03"]
+    },
+    {
+      "id": "TICK-04.2",
+      "nature": "deterministic",
+      "type": "loop",
+      "spec_ref": "AC-E04.1",
+      "timeout_sec": 30,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "loops/legoloop-dissecar/pipeline.dag.json",
+        "loops/legoloop-dissecar/legoloop-dissecar.loop.json"
+      ],
+      "context_in": [
+        "skills/legoloop-dissecar/SKILL.md"
+      ],
+      "context_out": [
+        "loops/legoloop-dissecar/pipeline.dag.json"
+      ],
+      "dependencies": ["TICK-04.1"]
+    },
+    {
+      "id": "TICK-04.3",
+      "nature": "deterministic",
+      "type": "script",
+      "spec_ref": "AC-E04.2",
+      "timeout_sec": 60,
+      "token_budget": {
+        "max_output_tokens": 1000
+      },
+      "routing": {
+        "model": "code-fast"
+      },
+      "write_boundary": [
+        "bin/legoloop.exe"
+      ],
+      "context_in": [
+        "cmd/legoloop/main.go"
+      ],
+      "context_out": [
+        "bin/legoloop.exe"
+      ],
+      "dependencies": ["TICK-04.2"]
+    },
+    {
+      "id": "SG-FINAL",
+      "nature": "deterministic",
+      "type": "stop_gate",
+      "timeout_sec": 0,
+      "routing": {
+        "model": "human"
+      },
+      "dependencies": ["TICK-04.3"]
+    }
+  ]
+}

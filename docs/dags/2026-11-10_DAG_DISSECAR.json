@@ -1,0 +1,155 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "name": "legoloop-dissecar",
+  "version": "2.2.0",
+  "description": "Processo industrial de inspeção anatômica profunda, engenharia reversa estática e geração da tríade de motion graphics.",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_resolver_alvo",
+      "type": "unit_task",
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 30,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "alvo": "var.alvo"
+      },
+      "output": {
+        "artifact": "target_resolved.json",
+        "gate": "file_exists('target_resolved.json')"
+      }
+    },
+    {
+      "id": "n02_extrair_ast_metricas",
+      "type": "unit_task",
+      "depends_on": [
+        "n01_resolver_alvo"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 45,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "target": "file('target_resolved.json')"
+      },
+      "output": {
+        "artifact": "ast_metrics.json",
+        "gate": "file_exists('ast_metrics.json')"
+      }
+    },
+    {
+      "id": "n03_auditar_governanca",
+      "type": "unit_task",
+      "depends_on": [
+        "n02_extrair_ast_metricas"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 30,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "ast": "file('ast_metrics.json')"
+      },
+      "output": {
+        "artifact": "governance_audit.json",
+        "gate": "file_exists('governance_audit.json')"
+      }
+    },
+    {
+      "id": "n04_sintetizar_dag_reverso",
+      "type": "unit_task",
+      "depends_on": [
+        "n03_auditar_governanca"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 45,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "ast": "file('ast_metrics.json')",
+        "gov": "file('governance_audit.json')"
+      },
+      "output": {
+        "artifact": "pipeline.dag.json",
+        "gate": "file_exists('pipeline.dag.json')"
+      }
+    },
+    {
+      "id": "n05_sintetizar_triade_motion",
+      "type": "unit_task",
+      "depends_on": [
+        "n04_sintetizar_dag_reverso"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 45,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "dag": "file('pipeline.dag.json')",
+        "gov": "file('governance_audit.json')"
+      },
+      "output": {
+        "artifact": "motion_graph.json",
+        "gate": "file_exists('motion_graph.json') && file_exists('anatomia.html') && file_exists('anatomia.svg')"
+      }
+    },
+    {
+      "id": "n06_compilar_relatorio_final",
+      "type": "unit_task",
+      "depends_on": [
+        "n05_sintetizar_triade_motion"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": "flash"
+      },
+      "timeout_sec": 30,
+      "execution": {
+        "mode": "isolated"
+      },
+      "inputs": {
+        "motion": "file('motion_graph.json')",
+        "gov": "file('governance_audit.json')"
+      },
+      "output": {
+        "artifact": "ficha_anatomica.json",
+        "gate": "file_exists('ficha_anatomica.json') && file_exists('ANATOMIA.md')"
+      }
+    }
+  ]
+}
