@@ -31,6 +31,9 @@ func projetarNo(n routeNode) (map[string]any, error) {
 		}
 		return nd, nil
 	}
+	if n.Routing.Harness == "direto" && n.Routing.Via != "9router" {
+		return nil, fmt.Errorf("nó %q: harness direto exige via 9router, recebeu %q", n.ID, n.Routing.Via)
+	}
 	nd["routing"] = roteamento(n)
 	unidade(nd, n)
 	return nd, nil
@@ -38,6 +41,9 @@ func projetarNo(n routeNode) (map[string]any, error) {
 
 func roteamento(n routeNode) map[string]any {
 	rt := map[string]any{"mode": n.Routing.Mode, "model": n.Routing.Model}
+	if n.Routing.Via != "" {
+		rt["via"] = n.Routing.Via
+	}
 	if n.Routing.Effort != nil {
 		rt["effort"] = *n.Routing.Effort
 	}
@@ -47,7 +53,7 @@ func roteamento(n routeNode) map[string]any {
 	return rt
 }
 
-// unidade preenche os campos próprios do unit_task.
+// unidade preenche os campos próprios do nó de código.
 func unidade(nd map[string]any, n routeNode) {
 	tooling := map[string]any{"harness": n.Routing.Harness}
 	maps.Copy(tooling, n.Tooling)

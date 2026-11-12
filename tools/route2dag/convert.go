@@ -38,6 +38,7 @@ type routeNode struct {
 	Routing struct {
 		Mode     string  `json:"mode"`
 		Harness  string  `json:"harness"`
+		Via      string  `json:"via,omitempty"`
 		Model    string  `json:"model"`
 		Effort   *string `json:"effort"`
 		Fallback *struct {
