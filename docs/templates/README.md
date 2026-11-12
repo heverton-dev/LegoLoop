@@ -24,6 +24,24 @@ Este diretório centraliza os modelos oficiais (**Single Source of Truth**) para
 3. **[`TEMPLATE_PLAN.md`](TEMPLATE_PLAN.md):** Fatiamento vertical com 4 níveis de supervisão humana (`nano`, `micro`, `epic`, `autonomous`), linhagem de iniciativa e épico, limites estritos de token e write boundary. É o espelho legível do ROUTE.
 4. **[`TEMPLATE_ROUTE.json`](TEMPLATE_ROUTE.json):** Matriz isomórfica de nós para execução por agentes com Merkle root, concorrência tipada, retentativas automáticas, orçamentos bidirecionais de token e contrato de telemetria. É o espelho executável do PLAN.
 
+### O sexteto: INTERVIEW, INTENT, SPEC, PLAN, ROUTE, DAG
+
+A cascata passa a ser o sexteto INTERVIEW, INTENT, SPEC, PLAN, ROUTE, DAG. A entrevista vem antes da intenção e o DAG fecha a sequência.
+
+* **[`TEMPLATE_INTERVIEW.md`](TEMPLATE_INTERVIEW.md):** respostas, confiança por rodada, fatos medidos e pendências para a SPEC.
+* **[`TEMPLATE_REPORT.md`](TEMPLATE_REPORT.md):** relatório com parte factual (telemetria, entregas, inventário) e parte interpretativa (matriz de qualidade, conclusão e recomendações).
+* **[`TEMPLATE_HANDOFF.md`](TEMPLATE_HANDOFF.md):** passagem de bastão a partir do REPORT, com `upstream` apontando para ele.
+
+Todo documento do sexteto tem front matter com `id`, `status`, `date`, `schema_version: 2`, `upstream` e `covers`, e usa os IDs Q, R e AC.
+
+### Peças agnósticas
+
+Toda Peça declara `os_support`, `execution_modes` e `harness_support`, e usa load lazy com `requires.class` para indicar a classe exigida.
+
+* **Skill:** sem `suggested_model`; declara classe, não modelo.
+* **MCP:** sem `autoApprove` fixo.
+* **Script:** em par `.ps1` e `.sh`, com o mesmo contrato de argumentos.
+
 ---
 
 ## 2. A Sextilha Canônica de Peças (v2.2.0)

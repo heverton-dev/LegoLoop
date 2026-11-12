@@ -80,6 +80,15 @@ func TestTemplatesDoSexteto(t *testing.T) {
 	}
 }
 
+func TestReadmeCitaSexteto(t *testing.T) {
+	texto := string(read(t, "README.md"))
+	for _, s := range []string{"TEMPLATE_INTERVIEW.md", "TEMPLATE_HANDOFF.md", "TEMPLATE_REPORT.md", "os_support", "execution_modes", "harness_support"} {
+		if !strings.Contains(texto, s) {
+			t.Errorf("README.md sem a citação %q", s)
+		}
+	}
+}
+
 func TestHandoffTemplate(t *testing.T) {
 	texto := string(read(t, "TEMPLATE_HANDOFF.md"))
 	for _, s := range []string{"---\nid: HANDOFF-", "\nschema_version: 2\n", "\nupstream: [REPORT-"} {
