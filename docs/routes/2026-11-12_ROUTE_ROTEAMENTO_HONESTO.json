@@ -1,0 +1,1777 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "schema_version": 2,
+  "name": "ROTEAMENTO_HONESTO",
+  "version": "1.0.0",
+  "date": "2026-11-12",
+  "session_id": "240fe656-1081-4519-b96d-4dd4985fff63",
+  "intent_ref": "docs/intents/2026-11-12_INTENT_ROTEAMENTO_HONESTO.md",
+  "spec_ref": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md",
+  "plan_ref": "docs/plans/2026-11-12_PLAN_ROTEAMENTO_HONESTO.md",
+  "initiative_ref": "I3",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-12_INTENT_ROTEAMENTO_HONESTO.md",
+      "sha256": "b7a38651e2475197e8ceb190f44a128e21d2c40c0264703eea3ae8d6b95e7bab"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md",
+      "sha256": "074d3b7f3cf7480351f8936c7bb35d129f2e72e1891f4d76d668ba5c35d980d5"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-12_PLAN_ROTEAMENTO_HONESTO.md",
+      "sha256": "97af926f2a7af3f9f15b45ac29d64aaa2b521d3645e9259a2160ad708bfa8336"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "stash_changes",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    },
+    "routing_order": [
+      "claude"
+    ],
+    "claude_model_tiers": {
+      "nano": "haiku",
+      "micro": "sonnet",
+      "macro": "sonnet",
+      "extreme": "opus"
+    }
+  },
+  "nodes": [
+    {
+      "class_rule": "macro: toca mais de 1 pacote",
+      "defects": [],
+      "depends_on": [],
+      "epic_id": "E00",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-00.3",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/artefato/trace.go",
+          "tools/ticketgate/trace.go",
+          "tools/ticketgate/main.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-00.3"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Regra de prova da entrevista e ticketgate -interview",
+      "nature": "macro",
+      "output": {
+        "artifacts": [
+          "internal/artefato/entrevista.go",
+          "internal/artefato/entrevista_test.go",
+          "tools/ticketgate/interview.go",
+          "tools/ticketgate/interview_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/artefato/entrevista.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/artefato/...,./tools/ticketgate/...",
+            "-tax",
+            "internal/artefato/entrevista.go,internal/artefato/entrevista_test.go,tools/ticketgate/interview.go,tools/ticketgate/interview_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-00.3",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/artefato/entrevista_test.go:TestEntrevistaSemFatoFalha",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "stop_gate: processo local sem tokens",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-00.3"
+      ],
+      "epic_id": "E00",
+      "execution_mode": "sequential",
+      "id": "SG-I3-CONTRATO",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [],
+        "spec_anchor": null
+      },
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "label": "Stop-Gate Humano (SG-I3-CONTRATO)",
+      "nature": "nano",
+      "output": {
+        "artifacts": [],
+        "gate": "prompt('Aprova incluir routing.via como campo obrigatório do contrato público do DAG v2? Nenhum DAG existente declara schema_version, então todos continuam válidos em modo legado.')",
+        "verify": []
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false,
+        "max_retries": 0
+      },
+      "rollback_strategy": "abort_pipeline",
+      "routing": {
+        "effort": null,
+        "fallback": null,
+        "harness": "local",
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "spec_ref": null,
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": null,
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "stop_gate"
+    },
+    {
+      "class_rule": "extreme: nature destrutiva",
+      "defects": [],
+      "depends_on": [
+        "SG-I3-CONTRATO"
+      ],
+      "epic_id": "E00",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-00.1",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/dag/schema_v2.go",
+          "internal/dag/types.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-00.1"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "routing.via obrigatório no contrato v2 do DAG",
+      "nature": "extreme",
+      "output": {
+        "artifacts": [
+          "internal/dag/types.go",
+          "internal/dag/schema_v2.go",
+          "internal/dag/schema_v2_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/dag/types.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/dag/...",
+            "-tax",
+            "internal/dag/schema_v2.go,internal/dag/schema_v2_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "opus"
+      },
+      "spec_ref": "AC-I3-00.1",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/dag/schema_v2_test.go:TestViaObrigatorioNoV2",
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 900
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-00.1"
+      ],
+      "epic_id": "E00",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-00.2",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "tools/route2dag/convert.go",
+          "tools/route2dag/node.go",
+          "tools/route2dag/paridade_test.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-00.2"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Paridade ROUTE e DAG com via e harness direto",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "tools/route2dag/convert.go",
+          "tools/route2dag/node.go",
+          "tools/route2dag/paridade_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('tools/route2dag/convert.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./tools/route2dag/...",
+            "-tax",
+            "tools/route2dag/paridade_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-00.2",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "tools/route2dag/paridade_test.go:TestParidadeViaEHarness",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-00.1"
+      ],
+      "epic_id": "E01",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-01.1",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/roteamento/inventario.go",
+          "internal/provider/inventory.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-01.1"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Inventário unificado por par harness e via",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/roteamento/inventario.go",
+          "internal/roteamento/inventario_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/inventario.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/roteamento/...",
+            "-tax",
+            "internal/roteamento/inventario.go,internal/roteamento/inventario_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-01.1",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/roteamento/inventario_test.go:TestInventarioUnificado",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-01.1"
+      ],
+      "epic_id": "E01",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-01.2",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/roteamento/inventario.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-01.2"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Perfil em dois níveis com padrão embutido",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/roteamento/perfil.go",
+          "internal/roteamento/perfil_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/perfil.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/roteamento/...",
+            "-tax",
+            "internal/roteamento/perfil.go,internal/roteamento/perfil_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-01.2",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/roteamento/perfil_test.go:TestPerfilDoisNiveis",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-01.2"
+      ],
+      "epic_id": "E01",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-01.3",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/roteamento/resolver.go",
+          "internal/roteamento/classe.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-01.3"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Resolvedor com via e política de falha por classe",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/roteamento/resolver.go",
+          "internal/roteamento/politica.go",
+          "internal/roteamento/resolver_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/resolver.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/roteamento/...",
+            "-tax",
+            "internal/roteamento/resolver.go,internal/roteamento/politica.go,internal/roteamento/resolver_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-01.3",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/roteamento/resolver_test.go:TestPoliticaDeFalhaPorClasse",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-01.3",
+        "TICK-I3-00.2"
+      ],
+      "epic_id": "E01",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-01.4",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/cli/cli.go",
+          "internal/roteamento/resolver.go",
+          "tools/route2dag/convert.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-01.4"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Comando legoloop rota",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/cli/rota.go",
+          "internal/cli/rota_test.go",
+          "internal/cli/cli.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/cli/rota.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/cli/...,./internal/roteamento/...",
+            "-tax",
+            "internal/cli/rota.go,internal/cli/rota_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-01.4",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/cli/rota_test.go:TestRotaGravaRoteamentoResolvido",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-01.3"
+      ],
+      "epic_id": "E02",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-02.1",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/orchestrix/unit_run.go",
+          "internal/orchestrix/unit_claude.go",
+          "internal/orchestrix/harness.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-02.1"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Nó de código em harness homologado",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/unit_harness.go",
+          "internal/orchestrix/unit_harness_test.go",
+          "internal/orchestrix/unit_run.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/unit_harness.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...",
+            "-tax",
+            "internal/orchestrix/unit_harness.go,internal/orchestrix/unit_harness_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-02.1",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/orchestrix/unit_harness_test.go:TestNoDeCodigoEmHarnessHomologado",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-02.1"
+      ],
+      "epic_id": "E02",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-02.2",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/orchestrix/unit_claude.go",
+          "internal/orchestrix/backends.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-02.2"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Comutação do gateway por nó",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/gateway.go",
+          "internal/orchestrix/gateway_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/gateway.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...",
+            "-tax",
+            "internal/orchestrix/gateway.go,internal/orchestrix/gateway_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-02.2",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/orchestrix/gateway_test.go:TestGatewayPorNoSoNoFilho",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-02.2"
+      ],
+      "epic_id": "E02",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-02.3",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/orchestrix/orchestrix.go",
+          "internal/orchestrix/backends.go",
+          "internal/roteamento/politica.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-02.3"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Despacho com degradação por classe e API direta",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/despacho.go",
+          "internal/orchestrix/despacho_test.go",
+          "internal/orchestrix/orchestrix.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/despacho.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...",
+            "-tax",
+            "internal/orchestrix/despacho.go,internal/orchestrix/despacho_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-02.3",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/orchestrix/despacho_test.go:TestDegradaNanoMicroFalhaGrandeExtreme",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "macro: mais de 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-02.3"
+      ],
+      "epic_id": "E02",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-02.4",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/orchestrix/orchestrix.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-02.4"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Limite de workers por memória livre",
+      "nature": "macro",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/workers.go",
+          "internal/orchestrix/workers_test.go",
+          "internal/orchestrix/memoria.go",
+          "internal/orchestrix/memoria_windows.go",
+          "internal/orchestrix/memoria_linux.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/workers.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...",
+            "-tax",
+            "internal/orchestrix/workers.go,internal/orchestrix/workers_test.go,internal/orchestrix/memoria.go,internal/orchestrix/memoria_windows.go,internal/orchestrix/memoria_linux.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-02.4",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/orchestrix/workers_test.go:TestWorkersPorMemoria",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-02.4"
+      ],
+      "epic_id": "E02",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-02.5",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/runner/runner.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-02.5"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Detecção de conflito de arquivo entre nós",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/runner/conflito.go",
+          "internal/runner/conflito_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/runner/conflito.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/runner/...",
+            "-tax",
+            "internal/runner/conflito.go,internal/runner/conflito_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-02.5",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/runner/conflito_test.go:TestDoisNosMesmoArquivoNaoJuntos",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-02.3"
+      ],
+      "epic_id": "E02",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-02.6",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/orchestrix/relatorio.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-02.6"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "REPORT factual com harness e via reais",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/orchestrix/relatorio.go",
+          "internal/orchestrix/relatorio_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/relatorio.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/orchestrix/...",
+            "-tax",
+            "internal/orchestrix/relatorio.go,internal/orchestrix/relatorio_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-02.6",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/orchestrix/relatorio_test.go:TestRelatorioComHarnessReal",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-01.1",
+        "TICK-I3-02.1"
+      ],
+      "epic_id": "E03",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-03.1",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/orchestrix/unit.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-03.1"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Bateria de conformidade com medição de memória",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/roteamento/homologacao/bateria.go",
+          "internal/roteamento/homologacao/criterios.go",
+          "internal/roteamento/homologacao/bateria_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/homologacao/bateria.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/roteamento/homologacao/...",
+            "-tax",
+            "internal/roteamento/homologacao/bateria.go,internal/roteamento/homologacao/criterios.go,internal/roteamento/homologacao/bateria_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-03.1",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/roteamento/homologacao/bateria_test.go:TestBateriaAprovaEReprova",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "macro: mais de 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-03.1",
+        "TICK-I3-01.4"
+      ],
+      "epic_id": "E03",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-03.2",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/cli/rota.go",
+          "internal/cli/cli.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-03.2"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Armazenamento da homologação e comando homologar",
+      "nature": "macro",
+      "output": {
+        "artifacts": [
+          "internal/roteamento/homologacao/store.go",
+          "internal/roteamento/homologacao/store_test.go",
+          "internal/cli/homologar.go",
+          "internal/cli/homologar_test.go",
+          "internal/cli/cli.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/homologacao/store.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/roteamento/homologacao/...,./internal/cli/...",
+            "-tax",
+            "internal/roteamento/homologacao/store.go,internal/roteamento/homologacao/store_test.go,internal/cli/homologar.go,internal/cli/homologar_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-03.2",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/cli/homologar_test.go:TestHomologarPedeConfirmacao",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "macro: toca mais de 1 pacote",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-03.2"
+      ],
+      "epic_id": "E03",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-03.3",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/orchestrix/harness.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-03.3"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Condições do agy e alarme de banimento",
+      "nature": "macro",
+      "output": {
+        "artifacts": [
+          "internal/roteamento/homologacao/agy.go",
+          "internal/roteamento/homologacao/agy_test.go",
+          "internal/orchestrix/alarme.go",
+          "internal/orchestrix/alarme_test.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/homologacao/agy.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/roteamento/homologacao/...,./internal/orchestrix/...",
+            "-tax",
+            "internal/roteamento/homologacao/agy.go,internal/roteamento/homologacao/agy_test.go,internal/orchestrix/alarme.go,internal/orchestrix/alarme_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-03.3",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/roteamento/homologacao/agy_test.go:TestAgyContaFixaEParadaTos",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "macro: toca mais de 1 pacote",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-03.2"
+      ],
+      "epic_id": "E03",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-03.4",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/cli/homologar.go",
+          "internal/provider/inventory.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-03.4"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "Sonda e correção do provider 9Router com backup",
+      "nature": "macro",
+      "output": {
+        "artifacts": [
+          "internal/roteamento/homologacao/provider.go",
+          "internal/roteamento/homologacao/provider_test.go",
+          "internal/cli/homologar.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/homologacao/provider.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/roteamento/homologacao/...,./internal/cli/...",
+            "-tax",
+            "internal/roteamento/homologacao/provider.go,internal/roteamento/homologacao/provider_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-03.4",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/roteamento/homologacao/provider_test.go:TestProviderVerificaECorrigeComBackup",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-00.3"
+      ],
+      "epic_id": "E04",
+      "execution_mode": "tdd_red_green",
+      "id": "TICK-I3-04.1",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "internal/mcp/router.go",
+          "internal/mcp/skills.go",
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-04.1"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "label": "skill_search e call_skill no roteador",
+      "nature": "micro",
+      "output": {
+        "artifacts": [
+          "internal/mcp/skill_router.go",
+          "internal/mcp/skill_router_test.go",
+          "internal/mcp/router.go"
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/mcp/skill_router.go')",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./internal/mcp/...",
+            "-tax",
+            "internal/mcp/skill_router.go,internal/mcp/skill_router_test.go",
+            "-tax-max",
+            "0"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true,
+        "max_retries": 1
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet"
+      },
+      "spec_ref": "AC-I3-04.1",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": "internal/mcp/skill_router_test.go:TestSkillSearchECallSkill",
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "unit_task"
+    },
+    {
+      "class_rule": "script: gate mecanico sem modelo",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-00.2",
+        "TICK-I3-01.4",
+        "TICK-I3-02.5",
+        "TICK-I3-02.6",
+        "TICK-I3-03.3",
+        "TICK-I3-03.4",
+        "TICK-I3-04.1"
+      ],
+      "epic_id": "E05",
+      "execution_mode": "sequential",
+      "id": "TICK-I3-05.1",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [
+          "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md#AC-I3-05.1"
+      },
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "label": "Fechamento: build fresco, go test global e taxlinter dos templates",
+      "nature": "nano",
+      "output": {
+        "artifacts": [],
+        "gate": "exit_code == 0",
+        "verify": [
+          [
+            "go",
+            "run",
+            "./tools/ticketgate",
+            "-pkgs",
+            "./...",
+            "-tax",
+            "docs/templates",
+            "-tax-max",
+            "35",
+            "-build"
+          ]
+        ]
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false,
+        "max_retries": 0
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        },
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku"
+      },
+      "spec_ref": "AC-I3-05.1",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": null,
+      "timeout_sec": 900,
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "script"
+    },
+    {
+      "class_rule": "stop_gate: processo local sem tokens",
+      "defects": [],
+      "depends_on": [
+        "TICK-I3-05.1"
+      ],
+      "epic_id": "E05",
+      "execution_mode": "sequential",
+      "id": "SG-I3-HOMOLOGACAO",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [],
+        "spec_anchor": null
+      },
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "label": "Stop-Gate Humano (SG-I3-HOMOLOGACAO)",
+      "nature": "nano",
+      "output": {
+        "artifacts": [],
+        "gate": "prompt('Rode legoloop homologar com confirmação do teto e legoloop homologar --provider com --corrigir-provider. Aprova o resultado de claude, opencode, mimo, omp e agy nesta máquina?')",
+        "verify": []
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false,
+        "max_retries": 0
+      },
+      "rollback_strategy": "abort_pipeline",
+      "routing": {
+        "effort": null,
+        "fallback": null,
+        "harness": "local",
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "spec_ref": "AC-I3-05.2",
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": null,
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "stop_gate"
+    },
+    {
+      "class_rule": "stop_gate: processo local sem tokens",
+      "defects": [],
+      "depends_on": [
+        "SG-I3-HOMOLOGACAO"
+      ],
+      "epic_id": "E05",
+      "execution_mode": "sequential",
+      "id": "SG-I3-FINAL",
+      "initiative_id": "I3",
+      "inputs": {
+        "context_artifacts": [],
+        "source_files": [],
+        "spec_anchor": null
+      },
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "label": "Stop-Gate Humano (SG-I3-FINAL)",
+      "nature": "nano",
+      "output": {
+        "artifacts": [],
+        "gate": "prompt('Aprova o fechamento da I3?')",
+        "verify": []
+      },
+      "ref": null,
+      "retry_policy": {
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false,
+        "max_retries": 0
+      },
+      "rollback_strategy": "abort_pipeline",
+      "routing": {
+        "effort": null,
+        "fallback": null,
+        "harness": "local",
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "spec_ref": null,
+      "status": "PENDING",
+      "telemetry": null,
+      "test_target": null,
+      "timeout_sec": 180,
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "tooling": {
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "go"
+      },
+      "type": "stop_gate"
+    }
+  ]
+}
