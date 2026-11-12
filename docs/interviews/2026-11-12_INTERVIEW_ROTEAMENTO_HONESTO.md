@@ -11,7 +11,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14]
 
 > **Protocolo:** uma pergunta por vez, em prosa. A entrevista só termina com confiança igual ou acima de 95%.
 > **Regra de prova:** nenhuma pergunta nasce de inferência. Cada pergunta cita fatos F da seção 3, e cada fato F traz a prova (arquivo e linha, ou comando e saída). Sem prova, o entrevistador verifica no código antes de perguntar. Fato de memória ou de sessão anterior não conta como prova.
-> **Confiança atual:** 92% (reaberta em 12/11 depois da refutação do F8; volta a 95% com as respostas das perguntas Q13 e Q14)
+> **Confiança final:** 95% (reaberta em 12/11 pela refutação do F8; refeita com as respostas Q13 e Q14)
 > **Iniciativa:** I3 Roteamento honesto
 > **Template:** TEMPLATE_INTERVIEW.md v2.3.0
 
@@ -31,6 +31,8 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14]
 | Q10 | Como o usuário controla o gasto da bateria? | F15, F16, F21 | Aviso com o teto total estimado e confirmação antes de gastar. Sem confirmação, o harness fica "não homologado". O Claude Code já configurado nunca é bloqueado. |
 | Q11 | O que o critério 2 da bateria exige? | F4, F5, F22 | Só a conferência do motor. A bateria testa que o motor detecta e reverte escrita fora do limite. |
 | Q12 | Como o campo `via` entra no contrato do DAG? | F24, F25 | Obrigatório no `schema_version: 2`. Mudança de contrato público, com Stop-Gate humano `SG-I3-CONTRATO`. |
+| Q13 | Qual é o endereço canônico do 9Router? | F27, F28, F29, F30 | `roteador.signa-docs.com`. Os três harnesses passam a apontar para ele. Cada correção faz backup antes e pede confirmação. |
+| Q14 | O agy entra na bateria? | F26, F31, F32, F33, F34 | Entra, com quatro condições: conta fixa (a já logada, sem troca), binário real chamado direto (sem o `gw`), parada e marca "reprovado" no primeiro sinal de "Terms of Service" ou "service disabled", e aviso de gasto e risco em separado. |
 
 Decisões sem pergunta numerada, tomadas pelo usuário durante a entrevista:
 
@@ -46,7 +48,8 @@ Decisões sem pergunta numerada, tomadas pelo usuário durante a entrevista:
 | 7 a 9 | Q5, Q6, Q7 | 83% | Skill sob demanda, paralelismo e fim das raias do agy. |
 | 10 a 12 | Q8, Q9, Q10 | 90% | Gerador em Go, perfil em dois níveis e controle do gasto da bateria. Q8 refeita com prova depois da correção do usuário. |
 | 13 a 14 | Q11, Q12 | 95% | Barreira de escrita e contrato `via`. Critério de parada atingido. |
-| 15 | Respostas às premissas do INTENT | 92% | O usuário exigiu todos os harnesses instalados, a medição do F16 e a verificação do 9Router. A verificação refutou o F8. Perguntas Q13 e Q14 abertas. |
+| 15 | Respostas às premissas do INTENT | 92% | O usuário exigiu todos os harnesses instalados, a medição do F16 e a verificação do 9Router. A verificação refutou o F8. |
+| 16 a 17 | Q13, Q14 | 95% | Endereço canônico do 9Router definido. O agy entra com quatro condições. Critério de parada atingido de novo. |
 
 ## 3. Fatos medidos durante a entrevista
 
@@ -80,7 +83,9 @@ Decisões sem pergunta numerada, tomadas pelo usuário durante a entrevista:
 | F28 | O host `roteador.vpsconexao.org` não resolve. | `curl: (6) Could not resolve host`; `nslookup`: `Non-existent domain` | VERIFICADO |
 | F29 | O host `9router.vpsconexao.org` roda a versão 0.5.95 (a última é 0.5.116) e expõe 8 combos, sem os `free-*`. O omp usa esse host e declara dois combos extras (as entradas das linhas 200 e 204 do arquivo), que não existem nesse host nem no de F30. | `curl https://9router.vpsconexao.org/api/version`; `GET /v1/models` com a chave; `~/.omp/agent/models.yml:184`, `:200`, `:204` | VERIFICADO |
 | F30 | O host `roteador.signa-docs.com` roda a versão 0.5.116, sem atualização pendente, e expõe 17 combos, com os `free-*`. | `curl https://roteador.signa-docs.com/api/version`; `GET /v1/models` com a chave | VERIFICADO |
-| F31 | O PLAN e o REPORT da I1 registram o agy como banido por ToS desde 2026-11-10. | `docs/reports/2026-11-12_REPORT_EXECUCAO_LEI15.md:89` | VERIFICADO |
+| F31 | O PLAN e o REPORT da I1 registram o agy como banido por ToS desde 2026-11-10. O registro é impreciso: a prova do F33 mostra uma conta desativada, não o harness. | `docs/reports/2026-11-12_REPORT_EXECUCAO_LEI15.md:89` | PARCIAL |
+| F33 | O erro de banimento é da conta `DEV_05`: "disabled in this account for violation of Terms of Service". A conta foi alcançada pelo failover do `gw` em erro 429 (`DEV_03>DEV_05`). Nenhum registro prova que a rotação causou a violação. | `docs/reports/data/2026-11-06_auditoria/agy_rodada_rotacao_gw.jsonl:4` a `:8` | VERIFICADO |
+| F34 | Com a conta `DEV_03` fixa e o binário real, os testes do agy rodaram. | `docs/reports/2026-11-06_REPORT_AUDITORIA_HARNESS_9ROUTER.md:148` | VERIFICADO |
 | F17 | O Claude Code exige comutação para usar os combos do 9Router. | Ver F9. Falta provar que os outros harnesses rodam o nó de código com o 9Router. A bateria prova isso. | PARCIAL |
 
 Decisões do usuário sobre as premissas do INTENT, em 12/11:
@@ -89,10 +94,7 @@ Decisões do usuário sobre as premissas do INTENT, em 12/11:
 * Sem reprodução e sem mensuração, o F16 não vale. A medição de memória entra como etapa obrigatória.
 * O LegoLoop verifica se cada harness usa o 9Router com a API atual, e corrige o que estiver errado (F27 a F30).
 
-Perguntas abertas:
-
-* Q13: qual é o endereço canônico do 9Router?
-* Q14: o agy (F31) entra na bateria?
+Decisões posteriores: Q13 e Q14 respondidas (seção 1).
 
 ## 4. Pendências para a SPEC
 
@@ -101,7 +103,8 @@ Perguntas abertas:
 * Adicionar `routing.via` ao contrato v2 e criar o Stop-Gate `SG-I3-CONTRATO` (Q12).
 * Definir o perfil em dois níveis e o perfil padrão embutido (Q9).
 * Medir o peso de memória de cada harness instalado (F16, obrigatório) dentro da bateria de conformidade.
-* Corrigir os providers do 9Router nos harnesses (F27 a F30) e criar a sonda de conectividade e de versão do provider.
+* Corrigir os providers do 9Router nos harnesses para `roteador.signa-docs.com` (Q13), com backup e confirmação, e criar a sonda de conectividade e de versão do provider.
+* Implementar as quatro condições do agy na bateria (Q14).
 * Provar na bateria quais harnesses rodam o nó de código com o 9Router (F17).
 * Definir o formato do arquivo de perfil do usuário e o campo `via` do `Candidato`.
 * Unir o `provider.Inventory` do motor ao `internal/roteamento` (F7).

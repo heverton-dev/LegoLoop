@@ -15,7 +15,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12]
 > **Iniciativa:** I3 Roteamento honesto (programa Lei #15: I1 Taxonomia, I2 Sexteto e templates, I3 Roteamento honesto, I4 DISSECAR, I5 MATRIZ_PAPEIS, I6 Migração dos legados)  
 > **Alvo:** `internal/roteamento`, `internal/orchestrix`, `internal/dag`, `internal/mcp`, `internal/provider`, `internal/cli`, `tools/route2dag`, `docs/templates`  
 > **Sessão:** 240fe656-1081-4519-b96d-4dd4985fff63  
-> **Confiança da Entrevista:** 92%, reaberta em 12/11 ([INTERVIEW](../interviews/2026-11-12_INTERVIEW_ROTEAMENTO_HONESTO.md))  
+> **Confiança da Entrevista:** 95%, refeita em 12/11 ([INTERVIEW](../interviews/2026-11-12_INTERVIEW_ROTEAMENTO_HONESTO.md))  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
 
 ---
@@ -32,7 +32,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12]
 * **O Porquê:** o LegoLoop quer ser agnóstico de harness e de modelo. Sem roteamento honesto, a ROUTE perde o valor como fonte da decisão (Q2 da I2).
 * **Estado Atual vs. Estado Desejado:**
   * **Hoje:** o agente preenche o roteamento à mão. O motor colapsa os combos em `sonnet`. Só o claude CLI roda nó de código.
-  * **Amanhã:** o comando `legoloop rota` grava a ROUTE com harness, modelo, esforço e `via` resolvidos contra o inventário do sistema operacional. O motor executa exatamente o que a ROUTE declara. Todo harness instalado nesta máquina (claude, opencode, mimo, omp e agy, F26) passa pela bateria de conformidade, e o aprovado pode rodar nó de código. Cada harness usa o 9Router com o endereço e a versão corretos.
+  * **Amanhã:** o comando `legoloop rota` grava a ROUTE com harness, modelo, esforço e `via` resolvidos contra o inventário do sistema operacional. O motor executa exatamente o que a ROUTE declara. Todo harness instalado nesta máquina (claude, opencode, mimo, omp e agy, F26; o agy com as quatro condições da Q14) passa pela bateria de conformidade, e o aprovado pode rodar nó de código. Cada harness usa o 9Router com o endereço e a versão corretos.
 
 ---
 
@@ -50,7 +50,7 @@ covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12]
 * ⛔ Não faremos refatorações oportunistas fora das Peças declaradas em `Alvo`.
 * ⛔ Não alteraremos contratos públicos de API/JSON sem spec formal prévia. O campo `routing.via` passa pelo Stop-Gate `SG-I3-CONTRATO`.
 * ⛔ Não criaremos dependências externas novas além das já autorizadas no projeto.
-* ⛔ Não reativaremos o rodízio de contas do agy (banido por ToS em 2026-11-10).
+* ⛔ Não reativaremos o rodízio de contas do agy. A conta `DEV_05` está desativada por ToS (F33). A bateria usa só a conta já logada, sem o `gw`.
 * ⛔ Não tocaremos o Cofre real `~/.aidd`. Os testes usam diretórios temporários.
 * ⛔ Não migraremos os arquivos legados (iniciativa I6), nem o MANUAL_TEMPLATES_LEGOLOOP.
 * ⛔ Não cobriremos o verbo DISSECAR (I4) nem a MATRIZ_PAPEIS (I5).
@@ -77,9 +77,9 @@ Identificação das Skills que o futuro Processo precisará acionar.
 * **Política de Privacidade & Orçamento Cognitivo:** nuvem autorizada para o código da iniciativa. Teto de US$ 1,50 por nó. A bateria de conformidade faz chamadas reais só depois da confirmação do usuário (Q10). Segredos: a chave do 9Router vem da variável `NINEROUTER_KEY`. Nenhum artefato grava o valor.
 * **Contrato de Evidência Factual (Definition of Done Visual/Real):** a ROUTE gerada pelo `legoloop rota` traz harness, modelo, esforço e `via` iguais aos do DAG projetado e aos executados. O REPORT factual lista o harness e o modelo reais de cada nó. Um nó em harness não claude passa no gate com o arquivo do `context_out` presente.
 * **Premissas Assumidas (a confirmar no Stop-Gate 01):**
-  * Todos os harnesses instalados entram na bateria (decisão do usuário em 12/11). Resta decidir o agy (Q14).
+  * Todos os harnesses instalados entram na bateria (decisão do usuário em 12/11). O agy entra com quatro condições (Q14: conta fixa, binário direto, parada no primeiro sinal de ToS, aviso próprio).
   * O peso de memória de cada harness só vale depois de medido (F16, decisão do usuário em 12/11).
-  * O opencode e o mimo não têm 9Router funcional hoje: o host configurado não resolve (F27 e F28). O omp usa um servidor desatualizado (F29). A I3 corrige as três configurações. Falta decidir o endereço canônico (Q13).
+  * O opencode e o mimo não têm 9Router funcional hoje: o host configurado não resolve (F27 e F28). O omp usa um servidor desatualizado (F29). A I3 corrige as três configurações para `roteador.signa-docs.com` (Q13), com backup e confirmação.
 * **Riscos e Perguntas em Aberto:**
   * Qual harness passa na bateria é desconhecido até a primeira execução.
   * Corrigir a configuração de um harness altera arquivos na pasta do usuário. Cada correção faz backup e pede confirmação.
