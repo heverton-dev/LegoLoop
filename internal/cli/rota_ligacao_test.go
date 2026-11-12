@@ -29,3 +29,14 @@ func TestLigarRoteamentoLeEstadoDaHomologacao(t *testing.T) {
 		t.Fatal("candidatos elegíveis não chegaram ao motor")
 	}
 }
+
+func TestRunnerOptionsLigaWorkersEPeso(t *testing.T) {
+	ox := &orchestrix.Orchestrix{MemoriaLivre: func() (uint64, error) { return 4 << 30, nil }}
+	opts := runFlags{parallel: 8}.runnerOptions(ox, nil)
+	if opts.Workers == nil || opts.PesoMB == nil {
+		t.Fatal("o runner não recebeu o limite de workers e o peso")
+	}
+	if got := opts.Workers([]int{750, 750}); got != 2 {
+		t.Fatalf("workers = %d", got)
+	}
+}

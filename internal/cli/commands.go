@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -250,9 +251,15 @@ func (f runFlags) prompter(d Deps) gate.Prompter {
 }
 
 func (f runFlags) runnerOptions(ox *orchestrix.Orchestrix, prompter gate.Prompter) runner.Options {
+	teto := f.parallel
+	if teto <= 0 {
+		teto = runtime.NumCPU()
+	}
 	return runner.Options{
 		Workdir:        f.workdir,
 		Parallelism:    f.parallel,
+		Workers:        ox.LimiteWorkers(teto, 0),
+		PesoMB:         ox.PesoMB,
 		DefaultTimeout: f.timeout,
 		Executor:       ox,
 		AllowScripts:   f.allowScripts,

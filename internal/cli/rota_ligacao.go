@@ -31,6 +31,10 @@ func ligarRoteamento(ox *orchestrix.Orchestrix, d Deps) error {
 	ox.EstadoHarness = func(harness, via string) string {
 		return store[roteamento.Par{Harness: harness, Via: roteamento.Via(via)}.Chave()].Estado
 	}
+	ox.PesoHarnessMB = func(harness, via string) int {
+		return store[roteamento.Par{Harness: harness, Via: roteamento.Via(via)}.Chave()].PesoMB
+	}
+	ox.MemoriaLivre = orchestrix.MemoriaLivreSO
 	if d.Stderr != nil {
 		ox.Aviso = func(m string) { fmt.Fprintln(d.Stderr, m) }
 	}

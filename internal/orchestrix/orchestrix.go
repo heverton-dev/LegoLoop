@@ -44,6 +44,10 @@ type Orchestrix struct {
 	// Elegiveis lista, por classe, os candidatos homologados do perfil, na ordem de preferência.
 	// Nano e micro usam a lista para trocar de candidato quando o declarado falha.
 	Elegiveis map[string][]roteamento.CandidatoVia
+	// MemoriaLivre devolve a memória física livre em bytes (injetada; nil = sem limite por memória).
+	MemoriaLivre func() (uint64, error)
+	// PesoHarnessMB devolve o peso_mb homologado do par harness e via (0 = sem medição, vale 750 MB).
+	PesoHarnessMB func(harness, via string) int
 	// Aviso recebe os avisos de tela, como a Substituicao (nil = sem aviso).
 	Aviso func(string)
 	// MaxOutputBytes limita stdout de subprocessos (0 = maxResponseBytes).
