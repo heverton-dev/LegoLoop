@@ -35,7 +35,7 @@ func TestTemplatesDoSexteto(t *testing.T) {
 		campos   []string
 		minTotal int
 	}{
-		{"TEMPLATE_INTERVIEW.md", "---\nid: INTERVIEW-", []string{"## 1. Respostas", "## 2. Confiança por rodada", "## 3. Fatos medidos durante a entrevista", "## 4. Pendências para a SPEC"}, []string{"\nschema_version: 2\n", "\nupstream: [", "\ncovers: ["}, 4},
+		{"TEMPLATE_INTERVIEW.md", "---\nid: INTERVIEW-", []string{"## 1. Respostas", "## 2. Confiança por rodada", "## 3. Fatos medidos durante a entrevista", "## 4. Pendências para a SPEC"}, []string{"\nschema_version: 2\n", "\nupstream: [", "\ncovers: [", "Regra de prova", "| ID | Afirmação | Prova", "| ID | Pergunta | Fatos |"}, 4},
 		{"TEMPLATE_INTENT.md", "---\nid: INTENT-", []string{"## 1. Contexto e Motivação", "## 2. Escopo Inegociável", "## 3. Mapeamento Preliminar de Peças", "## 6. Handoff de Governança"}, []string{"\nschema_version: 2\n", "\nupstream: [", "\ncovers: ["}, 6},
 		{"TEMPLATE_SPEC.md", "---\nid: SPEC-", []string{"## 1. Premissas Técnicas", "## 4. Contratos de Dados", "## 5. Critérios Binários de Aceite", "## 6. Comandos Operacionais"}, []string{"\nschema_version: 2\n", "\nupstream: [", "\ncovers: [", "| R | Requisito | AC |"}, 6},
 		{"TEMPLATE_PLAN.md", "---\nid: PLAN-", []string{"## 1. Estratégia de Execução", "## 2. Mapa Geral de Épicos", "## 3. Decomposição Estruturada de Tickets", "## 4. Homologação Final"}, []string{"\nschema_version: 2\n", "\nupstream: [", "\ncovers: ["}, 4},
