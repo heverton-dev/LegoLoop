@@ -1,4 +1,7 @@
 {
+  "harness_support": ["any"],
+  "os_support": ["windows", "linux", "macos"],
+  "execution_modes": ["cli", "agente", "estudio"],
   "hooks": {
     "PreToolUse": [
       {
@@ -6,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -File \"$CLAUDE_PROJECT_DIR/.claude/scripts/guard-write-boundary.ps1\"",
+            "command": "legoloop hook guard-write-boundary",
             "timeout": 15
           }
         ]
@@ -18,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -File \"$CLAUDE_PROJECT_DIR/.claude/scripts/post-format-linter.ps1\"",
+            "command": "legoloop hook post-format-linter",
             "timeout": 20
           }
         ]

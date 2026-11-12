@@ -3,6 +3,14 @@
   "template_version": "2.2.0",
   "name": "{{nome-da-receita-de-gate}}",
   "description": "Receitas de gate binário canônicas v2.2.0. Cada expression compila no DSL determinístico de internal/gate e pode ser colada em output.gate de um nó DAG ou ROUTE, ou em slots.gates.",
+  "schema_version": 2,
+  "execution_modes": ["cli", "agente", "estudio"],
+  "os_support": ["windows", "linux", "macos"],
+  "harness_support": ["any"],
+  "load": "lazy",
+  "requires": {
+    "class": "nano"
+  },
   "metadata": {
     "version": "2.2.0",
     "tier": "ouro",

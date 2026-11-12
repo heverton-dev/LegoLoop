@@ -1,0 +1,52 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "id": "exemplo-peca-processo",
+  "name": "exemplo-peca-processo",
+  "description": "Peça de Processo agnóstica: transforma uma SPEC aprovada em PLAN, com roteamento por classe de esforço e sem modelo fixo.",
+  "version": "2.3.0",
+  "execution_modes": ["cli", "agente", "estudio"],
+  "os_support": ["windows", "linux", "macos"],
+  "harness_support": ["any"],
+  "load": "lazy",
+  "requires": {
+    "class": "micro"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_plano",
+      "type": "skill",
+      "ref": "skills/aidd-tickets",
+      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "routing": {
+        "mode": "suggested",
+        "class": "micro"
+      },
+      "timeout_sec": 600,
+      "inputs": {
+        "spec": "file('SPEC.md')"
+      },
+      "output": {
+        "artifact": "PLAN.md",
+        "gate": "file_exists('PLAN.md') && has_binary_criteria('PLAN.md')"
+      }
+    },
+    {
+      "id": "n02_aprovacao",
+      "type": "stop_gate",
+      "depends_on": ["n01_plano"],
+      "routing": {
+        "mode": "suggested",
+        "class": "extreme"
+      },
+      "timeout_sec": 0,
+      "output": {
+        "artifact": "PLAN.md",
+        "gate": "prompt('Aprova o PLAN.md para iniciar o BUILD?')"
+      }
+    }
+  ]
+}

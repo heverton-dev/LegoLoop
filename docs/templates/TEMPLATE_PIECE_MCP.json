@@ -1,4 +1,21 @@
 {
+  "schema_version": 2,
+  "name": "meu-servidor-mcp",
+  "description": "Servidor MCP de exemplo, registrado no cofre e pesquisável sob demanda.",
+  "tools": [
+    {
+      "name": "consultar_recurso",
+      "description": "Consulta um recurso e devolve o resultado em texto."
+    },
+    {
+      "name": "analisar_alvo",
+      "description": "Analisa um alvo e devolve um resumo."
+    }
+  ],
+  "load": "lazy",
+  "execution_modes": ["cli", "agente", "estudio"],
+  "os_support": ["windows", "linux", "macos"],
+  "harness_support": ["any"],
   "mcpServers": {
     "meu-servidor-mcp": {
       "command": "uvx",
@@ -11,26 +28,7 @@
       "env": {
         "API_KEY": "${API_KEY}",
         "WORKSPACE_ROOT": "${WORKSPACE_ROOT}"
-      },
-      "autoApprove": [
-        "consultar_recurso",
-        "analisar_alvo"
-      ]
-    },
-    "meu-servidor-node": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "./docs"
-      ],
-      "env": {
-        "NODE_ENV": "production"
-      },
-      "autoApprove": [
-        "read_file",
-        "list_directory"
-      ]
+      }
     }
   }
 }

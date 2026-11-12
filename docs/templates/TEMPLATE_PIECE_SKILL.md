@@ -7,7 +7,12 @@ consumes: Artifact:Spec
 produces: Artifact:Code
 artifact: {{ARTEFATO_FINAL.md}}
 gate: has_binary_criteria('{{ARTEFATO_FINAL.md}}')
-suggested_model: code-pro
+load: lazy
+requires:
+  class: {{classe: nano, micro ou extreme}}
+execution_modes: [cli, agente, estudio]
+os_support: [windows, linux, macos]
+harness_support: [any]
 metadata:
   version: "2.2.0"
   tier: "ouro"
