@@ -3,8 +3,14 @@ package cli
 import (
 	"bytes"
 	"context"
+	"fmt"
+	"net"
+	"net/http"
+	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -93,5 +99,126 @@ func TestHomologarConfirmacaoEPendente(t *testing.T) {
 	st, _ = homologacao.Ler(homologacao.Caminho(d.Home))
 	if *chamadas != 0 || len(st) != 0 {
 		t.Fatalf("memória baixa não pode chamar nem gravar: %d %v", *chamadas, st)
+	}
+}
+
+const chaveProvTeste = "chave-de-teste-prov"
+
+func servidorProvTeste(t *testing.T, versao string, viuChave *atomic.Bool) *httptest.Server {
+	t.Helper()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if viuChave != nil && r.Header.Get("Authorization") == "Bearer "+chaveProvTeste {
+			viuChave.Store(true)
+		}
+		switch r.URL.Path {
+		case "/api/version":
+			fmt.Fprintf(w, `{"version":%q}`, versao)
+		case "/v1/models":
+			fmt.Fprint(w, `{"data":[{"id":"combo-a"},{"id":"combo-b"}]}`)
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	t.Cleanup(srv.Close)
+	return srv
+}
+
+func escreverProvTeste(t *testing.T, caminho, conteudo string) {
+	t.Helper()
+	if err := os.WriteFile(caminho, []byte(conteudo), 0o600); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func lerProvTeste(t *testing.T, caminho string) string {
+	t.Helper()
+	b, err := os.ReadFile(caminho)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
+
+func existeProvTeste(caminho string) bool {
+	_, err := os.Stat(caminho)
+	return err == nil
+}
+
+func TestSondaECorrecaoDeProvider(t *testing.T) {
+	t.Setenv("NINEROUTER_API_KEY", "")
+	t.Setenv("NINEROUTER_KEY", chaveProvTeste)
+	var viu atomic.Bool
+	correto := servidorProvTeste(t, "0.5.116", &viu)
+	velho := servidorProvTeste(t, "0.5.95", nil)
+	t.Setenv("NINEROUTER_URL", correto.URL)
+	hostCorreto := strings.TrimPrefix(correto.URL, "http://")
+	hostVelho := strings.TrimPrefix(velho.URL, "http://")
+	l, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	hostMorto := l.Addr().String()
+	l.Close()
+
+	dir := t.TempDir()
+	oc, mimo, yml, sem := filepath.Join(dir, "opencode.json"), filepath.Join(dir, "mimocode.jsonc"), filepath.Join(dir, "models.yml"), filepath.Join(dir, "sem.json")
+	origOC := fmt.Sprintf("{\n  \"provider\": {\n    \"x\": {\n      \"options\": {\n        \"baseURL\": \"http://%s/v1\"\n      }\n    }\n  }\n}\n", hostMorto)
+	origMimo := fmt.Sprintf("{\n  // comentário\n  \"provider\": {\n    \"baseURL\": \"http://%s/v1\"\n  }\n}\n", hostVelho)
+	origYML := fmt.Sprintf("providers:\n  nine:\n    baseUrl: 'http://%s/v1'\nother:\n  baseUrl: http://%s/v1\n", hostCorreto, hostMorto)
+	origSem := fmt.Sprintf("{\"outro\": {\"baseURL\": \"http://%s/v1\"}}\n", hostMorto)
+	escreverProvTeste(t, oc, origOC)
+	escreverProvTeste(t, mimo, origMimo)
+	escreverProvTeste(t, yml, origYML)
+	escreverProvTeste(t, sem, origSem)
+
+	out := &bytes.Buffer{}
+	novoDeps := func() Deps {
+		return Deps{
+			Stdin: strings.NewReader(""), Stdout: out, Stderr: &bytes.Buffer{}, Home: t.TempDir(),
+			Provider: &ProviderDeps{HTTP: correto.Client(), Arquivos: []string{oc, mimo, yml, sem}, Esquema: "http", Canonico: hostCorreto},
+		}
+	}
+	rodar := func(args ...string) {
+		t.Helper()
+		if code := Run(context.Background(), append([]string{"homologar"}, args...), novoDeps()); code != 0 {
+			t.Fatalf("exit %d: %s", code, out)
+		}
+	}
+
+	rodar("--provider")
+	sonda := out.String()
+	for _, want := range []string{hostMorto, "false", hostVelho, "0.5.95", "0.5.116", "combo-a,combo-b"} {
+		if !strings.Contains(sonda, want) {
+			t.Fatalf("a sonda não traz %q:\n%s", want, sonda)
+		}
+	}
+	if !viu.Load() {
+		t.Fatal("o host canônico confiável deve receber a chave")
+	}
+
+	rodar("--corrigir-provider", "--non-interactive")
+	for f, orig := range map[string]string{oc: origOC, mimo: origMimo, yml: origYML, sem: origSem} {
+		if lerProvTeste(t, f) != orig || existeProvTeste(f+homologacao.SufixoBackup) {
+			t.Fatalf("sem confirmação nada muda: %s", f)
+		}
+	}
+
+	rodar("--corrigir-provider", "--yes")
+	if got, want := lerProvTeste(t, oc), strings.Replace(origOC, hostMorto, hostCorreto, 1); got != want {
+		t.Fatalf("opencode.json: %s", got)
+	}
+	if got, want := lerProvTeste(t, mimo), strings.Replace(origMimo, hostVelho, hostCorreto, 1); got != want {
+		t.Fatalf("mimocode.jsonc: %s", got)
+	}
+	if lerProvTeste(t, oc+homologacao.SufixoBackup) != origOC || lerProvTeste(t, mimo+homologacao.SufixoBackup) != origMimo {
+		t.Fatal("o backup deve ser cópia do original")
+	}
+	for f, orig := range map[string]string{yml: origYML, sem: origSem} {
+		if lerProvTeste(t, f) != orig || existeProvTeste(f+homologacao.SufixoBackup) {
+			t.Fatalf("host correto e arquivo sem seção ficam intactos: %s", f)
+		}
+	}
+	if strings.Contains(out.String(), chaveProvTeste) {
+		t.Fatal("a saída não pode conter a chave")
 	}
 }

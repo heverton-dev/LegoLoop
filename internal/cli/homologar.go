@@ -3,12 +3,16 @@ package cli
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"legoloop/internal/orchestrix"
+	"legoloop/internal/provider"
 	"legoloop/internal/roteamento"
 	"legoloop/internal/roteamento/homologacao"
 )
@@ -29,6 +33,16 @@ type opcoesHomologar struct {
 	naoInterativo bool
 	asJSON        bool
 	teto          time.Duration
+
+	sondaProvider    bool
+	corrigirProvider bool
+}
+
+type ProviderDeps struct {
+	HTTP     *http.Client
+	Arquivos []string
+	Esquema  string
+	Canonico string
 }
 
 type fabricaHarness func(harness, via, model string) homologacao.Harness
@@ -41,8 +55,13 @@ func cmdHomologar(ctx context.Context, args []string, d Deps) int {
 	fs.BoolVar(&o.naoInterativo, "non-interactive", false, "não pergunta: pares sem entrada ficam pendentes")
 	fs.DurationVar(&o.teto, "teto", 120*time.Second, "duração máxima por chamada")
 	fs.BoolVar(&o.asJSON, "json", false, "saída JSON")
+	fs.BoolVar(&o.sondaProvider, "provider", false, "sonda o host de cada harness (resolve, versão, combos)")
+	fs.BoolVar(&o.corrigirProvider, "corrigir-provider", false, "troca o host que não resolve ou está antigo pelo canônico")
 	if err := fs.Parse(args); err != nil {
 		return 2
+	}
+	if o.sondaProvider || o.corrigirProvider {
+		return executarProvider(ctx, d, o)
 	}
 	return executarHomologar(ctx, d, o)
 }
@@ -208,4 +227,130 @@ func homologarPar(ctx context.Context, fabrica fabricaHarness, it roteamento.Ite
 	defer os.RemoveAll(base)
 	r := homologacao.Avaliar(ctx, fabrica(it.Par.Harness, string(it.Par.Via), it.Modelos[0]), base, teto)
 	return homologacao.Entrada{Estado: r.Estado, Data: r.Data, PesoMB: r.PesoMB, Criterios: r.Criterios, Motivo: r.Motivo}, nil
+}
+
+type sondador struct {
+	ctx     context.Context
+	cli     *http.Client
+	esquema string
+	canon   string
+	cache   map[string]homologacao.Sonda
+}
+
+func (s *sondador) sondar(host string) homologacao.Sonda {
+	if r, ok := s.cache[host]; ok {
+		return r
+	}
+	chave := ""
+	if host == s.canon {
+		chave = provider.TrustedRouterKey(s.esquema + "://" + host)
+	}
+	r := homologacao.SondarHost(s.ctx, s.cli, s.esquema, host, chave)
+	if host == s.canon {
+		r.Comparar(r.Versao)
+	} else {
+		r.Comparar(s.sondar(s.canon).Versao)
+	}
+	s.cache[host] = r
+	return r
+}
+
+func providerArquivos(d Deps) []string {
+	if d.Provider != nil && d.Provider.Arquivos != nil {
+		return d.Provider.Arquivos
+	}
+	h := homologarHome(d)
+	return []string{
+		filepath.Join(h, ".config", "opencode", "opencode.json"),
+		filepath.Join(h, ".config", "mimocode", "mimocode.jsonc"),
+		filepath.Join(h, ".omp", "agent", "models.yml"),
+	}
+}
+
+func novoSondador(ctx context.Context, d Deps) *sondador {
+	s := &sondador{
+		ctx: ctx, cli: &http.Client{Timeout: 10 * time.Second},
+		esquema: "https", canon: homologacao.HostCanonico, cache: map[string]homologacao.Sonda{},
+	}
+	if p := d.Provider; p != nil {
+		if p.HTTP != nil {
+			s.cli = p.HTTP
+		}
+		if p.Esquema != "" {
+			s.esquema = p.Esquema
+		}
+		if p.Canonico != "" {
+			s.canon = p.Canonico
+		}
+	}
+	return s
+}
+
+func executarProvider(ctx context.Context, d Deps, o opcoesHomologar) int {
+	s := novoSondador(ctx, d)
+	var ends []homologacao.Endereco
+	for _, arq := range providerArquivos(d) {
+		e, err := homologacao.LerEnderecos(arq)
+		if err != nil {
+			if !errors.Is(err, os.ErrNotExist) {
+				fmt.Fprintf(d.Stderr, "aviso: %v\n", err)
+			}
+			continue
+		}
+		ends = append(ends, e...)
+	}
+	if o.sondaProvider {
+		providerImprimir(d, s, ends)
+	}
+	if !o.corrigirProvider {
+		return 0
+	}
+	return providerCorrigir(d, o, s, ends)
+}
+
+func providerImprimir(d Deps, s *sondador, ends []homologacao.Endereco) {
+	w := table(d.Stdout)
+	fmt.Fprintln(w, "ARQUIVO\tHOST\tRESOLVE\tVERSAO\tDISPONIVEL\tCOMBOS")
+	for _, e := range ends {
+		r := s.sondar(e.Host)
+		fmt.Fprintf(w, "%s\t%s\t%t\t%s\t%s\t%s\n", e.Arquivo, e.Host, r.Resolve, r.Versao, r.VersaoDisponivel, strings.Join(r.Combos, ","))
+	}
+	_ = w.Flush()
+}
+
+func providerPlano(s *sondador, ends []homologacao.Endereco) []homologacao.Endereco {
+	vistos := map[string]bool{}
+	var plano []homologacao.Endereco
+	for _, e := range ends {
+		r := s.sondar(e.Host)
+		chave := e.Arquivo + "|" + e.Host
+		if e.Host != s.canon && (!r.Resolve || r.Antigo) && !vistos[chave] {
+			vistos[chave] = true
+			plano = append(plano, e)
+		}
+	}
+	return plano
+}
+
+func providerCorrigir(d Deps, o opcoesHomologar, s *sondador, ends []homologacao.Endereco) int {
+	plano := providerPlano(s, ends)
+	if len(plano) == 0 {
+		fmt.Fprintln(d.Stdout, "Nenhum endereço precisa de correção.")
+		return 0
+	}
+	for _, e := range plano {
+		fmt.Fprintf(d.Stdout, "Plano: %s: %s -> %s\n", e.Arquivo, e.Host, s.canon)
+	}
+	if !homologarConfirmou(d, o) {
+		fmt.Fprintln(d.Stdout, "Sem confirmação: nenhum arquivo foi alterado.")
+		return 0
+	}
+	for _, e := range plano {
+		m, err := homologacao.Corrigir(e.Arquivo, e.Host, s.canon, true)
+		if err != nil {
+			return fail(d, err)
+		}
+		fmt.Fprintf(d.Stdout, "Corrigido: %s conferido=%t backup=%s\n", m.Arquivo, m.Conferida, m.Backup)
+	}
+	return 0
 }
