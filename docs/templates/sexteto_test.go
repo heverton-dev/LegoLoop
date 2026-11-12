@@ -91,7 +91,7 @@ func TestHandoffTemplate(t *testing.T) {
 
 func TestPecasAgnosticas(t *testing.T) {
 	campos := []string{"execution_modes", "os_support", "harness_support"}
-	pecas := []string{"TEMPLATE_PIECE_SKILL.md", "TEMPLATE_PIECE_MCP.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_PROCESSO.json"}
+	pecas := []string{"TEMPLATE_PIECE_SKILL.md", "TEMPLATE_PIECE_MCP.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_PROCESSO.json", "TEMPLATE_PIECE_SCRIPT.sh", "TEMPLATE_PIECE_SCRIPT.ps1"}
 	for _, p := range pecas {
 		texto := string(read(t, p))
 		for _, c := range campos {

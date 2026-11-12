@@ -29,6 +29,9 @@
     .\meu_script.ps1 -TargetFile "docs\specs\SPEC.md" -DryRun -Json
 
 .NOTES
+    os_support: windows
+    execution_modes: cli, agente, estudio
+    harness_support: any
     Invariantes: é proibido deixar TODO ou stub no corpo (Zero Stubs); qualquer falha termina
     com exit code diferente de zero e mensagem no stderr; o resultado nunca depende de estado oculto.
     Códigos de saída (exit code, mesma convenção da CLI legoloop):

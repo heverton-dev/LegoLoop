@@ -2,6 +2,9 @@
 # {{NOME_DO_SCRIPT}} - peça Script do LegoLoop (template V2.2.0).
 # Uso: script.sh --target-file ARQUIVO [--project-root RAIZ] [--dry-run] [--json]
 # Códigos de saída: 0 sucesso, 1 falha de execução, 2 uso ou entrada inválida.
+# os_support: linux, macos
+# execution_modes: cli, agente, estudio
+# harness_support: any
 
 set -eu
 
