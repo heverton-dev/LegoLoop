@@ -273,6 +273,9 @@ func newOrchestrix(ctx context.Context, d Deps, skills string, vars map[string]s
 		Inventory: d.discover(ctx), HTTP: &http.Client{}, OllamaURL: cfg.OllamaURL,
 		RouterKey: cfg.RouterKey, RouterKeyURL: cfg.TrustedRouterURL(), SkillsDir: dir, Vars: vars,
 	}
+	if err := ligarRoteamento(ox, d); err != nil {
+		return nil, err
+	}
 	if acervo := caminhos.DirLoopsEm(dir); dirExists(acervo) {
 		if ox.LoopStore, err = studiodoc.NewStore(acervo); err != nil {
 			return nil, err

@@ -35,5 +35,13 @@ func (o *Orchestrix) semChave(err error) error {
 	if err == nil || o.RouterKey == "" || !strings.Contains(err.Error(), o.RouterKey) {
 		return err
 	}
-	return errors.New(strings.ReplaceAll(err.Error(), o.RouterKey, "[chave omitida]"))
+	return errors.New(o.semChaveTexto(err.Error()))
+}
+
+// semChaveTexto remove a chave do 9Router de um texto.
+func (o *Orchestrix) semChaveTexto(t string) string {
+	if o.RouterKey == "" {
+		return t
+	}
+	return strings.ReplaceAll(t, o.RouterKey, "[chave omitida]")
 }

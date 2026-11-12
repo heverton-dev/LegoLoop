@@ -16,6 +16,7 @@ import (
 
 	"legoloop/internal/dag"
 	"legoloop/internal/provider"
+	"legoloop/internal/roteamento"
 	"legoloop/internal/runner"
 	"legoloop/internal/studiodoc"
 )
@@ -40,6 +41,11 @@ type Orchestrix struct {
 	LoopStore *studiodoc.Store
 	// EstadoHarness devolve o estado de homologação do par harness e via (nil = nenhum harness homologado).
 	EstadoHarness func(harness, via string) string
+	// Elegiveis lista, por classe, os candidatos homologados do perfil, na ordem de preferência.
+	// Nano e micro usam a lista para trocar de candidato quando o declarado falha.
+	Elegiveis map[string][]roteamento.CandidatoVia
+	// Aviso recebe os avisos de tela, como a Substituicao (nil = sem aviso).
+	Aviso func(string)
 	// MaxOutputBytes limita stdout de subprocessos (0 = maxResponseBytes).
 	MaxOutputBytes int
 }
@@ -65,6 +71,9 @@ func (o *Orchestrix) Execute(ctx context.Context, n dag.Node, workdir string) (r
 }
 
 func (o *Orchestrix) runSkill(ctx context.Context, n dag.Node, workdir string) (runner.Result, error) {
+	if n.Routing.Harness == harnessDireto {
+		return o.runDireto(ctx, n, workdir)
+	}
 	root, err := os.OpenRoot(workdir)
 	if err != nil {
 		return runner.Result{}, err
@@ -95,6 +104,28 @@ func (o *Orchestrix) runSkill(ctx context.Context, n dag.Node, workdir string) (
 		}
 	}
 	return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, errors.Join(errs...))
+}
+
+// runDireto chama a API do 9Router sem harness e grava só o artefato de saída.
+func (o *Orchestrix) runDireto(ctx context.Context, n dag.Node, workdir string) (runner.Result, error) {
+	if n.Routing.Via != viaRouter {
+		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: harness direto exige via %s", n.ID, viaRouter)
+	}
+	root, err := os.OpenRoot(workdir)
+	if err != nil {
+		return runner.Result{}, err
+	}
+	defer root.Close()
+	prompt, err := o.buildPrompt(n, root)
+	if err != nil {
+		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
+	}
+	text, tokens, err := o.callRouter(ctx, n.Routing.Model, prompt)
+	if err != nil {
+		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, o.semChave(err))
+	}
+	res := runner.Result{Tokens: tokens, Model: harnessDireto + "/" + viaRouter + "/" + n.Routing.Model}
+	return res, writeArtifact(root, n.Output.Artifact, []byte(text))
 }
 
 func errStrings(errs []error) []string {

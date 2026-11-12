@@ -33,6 +33,8 @@ type attemptResult struct {
 	code    int
 	usage   runner.TokenUsage
 	err     error
+	notes   []string
+	modelo  string
 }
 
 type unitPlan struct {
@@ -111,6 +113,10 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 	for attempt := 0; ; attempt++ {
 		att := o.unitAttempt(ctx, n, w, plan, prompt, seeded)
 		res.Tokens = addUsage(res.Tokens, att.usage)
+		res.Notes = append(res.Notes, att.notes...)
+		if att.modelo != "" {
+			res.Model = "unit_task/" + att.modelo
+		}
 		res.Notes = append(res.Notes, fmt.Sprintf("tentativa %d: US$ %.2f, %d tokens de saída", attempt+1, att.usage.CostUSD, att.usage.Output))
 		res.ExitCode = att.code
 		last = att
@@ -176,34 +182,39 @@ func retryPrompt(base, failure string) string {
 // unitAttempt roda o claude, o command e o gate uma vez. A falha do gate volta em failure
 // (texto vazio = gate aprovado). Erro de boundary, link ou execução volta em err e não retenta.
 func (o *Orchestrix) unitAttempt(ctx context.Context, n dag.Node, w *Worktree, plan unitPlan, prompt string, seeded map[string][]byte) attemptResult {
-	text, usage, err := o.unitCall(ctx, n, plan, prompt, w.Dir)
+	call, err := o.despachar(ctx, n, plan, prompt, w.Dir)
+	usage, text := call.usage, call.text
 	if err != nil {
-		return attemptResult{usage: usage, err: err}
+		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, err: err}
 	}
 	changed, err := unitChanged(ctx, n, w, seeded)
 	if err != nil {
-		return attemptResult{usage: usage, err: err}
+		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, err: err}
 	}
 	if err := o.applyHygiene(ctx, w.Dir, changed); err != nil {
-		return attemptResult{usage: usage, err: err}
+		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, err: err}
 	}
 	cmdOut, code, err := o.unitCommand(ctx, n, w.Dir)
 	if err != nil {
-		return attemptResult{usage: usage, err: err}
+		return attemptResult{usage: usage, notes: call.notas, modelo: call.modelo, err: err}
 	}
-	report := unitReport{Node: n.ID, Model: plan.model, Changed: changed, ExitCode: code,
+	modelo := plan.model
+	if call.modelo != "" {
+		modelo = call.modelo
+	}
+	report := unitReport{Node: n.ID, Model: modelo, Changed: changed, ExitCode: code,
 		Gate: n.Output.Gate, Passed: true, Status: "ok", Summary: firstLine(text)}
 	ok, err := o.unitGate(w, n, plan.expr, report)
 	if err != nil {
-		return attemptResult{report: report, usage: usage, err: fmt.Errorf("gate %q: %w", n.Output.Gate, err)}
+		return attemptResult{report: report, usage: usage, notes: call.notas, modelo: call.modelo, err: fmt.Errorf("gate %q: %w", n.Output.Gate, err)}
 	}
 	if !ok {
 		gateDetail := formatGateOutput(cmdOut, maxGateOutputBytes)
 		msg := fmt.Sprintf("gate %q reprovou (exit_code=%d); claude respondeu: %s\nSaída do gate:\n%s",
 			n.Output.Gate, code, firstLine(text), gateDetail)
-		return attemptResult{report: report, failure: msg, cmdOut: cmdOut, code: code, usage: usage}
+		return attemptResult{report: report, failure: msg, cmdOut: cmdOut, code: code, usage: usage, notes: call.notas, modelo: call.modelo}
 	}
-	return attemptResult{report: report, usage: usage}
+	return attemptResult{report: report, usage: usage, notes: call.notas, modelo: call.modelo}
 }
 
 // unitGate avalia o gate com a worktree como raiz. O relatório provisório entra na worktree
@@ -315,21 +326,24 @@ func (o *Orchestrix) unitModelFor(n dag.Node) (string, error) {
 	return o.unitModel(n)
 }
 
-// unitCall executa o nó no harness do roteamento. Outro harness só roda se estiver homologado.
-func (o *Orchestrix) unitCall(ctx context.Context, n dag.Node, plan unitPlan, prompt, dir string) (string, runner.TokenUsage, error) {
+// chamarNo executa o nó no harness do roteamento. Outro harness só roda se estiver homologado.
+func (o *Orchestrix) chamarNo(ctx context.Context, n dag.Node, model, prompt, dir string) (string, runner.TokenUsage, error) {
+	if n.Routing.Harness == harnessDireto {
+		return "", runner.TokenUsage{}, fmt.Errorf("nó %q: harness direto não edita arquivos; use um nó skill", n.ID)
+	}
 	if !unitOutroHarness(n) {
 		env, err := o.envGateway(n)
 		if err != nil {
 			return "", runner.TokenUsage{}, err
 		}
-		text, usage, err := o.callClaudeToolsEnv(ctx, plan.model, prompt, dir, nil, unitLimitsFor(n), env)
+		text, usage, err := o.callClaudeToolsEnv(ctx, model, prompt, dir, nil, unitLimitsFor(n), env)
 		return text, usage, o.semChave(err)
 	}
 	estado := ""
 	if o.EstadoHarness != nil {
 		estado = o.EstadoHarness(n.Routing.Harness, n.Routing.Via)
 	}
-	return o.callHarnessInDir(ctx, provider.Source(n.Routing.Harness), estado, plan.model, prompt, dir, n.Routing.Effort)
+	return o.callHarnessInDir(ctx, provider.Source(n.Routing.Harness), estado, model, prompt, dir, n.Routing.Effort)
 }
 
 // unitModel escolhe o primeiro modelo do roteamento que o claude CLI executa.
