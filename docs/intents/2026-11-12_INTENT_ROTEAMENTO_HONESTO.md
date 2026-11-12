@@ -1,15 +1,15 @@
 ---
 id: INTENT-I3
-status: UNDER_REVIEW
+status: APPROVED
 date: 2026-11-12
 schema_version: 2
 upstream: [INTERVIEW-I3]
-covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12]
+covers: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14]
 ---
 
 # 🎯 INTENT: Roteamento honesto (Iniciativa I3)
 
-> **Status:** UNDER_REVIEW  
+> **Status:** APPROVED (Stop-Gate 01 aprovado pelo usuário em 2026-11-12)  
 > **Data:** 2026-11-12  
 > **Autor:** Claude  
 > **Iniciativa:** I3 Roteamento honesto (programa Lei #15: I1 Taxonomia, I2 Sexteto e templates, I3 Roteamento honesto, I4 DISSECAR, I5 MATRIZ_PAPEIS, I6 Migração dos legados)  
