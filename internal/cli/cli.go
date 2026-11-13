@@ -98,6 +98,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
 		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
+		"dissecar": cmdDissecar,
 		"refinar": cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills,
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar,
@@ -126,6 +127,16 @@ func cmdUpgrade(_ context.Context, args []string, d Deps) int {
 
 func cmdMatrix(_ context.Context, args []string, d Deps) int {
 	return RunMatrix(d.Stdout, d.Stderr, args)
+}
+
+func cmdDissecar(_ context.Context, args []string, d Deps) int {
+	cmd := NewDissecarCommand()
+	cmd.output = d.Stdout
+	if err := cmd.Run(args); err != nil {
+		fmt.Fprintln(d.Stderr, err)
+		return 1
+	}
+	return 0
 }
 
 func newFlags(name string, d Deps) *flag.FlagSet {
