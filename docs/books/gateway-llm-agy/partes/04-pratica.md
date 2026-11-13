@@ -50,3 +50,23 @@ Antes do passo 5, teste a URL e a chave com uma chamada à rota `/models`. Respo
 3. Confira o protocolo: `openai` para Chat Completions e `genai` para Gemini.
 4. Em máquina gerenciada, pergunte ao administrador sobre o `admin_settings.json`.
 5. Em JetBrains ou Zed, confira `auth.type = gateway` e o campo `env`.
+
+## 19. Receita: fechar o IDE por completo e reabrir
+
+**Quando usar.** Você rodou `gw agy 9router` ou `gw agy off` e o Antigravity IDE continua na rota antiga.
+
+1. Salve o trabalho aberto. O encerramento forçado não salva nada.
+2. Liste os processos do IDE com `Get-CimInstance Win32_Process -Filter "Name='Antigravity IDE.exe'"`.
+3. Ache a raiz. A raiz é o processo cujo pai não é outro `Antigravity IDE.exe`.
+4. Feche a árvore da raiz pelo PID: `taskkill /PID <pid-da-raiz> /T /F`.
+5. Confirme que a contagem de processos do IDE é `0`.
+6. Reabra o IDE pelo Explorer, com `Start-Process explorer.exe -ArgumentList <caminho-do-IDE>`.
+7. Reabra o workspace com `File > Open Folder`.
+
+**Erro comum.** Fechar só a janela. Em 13/11/2026 o PID continuou vivo depois de fechar a janela. A causa não foi verificada.
+
+**Outro erro comum.** Usar `taskkill /IM`. O comando mata todos os processos com o nome, inclusive os de outras sessões. Use sempre o PID.
+
+**Como provar.** Leia só os nomes das variáveis do processo raiz novo. Nenhuma pode começar com `AGY_LLM_GATEWAY` depois do `gw agy off`.
+
+O `agy` de linha de comando é outro processo (`agy.exe`). Feche o terminal que o roda e abra um novo. Não encerre o `agy.exe` de outra sessão.

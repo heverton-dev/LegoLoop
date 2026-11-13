@@ -204,11 +204,19 @@ Um provedor que não fala `genai` nem `openai` não funciona direto. Coloque um 
 3. Programas abertos pelo menu Iniciar ou pelo Dock não leem o perfil do shell.
 4. O `agy` na web não aceita gateway.
 
-## 13. Terminal novo, sempre
+## 13. Processo novo, sempre
 
 Variável de usuário só chega aos processos que nascem depois dela.
-Todo terminal aberto antes da mudança mantém o ambiente antigo.
+O Antigravity IDE e o `agy` leem o ambiente uma vez, quando abrem.
+Todo processo aberto antes da mudança mantém o ambiente antigo.
 Esse é o motivo mais comum de "mudei e não funcionou".
+
+Há um segundo mecanismo. Os programas abertos pelo menu Iniciar herdam o ambiente do Explorer.
+O Explorer só relê o ambiente quando recebe o aviso `WM_SETTINGCHANGE`.
+Até 13/11/2026, o `gw` gravava as variáveis no registro sem enviar esse aviso.
+O IDE abriu logo depois do `gw agy off` e herdou as variáveis antigas do Explorer.
+Hoje o `gw` envia o aviso a cada `agy 9router` e `agy off`.
+Mesmo assim, o processo que já estava aberto continua com o ambiente antigo e precisa ser reaberto (Receita 19).
 
 
 # PARTE IV — Prática: Receitas de Uso
@@ -263,6 +271,26 @@ Antes do passo 5, teste a URL e a chave com uma chamada à rota `/models`. Respo
 3. Confira o protocolo: `openai` para Chat Completions e `genai` para Gemini.
 4. Em máquina gerenciada, pergunte ao administrador sobre o `admin_settings.json`.
 5. Em JetBrains ou Zed, confira `auth.type = gateway` e o campo `env`.
+
+## 19. Receita: fechar o IDE por completo e reabrir
+
+**Quando usar.** Você rodou `gw agy 9router` ou `gw agy off` e o Antigravity IDE continua na rota antiga.
+
+1. Salve o trabalho aberto. O encerramento forçado não salva nada.
+2. Liste os processos do IDE com `Get-CimInstance Win32_Process -Filter "Name='Antigravity IDE.exe'"`.
+3. Ache a raiz. A raiz é o processo cujo pai não é outro `Antigravity IDE.exe`.
+4. Feche a árvore da raiz pelo PID: `taskkill /PID <pid-da-raiz> /T /F`.
+5. Confirme que a contagem de processos do IDE é `0`.
+6. Reabra o IDE pelo Explorer, com `Start-Process explorer.exe -ArgumentList <caminho-do-IDE>`.
+7. Reabra o workspace com `File > Open Folder`.
+
+**Erro comum.** Fechar só a janela. Em 13/11/2026 o PID continuou vivo depois de fechar a janela. A causa não foi verificada.
+
+**Outro erro comum.** Usar `taskkill /IM`. O comando mata todos os processos com o nome, inclusive os de outras sessões. Use sempre o PID.
+
+**Como provar.** Leia só os nomes das variáveis do processo raiz novo. Nenhuma pode começar com `AGY_LLM_GATEWAY` depois do `gw agy off`.
+
+O `agy` de linha de comando é outro processo (`agy.exe`). Feche o terminal que o roda e abra um novo. Não encerre o `agy.exe` de outra sessão.
 
 
 # PARTE V — Limites e proibições
@@ -325,27 +353,33 @@ O padrão se parece com o rodízio. A relação com os bloqueios é hipótese, s
 
 ## Apêndice B — Relatório de conformidade
 
-| Fato                                   | Prova                                       |
-| :------------------------------------- | :------------------------------------------ |
+| Fato                                      | Prova                                        |
+| :---------------------------------------- | :------------------------------------------- |
 | As seis variáveis `AGY_LLM_GATEWAY_*` são documentadas | Google Cloud, "Connect Antigravity to an Enterprise Gateway" |
-| `gw agy 9router` grava as três variáveis | `pkg/driver/driver.go`, `SetRoute`              |
-| `gw agy off` apaga as três variáveis     | `pkg/driver/driver.go`, ramo `RouteOff`         |
-| Gateway do 9Router respondeu           | `/v1/models` com HTTP 200 em 13/11/2026       |
-| O `agy` respondeu pelo 9Router           | confirmação do usuário em terminal novo     |
-| Comandos de rodízio estão bloqueados   | execução de `next`, `dev03`, `probe --all` e `sync` com código de saída 2 |
-| O Google aprova gateway de terceiros   | **Não verificado**                              |
-| `probe --all` causou os bloqueios        | **Não verificado** (hipótese)                   |
-| `gw agy list` não usa rede               | leitura de `pkg/driver/list.go`, sem chamadas HTTP |
+| `gw agy 9router` grava as três variáveis    | `pkg/driver/driver.go`, `SetRoute`               |
+| `gw agy off` apaga as três variáveis        | `pkg/driver/driver.go`, ramo `RouteOff`          |
+| Gateway do 9Router respondeu              | `/v1/models` com HTTP 200 em 13/11/2026        |
+| O `agy` respondeu pelo 9Router              | confirmação do usuário em terminal novo      |
+| Comandos de rodízio estão bloqueados      | execução de `next`, `dev03`, `probe --all` e `sync` com código de saída 2 |
+| O Google aprova gateway de terceiros      | **Não verificado**                               |
+| `probe --all` causou os bloqueios           | **Não verificado** (hipótese)                    |
+| `gw agy list` não usa rede                  | leitura de `pkg/driver/list.go`, sem chamadas HTTP |
+| O IDE aberto depois do `off` ainda tinha as três variáveis | leitura do ambiente do processo raiz do IDE: três `AGY_LLM_GATEWAY_*` presentes |
+| O IDE reaberto veio sem as variáveis      | processo raiz novo, 52 variáveis lidas, nenhuma `AGY_LLM_GATEWAY_*` |
+| `gw` avisa o Windows da mudança de ambiente | `broadcastEnvChange()` em `agy_env_windows.go`; `go test ./pkg/driver` passou |
+| O IDE usa as variáveis para rotear o modelo | **Não verificado** (inferência do relato do usuário) |
+| A janela fechada deixa o PID vivo         | relato do usuário em 13/11/2026; causa **não verificada** |
 
 ## Apêndice C — Referência rápida
 
-| Quero                             | Faço                                           |
-| :-------------------------------- | :--------------------------------------------- |
-| Ligar o 9Router                   | `gw agy 9router`, terminal novo                  |
-| Voltar ao `agy` puro                | `gw agy off`, terminal novo                      |
-| Testar sem persistir              | variáveis `$env:` na sessão                      |
-| Conferir sem mostrar a chave      | `definida: True/False`                           |
-| Trocar a chave                    | janela do sistema ou pedido ao agente com variável |
+| Quero                            | Faço                                             |
+| :------------------------------- | :----------------------------------------------- |
+| Ligar o 9Router                  | `gw agy 9router`, terminal novo                    |
+| Voltar ao `agy` puro               | `gw agy off`, terminal novo                        |
+| Testar sem persistir             | variáveis `$env:` na sessão                        |
+| Conferir sem mostrar a chave     | `definida: True/False`                             |
+| Trocar a chave                   | janela do sistema ou pedido ao agente com variável |
+| Fechar o IDE por completo        | `taskkill /PID <raiz> /T /F` e reabrir pelo Explorer (Receita 19) |
 
 ## Apêndice D — Fontes
 

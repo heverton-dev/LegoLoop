@@ -213,11 +213,79 @@ Apague AGY_LLM_GATEWAY_URL, AGY_LLM_GATEWAY_WIRE_PROTOCOL e AGY_LLM_GATEWAY_API_
 do ambiente do usuário. Confirme com "definida: False" para as três.
 ```
 
-Depois de qualquer pedido, abra um terminal novo e teste (seção 7).
+Depois de qualquer pedido, abra um terminal novo e teste (seção 8).
 
 ---
 
-## 7. Validação
+## 7. Reabrir o IDE e o `agy` depois de alternar a rota
+
+As variáveis `AGY_LLM_GATEWAY_*` ficam no ambiente do usuário. O Antigravity IDE e o `agy` leem esse ambiente só no instante em que o processo nasce.
+Depois de `gw agy 9router` ou `gw agy off`, todo processo já aberto mantém a rota antiga.
+
+Caso real de 13/11/2026:
+
+| Fato | Prova |
+| :--- | :--- |
+| `gw agy off` apagou as três variáveis do usuário | PowerShell: `definida: False` nas três |
+| O IDE aberto depois do `off` ainda estava no 9Router | o processo raiz do IDE tinha as três variáveis `AGY_LLM_GATEWAY_*` no ambiente |
+| Causa: o `gw` gravava no registro sem avisar o Windows | `pkg/driver/agy_env_windows.go` não enviava `WM_SETTINGCHANGE`; o Explorer repassou o ambiente antigo ao IDE |
+| Correção: o `gw` agora envia `WM_SETTINGCHANGE` | `broadcastEnvChange()` em `agy_env_windows.go`; `go test ./pkg/driver` passou |
+| Depois de fechar a árvore do IDE e reabrir, o ambiente veio limpo | processo raiz novo com 52 variáveis lidas e nenhuma `AGY_LLM_GATEWAY_*` |
+
+### 7.1 Fechar o IDE por completo
+
+Fechar a janela do IDE pode deixar processos vivos. O relato do usuário em 13/11/2026 é que o PID continuou ativo depois de fechar a janela. A causa disso não foi verificada.
+Por isso, feche pelo PID da raiz, com a árvore inteira.
+
+1. Liste os processos do IDE:
+
+```powershell
+Get-CimInstance Win32_Process -Filter "Name='Antigravity IDE.exe'" |
+  Select-Object ProcessId, ParentProcessId, CreationDate
+```
+
+2. Ache a raiz. A raiz é o processo cujo pai não é outro `Antigravity IDE.exe`. Feche a árvore dela:
+
+```powershell
+$todos = Get-CimInstance Win32_Process -Filter "Name='Antigravity IDE.exe'"
+$raiz = $todos | Where-Object { $todos.ProcessId -notcontains $_.ParentProcessId }
+$raiz | ForEach-Object { taskkill /PID $_.ProcessId /T /F }
+```
+
+3. Confirme que não sobrou nenhum:
+
+```powershell
+@(Get-CimInstance Win32_Process -Filter "Name='Antigravity IDE.exe'").Count
+```
+
+O resultado deve ser `0`.
+
+4. Reabra o IDE pelo Explorer. Assim ele herda o ambiente atual do Windows:
+
+```powershell
+Start-Process explorer.exe -ArgumentList (Join-Path $env:LOCALAPPDATA 'Programs/Antigravity IDE/Antigravity IDE.exe')
+```
+
+Avisos:
+
+- `taskkill /F` não salva nada. Salve o trabalho aberto antes.
+- Use o PID. Não use `taskkill /IM`, que mata todos os processos com o nome, inclusive os de outras sessões.
+- O IDE reabre sem a pasta do projeto. Reabra o workspace com `File > Open Folder`.
+- O `agy` de linha de comando abre como processo próprio (`agy.exe`). Feche o terminal que o roda e abra um novo. Não encerre `agy.exe` de outra sessão ou de outro desenvolvedor.
+
+### 7.2 Provar que o IDE não tem mais o gateway
+
+Leia só os nomes das variáveis do processo raiz novo. Nunca leia os valores.
+
+Prova usada em 13/11/2026: um leitor de ambiente de processo (`NtQueryInformationProcess` e `ReadProcessMemory`) listou os nomes das 52 variáveis do processo raiz, com o `Path` como controle de leitura. Nenhuma começava com `AGY_LLM_GATEWAY`.
+
+Se você não tem esse leitor, use o teste de comportamento: abra o agente do IDE e confira no painel do gateway se a chamada chegou a ele. Chamada ausente indica que o IDE saiu do gateway. Esse teste é indireto.
+
+Não verificado: se o IDE usa as variáveis para rotear as chamadas de modelo. A página do Google documenta as variáveis para o `agy` de linha de comando. O relato do usuário, de que o IDE seguia no 9Router, indica que ele as lê.
+
+---
+
+## 8. Validação
 
 | Teste | Comando | Resultado esperado |
 | :--- | :--- | :--- |
@@ -234,11 +302,12 @@ Prova desta máquina (13/11/2026):
 
 ---
 
-## 8. Solução de problemas
+## 9. Solução de problemas
 
 | Sintoma | Causa provável | Ação |
 | :--- | :--- | :--- |
 | `agy` ignora o gateway | terminal aberto antes da mudança | abra um terminal novo |
+| IDE continua na rota antiga depois de `gw agy off` | processo do IDE aberto antes, ou janela fechada com PID vivo | seção 7.1: feche a árvore pelo PID da raiz e reabra pelo Explorer |
 | `agy` ignora o gateway em máquina gerenciada | `admin_settings.json` vence a variável | peça ao administrador |
 | Erro de protocolo | `WIRE_PROTOCOL` errado | `openai` para Chat Completions, `genai` para Gemini |
 | JetBrains ou Zed não usam o gateway | faltam `auth.type = gateway` e o campo `env` | seção 2, regra 2 |
@@ -248,7 +317,7 @@ Prova desta máquina (13/11/2026):
 
 ---
 
-## 9. Limites e proibições
+## 10. Limites e proibições
 
 Estas regras vêm da lição do bloqueio de 10/11/2026 (memória `agy-bloqueio-gw`) e do código atual.
 
@@ -261,7 +330,7 @@ Estas regras vêm da lição do bloqueio de 10/11/2026 (memória `agy-bloqueio-g
 
 ---
 
-## 10. Fontes
+## 11. Fontes
 
 - Google Cloud, "Connect Antigravity to an Enterprise Gateway": https://docs.cloud.google.com/gemini/enterprise/docs/ai-developer-tools/connect-enterprise-gateway
 - Google Cloud, "Configure an enterprise gateway for Google Antigravity": https://docs.cloud.google.com/gemini/enterprise/docs/ai-developer-tools/deploy-enterprise-gateway

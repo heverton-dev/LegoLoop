@@ -42,8 +42,16 @@ Um provedor que não fala `genai` nem `openai` não funciona direto. Coloque um 
 3. Programas abertos pelo menu Iniciar ou pelo Dock não leem o perfil do shell.
 4. O `agy` na web não aceita gateway.
 
-## 13. Terminal novo, sempre
+## 13. Processo novo, sempre
 
 Variável de usuário só chega aos processos que nascem depois dela.
-Todo terminal aberto antes da mudança mantém o ambiente antigo.
+O Antigravity IDE e o `agy` leem o ambiente uma vez, quando abrem.
+Todo processo aberto antes da mudança mantém o ambiente antigo.
 Esse é o motivo mais comum de "mudei e não funcionou".
+
+Há um segundo mecanismo. Os programas abertos pelo menu Iniciar herdam o ambiente do Explorer.
+O Explorer só relê o ambiente quando recebe o aviso `WM_SETTINGCHANGE`.
+Até 13/11/2026, o `gw` gravava as variáveis no registro sem enviar esse aviso.
+O IDE abriu logo depois do `gw agy off` e herdou as variáveis antigas do Explorer.
+Hoje o `gw` envia o aviso a cada `agy 9router` e `agy off`.
+Mesmo assim, o processo que já estava aberto continua com o ambiente antigo e precisa ser reaberto (Receita 19).
