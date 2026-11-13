@@ -165,8 +165,11 @@ func TestPromptProvaUmaFrasePorLinha(t *testing.T) {
 	if !strings.Contains(prompt, "uma frase por linha") || !strings.Contains(prompt, "sem linha em branco") {
 		t.Errorf("prompt prova deve exigir uma frase por linha, sem linha em branco")
 	}
-	if strings.Contains(prompt, "\n\n") {
-		t.Errorf("prompt prova nao deve ter linha em branco, nem no exemplo")
+	if strings.Count(prompt, "\n\n") != 1 {
+		t.Errorf("prompt prova deve ter exatamente 1 linha em branco (antes da Recomendacao), tem %d", strings.Count(prompt, "\n\n"))
+	}
+	if !strings.Contains(prompt, "\n\nRecomendação: autorizar") {
+		t.Errorf("exemplo deve ter linha em branco antes da Recomendacao")
 	}
 	if strings.Contains(prompt, "grupos de 3 a 5") {
 		t.Errorf("prompt prova nao deve mais pedir grupos")
