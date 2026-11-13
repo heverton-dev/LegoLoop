@@ -96,6 +96,56 @@
           "rollback_strategy": { "type": "string" },
           "spec_ref": { "type": "string" },
           "status": { "type": "string" },
+          "role": {
+            "type": "string",
+            "enum": [
+              "patrocinador",
+              "arquiteto",
+              "planejador",
+              "orquestrador",
+              "dissecador-web",
+              "dissecador-mobile",
+              "dissecador-midia",
+              "engenheiro-frontend",
+              "engenheiro-mobile",
+              "engenheiro-backend",
+              "engenheiro-tdd",
+              "engenheiro-cloud",
+              "engenheiro-secops",
+              "roteirista-copy",
+              "ingestor-midia",
+              "animador-motion",
+              "pos-produtor",
+              "auditor-qualidade",
+              "redator-tecnico",
+              "compilador-livro"
+            ]
+          },
+          "papel": {
+            "type": "string",
+            "enum": [
+              "patrocinador",
+              "arquiteto",
+              "planejador",
+              "orquestrador",
+              "dissecador-web",
+              "dissecador-mobile",
+              "dissecador-midia",
+              "engenheiro-frontend",
+              "engenheiro-mobile",
+              "engenheiro-backend",
+              "engenheiro-tdd",
+              "engenheiro-cloud",
+              "engenheiro-secops",
+              "roteirista-copy",
+              "ingestor-midia",
+              "animador-motion",
+              "pos-produtor",
+              "auditor-qualidade",
+              "redator-tecnico",
+              "compilador-livro"
+            ]
+          },
           "stop_gate": { "type": ["object", "null"] }
         }
       }

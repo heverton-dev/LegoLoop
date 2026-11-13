@@ -116,5 +116,156 @@
       "forbidden_synonyms": ["concluir processo", "encerrar ciclo", "finalizar entrega"],
       "context_domain": "lifecycle_close"
     }
+  ],
+  "guildas": [
+    { "slug": "governanca", "nome": "Governança" },
+    { "slug": "reversa", "nome": "Engenharia Reversa" },
+    { "slug": "construcao", "nome": "Construção" },
+    { "slug": "infra", "nome": "Infraestrutura e Operações" },
+    { "slug": "audiovisual", "nome": "Audiovisual" },
+    { "slug": "qualidade", "nome": "Qualidade" },
+    { "slug": "publicacao", "nome": "Publicação" }
+  ],
+  "papeis": [
+    {
+      "slug": "patrocinador",
+      "nome": "Patrocinador",
+      "guilda": "governanca",
+      "descricao": "Aprovacao de regras e Stop-Gates",
+      "ferramentas_tipicas": "Chat UI"
+    },
+    {
+      "slug": "arquiteto",
+      "nome": "Arquiteto",
+      "guilda": "governanca",
+      "descricao": "Requisitos EARS e schemas",
+      "ferramentas_tipicas": "Templates v2"
+    },
+    {
+      "slug": "planejador",
+      "nome": "Planejador",
+      "guilda": "governanca",
+      "descricao": "Divisao em tickets atomicos",
+      "ferramentas_tipicas": "PLAN v2"
+    },
+    {
+      "slug": "orquestrador",
+      "nome": "Orquestrador",
+      "guilda": "governanca",
+      "descricao": "Despacho do DAG e isolamento esteril",
+      "ferramentas_tipicas": "LegoLoop CLI"
+    },
+    {
+      "slug": "dissecador-web",
+      "nome": "Dissecador Web",
+      "guilda": "reversa",
+      "descricao": "Extracao de tokens e rotas SaaS",
+      "ferramentas_tipicas": "REA Web"
+    },
+    {
+      "slug": "dissecador-mobile",
+      "nome": "Dissecador Mobile",
+      "guilda": "reversa",
+      "descricao": "Descompilacao de APKs",
+      "ferramentas_tipicas": "Jeb / Apktool"
+    },
+    {
+      "slug": "dissecador-midia",
+      "nome": "Dissecador Midia",
+      "guilda": "reversa",
+      "descricao": "Forense de video e transcricao",
+      "ferramentas_tipicas": "Video-REA"
+    },
+    {
+      "slug": "engenheiro-frontend",
+      "nome": "Engenheiro Frontend",
+      "guilda": "construcao",
+      "descricao": "Interfaces Web e Next.js",
+      "ferramentas_tipicas": "React / Tailwind"
+    },
+    {
+      "slug": "engenheiro-mobile",
+      "nome": "Engenheiro Mobile",
+      "guilda": "construcao",
+      "descricao": "Aplicativos moveis",
+      "ferramentas_tipicas": "Android / iOS"
+    },
+    {
+      "slug": "engenheiro-backend",
+      "nome": "Engenheiro Backend",
+      "guilda": "construcao",
+      "descricao": "APIs e logica de dominio",
+      "ferramentas_tipicas": "Go / REST"
+    },
+    {
+      "slug": "engenheiro-tdd",
+      "nome": "Engenheiro TDD",
+      "guilda": "construcao",
+      "descricao": "Red-Green-Refactor e testes",
+      "ferramentas_tipicas": "Go Test / Vitest"
+    },
+    {
+      "slug": "engenheiro-cloud",
+      "nome": "Engenheiro Cloud",
+      "guilda": "infra",
+      "descricao": "VPS, Edge e Docker",
+      "ferramentas_tipicas": "Cloudflare / Ops"
+    },
+    {
+      "slug": "engenheiro-secops",
+      "nome": "Engenheiro SecOps",
+      "guilda": "infra",
+      "descricao": "Path-jail e segredos",
+      "ferramentas_tipicas": "Security Gates"
+    },
+    {
+      "slug": "roteirista-copy",
+      "nome": "Roteirista Copy",
+      "guilda": "audiovisual",
+      "descricao": "Roteirizacao estruturada",
+      "ferramentas_tipicas": "Craft Story"
+    },
+    {
+      "slug": "ingestor-midia",
+      "nome": "Ingestor Midia",
+      "guilda": "audiovisual",
+      "descricao": "Download e FFMPEG",
+      "ferramentas_tipicas": "yt-dlp / Whisper"
+    },
+    {
+      "slug": "animador-motion",
+      "nome": "Animador Motion",
+      "guilda": "audiovisual",
+      "descricao": "Motion procedural em codigo",
+      "ferramentas_tipicas": "Remotion / Three.js"
+    },
+    {
+      "slug": "pos-produtor",
+      "nome": "Pos Produtor",
+      "guilda": "audiovisual",
+      "descricao": "Cortes de silencio e RMS",
+      "ferramentas_tipicas": "Auto-cutter"
+    },
+    {
+      "slug": "auditor-qualidade",
+      "nome": "Auditor Qualidade",
+      "guilda": "qualidade",
+      "descricao": "Linters e mutacao de teste",
+      "ferramentas_tipicas": "Taxlinter / Funclen"
+    },
+    {
+      "slug": "redator-tecnico",
+      "nome": "Redator Tecnico",
+      "guilda": "publicacao",
+      "descricao": "Manuais ASD-STE100",
+      "ferramentas_tipicas": "Manual Creator"
+    },
+    {
+      "slug": "compilador-livro",
+      "nome": "Compilador Livro",
+      "guilda": "publicacao",
+      "descricao": "Livros didaticos e PDF",
+      "ferramentas_tipicas": "LegoPress"
+    }
   ]
 }

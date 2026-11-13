@@ -61,3 +61,24 @@ func TestListarGuildasECatalogo(t *testing.T) {
 		}
 	}
 }
+
+func TestSincronizacaoDicionarioJSON(t *testing.T) {
+	dict, err := ObterDicionario()
+	if err != nil {
+		t.Fatalf("falha ao carregar dicionario: %v", err)
+	}
+	if len(dict.Guildas) != 7 {
+		t.Fatalf("esperado 7 guildas no dicionario.json, obtido %d", len(dict.Guildas))
+	}
+	if len(dict.Papeis) != 20 {
+		t.Fatalf("esperado 20 papeis no dicionario.json, obtido %d", len(dict.Papeis))
+	}
+	for _, p := range dict.Papeis {
+		if err := ValidarPapel(p.Slug); err != nil {
+			t.Fatalf("papel %q no dicionario.json nao e valido no codigo: %v", p.Slug, err)
+		}
+		if err := ValidarGuilda(Guilda(p.Guilda)); err != nil {
+			t.Fatalf("guilda %q no dicionario.json nao e valida no codigo: %v", p.Guilda, err)
+		}
+	}
+}
