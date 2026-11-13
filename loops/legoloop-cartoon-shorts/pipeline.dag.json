@@ -1,7 +1,8 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "name": "legoloop-cartoon-shorts",
   "version": "1.0.0",
+  "schema_version": 2,
   "date": "2026-11-09",
   "description": "Pipeline canônico soberano de geração de Cartoon Shorts (1080x1920 30fps) com roteiro 3.7 palavras/s, voz neural Edge-TTS e renderização Three.js/Playwright a custo R$ 0,00",
   "upstream_signatures": {
@@ -39,18 +40,33 @@
       "type": "unit_task",
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
-        "fallback": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180
       },
       "token_budget": {
         "max_prompt_tokens": 16000,
         "max_completion_tokens": 600
       },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E01.2",
+      "status": "COMPLETED",
       "timeout_sec": 180,
       "context_in": [
         "docs/specs/2026-11-09_SPEC_LEGOLOOP_CARTOON_SHORTS.md"
@@ -58,7 +74,6 @@
       "context_out": [
         "docs/videorea/legoloop-cartoon-shorts/scratch/script.json"
       ],
-      "status": "PENDING",
       "test_seam": {
         "type": "unit_test_gate",
         "target": "internal/videorea/script_engine_test.go"
@@ -74,6 +89,9 @@
       "output": {
         "artifact": "docs/videorea/legoloop-cartoon-shorts/scratch/script.json",
         "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/scratch/script.json')"
+      },
+      "verification": {
+        "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/scratch/script.json')"
       }
     },
     {
@@ -87,18 +105,33 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 500,
+        "max_duration_sec": 180
       },
       "token_budget": {
         "max_prompt_tokens": 8000,
         "max_completion_tokens": 500
       },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E02.1",
+      "status": "COMPLETED",
       "timeout_sec": 180,
       "context_in": [
         "docs/videorea/legoloop-cartoon-shorts/scratch/script.json"
@@ -106,7 +139,6 @@
       "context_out": [
         "docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3"
       ],
-      "status": "PENDING",
       "test_seam": {
         "type": "unit_test_gate",
         "target": "internal/videorea/tts_edge_test.go"
@@ -122,6 +154,9 @@
       "output": {
         "artifact": "docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3",
         "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3')"
+      },
+      "verification": {
+        "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/scratch/voice.mp3')"
       }
     },
     {
@@ -135,18 +170,33 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
-        "fallback": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "sonnet"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_prompt_tokens": 24000,
+        "max_completion_tokens": 800,
+        "max_duration_sec": 240
       },
       "token_budget": {
         "max_prompt_tokens": 24000,
         "max_completion_tokens": 800
       },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E03.1",
+      "status": "COMPLETED",
       "timeout_sec": 240,
       "context_in": [
         "docs/videorea/legoloop-cartoon-shorts/scratch/script.json",
@@ -155,7 +205,6 @@
       "context_out": [
         "docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4"
       ],
-      "status": "PENDING",
       "test_seam": {
         "type": "unit_test_gate",
         "target": "internal/videorea/cartoon_render_test.go"
@@ -170,6 +219,9 @@
       ],
       "output": {
         "artifact": "docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4",
+        "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4')"
+      },
+      "verification": {
         "gate": "file_exists('docs/videorea/legoloop-cartoon-shorts/loop/fixture_3s.mp4')"
       }
     }
