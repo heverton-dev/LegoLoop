@@ -1,7 +1,8 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "name": "legoloop-canal-redc",
   "version": "1.0.0",
+  "schema_version": 2,
   "date": "2026-11-07",
   "description": "Engenharia reversa profunda de canais e vídeos virais, geração de dossiê DNA, catálogo de métodos em pipelines e gerador de vídeos com Brand Swap.",
   "upstream_signatures": {
@@ -45,9 +46,16 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
         "effort": "low",
-        "fallback": "flash"
+        "fallback": "haiku"
+      },
+      "limits": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 300
       },
       "token_budget": {
         "input_tokens": 3000,
@@ -56,7 +64,15 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E01.1",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "tooling": {
+        "runtime": "powershell"
       },
       "context_in": [],
       "context_out": [
@@ -75,6 +91,9 @@
       "output": {
         "artifact": "internal/redc/catalog.go",
         "gate": "file_exists('internal/redc/catalog.go')"
+      },
+      "verification": {
+        "gate": "file_exists('internal/redc/catalog.go')"
       }
     },
     {
@@ -83,11 +102,21 @@
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "script",
+      "depends_on": [
+        "n01_catalogar_clusterizar"
+      ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "medium",
-        "fallback": "flash"
+        "fallback": "haiku"
+      },
+      "limits": {
+        "max_prompt_tokens": 12000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 300
       },
       "token_budget": {
         "input_tokens": 5000,
@@ -96,11 +125,16 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
-      "depends_on": [
-        "n01_catalogar_clusterizar"
-      ],
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E02.1",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "tooling": {
+        "runtime": "powershell"
+      },
       "context_in": [
         "internal/redc/catalog.go"
       ],
@@ -120,6 +154,9 @@
       "output": {
         "artifact": "internal/redc/dna.go",
         "gate": "file_exists('internal/redc/dna.go')"
+      },
+      "verification": {
+        "gate": "file_exists('internal/redc/dna.go')"
       }
     },
     {
@@ -128,11 +165,21 @@
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "script",
+      "depends_on": [
+        "n02_deep_redc_dna"
+      ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "medium",
-        "fallback": "flash"
+        "fallback": "haiku"
+      },
+      "limits": {
+        "max_prompt_tokens": 12000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 300
       },
       "token_budget": {
         "input_tokens": 5000,
@@ -141,11 +188,16 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
-      "depends_on": [
-        "n02_deep_redc_dna"
-      ],
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E03.1",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "tooling": {
+        "runtime": "powershell"
+      },
       "context_in": [
         "internal/redc/dna.go"
       ],
@@ -165,6 +217,9 @@
       "output": {
         "artifact": "internal/redc/pipeline_gen.go",
         "gate": "file_exists('internal/redc/pipeline_gen.go')"
+      },
+      "verification": {
+        "gate": "file_exists('internal/redc/pipeline_gen.go')"
       }
     },
     {
@@ -173,11 +228,21 @@
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "script",
+      "depends_on": [
+        "n02_deep_redc_dna"
+      ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "medium",
-        "fallback": "flash"
+        "fallback": "haiku"
+      },
+      "limits": {
+        "max_prompt_tokens": 12000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 300
       },
       "token_budget": {
         "input_tokens": 5000,
@@ -186,11 +251,16 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
-      "depends_on": [
-        "n02_deep_redc_dna"
-      ],
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E03.2",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "tooling": {
+        "runtime": "powershell"
+      },
       "context_in": [
         "internal/redc/dna.go"
       ],
@@ -209,6 +279,9 @@
       },
       "output": {
         "artifact": "internal/redc/brand_swap.go",
+        "gate": "file_exists('internal/redc/brand_swap.go')"
+      },
+      "verification": {
         "gate": "file_exists('internal/redc/brand_swap.go')"
       }
     }

@@ -1,7 +1,8 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "name": "legoloop-video-rea",
   "version": "1.0.0",
+  "schema_version": 2,
   "date": "2026-11-09",
   "description": "Pipeline canônico de engenharia reversa audiovisual com Matriz Original, curadoria de ferramentas e adoção de peças gratuitas",
   "upstream_signatures": {
@@ -39,13 +40,22 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 300
       },
       "token_budget": {
         "max_prompt_tokens": 8000,
@@ -54,6 +64,9 @@
       "tooling": {
         "runtime": "powershell"
       },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-n01_crawler_ingest",
+      "status": "COMPLETED",
       "timeout_sec": 300,
       "execution": {
         "mode": "isolated"
@@ -64,7 +77,6 @@
       "context_out": [
         "docs/videorea/${SLUG}/scratch/raw.json"
       ],
-      "status": "COMPLETED",
       "command": [
         "legoloop",
         "video-rea",
@@ -76,6 +88,9 @@
       ],
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/raw.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/raw.json')"
+      },
+      "verification": {
         "gate": "file_exists('docs/videorea/${SLUG}/scratch/raw.json')"
       },
       "test_seam": {
@@ -94,13 +109,22 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_prompt_tokens": 12000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 600
       },
       "token_budget": {
         "max_prompt_tokens": 12000,
@@ -109,6 +133,9 @@
       "tooling": {
         "runtime": "powershell"
       },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-n02_forensics_dissection",
+      "status": "COMPLETED",
       "timeout_sec": 600,
       "execution": {
         "mode": "isolated"
@@ -119,7 +146,6 @@
       "context_out": [
         "docs/videorea/${SLUG}/scratch/dossier.json"
       ],
-      "status": "COMPLETED",
       "command": [
         "legoloop",
         "video-rea",
@@ -131,6 +157,9 @@
       ],
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/dossier.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json')"
+      },
+      "verification": {
         "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json')"
       },
       "test_seam": {
@@ -149,13 +178,22 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 300
       },
       "token_budget": {
         "max_prompt_tokens": 10000,
@@ -164,6 +202,9 @@
       "tooling": {
         "runtime": "powershell"
       },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-n03_matrix_curation",
+      "status": "COMPLETED",
       "timeout_sec": 300,
       "execution": {
         "mode": "isolated"
@@ -174,7 +215,6 @@
       "context_out": [
         "docs/videorea/${SLUG}/scratch/curation.json"
       ],
-      "status": "COMPLETED",
       "command": [
         "legoloop",
         "video-rea",
@@ -186,6 +226,9 @@
       ],
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/curation.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json')"
+      },
+      "verification": {
         "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json')"
       },
       "test_seam": {
@@ -204,13 +247,22 @@
       ],
       "routing": {
         "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
         "model": "haiku",
-        "fallback": "flash"
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_prompt_tokens": 6000,
+        "max_completion_tokens": 1000,
+        "max_duration_sec": 180
       },
       "token_budget": {
         "max_prompt_tokens": 6000,
@@ -219,6 +271,9 @@
       "tooling": {
         "runtime": "powershell"
       },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-n04_stopgate_approval",
+      "status": "COMPLETED",
       "timeout_sec": 180,
       "execution": {
         "mode": "inline"
@@ -229,7 +284,6 @@
       "context_out": [
         "docs/videorea/${SLUG}/scratch/curation.json"
       ],
-      "status": "COMPLETED",
       "command": [
         "legoloop",
         "video-rea",
@@ -242,6 +296,9 @@
       ],
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/curation_approved.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation_approved.json')"
+      },
+      "verification": {
         "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation_approved.json')"
       },
       "test_seam": {
@@ -260,13 +317,22 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 180
       },
       "token_budget": {
         "max_prompt_tokens": 10000,
@@ -275,6 +341,9 @@
       "tooling": {
         "runtime": "powershell"
       },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-n05_governance_factory",
+      "status": "COMPLETED",
       "timeout_sec": 180,
       "execution": {
         "mode": "isolated"
@@ -285,7 +354,6 @@
       "context_out": [
         "docs/videorea/${SLUG}/scratch/governance_manifest.json"
       ],
-      "status": "COMPLETED",
       "command": [
         "legoloop",
         "video-rea",
@@ -299,6 +367,9 @@
       ],
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/governance_manifest.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/governance_manifest.json')"
+      },
+      "verification": {
         "gate": "file_exists('docs/videorea/${SLUG}/scratch/governance_manifest.json')"
       },
       "test_seam": {
@@ -317,13 +388,22 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500,
+        "max_duration_sec": 180
       },
       "token_budget": {
         "max_prompt_tokens": 8000,
@@ -332,6 +412,9 @@
       "tooling": {
         "runtime": "powershell"
       },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-n06_legopress_book",
+      "status": "COMPLETED",
       "timeout_sec": 180,
       "execution": {
         "mode": "isolated"
@@ -342,7 +425,6 @@
       "context_out": [
         "docs/videorea/${SLUG}/scratch/livro_manifest.json"
       ],
-      "status": "COMPLETED",
       "command": [
         "legoloop",
         "video-rea",
@@ -354,6 +436,9 @@
       ],
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/livro_manifest.json",
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/livro_manifest.json')"
+      },
+      "verification": {
         "gate": "file_exists('docs/videorea/${SLUG}/scratch/livro_manifest.json')"
       },
       "test_seam": {
