@@ -1,0 +1,138 @@
+{
+  "total_dags": 19,
+  "dags": [
+    {
+      "path": "docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json",
+      "total_nodes": 7,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_a_docs"
+    },
+    {
+      "path": "docs/dags/2026-11-07_DAG_LEGOLOOP_VIDEO_MOTION.json",
+      "total_nodes": 6,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_a_docs"
+    },
+    {
+      "path": "docs/dags/2026-11-08_DAG_LEGOLOOP_VIDEO_EDITION.json",
+      "total_nodes": 12,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_a_docs"
+    },
+    {
+      "path": "docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json",
+      "total_nodes": 6,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_a_docs"
+    },
+    {
+      "path": "docs/dags/2026-11-09_DAG_QUINTETO_GOVERNANCA_ISO.json",
+      "total_nodes": 8,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_b_docs"
+    },
+    {
+      "path": "docs/dags/2026-11-10_DAG_DISSECAR.json",
+      "total_nodes": 6,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_b_docs"
+    },
+    {
+      "path": "docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json",
+      "total_nodes": 56,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_b_docs"
+    },
+    {
+      "path": "docs/dags/2026-11-12_DAG_ROTEAMENTO_HONESTO.json",
+      "total_nodes": 22,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_b_docs"
+    },
+    {
+      "path": "docs/dags/2026-11-12_DAG_SEXTETO_E_TEMPLATES.json",
+      "total_nodes": 23,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_b_docs"
+    },
+    {
+      "path": "loops/ai-motion-graphics/pipeline.dag.json",
+      "total_nodes": 17,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_a"
+    },
+    {
+      "path": "loops/legoloop-video-edition/pipeline.dag.json",
+      "total_nodes": 12,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_a"
+    },
+    {
+      "path": "loops/legoloop-video-master/pipeline.dag.json",
+      "total_nodes": 5,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_a"
+    },
+    {
+      "path": "loops/legoloop-video-motion/pipeline.dag.json",
+      "total_nodes": 6,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_a"
+    },
+    {
+      "path": "loops/legoloop-canal-redc/pipeline.dag.json",
+      "total_nodes": 4,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_b"
+    },
+    {
+      "path": "loops/legoloop-cartoon-shorts/pipeline.dag.json",
+      "total_nodes": 3,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_b"
+    },
+    {
+      "path": "loops/legoloop-video-rea/pipeline.dag.json",
+      "total_nodes": 6,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_b"
+    },
+    {
+      "path": "loops/legoloop-dissecar/pipeline.dag.json",
+      "total_nodes": 6,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_c"
+    },
+    {
+      "path": "loops/legoloop-fechar/pipeline.dag.json",
+      "total_nodes": 7,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_c"
+    },
+    {
+      "path": "loops/legoloop-n10-foundry/pipeline.dag.json",
+      "total_nodes": 4,
+      "has_schema_version": false,
+      "has_routing_via": false,
+      "lote": "lote_loops_c"
+    }
+  ]
+}
