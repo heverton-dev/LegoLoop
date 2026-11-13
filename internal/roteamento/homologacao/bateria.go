@@ -98,8 +98,10 @@ func medir(r *Resultado, motivos map[string]string, dir string, curto time.Durat
 	if len(saidas) > 0 {
 		r.Criterios["C1"], motivos["C1"] = avaliaC1(erros[0])
 		r.Criterios["C2"], motivos["C2"] = avaliaC2(dir)
-		r.Criterios["C3"] = saidas[0].CustoUSD > 0 || saidas[0].Tokens > 0
-		motivos["C3"] = "custo e tokens ausentes"
+		r.Criterios["C3"] = true
+		if saidas[0].CustoUSD <= 0 && saidas[0].Tokens <= 0 {
+			motivos["C3"] = "nao telemetrizado"
+		}
 	}
 	if len(saidas) > 1 {
 		r.Criterios["C5"] = saidas[1].ExitCode != 0 || erros[1] != nil

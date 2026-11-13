@@ -13,6 +13,7 @@ bin/
 !.env.example
 *.pem
 *.key
+credential_gemini_backup.json
 
 # Testes, caches e temporários
 .worktrees/

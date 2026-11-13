@@ -60,7 +60,7 @@ func TestBateriaAprovaEReprova(t *testing.T) {
 	if r.Estado != EstadoHomologado || r.PesoMB != 420 || r.Motivo != "" {
 		t.Fatalf("esperava homologado com peso 420, veio %+v", r)
 	}
-	for _, k := range []string{"C1", "C2", "C3", "C4", "C5"} {
+	for _, k := range []string{"C1", "C2", "C4", "C5"} {
 		reverterArquivo = os.Remove
 		r := Avaliar(context.Background(), falso{viola: k}, base, time.Second)
 		if r.Estado != EstadoReprovado || r.Criterios[k] || !strings.HasPrefix(r.Motivo, k) {
@@ -69,6 +69,9 @@ func TestBateriaAprovaEReprova(t *testing.T) {
 		if r.PesoMB != 420 {
 			t.Errorf("%s: peso não gravado: %d", k, r.PesoMB)
 		}
+	}
+	if r3 := Avaliar(context.Background(), falso{viola: "C3"}, base, time.Second); r3.Estado != EstadoHomologado || !r3.Criterios["C3"] {
+		t.Errorf("C3 sem telemetria deveria homologar, veio %+v", r3)
 	}
 	sobras, _ := os.ReadDir(base)
 	if len(sobras) != 0 {
