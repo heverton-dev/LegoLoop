@@ -1,50 +1,65 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "name": "legoloop-matriz-papeis",
+  "version": "2.2.0",
   "date": "2026-11-10",
-  "description": "Espelho executável da ROUTE MATRIZ_PAPEIS",
+  "description": "Espelho executavel da ROUTE MATRIZ_PAPEIS (Iniciativa I5)",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md",
+      "sha256": "1c1968c9a2ad7b5ae082bd4a661bad386cafda385e3469155d55a0db0a0c65c3"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md",
+      "sha256": "9bed435ad0862b5ab294922b0d8539c816b3494023372fb21fb975913e7bfcb9"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md",
+      "sha256": "01c81581a51e2e6aa1d2f31b5f6c1fb6fc4b8916d57d2a7ecb948defd68cfe1d"
+    },
+    "route": {
+      "path": "docs/routes/2026-11-10_ROUTE_MATRIZ_PAPEIS.json",
+      "sha256": "829a305c3dee3afb924c201c85cafc71a142a2c8252e40d70bb68d2b5ba02776"
+    }
+  },
   "execution_strategy": {
-    "concurrency": {
-      "harness_capability": "subagent_cli_isolated",
-      "max_parallel_subagents": 2,
-      "mode": "hybrid",
-      "rate_limit_throttle_ms": 500
-    },
-    "default_isolation": {
-      "executor": "orchestrix_hermetic",
-      "subagents_allowed": false,
-      "workspace": "local"
-    },
-    "default_timeout_sec": 180,
+    "supervision_level": "micro",
     "max_parallel_workers": 2,
+    "default_timeout_sec": 180,
     "rollback_on_failure": "abort_pipeline",
     "rollback_policy": {
       "action": "abort_and_pause",
       "commit_on_node_pass": true,
       "git_strategy": "checkpoint_commit",
       "preserve_artifacts": true
-    },
-    "supervision_level": "micro",
-    "tdd_enforced": true
+    }
   },
-  "name": "legoloop-matriz-papeis",
+  "trigger": {
+    "type": "manual"
+  },
   "nodes": [
     {
+      "id": "TICK-01.1",
+      "name": "Implementar Catalogo dos 18 Papeis e Validador em Go",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": [],
       "command": [
         "go",
         "test",
         "-count=1",
         "./internal/taxonomy/..."
       ],
-      "context_in": [
-        "internal/taxonomy/roles.go",
-        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
-      ],
-      "context_out": [
-        "internal/taxonomy/roles.go",
-        "internal/taxonomy/roles_test.go"
-      ],
-      "depends_on": [],
-      "id": "TICK-01.1",
+      "timeout_sec": 180,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
+      },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -56,39 +71,45 @@
         "max_duration_sec": 180,
         "max_prompt_tokens": 16000
       },
-      "name": "tick_01_1",
-      "nature": "micro",
-      "output": {
-        "artifact": "scratch/gates/TICK-01.1.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/taxonomy/roles.go') \u0026\u0026 file_exists('internal/taxonomy/roles_test.go')"
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
       },
       "rollback_strategy": "stash_changes",
-      "routing": {
-        "effort": "high",
-        "fallback": "flash",
-        "mode": "suggested",
-        "model": "flash"
-      },
-      "spec_ref": "AC-E01.1",
+      "spec_ref": "AC-I5-01.1",
       "status": "PENDING",
       "test_seam": {
         "file": "internal/taxonomy/roles_test.go",
         "signature": "TestValidarPapel",
         "type": "highest_seam"
       },
-      "tooling": {
-        "harness": "antigravity",
-        "mcps_allowed": [],
-        "mcps_required": false,
-        "runtime": "powershell"
+      "context_in": [
+        "internal/taxonomy/taxonomy.go",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "internal/taxonomy/roles.go",
+        "internal/taxonomy/roles_test.go"
+      ],
+      "output": {
+        "artifact": "scratch/gates/TICK-01.1.json",
+        "gate": "exit_code == 0 && file_exists('internal/taxonomy/roles.go') && file_exists('internal/taxonomy/roles_test.go')"
       },
-      "type": "unit_task",
       "verification": {
         "exit_code": 0,
         "test_command": "go test -count=1 ./internal/taxonomy/..."
       }
     },
     {
+      "id": "TICK-01.2",
+      "name": "Sincronizar Dicionario JSON e Schemas Oficiais",
+      "type": "unit_task",
+      "nature": "nano",
+      "depends_on": [
+        "TICK-01.1"
+      ],
       "command": [
         "go",
         "run",
@@ -99,19 +120,15 @@
         "skills",
         "docs/templates"
       ],
-      "context_in": [
-        "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
-        "schemas/dag.v1.json",
-        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
-      ],
-      "context_out": [
-        "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
-        "schemas/dag.v1.json"
-      ],
-      "depends_on": [
-        "TICK-01.1"
-      ],
-      "id": "TICK-01.2",
+      "timeout_sec": 180,
+      "routing": {
+        "mode": "suggested",
+        "harness": "mimo",
+        "via": "oficial",
+        "model": "xiaomi/mimo-v2",
+        "effort": "low",
+        "fallback": "haiku"
+      },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -123,51 +140,112 @@
         "max_duration_sec": 180,
         "max_prompt_tokens": 8000
       },
-      "name": "tick_01_2",
-      "nature": "nano",
-      "output": {
-        "artifact": "scratch/gates/TICK-01.2.json",
-        "gate": "exit_code == 0"
-      },
-      "rollback_strategy": "stash_changes",
-      "routing": {
-        "fallback": "flash",
-        "mode": "suggested",
-        "model": "flash"
-      },
-      "spec_ref": "AC-E01.1",
-      "status": "PENDING",
       "tooling": {
-        "harness": "antigravity",
+        "harness": "mimo",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-I5-01.1",
+      "status": "PENDING",
+      "context_in": [
+        "internal/taxonomy/dictionary.json",
+        "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
+        "schemas/dag.v2.json",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "internal/taxonomy/dictionary.json",
+        "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
+        "schemas/dag.v2.json"
+      ],
+      "output": {
+        "artifact": "scratch/gates/TICK-01.2.json",
+        "gate": "exit_code == 0"
+      },
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/taxlinter internal cmd loops skills docs/templates"
       }
     },
     {
+      "id": "SG-E01",
+      "name": "Stop-Gate Humano Epico 01",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
+      },
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "spec_ref": "AC-I5-01.2",
+      "status": "PENDING",
+      "context_in": [
+        "scratch/gates/TICK-01.2.json"
+      ],
+      "context_out": [
+        "scratch/gates/SG-E01.json"
+      ],
+      "output": {
+        "artifact": "scratch/gates/SG-E01.json",
+        "gate": "prompt('Evidencias do Epico 01 aprovadas? Autoriza iniciar o Epico 02?')"
+      },
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "stop_gate": {
+        "gate_id": "SG-E01",
+        "question": "Evidencias do Epico 01 aprovadas? Autoriza iniciar o Epico 02?"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "name": "Atualizar Contrato da Peca e Validacao na Matriz",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": [
+        "SG-E01"
+      ],
       "command": [
         "go",
         "test",
         "-count=1",
         "./internal/matriz/..."
       ],
-      "context_in": [
-        "internal/matriz/matriz.go",
-        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
-      ],
-      "context_out": [
-        "internal/matriz/matriz.go",
-        "internal/matriz/matriz_test.go"
-      ],
-      "depends_on": [
-        "TICK-01.2"
-      ],
-      "id": "TICK-02.1",
+      "timeout_sec": 180,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "xiaomi/mimo-v2"
+      },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -179,56 +257,62 @@
         "max_duration_sec": 180,
         "max_prompt_tokens": 16000
       },
-      "name": "tick_02_1",
-      "nature": "micro",
-      "output": {
-        "artifact": "scratch/gates/TICK-02.1.json",
-        "gate": "exit_code == 0"
-      },
-      "rollback_strategy": "stash_changes",
-      "routing": {
-        "effort": "high",
-        "fallback": "flash",
-        "mode": "suggested",
-        "model": "flash"
-      },
-      "spec_ref": "AC-E02.1",
-      "status": "PENDING",
-      "test_seam": {
-        "file": "internal/matriz/matriz_test.go",
-        "signature": "TestPecaValidateRoles",
-        "type": "highest_seam"
-      },
       "tooling": {
-        "harness": "antigravity",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-I5-02.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/matriz/catalogador_test.go",
+        "signature": "TestPecaValidateRoles",
+        "type": "highest_seam"
+      },
+      "context_in": [
+        "internal/matriz/perfil.go",
+        "internal/matriz/catalogador.go",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "internal/matriz/perfil.go",
+        "internal/matriz/catalogador.go",
+        "internal/matriz/catalogador_test.go"
+      ],
+      "output": {
+        "artifact": "scratch/gates/TICK-02.1.json",
+        "gate": "exit_code == 0"
+      },
       "verification": {
         "exit_code": 0,
         "test_command": "go test -count=1 ./internal/matriz/..."
       }
     },
     {
+      "id": "TICK-02.2",
+      "name": "Adicionar Filtros --papel e --guilda na CLI da Matriz",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-02.1"
+      ],
       "command": [
         "go",
         "test",
         "-count=1",
-        "./cmd/legoloop/..."
+        "./internal/cli/..."
       ],
-      "context_in": [
-        "cmd/legoloop/matriz.go",
-        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
-      ],
-      "context_out": [
-        "cmd/legoloop/matriz.go"
-      ],
-      "depends_on": [
-        "TICK-02.1"
-      ],
-      "id": "TICK-02.2",
+      "timeout_sec": 180,
+      "routing": {
+        "mode": "suggested",
+        "harness": "opencode",
+        "via": "oficial",
+        "model": "default",
+        "effort": "high",
+        "fallback": "sonnet"
+      },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -240,52 +324,61 @@
         "max_duration_sec": 180,
         "max_prompt_tokens": 16000
       },
-      "name": "tick_02_2",
-      "nature": "micro",
+      "tooling": {
+        "harness": "opencode",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-I5-02.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/cli/matriz_ver_test.go",
+        "signature": "TestMatrizVerFiltrosPapelGuilda",
+        "type": "highest_seam"
+      },
+      "context_in": [
+        "internal/cli/matriz_ver.go",
+        "cmd/legoloop/main.go",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "internal/cli/matriz_ver.go",
+        "internal/cli/matriz_ver_test.go"
+      ],
       "output": {
         "artifact": "scratch/gates/TICK-02.2.json",
         "gate": "exit_code == 0"
       },
-      "rollback_strategy": "stash_changes",
-      "routing": {
-        "effort": "high",
-        "fallback": "flash",
-        "mode": "suggested",
-        "model": "flash"
-      },
-      "spec_ref": "AC-E02.2",
-      "status": "PENDING",
-      "tooling": {
-        "harness": "antigravity",
-        "mcps_allowed": [],
-        "mcps_required": false,
-        "runtime": "powershell"
-      },
-      "type": "unit_task",
       "verification": {
         "exit_code": 0,
-        "test_command": "go test -count=1 ./cmd/legoloop/..."
+        "test_command": "go test -count=1 ./internal/cli/..."
       }
     },
     {
+      "id": "TICK-03.1",
+      "name": "Implementar Algoritmo de Casamento em 2 Niveis no Fabricar",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-02.1"
+      ],
       "command": [
         "go",
         "test",
         "-count=1",
-        "./internal/generator/..."
+        "./internal/fabricar/..."
       ],
-      "context_in": [
-        "internal/generator/generator.go",
-        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
-      ],
-      "context_out": [
-        "internal/generator/generator.go",
-        "internal/generator/generator_test.go"
-      ],
-      "depends_on": [
-        "TICK-02.2"
-      ],
-      "id": "TICK-03.1",
+      "timeout_sec": 180,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
+      },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -297,39 +390,102 @@
         "max_duration_sec": 180,
         "max_prompt_tokens": 16000
       },
-      "name": "tick_03_1",
-      "nature": "micro",
-      "output": {
-        "artifact": "scratch/gates/TICK-03.1.json",
-        "gate": "exit_code == 0"
-      },
-      "rollback_strategy": "stash_changes",
-      "routing": {
-        "effort": "high",
-        "fallback": "flash",
-        "mode": "suggested",
-        "model": "flash"
-      },
-      "spec_ref": "AC-E03.1",
-      "status": "PENDING",
-      "test_seam": {
-        "file": "internal/generator/generator_test.go",
-        "signature": "TestCasamentoPapeis",
-        "type": "highest_seam"
-      },
       "tooling": {
-        "harness": "antigravity",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-I5-03.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/fabricar/merger_rank_test.go",
+        "signature": "TestCasamentoPapeis",
+        "type": "highest_seam"
+      },
+      "context_in": [
+        "internal/fabricar/merger_fit.go",
+        "internal/fabricar/engine.go",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "internal/fabricar/merger_fit.go",
+        "internal/fabricar/merger_rank_test.go"
+      ],
+      "output": {
+        "artifact": "scratch/gates/TICK-03.1.json",
+        "gate": "exit_code == 0"
+      },
       "verification": {
         "exit_code": 0,
-        "test_command": "go test -count=1 ./internal/generator/..."
+        "test_command": "go test -count=1 ./internal/fabricar/..."
       }
     },
     {
+      "id": "SG-E02",
+      "name": "Stop-Gate Humano Epicos 02 e 03",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": [
+        "TICK-02.2",
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
+      },
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "spec_ref": "AC-I5-02.3",
+      "status": "PENDING",
+      "context_in": [
+        "scratch/gates/TICK-02.2.json",
+        "scratch/gates/TICK-03.1.json"
+      ],
+      "context_out": [
+        "scratch/gates/SG-E02.json"
+      ],
+      "output": {
+        "artifact": "scratch/gates/SG-E02.json",
+        "gate": "prompt('Evidencias paralelas de CLI (TICK-02.2) e Fabricar (TICK-03.1) aprovadas? Autoriza recompilacao final?')"
+      },
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "stop_gate": {
+        "gate_id": "SG-E02",
+        "question": "Evidencias paralelas de CLI (TICK-02.2) e Fabricar (TICK-03.1) aprovadas? Autoriza recompilacao final?"
+      }
+    },
+    {
+      "id": "TICK-03.2",
+      "name": "Verificacao Integrada e Recompilacao Fresca",
+      "type": "unit_task",
+      "nature": "nano",
+      "depends_on": [
+        "SG-E02"
+      ],
       "command": [
         "go",
         "build",
@@ -337,17 +493,15 @@
         "bin/legoloop.exe",
         "./cmd/legoloop"
       ],
-      "context_in": [
-        "bin/legoloop.exe",
-        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
-      ],
-      "context_out": [
-        "bin/legoloop.exe"
-      ],
-      "depends_on": [
-        "TICK-03.1"
-      ],
-      "id": "TICK-03.2",
+      "timeout_sec": 180,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "default"
+      },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -359,40 +513,84 @@
         "max_duration_sec": 180,
         "max_prompt_tokens": 8000
       },
-      "name": "tick_03_2",
-      "nature": "nano",
-      "output": {
-        "artifact": "scratch/gates/TICK-03.2.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
-      },
-      "rollback_strategy": "stash_changes",
-      "routing": {
-        "fallback": "flash",
-        "mode": "suggested",
-        "model": "flash"
-      },
-      "spec_ref": "AC-E03.2",
-      "status": "PENDING",
       "tooling": {
-        "harness": "antigravity",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-I5-03.2",
+      "status": "PENDING",
+      "context_in": [
+        "cmd/legoloop/main.go",
+        "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+      ],
+      "context_out": [
+        "bin/legoloop.exe"
+      ],
+      "output": {
+        "artifact": "scratch/gates/TICK-03.2.json",
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
       "verification": {
         "exit_code": 0,
         "test_command": "go build -o bin/legoloop.exe ./cmd/legoloop"
       }
+    },
+    {
+      "id": "SG-FINAL",
+      "name": "Stop-Gate Humano Final",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
+      },
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "spec_ref": "AC-I5-03.2",
+      "status": "PENDING",
+      "context_in": [
+        "bin/legoloop.exe"
+      ],
+      "context_out": [
+        "scratch/gates/SG-FINAL.json"
+      ],
+      "output": {
+        "artifact": "scratch/gates/SG-FINAL.json",
+        "gate": "prompt('Todos os Epicos foram concluidos e validados? Autoriza o fechamento da demanda?')"
+      },
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "stop_gate": {
+        "gate_id": "SG-FINAL",
+        "question": "Todos os Epicos foram concluidos e validados? Autoriza o fechamento da demanda?"
+      }
     }
-  ],
-  "trigger": {
-    "type": "manual"
-  },
-  "upstream_signatures": {
-    "intent": "b0ea96eed0008352b3f848d496a94c0d024b741525e234a2b394c0024c148ab4",
-    "plan": "84671226ccd985fef8aa2264f87ec4eeeb591c822f036dd27067c8f066bcfcf1",
-    "spec": "b75ca8f41d970b5e89c39e28fb4922c23e8ea13c41fb558342de9a80b4f7e13e"
-  },
-  "version": "1.0.0"
+  ]
 }

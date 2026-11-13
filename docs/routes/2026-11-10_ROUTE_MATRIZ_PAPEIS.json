@@ -1,26 +1,27 @@
 {
   "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
   "template_version": "2.2.0",
   "name": "MATRIZ_PAPEIS",
-  "version": "1.0.0",
+  "version": "2.2.0",
   "date": "2026-11-10",
   "session_id": "b92a1402-a673-42dc-b9a5-2b06b573ed56",
   "intent_ref": "docs/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md",
   "spec_ref": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md",
   "plan_ref": "docs/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md",
-  "initiative_ref": null,
+  "initiative_ref": "I5",
   "upstream_signatures": {
     "intent": {
       "path": "docs/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md",
-      "sha256": "b0ea96eed0008352b3f848d496a94c0d024b741525e234a2b394c0024c148ab4"
+      "sha256": "1c1968c9a2ad7b5ae082bd4a661bad386cafda385e3469155d55a0db0a0c65c3"
     },
     "spec": {
       "path": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md",
-      "sha256": "b75ca8f41d970b5e89c39e28fb4922c23e8ea13c41fb558342de9a80b4f7e13e"
+      "sha256": "9bed435ad0862b5ab294922b0d8539c816b3494023372fb21fb975913e7bfcb9"
     },
     "plan": {
       "path": "docs/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md",
-      "sha256": "84671226ccd985fef8aa2264f87ec4eeeb591c822f036dd27067c8f066bcfcf1"
+      "sha256": "01c81581a51e2e6aa1d2f31b5f6c1fb6fc4b8916d57d2a7ecb948defd68cfe1d"
     }
   },
   "execution_strategy": {
@@ -50,11 +51,12 @@
   "nodes": [
     {
       "id": "TICK-01.1",
-      "initiative_id": null,
+      "initiative_id": "I5",
       "epic_id": "E01",
       "label": "Implementar Catalogo dos 18 Papeis e Validador em Go",
       "nature": "micro",
       "extreme": false,
+      "class_rule": "nature=micro",
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -78,11 +80,14 @@
       "depends_on": [],
       "routing": {
         "mode": "suggested",
-        "harness": "antigravity",
-        "model": "flash",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "high",
         "fallback": {
-          "model": "flash"
+          "harness": "claude",
+          "via": "oficial",
+          "model": "haiku"
         }
       },
       "tooling": {
@@ -92,12 +97,15 @@
       },
       "inputs": {
         "source_files": [
+          "internal/taxonomy/taxonomy.go",
           "internal/taxonomy/roles.go"
         ],
-        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E01.1"
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-I5-01.1",
+        "context_artifacts": []
       },
-      "spec_ref": "AC-E01.1",
+      "spec_ref": "AC-I5-01.1",
       "test_target": "internal/taxonomy/roles_test.go:TestValidarPapel",
+      "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
@@ -113,15 +121,17 @@
           ]
         ],
         "gate": "exit_code == 0 && file_exists('internal/taxonomy/roles.go') && file_exists('internal/taxonomy/roles_test.go')"
-      }
+      },
+      "telemetry": null
     },
     {
       "id": "TICK-01.2",
-      "initiative_id": null,
+      "initiative_id": "I5",
       "epic_id": "E01",
       "label": "Sincronizar Dicionario JSON e Schemas Oficiais",
       "nature": "nano",
       "extreme": false,
+      "class_rule": "nature=nano",
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -147,10 +157,14 @@
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "antigravity",
-        "model": "flash",
+        "harness": "mimo",
+        "via": "oficial",
+        "model": "xiaomi/mimo-v2",
+        "effort": "low",
         "fallback": {
-          "model": "flash"
+          "harness": "claude",
+          "via": "oficial",
+          "model": "haiku"
         }
       },
       "tooling": {
@@ -160,17 +174,21 @@
       },
       "inputs": {
         "source_files": [
+          "internal/taxonomy/dictionary.json",
           "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
-          "schemas/dag.v1.json"
+          "schemas/dag.v2.json"
         ],
-        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E01.1"
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-I5-01.1",
+        "context_artifacts": []
       },
-      "spec_ref": "AC-E01.1",
+      "spec_ref": "AC-I5-01.1",
+      "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
+          "internal/taxonomy/dictionary.json",
           "docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json",
-          "schemas/dag.v1.json"
+          "schemas/dag.v2.json"
         ],
         "verify": [
           [
@@ -185,15 +203,62 @@
           ]
         ],
         "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": "I5",
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano Epico 01",
+      "nature": "nano",
+      "extreme": false,
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
+      },
+      "tooling": {
+        "runtime": "human",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "spec_ref": "AC-I5-01.2",
+      "rollback_strategy": "none",
+      "output": {
+        "artifacts": [
+          "scratch/gates/SG-E01.json"
+        ],
+        "verify": [],
+        "gate": "prompt('Evidencias do Epico 01 aprovadas? Autoriza iniciar o Epico 02?')"
+      },
+      "stop_gate": {
+        "gate_id": "SG-E01",
+        "question": "Evidencias do Epico 01 aprovadas? Autoriza iniciar o Epico 02?"
       }
     },
     {
       "id": "TICK-02.1",
-      "initiative_id": null,
+      "initiative_id": "I5",
       "epic_id": "E02",
       "label": "Atualizar Contrato da Peca e Validacao na Matriz",
       "nature": "micro",
       "extreme": false,
+      "class_rule": "nature=micro",
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -215,15 +280,18 @@
         "max_output_tokens": 600
       },
       "depends_on": [
-        "TICK-01.2"
+        "SG-E01"
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "antigravity",
-        "model": "flash",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "high",
         "fallback": {
-          "model": "flash"
+          "harness": "mimo",
+          "via": "oficial",
+          "model": "xiaomi/mimo-v2"
         }
       },
       "tooling": {
@@ -233,17 +301,21 @@
       },
       "inputs": {
         "source_files": [
-          "internal/matriz/matriz.go"
+          "internal/matriz/perfil.go",
+          "internal/matriz/catalogador.go"
         ],
-        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E02.1"
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-I5-02.1",
+        "context_artifacts": []
       },
-      "spec_ref": "AC-E02.1",
-      "test_target": "internal/matriz/matriz_test.go:TestPecaValidateRoles",
+      "spec_ref": "AC-I5-02.1",
+      "test_target": "internal/matriz/catalogador_test.go:TestPecaValidateRoles",
+      "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "internal/matriz/matriz.go",
-          "internal/matriz/matriz_test.go"
+          "internal/matriz/perfil.go",
+          "internal/matriz/catalogador.go",
+          "internal/matriz/catalogador_test.go"
         ],
         "verify": [
           [
@@ -254,15 +326,17 @@
           ]
         ],
         "gate": "exit_code == 0"
-      }
+      },
+      "telemetry": null
     },
     {
       "id": "TICK-02.2",
-      "initiative_id": null,
+      "initiative_id": "I5",
       "epic_id": "E02",
       "label": "Adicionar Filtros --papel e --guilda na CLI da Matriz",
       "nature": "micro",
       "extreme": false,
+      "class_rule": "nature=micro",
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -288,11 +362,14 @@
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "antigravity",
-        "model": "flash",
+        "harness": "opencode",
+        "via": "oficial",
+        "model": "default",
         "effort": "high",
         "fallback": {
-          "model": "flash"
+          "harness": "claude",
+          "via": "oficial",
+          "model": "sonnet"
         }
       },
       "tooling": {
@@ -302,34 +379,41 @@
       },
       "inputs": {
         "source_files": [
-          "cmd/legoloop/matriz.go"
+          "internal/cli/matriz_ver.go",
+          "cmd/legoloop/main.go"
         ],
-        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E02.2"
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-I5-02.2",
+        "context_artifacts": []
       },
-      "spec_ref": "AC-E02.2",
+      "spec_ref": "AC-I5-02.2",
+      "test_target": "internal/cli/matriz_ver_test.go:TestMatrizVerFiltrosPapelGuilda",
+      "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "cmd/legoloop/matriz.go"
+          "internal/cli/matriz_ver.go",
+          "internal/cli/matriz_ver_test.go"
         ],
         "verify": [
           [
             "go",
             "test",
             "-count=1",
-            "./cmd/legoloop/..."
+            "./internal/cli/..."
           ]
         ],
         "gate": "exit_code == 0"
-      }
+      },
+      "telemetry": null
     },
     {
       "id": "TICK-03.1",
-      "initiative_id": null,
+      "initiative_id": "I5",
       "epic_id": "E03",
       "label": "Implementar Algoritmo de Casamento em 2 Niveis no Fabricar",
       "nature": "micro",
       "extreme": false,
+      "class_rule": "nature=micro",
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -351,15 +435,18 @@
         "max_output_tokens": 600
       },
       "depends_on": [
-        "TICK-02.2"
+        "TICK-02.1"
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "antigravity",
-        "model": "flash",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "high",
         "fallback": {
-          "model": "flash"
+          "harness": "claude",
+          "via": "oficial",
+          "model": "haiku"
         }
       },
       "tooling": {
@@ -369,36 +456,87 @@
       },
       "inputs": {
         "source_files": [
-          "internal/generator/generator.go"
+          "internal/fabricar/merger_fit.go",
+          "internal/fabricar/engine.go"
         ],
-        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-E03.1"
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-I5-03.1",
+        "context_artifacts": []
       },
-      "spec_ref": "AC-E03.1",
-      "test_target": "internal/generator/generator_test.go:TestCasamentoPapeis",
+      "spec_ref": "AC-I5-03.1",
+      "test_target": "internal/fabricar/merger_rank_test.go:TestCasamentoPapeis",
+      "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "internal/generator/generator.go",
-          "internal/generator/generator_test.go"
+          "internal/fabricar/merger_fit.go",
+          "internal/fabricar/merger_rank_test.go"
         ],
         "verify": [
           [
             "go",
             "test",
             "-count=1",
-            "./internal/generator/..."
+            "./internal/fabricar/..."
           ]
         ],
         "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": "I5",
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano Epicos 02 e 03",
+      "nature": "nano",
+      "extreme": false,
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "depends_on": [
+        "TICK-02.2",
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
+      },
+      "tooling": {
+        "runtime": "human",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "spec_ref": "AC-I5-02.3",
+      "rollback_strategy": "none",
+      "output": {
+        "artifacts": [
+          "scratch/gates/SG-E02.json"
+        ],
+        "verify": [],
+        "gate": "prompt('Evidencias paralelas de CLI (TICK-02.2) e Fabricar (TICK-03.1) aprovadas? Autoriza recompilacao final?')"
+      },
+      "stop_gate": {
+        "gate_id": "SG-E02",
+        "question": "Evidencias paralelas de CLI (TICK-02.2) e Fabricar (TICK-03.1) aprovadas? Autoriza recompilacao final?"
       }
     },
     {
       "id": "TICK-03.2",
-      "initiative_id": null,
+      "initiative_id": "I5",
       "epic_id": "E03",
       "label": "Verificacao Integrada e Recompilacao Fresca",
       "nature": "nano",
       "extreme": false,
+      "class_rule": "nature=nano",
       "type": "unit_task",
       "ref": null,
       "status": "PENDING",
@@ -420,14 +558,18 @@
         "max_output_tokens": 300
       },
       "depends_on": [
-        "TICK-03.1"
+        "SG-E02"
       ],
       "routing": {
         "mode": "suggested",
-        "harness": "antigravity",
-        "model": "flash",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
         "fallback": {
-          "model": "flash"
+          "harness": "opencode",
+          "via": "oficial",
+          "model": "default"
         }
       },
       "tooling": {
@@ -437,11 +579,13 @@
       },
       "inputs": {
         "source_files": [
-          "bin/legoloop.exe"
+          "cmd/legoloop/main.go"
         ],
-        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md"
+        "spec_anchor": "docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md#AC-I5-03.2",
+        "context_artifacts": []
       },
-      "spec_ref": "AC-E03.2",
+      "spec_ref": "AC-I5-03.2",
+      "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
@@ -457,6 +601,52 @@
           ]
         ],
         "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": "I5",
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano Final",
+      "nature": "nano",
+      "extreme": false,
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "depends_on": [
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
+      },
+      "tooling": {
+        "runtime": "human",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "spec_ref": "AC-I5-03.2",
+      "rollback_strategy": "none",
+      "output": {
+        "artifacts": [
+          "scratch/gates/SG-FINAL.json"
+        ],
+        "verify": [],
+        "gate": "prompt('Todos os Epicos foram concluidos e validados? Autoriza o fechamento da demanda?')"
+      },
+      "stop_gate": {
+        "gate_id": "SG-FINAL",
+        "question": "Todos os Epicos foram concluidos e validados? Autoriza o fechamento da demanda?"
       }
     }
   ]
