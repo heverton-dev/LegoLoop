@@ -1,0 +1,582 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "legoloop-combos-honestos-9router",
+  "version": "1.0.0",
+  "date": "2026-11-13",
+  "session_id": "2269091e-b05b-4acd-a6ba-199f7248b3aa",
+  "intent_ref": "docs/intents/2026-11-13_INTENT_COMBOS_HONESTOS_9ROUTER.md",
+  "spec_ref": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md",
+  "plan_ref": "docs/plans/2026-11-13_PLAN_COMBOS_HONESTOS_9ROUTER.md",
+  "initiative_ref": "I7",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-13_INTENT_COMBOS_HONESTOS_9ROUTER.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-13_PLAN_COMBOS_HONESTOS_9ROUTER.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "stash_changes",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-I7-01.1",
+      "initiative_id": "I7",
+      "epic_id": "E01",
+      "label": "Definição canônica dos 6 combos honestos em Go",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "claude",
+          "model": "haiku"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcp_tools_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/plans/2026-11-13_RASCUNHO_COMBOS_9ROUTER.md",
+          "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md#AC-I7-01.1",
+        "context_artifacts": []
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/combo/combo.go",
+          "internal/combo/combo_test.go"
+        ],
+        "verification": "go test -v ./internal/combo/...",
+        "gate": "exit_code == 0 && file_exists('internal/combo/combo.go') && file_exists('internal/combo/combo_test.go')"
+      },
+      "spec_ref": "AC-I7-01.1"
+    },
+    {
+      "id": "TICK-I7-01.2",
+      "initiative_id": "I7",
+      "epic_id": "E01",
+      "label": "Validador de barreira mecânica contra HTTP 413",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-I7-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "claude",
+          "model": "haiku"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcp_tools_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/combo/combo.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md#AC-I7-01.2",
+        "context_artifacts": [
+          "internal/combo/combo.go"
+        ]
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/combo/validar.go",
+          "internal/combo/validar_test.go"
+        ],
+        "verification": "go test -v ./internal/combo/...",
+        "gate": "exit_code == 0 && file_exists('internal/combo/validar.go')"
+      },
+      "spec_ref": "AC-I7-01.2"
+    },
+    {
+      "id": "SG-I7-E01",
+      "initiative_id": "I7",
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano do Épico 01",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "manual",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 86400,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 4000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-I7-01.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "claude",
+          "model": "haiku"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcp_tools_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/combo/combo.go",
+          "internal/combo/validar.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md#AC-I7-01.1",
+        "context_artifacts": [
+          "internal/combo/combo.go",
+          "internal/combo/validar.go"
+        ]
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "scratch/gates/SG-I7-E01.json"
+        ],
+        "verification": "prompt('Catálogo dos 6 combos e barreira mecânica de tokens validados com sucesso? Autoriza iniciar o Épico 02?')",
+        "gate": "prompt('Catálogo dos 6 combos e barreira mecânica de tokens validados com sucesso? Autoriza iniciar o Épico 02?')"
+      },
+      "spec_ref": "AC-I7-01.1"
+    },
+    {
+      "id": "TICK-I7-02.1",
+      "initiative_id": "I7",
+      "epic_id": "E02",
+      "label": "Gerador de manifesto JSON para o 9Router",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-I7-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "haiku"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcp_tools_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/combo/combo.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md#AC-I7-02.1",
+        "context_artifacts": [
+          "internal/combo/combo.go"
+        ]
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/combo/manifesto.go",
+          "internal/combo/manifesto_test.go",
+          "scratch/combos_9router_manifest.json"
+        ],
+        "verification": "go test -v -run TestGerarManifesto9Router ./internal/combo/...",
+        "gate": "exit_code == 0 && file_exists('scratch/combos_9router_manifest.json')"
+      },
+      "spec_ref": "AC-I7-02.1"
+    },
+    {
+      "id": "TICK-I7-02.2",
+      "initiative_id": "I7",
+      "epic_id": "E02",
+      "label": "Mapeamento e resolução de retrocompatibilidade",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-I7-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "claude",
+          "model": "haiku"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcp_tools_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/combo/combo.go",
+          "internal/brain/brain.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md#AC-I7-02.2",
+        "context_artifacts": [
+          "internal/combo/combo.go"
+        ]
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "internal/combo/legado.go",
+          "internal/combo/legado_test.go"
+        ],
+        "verification": "go test -v -run TestMapeamentoLegado ./internal/combo/...",
+        "gate": "exit_code == 0 && file_exists('internal/combo/legado.go')"
+      },
+      "spec_ref": "AC-I7-02.2"
+    },
+    {
+      "id": "SG-I7-E02",
+      "initiative_id": "I7",
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano do Épico 02",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "manual",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 86400,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 4000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-I7-02.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "claude",
+          "model": "haiku"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcp_tools_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "scratch/combos_9router_manifest.json",
+          "internal/combo/legado.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md#AC-I7-02.1",
+        "context_artifacts": [
+          "scratch/combos_9router_manifest.json"
+        ]
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "scratch/gates/SG-I7-E02.json"
+        ],
+        "verification": "prompt('Manifesto exportado e compatibilidade de legados testada? Autoriza iniciar o Fechamento?')",
+        "gate": "prompt('Manifesto exportado e compatibilidade de legados testada? Autoriza iniciar o Fechamento?')"
+      },
+      "spec_ref": "AC-I7-02.1"
+    },
+    {
+      "id": "TICK-I7-03.1",
+      "initiative_id": "I7",
+      "epic_id": "E03",
+      "label": "Validação mecânica global e auditoria de qualidade",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "script",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "SG-I7-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "claude",
+          "model": "sonnet"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcp_tools_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/combo/combo.go",
+          "internal/combo/validar.go",
+          "internal/combo/manifesto.go",
+          "internal/combo/legado.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md#AC-I7-03.1",
+        "context_artifacts": [
+          "scratch/combos_9router_manifest.json"
+        ]
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "scratch/i7_validacao_final.json"
+        ],
+        "verification": "go test -count=1 ./...",
+        "gate": "exit_code == 0 && file_exists('scratch/i7_validacao_final.json')"
+      },
+      "spec_ref": "AC-I7-03.1"
+    },
+    {
+      "id": "SG-I7-FINAL",
+      "initiative_id": "I7",
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano Final de Homologação I7",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "manual",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 86400,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 4000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-I7-03.1"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "claude",
+          "model": "haiku"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcp_tools_allowlist": []
+      },
+      "inputs": {
+        "source_files": [
+          "scratch/i7_validacao_final.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md#AC-I7-03.1",
+        "context_artifacts": [
+          "scratch/i7_validacao_final.json"
+        ]
+      },
+      "outputs": {
+        "artifacts_produced": [
+          "scratch/gates/SG-I7-FINAL.json"
+        ],
+        "verification": "prompt('Homologa a conclusão da Iniciativa I7 (Combos Honestos do 9Router)?')",
+        "gate": "prompt('Homologa a conclusão da Iniciativa I7 (Combos Honestos do 9Router)?')"
+      },
+      "spec_ref": "AC-I7-03.1"
+    }
+  ]
+}
