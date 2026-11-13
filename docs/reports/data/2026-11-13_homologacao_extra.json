@@ -1,0 +1,548 @@
+[
+ {
+  "id": "mistral/codestral-2508",
+  "provedor": "mistral",
+  "testes": {}
+ },
+ {
+  "id": "mistral/ministral-14b-2512",
+  "provedor": "mistral",
+  "testes": {}
+ },
+ {
+  "id": "mistral/ministral-14b-latest",
+  "provedor": "mistral",
+  "testes": {}
+ },
+ {
+  "id": "mistral/ministral-3b-2512",
+  "provedor": "mistral",
+  "testes": {}
+ },
+ {
+  "id": "mistral/ministral-3b-latest",
+  "provedor": "mistral",
+  "testes": {}
+ },
+ {
+  "id": "mistral/ministral-8b-2512",
+  "provedor": "mistral",
+  "testes": {}
+ },
+ {
+  "id": "gemini/gemini-flash-lite-latest",
+  "provedor": "gemini",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 1.2,
+    "pt": 2453,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "openrouter/liquid/lfm-3-1.7b:free",
+  "provedor": "openrouter",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 1.8,
+    "pt": 2490,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/openai/gpt-oss-120b",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.8,
+    "pt": 2508,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "gemini/gemini-3-flash-preview",
+  "provedor": "gemini",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.4,
+    "pt": 2599,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "openrouter/recursive/flint-v1.0:free",
+  "provedor": "openrouter",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 3.0,
+    "pt": 2525,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/zai-org/glm-4.7-flash",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.2,
+    "pt": 2566,
+    "tool_calls": true,
+    "texto": ""
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/ibm-granite/granite-4.0-h-micro",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.3,
+    "pt": 2589,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "openrouter/nvidia/nemotron-3.5-super-vl:free",
+  "provedor": "openrouter",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 1.6,
+    "pt": 2699,
+    "tool_calls": true,
+    "texto": "None"
+   },
+   "imagem": {
+    "http": 200,
+    "s": 1.5,
+    "pt": 2677,
+    "tool_calls": false,
+    "texto": "Vermelho"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/nvidia/nemotron-3-120b-a12b",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 3.9,
+    "pt": 2699,
+    "tool_calls": false,
+    "texto": "\n42"
+   }
+  }
+ },
+ {
+  "id": "gemini/gemini-3.1-flash-lite-preview",
+  "provedor": "gemini",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 10.0,
+    "pt": 2453,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/aisingapore/gemma-sea-lion-v4-27b-it",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 400,
+    "s": 0.8,
+    "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: AiError: Internal Server Error (7ec7c73d-a781-4f8d-bd27-46b265bd4425)\\\",\\\"code\\\":3030}],\\\"success\\\":false"
+   }
+  }
+ },
+ {
+  "id": "gemini/gemini-3.1-flash-lite",
+  "provedor": "gemini",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 1.2,
+    "pt": 2453,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "openrouter/dots-studio/dots-3-note-preview:free",
+  "provedor": "openrouter",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.4,
+    "pt": 2571,
+    "tool_calls": true,
+    "texto": "\n\n\n"
+   },
+   "imagem": {
+    "http": 200,
+    "s": 4.5,
+    "pt": 2405,
+    "tool_calls": false,
+    "texto": "\n\nVermelho"
+   }
+  }
+ },
+ {
+  "id": "openrouter/nvidia/nemotron-3.5-lightning:free",
+  "provedor": "openrouter",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 3.8,
+    "pt": 2699,
+    "tool_calls": false,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "openrouter/cohere/north-mini-code:free",
+  "provedor": "openrouter",
+  "testes": {}
+ },
+ {
+  "id": "gemini/gemini-3.5-flash",
+  "provedor": "gemini",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 6.0,
+    "pt": 2512,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "gemini/gemini-3.5-flash-lite",
+  "provedor": "gemini",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 1.2,
+    "pt": 2453,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/google/gemma-4-26b-a4b-it",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 10.3,
+    "pt": 2468,
+    "tool_calls": false,
+    "texto": ""
+   }
+  }
+ },
+ {
+  "id": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+  "provedor": "openrouter",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.9,
+    "pt": 2699,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "gemini/gemini-robotics-er-2-preview",
+  "provedor": "gemini",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 1.7,
+    "pt": 2504,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "nvidia/minimaxai/minimax-m3.1-flash",
+  "provedor": "nvidia",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 30.4,
+    "pt": 2796,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/mistralai/mistral-small-3.1-24b-instruct",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.3,
+    "pt": 2486,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/daily-co/phonellm-mini-alpha-2",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 1.5,
+    "pt": 2699,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "openrouter/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+  "provedor": "openrouter",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.7,
+    "pt": 2699,
+    "tool_calls": true,
+    "texto": "None"
+   },
+   "imagem": {
+    "http": 200,
+    "s": 2.8,
+    "pt": 2678,
+    "tool_calls": false,
+    "texto": "Vermelha"
+   }
+  }
+ },
+ {
+  "id": "nvidia/mistralai/mistral-large-4-1t-a52b",
+  "provedor": "nvidia",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 5.2,
+    "pt": 2490,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/qwen/qwen3.8-27b",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 3.4,
+    "pt": 2714,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/openai/gpt-oss-20b",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 1.6,
+    "pt": 2510,
+    "tool_calls": false,
+    "texto": "{\"a\":17,\"b\":25}"
+   }
+  }
+ },
+ {
+  "id": "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+  "provedor": "nvidia",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.4,
+    "pt": 2699,
+    "tool_calls": true,
+    "texto": "None"
+   },
+   "imagem": {
+    "http": 200,
+    "s": 3.1,
+    "pt": 2678,
+    "tool_calls": false,
+    "texto": "Vermelha"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/moondream/moondream3.1-9B-A2B",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.3,
+    "pt": 2009,
+    "tool_calls": false,
+    "texto": "None"
+   },
+   "imagem": {
+    "http": 200,
+    "s": 2.6,
+    "pt": 2009,
+    "tool_calls": false,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "openrouter/google/lyria-3-pro-preview",
+  "provedor": "openrouter",
+  "testes": {
+   "funcao": {
+    "http": 503,
+    "s": 9.0,
+    "erro": "{\"error\":{\"message\":\"[openrouter/google/lyria-3-pro-preview] [404]: {\\\"error\\\":{\\\"message\\\":\\\"No endpoints found that support tool use. Try disabling \\\\\\\"somar\\\\\\\". To le"
+   },
+   "imagem": {
+    "http": 503,
+    "s": 0.7,
+    "erro": "{\"error\":{\"message\":\"[openrouter/google/lyria-3-pro-preview] [404]: {\\\"error\\\":{\\\"message\\\":\\\"No endpoints found that support tool use. Try disabling \\\\\\\"somar\\\\\\\". To le"
+   }
+  }
+ },
+ {
+  "id": "nvidia/nvidia/nemotron-3-ultra-550b-a55b",
+  "provedor": "nvidia",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 3.0,
+    "pt": 2699,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "nvidia/nvidia/nemotron-3.5-bolt-e4b",
+  "provedor": "nvidia",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 1.0,
+    "pt": 2466,
+    "tool_calls": false,
+    "texto": "soma calculate 17 25 next call"
+   }
+  }
+ },
+ {
+  "id": "cf/@cf/meta/llama-4-scout-17b-16e-instruct",
+  "provedor": "cloudflare",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 4.0,
+    "pt": 2542,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "openrouter/openrouter/free",
+  "provedor": "openrouter",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 3.4,
+    "pt": 2699,
+    "tool_calls": false,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+  "provedor": "nvidia",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 3.9,
+    "pt": 2699,
+    "tool_calls": false,
+    "texto": "None"
+   }
+  }
+ },
+ {
+  "id": "nvidia/nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "provedor": "nvidia",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.5,
+    "pt": 2699,
+    "tool_calls": true,
+    "texto": "None"
+   },
+   "imagem": {
+    "http": 200,
+    "s": 2.8,
+    "pt": 2677,
+    "tool_calls": false,
+    "texto": "Vermelho"
+   }
+  }
+ },
+ {
+  "id": "nvidia/poolside/laguna-xs-2.1",
+  "provedor": "nvidia",
+  "testes": {
+   "funcao": {
+    "http": 200,
+    "s": 2.8,
+    "pt": 2510,
+    "tool_calls": true,
+    "texto": "None"
+   }
+  }
+ }
+]

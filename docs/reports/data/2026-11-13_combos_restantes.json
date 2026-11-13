@@ -1,0 +1,253 @@
+{
+ "backup": "C:\\Users\\trcnologia\\Desktop\\LegoLoop\\scratch\\backup_9router_combos_20261113_pre_restantes",
+ "combos": {
+  "t-chat-128k": {
+   "membros": [
+    "mistral/codestral-latest",
+    "gemini/gemini-3.5-flash-lite",
+    "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+    "openrouter/cohere/north-mini-code:free",
+    "cf/@cf/meta/llama-4-scout-17b-16e-instruct",
+    "mistral/ministral-3b-latest"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 0.9,
+     "atendeu": "codestral-latest",
+     "texto": "ok",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.0,
+     "atendeu": "codestral-latest",
+     "texto": "ok",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "codestral-latest",
+     "texto": "ok",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 6.2,
+     "atendeu": "codestral-latest",
+     "texto": "\"Bug in auth middleware. Token",
+     "teste": "100k"
+    }
+   ]
+  },
+  "t-raciocinio-128k": {
+   "membros": [
+    "gemini/gemini-3.5-flash-lite",
+    "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+    "openrouter/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "cf/@cf/openai/gpt-oss-20b",
+    "gemini/gemini-3-flash-preview",
+    "cf/@cf/openai/gpt-oss-120b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.6,
+     "atendeu": "gemini-3.5-flash-lite",
+     "texto": "ok",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.2,
+     "atendeu": "gemini-3.5-flash-lite",
+     "texto": "OK.",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "gemini-3.5-flash-lite",
+     "texto": "ok",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 3.4,
+     "atendeu": "gemini-3.5-flash-lite",
+     "texto": "ok",
+     "teste": "100k"
+    }
+   ]
+  },
+  "t-visao-128k": {
+   "membros": [
+    "mistral/ministral-3b-latest",
+    "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+    "openrouter/dots-studio/dots-3-note-preview:free",
+    "mistral/ministral-3b-2512",
+    "nvidia/nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "openrouter/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.4,
+     "atendeu": "ministral-3b-latest",
+     "texto": "Lỗi: **`500 Internal Server Er",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.3,
+     "atendeu": "ministral-3b-latest",
+     "texto": "Lỗi: **`ModuleNotFoundError: N",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.8,
+     "atendeu": "ministral-3b-latest",
+     "texto": "Token invalidado. Límite de ca",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 6.8,
+     "atendeu": "ministral-3b-latest",
+     "texto": "Bug no giải. Token expiry chec",
+     "teste": "100k"
+    },
+    {
+     "http": 200,
+     "s": 1.3,
+     "atendeu": "ministral-3b-latest",
+     "texto": "Vermelho.",
+     "teste": "imagem"
+    },
+    {
+     "http": 200,
+     "s": 1.3,
+     "atendeu": "ministral-3b-latest",
+     "texto": "Vermelho.",
+     "teste": "imagem"
+    }
+   ]
+  },
+  "t-codigo-128k": {
+   "membros": [
+    "mistral/codestral-latest",
+    "openrouter/cohere/north-mini-code:free",
+    "mistral/codestral-2508",
+    "mistral/mistral-code-latest"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.0,
+     "atendeu": "codestral-latest",
+     "texto": "ok",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.0,
+     "atendeu": "codestral-latest",
+     "texto": "ok",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 3.3,
+     "atendeu": "codestral-latest",
+     "texto": "ok",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 7.0,
+     "atendeu": "codestral-latest",
+     "texto": "\"Bug in auth middleware. Token",
+     "teste": "100k"
+    }
+   ]
+  },
+  "t-micro-8k": {
+   "membros": [
+    "groq/openai/gpt-oss-120b",
+    "groq/openai/gpt-oss-20b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.3,
+     "atendeu": "openai/gpt-oss-120b",
+     "texto": "",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.2,
+     "atendeu": "openai/gpt-oss-120b",
+     "texto": "",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 0.9,
+     "atendeu": "openai/gpt-oss-120b",
+     "texto": "",
+     "teste": "curto"
+    }
+   ]
+  },
+  "m-gemini-4-hydrogen": {
+   "membros": [
+    "gemini/gemini-4-hydrogen"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 5.1,
+     "atendeu": "gemini-4-hydrogen",
+     "texto": "",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 13.6,
+     "atendeu": "gemini-4-hydrogen",
+     "texto": "ok",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 5.1,
+     "atendeu": "gemini-4-hydrogen",
+     "texto": "ok",
+     "teste": "curto"
+    }
+   ]
+  },
+  "t-embedding": {
+   "membros": [
+    "gemini/gemini-embedding-2"
+   ],
+   "probe": [
+    {
+     "http": 400,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"Invalid model format\",\"type\":\"invalid_request_error\",\"code\":\"bad_request\"}}",
+     "teste": "embedding"
+    },
+    {
+     "http": 400,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"Invalid model format\",\"type\":\"invalid_request_error\",\"code\":\"bad_request\"}}",
+     "teste": "embedding"
+    }
+   ]
+  }
+ }
+}

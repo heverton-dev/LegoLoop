@@ -1,0 +1,342 @@
+[
+ {
+  "vars": [
+   "DEV_01_GEMINI_API_KEY",
+   "DEV_02_GEMINI_API_KEY",
+   "DEV_03_GEMINI_API_KEY",
+   "DEV_07_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-3.8-flash",
+  "http": 403,
+  "s": 0.3,
+  "msg": "PERMISSION_DENIED | Permission denied on the service."
+ },
+ {
+  "vars": [
+   "DEV_01_GEMINI_API_KEY",
+   "DEV_02_GEMINI_API_KEY",
+   "DEV_03_GEMINI_API_KEY",
+   "DEV_07_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-argon",
+  "http": 403,
+  "s": 0.3,
+  "msg": "PERMISSION_DENIED | Permission denied on the service."
+ },
+ {
+  "vars": [
+   "DEV_01_GEMINI_API_KEY",
+   "DEV_02_GEMINI_API_KEY",
+   "DEV_03_GEMINI_API_KEY",
+   "DEV_07_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-carbon",
+  "http": 403,
+  "s": 0.3,
+  "msg": "PERMISSION_DENIED | Permission denied on the service."
+ },
+ {
+  "vars": [
+   "DEV_01_GEMINI_API_KEY",
+   "DEV_02_GEMINI_API_KEY",
+   "DEV_03_GEMINI_API_KEY",
+   "DEV_07_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-hydrogen",
+  "http": 403,
+  "s": 0.3,
+  "msg": "PERMISSION_DENIED | Permission denied on the service."
+ },
+ {
+  "vars": [
+   "DEV_04_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-3.8-flash",
+  "http": 503,
+  "s": 15.9,
+  "msg": "UNAVAILABLE | This model is currently experiencing high demand. Spikes in demand are usually temporary. "
+ },
+ {
+  "vars": [
+   "DEV_04_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-argon",
+  "http": 429,
+  "s": 0.4,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_04_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-carbon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_04_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-hydrogen",
+  "http": 200,
+  "s": 2.4,
+  "msg": ""
+ },
+ {
+  "vars": [
+   "DEV_05_GEMINI_API_KEY",
+   "DEV_12_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-3.8-flash",
+  "http": 503,
+  "s": 17.5,
+  "msg": "UNAVAILABLE | This model is currently experiencing high demand. Spikes in demand are usually temporary. "
+ },
+ {
+  "vars": [
+   "DEV_05_GEMINI_API_KEY",
+   "DEV_12_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-argon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_05_GEMINI_API_KEY",
+   "DEV_12_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-carbon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_05_GEMINI_API_KEY",
+   "DEV_12_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-hydrogen",
+  "http": 0,
+  "s": 60.1,
+  "msg": "TimeoutError('The read operation timed out')"
+ },
+ {
+  "vars": [
+   "DEV_06_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-3.8-flash",
+  "http": 503,
+  "s": 1.0,
+  "msg": "UNAVAILABLE | This model is currently experiencing high demand. Spikes in demand are usually temporary. "
+ },
+ {
+  "vars": [
+   "DEV_06_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-argon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_06_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-carbon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_06_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-hydrogen",
+  "http": 200,
+  "s": 3.2,
+  "msg": ""
+ },
+ {
+  "vars": [
+   "DEV_08_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-3.8-flash",
+  "http": 503,
+  "s": 3.0,
+  "msg": "UNAVAILABLE | This model is currently experiencing high demand. Spikes in demand are usually temporary. "
+ },
+ {
+  "vars": [
+   "DEV_08_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-argon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_08_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-carbon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_08_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-hydrogen",
+  "http": 200,
+  "s": 4.9,
+  "msg": ""
+ },
+ {
+  "vars": [
+   "DEV_09_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-3.8-flash",
+  "http": 503,
+  "s": 1.6,
+  "msg": "UNAVAILABLE | This model is currently experiencing high demand. Spikes in demand are usually temporary. "
+ },
+ {
+  "vars": [
+   "DEV_09_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-argon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_09_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-carbon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_09_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-hydrogen",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_10_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-3.8-flash",
+  "http": 503,
+  "s": 1.6,
+  "msg": "UNAVAILABLE | This model is currently experiencing high demand. Spikes in demand are usually temporary. "
+ },
+ {
+  "vars": [
+   "DEV_10_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-argon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_10_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-carbon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_10_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-hydrogen",
+  "http": 200,
+  "s": 2.4,
+  "msg": ""
+ },
+ {
+  "vars": [
+   "DEV_11_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-3.8-flash",
+  "http": 503,
+  "s": 6.2,
+  "msg": "UNAVAILABLE | This model is currently experiencing high demand. Spikes in demand are usually temporary. "
+ },
+ {
+  "vars": [
+   "DEV_11_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-argon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_11_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-carbon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_11_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-hydrogen",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_13_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-3.8-flash",
+  "http": 503,
+  "s": 9.4,
+  "msg": "UNAVAILABLE | This model is currently experiencing high demand. Spikes in demand are usually temporary. "
+ },
+ {
+  "vars": [
+   "DEV_13_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-argon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_13_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-carbon",
+  "http": 429,
+  "s": 0.3,
+  "msg": "RESOURCE_EXHAUSTED | You exceeded your current quota, please check your plan and billing details. For more info"
+ },
+ {
+  "vars": [
+   "DEV_13_GEMINI_API_KEY"
+  ],
+  "modelo": "gemini-4-hydrogen",
+  "http": 200,
+  "s": 2.6,
+  "msg": ""
+ }
+]

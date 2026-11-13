@@ -1,0 +1,877 @@
+[
+ {
+  "id": "cloudflare-ai/qwen3.8-27b",
+  "amostras": {
+   "curto": [
+    {
+     "http": 400,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model qwen3.8-27b or task (16ba34af-ba96-42e8-82f2-d"
+    },
+    {
+     "http": 400,
+     "s": 0.8,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model qwen3.8-27b or task (c7a12fb3-9f01-44c6-9311-3"
+    },
+    {
+     "http": 400,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model qwen3.8-27b or task (db9d3399-91d8-430f-a9ce-a"
+    }
+   ],
+   "20k": [
+    {
+     "http": 400,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model qwen3.8-27b or task (21349d2e-84da-403c-882e-b"
+    },
+    {
+     "http": 400,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model qwen3.8-27b or task (e55a9c0b-227a-47bc-99ca-2"
+    },
+    {
+     "http": 400,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model qwen3.8-27b or task (61cb7b44-5831-45ad-9727-2"
+    }
+   ],
+   "100k": [
+    {
+     "http": 400,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model qwen3.8-27b or task (526fe870-945b-4e77-8952-c"
+    },
+    {
+     "http": 400,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model qwen3.8-27b or task (a89a75c1-3535-4d12-a6e6-e"
+    },
+    {
+     "http": 400,
+     "s": 1.8,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model qwen3.8-27b or task (165f48ec-a22f-4260-9753-c"
+    }
+   ]
+  }
+ },
+ {
+  "id": "mistral/codestral-latest",
+  "amostras": {
+   "curto": [
+    {
+     "http": 200,
+     "s": 1.0
+    },
+    {
+     "http": 200,
+     "s": 1.0
+    },
+    {
+     "http": 200,
+     "s": 1.1
+    }
+   ],
+   "20k": [
+    {
+     "http": 200,
+     "s": 2.3
+    },
+    {
+     "http": 200,
+     "s": 2.1
+    },
+    {
+     "http": 200,
+     "s": 1.4
+    }
+   ],
+   "100k": [
+    {
+     "http": 200,
+     "s": 6.1
+    },
+    {
+     "http": 503,
+     "s": 2.0,
+     "erro": "{\"error\":{\"message\":\"[mistral/codestral-latest] [429]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"Rate limit exceeded\\\",\\\"type\\\":\\\"rate_limited\\\",\\"
+    },
+    {
+     "http": 200,
+     "s": 2.7
+    }
+   ]
+  }
+ },
+ {
+  "id": "cf/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "amostras": {
+   "curto": [
+    {
+     "http": 200,
+     "s": 1.3
+    },
+    {
+     "http": 200,
+     "s": 3.1
+    },
+    {
+     "http": 200,
+     "s": 8.2
+    }
+   ],
+   "20k": [
+    {
+     "http": 200,
+     "s": 12.3
+    },
+    {
+     "http": 200,
+     "s": 8.7
+    },
+    {
+     "http": 200,
+     "s": 10.4
+    }
+   ],
+   "100k": [
+    {
+     "http": 413,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[413]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: Ai: The estimated number of input and maximum output tokens (54464) exceede"
+    },
+    {
+     "http": 413,
+     "s": 1.9,
+     "erro": "{\"error\":{\"message\":\"[413]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: Ai: The estimated number of input and maximum output tokens (54464) exceede"
+    },
+    {
+     "http": 413,
+     "s": 2.5,
+     "erro": "{\"error\":{\"message\":\"[413]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: Ai: The estimated number of input and maximum output tokens (54464) exceede"
+    }
+   ]
+  }
+ },
+ {
+  "id": "cloudflare-ai/gemma-4-26b-a4b-it",
+  "amostras": {
+   "curto": [
+    {
+     "http": 400,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model gemma-4-26b-a4b-it or task (55b9f037-997b-4abf"
+    },
+    {
+     "http": 400,
+     "s": 0.8,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model gemma-4-26b-a4b-it or task (448c3593-c0f3-4a2c"
+    },
+    {
+     "http": 400,
+     "s": 0.8,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model gemma-4-26b-a4b-it or task (0aed1cc2-fb6e-4de3"
+    }
+   ],
+   "20k": [
+    {
+     "http": 400,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model gemma-4-26b-a4b-it or task (e7d060e9-2430-4203"
+    },
+    {
+     "http": 400,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model gemma-4-26b-a4b-it or task (0b234d97-1f8a-4a5f"
+    },
+    {
+     "http": 400,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model gemma-4-26b-a4b-it or task (11d3b90c-9ade-45eb"
+    }
+   ],
+   "100k": [
+    {
+     "http": 400,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model gemma-4-26b-a4b-it or task (5847e796-ccfb-47ec"
+    },
+    {
+     "http": 400,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model gemma-4-26b-a4b-it or task (6959f693-11cd-4cb2"
+    },
+    {
+     "http": 400,
+     "s": 1.7,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model gemma-4-26b-a4b-it or task (e5e1607b-a840-4f58"
+    }
+   ]
+  }
+ },
+ {
+  "id": "mistral/mistral-large-4",
+  "amostras": {
+   "curto": [
+    {
+     "http": 503,
+     "s": 13.2,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription t"
+    },
+    {
+     "http": 503,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription t"
+    },
+    {
+     "http": 503,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription t"
+    }
+   ],
+   "20k": [
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription t"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription t"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription t"
+    }
+   ],
+   "100k": [
+    {
+     "http": 503,
+     "s": 2.6,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription t"
+    },
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription t"
+    },
+    {
+     "http": 503,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription t"
+    }
+   ]
+  }
+ },
+ {
+  "id": "cloudflare-ai/llama-3.2-11b-vision-instruct",
+  "amostras": {
+   "curto": [
+    {
+     "http": 400,
+     "s": 1.2,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (4ff1ab8"
+    },
+    {
+     "http": 400,
+     "s": 0.8,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (e809b97"
+    },
+    {
+     "http": 400,
+     "s": 0.8,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (5c87468"
+    }
+   ],
+   "20k": [
+    {
+     "http": 400,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (ae1234c"
+    },
+    {
+     "http": 400,
+     "s": 1.3,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (70b6baf"
+    },
+    {
+     "http": 400,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (15f5c07"
+    }
+   ],
+   "100k": [
+    {
+     "http": 400,
+     "s": 3.0,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (67d16dd"
+    },
+    {
+     "http": 400,
+     "s": 1.7,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (c154e9b"
+    },
+    {
+     "http": 400,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[400]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: No such model: No such model llama-3.2-11b-vision-instruct or task (30cbbc5"
+    }
+   ]
+  }
+ },
+ {
+  "id": "cf/@cf/meta/llama-3.1-70b-instruct-fp8-fast",
+  "amostras": {
+   "curto": [
+    {
+     "http": 200,
+     "s": 1.3
+    },
+    {
+     "http": 200,
+     "s": 1.0
+    },
+    {
+     "http": 200,
+     "s": 1.1
+    }
+   ],
+   "20k": [
+    {
+     "http": 200,
+     "s": 9.0
+    },
+    {
+     "http": 200,
+     "s": 10.3
+    },
+    {
+     "http": 200,
+     "s": 10.2
+    }
+   ],
+   "100k": [
+    {
+     "http": 413,
+     "s": 1.7,
+     "erro": "{\"error\":{\"message\":\"[413]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: Ai: The estimated number of input and maximum output tokens (54507) exceede"
+    },
+    {
+     "http": 413,
+     "s": 2.0,
+     "erro": "{\"error\":{\"message\":\"[413]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: Ai: The estimated number of input and maximum output tokens (54507) exceede"
+    },
+    {
+     "http": 413,
+     "s": 1.8,
+     "erro": "{\"error\":{\"message\":\"[413]: {\\\"errors\\\":[{\\\"message\\\":\\\"AiError: Ai: The estimated number of input and maximum output tokens (54507) exceede"
+    }
+   ]
+  }
+ },
+ {
+  "id": "mistral/mistral-code-latest",
+  "amostras": {
+   "curto": [
+    {
+     "http": 200,
+     "s": 0.9
+    },
+    {
+     "http": 200,
+     "s": 1.4
+    },
+    {
+     "http": 200,
+     "s": 1.1
+    }
+   ],
+   "20k": [
+    {
+     "http": 200,
+     "s": 1.9
+    },
+    {
+     "http": 200,
+     "s": 1.7
+    },
+    {
+     "http": 200,
+     "s": 1.2
+    }
+   ],
+   "100k": [
+    {
+     "http": 200,
+     "s": 3.0
+    },
+    {
+     "http": 200,
+     "s": 5.4
+    },
+    {
+     "http": 503,
+     "s": 2.1,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-code-latest] [429]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"Rate limit exceeded\\\",\\\"type\\\":\\\"rate_limited\\"
+    }
+   ]
+  }
+ },
+ {
+  "id": "gemini/gemma-4-26b-a4b-it",
+  "amostras": {
+   "curto": [
+    {
+     "http": 200,
+     "s": 44.9
+    },
+    {
+     "http": 200,
+     "s": 37.9
+    },
+    {
+     "http": 200,
+     "s": 29.2
+    }
+   ],
+   "20k": [
+    {
+     "http": 200,
+     "s": 28.6
+    },
+    {
+     "http": 200,
+     "s": 3.2
+    },
+    {
+     "http": 200,
+     "s": 9.0
+    }
+   ],
+   "100k": [
+    {
+     "http": 503,
+     "s": 3.8,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemma-4-26b-a4b-it] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current "
+    },
+    {
+     "http": 503,
+     "s": 2.2,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemma-4-26b-a4b-it] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current "
+    },
+    {
+     "http": 503,
+     "s": 3.0,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemma-4-26b-a4b-it] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current "
+    }
+   ]
+  }
+ },
+ {
+  "id": "mistral/mistral-large-4-0",
+  "amostras": {
+   "curto": [
+    {
+     "http": 503,
+     "s": 13.1,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4-0] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription"
+    },
+    {
+     "http": 503,
+     "s": 0.6,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4-0] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription"
+    },
+    {
+     "http": 503,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4-0] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription"
+    }
+   ],
+   "20k": [
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4-0] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4-0] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription"
+    },
+    {
+     "http": 503,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4-0] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription"
+    }
+   ],
+   "100k": [
+    {
+     "http": 503,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4-0] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription"
+    },
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4-0] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription"
+    },
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-large-4-0] [403]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"This model is not available in your subscription"
+    }
+   ]
+  }
+ },
+ {
+  "id": "gemini/gemini-3.8-flash",
+  "amostras": {
+   "curto": [
+    {
+     "http": 503,
+     "s": 6.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.8-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 1.1,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.8-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 1.0,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.8-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    }
+   ],
+   "20k": [
+    {
+     "http": 503,
+     "s": 65.6,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.8-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 1.1,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.8-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.8-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    }
+   ],
+   "100k": [
+    {
+     "http": 503,
+     "s": 2.0,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.8-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.8-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 1.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.8-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    }
+   ]
+  }
+ },
+ {
+  "id": "gemini/gemma-4-31b-it",
+  "amostras": {
+   "curto": [
+    {
+     "http": 200,
+     "s": 55.9
+    },
+    {
+     "http": 0,
+     "s": 60.4,
+     "erro": "TimeoutError('The read operation timed out')"
+    },
+    {
+     "http": 200,
+     "s": 25.6
+    }
+   ],
+   "20k": [
+    {
+     "http": 0,
+     "s": 100.4,
+     "erro": "TimeoutError('The read operation timed out')"
+    },
+    {
+     "http": 200,
+     "s": 22.7
+    },
+    {
+     "http": 200,
+     "s": 34.8
+    }
+   ],
+   "100k": [
+    {
+     "http": 503,
+     "s": 4.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemma-4-31b-it] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    },
+    {
+     "http": 503,
+     "s": 1.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemma-4-31b-it] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    },
+    {
+     "http": 503,
+     "s": 1.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemma-4-31b-it] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    }
+   ]
+  }
+ },
+ {
+  "id": "gemini/gemini-3.1-pro-preview",
+  "amostras": {
+   "curto": [
+    {
+     "http": 503,
+     "s": 6.5,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.1-pro-preview] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your curr"
+    },
+    {
+     "http": 503,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.1-pro-preview] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your curr"
+    },
+    {
+     "http": 503,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.1-pro-preview] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your curr"
+    }
+   ],
+   "20k": [
+    {
+     "http": 503,
+     "s": 1.3,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.1-pro-preview] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your curr"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.1-pro-preview] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your curr"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.1-pro-preview] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your curr"
+    }
+   ],
+   "100k": [
+    {
+     "http": 503,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.1-pro-preview] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your curr"
+    },
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.1-pro-preview] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your curr"
+    },
+    {
+     "http": 503,
+     "s": 2.2,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.1-pro-preview] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your curr"
+    }
+   ]
+  }
+ },
+ {
+  "id": "gemini/gemini-3.6-flash",
+  "amostras": {
+   "curto": [
+    {
+     "http": 503,
+     "s": 12.6,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.6-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.6-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.6-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    }
+   ],
+   "20k": [
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.6-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.6-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.6-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    }
+   ],
+   "100k": [
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.6-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.6-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    },
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-3.6-flash] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current qu"
+    }
+   ]
+  }
+ },
+ {
+  "id": "gemini/gemini-embedding-2",
+  "amostras": {
+   "embedding": [
+    {
+     "http": 200,
+     "s": 1.3
+    },
+    {
+     "http": 200,
+     "s": 1.3
+    },
+    {
+     "http": 200,
+     "s": 1.4
+    }
+   ]
+  }
+ },
+ {
+  "id": "gemini/gemini-4-hydrogen",
+  "amostras": {
+   "curto": [
+    {
+     "http": 200,
+     "s": 8.3
+    },
+    {
+     "http": 200,
+     "s": 1.8
+    },
+    {
+     "http": 503,
+     "s": 3.2,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-hydrogen] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current q"
+    }
+   ],
+   "20k": [
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-hydrogen] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current q"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-hydrogen] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current q"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-hydrogen] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current q"
+    }
+   ],
+   "100k": [
+    {
+     "http": 503,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-hydrogen] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current q"
+    },
+    {
+     "http": 503,
+     "s": 2.1,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-hydrogen] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current q"
+    },
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-hydrogen] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current q"
+    }
+   ]
+  }
+ },
+ {
+  "id": "gemini/gemini-4-argon",
+  "amostras": {
+   "curto": [
+    {
+     "http": 503,
+     "s": 6.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    },
+    {
+     "http": 503,
+     "s": 0.7,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    },
+    {
+     "http": 503,
+     "s": 0.6,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    }
+   ],
+   "20k": [
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    },
+    {
+     "http": 503,
+     "s": 0.9,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    }
+   ],
+   "100k": [
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    },
+    {
+     "http": 503,
+     "s": 1.6,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    },
+    {
+     "http": 503,
+     "s": 1.5,
+     "erro": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quot"
+    }
+   ]
+  }
+ }
+]

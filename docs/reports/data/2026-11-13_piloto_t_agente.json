@@ -1,0 +1,98 @@
+{
+ "combo": "t-agente-128k",
+ "membros": [
+  "mistral/ministral-3b-latest",
+  "gemini/gemini-3.5-flash-lite",
+  "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+  "openrouter/dots-studio/dots-3-note-preview:free",
+  "cf/@cf/meta/llama-4-scout-17b-16e-instruct",
+  "mistral/ministral-3b-2512"
+ ],
+ "backup": "C:\\Users\\trcnologia\\Desktop\\LegoLoop\\scratch\\backup_9router_combos_20261113_pre_piloto",
+ "probe": [
+  {
+   "http": 200,
+   "s": 1.2,
+   "atendeu": "ministral-3b-latest",
+   "tool_calls": false,
+   "teste": "curto"
+  },
+  {
+   "http": 200,
+   "s": 1.1,
+   "atendeu": "ministral-3b-latest",
+   "tool_calls": false,
+   "teste": "curto"
+  },
+  {
+   "http": 200,
+   "s": 1.4,
+   "atendeu": "ministral-3b-latest",
+   "tool_calls": false,
+   "teste": "curto"
+  },
+  {
+   "http": 200,
+   "s": 2.1,
+   "atendeu": "ministral-3b-latest",
+   "tool_calls": false,
+   "teste": "20k"
+  },
+  {
+   "http": 200,
+   "s": 2.5,
+   "atendeu": "ministral-3b-latest",
+   "tool_calls": false,
+   "teste": "20k"
+  },
+  {
+   "http": 200,
+   "s": 3.0,
+   "atendeu": "ministral-3b-latest",
+   "tool_calls": false,
+   "teste": "20k"
+  },
+  {
+   "http": 200,
+   "s": 7.0,
+   "atendeu": "ministral-3b-latest",
+   "tool_calls": false,
+   "teste": "100k"
+  },
+  {
+   "http": 200,
+   "s": 7.9,
+   "atendeu": "ministral-3b-latest",
+   "tool_calls": false,
+   "teste": "100k"
+  },
+  {
+   "http": 200,
+   "s": 6.1,
+   "atendeu": "gemini-3.5-flash-lite",
+   "tool_calls": false,
+   "teste": "100k"
+  },
+  {
+   "http": 200,
+   "s": 3.8,
+   "atendeu": "gemini-3.5-flash-lite",
+   "tool_calls": true,
+   "teste": "funcao"
+  },
+  {
+   "http": 200,
+   "s": 3.5,
+   "atendeu": "gemini-3.5-flash-lite",
+   "tool_calls": true,
+   "teste": "funcao"
+  },
+  {
+   "http": 200,
+   "s": 3.4,
+   "atendeu": "gemini-3.5-flash-lite",
+   "tool_calls": true,
+   "teste": "funcao"
+  }
+ ]
+}

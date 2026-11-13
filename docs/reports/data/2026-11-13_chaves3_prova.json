@@ -1,0 +1,227 @@
+[
+ {
+  "chave": "DEV_01",
+  "hydrogen": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Requests from referer \\u003cempty\\u003e ar"
+  ],
+  "argon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ],
+  "carbon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Requests from referer \\u003cempty\\u003e ar"
+  ]
+ },
+ {
+  "chave": "DEV_02",
+  "hydrogen": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ],
+  "argon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Requests from referer \\u003cempty\\u003e ar"
+  ],
+  "carbon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ]
+ },
+ {
+  "chave": "DEV_03",
+  "hydrogen": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ],
+  "argon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Requests from referer \\u003cempty\\u003e ar"
+  ],
+  "carbon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ]
+ },
+ {
+  "chave": "DEV_04",
+  "hydrogen": [
+   429,
+   "limit=20"
+  ],
+  "argon": [
+   429,
+   "limit=0"
+  ],
+  "carbon": [
+   429,
+   "limit=0"
+  ]
+ },
+ {
+  "chave": "DEV_05",
+  "hydrogen": [
+   429,
+   "limit=20"
+  ],
+  "argon": [
+   429,
+   "limit=0"
+  ],
+  "carbon": [
+   429,
+   "limit=0"
+  ]
+ },
+ {
+  "chave": "DEV_06",
+  "hydrogen": [
+   200,
+   ""
+  ],
+  "argon": [
+   429,
+   "limit=0"
+  ],
+  "carbon": [
+   429,
+   "limit=0"
+  ]
+ },
+ {
+  "chave": "DEV_07",
+  "hydrogen": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ],
+  "argon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ],
+  "carbon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ]
+ },
+ {
+  "chave": "DEV_08",
+  "hydrogen": [
+   429,
+   "limit=20"
+  ],
+  "argon": [
+   429,
+   "limit=0"
+  ],
+  "carbon": [
+   429,
+   "limit=0"
+  ]
+ },
+ {
+  "chave": "DEV_09",
+  "hydrogen": [
+   429,
+   "limit=20"
+  ],
+  "argon": [
+   429,
+   "limit=0"
+  ],
+  "carbon": [
+   429,
+   "limit=0"
+  ]
+ },
+ {
+  "chave": "DEV_10",
+  "hydrogen": [
+   429,
+   "limit=20"
+  ],
+  "argon": [
+   429,
+   "limit=0"
+  ],
+  "carbon": [
+   429,
+   "limit=0"
+  ]
+ },
+ {
+  "chave": "DEV_11",
+  "hydrogen": [
+   429,
+   "limit=20"
+  ],
+  "argon": [
+   429,
+   "limit=0"
+  ],
+  "carbon": [
+   429,
+   "limit=0"
+  ]
+ },
+ {
+  "chave": "DEV_12",
+  "hydrogen": [
+   429,
+   "limit=20"
+  ],
+  "argon": [
+   429,
+   "limit=0"
+  ],
+  "carbon": [
+   429,
+   "limit=0"
+  ]
+ },
+ {
+  "chave": "DEV_13",
+  "hydrogen": [
+   200,
+   ""
+  ],
+  "argon": [
+   429,
+   "limit=0"
+  ],
+  "carbon": [
+   429,
+   "limit=0"
+  ]
+ },
+ {
+  "chave": "DEV_14",
+  "hydrogen": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ],
+  "argon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ],
+  "carbon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ]
+ },
+ {
+  "chave": "DEV_15",
+  "hydrogen": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ],
+  "argon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Method doesn't allow unregistered callers "
+  ],
+  "carbon": [
+   403,
+   "{   \"error\": {     \"code\": 403,     \"message\": \"Permission denied on the service.\",     \"s"
+  ]
+ }
+]

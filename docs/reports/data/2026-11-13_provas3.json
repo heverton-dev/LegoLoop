@@ -1,0 +1,214 @@
+{
+ "prova1": [
+  {
+   "modelo": "gemini-4-argon",
+   "chave": "DEV_04_GEMINI_API_KEY",
+   "http": 429,
+   "msg": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit.  * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-4-argon, description: Generate content input tokens per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits. * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-4-argon, description: Generate content requests per day limit exceed",
+   "detalhe": "[{\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\", \"quotaId\": \"GenerateContentInputTokensPerModelPerDay-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-argon\", \"location\": \"global\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\", \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-argon\", \"location\": \"global\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\", \"quotaId\": \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-argon\", \"location\": \"global\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\", \"quotaId\": \"GenerateContentInputTokensPerModelPerMinute-FreeTier\", \"quotaDimensions\": {\"location\": \"global\", \"model\": \"gemini-4-argon\"}, \"quotaValue\": null}] retryDelay=60879s"
+  },
+  {
+   "modelo": "gemini-4-argon",
+   "chave": "DEV_06_GEMINI_API_KEY",
+   "http": 429,
+   "msg": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit.  * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-4-argon, description: Generate content input tokens per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits. * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-4-argon, description: Generate content requests per day limit exceed",
+   "detalhe": "[{\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\", \"quotaId\": \"GenerateContentInputTokensPerModelPerDay-FreeTier\", \"quotaDimensions\": {\"location\": \"global\", \"model\": \"gemini-4-argon\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\", \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\", \"quotaDimensions\": {\"location\": \"global\", \"model\": \"gemini-4-argon\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\", \"quotaId\": \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-argon\", \"location\": \"global\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\", \"quotaId\": \"GenerateContentInputTokensPerModelPerMinute-FreeTier\", \"quotaDimensions\": {\"location\": \"global\", \"model\": \"gemini-4-argon\"}, \"quotaValue\": null}] retryDelay=60879s"
+  },
+  {
+   "modelo": "gemini-4-carbon",
+   "chave": "DEV_04_GEMINI_API_KEY",
+   "http": 429,
+   "msg": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit.  * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-4-carbon, description: Generate content input tokens per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits. * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-4-carbon, description: Generate content requests per minute limi",
+   "detalhe": "[{\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\", \"quotaId\": \"GenerateContentInputTokensPerModelPerMinute-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-carbon\", \"location\": \"global\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\", \"quotaId\": \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-carbon\", \"location\": \"global\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\", \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-carbon\", \"location\": \"global\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\", \"quotaId\": \"GenerateContentInputTokensPerModelPerDay-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-carbon\", \"location\": \"global\"}, \"quotaValue\": null}] retryDelay=60879s"
+  },
+  {
+   "modelo": "gemini-4-carbon",
+   "chave": "DEV_06_GEMINI_API_KEY",
+   "http": 429,
+   "msg": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit.  * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-4-carbon, description: Generate content input tokens per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits. * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-4-carbon, description: Generate content requests per minute limi",
+   "detalhe": "[{\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\", \"quotaId\": \"GenerateContentInputTokensPerModelPerMinute-FreeTier\", \"quotaDimensions\": {\"location\": \"global\", \"model\": \"gemini-4-carbon\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\", \"quotaId\": \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-carbon\", \"location\": \"global\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\", \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\", \"quotaDimensions\": {\"location\": \"global\", \"model\": \"gemini-4-carbon\"}, \"quotaValue\": null}, {\"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\", \"quotaId\": \"GenerateContentInputTokensPerModelPerDay-FreeTier\", \"quotaDimensions\": {\"model\": \"gemini-4-carbon\", \"location\": \"global\"}, \"quotaValue\": null}] retryDelay=60878s"
+  }
+ ],
+ "prova2": [
+  {
+   "i": 1,
+   "chave": "DEV_04_GEMINI_API_KEY",
+   "direto_http": 200,
+   "direto_s": 1.6,
+   "combo_http": 200,
+   "combo_s": 14.7,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 2,
+   "chave": "DEV_06_GEMINI_API_KEY",
+   "direto_http": 503,
+   "direto_s": 0.7,
+   "combo_http": 200,
+   "combo_s": 5.6,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 3,
+   "chave": "DEV_08_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.4,
+   "combo_http": 200,
+   "combo_s": 11.3,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 4,
+   "chave": "DEV_10_GEMINI_API_KEY",
+   "direto_http": 503,
+   "direto_s": 0.6,
+   "combo_http": 200,
+   "combo_s": 15.0,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 5,
+   "chave": "DEV_13_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.3,
+   "combo_http": 200,
+   "combo_s": 10.2,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 6,
+   "chave": "DEV_04_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.3,
+   "combo_http": 200,
+   "combo_s": 23.3,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 7,
+   "chave": "DEV_06_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.3,
+   "combo_http": 200,
+   "combo_s": 31.0,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 8,
+   "chave": "DEV_08_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.3,
+   "combo_http": 200,
+   "combo_s": 43.1,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 9,
+   "chave": "DEV_10_GEMINI_API_KEY",
+   "direto_http": 200,
+   "direto_s": 4.5,
+   "combo_http": 200,
+   "combo_s": 14.7,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 10,
+   "chave": "DEV_13_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.3,
+   "combo_http": 200,
+   "combo_s": 2.7,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 11,
+   "chave": "DEV_04_GEMINI_API_KEY",
+   "direto_http": 200,
+   "direto_s": 4.1,
+   "combo_http": 200,
+   "combo_s": 11.4,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 12,
+   "chave": "DEV_06_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.4,
+   "combo_http": 200,
+   "combo_s": 4.5,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 13,
+   "chave": "DEV_08_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.3,
+   "combo_http": 200,
+   "combo_s": 18.0,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 14,
+   "chave": "DEV_10_GEMINI_API_KEY",
+   "direto_http": 200,
+   "direto_s": 5.7,
+   "combo_http": 200,
+   "combo_s": 6.2,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 15,
+   "chave": "DEV_13_GEMINI_API_KEY",
+   "direto_http": 200,
+   "direto_s": 3.7,
+   "combo_http": 200,
+   "combo_s": 12.3,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 16,
+   "chave": "DEV_04_GEMINI_API_KEY",
+   "direto_http": 200,
+   "direto_s": 5.7,
+   "combo_http": 0,
+   "combo_s": 130.5,
+   "combo_atendeu": "TimeoutError('The read operation timed out')"
+  },
+  {
+   "i": 17,
+   "chave": "DEV_06_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.4,
+   "combo_http": 0,
+   "combo_s": 130.4,
+   "combo_atendeu": "TimeoutError('The read operation timed out')"
+  },
+  {
+   "i": 18,
+   "chave": "DEV_08_GEMINI_API_KEY",
+   "direto_http": 503,
+   "direto_s": 4.0,
+   "combo_http": 0,
+   "combo_s": 130.5,
+   "combo_atendeu": "TimeoutError('The read operation timed out')"
+  },
+  {
+   "i": 19,
+   "chave": "DEV_10_GEMINI_API_KEY",
+   "direto_http": 200,
+   "direto_s": 22.3,
+   "combo_http": 200,
+   "combo_s": 27.2,
+   "combo_atendeu": "gemini-3.6-flash"
+  },
+  {
+   "i": 20,
+   "chave": "DEV_13_GEMINI_API_KEY",
+   "direto_http": 429,
+   "direto_s": 0.3,
+   "combo_http": 200,
+   "combo_s": 27.7,
+   "combo_atendeu": "gemini-3.6-flash"
+  }
+ ]
+}

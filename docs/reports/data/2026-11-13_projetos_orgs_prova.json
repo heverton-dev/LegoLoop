@@ -1,0 +1,205 @@
+{
+ "google": [
+  {
+   "chave": "DEV_01",
+   "projetos": [],
+   "resp": [
+    403,
+    403
+   ]
+  },
+  {
+   "chave": "DEV_02",
+   "projetos": [],
+   "resp": [
+    403,
+    403
+   ]
+  },
+  {
+   "chave": "DEV_03",
+   "projetos": [],
+   "resp": [
+    403,
+    403
+   ]
+  },
+  {
+   "chave": "DEV_04",
+   "projetos": [],
+   "resp": [
+    200,
+    429,
+    "billing-citado"
+   ]
+  },
+  {
+   "chave": "DEV_05",
+   "projetos": [],
+   "resp": [
+    429,
+    "billing-citado",
+    429,
+    "billing-citado"
+   ]
+  },
+  {
+   "chave": "DEV_06",
+   "projetos": [],
+   "resp": [
+    200,
+    429,
+    "billing-citado"
+   ]
+  },
+  {
+   "chave": "DEV_07",
+   "projetos": [],
+   "resp": [
+    403,
+    403
+   ]
+  },
+  {
+   "chave": "DEV_08",
+   "projetos": [],
+   "resp": [
+    429,
+    "billing-citado",
+    429,
+    "billing-citado"
+   ]
+  },
+  {
+   "chave": "DEV_09",
+   "projetos": [],
+   "resp": [
+    429,
+    "billing-citado",
+    429,
+    "billing-citado"
+   ]
+  },
+  {
+   "chave": "DEV_10",
+   "projetos": [],
+   "resp": [
+    200,
+    429,
+    "billing-citado"
+   ]
+  },
+  {
+   "chave": "DEV_11",
+   "projetos": [],
+   "resp": [
+    200,
+    429,
+    "billing-citado"
+   ]
+  },
+  {
+   "chave": "DEV_12",
+   "projetos": [],
+   "resp": [
+    429,
+    "billing-citado",
+    429,
+    "billing-citado"
+   ]
+  },
+  {
+   "chave": "DEV_13",
+   "projetos": [],
+   "resp": [
+    429,
+    "billing-citado",
+    429,
+    "billing-citado"
+   ]
+  },
+  {
+   "chave": "DEV_14",
+   "projetos": [],
+   "resp": [
+    403,
+    403
+   ]
+  },
+  {
+   "chave": "DEV_15",
+   "projetos": [],
+   "resp": [
+    403,
+    403
+   ]
+  }
+ ],
+ "groq": [
+  {
+   "var": "DEV_01_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m64nvbceet7bnm3skvga5xky"
+  },
+  {
+   "var": "DEV_02_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m64semzje60b60cdj3022gbf"
+  },
+  {
+   "var": "DEV_03_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m641t4cjes0v5s38hdsj0401"
+  },
+  {
+   "var": "DEV_04_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m64semzje60b60cdj3022gbf"
+  },
+  {
+   "var": "DEV_05_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m40s5j4ye1n89qyhdec13xxv"
+  },
+  {
+   "var": "DEV_06_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m62efkfrejhs16wmyjnf4xtc"
+  },
+  {
+   "var": "DEV_07_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m64fac4reyar59fd7s14wkfs"
+  },
+  {
+   "var": "DEV_08_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m667cxetet6bbeaa9wqvm41d"
+  },
+  {
+   "var": "DEV_09_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m66762zne4xr6qw3s2a49dpt"
+  },
+  {
+   "var": "DEV_10_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m6663c50ey9tgwh94gq64qw8"
+  },
+  {
+   "var": "DEV_11_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m66762zne4xr6qw3s2a49dpt"
+  },
+  {
+   "var": "DEV_12_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m66762zne4xr6qw3s2a49dpt"
+  },
+  {
+   "var": "DEV_13_GROQ_API_KEY",
+   "http": 413,
+   "org": "org_01m66762zne4xr6qw3s2a49dpt"
+  }
+ ]
+}

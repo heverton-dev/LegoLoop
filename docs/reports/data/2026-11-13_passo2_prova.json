@@ -1,0 +1,162 @@
+{
+ "tamanhos": [
+  {
+   "modelo": "gemini/gemini-4-hydrogen",
+   "pedido": "curto",
+   "http": 200,
+   "s": 6.7,
+   "modelo_atendeu": "gemini-4-hydrogen",
+   "usage": {
+    "prompt_tokens": 2538,
+    "completion_tokens": 5,
+    "total_tokens": 2543,
+    "completion_tokens_details": {
+     "reasoning_tokens": 116
+    }
+   }
+  },
+  {
+   "modelo": "gemini/gemini-4-hydrogen",
+   "pedido": "20k",
+   "http": 200,
+   "s": 7.9,
+   "modelo_atendeu": "gemini-4-hydrogen",
+   "usage": {
+    "prompt_tokens": 21829,
+    "completion_tokens": 5,
+    "total_tokens": 21834,
+    "completion_tokens_details": {
+     "reasoning_tokens": 151
+    }
+   }
+  },
+  {
+   "modelo": "gemini/gemini-4-hydrogen",
+   "pedido": "100k",
+   "http": 200,
+   "s": 15.9,
+   "modelo_atendeu": "gemini-4-hydrogen",
+   "usage": {
+    "prompt_tokens": 101361,
+    "completion_tokens": 5,
+    "total_tokens": 101366,
+    "completion_tokens_details": {
+     "reasoning_tokens": 66
+    }
+   }
+  },
+  {
+   "modelo": "gemini/gemini-4-argon",
+   "pedido": "curto",
+   "http": 503,
+   "s": 4.3,
+   "corpo": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/"
+  },
+  {
+   "modelo": "gemini/gemini-4-argon",
+   "pedido": "20k",
+   "http": 503,
+   "s": 4.1,
+   "corpo": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [403]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 403,\\n    \\\"message\\\": \\\"Permission denied on the service.\\\",\\n    \\\"status\\\": \\\"PERMISSION_DENIED\\\",\\n    \\\"details\\\": [\\n      {\\n        \\\"@type\\\": \\\"type.googleapis.com/go"
+  },
+  {
+   "modelo": "gemini/gemini-4-argon",
+   "pedido": "100k",
+   "http": 503,
+   "s": 1.5,
+   "corpo": "{\"error\":{\"message\":\"[gemini/gemini-4-argon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google (res"
+  },
+  {
+   "modelo": "gemini/gemini-4-carbon",
+   "pedido": "curto",
+   "http": 503,
+   "s": 6.3,
+   "corpo": "{\"error\":{\"message\":\"[gemini/gemini-4-carbon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com"
+  },
+  {
+   "modelo": "gemini/gemini-4-carbon",
+   "pedido": "20k",
+   "http": 503,
+   "s": 5.9,
+   "corpo": "{\"error\":{\"message\":\"[gemini/gemini-4-carbon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com"
+  },
+  {
+   "modelo": "gemini/gemini-4-carbon",
+   "pedido": "100k",
+   "http": 503,
+   "s": 2.5,
+   "corpo": "{\"error\":{\"message\":\"[gemini/gemini-4-carbon] [429]: {\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com"
+  }
+ ],
+ "esforco": [
+  {
+   "effort": "low",
+   "http": 200,
+   "s": 12.2,
+   "modelo_atendeu": "gemini-4-hydrogen",
+   "usage": {
+    "prompt_tokens": 2679,
+    "completion_tokens": 73,
+    "total_tokens": 2752,
+    "completion_tokens_details": {
+     "reasoning_tokens": 235
+    }
+   }
+  },
+  {
+   "effort": "high",
+   "http": 200,
+   "s": 49.8,
+   "modelo_atendeu": "gemini-4-hydrogen",
+   "usage": {
+    "prompt_tokens": 2889,
+    "completion_tokens": 87,
+    "total_tokens": 2976,
+    "completion_tokens_details": {
+     "reasoning_tokens": 445
+    }
+   }
+  }
+ ],
+ "combo_hydrogen": [
+  {
+   "http": 200,
+   "s": 3.5,
+   "modelo_atendeu": "gemini-4-hydrogen",
+   "usage": {
+    "prompt_tokens": 2488,
+    "completion_tokens": 5,
+    "total_tokens": 2493,
+    "completion_tokens_details": {
+     "reasoning_tokens": 66
+    }
+   }
+  },
+  {
+   "http": 200,
+   "s": 7.7,
+   "modelo_atendeu": "gemini-4-hydrogen",
+   "usage": {
+    "prompt_tokens": 2480,
+    "completion_tokens": 5,
+    "total_tokens": 2485,
+    "completion_tokens_details": {
+     "reasoning_tokens": 58
+    }
+   }
+  },
+  {
+   "http": 200,
+   "s": 4.3,
+   "modelo_atendeu": "gemini-4-hydrogen",
+   "usage": {
+    "prompt_tokens": 2458,
+    "completion_tokens": 5,
+    "total_tokens": 2463,
+    "completion_tokens_details": {
+     "reasoning_tokens": 36
+    }
+   }
+  }
+ ]
+}

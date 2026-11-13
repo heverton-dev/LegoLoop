@@ -1,0 +1,1357 @@
+{
+ "backup": "C:\\Users\\trcnologia\\Desktop\\LegoLoop\\scratch\\backup_9router_combos_20261113_pre_todos",
+ "combos": {
+  "p-cloudflare-128k": {
+   "membros": [
+    "cf/@cf/moondream/moondream3.1-9B-A2B",
+    "cf/@cf/meta/llama-4-scout-17b-16e-instruct",
+    "cf/@cf/nvidia/nemotron-3-120b-a12b",
+    "cf/@cf/openai/gpt-oss-20b",
+    "cf/@cf/openai/gpt-oss-120b",
+    "cf/@cf/daily-co/phonellm-mini-alpha-2",
+    "cf/@cf/google/gemma-4-26b-a4b-it",
+    "cf/@cf/ibm-granite/granite-4.0-h-micro",
+    "cf/@cf/zai-org/glm-4.7-flash",
+    "cf/@cf/qwen/qwen3.8-27b",
+    "cf/@cf/mistralai/mistral-small-3.1-24b-instruct"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.7,
+     "atendeu": "@cf/moondream/moondream3.1-9B-A2B",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.7,
+     "atendeu": "@cf/moondream/moondream3.1-9B-A2B",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 2.4,
+     "atendeu": "@cf/moondream/moondream3.1-9B-A2B",
+     "teste": "100k"
+    }
+   ]
+  },
+  "p-openrouter-128k": {
+   "membros": [
+    "openrouter/cohere/north-mini-code:free",
+    "openrouter/dots-studio/dots-3-note-preview:free",
+    "openrouter/recursive/flint-v1.0:free",
+    "openrouter/nvidia/nemotron-3.5-lightning:free",
+    "openrouter/liquid/lfm-3-1.7b:free",
+    "openrouter/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+    "openrouter/openrouter/free",
+    "openrouter/nvidia/nemotron-3.5-super-vl:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.1,
+     "atendeu": "cohere/north-mini-code:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.0,
+     "atendeu": "cohere/north-mini-code:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 4.5,
+     "atendeu": "cohere/north-mini-code:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "p-mistral-128k": {
+   "membros": [
+    "mistral/codestral-latest",
+    "mistral/ministral-3b-latest",
+    "mistral/codestral-2508",
+    "mistral/ministral-3b-2512",
+    "mistral/ministral-8b-2512",
+    "mistral/ministral-14b-2512",
+    "mistral/mistral-code-latest"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.0,
+     "atendeu": "codestral-latest",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "codestral-latest",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 6.4,
+     "atendeu": "codestral-latest",
+     "teste": "100k"
+    }
+   ]
+  },
+  "p-nvidia-128k": {
+   "membros": [
+    "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+    "nvidia/nvidia/nemotron-3.5-super-vl-120b-a12b",
+    "nvidia/nvidia/nemotron-3-ultra-550b-a55b",
+    "nvidia/nvidia/nemotron-3.5-lightning-30b-a3b",
+    "nvidia/poolside/laguna-xs-2.1",
+    "nvidia/mistralai/mistral-large-4-1t-a52b",
+    "nvidia/nvidia/nemotron-3.5-bolt-e4b",
+    "nvidia/minimaxai/minimax-m3.1-flash"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.4,
+     "atendeu": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 5.5,
+     "atendeu": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "teste": "100k"
+    }
+   ]
+  },
+  "p-gemini-128k": {
+   "membros": [
+    "gemini/gemini-3.5-flash-lite",
+    "gemini/gemini-3-flash-preview",
+    "gemini/gemini-3.1-flash-lite-preview",
+    "gemini/gemini-3.1-flash-lite",
+    "gemini/gemini-flash-lite-latest",
+    "gemini/gemini-robotics-er-2-preview",
+    "gemini/gemini-3.5-flash"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.8,
+     "atendeu": "gemini-3.5-flash-lite",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 3.2,
+     "atendeu": "gemini-3.5-flash-lite",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 4.9,
+     "atendeu": "gemini-3.5-flash-lite",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-mistral-codestral-2508": {
+   "membros": [
+    "mistral/codestral-2508"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.0,
+     "atendeu": "codestral-2508",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.3,
+     "atendeu": "codestral-2508",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 2.8,
+     "atendeu": "codestral-2508",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-gemini-gemini-flash-lite-latest": {
+   "membros": [
+    "gemini/gemini-flash-lite-latest"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.0,
+     "atendeu": "gemini-3.5-flash-lite",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.5,
+     "atendeu": "gemini-3.5-flash-lite",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 3.2,
+     "atendeu": "gemini-3.5-flash-lite",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-openrouter-liquid-lfm-3-1-7b-free": {
+   "membros": [
+    "openrouter/liquid/lfm-3-1.7b:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.2,
+     "atendeu": "liquid/lfm-3-1.7b:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.6,
+     "atendeu": "liquid/lfm-3-1.7b:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 3.4,
+     "atendeu": "liquid/lfm-3-1.7b:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-openai-gpt-oss-120b": {
+   "membros": [
+    "cf/@cf/openai/gpt-oss-120b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 7.6,
+     "atendeu": "@cf/openai/gpt-oss-120b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 4.2,
+     "atendeu": "@cf/openai/gpt-oss-120b",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 8.1,
+     "atendeu": "@cf/openai/gpt-oss-120b",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-nvidia-minimaxai-minimax-m3-1-flash": {
+   "membros": [
+    "nvidia/minimaxai/minimax-m3.1-flash"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 9.9,
+     "atendeu": "minimaxai/minimax-m3.1-flash",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 4.6,
+     "atendeu": "minimaxai/minimax-m3.1-flash",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 6.8,
+     "atendeu": "minimaxai/minimax-m3.1-flash",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-meta-llama-3-2-3b-instruct": {
+   "membros": [
+    "cf/@cf/meta/llama-3.2-3b-instruct"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.0,
+     "atendeu": "@cf/meta/llama-3.2-3b-instruct",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.6,
+     "atendeu": "@cf/meta/llama-3.2-3b-instruct",
+     "teste": "20k"
+    }
+   ]
+  },
+  "m-mistral-codestral-latest": {
+   "membros": [
+    "mistral/codestral-latest"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.2,
+     "atendeu": "codestral-latest",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.7,
+     "atendeu": "codestral-latest",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 2.4,
+     "atendeu": "codestral-latest",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-openrouter-recursive-flint-v1-0-free": {
+   "membros": [
+    "openrouter/recursive/flint-v1.0:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.8,
+     "atendeu": "recursive/flint-v1.0:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.6,
+     "atendeu": "recursive/flint-v1.0:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 5.1,
+     "atendeu": "recursive/flint-v1.0:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-mistral-mistral-code-latest": {
+   "membros": [
+    "mistral/mistral-code-latest"
+   ],
+   "probe": [
+    {
+     "http": 503,
+     "s": 3.2,
+     "erro": "{\"error\":{\"message\":\"[mistral/mistral-code-latest] [429]: {\\\"object\\\":\\\"error\\\",\\\"message\\\":\\\"Rate l",
+     "teste": "curto"
+    }
+   ]
+  },
+  "m-cf-deepseek-ai-deepseek-r1-distill-qwen-32b": {
+   "membros": [
+    "cf/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.7,
+     "atendeu": "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 8.1,
+     "atendeu": "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
+     "teste": "20k"
+    }
+   ]
+  },
+  "m-openrouter-nvidia-nemotron-3-5-super-vl-free": {
+   "membros": [
+    "openrouter/nvidia/nemotron-3.5-super-vl:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.3,
+     "atendeu": "nvidia/nemotron-3.5-super-vl:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 3.1,
+     "atendeu": "nvidia/nemotron-3.5-super-vl:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 10.1,
+     "atendeu": "nvidia/nemotron-3.5-super-vl:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-gemini-gemini-3-flash-preview": {
+   "membros": [
+    "gemini/gemini-3-flash-preview"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.7,
+     "atendeu": "gemini-3-flash-preview",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.9,
+     "atendeu": "gemini-3-flash-preview",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 31.6,
+     "atendeu": "gemini-3-flash-preview",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-meta-llama-3-1-8b-instruct-fp8": {
+   "membros": [
+    "cf/@cf/meta/llama-3.1-8b-instruct-fp8"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.0,
+     "atendeu": "@cf/meta/llama-3.1-8b-instruct-fp8",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 8.2,
+     "atendeu": "@cf/meta/llama-3.1-8b-instruct-fp8",
+     "teste": "20k"
+    }
+   ]
+  },
+  "m-mistral-ministral-14b-2512": {
+   "membros": [
+    "mistral/ministral-14b-2512"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 0.9,
+     "atendeu": "ministral-14b-2512",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.6,
+     "atendeu": "ministral-14b-2512",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 11.5,
+     "atendeu": "ministral-14b-2512",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-meta-llama-3-2-1b-instruct": {
+   "membros": [
+    "cf/@cf/meta/llama-3.2-1b-instruct"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.0,
+     "atendeu": "@cf/meta/llama-3.2-1b-instruct",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.4,
+     "atendeu": "@cf/meta/llama-3.2-1b-instruct",
+     "teste": "20k"
+    }
+   ]
+  },
+  "m-openrouter-dots-studio-dots-3-note-preview-free": {
+   "membros": [
+    "openrouter/dots-studio/dots-3-note-preview:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.7,
+     "atendeu": "dots-studio/dots-3-note-preview:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.9,
+     "atendeu": "dots-studio/dots-3-note-preview:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 7.4,
+     "atendeu": "dots-studio/dots-3-note-preview:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-mistral-ministral-3b-2512": {
+   "membros": [
+    "mistral/ministral-3b-2512"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.1,
+     "atendeu": "ministral-3b-2512",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "ministral-3b-2512",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 7.3,
+     "atendeu": "ministral-3b-2512",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-openrouter-nvidia-nemotron-3-5-lightning-free": {
+   "membros": [
+    "openrouter/nvidia/nemotron-3.5-lightning:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.2,
+     "atendeu": "nvidia/nemotron-3.5-lightning:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.2,
+     "atendeu": "nvidia/nemotron-3.5-lightning:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 6.6,
+     "atendeu": "nvidia/nemotron-3.5-lightning:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-mistral-ministral-3b-latest": {
+   "membros": [
+    "mistral/ministral-3b-latest"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.6,
+     "atendeu": "ministral-3b-latest",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.4,
+     "atendeu": "ministral-3b-latest",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 7.3,
+     "atendeu": "ministral-3b-latest",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-zai-org-glm-4-7-flash": {
+   "membros": [
+    "cf/@cf/zai-org/glm-4.7-flash"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 3.0,
+     "atendeu": "@cf/zai-org/glm-4.7-flash",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 4.3,
+     "atendeu": "@cf/zai-org/glm-4.7-flash",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 21.0,
+     "atendeu": "@cf/zai-org/glm-4.7-flash",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-openrouter-cohere-north-mini-code-free": {
+   "membros": [
+    "openrouter/cohere/north-mini-code:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.4,
+     "atendeu": "cohere/north-mini-code:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.6,
+     "atendeu": "cohere/north-mini-code:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 4.7,
+     "atendeu": "cohere/north-mini-code:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-gemini-gemini-3-1-flash-lite-preview": {
+   "membros": [
+    "gemini/gemini-3.1-flash-lite-preview"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 43.3,
+     "atendeu": "gemini-3.1-flash-lite",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 3.3,
+     "atendeu": "gemini-3.1-flash-lite",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 8.0,
+     "atendeu": "gemini-3.1-flash-lite",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-mistral-ministral-8b-2512": {
+   "membros": [
+    "mistral/ministral-8b-2512"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.1,
+     "atendeu": "ministral-8b-2512",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "ministral-8b-2512",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 9.7,
+     "atendeu": "ministral-8b-2512",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-mistral-voxtral-small-2507": {
+   "membros": [
+    "mistral/voxtral-small-2507"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.0,
+     "atendeu": "voxtral-small-2507",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.7,
+     "atendeu": "voxtral-small-2507",
+     "teste": "20k"
+    }
+   ]
+  },
+  "m-openrouter-nvidia-nemotron-3-ultra-550b-a55b-free": {
+   "membros": [
+    "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 4.6,
+     "atendeu": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 4.4,
+     "atendeu": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 6.9,
+     "atendeu": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-mistral-voxtral-small-latest": {
+   "membros": [
+    "mistral/voxtral-small-latest"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.0,
+     "atendeu": "voxtral-small-latest",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "voxtral-small-latest",
+     "teste": "20k"
+    }
+   ]
+  },
+  "m-cf-ibm-granite-granite-4-0-h-micro": {
+   "membros": [
+    "cf/@cf/ibm-granite/granite-4.0-h-micro"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.6,
+     "atendeu": "@cf/ibm-granite/granite-4.0-h-micro",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 4.7,
+     "atendeu": "@cf/ibm-granite/granite-4.0-h-micro",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 20.2,
+     "atendeu": "@cf/ibm-granite/granite-4.0-h-micro",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-qwen-qwen2-5-coder-32b-instruct": {
+   "membros": [
+    "cf/@cf/qwen/qwen2.5-coder-32b-instruct"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.2,
+     "atendeu": "@cf/qwen/qwen2.5-coder-32b-instruct",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 5.1,
+     "atendeu": "@cf/qwen/qwen2.5-coder-32b-instruct",
+     "teste": "20k"
+    }
+   ]
+  },
+  "m-openrouter-nvidia-nemotron-3-nano-omni-30b-a3b-reasoning": {
+   "membros": [
+    "openrouter/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.8,
+     "atendeu": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.2,
+     "atendeu": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 3.0,
+     "atendeu": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-gemini-gemini-3-1-flash-lite": {
+   "membros": [
+    "gemini/gemini-3.1-flash-lite"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 3.9,
+     "atendeu": "gemini-3.1-flash-lite",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 4.7,
+     "atendeu": "gemini-3.1-flash-lite",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 24.0,
+     "atendeu": "gemini-3.1-flash-lite",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-openrouter-openrouter-free": {
+   "membros": [
+    "openrouter/openrouter/free"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.3,
+     "atendeu": "cohere/north-mini-code:free",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.8,
+     "atendeu": "dots-studio/dots-3-note-preview:free",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 3.9,
+     "atendeu": "liquid/lfm-3-1.7b:free",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-nvidia-nemotron-3-120b-a12b": {
+   "membros": [
+    "cf/@cf/nvidia/nemotron-3-120b-a12b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.3,
+     "atendeu": "@cf/nvidia/nemotron-3-120b-a12b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 3.5,
+     "atendeu": "@cf/nvidia/nemotron-3-120b-a12b",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 8.2,
+     "atendeu": "@cf/nvidia/nemotron-3-120b-a12b",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-qwen-qwen3-30b-a3b-fp8": {
+   "membros": [
+    "cf/@cf/qwen/qwen3-30b-a3b-fp8"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 3.2,
+     "atendeu": "@cf/qwen/qwen3-30b-a3b-fp8",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.9,
+     "atendeu": "@cf/qwen/qwen3-30b-a3b-fp8",
+     "teste": "20k"
+    }
+   ]
+  },
+  "m-gemini-gemini-3-5-flash": {
+   "membros": [
+    "gemini/gemini-3.5-flash"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 8.5,
+     "atendeu": "gemini-3.6-flash",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 5.5,
+     "atendeu": "gemini-3.6-flash",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 14.2,
+     "atendeu": "gemini-3.6-flash",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-gemini-gemini-3-5-flash-lite": {
+   "membros": [
+    "gemini/gemini-3.5-flash-lite"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.6,
+     "atendeu": "gemini-3.5-flash-lite",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.5,
+     "atendeu": "gemini-3.5-flash-lite",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 2.5,
+     "atendeu": "gemini-3.5-flash-lite",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-google-gemma-4-26b-a4b-it": {
+   "membros": [
+    "cf/@cf/google/gemma-4-26b-a4b-it"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.1,
+     "atendeu": "@cf/google/gemma-4-26b-a4b-it",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 3.2,
+     "atendeu": "@cf/google/gemma-4-26b-a4b-it",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 22.7,
+     "atendeu": "@cf/google/gemma-4-26b-a4b-it",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-gemini-gemini-robotics-er-2-preview": {
+   "membros": [
+    "gemini/gemini-robotics-er-2-preview"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.7,
+     "atendeu": "gemini-robotics-er-2-preview",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 4.1,
+     "atendeu": "gemini-robotics-er-2-preview",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 6.7,
+     "atendeu": "gemini-robotics-er-2-preview",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-nvidia-mistralai-mistral-large-4-1t-a52b": {
+   "membros": [
+    "nvidia/mistralai/mistral-large-4-1t-a52b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 59.5,
+     "atendeu": "mistralai/mistral-large-4-1t-a52b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 111.3,
+     "atendeu": "mistralai/mistral-large-4-1t-a52b",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 48.4,
+     "atendeu": "mistralai/mistral-large-4-1t-a52b",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-nvidia-nemotron-3-nano-omni-30b-a3b-reasoning": {
+   "membros": [
+    "nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.8,
+     "atendeu": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.0,
+     "atendeu": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 3.2,
+     "atendeu": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-mistralai-mistral-small-3-1-24b-instruct": {
+   "membros": [
+    "cf/@cf/mistralai/mistral-small-3.1-24b-instruct"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.3,
+     "atendeu": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 4.7,
+     "atendeu": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 25.7,
+     "atendeu": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-nvidia-nemotron-3-ultra-550b-a55b": {
+   "membros": [
+    "nvidia/nvidia/nemotron-3-ultra-550b-a55b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.0,
+     "atendeu": "nvidia/nemotron-3-ultra-550b-a55b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 8.8,
+     "atendeu": "nvidia/nemotron-3-ultra-550b-a55b",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 4.8,
+     "atendeu": "nvidia/nemotron-3-ultra-550b-a55b",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-daily-co-phonellm-mini-alpha-2": {
+   "membros": [
+    "cf/@cf/daily-co/phonellm-mini-alpha-2"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.3,
+     "atendeu": "@cf/daily-co/phonellm-mini-alpha-2",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 4.7,
+     "atendeu": "@cf/daily-co/phonellm-mini-alpha-2",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 7.0,
+     "atendeu": "@cf/daily-co/phonellm-mini-alpha-2",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-nvidia-nemotron-3-5-bolt-e4b": {
+   "membros": [
+    "nvidia/nvidia/nemotron-3.5-bolt-e4b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 0.9,
+     "atendeu": "nvidia/nemotron-3.5-bolt-e4b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.2,
+     "atendeu": "nvidia/nemotron-3.5-bolt-e4b",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 13.9,
+     "atendeu": "nvidia/nemotron-3.5-bolt-e4b",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-qwen-qwen3-8-27b": {
+   "membros": [
+    "cf/@cf/qwen/qwen3.8-27b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.6,
+     "atendeu": "@cf/qwen/qwen3.8-27b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 5.7,
+     "atendeu": "@cf/qwen/qwen3.8-27b",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 21.0,
+     "atendeu": "@cf/qwen/qwen3.8-27b",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-nvidia-nemotron-3-5-lightning-30b-a3b": {
+   "membros": [
+    "nvidia/nvidia/nemotron-3.5-lightning-30b-a3b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.6,
+     "atendeu": "nvidia/nemotron-3.5-lightning-30b-a3b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.2,
+     "atendeu": "nvidia/nemotron-3.5-lightning-30b-a3b",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 2.9,
+     "atendeu": "nvidia/nemotron-3.5-lightning-30b-a3b",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-openai-gpt-oss-20b": {
+   "membros": [
+    "cf/@cf/openai/gpt-oss-20b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "@cf/openai/gpt-oss-20b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.4,
+     "atendeu": "@cf/openai/gpt-oss-20b",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 8.9,
+     "atendeu": "@cf/openai/gpt-oss-20b",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-nvidia-nemotron-3-5-super-vl-120b-a12b": {
+   "membros": [
+    "nvidia/nvidia/nemotron-3.5-super-vl-120b-a12b"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 2.3,
+     "atendeu": "private/nvidia/nemotron-3.5-super-120b-a12b",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.7,
+     "atendeu": "private/nvidia/nemotron-3.5-super-120b-a12b",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 7.6,
+     "atendeu": "private/nvidia/nemotron-3.5-super-120b-a12b",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-moondream-moondream3-1-9b-a2b": {
+   "membros": [
+    "cf/@cf/moondream/moondream3.1-9B-A2B"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.6,
+     "atendeu": "@cf/moondream/moondream3.1-9B-A2B",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "@cf/moondream/moondream3.1-9B-A2B",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 2.0,
+     "atendeu": "@cf/moondream/moondream3.1-9B-A2B",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-nvidia-poolside-laguna-xs-2-1": {
+   "membros": [
+    "nvidia/poolside/laguna-xs-2.1"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.4,
+     "atendeu": "poolside/laguna-xs-2.1",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 1.9,
+     "atendeu": "poolside/laguna-xs-2.1",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 6.4,
+     "atendeu": "poolside/laguna-xs-2.1",
+     "teste": "100k"
+    }
+   ]
+  },
+  "m-cf-meta-llama-4-scout-17b-16e-instruct": {
+   "membros": [
+    "cf/@cf/meta/llama-4-scout-17b-16e-instruct"
+   ],
+   "probe": [
+    {
+     "http": 200,
+     "s": 1.6,
+     "atendeu": "@cf/meta/llama-4-scout-17b-16e-instruct",
+     "teste": "curto"
+    },
+    {
+     "http": 200,
+     "s": 2.0,
+     "atendeu": "@cf/meta/llama-4-scout-17b-16e-instruct",
+     "teste": "20k"
+    },
+    {
+     "http": 200,
+     "s": 3.7,
+     "atendeu": "@cf/meta/llama-4-scout-17b-16e-instruct",
+     "teste": "100k"
+    }
+   ]
+  }
+ }
+}
