@@ -11,6 +11,7 @@ import (
 
 	"legoloop/internal/interview"
 	"legoloop/internal/matriz"
+	"legoloop/internal/taxonomy"
 )
 
 // fakeBrain é o dublê da borda (LLM): registra as chamadas e devolve a resposta combinada.
@@ -429,5 +430,44 @@ func TestCatalogador_TermoRepetidoPeloCerebroNaoGastaACota(t *testing.T) {
 	r := catalogar(t, b, peca("repete", "forma peculiar", ""))
 	if !slices.Equal(r.Perfil.CasosDeUso, []string{"tdd", "especificacao", "planejamento"}) {
 		t.Errorf("a repetição conta uma vez só: %v", r.Perfil.CasosDeUso)
+	}
+}
+
+func TestPecaValidateRoles(t *testing.T) {
+	t.Run("rejeicoes", testPecaValidateRolesRejeicoes)
+	t.Run("sucesso", testPecaValidateRolesSucesso)
+	t.Run("frontmatter", testPecaValidateRolesFrontmatter)
+}
+
+func testPecaValidateRolesRejeicoes(t *testing.T) {
+	p1 := matriz.Peca{PapelPrimario: "termo-invalido"}
+	if err := p1.Validate(); !errors.Is(err, taxonomy.ErrPapelPrimarioObrigatorio) {
+		t.Fatalf("esperava ErrPapelPrimarioObrigatorio, obteve %v", err)
+	}
+	p2 := matriz.Peca{PapelPrimario: "engenheiro-frontend", PapeisSecundarios: []string{"ninja"}}
+	if err := p2.Validate(); !errors.Is(err, taxonomy.ErrPapelInvalido) {
+		t.Fatalf("esperava ErrPapelInvalido, obteve %v", err)
+	}
+}
+
+func testPecaValidateRolesSucesso(t *testing.T) {
+	p := matriz.Peca{
+		PapelPrimario:     "engenheiro-backend",
+		PapeisSecundarios: []string{"engenheiro-tdd", "auditor-qualidade"},
+	}
+	if err := p.Validate(); err != nil {
+		t.Fatalf("esperava sucesso, obteve %v", err)
+	}
+}
+
+func testPecaValidateRolesFrontmatter(t *testing.T) {
+	fm := "---\npapel: dissecador-web\npapeis: [engenheiro-tdd]\n---\n"
+	p := matriz.Peca{Conteudo: fm}
+	if err := p.Validate(); err != nil {
+		t.Fatalf("esperava sucesso, obteve %v", err)
+	}
+	p.PreencherPapeis()
+	if p.PapelPrimario != "dissecador-web" || len(p.PapeisSecundarios) != 1 {
+		t.Fatalf("falha ao preencher: %+v", p)
 	}
 }
