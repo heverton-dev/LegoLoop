@@ -1,0 +1,716 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "legoloop-migracao-legados",
+  "version": "1.0.0",
+  "date": "2026-11-13",
+  "session_id": "8e0c5643-39a6-4215-ac57-d16e07b7b41f",
+  "intent_ref": "docs/intents/2026-11-13_INTENT_MIGRACAO_LEGADOS.md",
+  "spec_ref": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md",
+  "plan_ref": "docs/plans/2026-11-13_PLAN_MIGRACAO_LEGADOS.md",
+  "initiative_ref": "I6",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-13_INTENT_MIGRACAO_LEGADOS.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-13_PLAN_MIGRACAO_LEGADOS.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "parallel_layers",
+      "max_parallel_subagents": 3,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 3,
+    "tdd_enforced": false,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "stash_changes",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-I6-01.1",
+      "initiative_id": "I6",
+      "epic_id": "E01",
+      "label": "Inventário determinístico dos 19 DAGs legados",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "script",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "isolated",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 120,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json",
+          "loops/legoloop-fechar/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-I6-01.1",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "scratch/i6_inventario_legados.json"
+        ],
+        "verify": [
+          ["go", "run", "./cmd/legoloop", "validate", "docs/dags/2026-11-13_DAG_MIGRACAO_LEGADOS.json"]
+        ],
+        "gate": "exit_code == 0 && file_exists('scratch/i6_inventario_legados.json')"
+      }
+    },
+    {
+      "id": "TICK-I6-01.2",
+      "initiative_id": "I6",
+      "epic_id": "E01",
+      "label": "Migrar Lote A de docs/dags/ (4 DAGs operacionais)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-I6-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json",
+          "docs/dags/2026-11-07_DAG_LEGOLOOP_VIDEO_MOTION.json",
+          "docs/dags/2026-11-08_DAG_LEGOLOOP_VIDEO_EDITION.json",
+          "docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-01.2",
+        "context_artifacts": [
+          "scratch/i6_inventario_legados.json"
+        ]
+      },
+      "spec_ref": "AC-I6-01.2",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json",
+          "docs/dags/2026-11-07_DAG_LEGOLOOP_VIDEO_MOTION.json",
+          "docs/dags/2026-11-08_DAG_LEGOLOOP_VIDEO_EDITION.json",
+          "docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json"
+        ],
+        "verify": [
+          ["go", "run", "./cmd/legoloop", "validate", "docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json"]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-I6-01.3",
+      "initiative_id": "I6",
+      "epic_id": "E01",
+      "label": "Migrar Lote B de docs/dags/ (5 DAGs de governança e I1-I3)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 24000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-I6-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/dags/2026-11-09_DAG_QUINTETO_GOVERNANCA_ISO.json",
+          "docs/dags/2026-11-10_DAG_DISSECAR.json",
+          "docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json",
+          "docs/dags/2026-11-12_DAG_ROTEAMENTO_HONESTO.json",
+          "docs/dags/2026-11-12_DAG_SEXTETO_E_TEMPLATES.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-01.3",
+        "context_artifacts": [
+          "scratch/i6_inventario_legados.json"
+        ]
+      },
+      "spec_ref": "AC-I6-01.3",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/dags/2026-11-09_DAG_QUINTETO_GOVERNANCA_ISO.json",
+          "docs/dags/2026-11-10_DAG_DISSECAR.json",
+          "docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json",
+          "docs/dags/2026-11-12_DAG_ROTEAMENTO_HONESTO.json",
+          "docs/dags/2026-11-12_DAG_SEXTETO_E_TEMPLATES.json"
+        ],
+        "verify": [
+          ["go", "run", "./cmd/legoloop", "validate", "docs/dags/2026-11-12_DAG_ROTEAMENTO_HONESTO.json"]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-I6-E01",
+      "initiative_id": "I6",
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano do Épico 01 (docs/dags/)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "inline",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 86400,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 2000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-I6-01.2",
+        "TICK-I6-01.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-01.3",
+        "context_artifacts": [
+          "docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json",
+          "docs/dags/2026-11-12_DAG_ROTEAMENTO_HONESTO.json"
+        ]
+      },
+      "spec_ref": "AC-I6-01.3",
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [
+          "scratch/gates/SG-I6-E01.json"
+        ],
+        "verify": [],
+        "gate": "prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (loops/)?')"
+      }
+    },
+    {
+      "id": "TICK-I6-02.1",
+      "initiative_id": "I6",
+      "epic_id": "E02",
+      "label": "Migrar Lote Vídeo I em loops/ (4 arquivos)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-I6-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "loops/ai-motion-graphics/pipeline.dag.json",
+          "loops/legoloop-video-edition/pipeline.dag.json",
+          "loops/legoloop-video-master/pipeline.dag.json",
+          "loops/legoloop-video-motion/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.1",
+        "context_artifacts": [
+          "scratch/i6_inventario_legados.json"
+        ]
+      },
+      "spec_ref": "AC-I6-02.1",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "loops/ai-motion-graphics/pipeline.dag.json",
+          "loops/legoloop-video-edition/pipeline.dag.json",
+          "loops/legoloop-video-master/pipeline.dag.json",
+          "loops/legoloop-video-motion/pipeline.dag.json"
+        ],
+        "verify": [
+          ["go", "run", "./cmd/legoloop", "validate", "loops/ai-motion-graphics/pipeline.dag.json"]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-I6-02.2",
+      "initiative_id": "I6",
+      "epic_id": "E02",
+      "label": "Migrar Lote Vídeo II em loops/ (3 arquivos)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-I6-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "loops/legoloop-canal-redc/pipeline.dag.json",
+          "loops/legoloop-cartoon-shorts/pipeline.dag.json",
+          "loops/legoloop-video-rea/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.2",
+        "context_artifacts": [
+          "scratch/i6_inventario_legados.json"
+        ]
+      },
+      "spec_ref": "AC-I6-02.2",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "loops/legoloop-canal-redc/pipeline.dag.json",
+          "loops/legoloop-cartoon-shorts/pipeline.dag.json",
+          "loops/legoloop-video-rea/pipeline.dag.json"
+        ],
+        "verify": [
+          ["go", "run", "./cmd/legoloop", "validate", "loops/legoloop-canal-redc/pipeline.dag.json"]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-I6-02.3",
+      "initiative_id": "I6",
+      "epic_id": "E02",
+      "label": "Migrar Lote Governança em loops/ (3 arquivos)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-I6-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "loops/legoloop-dissecar/pipeline.dag.json",
+          "loops/legoloop-fechar/pipeline.dag.json",
+          "loops/legoloop-n10-foundry/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.3",
+        "context_artifacts": [
+          "scratch/i6_inventario_legados.json"
+        ]
+      },
+      "spec_ref": "AC-I6-02.3",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "loops/legoloop-dissecar/pipeline.dag.json",
+          "loops/legoloop-fechar/pipeline.dag.json",
+          "loops/legoloop-n10-foundry/pipeline.dag.json"
+        ],
+        "verify": [
+          ["go", "run", "./cmd/legoloop", "validate", "loops/legoloop-fechar/pipeline.dag.json"]
+        ],
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-I6-E02",
+      "initiative_id": "I6",
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano do Épico 02 (loops/)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "inline",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 86400,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 2000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-I6-02.1",
+        "TICK-I6-02.2",
+        "TICK-I6-02.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.3",
+        "context_artifacts": [
+          "loops/ai-motion-graphics/pipeline.dag.json",
+          "loops/legoloop-fechar/pipeline.dag.json"
+        ]
+      },
+      "spec_ref": "AC-I6-02.3",
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [
+          "scratch/gates/SG-I6-E02.json"
+        ],
+        "verify": [],
+        "gate": "prompt('Os 10 pipeline.dag.json de loops/ validam em v2? Autoriza validação final E03?')"
+      }
+    },
+    {
+      "id": "TICK-I6-03.1",
+      "initiative_id": "I6",
+      "epic_id": "E03",
+      "label": "Auditoria mecânica integral dos 19 DAGs migrados",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "script",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "SG-I6-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-03.1",
+        "context_artifacts": [
+          "scratch/i6_inventario_legados.json"
+        ]
+      },
+      "spec_ref": "AC-I6-03.1",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "scratch/i6_validacao_final.json"
+        ],
+        "verify": [
+          ["go", "test", "-count=1", "./internal/dag/..."]
+        ],
+        "gate": "exit_code == 0 && file_exists('scratch/i6_validacao_final.json')"
+      }
+    },
+    {
+      "id": "SG-I6-FINAL",
+      "initiative_id": "I6",
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano final de homologação I6",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "inline",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 86400,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 2000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-I6-03.1"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-03.1",
+        "context_artifacts": [
+          "scratch/i6_validacao_final.json"
+        ]
+      },
+      "spec_ref": "AC-I6-03.1",
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [
+          "scratch/gates/SG-I6-FINAL.json"
+        ],
+        "verify": [],
+        "gate": "prompt('Homologa a conclusão da Iniciativa I6 (19 DAGs em schema_version 2)?')"
+      }
+    }
+  ]
+}
