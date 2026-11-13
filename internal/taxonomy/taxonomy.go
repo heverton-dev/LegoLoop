@@ -21,11 +21,26 @@ type TermEntry struct {
 	ContextDomain     string   `json:"context_domain"`
 }
 
+type GuildaEntry struct {
+	Slug string `json:"slug"`
+	Nome string `json:"nome"`
+}
+
+type PapelEntry struct {
+	Slug               string `json:"slug"`
+	Nome               string `json:"nome"`
+	Guilda             string `json:"guilda"`
+	Descricao          string `json:"descricao"`
+	FerramentasTipicas string `json:"ferramentas_tipicas"`
+}
+
 type Dictionary struct {
-	Version     string      `json:"version"`
-	Name        string      `json:"name"`
-	Description string      `json:"description"`
-	Terms       []TermEntry `json:"terms"`
+	Version     string        `json:"version"`
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	Terms       []TermEntry   `json:"terms"`
+	Guildas     []GuildaEntry `json:"guildas,omitempty"`
+	Papeis      []PapelEntry  `json:"papeis,omitempty"`
 }
 
 type TaxonomyViolation struct {
@@ -135,4 +150,10 @@ func ValidateText(content string) ([]TaxonomyViolation, error) {
 		}
 	}
 	return allViolations, nil
+}
+
+// ObterDicionario retorna o dicionario estruturado ASD-STE100.
+func ObterDicionario() (*Dictionary, error) {
+	dict, _, err := loadDictionary()
+	return dict, err
 }
