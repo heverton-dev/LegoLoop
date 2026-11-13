@@ -1,6 +1,7 @@
 package fabricar_test
 
 import (
+	"errors"
 	"slices"
 	"strings"
 	"testing"
@@ -8,6 +9,7 @@ import (
 	"legoloop/internal/fabricar"
 	"legoloop/internal/matriz"
 	"legoloop/internal/reputation"
+	"legoloop/internal/taxonomy"
 )
 
 func skill(ref string, score float64, etapas, naturezas []string) matriz.Entrada {
@@ -121,5 +123,65 @@ func TestRankMergeSemEtapasPedidasUsaARankingGeral(t *testing.T) {
 	m := fabricar.MergeByFit(matriz.Needs{Natureza: "software"}, es, fabricar.MergeOptions{})
 	if got := nomes(m); !slices.Equal(got, []string{"a", "b"}) {
 		t.Errorf("sem etapas pedidas valem as melhores peças, na ordem do ranking: %v", got)
+	}
+}
+
+func TestCasamentoPapeis(t *testing.T) {
+	t.Run("prioridade papel primario sobre secundario AC-I5-03.1", testCasamentoPapeisPrimarioSobreSecundario)
+	t.Run("desempate score e tier entre primarios", testCasamentoPapeisDesempatePrimarios)
+	t.Run("fallback papel secundario", testCasamentoPapeisFallbackSecundario)
+	t.Run("lacuna sem ferramenta AC-I5-03.2", testCasamentoPapeisSemFerramenta)
+}
+
+func testCasamentoPapeisPrimarioSobreSecundario(t *testing.T) {
+	pecaA := fabricar.EntradaComPapel(skill("peca-a", 0.90, []string{"construir"}, sw), "engenheiro-tdd")
+	pecaB := fabricar.EntradaComPapel(skill("peca-b", 0.95, []string{"construir"}, sw), "revisor-codigo", "engenheiro-tdd")
+
+	casada, err := fabricar.CasarFerramentaPorPapel("engenheiro-tdd", []matriz.Entrada{pecaB, pecaA})
+	if err != nil {
+		t.Fatalf("esperava sucesso no casamento, obteve erro: %v", err)
+	}
+	if casada.Ref != "peca-a" {
+		t.Fatalf("AC-I5-03.1: esperava peca-a (papel primario), obteve %s", casada.Ref)
+	}
+
+	viaCostura, err := fabricar.CasarFerramenta("engenheiro-tdd", []matriz.Entrada{pecaB, pecaA})
+	if err != nil || viaCostura.Ref != "peca-a" {
+		t.Fatalf("costura CasarFerramenta deve ter mesmo comportamento: %v, %v", viaCostura.Ref, err)
+	}
+}
+
+func testCasamentoPapeisDesempatePrimarios(t *testing.T) {
+	a1 := fabricar.EntradaComPapel(skill("a1", 0.90, []string{"construir"}, sw), "engenheiro-tdd")
+	a2 := fabricar.EntradaComPapel(skill("a2", 0.95, []string{"construir"}, sw), "engenheiro-tdd")
+
+	casada, err := fabricar.CasarFerramentaPorPapel("engenheiro-tdd", []matriz.Entrada{a1, a2})
+	if err != nil {
+		t.Fatalf("erro inesperado: %v", err)
+	}
+	if casada.Ref != "a2" {
+		t.Fatalf("desempate de primarios deve escolher maior score: obteve %s", casada.Ref)
+	}
+}
+
+func testCasamentoPapeisFallbackSecundario(t *testing.T) {
+	b1 := fabricar.EntradaComPapel(skill("b1", 0.80, []string{"construir"}, sw), "arquiteto-solucoes", "engenheiro-tdd")
+	b2 := fabricar.EntradaComPapel(skill("b2", 0.85, []string{"construir"}, sw), "revisor-codigo", "engenheiro-tdd")
+
+	casada, err := fabricar.CasarFerramentaPorPapel("engenheiro-tdd", []matriz.Entrada{b1, b2})
+	if err != nil {
+		t.Fatalf("erro inesperado: %v", err)
+	}
+	if casada.Ref != "b2" {
+		t.Fatalf("fallback secundario deve escolher maior score: obteve %s", casada.Ref)
+	}
+}
+
+func testCasamentoPapeisSemFerramenta(t *testing.T) {
+	p := fabricar.EntradaComPapel(skill("p1", 0.99, []string{"construir"}, sw), "engenheiro-frontend")
+
+	_, err := fabricar.CasarFerramentaPorPapel("dissecador-mobile", []matriz.Entrada{p})
+	if !errors.Is(err, taxonomy.ErrNenhumaFerramentaEncontrada) {
+		t.Fatalf("AC-I5-03.2: esperava ErrNenhumaFerramentaEncontrada, obteve %v", err)
 	}
 }
