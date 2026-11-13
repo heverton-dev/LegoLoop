@@ -12,9 +12,11 @@
       "type": "unit_task",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "low",
-        "fallback": "flash"
+        "fallback": "haiku"
       },
       "timeout_sec": 30,
       "execution": {
@@ -26,7 +28,37 @@
       "output": {
         "artifact": "target_resolved.json",
         "gate": "file_exists('target_resolved.json')"
-      }
+      },
+      "name": "n01_resolver_alvo",
+      "nature": "micro",
+      "context_in": [],
+      "context_out": [
+        "target_resolved.json"
+      ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "file_exists('target_resolved.json')"
+      },
+      "spec_ref": "n01_resolver_alvo",
+      "status": "PENDING"
     },
     {
       "id": "n02_extrair_ast_metricas",
@@ -36,9 +68,11 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "medium",
-        "fallback": "flash"
+        "fallback": "haiku"
       },
       "timeout_sec": 45,
       "execution": {
@@ -50,7 +84,37 @@
       "output": {
         "artifact": "ast_metrics.json",
         "gate": "file_exists('ast_metrics.json')"
-      }
+      },
+      "name": "n02_extrair_ast_metricas",
+      "nature": "micro",
+      "context_in": [],
+      "context_out": [
+        "ast_metrics.json"
+      ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "file_exists('ast_metrics.json')"
+      },
+      "spec_ref": "n02_extrair_ast_metricas",
+      "status": "PENDING"
     },
     {
       "id": "n03_auditar_governanca",
@@ -60,9 +124,11 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "low",
-        "fallback": "flash"
+        "fallback": "haiku"
       },
       "timeout_sec": 30,
       "execution": {
@@ -74,7 +140,37 @@
       "output": {
         "artifact": "governance_audit.json",
         "gate": "file_exists('governance_audit.json')"
-      }
+      },
+      "name": "n03_auditar_governanca",
+      "nature": "micro",
+      "context_in": [],
+      "context_out": [
+        "governance_audit.json"
+      ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "file_exists('governance_audit.json')"
+      },
+      "spec_ref": "n03_auditar_governanca",
+      "status": "PENDING"
     },
     {
       "id": "n04_sintetizar_dag_reverso",
@@ -84,9 +180,11 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "medium",
-        "fallback": "flash"
+        "fallback": "haiku"
       },
       "timeout_sec": 45,
       "execution": {
@@ -99,7 +197,37 @@
       "output": {
         "artifact": "pipeline.dag.json",
         "gate": "file_exists('pipeline.dag.json')"
-      }
+      },
+      "name": "n04_sintetizar_dag_reverso",
+      "nature": "micro",
+      "context_in": [],
+      "context_out": [
+        "pipeline.dag.json"
+      ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "file_exists('pipeline.dag.json')"
+      },
+      "spec_ref": "n04_sintetizar_dag_reverso",
+      "status": "PENDING"
     },
     {
       "id": "n05_sintetizar_triade_motion",
@@ -109,9 +237,11 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "medium",
-        "fallback": "flash"
+        "fallback": "haiku"
       },
       "timeout_sec": 45,
       "execution": {
@@ -124,7 +254,37 @@
       "output": {
         "artifact": "motion_graph.json",
         "gate": "file_exists('motion_graph.json') && file_exists('anatomia.html') && file_exists('anatomia.svg')"
-      }
+      },
+      "name": "n05_sintetizar_triade_motion",
+      "nature": "micro",
+      "context_in": [],
+      "context_out": [
+        "motion_graph.json"
+      ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "file_exists('motion_graph.json') && file_exists('anatomia.html') && file_exists('anatomia.svg')"
+      },
+      "spec_ref": "n05_sintetizar_triade_motion",
+      "status": "PENDING"
     },
     {
       "id": "n06_compilar_relatorio_final",
@@ -134,9 +294,11 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "low",
-        "fallback": "flash"
+        "fallback": "haiku"
       },
       "timeout_sec": 30,
       "execution": {
@@ -149,7 +311,51 @@
       "output": {
         "artifact": "ficha_anatomica.json",
         "gate": "file_exists('ficha_anatomica.json') && file_exists('ANATOMIA.md')"
-      }
+      },
+      "name": "n06_compilar_relatorio_final",
+      "nature": "micro",
+      "context_in": [],
+      "context_out": [
+        "ficha_anatomica.json"
+      ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "file_exists('ficha_anatomica.json') && file_exists('ANATOMIA.md')"
+      },
+      "spec_ref": "n06_compilar_relatorio_final",
+      "status": "PENDING"
     }
-  ]
+  ],
+  "schema_version": 2,
+  "date": "2026-11-10",
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 1,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-10_ROUTE_DISSECAR.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  }
 }
