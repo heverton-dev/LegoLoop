@@ -1,6 +1,6 @@
 ---
 id: REPORT-I2
-status: DRAFT
+status: APPROVED
 date: 2026-11-13
 schema_version: 2
 upstream: [PLAN-I2]
@@ -10,7 +10,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 
 # 📋 Relatório de Conclusão: Sexteto e templates agnósticos (Iniciativa I2)
 
-> **Status:** PARCIAL (aguardando Stop-Gate humano `SG-I2-FINAL`)  
+> **Status:** APPROVED (`SG-I2-FINAL` aprovado pelo usuário em 2026-11-13)  
 > **Data:** 2026-11-13  
 > **Autor:** i2-closer (swarm)  
 > **Iniciativa / Épico:** Iniciativa I2 — Sexteto e templates agnósticos (Épico E05 / `TICK-I2-05.1`)  
