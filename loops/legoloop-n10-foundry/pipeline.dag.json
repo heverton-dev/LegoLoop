@@ -1,7 +1,8 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "name": "legoloop-n10-foundry",
   "version": "1.0.0",
+  "schema_version": 2,
   "date": "2026-11-09",
   "description": "Pipeline canônico da Fundição Autônoma de Software LegoLoop com Protocolos Industriais e Motores de Fronteira N10",
   "upstream_signatures": {
@@ -12,7 +13,18 @@
   },
   "execution_strategy": {
     "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
     "max_parallel_workers": 2,
+    "tdd_enforced": true,
     "default_timeout_sec": 300,
     "rollback_on_failure": "abort_and_pause",
     "rollback_policy": {
@@ -33,13 +45,38 @@
       "nature": "micro",
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
-        "effort": "medium"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "context_in": [],
       "context_out": [
         "schemas/dag.v1.json"
       ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell",
+        "harness": "claude"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "exit_code == 0 && file_exists('schemas/dag.v1.json')"
+      },
+      "spec_ref": "AC-n01_contracts_and_schemas",
+      "status": "COMPLETED",
       "test_seam": {
         "type": "schema_gate",
         "target": "exit_code == 0 && file_exists('schemas/dag.v1.json')"
@@ -54,11 +91,16 @@
       "name": "Disjuntor Jidoka Andon Cord e Formatador SBAR",
       "type": "unit_task",
       "nature": "micro",
-      "depends_on": ["n01_contracts_and_schemas"],
+      "depends_on": [
+        "n01_contracts_and_schemas"
+      ],
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
-        "effort": "medium"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "context_in": [
         "schemas/dag.v1.json"
@@ -66,6 +108,28 @@
       "context_out": [
         "internal/runner/retry.go"
       ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell",
+        "harness": "claude"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "exit_code == 0 && file_exists('internal/runner/retry.go')"
+      },
+      "spec_ref": "AC-n02_andon_and_sbar",
+      "status": "COMPLETED",
       "test_seam": {
         "type": "unit_test_gate",
         "target": "exit_code == 0 && file_exists('internal/runner/retry.go')"
@@ -80,11 +144,16 @@
       "name": "Motores de Fronteira Industrial N10",
       "type": "unit_task",
       "nature": "macro",
-      "depends_on": ["n02_andon_and_sbar"],
+      "depends_on": [
+        "n02_andon_and_sbar"
+      ],
       "routing": {
         "mode": "manual",
-        "model": "code-pro",
-        "effort": "high"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "context_in": [
         "internal/runner/retry.go"
@@ -92,6 +161,28 @@
       "context_out": [
         "internal/runner/redteam_blueteam.go"
       ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 4000,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell",
+        "harness": "claude"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "exit_code == 0 && file_exists('internal/runner/redteam_blueteam.go')"
+      },
+      "spec_ref": "AC-n03_n10_frontier_engines",
+      "status": "COMPLETED",
       "test_seam": {
         "type": "unit_test_gate",
         "target": "exit_code == 0 && file_exists('internal/runner/redteam_blueteam.go')"
@@ -106,11 +197,16 @@
       "name": "Dupla Superfície Autopilot e LegoPress",
       "type": "unit_task",
       "nature": "micro",
-      "depends_on": ["n03_n10_frontier_engines"],
+      "depends_on": [
+        "n03_n10_frontier_engines"
+      ],
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
-        "effort": "medium"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "context_in": [
         "internal/runner/redteam_blueteam.go"
@@ -118,6 +214,28 @@
       "context_out": [
         "internal/cli/autopilot.go"
       ],
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2500,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell",
+        "harness": "claude"
+      },
+      "verification": {
+        "exit_code": 0,
+        "gate": "exit_code == 0 && file_exists('internal/cli/autopilot.go')"
+      },
+      "spec_ref": "AC-n04_double_surface",
+      "status": "COMPLETED",
       "test_seam": {
         "type": "unit_test_gate",
         "target": "exit_code == 0 && file_exists('internal/cli/autopilot.go')"
