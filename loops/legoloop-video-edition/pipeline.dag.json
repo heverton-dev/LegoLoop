@@ -1,42 +1,28 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
-  "name": "legoloop-video-edition",
-  "version": "1.0.0",
   "date": "2026-11-08",
   "description": "Pipeline executável de edição determinística de vídeo por código (Lucas Leite) com isolamento hermético em scratch/ e Stop-Gates humanos.",
-  "upstream_signatures": {
-    "intent": "38a39527ec3169f44db5582f3ef7f039a6133a887019e09d17d057754b5dfd17",
-    "spec": "86bc57bdfceef5ca66d81b953d602330a6c02ebce75231e3fe0e7fa36f1c4df7",
-    "plan": "024fc8b99c855a822fbdf42e77ca97079a0d8e87d09f7a77e923e4ea00c6d9a1",
-    "route": "docs/routes/2026-11-08_ROUTE_LEGOLOOP_VIDEO_EDITION.json"
-  },
   "execution_strategy": {
-    "supervision_level": "micro",
     "concurrency": {
-      "mode": "sequential",
+      "harness_capability": "subagent_cli_isolated",
       "max_parallel_subagents": 1,
-      "harness_capability": "subagent_cli_isolated"
+      "mode": "sequential"
     },
     "default_isolation": {
-      "workspace": "local",
       "executor": "orchestrix_hermetic",
-      "subagents_allowed": false
+      "subagents_allowed": false,
+      "workspace": "local"
     },
-    "max_parallel_workers": 1,
-    "tdd_enforced": true,
     "default_timeout_sec": 600,
-    "rollback_on_failure": "abort_pipeline"
+    "max_parallel_workers": 1,
+    "rollback_on_failure": "abort_pipeline",
+    "supervision_level": "micro",
+    "tdd_enforced": true
   },
-  "trigger": {
-    "type": "manual"
-  },
+  "name": "legoloop-video-edition",
   "nodes": [
     {
-      "id": "n01_iniciar_preparar",
-      "name": "Extração de Áudio Linear PCM 48kHz Stereo",
-      "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "script",
       "command": [
         "ffmpeg",
         "-i",
@@ -50,53 +36,62 @@
         "2",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav"
       ],
-      "routing": {
-        "mode": "suggested",
-        "model": "code-fast",
-        "effort": "low",
-        "fallback": "flash"
-      },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "token_budget": {
-        "max_prompt_tokens": 8000,
-        "max_completion_tokens": 2000
-      },
-      "tooling": {
-        "runtime": "powershell"
-      },
-      "timeout_sec": 300,
-      "execution": {
-        "mode": "isolated"
-      },
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/raw_video.mp4"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav"
       ],
-      "status": "COMPLETED",
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n01_iniciar_preparar",
       "inputs": {
         "video": "var.raw_video"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 8000
+      },
+      "name": "Extração de Áudio Linear PCM 48kHz Stereo",
+      "nature": "micro",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-n01_iniciar_preparar",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_completion_tokens": 2000,
+        "max_prompt_tokens": 8000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav')"
       }
     },
     {
-      "id": "n02_transcricao_alinhamento",
-      "name": "Transcrição Fonética WhisperX com Word Timestamps",
-      "nature": "micro",
       "cognitive_complexity": "media",
-      "type": "script",
       "command": [
         "whisperx",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav",
@@ -105,56 +100,65 @@
         "--output_dir",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch"
       ],
-      "depends_on": [
-        "n01_iniciar_preparar"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "model": "code-pro",
-        "effort": "high",
-        "fallback": "flash"
-      },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "token_budget": {
-        "max_prompt_tokens": 12000,
-        "max_completion_tokens": 3000
-      },
-      "tooling": {
-        "runtime": "powershell"
-      },
-      "timeout_sec": 600,
-      "execution": {
-        "mode": "isolated"
-      },
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n01_iniciar_preparar"
+      ],
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n02_transcricao_alinhamento",
       "inputs": {
         "audio": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.wav')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 600,
+        "max_prompt_tokens": 12000
+      },
+      "name": "Transcrição Fonética WhisperX com Word Timestamps",
+      "nature": "micro",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-n02_transcricao_alinhamento",
+      "status": "COMPLETED",
+      "timeout_sec": 600,
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 12000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json')"
       }
     },
     {
-      "id": "n03_decisao_cortes",
-      "name": "Decisão de Cortes de Silêncio e Gaps com 40ms de Margem",
-      "nature": "micro",
       "cognitive_complexity": "media",
-      "type": "script",
       "command": [
         "python",
         "scripts/corte_silencio.py",
@@ -165,207 +169,243 @@
         "--margin",
         "0.04"
       ],
-      "depends_on": [
-        "n02_transcricao_alinhamento"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "model": "code-pro",
-        "effort": "high",
-        "fallback": "code-fast"
-      },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "token_budget": {
-        "max_prompt_tokens": 12000,
-        "max_completion_tokens": 3000
-      },
-      "tooling": {
-        "runtime": "powershell"
-      },
-      "timeout_sec": 300,
-      "execution": {
-        "mode": "isolated"
-      },
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n02_transcricao_alinhamento"
+      ],
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n03_decisao_cortes",
       "inputs": {
         "transcript": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 12000
+      },
+      "name": "Decisão de Cortes de Silêncio e Gaps com 40ms de Margem",
+      "nature": "micro",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
-      }
-    },
-    {
-      "id": "n04_sg_revisao_corte",
-      "name": "Stop-Gate Humano: Revisão da Linha de Corte",
-      "nature": "nano",
-      "cognitive_complexity": "simples",
-      "type": "stop_gate",
-      "depends_on": [
-        "n03_decisao_cortes"
-      ],
+      "rollback_strategy": "stash_changes",
       "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
         "mode": "suggested",
-        "model": "code-pro",
-        "effort": "low",
-        "fallback": "flash"
+        "model": "sonnet",
+        "via": "oficial"
       },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
+      "spec_ref": "AC-n03_decisao_cortes",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
       "token_budget": {
-        "max_prompt_tokens": 6000,
-        "max_completion_tokens": 1000
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 12000
       },
       "tooling": {
         "runtime": "powershell"
       },
-      "timeout_sec": 86400,
-      "execution": {
-        "mode": "inline"
-      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json')"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n03_decisao_cortes"
+      ],
+      "execution": {
+        "mode": "inline"
+      },
+      "id": "n04_sg_revisao_corte",
       "inputs": {
         "cuts": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1000,
+        "max_duration_sec": 86400,
+        "max_prompt_tokens": 6000
+      },
+      "name": "Stop-Gate Humano: Revisão da Linha de Corte",
+      "nature": "nano",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json') && prompt('Aprovar cortes de silencio e selecao de takes?')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
-      }
-    },
-    {
-      "id": "n05_motion_mapa",
-      "name": "Mapeamento Semântico de Animações e Overlays",
-      "nature": "micro",
-      "cognitive_complexity": "complexa",
-      "type": "skill",
-      "ref": "skills/aidd-impeccable",
-      "depends_on": [
-        "n04_sg_revisao_corte"
-      ],
+      "rollback_strategy": "stash_changes",
       "routing": {
+        "effort": "low",
+        "fallback": "sonnet",
+        "harness": "claude",
         "mode": "suggested",
-        "model": "code-pro",
-        "effort": "high",
-        "fallback": "sonnet"
+        "model": "haiku",
+        "via": "oficial"
       },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
+      "spec_ref": "AC-n04_sg_revisao_corte",
+      "status": "COMPLETED",
+      "timeout_sec": 86400,
       "token_budget": {
-        "max_prompt_tokens": 16000,
-        "max_completion_tokens": 4000
+        "max_completion_tokens": 1000,
+        "max_prompt_tokens": 6000
       },
       "tooling": {
         "runtime": "powershell"
       },
-      "timeout_sec": 600,
-      "execution": {
-        "mode": "isolated"
-      },
+      "type": "stop_gate",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json') && prompt('Aprovar cortes de silencio e selecao de takes?')"
+      }
+    },
+    {
+      "cognitive_complexity": "complexa",
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n04_sg_revisao_corte"
+      ],
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n05_motion_mapa",
       "inputs": {
         "cuts": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 4000,
+        "max_duration_sec": 600,
+        "max_prompt_tokens": 16000
+      },
+      "name": "Mapeamento Semântico de Animações e Overlays",
+      "nature": "micro",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
-      }
-    },
-    {
-      "id": "n06_sg_revisao_motion",
-      "name": "Stop-Gate Humano: Aprovação do Storyboard Cinético",
-      "nature": "nano",
-      "cognitive_complexity": "simples",
-      "type": "stop_gate",
-      "depends_on": [
-        "n05_motion_mapa"
-      ],
+      "ref": "skills/aidd-impeccable",
+      "rollback_strategy": "stash_changes",
       "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
         "mode": "suggested",
-        "model": "code-pro",
-        "effort": "low",
-        "fallback": "flash"
+        "model": "sonnet",
+        "via": "oficial"
       },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
+      "spec_ref": "AC-n05_motion_mapa",
+      "status": "COMPLETED",
+      "timeout_sec": 600,
       "token_budget": {
-        "max_prompt_tokens": 6000,
-        "max_completion_tokens": 1000
+        "max_completion_tokens": 4000,
+        "max_prompt_tokens": 16000
       },
       "tooling": {
         "runtime": "powershell"
       },
-      "timeout_sec": 86400,
-      "execution": {
-        "mode": "inline"
-      },
+      "type": "skill",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json')"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n05_motion_mapa"
+      ],
+      "execution": {
+        "mode": "inline"
+      },
+      "id": "n06_sg_revisao_motion",
       "inputs": {
         "storyboard": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1000,
+        "max_duration_sec": 86400,
+        "max_prompt_tokens": 6000
+      },
+      "name": "Stop-Gate Humano: Aprovação do Storyboard Cinético",
+      "nature": "nano",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json') && prompt('Aprovar plano de animacoes cineticas e overlays?')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "sonnet",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-n06_sg_revisao_motion",
+      "status": "COMPLETED",
+      "timeout_sec": 86400,
+      "token_budget": {
+        "max_completion_tokens": 1000,
+        "max_prompt_tokens": 6000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "type": "stop_gate",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json') && prompt('Aprovar plano de animacoes cineticas e overlays?')"
       }
     },
     {
-      "id": "n07_camera_yunet",
-      "name": "Rastreamento Facial YuNet e Enquadramento Dinâmico (Olhos 35%)",
-      "nature": "micro",
       "cognitive_complexity": "media",
-      "type": "script",
       "command": [
         "python",
         "scripts/yunet_tracking.py",
@@ -376,31 +416,6 @@
         "--motion",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json"
       ],
-      "depends_on": [
-        "n06_sg_revisao_motion"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "model": "code-pro",
-        "effort": "medium",
-        "fallback": "flash"
-      },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "token_budget": {
-        "max_prompt_tokens": 10000,
-        "max_completion_tokens": 2500
-      },
-      "tooling": {
-        "runtime": "powershell"
-      },
-      "timeout_sec": 600,
-      "execution": {
-        "mode": "isolated"
-      },
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json"
@@ -408,26 +423,60 @@
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n06_sg_revisao_motion"
+      ],
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n07_camera_yunet",
       "inputs": {
         "cuts": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/cuts_approved.json')",
         "motion": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2500,
+        "max_duration_sec": 600,
+        "max_prompt_tokens": 10000
+      },
+      "name": "Rastreamento Facial YuNet e Enquadramento Dinâmico (Olhos 35%)",
+      "nature": "micro",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-n07_camera_yunet",
+      "status": "COMPLETED",
+      "timeout_sec": 600,
+      "token_budget": {
+        "max_completion_tokens": 2500,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json')"
       }
     },
     {
-      "id": "n08_assets_download",
-      "name": "Download de Ativos de Mídia e B-Rolls via yt-dlp",
-      "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "script",
       "command": [
         "yt-dlp",
         "--batch-file",
@@ -436,56 +485,65 @@
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/assets",
         "--write-info-json"
       ],
-      "depends_on": [
-        "n06_sg_revisao_motion"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "model": "code-fast",
-        "effort": "low",
-        "fallback": "flash"
-      },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "token_budget": {
-        "max_prompt_tokens": 8000,
-        "max_completion_tokens": 2000
-      },
-      "tooling": {
-        "runtime": "powershell"
-      },
-      "timeout_sec": 300,
-      "execution": {
-        "mode": "isolated"
-      },
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n06_sg_revisao_motion"
+      ],
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n08_assets_download",
       "inputs": {
         "motion": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_approved.json')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 8000
+      },
+      "name": "Download de Ativos de Mídia e B-Rolls via yt-dlp",
+      "nature": "micro",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-n08_assets_download",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_completion_tokens": 2000,
+        "max_prompt_tokens": 8000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json')"
       }
     },
     {
-      "id": "n09_motion_render",
-      "name": "Renderização HyperFrames de Motion Overlays",
-      "nature": "micro",
       "cognitive_complexity": "media",
-      "type": "script",
       "command": [
         "bun",
         "run",
@@ -496,56 +554,65 @@
         "--out",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4"
       ],
-      "depends_on": [
-        "n08_assets_download"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "model": "code-pro",
-        "effort": "high",
-        "fallback": "flash"
-      },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "token_budget": {
-        "max_prompt_tokens": 12000,
-        "max_completion_tokens": 3000
-      },
-      "tooling": {
-        "runtime": "powershell"
-      },
-      "timeout_sec": 600,
-      "execution": {
-        "mode": "isolated"
-      },
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n08_assets_download"
+      ],
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n09_motion_render",
       "inputs": {
         "assets": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/assets_manifest.json')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 600,
+        "max_prompt_tokens": 12000
+      },
+      "name": "Renderização HyperFrames de Motion Overlays",
+      "nature": "micro",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-n09_motion_render",
+      "status": "COMPLETED",
+      "timeout_sec": 600,
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 12000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4')"
       }
     },
     {
-      "id": "n10_efeitos_sonoros_sfx",
-      "name": "Sound Design Automatizado por Eventos com Ducking -18dB",
-      "nature": "micro",
       "cognitive_complexity": "media",
-      "type": "script",
       "command": [
         "python",
         "scripts/mix_sfx.py",
@@ -558,32 +625,6 @@
         "--ducking",
         "-18dB"
       ],
-      "depends_on": [
-        "n07_camera_yunet",
-        "n09_motion_render"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "model": "code-fast",
-        "effort": "medium",
-        "fallback": "flash"
-      },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "token_budget": {
-        "max_prompt_tokens": 10000,
-        "max_completion_tokens": 2500
-      },
-      "tooling": {
-        "runtime": "powershell"
-      },
-      "timeout_sec": 300,
-      "execution": {
-        "mode": "isolated"
-      },
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4"
@@ -591,26 +632,61 @@
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n07_camera_yunet",
+        "n09_motion_render"
+      ],
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n10_efeitos_sonoros_sfx",
       "inputs": {
         "camera": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json')",
         "motion": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_overlays.mp4')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2500,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 10000
+      },
+      "name": "Sound Design Automatizado por Eventos com Ducking -18dB",
+      "nature": "micro",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-n10_efeitos_sonoros_sfx",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_completion_tokens": 2500,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav')"
       }
     },
     {
-      "id": "n11_entrega_final_hibrida",
-      "name": "Exportação Híbrida: Master MP4 e Timeline FCPXML",
-      "nature": "micro",
       "cognitive_complexity": "media",
-      "type": "script",
       "command": [
         "python",
         "scripts/export_fcpxml.py",
@@ -621,99 +697,132 @@
         "--out-mp4",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.mp4"
       ],
-      "depends_on": [
-        "n10_efeitos_sonoros_sfx"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "model": "code-pro",
-        "effort": "high",
-        "fallback": "flash"
-      },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "token_budget": {
-        "max_prompt_tokens": 12000,
-        "max_completion_tokens": 3000
-      },
-      "tooling": {
-        "runtime": "powershell"
-      },
-      "timeout_sec": 600,
-      "execution": {
-        "mode": "isolated"
-      },
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n10_efeitos_sonoros_sfx"
+      ],
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n11_entrega_final_hibrida",
       "inputs": {
         "sfx": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/sfx_mix.wav')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 600,
+        "max_prompt_tokens": 12000
+      },
+      "name": "Exportação Híbrida: Master MP4 e Timeline FCPXML",
+      "nature": "micro",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
-      }
-    },
-    {
-      "id": "n12_sg_entrega_final",
-      "name": "Stop-Gate Humano: Aprovação Final de Entrega Audiovisual",
-      "nature": "nano",
-      "cognitive_complexity": "simples",
-      "type": "stop_gate",
-      "depends_on": [
-        "n11_entrega_final_hibrida"
-      ],
+      "rollback_strategy": "stash_changes",
       "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
         "mode": "suggested",
-        "model": "code-pro",
-        "effort": "low",
-        "fallback": "flash"
+        "model": "sonnet",
+        "via": "oficial"
       },
-      "isolation": {
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
+      "spec_ref": "AC-n11_entrega_final_hibrida",
+      "status": "COMPLETED",
+      "timeout_sec": 600,
       "token_budget": {
-        "max_prompt_tokens": 6000,
-        "max_completion_tokens": 1000
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 12000
       },
       "tooling": {
         "runtime": "powershell"
       },
-      "timeout_sec": 86400,
-      "execution": {
-        "mode": "inline"
-      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml')"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
       "context_in": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml"
       ],
       "context_out": [
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/delivery_approved.json"
       ],
-      "status": "COMPLETED",
+      "depends_on": [
+        "n11_entrega_final_hibrida"
+      ],
+      "execution": {
+        "mode": "inline"
+      },
+      "id": "n12_sg_entrega_final",
       "inputs": {
         "fcpxml": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml')"
       },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1000,
+        "max_duration_sec": 86400,
+        "max_prompt_tokens": 6000
+      },
+      "name": "Stop-Gate Humano: Aprovação Final de Entrega Audiovisual",
+      "nature": "nano",
       "output": {
         "artifact": "docs/videorea/lucas-leite-edicao-claude-code/scratch/delivery_approved.json",
         "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml') && prompt('Aprovar entrega final do video?')"
       },
-      "test_seam": {
-        "type": "unit_test_gate",
-        "target": "internal/videorea/videorea_test.go"
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "sonnet",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-n12_sg_entrega_final",
+      "status": "COMPLETED",
+      "timeout_sec": 86400,
+      "token_budget": {
+        "max_completion_tokens": 1000,
+        "max_prompt_tokens": 6000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "type": "stop_gate",
+      "verification": {
+        "gate": "file_exists('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml') && prompt('Aprovar entrega final do video?')"
       }
     }
-  ]
+  ],
+  "schema_version": 2,
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "38a39527ec3169f44db5582f3ef7f039a6133a887019e09d17d057754b5dfd17",
+    "plan": "024fc8b99c855a822fbdf42e77ca97079a0d8e87d09f7a77e923e4ea00c6d9a1",
+    "route": "docs/routes/2026-11-08_ROUTE_LEGOLOOP_VIDEO_EDITION.json",
+    "spec": "86bc57bdfceef5ca66d81b953d602330a6c02ebce75231e3fe0e7fa36f1c4df7"
+  },
+  "version": "1.0.0"
 }

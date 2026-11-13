@@ -1,7 +1,8 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "name": "legoloop-video-master",
   "version": "1.0.0",
+  "schema_version": 2,
   "date": "2026-11-07",
   "description": "Mega-pipeline unificado em 4 pilares tecnológicos: Motion Graphics 3D com código, Whiteboard SVG no piloto automático, Auto-Editor de Reels e Engenharia Reversa de Canais.",
   "upstream_signatures": {
@@ -45,18 +46,39 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "effort": "low",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "token_budget": {
-        "input_tokens": 3000,
-        "output_tokens": 1000
+        "max_prompt_tokens": 3000,
+        "max_completion_tokens": 1000
+      },
+      "limits": {
+        "max_prompt_tokens": 3000,
+        "max_completion_tokens": 1000,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json')"
+      },
+      "spec_ref": "AC-n01_forensics_intake",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [],
       "context_out": [
@@ -85,18 +107,39 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "medium",
-        "fallback": "flash"
+        "fallback": "haiku"
       },
       "token_budget": {
-        "input_tokens": 5000,
-        "output_tokens": 2000
+        "max_prompt_tokens": 5000,
+        "max_completion_tokens": 2000
+      },
+      "limits": {
+        "max_prompt_tokens": 5000,
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json')"
+      },
+      "spec_ref": "AC-n02_motion_3d_engine",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "depends_on": [
         "n01_forensics_intake"
@@ -130,18 +173,39 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "effort": "low",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "token_budget": {
-        "input_tokens": 3000,
-        "output_tokens": 1000
+        "max_prompt_tokens": 3000,
+        "max_completion_tokens": 1000
+      },
+      "limits": {
+        "max_prompt_tokens": 3000,
+        "max_completion_tokens": 1000,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('scratch/videomaster/whiteboard_preview.svg')"
+      },
+      "spec_ref": "AC-n03_whiteboard_svg_engine",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "depends_on": [
         "n01_forensics_intake"
@@ -175,18 +239,39 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "medium",
-        "fallback": "flash"
+        "fallback": "haiku"
       },
       "token_budget": {
-        "input_tokens": 5000,
-        "output_tokens": 2000
+        "max_prompt_tokens": 5000,
+        "max_completion_tokens": 2000
+      },
+      "limits": {
+        "max_prompt_tokens": 5000,
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('testdata/fixtures/video_master_fixture_3s.mp4')"
+      },
+      "spec_ref": "AC-n04_auto_editor_reels",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "depends_on": [
         "n02_motion_3d_engine",
@@ -222,18 +307,39 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
         "effort": "medium",
-        "fallback": "flash"
+        "fallback": "haiku"
       },
       "token_budget": {
-        "input_tokens": 5000,
-        "output_tokens": 2000
+        "max_prompt_tokens": 5000,
+        "max_completion_tokens": 2000
+      },
+      "limits": {
+        "max_prompt_tokens": 5000,
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('docs/books/video-master/livro.json')"
+      },
+      "spec_ref": "AC-n05_channel_clone_book",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "depends_on": [
         "n04_auto_editor_reels"
