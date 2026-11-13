@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,6 +13,7 @@ import (
 	"legoloop/internal/matriz"
 	"legoloop/internal/reputation"
 	"legoloop/internal/ste"
+	"legoloop/internal/taxonomy"
 )
 
 func init() {
@@ -25,8 +28,14 @@ var (
 
 type verOpts struct {
 	vault, registro, tipo, tier, natureza, etapa, caso, origem string
+	papel, guilda                                              string
 	min                                                        float64
 	copias, json                                               bool
+}
+
+type papeisInfo struct {
+	PapelPrimario     string   `json:"papel_primario"`
+	PapeisSecundarios []string `json:"papeis_secundarios"`
 }
 
 // linhaVer é uma linha da tabela: a peça e as cópias idênticas que ela representa.
@@ -37,15 +46,17 @@ type linhaVer struct {
 
 // entradaVer é a forma da linha no --json.
 type entradaVer struct {
-	Ref    string              `json:"ref"`
-	Nome   string              `json:"nome"`
-	Tipo   string              `json:"tipo"`
-	Tier   string              `json:"tier"`
-	Score  float64             `json:"total_score"`
-	Perfil *matriz.PerfilDeUso `json:"perfil,omitempty"`
-	Origem string              `json:"origem"`
-	Copias int                 `json:"copias"`
-	Refs   []string            `json:"refs"`
+	Ref               string              `json:"ref"`
+	Nome              string              `json:"nome"`
+	Tipo              string              `json:"tipo"`
+	Tier              string              `json:"tier"`
+	Score             float64             `json:"total_score"`
+	Perfil            *matriz.PerfilDeUso `json:"perfil,omitempty"`
+	Origem            string              `json:"origem"`
+	Copias            int                 `json:"copias"`
+	Refs              []string            `json:"refs"`
+	PapelPrimario     string              `json:"papel_primario,omitempty"`
+	PapeisSecundarios []string            `json:"papeis_secundarios,omitempty"`
 }
 
 // cmdMatrizVer mostra a matriz de peças: nota, tipo e perfil de uso, com as cópias idênticas numa linha só.
@@ -58,17 +69,17 @@ func cmdMatrizVer(args []string, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
+	papeis := carregarMapaPapeis(o.registro)
 	var passam []matriz.Entrada
 	for _, e := range reg.Entradas {
-		if passaVer(e, o) {
+		if passaVer(e, o, papeis) {
 			passam = append(passam, e)
 		}
 	}
-	return imprimirVer(d, agruparVer(passam, o.copias), o)
+	return imprimirVer(d, agruparVer(passam, o.copias), o, papeis)
 }
 
-func parseVer(args []string, d Deps) (o verOpts, code int, ok bool) {
-	fs := newFlags("matriz ver", d)
+func configurarFlagsVer(o *verOpts, fs *flag.FlagSet) {
 	fs.StringVar(&o.vault, "vault", "", "cofre canônico (padrão ~/.aidd/canonical)")
 	fs.StringVar(&o.registro, "registro", "", "caminho de um registry_matrix.json (padrão: o do cofre)")
 	fs.StringVar(&o.tipo, "tipo", "", "skill, mcp, script, hook, gate ou processo")
@@ -78,8 +89,15 @@ func parseVer(args []string, d Deps) (o verOpts, code int, ok bool) {
 	fs.StringVar(&o.etapa, "etapa", "", "etapa do vocabulário")
 	fs.StringVar(&o.caso, "caso", "", "caso de uso do vocabulário")
 	fs.StringVar(&o.origem, "origem", "", "declarado, inferido, confirmado ou nenhuma")
+	fs.StringVar(&o.papel, "papel", "", "papel operacional da taxonomia")
+	fs.StringVar(&o.guilda, "guilda", "", "guilda operacional da taxonomia")
 	fs.BoolVar(&o.copias, "copias", false, "uma linha por caminho, sem agrupar as cópias")
 	fs.BoolVar(&o.json, "json", false, "saída JSON")
+}
+
+func parseVer(args []string, d Deps) (o verOpts, code int, ok bool) {
+	fs := newFlags("matriz ver", d)
+	configurarFlagsVer(&o, fs)
 	if err := fs.Parse(args); err != nil {
 		return o, 2, false
 	}
@@ -94,13 +112,18 @@ func parseVer(args []string, d Deps) (o verOpts, code int, ok bool) {
 		o.registro = filepath.Join(v, "registry_matrix.json")
 	}
 	o.tipo, o.tier, o.origem = strings.ToLower(o.tipo), strings.ToLower(o.tier), strings.ToLower(o.origem)
+	o.papel, o.guilda = strings.ToLower(strings.TrimSpace(o.papel)), strings.ToLower(strings.TrimSpace(o.guilda))
 	voc, err := matriz.LoadVocab(v)
 	if err == nil {
 		err = validarVer(o, voc)
 	}
 	if err != nil {
 		fmt.Fprintln(d.Stderr, "erro:", err)
-		return o, 2, false
+		code := 2
+		if errors.Is(err, taxonomy.ErrPapelInvalido) || errors.Is(err, taxonomy.ErrGuildaInvalida) {
+			code = 1
+		}
+		return o, code, false
 	}
 	return o, 0, true
 }
@@ -124,6 +147,16 @@ func validarVer(o verOpts, voc matriz.Vocab) error {
 	}
 	if o.min < 0 || o.min > 1 {
 		return errors.New("--min precisa estar entre 0 e 1")
+	}
+	if o.papel != "" {
+		if err := taxonomy.ValidarPapel(o.papel); err != nil {
+			return fmt.Errorf("--papel %q inválido ou fora do catálogo canônico: %w", o.papel, err)
+		}
+	}
+	if o.guilda != "" {
+		if err := taxonomy.ValidarGuilda(taxonomy.Guilda(o.guilda)); err != nil {
+			return fmt.Errorf("--guilda %q inválida ou fora do catálogo canônico: %w", o.guilda, err)
+		}
 	}
 	return nil
 }
@@ -170,12 +203,123 @@ func origemDaEntrada(e matriz.Entrada) string {
 	return e.Perfil.Origem
 }
 
-func passaVer(e matriz.Entrada, o verOpts) bool {
+func carregarMapaPapeis(path string) map[string]papeisInfo {
+	res := make(map[string]papeisInfo)
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return res
+	}
+	var doc struct {
+		Entradas []struct {
+			Ref               string         `json:"ref"`
+			Nome              string         `json:"nome"`
+			PapelPrimario     string         `json:"papel_primario"`
+			PapeisSecundarios []string       `json:"papeis_secundarios"`
+			Tipado            map[string]any `json:"tipado"`
+		} `json:"entradas"`
+	}
+	if err := json.Unmarshal(b, &doc); err != nil {
+		return res
+	}
+	for _, it := range doc.Entradas {
+		info := mapearPapeisEntrada(it.PapelPrimario, it.PapeisSecundarios, it.Tipado)
+		if it.Ref != "" {
+			res[it.Ref] = info
+		}
+		if it.Nome != "" {
+			if _, exists := res[it.Nome]; !exists {
+				res[it.Nome] = info
+			}
+		}
+	}
+	return res
+}
+
+func mapearPapeisEntrada(prim string, secs []string, tipado map[string]any) papeisInfo {
+	info := papeisInfo{PapelPrimario: prim, PapeisSecundarios: secs}
+	if info.PapelPrimario == "" && tipado != nil {
+		if p, ok := tipado["papel_primario"].(string); ok {
+			info.PapelPrimario = p
+		}
+		if sList, ok := tipado["papeis_secundarios"].([]any); ok {
+			for _, item := range sList {
+				if s, ok := item.(string); ok {
+					info.PapeisSecundarios = append(info.PapeisSecundarios, s)
+				}
+			}
+		}
+	}
+	return info
+}
+
+func obterPapeisEntrada(e matriz.Entrada, mapa map[string]papeisInfo) papeisInfo {
+	if info, ok := mapa[e.Ref]; ok && (info.PapelPrimario != "" || len(info.PapeisSecundarios) > 0) {
+		return info
+	}
+	if info, ok := mapa[e.Nome]; ok && (info.PapelPrimario != "" || len(info.PapeisSecundarios) > 0) {
+		return info
+	}
+	if e.Tipado != nil {
+		if info := mapearPapeisEntrada("", nil, e.Tipado); info.PapelPrimario != "" || len(info.PapeisSecundarios) > 0 {
+			return info
+		}
+	}
+	if e.Ref != "" {
+		if b, err := os.ReadFile(e.Ref); err == nil {
+			prim, sec := matriz.ExtrairPapeis(string(b))
+			if prim != "" || len(sec) > 0 {
+				return papeisInfo{PapelPrimario: prim, PapeisSecundarios: sec}
+			}
+		}
+	}
+	return papeisInfo{}
+}
+
+func papelPertenceAGuilda(slug, guilda string) bool {
+	if slug == "" {
+		return false
+	}
+	p, err := taxonomy.ObterPapel(slug)
+	if err != nil {
+		return false
+	}
+	return string(p.Guilda) == guilda
+}
+
+func passaPapeis(e matriz.Entrada, o verOpts, mapa map[string]papeisInfo) bool {
+	info := obterPapeisEntrada(e, mapa)
+	if o.papel != "" {
+		bateu := info.PapelPrimario == o.papel || slices.Contains(info.PapeisSecundarios, o.papel)
+		if !bateu {
+			return false
+		}
+	}
+	if o.guilda != "" {
+		bateuGuilda := papelPertenceAGuilda(info.PapelPrimario, o.guilda)
+		if !bateuGuilda {
+			for _, sec := range info.PapeisSecundarios {
+				if papelPertenceAGuilda(sec, o.guilda) {
+					bateuGuilda = true
+					break
+				}
+			}
+		}
+		if !bateuGuilda {
+			return false
+		}
+	}
+	return true
+}
+
+func passaVer(e matriz.Entrada, o verOpts, mapa map[string]papeisInfo) bool {
 	switch {
 	case o.tipo != "" && e.Tipo != o.tipo,
 		o.tier != "" && string(e.Rating.Tier) != o.tier,
 		o.min > 0 && e.Rating.TotalScore < o.min,
 		o.origem != "" && origemDaEntrada(e) != o.origem:
+		return false
+	}
+	if (o.papel != "" || o.guilda != "") && !passaPapeis(e, o, mapa) {
 		return false
 	}
 	if o.natureza == "" && o.etapa == "" && o.caso == "" {
@@ -203,7 +347,7 @@ func agruparVer(es []matriz.Entrada, copias bool) []linhaVer {
 	return out
 }
 
-func imprimirVer(d Deps, ls []linhaVer, o verOpts) int {
+func imprimirVer(d Deps, ls []linhaVer, o verOpts, mapa map[string]papeisInfo) int {
 	if o.json {
 		doc := struct {
 			Total    int                      `json:"total_found"`
@@ -212,7 +356,20 @@ func imprimirVer(d Deps, ls []linhaVer, o verOpts) int {
 		}{Total: len(ls), Entradas: []entradaVer{}, Ratings: []reputation.PieceRating{}}
 		for _, l := range ls {
 			e := l.Entrada
-			doc.Entradas = append(doc.Entradas, entradaVer{e.Ref, e.Nome, e.Tipo, string(e.Rating.Tier), e.Rating.TotalScore, e.Perfil, origemDaEntrada(e), len(l.Refs), l.Refs})
+			info := obterPapeisEntrada(e, mapa)
+			doc.Entradas = append(doc.Entradas, entradaVer{
+				Ref:               e.Ref,
+				Nome:              e.Nome,
+				Tipo:              e.Tipo,
+				Tier:              string(e.Rating.Tier),
+				Score:             e.Rating.TotalScore,
+				Perfil:            e.Perfil,
+				Origem:            origemDaEntrada(e),
+				Copias:            len(l.Refs),
+				Refs:              l.Refs,
+				PapelPrimario:     info.PapelPrimario,
+				PapeisSecundarios: info.PapeisSecundarios,
+			})
 			doc.Ratings = append(doc.Ratings, e.Rating)
 		}
 		return printJSON(d, doc)

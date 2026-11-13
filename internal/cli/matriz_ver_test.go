@@ -339,3 +339,107 @@ func TestMatrizVer_CabecalhoDaUltimaColuna(t *testing.T) {
 		t.Errorf("--copias: coluna CAMINHO:\n%s", out)
 	}
 }
+
+func registroComPapeis(t *testing.T, a *ambiente) {
+	t.Helper()
+	reg := `{"generated_at":"2026-11-10","matrix_version":"2.0.0","total_pieces":4,
+	"ratings":[
+	 {"ref":"~/a","name":"peca-tdd","total_score":0.95,"tier":"ouro"},
+	 {"ref":"~/b","name":"peca-audio","total_score":0.85,"tier":"prata"},
+	 {"ref":"~/c","name":"peca-multi","total_score":0.90,"tier":"ouro"},
+	 {"ref":"~/d","name":"peca-secops","total_score":0.70,"tier":"prata"}],
+	"entradas":[
+	 {"ref":"~/a","nome":"peca-tdd","tipo":"skill","hash":"h1","papel_primario":"engenheiro-tdd","perfil":{"casos_de_uso":["tdd"],"etapas":["construir"],"naturezas":["software"],"origem":"declarado"}},
+	 {"ref":"~/b","nome":"peca-audio","tipo":"skill","hash":"h2","papel_primario":"animador-motion","perfil":{"casos_de_uso":["motion"],"etapas":["renderizar"],"naturezas":["midia"],"origem":"declarado"}},
+	 {"ref":"~/c","nome":"peca-multi","tipo":"skill","hash":"h3","papel_primario":"engenheiro-backend","papeis_secundarios":["engenheiro-tdd"],"perfil":{"casos_de_uso":["api"],"etapas":["construir"],"naturezas":["software"],"origem":"declarado"}},
+	 {"ref":"~/d","nome":"peca-secops","tipo":"skill","hash":"h4","papel_primario":"engenheiro-secops","perfil":{"casos_de_uso":["seguranca"],"etapas":["verificar"],"naturezas":["infra"],"origem":"declarado"}}]}
+`
+	if err := os.MkdirAll(a.vault, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(a.vault, "registry_matrix.json"), []byte(reg), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestMatrizVerFiltrosPapelGuilda(t *testing.T) {
+	t.Run("filtro por papel", testMatrizVerFiltroPapel)
+	t.Run("filtro por guilda", testMatrizVerFiltroGuilda)
+	t.Run("erro papel e guilda desconhecidos", testMatrizVerErroDesconhecidos)
+	t.Run("filtro por frontmatter no disco", testMatrizVerFiltroFrontmatterDisco)
+}
+
+func testMatrizVerFiltroPapel(t *testing.T) {
+	a := novoAmbiente(t)
+	registroComPapeis(t, a)
+	casos := []struct {
+		args []string
+		quer string
+	}{
+		{[]string{"--papel", "engenheiro-tdd"}, "peca-tdd,peca-multi"},
+		{[]string{"--papel", "animador-motion"}, "peca-audio"},
+		{[]string{"--papel", "ENGENHEIRO-SECOPS"}, "peca-secops"},
+	}
+	for _, c := range casos {
+		if got := nomesDe(a.verJSON(nil, c.args...)); got != c.quer {
+			t.Errorf("%v: veio %q, esperava %q", c.args, got, c.quer)
+		}
+	}
+}
+
+func testMatrizVerFiltroGuilda(t *testing.T) {
+	a := novoAmbiente(t)
+	registroComPapeis(t, a)
+	casos := []struct {
+		args []string
+		quer string
+	}{
+		{[]string{"--guilda", "audiovisual"}, "peca-audio"},
+		{[]string{"--guilda", "construcao"}, "peca-tdd,peca-multi"},
+		{[]string{"--guilda", "INFRA"}, "peca-secops"},
+	}
+	for _, c := range casos {
+		if got := nomesDe(a.verJSON(nil, c.args...)); got != c.quer {
+			t.Errorf("%v: veio %q, esperava %q", c.args, got, c.quer)
+		}
+	}
+}
+
+func testMatrizVerErroDesconhecidos(t *testing.T) {
+	a := novoAmbiente(t)
+	registroComPapeis(t, a)
+	casos := []struct {
+		args []string
+		quer string
+	}{
+		{[]string{"--papel", "ninja-react"}, "catálogo"},
+		{[]string{"--guilda", "guilda-inexistente"}, "catálogo"},
+	}
+	for _, c := range casos {
+		code, out, errb := a.ver(nil, c.args...)
+		if code != 1 || !strings.Contains(errb, c.quer) || out != "" {
+			t.Errorf("%v: exit %d, stdout %q, stderr %q", c.args, code, out, errb)
+		}
+	}
+}
+
+func testMatrizVerFiltroFrontmatterDisco(t *testing.T) {
+	a := novoAmbiente(t)
+	skillPath := filepath.Join(a.home, "skills", "minha-skill", "SKILL.md")
+	_ = os.MkdirAll(filepath.Dir(skillPath), 0o755)
+	_ = os.WriteFile(skillPath, []byte("---\npapel: dissecador-web\npapeis: [engenheiro-tdd]\n---\n# Minha Skill\n"), 0o644)
+	reg := `{"generated_at":"2026-11-10","matrix_version":"2.0.0","total_pieces":1,
+	"ratings":[{"ref":"` + filepath.ToSlash(skillPath) + `","name":"minha-skill","total_score":0.90,"tier":"ouro"}],
+	"entradas":[{"ref":"` + filepath.ToSlash(skillPath) + `","nome":"minha-skill","tipo":"skill","hash":"h1"}]}`
+	_ = os.MkdirAll(a.vault, 0o755)
+	_ = os.WriteFile(filepath.Join(a.vault, "registry_matrix.json"), []byte(reg), 0o644)
+	if got := nomesDe(a.verJSON(nil, "--papel", "dissecador-web")); got != "minha-skill" {
+		t.Fatalf("esperava minha-skill por papel primario no frontmatter, obteve %q", got)
+	}
+	if got := nomesDe(a.verJSON(nil, "--papel", "engenheiro-tdd")); got != "minha-skill" {
+		t.Fatalf("esperava minha-skill por papel secundario no frontmatter, obteve %q", got)
+	}
+	if got := nomesDe(a.verJSON(nil, "--guilda", "reversa")); got != "minha-skill" {
+		t.Fatalf("esperava minha-skill por guilda reversa, obteve %q", got)
+	}
+}
