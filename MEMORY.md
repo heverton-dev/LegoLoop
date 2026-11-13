@@ -552,6 +552,12 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Épico 02 (`loops/*/`):** Migração paralela em 3 lotes disjuntos de todos os 10 DAGs de `loops/` (`ai-motion-graphics`, `video-edition`, `video-master`, `video-motion`, `canal-redc`, `cartoon-shorts`, `video-rea`, `dissecar`, `fechar`, `n10-foundry`) com fallback em string simples e contrato v2 rigoroso. Stop-Gate `SG-I6-E02` aprovado.
   - **Épico 03 & Fechamento:** Validação mecânica global de 100% dos 21 manifestos DAG do repositório (`legoloop validate`, todos exit 0). `go test -count=1 ./internal/dag/...` 100% verde. `bin/legoloop.exe` recompilado e instalado no PATH. Relatório oficial emitido em `docs/reports/2026-11-13_REPORT_INICIATIVA_I6.md`.
 
+- **13/11/2026** — 🌐 **Iniciativa I7 Concluída: Combos Honestos do 9Router e Eliminação do Erro 413 (Swarm):**
+  - **Sessão:** `d8076846-0f35-46f0-bed9-170faf884416`
+  - **Épico 01 (`internal/combo`):** Definição canônica dos 6 combos honestos certificados (`t-agente-128k`, `t-chat-128k`, `t-raciocinio-128k`, `t-visao-128k`, `t-codigo-128k`, `t-micro-8k`) eliminando provedores afetados por HTTP 413 em 100k tokens. Barreira mecânica `ValidarRequisicao` com sentinelas `ErrTetoTokensExcedido` e `ErrFerramentaNaoSuportada`. Stop-Gate `SG-I7-E01` aprovado.
+  - **Épico 02 (`internal/combo`):** Gerador atômico do manifesto JSON do 9Router em `scratch/combos_9router_manifest.json` (`manifesto.go`). Resolução transparente de retrocompatibilidade de nomes legados (`code-pro`, `code-fast`, `code-free`, `task-micro`, `megacombos`) em `legado.go`. Stop-Gate `SG-I7-E02` aprovado.
+  - **Épico 03 & Fechamento:** Validação mecânica global de 100% dos 22 manifestos DAG do repositório (`legoloop.exe validate`: todos exit 0). `go test` 100% verde nos pacotes de roteamento, combo e core. `bin/legoloop.exe` recompilado e instalado no PATH. Relatório oficial emitido em `docs/reports/2026-11-13_REPORT_INICIATIVA_I7.md`.
+
 ## Estado Atual do Repositório
 - **Status da Branch:** `main` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
