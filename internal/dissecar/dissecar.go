@@ -18,9 +18,9 @@ type Target struct {
 
 // Result representa o resultado da dissecação.
 type Result struct {
-	TargetID   string            `json:"target_id"`
-	AstNodes   []string          `json:"ast_nodes,omitempty"`
-	Syscalls   []string          `json:"syscalls,omitempty"`
+	TargetID   string              `json:"target_id"`
+	AstNodes   []string            `json:"ast_nodes,omitempty"`
+	Syscalls   []string            `json:"syscalls,omitempty"`
 	ReverseDAG map[string][]string `json:"reverse_dag,omitempty"`
 }
 

@@ -22,7 +22,7 @@
           "block": "aidd-spec",
           "routing": {
             "mode": "auto",
-            "combo": "code-pro"
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -30,7 +30,7 @@
           "block": "aidd-tickets",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         }
       ],
@@ -60,7 +60,7 @@
           "block": "aidd-rea-router",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -95,7 +95,7 @@
           "block": "interview",
           "routing": {
             "mode": "auto",
-            "combo": "code-pro"
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -139,7 +139,7 @@
           "block": "impeccable",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -147,7 +147,7 @@
           "block": "aidd-spec",
           "routing": {
             "mode": "auto",
-            "combo": "code-pro"
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -164,7 +164,7 @@
           "block": "code-review",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         }
       ],
@@ -202,7 +202,7 @@
           "block": "impeccable",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -219,7 +219,7 @@
           "block": "impeccable",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -227,7 +227,7 @@
           "block": "impeccable",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -235,7 +235,7 @@
           "block": "impeccable",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -243,7 +243,7 @@
           "block": "impeccable",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         }
       ],
@@ -294,7 +294,7 @@
           "block": "aidd-pocock",
           "routing": {
             "mode": "auto",
-            "combo": "code-pro"
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -302,7 +302,7 @@
           "block": "aidd-pocock",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -319,7 +319,7 @@
           "block": "aidd-pocock",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -327,7 +327,7 @@
           "block": "aidd-pocock",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         }
       ],
@@ -378,7 +378,7 @@
           "block": "aidd-osmani",
           "routing": {
             "mode": "auto",
-            "combo": "code-pro"
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -386,7 +386,7 @@
           "block": "aidd-osmani",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -403,7 +403,7 @@
           "block": "aidd-osmani",
           "routing": {
             "mode": "auto",
-            "combo": "code-pro"
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -420,7 +420,7 @@
           "block": "aidd-osmani",
           "routing": {
             "mode": "auto",
-            "combo": "code-pro"
+            "combo": "t-codigo-128k"
           }
         }
       ],
@@ -484,7 +484,7 @@
           "block": "aidd-lauren",
           "routing": {
             "mode": "auto",
-            "combo": "code-fast"
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -510,7 +510,7 @@
           "block": "aidd-lauren",
           "routing": {
             "mode": "auto",
-            "combo": "fast"
+            "combo": "t-chat-128k"
           }
         }
       ],

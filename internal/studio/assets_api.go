@@ -20,6 +20,7 @@ import (
 	"legoloop/internal/canon"
 	"legoloop/internal/reputation"
 	"legoloop/internal/studiodoc"
+	"legoloop/internal/taxonomy"
 )
 
 // maxListItems limita cada resposta de lista; o total real vai em "total".
@@ -242,7 +243,51 @@ func (s *Server) present(it assets.Item) assets.Item {
 		it.Meta["favorite"] = "true"
 	}
 
+	s.enriquecerPapelGuilda(&it)
+
 	return it
+}
+
+func (s *Server) enriquecerPapelGuilda(it *assets.Item) {
+	papel := it.Meta["papel_primario"]
+	if papel == "" {
+		papel = inferirPapelItem(*it)
+		if papel != "" {
+			it.Meta["papel_primario"] = papel
+		}
+	}
+	if papel != "" {
+		if p, err := taxonomy.ObterPapel(papel); err == nil {
+			it.Meta["guilda"] = string(p.Guilda)
+			it.Meta["papel_nome"] = p.Nome
+		}
+	}
+}
+
+func inferirPapelItem(it assets.Item) string {
+	name := strings.ToLower(it.Name)
+	switch {
+	case strings.Contains(name, "spec") || strings.Contains(name, "arquiteto"):
+		return "arquiteto"
+	case strings.Contains(name, "plan") || strings.Contains(name, "planejador"):
+		return "planejador"
+	case strings.Contains(name, "tdd") || strings.Contains(name, "test"):
+		return "engenheiro-tdd"
+	case strings.Contains(name, "rea") || strings.Contains(name, "dissecador") || strings.Contains(name, "obscura"):
+		return "dissecador-web"
+	case strings.Contains(name, "video") || strings.Contains(name, "motion"):
+		return "animador-motion"
+	case strings.Contains(name, "qualidade") || strings.Contains(name, "audit"):
+		return "auditor-qualidade"
+	case strings.Contains(name, "livro") || strings.Contains(name, "legopress") || strings.Contains(name, "manual"):
+		return "compilador-livro"
+	case it.Kind == assets.KindLoop:
+		return "orquestrador"
+	case it.Kind == assets.KindScript || it.Kind == assets.KindHook:
+		return "engenheiro-backend"
+	default:
+		return "arquiteto"
+	}
 }
 
 func (s *Server) getRegistry() *reputation.RegistryMatrix {

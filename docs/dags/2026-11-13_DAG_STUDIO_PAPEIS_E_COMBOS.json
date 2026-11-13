@@ -1,0 +1,172 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "name": "legoloop-studio-papeis-e-combos",
+  "version": "1.0.0",
+  "date": "2026-11-13",
+  "description": "Espelho executável da Frente B para integração de papéis canônicos e combos honestos no LegoLoop Studio Web",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-13_ROUTE_STUDIO_PAPEIS_E_COMBOS.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "stop_on_gate_failure": true,
+    "max_parallel_nodes": 1
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "TICK-ST-01.1",
+      "name": "Serialização de papéis e guildas na API de peças",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "codestral",
+        "effort": "medium",
+        "fallback": "ministral-3b"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-ST-01",
+      "status": "PENDING",
+      "context_in": [
+        "docs/specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md"
+      ],
+      "context_out": [
+        "internal/studio/pieces.go",
+        "internal/studio/pieces_test.go"
+      ],
+      "inputs": {
+        "source": "docs/specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md"
+      },
+      "output": {
+        "artifact": "internal/studio/pieces.go",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-ST-02.1",
+      "name": "Atualização de modelos do Studio para combos honestos",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-ST-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "codestral",
+        "effort": "medium",
+        "fallback": "ministral-3b"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-ST-03",
+      "status": "PENDING",
+      "context_in": [
+        "internal/studio/templates.json"
+      ],
+      "context_out": [
+        "internal/studio/templates.json"
+      ],
+      "inputs": {
+        "source": "internal/studio/templates.json"
+      },
+      "output": {
+        "artifact": "internal/studio/templates.json",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "TICK-ST-03.1",
+      "name": "Front-end Studio Canvas e Inspetor com distintivos de guilda",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-ST-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "codestral",
+        "effort": "medium",
+        "fallback": "ministral-3b"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-ST-02",
+      "status": "PENDING",
+      "context_in": [
+        "internal/studio/static/app.js",
+        "internal/studio/static/style.css"
+      ],
+      "context_out": [
+        "internal/studio/static/app.js",
+        "internal/studio/static/style.css"
+      ],
+      "inputs": {
+        "source": "internal/studio/static/app.js"
+      },
+      "output": {
+        "artifact": "internal/studio/static/app.js",
+        "gate": "exit_code == 0"
+      }
+    }
+  ]
+}

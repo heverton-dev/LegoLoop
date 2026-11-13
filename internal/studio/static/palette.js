@@ -67,6 +67,9 @@ function entryFromItem(cat, it) {
     tier: meta.tier || "",
     badgeColor: meta.badge_color || "",
     favorite: meta.favorite === "true",
+    papelPrimario: meta.papel_primario || "",
+    guilda: meta.guilda || "",
+    papelNome: meta.papel_nome || "",
   };
   if (cat === "hook") e.event = meta.event || "";
   if (cat === "gate") e.gateName = it.name;
@@ -161,7 +164,7 @@ function buildPaletteModel(blocks, inv) {
     }
   }
   for (const list of Object.values(model)) {
-    for (const e of list) e.search = `${e.name} ${e.desc} ${e.origin} ${e.scope} ${e.badge || ""}`;
+    for (const e of list) e.search = `${e.name} ${e.desc} ${e.origin} ${e.scope} ${e.guilda || ""} ${e.papelPrimario || ""} ${e.badge || ""}`;
   }
   return model;
 }
@@ -407,6 +410,13 @@ function createPalette(els, handlers) {
               }
               tierBadge.title = `Score Matricial: ${item.score || "?"} (${item.tier})`;
               actions.append(tierBadge);
+            }
+
+            // 1.1 Badge da Guilda Canônica
+            if (item.guilda) {
+              const guildaBadge = paletteEl("span", `guilda-badge guilda-badge--${item.guilda}`, item.guilda.toUpperCase());
+              guildaBadge.title = `Guilda: ${item.guilda} · Papel: ${item.papelNome || item.papelPrimario}`;
+              actions.append(guildaBadge);
             }
 
             if (item.badge) {

@@ -39,6 +39,10 @@ func (c *DissecarCommand) Run(args []string) error {
 		return fmt.Errorf("parametro --target e obrigatorio")
 	}
 
+	return c.executarDisseccao(target, outputJSON)
+}
+
+func (c *DissecarCommand) executarDisseccao(target string, outputJSON bool) error {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return err
@@ -59,15 +63,17 @@ func (c *DissecarCommand) Run(args []string) error {
 		return fmt.Errorf("erro ao extrair syscalls: %w", err)
 	}
 
-	dag := dissecar.BuildReverseDAG(astNodes)
-
 	result := dissecar.Result{
 		TargetID:   safePath,
 		AstNodes:   astNodes,
 		Syscalls:   syscalls,
-		ReverseDAG: dag,
+		ReverseDAG: dissecar.BuildReverseDAG(astNodes),
 	}
 
+	return c.renderizarResultado(result, outputJSON)
+}
+
+func (c *DissecarCommand) renderizarResultado(result dissecar.Result, outputJSON bool) error {
 	if outputJSON {
 		enc := json.NewEncoder(c.output)
 		enc.SetIndent("", "  ")

@@ -157,7 +157,7 @@ func parseFrontmatter(data []byte) (name, desc string, ont map[string]string) {
 			name = limitRunes(unquote(val), maxNameRunes)
 		case "description":
 			desc, i = descriptionValue(lines, i, val)
-		case "consumes", "produces", "artifact", "gate", "suggested_model":
+		case "consumes", "produces", "artifact", "gate", "suggested_model", "papel_primario", "papeis_secundarios":
 			v := strings.TrimSpace(val)
 			v = strings.Trim(v, "[]")
 			ont[k] = unquote(v)

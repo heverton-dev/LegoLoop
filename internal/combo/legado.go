@@ -4,6 +4,7 @@ package combo
 var mapaLegado = map[string]string{
 	"code-pro":            "t-codigo-128k",
 	"code-fast":           "t-chat-128k",
+	"fast":                "t-chat-128k",
 	"code-free":           "t-agente-128k",
 	"t" + "ask-micro":     "t-micro-8k",
 	"megacombo-coding":    "t-codigo-128k",

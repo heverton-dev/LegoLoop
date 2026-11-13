@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "route_id": "studio-papeis-e-combos",
+  "name": "Integração de Papéis e Combos no LegoLoop Studio Web",
+  "description": "Exposição de papéis canônicos, guildas e combos certificados na API e interface web do Studio",
+  "category": "web",
+  "nodes": [
+    {
+      "id": "tick-st-01",
+      "name": "Backend API e Serialização",
+      "role": "backend-developer",
+      "routing": {
+        "model": "codestral",
+        "provider": "9router",
+        "combo": "t-codigo-128k",
+        "max_tokens": 8192,
+        "temperature": 0.1,
+        "requires_tools": false,
+        "fallback": "ministral-3b"
+      },
+      "gate": "go test -count=1 ./internal/studio/..."
+    },
+    {
+      "id": "tick-st-02",
+      "name": "Atualização de Modelos do Studio",
+      "role": "architect",
+      "routing": {
+        "model": "codestral",
+        "provider": "9router",
+        "combo": "t-codigo-128k",
+        "max_tokens": 8192,
+        "temperature": 0.1,
+        "requires_tools": false,
+        "fallback": "ministral-3b"
+      },
+      "gate": "go test -count=1 ./internal/studio/templates_test.go"
+    },
+    {
+      "id": "tick-st-03",
+      "name": "Front-end Studio Canvas e Inspetor",
+      "role": "frontend-developer",
+      "routing": {
+        "model": "codestral",
+        "provider": "9router",
+        "combo": "t-codigo-128k",
+        "max_tokens": 8192,
+        "temperature": 0.1,
+        "requires_tools": false,
+        "fallback": "ministral-3b"
+      },
+      "gate": "go test -count=1 ./internal/studio/..."
+    }
+  ]
+}

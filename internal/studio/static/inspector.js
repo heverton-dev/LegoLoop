@@ -88,11 +88,31 @@ function onRoutingChanged(node) {
   renderInspector();
 }
 
+const COMBO_HONESTO_SPECS = {
+  "t-codigo-128k": { teto: "128k", tools: "Sim", modelos: "Codestral / Nemotron / Llama", desc: "Desenvolvimento e refatoração com suporte a ferramentas" },
+  "t-chat-128k": { teto: "128k", tools: "Sim", modelos: "Ministral 3B / Llama 4 Scout / Gemini Lite", desc: "Interação rápida e síntese conversacional" },
+  "t-raciocinio-128k": { teto: "128k", tools: "Não", modelos: "Dots 3 Note / DeepSeek R1", desc: "Raciocínio lógico e dedução sem chamadas externas" },
+  "t-visao-128k": { teto: "128k", tools: "Sim", modelos: "Llama 4 Scout / Gemini Lite", desc: "Inspeção multimodal e análise visual" },
+  "t-agente-128k": { teto: "128k", tools: "Sim", modelos: "Codestral / Nemotron Nano", desc: "Autonomia com loop fechado e ferramentas ativas" },
+  "t-micro-8k": { teto: "8k", tools: "Não", modelos: "Groq Llama 3.3 70B", desc: "Tarefas microscópicas com barreira estrita de 8k" },
+};
+
 function routingFields(node) {
   const r = node.routing;
   const out = [];
   if (r.mode === "auto") {
-    out.push(selectField("Combo do 9Router", r.combo, modelIds("9router"), (v) => { r.combo = v; onRoutingChanged(node); }));
+    const defaultCombos = ["t-codigo-128k", "t-chat-128k", "t-agente-128k", "t-raciocinio-128k", "t-visao-128k", "t-micro-8k"];
+    const routerCombos = modelIds("9router");
+    const options = Array.from(new Set([...defaultCombos, ...routerCombos]));
+    out.push(selectField("Combo Honesto (9Router)", r.combo, options, (v) => { r.combo = v; onRoutingChanged(node); }));
+    const spec = COMBO_HONESTO_SPECS[r.combo] || { teto: "128k", tools: "Sim", modelos: "Auto", desc: "Combo certificado contra erro 413" };
+    const card = el("div", "combo-info-card");
+    card.append(
+      el("div", "combo-info-header", `Teto: ${spec.teto} · Tools: ${spec.tools}`),
+      el("div", "combo-info-modelos", `Modelos: ${spec.modelos}`),
+      el("div", "combo-info-desc", spec.desc)
+    );
+    out.push(card);
     return out;
   }
   out.push(selectField("Modelo", r.model, modelIds(), (v) => { r.model = v; onRoutingChanged(node); }));
@@ -272,6 +292,9 @@ function renderNodePanel(body, node) {
   state.gateDraft = null;
   const rerender = () => { clearValidation(); renderNode(node); renderInspector(); };
   const children = [kv(node.piece ? "Peça" : "Bloco", node.piece ? `${block.label} (${node.piece.kind})` : `${block.label} (${block.ref})`)];
+  if (node.role) {
+    children.push(kv("Papel Canônico", node.role));
+  }
 
   const isSubloop = (node.piece && (node.piece.kind === "subloop" || node.piece.kind === "loop")) || (block.kind && (block.kind === "loop" || block.kind === "flow_loop"));
   if (isSubloop) {

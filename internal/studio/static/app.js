@@ -355,6 +355,7 @@ function renderBadges(node, box) {
     : status === "fail" ? pill("pill--fail", "com erro", block.gate)
     : pill("", "gate pendente", block.gate);
   const pills = [];
+  if (node.role) pills.push(pill("pill--role", node.role, `Papel Canônico: ${node.role}`));
   if (node.piece) pills.push(pill("pill--kind", PIECE_LABEL[node.piece.kind] || node.piece.kind, "Peça do inventário (entrada e saída: Qualquer)"));
   pills.push(pill("pill--handoff", block.artifact, "Handoff imutável"), pill("pill--route", routingLabel(node.routing), "Roteamento"), gate);
   const slots = slotCount(node.slots);

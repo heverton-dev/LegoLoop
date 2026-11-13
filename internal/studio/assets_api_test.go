@@ -353,3 +353,38 @@ func TestAssetImportRejectsInvalidURL(t *testing.T) {
 		t.Errorf("esperava status 400 para url vazia, obteve %d", recEmpty.Code)
 	}
 }
+
+func TestAssetsPapelEGuildaEnriquecidos(t *testing.T) {
+	s, home, _ := newAssetsServer(t)
+	writeFile(t, filepath.Join(home, ".claude", "skills", "minha-spec", "SKILL.md"), `---
+name: minha-spec
+description: Criador de spec
+papel_primario: arquiteto
+---
+`)
+	var b struct {
+		Items []struct {
+			Name string            `json:"name"`
+			Meta map[string]string `json:"meta"`
+		} `json:"items"`
+	}
+	decode(t, do(t, s.Handler(), "GET", "/api/assets/skill", ""), &b)
+	if len(b.Items) == 0 {
+		t.Fatal("esperava pelo menos uma skill listada")
+	}
+	found := false
+	for _, it := range b.Items {
+		if it.Name == "minha-spec" {
+			found = true
+			if it.Meta["papel_primario"] != "arquiteto" {
+				t.Errorf("papel_primario divergente: %v", it.Meta["papel_primario"])
+			}
+			if it.Meta["guilda"] != "governanca" {
+				t.Errorf("guilda divergente: %v", it.Meta["guilda"])
+			}
+		}
+	}
+	if !found {
+		t.Error("skill minha-spec não encontrada na resposta")
+	}
+}

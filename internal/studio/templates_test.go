@@ -2,6 +2,7 @@ package studio
 
 import (
 	"encoding/json"
+	"legoloop/internal/combo"
 	"net/http"
 	"testing"
 )
@@ -53,5 +54,35 @@ func TestTemplatesEndpointReturnsAtLeastThreeValidTemplates(t *testing.T) {
 		if !found {
 			t.Errorf("template esperado %q não encontrado", id)
 		}
+	}
+}
+
+func TestTemplatesCombosHonestosCertificados(t *testing.T) {
+	s, _ := newServer(t)
+	rec := do(t, s.Handler(), "GET", "/api/templates", "")
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d", rec.Code)
+	}
+
+	var res struct {
+		Templates []Template `json:"templates"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &res); err != nil {
+		t.Fatalf("erro ao unmarshal: %v", err)
+	}
+
+	testados := 0
+	for _, tmpl := range res.Templates {
+		for _, n := range tmpl.Composition.Nodes {
+			if n.Routing.Combo != "" {
+				testados++
+				if _, err := combo.ObterCombo(n.Routing.Combo); err != nil {
+					t.Errorf("template %s nó %s usa combo não certificado: %s (%v)", tmpl.ID, n.ID, n.Routing.Combo, err)
+				}
+			}
+		}
+	}
+	if testados == 0 {
+		t.Fatal("nenhum combo encontrado nos templates para validar")
 	}
 }

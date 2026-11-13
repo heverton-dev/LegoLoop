@@ -48,6 +48,9 @@
 | TICK-403 | ✅ | `internal/graph/index.go` `Route` (Dijkstra, desempate por ID) | idem; URL→Spec = obscura→rea→impeccable→aidd-spec |
 | TICK-501 | ✅ | `internal/studio/static/{index.html,style.css,app.js}` (canvas próprio, sem libs, embutido via `embed`) | `go test ./internal/studio` 92,8% |
 | TICK-502 | ✅ | `app.js` `renderBadges` (handoff, roteamento Sugerido/Manual/Auto, gate) | idem + verificação visual pendente |
+| TICK-ST-01 | ✅ | `internal/studio/assets_api.go` (`present`, `enriquecerPapelGuilda`, `inferirPapelItem`) + `internal/assets/skills.go` | `go test ./internal/studio` 100% PASS |
+| TICK-ST-02 | ✅ | `internal/studio/templates.json` + `templates_test.go` + `internal/combo/legado.go` (combos honestos certificados) | `go test ./internal/studio -run TestTemplates` PASS |
+| TICK-ST-03 | ✅ | `internal/studio/static/{palette.js,app.js,inspector.js,style.css}` (badges de 7 guildas, pill role e combo card) | `go test -count=1 ./...` 100% PASS |
 | TICK-503 | ✅ | `internal/studio/{compose,server}.go` `POST /api/materialize` → `pipeline.dag.json` | idem |
 
 ## Progresso da demanda `fabricar` (03/11/2026) — 18 tickets `PASSED`, `SG-E01..SG-FINAL` aprovados
@@ -557,6 +560,14 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Épico 01 (`internal/combo`):** Definição canônica dos 6 combos honestos certificados (`t-agente-128k`, `t-chat-128k`, `t-raciocinio-128k`, `t-visao-128k`, `t-codigo-128k`, `t-micro-8k`) eliminando provedores afetados por HTTP 413 em 100k tokens. Barreira mecânica `ValidarRequisicao` com sentinelas `ErrTetoTokensExcedido` e `ErrFerramentaNaoSuportada`. Stop-Gate `SG-I7-E01` aprovado.
   - **Épico 02 (`internal/combo`):** Gerador atômico do manifesto JSON do 9Router em `scratch/combos_9router_manifest.json` (`manifesto.go`). Resolução transparente de retrocompatibilidade de nomes legados (`code-pro`, `code-fast`, `code-free`, `task-micro`, `megacombos`) em `legado.go`. Stop-Gate `SG-I7-E02` aprovado.
   - **Épico 03 & Fechamento:** Validação mecânica global de 100% dos 22 manifestos DAG do repositório (`legoloop.exe validate`: todos exit 0). `go test` 100% verde nos pacotes de roteamento, combo e core. `bin/legoloop.exe` recompilado e instalado no PATH. Relatório oficial emitido em `docs/reports/2026-11-13_REPORT_INICIATIVA_I7.md`.
+
+- **13/11/2026** — 🎨 **Frente B Concluída: LegoLoop Studio Web com Papéis Canônicos e Combos Honestos:**
+  - **Sessão:** `d8076846-0f35-46f0-bed9-170faf884416`
+  - **Quinteto de Governança ISO:** INTENT, SPEC, PLAN, ROUTE e DAG criados e validados mecanicamente com exit 0 (`docs/dags/2026-11-13_DAG_STUDIO_PAPEIS_E_COMBOS.json`).
+  - **Backend API & Serialização:** `internal/assets/skills.go` e `internal/studio/assets_api.go` (`present`, `enriquecerPapelGuilda`, `inferirPapelItem`) expondo `papel_primario`, `papel_nome` e `guilda` integrada a `taxonomy.CatalogoCanonico`. Funclen <= 35 rigorosamente mantido.
+  - **Modelos do Studio:** Migração completa de 22 ocorrências em `internal/studio/templates.json` para os combos honestos certificados (`t-codigo-128k` e `t-chat-128k`). Teste `TestTemplatesCombosHonestosCertificados` comprovando ausência de combos legados.
+  - **Frontend UI/UX:** Badges de 7 guildas (`.guilda-badge--*`) na paleta de peças (`palette.js`), distintivo `.pill--role` nos cartões de nós do Canvas (`app.js`), e card informativo com os limites mecânicos do combo honesto (`teto`, `tools`, `modelos`, `desc`) no Inspetor (`inspector.js`). Estilos dedicados em `style.css`.
+  - **Portões Mecânicos e Fechamento:** `go test -count=1 ./...` 100% PASS em todos os 51 pacotes, `go vet` limpo, `funclen` vazio, `gofmt` sem divergências, 23/23 DAGs validados com `legoloop validate`. `bin/legoloop.exe` recompilado e instalado no PATH. Relatório oficial em `docs/reports/2026-11-13_REPORT_STUDIO_PAPEIS_E_COMBOS.md`.
 
 ## Estado Atual do Repositório
 - **Status da Branch:** `main` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.

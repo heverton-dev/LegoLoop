@@ -122,6 +122,8 @@ consumes: [Artifact:Briefing]
 produces: Artifact:Spec
 artifact: SPEC.md
 gate: file_exists('SPEC.md')
+papel_primario: arquiteto
+papeis_secundarios: [planejador]
 ---
 `)
 
@@ -136,7 +138,8 @@ description: Entrevista guiada
 
 	exp := mustFind(t, items, "explicit")
 	if exp.Meta["consumes"] != "Artifact:Briefing" || exp.Meta["produces"] != "Artifact:Spec" ||
-		exp.Meta["artifact"] != "SPEC.md" || exp.Meta["gate"] != "file_exists('SPEC.md')" {
+		exp.Meta["artifact"] != "SPEC.md" || exp.Meta["gate"] != "file_exists('SPEC.md')" ||
+		exp.Meta["papel_primario"] != "arquiteto" {
 		t.Errorf("explicit metadata ontológica incorreta: %+v", exp.Meta)
 	}
 
