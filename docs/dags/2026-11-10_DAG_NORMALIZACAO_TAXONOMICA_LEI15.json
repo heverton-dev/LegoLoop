@@ -1,5 +1,5 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "date": "2026-11-10",
   "description": "Espelho executável da ROUTE NORMALIZACAO_TAXONOMICA_LEI15",
   "execution_strategy": {
@@ -59,19 +59,21 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-00.1.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('scratch/tax_triagem.json')"
+        "gate": "exit_code == 0 && file_exists('scratch/tax_triagem.json')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E00.1",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -117,10 +119,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E00.2",
       "status": "PENDING",
@@ -130,7 +134,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -179,14 +183,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-00.3.json",
-        "gate": "exit_code == 0 \u0026\u0026 has_pattern('AGENTS.md', 'efêmero')"
+        "gate": "exit_code == 0 && has_pattern('AGENTS.md', 'efêmero')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E00.3",
       "status": "PENDING",
@@ -196,7 +202,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -242,14 +248,16 @@
       "nature": "macro",
       "output": {
         "artifact": "scratch/gates/TICK-00.4.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('scratch/tax_baseline.txt')"
+        "gate": "exit_code == 0 && file_exists('scratch/tax_baseline.txt')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E00.4",
       "status": "PENDING",
@@ -259,7 +267,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -302,14 +310,16 @@
       "nature": "macro",
       "output": {
         "artifact": "scratch/gates/TICK-00.5.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('tools/ticketgate/main.go')"
+        "gate": "exit_code == 0 && file_exists('tools/ticketgate/main.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E00.5",
       "status": "PENDING",
@@ -319,7 +329,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -353,10 +363,34 @@
       },
       "routing": {
         "mode": "manual",
-        "model": "human/operator"
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
       },
       "status": "PENDING",
-      "type": "stop_gate"
+      "type": "stop_gate",
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "spec_ref": "SG-E00",
+      "context_in": [],
+      "context_out": [
+        "scratch/gates/SG-E00.json"
+      ]
     },
     {
       "command": [
@@ -398,10 +432,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E01.1",
       "status": "PENDING",
@@ -411,7 +447,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -464,10 +500,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E01.2",
       "status": "PENDING",
@@ -477,7 +515,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -528,10 +566,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E01.3",
       "status": "PENDING",
@@ -541,7 +581,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -592,10 +632,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E01.4",
       "status": "PENDING",
@@ -605,7 +647,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -656,10 +698,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E01.5",
       "status": "PENDING",
@@ -669,7 +713,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -717,14 +761,16 @@
       "nature": "macro",
       "output": {
         "artifact": "scratch/gates/TICK-01.6.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json')"
+        "gate": "exit_code == 0 && file_exists('docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E01.6",
       "status": "PENDING",
@@ -734,7 +780,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -791,10 +837,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E02.1",
       "status": "PASSED",
@@ -804,7 +852,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -872,10 +920,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E02.2",
       "status": "PENDING",
@@ -885,7 +935,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -937,10 +987,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E02.3",
       "status": "PENDING",
@@ -950,7 +1002,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1002,10 +1054,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E02.4",
       "status": "PENDING",
@@ -1015,7 +1069,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1087,10 +1141,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E02.5",
       "status": "PENDING",
@@ -1100,7 +1156,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1140,10 +1196,34 @@
       },
       "routing": {
         "mode": "manual",
-        "model": "human/operator"
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
       },
       "status": "PENDING",
-      "type": "stop_gate"
+      "type": "stop_gate",
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "spec_ref": "SG-E02",
+      "context_in": [],
+      "context_out": [
+        "scratch/gates/SG-E02.json"
+      ]
     },
     {
       "command": [
@@ -1196,15 +1276,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.1",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1266,15 +1348,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.1",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1334,15 +1418,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.1",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1408,15 +1494,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.2",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1468,15 +1556,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.3",
       "status": "PASSED",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1543,15 +1633,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.4",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1618,15 +1710,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.4",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1693,15 +1787,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.4",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1768,15 +1864,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.4",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1842,15 +1940,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.5",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1916,15 +2016,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.5",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -1990,15 +2092,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.5",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2061,15 +2165,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.5",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2133,15 +2239,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.6",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2204,15 +2312,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E03.6",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2281,15 +2391,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E03.7",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2353,15 +2465,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E03.7",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2425,15 +2539,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E03.7",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2497,15 +2613,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E03.7",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2569,15 +2687,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E03.7",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2641,15 +2761,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E03.7",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2713,15 +2835,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E03.7",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2785,15 +2909,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E03.7",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2856,15 +2982,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E03.7",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2894,10 +3022,34 @@
       },
       "routing": {
         "mode": "manual",
-        "model": "human/operator"
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
       },
       "status": "PENDING",
-      "type": "stop_gate"
+      "type": "stop_gate",
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "spec_ref": "SG-E03",
+      "context_in": [],
+      "context_out": [
+        "scratch/gates/SG-E03.json"
+      ]
     },
     {
       "command": [
@@ -2934,19 +3086,21 @@
       "nature": "macro",
       "output": {
         "artifact": "scratch/gates/TICK-04.1.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('processos/legoloop-fechar/processo.dag.json')"
+        "gate": "exit_code == 0 && file_exists('processos/legoloop-fechar/processo.dag.json')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E04.1",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -2977,10 +3131,34 @@
       },
       "routing": {
         "mode": "manual",
-        "model": "human/operator"
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
       },
       "status": "PENDING",
-      "type": "stop_gate"
+      "type": "stop_gate",
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "spec_ref": "SG-E04-COFRE",
+      "context_in": [],
+      "context_out": [
+        "scratch/gates/SG-E04-COFRE.json"
+      ]
     },
     {
       "command": [
@@ -3012,19 +3190,21 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-04.2.json",
-        "gate": "exit_code == 0 \u0026\u0026 prompt('Os 6 loops do Cofre validam e o backup existe?')"
+        "gate": "exit_code == 0 && prompt('Os 6 loops do Cofre validam e o backup existe?')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E04.2",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3073,15 +3253,17 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E04.3",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3132,10 +3314,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-E04.4",
       "status": "PENDING",
@@ -3145,7 +3329,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3197,10 +3381,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E05.1",
       "status": "PENDING",
@@ -3210,7 +3396,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3261,10 +3447,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E05.2",
       "status": "PENDING",
@@ -3274,7 +3462,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3325,10 +3513,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E05.3",
       "status": "PENDING",
@@ -3338,7 +3528,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3390,10 +3580,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E05.4",
       "status": "PENDING",
@@ -3403,7 +3595,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3454,10 +3646,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-pro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E05.5",
       "status": "PENDING",
@@ -3467,7 +3661,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3519,10 +3713,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E05.6",
       "status": "PENDING",
@@ -3532,7 +3728,7 @@
         "type": "highest_seam"
       },
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3584,19 +3780,21 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-06.1.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "flash",
         "mode": "suggested",
-        "model": "code-fast"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-E06.1",
       "status": "PENDING",
       "tooling": {
-        "harness": "9router",
+        "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
         "runtime": "powershell"
@@ -3626,10 +3824,34 @@
       },
       "routing": {
         "mode": "manual",
-        "model": "human/operator"
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
       },
       "status": "PENDING",
-      "type": "stop_gate"
+      "type": "stop_gate",
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "spec_ref": "SG-FINAL",
+      "context_in": [],
+      "context_out": [
+        "scratch/gates/SG-FINAL.json"
+      ]
     }
   ],
   "trigger": {
@@ -3640,5 +3862,6 @@
     "plan": "1420ec1a08f0ba19a8360d81cbec4f33a6541c505ff1b8e1a912aab3b2c318db",
     "spec": "cbbb5d8d4075c08b5aa46afc5a96d9b817ad4b9d03fea24e0d74f429230272ea"
   },
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "schema_version": 2
 }

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "date": "2026-11-12",
   "description": "Espelho executável da ROUTE ROTEAMENTO_HONESTO",
   "execution_strategy": {
@@ -70,15 +70,16 @@
       "nature": "macro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-00.3.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/artefato/entrevista.go')"
+        "gate": "exit_code == 0 && file_exists('internal/artefato/entrevista.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-00.3",
       "status": "PENDING",
@@ -118,10 +119,34 @@
       },
       "routing": {
         "mode": "manual",
-        "model": "human/operator"
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
       },
       "status": "PENDING",
-      "type": "stop_gate"
+      "type": "stop_gate",
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "spec_ref": "SG-I3-CONTRATO",
+      "context_in": [],
+      "context_out": [
+        "scratch/gates/SG-I3-CONTRATO.json"
+      ]
     },
     {
       "command": [
@@ -165,15 +190,16 @@
       "nature": "extreme",
       "output": {
         "artifact": "scratch/gates/TICK-I3-00.1.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/types.go')"
+        "gate": "exit_code == 0 && file_exists('internal/dag/types.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "opus"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "opus",
+        "effort": "high",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-I3-00.1",
       "status": "PENDING",
@@ -237,15 +263,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-00.2.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('tools/route2dag/convert.go')"
+        "gate": "exit_code == 0 && file_exists('tools/route2dag/convert.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-00.2",
       "status": "PENDING",
@@ -307,15 +334,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-01.1.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/roteamento/inventario.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/inventario.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-01.1",
       "status": "PENDING",
@@ -376,15 +404,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-01.2.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/roteamento/perfil.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/perfil.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-01.2",
       "status": "PENDING",
@@ -447,15 +476,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-01.3.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/roteamento/resolver.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/resolver.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-01.3",
       "status": "PENDING",
@@ -520,15 +550,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-01.4.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/rota.go')"
+        "gate": "exit_code == 0 && file_exists('internal/cli/rota.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-01.4",
       "status": "PENDING",
@@ -592,15 +623,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-02.1.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/orchestrix/unit_harness.go')"
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/unit_harness.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-02.1",
       "status": "PENDING",
@@ -662,15 +694,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-02.2.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/orchestrix/gateway.go')"
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/gateway.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-02.2",
       "status": "PENDING",
@@ -734,15 +767,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-02.3.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/orchestrix/despacho.go')"
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/despacho.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-02.3",
       "status": "PENDING",
@@ -806,15 +840,16 @@
       "nature": "macro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-02.4.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/orchestrix/workers.go')"
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/workers.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-02.4",
       "status": "PENDING",
@@ -875,15 +910,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-02.5.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/conflito.go')"
+        "gate": "exit_code == 0 && file_exists('internal/runner/conflito.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-02.5",
       "status": "PENDING",
@@ -944,15 +980,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-02.6.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/orchestrix/relatorio.go')"
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/relatorio.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-02.6",
       "status": "PENDING",
@@ -1015,15 +1052,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-03.1.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/roteamento/homologacao/bateria.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/homologacao/bateria.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-03.1",
       "status": "PENDING",
@@ -1089,15 +1127,16 @@
       "nature": "macro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-03.2.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/roteamento/homologacao/store.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/homologacao/store.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-03.2",
       "status": "PENDING",
@@ -1160,15 +1199,16 @@
       "nature": "macro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-03.3.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/roteamento/homologacao/agy.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/homologacao/agy.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-03.3",
       "status": "PENDING",
@@ -1231,15 +1271,16 @@
       "nature": "macro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-03.4.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/roteamento/homologacao/provider.go')"
+        "gate": "exit_code == 0 && file_exists('internal/roteamento/homologacao/provider.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "high",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-03.4",
       "status": "PENDING",
@@ -1302,15 +1343,16 @@
       "nature": "micro",
       "output": {
         "artifact": "scratch/gates/TICK-I3-04.1.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/mcp/skill_router.go')"
+        "gate": "exit_code == 0 && file_exists('internal/mcp/skill_router.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "medium",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "sonnet"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "spec_ref": "AC-I3-04.1",
       "status": "PENDING",
@@ -1378,11 +1420,12 @@
       },
       "rollback_strategy": "stash_changes",
       "routing": {
-        "effort": "low",
-        "fallback": "sonnet",
-        "harness": "claude",
         "mode": "suggested",
-        "model": "haiku"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "spec_ref": "AC-I3-05.1",
       "status": "PENDING",
@@ -1417,11 +1460,34 @@
       },
       "routing": {
         "mode": "manual",
-        "model": "human/operator"
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
       },
       "spec_ref": "AC-I3-05.2",
       "status": "PENDING",
-      "type": "stop_gate"
+      "type": "stop_gate",
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "context_in": [],
+      "context_out": [
+        "scratch/gates/SG-I3-HOMOLOGACAO.json"
+      ]
     },
     {
       "depends_on": [
@@ -1442,10 +1508,34 @@
       },
       "routing": {
         "mode": "manual",
-        "model": "human/operator"
+        "harness": "human",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
       },
       "status": "PENDING",
-      "type": "stop_gate"
+      "type": "stop_gate",
+      "limits": {
+        "max_completion_tokens": 0,
+        "max_duration_sec": 0,
+        "max_prompt_tokens": 0
+      },
+      "tooling": {
+        "harness": "human",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "human"
+      },
+      "rollback_strategy": "none",
+      "verification": {
+        "exit_code": 0,
+        "test_command": ""
+      },
+      "spec_ref": "SG-I3-FINAL",
+      "context_in": [],
+      "context_out": [
+        "scratch/gates/SG-I3-FINAL.json"
+      ]
     }
   ],
   "trigger": {
@@ -1456,5 +1546,6 @@
     "plan": "97af926f2a7af3f9f15b45ac29d64aaa2b521d3645e9259a2160ad708bfa8336",
     "spec": "2b7b46cdd5721059e36cacaa1ca718551a0f77ba9929f4fdcedb1b7d3b842ac2"
   },
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "schema_version": 2
 }

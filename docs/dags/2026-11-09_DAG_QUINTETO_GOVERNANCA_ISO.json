@@ -1,5 +1,5 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "name": "legoloop-quinteto-governanca-iso",
   "version": "1.1.0",
   "date": "2026-11-09",
@@ -46,13 +46,17 @@
       "depends_on": [],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "docs/specs/2026-11-09_SPEC_QUINTETO_GOVERNANCA_ISO.md"
@@ -89,6 +93,13 @@
       "output": {
         "artifact": "internal/processo/projecoes.go",
         "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
       }
     },
     {
@@ -102,13 +113,17 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "internal/processo/projecoes.go"
@@ -146,6 +161,13 @@
       "output": {
         "artifact": "internal/fabricar/camada4.go",
         "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
       }
     },
     {
@@ -159,13 +181,17 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "internal/dag/types.go",
@@ -204,6 +230,13 @@
       "output": {
         "artifact": "internal/dag/types.go",
         "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
       }
     },
     {
@@ -217,13 +250,17 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "internal/compor/compor.go"
@@ -260,6 +297,13 @@
       "output": {
         "artifact": "internal/compor/compor.go",
         "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
       }
     },
     {
@@ -273,13 +317,17 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "internal/fechar/fechar.go"
@@ -316,6 +364,13 @@
       "output": {
         "artifact": "internal/fechar/fechar.go",
         "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
       }
     },
     {
@@ -329,13 +384,17 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "docs/templates/templates.go",
@@ -374,6 +433,13 @@
       "output": {
         "artifact": "docs/templates/templates_test.go",
         "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
       }
     },
     {
@@ -388,13 +454,17 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "loops/video-rea/pipeline.dag.json"
@@ -431,6 +501,13 @@
       "output": {
         "artifact": "loops/legoloop-video-rea/pipeline.dag.json",
         "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
       }
     },
     {
@@ -444,13 +521,17 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
-        "fallback": "flash"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
       },
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "loops/"
@@ -487,7 +568,15 @@
       "output": {
         "artifact": "docs/dags/",
         "gate": "exit_code == 0"
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "harness": "claude",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "powershell"
       }
     }
-  ]
+  ],
+  "schema_version": 2
 }
