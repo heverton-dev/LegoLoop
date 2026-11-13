@@ -17,6 +17,7 @@ var FS embed.FS
 var naoNativas = map[string]bool{
 	"legoloop-canal-redc":     true,
 	"legoloop-cartoon-shorts": true,
+	"legoloop-gateway-agy":    true,
 	"legoloop-n10-foundry":    true,
 	"legoloop-video-edition":  true,
 }

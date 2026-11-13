@@ -1,0 +1,11 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Gateway de LLM no Antigravity CLI: Chaves por Variável de Ambiente",
+  "nome_base": "13-11-2026_GATEWAY-DE-LLM-NO-AGY-CHAVES-POR-VARIAVEL-DE-AMBIENTE",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "fonte": "docs/manuals/2026-11-13_MANUAL_GATEWAY_LLM_AGY_LEGOLOOP.md",
+  "partes": ["00-frontmatter.md","01-macro.md","02-meso-tres-metodos.md","03-micro-variaveis.md","04-pratica.md","05-limites.md","06-apendices.md"],
+  "revisoes": [],
+  "ultima_compilacao": "2026-11-13"
+}
