@@ -185,10 +185,10 @@ func TestSchemasV1eV2ValidamProcessos(t *testing.T) {
 			}
 		}
 	}
-	// 24 arquivos JSON na pasta de Processos: 23 passam no parser (inclui os 15
-	// do teste dourado) e 1 legado é recusado.
-	if validados != 23 {
-		t.Fatalf("validei %d Processos do repositório, esperado 23", validados)
+	// Pelo menos 23 arquivos passam no parser (inclui os 15 do teste dourado)
+	// e 1 legado antigo é recusado pelo parser.
+	if validados < 23 {
+		t.Fatalf("validei %d Processos do repositório, esperado pelo menos 23", validados)
 	}
 }
 

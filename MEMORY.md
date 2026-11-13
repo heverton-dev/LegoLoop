@@ -539,6 +539,13 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
     - `DAG`: [docs/dags/2026-11-10_DAG_MATRIZ_PAPEIS.json](docs/dags/2026-11-10_DAG_MATRIZ_PAPEIS.json) (Projetado mecanicamente via `route2dag`).
   - **Status:** Colocado em stand-by formal pelo usuário antes da execução do Épico 01, aguardando alinhamento com implementações concomitantes.
 
+- **13/11/2026** — 🏷️ **Iniciativa I5 Concluída: Matriz Canônica de Papéis e Casamento Determinístico (Swarm):**
+  - **Sessão:** `d8076846-0f35-46f0-bed9-170faf884416`
+  - **Épico 01 (`internal/taxonomy`):** Catálogo de 7 Guildas e 20 Papéis canônicos em `roles.go`, validação estrita Poka-Yoke (`ValidarPapel`), paridade 1:1 comprovada em teste com `dictionary.json` e `2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json`, enum sincronizado em `schemas/dag.v2.json`. Stop-Gate `SG-E01` aprovado.
+  - **Épico 02 (`internal/matriz` e `internal/cli`):** Struct `Peca` estendida com `PapelPrimario`, `PapeisSecundarios` e método `Validate() error` com erros sentinela (`perfil.go`), extração de frontmatter (`frontmatter.go`). Flags `--papel` e `--guilda` na CLI `legoloop matriz ver` (`matriz_ver.go`) com validação taxonômica.
+  - **Épico 03 (`internal/fabricar`):** Algoritmo de casamento determinístico em 2 níveis (`merger_fit.go`): preferência por papel primário (desempate por score/tier), fallback para secundário e retorno de `ErrNenhumaFerramentaEncontrada` sem alucinação. Stop-Gate `SG-E02` aprovado.
+  - **Portões Mecânicos e Fechamento:** 100% dos pacotes verdes em `go test -count=1 ./...`, `go vet` limpo, `gofmt` sem divergências, `bin/legoloop.exe` instalado no PATH (`go install ./cmd/legoloop`). Relatório oficial emitido em `docs/reports/2026-11-13_REPORT_INICIATIVA_I5.md`.
+
 ## Estado Atual do Repositório
 - **Status da Branch:** `main` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
