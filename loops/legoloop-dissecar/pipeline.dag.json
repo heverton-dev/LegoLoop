@@ -1,0 +1,32 @@
+{
+  "name": "legoloop-dissecar",
+  "version": "1.0.0",
+  "description": "Pipeline DAG para a Iniciativa DISSECAR",
+  "nodes": [
+    {
+      "id": "analisar",
+      "name": "Analisar Alvo",
+      "description": "Inspeciona o alvo e extrai metadados"
+    },
+    {
+      "id": "decompor",
+      "name": "Decompor Estrutura",
+      "description": "Divide o alvo em micro-componentes"
+    },
+    {
+      "id": "fechar",
+      "name": "Fechamento Canônico",
+      "description": "Executa testes, linter e relatórios"
+    }
+  ],
+  "edges": [
+    {
+      "from": "analisar",
+      "to": "decompor"
+    },
+    {
+      "from": "decompor",
+      "to": "fechar"
+    }
+  ]
+}
