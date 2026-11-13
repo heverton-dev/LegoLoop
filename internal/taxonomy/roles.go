@@ -7,8 +7,10 @@ import (
 
 // Erros sentinela do subsistema de papeis e taxonomia.
 var (
-	ErrPapelInvalido  = errors.New("taxonomy: papel operacional desconhecido ou fora do catalogo")
-	ErrGuildaInvalida = errors.New("taxonomy: guilda operacional desconhecida")
+	ErrPapelInvalido               = errors.New("taxonomy: papel operacional desconhecido ou fora do catalogo")
+	ErrGuildaInvalida              = errors.New("taxonomy: guilda operacional desconhecida")
+	ErrPapelPrimarioObrigatorio    = errors.New("matriz: peca deve possuir papel_primario valido")
+	ErrNenhumaFerramentaEncontrada = errors.New("fabricar: nenhuma ferramenta compativel encontrada no cofre")
 )
 
 // Guilda representa uma divisao operacional da fabrica.

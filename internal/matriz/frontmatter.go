@@ -50,6 +50,26 @@ func limpa(s string) string { return strings.Trim(strings.TrimSpace(s), `"'`) }
 
 var reQuandoNaoUsar = regexp.MustCompile(`(?i)quando\s+n[ãa]o\s+usar[:*\s]*([^\n]+)`)
 
+// ExtrairPapeis extrai papel_primario e papeis_secundarios do frontmatter da peca.
+// Reconhece as chaves papel_primario / papel e papeis_secundarios / papeis.
+func ExtrairPapeis(texto string) (primario string, secundarios []string) {
+	fm := frontmatter(texto)
+	if fm == nil {
+		return "", nil
+	}
+	if v, ok := fm["papel_primario"]; ok && len(v) > 0 {
+		primario = v[0]
+	} else if v, ok := fm["papel"]; ok && len(v) > 0 {
+		primario = v[0]
+	}
+	if v, ok := fm["papeis_secundarios"]; ok && len(v) > 0 {
+		secundarios = v
+	} else if v, ok := fm["papeis"]; ok && len(v) > 0 {
+		secundarios = v
+	}
+	return primario, secundarios
+}
+
 // trechoQuandoNaoUsar devolve a frase "Quando NÃO usar: ..." do texto da peça, se existir.
 func trechoQuandoNaoUsar(texto string) string {
 	if m := reQuandoNaoUsar.FindStringSubmatch(texto); m != nil {
