@@ -14,22 +14,25 @@
 
 ## Apêndice B — Relatório de conformidade
 
-| Fato                                      | Prova                                        |
-| :---------------------------------------- | :------------------------------------------- |
+| Fato                                        | Prova                                            |
+| :------------------------------------------ | :----------------------------------------------- |
 | As seis variáveis `AGY_LLM_GATEWAY_*` são documentadas | Google Cloud, "Connect Antigravity to an Enterprise Gateway" |
-| `gw agy 9router` grava as três variáveis    | `pkg/driver/driver.go`, `SetRoute`               |
-| `gw agy off` apaga as três variáveis        | `pkg/driver/driver.go`, ramo `RouteOff`          |
-| Gateway do 9Router respondeu              | `/v1/models` com HTTP 200 em 13/11/2026        |
-| O `agy` respondeu pelo 9Router              | confirmação do usuário em terminal novo      |
-| Comandos de rodízio estão bloqueados      | execução de `next`, `dev03`, `probe --all` e `sync` com código de saída 2 |
-| O Google aprova gateway de terceiros      | **Não verificado**                               |
-| `probe --all` causou os bloqueios           | **Não verificado** (hipótese)                    |
-| `gw agy list` não usa rede                  | leitura de `pkg/driver/list.go`, sem chamadas HTTP |
+| `gw agy 9router` grava as três variáveis      | `pkg/driver/driver.go`, `SetRoute`                   |
+| `gw agy off` apaga as três variáveis          | `pkg/driver/driver.go`, ramo `RouteOff`              |
+| Gateway do 9Router respondeu                | `/v1/models` com HTTP 200 em 13/11/2026            |
+| O `agy` respondeu pelo 9Router                | confirmação do usuário em terminal novo          |
+| Comandos de rodízio estão bloqueados        | execução de `next`, `dev03`, `probe --all` e `sync` com código de saída 2 |
+| O Google aprova gateway de terceiros        | **Não verificado**                                   |
+| `probe --all` causou os bloqueios             | **Não verificado** (hipótese)                        |
+| `gw agy list` não usa rede                    | leitura de `pkg/driver/list.go`, sem chamadas HTTP |
 | O IDE aberto depois do `off` ainda tinha as três variáveis | leitura do ambiente do processo raiz do IDE: três `AGY_LLM_GATEWAY_*` presentes |
-| O IDE reaberto veio sem as variáveis      | processo raiz novo, 52 variáveis lidas, nenhuma `AGY_LLM_GATEWAY_*` |
-| `gw` avisa o Windows da mudança de ambiente | `broadcastEnvChange()` em `agy_env_windows.go`; `go test ./pkg/driver` passou |
+| O IDE reaberto veio sem as variáveis        | processo raiz novo, 52 variáveis lidas, nenhuma `AGY_LLM_GATEWAY_*` |
+| `gw` avisa o Windows da mudança de ambiente   | `broadcastEnvChange()` em `agy_env_windows.go`; `go test ./pkg/driver` passou |
 | O IDE usa as variáveis para rotear o modelo | **Não verificado** (inferência do relato do usuário) |
-| A janela fechada deixa o PID vivo         | relato do usuário em 13/11/2026; causa **não verificada** |
+| A janela fechada deixa o PID vivo           | relato do usuário em 13/11/2026; causa **não verificada** |
+| O `Orca.exe` aberto com as variáveis repassa o 9Router aos filhos | varredura de processos em 13/11/2026: Orca, bash, `agy.exe`, `gw.exe` e `claude.exe` com as 3 variáveis |
+| Os atalhos `agy-env.cmd`, `agy`, `antigravity-ide` obedecem ao estado do `gw` | bateria de 11 testes nos dois modos, `cmd` e Git Bash, com leitura do ambiente do processo |
+| `agy -p` deixa `agy.exe` vivo depois de terminar | observado na bateria de 13/11/2026               |
 
 ## Apêndice C — Referência rápida
 

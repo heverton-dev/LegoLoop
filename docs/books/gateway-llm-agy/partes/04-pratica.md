@@ -70,3 +70,20 @@ Antes do passo 5, teste a URL e a chave com uma chamada à rota `/models`. Respo
 **Como provar.** Leia só os nomes das variáveis do processo raiz novo. Nenhuma pode começar com `AGY_LLM_GATEWAY` depois do `gw agy off`.
 
 O `agy` de linha de comando é outro processo (`agy.exe`). Feche o terminal que o roda e abra um novo. Não encerre o `agy.exe` de outra sessão.
+
+## 20. Receita: usar os atalhos blindados nos terminais do Orca
+
+**Quando usar.** Você roda o `agy` ou o IDE de dentro de um terminal do Orca e quer que a rota do `gw` valha, mesmo que o Orca tenha aberto com o 9Router ligado.
+
+1. Rode `gw agy off` ou `gw agy 9router` para escolher a rota.
+2. Abra o IDE com o comando `antigravity-ide`.
+3. Rode o `agy` com o comando `agy`.
+4. Para provar, leia só os nomes das variáveis do processo criado. Na rota oficial, nenhuma pode começar com `AGY_LLM_GATEWAY`.
+
+**Como funciona.** Os atalhos leem `~/.gw/harness_state/agy.json`. Fora da rota `9router`, apagam as três variáveis. Na rota `9router`, carregam as três do registro do usuário.
+
+**Erro comum.** Digitar o caminho de `Antigravity IDE.exe`. Esse caminho não passa pelo atalho e herda o ambiente do terminal.
+
+**Causa raiz.** O `Orca.exe` aberto com as variáveis ligadas repassa o ambiente a todo processo filho. Fechar o Orca e abri-lo pelo menu Iniciar resolve de vez.
+
+**Bateria de testes.** Em 13/11/2026 foram testados os quatro atalhos, nos dois modos, no Git Bash e no `cmd`. Todos obedeceram ao estado do `gw` (Apêndice B).

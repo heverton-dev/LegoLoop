@@ -283,6 +283,55 @@ Se você não tem esse leitor, use o teste de comportamento: abra o agente do ID
 
 Não verificado: se o IDE usa as variáveis para rotear as chamadas de modelo. A página do Google documenta as variáveis para o `agy` de linha de comando. O relato do usuário, de que o IDE seguia no 9Router, indica que ele as lê.
 
+### 7.3 Causa raiz: o Orca carrega o ambiente antigo
+
+Em 13/11/2026, mesmo depois do `gw agy off`, o IDE e o `agy` abertos de dentro do Orca continuavam no 9Router.
+Uma varredura dos processos mostrou a causa: o próprio `Orca.exe` (aberto às 08:59, com as variáveis ligadas) tinha as três variáveis `AGY_LLM_GATEWAY_*` no ambiente.
+Tudo que nasce do Orca herda esse ambiente: terminais `bash`, `agy.exe`, `gw.exe` e `claude.exe`.
+O `gw agy off` apaga as variáveis do Windows, mas não altera o ambiente de um processo que já roda.
+
+Correção estrutural: os atalhos leem só o estado do `gw` (`~/.gw/harness_state/agy.json`) e ignoram o ambiente herdado.
+
+| Arquivo em `~/.local/bin` | Função |
+| :--- | :--- |
+| `agy-env.cmd` | rota diferente de `9router`: apaga as três variáveis. Rota `9router`: carrega as três do registro do usuário |
+| `agy.cmd` e `antigravity.cmd` | chamam `agy-env.cmd` e depois o `agy.exe` |
+| `antigravity-ide.cmd` | chama `agy-env.cmd` e depois o atalho de linha de comando do IDE |
+| `agy`, `antigravity` e `antigravity-ide` (sh) | mesma lógica para o Git Bash, com `reg query` |
+
+Cópias versionadas desses arquivos: `scripts/wrappers-agy/` no repositório `auto-provider-onboarding`. O `gw harness sync-wrappers` não os sobrescreve.
+
+Regras de uso nos terminais do Orca:
+
+1. Para abrir o IDE, digite `antigravity-ide`.
+2. Para o `agy`, digite `agy`.
+3. Não digite o caminho de `Antigravity IDE.exe`. Esse caminho herda o ambiente do terminal.
+4. O atalho do menu Iniciar e o Explorer já abrem limpos.
+
+### 7.4 Bateria de testes (13/11/2026)
+
+Cada linha lê o ambiente do processo criado. O terminal de teste vinha do Orca, com as variáveis.
+
+| Rota | Terminal | Caminho | Resultado |
+| :--- | :--- | :--- | :--- |
+| qualquer | poluído | executável do IDE direto | TEM(3). Falha esperada, sem wrapper |
+| `official_pro` | poluído | `agy.cmd` | limpo |
+| `official_pro` | poluído | `agy` (sh) | limpo |
+| `official_pro` | poluído | `antigravity-ide.cmd` | limpo |
+| `official_pro` | poluído | `antigravity-ide` (sh) | limpo |
+| `official_pro` | poluído | IDE pelo Explorer | limpo |
+| `9router` | sem variáveis | `agy.cmd` | TEM(3) |
+| `9router` | sem variáveis | `agy` (sh) | TEM(3) |
+| `9router` | sem variáveis | `antigravity-ide.cmd` | TEM(3) |
+| `9router` | sem variáveis | `antigravity-ide` (sh) | TEM(3) |
+| `9router` | com variáveis | `agy` (sh) | TEM(3) |
+
+Observações:
+
+- O `agy -p` deixa um `agy.exe` vivo depois de terminar. Isso explica parte do PID que continua depois de fechar a janela. Encerre só os `agy.exe` que você criou, pelo PID.
+- Quem já está aberto com o ambiente antigo (por exemplo o `agy.exe` das 08:59) só muda quando for fechado e reaberto.
+- A cura definitiva é fechar o Orca inteiro e abri-lo pelo menu Iniciar. Ele passa a nascer sem as variáveis.
+
 ---
 
 ## 8. Validação
@@ -308,6 +357,7 @@ Prova desta máquina (13/11/2026):
 | :--- | :--- | :--- |
 | `agy` ignora o gateway | terminal aberto antes da mudança | abra um terminal novo |
 | IDE continua na rota antiga depois de `gw agy off` | processo do IDE aberto antes, ou janela fechada com PID vivo | seção 7.1: feche a árvore pelo PID da raiz e reabra pelo Explorer |
+| `agy` ou IDE aberto do Orca segue no 9Router | o `Orca.exe` aberto com as variáveis repassa o ambiente | seção 7.3: use `agy` e `antigravity-ide`, ou reinicie o Orca pelo menu Iniciar |
 | `agy` ignora o gateway em máquina gerenciada | `admin_settings.json` vence a variável | peça ao administrador |
 | Erro de protocolo | `WIRE_PROTOCOL` errado | `openai` para Chat Completions, `genai` para Gemini |
 | JetBrains ou Zed não usam o gateway | faltam `auth.type = gateway` e o campo `env` | seção 2, regra 2 |
