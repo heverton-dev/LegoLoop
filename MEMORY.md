@@ -546,6 +546,12 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Épico 03 (`internal/fabricar`):** Algoritmo de casamento determinístico em 2 níveis (`merger_fit.go`): preferência por papel primário (desempate por score/tier), fallback para secundário e retorno de `ErrNenhumaFerramentaEncontrada` sem alucinação. Stop-Gate `SG-E02` aprovado.
   - **Portões Mecânicos e Fechamento:** 100% dos pacotes verdes em `go test -count=1 ./...`, `go vet` limpo, `gofmt` sem divergências, `bin/legoloop.exe` instalado no PATH (`go install ./cmd/legoloop`). Relatório oficial emitido em `docs/reports/2026-11-13_REPORT_INICIATIVA_I5.md`.
 
+- **13/11/2026** — 🔄 **Iniciativa I6 Concluída: Migração Global dos DAGs Legados para schema_version 2 (Swarm):**
+  - **Sessão:** `d8076846-0f35-46f0-bed9-170faf884416`
+  - **Épico 01 (`docs/dags/`):** Inventário determinístico em `scratch/i6_inventario_legados.json`. Migração paralela de 4 DAGs operacionais (`FECHAR`, `VIDEO_MOTION`, `EDITION`, `REA`) no Lote A e 5 DAGs de governança (`QUINTETO_ISO`, `DISSECAR`, `LEI15`, `ROTEAMENTO`, `SEXTETO`) no Lote B para `schema_version: 2` com roteamento completo sem termos legados. Stop-Gate `SG-I6-E01` aprovado.
+  - **Épico 02 (`loops/*/`):** Migração paralela em 3 lotes disjuntos de todos os 10 DAGs de `loops/` (`ai-motion-graphics`, `video-edition`, `video-master`, `video-motion`, `canal-redc`, `cartoon-shorts`, `video-rea`, `dissecar`, `fechar`, `n10-foundry`) com fallback em string simples e contrato v2 rigoroso. Stop-Gate `SG-I6-E02` aprovado.
+  - **Épico 03 & Fechamento:** Validação mecânica global de 100% dos 21 manifestos DAG do repositório (`legoloop validate`, todos exit 0). `go test -count=1 ./internal/dag/...` 100% verde. `bin/legoloop.exe` recompilado e instalado no PATH. Relatório oficial emitido em `docs/reports/2026-11-13_REPORT_INICIATIVA_I6.md`.
+
 ## Estado Atual do Repositório
 - **Status da Branch:** `main` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
