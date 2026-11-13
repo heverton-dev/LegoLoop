@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"legoloop/internal/matriz"
+	"legoloop/internal/reputation"
 	"legoloop/internal/ste"
+	"legoloop/internal/taxonomy"
 )
 
 // MergeByFit é a Camada 3 pela aptidão ao caso de uso: para cada etapa pedida escolhe a peça mais apta da matriz
@@ -166,4 +168,120 @@ func dedupeCopies(es []matriz.Entrada) []matriz.Entrada {
 		}
 	}
 	return out
+}
+
+// EntradaComPapel registra papel primario e papeis secundarios no mapa tipado da Entrada.
+func EntradaComPapel(e matriz.Entrada, primario string, secundarios ...string) matriz.Entrada {
+	if e.Tipado == nil {
+		e.Tipado = make(map[string]any)
+	}
+	e.Tipado["papel_primario"] = primario
+	if len(secundarios) > 0 {
+		e.Tipado["papeis_secundarios"] = secundarios
+	}
+	return e
+}
+
+func extrairPapeisEntrada(e matriz.Entrada) (string, []string) {
+	if e.Tipado == nil {
+		return "", nil
+	}
+	prim := extrairString(e.Tipado, "papel_primario", "papel")
+	sec := extrairSlice(e.Tipado, "papeis_secundarios", "papeis")
+	return prim, sec
+}
+
+func extrairString(m map[string]any, keys ...string) string {
+	for _, k := range keys {
+		if v, ok := m[k].(string); ok && v != "" {
+			return v
+		}
+	}
+	return ""
+}
+
+func extrairSlice(m map[string]any, keys ...string) []string {
+	for _, k := range keys {
+		if v, ok := m[k].([]string); ok {
+			return v
+		}
+		if raw, ok := m[k].([]any); ok {
+			var out []string
+			for _, item := range raw {
+				if s, ok := item.(string); ok {
+					out = append(out, s)
+				}
+			}
+			return out
+		}
+	}
+	return nil
+}
+
+func pesoTier(t reputation.Tier) int {
+	switch t {
+	case reputation.TierOuro:
+		return 4
+	case reputation.TierPrata:
+		return 3
+	case reputation.TierBronze:
+		return 2
+	case reputation.TierToxica:
+		return 1
+	default:
+		return 0
+	}
+}
+
+func maisApta(a, b matriz.Entrada) bool {
+	if a.Rating.TotalScore != b.Rating.TotalScore {
+		return a.Rating.TotalScore > b.Rating.TotalScore
+	}
+	pA, pB := pesoTier(a.Rating.Tier), pesoTier(b.Rating.Tier)
+	if pA != pB {
+		return pA > pB
+	}
+	return a.Ref < b.Ref
+}
+
+func melhorCandidata(candidatas []matriz.Entrada) matriz.Entrada {
+	melhor := candidatas[0]
+	for i := 1; i < len(candidatas); i++ {
+		if maisApta(candidatas[i], melhor) {
+			melhor = candidatas[i]
+		}
+	}
+	return melhor
+}
+
+// CasarFerramentaPorPapel seleciona deterministica em 2 niveis a melhor ferramenta da matriz.
+// Nivel 1: Prioriza pecas cujo PapelPrimario == papelRequerido. Desempate por Score, Tier e Ref.
+// Nivel 2: Se nenhuma no nivel 1, busca pecas cujo PapeisSecundarios contenha papelRequerido. Desempate por Score.
+// Nivel 3: Se nenhuma peca for encontrada, retorna taxonomy.ErrNenhumaFerramentaEncontrada.
+func CasarFerramentaPorPapel(papelRequerido string, pecas []matriz.Entrada) (matriz.Entrada, error) {
+	if len(pecas) == 0 || papelRequerido == "" {
+		return matriz.Entrada{}, taxonomy.ErrNenhumaFerramentaEncontrada
+	}
+	var primarias []matriz.Entrada
+	var secundarias []matriz.Entrada
+	for _, p := range pecas {
+		prim, sec := extrairPapeisEntrada(p)
+		if prim == papelRequerido {
+			primarias = append(primarias, p)
+		} else if slices.Contains(sec, papelRequerido) {
+			secundarias = append(secundarias, p)
+		}
+	}
+	if len(primarias) > 0 {
+		return melhorCandidata(primarias), nil
+	}
+	if len(secundarias) > 0 {
+		return melhorCandidata(secundarias), nil
+	}
+	return matriz.Entrada{}, taxonomy.ErrNenhumaFerramentaEncontrada
+}
+
+// CasarFerramenta e a costura canonica especificada em AC-I5-03.1 e AC-I5-03.2.
+func CasarFerramenta(papelRequerido string, pecas []matriz.Entrada) (matriz.Entrada, error) {
+	return CasarFerramentaPorPapel(papelRequerido, pecas)
 }
