@@ -27,6 +27,7 @@ func cmdSwarm(ctx context.Context, args []string, d Deps) int {
 	sub := map[string]func(context.Context, []string, Deps) int{
 		"add": cmdSwarmAdd, "post": cmdSwarmPost, "read": cmdSwarmRead,
 		"wait": cmdSwarmWait, "status": cmdSwarmStatus, "kill": cmdSwarmKill, "monitor": cmdSwarmMonitor,
+		"ui": cmdSwarmUI,
 	}
 	fn, ok := sub[args[0]]
 	if !ok {
@@ -40,6 +41,7 @@ func cmdSwarmAdd(_ context.Context, args []string, d Deps) int {
 	fs := newFlags("swarm add", d)
 	role := fs.String("role", "", "papel canonico")
 	name := fs.String("name", "", "nome do worker")
+	parent := fs.String("parent", "", "processo pai (vazio = macro)")
 	ws := fs.String("workspace", "inherit", "share|branch|inherit")
 	model := fs.String("model", "", "modelo")
 	dir := fs.String("dir", defaultBoardDir(), "diretorio do quadro")
@@ -52,7 +54,7 @@ func cmdSwarmAdd(_ context.Context, args []string, d Deps) int {
 		return fail(d, err)
 	}
 	w, err := sb.AddWorker(board.AddWorkerRequest{
-		Name: *name, Role: *role, Model: *model,
+		Name: *name, Role: *role, Parent: *parent, Model: *model,
 		WorkspaceMode: board.WorkspaceMode(*ws), RepoDir: *repo,
 	})
 	if err != nil {

@@ -35,6 +35,7 @@ const (
 type Worker struct {
 	Name          string        `json:"name"`
 	Role          string        `json:"role"`
+	Parent        string        `json:"parent,omitempty"`
 	Model         string        `json:"model,omitempty"`
 	WorkspaceMode WorkspaceMode `json:"workspace_mode"`
 	WorktreePath  string        `json:"worktree_path,omitempty"`
@@ -60,6 +61,7 @@ type SwarmStatus struct {
 type AddWorkerRequest struct {
 	Name          string        `json:"name,omitempty"`
 	Role          string        `json:"role"`
+	Parent        string        `json:"parent,omitempty"`
 	Model         string        `json:"model,omitempty"`
 	WorkspaceMode WorkspaceMode `json:"workspace_mode,omitempty"`
 	RepoDir       string        `json:"repo_dir,omitempty"`
@@ -166,7 +168,7 @@ func (sb *SwarmBoard) AddWorker(req AddWorkerRequest) (Worker, error) {
 	}
 	name := resolveWorkerName(req, st.Workers)
 	now := time.Now().UTC()
-	w := Worker{Name: name, Role: req.Role, Model: req.Model, WorkspaceMode: mode, Status: WorkerWaiting, CreatedAt: now, LastActiveAt: now}
+	w := Worker{Name: name, Role: req.Role, Parent: req.Parent, Model: req.Model, WorkspaceMode: mode, Status: WorkerWaiting, CreatedAt: now, LastActiveAt: now}
 	if mode == WorkspaceShare || mode == WorkspaceBranch {
 		wtPath := filepath.Join(sb.dir, "worktrees", name)
 		branch := fmt.Sprintf("swarm/%s-%d", name, now.UnixNano())
