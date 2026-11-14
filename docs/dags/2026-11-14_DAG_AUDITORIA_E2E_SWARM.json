@@ -1,0 +1,10 @@
+{
+  "id": "auditoria-e2e-swarm",
+  "version": "1.0.0",
+  "nodes": [
+    { "id": "t1_cli", "type": "exec", "deps": [] },
+    { "id": "t2_studio", "type": "exec", "deps": [] },
+    { "id": "t3_gates", "type": "gate", "deps": [] },
+    { "id": "t4_close", "type": "close", "deps": ["t1_cli", "t2_studio", "t3_gates"] }
+  ]
+}

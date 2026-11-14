@@ -1,0 +1,11 @@
+{
+  "version": "2.0",
+  "slug": "auditoria-e2e-swarm",
+  "date": "2026-11-14",
+  "nodes": [
+    { "id": "t1_cli", "role": "cli-prover", "depends_on": [] },
+    { "id": "t2_studio", "role": "studio-prover", "depends_on": [] },
+    { "id": "t3_gates", "role": "arch-auditor", "depends_on": [] },
+    { "id": "t4_close", "role": "coordinator", "depends_on": ["t1_cli", "t2_studio", "t3_gates"] }
+  ]
+}

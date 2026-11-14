@@ -70,10 +70,10 @@ type Problema struct {
 
 // ValidationResult é a resposta de /api/validate e /api/materialize.
 type ValidationResult struct {
-	OK     bool            `json:"ok"`
+	OK        bool            `json:"ok"`
 	Problemas []Problema      `json:"problemas"`
-	DAG    json.RawMessage `json:"dag,omitempty"`
-	Path   string          `json:"path,omitempty"`
+	DAG       json.RawMessage `json:"dag,omitempty"`
+	Path      string          `json:"path,omitempty"`
 }
 
 // compose valida o canvas contra o grafo semântico e o inventário e compila o DAG.

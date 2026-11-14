@@ -15,14 +15,14 @@ import (
 type Kind string
 
 const (
-	KindSkill   Kind = "skill"
-	KindMCP     Kind = "mcp"
-	KindScript  Kind = "script"
-	KindHook    Kind = "hook"
-	KindGate    Kind = "gate"
-	KindHarness Kind = "harness"
-	KindBinary  Kind = "binary"
-	KindProcesso    Kind = "loop"
+	KindSkill    Kind = "skill"
+	KindMCP      Kind = "mcp"
+	KindScript   Kind = "script"
+	KindHook     Kind = "hook"
+	KindGate     Kind = "gate"
+	KindHarness  Kind = "harness"
+	KindBinary   Kind = "binary"
+	KindProcesso Kind = "loop"
 )
 
 // Kinds lista as categorias na ordem de exibição.
@@ -70,7 +70,7 @@ type Config struct {
 	Projects       []string
 	AutoDiscover   bool
 	DiscoveryRoots []string
-	ProcessosDir       string
+	ProcessosDir   string
 	LookPath       func(string) (string, error)
 	Getenv         func(string) string
 }

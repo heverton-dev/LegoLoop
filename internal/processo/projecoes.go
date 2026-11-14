@@ -33,12 +33,12 @@ type FichaTecnica struct {
 // Projecoes são as visões do mesmo processo no Quinteto ISO. Todas nascem das mesmas etapas, e Verificar prova que
 // listam os mesmos ids na mesma ordem.
 type Projecoes struct {
-	Spec, Plan, Skill string
-	Route, DAG, Studio  []byte
-	Triagem, Livro    []byte
-	Manual            string
-	Fichas            []FichaTecnica
-	Avisos            []string // avisos do plangen (por exemplo, critério sem ticket)
+	Spec, Plan, Skill  string
+	Route, DAG, Studio []byte
+	Triagem, Livro     []byte
+	Manual             string
+	Fichas             []FichaTecnica
+	Avisos             []string // avisos do plangen (por exemplo, critério sem ticket)
 	// Nomes dos arquivos em docs/specs, docs/plans, docs/routes, docs/dags e docs/manuals.
 	SpecNome, PlanNome, RouteNome string
 	DAGNome, ManualNome           string
