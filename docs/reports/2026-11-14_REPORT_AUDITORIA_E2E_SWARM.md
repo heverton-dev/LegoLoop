@@ -24,3 +24,7 @@
 - `gofmt -l .`: corrigidos 4 arquivos (`internal/assets/types.go`, `internal/processo/projecoes.go`, `internal/studio/compose.go`, `internal/studio/loops_api_test.go`), saída final vazia.
 - `go run ./tools/funclen internal`: exit 0.
 - `go run ./tools/taxlinter internal loops skills`: exit 0.
+
+## 4. Auditoria Arquitetural do Swarm (Nota 7.5/10)
+- **Já implementado:** quadro persistente com git worktree e stall monitor (`internal/board/swarm.go`), CLI `legoloop swarm` (`internal/cli/swarm.go`), 7 tools no `mcp-router` (`internal/mcp/swarm_tools.go`) e aba `/swarm` no Studio com SSE, árvore fractal e Ficha Técnica (`internal/studio/swarm_api.go`).
+- **Lacunas identificadas:** spawn real de processos de agentes e troca de modelo em runtime (`internal/board/swarm.go`), endpoint de `add` no Studio e remoção da duplicação entre `internal/cli/swarm_ui.go` e `internal/studio/swarm_api.go`.
