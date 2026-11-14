@@ -104,3 +104,27 @@ func TestBuildPromptInjectsToolingSkills(t *testing.T) {
 		t.Errorf("prompt deveria conter skill referenciada em tooling, obtido:\n%s", got)
 	}
 }
+
+func TestBuildPromptInjectsRuleTagsLazily(t *testing.T) {
+	o, root := setupPromptTestEnv(t)
+	n := dag.Node{
+		ID:       "n4",
+		Ref:      "peca-principal",
+		RuleTags: []string{"go", "seguranca"},
+		Output:   dag.HandoffContract{Artifact: "out.md", Gate: "exit_code == 0"},
+	}
+
+	got, err := o.buildPrompt(n, root)
+	if err != nil {
+		t.Fatalf("buildPrompt falhou: %v", err)
+	}
+	if !strings.Contains(got, "gofmt") {
+		t.Errorf("prompt com tag 'go' deveria conter regra de Go (gofmt), obtido:\n%s", got)
+	}
+	if !strings.Contains(got, "segredos") && !strings.Contains(got, "Segredos") {
+		t.Errorf("prompt com tag 'seguranca' deveria conter regra de segurança, obtido:\n%s", got)
+	}
+	if strings.Contains(got, "WCAG") {
+		t.Errorf("prompt sem tag 'ui' não deveria conter regra de UI (WCAG), obtido:\n%s", got)
+	}
+}

@@ -1,0 +1,77 @@
+{
+  "id": "fronteira-ai-driven-2026-11-14",
+  "name": "fronteira-ai-driven",
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "T-01",
+      "type": "unit_task",
+      "nature": "micro",
+      "cognitive_complexity": "medium",
+      "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
+      "context_out": ["internal/orchestrix/prompt.go"],
+      "routing": {"mode": "auto", "combo": "code-pro"},
+      "output": {"artifact": "internal/orchestrix/prompt.go", "gate": "exit_code == 0"},
+      "verification": {"command": "go test ./internal/orchestrix/..."}
+    },
+    {
+      "id": "T-02",
+      "type": "unit_task",
+      "nature": "micro",
+      "cognitive_complexity": "medium",
+      "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
+      "context_out": ["internal/router/"],
+      "routing": {"mode": "auto", "combo": "code-pro"},
+      "output": {"artifact": "internal/router/", "gate": "exit_code == 0"},
+      "verification": {"command": "go test ./internal/router/..."}
+    },
+    {
+      "id": "T-03",
+      "type": "unit_task",
+      "nature": "micro",
+      "cognitive_complexity": "high",
+      "depends_on": ["T-01"],
+      "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
+      "context_out": ["internal/runner/isolated.go"],
+      "routing": {"mode": "auto", "combo": "code-pro"},
+      "output": {"artifact": "internal/runner/isolated.go", "gate": "exit_code == 0"},
+      "verification": {"command": "go test ./internal/runner/..."}
+    },
+    {
+      "id": "T-04",
+      "type": "unit_task",
+      "nature": "micro",
+      "cognitive_complexity": "high",
+      "depends_on": ["T-03"],
+      "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
+      "context_out": ["internal/fechar/"],
+      "routing": {"mode": "auto", "combo": "code-pro"},
+      "output": {"artifact": "internal/fechar/", "gate": "exit_code == 0"},
+      "verification": {"command": "go test ./internal/fechar/..."}
+    },
+    {
+      "id": "T-05",
+      "type": "unit_task",
+      "nature": "micro",
+      "cognitive_complexity": "high",
+      "depends_on": ["T-01"],
+      "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
+      "context_out": ["internal/orchestrix/prompt.go", "internal/runner/isolated.go"],
+      "routing": {"mode": "auto", "combo": "code-pro"},
+      "output": {"artifact": "internal/orchestrix/integration_test.go", "gate": "exit_code == 0"},
+      "verification": {"command": "go test ./internal/orchestrix/... ./internal/runner/..."}
+    },
+    {
+      "id": "T-06",
+      "type": "unit_task",
+      "nature": "micro",
+      "cognitive_complexity": "low",
+      "depends_on": ["T-02", "T-04", "T-05"],
+      "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
+      "context_out": ["internal/cli/cli.go"],
+      "routing": {"mode": "auto", "combo": "code-pro"},
+      "output": {"artifact": "internal/cli/cli.go", "gate": "exit_code == 0"},
+      "verification": {"command": "go test -count=1 ./..."}
+    }
+  ]
+}

@@ -32,6 +32,10 @@ func (s *Store) filePath(id string) (string, error) {
 	if info, err := os.Stat(novo); err == nil && info.Mode().IsRegular() {
 		return novo, nil
 	}
+	aninhado := filepath.Join(s.dir, id, id+caminhos.SufixoStudio)
+	if info, err := os.Stat(aninhado); err == nil && info.Mode().IsRegular() {
+		return aninhado, nil
+	}
 	return filepath.Join(s.dir, id+sufixoAntigo), nil
 }
 
@@ -103,6 +107,10 @@ func (s *Store) Get(id string) (*Processo, error) {
 		return nil, err
 	}
 	data, err := os.ReadFile(p)
+	if os.IsNotExist(err) {
+		nested := filepath.Join(s.dir, id, filepath.Base(p))
+		data, err = os.ReadFile(nested)
+	}
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, ErrNotFound
@@ -143,7 +151,10 @@ func (s *Store) List() ([]Summary, error) {
 
 func idDeArquivo(e os.DirEntry) string {
 	if e.IsDir() {
-		return ""
+		if strings.HasPrefix(e.Name(), ".") {
+			return ""
+		}
+		return e.Name()
 	}
 	if strings.HasSuffix(e.Name(), caminhos.SufixoStudio) {
 		return strings.TrimSuffix(e.Name(), caminhos.SufixoStudio)

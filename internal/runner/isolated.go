@@ -104,9 +104,9 @@ func isIgnoredDir(name string) bool {
 
 func injectContextIn(srcWorkdir, dstWorkdir string, contextIn []string) error {
 	for _, inRel := range contextIn {
-		clean := filepath.Clean(inRel)
-		if strings.HasPrefix(clean, "..") || filepath.IsAbs(clean) {
-			continue
+		clean := filepath.Clean(filepath.FromSlash(strings.TrimSpace(inRel)))
+		if clean == "" || !filepath.IsLocal(clean) {
+			return fmt.Errorf("path jail: context_in %q fora da raiz permitida", inRel)
 		}
 		src := filepath.Join(srcWorkdir, clean)
 		dst := filepath.Join(dstWorkdir, clean)

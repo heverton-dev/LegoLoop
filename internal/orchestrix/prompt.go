@@ -30,6 +30,7 @@ func (o *Orchestrix) buildPrompt(n dag.Node, work *os.Root) (string, error) {
 	fmt.Fprintf(&b, "# Orchestrix isolada — nó %s\n\n", n.ID)
 	fmt.Fprintf(&b, "Você é um executor de tarefa única, sem histórico. Responda SOMENTE com o conteúdo final do artefato `%s`, sem comentários extras.\n\n", n.Output.Artifact)
 	fmt.Fprintf(&b, "Condição de saída (gate): `%s`\n\n## Núcleo Mínimo Inviolável\n\n%s\n\n## Skill\n\n%s\n", n.Output.Gate, coreInviolableRules, strings.TrimSpace(skill))
+	o.appendRuleTags(&b, n.RuleTags)
 	o.appendTooling(&b, n.Tooling)
 	o.appendContextIn(&b, n.ContextIn, work)
 	if err := o.appendInputs(&b, n.Inputs, work); err != nil {
@@ -67,8 +68,28 @@ func (o *Orchestrix) appendContextIn(b *strings.Builder, contextIn []string, wor
 		if err != nil {
 			continue
 		}
-		fmt.Fprintf(b, "\n## Contexto de Entrada: %s\n\n%s\n", path, strings.TrimSpace(string(data)))
+		sanitized := SanitizeContextIn(strings.TrimSpace(string(data)))
+		fmt.Fprintf(b, "\n## Contexto de Entrada: %s\n\n<<<CONTEXT_IN_DATA\n%s\nCONTEXT_IN_DATA>>>\n", path, sanitized)
 	}
+}
+
+var injectionRules = []struct {
+	re   *regexp.Regexp
+	repl string
+}{
+	{regexp.MustCompile(`(?i)ignore\s+(all\s+)?(previous|prior|above)\s+instructions?`), "[SANITIZED:instruction-override]"},
+	{regexp.MustCompile(`(?i)you\s+are\s+now\s+`), "[SANITIZED:role-override]"},
+	{regexp.MustCompile(`(?im)^\s*(system|assistant|developer)\s*:`), "[SANITIZED:role-tag]"},
+	{regexp.MustCompile(`(?i)<\|im_start\|>|<\|im_end\|>|<\|system\|>|<system>|</system>`), "[SANITIZED:control-token]"},
+}
+
+// SanitizeContextIn neutraliza padrões conhecidos de prompt injection em dados externos.
+func SanitizeContextIn(raw string) string {
+	out := raw
+	for _, r := range injectionRules {
+		out = r.re.ReplaceAllString(out, r.repl)
+	}
+	return out
 }
 
 func (o *Orchestrix) appendTooling(b *strings.Builder, tooling map[string]any) {
@@ -150,4 +171,26 @@ func readLimited(root *os.Root, name string) ([]byte, error) {
 		err = fmt.Errorf("%q excede %d bytes", name, maxInputBytes)
 	}
 	return data, err
+}
+
+var domainRulesByTag = map[string]string{
+	"go":        "Go: execute `gofmt`, `go vet` e mantenha funcoes <= 35 linhas.",
+	"ui":        "UI: respeite tokens de design, contraste WCAG e responsividade.",
+	"seguranca": "Seguranca: valide entradas, aplique Path Jail e proiba segredos em logs.",
+}
+
+func (o *Orchestrix) appendRuleTags(b *strings.Builder, tags []string) {
+	if len(tags) == 0 {
+		return
+	}
+	var regras []string
+	for _, tag := range tags {
+		if r, ok := domainRulesByTag[strings.ToLower(strings.TrimSpace(tag))]; ok {
+			regras = append(regras, "- "+r)
+		}
+	}
+	if len(regras) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "\n## Regras de Dominio (Lazy)\n\n%s\n", strings.Join(regras, "\n"))
 }

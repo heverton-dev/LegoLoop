@@ -50,6 +50,7 @@
 
 - **Ficha Técnica Visual ("Carta de Trunfo"):** Deve ser derivada em tempo real no Studio (ou regerada deterministicamente em `fabricar`, `refinar` e `fechar`) direto do `pipeline.dag.json` + Matriz de Peças (SSOT), nunca mantida à mão.
 - **Canonização Universal (SO + Harnesses):** Todo processo do LegoLoop deve residir no cofre (`~/.aidd/canonical`) e estar vinculado dinamicamente a todos os harnesses detectados na máquina do usuário (`legoloop doctor` / `instalar-skills`) para uso imediato no SO e em qualquer agente.
+- **Gap Identificado (Processos Antigos em `loops/`):** Processos criados via `legoloop fabricar` já nascem no cofre, mas processos legados em `loops/` não possuem registro v2 (`.processo.json`) em `~/.aidd/canonical` e ficam invisíveis para `listar`, `compor`, `refinar` e `remover`.
 
 ## Camada 2 — `l2-design` (Ficha Técnica Completa)
 
@@ -59,7 +60,13 @@
 - **Output (`context_out`):** `DESIGN.md`.
 - **Gate:** `file_exists('DESIGN.md')`.
 - **Diagnóstico:** `impeccable` é específico para UI/UX e frontend; não deve bloquear projetos sem interface visual.
-- **Decisão:** A execução de `l2-design` (`impeccable`) deve ser condicional à existência de superfície visual, decidida por uma **Peça de Triagem / Roteador de Entrada** antes da esteira linear.
+- **Decisão:** Separar por responsabilidade única (invocados pela Peça de Triagem):
+  - `l2-design-ui` (composicional, 4 etapas):
+    1. `n01_referencias_ui` (`aidd-uiux` + `mobbin-mcp` + catálogo `pick-ui-library`: `shadcn/ui`, `Base UI`, `Radix`, `Magic UI`, `Aceternity UI`, `21st.dev`).
+    2. `n02_design_spec` (`impeccable` elevada para `0.80 prata` — `shape`, `document`, `animate`, `adapt` para mobile/tablet/desktop e motion/3D).
+    3. `n03_validar_paleta` (`aidd-dataviz` — `validate_palette.py` para contraste WCAG e CVD).
+    4. `n04_gate_tokens` (`aidd-linter-design` + `chrome-devtools-mcp` — gate determinístico de tokens SSOT).
+  - `l2-design-arch`: novo processo especializado exclusivo para design de arquitetura de sistema (backend, CLI, API, processos).
 
 ---
 

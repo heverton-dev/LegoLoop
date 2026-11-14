@@ -409,3 +409,23 @@ func TestNaturezaAbertaProcessoDeUsaSoAPecaQueEntrou(t *testing.T) {
 		t.Errorf("só a decisão que entrou vale: %+v %v", p.Etapas, err)
 	}
 }
+
+func TestProcessoDeComUmaEtapaEMultiplosStepsCompoeNosReais(t *testing.T) {
+	n := matriz.Needs{Natureza: "software", Etapas: []string{"planejar"}}
+	m := fabricar.Merged{
+		Steps: []fabricar.Step{{Piece: "aidd-spec"}, {Piece: "aidd-tdd"}, {Piece: "aidd-delivery"}},
+		Decisoes: []fabricar.Decisao{
+			{Etapa: "planejar", Peca: "aidd-spec", Entrou: true},
+		},
+	}
+	p, err := fabricar.ProcessoDe("legoloop-x", "construir feature", n, m, agora)
+	if err != nil {
+		t.Fatalf("ProcessoDe falhou: %v", err)
+	}
+	if len(p.Etapas) != 3 {
+		t.Fatalf("esperado 3 etapas, obtido %d: %+v", len(p.Etapas), p.Etapas)
+	}
+	if p.Etapas[0].Peca != "aidd-spec" || p.Etapas[1].Peca != "aidd-tdd" || p.Etapas[2].Peca != "aidd-delivery" {
+		t.Errorf("peças inesperadas: %+v", p.Etapas)
+	}
+}

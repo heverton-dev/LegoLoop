@@ -47,7 +47,7 @@ func TestProcessoRealBinarioGravaOProcessoEAsSeisVisoesCoerentes(t *testing.T) {
 			t.Errorf("etapa %s sem peça ou com gate só de existência: %+v", e.ID, e)
 		}
 	}
-	assertDAGComAsEtapas(t, filepath.Join(vault, caminhos.DirLoops, "legoloop-extrair-audio.dag.json"), ids)
+	assertDAGComAsEtapas(t, filepath.Join(vault, caminhos.DirLoops, "legoloop-extrair-audio", "pipeline.dag.json"), ids)
 	plan := firstGlob(t, filepath.Join(proj, "docs", "plans", "*_PLAN_EXTRAIR_AUDIO.md"))
 	spec := firstGlob(t, filepath.Join(proj, "docs", "specs", "*_SPEC_EXTRAIR_AUDIO.md"))
 	for _, id := range ids {
@@ -82,15 +82,14 @@ func assertDAGComAsEtapas(t *testing.T, path string, ids []string) {
 	}
 }
 
-// TestProcessoRealBinarioLacunaParaSemGravar: etapa sem peça apta é decisão do usuário; o fabricar para,
-// diz qual etapa e como resolver, e não grava nada.
+// TestProcessoRealBinarioLacunaParaSemGravar: etapa sem peça apta não bloqueia o fabricar;
+// segue com exit 0 e emite sugestões externas curadoria-externa-*.
 func TestProcessoRealBinarioLacunaParaSemGravar(t *testing.T) {
 	cer := &cerebroPorPapel{needsJSON: `{"natureza": "software", "etapas": ["construir", "publicar"], "casos": []}`}
-	r, vault, proj := fabricarReal(t, cer)
-	if r.code != 1 || !strings.Contains(r.errb, "publicar") || !strings.Contains(r.errb, "legoloop matriz perfil definir") {
-		t.Fatalf("esperava exit 1 citando a etapa publicar e como resolver; exit %d\n%s\n%s", r.code, r.out, r.errb)
+	r, _, _ := fabricarReal(t, cer)
+	if r.code != 0 || !strings.Contains(r.errb, "curadoria-externa-construir") || !strings.Contains(r.errb, "curadoria-externa-publicar") {
+		t.Fatalf("esperava exit 0 com sugestões curadoria-externa-*; exit %d\n%s\n%s", r.code, r.out, r.errb)
 	}
-	assertSoAMatriz(t, vault, proj)
 }
 
 // TestProcessoRealBinarioCerebroCaidoParaSemGravar: o cérebro cai ao dar as necessidades; o fabricar para.

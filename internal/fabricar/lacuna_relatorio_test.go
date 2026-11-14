@@ -3,7 +3,6 @@ package fabricar_test
 import (
 	"bytes"
 	"context"
-	"errors"
 	"os"
 	"path/filepath"
 	"slices"
@@ -55,31 +54,30 @@ func nadaGravado(t *testing.T, r *rig) {
 
 func testLacunaDryRun(t *testing.T) {
 	res, err, r := rodarLacuna(t, true)
-	if !errors.Is(err, fabricar.ErrLacuna) || !strings.Contains(err.Error(), "A etapa verificar não tem peça apta") {
-		t.Fatalf("o dry-run com lacuna segue sendo erro de lacuna: %v", err)
+	if err != nil {
+		t.Fatalf("cascata de 3 fontes não deve retornar erro no dry-run com lacuna: %v", err)
 	}
 	if res == nil || res.Report == nil {
-		t.Fatal("no dry-run a lacuna não para antes do relatório: Result e Report são obrigatórios")
+		t.Fatal("no dry-run Result e Report são obrigatórios")
 	}
 	nadaGravado(t, r)
-	rep := res.Report
-	if !slices.Equal(rep.Fusao.Lacunas, []string{"verificar"}) {
-		t.Errorf("o relatório lista a lacuna: %v", rep.Fusao.Lacunas)
+	if !slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "verificar") }) {
+		t.Errorf("o aviso da cascata deve citar verificar: %v", res.Warnings)
 	}
+	rep := res.Report
 	assertDecisoesDaLacuna(t, rep.Fusao.Decisoes)
-	if len(rep.Gravacao.Arquivos) != 0 || rep.Gravacao.Bytes != 0 {
-		t.Errorf("com lacuna nenhum arquivo seria gravado: %+v", rep.Gravacao)
+	if len(rep.Gravacao.Arquivos) == 0 {
+		t.Errorf("com cascata de 3 fontes o dry-run planeja os arquivos normalmente: %+v", rep.Gravacao)
 	}
 	if rep.Triade.ACs != 2 || len(rep.Triade.Gates) != 2 || !strings.Contains(rep.Triade.Gates[1], "02_verificar") {
-		t.Errorf("a Tríade mostra as duas etapas, inclusive a da lacuna: %+v", rep.Triade)
+		t.Errorf("a Tríade mostra as duas etapas: %+v", rep.Triade)
 	}
-	assertCartaoDaLacuna(t, rep.Cartao)
 	avisos := strings.Join(res.Warnings, "\n")
-	if !strings.Contains(avisos, "Lacuna: a etapa verificar") || !strings.Contains(avisos, "Aptidão desconhecida: sem-perfil") {
-		t.Errorf("os avisos da Fusão chegam ao resultado do dry-run:\n%s", avisos)
+	if !strings.Contains(avisos, "verificar") || !strings.Contains(avisos, "sugestão externa") {
+		t.Errorf("os avisos mostram a cascata externa para verificar:\n%s", avisos)
 	}
-	if res.CanonicalName != "legoloop-extrator-de-audio" || res.Artifacts.SkillPath != "" {
-		t.Errorf("o resultado nomeia o processo e não promete arquivo: %q %+v", res.CanonicalName, res.Artifacts)
+	if res.CanonicalName != "legoloop-extrator-de-audio" || res.Artifacts.SkillPath == "" {
+		t.Errorf("o resultado nomeia o processo e aponta os artefatos planejados: %q %+v", res.CanonicalName, res.Artifacts)
 	}
 }
 
@@ -121,14 +119,16 @@ func assertCartaoDaLacuna(t *testing.T, c ste.Cartao) {
 }
 
 func testLacunaSemDryRun(t *testing.T) {
-	res, err, r := rodarLacuna(t, false)
-	if !errors.Is(err, fabricar.ErrLacuna) || !strings.Contains(err.Error(), "verificar") {
-		t.Fatalf("sem dry-run a lacuna para: %v", err)
+	res, err, _ := rodarLacuna(t, false)
+	if err != nil {
+		t.Fatalf("cascata de 3 fontes não deve bloquear fabricação sem dry-run: %v", err)
 	}
-	if res != nil {
-		t.Errorf("sem dry-run a lacuna para antes do relatório: %+v", res)
+	if res == nil {
+		t.Fatal("resultado não deve ser nil")
 	}
-	nadaGravado(t, r)
+	if !slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "verificar") }) {
+		t.Errorf("o aviso da cascata deve citar verificar: %v", res.Warnings)
+	}
 }
 
 func testLacunaTexto(t *testing.T) {

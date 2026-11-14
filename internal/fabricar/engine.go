@@ -211,16 +211,20 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	m := c.m
 	now := d.Clock().UTC()
 	d.progress(4, "Tríade")
-	p, pr, err := projetar(name, objetivoDoProcesso(req, clar), c, now)
+	p, pr, err := projetar(name, objetivoDoProcesso(req, clar), &c, now)
 	if req.DryRun && errors.Is(err, ErrLacuna) {
 		return relatorioDaLacuna(d, name, clar, c, p, now), err // a lacuna não para antes do relatório
 	}
 	if err != nil {
 		return nil, err
 	}
+	m = c.m
 	d.progress(5, "Template e gravação")
 	files, err := plannedFiles(d.Roots, p, pr, intentDe(name, clar, p.Natureza, now))
 	if err != nil {
+		return nil, err
+	}
+	if err := injectIntentFiles(files, clar.ContextIn); err != nil {
 		return nil, err
 	}
 	vinculos, lwarns, err := aprovar(d, req, files, m, name)

@@ -2,7 +2,6 @@ package fabricar_test
 
 import (
 	"context"
-	"errors"
 	"slices"
 	"strings"
 	"testing"
@@ -146,9 +145,12 @@ func TestCalibragemMotorUsaOVocabularioDoCofre(t *testing.T) {
 	r.deps.Matriz = func() (fabricar.FonteMatriz, error) {
 		return fabricar.FonteMatriz{Entradas: goodPieces(), Vocab: v, GeradaEm: fabNow.Add(-48 * time.Hour)}, nil
 	}
-	_, err := fabricar.Fabricar(context.Background(), r.req, r.deps)
-	if !errors.Is(err, fabricar.ErrLacuna) || !strings.Contains(err.Error(), "construir") {
-		t.Fatalf("esperava lacuna em construir pelo vocabulário do cofre: %v", err)
+	res, err := fabricar.Fabricar(context.Background(), r.req, r.deps)
+	if err != nil {
+		t.Fatalf("cascata de 3 fontes não deve bloquear lacuna em construir: %v", err)
+	}
+	if !slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "construir") }) {
+		t.Errorf("esperava aviso de lacuna em construir pelo vocabulário do cofre: %v", res.Warnings)
 	}
 }
 

@@ -31,6 +31,14 @@ Esta skill só conduz a conversa e o gate humano. **Toda a lógica mora no coman
 * **Target Files (escopo de escrita permitido):**
   - nenhum arquivo é escrito por esta skill; só o comando `legoloop fabricar` grava
 
+### Subprocesso Obrigatório: Curadoria e Composição de Fronteira (6 Etapas)
+1. **Entrevista e Escopo:** definir objetivo, critérios binários de aceite, restrições e nível de qualidade (0 a 10).
+2. **Inventário Local:** varrer SO + Cofre (Matriz de Peças, skills, MCPs e processos instalados).
+3. **Curadoria Externa:** buscar em GitHub/Fontes quando houver lacuna, importar via `legoloop import` e descartar repositórios temporários após canonizar.
+4. **Elevação e Canonização:** executar `legoloop upgrade --diagnose`, corrigir I/O Contracts e Negative Guardrails, e canonizar por SHA-256.
+5. **Composição do DAG Completo:** compor nós reais com `context_in`, `context_out`, `routing` e gates determinísticos (nunca 1 nó genérico).
+6. **Projeção Padrão no Cofre de Processos:** gerar os 4 arquivos padrão do Processo (manifesto, DAG, triagem e memória de execução), o Sexteto em `docs/` e validar com `legoloop validate`.
+
 ### Procedimento (passos determinísticos)
 1. **Entrevista pelo motor.** Rode `legoloop fabricar entrevista iniciar "<ideia>"`. A saída é JSON com `sessao`, `pergunta`, `palpite`, `opcoes`, `confianca` e `espelho`. Faça ao usuário a `pergunta`, uma por vez, e mostre o `palpite`. Envie cada resposta com `legoloop fabricar entrevista responder <sessao> "<texto>"`. Repita até `status` ser `COMPLETED` ou até 12 turnos. A `confianca` é a do JSON; nunca a invente. Defina também o **nome**, a **categoria** (`build`, `reverse`, `web` ou `mobile`) e o **modelo** (confira com `legoloop doctor`; só vale modelo do inventário).
 2. **Prévia.** Rode `legoloop fabricar "<nome>" --yes --entrevista <sessao> --category <categoria> --model <modelo> --dry-run` e leia o resultado. O `--dry-run` não grava nada.

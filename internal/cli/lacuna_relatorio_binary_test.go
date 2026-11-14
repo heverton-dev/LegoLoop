@@ -3,7 +3,6 @@ package cli
 import (
 	"encoding/json"
 	"path/filepath"
-	"slices"
 	"strings"
 	"testing"
 )
@@ -19,11 +18,10 @@ func TestLacunaRelatorioBinario(t *testing.T) {
 	t.Run("dry-run texto", func(t *testing.T) {
 		r, root := rodarLacunaBin(t, bin, "--dry-run")
 		saida := r.out + r.errb
-		if r.code != 1 {
-			t.Fatalf("exit %d; esperava 1\n%s", r.code, saida)
+		if r.code != 0 {
+			t.Fatalf("exit %d; esperava 0\n%s", r.code, saida)
 		}
-		for _, quer := range []string{"AÇÃO: Parar: o processo tem lacuna", "AVISO: A etapa verificar não tem peça apta",
-			"verificar  LACUNA |", "aptidão desconhecida: 1", "aviso: Lacuna: a etapa verificar", "erro:"} {
+		for _, quer := range []string{"verificar  LACUNA |", "aptidão desconhecida: 1", "aviso: Lacuna: a etapa verificar", "sugestão externa (GitHub/Fontes): curadoria-externa-verificar"} {
 			if !strings.Contains(saida, quer) {
 				t.Errorf("falta %q na saída:\n%s", quer, saida)
 			}
@@ -32,36 +30,25 @@ func TestLacunaRelatorioBinario(t *testing.T) {
 	})
 	t.Run("dry-run json", func(t *testing.T) {
 		r, root := rodarLacunaBin(t, bin, "--dry-run", "--json")
-		if r.code != 1 {
-			t.Fatalf("exit %d; esperava 1\n%s\n%s", r.code, r.out, r.errb)
+		if r.code != 0 {
+			t.Fatalf("exit %d; esperava 0 com cascata de 3 fontes\n%s\n%s", r.code, r.out, r.errb)
 		}
 		var s struct {
-			Report struct {
-				Fusao struct {
-					Lacunas []string `json:"lacunas"`
-				} `json:"fusao"`
-				Cartao struct {
-					Aviso string `json:"aviso"`
-				} `json:"cartao"`
-			} `json:"report"`
+			CuratedPieces []any `json:"curated_pieces"`
 		}
 		if err := json.Unmarshal([]byte(r.out), &s); err != nil {
 			t.Fatalf("stdout deve ser JSON puro: %v\n%s", err, r.out)
 		}
-		if !slices.Equal(s.Report.Fusao.Lacunas, []string{"verificar"}) || !strings.Contains(s.Report.Cartao.Aviso, "matriz perfil definir") {
-			t.Errorf("o JSON traz a lacuna e o cartão: %+v", s.Report)
+		if len(s.CuratedPieces) == 0 {
+			t.Errorf("esperava sugestões externas na cascata de 3 fontes: %+v", s)
 		}
 		semArquivos(t, root)
 	})
 	t.Run("sem dry-run", func(t *testing.T) {
-		r, root := rodarLacunaBin(t, bin)
-		if r.code != 1 || !strings.Contains(r.errb, "A etapa verificar não tem peça apta") {
-			t.Fatalf("exit %d; esperava 1 e o aviso da lacuna\n%s\n%s", r.code, r.out, r.errb)
+		r, _ := rodarLacunaBin(t, bin)
+		if r.code != 0 {
+			t.Fatalf("exit %d; esperava 0 com cascata de 3 fontes\n%s\n%s", r.code, r.out, r.errb)
 		}
-		if strings.Contains(r.out, "AÇÃO:") || strings.Contains(r.out, "Resumo por Camada") {
-			t.Errorf("sem --dry-run a lacuna para antes do relatório:\n%s", r.out)
-		}
-		semArquivos(t, root)
 	})
 }
 

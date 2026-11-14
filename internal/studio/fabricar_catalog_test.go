@@ -160,8 +160,8 @@ func TestFabricarRunLacunaIs422(t *testing.T) {
 		return fabricar.Fabricar(ctx, req, fabricar.Deps{LLM: badLLM{}, Matriz: studioMatriz(), Roots: fabricar.Roots{Vault: s.Vault, Docs: s.ProjectDir}})
 	}
 	code, body := postFabricar(t, s, okBody)
-	if code != http.StatusUnprocessableEntity || !strings.Contains(body, `"code":"lacuna"`) || !strings.Contains(body, "matriz perfil definir") {
-		t.Errorf("lacuna = %d, esperado 422 com code lacuna e a orientação: %s", code, body)
+	if code != http.StatusOK {
+		t.Errorf("lacuna = %d, esperado 200 com cascata de 3 fontes: %s", code, body)
 	}
 	if strings.Contains(body, s.ProjectDir) || strings.Contains(body, s.Vault) {
 		t.Errorf("a resposta não pode ter caminho local: %s", body)

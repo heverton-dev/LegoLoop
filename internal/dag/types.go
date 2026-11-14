@@ -137,6 +137,7 @@ type Node struct {
 	Type                NodeType          `json:"type"`
 	Nature              string            `json:"nature,omitempty"`
 	CognitiveComplexity string            `json:"cognitive_complexity,omitempty"`
+	RuleTags            []string          `json:"rule_tags,omitempty"`
 	Ref                 string            `json:"ref,omitempty"`
 	DependsOn           []string          `json:"depends_on,omitempty"`
 	Dependencies        []string          `json:"dependencies,omitempty"`

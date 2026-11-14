@@ -227,14 +227,23 @@ func passosDe(n matriz.Needs, m Merged) []passo {
 		}
 		return out
 	}
-	out := make([]passo, len(n.Etapas))
-	for i, e := range n.Etapas {
-		out[i] = passo{etapa: e}
+	out := make([]passo, 0, len(n.Etapas)+len(m.Steps))
+	usadas := make(map[string]bool, len(n.Etapas))
+	for _, e := range n.Etapas {
+		p := passo{etapa: e}
 		for _, d := range m.Decisoes {
 			if d.Etapa == e && d.Entrou {
-				out[i].peca = d.Peca
+				p.peca = d.Peca
+				usadas[d.Peca] = true
 				break
 			}
+		}
+		out = append(out, p)
+	}
+	for _, s := range m.Steps {
+		if s.Piece != "" && !usadas[s.Piece] {
+			out = append(out, passo{peca: s.Piece})
+			usadas[s.Piece] = true
 		}
 	}
 	return out

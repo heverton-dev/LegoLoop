@@ -183,7 +183,7 @@ func assertThreeMeans(t *testing.T, r *rig, res *fabricar.Result) {
 	if sk := snap.Of(assets.KindSkill); len(sk) != 1 || sk[0].Name != res.CanonicalName {
 		t.Errorf("o assets.Scanner real deve listar a skill: %+v", sk)
 	}
-	st, err := studiodoc.NewStore(paths.DirAntigoEm(r.deps.Roots.Vault))
+	st, err := studiodoc.NewStore(filepath.Dir(res.Artifacts.LoopPath))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -371,12 +371,16 @@ func TestFabricar_RejectsInvalidRequestsBeforeAnyWork(t *testing.T) {
 
 func TestFabricar_MatrixWithoutAptPieceStopsAtTheGapWithoutWriting(t *testing.T) {
 	r := newRig(t, nil)
-	_, err := fabricar.Fabricar(context.Background(), r.req, r.deps)
-	if !errors.Is(err, fabricar.ErrLacuna) || !strings.Contains(err.Error(), "As etapas construir, verificar não têm peça apta") {
-		t.Fatalf("sem peça apta as etapas pedidas viram lacuna e a fabricação para: %v", err)
+	res, err := fabricar.Fabricar(context.Background(), r.req, r.deps)
+	if err != nil {
+		t.Fatalf("cascata de 3 fontes não deve bloquear fabricação sem peça apta: %v", err)
 	}
-	if r.written(t) != 0 {
-		t.Errorf("a lacuna não pode gravar nada: %d arquivos", r.written(t))
+	if !slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "construir") }) ||
+		!slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "verificar") }) {
+		t.Errorf("esperava avisos da cascata para construir e verificar: %v", res.Warnings)
+	}
+	if len(res.CuratedPieces) < 2 {
+		t.Errorf("esperava sugestões externas em CuratedPieces, obtido: %+v", res.CuratedPieces)
 	}
 }
 
@@ -402,5 +406,27 @@ func TestGravaNomesCanonicos(t *testing.T) {
 	var out, errb bytes.Buffer
 	if code := cli.Run(context.Background(), []string{"validate", res.Artifacts.DagPath}, cli.Deps{Stdout: &out, Stderr: &errb}); code != 0 {
 		t.Errorf("legoloop validate falhou (%d): %s", code, errb.String())
+	}
+}
+
+func TestGravaArquivosPadraoNaPastaDoLoop(t *testing.T) {
+	r := newRig(t, goodPieces())
+	res := r.run(t)
+	dirLoop := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName)
+	esperados := []string{
+		res.CanonicalName + paths.SufixoStudio,
+		"pipeline.dag.json",
+		"triagem.json",
+		"memoria_execucao.json",
+	}
+	for _, nome := range esperados {
+		p := filepath.Join(dirLoop, nome)
+		if _, err := os.Stat(p); err != nil {
+			t.Errorf("arquivo padrão ausente em loops/<slug>/: %s (%v)", p, err)
+		}
+	}
+	raizLoop := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName+paths.SufixoStudio)
+	if _, err := os.Stat(raizLoop); err == nil {
+		t.Errorf("arquivo de loop não deve ficar na raiz loops/: %s", raizLoop)
 	}
 }

@@ -1,15 +1,18 @@
 package fabricar
 
 import (
+	"encoding/json"
 	"fmt"
 	"legoloop/internal/paths"
 	"path/filepath"
 	"strings"
 	"time"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/interview"
 	"legoloop/internal/processo"
 	"legoloop/internal/ste"
+	"legoloop/internal/triagem"
 )
 
 func init() {
@@ -29,13 +32,13 @@ type namedFile struct {
 // projetar é a Camada 4. O Processo nasce das necessidades e da Fusão (ProcessoDe), e SPEC, PLAN, ROUTE,
 // DAG, documento do Studio e skill são projeções dele, conferidas entre si por processo.Projetar. Etapa sem peça para aqui:
 // o erro é ErrLacuna e o Processo volta junto, para o dry-run montar o relatório da lacuna.
-func projetar(name, objetivo string, c consulta, now time.Time) (processo.Processo, *processo.Projecoes, error) {
+func projetar(name, objetivo string, c *consulta, now time.Time) (processo.Processo, *processo.Projecoes, error) {
 	p, err := ProcessoDe(name, objetivo, c.needs, c.m, now)
 	if err != nil {
 		return processo.Processo{}, nil, err
 	}
 	if l := lacunasDe(p); len(l) > 0 {
-		return p, nil, fmt.Errorf("%w: %s", ErrLacuna, msgLacuna(l))
+		resolverCascataLacunas(&p, c)
 	}
 	pr, err := processo.Projetar(p, now)
 	if err != nil {
@@ -102,8 +105,20 @@ func intentDe(name string, clar Clarification, natureza string, now time.Time) n
 
 func upperSnake(slug string) string { return strings.ToUpper(strings.ReplaceAll(slug, "-", "_")) }
 
+func memoriaDe(p processo.Processo) ([]byte, error) {
+	ts := p.CriadoEm
+	if ts.IsZero() {
+		ts = time.Now().UTC()
+	}
+	return json.MarshalIndent(triagem.MemoriaExecucao{Processo: p.Nome, AtualizadoEm: ts}, "", "  ")
+}
+
 func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, intent namedFile) ([]PlannedFile, error) {
 	pj, err := p.Marshal()
+	if err != nil {
+		return nil, err
+	}
+	mem, err := memoriaDe(p)
 	if err != nil {
 		return nil, err
 	}
@@ -111,8 +126,8 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, inte
 	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
 	files := []PlannedFile{
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Kind: "loop", Path: vault(paths.DirAntigo, p.Nome+paths.SufixoStudio), Data: pr.Loop},
-		{Kind: "dag", Path: vault(paths.DirAntigo, p.Nome+".dag.json"), Data: pr.DAG},
+		{Kind: "loop", Path: vault(paths.DirAntigo, p.Nome, p.Nome+paths.SufixoStudio), Data: pr.Loop},
+		{Kind: "dag", Path: vault(paths.DirAntigo, p.Nome, caminhos.ArquivoDAG), Data: pr.DAG},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 		{Kind: "intent", Path: docs("intents", intent.Name), Data: intent.Data},
 		{Kind: "spec", Path: docs("specs", pr.SpecNome), Data: []byte(pr.Spec)},
@@ -120,6 +135,7 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, inte
 		{Kind: "route", Path: docs("routes", pr.RouteNome), Data: pr.Route},
 		{Kind: "dag_iso", Path: docs("dags", pr.DAGNome), Data: pr.DAG},
 		{Kind: "triagem", Path: vault(paths.DirAntigo, p.Nome, "triagem.json"), Data: pr.Triagem},
+		{Kind: "memoria", Path: vault(paths.DirAntigo, p.Nome, triagem.ArquivoMemoria), Data: mem},
 		{Kind: "manual", Path: docs("manuals", pr.ManualNome), Data: []byte(pr.Manual)},
 		{Kind: "livro", Path: docs("books", filepath.Join(p.Nome, "livro.json")), Data: pr.Livro},
 	}

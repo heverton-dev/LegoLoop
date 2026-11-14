@@ -74,8 +74,8 @@ func TestRunFabricarInteractive(t *testing.T) {
 				t.Errorf("saída sem %q:\n%s", want, r.out)
 			}
 		}
-		if r.wrote(t) != 14 {
-			t.Errorf("devia gravar 14 arquivos, gravou %d", r.wrote(t))
+		if r.wrote(t) != 15 {
+			t.Errorf("devia gravar 15 arquivos, gravou %d", r.wrote(t))
 		}
 		if strings.Contains(r.out.String(), "Drives detectados") {
 			t.Errorf("o fabricar não pergunta drives: as peças vêm da matriz:\n%s", r.out)

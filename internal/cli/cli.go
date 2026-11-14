@@ -75,6 +75,7 @@ Comandos:
   remover    <nome> [--vault DIR] [--yes]  apaga um processo do cofre e os vínculos dele (falha se outro processo o usa)
   compor     <nome> <legoloop-x@versão> [--depende ID]... [--yes]  liga um processo como etapa de outro (recusa ciclo)
   instalar-skills [--vault DIR] [--dry-run] [--json]  instala e vincula as skills nativas universais
+  bootstrap       [--vault DIR] [--dry-run] [--json]  orquestra skills, mcp-router e ambiente sem config manual
   stept      [status|set|on|off|scan] [--harness H] [--modo M] [--pausa P] [--json]  alternador de governança STE-PT
   sync-harnesses (--dry-run|--apply)         conecta harnesses ao legoloop mcp-router
   mcp-router                                 inicia servidor MCP STDIO com Lazy discovery
@@ -100,7 +101,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
 		"dissecar": cmdDissecar,
 		"refinar":  cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills,
-		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter,
+		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
 	}

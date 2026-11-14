@@ -1,45 +1,106 @@
 {
   "schema_version": 2,
   "name": "legoloop-triagem",
-  "description": "Peça de Triagem Universal de Entrada e 13 Artefatos do Fabricar",
+  "date": "2026-11-14",
   "execution_strategy": {
     "mode": "sequential"
   },
+  "upstream_signatures": {},
   "nodes": [
     {
       "id": "t1-motor-triagem",
       "name": "Motor de Triagem",
-      "description": "Implementa internal/triagem híbrido com TDD",
+      "type": "unit_task",
+      "nature": "micro",
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
       "depends_on": [],
-      "handler": { "type": "shell", "command": "go test -count=1 ./internal/triagem/..." }
+      "context_in": [],
+      "context_out": ["internal/triagem/triagem.go"],
+      "output": { "artifact": "internal/triagem/triagem.go", "gate": "exit_code == 0" },
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-T1",
+      "status": "PENDING"
     },
     {
       "id": "t2-fabricar-13-artefatos",
       "name": "Fabricar 13 Artefatos",
-      "description": "Atualiza fabricar e processo para 13 artefatos sem template",
+      "type": "unit_task",
+      "nature": "micro",
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
       "depends_on": ["t1-motor-triagem"],
-      "handler": { "type": "shell", "command": "go test -count=1 ./internal/fabricar/... ./internal/processo/..." }
+      "context_in": [],
+      "context_out": ["internal/fabricar/fabricar.go"],
+      "output": { "artifact": "internal/fabricar/fabricar.go", "gate": "exit_code == 0" },
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-T2",
+      "status": "PENDING"
     },
     {
       "id": "t3-pontos-entrada",
       "name": "Pontos de Entrada",
-      "description": "Expõe triagem em CLI, Studio e Skill",
+      "type": "unit_task",
+      "nature": "micro",
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
       "depends_on": ["t1-motor-triagem", "t2-fabricar-13-artefatos"],
-      "handler": { "type": "shell", "command": "go test -count=1 ./cmd/legoloop/... ./internal/studio/..." }
+      "context_in": [],
+      "context_out": ["cmd/legoloop/main.go"],
+      "output": { "artifact": "cmd/legoloop/main.go", "gate": "exit_code == 0" },
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-T3",
+      "status": "PENDING"
     },
     {
       "id": "t4-saneamento-loops",
       "name": "Saneamento de Loops",
-      "description": "Saneia e migra processos em loops/",
+      "type": "unit_task",
+      "nature": "micro",
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
       "depends_on": ["t3-pontos-entrada"],
-      "handler": { "type": "shell", "command": "go run ./cmd/legoloop migrar-loops --apply" }
+      "context_in": [],
+      "context_out": ["loops/manifest.json"],
+      "output": { "artifact": "loops/manifest.json", "gate": "exit_code == 0" },
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-T4",
+      "status": "PENDING"
     },
     {
       "id": "t5-portoes-fechamento",
       "name": "Portões e Fechamento",
-      "description": "Roda testes, vet e build final",
+      "type": "unit_task",
+      "nature": "micro",
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
       "depends_on": ["t4-saneamento-loops"],
-      "handler": { "type": "shell", "command": "go test -count=1 ./... && go vet ./... && go build -o bin/legoloop.exe ./cmd/legoloop" }
+      "context_in": [],
+      "context_out": ["docs/reports/2026-11-14_REPORT_TRIAGEM.md"],
+      "output": { "artifact": "docs/reports/2026-11-14_REPORT_TRIAGEM.md", "gate": "exit_code == 0" },
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-T5",
+      "status": "PENDING"
     }
   ]
 }

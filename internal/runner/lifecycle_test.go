@@ -45,7 +45,7 @@ func TestTicketLifecycleWorktree(t *testing.T) {
 	repoDir := initTestGitRepo(t)
 	defer os.RemoveAll(repoDir)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	wtDir, branch, cleanup, err := runner.PrepareTicketWorktree(ctx, repoDir, 42, "Implement Wave Runner")

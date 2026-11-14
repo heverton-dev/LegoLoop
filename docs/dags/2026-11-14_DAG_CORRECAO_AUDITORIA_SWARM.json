@@ -6,6 +6,8 @@
   "date": "2026-11-14",
   "description": "Ciclo de correção completa dos achados AUD-03, AUD-04 e AUD-05 da Auditoria Profunda.",
   "trigger": { "type": "manual" },
+  "execution_strategy": { "mode": "sequential" },
+  "upstream_signatures": {},
   "nodes": [
     {
       "id": "TICK-01.1",
@@ -19,6 +21,9 @@
       "verification": { "gate": "exit_code == 0" },
       "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
       "isolation": { "write_boundary": "strict" },
+      "context_in": [],
+      "context_out": ["web/studio/js/lego-item-modal.js"],
+      "output": { "artifact": "web/studio/js/lego-item-modal.js", "gate": "exit_code == 0" },
       "spec_ref": "AC-E01.1",
       "status": "PENDING"
     },
@@ -34,6 +39,9 @@
       "verification": { "gate": "exit_code == 0" },
       "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
       "isolation": { "write_boundary": "strict" },
+      "context_in": [],
+      "context_out": ["web/studio/style.css"],
+      "output": { "artifact": "web/studio/style.css", "gate": "exit_code == 0" },
       "spec_ref": "AC-E02.1",
       "status": "PENDING"
     },
@@ -49,6 +57,9 @@
       "verification": { "gate": "exit_code == 0" },
       "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
       "isolation": { "write_boundary": "strict" },
+      "context_in": [],
+      "context_out": ["loops/manifest.json"],
+      "output": { "artifact": "loops/manifest.json", "gate": "exit_code == 0" },
       "spec_ref": "AC-E03.1",
       "status": "PENDING"
     }

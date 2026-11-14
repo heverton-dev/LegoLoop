@@ -24,6 +24,8 @@ type Clarification struct {
 	Natureza string `json:"natureza,omitempty"`
 	// Gaps lista o que o espelho ainda não respondeu quando a entrevista parou abaixo da meta.
 	Gaps []string `json:"gaps,omitempty"`
+	// ContextIn guarda o caminho da INTENT gerada por internal/interview quando conectada ao fabricar.
+	ContextIn string `json:"context_in,omitempty"`
 }
 
 // defaultMaxTurns é o limite de turnos da entrevista interativa.
