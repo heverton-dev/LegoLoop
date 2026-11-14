@@ -1,0 +1,43 @@
+﻿{
+  "front": "f2-uiux",
+  "scope": "internal/studio/",
+  "summary": {
+    "alerts_confirms_prompts": 0,
+    "emojis_found": 29,
+    "empty_states": "covered",
+    "accessibility_baseline": "good",
+    "responsiveness": "partial_no_mobile_breakpoint"
+  },
+  "findings": [
+    {
+      "id": "UIUX-001",
+      "severity": "medium",
+      "category": "emojis",
+      "file": "internal/studio/static/components/lego-item-modal.js",
+      "lines": [45, 48, 55, 58, 61, 82, 101, 113, 125, 136, 184, 185, 221, 222, 255, 289, 495, 496, 497, 498, 499, 500, 501, 502, 504, 615, 616, 617, 628, 647, 674, 680, 934, 935, 953, 967, 1043],
+      "description": "Uso de emojis Unicode na interface do modal de item (ex.: iconMap, botoes de acao, diagrama IPO e filtros). Substituir por icones SVG de icons.js."
+    },
+    {
+      "id": "UIUX-002",
+      "severity": "low",
+      "category": "responsiveness",
+      "file": "internal/studio/static/style.css",
+      "lines": [517, 523, 590],
+      "description": "Breakpoints cobrem 1280px, 1100px e 1024px, mas nao ha media query para telas estreitas (<= 768px), mantendo sidebar fixa de 220px/200px."
+    }
+  ],
+  "verified_ok": [
+    {
+      "check": "no_native_dialogs",
+      "evidence": "rg -n 'alert\\(|confirm\\(|prompt\\(' internal/studio/ -> 0 ocorrencias; usa <dialog id='dialog'> em ui.js:62-99"
+    },
+    {
+      "check": "empty_states",
+      "evidence": "index.html:88-90,144-146; inventario.html:53-55; palette.js:25-31,592-597; inventory.js:7-15,214-219; app.js:373,1457,2416"
+    },
+    {
+      "check": "accessibility_and_motion",
+      "evidence": "index.html, inventario.html e lego-item-modal.js usam aria-label, role, aria-live, aria-selected; style.css:83 usa box-shadow em :focus-visible; style.css:37 e 533 cobrem dark mode e prefers-reduced-motion"
+    }
+  ]
+}

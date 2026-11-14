@@ -1,0 +1,488 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "2026-11-14_ROUTE_SWARM",
+  "version": "1.0.0",
+  "date": "2026-11-14",
+  "session_id": null,
+  "intent_ref": null,
+  "spec_ref": "docs/specs/2026-11-14_SPEC_SWARM.md",
+  "plan_ref": "docs/plans/2026-11-14_PLAN_SWARM.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "spec": {
+      "path": "docs/specs/2026-11-14_SPEC_SWARM.md",
+      "sha256": "bfc40d3039c5a7e3c9dd7a49d7f7dc2c880198dace8e65729e9ae986f23df261"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-14_PLAN_SWARM.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "write_boundary": "strict"
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "`e01` — Etapa 1 — peça `legoloop-piece-upgrader`",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "out/01_etapa.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "out/01_etapa.md"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "validate",
+            "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
+          ]
+        ],
+        "gate": "file_exists('out/01_etapa.md') \u0026\u0026 word_count('out/01_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_etapa.md', '\\{\\{')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "`e02` — Etapa 2 — peça `aidd-piece-upgrader`",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "out/02_etapa.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "out/02_etapa.md"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "validate",
+            "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
+          ]
+        ],
+        "gate": "file_exists('out/02_etapa.md') \u0026\u0026 word_count('out/02_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/02_etapa.md', '\\{\\{')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.3",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "`e03` — Etapa 3 — peça `legoloop-mega-pipeline`",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "out/03_etapa.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "out/03_etapa.md"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "validate",
+            "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
+          ]
+        ],
+        "gate": "file_exists('out/03_etapa.md') \u0026\u0026 word_count('out/03_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/03_etapa.md', '\\{\\{')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.4",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "`e04` — Etapa 4 — peça `aidd-legoloop-mega-pipeline`",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "out/04_etapa.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.4",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "out/04_etapa.md"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "validate",
+            "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
+          ]
+        ],
+        "gate": "file_exists('out/04_etapa.md') \u0026\u0026 word_count('out/04_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/04_etapa.md', '\\{\\{')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.5",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "`e05` — Etapa 5 — peça `legoloop-video-master`",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_task",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.4"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "out/05_etapa.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.5",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "out/05_etapa.md"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "validate",
+            "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
+          ]
+        ],
+        "gate": "file_exists('out/05_etapa.md') \u0026\u0026 word_count('out/05_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/05_etapa.md', '\\{\\{')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": null,
+      "epic_id": null,
+      "label": "Homologação Final (Regressão Global \u0026 Recompilação Fresca)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.5"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_pipeline",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./..."
+          ],
+          [
+            "go",
+            "vet",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    }
+  ]
+}

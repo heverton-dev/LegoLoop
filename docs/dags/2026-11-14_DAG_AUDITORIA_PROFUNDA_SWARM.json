@@ -1,0 +1,117 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "name": "auditoria-profunda-swarm",
+  "version": "2.2.0",
+  "date": "2026-11-14",
+  "description": "Auditoria Profunda de Código Go, UI/UX Studio Web e Contratos DAG em 4 frentes paralelas via Swarm.",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-14_ROUTE_AUDITORIA_PROFUNDA_SWARM.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 3,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "name": "Frente 1: Auditoria de Código Go e Linters",
+      "type": "script",
+      "nature": "micro",
+      "command": ["go", "test", "-count=1", "./..."],
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "context_in": [],
+      "context_out": ["docs/reports/audit_f1_go.json"],
+      "output": {
+        "artifact": "docs/reports/audit_f1_go.json",
+        "gate": "file_exists('docs/reports/audit_f1_go.json')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "name": "Frente 2: Auditoria de UI/UX Studio Web",
+      "type": "skill",
+      "nature": "micro",
+      "ref": "skills/aidd-uiux",
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "context_in": [],
+      "context_out": ["docs/reports/audit_f2_uiux.json"],
+      "output": {
+        "artifact": "docs/reports/audit_f2_uiux.json",
+        "gate": "file_exists('docs/reports/audit_f2_uiux.json')"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "name": "Frente 3: Auditoria de Contratos e DAGs",
+      "type": "script",
+      "nature": "micro",
+      "command": ["powershell", "-NoProfile", "-Command", "legoloop validate"],
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING",
+      "context_in": [],
+      "context_out": ["docs/reports/audit_f3_dags.json"],
+      "output": {
+        "artifact": "docs/reports/audit_f3_dags.json",
+        "gate": "file_exists('docs/reports/audit_f3_dags.json')"
+      }
+    },
+    {
+      "id": "TICK-04.1",
+      "name": "Frente 4: Consolidação Swarm e Relatório Executivo",
+      "type": "unit_task",
+      "nature": "micro",
+      "depends_on": ["TICK-01.1", "TICK-02.1", "TICK-03.1"],
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "context_in": [
+        "docs/reports/audit_f1_go.json",
+        "docs/reports/audit_f2_uiux.json",
+        "docs/reports/audit_f3_dags.json"
+      ],
+      "context_out": ["docs/reports/2026-11-14_REPORT_AUDITORIA_PROFUNDA_SWARM.md"],
+      "output": {
+        "artifact": "docs/reports/2026-11-14_REPORT_AUDITORIA_PROFUNDA_SWARM.md",
+        "gate": "file_exists('docs/reports/2026-11-14_REPORT_AUDITORIA_PROFUNDA_SWARM.md')"
+      }
+    }
+  ]
+}

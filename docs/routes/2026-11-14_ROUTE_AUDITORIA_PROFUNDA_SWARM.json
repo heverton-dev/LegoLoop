@@ -1,0 +1,94 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "auditoria-profunda-swarm",
+  "version": "1.0.0",
+  "date": "2026-11-14",
+  "session_id": "2b93726e-e3b1-4f72-aa2a-d2ddcd8ca025",
+  "intent_ref": "docs/intents/2026-11-14_INTENT_AUDITORIA_PROFUNDA_SWARM.md",
+  "spec_ref": "docs/specs/2026-11-14_SPEC_AUDITORIA_PROFUNDA_SWARM.md",
+  "plan_ref": "docs/plans/2026-11-14_PLAN_AUDITORIA_PROFUNDA_SWARM.md",
+  "initiative_ref": "Auditoria Profunda Swarm",
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 3,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": "ephemeral"
+    },
+    "max_parallel_workers": 3,
+    "tdd_enforced": false,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "epic_id": "E01",
+      "label": "Frente 1: Auditoria de Código Go e Linters",
+      "nature": "micro",
+      "type": "script",
+      "status": "PENDING",
+      "depends_on": [],
+      "spec_ref": "AC-E01.1",
+      "output": {
+        "artifacts": ["docs/reports/audit_f1_go.json"],
+        "verify": [["go", "test", "-count=1", "./..."]],
+        "gate": "exit_code == 0 && file_exists('docs/reports/audit_f1_go.json')"
+      }
+    },
+    {
+      "id": "TICK-02.1",
+      "epic_id": "E02",
+      "label": "Frente 2: Auditoria de UI/UX Studio Web",
+      "nature": "micro",
+      "type": "skill",
+      "ref": "skills/aidd-uiux",
+      "status": "PENDING",
+      "depends_on": [],
+      "spec_ref": "AC-E02.1",
+      "output": {
+        "artifacts": ["docs/reports/audit_f2_uiux.json"],
+        "verify": [["powershell", "-NoProfile", "-Command", "Test-Path docs/reports/audit_f2_uiux.json"]],
+        "gate": "exit_code == 0 && file_exists('docs/reports/audit_f2_uiux.json')"
+      }
+    },
+    {
+      "id": "TICK-03.1",
+      "epic_id": "E03",
+      "label": "Frente 3: Auditoria de Contratos e DAGs",
+      "nature": "micro",
+      "type": "script",
+      "status": "PENDING",
+      "depends_on": [],
+      "spec_ref": "AC-E03.1",
+      "output": {
+        "artifacts": ["docs/reports/audit_f3_dags.json"],
+        "verify": [["powershell", "-NoProfile", "-Command", "Test-Path docs/reports/audit_f3_dags.json"]],
+        "gate": "exit_code == 0 && file_exists('docs/reports/audit_f3_dags.json')"
+      }
+    },
+    {
+      "id": "TICK-04.1",
+      "epic_id": "E04",
+      "label": "Frente 4: Consolidação Swarm e Relatório Executivo",
+      "nature": "micro",
+      "type": "unit_task",
+      "status": "PENDING",
+      "depends_on": ["TICK-01.1", "TICK-02.1", "TICK-03.1"],
+      "spec_ref": "AC-E04.1",
+      "output": {
+        "artifacts": ["docs/reports/2026-11-14_REPORT_AUDITORIA_PROFUNDA_SWARM.md"],
+        "verify": [["powershell", "-NoProfile", "-Command", "Test-Path docs/reports/2026-11-14_REPORT_AUDITORIA_PROFUNDA_SWARM.md"]],
+        "gate": "exit_code == 0 && file_exists('docs/reports/2026-11-14_REPORT_AUDITORIA_PROFUNDA_SWARM.md')"
+      }
+    }
+  ]
+}

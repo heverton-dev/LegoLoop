@@ -1,0 +1,45 @@
+{
+  "frente": "f1-go",
+  "escopo": "Auditoria de Código Go e Linters (somente leitura)",
+  "comandos": {
+    "go_test": {
+      "comando": "go test -count=1 ./...",
+      "exit_code": 1,
+      "totais": {
+        "pacotes_total": 50,
+        "ok": 43,
+        "sem_testes": 5,
+        "falhas": 2
+      },
+      "violacoes": [
+        {
+          "pacote": "legoloop/internal/cli",
+          "teste": "TestStudioWiresAssetInventory",
+          "local": "cli_test.go:268",
+          "erro": "/api/assets: Get \"http://127.0.0.1:61750/api/assets\": EOF <nil>"
+        },
+        {
+          "pacote": "legoloop/tools/route2dag",
+          "teste": "TestDAGsDeDocsValidam",
+          "local": "route2dag_test.go:119",
+          "erro": "2026-11-14_DAG_AUDITORIA_PROFUNDA_SWARM.json não valida: dag: campo obrigatório do schema_version 2 ausente: nó \"TICK-01.1\": limits"
+        }
+      ]
+    },
+    "go_vet": {
+      "comando": "go vet ./...",
+      "exit_code": 0,
+      "violacoes": []
+    },
+    "funclen": {
+      "comando": "go run ./tools/funclen internal",
+      "exit_code": 0,
+      "violacoes": []
+    },
+    "gofmt": {
+      "comando": "gofmt -l .",
+      "exit_code": 0,
+      "violacoes": []
+    }
+  }
+}

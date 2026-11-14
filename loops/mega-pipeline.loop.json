@@ -158,6 +158,49 @@
       }
     },
     {
+      "id": "l3b-swarm",
+      "name": "Orquestração Swarm por Nível Topológico",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "type": "skill",
+      "ref": "skills/legoloop-swarm",
+      "depends_on": [
+        "l3-triade"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "gemini-4-hydrogen-low",
+        "effort": "low",
+        "fallback": "llama3.1:8b"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/reports/SWARM_RUN_REPORT.json"
+      ],
+      "test_seam": {
+        "type": "unit_test_gate",
+        "target": "file_exists('docs/reports/SWARM_RUN_REPORT.json')"
+      },
+      "output": {
+        "artifact": "docs/reports/SWARM_RUN_REPORT.json",
+        "gate": "file_exists('docs/reports/SWARM_RUN_REPORT.json')"
+      }
+    },
+    {
       "id": "l4-tdd",
       "name": "Construção TDD por Épico",
       "nature": "macro",
@@ -165,7 +208,7 @@
       "type": "skill",
       "ref": "skills/aidd-tdd",
       "depends_on": [
-        "l3-triade"
+        "l3b-swarm"
       ],
       "routing": {
         "mode": "suggested",

@@ -1,0 +1,223 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "legoloop-swarm",
+  "name": "legoloop-swarm",
+  "description": "Orquestrar execucao paralela de pipeline.dag.json em swarm por nivel topologico com roteamento de modelos pela Matriz de Papeis",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "e01",
+      "name": "Etapa 1",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-piece-upgrader",
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "output": {
+        "artifact": "out/01_etapa.md",
+        "gate": "file_exists('out/01_etapa.md') \u0026\u0026 word_count('out/01_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_etapa.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_out": [
+        "out/01_etapa.md"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "id": "e02",
+      "name": "Etapa 2",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/aidd-piece-upgrader",
+      "depends_on": [
+        "e01"
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "e01": "file('out/01_etapa.md')"
+      },
+      "output": {
+        "artifact": "out/02_etapa.md",
+        "gate": "file_exists('out/02_etapa.md') \u0026\u0026 word_count('out/02_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/02_etapa.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "out/01_etapa.md"
+      ],
+      "context_out": [
+        "out/02_etapa.md"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "id": "e03",
+      "name": "Etapa 3",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-mega-pipeline",
+      "depends_on": [
+        "e02"
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "e02": "file('out/02_etapa.md')"
+      },
+      "output": {
+        "artifact": "out/03_etapa.md",
+        "gate": "file_exists('out/03_etapa.md') \u0026\u0026 word_count('out/03_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/03_etapa.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "out/02_etapa.md"
+      ],
+      "context_out": [
+        "out/03_etapa.md"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "id": "e04",
+      "name": "Etapa 4",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/aidd-legoloop-mega-pipeline",
+      "depends_on": [
+        "e03"
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "e03": "file('out/03_etapa.md')"
+      },
+      "output": {
+        "artifact": "out/04_etapa.md",
+        "gate": "file_exists('out/04_etapa.md') \u0026\u0026 word_count('out/04_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/04_etapa.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "out/03_etapa.md"
+      ],
+      "context_out": [
+        "out/04_etapa.md"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "id": "e05",
+      "name": "Etapa 5",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-video-master",
+      "depends_on": [
+        "e04"
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "e04": "file('out/04_etapa.md')"
+      },
+      "output": {
+        "artifact": "out/05_etapa.md",
+        "gate": "file_exists('out/05_etapa.md') \u0026\u0026 word_count('out/05_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/05_etapa.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "out/04_etapa.md"
+      ],
+      "context_out": [
+        "out/05_etapa.md"
+      ],
+      "status": "PENDING"
+    }
+  ]
+}

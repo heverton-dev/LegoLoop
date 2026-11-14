@@ -190,7 +190,7 @@ func (s *Server) ListenAndServe(ctx context.Context, addr string, ready chan<- s
 	}
 	s.Host = ln.Addr().String()
 	srv := &http.Server{Handler: s.Handler(), ReadHeaderTimeout: 5 * time.Second,
-		ReadTimeout: 15 * time.Second, WriteTimeout: 30 * time.Second, MaxHeaderBytes: 64 << 10}
+		ReadTimeout: 15 * time.Second, WriteTimeout: 90 * time.Second, MaxHeaderBytes: 64 << 10}
 	if ready != nil {
 		ready <- s.Host
 	}

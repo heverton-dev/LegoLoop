@@ -1,0 +1,32 @@
+﻿{
+  "frente": "f3-dags",
+  "timestamp": "2026-11-14T06:22:10-03:00",
+  "legoloop_validate_sem_args": {
+    "exit_code": 1,
+    "output": "erro: informe o arquivo pipeline.dag.json"
+  },
+  "schemas": [
+    "schemas/dag.v1.json",
+    "schemas/dag.v2.json",
+    "schemas/route.v2.json",
+    "schemas/spec.v1.json"
+  ],
+  "dags_conformes_schema_v2": {
+    "total": 10,
+    "validos": 10,
+    "invalidos": 0,
+    "resultados": [
+      {"arquivo": "loops/ai-motion-graphics/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 17, "status": "valido"},
+      {"arquivo": "loops/legoloop-canal-redc/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 4, "status": "valido"},
+      {"arquivo": "loops/legoloop-cartoon-shorts/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 3, "status": "valido"},
+      {"arquivo": "loops/legoloop-dissecar/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 6, "status": "valido"},
+      {"arquivo": "loops/legoloop-fechar/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 7, "status": "valido"},
+      {"arquivo": "loops/legoloop-n10-foundry/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 4, "status": "valido"},
+      {"arquivo": "loops/legoloop-video-edition/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 12, "status": "valido"},
+      {"arquivo": "loops/legoloop-video-master/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 5, "status": "valido"},
+      {"arquivo": "loops/legoloop-video-motion/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 6, "status": "valido"},
+      {"arquivo": "loops/legoloop-video-rea/pipeline.dag.json", "schema_version": 2, "exit_code": 0, "nos": 6, "status": "valido"}
+    ]
+  },
+  "loop_json_sem_schema_version": 15
+}
