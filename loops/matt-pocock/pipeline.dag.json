@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort_processo",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -39,7 +39,7 @@
   },
   "nodes": [
     {
-      "id": "subloop-1-alinhar-dominio",
+      "id": "subprocesso-1-alinhar-dominio",
       "name": "Grilling & Alinhamento de Domínio",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -88,18 +88,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-1-alinhar-dominio",
+      "spec_ref": "AC-subprocesso-1-alinhar-dominio",
       "status": "pending"
     },
     {
-      "id": "subloop-2-especificar",
+      "id": "subprocesso-2-especificar",
       "name": "Especificação & Restrições Invariantes",
       "nature": "micro",
       "cognitive_complexity": "alto",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-1-alinhar-dominio"
+        "subprocesso-1-alinhar-dominio"
       ],
       "routing": {
         "mode": "auto",
@@ -147,18 +147,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-2-especificar",
+      "spec_ref": "AC-subprocesso-2-especificar",
       "status": "pending"
     },
     {
-      "id": "subloop-3-planejar-tickets",
+      "id": "subprocesso-3-planejar-tickets",
       "name": "Tickets em Grafo Acíclico (DAG)",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-2-especificar"
+        "subprocesso-2-especificar"
       ],
       "routing": {
         "mode": "auto",
@@ -206,18 +206,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-3-planejar-tickets",
+      "spec_ref": "AC-subprocesso-3-planejar-tickets",
       "status": "pending"
     },
     {
-      "id": "subloop-4-construir-tdd",
+      "id": "subprocesso-4-construir-tdd",
       "name": "Construção TDD Cirúrgica (Zero Stubs)",
-      "nature": "macro",
+      "nature": "skill",
       "cognitive_complexity": "alto",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-3-planejar-tickets"
+        "subprocesso-3-planejar-tickets"
       ],
       "routing": {
         "mode": "suggested",
@@ -265,18 +265,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-4-construir-tdd",
+      "spec_ref": "AC-subprocesso-4-construir-tdd",
       "status": "pending"
     },
     {
-      "id": "subloop-5-review-auditar",
+      "id": "subprocesso-5-review-auditar",
       "name": "Code Review de 2 Eixos & Hardening",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-4-construir-tdd"
+        "subprocesso-4-construir-tdd"
       ],
       "routing": {
         "mode": "auto",
@@ -324,18 +324,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-5-review-auditar",
+      "spec_ref": "AC-subprocesso-5-review-auditar",
       "status": "pending"
     },
     {
-      "id": "subloop-6-retro-ambiente",
+      "id": "subprocesso-6-retro-ambiente",
       "name": "Retroalimentação do Ambiente & Governança",
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "skill",
       "ref": "skills/aidd-pocock",
       "depends_on": [
-        "subloop-5-review-auditar"
+        "subprocesso-5-review-auditar"
       ],
       "routing": {
         "mode": "auto",
@@ -383,7 +383,7 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-6-retro-ambiente",
+      "spec_ref": "AC-subprocesso-6-retro-ambiente",
       "status": "pending"
     }
   ]

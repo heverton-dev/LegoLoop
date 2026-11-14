@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort_processo"
   },
   "trigger": {
     "type": "manual"

@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort_processo",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -160,7 +160,7 @@
       }
     },
     {
-      "id": "n03_gerar_pipelines_metodos",
+      "id": "n03_gerar_processos_metodos",
       "name": "Gerador de Processos & Métodos",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -202,24 +202,24 @@
         "internal/redc/dna.go"
       ],
       "context_out": [
-        "internal/redc/pipeline_gen.go"
+        "internal/redc/processo_gen.go"
       ],
       "command": [
         "powershell",
         "-NoProfile",
         "-Command",
-        "Test-Path internal/redc/pipeline_gen.go"
+        "Test-Path internal/redc/processo_gen.go"
       ],
       "test_seam": {
         "type": "unit_test_gate",
-        "target": "file_exists('internal/redc/pipeline_gen.go')"
+        "target": "file_exists('internal/redc/processo_gen.go')"
       },
       "output": {
-        "artifact": "internal/redc/pipeline_gen.go",
-        "gate": "file_exists('internal/redc/pipeline_gen.go')"
+        "artifact": "internal/redc/processo_gen.go",
+        "gate": "file_exists('internal/redc/processo_gen.go')"
       },
       "verification": {
-        "gate": "file_exists('internal/redc/pipeline_gen.go')"
+        "gate": "file_exists('internal/redc/processo_gen.go')"
       }
     },
     {

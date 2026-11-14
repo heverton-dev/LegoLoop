@@ -23,7 +23,7 @@ func parseOuFalha(t *testing.T, src string) *DAG {
 }
 
 func TestParseDoisDialetos(t *testing.T) {
-	antigo := parseOuFalha(t, dualNos(`{"type":"loop_end","loop":"alvo"}`, "subloop", "outro"))
+	antigo := parseOuFalha(t, dualNos(`{"type":"loop_end","loop":"alvo"}`, "subprocesso", "outro"))
 	novo := parseOuFalha(t, dualNos(`{"type":"processo_fim","processo":"alvo"}`, "subprocesso", "outro"))
 	if !reflect.DeepEqual(antigo.Nodes, novo.Nodes) {
 		t.Errorf("nós divergem:\nantigo=%+v\nnovo=%+v", antigo.Nodes, novo.Nodes)
@@ -41,7 +41,7 @@ func TestParseDoisDialetos(t *testing.T) {
 	if _, err := Parse([]byte(misto)); !errors.Is(err, ErrDialetoMisto) {
 		t.Errorf("mistura inválida deveria retornar ErrDialetoMisto, recebeu %v", err)
 	}
-	for _, tipo := range []string{"subprocesso", "subloop"} {
+	for _, tipo := range []string{"subprocesso"} {
 		if _, err := Parse([]byte(dualNos(`{"type":"manual"}`, tipo, "a.b"))); err == nil {
 			t.Errorf("ref %s com ponto deveria ser recusado", tipo)
 		}

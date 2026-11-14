@@ -41,7 +41,7 @@
     {
       "id": "n01_contracts_and_schemas",
       "name": "Saneamento de Schemas e Proveniência de Contexto",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "routing": {
         "mode": "manual",
@@ -89,7 +89,7 @@
     {
       "id": "n02_andon_and_sbar",
       "name": "Disjuntor Jidoka Andon Cord e Formatador SBAR",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "n01_contracts_and_schemas"
@@ -142,8 +142,8 @@
     {
       "id": "n03_n10_frontier_engines",
       "name": "Motores de Fronteira Industrial N10",
-      "type": "unit_task",
-      "nature": "macro",
+      "type": "unit_no",
+      "nature": "skill",
       "depends_on": [
         "n02_andon_and_sbar"
       ],
@@ -195,7 +195,7 @@
     {
       "id": "n04_double_surface",
       "name": "Dupla Superfície Autopilot e LegoPress",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "n03_n10_frontier_engines"

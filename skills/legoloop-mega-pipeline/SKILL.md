@@ -1,12 +1,12 @@
 ---
-name: legoloop-mega-pipeline
+name: legoloop-mega-processo
 description: Orquestrador Mestre do Mega Processo LegoLoop. Decompõe Épicos em Micro/Nano-tickets, roteia modelos cognitivos por complexidade e executa os 5 subprocessos modulares em contexto estéril (Orchestrix cirúrgica) com gates binários e canonização.
 commands:
   - "/legoloop"
-  - "/mega-pipeline"
+  - "/mega-processo"
   - "/legoloop-orchestrator"
   - "/canonize"
-  - "/aidd-legoloop-mega-pipeline"
+  - "/aidd-legoloop-mega-processo"
 ---
 
 # ♾️ LegoLoop Mega Processo — Orquestrador Canônico

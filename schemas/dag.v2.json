@@ -50,8 +50,8 @@
         "properties": {
           "id": { "type": "string", "pattern": "^[A-Za-z0-9_-]([A-Za-z0-9_.-]{0,62}[A-Za-z0-9_-])?$" },
           "name": { "type": "string" },
-          "type": { "type": "string", "enum": ["skill", "script", "subloop", "subprocesso", "stop_gate", "unit_task"] },
-          "nature": { "type": "string", "enum": ["nano", "micro", "macro", "epic"] },
+          "type": { "type": "string", "enum": ["skill", "script", "subprocesso", "stop_gate", "unit_no"] },
+          "nature": { "type": "string", "enum": ["nano", "micro", "skill", "epic"] },
           "cognitive_complexity": { "type": "string" },
           "ref": { "type": "string" },
           "depends_on": { "type": "array", "items": { "type": "string" } },

@@ -9,7 +9,7 @@
   "nodes": [
     {
       "id": "n01_resolver_alvo",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "claude",
@@ -62,7 +62,7 @@
     },
     {
       "id": "n02_extrair_ast_metricas",
-      "type": "unit_task",
+      "type": "unit_no",
       "depends_on": [
         "n01_resolver_alvo"
       ],
@@ -118,7 +118,7 @@
     },
     {
       "id": "n03_auditar_governanca",
-      "type": "unit_task",
+      "type": "unit_no",
       "depends_on": [
         "n02_extrair_ast_metricas"
       ],
@@ -174,7 +174,7 @@
     },
     {
       "id": "n04_sintetizar_dag_reverso",
-      "type": "unit_task",
+      "type": "unit_no",
       "depends_on": [
         "n03_auditar_governanca"
       ],
@@ -231,7 +231,7 @@
     },
     {
       "id": "n05_sintetizar_triade_motion",
-      "type": "unit_task",
+      "type": "unit_no",
       "depends_on": [
         "n04_sintetizar_dag_reverso"
       ],
@@ -288,7 +288,7 @@
     },
     {
       "id": "n06_compilar_relatorio_final",
-      "type": "unit_task",
+      "type": "unit_no",
       "depends_on": [
         "n05_sintetizar_triade_motion"
       ],
@@ -349,7 +349,7 @@
     "supervision_level": "micro",
     "max_parallel_workers": 1,
     "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort_processo"
   },
   "upstream_signatures": {
     "route": {

@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort_processo"
   },
   "trigger": {
     "type": "manual"
@@ -123,7 +123,7 @@
         "legoloop",
         "legopress",
         "auditar",
-        "docs/books/video-rea/2026-11-07_PIPELINE-VIDEO-REA.pdf"
+        "docs/books/video-rea/2026-11-07_PROCESSO-VIDEO-REA.pdf"
       ],
       "output": {
         "artifact": "docs/books/video-rea/livro.json",

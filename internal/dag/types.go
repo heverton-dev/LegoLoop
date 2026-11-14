@@ -23,13 +23,13 @@ const (
 	TypeScript NodeType = "script"
 	// Nó subprocesso no dialeto antigo: referencia outro Processo do acervo (Ref = nome do
 	// Processo) e roda isolado e estéril. É a representação interna depois do Parse.
-	TypeSubloop NodeType = "subloop"
+	TypeSubloop NodeType = "subprocesso"
 	// TypeSubprocesso é o nome novo do tipo acima; o leitor converte no Parse.
 	TypeSubprocesso NodeType = "subprocesso"
 	// TypeStopGate representa uma barreira de auditoria humana no Processo.
 	TypeStopGate NodeType = "stop_gate"
 	// Nó de Ticket: unidade cognitiva de engenharia.
-	TypeUnitTask NodeType = "unit_task"
+	TypeUnitTask NodeType = "unit_no"
 )
 
 // ExecMode define onde a peça roda: na pasta do projeto ou em workspace isolado.

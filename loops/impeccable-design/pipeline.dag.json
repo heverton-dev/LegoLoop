@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort_processo",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -39,7 +39,7 @@
   },
   "nodes": [
     {
-      "id": "subloop-avaliar",
+      "id": "subprocesso-avaliar",
       "name": "Avaliação de UI/UX e Diagnóstico",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -88,18 +88,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-avaliar",
+      "spec_ref": "AC-subprocesso-avaliar",
       "status": "pending"
     },
     {
-      "id": "subloop-construir",
+      "id": "subprocesso-construir",
       "name": "Construção da Direção Visual",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-avaliar"
+        "subprocesso-avaliar"
       ],
       "routing": {
         "mode": "suggested",
@@ -147,18 +147,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-construir",
+      "spec_ref": "AC-subprocesso-construir",
       "status": "pending"
     },
     {
-      "id": "subloop-melhorar",
+      "id": "subprocesso-melhorar",
       "name": "Design Tokens & Sistema de Cores",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-construir"
+        "subprocesso-construir"
       ],
       "routing": {
         "mode": "auto",
@@ -206,18 +206,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-melhorar",
+      "spec_ref": "AC-subprocesso-melhorar",
       "status": "pending"
     },
     {
-      "id": "subloop-refinar",
+      "id": "subprocesso-refinar",
       "name": "Refinamento & Hardening UI",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-melhorar"
+        "subprocesso-melhorar"
       ],
       "routing": {
         "mode": "auto",
@@ -265,18 +265,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-refinar",
+      "spec_ref": "AC-subprocesso-refinar",
       "status": "pending"
     },
     {
-      "id": "subloop-corrigir",
+      "id": "subprocesso-corrigir",
       "name": "Correções de Acessibilidade & Responsividade",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-refinar"
+        "subprocesso-refinar"
       ],
       "routing": {
         "mode": "auto",
@@ -324,18 +324,18 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-corrigir",
+      "spec_ref": "AC-subprocesso-corrigir",
       "status": "pending"
     },
     {
-      "id": "subloop-iterar-documentar",
+      "id": "subprocesso-iterar-documentar",
       "name": "Documentação do Design System",
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "skill",
       "ref": "skills/impeccable",
       "depends_on": [
-        "subloop-corrigir"
+        "subprocesso-corrigir"
       ],
       "routing": {
         "mode": "auto",
@@ -383,7 +383,7 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-iterar-documentar",
+      "spec_ref": "AC-subprocesso-iterar-documentar",
       "status": "pending"
     }
   ],

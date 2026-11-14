@@ -5,7 +5,7 @@
   "nodes": [
     {
       "id": "T-01",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "medium",
       "context_in": [
@@ -28,7 +28,7 @@
     },
     {
       "id": "T-02",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "medium",
       "context_in": [
@@ -51,7 +51,7 @@
     },
     {
       "id": "T-03",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "high",
       "depends_on": [
@@ -77,7 +77,7 @@
     },
     {
       "id": "T-04",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "high",
       "depends_on": [
@@ -103,7 +103,7 @@
     },
     {
       "id": "T-05",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "high",
       "depends_on": [
@@ -129,7 +129,7 @@
     },
     {
       "id": "T-06",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "low",
       "depends_on": [

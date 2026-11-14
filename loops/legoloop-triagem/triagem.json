@@ -18,7 +18,7 @@
       "t1-motor-triagem",
       "t2-fabricar-13-artefatos",
       "t3-pontos-entrada",
-      "t4-saneamento-loops",
+      "t4-saneamento-processos",
       "t5-portoes-fechamento"
     ]
   },
@@ -51,13 +51,13 @@
       "flag_cli": "--etapa t3-pontos-entrada"
     },
     {
-      "id": "t4-saneamento-loops",
+      "id": "t4-saneamento-processos",
       "palavras_chave": [
-        "saneamento loops",
-        "saneamento-loops"
+        "saneamento processos",
+        "saneamento-processos"
       ],
-      "slash_command": "/legoloop-triagem-saneamento-loops",
-      "flag_cli": "--etapa t4-saneamento-loops"
+      "slash_command": "/legoloop-triagem-saneamento-processos",
+      "flag_cli": "--etapa t4-saneamento-processos"
     },
     {
       "id": "t5-portoes-fechamento",

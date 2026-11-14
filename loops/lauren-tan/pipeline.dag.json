@@ -26,7 +26,7 @@
     "max_parallel_workers": 1,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort_processo",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -39,7 +39,7 @@
   },
   "nodes": [
     {
-      "id": "subloop-1-intencao-dominio",
+      "id": "subprocesso-1-intencao-dominio",
       "name": "Intenção & Modelagem de Domínio",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -87,11 +87,11 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-1-intencao-dominio",
+      "spec_ref": "AC-subprocesso-1-intencao-dominio",
       "status": "pending"
     },
     {
-      "id": "subloop-2-arquitetura-exploracao",
+      "id": "subprocesso-2-arquitetura-exploracao",
       "name": "Arquitetura & Exploração Competitiva",
       "nature": "micro",
       "cognitive_complexity": "alto",
@@ -116,7 +116,7 @@
         "write_boundary": "strict"
       },
       "depends_on": [
-        "subloop-1-intencao-dominio"
+        "subprocesso-1-intencao-dominio"
       ],
       "inputs": {
         "intent": "file('docs/intents/INTENT.md')"
@@ -142,11 +142,11 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-2-arquitetura-exploracao",
+      "spec_ref": "AC-subprocesso-2-arquitetura-exploracao",
       "status": "pending"
     },
     {
-      "id": "subloop-3-decomposicao-verificavel",
+      "id": "subprocesso-3-decomposicao-verificavel",
       "name": "Decomposição em Unidades Verificáveis",
       "nature": "micro",
       "cognitive_complexity": "medio",
@@ -171,7 +171,7 @@
         "write_boundary": "strict"
       },
       "depends_on": [
-        "subloop-2-arquitetura-exploracao"
+        "subprocesso-2-arquitetura-exploracao"
       ],
       "inputs": {
         "spec": "file('docs/specs/SPEC.md')"
@@ -197,11 +197,11 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-3-decomposicao-verificavel",
+      "spec_ref": "AC-subprocesso-3-decomposicao-verificavel",
       "status": "pending"
     },
     {
-      "id": "subloop-4-construcao-tdd",
+      "id": "subprocesso-4-construcao-tdd",
       "name": "Construção Rigorosa TDD",
       "nature": "micro",
       "cognitive_complexity": "alto",
@@ -226,7 +226,7 @@
         "write_boundary": "strict"
       },
       "depends_on": [
-        "subloop-3-decomposicao-verificavel"
+        "subprocesso-3-decomposicao-verificavel"
       ],
       "inputs": {
         "plan": "file('docs/plans/PLAN.md')"
@@ -252,11 +252,11 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-4-construcao-tdd",
+      "spec_ref": "AC-subprocesso-4-construcao-tdd",
       "status": "pending"
     },
     {
-      "id": "subloop-5-verificacao-artefato-real",
+      "id": "subprocesso-5-verificacao-artefato-real",
       "name": "Verificação Formal no Artefato Real",
       "nature": "micro",
       "cognitive_complexity": "alto",
@@ -281,7 +281,7 @@
         "write_boundary": "strict"
       },
       "depends_on": [
-        "subloop-4-construcao-tdd"
+        "subprocesso-4-construcao-tdd"
       ],
       "inputs": {
         "tdd_report": "file('docs/reports/TDD_REPORT.md')"
@@ -307,11 +307,11 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-5-verificacao-artefato-real",
+      "spec_ref": "AC-subprocesso-5-verificacao-artefato-real",
       "status": "pending"
     },
     {
-      "id": "subloop-6-unslop-ship",
+      "id": "subprocesso-6-unslop-ship",
       "name": "Higiene de Código (Unslop) & Ship",
       "nature": "micro",
       "cognitive_complexity": "baixo",
@@ -336,7 +336,7 @@
         "write_boundary": "strict"
       },
       "depends_on": [
-        "subloop-5-verificacao-artefato-real"
+        "subprocesso-5-verificacao-artefato-real"
       ],
       "inputs": {
         "report": "file('docs/reports/REPORT.md')"
@@ -362,7 +362,7 @@
       "verification": {
         "command": "go test -count=1 ./..."
       },
-      "spec_ref": "AC-subloop-6-unslop-ship",
+      "spec_ref": "AC-subprocesso-6-unslop-ship",
       "status": "pending"
     }
   ],

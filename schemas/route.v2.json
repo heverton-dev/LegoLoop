@@ -47,7 +47,7 @@
           "initiative_id": { "type": ["string", "null"] },
           "epic_id": { "type": ["string", "null"] },
           "label": { "type": "string" },
-          "nature": { "type": "string", "enum": ["nano", "micro", "macro", "epic"] },
+          "nature": { "type": "string", "enum": ["nano", "micro", "skill", "epic"] },
           "type": { "type": "string" },
           "ref": { "type": ["string", "null"] },
           "status": { "type": "string" },

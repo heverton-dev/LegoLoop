@@ -26,7 +26,7 @@
     "max_parallel_workers": 2,
     "tdd_enforced": true,
     "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort_processo"
   },
   "trigger": {
     "type": "manual"
@@ -37,7 +37,7 @@
       "name": "Tipos, contrato e validação de Request",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -91,7 +91,7 @@
       "name": "Motor de sugestão de repos por cenário",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -147,7 +147,7 @@
       "name": "Verificação estática do motor de seleção",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -245,7 +245,7 @@
       "name": "Gerador HTML/WebGL com Three.js",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -301,7 +301,7 @@
       "name": "Verificação estática do gerador HTML",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -397,7 +397,7 @@
       "name": "Captura de frames via Playwright",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -453,7 +453,7 @@
       "name": "Conversão frames → MP4 via FFmpeg",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -509,7 +509,7 @@
       "name": "Teste de integração com limite de tempo",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -613,7 +613,7 @@
       "name": "Detecção de beats via Librosa",
       "nature": "micro",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -671,7 +671,7 @@
       "name": "Verificação estática do sync de áudio",
       "nature": "nano",
       "cognitive_complexity": "simples",
-      "type": "unit_task",
+      "type": "unit_no",
       "routing": {
         "mode": "suggested",
         "harness": "9router",
@@ -765,9 +765,9 @@
     {
       "id": "t11_skill",
       "name": "Skill canônica universal",
-      "nature": "macro",
+      "nature": "skill",
       "cognitive_complexity": "media",
-      "type": "subloop",
+      "type": "subprocesso",
       "ref": "legoloop-instalar-skills",
       "routing": {
         "mode": "suggested",
@@ -818,9 +818,9 @@
     {
       "id": "t12_book",
       "name": "Livro Didático LegoPress",
-      "nature": "macro",
+      "nature": "skill",
       "cognitive_complexity": "media",
-      "type": "subloop",
+      "type": "subprocesso",
       "ref": "legoloop-legopress",
       "routing": {
         "mode": "suggested",

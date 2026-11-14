@@ -15,7 +15,7 @@
     },
     "default_timeout_sec": 180,
     "max_parallel_workers": 1,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort_processo",
     "supervision_level": "micro",
     "tdd_enforced": true
   },
@@ -87,7 +87,7 @@
         "legoloop",
         "legopress",
         "auditar",
-        "docs/books/video-rea/2026-11-07_PIPELINE-VIDEO-REA.pdf"
+        "docs/books/video-rea/2026-11-07_PROCESSO-VIDEO-REA.pdf"
       ],
       "context_in": [
         "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md"

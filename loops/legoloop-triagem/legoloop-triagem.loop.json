@@ -74,10 +74,10 @@
       }
     },
     {
-      "id": "t4-saneamento-loops",
+      "id": "t4-saneamento-processos",
       "name": "Saneamento de Processos",
       "type": "script",
-      "description": "Saneia e migra processos em loops/",
+      "description": "Saneia e migra processos em processos/",
       "depends_on": [
         "t3-pontos-entrada"
       ],
@@ -86,12 +86,12 @@
         "combo": "code-pro"
       },
       "output": {
-        "artifact": "loops/",
-        "gate": "go run ./cmd/legoloop migrar-loops --apply"
+        "artifact": "processos/",
+        "gate": "go run ./cmd/legoloop migrar-processos --apply"
       },
       "handler": {
         "type": "shell",
-        "command": "go run ./cmd/legoloop migrar-loops --apply"
+        "command": "go run ./cmd/legoloop migrar-processos --apply"
       }
     },
     {
@@ -100,7 +100,7 @@
       "type": "script",
       "description": "Roda testes, vet e build final",
       "depends_on": [
-        "t4-saneamento-loops"
+        "t4-saneamento-processos"
       ],
       "routing": {
         "mode": "auto",

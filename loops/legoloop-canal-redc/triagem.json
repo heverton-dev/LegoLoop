@@ -17,7 +17,7 @@
     "etapas": [
       "n01_catalogar_clusterizar",
       "n02_deep_redc_dna",
-      "n03_gerar_pipelines_metodos",
+      "n03_gerar_processos_metodos",
       "n04_gerador_brand_swap"
     ]
   },
@@ -41,13 +41,13 @@
       "flag_cli": "--etapa n02_deep_redc_dna"
     },
     {
-      "id": "n03_gerar_pipelines_metodos",
+      "id": "n03_gerar_processos_metodos",
       "palavras_chave": [
-        "gerar pipelines metodos",
-        "gerar-pipelines-metodos"
+        "gerar processos metodos",
+        "gerar-processos-metodos"
       ],
-      "slash_command": "/legoloop-canal-redc-gerar-pipelines-metodos",
-      "flag_cli": "--etapa n03_gerar_pipelines_metodos"
+      "slash_command": "/legoloop-canal-redc-gerar-processos-metodos",
+      "flag_cli": "--etapa n03_gerar_processos_metodos"
     },
     {
       "id": "n04_gerador_brand_swap",

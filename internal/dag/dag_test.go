@@ -304,7 +304,7 @@ func TestParse_PreservaMetadadosCognitivos(t *testing.T) {
 				"name": "nome_do_no",
 				"nature": "micro",
 				"cognitive_complexity": "simples",
-				"type": "unit_task",
+				"type": "unit_no",
 				"status": "PENDING",
 				"spec_ref": "AC-E01.1",
 				"routing": {"mode": "suggested", "model": "code-fast"},

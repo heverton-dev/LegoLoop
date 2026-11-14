@@ -16,7 +16,7 @@
     },
     "default_timeout_sec": 180,
     "max_parallel_workers": 2,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort_processo",
     "supervision_level": "micro",
     "tdd_enforced": true
   },
@@ -82,7 +82,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/motion/types.go') && file_exists('internal/motion/types_test.go')"
       }
@@ -149,7 +149,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/motion/suggest.go') && file_exists('internal/motion/suggest_test.go')"
       }
@@ -213,7 +213,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0"
       }
@@ -336,7 +336,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/motion/build.go') && file_exists('internal/motion/build_test.go')"
       }
@@ -399,7 +399,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0"
       }
@@ -521,7 +521,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/motion/render.go') && file_exists('internal/motion/render_test.go')"
       }
@@ -588,7 +588,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/motion/encode.go') && file_exists('internal/motion/encode_test.go')"
       }
@@ -658,7 +658,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0"
       }
@@ -783,7 +783,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/motion/sync.go') && file_exists('scripts/beat_detect.py')"
       }
@@ -846,7 +846,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "gate": "exit_code == 0"
       }
@@ -939,7 +939,7 @@
         "max_prompt_tokens": 32000
       },
       "name": "Skill canônica universal",
-      "nature": "macro",
+      "nature": "skill",
       "output": {
         "artifact": "skills/ai-motion-graphics/SKILL.md",
         "gate": "exit_code == 0 && file_exists('skills/ai-motion-graphics/SKILL.md')"
@@ -965,7 +965,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "subloop",
+      "type": "subprocesso",
       "verification": {
         "gate": "exit_code == 0 && file_exists('skills/ai-motion-graphics/SKILL.md')"
       }
@@ -1002,7 +1002,7 @@
         "max_prompt_tokens": 32000
       },
       "name": "Livro Didático LegoPress",
-      "nature": "macro",
+      "nature": "skill",
       "output": {
         "artifact": "docs/books/ai-motion-graphics-engenheiro/livro.json",
         "gate": "exit_code == 0 && file_exists('docs/books/ai-motion-graphics/livro.json')"
@@ -1028,7 +1028,7 @@
       "tooling": {
         "runtime": "powershell"
       },
-      "type": "subloop",
+      "type": "subprocesso",
       "verification": {
         "gate": "exit_code == 0 && file_exists('docs/books/ai-motion-graphics/livro.json')"
       }

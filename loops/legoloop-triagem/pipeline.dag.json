@@ -161,7 +161,7 @@
       ]
     },
     {
-      "id": "t4-saneamento-loops",
+      "id": "t4-saneamento-processos",
       "name": "Saneamento de Processos",
       "type": "script",
       "depends_on": [
@@ -176,11 +176,11 @@
         "effort": "medium"
       },
       "output": {
-        "artifact": "loops/",
+        "artifact": "processos/",
         "gate": "exit_code == 0"
       },
       "verification": {
-        "command": "go run ./cmd/legoloop migrar-loops --apply"
+        "command": "go run ./cmd/legoloop migrar-processos --apply"
       },
       "isolation": {
         "workspace": "local",
@@ -189,7 +189,7 @@
         "write_boundary": "strict"
       },
       "context_out": [
-        "loops/"
+        "processos/"
       ],
       "context_in": [
         "docs/specs/"
@@ -204,12 +204,12 @@
       },
       "nature": "micro",
       "cognitive_complexity": "medium",
-      "spec_ref": "AC-t4-saneamento-loops",
+      "spec_ref": "AC-t4-saneamento-processos",
       "status": "pending",
       "command": [
         "powershell",
         "-Command",
-        "go run ./cmd/legoloop migrar-loops --apply"
+        "go run ./cmd/legoloop migrar-processos --apply"
       ]
     },
     {
@@ -217,7 +217,7 @@
       "name": "Portões e Fechamento",
       "type": "script",
       "depends_on": [
-        "t4-saneamento-loops"
+        "t4-saneamento-processos"
       ],
       "routing": {
         "mode": "auto",
