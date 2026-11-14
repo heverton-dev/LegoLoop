@@ -592,6 +592,12 @@ button, input, select { font: inherit; color: inherit; }
   .inv-canon { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--border); max-height: 38%; }
 }
 
+@media (max-width: 768px) {
+  .inv-workspace { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; }
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .sidebar { max-height: 220px; border-right: 0; border-bottom: 1px solid var(--border); }
+}
+
 /* ---------- Modelos Vivos (Painel na Sidebar com Sanfona) ---------- */
 .models-panel {
   flex: 1 1 0%;

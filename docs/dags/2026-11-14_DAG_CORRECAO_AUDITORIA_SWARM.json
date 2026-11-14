@@ -1,0 +1,56 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "name": "correcao-auditoria-swarm",
+  "version": "2.2.0",
+  "date": "2026-11-14",
+  "description": "Ciclo de correção completa dos achados AUD-03, AUD-04 e AUD-05 da Auditoria Profunda.",
+  "trigger": { "type": "manual" },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "name": "Remover emojis de lego-item-modal.js",
+      "type": "unit_task",
+      "nature": "micro",
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-02.1",
+      "name": "Adicionar breakpoint <= 768px em style.css",
+      "type": "unit_task",
+      "nature": "micro",
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-03.1",
+      "name": "Padronizar schema_version nos .loop.json",
+      "type": "unit_task",
+      "nature": "micro",
+      "timeout_sec": 180,
+      "limits": { "max_output_tokens": 600 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
+      "isolation": { "write_boundary": "strict" },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING"
+    }
+  ]
+}

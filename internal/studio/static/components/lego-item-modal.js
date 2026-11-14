@@ -15,8 +15,8 @@
  * 
  * Tríade de Compatibilidade:
  * - ⬅️ Antecessoras (Quem alimenta a peça)
- * - 🔄 Substitutas / Swap (Mesmo contrato de I/O)
- * - ➡️ Sucessoras (Quem consome a entrega da peça)
+ * - Substitutas / Swap (Mesmo contrato de I/O)
+ * - Sucessoras (Quem consome a entrega da peça)
  */
 
 class LegoItemModal extends HTMLElement {
@@ -42,23 +42,23 @@ class LegoItemModal extends HTMLElement {
         <header class="modal-header">
           <div class="modal-title-group">
             <div class="modal-title-row">
-              <span class="modal-kind-icon" id="modal-item-icon" aria-hidden="true">🧩</span>
+              <span class="modal-kind-icon" id="modal-item-icon" aria-hidden="true">[Peça]</span>
               <h3 id="modal-item-name" class="modal-title">Detalhes da Peça</h3>
               <button id="btn-modal-copy-id" class="btn-icon-subtle" type="button" title="Copiar ID da peça" aria-label="Copiar ID da peça">
-                📋
+                Copiar
               </button>
             </div>
             <div id="modal-item-badges" class="modal-badges" aria-label="Metadados da peça"></div>
           </div>
           <div class="modal-actions-top">
             <button id="btn-modal-add-canvas" class="btn btn--primary btn--sm" type="button" title="Adicionar esta peça ao centro do Canvas" hidden>
-              ➕ Adicionar ao Canvas
+              + Adicionar ao Canvas
             </button>
             <button id="btn-modal-canonize" class="btn btn--sm" type="button" title="Canonizar esta peça no cofre central">
-              💎 Canonizar
+              Canonizar
             </button>
             <button id="btn-modal-reveal" class="btn btn--sm" type="button" title="Abrir pasta física no Windows Explorer">
-              📁 Abrir no Explorer
+              Abrir no Explorer
             </button>
             <button id="btn-modal-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar modal">✕</button>
           </div>
@@ -79,7 +79,7 @@ class LegoItemModal extends HTMLElement {
             Ocorrências no SO
           </button>
           <button id="tab-btn-sandbox" class="modal-tab" role="tab" aria-selected="false" aria-controls="tab-panel-sandbox" data-tab="sandbox" tabindex="-1">
-            ⚡ Simulação
+            Simulação
           </button>
           <button id="tab-btn-source" class="modal-tab" role="tab" aria-selected="false" aria-controls="tab-panel-source" data-tab="source" tabindex="-1">
             Código / Fonte
@@ -98,7 +98,7 @@ class LegoItemModal extends HTMLElement {
               <div class="ipo-flow" id="ipo-flow-container">
                 <div class="ipo-box ipo-in">
                   <div class="ipo-box-header">
-                    <span class="ipo-icon" id="ipo-icon-in">📥</span>
+                    <span class="ipo-icon" id="ipo-icon-in">IN</span>
                     <span class="ipo-label" id="ipo-label-in">ENTRADA (INPUT)</span>
                   </div>
                   <div id="modal-ipo-in" class="ipo-content"></div>
@@ -110,7 +110,7 @@ class LegoItemModal extends HTMLElement {
 
                 <div class="ipo-box ipo-proc">
                   <div class="ipo-box-header">
-                    <span class="ipo-icon" id="ipo-icon-proc">⚙️</span>
+                    <span class="ipo-icon" id="ipo-icon-proc">PROC</span>
                     <span class="ipo-label" id="ipo-label-proc">PROCESSAMENTO</span>
                   </div>
                   <div id="modal-ipo-proc" class="ipo-content"></div>
@@ -122,7 +122,7 @@ class LegoItemModal extends HTMLElement {
 
                 <div class="ipo-box ipo-out">
                   <div class="ipo-box-header">
-                    <span class="ipo-icon" id="ipo-icon-out">📤</span>
+                    <span class="ipo-icon" id="ipo-icon-out">OUT</span>
                     <span class="ipo-label" id="ipo-label-out">SAÍDA (OUTPUT)</span>
                   </div>
                   <div id="modal-ipo-out" class="ipo-content"></div>
@@ -133,7 +133,7 @@ class LegoItemModal extends HTMLElement {
             <!-- Card Especial: Destaque de Auditoria para Gates -->
             <div id="gate-audit-card" class="gate-audit-card" hidden>
               <div class="gate-audit-header">
-                <span class="gate-audit-icon">🛡️</span>
+                <span class="gate-audit-icon"></span>
                 <div>
                   <h4 class="gate-audit-title">Artefato Auditado por este Gate:</h4>
                   <p id="gate-audited-artifact" class="gate-audited-artifact-name"></p>
@@ -181,7 +181,7 @@ class LegoItemModal extends HTMLElement {
             </div>
 
             <div class="overview-footer-actions">
-              <button id="btn-copy-json" class="btn btn--sm" type="button">📋 Copiar JSON</button>
+              <button id="btn-copy-json" class="btn btn--sm" type="button">Copiar Copiar JSON</button>
               <button id="btn-copy-markdown" class="btn btn--sm" type="button">📝 Copiar Markdown</button>
             </div>
           </section>
@@ -218,8 +218,8 @@ class LegoItemModal extends HTMLElement {
               <span class="triad-label">Relação:</span>
               <button class="btn btn--sm triad-filter is-active" data-rel="all" type="button">Todas</button>
               <button class="btn btn--sm triad-filter" data-rel="predecessor" type="button" title="Peças que produzem o que esta peça consome">⬅️ Antecessoras</button>
-              <button class="btn btn--sm triad-filter" data-rel="substitute" type="button" title="Peças com o mesmo contrato de I/O para troca imediata">🔄 Substitutas (Swap)</button>
-              <button class="btn btn--sm triad-filter" data-rel="successor" type="button" title="Peças que consomem o que esta peça entrega">➡️ Sucessoras</button>
+              <button class="btn btn--sm triad-filter" data-rel="substitute" type="button" title="Peças com o mesmo contrato de I/O para troca imediata">Substitutas (Swap)</button>
+              <button class="btn btn--sm triad-filter" data-rel="successor" type="button" title="Peças que consomem o que esta peça entrega">Sucessoras</button>
             </div>
 
             <!-- Filtro por Categoria -->
@@ -252,7 +252,7 @@ class LegoItemModal extends HTMLElement {
           <section id="tab-panel-sandbox" class="modal-panel" role="tabpanel" aria-labelledby="tab-btn-sandbox" hidden>
             <div class="sandbox-container">
               <div class="sandbox-card">
-                <h4 class="prop-title">⚡ Playground de Simulação Determinística</h4>
+                <h4 class="prop-title">Playground de Simulação Determinística</h4>
                 <p class="sandbox-desc" id="sandbox-desc">Teste o contrato de entrada e saída desta peça em ambiente estéril sem efeitos colaterais.</p>
                 
                 <div class="sandbox-field">
@@ -286,7 +286,7 @@ class LegoItemModal extends HTMLElement {
             <div class="source-actions">
               <span id="modal-source-path" class="source-path"></span>
               <div class="source-actions-right">
-                <button id="btn-copy-source" class="btn btn--sm" type="button">📋 Copiar Conteúdo</button>
+                <button id="btn-copy-source" class="btn btn--sm" type="button">Copiar Copiar Conteúdo</button>
                 <button id="btn-translate" class="btn btn--primary btn--sm" type="button">Traduzir para PT-BR</button>
               </div>
             </div>
@@ -494,14 +494,14 @@ class LegoItemModal extends HTMLElement {
     const iconMap = {
       trigger: "⚡",
       control: "🔀",
-      gate: "🛡️",
+      gate: "",
       loop: "♾️",
       mcp: "🔌",
       hook: "🪝",
       script: "📜",
-      skill: "🧠"
+      skill: ""
     };
-    this.querySelector("#modal-item-icon").textContent = iconMap[family] || "🧩";
+    this.querySelector("#modal-item-icon").textContent = iconMap[family] || "[Peça]";
     this.querySelector("#modal-item-name").textContent = it.name || it.label || "Peça LegoLoop";
 
     // Badges do Header
@@ -612,9 +612,9 @@ class LegoItemModal extends HTMLElement {
     this.querySelector("#ipo-label-in").textContent = "ENTRADA (INPUT)";
     this.querySelector("#ipo-label-proc").textContent = "PROCESSAMENTO";
     this.querySelector("#ipo-label-out").textContent = "SAÍDA (OUTPUT)";
-    this.querySelector("#ipo-icon-in").textContent = "📥";
-    this.querySelector("#ipo-icon-proc").textContent = "⚙️";
-    this.querySelector("#ipo-icon-out").textContent = "📤";
+    this.querySelector("#ipo-icon-in").textContent = "IN";
+    this.querySelector("#ipo-icon-proc").textContent = "PROC";
+    this.querySelector("#ipo-icon-out").textContent = "OUT";
     gateAuditCard.style.display = "none";
 
     let what = "";
@@ -671,7 +671,7 @@ class LegoItemModal extends HTMLElement {
         this.querySelector("#gate-syntax-rule").textContent = it.gate || it.signature || `${it.name}(caminho)`;
 
         this.querySelector("#ipo-label-in").textContent = "ARTEFATO AUDITADO";
-        this.querySelector("#ipo-icon-in").textContent = "🛡️";
+        this.querySelector("#ipo-icon-in").textContent = "";
         ipoIn.append(this._createBadge(auditedArtifact, "badge--accent"));
 
         ipoProc.append(this._createEl("span", "ipo-desc", `Avaliação binária inegociável da regra ${it.name}`));
@@ -931,8 +931,8 @@ class LegoItemModal extends HTMLElement {
 
       const relLabelMap = {
         predecessor: "⬅️ Antecessora",
-        substitute: "🔄 Substituta (Swap)",
-        successor: "➡️ Sucessora"
+        substitute: "Substituta (Swap)",
+        successor: "Sucessora"
       };
 
       top.append(
@@ -950,7 +950,7 @@ class LegoItemModal extends HTMLElement {
       actions.className = "compat-item-actions";
 
       if (c.relation === "substitute") {
-        const btnSwap = this._createEl("button", "btn btn--sm btn--primary", "🔄 Trocar por esta Peça");
+        const btnSwap = this._createEl("button", "btn btn--sm btn--primary", "Trocar por esta Peça");
         btnSwap.onclick = () => {
           this.close();
           this._showToast(`Peça "${c.item.name}" selecionada para troca (Swap).`);
@@ -964,7 +964,7 @@ class LegoItemModal extends HTMLElement {
         };
         actions.append(btnPre);
       } else {
-        const btnPost = this._createEl("button", "btn btn--sm", "➡️ Conectar Depois");
+        const btnPost = this._createEl("button", "btn btn--sm", "Conectar Depois");
         btnPost.onclick = () => {
           this.close();
           this._showToast(`Conectando "${c.item.name}" como sucessora no Canvas.`);
@@ -1040,7 +1040,7 @@ class LegoItemModal extends HTMLElement {
       if (o.path || it.path) {
         const btnOpenFolder = document.createElement("button");
         btnOpenFolder.className = "btn btn--sm occ-btn-open";
-        btnOpenFolder.textContent = "📁 Abrir Pasta";
+        btnOpenFolder.textContent = "Abrir Pasta";
         btnOpenFolder.onclick = async () => {
           const res = await this._callApi("/api/assets/reveal", { path: o.path || it.path });
           if (res.ok) this._showToast("Pasta aberta no Windows Explorer.");
