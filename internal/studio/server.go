@@ -93,6 +93,7 @@ func (s *Server) Handler() http.Handler {
 	s.registerStaticRoutes(mux)
 	s.registerAPIRoutes(mux)
 	s.registerProcessoRoutes(mux)
+	s.registerSwarmRoutes(mux)
 	return s.secure(mux)
 }
 
