@@ -196,8 +196,17 @@ func (sb *SwarmBoard) PostMessage(from, to, body string) (Message, error) {
 	msg := Message{Seq: st.NextSeq, From: from, To: to, Body: body, CreatedAt: time.Now().UTC()}
 	st.NextSeq++
 	st.Messages = append(st.Messages, msg)
+	target := strings.TrimPrefix(strings.TrimSpace(to), "@")
 	for i := range st.Workers {
+		if st.Workers[i].Status == WorkerKilled {
+			continue
+		}
 		if st.Workers[i].Name == from {
+			st.Workers[i].LastActiveAt = msg.CreatedAt
+			if target != "" && target != from {
+				st.Workers[i].Status = WorkerWaiting
+			}
+		} else if target == "all" || st.Workers[i].Name == target {
 			st.Workers[i].Status = WorkerWorking
 			st.Workers[i].LastActiveAt = msg.CreatedAt
 		}

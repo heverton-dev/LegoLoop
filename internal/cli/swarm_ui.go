@@ -173,6 +173,7 @@ html,body{height:100dvh;margin:0;overflow:hidden;font-family:var(--font-ui);back
 .grp:first-child{margin-top:0}
 .w{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;margin-bottom:6px;background:var(--surface-2);cursor:pointer;border:1.5px solid var(--border);transition:border-color .15s,opacity .15s,filter .15s}
 .w.waiting{filter:grayscale(1);opacity:.65}
+.w.working{background:var(--surface-2)}
 .w:hover{border-color:var(--accent)}.w.sel{border-color:var(--accent);background:var(--accent-soft);opacity:1;filter:none}
 .bot{width:26px;height:26px;flex-shrink:0;shape-rendering:crispEdges}
 .bot.working{animation:work .55s steps(2) infinite}.bot.killed{opacity:.35;filter:grayscale(1)}
