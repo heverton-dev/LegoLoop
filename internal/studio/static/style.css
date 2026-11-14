@@ -2504,3 +2504,8 @@ lego-item-modal {
 .import-input { width: 100%; box-sizing: border-box; }
 .import-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .import-mt { margin-top: 12px; }
+
+.sidebar.is-collapsed #btn-import-github { display: none; }
+.inspector.is-collapsed .inspector-header > *:not(#btn-toggle-inspector) { display: none; }
+.inspector.is-collapsed .inspector-header { display: flex; justify-content: center; padding: 8px 4px; }
+.sidebar .cat-tabs, .sidebar .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
