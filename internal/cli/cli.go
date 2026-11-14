@@ -104,6 +104,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
+		"swarm": cmdSwarm,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

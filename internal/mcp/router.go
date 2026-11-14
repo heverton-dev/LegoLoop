@@ -148,6 +148,9 @@ func (r *Router) handleToolCall(req JSONRPCRequest) JSONRPCResponse {
 	case "call_skill":
 		return r.callSkill(req.ID, params.Arguments)
 	default:
+		if resp, ok := r.handleSwarmTool(req.ID, params.Name, params.Arguments); ok {
+			return resp
+		}
 		return r.toolCallError(req.ID, fmt.Sprintf("unknown tool: %s", params.Name))
 	}
 }
