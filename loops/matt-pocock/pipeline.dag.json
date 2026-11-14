@@ -1,0 +1,290 @@
+﻿{
+    "$schema":  "https://legoloop.dev/schemas/dag.v2.json",
+    "name":  "matt-pocock",
+    "version":  "1.0.0",
+    "schema_version":  2,
+    "date":  "2026-11-09",
+    "description":  "Pipeline determinístico de engenharia baseado no método Matt Pocock: Grilling \u0026 Alinhamento de Domínio -\u003e Desvio Empírico/Protótipo -\u003e Especificação \u0026 Tickets em Grafo -\u003e Construção TDD Cirúrgica -\u003e Code Review de 2 Eixos -\u003e Retroalimentação do Ambiente.",
+    "upstream_signatures":  {
+                                "intent":  "9812a677fbca05619985ea15858022b7c02bda6396919db45873919e86bf79e8",
+                                "spec":  "ec6576b22ba8fe6cb30d24bf51a37c9a419eb9338f977c0500e2ea024f9e1189",
+                                "plan":  "2b6b66e138a0c20beceb43f9ba6be91e528dbe4cbf5e59b9a695d7eb8f1eeae3",
+                                "route":  "docs/routes/2026-11-07_ROUTE_MATT_POCOCK.json"
+                            },
+    "execution_strategy":  {
+                               "supervision_level":  "micro",
+                               "concurrency":  {
+                                                   "mode":  "sequential",
+                                                   "max_parallel_subagents":  1,
+                                                   "harness_capability":  "subagent_cli_isolated"
+                                               },
+                               "default_isolation":  {
+                                                         "workspace":  "local",
+                                                         "executor":  "orchestrix_hermetic",
+                                                         "subagents_allowed":  false
+                                                     },
+                               "max_parallel_workers":  1,
+                               "tdd_enforced":  true,
+                               "default_timeout_sec":  300,
+                               "rollback_on_failure":  "abort_pipeline",
+                               "rollback_policy":  {
+                                                       "action":  "abort_and_pause",
+                                                       "git_strategy":  "checkpoint_commit",
+                                                       "preserve_artifacts":  true,
+                                                       "commit_on_node_pass":  true
+                                                   }
+                           },
+    "trigger":  {
+                    "type":  "manual"
+                },
+    "nodes":  [
+                  {
+                      "id":  "subloop-1-alinhar-dominio",
+                      "name":  "Grilling \u0026 Alinhamento de Domínio",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "medio",
+                      "type":  "skill",
+                      "ref":  "skills/aidd-pocock",
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "model":  "sonnet",
+                                      "effort":  "medium",
+                                      "fallback":  "haiku"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  4000,
+                                           "output_tokens":  1500
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "context_in":  [
+
+                                     ],
+                      "context_out":  [
+                                          "GLOSSARY.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "contract_gate",
+                                        "target":  "file_exists(\u0027GLOSSARY.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "GLOSSARY.md",
+                                     "gate":  "file_exists(\u0027GLOSSARY.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "subloop-2-especificar",
+                      "name":  "Especificação \u0026 Restrições Invariantes",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "alto",
+                      "type":  "skill",
+                      "ref":  "skills/aidd-pocock",
+                      "depends_on":  [
+                                         "subloop-1-alinhar-dominio"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-pro",
+                                      "effort":  "high"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  6000,
+                                           "output_tokens":  2500
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "glossario":  "file(\u0027GLOSSARY.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "GLOSSARY.md"
+                                     ],
+                      "context_out":  [
+                                          "docs/specs/SPEC.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "contract_gate",
+                                        "target":  "file_exists(\u0027docs/specs/SPEC.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/specs/SPEC.md",
+                                     "gate":  "file_exists(\u0027docs/specs/SPEC.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "subloop-3-planejar-tickets",
+                      "name":  "Tickets em Grafo Acíclico (DAG)",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "medio",
+                      "type":  "skill",
+                      "ref":  "skills/aidd-pocock",
+                      "depends_on":  [
+                                         "subloop-2-especificar"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-fast",
+                                      "effort":  "medium"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  5000,
+                                           "output_tokens":  2000
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "spec":  "file(\u0027docs/specs/SPEC.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "docs/specs/SPEC.md"
+                                     ],
+                      "context_out":  [
+                                          "docs/plans/PLAN.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "contract_gate",
+                                        "target":  "file_exists(\u0027docs/plans/PLAN.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/plans/PLAN.md",
+                                     "gate":  "file_exists(\u0027docs/plans/PLAN.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "subloop-4-construir-tdd",
+                      "name":  "Construção TDD Cirúrgica (Zero Stubs)",
+                      "nature":  "macro",
+                      "cognitive_complexity":  "alto",
+                      "type":  "skill",
+                      "ref":  "skills/aidd-pocock",
+                      "depends_on":  [
+                                         "subloop-3-planejar-tickets"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "model":  "sonnet",
+                                      "effort":  "high",
+                                      "fallback":  "qwen2.5-coder:7b"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  8000,
+                                           "output_tokens":  3000
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "plano":  "file(\u0027docs/plans/PLAN.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "docs/plans/PLAN.md"
+                                     ],
+                      "context_out":  [
+                                          "docs/reports/TDD_REPORT.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "unit_test_gate",
+                                        "target":  "file_exists(\u0027docs/reports/TDD_REPORT.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/reports/TDD_REPORT.md",
+                                     "gate":  "file_exists(\u0027docs/reports/TDD_REPORT.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "subloop-5-review-auditar",
+                      "name":  "Code Review de 2 Eixos \u0026 Hardening",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "medio",
+                      "type":  "skill",
+                      "ref":  "skills/aidd-pocock",
+                      "depends_on":  [
+                                         "subloop-4-construir-tdd"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-fast",
+                                      "effort":  "medium"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  5000,
+                                           "output_tokens":  2000
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "tdd":  "file(\u0027docs/reports/TDD_REPORT.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "docs/reports/TDD_REPORT.md"
+                                     ],
+                      "context_out":  [
+                                          "docs/reports/CODE_REVIEW.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "review_gate",
+                                        "target":  "file_exists(\u0027docs/reports/CODE_REVIEW.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/reports/CODE_REVIEW.md",
+                                     "gate":  "file_exists(\u0027docs/reports/CODE_REVIEW.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "subloop-6-retro-ambiente",
+                      "name":  "Retroalimentação do Ambiente \u0026 Governança",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "simples",
+                      "type":  "skill",
+                      "ref":  "skills/aidd-pocock",
+                      "depends_on":  [
+                                         "subloop-5-review-auditar"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-fast",
+                                      "effort":  "low"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  4000,
+                                           "output_tokens":  1500
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "review":  "file(\u0027docs/reports/CODE_REVIEW.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "docs/reports/CODE_REVIEW.md"
+                                     ],
+                      "context_out":  [
+                                          "docs/reports/RETRO.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "contract_gate",
+                                        "target":  "file_exists(\u0027docs/reports/RETRO.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/reports/RETRO.md",
+                                     "gate":  "file_exists(\u0027docs/reports/RETRO.md\u0027)"
+                                 }
+                  }
+              ]
+}

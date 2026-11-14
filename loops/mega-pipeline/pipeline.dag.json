@@ -1,0 +1,338 @@
+﻿{
+    "$schema":  "https://legoloop.dev/schemas/dag.v2.json",
+    "name":  "mega-pipeline",
+    "version":  "1.0.0",
+    "schema_version":  2,
+    "date":  "2026-11-09",
+    "description":  "Esteira mestre determinística com os 6 sub-loops canônicos: Concepção \u0026 Alinhamento -\u003e Engenharia Reversa \u0026 Design Pass -\u003e Tríade de Planejamento -\u003e Construção TDD por Épico -\u003e Homologação E2E -\u003e Fechamento Canônico Universal.",
+    "upstream_signatures":  {
+                                "intent":  "9812a677fbca05619985ea15858022b7c02bda6396919db45873919e86bf79e8",
+                                "spec":  "ec6576b22ba8fe6cb30d24bf51a37c9a419eb9338f977c0500e2ea024f9e1189",
+                                "plan":  "2b6b66e138a0c20beceb43f9ba6be91e528dbe4cbf5e59b9a695d7eb8f1eeae3",
+                                "route":  "docs/routes/2026-11-07_ROUTE_MEGA_PIPELINE.json"
+                            },
+    "execution_strategy":  {
+                               "supervision_level":  "micro",
+                               "concurrency":  {
+                                                   "mode":  "sequential",
+                                                   "max_parallel_subagents":  1,
+                                                   "harness_capability":  "subagent_cli_isolated"
+                                               },
+                               "default_isolation":  {
+                                                         "workspace":  "local",
+                                                         "executor":  "orchestrix_hermetic",
+                                                         "subagents_allowed":  false
+                                                     },
+                               "max_parallel_workers":  1,
+                               "tdd_enforced":  true,
+                               "default_timeout_sec":  600,
+                               "rollback_on_failure":  "abort_pipeline",
+                               "rollback_policy":  {
+                                                       "action":  "abort_and_pause",
+                                                       "git_strategy":  "checkpoint_commit",
+                                                       "preserve_artifacts":  true,
+                                                       "commit_on_node_pass":  true
+                                                   }
+                           },
+    "trigger":  {
+                    "type":  "manual"
+                },
+    "nodes":  [
+                  {
+                      "id":  "l1-concepcao",
+                      "name":  "Concepção \u0026 Alinhamento Socrático",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "medio",
+                      "type":  "script",
+                      "command":  [
+                                      "legoloop",
+                                      "fabricar",
+                                      "entrevista"
+                                  ],
+                      "ref":  "legoloop fabricar entrevista",
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "model":  "sonnet",
+                                      "effort":  "medium",
+                                      "fallback":  "haiku"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  4000,
+                                           "output_tokens":  1500
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "context_in":  [
+
+                                     ],
+                      "context_out":  [
+                                          "docs/intents/INTENT.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "contract_gate",
+                                        "target":  "file_exists(\u0027docs/intents/INTENT.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/intents/INTENT.md",
+                                     "gate":  "file_exists(\u0027docs/intents/INTENT.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "l2-design",
+                      "name":  "Design Pass \u0026 Direção Visual",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "medio",
+                      "type":  "skill",
+                      "ref":  "skills/impeccable",
+                      "depends_on":  [
+                                         "l1-concepcao"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-fast",
+                                      "effort":  "medium"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  5000,
+                                           "output_tokens":  2000
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "intencao":  "file(\u0027docs/intents/INTENT.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "docs/intents/INTENT.md"
+                                     ],
+                      "context_out":  [
+                                          "DESIGN.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "contract_gate",
+                                        "target":  "file_exists(\u0027DESIGN.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "DESIGN.md",
+                                     "gate":  "file_exists(\u0027DESIGN.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "l3-triade",
+                      "name":  "Tríade de Especificação \u0026 Rota",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "alto",
+                      "type":  "skill",
+                      "ref":  "skills/aidd-spec",
+                      "depends_on":  [
+                                         "l2-design"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-pro",
+                                      "effort":  "high"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  6000,
+                                           "output_tokens":  2500
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "design":  "file(\u0027DESIGN.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "DESIGN.md"
+                                     ],
+                      "context_out":  [
+                                          "docs/specs/SPEC.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "contract_gate",
+                                        "target":  "file_exists(\u0027docs/specs/SPEC.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/specs/SPEC.md",
+                                     "gate":  "file_exists(\u0027docs/specs/SPEC.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "l3b-swarm",
+                      "name":  "Orquestração Swarm por Nível Topológico",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "medio",
+                      "type":  "skill",
+                      "ref":  "skills/legoloop-swarm",
+                      "depends_on":  [
+                                         "l3-triade"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "model":  "gemini-4-hydrogen-low",
+                                      "effort":  "low",
+                                      "fallback":  "llama3.1:8b"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  4000,
+                                           "output_tokens":  1500
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "spec":  "file(\u0027docs/specs/SPEC.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "docs/specs/SPEC.md"
+                                     ],
+                      "context_out":  [
+                                          "docs/reports/SWARM_RUN_REPORT.json"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "unit_test_gate",
+                                        "target":  "file_exists(\u0027docs/reports/SWARM_RUN_REPORT.json\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/reports/SWARM_RUN_REPORT.json",
+                                     "gate":  "file_exists(\u0027docs/reports/SWARM_RUN_REPORT.json\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "l4-tdd",
+                      "name":  "Construção TDD por Épico",
+                      "nature":  "macro",
+                      "cognitive_complexity":  "alto",
+                      "type":  "skill",
+                      "ref":  "skills/aidd-tdd",
+                      "depends_on":  [
+                                         "l3b-swarm"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "model":  "sonnet",
+                                      "effort":  "high",
+                                      "fallback":  "llama3.1:8b"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  8000,
+                                           "output_tokens":  3000
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "spec":  "file(\u0027docs/specs/SPEC.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "docs/specs/SPEC.md"
+                                     ],
+                      "context_out":  [
+                                          "docs/reports/TDD_REPORT.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "unit_test_gate",
+                                        "target":  "file_exists(\u0027docs/reports/TDD_REPORT.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/reports/TDD_REPORT.md",
+                                     "gate":  "file_exists(\u0027docs/reports/TDD_REPORT.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "l5-homologue",
+                      "name":  "Homologação E2E \u0026 Auditoria Full-Stack",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "medio",
+                      "type":  "skill",
+                      "ref":  "skills/aidd-homologue",
+                      "depends_on":  [
+                                         "l4-tdd"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-fast",
+                                      "effort":  "medium"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  5000,
+                                           "output_tokens":  2000
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "tdd":  "file(\u0027docs/reports/TDD_REPORT.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "docs/reports/TDD_REPORT.md"
+                                     ],
+                      "context_out":  [
+                                          "docs/reports/REPORT_FINAL.md"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "e2e_gate",
+                                        "target":  "file_exists(\u0027docs/reports/REPORT_FINAL.md\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "docs/reports/REPORT_FINAL.md",
+                                     "gate":  "file_exists(\u0027docs/reports/REPORT_FINAL.md\u0027)"
+                                 }
+                  },
+                  {
+                      "id":  "l6-fechar-canonico",
+                      "name":  "Fechamento Canônico Universal",
+                      "nature":  "micro",
+                      "cognitive_complexity":  "simples",
+                      "type":  "subloop",
+                      "ref":  "fechar",
+                      "depends_on":  [
+                                         "l5-homologue"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-fast",
+                                      "effort":  "low"
+                                  },
+                      "token_budget":  {
+                                           "input_tokens":  4000,
+                                           "output_tokens":  1500
+                                       },
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  false
+                                    },
+                      "inputs":  {
+                                     "report":  "file(\u0027docs/reports/REPORT_FINAL.md\u0027)"
+                                 },
+                      "context_in":  [
+                                         "docs/reports/REPORT_FINAL.md"
+                                     ],
+                      "context_out":  [
+                                          "bin/legoloop.exe"
+                                      ],
+                      "test_seam":  {
+                                        "type":  "binary_build_gate",
+                                        "target":  "file_exists(\u0027bin/legoloop.exe\u0027)"
+                                    },
+                      "output":  {
+                                     "artifact":  "bin/legoloop.exe",
+                                     "gate":  "file_exists(\u0027bin/legoloop.exe\u0027)"
+                                 }
+                  }
+              ]
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "legoloop-design-ui",
+  "name": "legoloop-design-ui",
+  "description": "Processo especializado de UI/UX, motion scroll e 3D web integrando aidd-uiux, impeccable, emilkowalski-skills, aidd-dataviz, aidd-linter-design, web-perf e gates responsivos",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "e01",
+      "name": "Planejar",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/frontend-design-direction",
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "output": {
+        "artifact": "out/01_planejar.md",
+        "gate": "file_exists('out/01_planejar.md') && word_count('out/01_planejar.md') >= 30 && !has_pattern('out/01_planejar.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_out": [
+        "out/01_planejar.md"
+      ],
+      "status": "PENDING"
+    }
+  ],
+  "": "https://legoloop.dev/schemas/dag.v1.json"
+}

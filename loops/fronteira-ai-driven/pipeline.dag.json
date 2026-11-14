@@ -11,7 +11,7 @@
       "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
       "context_out": ["internal/orchestrix/prompt.go"],
       "routing": {"mode": "auto", "combo": "code-pro"},
-      "output": {"artifact": "internal/orchestrix/prompt.go", "gate": "exit_code == 0"},
+      "output": {"artifact": "internal/orchestrix/prompt.go", "gate": "go test ./internal/orchestrix/..."},
       "verification": {"command": "go test ./internal/orchestrix/..."}
     },
     {
@@ -22,7 +22,7 @@
       "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
       "context_out": ["internal/router/"],
       "routing": {"mode": "auto", "combo": "code-pro"},
-      "output": {"artifact": "internal/router/", "gate": "exit_code == 0"},
+      "output": {"artifact": "internal/router/", "gate": "go test ./internal/router/..."},
       "verification": {"command": "go test ./internal/router/..."}
     },
     {
@@ -34,7 +34,7 @@
       "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
       "context_out": ["internal/runner/isolated.go"],
       "routing": {"mode": "auto", "combo": "code-pro"},
-      "output": {"artifact": "internal/runner/isolated.go", "gate": "exit_code == 0"},
+      "output": {"artifact": "internal/runner/isolated.go", "gate": "go test ./internal/runner/..."},
       "verification": {"command": "go test ./internal/runner/..."}
     },
     {
@@ -46,7 +46,7 @@
       "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
       "context_out": ["internal/fechar/"],
       "routing": {"mode": "auto", "combo": "code-pro"},
-      "output": {"artifact": "internal/fechar/", "gate": "exit_code == 0"},
+      "output": {"artifact": "internal/fechar/", "gate": "go test ./internal/fechar/..."},
       "verification": {"command": "go test ./internal/fechar/..."}
     },
     {
@@ -58,7 +58,7 @@
       "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
       "context_out": ["internal/orchestrix/prompt.go", "internal/runner/isolated.go"],
       "routing": {"mode": "auto", "combo": "code-pro"},
-      "output": {"artifact": "internal/orchestrix/integration_test.go", "gate": "exit_code == 0"},
+      "output": {"artifact": "internal/orchestrix/prompt.go", "gate": "go test ./internal/orchestrix/... ./internal/runner/..."},
       "verification": {"command": "go test ./internal/orchestrix/... ./internal/runner/..."}
     },
     {
@@ -70,7 +70,7 @@
       "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
       "context_out": ["internal/cli/cli.go"],
       "routing": {"mode": "auto", "combo": "code-pro"},
-      "output": {"artifact": "internal/cli/cli.go", "gate": "exit_code == 0"},
+      "output": {"artifact": "internal/cli/cli.go", "gate": "go test -count=1 ./..."},
       "verification": {"command": "go test -count=1 ./..."}
     }
   ]

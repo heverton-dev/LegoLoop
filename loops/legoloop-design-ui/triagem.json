@@ -1,0 +1,32 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-design-ui",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-design-ui",
+      "comandos_cli": [
+        "legoloop legoloop-design-ui",
+        "/legoloop-legoloop-design-ui"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-design-ui",
+    "etapas": [
+      "e01"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "e01",
+      "palavras_chave": [
+        "e01",
+        "e01"
+      ],
+      "slash_command": "/legoloop-design-ui-e01",
+      "flag_cli": "--etapa e01"
+    }
+  ]
+}

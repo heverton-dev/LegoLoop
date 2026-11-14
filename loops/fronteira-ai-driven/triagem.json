@@ -1,0 +1,82 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "fronteira-ai-driven",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "fronteira-ai-driven",
+      "comandos_cli": [
+        "legoloop fronteira-ai-driven",
+        "/legoloop-fronteira-ai-driven"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo fronteira-ai-driven",
+    "etapas": [
+      "T-01",
+      "T-02",
+      "T-03",
+      "T-04",
+      "T-05",
+      "T-06"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "T-01",
+      "palavras_chave": [
+        "T-01",
+        "T-01"
+      ],
+      "slash_command": "/fronteira-ai-driven-T-01",
+      "flag_cli": "--etapa T-01"
+    },
+    {
+      "id": "T-02",
+      "palavras_chave": [
+        "T-02",
+        "T-02"
+      ],
+      "slash_command": "/fronteira-ai-driven-T-02",
+      "flag_cli": "--etapa T-02"
+    },
+    {
+      "id": "T-03",
+      "palavras_chave": [
+        "T-03",
+        "T-03"
+      ],
+      "slash_command": "/fronteira-ai-driven-T-03",
+      "flag_cli": "--etapa T-03"
+    },
+    {
+      "id": "T-04",
+      "palavras_chave": [
+        "T-04",
+        "T-04"
+      ],
+      "slash_command": "/fronteira-ai-driven-T-04",
+      "flag_cli": "--etapa T-04"
+    },
+    {
+      "id": "T-05",
+      "palavras_chave": [
+        "T-05",
+        "T-05"
+      ],
+      "slash_command": "/fronteira-ai-driven-T-05",
+      "flag_cli": "--etapa T-05"
+    },
+    {
+      "id": "T-06",
+      "palavras_chave": [
+        "T-06",
+        "T-06"
+      ],
+      "slash_command": "/fronteira-ai-driven-T-06",
+      "flag_cli": "--etapa T-06"
+    }
+  ]
+}

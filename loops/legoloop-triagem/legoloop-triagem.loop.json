@@ -1,0 +1,121 @@
+﻿{
+    "$schema":  "https://legoloop.dev/schemas/dag.v1.json",
+    "id":  "legoloop-triagem",
+    "name":  "legoloop-triagem",
+    "version":  "1.0.0",
+    "description":  "Peça de Triagem Universal de Entrada e 13 Artefatos do Fabricar",
+    "execution_strategy":  {
+                               "mode":  "sequential"
+                           },
+    "trigger":  {
+                    "type":  "manual"
+                },
+    "nodes":  [
+                  {
+                      "id":  "t1-motor-triagem",
+                      "name":  "Motor de Triagem",
+                      "type":  "script",
+                      "description":  "Implementa internal/triagem híbrido com TDD",
+                      "depends_on":  [
+
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-pro"
+                                  },
+                      "output":  {
+                                     "artifact":  "internal/triagem",
+                                     "gate":  "go test -count=1 ./internal/triagem/..."
+                                 },
+                      "handler":  {
+                                      "type":  "shell",
+                                      "command":  "go test -count=1 ./internal/triagem/..."
+                                  }
+                  },
+                  {
+                      "id":  "t2-fabricar-13-artefatos",
+                      "name":  "Fabricar 13 Artefatos",
+                      "type":  "script",
+                      "description":  "Atualiza fabricar e processo para 13 artefatos sem template",
+                      "depends_on":  [
+                                         "t1-motor-triagem"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-pro"
+                                  },
+                      "output":  {
+                                     "artifact":  "internal/fabricar",
+                                     "gate":  "go test -count=1 ./internal/fabricar/... ./internal/processo/..."
+                                 },
+                      "handler":  {
+                                      "type":  "shell",
+                                      "command":  "go test -count=1 ./internal/fabricar/... ./internal/processo/..."
+                                  }
+                  },
+                  {
+                      "id":  "t3-pontos-entrada",
+                      "name":  "Pontos de Entrada",
+                      "type":  "script",
+                      "description":  "Expõe triagem em CLI, Studio e Skill",
+                      "depends_on":  [
+                                         "t1-motor-triagem",
+                                         "t2-fabricar-13-artefatos"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-pro"
+                                  },
+                      "output":  {
+                                     "artifact":  "cmd/legoloop",
+                                     "gate":  "go test -count=1 ./cmd/legoloop/... ./internal/studio/..."
+                                 },
+                      "handler":  {
+                                      "type":  "shell",
+                                      "command":  "go test -count=1 ./cmd/legoloop/... ./internal/studio/..."
+                                  }
+                  },
+                  {
+                      "id":  "t4-saneamento-loops",
+                      "name":  "Saneamento de Loops",
+                      "type":  "script",
+                      "description":  "Saneia e migra processos em loops/",
+                      "depends_on":  [
+                                         "t3-pontos-entrada"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-pro"
+                                  },
+                      "output":  {
+                                     "artifact":  "loops/",
+                                     "gate":  "go run ./cmd/legoloop migrar-loops --apply"
+                                 },
+                      "handler":  {
+                                      "type":  "shell",
+                                      "command":  "go run ./cmd/legoloop migrar-loops --apply"
+                                  }
+                  },
+                  {
+                      "id":  "t5-portoes-fechamento",
+                      "name":  "Portões e Fechamento",
+                      "type":  "script",
+                      "description":  "Roda testes, vet e build final",
+                      "depends_on":  [
+                                         "t4-saneamento-loops"
+                                     ],
+                      "routing":  {
+                                      "mode":  "auto",
+                                      "combo":  "code-pro"
+                                  },
+                      "output":  {
+                                     "artifact":  "bin/legoloop.exe",
+                                     "gate":  "go test -count=1 ./... \u0026\u0026 go vet ./... \u0026\u0026 go build -o bin/legoloop.exe ./cmd/legoloop"
+                                 },
+                      "handler":  {
+                                      "type":  "shell",
+                                      "command":  "go test -count=1 ./... \u0026\u0026 go vet ./... \u0026\u0026 go build -o bin/legoloop.exe ./cmd/legoloop"
+                                  }
+                  }
+              ]
+}
