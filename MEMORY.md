@@ -13,6 +13,7 @@
 | Prompt mestre | `PROMPT_IMPLEMENTATION.md` / colado no chat (EP-01..EP-05) |
 | ID da sessão de BUILD `fabricar` (Claude Code) | `872376ce-a2c0-45d2-aa66-989fbaa25a97` · retomar: `claude --resume 872376ce-a2c0-45d2-aa66-989fbaa25a97` (03/11/2026) |
 | Sessão que originou o PLAN `fabricar` | `1da38997-8926-43dc-a9c7-4c885fc12303` (citada no PLAN; o `faz-session` exportou conteúdo idêntico para os dois IDs, então o rótulo do ID não é confiável) |
+| ID da sessão Swarm I5/I6/I7 e Frente B (Antigravity) | `d8076846-0f35-46f0-bed9-170faf884416` (13/11/2026) |
 
 ## Estado inicial (verificado)
 
@@ -28,6 +29,8 @@
 | Studio UI embutida via `embed` e servida por `legoloop studio` em 127.0.0.1 | binário único, sem build de frontend |
 
 ### Decisões Swarm + Mega-Pipeline (13/11/2026)
+
+- **ID da sessão Antigravity:** `95d7dbd7-0074-4021-91ef-bcd376890df0`
 
 - **Painel visual do `swarm`:** adiado. Usar `/swarm board` (`Alt+S`) no dia a dia e priorizar o subprocesso oficial `legoloop-swarm` (que gera `swarm_run_report.json` para futura exibição no Studio sem acoplar a arquivos internos do Antigravity).
 - **Contrato `legoloop-swarm`:** consome `pipeline.dag.json` e mapa `guild_models` ligado à Matriz de Papéis (`docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md`), executa nós independentes em paralelo por nível topológico com barreira de `output.gate` e roteamento de modelos leves por guilda/papel.
