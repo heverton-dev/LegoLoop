@@ -130,7 +130,7 @@ function executionSection(node) {
     { value: "isolated", label: "Isolada" },
   ], node.execution, (mode) => { node.execution = mode; clearValidation(); renderNode(node); renderInspector(); }));
   sec.append(el("p", "note", "Inline roda na pasta do projeto. Isolada usa um workspace separado e é obrigatória quando peças em paralelo gravam em pastas sobrepostas."));
-  if (node.execution === "isolated") sec.append(el("p", "note note--warn", "O runner ainda não executa o modo isolado."));
+  if (node.execution === "isolated") sec.append(el("p", "note note--ok", "O runner executa em git worktree efêmero com isolamento estéril."));
   return sec;
 }
 
