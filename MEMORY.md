@@ -27,6 +27,12 @@
 | Somente biblioteca padrão Go | SPEC: "zero dependências externas", binário único |
 | Studio UI embutida via `embed` e servida por `legoloop studio` em 127.0.0.1 | binário único, sem build de frontend |
 
+### Decisões Swarm + Mega-Pipeline (13/11/2026)
+
+- **Painel visual do `swarm`:** adiado. Usar `/swarm board` (`Alt+S`) no dia a dia e priorizar o subprocesso oficial `legoloop-swarm` (que gera `swarm_run_report.json` para futura exibição no Studio sem acoplar a arquivos internos do Antigravity).
+- **Contrato `legoloop-swarm`:** consome `pipeline.dag.json` e mapa `guild_models` ligado à Matriz de Papéis (`docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md`), executa nós independentes em paralelo por nível topológico com barreira de `output.gate` e roteamento de modelos leves por guilda/papel.
+- **Estado atual:** `--dry-run` de `legoloop fabricar "legoloop-swarm"` passou com `exit_code 0` e `coerente: true`. Falta apenas executar a gravação real (sem `--dry-run`) e compor no `mega-pipeline` via `legoloop compor` após a Tríade de Planejamento.
+
 ## Progresso por ticket
 
 | Ticket | Status | Arquivos | Evidência |
@@ -567,7 +573,18 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Backend API & Serialização:** `internal/assets/skills.go` e `internal/studio/assets_api.go` (`present`, `enriquecerPapelGuilda`, `inferirPapelItem`) expondo `papel_primario`, `papel_nome` e `guilda` integrada a `taxonomy.CatalogoCanonico`. Funclen <= 35 rigorosamente mantido.
   - **Modelos do Studio:** Migração completa de 22 ocorrências em `internal/studio/templates.json` para os combos honestos certificados (`t-codigo-128k` e `t-chat-128k`). Teste `TestTemplatesCombosHonestosCertificados` comprovando ausência de combos legados.
   - **Frontend UI/UX:** Badges de 7 guildas (`.guilda-badge--*`) na paleta de peças (`palette.js`), distintivo `.pill--role` nos cartões de nós do Canvas (`app.js`), e card informativo com os limites mecânicos do combo honesto (`teto`, `tools`, `modelos`, `desc`) no Inspetor (`inspector.js`). Estilos dedicados em `style.css`.
-  - **Portões Mecânicos e Fechamento:** `go test -count=1 ./...` 100% PASS em todos os 51 pacotes, `go vet` limpo, `funclen` vazio, `gofmt` sem divergências, 23/23 DAGs validados com `legoloop validate`. `bin/legoloop.exe` recompilado e instalado no PATH. Relatório oficial em `docs/reports/2026-11-13_REPORT_STUDIO_PAPEIS_E_COMBOS.md`.
+  - **Portões Mecânicos e Fechamento:** `go test -count=1 ./...` 100% PASS em todos os 51 pacotes, `go vet` limpo, `funclen` vazio, `gofmt` sem divergências, 23/23 DAGs validados com `legoloop validate`. `bin/legoloop.exe` recompilado e instalado no PATH. Relatório oficial em `docs/reports/2026-11-13_REPORT_STUDIO_PAPEIS_E_COMBOS.md`. Commit `7e0da30` e `c949093`.
+  - **Instalação Canônica:** 14 skills universais instaladas e vinculadas aos 6 harnesses com `legoloop instalar-skills`.
+
+- **13/11/2026** — 🛑 **Encerramento da Sessão e Decisões para o Próximo Ciclo (Mega-Pipeline de Auditoria Profunda):**
+  - **Estado do Repositório:** 100% dos testes verdes (`go test ./...`: exit 0), binário atualizado no PATH, git limpo e em paridade com `origin/main`. Todos os processos de background foram encerrados com segurança.
+  - **Próximo Passo Decidido com o Usuário:** Executar uma **Auditoria Profunda de Código e UI/UX em modo Swarm via Mega-Pipeline LegoLoop**.
+  - **Estrutura das 4 Frentes Planejadas para Amanhã:**
+    1. *Frente 1 (UI/UX Impeccable & Acessibilidade):* Inspeção do Studio Web no DOM real (Playwright/Chrome headless), verificando contraste WCAG, overflow, drag-and-drop, conexões e consistência de cores das 7 guildas.
+    2. *Frente 2 (Código Backend, Concorrência e Leaks):* Varredura estática e dinâmica de todo o Go (`internal/`), teste com `-race`, auditoria de goroutines órfãs, buffers e tratamento de erros sem perda de contexto.
+    3. *Frente 3 (Integridade Mecânica de Processos e DAGs):* Validação formal de contratos v2, verificação do isolamento hermético em git worktrees (`prepareIsolation`) e execução de teste e2e.
+    4. *Frente 4 (Taxonomia e Governança ASD-STE100):* Varredura com `tools/taxlinter` para zerar termos proibidos residuais e garantir conformidade com a Lei #15.
+  - **Materialização Prévia para Retomada:** Elaborar o Quinteto ISO de Auditoria (`INTENT`, `SPEC`, `PLAN`, `ROUTE`, `DAG`) antes do disparo dos workers estéreis do Swarm.
 
 ## Estado Atual do Repositório
 - **Status da Branch:** `main` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
