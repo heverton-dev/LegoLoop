@@ -1,0 +1,77 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-triagem",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-triagem",
+      "comandos_cli": [
+        "legoloop legoloop-triagem",
+        "/legoloop-legoloop-triagem"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-triagem",
+    "etapas": [
+      "t1-motor-triagem",
+      "t2-fabricar-13-artefatos",
+      "t3-pontos-entrada",
+      "t4-saneamento-loops",
+      "t5-portoes-fechamento"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "t1-motor-triagem",
+      "palavras_chave": [
+        "motor triagem",
+        "motor-triagem"
+      ],
+      "slash_command": "/legoloop-triagem-motor-triagem",
+      "flag_cli": "--etapa t1-motor-triagem"
+    },
+    {
+      "id": "t2-fabricar-13-artefatos",
+      "palavras_chave": [
+        "fabricar 13 artefatos",
+        "fabricar-13-artefatos"
+      ],
+      "slash_command": "/legoloop-triagem-fabricar-13-artefatos",
+      "flag_cli": "--etapa t2-fabricar-13-artefatos"
+    },
+    {
+      "id": "t3-pontos-entrada",
+      "palavras_chave": [
+        "pontos entrada",
+        "pontos-entrada"
+      ],
+      "slash_command": "/legoloop-triagem-pontos-entrada",
+      "flag_cli": "--etapa t3-pontos-entrada"
+    },
+    {
+      "id": "t4-saneamento-loops",
+      "palavras_chave": [
+        "saneamento loops",
+        "saneamento-loops"
+      ],
+      "slash_command": "/legoloop-triagem-saneamento-loops",
+      "flag_cli": "--etapa t4-saneamento-loops"
+    },
+    {
+      "id": "t5-portoes-fechamento",
+      "palavras_chave": [
+        "portoes fechamento",
+        "portoes-fechamento"
+      ],
+      "slash_command": "/legoloop-triagem-portoes-fechamento",
+      "flag_cli": "--etapa t5-portoes-fechamento"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

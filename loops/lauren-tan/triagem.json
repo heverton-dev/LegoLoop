@@ -1,0 +1,24 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "lauren-tan",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "lauren-tan",
+      "comandos_cli": [
+        "legoloop lauren-tan",
+        "/legoloop-lauren-tan"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo lauren-tan",
+    "etapas": null
+  },
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

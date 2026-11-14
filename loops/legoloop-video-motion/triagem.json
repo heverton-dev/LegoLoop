@@ -1,0 +1,87 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-video-motion",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-video-motion",
+      "comandos_cli": [
+        "legoloop legoloop-video-motion",
+        "/legoloop-legoloop-video-motion"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-video-motion",
+    "etapas": [
+      "n01_silence_clock",
+      "n02_punch_detector",
+      "n03_asset_synthesis",
+      "n04_kinetic_typography",
+      "n05_3d_glass_cards",
+      "n06_multi_aspect_render"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_silence_clock",
+      "palavras_chave": [
+        "silence clock",
+        "silence-clock"
+      ],
+      "slash_command": "/legoloop-video-motion-silence-clock",
+      "flag_cli": "--etapa n01_silence_clock"
+    },
+    {
+      "id": "n02_punch_detector",
+      "palavras_chave": [
+        "punch detector",
+        "punch-detector"
+      ],
+      "slash_command": "/legoloop-video-motion-punch-detector",
+      "flag_cli": "--etapa n02_punch_detector"
+    },
+    {
+      "id": "n03_asset_synthesis",
+      "palavras_chave": [
+        "asset synthesis",
+        "asset-synthesis"
+      ],
+      "slash_command": "/legoloop-video-motion-asset-synthesis",
+      "flag_cli": "--etapa n03_asset_synthesis"
+    },
+    {
+      "id": "n04_kinetic_typography",
+      "palavras_chave": [
+        "kinetic typography",
+        "kinetic-typography"
+      ],
+      "slash_command": "/legoloop-video-motion-kinetic-typography",
+      "flag_cli": "--etapa n04_kinetic_typography"
+    },
+    {
+      "id": "n05_3d_glass_cards",
+      "palavras_chave": [
+        "3d glass cards",
+        "3d-glass-cards"
+      ],
+      "slash_command": "/legoloop-video-motion-3d-glass-cards",
+      "flag_cli": "--etapa n05_3d_glass_cards"
+    },
+    {
+      "id": "n06_multi_aspect_render",
+      "palavras_chave": [
+        "multi aspect render",
+        "multi-aspect-render"
+      ],
+      "slash_command": "/legoloop-video-motion-multi-aspect-render",
+      "flag_cli": "--etapa n06_multi_aspect_render"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

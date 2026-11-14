@@ -1,0 +1,77 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-video-master",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-video-master",
+      "comandos_cli": [
+        "legoloop legoloop-video-master",
+        "/legoloop-legoloop-video-master"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-video-master",
+    "etapas": [
+      "n01_forensics_intake",
+      "n02_motion_3d_engine",
+      "n03_whiteboard_svg_engine",
+      "n04_auto_editor_reels",
+      "n05_channel_clone_book"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_forensics_intake",
+      "palavras_chave": [
+        "forensics intake",
+        "forensics-intake"
+      ],
+      "slash_command": "/legoloop-video-master-forensics-intake",
+      "flag_cli": "--etapa n01_forensics_intake"
+    },
+    {
+      "id": "n02_motion_3d_engine",
+      "palavras_chave": [
+        "motion 3d engine",
+        "motion-3d-engine"
+      ],
+      "slash_command": "/legoloop-video-master-motion-3d-engine",
+      "flag_cli": "--etapa n02_motion_3d_engine"
+    },
+    {
+      "id": "n03_whiteboard_svg_engine",
+      "palavras_chave": [
+        "whiteboard svg engine",
+        "whiteboard-svg-engine"
+      ],
+      "slash_command": "/legoloop-video-master-whiteboard-svg-engine",
+      "flag_cli": "--etapa n03_whiteboard_svg_engine"
+    },
+    {
+      "id": "n04_auto_editor_reels",
+      "palavras_chave": [
+        "auto editor reels",
+        "auto-editor-reels"
+      ],
+      "slash_command": "/legoloop-video-master-auto-editor-reels",
+      "flag_cli": "--etapa n04_auto_editor_reels"
+    },
+    {
+      "id": "n05_channel_clone_book",
+      "palavras_chave": [
+        "channel clone book",
+        "channel-clone-book"
+      ],
+      "slash_command": "/legoloop-video-master-channel-clone-book",
+      "flag_cli": "--etapa n05_channel_clone_book"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

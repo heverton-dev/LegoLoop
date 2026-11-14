@@ -1,0 +1,87 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-dissecar",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-dissecar",
+      "comandos_cli": [
+        "legoloop legoloop-dissecar",
+        "/legoloop-legoloop-dissecar"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-dissecar",
+    "etapas": [
+      "n01_resolver_alvo",
+      "n02_extrair_ast_metricas",
+      "n03_auditar_governanca",
+      "n04_sintetizar_dag_reverso",
+      "n05_sintetizar_triade_motion",
+      "n06_compilar_relatorio_final"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_resolver_alvo",
+      "palavras_chave": [
+        "resolver alvo",
+        "resolver-alvo"
+      ],
+      "slash_command": "/legoloop-dissecar-resolver-alvo",
+      "flag_cli": "--etapa n01_resolver_alvo"
+    },
+    {
+      "id": "n02_extrair_ast_metricas",
+      "palavras_chave": [
+        "extrair ast metricas",
+        "extrair-ast-metricas"
+      ],
+      "slash_command": "/legoloop-dissecar-extrair-ast-metricas",
+      "flag_cli": "--etapa n02_extrair_ast_metricas"
+    },
+    {
+      "id": "n03_auditar_governanca",
+      "palavras_chave": [
+        "auditar governanca",
+        "auditar-governanca"
+      ],
+      "slash_command": "/legoloop-dissecar-auditar-governanca",
+      "flag_cli": "--etapa n03_auditar_governanca"
+    },
+    {
+      "id": "n04_sintetizar_dag_reverso",
+      "palavras_chave": [
+        "sintetizar dag reverso",
+        "sintetizar-dag-reverso"
+      ],
+      "slash_command": "/legoloop-dissecar-sintetizar-dag-reverso",
+      "flag_cli": "--etapa n04_sintetizar_dag_reverso"
+    },
+    {
+      "id": "n05_sintetizar_triade_motion",
+      "palavras_chave": [
+        "sintetizar triade motion",
+        "sintetizar-triade-motion"
+      ],
+      "slash_command": "/legoloop-dissecar-sintetizar-triade-motion",
+      "flag_cli": "--etapa n05_sintetizar_triade_motion"
+    },
+    {
+      "id": "n06_compilar_relatorio_final",
+      "palavras_chave": [
+        "compilar relatorio final",
+        "compilar-relatorio-final"
+      ],
+      "slash_command": "/legoloop-dissecar-compilar-relatorio-final",
+      "flag_cli": "--etapa n06_compilar_relatorio_final"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

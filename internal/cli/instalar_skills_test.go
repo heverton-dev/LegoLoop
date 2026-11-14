@@ -15,8 +15,8 @@ import (
 
 func TestInstalarSkills(t *testing.T) {
 	// 0. Quantidade canônica de funções nativas
-	if len(skills.FuncoesNativas) != 14 {
-		t.Fatalf("esperava 14 funções nativas em skills.FuncoesNativas, obteve %d", len(skills.FuncoesNativas))
+	if len(skills.FuncoesNativas) != 15 {
+		t.Fatalf("esperava 15 funções nativas em skills.FuncoesNativas, obteve %d", len(skills.FuncoesNativas))
 	}
 
 	// 1. Manuais das 14 funções devem existir na raiz do repositório

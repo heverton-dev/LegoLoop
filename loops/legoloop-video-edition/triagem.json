@@ -1,0 +1,147 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-video-edition",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-video-edition",
+      "comandos_cli": [
+        "legoloop legoloop-video-edition",
+        "/legoloop-legoloop-video-edition"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-video-edition",
+    "etapas": [
+      "n01_iniciar_preparar",
+      "n02_transcricao_alinhamento",
+      "n03_decisao_cortes",
+      "n04_sg_revisao_corte",
+      "n05_motion_mapa",
+      "n06_sg_revisao_motion",
+      "n07_camera_yunet",
+      "n08_assets_download",
+      "n09_motion_render",
+      "n10_efeitos_sonoros_sfx",
+      "n11_entrega_final_hibrida",
+      "n12_sg_entrega_final"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_iniciar_preparar",
+      "palavras_chave": [
+        "iniciar preparar",
+        "iniciar-preparar"
+      ],
+      "slash_command": "/legoloop-video-edition-iniciar-preparar",
+      "flag_cli": "--etapa n01_iniciar_preparar"
+    },
+    {
+      "id": "n02_transcricao_alinhamento",
+      "palavras_chave": [
+        "transcricao alinhamento",
+        "transcricao-alinhamento"
+      ],
+      "slash_command": "/legoloop-video-edition-transcricao-alinhamento",
+      "flag_cli": "--etapa n02_transcricao_alinhamento"
+    },
+    {
+      "id": "n03_decisao_cortes",
+      "palavras_chave": [
+        "decisao cortes",
+        "decisao-cortes"
+      ],
+      "slash_command": "/legoloop-video-edition-decisao-cortes",
+      "flag_cli": "--etapa n03_decisao_cortes"
+    },
+    {
+      "id": "n04_sg_revisao_corte",
+      "palavras_chave": [
+        "sg revisao corte",
+        "sg-revisao-corte"
+      ],
+      "slash_command": "/legoloop-video-edition-sg-revisao-corte",
+      "flag_cli": "--etapa n04_sg_revisao_corte"
+    },
+    {
+      "id": "n05_motion_mapa",
+      "palavras_chave": [
+        "motion mapa",
+        "motion-mapa"
+      ],
+      "slash_command": "/legoloop-video-edition-motion-mapa",
+      "flag_cli": "--etapa n05_motion_mapa"
+    },
+    {
+      "id": "n06_sg_revisao_motion",
+      "palavras_chave": [
+        "sg revisao motion",
+        "sg-revisao-motion"
+      ],
+      "slash_command": "/legoloop-video-edition-sg-revisao-motion",
+      "flag_cli": "--etapa n06_sg_revisao_motion"
+    },
+    {
+      "id": "n07_camera_yunet",
+      "palavras_chave": [
+        "camera yunet",
+        "camera-yunet"
+      ],
+      "slash_command": "/legoloop-video-edition-camera-yunet",
+      "flag_cli": "--etapa n07_camera_yunet"
+    },
+    {
+      "id": "n08_assets_download",
+      "palavras_chave": [
+        "assets download",
+        "assets-download"
+      ],
+      "slash_command": "/legoloop-video-edition-assets-download",
+      "flag_cli": "--etapa n08_assets_download"
+    },
+    {
+      "id": "n09_motion_render",
+      "palavras_chave": [
+        "motion render",
+        "motion-render"
+      ],
+      "slash_command": "/legoloop-video-edition-motion-render",
+      "flag_cli": "--etapa n09_motion_render"
+    },
+    {
+      "id": "n10_efeitos_sonoros_sfx",
+      "palavras_chave": [
+        "efeitos sonoros sfx",
+        "efeitos-sonoros-sfx"
+      ],
+      "slash_command": "/legoloop-video-edition-efeitos-sonoros-sfx",
+      "flag_cli": "--etapa n10_efeitos_sonoros_sfx"
+    },
+    {
+      "id": "n11_entrega_final_hibrida",
+      "palavras_chave": [
+        "entrega final hibrida",
+        "entrega-final-hibrida"
+      ],
+      "slash_command": "/legoloop-video-edition-entrega-final-hibrida",
+      "flag_cli": "--etapa n11_entrega_final_hibrida"
+    },
+    {
+      "id": "n12_sg_entrega_final",
+      "palavras_chave": [
+        "sg entrega final",
+        "sg-entrega-final"
+      ],
+      "slash_command": "/legoloop-video-edition-sg-entrega-final",
+      "flag_cli": "--etapa n12_sg_entrega_final"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

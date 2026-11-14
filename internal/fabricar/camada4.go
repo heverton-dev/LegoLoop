@@ -109,7 +109,7 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, inte
 	}
 	docs := func(sub, file string) string { return filepath.Join(roots.Docs, "docs", sub, file) }
 	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
-	return []PlannedFile{
+	files := []PlannedFile{
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
 		{Kind: "loop", Path: vault(paths.DirAntigo, p.Nome+paths.SufixoStudio), Data: pr.Loop},
 		{Kind: "dag", Path: vault(paths.DirAntigo, p.Nome+".dag.json"), Data: pr.DAG},
@@ -119,6 +119,12 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, inte
 		{Kind: "plan", Path: docs("plans", pr.PlanNome), Data: []byte(pr.Plan)},
 		{Kind: "route", Path: docs("routes", pr.RouteNome), Data: pr.Route},
 		{Kind: "dag_iso", Path: docs("dags", pr.DAGNome), Data: pr.DAG},
-		{Kind: "template", Path: docs("templates", templateFileName(p.Nome)), Data: []byte(EmitTemplate(p))},
-	}, nil
+		{Kind: "triagem", Path: vault(paths.DirAntigo, p.Nome, "triagem.json"), Data: pr.Triagem},
+		{Kind: "manual", Path: docs("manuals", pr.ManualNome), Data: []byte(pr.Manual)},
+		{Kind: "livro", Path: docs("books", filepath.Join(p.Nome, "livro.json")), Data: pr.Livro},
+	}
+	for _, f := range pr.Fichas {
+		files = append(files, PlannedFile{Kind: "fichas_tecnicas", Path: docs("fichas", filepath.Join(p.Nome, f.EtapaID+".md")), Data: []byte(f.Conteudo)})
+	}
+	return files, nil
 }

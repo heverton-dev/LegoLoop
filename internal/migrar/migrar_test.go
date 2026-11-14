@@ -1,172 +1,80 @@
 package migrar
 
 import (
-	"errors"
-	"io/fs"
-	"maps"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/caminhos"
+	"legoloop/internal/triagem"
 )
 
-const (
-	docAntigo = "pesquisa" + caminhos.SufixoLoop
-	dagAntigo = "extrator/" + caminhos.ArquivoDAG
-	extAntiga = "alheio" + caminhos.SufixoLoop
-)
+func TestMigrarLoops_DryRunNaoAlteraDisco(t *testing.T) {
+	dir := t.TempDir()
+	criarDir(t, filepath.Join(dir, "vazio"))
+	criarDAG(t, filepath.Join(dir, "valido"), `{"nodes":[{"id":"n1"},{"id":"n2"}]}`)
 
-func escrever(t *testing.T, raiz, rel, conteudo string) {
+	rel, err := MigrarLoops(dir, false)
+	if err != nil {
+		t.Fatalf("erro inesperado: %v", err)
+	}
+	if len(rel.Removidos) != 1 || rel.Removidos[0] != "vazio" {
+		t.Errorf("esperado removido=vazio, obtido %v", rel.Removidos)
+	}
+	if len(rel.TriagensGeradas) != 1 || rel.TriagensGeradas[0] != "valido" {
+		t.Errorf("esperado triagem=valido, obtido %v", rel.TriagensGeradas)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "vazio")); err != nil {
+		t.Errorf("dry-run não deveria remover diretório vazio")
+	}
+	if _, err := os.Stat(filepath.Join(dir, "valido", "triagem.json")); err == nil {
+		t.Errorf("dry-run não deveria criar triagem.json")
+	}
+}
+
+func TestMigrarLoops_ApplyRemoveQuebradosEGeraTriagem(t *testing.T) {
+	dir := t.TempDir()
+	criarDir(t, filepath.Join(dir, "quebrado"))
+	_ = os.WriteFile(filepath.Join(dir, "quebrado", "pipeline.dag.json"), []byte("{invalido"), 0644)
+	criarDAG(t, filepath.Join(dir, "proc-ok"), `{"nodes":[{"id":"etapa1"}]}`)
+
+	rel, err := MigrarLoops(dir, true)
+	if err != nil {
+		t.Fatalf("erro inesperado: %v", err)
+	}
+	if len(rel.Removidos) != 1 || rel.Removidos[0] != "quebrado" {
+		t.Errorf("esperado removido=quebrado, obtido %v", rel.Removidos)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "quebrado")); !os.IsNotExist(err) {
+		t.Errorf("apply deveria remover diretório quebrado")
+	}
+	data, err := os.ReadFile(filepath.Join(dir, "proc-ok", "triagem.json"))
+	if err != nil {
+		t.Fatalf("triagem.json não criado: %v", err)
+	}
+	var spec triagem.TriagemSpec
+	if err := json.Unmarshal(data, &spec); err != nil {
+		t.Fatalf("triagem.json inválido: %v", err)
+	}
+	if err := spec.Validar(); err != nil {
+		t.Errorf("spec inválida: %v", err)
+	}
+	if len(spec.CriterioAmbiguidade.Etapas) != 1 || spec.CriterioAmbiguidade.Etapas[0] != "etapa1" {
+		t.Errorf("etapas inesperadas: %v", spec.CriterioAmbiguidade.Etapas)
+	}
+}
+
+func criarDir(t *testing.T, p string) {
 	t.Helper()
-	p := filepath.Join(raiz, filepath.FromSlash(rel))
-	if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+	if err := os.MkdirAll(p, 0755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(p, []byte(conteudo), 0o600); err != nil {
+}
+
+func criarDAG(t *testing.T, p, conteudo string) {
+	t.Helper()
+	criarDir(t, p)
+	if err := os.WriteFile(filepath.Join(p, "pipeline.dag.json"), []byte(conteudo), 0644); err != nil {
 		t.Fatal(err)
-	}
-}
-
-func ler(t *testing.T, raiz, rel string) string {
-	t.Helper()
-	data, err := os.ReadFile(filepath.Join(raiz, filepath.FromSlash(rel)))
-	if err != nil {
-		t.Fatalf("ler %s: %v", rel, err)
-	}
-	return string(data)
-}
-
-func ausente(t *testing.T, raiz, rel string) {
-	t.Helper()
-	if _, err := os.Lstat(filepath.Join(raiz, filepath.FromSlash(rel))); !errors.Is(err, fs.ErrNotExist) {
-		t.Fatalf("%s deveria não existir (err=%v)", rel, err)
-	}
-}
-
-// fotografar registra todo o conteúdo sob a raiz para comparar antes e depois.
-func fotografar(t *testing.T, raiz string) map[string]string {
-	t.Helper()
-	foto := map[string]string{}
-	err := filepath.WalkDir(raiz, func(p string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		rel, _ := filepath.Rel(raiz, p)
-		if d.IsDir() {
-			foto[filepath.ToSlash(rel)] = "<pasta>"
-			return nil
-		}
-		data, err := os.ReadFile(p)
-		foto[filepath.ToSlash(rel)] = string(data)
-		return err
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	return foto
-}
-
-func processoV1(t *testing.T) string {
-	t.Helper()
-	raiz := t.TempDir()
-	escrever(t, raiz, docAntigo, `{"id":"pesquisa"}`)
-	escrever(t, raiz, "pesquisa.dag.json", `{"name":"pesquisa-dag"}`)
-	escrever(t, raiz, "pesquisa.processo.json", `{"nome":"pesquisa"}`)
-	escrever(t, raiz, dagAntigo, `{"name":"extrator"}`)
-	return raiz
-}
-
-func TestMigrarIdaEVolta(t *testing.T) {
-	raiz := processoV1(t)
-	rel, err := Migrar(raiz)
-	if err != nil {
-		t.Fatalf("primeira execução: %v", err)
-	}
-	if len(rel.Movimentos) != 2 {
-		t.Fatalf("esperava 2 movimentos, veio %+v", rel.Movimentos)
-	}
-	conferirMigrado(t, raiz)
-
-	antes := fotografar(t, raiz)
-	rel2, err := Migrar(raiz)
-	if err != nil {
-		t.Fatalf("segunda execução: %v", err)
-	}
-	if len(rel2.Movimentos) != 0 {
-		t.Fatalf("segunda execução moveu %+v", rel2.Movimentos)
-	}
-	if depois := fotografar(t, raiz); !maps.Equal(antes, depois) {
-		t.Fatalf("segunda execução alterou o disco:\nantes=%v\ndepois=%v", antes, depois)
-	}
-}
-
-// conferirMigrado verifica os nomes novos, os arquivos intactos e o backup.
-func conferirMigrado(t *testing.T, raiz string) {
-	t.Helper()
-	if got := ler(t, raiz, "pesquisa.studio.json"); got != `{"id":"pesquisa"}` {
-		t.Fatalf("studio.json com conteúdo %q", got)
-	}
-	ausente(t, raiz, docAntigo)
-	ausente(t, raiz, dagAntigo)
-	if got := ler(t, raiz, "extrator/processo.dag.json"); got != `{"name":"extrator"}` {
-		t.Fatalf("processo.dag.json com conteúdo %q", got)
-	}
-	if ler(t, raiz, "pesquisa.dag.json") != `{"name":"pesquisa-dag"}` || ler(t, raiz, "pesquisa.processo.json") != `{"nome":"pesquisa"}` {
-		t.Fatal(".dag.json ou .processo.json foram alterados")
-	}
-	if got := ler(t, raiz, DirBackup+"/"+docAntigo); got != `{"id":"pesquisa"}` {
-		t.Fatalf("backup do documento antigo com conteúdo %q", got)
-	}
-	if got := ler(t, raiz, DirBackup+"/"+dagAntigo); got != `{"name":"extrator"}` {
-		t.Fatalf("backup do DAG antigo com conteúdo %q", got)
-	}
-}
-
-func TestMigrarDestinoExistenteNaoAlteraDisco(t *testing.T) {
-	raiz := processoV1(t)
-	escrever(t, raiz, "extrator/processo.dag.json", `{"name":"ja-existe"}`)
-	antes := fotografar(t, raiz)
-	if _, err := Migrar(raiz); !errors.Is(err, ErrDestinoExiste) {
-		t.Fatalf("esperava ErrDestinoExiste, veio %v", err)
-	}
-	if depois := fotografar(t, raiz); !maps.Equal(antes, depois) {
-		t.Fatalf("conflito alterou o disco:\nantes=%v\ndepois=%v", antes, depois)
-	}
-}
-
-func TestMigrarBackupExistenteNaoAlteraDisco(t *testing.T) {
-	raiz := processoV1(t)
-	escrever(t, raiz, DirBackup+"/"+docAntigo, `velho`)
-	antes := fotografar(t, raiz)
-	if _, err := Migrar(raiz); !errors.Is(err, ErrDestinoExiste) {
-		t.Fatalf("esperava ErrDestinoExiste, veio %v", err)
-	}
-	if depois := fotografar(t, raiz); !maps.Equal(antes, depois) {
-		t.Fatal("conflito no backup alterou o disco")
-	}
-}
-
-func TestMigrarRecusaRaizInvalida(t *testing.T) {
-	raiz := t.TempDir()
-	for _, r := range []string{"", raiz + "/../" + filepath.Base(raiz), filepath.Join(raiz, "nao-existe")} {
-		if _, err := Migrar(r); !errors.Is(err, ErrRaizInvalida) {
-			t.Fatalf("raiz %q: esperava ErrRaizInvalida, veio %v", r, err)
-		}
-	}
-}
-
-func TestMigrarRecusaSymlink(t *testing.T) {
-	raiz := t.TempDir()
-	fora := t.TempDir()
-	escrever(t, fora, extAntiga, `{}`)
-	if err := os.Symlink(filepath.Join(fora, extAntiga), filepath.Join(raiz, extAntiga)); err != nil {
-		t.Skipf("symlink indisponível: %v", err)
-	}
-	if _, err := Migrar(raiz); !errors.Is(err, ErrSymlink) {
-		t.Fatalf("esperava ErrSymlink, veio %v", err)
-	}
-	if ler(t, fora, extAntiga) != `{}` {
-		t.Fatal("arquivo externo alterado")
 	}
 }

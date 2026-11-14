@@ -163,7 +163,7 @@ func TestFabricar_GeneratesTheThreeMeansAndTheGovernanceDocs(t *testing.T) {
 		t.Fatalf("identidade incorreta: %+v", res)
 	}
 	a := res.Artifacts
-	for _, p := range []string{a.SkillPath, a.LoopPath, a.DagPath, a.IntentPath, a.SpecPath, a.PlanPath, a.RoutePath, a.TemplatePath} {
+	for _, p := range []string{a.SkillPath, a.LoopPath, a.DagPath, a.IntentPath, a.SpecPath, a.PlanPath, a.RoutePath} {
 		if _, err := os.Stat(p); err != nil {
 			t.Errorf("artefato ausente: %s", p)
 		}
@@ -240,7 +240,7 @@ func TestFabricar_IsDeterministicAndStaysInsideTheInjectedRoots(t *testing.T) {
 		res := r.run(t)
 		out := map[string]string{}
 		for _, p := range []string{res.Artifacts.SkillPath, res.Artifacts.LoopPath, res.Artifacts.DagPath, res.Artifacts.IntentPath,
-			res.Artifacts.SpecPath, res.Artifacts.PlanPath, res.Artifacts.RoutePath, res.Artifacts.TemplatePath, res.Artifacts.ProcessoPath} {
+			res.Artifacts.SpecPath, res.Artifacts.PlanPath, res.Artifacts.RoutePath, res.Artifacts.ProcessoPath} {
 			if !strings.HasPrefix(p, r.home) {
 				t.Errorf("gravou fora das raízes injetadas: %s", p)
 			}
@@ -250,8 +250,8 @@ func TestFabricar_IsDeterministicAndStaysInsideTheInjectedRoots(t *testing.T) {
 		return out
 	}
 	a, b := snapshot(), snapshot()
-	if len(a) != 9 {
-		t.Fatalf("esperava 9 arquivos: %d", len(a))
+	if len(a) != 8 {
+		t.Fatalf("esperava 8 arquivos: %d", len(a))
 	}
 	for name, content := range a {
 		if b[name] != content {

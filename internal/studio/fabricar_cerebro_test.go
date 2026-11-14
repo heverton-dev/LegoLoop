@@ -52,8 +52,8 @@ func TestStudioCerebro_OllamaSemRouterFabrica(t *testing.T) {
 		}
 		return nil
 	})
-	if n != 6 {
-		t.Errorf("devia gravar os 6 documentos no projeto, gravou %d", n)
+	if n != 9 {
+		t.Errorf("devia gravar os 9 documentos no projeto, gravou %d", n)
 	}
 }
 

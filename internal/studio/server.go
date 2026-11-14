@@ -136,6 +136,7 @@ func (s *Server) registerAPIRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/interview/finalize", s.handleInterviewFinalize)
 	mux.HandleFunc("POST /api/spec/generate", s.handleSpecGenerate)
 	mux.HandleFunc("POST /api/plan/generate", s.handlePlanGenerate)
+	mux.HandleFunc("POST /api/triagem", s.handleTriagem)
 }
 
 func (s *Server) registerProcessoRoutes(mux *http.ServeMux) {

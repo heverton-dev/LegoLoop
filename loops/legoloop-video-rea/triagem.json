@@ -1,0 +1,87 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-video-rea",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-video-rea",
+      "comandos_cli": [
+        "legoloop legoloop-video-rea",
+        "/legoloop-legoloop-video-rea"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-video-rea",
+    "etapas": [
+      "n01_crawler_ingest",
+      "n02_forensics_dissection",
+      "n03_matrix_curation",
+      "n04_stopgate_approval",
+      "n05_governance_factory",
+      "n06_legopress_book"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_crawler_ingest",
+      "palavras_chave": [
+        "crawler ingest",
+        "crawler-ingest"
+      ],
+      "slash_command": "/legoloop-video-rea-crawler-ingest",
+      "flag_cli": "--etapa n01_crawler_ingest"
+    },
+    {
+      "id": "n02_forensics_dissection",
+      "palavras_chave": [
+        "forensics dissection",
+        "forensics-dissection"
+      ],
+      "slash_command": "/legoloop-video-rea-forensics-dissection",
+      "flag_cli": "--etapa n02_forensics_dissection"
+    },
+    {
+      "id": "n03_matrix_curation",
+      "palavras_chave": [
+        "matrix curation",
+        "matrix-curation"
+      ],
+      "slash_command": "/legoloop-video-rea-matrix-curation",
+      "flag_cli": "--etapa n03_matrix_curation"
+    },
+    {
+      "id": "n04_stopgate_approval",
+      "palavras_chave": [
+        "stopgate approval",
+        "stopgate-approval"
+      ],
+      "slash_command": "/legoloop-video-rea-stopgate-approval",
+      "flag_cli": "--etapa n04_stopgate_approval"
+    },
+    {
+      "id": "n05_governance_factory",
+      "palavras_chave": [
+        "governance factory",
+        "governance-factory"
+      ],
+      "slash_command": "/legoloop-video-rea-governance-factory",
+      "flag_cli": "--etapa n05_governance_factory"
+    },
+    {
+      "id": "n06_legopress_book",
+      "palavras_chave": [
+        "legopress book",
+        "legopress-book"
+      ],
+      "slash_command": "/legoloop-video-rea-legopress-book",
+      "flag_cli": "--etapa n06_legopress_book"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

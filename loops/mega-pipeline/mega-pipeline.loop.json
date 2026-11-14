@@ -43,8 +43,9 @@
       "name": "Concepção & Alinhamento Socrático",
       "nature": "micro",
       "cognitive_complexity": "medio",
-      "type": "skill",
-      "ref": "skills/aidd-grill",
+      "type": "script",
+      "command": ["legoloop", "fabricar", "entrevista"],
+      "ref": "legoloop fabricar entrevista",
       "routing": {
         "mode": "suggested",
         "model": "sonnet",

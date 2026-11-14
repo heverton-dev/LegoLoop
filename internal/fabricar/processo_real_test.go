@@ -26,7 +26,7 @@ func TestProcessoRealGravaOProcessoEOTemplateContaAMesmaHistoria(t *testing.T) {
 	if !tri.Coerente || tri.ACs != 2 || tri.Tickets != 2 || len(tri.Gates) != 2 || tri.Gates[0] != p.Etapas[0].Gate {
 		t.Errorf("a Tríade deve vir do Processo: %+v", tri)
 	}
-	tpl := read(t, res.Artifacts.TemplatePath)
+	tpl := fabricar.EmitTemplate(p)
 	for _, e := range p.Etapas {
 		for _, want := range []string{"`" + e.ID + "`", e.Produz.Caminho, e.Gate, "skill `" + e.Peca + "`"} {
 			if !strings.Contains(tpl, want) {

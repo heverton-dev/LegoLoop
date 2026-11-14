@@ -1,0 +1,37 @@
+{
+  "schema_version": "route.v2",
+  "id": "2026-11-14_ROUTE_TRIAGEM_UNIVERSAL_E_ARTEFATOS",
+  "plan": "docs/plans/2026-11-14_PLAN_TRIAGEM_UNIVERSAL_E_ARTEFATOS.md",
+  "nodes": [
+    {
+      "id": "t1-motor-triagem",
+      "title": "Motor internal/triagem híbrido com TDD",
+      "depends_on": [],
+      "write_boundary": ["internal/triagem/**"]
+    },
+    {
+      "id": "t2-fabricar-13-artefatos",
+      "title": "Atualizar internal/fabricar e internal/processo para 13 artefatos sem template",
+      "depends_on": ["t1-motor-triagem"],
+      "write_boundary": ["internal/fabricar/**", "internal/processo/**"]
+    },
+    {
+      "id": "t3-pontos-entrada",
+      "title": "Expor triagem em CLI, Chat/Skill e Studio",
+      "depends_on": ["t1-motor-triagem", "t2-fabricar-13-artefatos"],
+      "write_boundary": ["cmd/legoloop/**", "internal/studio/**", "skills/**"]
+    },
+    {
+      "id": "t4-saneamento-loops",
+      "title": "Saneamento e migração dos processos em loops/",
+      "depends_on": ["t3-pontos-entrada"],
+      "write_boundary": ["loops/**", "internal/migrar/**"]
+    },
+    {
+      "id": "t5-portoes-fechamento",
+      "title": "Portões de qualidade, build e validação final",
+      "depends_on": ["t4-saneamento-loops"],
+      "write_boundary": ["bin/**"]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "matt-pocock",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "matt-pocock",
+      "comandos_cli": [
+        "legoloop matt-pocock",
+        "/legoloop-matt-pocock"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo matt-pocock",
+    "etapas": null
+  },
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

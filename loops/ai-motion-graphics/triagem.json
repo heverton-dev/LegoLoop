@@ -1,0 +1,189 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "ai-motion-graphics",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "ai-motion-graphics",
+      "comandos_cli": [
+        "legoloop ai-motion-graphics",
+        "/legoloop-ai-motion-graphics"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo ai-motion-graphics",
+    "etapas": [
+      "t01_types",
+      "t02_suggest",
+      "t03_vet_e01",
+      "sg_e01",
+      "t04_build",
+      "t05_vet_e02",
+      "sg_e02",
+      "t06_render",
+      "t07_encode",
+      "t08_vet_e03",
+      "sg_e03",
+      "t09_sync",
+      "t10_vet_e04",
+      "sg_e04",
+      "t11_skill",
+      "t12_book",
+      "sg_final"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "t01_types",
+      "palavras_chave": [
+        "types"
+      ],
+      "slash_command": "/ai-motion-graphics-types",
+      "flag_cli": "--etapa t01_types"
+    },
+    {
+      "id": "t02_suggest",
+      "palavras_chave": [
+        "suggest"
+      ],
+      "slash_command": "/ai-motion-graphics-suggest",
+      "flag_cli": "--etapa t02_suggest"
+    },
+    {
+      "id": "t03_vet_e01",
+      "palavras_chave": [
+        "vet e01",
+        "vet-e01"
+      ],
+      "slash_command": "/ai-motion-graphics-vet-e01",
+      "flag_cli": "--etapa t03_vet_e01"
+    },
+    {
+      "id": "sg_e01",
+      "palavras_chave": [
+        "sg e01",
+        "sg-e01"
+      ],
+      "slash_command": "/ai-motion-graphics-sg-e01",
+      "flag_cli": "--etapa sg_e01"
+    },
+    {
+      "id": "t04_build",
+      "palavras_chave": [
+        "build"
+      ],
+      "slash_command": "/ai-motion-graphics-build",
+      "flag_cli": "--etapa t04_build"
+    },
+    {
+      "id": "t05_vet_e02",
+      "palavras_chave": [
+        "vet e02",
+        "vet-e02"
+      ],
+      "slash_command": "/ai-motion-graphics-vet-e02",
+      "flag_cli": "--etapa t05_vet_e02"
+    },
+    {
+      "id": "sg_e02",
+      "palavras_chave": [
+        "sg e02",
+        "sg-e02"
+      ],
+      "slash_command": "/ai-motion-graphics-sg-e02",
+      "flag_cli": "--etapa sg_e02"
+    },
+    {
+      "id": "t06_render",
+      "palavras_chave": [
+        "render"
+      ],
+      "slash_command": "/ai-motion-graphics-render",
+      "flag_cli": "--etapa t06_render"
+    },
+    {
+      "id": "t07_encode",
+      "palavras_chave": [
+        "encode"
+      ],
+      "slash_command": "/ai-motion-graphics-encode",
+      "flag_cli": "--etapa t07_encode"
+    },
+    {
+      "id": "t08_vet_e03",
+      "palavras_chave": [
+        "vet e03",
+        "vet-e03"
+      ],
+      "slash_command": "/ai-motion-graphics-vet-e03",
+      "flag_cli": "--etapa t08_vet_e03"
+    },
+    {
+      "id": "sg_e03",
+      "palavras_chave": [
+        "sg e03",
+        "sg-e03"
+      ],
+      "slash_command": "/ai-motion-graphics-sg-e03",
+      "flag_cli": "--etapa sg_e03"
+    },
+    {
+      "id": "t09_sync",
+      "palavras_chave": [
+        "sync"
+      ],
+      "slash_command": "/ai-motion-graphics-sync",
+      "flag_cli": "--etapa t09_sync"
+    },
+    {
+      "id": "t10_vet_e04",
+      "palavras_chave": [
+        "vet e04",
+        "vet-e04"
+      ],
+      "slash_command": "/ai-motion-graphics-vet-e04",
+      "flag_cli": "--etapa t10_vet_e04"
+    },
+    {
+      "id": "sg_e04",
+      "palavras_chave": [
+        "sg e04",
+        "sg-e04"
+      ],
+      "slash_command": "/ai-motion-graphics-sg-e04",
+      "flag_cli": "--etapa sg_e04"
+    },
+    {
+      "id": "t11_skill",
+      "palavras_chave": [
+        "skill"
+      ],
+      "slash_command": "/ai-motion-graphics-skill",
+      "flag_cli": "--etapa t11_skill"
+    },
+    {
+      "id": "t12_book",
+      "palavras_chave": [
+        "book"
+      ],
+      "slash_command": "/ai-motion-graphics-book",
+      "flag_cli": "--etapa t12_book"
+    },
+    {
+      "id": "sg_final",
+      "palavras_chave": [
+        "sg final",
+        "sg-final"
+      ],
+      "slash_command": "/ai-motion-graphics-sg-final",
+      "flag_cli": "--etapa sg_final"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

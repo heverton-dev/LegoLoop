@@ -1,0 +1,67 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-canal-redc",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-canal-redc",
+      "comandos_cli": [
+        "legoloop legoloop-canal-redc",
+        "/legoloop-legoloop-canal-redc"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-canal-redc",
+    "etapas": [
+      "n01_catalogar_clusterizar",
+      "n02_deep_redc_dna",
+      "n03_gerar_pipelines_metodos",
+      "n04_gerador_brand_swap"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_catalogar_clusterizar",
+      "palavras_chave": [
+        "catalogar clusterizar",
+        "catalogar-clusterizar"
+      ],
+      "slash_command": "/legoloop-canal-redc-catalogar-clusterizar",
+      "flag_cli": "--etapa n01_catalogar_clusterizar"
+    },
+    {
+      "id": "n02_deep_redc_dna",
+      "palavras_chave": [
+        "deep redc dna",
+        "deep-redc-dna"
+      ],
+      "slash_command": "/legoloop-canal-redc-deep-redc-dna",
+      "flag_cli": "--etapa n02_deep_redc_dna"
+    },
+    {
+      "id": "n03_gerar_pipelines_metodos",
+      "palavras_chave": [
+        "gerar pipelines metodos",
+        "gerar-pipelines-metodos"
+      ],
+      "slash_command": "/legoloop-canal-redc-gerar-pipelines-metodos",
+      "flag_cli": "--etapa n03_gerar_pipelines_metodos"
+    },
+    {
+      "id": "n04_gerador_brand_swap",
+      "palavras_chave": [
+        "gerador brand swap",
+        "gerador-brand-swap"
+      ],
+      "slash_command": "/legoloop-canal-redc-gerador-brand-swap",
+      "flag_cli": "--etapa n04_gerador_brand_swap"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-n10-foundry",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-n10-foundry",
+      "comandos_cli": [
+        "legoloop legoloop-n10-foundry",
+        "/legoloop-legoloop-n10-foundry"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-n10-foundry",
+    "etapas": [
+      "n01_contracts_and_schemas",
+      "n02_andon_and_sbar",
+      "n03_n10_frontier_engines",
+      "n04_double_surface"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_contracts_and_schemas",
+      "palavras_chave": [
+        "contracts and schemas",
+        "contracts-and-schemas"
+      ],
+      "slash_command": "/legoloop-n10-foundry-contracts-and-schemas",
+      "flag_cli": "--etapa n01_contracts_and_schemas"
+    },
+    {
+      "id": "n02_andon_and_sbar",
+      "palavras_chave": [
+        "andon and sbar",
+        "andon-and-sbar"
+      ],
+      "slash_command": "/legoloop-n10-foundry-andon-and-sbar",
+      "flag_cli": "--etapa n02_andon_and_sbar"
+    },
+    {
+      "id": "n03_n10_frontier_engines",
+      "palavras_chave": [
+        "n10 frontier engines",
+        "n10-frontier-engines"
+      ],
+      "slash_command": "/legoloop-n10-foundry-n10-frontier-engines",
+      "flag_cli": "--etapa n03_n10_frontier_engines"
+    },
+    {
+      "id": "n04_double_surface",
+      "palavras_chave": [
+        "double surface",
+        "double-surface"
+      ],
+      "slash_command": "/legoloop-n10-foundry-double-surface",
+      "flag_cli": "--etapa n04_double_surface"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

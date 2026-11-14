@@ -1,228 +1,152 @@
-// Package migrar converte um Processo v1 para os nomes canônicos (TICK-01.4):
-// o documento do Studio vira <nome>.studio.json e o DAG antigo vira
-// processo.dag.json. Os arquivos .dag.json e .processo.json não mudam. Antes de
-// mover, a migração copia cada original para a pasta de backup. A operação é
-// idempotente: sem origem pendente, nada muda no disco.
 package migrar
 
 import (
-	"errors"
-	"fmt"
-	"io"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/caminhos"
+	"legoloop/internal/paths"
+	"legoloop/internal/triagem"
 )
 
-// SufixoV1 é o sufixo do documento do Studio no dialeto antigo.
-const SufixoV1 = caminhos.SufixoLoop
-
-// SufixoStudio é o sufixo do documento do Studio no dialeto novo.
-const SufixoStudio = ".studio.json"
-
-// DirBackup é a pasta, sob a raiz, que guarda a cópia dos originais.
-const DirBackup = ".migrar-backup"
-
-var (
-	// ErrDestinoExiste indica que o destino de um movimento já existe; nada é alterado.
-	ErrDestinoExiste = errors.New("migrar: destino já existe")
-
-	// ErrSymlink indica um symlink no lugar de um arquivo a migrar (Path Jail).
-	ErrSymlink = errors.New("migrar: symlink recusado")
-
-	// ErrRaizInvalida indica raiz vazia, com "..", inexistente ou que não é pasta.
-	ErrRaizInvalida = errors.New("migrar: raiz inválida")
-)
-
-// Movimento descreve uma renomeação, com caminhos relativos à raiz e barra "/".
-type Movimento struct {
-	Origem string
-
-	Destino string
-}
-
-// Relatorio resume a execução: os movimentos aplicados e a pasta de backup.
+// Relatorio resume o saneamento e a geração de triagem.json em loops/.
 type Relatorio struct {
-	Movimentos []Movimento
-
-	Backup string
+	Validos         []string `json:"validos"`
+	Removidos       []string `json:"removidos"`
+	TriagensGeradas []string `json:"triagens_geradas"`
 }
 
-// Migrar planeja, confere, copia o backup e só então renomeia. Qualquer conflito
-// detectado na conferência retorna erro antes de tocar o disco.
-func Migrar(raiz string) (Relatorio, error) {
-	raiz, err := validarRaiz(raiz)
+type dagMinimo struct {
+	Nodes []struct {
+		ID string `json:"id"`
+	} `json:"nodes"`
+}
+
+// MigrarLoops varre loopsDir, remove diretórios sem pipeline.dag.json válido e gera triagem.json.
+func MigrarLoops(loopsDir string, apply bool) (Relatorio, error) {
+	var rel Relatorio
+	entries, err := os.ReadDir(loopsDir)
 	if err != nil {
-		return Relatorio{}, err
+		return rel, err
 	}
-	plano, err := Planejar(raiz)
-	if err != nil || len(plano) == 0 {
-		return Relatorio{}, err
-	}
-	backup := filepath.Join(raiz, DirBackup)
-	if err := conferir(raiz, backup, plano); err != nil {
-		return Relatorio{}, err
-	}
-	if err := copiarBackup(raiz, backup, plano); err != nil {
-		return Relatorio{}, err
-	}
-	if err := aplicar(raiz, plano); err != nil {
-		return Relatorio{}, err
-	}
-	return Relatorio{Movimentos: plano, Backup: backup}, nil
-}
-
-// validarRaiz recusa raiz vazia, com "..", symlink ou que não seja pasta.
-func validarRaiz(raiz string) (string, error) {
-	if strings.TrimSpace(raiz) == "" {
-		return "", fmt.Errorf("%w: vazia", ErrRaizInvalida)
-	}
-	for _, parte := range strings.Split(filepath.ToSlash(raiz), "/") {
-		if parte == ".." {
-			return "", fmt.Errorf("%w: %q contém ..", ErrRaizInvalida, raiz)
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			if err := normalizarLoopSolto(loopsDir, entry.Name(), apply, &rel); err != nil {
+				return rel, err
+			}
+			continue
+		}
+		if err := processarLoop(loopsDir, entry.Name(), apply, &rel); err != nil {
+			return rel, err
 		}
 	}
-	abs, err := filepath.Abs(raiz)
-	if err != nil {
-		return "", fmt.Errorf("%w: %v", ErrRaizInvalida, err)
-	}
-	info, err := os.Lstat(abs)
-	if err != nil {
-		return "", fmt.Errorf("%w: %v", ErrRaizInvalida, err)
-	}
-	if info.Mode()&os.ModeSymlink != 0 {
-		return "", fmt.Errorf("%w: %q", ErrSymlink, raiz)
-	}
-	if !info.IsDir() {
-		return "", fmt.Errorf("%w: %q não é pasta", ErrRaizInvalida, raiz)
-	}
-	return abs, nil
+	return rel, nil
 }
 
-// Planejar lista os movimentos pendentes sob a raiz, sem alterar o disco.
-// Pastas symlink não são seguidas; a pasta de backup é ignorada.
-func Planejar(raiz string) ([]Movimento, error) {
-	entradas, err := os.ReadDir(raiz)
-	if err != nil {
-		return nil, fmt.Errorf("migrar: ler %q: %w", raiz, err)
+func processarLoop(loopsDir, slug string, apply bool, rel *Relatorio) error {
+	dir := filepath.Join(loopsDir, slug)
+	etapas, ok := lerEtapasDAG(paths.CaminhoDAG(dir))
+	if !ok {
+		rel.Removidos = append(rel.Removidos, slug)
+		if apply {
+			return os.RemoveAll(dir)
+		}
+		return nil
 	}
-	var plano []Movimento
-	for _, e := range entradas {
-		m, ok, err := planejarEntrada(raiz, e)
+	rel.Validos = append(rel.Validos, slug)
+	if err := garantirMemoria(dir, slug, apply); err != nil {
+		return err
+	}
+	triagemPath := filepath.Join(dir, "triagem.json")
+	if triagemAtualizada(triagemPath) {
+		return nil
+	}
+	rel.TriagensGeradas = append(rel.TriagensGeradas, slug)
+	if !apply {
+		return nil
+	}
+	return gravarTriagem(triagemPath, slug, etapas)
+}
+
+func lerEtapasDAG(path string) ([]string, bool) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, false
+	}
+	var dag dagMinimo
+	if err := json.Unmarshal(data, &dag); err != nil {
+		return nil, false
+	}
+	var etapas []string
+	for _, n := range dag.Nodes {
+		if n.ID != "" {
+			etapas = append(etapas, n.ID)
+		}
+	}
+	return etapas, true
+}
+
+func gravarTriagem(path, slug string, etapas []string) error {
+	spec := triagem.GerarTriagemPadrao(slug, etapas)
+	out, err := json.MarshalIndent(spec, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, append(out, '\n'), 0644)
+}
+
+func triagemAtualizada(path string) bool {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return false
+	}
+	var spec triagem.TriagemSpec
+	if err := json.Unmarshal(data, &spec); err != nil {
+		return false
+	}
+	return len(spec.Etapas) > 0
+}
+
+func normalizarLoopSolto(loopsDir, nome string, apply bool, rel *Relatorio) error {
+	const sufixo = ".loop.json"
+	if !strings.HasSuffix(nome, sufixo) {
+		return nil
+	}
+	slug := strings.TrimSuffix(nome, sufixo)
+	dir := filepath.Join(loopsDir, slug)
+	if apply {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			return err
+		}
+		data, err := os.ReadFile(filepath.Join(loopsDir, nome))
 		if err != nil {
-			return nil, err
+			return err
 		}
-		if ok {
-			plano = append(plano, m)
+		if err := os.WriteFile(filepath.Join(dir, nome), data, 0o644); err != nil {
+			return err
 		}
-	}
-	return plano, nil
-}
-
-func planejarEntrada(raiz string, e os.DirEntry) (Movimento, bool, error) {
-	nome := e.Name()
-	symlink := e.Type()&os.ModeSymlink != 0
-	switch {
-	case nome == DirBackup:
-		return Movimento{}, false, nil
-	case symlink && (strings.HasSuffix(nome, SufixoV1) || nome == caminhos.ArquivoDAG):
-		return Movimento{}, false, fmt.Errorf("%w: %q", ErrSymlink, nome)
-	case symlink:
-		return Movimento{}, false, nil
-	case e.Type().IsRegular() && strings.HasSuffix(nome, SufixoV1) && len(nome) > len(SufixoV1):
-		return Movimento{Origem: nome, Destino: strings.TrimSuffix(nome, SufixoV1) + SufixoStudio}, true, nil
-	case e.Type().IsRegular() && nome == caminhos.ArquivoDAG:
-		return Movimento{Origem: nome, Destino: caminhos.ArquivoProcessoDAG}, true, nil
-	case e.IsDir():
-		return planejarPasta(raiz, nome)
-	}
-	return Movimento{}, false, nil
-}
-
-// planejarPasta procura o DAG antigo dentro de uma pasta de Processo.
-func planejarPasta(raiz, pasta string) (Movimento, bool, error) {
-	origem := pasta + "/" + caminhos.ArquivoDAG
-	info, err := os.Lstat(filepath.Join(raiz, filepath.FromSlash(origem)))
-	if errors.Is(err, os.ErrNotExist) {
-		return Movimento{}, false, nil
-	}
-	if err != nil {
-		return Movimento{}, false, fmt.Errorf("migrar: %q: %w", origem, err)
-	}
-	if info.Mode()&os.ModeSymlink != 0 {
-		return Movimento{}, false, fmt.Errorf("%w: %q", ErrSymlink, origem)
-	}
-	if !info.Mode().IsRegular() {
-		return Movimento{}, false, nil
-	}
-	return Movimento{Origem: origem, Destino: pasta + "/" + caminhos.ArquivoProcessoDAG}, true, nil
-}
-
-// conferir garante que nenhum destino nem cópia de backup já exista.
-func conferir(raiz, backup string, plano []Movimento) error {
-	for _, m := range plano {
-		alvos := []string{
-			filepath.Join(raiz, filepath.FromSlash(m.Destino)),
-			filepath.Join(backup, filepath.FromSlash(m.Origem)),
+		if err := garantirMemoria(dir, slug, true); err != nil {
+			return err
 		}
-		for _, alvo := range alvos {
-			_, err := os.Lstat(alvo)
-			if err == nil {
-				return fmt.Errorf("%w: %q", ErrDestinoExiste, alvo)
-			}
-			if !errors.Is(err, os.ErrNotExist) {
-				return fmt.Errorf("migrar: %q: %w", alvo, err)
+		triagemPath := filepath.Join(dir, "triagem.json")
+		if !triagemAtualizada(triagemPath) {
+			if err := gravarTriagem(triagemPath, slug, nil); err != nil {
+				return err
 			}
 		}
 	}
+	rel.TriagensGeradas = append(rel.TriagensGeradas, slug)
 	return nil
 }
 
-func copiarBackup(raiz, backup string, plano []Movimento) error {
-	for _, m := range plano {
-		origem := filepath.Join(raiz, filepath.FromSlash(m.Origem))
-		destino := filepath.Join(backup, filepath.FromSlash(m.Origem))
-		if err := os.MkdirAll(filepath.Dir(destino), 0o755); err != nil {
-			return fmt.Errorf("migrar: backup: %w", err)
-		}
-		if err := copiarArquivo(origem, destino); err != nil {
-			return fmt.Errorf("migrar: backup de %q: %w", m.Origem, err)
-		}
+func garantirMemoria(dir, slug string, apply bool) error {
+	if !apply {
+		return nil
 	}
-	return nil
-}
-
-// copiarArquivo copia sem sobrescrever (O_EXCL), preservando as permissões.
-func copiarArquivo(origem, destino string) error {
-	in, err := os.Open(origem)
-	if err != nil {
-		return err
+	memPath := filepath.Join(dir, "memoria_execucao.json")
+	if _, err := os.Stat(memPath); err == nil {
+		return nil
 	}
-	defer in.Close()
-	info, err := in.Stat()
-	if err != nil {
-		return err
-	}
-	out, err := os.OpenFile(destino, os.O_WRONLY|os.O_CREATE|os.O_EXCL, info.Mode().Perm())
-	if err != nil {
-		return err
-	}
-	if _, err := io.Copy(out, in); err != nil {
-		out.Close()
-		return err
-	}
-	return out.Close()
-}
-
-func aplicar(raiz string, plano []Movimento) error {
-	for _, m := range plano {
-		origem := filepath.Join(raiz, filepath.FromSlash(m.Origem))
-		destino := filepath.Join(raiz, filepath.FromSlash(m.Destino))
-		if err := os.Rename(origem, destino); err != nil {
-			return fmt.Errorf("migrar: renomear %q: %w", m.Origem, err)
-		}
-	}
-	return nil
+	return triagem.SalvarMemoria(dir, triagem.MemoriaExecucao{Processo: slug})
 }

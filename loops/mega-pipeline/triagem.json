@@ -1,0 +1,24 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "mega-pipeline",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "mega-pipeline",
+      "comandos_cli": [
+        "legoloop mega-pipeline",
+        "/legoloop-mega-pipeline"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo mega-pipeline",
+    "etapas": null
+  },
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

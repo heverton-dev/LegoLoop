@@ -1,0 +1,57 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-cartoon-shorts",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-cartoon-shorts",
+      "comandos_cli": [
+        "legoloop legoloop-cartoon-shorts",
+        "/legoloop-legoloop-cartoon-shorts"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-cartoon-shorts",
+    "etapas": [
+      "n01_script_engine",
+      "n02_edge_tts",
+      "n03_threejs_render"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_script_engine",
+      "palavras_chave": [
+        "script engine",
+        "script-engine"
+      ],
+      "slash_command": "/legoloop-cartoon-shorts-script-engine",
+      "flag_cli": "--etapa n01_script_engine"
+    },
+    {
+      "id": "n02_edge_tts",
+      "palavras_chave": [
+        "edge tts",
+        "edge-tts"
+      ],
+      "slash_command": "/legoloop-cartoon-shorts-edge-tts",
+      "flag_cli": "--etapa n02_edge_tts"
+    },
+    {
+      "id": "n03_threejs_render",
+      "palavras_chave": [
+        "threejs render",
+        "threejs-render"
+      ],
+      "slash_command": "/legoloop-cartoon-shorts-threejs-render",
+      "flag_cli": "--etapa n03_threejs_render"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

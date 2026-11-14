@@ -13,6 +13,7 @@ import (
 	"legoloop/internal/dag"
 	"legoloop/internal/plangen"
 	"legoloop/internal/studiodoc"
+	"legoloop/internal/triagem"
 )
 
 const (
@@ -23,15 +24,24 @@ const (
 	maxTimeoutNode = 600
 )
 
+// FichaTecnica representa a documentação técnica de uma etapa/nó do processo.
+type FichaTecnica struct {
+	EtapaID  string
+	Conteudo string
+}
+
 // Projecoes são as visões do mesmo processo no Quinteto ISO. Todas nascem das mesmas etapas, e Verificar prova que
 // listam os mesmos ids na mesma ordem.
 type Projecoes struct {
 	Spec, Plan, Skill string
 	Route, DAG, Loop  []byte
+	Triagem, Livro    []byte
+	Manual            string
+	Fichas            []FichaTecnica
 	Avisos            []string // avisos do plangen (por exemplo, critério sem ticket)
-	// Nomes dos arquivos em docs/specs, docs/plans, docs/routes e docs/dags.
+	// Nomes dos arquivos em docs/specs, docs/plans, docs/routes, docs/dags e docs/manuals.
 	SpecNome, PlanNome, RouteNome string
-	DAGNome                       string
+	DAGNome, ManualNome           string
 }
 
 // CheckParity compara o hash SHA-256 de dois arquivos no disco.
@@ -71,8 +81,21 @@ func Projetar(p Processo, now time.Time) (*Projecoes, error) {
 		return nil, err
 	}
 	dagNome := strings.Replace(strings.Replace(pl.specNome, "SPEC", "DAG", 1), ".md", ".json", 1)
-	pr := &Projecoes{Spec: spec, Plan: pl.plan, Route: pl.route, DAG: dagJSON, Loop: studioJSON, Skill: projetarSkill(p, ord),
-		Avisos: pl.avisos, SpecNome: pl.specNome, PlanNome: pl.planNome, RouteNome: pl.routeNome, DAGNome: dagNome}
+	triagemJSON, err := projetarTriagem(p, ord)
+	if err != nil {
+		return nil, err
+	}
+	livroJSON, err := projetarLivro(p, ord)
+	if err != nil {
+		return nil, err
+	}
+	manualNome, manualMD := projetarManual(p, ord, now)
+	pr := &Projecoes{
+		Spec: spec, Plan: pl.plan, Route: pl.route, DAG: dagJSON, Loop: studioJSON, Skill: projetarSkill(p, ord),
+		Triagem: triagemJSON, Livro: livroJSON, Manual: manualMD, Fichas: projetarFichas(p, ord),
+		Avisos: pl.avisos, SpecNome: pl.specNome, PlanNome: pl.planNome, RouteNome: pl.routeNome,
+		DAGNome: dagNome, ManualNome: manualNome,
+	}
 	if err := pr.Verificar(p); err != nil {
 		return nil, err
 	}
@@ -240,4 +263,57 @@ func gravarSpec(stage, nome, spec string, now time.Time) (string, error) {
 	slug := strings.ToUpper(strings.ReplaceAll(strings.TrimPrefix(nome, "legoloop-"), "-", "_"))
 	specPath := filepath.Join(dir, fmt.Sprintf("%s_SPEC_%s.md", now.Format("2006-01-02"), slug))
 	return specPath, os.WriteFile(specPath, []byte(spec), 0o644)
+}
+
+func projetarTriagem(p Processo, ord []Etapa) ([]byte, error) {
+	ids := make([]string, len(ord))
+	for i, e := range ord {
+		ids[i] = e.ID
+	}
+	spec := triagem.GerarTriagemPadrao(p.Nome, ids)
+	data, err := json.MarshalIndent(spec, "", "  ")
+	if err != nil {
+		return nil, err
+	}
+	return append(data, '\n'), nil
+}
+
+func projetarLivro(p Processo, ord []Etapa) ([]byte, error) {
+	caps := make([]map[string]string, len(ord))
+	for i, e := range ord {
+		caps[i] = map[string]string{"id": e.ID, "titulo": limpo(e.Titulo), "peca": e.Peca}
+	}
+	livro := map[string]any{
+		"slug":      p.Nome,
+		"titulo":    "Manual Didático: " + p.Nome,
+		"descricao": limpo(p.Objetivo),
+		"capitulos": caps,
+	}
+	data, err := json.MarshalIndent(livro, "", "  ")
+	if err != nil {
+		return nil, err
+	}
+	return append(data, '\n'), nil
+}
+
+func projetarManual(p Processo, ord []Etapa, now time.Time) (string, string) {
+	slug := strings.ToUpper(strings.ReplaceAll(strings.TrimPrefix(p.Nome, "legoloop-"), "-", "_"))
+	nome := fmt.Sprintf("%s_MANUAL_%s.md", now.Format("2006-01-02"), slug)
+	var b strings.Builder
+	fmt.Fprintf(&b, "# Manual Operacional: %s\n\n%s\n\n## Etapas\n\n", p.Nome, limpo(p.Objetivo))
+	for _, e := range ord {
+		fmt.Fprintf(&b, "- `%s`: %s\n", e.ID, limpo(e.Titulo))
+	}
+	return nome, b.String()
+}
+
+func projetarFichas(p Processo, ord []Etapa) []FichaTecnica {
+	fichas := make([]FichaTecnica, len(ord))
+	for i, e := range ord {
+		var b strings.Builder
+		fmt.Fprintf(&b, "# Ficha Técnica: %s\n\n- **Processo:** %s\n- **Título:** %s\n- **Peça:** %s\n- **Saída:** %s\n",
+			e.ID, p.Nome, limpo(e.Titulo), e.Peca, e.Produz.Caminho)
+		fichas[i] = FichaTecnica{EtapaID: e.ID, Conteudo: b.String()}
+	}
+	return fichas
 }
