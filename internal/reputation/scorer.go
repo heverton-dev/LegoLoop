@@ -61,7 +61,7 @@ var knownAuthors = map[string]float64{
 var (
 	reNegativeGuardrails = regexp.MustCompile(`(?i)(negative guardrails|regras negativas|nunca fazer|never do|proibido|zero stubs)`)
 	reCommands           = regexp.MustCompile(`(?i)(go test|pytest|npm test|cargo test|exit code|exit_code)`)
-	reStopGates          = regexp.MustCompile(`(?i)(stopping checklist|stop-gate|critério de parada|human-in-the-loop)`)
+	reStopGates          = regexp.MustCompile(`(?i)(stopping checklist|stop-gate|critério de parada|aprovação humana)`)
 	reIOContracts        = regexp.MustCompile(`(?i)(consumes:|produces:|inputs:|outputs:|target files|blocked by)`)
 	reSchemas            = regexp.MustCompile(`(?i)(` + "```" + `(go|typescript|ts|json|rust)|type\s+\w+\s+struct|interface\s+\w+)`)
 )

@@ -77,7 +77,7 @@ func executeREDC(origem, canalSlug, root string, asJSON bool, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro ao gravar repc: %v\n", err)
 		return 1
 	}
-	createdProcs, err := redc.GenerateMethodPipelines(root, canalSlug, clusters)
+	createdProcs, err := redc.GenerateMethodProcessos(root, canalSlug, clusters)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "erro ao fabricar Processos: %v\n", err)
 		return 1

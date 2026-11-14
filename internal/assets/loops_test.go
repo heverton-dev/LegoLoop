@@ -32,7 +32,7 @@ func TestScanProcessos(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	scanner := assets.NewScanner(assets.Config{Home: t.TempDir(), LoopsDir: processosDir})
+	scanner := assets.NewScanner(assets.Config{Home: t.TempDir(), ProcessosDir: processosDir})
 	snap := scanner.Scan(context.Background())
 
 	processos := snap.Of(kindProcesso)

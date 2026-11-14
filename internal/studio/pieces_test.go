@@ -73,10 +73,10 @@ func post(t *testing.T, s *Server, path, body string) (int, ValidationResult, st
 }
 
 func primeiroProblema(res ValidationResult) string {
-	if len(res.Issues) == 0 {
+	if len(res.Problemas) == 0 {
 		return ""
 	}
-	return res.Issues[0].Message
+	return res.Problemas[0].Message
 }
 
 // ---------- /api/suggest ----------
@@ -243,11 +243,11 @@ func TestComposeSlotErrorsAreReportedOnTheNode(t *testing.T) {
 	}
 	for name, slots := range cases {
 		_, res, raw := post(t, s, "/api/validate", comp([]string{nodeJSON("n1", "interview", `,"slots":{`+slots+`}`)}, ""))
-		if res.OK || len(res.Issues) == 0 {
+		if res.OK || len(res.Problemas) == 0 {
 			t.Errorf("%s: deveria reprovar: %s", name, raw)
 			continue
 		}
-		if res.Issues[0].Node != "n1" && !strings.Contains(raw, "slot") {
+		if res.Problemas[0].Node != "n1" && !strings.Contains(raw, "slot") {
 			t.Errorf("%s: problema sem nó nem menção ao slot: %s", name, raw)
 		}
 	}
@@ -336,7 +336,7 @@ func TestComposePieceErrors(t *testing.T) {
 		"tipo errado (script)":     {one(fmt.Sprintf(`{"kind":"skill","ref":%q,"artifact":"A.md"}`, script)), "skill"},
 		"tipo errado (skill)":      {one(fmt.Sprintf(`{"kind":"script","ref":%q,"artifact":"A.md"}`, skill)), "script"},
 		"MCP não executa":          {one(fmt.Sprintf(`{"kind":"mcp","ref":%q,"artifact":"A.md"}`, mcp)), "MCP"},
-		"subloop ainda não":        {one(`{"kind":"subloop","ref":"x","artifact":"A.md"}`), "acervo"},
+		"subprocesso ainda não":    {one(`{"kind":"subprocesso","ref":"x","artifact":"A.md"}`), "acervo"},
 		"tipo desconhecido":        {one(`{"kind":"banana","ref":"x","artifact":"A.md"}`), "banana"},
 		"sem artefato":             {one(fmt.Sprintf(`{"kind":"skill","ref":%q}`, skill)), "artefato"},
 		"artefato com aspas":       {one(fmt.Sprintf(`{"kind":"skill","ref":%q,"artifact":"a'b.md"}`, skill)), "artefato"},
@@ -391,7 +391,7 @@ func TestComposeSubprocessoSuccess(t *testing.T) {
 
 	// Acha o ID público no inventário
 	var item assets.Item
-	for _, it := range s.Assets.Snapshot().Of(assets.KindLoop) {
+	for _, it := range s.Assets.Snapshot().Of(assets.KindProcesso) {
 		if it.Name == "Sub Pipe" {
 			item = it
 			break
@@ -401,12 +401,12 @@ func TestComposeSubprocessoSuccess(t *testing.T) {
 		t.Fatal("Processo não encontrado no inventário de assets")
 	}
 
-	body := comp([]string{pieceJSON("n1", fmt.Sprintf(`{"kind":"subloop","ref":%q,"artifact":"SUB_OUT.md"}`, item.ID), "")}, "")
+	body := comp([]string{pieceJSON("n1", fmt.Sprintf(`{"kind":"subprocesso","ref":%q,"artifact":"SUB_OUT.md"}`, item.ID), "")}, "")
 	code, res, raw := post(t, s, "/api/validate", body)
 	if code != 200 || !res.OK {
 		t.Fatalf("esperava validação com sucesso do subprocesso: %d %s", code, raw)
 	}
-	if !strings.Contains(raw, `"type":"subloop"`) || !strings.Contains(raw, `"ref":"sub-pipe"`) {
+	if !strings.Contains(raw, `"type":"subprocesso"`) || !strings.Contains(raw, `"ref":"sub-pipe"`) {
 		t.Fatalf("DAG gerado não contém nó de subprocesso correto: %s", raw)
 	}
 }
@@ -438,7 +438,7 @@ func TestTriggerBlocksCatalog(t *testing.T) {
 		"trigger-manual":       false,
 		"trigger-cron":         false,
 		"trigger-file-change":  false,
-		"trigger-loop-end":     false,
+		"trigger-processo-fim": false,
 		"github-board-trigger": false,
 	}
 	for _, b := range trigs {

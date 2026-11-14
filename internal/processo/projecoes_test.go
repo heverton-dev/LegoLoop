@@ -96,7 +96,7 @@ func TestProjecoesCoerentesSeisArquivosContamAMesmaHistoria(t *testing.T) {
 	pr := projetar(t, quatro())
 	quero := []string{"e01", "e02", "e03", "e04"}
 	vistas := map[string][]string{
-		"dag": idsDag(t, pr.DAG), "studio": idsDag(t, pr.Loop), "route": idsRoute(t, pr.Route),
+		"dag": idsDag(t, pr.DAG), "studio": idsDag(t, pr.Studio), "route": idsRoute(t, pr.Route),
 		"plan": idsPlan(pr.Plan), "skill": idsSkill(pr.Skill), "spec": idsSpec(pr.Spec),
 	}
 	for nome, got := range vistas {
@@ -177,7 +177,7 @@ func corromper(t *testing.T, pr *processo.Projecoes, qual string) {
 	case "dag":
 		pr.DAG = tiraNo(pr.DAG)
 	case "studio":
-		pr.Loop = tiraNo(pr.Loop)
+		pr.Studio = tiraNo(pr.Studio)
 	case "route":
 		pr.Route = tiraNo(pr.Route)
 	case "plan":
@@ -236,7 +236,7 @@ func TestProjecoesCoerentesPlanNaoTemAplicarASkill(t *testing.T) {
 
 func TestProjecoesCoerentesDeterministicas(t *testing.T) {
 	a, b := projetar(t, quatro()), projetar(t, quatro())
-	if string(a.DAG) != string(b.DAG) || string(a.Route) != string(b.Route) || a.Plan != b.Plan || a.Spec != b.Spec || a.Skill != b.Skill || string(a.Loop) != string(b.Loop) {
+	if string(a.DAG) != string(b.DAG) || string(a.Route) != string(b.Route) || a.Plan != b.Plan || a.Spec != b.Spec || a.Skill != b.Skill || string(a.Studio) != string(b.Studio) {
 		t.Error("a mesma entrada deve gerar os mesmos bytes")
 	}
 }
@@ -254,7 +254,7 @@ func TestProjecoesCoerentesDagEStudioSaoValidos(t *testing.T) {
 		t.Errorf("handoff do nó e02: %+v", d.Nodes[1].Output)
 	}
 	var lp studiodoc.Processo
-	if err := json.Unmarshal(pr.Loop, &lp); err != nil || lp.ID != "legoloop-build-engine" || len(lp.Nodes) != 4 {
+	if err := json.Unmarshal(pr.Studio, &lp); err != nil || lp.ID != "legoloop-build-engine" || len(lp.Nodes) != 4 {
 		t.Errorf("studio: %v %+v", err, lp)
 	}
 }
@@ -444,7 +444,7 @@ func TestProjecoesCoerentesNoDoDagTemEntradasEVersao(t *testing.T) {
 		t.Errorf("etapa sem dependência não consome nada: %v", d.Nodes[0].Inputs)
 	}
 	var lp studiodoc.Processo
-	_ = json.Unmarshal(pr.Loop, &lp)
+	_ = json.Unmarshal(pr.Studio, &lp)
 	if d.Version != "1.0.0" || lp.Version != "1.0.0" || !lp.CreatedAt.Equal(agora) {
 		t.Errorf("a versão do processo vai ao DAG e ao loop, e a data vem do relógio injetado: %q %q %v", d.Version, lp.Version, lp.CreatedAt)
 	}

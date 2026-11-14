@@ -15,8 +15,8 @@ const (
 	contractVersion = 2
 	finalGateID     = "SG-FINAL"
 	finalBinary     = "bin/legoloop.exe"
-	tipoUnidade     = "unit_task"
-	rollbackAborta  = "abort_pipeline"
+	tipoUnidade     = "unit_no"
+	rollbackAborta  = "abort_processo"
 )
 
 type routeFallback struct {
@@ -227,7 +227,7 @@ func tokenBudgetFor(nature string) (tokenBudget, routeRouting) {
 	if nature == "nano" {
 		effort, model, out = "low", "code-fast", 300
 		in = 8000
-	} else if nature == "macro" {
+	} else if nature == "skill" {
 		effort, model, out = "medium", "code-fast", 1200
 		in = 32000
 	}

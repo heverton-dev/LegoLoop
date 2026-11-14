@@ -61,7 +61,7 @@ func TestSubloopGravaNoCaminhoDoPai(t *testing.T) {
 	if b, _ := os.ReadFile(filepath.Join(work, "FINAL.txt")); string(b) != "do pai" {
 		t.Errorf("o arquivo do pai com o mesmo nome mudou: %q", b)
 	}
-	d, err := dag.Parse([]byte(`{"name":"pai","nodes":[{"id":"sub_node","type":"subloop","ref":"sub-final",
+	d, err := dag.Parse([]byte(`{"name":"pai","nodes":[{"id":"sub_node","type":"subprocesso","ref":"sub-final",
 		"routing":{"mode":"manual","model":"subloop"},
 		"output":{"artifact":"out/sub-final/FINAL.txt","sub_artifact":"FINAL.txt","gate":"file_exists('out/sub-final/FINAL.txt')"}}]}`))
 	if err != nil {

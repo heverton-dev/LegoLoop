@@ -5,7 +5,7 @@
   "nodes": [
     {
       "id": "T-01",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "medium",
       "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
@@ -16,7 +16,7 @@
     },
     {
       "id": "T-02",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "medium",
       "context_in": ["docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"],
@@ -27,7 +27,7 @@
     },
     {
       "id": "T-03",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "high",
       "depends_on": ["T-01"],
@@ -39,7 +39,7 @@
     },
     {
       "id": "T-04",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "high",
       "depends_on": ["T-03"],
@@ -51,7 +51,7 @@
     },
     {
       "id": "T-05",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "high",
       "depends_on": ["T-01"],
@@ -63,7 +63,7 @@
     },
     {
       "id": "T-06",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "cognitive_complexity": "low",
       "depends_on": ["T-02", "T-04", "T-05"],

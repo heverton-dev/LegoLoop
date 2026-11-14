@@ -1,5 +1,5 @@
 ---
-name: legoloop-processo-map
+name: legoloop-loop-map
 description: Mapeia e canoniza autores, frameworks e skills no LegoLoop em Manual, Processo DAG e Template com TDD e stop gates.
 commands:
   - "/legoloop-map"

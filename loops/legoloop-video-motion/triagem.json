@@ -19,7 +19,7 @@
       "n02_punch_detector",
       "n03_asset_synthesis",
       "n04_kinetic_typography",
-      "n05_3d_glass_cards",
+      "n05_3d_glass_tickets",
       "n06_multi_aspect_render"
     ]
   },
@@ -61,13 +61,13 @@
       "flag_cli": "--etapa n04_kinetic_typography"
     },
     {
-      "id": "n05_3d_glass_cards",
+      "id": "n05_3d_glass_tickets",
       "palavras_chave": [
-        "3d glass cards",
-        "3d-glass-cards"
+        "3d glass tickets",
+        "3d-glass-tickets"
       ],
-      "slash_command": "/legoloop-video-motion-3d-glass-cards",
-      "flag_cli": "--etapa n05_3d_glass_cards"
+      "slash_command": "/legoloop-video-motion-3d-glass-tickets",
+      "flag_cli": "--etapa n05_3d_glass_tickets"
     },
     {
       "id": "n06_multi_aspect_render",

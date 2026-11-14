@@ -94,7 +94,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/artefato/...,./tools/ticketgate/... -tax internal/artefato/entrevista.go,internal/artefato/entrevista_test.go,tools/ticketgate/interview.go,tools/ticketgate/interview_test.go -tax-max 0"
@@ -214,7 +214,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/dag/... -tax internal/dag/schema_v2.go,internal/dag/schema_v2_test.go -tax-max 0"
@@ -287,7 +287,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./tools/route2dag/... -tax tools/route2dag/paridade_test.go -tax-max 0"
@@ -358,7 +358,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/... -tax internal/roteamento/inventario.go,internal/roteamento/inventario_test.go -tax-max 0"
@@ -428,7 +428,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/... -tax internal/roteamento/perfil.go,internal/roteamento/perfil_test.go -tax-max 0"
@@ -500,7 +500,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/... -tax internal/roteamento/resolver.go,internal/roteamento/politica.go,internal/roteamento/resolver_test.go -tax-max 0"
@@ -574,7 +574,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/cli/...,./internal/roteamento/... -tax internal/cli/rota.go,internal/cli/rota_test.go -tax-max 0"
@@ -647,7 +647,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -tax internal/orchestrix/unit_harness.go,internal/orchestrix/unit_harness_test.go -tax-max 0"
@@ -718,7 +718,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -tax internal/orchestrix/gateway.go,internal/orchestrix/gateway_test.go -tax-max 0"
@@ -791,7 +791,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -tax internal/orchestrix/despacho.go,internal/orchestrix/despacho_test.go -tax-max 0"
@@ -864,7 +864,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -tax internal/orchestrix/workers.go,internal/orchestrix/workers_test.go,internal/orchestrix/memoria.go,internal/orchestrix/memoria_windows.go,internal/orchestrix/memoria_linux.go -tax-max 0"
@@ -934,7 +934,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/runner/... -tax internal/runner/conflito.go,internal/runner/conflito_test.go -tax-max 0"
@@ -1004,7 +1004,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -tax internal/orchestrix/relatorio.go,internal/orchestrix/relatorio_test.go -tax-max 0"
@@ -1076,7 +1076,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/homologacao/... -tax internal/roteamento/homologacao/bateria.go,internal/roteamento/homologacao/criterios.go,internal/roteamento/homologacao/bateria_test.go -tax-max 0"
@@ -1151,7 +1151,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/homologacao/...,./internal/cli/... -tax internal/roteamento/homologacao/store.go,internal/roteamento/homologacao/store_test.go,internal/cli/homologar.go,internal/cli/homologar_test.go -tax-max 0"
@@ -1223,7 +1223,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/homologacao/...,./internal/orchestrix/... -tax internal/roteamento/homologacao/agy.go,internal/roteamento/homologacao/agy_test.go,internal/orchestrix/alarme.go,internal/orchestrix/alarme_test.go -tax-max 0"
@@ -1295,7 +1295,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/homologacao/...,./internal/cli/... -tax internal/roteamento/homologacao/provider.go,internal/roteamento/homologacao/provider_test.go -tax-max 0"
@@ -1367,7 +1367,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/mcp/... -tax internal/mcp/skill_router.go,internal/mcp/skill_router_test.go -tax-max 0"

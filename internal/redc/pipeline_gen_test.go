@@ -9,7 +9,7 @@ import (
 	"legoloop/internal/redc"
 )
 
-func TestGenerateMethodPipelines_Success(t *testing.T) {
+func TestGenerateMethodProcessos_Success(t *testing.T) {
 	tempDir := t.TempDir()
 	clusters := []redc.MethodCluster{
 		{
@@ -21,7 +21,7 @@ func TestGenerateMethodPipelines_Success(t *testing.T) {
 		},
 	}
 
-	created, err := redc.GenerateMethodPipelines(tempDir, "canal-alvo", clusters)
+	created, err := redc.GenerateMethodProcessos(tempDir, "canal-alvo", clusters)
 	if err != nil {
 		t.Fatalf("esperava sucesso ao gerar Processos de metodos, obteve: %v", err)
 	}

@@ -10,7 +10,7 @@
     {
       "id": "t1-motor-triagem",
       "name": "Motor de Triagem",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "timeout_sec": 180,
       "limits": { "max_output_tokens": 600 },
@@ -29,7 +29,7 @@
     {
       "id": "t2-fabricar-13-artefatos",
       "name": "Fabricar 13 Artefatos",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "timeout_sec": 180,
       "limits": { "max_output_tokens": 600 },
@@ -48,7 +48,7 @@
     {
       "id": "t3-pontos-entrada",
       "name": "Pontos de Entrada",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "timeout_sec": 180,
       "limits": { "max_output_tokens": 600 },
@@ -67,7 +67,7 @@
     {
       "id": "t4-saneamento-loops",
       "name": "Saneamento de Loops",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "timeout_sec": 180,
       "limits": { "max_output_tokens": 600 },
@@ -86,7 +86,7 @@
     {
       "id": "t5-portoes-fechamento",
       "name": "Portões e Fechamento",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "timeout_sec": 180,
       "limits": { "max_output_tokens": 600 },

@@ -156,7 +156,7 @@ func TestValidateComposition(t *testing.T) {
 	rec := do(t, s.Handler(), "POST", "/api/validate", validComp)
 	var res ValidationResult
 	decode(t, rec, &res)
-	if !res.OK || len(res.Issues) != 0 {
+	if !res.OK || len(res.Problemas) != 0 {
 		t.Fatalf("composição válida rejeitada: %+v", res)
 	}
 	var d dag.DAG
@@ -188,7 +188,7 @@ func TestValidateDetectsProblems(t *testing.T) {
 		rec := do(t, s.Handler(), "POST", "/api/validate", body)
 		var res ValidationResult
 		decode(t, rec, &res)
-		if res.OK || len(res.Issues) == 0 {
+		if res.OK || len(res.Problemas) == 0 {
 			t.Errorf("%s: deveria reprovar: %+v", name, res)
 		}
 	}

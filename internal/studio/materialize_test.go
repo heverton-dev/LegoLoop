@@ -44,7 +44,7 @@ func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInProcessoStore(t 
 	}
 
 	// 2. Skill orquestradora deve existir no Vault (< 20 linhas)
-	skillFile := filepath.Join(vaultDir, "skills", "loop-meu-processo", "SKILL.md")
+	skillFile := filepath.Join(vaultDir, "skills", "processo-meu-processo", "SKILL.md")
 	content, err := os.ReadFile(skillFile)
 	if err != nil {
 		t.Fatalf("SKILL.md orquestradora não foi gerada: %v", err)

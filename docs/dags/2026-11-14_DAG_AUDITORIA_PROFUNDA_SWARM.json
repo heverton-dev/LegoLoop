@@ -90,7 +90,7 @@
     {
       "id": "TICK-04.1",
       "name": "Frente 4: Consolidação Swarm e Relatório Executivo",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": ["TICK-01.1", "TICK-02.1", "TICK-03.1"],
       "timeout_sec": 180,

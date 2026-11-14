@@ -22,12 +22,12 @@ const (
 	KindGate    Kind = "gate"
 	KindHarness Kind = "harness"
 	KindBinary  Kind = "binary"
-	KindLoop    Kind = "loop"
+	KindProcesso    Kind = "loop"
 )
 
 // Kinds lista as categorias na ordem de exibição.
 func Kinds() []Kind {
-	return []Kind{KindSkill, KindMCP, KindScript, KindHook, KindGate, KindHarness, KindBinary, KindLoop}
+	return []Kind{KindSkill, KindMCP, KindScript, KindHook, KindGate, KindHarness, KindBinary, KindProcesso}
 }
 
 // Item é um ativo inventariado. Scope: global, project, local, builtin ou system.
@@ -70,7 +70,7 @@ type Config struct {
 	Projects       []string
 	AutoDiscover   bool
 	DiscoveryRoots []string
-	LoopsDir       string
+	ProcessosDir       string
 	LookPath       func(string) (string, error)
 	Getenv         func(string) string
 }

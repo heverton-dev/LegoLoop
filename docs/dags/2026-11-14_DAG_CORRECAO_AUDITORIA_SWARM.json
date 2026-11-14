@@ -12,7 +12,7 @@
     {
       "id": "TICK-01.1",
       "name": "Remover emojis de lego-item-modal.js",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "timeout_sec": 180,
       "limits": { "max_output_tokens": 600 },
@@ -30,7 +30,7 @@
     {
       "id": "TICK-02.1",
       "name": "Adicionar breakpoint <= 768px em style.css",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "timeout_sec": 180,
       "limits": { "max_output_tokens": 600 },
@@ -48,7 +48,7 @@
     {
       "id": "TICK-03.1",
       "name": "Padronizar schema_version nos .loop.json",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "timeout_sec": 180,
       "limits": { "max_output_tokens": 600 },

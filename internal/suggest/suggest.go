@@ -212,7 +212,7 @@ func neighborSuggestions(ctx Context, idx *graph.Index, snap assets.Snapshot) []
 		typed = typed[:MaxNeighbors]
 	}
 	out := append(typed, mcpNeighbors(snap.Of(assets.KindMCP))...)
-	return append(out, processoNeighbors(snap.Of(assets.KindLoop))...)
+	return append(out, processoNeighbors(snap.Of(assets.KindProcesso))...)
 }
 
 // neighborLess ordena instalados primeiro, depois maior Score de Reputação, depois nome.
@@ -256,7 +256,7 @@ func processoNeighbors(processos []assets.Item) []Neighbor {
 			continue
 		}
 		seen[l.Name] = true
-		out = append(out, Neighbor{Kind: "loop", ID: l.ID, Name: l.Name, Installed: true})
+		out = append(out, Neighbor{Kind: "processo", ID: l.ID, Name: l.Name, Installed: true})
 	}
 	return out
 }

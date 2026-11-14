@@ -7,7 +7,7 @@ import (
 	"legoloop/internal/suggest"
 )
 
-var suggestKinds = map[string]bool{"skill": true, "script": true, "mcp": true, "subloop": true}
+var suggestKinds = map[string]bool{"skill": true, "script": true, "mcp": true, "subprocesso": true}
 
 type suggestResponse struct {
 	Gates     []suggest.Gate     `json:"gates"`

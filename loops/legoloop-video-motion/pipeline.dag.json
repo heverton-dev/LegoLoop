@@ -287,13 +287,13 @@
         "--assets",
         "scratch/videomotion/assets",
         "--out",
-        "scratch/videomotion/cards"
+        "scratch/videomotion/tickets"
       ],
       "context_in": [
         "scratch/videomotion/typography.json"
       ],
       "context_out": [
-        "scratch/videomotion/cards"
+        "scratch/videomotion/tickets"
       ],
       "depends_on": [
         "n04_kinetic_typography"
@@ -301,7 +301,7 @@
       "execution": {
         "mode": "isolated"
       },
-      "id": "n05_3d_glass_cards",
+      "id": "n05_3d_glass_tickets",
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -316,8 +316,8 @@
       "name": "Renderização dos Cartões de Vidro com Oclusão Tridimensional",
       "nature": "micro",
       "output": {
-        "artifact": "scratch/videomotion/cards",
-        "gate": "file_exists('scratch/videomotion/cards')"
+        "artifact": "scratch/videomotion/tickets",
+        "gate": "file_exists('scratch/videomotion/tickets')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -328,7 +328,7 @@
         "model": "sonnet",
         "via": "oficial"
       },
-      "spec_ref": "AC-n05_3d_glass_cards",
+      "spec_ref": "AC-n05_3d_glass_tickets",
       "status": "COMPLETED",
       "timeout_sec": 300,
       "token_budget": {
@@ -340,7 +340,7 @@
       },
       "type": "script",
       "verification": {
-        "gate": "file_exists('scratch/videomotion/cards')"
+        "gate": "file_exists('scratch/videomotion/tickets')"
       }
     },
     {
@@ -349,19 +349,19 @@
         "legoloop",
         "video-motion",
         "render",
-        "--cards",
-        "scratch/videomotion/cards",
+        "--tickets",
+        "scratch/videomotion/tickets",
         "--out",
         "dist/motion_render.mp4"
       ],
       "context_in": [
-        "scratch/videomotion/cards"
+        "scratch/videomotion/tickets"
       ],
       "context_out": [
         "dist/motion_render.mp4"
       ],
       "depends_on": [
-        "n05_3d_glass_cards"
+        "n05_3d_glass_tickets"
       ],
       "execution": {
         "mode": "isolated"

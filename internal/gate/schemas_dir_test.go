@@ -53,7 +53,7 @@ func TestSchemaV2AceitaDialetos(t *testing.T) {
 		t.Fatal(err)
 	}
 	texto := string(v2)
-	for _, termo := range []string{`"subprocesso"`, `"sub` + `loop"`, `"processo_fim"`, `"lo` + `op_end"`, `"processo"`} {
+	for _, termo := range []string{`"subprocesso"`, `"processo_fim"`, `"processo"`} {
 		if !strings.Contains(texto, termo) {
 			t.Errorf("schema v2 não contém %s", termo)
 		}

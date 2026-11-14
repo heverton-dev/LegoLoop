@@ -24,7 +24,7 @@
     {
       "id": "TICK-I7-01.1",
       "name": "Definição canônica dos 6 combos honestos em Go",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [],
       "routing": {
@@ -73,7 +73,7 @@
     {
       "id": "TICK-I7-01.2",
       "name": "Validador de barreira mecânica contra HTTP 413",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "TICK-I7-01.1"
@@ -173,7 +173,7 @@
     {
       "id": "TICK-I7-02.1",
       "name": "Gerador de manifesto JSON para o 9Router",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "SG-I7-E01"
@@ -224,7 +224,7 @@
     {
       "id": "TICK-I7-02.2",
       "name": "Mapeamento e resolução de retrocompatibilidade",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "TICK-I7-02.1"

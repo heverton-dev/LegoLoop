@@ -318,7 +318,7 @@ func validarChecklistQualidade(t *testing.T, res *fabricar.Result, c cenarioRef,
 	}
 	realHome, _ := os.UserHomeDir()
 	a := res.Artifacts
-	caminhos := []string{a.IntentPath, a.SpecPath, a.PlanPath, a.RoutePath, a.DagPath, a.LoopPath, a.SkillPath}
+	caminhos := []string{a.IntentPath, a.SpecPath, a.PlanPath, a.RoutePath, a.DagPath, a.ProcessoPath, a.SkillPath}
 	for _, p := range caminhos {
 		if p == "" {
 			t.Errorf("[%s] Caminho de artefato vazio", c.nome)

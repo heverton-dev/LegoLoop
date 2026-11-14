@@ -32,8 +32,8 @@ func TestOrigemViraSubArtifactDoNo(t *testing.T) {
 	if got := d.Nodes[3].Inputs["e03"]; got != "file('out/legoloop-outro/e03.md')" {
 		t.Errorf("a etapa seguinte lê o caminho do pai: %q", got)
 	}
-	if !strings.Contains(string(pr.Loop), `"sub_artifact": "out/e03.md"`) {
-		t.Errorf("o documento do Studio leva o sub_artifact:\n%s", pr.Loop)
+	if !strings.Contains(string(pr.Studio), `"sub_artifact": "out/e03.md"`) {
+		t.Errorf("o documento do Studio leva o sub_artifact:\n%s", pr.Studio)
 	}
 }
 
@@ -44,7 +44,7 @@ func TestOrigemVaziaMantemOContratoAntigo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.Contains(string(pr.DAG), "sub_artifact") || strings.Contains(string(pr.Loop), "sub_artifact") ||
+	if strings.Contains(string(pr.DAG), "sub_artifact") || strings.Contains(string(pr.Studio), "sub_artifact") ||
 		strings.Contains(string(pj), "origem") {
 		t.Errorf("sem origem, nada novo nos arquivos:\n%s", pr.DAG)
 	}

@@ -86,7 +86,7 @@ func compArquivos(t *testing.T, p processo.Processo, vault, proj string, data ti
 	doc := func(sub, file string) string { return filepath.Join(proj, "docs", sub, file) }
 	return []processo.File{
 		{Path: filepath.Join(vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(vault, caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Loop},
+		{Path: filepath.Join(vault, caminhos.DirLoops, p.Nome+".loop.json"), Data: pr.Studio},
 		{Path: filepath.Join(vault, caminhos.DirLoops, p.Nome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(vault, p.Nome), Data: pj},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},

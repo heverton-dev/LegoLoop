@@ -195,14 +195,14 @@
         "gov": "file('governance_audit.json')"
       },
       "output": {
-        "artifact": "pipeline.dag.json",
-        "gate": "file_exists('pipeline.dag.json')"
+        "artifact": "dag.json",
+        "gate": "file_exists('dag.json')"
       },
       "name": "n04_sintetizar_dag_reverso",
       "nature": "micro",
       "context_in": [],
       "context_out": [
-        "pipeline.dag.json"
+        "dag.json"
       ],
       "isolation": {
         "write_boundary": "strict",
@@ -224,7 +224,7 @@
       },
       "verification": {
         "exit_code": 0,
-        "gate": "file_exists('pipeline.dag.json')"
+        "gate": "file_exists('dag.json')"
       },
       "spec_ref": "n04_sintetizar_dag_reverso",
       "status": "PENDING"
@@ -248,7 +248,7 @@
         "mode": "isolated"
       },
       "inputs": {
-        "dag": "file('pipeline.dag.json')",
+        "dag": "file('dag.json')",
         "gov": "file('governance_audit.json')"
       },
       "output": {

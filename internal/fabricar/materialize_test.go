@@ -49,7 +49,7 @@ func newEnv(t *testing.T) env {
 	roots := fabricar.Roots{Vault: vault, Docs: docs}
 	return env{vault: vault, docs: docs, plan: fabricar.MaterializePlan{Name: "legoloop-x", Roots: roots, Files: []fabricar.PlannedFile{
 		{Kind: "skill", Path: filepath.Join(vault, "skills", "legoloop-x", "SKILL.md"), Data: []byte("skill")},
-		{Kind: "loop", Path: filepath.Join(vault, paths.DirAntigo, "legoloop-x"+paths.SufixoAntigo), Data: []byte("loop")},
+		{Kind: "processo", Path: filepath.Join(vault, paths.DirAntigo, "legoloop-x"+paths.SufixoAntigo), Data: []byte("processo")},
 		{Kind: "dag", Path: filepath.Join(vault, paths.DirAntigo, "legoloop-x.dag.json"), Data: []byte("dag")},
 		{Kind: "intent", Path: filepath.Join(docs, "docs", "intents", "2026-11-03_INTENT_X.md"), Data: []byte("intent")},
 		{Kind: "route", Path: filepath.Join(docs, "docs", "routes", "2026-11-03_ROUTE_X.json"), Data: []byte("route")},
@@ -75,7 +75,7 @@ func TestMaterialize_WritesEverythingAndFillsArtifacts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if art.SkillPath != e.plan.Files[0].Path || art.LoopPath != e.plan.Files[1].Path || art.DagPath != e.plan.Files[2].Path ||
+	if art.SkillPath != e.plan.Files[0].Path || art.ProcessoPath != e.plan.Files[1].Path || art.DagPath != e.plan.Files[2].Path ||
 		art.IntentPath != e.plan.Files[3].Path || art.RoutePath != e.plan.Files[4].Path {
 		t.Errorf("artefatos incorretos: %+v", art)
 	}

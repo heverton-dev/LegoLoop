@@ -287,7 +287,7 @@ func temGateDeDados(t *testing.T, route []byte) bool {
 	}
 	achou := false
 	for _, n := range d.Nodes {
-		if n.Type != "unit_task" {
+		if n.Type != "unit_no" {
 			continue
 		}
 		e, err := gate.Compile(n.Output.Gate)

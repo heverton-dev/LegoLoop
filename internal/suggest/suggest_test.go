@@ -296,14 +296,14 @@ func TestProcessoNeighborsAreSuggested(t *testing.T) {
 	idx := index(t)
 	item := assets.Item{
 		ID:          "proc-pesquisa",
-		Kind:        assets.KindLoop,
+		Kind:        assets.KindProcesso,
 		Name:        "Pesquisa de Mercado",
 		Description: "Processo salvo no acervo",
 	}
 	r := Suggest(Context{Kind: "skill", Artifact: "A.md"}, idx, snap(item))
 	var found bool
 	for _, n := range r.Neighbors {
-		if n.Kind == "loop" && n.ID == "proc-pesquisa" && n.Name == "Pesquisa de Mercado" && n.Installed {
+		if n.Kind == "processo" && n.ID == "proc-pesquisa" && n.Name == "Pesquisa de Mercado" && n.Installed {
 			found = true
 			break
 		}

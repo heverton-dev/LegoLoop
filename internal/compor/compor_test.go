@@ -79,7 +79,7 @@ func gravar(t *testing.T, c cofre, p processo.Processo) {
 	doc := func(sub, file string) string { return filepath.Join(c.docs, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(c.vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(pastaDoCofre(c.vault), p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
+		{Path: filepath.Join(pastaDoCofre(c.vault), p.Nome+caminhos.SufixoStudio), Data: pr.Studio},
 		{Path: filepath.Join(pastaDoCofre(c.vault), p.Nome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(c.vault, p.Nome), Data: pj},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},

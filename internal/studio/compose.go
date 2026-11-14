@@ -71,7 +71,7 @@ type Problema struct {
 // ValidationResult é a resposta de /api/validate e /api/materialize.
 type ValidationResult struct {
 	OK     bool            `json:"ok"`
-	Issues []Problema      `json:"issues"`
+	Problemas []Problema      `json:"problemas"`
 	DAG    json.RawMessage `json:"dag,omitempty"`
 	Path   string          `json:"path,omitempty"`
 }
@@ -95,11 +95,11 @@ func compose(idx *graph.Index, inv provider.Inventory, res Resolver, c Compositi
 		return fail(Problema{Message: err.Error()}), nil
 	}
 	out, _ := d.Marshal()
-	return ValidationResult{OK: true, Issues: []Problema{}, DAG: out}, d
+	return ValidationResult{OK: true, Problemas: []Problema{}, DAG: out}, d
 }
 
 func fail(problemas ...Problema) ValidationResult {
-	return ValidationResult{OK: false, Issues: problemas}
+	return ValidationResult{OK: false, Problemas: problemas}
 }
 
 func resolveNodes(idx *graph.Index, inv provider.Inventory, res Resolver, nodes []CompNode) (map[string]nodeInfo, map[string]*dag.Slots, []Problema) {

@@ -54,7 +54,7 @@ func refinSemear(t *testing.T) (root, vault, proj string) {
 	doc := func(sub, file string) string { return filepath.Join(proj, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(vault, "skills", refinNome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(vault, paths.DirAntigo, refinNome+paths.SufixoAntigo), Data: pr.Loop},
+		{Path: filepath.Join(vault, paths.DirAntigo, refinNome+paths.SufixoAntigo), Data: pr.Studio},
 		{Path: filepath.Join(vault, paths.DirAntigo, refinNome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(vault, refinNome), Data: pj},
 		{Path: doc("intents", "2026-11-05_INTENT_X.md"), Data: []byte("# INTENT: x\n\nTexto original da entrevista.\n")},

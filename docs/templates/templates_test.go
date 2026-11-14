@@ -179,10 +179,10 @@ func TestPiecesAreRecognizedByInventory(t *testing.T) {
 	put(t, home, ".aidd/scripts/TEMPLATE_PIECE_SCRIPT.ps1", read(t, "TEMPLATE_PIECE_SCRIPT.ps1"))
 	put(t, home, dirDocumentos+"/"+idExemplo+sufixoStudio, read(t, arquivoProcesso))
 
-	sc := assets.NewScanner(assets.Config{Home: home, LoopsDir: caminhos.DirLoopsEm(home),
+	sc := assets.NewScanner(assets.Config{Home: home, ProcessosDir: caminhos.DirLoopsEm(home),
 		LookPath: func(string) (string, error) { return "", os.ErrNotExist }, Getenv: func(string) string { return "" }})
 	snap := sc.Scan(context.Background())
-	for _, k := range []assets.Kind{assets.KindSkill, assets.KindHook, assets.KindMCP, assets.KindScript, assets.KindLoop} {
+	for _, k := range []assets.Kind{assets.KindSkill, assets.KindHook, assets.KindMCP, assets.KindScript, assets.KindProcesso} {
 		if len(snap.Of(k)) == 0 {
 			t.Errorf("o inventário não reconheceu o template de %s", k)
 		}

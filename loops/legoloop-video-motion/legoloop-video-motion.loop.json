@@ -250,7 +250,7 @@
       }
     },
     {
-      "id": "n05_3d_glass_cards",
+      "id": "n05_3d_glass_tickets",
       "name": "Renderização dos Cartões de Vidro com Oclusão Tridimensional",
       "nature": "micro",
       "cognitive_complexity": "media",
@@ -283,7 +283,7 @@
         "scratch/videomotion/typography.json"
       ],
       "context_out": [
-        "scratch/videomotion/cards"
+        "scratch/videomotion/tickets"
       ],
       "status": "COMPLETED",
       "command": [
@@ -293,11 +293,11 @@
         "--assets",
         "scratch/videomotion/assets",
         "--out",
-        "scratch/videomotion/cards"
+        "scratch/videomotion/tickets"
       ],
       "output": {
-        "artifact": "scratch/videomotion/cards",
-        "gate": "file_exists('scratch/videomotion/cards')"
+        "artifact": "scratch/videomotion/tickets",
+        "gate": "file_exists('scratch/videomotion/tickets')"
       },
       "test_seam": {
         "type": "unit_test_gate",
@@ -311,7 +311,7 @@
       "cognitive_complexity": "simples",
       "type": "script",
       "depends_on": [
-        "n05_3d_glass_cards"
+        "n05_3d_glass_tickets"
       ],
       "routing": {
         "mode": "suggested",
@@ -335,7 +335,7 @@
         "mode": "isolated"
       },
       "context_in": [
-        "scratch/videomotion/cards"
+        "scratch/videomotion/tickets"
       ],
       "context_out": [
         "dist/motion_render.mp4"
@@ -345,8 +345,8 @@
         "legoloop",
         "video-motion",
         "render",
-        "--cards",
-        "scratch/videomotion/cards",
+        "--tickets",
+        "scratch/videomotion/tickets",
         "--out",
         "dist/motion_render.mp4"
       ],

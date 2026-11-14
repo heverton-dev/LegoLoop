@@ -42,7 +42,6 @@ type CanonicalArtifacts struct {
 	RoutePath    string   `json:"route_path"`
 	TemplatePath string   `json:"template_path"`
 	SkillPath    string   `json:"skill_path"`
-	LoopPath     string   `json:"loop_path"`
 	DagPath      string   `json:"dag_path"`
 	DagIsoPath   string   `json:"dag_iso_path"`
 	ProcessoPath string   `json:"processo_path"` // <nome>.processo.json no cofre: o que listar, refinar e compor leem
@@ -94,8 +93,6 @@ func artifactsOf(files []PlannedFile) CanonicalArtifacts {
 			a.TemplatePath = f.Path
 		case "skill":
 			a.SkillPath = f.Path
-		case "loop":
-			a.LoopPath = f.Path
 		case "dag":
 			a.DagPath = f.Path
 		case "dag_iso":

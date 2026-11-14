@@ -90,7 +90,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/artefato/... -tax internal/artefato/frontmatter.go,internal/artefato/frontmatter_test.go -tax-max 0"
@@ -164,7 +164,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/artefato/...,./tools/ticketgate/... -tax internal/artefato/trace.go,internal/artefato/trace_test.go,tools/ticketgate/trace.go,tools/ticketgate/trace_test.go,tools/ticketgate/main.go -tax-max 0"
@@ -287,7 +287,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/dag/...,./internal/golden/... -tax internal/dag/types.go,internal/dag/parse.go,internal/dag/schema_v2.go,internal/dag/schema_v2_test.go,schemas/dag.v2.json -tax-max 24"
@@ -354,7 +354,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/... -tax internal/roteamento/classe.go,internal/roteamento/classe_test.go -tax-max 0"
@@ -426,7 +426,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/... -tax internal/roteamento/inventario.go,internal/roteamento/inventario_test.go -tax-max 0"
@@ -496,7 +496,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/roteamento/... -tax internal/roteamento/resolver.go,internal/roteamento/resolver_test.go -tax-max 0"
@@ -571,7 +571,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./tools/route2dag/...,./internal/dag/... -tax tools/route2dag/main.go,tools/route2dag/paridade_test.go,internal/dag/types.go,schemas/route.v2.json -tax-max 16"
@@ -644,7 +644,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/... -tax docs/templates/TEMPLATE_INTERVIEW.md,docs/templates/templates.go,docs/templates/templates_test.go -tax-max 6"
@@ -717,7 +717,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/interview/... -tax docs/templates/TEMPLATE_INTENT.md,docs/templates/templates_test.go,internal/interview/intent_render.go,internal/interview/intent_template_test.go -tax-max 9"
@@ -792,7 +792,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/plangen/... -tax docs/templates/TEMPLATE_SPEC.md,docs/templates/TEMPLATE_PLAN.md,docs/templates/templates_test.go,internal/plangen/plan_md.go,internal/plangen/plangen_test.go -tax-max 10"
@@ -867,7 +867,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/plangen/...,./internal/dag/... -tax docs/templates/TEMPLATE_ROUTE.json,docs/templates/TEMPLATE_DAG.json,docs/templates/templates_test.go,internal/plangen/route.go -tax-max 17"
@@ -941,7 +941,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/... -tax docs/templates/TEMPLATE_REPORT.md,docs/templates/TEMPLATE_HANDOFF.md,docs/templates/templates.go,docs/templates/templates_test.go -tax-max 7"
@@ -1013,7 +1013,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./internal/orchestrix/... -tax internal/orchestrix/relatorio.go,internal/orchestrix/relatorio_test.go -tax-max 0"
@@ -1072,7 +1072,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate"
@@ -1144,7 +1144,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/assets/... -tax docs/templates/TEMPLATE_PIECE_SKILL.md,docs/templates/templates_test.go -tax-max 6"
@@ -1215,7 +1215,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/mcp/... -tax docs/templates/TEMPLATE_PIECE_MCP.json,docs/templates/templates_test.go -tax-max 9"
@@ -1285,7 +1285,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/... -tax docs/templates/TEMPLATE_PIECE_HOOK.json,docs/templates/templates_test.go -tax-max 9"
@@ -1356,7 +1356,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/... -tax docs/templates/TEMPLATE_PIECE_SCRIPT.ps1,docs/templates/TEMPLATE_PIECE_SCRIPT.sh,docs/templates/templates_test.go -tax-max 6"
@@ -1429,7 +1429,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/...,./internal/gate/... -tax docs/templates/TEMPLATE_PIECE_GATE.json,docs/templates/TEMPLATE_PIECE_PROCESSO.json,docs/templates/templates.go,docs/templates/templates_test.go -tax-max 9"
@@ -1494,7 +1494,7 @@
         "mcps_required": false,
         "runtime": "go"
       },
-      "type": "unit_task",
+      "type": "unit_no",
       "verification": {
         "exit_code": 0,
         "test_command": "go run ./tools/ticketgate -pkgs ./docs/templates/..."

@@ -34,7 +34,7 @@ type FichaTecnica struct {
 // listam os mesmos ids na mesma ordem.
 type Projecoes struct {
 	Spec, Plan, Skill string
-	Route, DAG, Loop  []byte
+	Route, DAG, Studio  []byte
 	Triagem, Livro    []byte
 	Manual            string
 	Fichas            []FichaTecnica
@@ -102,7 +102,7 @@ func montarProjecoes(p Processo, ord []Etapa, now time.Time) (*Projecoes, error)
 	manualNome, manualMD := projetarManual(p, ord, now)
 	dagNome := strings.Replace(strings.Replace(pl.specNome, "SPEC", "DAG", 1), ".md", ".json", 1)
 	return &Projecoes{
-		Spec: spec, Plan: pl.plan, Route: pl.route, DAG: dagJSON, Loop: studioJSON, Skill: projetarSkill(p, ord),
+		Spec: spec, Plan: pl.plan, Route: pl.route, DAG: dagJSON, Studio: studioJSON, Skill: projetarSkill(p, ord),
 		Triagem: triagemJSON, Livro: livroJSON, Manual: manualMD, Fichas: projetarFichas(p, ord),
 		Avisos: pl.avisos, SpecNome: pl.specNome, PlanNome: pl.planNome, RouteNome: pl.routeNome,
 		DAGNome: dagNome, ManualNome: manualNome,

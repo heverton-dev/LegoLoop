@@ -205,7 +205,7 @@ func appendProcessoItems(out []assets.Item, seen map[string]bool, list []studiod
 		seen[l.ID] = true
 		out = append(out, assets.Item{
 			ID:          l.ID,
-			Kind:        assets.KindLoop,
+			Kind:        assets.KindProcesso,
 			Name:        l.Name,
 			Description: l.Description,
 			Origin:      origin,
@@ -281,7 +281,7 @@ func inferirPapelItem(it assets.Item) string {
 		return "auditor-qualidade"
 	case strings.Contains(name, "livro") || strings.Contains(name, "legopress") || strings.Contains(name, "manual"):
 		return "compilador-livro"
-	case it.Kind == assets.KindLoop:
+	case it.Kind == assets.KindProcesso:
 		return "orquestrador"
 	case it.Kind == assets.KindScript || it.Kind == assets.KindHook:
 		return "engenheiro-backend"

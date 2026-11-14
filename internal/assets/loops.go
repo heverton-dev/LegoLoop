@@ -29,7 +29,7 @@ func trimProcessoDoc(name string) string {
 
 func (s *Scanner) processoRoots(ctx context.Context) []root {
 	var roots []root
-	if dir := s.cfg.LoopsDir; dir != "" {
+	if dir := s.cfg.ProcessosDir; dir != "" {
 		roots = append(roots, root{dir: dir, scope: "global", origin: "acervo"})
 	}
 	if s.cfg.Home != "" {

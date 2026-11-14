@@ -23,7 +23,7 @@
     {
       "id": "TICK-ST-01.1",
       "name": "Serialização de papéis e guildas na API de peças",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [],
       "routing": {
@@ -71,7 +71,7 @@
     {
       "id": "TICK-ST-02.1",
       "name": "Atualização de modelos do Studio para combos honestos",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "TICK-ST-01.1"
@@ -120,7 +120,7 @@
     {
       "id": "TICK-ST-03.1",
       "name": "Front-end Studio Canvas e Inspetor com distintivos de guilda",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "TICK-ST-02.1"

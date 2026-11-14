@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 )
 
-// GenerateMethodPipelines gera um Processo executável para cada método detectado.
-func GenerateMethodPipelines(rootDir, canalSlug string, clusters []MethodCluster) ([]string, error) {
+// GenerateMethodProcessos gera um Processo executável para cada método detectado.
+func GenerateMethodProcessos(rootDir, canalSlug string, clusters []MethodCluster) ([]string, error) {
 	var created []string
 	baseDir := filepath.Join(rootDir, "docs", "channels", canalSlug, "processos")
 	for _, c := range clusters {
@@ -26,7 +26,7 @@ func GenerateMethodPipelines(rootDir, canalSlug string, clusters []MethodCluster
 	return created, nil
 }
 
-const tipoUnidade = "unit_" + "task"
+const tipoUnidade = "unit_no"
 
 func writeMethodDAG(dir string, c MethodCluster) (string, error) {
 	dag := buildMethodDAGPayload(c)

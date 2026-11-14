@@ -153,13 +153,6 @@ func (s *Server) registerProcessoRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/processos/compor", s.handleProcessosCompor)
 	mux.HandleFunc("GET /api/dag", s.handleDAGStatus)
 	mux.HandleFunc("GET /api/dag/{id}", s.handleDAGGet)
-
-	mux.HandleFunc("GET /api/loops", deprecada(s.handleProcessosLista))
-	mux.HandleFunc("GET /api/loops/{id}", deprecada(s.handleProcessosObter))
-	mux.HandleFunc("POST /api/loops", deprecada(s.handleProcessosGravar))
-	mux.HandleFunc("POST /api/loops/{id}/duplicate", deprecada(s.handleProcessosDuplicar))
-	mux.HandleFunc("POST /api/loops/{id}/fork", deprecada(s.handleProcessosDuplicar))
-	mux.HandleFunc("DELETE /api/loops/{id}", deprecada(s.handleProcessosExcluir))
 }
 
 func deprecada(h http.HandlerFunc) http.HandlerFunc {
@@ -324,10 +317,10 @@ func (s *Server) writeOrchestratorSkill(d *dag.DAG) {
 	if vault == "" || d == nil {
 		return
 	}
-	skillDir := filepath.Join(vault, "skills", "loop-"+d.Name)
+	skillDir := filepath.Join(vault, "skills", "processo-"+d.Name)
 	_ = os.MkdirAll(skillDir, 0o755)
 	skillContent := fmt.Sprintf(`---
-name: loop-%s
+name: processo-%s
 description: Executa o Processo %s
 ---
 # Processo %s

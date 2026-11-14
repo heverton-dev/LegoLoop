@@ -78,7 +78,7 @@ func resolvePiece(res Resolver, p CompPiece) (nodeInfo, string) {
 	if art == "" {
 		if info.Artifact != "" {
 			art = info.Artifact
-		} else if p.Kind == "subloop" {
+		} else if p.Kind == "subprocesso" {
 			if it, ok := res.ByID(p.Ref); ok && it.Meta != nil && it.Meta["artifact"] != "" {
 				art = it.Meta["artifact"]
 			}
@@ -115,14 +115,14 @@ func pieceByKind(res Resolver, p CompPiece) (nodeInfo, string) {
 		return scriptPiece(res, p.Ref)
 	case "mcp":
 		return nodeInfo{}, "peça MCP ainda não é executável: não há cliente MCP (etapa 2)"
-	case "subloop":
+	case "subprocesso":
 		return subprocessoPeca(res, p.Ref)
 	}
 	return nodeInfo{}, fmt.Sprintf("tipo de peça desconhecido %q", p.Kind)
 }
 
 func subprocessoPeca(res Resolver, ref string) (nodeInfo, string) {
-	it, msg := lookup(res, ref, assets.KindLoop)
+	it, msg := lookup(res, ref, assets.KindProcesso)
 	if msg != "" {
 		return nodeInfo{}, fmt.Sprintf("subprocesso %q não encontrado no acervo (%s)", ref, msg)
 	}

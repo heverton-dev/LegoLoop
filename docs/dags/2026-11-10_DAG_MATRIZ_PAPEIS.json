@@ -42,7 +42,7 @@
     {
       "id": "TICK-01.1",
       "name": "Implementar Catalogo dos 18 Papeis e Validador em Go",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [],
       "command": [
@@ -105,7 +105,7 @@
     {
       "id": "TICK-01.2",
       "name": "Sincronizar Dicionario JSON e Schemas Oficiais",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "nano",
       "depends_on": [
         "TICK-01.1"
@@ -226,7 +226,7 @@
     {
       "id": "TICK-02.1",
       "name": "Atualizar Contrato da Peca e Validacao na Matriz",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "SG-E01"
@@ -293,7 +293,7 @@
     {
       "id": "TICK-02.2",
       "name": "Adicionar Filtros --papel e --guilda na CLI da Matriz",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "TICK-02.1"
@@ -359,7 +359,7 @@
     {
       "id": "TICK-03.1",
       "name": "Implementar Algoritmo de Casamento em 2 Niveis no Fabricar",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "micro",
       "depends_on": [
         "TICK-02.1"
@@ -481,7 +481,7 @@
     {
       "id": "TICK-03.2",
       "name": "Verificacao Integrada e Recompilacao Fresca",
-      "type": "unit_task",
+      "type": "unit_no",
       "nature": "nano",
       "depends_on": [
         "SG-E02"

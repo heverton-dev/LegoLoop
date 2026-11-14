@@ -158,9 +158,9 @@ func TestUnitTaskRequiresClaudeModel(t *testing.T) {
 }
 
 const twoNodeDAG = `{"name":"ut","nodes":[
- {"id":"n1","type":"unit_task","routing":{"mode":"manual","model":"sonnet"},"context_out":%s,
+ {"id":"n1","type":"unit_no","routing":{"mode":"manual","model":"sonnet"},"context_out":%s,
   "output":{"artifact":"out/n1.json","gate":"exit_code == 0 && file_exists('n1.txt')"}},
- {"id":"n2","type":"unit_task","depends_on":["n1"],"routing":{"mode":"manual","model":"sonnet"},"context_out":%s,
+ {"id":"n2","type":"unit_no","depends_on":["n1"],"routing":{"mode":"manual","model":"sonnet"},"context_out":%s,
   "output":{"artifact":"out/n2.json","gate":"exit_code == 0 && file_exists('n2.txt')"}}]}`
 
 func runTwoNodeDAG(t *testing.T, repo, outs1, outs2 string) runner.Report {

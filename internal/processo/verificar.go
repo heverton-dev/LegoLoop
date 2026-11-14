@@ -43,7 +43,7 @@ func (pr *Projecoes) ids() (map[string][]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	studioIDs, err := idsDeNos(pr.Loop, "studio")
+	studioIDs, err := idsDeNos(pr.Studio, "studio")
 	if err != nil {
 		return nil, err
 	}

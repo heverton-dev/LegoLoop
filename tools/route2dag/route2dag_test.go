@@ -65,7 +65,7 @@ func TestRegrasDaProjecao(t *testing.T) {
 }
 
 func TestCommandEhPrimeiroArgvDeVerify(t *testing.T) {
-	rota := `{"name":"X","version":"1","date":"2026-01-01","nodes":[{"id":"T1","type":"unit_task","nature":"micro",
+	rota := `{"name":"X","version":"1","date":"2026-01-01","nodes":[{"id":"T1","type":"unit_no","nature":"micro",
 	 "routing":{"mode":"manual","model":"sonnet"},"output":{"artifacts":["a"],"verify":[["go","test","./..."],["go","vet"]],"gate":"exit_code == 0"}}]}`
 	out, _, err := Converter([]byte(rota))
 	if err != nil {
@@ -86,7 +86,7 @@ func TestConverterRecusaRouteQuebrada(t *testing.T) {
 		"json ruim": `{`,
 		"sem nodes": `{"name":"X","nodes":[]}`,
 		"tipo ruim": `{"name":"X","nodes":[{"id":"a","type":"skill"}]}`,
-		"nó sem id": `{"name":"X","nodes":[{"type":"unit_task"}]}`,
+		"nó sem id": `{"name":"X","nodes":[{"type":"unit_no"}]}`,
 	}
 	for nome, raw := range casos {
 		if _, _, err := Converter([]byte(raw)); err == nil {

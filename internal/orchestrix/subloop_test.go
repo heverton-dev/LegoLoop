@@ -103,7 +103,7 @@ func TestRunSubloopSuccess(t *testing.T) {
 		"trigger": {"type": "manual"},
 		"nodes": [{
 			"id": "sub_node",
-			"type": "subloop",
+			"type": "subprocesso",
 			"ref": "pesquisa-mercado",
 			"routing": {"mode": "manual", "model": "subloop"},
 			"output": {"artifact": "FINAL.txt", "gate": "file_exists('FINAL.txt')"}

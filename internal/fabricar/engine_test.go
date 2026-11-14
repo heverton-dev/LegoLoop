@@ -164,7 +164,7 @@ func TestFabricar_GeneratesTheThreeMeansAndTheGovernanceDocs(t *testing.T) {
 		t.Fatalf("identidade incorreta: %+v", res)
 	}
 	a := res.Artifacts
-	for _, p := range []string{a.SkillPath, a.LoopPath, a.DagPath, a.IntentPath, a.SpecPath, a.PlanPath, a.RoutePath} {
+	for _, p := range []string{a.SkillPath, a.ProcessoPath, a.DagPath, a.IntentPath, a.SpecPath, a.PlanPath, a.RoutePath} {
 		if _, err := os.Stat(p); err != nil {
 			t.Errorf("artefato ausente: %s", p)
 		}
@@ -184,7 +184,7 @@ func assertThreeMeans(t *testing.T, r *rig, res *fabricar.Result) {
 	if sk := snap.Of(assets.KindSkill); len(sk) != 1 || sk[0].Name != res.CanonicalName {
 		t.Errorf("o assets.Scanner real deve listar a skill: %+v", sk)
 	}
-	st, err := studiodoc.NewStore(filepath.Dir(res.Artifacts.LoopPath))
+	st, err := studiodoc.NewStore(filepath.Dir(res.Artifacts.ProcessoPath))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -240,7 +240,7 @@ func TestFabricar_IsDeterministicAndStaysInsideTheInjectedRoots(t *testing.T) {
 		r := newRig(t, goodPieces())
 		res := r.run(t)
 		out := map[string]string{}
-		for _, p := range []string{res.Artifacts.SkillPath, res.Artifacts.LoopPath, res.Artifacts.DagPath, res.Artifacts.IntentPath,
+		for _, p := range []string{res.Artifacts.SkillPath, res.Artifacts.ProcessoPath, res.Artifacts.DagPath, res.Artifacts.IntentPath,
 			res.Artifacts.SpecPath, res.Artifacts.PlanPath, res.Artifacts.RoutePath, res.Artifacts.ProcessoPath} {
 			if !strings.HasPrefix(p, r.home) {
 				t.Errorf("gravou fora das raízes injetadas: %s", p)
@@ -251,8 +251,8 @@ func TestFabricar_IsDeterministicAndStaysInsideTheInjectedRoots(t *testing.T) {
 		return out
 	}
 	a, b := snapshot(), snapshot()
-	if len(a) != 8 {
-		t.Fatalf("esperava 8 arquivos: %d", len(a))
+	if len(a) != 7 {
+		t.Fatalf("esperava 7 arquivos: %d", len(a))
 	}
 	for name, content := range a {
 		if b[name] != content {
@@ -274,7 +274,7 @@ func TestFabricar_HostileRemovablePieceStaysOutOfTheProcess(t *testing.T) {
 	if !slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "ficou fora") }) {
 		t.Errorf("a exclusão deve gerar aviso: %v", res.Warnings)
 	}
-	for _, p := range []string{res.Artifacts.SkillPath, res.Artifacts.LoopPath, res.Artifacts.DagPath, res.Artifacts.PlanPath, res.Artifacts.RoutePath} {
+	for _, p := range []string{res.Artifacts.SkillPath, res.Artifacts.ProcessoPath, res.Artifacts.DagPath, res.Artifacts.PlanPath, res.Artifacts.RoutePath} {
 		if strings.Contains(read(t, p), "rm -rf") {
 			t.Errorf("o texto hostil vazou para %s", p)
 		}
@@ -388,11 +388,11 @@ func TestFabricar_MatrixWithoutAptPieceStopsAtTheGapWithoutWriting(t *testing.T)
 func TestGravaNomesCanonicos(t *testing.T) {
 	r := newRig(t, goodPieces())
 	res := r.run(t)
-	if !strings.HasSuffix(res.Artifacts.LoopPath, ".studio.json") {
-		t.Fatalf("LoopPath deve terminar com .studio.json: %s", res.Artifacts.LoopPath)
+	if !strings.HasSuffix(res.Artifacts.ProcessoPath, ".processo.json") {
+		t.Fatalf("ProcessoPath deve terminar com .processo.json: %s", res.Artifacts.ProcessoPath)
 	}
-	if _, err := os.Stat(res.Artifacts.LoopPath); err != nil {
-		t.Errorf("arquivo .studio.json ausente: %v", err)
+	if _, err := os.Stat(res.Artifacts.ProcessoPath); err != nil {
+		t.Errorf("arquivo .processo.json ausente: %v", err)
 	}
 	antigo := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName+paths.SufixoAntigo)
 	if _, err := os.Stat(antigo); err == nil {

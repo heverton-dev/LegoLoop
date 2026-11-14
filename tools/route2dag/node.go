@@ -11,13 +11,17 @@ func projetarNo(n routeNode) (map[string]any, error) {
 	if n.ID == "" {
 		return nil, fmt.Errorf("nó sem id")
 	}
-	if n.Type != "unit_task" && n.Type != "script" && n.Type != "stop_gate" {
+	tipo := n.Type
+	if tipo == "unit_task" {
+		tipo = "unit_no"
+	}
+	if tipo != "unit_no" && tipo != "script" && tipo != "stop_gate" {
 		return nil, fmt.Errorf("nó %q: tipo %q não suportado", n.ID, n.Type)
 	}
 	nd := map[string]any{
 		"id":         n.ID,
 		"name":       strings.ToLower(strings.NewReplacer("-", "_", ".", "_").Replace(n.ID)),
-		"type":       n.Type,
+		"type":       tipo,
 		"nature":     n.Nature,
 		"depends_on": n.DependsOn,
 		"isolation":  n.Isolation,

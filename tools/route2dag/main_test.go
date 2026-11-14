@@ -68,8 +68,8 @@ func conferirNos(t *testing.T, d *dag.DAG, r route) {
 // Mutação: dois nós com o mesmo artefato (ids iguais sem caixa) fazem a projeção falhar.
 func TestProjecaoRecusaArtefatoRepetido(t *testing.T) {
 	rota := `{"name":"X","version":"1","date":"2026-01-01","nodes":[
-	 {"id":"T1","type":"unit_task","nature":"micro","routing":{"mode":"manual","model":"sonnet"},"output":{"gate":"exit_code == 0"}},
-	 {"id":"t1","type":"unit_task","nature":"micro","routing":{"mode":"manual","model":"sonnet"},"output":{"gate":"exit_code == 0"}}]}`
+	 {"id":"T1","type":"unit_no","nature":"micro","routing":{"mode":"manual","model":"sonnet"},"output":{"gate":"exit_code == 0"}},
+	 {"id":"t1","type":"unit_no","nature":"micro","routing":{"mode":"manual","model":"sonnet"},"output":{"gate":"exit_code == 0"}}]}`
 	_, _, err := Projetar([]byte(rota))
 	if !errors.Is(err, ErrArtefatoRepetido) {
 		t.Fatalf("err = %v, esperado ErrArtefatoRepetido", err)
@@ -79,8 +79,8 @@ func TestProjecaoRecusaArtefatoRepetido(t *testing.T) {
 // Mutação: ROUTE com ciclo gera DAG que o parser recusa, e a projeção falha.
 func TestProjecaoRecusaCiclo(t *testing.T) {
 	rota := `{"name":"X","version":"1","date":"2026-01-01","nodes":[
-	 {"id":"A","type":"unit_task","nature":"micro","depends_on":["B"],"routing":{"mode":"manual","model":"sonnet"},"output":{"gate":"exit_code == 0"}},
-	 {"id":"B","type":"unit_task","nature":"micro","depends_on":["A"],"routing":{"mode":"manual","model":"sonnet"},"output":{"gate":"exit_code == 0"}}]}`
+	 {"id":"A","type":"unit_no","nature":"micro","depends_on":["B"],"routing":{"mode":"manual","model":"sonnet"},"output":{"gate":"exit_code == 0"}},
+	 {"id":"B","type":"unit_no","nature":"micro","depends_on":["A"],"routing":{"mode":"manual","model":"sonnet"},"output":{"gate":"exit_code == 0"}}]}`
 	if _, _, err := Projetar([]byte(rota)); err == nil {
 		t.Fatal("ROUTE com ciclo deveria falhar na projeção")
 	}

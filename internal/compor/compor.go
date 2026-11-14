@@ -486,7 +486,7 @@ func montar(p processo.Processo, e processo.Etapa, now time.Time, roots processo
 		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
 		{Kind: "DAG_ISO", Path: filepath.Join(docs, "dags", pr.DAGNome), Data: pr.DAG},
 		{Kind: "DAG", Path: filepath.Join(pastaProcessos(roots.Vault), p.Nome+".dag.json"), Data: pr.DAG},
-		{Kind: "studio", Path: filepath.Join(pastaProcessos(roots.Vault), p.Nome+caminhos.SufixoStudio), Data: pr.Loop},
+		{Kind: "studio", Path: filepath.Join(pastaProcessos(roots.Vault), p.Nome+caminhos.SufixoStudio), Data: pr.Studio},
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 	})
@@ -499,7 +499,7 @@ func projetar(p processo.Processo, now, dataDocs time.Time) (*processo.Projecoes
 	if err != nil {
 		return nil, err
 	}
-	if pr.Loop, err = manterCriacao(pr.Loop, p.CriadoEm); err != nil {
+	if pr.Studio, err = manterCriacao(pr.Studio, p.CriadoEm); err != nil {
 		return nil, err
 	}
 	if dataDocs.Format(time.DateOnly) == now.Format(time.DateOnly) {

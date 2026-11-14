@@ -216,20 +216,20 @@
         "mode": "isolated"
       },
       "context_in": [
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/dag.json"
       ],
       "context_out": [
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/dag.json"
       ],
       "status": "COMPLETED",
       "command": [
         "legoloop",
         "validate",
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/dag.json"
       ],
       "output": {
-        "artifact": "loops/legoloop-video-motion/pipeline.dag.json",
-        "gate": "file_exists('loops/legoloop-video-motion/pipeline.dag.json')"
+        "artifact": "processos/legoloop-video-motion/dag.json",
+        "gate": "file_exists('processos/legoloop-video-motion/dag.json')"
       },
       "test_seam": {
         "type": "unit_test_gate",
@@ -267,7 +267,7 @@
         "mode": "isolated"
       },
       "context_in": [
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/legoloop-video-motion/dag.json"
       ],
       "context_out": [
         "bin/legoloop.exe"

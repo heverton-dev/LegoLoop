@@ -32,7 +32,7 @@ func listedSkill(t *testing.T, s *Server, name string) bool {
 
 func listedProcesso(t *testing.T, s *Server, id string) bool {
 	t.Helper()
-	rec := do(t, s.Handler(), "GET", "/api/loops", "")
+	rec := do(t, s.Handler(), "GET", "/api/processos", "")
 	return rec.Code == 200 && strings.Contains(rec.Body.String(), `"`+id+`"`)
 }
 

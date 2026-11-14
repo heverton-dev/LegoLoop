@@ -20,7 +20,7 @@ by Addy Osmani
 - Produces: docs/plans/PLAN.md
 
 ## Code Contracts
-` + "```typescript\ninterface Task { id: string; run(): void; }\n```" + `
+` + "```typescript\ninterface Node { id: string; run(): void; }\n```" + `
 
 ## Verification
 - Run tests: go test -v ./...

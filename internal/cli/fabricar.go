@@ -276,7 +276,7 @@ func reportFabricar(d Deps, res *fabricar.Result, o fabricarOpts) int {
 		fmt.Fprintf(d.Stdout, "\n✓ Processo %s criado\n", res.CanonicalName)
 	}
 	a := res.Artifacts
-	rows := [][2]string{{"skill (Chat)", a.SkillPath}, {"documento (Studio)", a.LoopPath}, {"dag (CLI)", a.DagPath},
+	rows := [][2]string{{"skill (Chat)", a.SkillPath}, {"documento (Studio)", a.ProcessoPath}, {"dag (CLI)", a.DagPath},
 		{"INTENT", a.IntentPath}, {"SPEC", a.SpecPath}, {"PLAN", a.PlanPath}, {"ROUTE", a.RoutePath}, {"TEMPLATE", a.TemplatePath}}
 	for _, r := range rows {
 		fmt.Fprintf(d.Stdout, "  %-14s %s\n", r[0], r[1])

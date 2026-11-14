@@ -72,7 +72,7 @@ func semear(t *testing.T, p processo.Processo, data time.Time, comIntent bool) c
 	doc := func(sub, file string) string { return filepath.Join(c.docs, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(c.vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(c.vault, paths.DirAntigo, p.Nome+paths.SufixoAntigo), Data: pr.Loop},
+		{Path: filepath.Join(c.vault, paths.DirAntigo, p.Nome+paths.SufixoAntigo), Data: pr.Studio},
 		{Path: filepath.Join(c.vault, paths.DirAntigo, p.Nome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(c.vault, p.Nome), Data: pj},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
