@@ -26,11 +26,11 @@ func (s *Server) handleTriagem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "entrada ou workspace obrigatório", http.StatusBadRequest)
 		return
 	}
-	loopsDir := paths.DirAntigo
+	processosDir := paths.DirAntigo
 	if s.ProjectDir != "" {
-		loopsDir = filepath.Join(s.ProjectDir, paths.DirAntigo)
+		processosDir = filepath.Join(s.ProjectDir, paths.DirAntigo)
 	}
-	catalogo, err := carregarCatalogoTriagemStudio(loopsDir)
+	catalogo, err := carregarCatalogoTriagemStudio(processosDir)
 	if err != nil {
 		http.Error(w, "erro ao carregar catálogo de triagem", http.StatusInternalServerError)
 		return
@@ -56,8 +56,8 @@ func decidirTriagemStudio(r *http.Request, req triagemRequest, catalogo []triage
 	return dec, err
 }
 
-func carregarCatalogoTriagemStudio(loopsDir string) ([]triagem.TriagemSpec, error) {
-	entries, err := os.ReadDir(loopsDir)
+func carregarCatalogoTriagemStudio(processosDir string) ([]triagem.TriagemSpec, error) {
+	entries, err := os.ReadDir(processosDir)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, nil
@@ -69,7 +69,7 @@ func carregarCatalogoTriagemStudio(loopsDir string) ([]triagem.TriagemSpec, erro
 		if !e.IsDir() {
 			continue
 		}
-		spec, ok, err := lerTriagemSpecStudio(filepath.Join(loopsDir, e.Name(), "triagem.json"))
+		spec, ok, err := lerTriagemSpecStudio(filepath.Join(processosDir, e.Name(), "triagem.json"))
 		if err != nil {
 			return nil, err
 		}

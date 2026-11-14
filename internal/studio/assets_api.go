@@ -39,7 +39,7 @@ const (
 )
 
 func (s *Server) documentoStore() (*studiodoc.Store, error) {
-	return s.loopStore()
+	return s.acervoStore()
 }
 
 func errNoInventory(w http.ResponseWriter) {

@@ -171,9 +171,9 @@ html,body{height:100dvh;margin:0;overflow:hidden;font-family:var(--font-ui);back
 .dot{width:10px;height:10px;border-radius:50%;background:var(--ok);animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.45}}
 .grid{flex:1;min-height:0;display:grid;grid-template-columns:380px 1fr;gap:12px}
-.card{display:flex;flex-direction:column;min-height:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;box-shadow:var(--shadow)}
-.card-hd{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.card-hd h3{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.panel{display:flex;flex-direction:column;min-height:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;box-shadow:var(--shadow)}
+.panel-hd{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.panel-hd h3{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
 .scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:4px}
 .grp{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin:10px 0 6px;display:flex;justify-content:space-between}
 .grp:first-child{margin-top:0}
@@ -209,8 +209,8 @@ html,body{height:100dvh;margin:0;overflow:hidden;font-family:var(--font-ui);back
   </div>
   <div class="tabs" id="tabs"></div>
   <div class="grid">
-    <div class="card"><div class="card-hd"><h3>Agentes</h3><span class="meta" id="counts"></span></div><div class="scroll" id="workers"></div></div>
-    <div class="card"><div class="card-hd"><h3>Execução <span id="filter"></span></h3><span class="meta">Mais recente no topo</span></div><div id="ficha"></div><div class="scroll" id="msgs"></div><div class="pager" id="pager"></div></div>
+    <div class="panel"><div class="panel-hd"><h3>Agentes</h3><span class="meta" id="counts"></span></div><div class="scroll" id="workers"></div></div>
+    <div class="panel"><div class="panel-hd"><h3>Execução <span id="filter"></span></h3><span class="meta">Mais recente no topo</span></div><div id="ficha"></div><div class="scroll" id="msgs"></div><div class="pager" id="pager"></div></div>
   </div>
 </div>
 <script>
@@ -231,7 +231,7 @@ function goPage(p){page=p;if(window._last)render(window._last);}
 function renderCrumb(ws){
   const path=[]; let p=curParent;
   while(p){path.unshift(p);const w=ws.find(x=>x.name===p);p=w?(w.parent||""):"";}
-  let html='<a onclick="enterSub(\'\',event)">Macro</a>';
+  let html='<a onclick="enterSub(\'\',event)">Principal</a>';
   for(const n of path) html+=' › <a onclick="enterSub(\''+n+'\',event)">'+n+'</a>';
   document.getElementById('crumb').innerHTML=html;
 }

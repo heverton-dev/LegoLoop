@@ -23,29 +23,29 @@ type dagMinimo struct {
 	} `json:"nodes"`
 }
 
-// MigrarLoops varre loopsDir, remove diretórios sem pipeline.dag.json válido e gera triagem.json.
-func MigrarLoops(loopsDir string, apply bool) (Relatorio, error) {
+// MigrarLoops varre processosDir, remove diretórios sem pipeline.dag.json válido e gera triagem.json.
+func MigrarLoops(processosDir string, apply bool) (Relatorio, error) {
 	var rel Relatorio
-	entries, err := os.ReadDir(loopsDir)
+	entries, err := os.ReadDir(processosDir)
 	if err != nil {
 		return rel, err
 	}
 	for _, entry := range entries {
 		if !entry.IsDir() {
-			if err := normalizarLoopSolto(loopsDir, entry.Name(), apply, &rel); err != nil {
+			if err := normalizarProcessoSolto(processosDir, entry.Name(), apply, &rel); err != nil {
 				return rel, err
 			}
 			continue
 		}
-		if err := processarLoop(loopsDir, entry.Name(), apply, &rel); err != nil {
+		if err := processarProcesso(processosDir, entry.Name(), apply, &rel); err != nil {
 			return rel, err
 		}
 	}
 	return rel, nil
 }
 
-func processarLoop(loopsDir, slug string, apply bool, rel *Relatorio) error {
-	dir := filepath.Join(loopsDir, slug)
+func processarProcesso(processosDir, slug string, apply bool, rel *Relatorio) error {
+	dir := filepath.Join(processosDir, slug)
 	etapas, ok := lerEtapasDAG(paths.CaminhoDAG(dir))
 	if !ok {
 		rel.Removidos = append(rel.Removidos, slug)
@@ -108,18 +108,18 @@ func triagemAtualizada(path string) bool {
 	return len(spec.Etapas) > 0
 }
 
-func normalizarLoopSolto(loopsDir, nome string, apply bool, rel *Relatorio) error {
+func normalizarProcessoSolto(processosDir, nome string, apply bool, rel *Relatorio) error {
 	const sufixo = ".loop.json"
 	if !strings.HasSuffix(nome, sufixo) {
 		return nil
 	}
 	slug := strings.TrimSuffix(nome, sufixo)
-	dir := filepath.Join(loopsDir, slug)
+	dir := filepath.Join(processosDir, slug)
 	if apply {
 		if err := os.MkdirAll(dir, 0o755); err != nil {
 			return err
 		}
-		data, err := os.ReadFile(filepath.Join(loopsDir, nome))
+		data, err := os.ReadFile(filepath.Join(processosDir, nome))
 		if err != nil {
 			return err
 		}

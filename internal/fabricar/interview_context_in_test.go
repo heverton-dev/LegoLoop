@@ -9,28 +9,30 @@ import (
 	"strings"
 	"testing"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
 	"legoloop/internal/fabricar"
 	"legoloop/internal/interview"
 	"legoloop/internal/matriz"
+	"legoloop/internal/paths"
 )
 
 func TestFabricarFromInterview_ConectaIntentComoContextIn(t *testing.T) {
 	tempDir := t.TempDir()
 	llm := &scriptedLLM{replies: []string{
-		`{"confidence": 70, "question": "Qual o objetivo?", "socratic_mirror": {"outcome": "Validar fluxo"}}`,
-		`{"confidence": 96, "question": "Pronto", "socratic_mirror": {"outcome": "Validar fluxo", "target_audience": "devs", "constraints": ["zero stubs"], "out_of_scope": ["deploy"]}}`,
+		`{"confidence": 70, "question": "Qual o objetivo?", "socratic_mirror": {"outcome": "Validar processo"}}`,
+		`{"confidence": 96, "question": "Pronto", "socratic_mirror": {"outcome": "Validar processo", "target_audience": "devs", "constraints": ["zero stubs"], "out_of_scope": ["deploy"]}}`,
 	}}
 	eng := interview.NewEngine(llm)
 	sess, _, err := eng.Start(context.Background(), "processo de teste")
 	if err != nil {
 		t.Fatalf("Start: %v", err)
 	}
-	if _, err := eng.Step(context.Background(), sess.ID, "Validar fluxo"); err != nil {
+	if _, err := eng.Step(context.Background(), sess.ID, "Validar processo"); err != nil {
 		t.Fatalf("Step: %v", err)
 	}
 	if sess.Mirror == nil {
-		sess.Mirror = &interview.Mirror{Outcome: "Validar fluxo", Constraints: []string{"zero stubs"}, OutOfScope: []string{"deploy"}}
+		sess.Mirror = &interview.Mirror{Outcome: "Validar processo", Constraints: []string{"zero stubs"}, OutOfScope: []string{"deploy"}}
 		sess.Confidence = 96
 		sess.Status = interview.StatusCompleted
 	}
@@ -46,11 +48,11 @@ func TestFabricarFromInterview_ConectaIntentComoContextIn(t *testing.T) {
 		t.Fatalf("INTENT esperada em UNDER_REVIEW, obtido:\n%s", string(rawIntent))
 	}
 
-	e1 := pecaComCasos("peca-construir", 0.90, []string{"construir"}, []string{"qualquer"}, []string{"Validar fluxo"})
-	e2 := pecaComCasos("peca-verificar", 0.90, []string{"verificar"}, []string{"qualquer"}, []string{"Validar fluxo"})
+	e1 := pecaComCasos("peca-construir", 0.90, []string{"construir"}, []string{"qualquer"}, []string{"Validar processo"})
+	e2 := pecaComCasos("peca-verificar", 0.90, []string{"verificar"}, []string{"qualquer"}, []string{"Validar processo"})
 	r := newRig(t, []matriz.Entrada{e1, e2})
 	r.req.RawName = "teste-conexao"
-	r.req.Goal = "Validar fluxo"
+	r.req.Goal = "Validar processo"
 
 	res, err := fabricar.FabricarFromInterview(context.Background(), r.req, r.deps, sess, intentPath)
 	if err != nil {
@@ -60,11 +62,11 @@ func TestFabricarFromInterview_ConectaIntentComoContextIn(t *testing.T) {
 		t.Fatalf("resultado vazio")
 	}
 
-	// Verifica os 4 arquivos padrão em loops/<slug>/ e SPEC, PLAN, ROUTE, DAG em docs/.
-	loopDir := filepath.Join(r.deps.Roots.Vault, "loops", res.CanonicalName)
-	for _, f := range []string{res.CanonicalName + ".studio.json", "pipeline.dag.json", "triagem.json", "memoria_execucao.json"} {
-		if _, err := os.Stat(filepath.Join(loopDir, f)); err != nil {
-			t.Errorf("arquivo padrão ausente em loops/: %s (%v)", f, err)
+	// Verifica os 4 arquivos padrão no diretório do Processo e SPEC, PLAN, ROUTE, DAG em docs/.
+	procDir := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName)
+	for _, f := range []string{res.CanonicalName + ".studio.json", caminhos.ArquivoDAG, "triagem.json", "memoria_execucao.json"} {
+		if _, err := os.Stat(filepath.Join(procDir, f)); err != nil {
+			t.Errorf("arquivo padrão ausente no diretório do Processo: %s (%v)", f, err)
 		}
 	}
 	for _, sub := range []string{"specs", "plans", "routes", "dags"} {
@@ -75,9 +77,9 @@ func TestFabricarFromInterview_ConectaIntentComoContextIn(t *testing.T) {
 	}
 
 	// Valida o DAG resultante com dag.Parse e verifica context_in apontando para a INTENT.
-	dagBytes, err := os.ReadFile(filepath.Join(loopDir, "pipeline.dag.json"))
+	dagBytes, err := os.ReadFile(filepath.Join(procDir, caminhos.ArquivoDAG))
 	if err != nil {
-		t.Fatalf("ler pipeline.dag.json: %v", err)
+		t.Fatalf("ler %s: %v", caminhos.ArquivoDAG, err)
 	}
 	parsed, err := dag.Parse(dagBytes)
 	if err != nil {

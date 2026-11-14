@@ -41,7 +41,7 @@ func cmdSwarmAdd(_ context.Context, args []string, d Deps) int {
 	fs := newFlags("swarm add", d)
 	role := fs.String("role", "", "papel canonico")
 	name := fs.String("name", "", "nome do worker")
-	parent := fs.String("parent", "", "processo pai (vazio = macro)")
+	parent := fs.String("parent", "", "processo pai (vazio = principal)")
 	ws := fs.String("workspace", "inherit", "share|branch|inherit")
 	model := fs.String("model", "", "modelo")
 	dir := fs.String("dir", defaultBoardDir(), "diretorio do quadro")

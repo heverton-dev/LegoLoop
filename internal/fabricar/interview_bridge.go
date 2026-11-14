@@ -33,7 +33,7 @@ func FabricarFromInterview(ctx context.Context, req Request, deps Deps, sess *in
 	return Fabricar(ctx, req, deps)
 }
 
-// FabricarFromInterviewWithStopGate executa o fluxo pós-entrevista exigindo parada
+// FabricarFromInterviewWithStopGate executa o Processo pós-entrevista exigindo parada
 // obrigatória no Stop-Gate após a cascata de 3 camadas (Cofre -> SO -> GitHub)
 // antes da materialização quando req.Yes é falso.
 func FabricarFromInterviewWithStopGate(ctx context.Context, req Request, deps Deps, sess *interview.Session, intentPath string, sugestoesGitHub []string) (*Result, CuradoriaStopGateSummary, error) {

@@ -18,7 +18,7 @@ func readStatic(t *testing.T, name string) string {
 	return string(b)
 }
 
-// R-UI-3: nenhum diálogo nativo do navegador/SO — feedback é sempre componente próprio.
+// R-UI-3: nenhum diálogo nativo do navegador/SO — feedback é sempre peça própria.
 func TestNoNativeDialogs(t *testing.T) {
 	native := regexp.MustCompile(`(^|[^.\w])(window\.)?(alert|confirm|prompt)\s*\(|window\.(alert|confirm|prompt)\b`)
 	err := fs.WalkDir(staticFS, "static", func(path string, d fs.DirEntry, err error) error {
@@ -346,7 +346,7 @@ func TestConfirmDialogMessageParam(t *testing.T) {
 func TestTemplatesFallbackWithoutDoubleName(t *testing.T) {
 	js := readStatic(t, "app.js")
 	if strings.Contains(js, "icon.textContent = tmpl.name") {
-		t.Error("BUG-TMPL-01: app.js repete tmpl.name no fallback de icon, duplicando o nome no card")
+		t.Error("BUG-TMPL-01: app.js repete tmpl.name no fallback de icon, duplicando o nome no elemento")
 	}
 }
 
@@ -368,7 +368,7 @@ func TestVaultApplyResetsDisabledInFinally(t *testing.T) {
 	}
 	chunk := js[idx : idx+1500]
 	if !strings.Contains(chunk, "btnApply.disabled = false") && !strings.Contains(chunk, "btnApply.disabled =") {
-		t.Error("BUG-VAULT-03: handler de btnApply deve gerenciar disabled no bloco finally")
+		t.Error("BUG-VAULT-03: handler de btnApply deve gerenciar disabled na cláusula finally")
 	}
 }
 
@@ -470,7 +470,7 @@ func TestVault503ToastFeedback(t *testing.T) {
 	}
 }
 
-// TestNoInlineStylesInComponents (BUG-CSP-01) assegura que nenhum componente utiliza
+// TestNoInlineStylesInComponents (BUG-CSP-01) assegura que nenhuma peça utiliza
 // o atributo style="..." inline, prevenindo violações da política Content Security Policy (style-src 'self').
 func TestNoInlineStylesInComponents(t *testing.T) {
 	inlineStyleRe := regexp.MustCompile(`style\s*=\s*["'][^"']*["']`)
@@ -525,6 +525,6 @@ func TestCanConnectTriggerAnyBlock(t *testing.T) {
 		snippet = snippet[:end+2]
 	}
 	if !strings.Contains(snippet, `startsWith("trigger_")`) {
-		t.Fatalf("canConnect deve permitir ligação de/para trigger_* com qualquer bloco ou peça; trecho:\n%s", snippet)
+		t.Fatalf("canConnect deve permitir ligação de/para trigger_* com qualquer peça; trecho:\n%s", snippet)
 	}
 }

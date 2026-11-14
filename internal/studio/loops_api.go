@@ -9,10 +9,6 @@ import (
 	"legoloop/internal/studiodoc"
 )
 
-func (s *Server) loopStore() (*studiodoc.Store, error) {
-	return s.acervoStore()
-}
-
 func (s *Server) acervoStore() (*studiodoc.Store, error) {
 	if s.Processos != nil {
 		return s.Processos, nil

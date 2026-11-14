@@ -14,6 +14,7 @@ import (
 
 	"legoloop/docs/templates"
 	"legoloop/internal/assets"
+	"legoloop/internal/caminhos"
 	"legoloop/internal/cli"
 	"legoloop/internal/dag"
 	"legoloop/internal/fabricar"
@@ -409,24 +410,24 @@ func TestGravaNomesCanonicos(t *testing.T) {
 	}
 }
 
-func TestGravaArquivosPadraoNaPastaDoLoop(t *testing.T) {
+func TestGravaArquivosPadraoNaPastaDoProcesso(t *testing.T) {
 	r := newRig(t, goodPieces())
 	res := r.run(t)
-	dirLoop := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName)
+	dirProc := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName)
 	esperados := []string{
 		res.CanonicalName + paths.SufixoStudio,
-		"pipeline.dag.json",
+		caminhos.ArquivoDAG,
 		"triagem.json",
 		"memoria_execucao.json",
 	}
 	for _, nome := range esperados {
-		p := filepath.Join(dirLoop, nome)
+		p := filepath.Join(dirProc, nome)
 		if _, err := os.Stat(p); err != nil {
-			t.Errorf("arquivo padrão ausente em loops/<slug>/: %s (%v)", p, err)
+			t.Errorf("arquivo padrão ausente no diretório do Processo: %s (%v)", p, err)
 		}
 	}
-	raizLoop := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName+paths.SufixoStudio)
-	if _, err := os.Stat(raizLoop); err == nil {
-		t.Errorf("arquivo de loop não deve ficar na raiz loops/: %s", raizLoop)
+	raizProc := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName+paths.SufixoStudio)
+	if _, err := os.Stat(raizProc); err == nil {
+		t.Errorf("arquivo de Processo não deve ficar na raiz: %s", raizProc)
 	}
 }
