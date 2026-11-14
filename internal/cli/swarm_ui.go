@@ -171,7 +171,7 @@ html,body{height:100dvh;margin:0;overflow:hidden;font-family:var(--font-ui);back
 .scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:4px}
 .grp{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin:10px 0 6px;display:flex;justify-content:space-between}
 .grp:first-child{margin-top:0}
-.w{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;margin-bottom:6px;background:var(--surface-2);cursor:pointer;border:1.5px solid var(--border);transition:border-color .15s,opacity .15s,filter .15s}
+.w{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;margin-bottom:6px;background:var(--surface-2);cursor:pointer;border:1px solid var(--border);transition:border-color .2s,opacity .2s,filter .2s}
 .w.waiting{filter:grayscale(1);opacity:.65}
 .w.working{background:var(--surface-2)}
 .w:hover{border-color:var(--accent)}.w.sel{border-color:var(--accent);background:var(--accent-soft);opacity:1;filter:none}
@@ -191,10 +191,8 @@ html,body{height:100dvh;margin:0;overflow:hidden;font-family:var(--font-ui);back
 .pager{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
 .ficha{flex-shrink:0;display:flex;gap:12px;align-items:center;padding:10px 12px;margin-bottom:10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)}
 .ficha-body{flex:1;min-width:0}
-.prog{height:5px;border-radius:999px;background:var(--border);overflow:hidden;margin-top:6px}
-.prog-bar{height:100%;background:var(--ok);transition:width .3s}
-.prog-bar.working{width:65%;animation:indet 1.4s infinite ease-in-out}
-@keyframes indet{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+.prog{height:4px;border-radius:999px;background:var(--border);overflow:hidden;margin-top:6px}
+.prog-bar{height:100%;background:var(--ok);transition:width .6s ease}
 .btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px}
 .btn:disabled{opacity:.4;cursor:default}
 </style></head><body>
@@ -212,11 +210,13 @@ html,body{height:100dvh;margin:0;overflow:hidden;font-family:var(--font-ui);back
 <script>
 let sel="", page=0, curParent="", curProc="", closedProcs={}; const PER_PAGE=20;
 const palette=['#8ab4f8','#f28b82','#fdd663','#81c995','#c58af9'];
-function botSVG(st,idx,kind){
-  const c=palette[idx%palette.length];
-  if(kind==='coord') return '<svg class="bot '+st+'" viewBox="0 0 8 8"><rect x="2" y="0" width="4" height="3" fill="'+c+'"/><rect x="3" y="1" width="1" height="1" fill="#1e293b"/><rect x="5" y="1" width="1" height="1" fill="#1e293b"/><rect x="1" y="3" width="6" height="4" fill="#334155"/><rect x="3" y="3" width="2" height="4" fill="#fff"/><rect x="3" y="4" width="2" height="2" fill="#d9480f"/><rect x="2" y="7" width="1" height="1" fill="#334155"/><rect x="5" y="7" width="1" height="1" fill="#334155"/></svg>';
-  if(kind==='ver') return '<svg class="bot '+st+'" viewBox="0 0 8 8"><rect x="2" y="0" width="4" height="3" fill="'+c+'"/><rect x="2" y="1" width="2" height="2" fill="#bae6fd"/><rect x="5" y="1" width="1" height="1" fill="#1e293b"/><rect x="1" y="3" width="5" height="4" fill="'+c+'"/><rect x="6" y="3" width="2" height="3" fill="#e2e8f0"/><rect x="2" y="7" width="1" height="1" fill="'+c+'"/><rect x="4" y="7" width="1" height="1" fill="'+c+'"/></svg>';
-  return '<svg class="bot '+st+'" viewBox="0 0 8 8"><rect x="1" y="0" width="6" height="1" fill="#facc15"/><rect x="2" y="1" width="4" height="2" fill="'+c+'"/><rect x="3" y="2" width="1" height="1" fill="#1e293b"/><rect x="5" y="2" width="1" height="1" fill="#1e293b"/><rect x="1" y="3" width="6" height="3" fill="'+c+'"/><rect x="1" y="5" width="6" height="1" fill="#78350f"/><rect x="2" y="6" width="1" height="2" fill="'+c+'"/><rect x="5" y="6" width="1" height="2" fill="'+c+'"/></svg>';
+function colorIdx(name){let h=0;for(let i=0;i<(name||'').length;i++)h=(h*31+name.charCodeAt(i))|0;return Math.abs(h)%palette.length;}
+function botSVG(st,name,kind,anim){
+  const c=palette[colorIdx(name)];
+  const cls='bot '+(anim!==false?st:'');
+  if(kind==='coord') return '<svg class="'+cls+'" viewBox="0 0 8 8"><rect x="2" y="0" width="4" height="3" fill="'+c+'"/><rect x="3" y="1" width="1" height="1" fill="#1e293b"/><rect x="5" y="1" width="1" height="1" fill="#1e293b"/><rect x="1" y="3" width="6" height="4" fill="#334155"/><rect x="3" y="3" width="2" height="4" fill="#fff"/><rect x="3" y="4" width="2" height="2" fill="#d9480f"/><rect x="2" y="7" width="1" height="1" fill="#334155"/><rect x="5" y="7" width="1" height="1" fill="#334155"/></svg>';
+  if(kind==='ver') return '<svg class="'+cls+'" viewBox="0 0 8 8"><rect x="2" y="0" width="4" height="3" fill="'+c+'"/><rect x="2" y="1" width="2" height="2" fill="#bae6fd"/><rect x="5" y="1" width="1" height="1" fill="#1e293b"/><rect x="1" y="3" width="5" height="4" fill="'+c+'"/><rect x="6" y="3" width="2" height="3" fill="#e2e8f0"/><rect x="2" y="7" width="1" height="1" fill="'+c+'"/><rect x="4" y="7" width="1" height="1" fill="'+c+'"/></svg>';
+  return '<svg class="'+cls+'" viewBox="0 0 8 8"><rect x="1" y="0" width="6" height="1" fill="#facc15"/><rect x="2" y="1" width="4" height="2" fill="'+c+'"/><rect x="3" y="2" width="1" height="1" fill="#1e293b"/><rect x="5" y="2" width="1" height="1" fill="#1e293b"/><rect x="1" y="3" width="6" height="3" fill="'+c+'"/><rect x="1" y="5" width="6" height="1" fill="#78350f"/><rect x="2" y="6" width="1" height="2" fill="'+c+'"/><rect x="5" y="6" width="1" height="2" fill="'+c+'"/></svg>';
 }
 function setProc(p){curProc=p;curParent="";sel="";page=0;if(window._last)render(window._last);}
 function setSel(n){sel=(sel===n)?"":n;page=0;if(window._last)render(window._last);}
@@ -237,8 +237,10 @@ function renderGroup(title,list,offset,allWs,kind){
   return '<div class="grp"><span>'+title+'</span><span>'+list.length+'</span></div>'+list.map((w,i)=>{
     const subs=allWs.filter(x=>x.parent===w.name).length;
     const subBtn=subs?'<button class="sub-btn" onclick="enterSub(\''+w.name+'\',event)">'+subs+' sub ▶</button>':'';
-    const bStyle=w.status==='working'?' style="border-color:'+palette[(offset+i)%palette.length]+'"':'';
-    return '<div class="w '+w.status+' '+(sel===w.name?'sel':'')+'"'+bStyle+' onclick="setSel(\''+w.name+'\')">'+botSVG(w.status,offset+i,kind)+
+    const c=palette[colorIdx(w.name)];
+    const isSel=sel===w.name;
+    const bStyle=(w.status==='working'||isSel)?' style="'+(w.status==='working'?'border-color:color-mix(in srgb,'+c+' 55%,var(--border));':'')+(isSel?'background:color-mix(in srgb,'+c+' 12%,var(--surface-2));border-color:'+c+';':'')+'"':'';
+    return '<div class="w '+w.status+' '+(isSel?'sel':'')+'"'+bStyle+' onclick="setSel(\''+w.name+'\')">'+botSVG(w.status,w.name,kind)+
     '<div class="w-info"><div class="row"><b>'+w.name+'</b><span style="display:flex;gap:4px;align-items:center">'+subBtn+'<span class="badge '+w.status+'">'+w.status+'</span></span></div>'+
     '<div class="meta">'+w.role+' · '+(w.model||'-')+' · '+w.workspace_mode+'</div></div></div>';
   }).join('');
@@ -248,19 +250,24 @@ function fmtDur(iso){
   const s=Math.max(0,Math.floor((Date.now()-new Date(iso).getTime())/1000));
   const m=Math.floor(s/60); return m>0?(m+'m '+(s%60)+'s'):(s+'s');
 }
+const roleTools={orquestrador:'LegoLoop CLI',planejador:'PLAN v2',arquiteto:'Templates v2','engenheiro-backend':'Go / REST','engenheiro-tdd':'Go Test / Vitest','engenheiro-frontend':'React / Tailwind','engenheiro-secops':'Security Gates','dissecador-web':'REA Web','auditor-qualidade':'Taxlinter / Funclen','redator-tecnico':'Manual Creator'};
 function renderFicha(allWs,ms){
   const el=document.getElementById('ficha');
   if(!sel){el.innerHTML='';return;}
   const idx=allWs.findIndex(w=>w.name===sel);
   const w=idx>=0?allWs[idx]:{name:sel,role:'orquestrador',model:'maestro',workspace_mode:'inherit',status:'working'};
   const ord=ms.find(m=>m.to==='@'+w.name||m.to==='@all');
-  const pct=w.status==='killed'?'100%':w.status==='waiting'?'10%':'65%';
+  const out=ms.find(m=>m.from===w.name);
+  const subs=allWs.filter(x=>x.parent===w.name).map(x=>x.name);
+  const iso=(w.workspace_mode==='share'||w.workspace_mode==='branch')?'Isolado (git worktree)':'Conjunto (inherit)';
+  const pct=w.status==='killed'?'100%':w.status==='waiting'?'15%':'70%';
   const kind=w.role==='orquestrador'?'coord':w.role==='auditor-qualidade'?'ver':'trab';
-  el.innerHTML='<div class="ficha">'+botSVG(w.status,idx>=0?idx+1:0,kind)+'<div class="ficha-body">'+
+  el.innerHTML='<div class="ficha">'+botSVG(w.status,w.name,kind,false)+'<div class="ficha-body">'+
     '<div class="row"><b>'+w.name+'</b><span class="meta">⏱ '+fmtDur(w.created_at)+' · <span class="badge '+w.status+'">'+w.status+'</span></span></div>'+
-    '<div class="meta">Papel: '+w.role+' · Cérebro: '+(w.model||'-')+' · '+w.workspace_mode+'</div>'+
-    '<div class="meta">Ordem: '+(ord?ord.body:'aguardando instrução')+'</div>'+
-    '<div class="prog"><div class="prog-bar '+w.status+'" style="width:'+pct+'"></div></div>'+
+    '<div class="meta">Papel: '+w.role+' · Cérebro: '+(w.model||'-')+' · Ferramentas: '+(roleTools[w.role]||'CLI')+' · Modo: '+iso+'</div>'+
+    '<div class="meta">Input: '+(ord?ord.body:'aguardando')+' · Output: '+(out?out.body:'-')+'</div>'+
+    (subs.length?'<div class="meta">Subprocessos: '+subs.join(', ')+'</div>':'')+
+    '<div class="prog"><div class="prog-bar" style="width:'+pct+'"></div></div>'+
     '<div style="display:flex;gap:6px;margin-top:8px"><input id="cmd-in" class="btn" style="flex:1;text-align:left" placeholder="Enviar instrução para @'+w.name+'..."><button class="btn" onclick="sendPost(\''+w.name+'\')">Enviar</button><button class="btn" style="color:var(--fail)" onclick="sendKill(\''+w.name+'\')">Kill</button></div></div></div>';
 }
 function render(payload){
