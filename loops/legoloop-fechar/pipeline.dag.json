@@ -1,7 +1,7 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "date": "2026-11-07",
-  "description": "Pipeline canônico de canonização determinística em 9 etapas com telemetria estrita de tempo, recursos e custos",
+  "description": "Processo canônico de canonização determinística em 9 etapas com telemetria estrita de tempo, recursos e custos",
   "execution_strategy": {
     "concurrency": {
       "harness_capability": "subagent_cli_isolated",

@@ -162,7 +162,7 @@
     },
     {
       "id": "t4-saneamento-loops",
-      "name": "Saneamento de Loops",
+      "name": "Saneamento de Processos",
       "type": "script",
       "depends_on": [
         "t3-pontos-entrada"

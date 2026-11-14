@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "schema_version": 2,
   "date": "2026-11-09",
-  "description": "Pipeline canônico da Fundição Autônoma de Software LegoLoop com Protocolos Industriais e Motores de Fronteira N10",
+  "description": "Processo canônico da Fundição Autônoma de Software LegoLoop com Protocolos Industriais e Motores de Fronteira N10",
   "upstream_signatures": {
     "intent": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "spec": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",

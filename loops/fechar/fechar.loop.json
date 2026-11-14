@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "fechar",
-  "name": "Pipeline Universal de Fechamento e Canonização (legoloop-fechar)",
-  "description": "Sub-loop canônico em 8 etapas para canonizar e fechar qualquer pipeline aprovado no LegoLoop: Manual, Livro LegoPress, Skill nos harnesses, DAG validado, Rebuild do binário, Governança, Grafo semântico e Portões de qualidade.",
+  "name": "Processo Universal de Fechamento e Canonização (legoloop-fechar)",
+  "description": "Sub-processo canônico em 8 etapas para canonizar e fechar qualquer processo aprovado no LegoLoop: Manual, Livro LegoPress, Skill nos harnesses, DAG validado, Rebuild do binário, Governança, Grafo semântico e Portões de qualidade.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {
@@ -62,7 +62,13 @@
       "context_out": [
         "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md"
       ],
-      "command": ["legoloop", "fechar", "video-motion", "--dry-run", "--skip-build"],
+      "command": [
+        "legoloop",
+        "fechar",
+        "video-motion",
+        "--dry-run",
+        "--skip-build"
+      ],
       "test_seam": {
         "type": "script_exit_gate",
         "target": "file_exists('docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md')"
@@ -78,7 +84,9 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "script",
-      "depends_on": ["etapa-manual"],
+      "depends_on": [
+        "etapa-manual"
+      ],
       "routing": {
         "mode": "manual",
         "model": "code-fast",
@@ -99,7 +107,12 @@
       "context_out": [
         "docs/books/video-rea/livro.json"
       ],
-      "command": ["legoloop", "legopress", "auditar", "docs/books/video-rea/2026-11-07_PIPELINE-VIDEO-REA.pdf"],
+      "command": [
+        "legoloop",
+        "legopress",
+        "auditar",
+        "docs/books/video-rea/2026-11-07_PIPELINE-VIDEO-REA.pdf"
+      ],
       "test_seam": {
         "type": "script_exit_gate",
         "target": "file_exists('docs/books/video-rea/livro.json')"
@@ -115,7 +128,9 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "script",
-      "depends_on": ["etapa-livro"],
+      "depends_on": [
+        "etapa-livro"
+      ],
       "routing": {
         "mode": "manual",
         "model": "code-fast",
@@ -136,7 +151,11 @@
       "context_out": [
         "skills/legoloop-fechar/SKILL.md"
       ],
-      "command": ["legoloop", "instalar-skills", "--dry-run"],
+      "command": [
+        "legoloop",
+        "instalar-skills",
+        "--dry-run"
+      ],
       "test_seam": {
         "type": "script_exit_gate",
         "target": "file_exists('skills/legoloop-fechar/SKILL.md')"
@@ -152,7 +171,9 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "script",
-      "depends_on": ["etapa-skill"],
+      "depends_on": [
+        "etapa-skill"
+      ],
       "routing": {
         "mode": "manual",
         "model": "code-fast",
@@ -173,7 +194,11 @@
       "context_out": [
         "loops/legoloop-video-motion/pipeline.dag.json"
       ],
-      "command": ["legoloop", "validate", "loops/legoloop-video-motion/pipeline.dag.json"],
+      "command": [
+        "legoloop",
+        "validate",
+        "loops/legoloop-video-motion/pipeline.dag.json"
+      ],
       "test_seam": {
         "type": "script_exit_gate",
         "target": "file_exists('loops/legoloop-video-motion/pipeline.dag.json')"
@@ -189,7 +214,9 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "script",
-      "depends_on": ["etapa-dag"],
+      "depends_on": [
+        "etapa-dag"
+      ],
       "routing": {
         "mode": "manual",
         "model": "code-fast",
@@ -210,7 +237,10 @@
       "context_out": [
         "bin/legoloop.exe"
       ],
-      "command": ["legoloop", "version"],
+      "command": [
+        "legoloop",
+        "version"
+      ],
       "test_seam": {
         "type": "script_exit_gate",
         "target": "file_exists('bin/legoloop.exe')"
@@ -226,7 +256,9 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "type": "script",
-      "depends_on": ["etapa-rebuild"],
+      "depends_on": [
+        "etapa-rebuild"
+      ],
       "routing": {
         "mode": "manual",
         "model": "code-fast",
@@ -247,7 +279,11 @@
       "context_out": [
         "AGENTS.md"
       ],
-      "command": ["legoloop", "doctor", "--json"],
+      "command": [
+        "legoloop",
+        "doctor",
+        "--json"
+      ],
       "test_seam": {
         "type": "script_exit_gate",
         "target": "file_exists('AGENTS.md')"

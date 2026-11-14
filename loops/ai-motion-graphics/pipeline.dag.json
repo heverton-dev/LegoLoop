@@ -1,7 +1,7 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "date": "2026-11-09",
-  "description": "Pipeline soberano de motion graphics com 10 GitHub repos open-source",
+  "description": "Processo soberano de motion graphics com 10 GitHub repos open-source",
   "execution_strategy": {
     "concurrency": {
       "harness_capability": "subagent_cli_isolated",
@@ -57,7 +57,7 @@
       "nature": "nano",
       "output": {
         "artifact": "internal/motion/types.go",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/types.go') \u0026\u0026 file_exists('internal/motion/types_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/types.go') && file_exists('internal/motion/types_test.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -84,7 +84,7 @@
       },
       "type": "unit_task",
       "verification": {
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/types.go') \u0026\u0026 file_exists('internal/motion/types_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/types.go') && file_exists('internal/motion/types_test.go')"
       }
     },
     {
@@ -124,7 +124,7 @@
       "nature": "micro",
       "output": {
         "artifact": "internal/motion/suggest.go",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/suggest.go') \u0026\u0026 file_exists('internal/motion/suggest_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/suggest.go') && file_exists('internal/motion/suggest_test.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -151,7 +151,7 @@
       },
       "type": "unit_task",
       "verification": {
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/suggest.go') \u0026\u0026 file_exists('internal/motion/suggest_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/suggest.go') && file_exists('internal/motion/suggest_test.go')"
       }
     },
     {
@@ -311,7 +311,7 @@
       "nature": "micro",
       "output": {
         "artifact": "internal/motion/build.go",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/build.go') \u0026\u0026 file_exists('internal/motion/build_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/build.go') && file_exists('internal/motion/build_test.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -338,7 +338,7 @@
       },
       "type": "unit_task",
       "verification": {
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/build.go') \u0026\u0026 file_exists('internal/motion/build_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/build.go') && file_exists('internal/motion/build_test.go')"
       }
     },
     {
@@ -496,7 +496,7 @@
       "nature": "micro",
       "output": {
         "artifact": "internal/motion/render.go",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/render.go') \u0026\u0026 file_exists('internal/motion/render_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/render.go') && file_exists('internal/motion/render_test.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -523,7 +523,7 @@
       },
       "type": "unit_task",
       "verification": {
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/render.go') \u0026\u0026 file_exists('internal/motion/render_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/render.go') && file_exists('internal/motion/render_test.go')"
       }
     },
     {
@@ -563,7 +563,7 @@
       "nature": "micro",
       "output": {
         "artifact": "internal/motion/encode.go",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/encode.go') \u0026\u0026 file_exists('internal/motion/encode_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/encode.go') && file_exists('internal/motion/encode_test.go')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -590,7 +590,7 @@
       },
       "type": "unit_task",
       "verification": {
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/encode.go') \u0026\u0026 file_exists('internal/motion/encode_test.go')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/encode.go') && file_exists('internal/motion/encode_test.go')"
       }
     },
     {
@@ -758,7 +758,7 @@
       "nature": "micro",
       "output": {
         "artifact": "internal/motion/sync.go",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/sync.go') \u0026\u0026 file_exists('scripts/beat_detect.py')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/sync.go') && file_exists('scripts/beat_detect.py')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -785,7 +785,7 @@
       },
       "type": "unit_task",
       "verification": {
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/sync.go') \u0026\u0026 file_exists('scripts/beat_detect.py')"
+        "gate": "exit_code == 0 && file_exists('internal/motion/sync.go') && file_exists('scripts/beat_detect.py')"
       }
     },
     {
@@ -942,7 +942,7 @@
       "nature": "macro",
       "output": {
         "artifact": "skills/ai-motion-graphics/SKILL.md",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('skills/ai-motion-graphics/SKILL.md')"
+        "gate": "exit_code == 0 && file_exists('skills/ai-motion-graphics/SKILL.md')"
       },
       "ref": "legoloop-instalar-skills",
       "rollback_strategy": "stash_changes",
@@ -967,7 +967,7 @@
       },
       "type": "subloop",
       "verification": {
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('skills/ai-motion-graphics/SKILL.md')"
+        "gate": "exit_code == 0 && file_exists('skills/ai-motion-graphics/SKILL.md')"
       }
     },
     {
@@ -1005,7 +1005,7 @@
       "nature": "macro",
       "output": {
         "artifact": "docs/books/ai-motion-graphics-engenheiro/livro.json",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/books/ai-motion-graphics/livro.json')"
+        "gate": "exit_code == 0 && file_exists('docs/books/ai-motion-graphics/livro.json')"
       },
       "ref": "legoloop-legopress",
       "rollback_strategy": "stash_changes",
@@ -1030,7 +1030,7 @@
       },
       "type": "subloop",
       "verification": {
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/books/ai-motion-graphics/livro.json')"
+        "gate": "exit_code == 0 && file_exists('docs/books/ai-motion-graphics/livro.json')"
       }
     },
     {
@@ -1071,7 +1071,7 @@
       "nature": "nano",
       "output": {
         "artifact": "bin/legoloop.exe",
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
       },
       "rollback_strategy": "stash_changes",
       "routing": {
@@ -1095,7 +1095,7 @@
       },
       "type": "stop_gate",
       "verification": {
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
       }
     }
   ],

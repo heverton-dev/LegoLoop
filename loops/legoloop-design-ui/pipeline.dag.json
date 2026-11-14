@@ -24,7 +24,7 @@
       },
       "output": {
         "artifact": "out/01_planejar.md",
-        "gate": "file_exists('out/01_planejar.md') \u0026\u0026 word_count('out/01_planejar.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_planejar.md', '\\{\\{')"
+        "gate": "file_exists('out/01_planejar.md') && word_count('out/01_planejar.md') >= 30 && !has_pattern('out/01_planejar.md', '\\{\\{')"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",

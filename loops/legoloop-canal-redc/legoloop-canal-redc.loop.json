@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "legoloop-canal-redc",
-  "name": "Mega-Pipeline REDC (Engenharia Reversa Profunda de Canais e Clonagem)",
-  "description": "Engenharia reversa profunda de canais e vídeos virais, geração de dossiê DNA, catálogo de métodos em pipelines e gerador de vídeos com Brand Swap.",
+  "name": "Mega-Processo REDC (Engenharia Reversa Profunda de Canais e Clonagem)",
+  "description": "Engenharia reversa profunda de canais e vídeos virais, geração de dossiê DNA, catálogo de métodos em processos e gerador de vídeos com Brand Swap.",
   "version": "1.0.0",
   "date": "2026-11-07",
   "upstream_signatures": {
@@ -125,7 +125,7 @@
     },
     {
       "id": "n03_gerar_pipelines_metodos",
-      "name": "Gerador de Pipelines & Métodos",
+      "name": "Gerador de Processos & Métodos",
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "script",

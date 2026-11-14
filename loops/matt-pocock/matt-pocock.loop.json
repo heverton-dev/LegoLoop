@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "matt-pocock",
-  "name": "Pipeline de Rigor Matt Pocock (6 Sub-Loops)",
-  "description": "Pipeline determinístico de engenharia baseado no método Matt Pocock: Grilling & Alinhamento de Domínio -> Desvio Empírico/Protótipo -> Especificação & Tickets em Grafo -> Construção TDD Cirúrgica -> Code Review de 2 Eixos -> Retroalimentação do Ambiente.",
+  "name": "Processo de Rigor Matt Pocock (6 Sub-Processos)",
+  "description": "Processo determinístico de engenharia baseado no método Matt Pocock: Grilling & Alinhamento de Domínio -> Desvio Empírico/Protótipo -> Especificação & Tickets em Grafo -> Construção TDD Cirúrgica -> Code Review de 2 Eixos -> Retroalimentação do Ambiente.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {

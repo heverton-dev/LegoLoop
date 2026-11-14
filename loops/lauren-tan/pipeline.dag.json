@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "lauren-tan",
-  "name": "Pipeline Lauren Tan pstack (6 Sub-Loops)",
-  "description": "Pipeline de rigor de engenharia baseado no método Lauren Tan (pstack / poteto-mode): Intenção & Modelagem de Domínio -> Arquitetura & Exploração -> Decomposição em Unidades Verificáveis -> Construção Rigorosa TDD -> Verificação Formal no Artefato Real -> Higiene de Código (Unslop) & Ship.",
+  "name": "Processo Lauren Tan pstack (6 Sub-Processos)",
+  "description": "Processo de rigor de engenharia baseado no método Lauren Tan (pstack / poteto-mode): Intenção & Modelagem de Domínio -> Arquitetura & Exploração -> Decomposição em Unidades Verificáveis -> Construção Rigorosa TDD -> Verificação Formal no Artefato Real -> Higiene de Código (Unslop) & Ship.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {

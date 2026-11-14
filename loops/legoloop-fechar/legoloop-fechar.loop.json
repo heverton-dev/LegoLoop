@@ -1,10 +1,10 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",  "id": "legoloop-fechar",
-
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "legoloop-fechar",
   "name": "legoloop-fechar",
   "version": "1.0.0",
   "date": "2026-11-07",
-  "description": "Pipeline canônico de canonização determinística em 9 etapas com telemetria estrita de tempo, recursos e custos",
+  "description": "Processo canônico de canonização determinística em 9 etapas com telemetria estrita de tempo, recursos e custos",
   "upstream_signatures": {
     "intent": "e037061d1ea1787c80ee98ca4666cfb749629b3a4a905a96328a9b31d9fa499c",
     "spec": "01b2a758e5f2fe4e8be320a4ca22495fc9f6ee40498dbfb9df881db22b31128c",

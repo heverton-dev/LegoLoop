@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "schema_version": 2,
   "date": "2026-11-09",
-  "description": "Pipeline canônico soberano de geração de Cartoon Shorts (1080x1920 30fps) com roteiro 3.7 palavras/s, voz neural Edge-TTS e renderização Three.js/Playwright a custo R$ 0,00",
+  "description": "Processo canônico soberano de geração de Cartoon Shorts (1080x1920 30fps) com roteiro 3.7 palavras/s, voz neural Edge-TTS e renderização Three.js/Playwright a custo R$ 0,00",
   "upstream_signatures": {
     "intent": "6ef659ca8a52b2aa64cb8cd88fddec0444400c9a9088bca7aa9c5a358f05cf9f",
     "spec": "5aacc736641d9a342a57c510e76455f28978032b18f30d699942f22ebc5cba3f",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "date": "2026-11-08",
-  "description": "Pipeline executável de edição determinística de vídeo por código (Lucas Leite) com isolamento hermético em scratch/ e Stop-Gates humanos.",
+  "description": "Processo executável de edição determinística de vídeo por código (Lucas Leite) com isolamento hermético em scratch/ e Stop-Gates humanos.",
   "execution_strategy": {
     "concurrency": {
       "harness_capability": "subagent_cli_isolated",

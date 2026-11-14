@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "addy-osmani",
-  "name": "Pipeline de Web Performance & Engenharia Addy Osmani (8 Sub-Loops)",
-  "description": "Pipeline canônico de engenharia e performance web baseado nas 25 skills e playbooks de Addy Osmani: Alinhamento & Contexto -> Especificação & Restrições (CONSTRAINTS.md) -> Decomposição Tracer-Bullet -> Construção TDD -> Runtime Real & Web Vitals -> Auditoria 5 Eixos & Hardening OWASP -> Observabilidade & Ship.",
+  "name": "Processo de Web Performance & Engenharia Addy Osmani (8 Sub-Processos)",
+  "description": "Processo canônico de engenharia e performance web baseado nas 25 skills e playbooks de Addy Osmani: Alinhamento & Contexto -> Especificação & Restrições (CONSTRAINTS.md) -> Decomposição Tracer-Bullet -> Construção TDD -> Runtime Real & Web Vitals -> Auditoria 5 Eixos & Hardening OWASP -> Observabilidade & Ship.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {

@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "legoloop-video-master",
-  "name": "Mega-Pipeline Soberano de Producao Audiovisual (legoloop-video-master)",
-  "description": "Mega-pipeline unificado em 4 pilares tecnológicos: Motion Graphics 3D com código, Whiteboard SVG no piloto automático, Auto-Editor de Reels e Engenharia Reversa de Canais.",
+  "name": "Mega-Processo Soberano de Producao Audiovisual (legoloop-video-master)",
+  "description": "Mega-processo unificado em 4 pilares tecnológicos: Motion Graphics 3D com código, Whiteboard SVG no piloto automático, Auto-Editor de Reels e Engenharia Reversa de Canais.",
   "version": "1.0.0",
   "date": "2026-11-07",
   "upstream_signatures": {

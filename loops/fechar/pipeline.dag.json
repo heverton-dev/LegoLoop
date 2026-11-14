@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "fechar",
-  "name": "Pipeline Universal de Fechamento e Canonização (legoloop-fechar)",
-  "description": "Sub-loop canônico em 8 etapas para canonizar e fechar qualquer pipeline aprovado no LegoLoop: Manual, Livro LegoPress, Skill nos harnesses, DAG validado, Rebuild do binário, Governança, Grafo semântico e Portões de qualidade.",
+  "name": "Processo Universal de Fechamento e Canonização (legoloop-fechar)",
+  "description": "Sub-processo canônico em 8 etapas para canonizar e fechar qualquer processo aprovado no LegoLoop: Manual, Livro LegoPress, Skill nos harnesses, DAG validado, Rebuild do binário, Governança, Grafo semântico e Portões de qualidade.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {

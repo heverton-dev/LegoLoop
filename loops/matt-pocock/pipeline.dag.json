@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "schema_version": 2,
   "date": "2026-11-09",
-  "description": "Pipeline determinístico de engenharia baseado no método Matt Pocock: Grilling & Alinhamento de Domínio -> Desvio Empírico/Protótipo -> Especificação & Tickets em Grafo -> Construção TDD Cirúrgica -> Code Review de 2 Eixos -> Retroalimentação do Ambiente.",
+  "description": "Processo determinístico de engenharia baseado no método Matt Pocock: Grilling & Alinhamento de Domínio -> Desvio Empírico/Protótipo -> Especificação & Tickets em Grafo -> Construção TDD Cirúrgica -> Code Review de 2 Eixos -> Retroalimentação do Ambiente.",
   "upstream_signatures": {
     "intent": "9812a677fbca05619985ea15858022b7c02bda6396919db45873919e86bf79e8",
     "spec": "ec6576b22ba8fe6cb30d24bf51a37c9a419eb9338f977c0500e2ea024f9e1189",

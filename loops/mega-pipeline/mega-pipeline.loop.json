@@ -1,8 +1,8 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
   "id": "mega-pipeline",
-  "name": "Mega Pipeline LegoLoop (6 Sub-Loops)",
-  "description": "Esteira mestre determinística com os 6 sub-loops canônicos: Concepção & Alinhamento -> Engenharia Reversa & Design Pass -> Tríade de Planejamento -> Construção TDD por Épico -> Homologação E2E -> Fechamento Canônico Universal.",
+  "name": "Mega Processo LegoLoop (6 Sub-Processos)",
+  "description": "Processo mestre determinística com os 6 sub-processos canônicos: Concepção & Alinhamento -> Engenharia Reversa & Design Pass -> Tríade de Planejamento -> Construção TDD por Épico -> Homologação E2E -> Fechamento Canônico Universal.",
   "version": "1.0.0",
   "date": "2026-11-09",
   "upstream_signatures": {
@@ -44,7 +44,11 @@
       "nature": "micro",
       "cognitive_complexity": "medio",
       "type": "script",
-      "command": ["legoloop", "fabricar", "entrevista"],
+      "command": [
+        "legoloop",
+        "fabricar",
+        "entrevista"
+      ],
       "ref": "legoloop fabricar entrevista",
       "routing": {
         "mode": "suggested",
