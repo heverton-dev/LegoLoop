@@ -100,7 +100,7 @@ func (s *Server) Handler() http.Handler {
 func (s *Server) registerStaticRoutes(mux *http.ServeMux) {
 	static, _ := fs.Sub(staticFS, "static")
 	files := http.FileServerFS(static)
-	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /processos.js", "GET /style.css", "GET /components/"} {
+	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /processos.js", "GET /swarm.js", "GET /swarm.css", "GET /style.css", "GET /components/"} {
 		mux.Handle(p, files)
 	}
 	mux.HandleFunc("GET /inventario", handlePage("inventario.html"))
