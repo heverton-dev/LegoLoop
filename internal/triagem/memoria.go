@@ -10,12 +10,21 @@ import (
 // ArquivoMemoria é o nome do arquivo de memória de curto prazo por processo.
 const ArquivoMemoria = "memoria_execucao.json"
 
+// TokenBudgetTelemetry registra a atuação do gate mecânico de token_budget.
+type TokenBudgetTelemetry struct {
+	NodeID          string `json:"node_id"`
+	EstimatedTokens int    `json:"estimated_tokens"`
+	MaxPromptTokens int    `json:"max_prompt_tokens"`
+	Action          string `json:"action"` // "pass", "truncate", "abort"
+}
+
 // MemoriaExecucao registra o estado atual de execução de um processo.
 type MemoriaExecucao struct {
-	Processo     string    `json:"processo"`
-	EtapaAtual   string    `json:"etapa_atual"`
-	ProximoPasso string    `json:"proximo_passo"`
-	AtualizadoEm time.Time `json:"atualizado_em"`
+	Processo     string                `json:"processo"`
+	EtapaAtual   string                `json:"etapa_atual"`
+	ProximoPasso string                `json:"proximo_passo"`
+	AtualizadoEm time.Time             `json:"atualizado_em"`
+	TokenBudget  *TokenBudgetTelemetry `json:"token_budget,omitempty"`
 }
 
 // LerMemoria lê a memória de curto prazo do diretório informado.

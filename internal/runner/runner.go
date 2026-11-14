@@ -223,10 +223,8 @@ func (r *run) execNode(parent context.Context, id string) NodeReport {
 	if cleanup != nil {
 		defer cleanup()
 	}
-	if n.Slots != nil && len(n.Slots.Hooks.Pre) > 0 {
-		if preErr := executeSlotCommands(ctx, n.Slots.Hooks.Pre, workdir); preErr != nil {
-			return fail("slot hook pre falhou: " + preErr.Error())
-		}
+	if err := r.preExecNode(ctx, &n, workdir); err != nil {
+		return fail(err.Error())
 	}
 	res, err := r.opts.Executor.Execute(ctx, n, workdir)
 	nr := NodeReport{ID: id, Duration: time.Since(start), ExitCode: res.ExitCode, Tokens: res.Tokens,
@@ -240,6 +238,15 @@ func (r *run) execNode(parent context.Context, id string) NodeReport {
 	}
 	r.finalStatus(ctx, parent, &nr, n, res.ExitCode, err)
 	return nr
+}
+
+func (r *run) preExecNode(ctx context.Context, n *dag.Node, workdir string) error {
+	if n.Slots != nil && len(n.Slots.Hooks.Pre) > 0 {
+		if preErr := executeSlotCommands(ctx, n.Slots.Hooks.Pre, workdir); preErr != nil {
+			return fmt.Errorf("slot hook pre falhou: %w", preErr)
+		}
+	}
+	return enforceTokenBudget(n, workdir, r.opts.Workdir)
 }
 
 func errString(err error) string {

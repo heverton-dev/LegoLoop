@@ -15,9 +15,12 @@ import (
 // maxInputBytes limita cada artefato de entrada injetado no prompt (contexto 2k–8k tokens).
 const maxInputBytes = 256 << 10
 
+// coreInviolableRules define o núcleo mínimo inviolável injetado em cada nó.
+const coreInviolableRules = "- STE-PT: frases curtas (<20 palavras), voz ativa, PT-BR, fatos com prova.\n- Zero Stubs: proibido TODO, pass, mock simulado ou implementação incompleta.\n- Path Jail: proibido escape de diretório (.., symlinks externos ou caminhos fora da raiz)."
+
 var fileInputRe = regexp.MustCompile(`^file\('([^']+)'\)$`)
 
-// buildPrompt monta o prompt único e estéril: skill + entradas resolvidas + contrato de saída.
+// buildPrompt monta o prompt único e estéril: núcleo mínimo + skill + tooling + context_in + entradas.
 func (o *Orchestrix) buildPrompt(n dag.Node, work *os.Root) (string, error) {
 	skill, err := o.readSkill(n.Ref)
 	if err != nil {
@@ -26,20 +29,78 @@ func (o *Orchestrix) buildPrompt(n dag.Node, work *os.Root) (string, error) {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# Orchestrix isolada — nó %s\n\n", n.ID)
 	fmt.Fprintf(&b, "Você é um executor de tarefa única, sem histórico. Responda SOMENTE com o conteúdo final do artefato `%s`, sem comentários extras.\n\n", n.Output.Artifact)
-	fmt.Fprintf(&b, "Condição de saída (gate): `%s`\n\n## Skill\n\n%s\n", n.Output.Gate, strings.TrimSpace(skill))
-	keys := make([]string, 0, len(n.Inputs))
-	for k := range n.Inputs {
+	fmt.Fprintf(&b, "Condição de saída (gate): `%s`\n\n## Núcleo Mínimo Inviolável\n\n%s\n\n## Skill\n\n%s\n", n.Output.Gate, coreInviolableRules, strings.TrimSpace(skill))
+	o.appendTooling(&b, n.Tooling)
+	o.appendContextIn(&b, n.ContextIn, work)
+	if err := o.appendInputs(&b, n.Inputs, work); err != nil {
+		return "", err
+	}
+	return b.String(), nil
+}
+
+func (o *Orchestrix) appendInputs(b *strings.Builder, inputs map[string]string, work *os.Root) error {
+	keys := make([]string, 0, len(inputs))
+	for k := range inputs {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	for _, k := range keys {
-		v, err := o.resolveInput(n.Inputs[k], work)
+		v, err := o.resolveInput(inputs[k], work)
 		if err != nil {
-			return "", fmt.Errorf("entrada %q: %w", k, err)
+			return fmt.Errorf("entrada %q: %w", k, err)
 		}
-		fmt.Fprintf(&b, "\n## Entrada: %s\n\n%s\n", k, v)
+		fmt.Fprintf(b, "\n## Entrada: %s\n\n%s\n", k, v)
 	}
-	return b.String(), nil
+	return nil
+}
+
+func (o *Orchestrix) appendContextIn(b *strings.Builder, contextIn []string, work *os.Root) {
+	if work == nil || len(contextIn) == 0 {
+		return
+	}
+	for _, path := range contextIn {
+		clean := filepath.FromSlash(strings.TrimSpace(path))
+		if clean == "" || !filepath.IsLocal(clean) {
+			continue
+		}
+		data, err := readLimited(work, clean)
+		if err != nil {
+			continue
+		}
+		fmt.Fprintf(b, "\n## Contexto de Entrada: %s\n\n%s\n", path, strings.TrimSpace(string(data)))
+	}
+}
+
+func (o *Orchestrix) appendTooling(b *strings.Builder, tooling map[string]any) {
+	for _, key := range []string{"skills", "rules", "skill", "rule"} {
+		for _, ref := range extractStringRefs(tooling[key]) {
+			content, err := o.readSkill(ref)
+			if err != nil {
+				continue
+			}
+			fmt.Fprintf(b, "\n## Regra/Skill (%s)\n\n%s\n", ref, strings.TrimSpace(content))
+		}
+	}
+}
+
+func extractStringRefs(val any) []string {
+	switch v := val.(type) {
+	case string:
+		if strings.TrimSpace(v) != "" {
+			return []string{strings.TrimSpace(v)}
+		}
+	case []string:
+		return v
+	case []any:
+		out := make([]string, 0, len(v))
+		for _, item := range v {
+			if s, ok := item.(string); ok && strings.TrimSpace(s) != "" {
+				out = append(out, strings.TrimSpace(s))
+			}
+		}
+		return out
+	}
+	return nil
 }
 
 func (o *Orchestrix) readSkill(ref string) (string, error) {
