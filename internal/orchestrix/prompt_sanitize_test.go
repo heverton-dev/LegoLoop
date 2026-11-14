@@ -7,8 +7,8 @@ import (
 
 func TestSanitizeContextIn_NeutralizaPromptInjection(t *testing.T) {
 	casos := []struct {
-		nome    string
-		entrada string
+		nome     string
+		entrada  string
 		proibido string
 	}{
 		{

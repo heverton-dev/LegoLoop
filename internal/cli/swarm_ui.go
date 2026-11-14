@@ -48,8 +48,14 @@ func allBoardsPayload(root, singleDir, procName string) ([]byte, error) {
 		if err != nil {
 			continue
 		}
-		st, _ := sb.Status()
-		msgs, _ := sb.ReadMessages(0, nil)
+		st, err := sb.Status()
+		if err != nil {
+			continue
+		}
+		msgs, err := sb.ReadMessages(0, nil)
+		if err != nil {
+			continue
+		}
 		procs[name] = map[string]any{"workers": st.Workers, "messages": msgs}
 	}
 	return json.Marshal(map[string]any{"order": names, "processes": procs})

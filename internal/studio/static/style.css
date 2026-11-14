@@ -228,7 +228,6 @@ button, input, select { font: inherit; color: inherit; }
   overflow: hidden;
   padding: 0;
 }
-.inspector.is-collapsed .inspector-header,
 .inspector.is-collapsed .inspector__body {
   display: none !important;
 }
@@ -2507,5 +2506,6 @@ lego-item-modal {
 
 .sidebar.is-collapsed #btn-import-github { display: none; }
 .inspector.is-collapsed .inspector-header > *:not(#btn-toggle-inspector) { display: none; }
-.inspector.is-collapsed .inspector-header { display: flex; justify-content: center; padding: 8px 4px; }
-.sidebar .cat-tabs, .sidebar .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.inspector.is-collapsed .inspector-header { display: flex; justify-content: center; padding: 8px 4px; position: relative; z-index: 20; }
+#btn-toggle-inspector { position: relative; z-index: 25; }
+.sidebar .cats, .sidebar .cat-tabs, .sidebar .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }

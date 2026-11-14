@@ -513,3 +513,18 @@ func TestProcessosModalWiring(t *testing.T) {
 		t.Error("app.js deve chamar initProcessosModal")
 	}
 }
+
+func TestCanConnectTriggerAnyBlock(t *testing.T) {
+	app := readStatic(t, "app.js")
+	idx := strings.Index(app, "function canConnect(")
+	if idx < 0 {
+		t.Fatal("app.js sem function canConnect(")
+	}
+	snippet := app[idx:]
+	if end := strings.Index(snippet, "\n}"); end > 0 {
+		snippet = snippet[:end+2]
+	}
+	if !strings.Contains(snippet, `startsWith("trigger_")`) {
+		t.Fatalf("canConnect deve permitir ligação de/para trigger_* com qualquer bloco ou peça; trecho:\n%s", snippet)
+	}
+}

@@ -47,7 +47,9 @@
       "routing": {
         "mode": "manual",
         "model": "code-fast",
-        "effort": "low"
+        "effort": "low",
+        "harness": "claude",
+        "via": "9router"
       },
       "token_budget": {
         "input_tokens": 2000,
@@ -56,9 +58,12 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
-      "context_in": [],
+      "context_in": [
+        "docs/specs/"
+      ],
       "context_out": [
         "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md"
       ],
@@ -76,7 +81,20 @@
       "output": {
         "artifact": "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md",
         "gate": "file_exists('docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-etapa-manual",
+      "status": "pending"
     },
     {
       "id": "etapa-livro",
@@ -90,7 +108,9 @@
       "routing": {
         "mode": "manual",
         "model": "code-fast",
-        "effort": "low"
+        "effort": "low",
+        "harness": "claude",
+        "via": "9router"
       },
       "token_budget": {
         "input_tokens": 2000,
@@ -99,7 +119,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md"
@@ -120,7 +141,20 @@
       "output": {
         "artifact": "docs/books/video-rea/livro.json",
         "gate": "file_exists('docs/books/video-rea/livro.json')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-etapa-livro",
+      "status": "pending"
     },
     {
       "id": "etapa-skill",
@@ -134,7 +168,9 @@
       "routing": {
         "mode": "manual",
         "model": "code-fast",
-        "effort": "low"
+        "effort": "low",
+        "harness": "claude",
+        "via": "9router"
       },
       "token_budget": {
         "input_tokens": 2000,
@@ -143,7 +179,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "docs/books/video-rea/livro.json"
@@ -163,7 +200,20 @@
       "output": {
         "artifact": "skills/legoloop-fechar/SKILL.md",
         "gate": "file_exists('skills/legoloop-fechar/SKILL.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-etapa-skill",
+      "status": "pending"
     },
     {
       "id": "etapa-dag",
@@ -177,7 +227,9 @@
       "routing": {
         "mode": "manual",
         "model": "code-fast",
-        "effort": "low"
+        "effort": "low",
+        "harness": "claude",
+        "via": "9router"
       },
       "token_budget": {
         "input_tokens": 2000,
@@ -186,7 +238,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "skills/legoloop-fechar/SKILL.md"
@@ -206,7 +259,20 @@
       "output": {
         "artifact": "loops/legoloop-video-motion/pipeline.dag.json",
         "gate": "file_exists('loops/legoloop-video-motion/pipeline.dag.json')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-etapa-dag",
+      "status": "pending"
     },
     {
       "id": "etapa-rebuild",
@@ -220,7 +286,9 @@
       "routing": {
         "mode": "manual",
         "model": "code-fast",
-        "effort": "low"
+        "effort": "low",
+        "harness": "claude",
+        "via": "9router"
       },
       "token_budget": {
         "input_tokens": 2000,
@@ -229,7 +297,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "loops/legoloop-video-motion/pipeline.dag.json"
@@ -248,7 +317,20 @@
       "output": {
         "artifact": "bin/legoloop.exe",
         "gate": "file_exists('bin/legoloop.exe')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-etapa-rebuild",
+      "status": "pending"
     },
     {
       "id": "etapa-governanca",
@@ -262,7 +344,9 @@
       "routing": {
         "mode": "manual",
         "model": "code-fast",
-        "effort": "low"
+        "effort": "low",
+        "harness": "claude",
+        "via": "9router"
       },
       "token_budget": {
         "input_tokens": 2000,
@@ -271,7 +355,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "context_in": [
         "bin/legoloop.exe"
@@ -291,9 +376,21 @@
       "output": {
         "artifact": "AGENTS.md",
         "gate": "file_exists('AGENTS.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-etapa-governanca",
+      "status": "pending"
     }
   ],
-  "": "https://legoloop.dev/schemas/dag.v2.json",
   "schema_version": 2
 }

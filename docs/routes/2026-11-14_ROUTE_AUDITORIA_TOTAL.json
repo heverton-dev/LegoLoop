@@ -1,0 +1,11 @@
+{
+  "version": "2.0",
+  "id": "ROUTE-AUDITORIA-TOTAL-2026-11-14",
+  "nodes": [
+    {"id": "T-01", "worker": "fix-core", "depends_on": []},
+    {"id": "T-02", "worker": "fix-loops", "depends_on": []},
+    {"id": "T-03", "worker": "fix-studio", "depends_on": []},
+    {"id": "T-04", "worker": "fix-swarm-motores", "depends_on": []},
+    {"id": "T-05", "worker": "verify-e2e", "depends_on": ["T-01", "T-02", "T-03", "T-04"]}
+  ]
+}

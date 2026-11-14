@@ -522,12 +522,13 @@ function curve(a, b) {
   return `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
 }
 
-// Peça genérica aceita e produz "Qualquer": liga com tudo. Entre blocos tipados vale a matriz.
+// Peça genérica ou Gatilho (trigger_*) aceita e produz "Qualquer": liga com tudo. Entre blocos tipados vale a matriz.
 function canConnect(fromId, toId) {
   const a = state.nodes.get(fromId);
   const b = state.nodes.get(toId);
   if (!a || !b || fromId === toId) return false;
   if (a.piece || b.piece) return true;
+  if (blockOf(a)?.kind?.startsWith("trigger_") || blockOf(b)?.kind?.startsWith("trigger_")) return true;
   return (state.matrix[a.block] || []).includes(b.block);
 }
 

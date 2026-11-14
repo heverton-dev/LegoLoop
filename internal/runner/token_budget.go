@@ -2,6 +2,7 @@ package runner
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -88,7 +89,9 @@ func recordBudgetTelemetry(memDir string, tel triagem.TokenBudgetTelemetry) {
 		}
 	}
 	mem.TokenBudget = &tel
-	_ = triagem.SalvarMemoria(memDir, mem)
+	if err := triagem.SalvarMemoria(memDir, mem); err != nil {
+		log.Printf("token_budget: falha ao salvar memoria em %s: %v", memDir, err)
+	}
 }
 
 func enforceTokenBudget(n *dag.Node, workdir, memDir string) error {

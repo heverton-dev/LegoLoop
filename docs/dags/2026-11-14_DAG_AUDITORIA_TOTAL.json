@@ -1,0 +1,12 @@
+{
+  "id": "dag-auditoria-total-2026-11-14",
+  "name": "auditoria-total-2026-11-14",
+  "version": "1.0",
+  "nodes": [
+    {"id": "T-01", "type": "script", "routing": {"mode": "manual", "model": "code-fast"}, "command": ["echo", "T-01"], "output": {"artifact": "docs/reports/2026-11-14_MEMORIA_AUDITORIA_TOTAL.md", "gate": "exit_code == 0"}, "depends_on": []},
+    {"id": "T-02", "type": "script", "routing": {"mode": "manual", "model": "code-fast"}, "command": ["echo", "T-02"], "output": {"artifact": "docs/intents/2026-11-14_INTENT_AUDITORIA_TOTAL.md", "gate": "exit_code == 0"}, "depends_on": []},
+    {"id": "T-03", "type": "script", "routing": {"mode": "manual", "model": "code-fast"}, "command": ["echo", "T-03"], "output": {"artifact": "docs/specs/2026-11-14_SPEC_AUDITORIA_TOTAL.md", "gate": "exit_code == 0"}, "depends_on": []},
+    {"id": "T-04", "type": "script", "routing": {"mode": "manual", "model": "code-fast"}, "command": ["echo", "T-04"], "output": {"artifact": "docs/plans/2026-11-14_PLAN_AUDITORIA_TOTAL.md", "gate": "exit_code == 0"}, "depends_on": []},
+    {"id": "T-05", "type": "script", "routing": {"mode": "manual", "model": "code-fast"}, "command": ["echo", "T-05"], "output": {"artifact": "docs/reports/2026-11-14_REPORT_AUDITORIA_TOTAL.md", "gate": "exit_code == 0"}, "depends_on": ["T-01", "T-02", "T-03", "T-04"]}
+  ]
+}

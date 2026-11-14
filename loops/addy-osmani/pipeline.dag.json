@@ -49,7 +49,9 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "medium",
-        "fallback": "haiku"
+        "fallback": "haiku",
+        "harness": "claude",
+        "via": "9router"
       },
       "token_budget": {
         "input_tokens": 4000,
@@ -58,9 +60,12 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
-      "context_in": [],
+      "context_in": [
+        "docs/specs/"
+      ],
       "context_out": [
         "docs/intents/INTENT.md"
       ],
@@ -71,7 +76,20 @@
       "output": {
         "artifact": "docs/intents/INTENT.md",
         "gate": "file_exists('docs/intents/INTENT.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-subloop-1-alinhar-contexto",
+      "status": "pending"
     },
     {
       "id": "subloop-2-especificar-restricoes",
@@ -86,7 +104,10 @@
       "routing": {
         "mode": "auto",
         "combo": "code-pro",
-        "effort": "high"
+        "effort": "high",
+        "harness": "claude",
+        "via": "9router",
+        "model": "code-pro"
       },
       "token_budget": {
         "input_tokens": 6000,
@@ -95,7 +116,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "inputs": {
         "intencao": "file('docs/intents/INTENT.md')"
@@ -113,7 +135,20 @@
       "output": {
         "artifact": "docs/specs/SPEC.md",
         "gate": "file_exists('docs/specs/SPEC.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-subloop-2-especificar-restricoes",
+      "status": "pending"
     },
     {
       "id": "subloop-3-planejar-tickets",
@@ -128,7 +163,10 @@
       "routing": {
         "mode": "auto",
         "combo": "code-fast",
-        "effort": "medium"
+        "effort": "medium",
+        "harness": "claude",
+        "via": "9router",
+        "model": "code-pro"
       },
       "token_budget": {
         "input_tokens": 5000,
@@ -137,7 +175,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "inputs": {
         "spec": "file('docs/specs/SPEC.md')"
@@ -155,7 +194,20 @@
       "output": {
         "artifact": "docs/plans/PLAN.md",
         "gate": "file_exists('docs/plans/PLAN.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-subloop-3-planejar-tickets",
+      "status": "pending"
     },
     {
       "id": "subloop-4-construir-tdd",
@@ -171,7 +223,9 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "high",
-        "fallback": "qwen2.5-coder:7b"
+        "fallback": "qwen2.5-coder:7b",
+        "harness": "claude",
+        "via": "9router"
       },
       "token_budget": {
         "input_tokens": 8000,
@@ -180,7 +234,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "inputs": {
         "plano": "file('docs/plans/PLAN.md')"
@@ -198,7 +253,20 @@
       "output": {
         "artifact": "docs/reports/TDD_REPORT.md",
         "gate": "file_exists('docs/reports/TDD_REPORT.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-subloop-4-construir-tdd",
+      "status": "pending"
     },
     {
       "id": "subloop-5-runtime-webperf",
@@ -213,7 +281,10 @@
       "routing": {
         "mode": "auto",
         "combo": "code-pro",
-        "effort": "medium"
+        "effort": "medium",
+        "harness": "claude",
+        "via": "9router",
+        "model": "code-pro"
       },
       "token_budget": {
         "input_tokens": 6000,
@@ -222,7 +293,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "inputs": {
         "tdd": "file('docs/reports/TDD_REPORT.md')"
@@ -240,7 +312,20 @@
       "output": {
         "artifact": "docs/reports/PERF_REPORT.md",
         "gate": "file_exists('docs/reports/PERF_REPORT.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-subloop-5-runtime-webperf",
+      "status": "pending"
     },
     {
       "id": "subloop-6-review-hardening",
@@ -256,7 +341,9 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "medium",
-        "fallback": "haiku"
+        "fallback": "haiku",
+        "harness": "claude",
+        "via": "9router"
       },
       "token_budget": {
         "input_tokens": 6000,
@@ -265,7 +352,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "inputs": {
         "perf": "file('docs/reports/PERF_REPORT.md')"
@@ -283,7 +371,20 @@
       "output": {
         "artifact": "docs/reports/CODE_REVIEW.md",
         "gate": "file_exists('docs/reports/CODE_REVIEW.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-subloop-6-review-hardening",
+      "status": "pending"
     },
     {
       "id": "subloop-7-observabilidade-ship",
@@ -298,7 +399,10 @@
       "routing": {
         "mode": "auto",
         "combo": "code-pro",
-        "effort": "low"
+        "effort": "low",
+        "harness": "claude",
+        "via": "9router",
+        "model": "code-pro"
       },
       "token_budget": {
         "input_tokens": 4000,
@@ -307,7 +411,8 @@
       "isolation": {
         "workspace": "local",
         "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
+        "subagents_allowed": false,
+        "write_boundary": "strict"
       },
       "inputs": {
         "review": "file('docs/reports/CODE_REVIEW.md')"
@@ -325,9 +430,21 @@
       "output": {
         "artifact": "docs/reports/SHIP_REPORT.md",
         "gate": "file_exists('docs/reports/SHIP_REPORT.md')"
-      }
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "git_reset",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "command": "go test -count=1 ./..."
+      },
+      "spec_ref": "AC-subloop-7-observabilidade-ship",
+      "status": "pending"
     }
   ],
-  "": "https://legoloop.dev/schemas/dag.v2.json",
   "schema_version": 2
 }

@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -138,7 +139,9 @@ func (s *TriggerScheduler) Listen(ctx context.Context, trg dag.Trigger, onTrigge
 	case dag.TriggerFileChange:
 		w := NewFileWatcher(s.workdir, trg.Path, 100*time.Millisecond)
 		return w.Watch(ctx, func(path string) {
-			_ = onTrigger()
+			if err := onTrigger(); err != nil {
+				log.Printf("triggers: falha ao disparar onTrigger para %s: %v", path, err)
+			}
 		})
 	case dag.TriggerCron:
 		return listenCron(ctx, trg.Cron, onTrigger)

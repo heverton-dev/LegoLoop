@@ -66,6 +66,17 @@ func Projetar(p Processo, now time.Time) (*Projecoes, error) {
 	if err != nil {
 		return nil, err
 	}
+	pr, err := montarProjecoes(p, ord, now)
+	if err != nil {
+		return nil, err
+	}
+	if err := pr.Verificar(p); err != nil {
+		return nil, err
+	}
+	return pr, nil
+}
+
+func montarProjecoes(p Processo, ord []Etapa, now time.Time) (*Projecoes, error) {
 	d := dagDe(p, ord)
 	dagJSON, err := marshalDAG(d)
 	if err != nil {
@@ -80,7 +91,6 @@ func Projetar(p Processo, now time.Time) (*Projecoes, error) {
 	if err != nil {
 		return nil, err
 	}
-	dagNome := strings.Replace(strings.Replace(pl.specNome, "SPEC", "DAG", 1), ".md", ".json", 1)
 	triagemJSON, err := projetarTriagem(p, ord)
 	if err != nil {
 		return nil, err
@@ -90,16 +100,13 @@ func Projetar(p Processo, now time.Time) (*Projecoes, error) {
 		return nil, err
 	}
 	manualNome, manualMD := projetarManual(p, ord, now)
-	pr := &Projecoes{
+	dagNome := strings.Replace(strings.Replace(pl.specNome, "SPEC", "DAG", 1), ".md", ".json", 1)
+	return &Projecoes{
 		Spec: spec, Plan: pl.plan, Route: pl.route, DAG: dagJSON, Loop: studioJSON, Skill: projetarSkill(p, ord),
 		Triagem: triagemJSON, Livro: livroJSON, Manual: manualMD, Fichas: projetarFichas(p, ord),
 		Avisos: pl.avisos, SpecNome: pl.specNome, PlanNome: pl.planNome, RouteNome: pl.routeNome,
 		DAGNome: dagNome, ManualNome: manualNome,
-	}
-	if err := pr.Verificar(p); err != nil {
-		return nil, err
-	}
-	return pr, nil
+	}, nil
 }
 
 // limpo deixa o texto livre numa linha só e sem crase: assim um título não abre seção, não forja etapa e
