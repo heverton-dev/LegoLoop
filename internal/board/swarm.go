@@ -198,6 +198,7 @@ func (sb *SwarmBoard) PostMessage(from, to, body string) (Message, error) {
 	st.Messages = append(st.Messages, msg)
 	for i := range st.Workers {
 		if st.Workers[i].Name == from {
+			st.Workers[i].Status = WorkerWorking
 			st.Workers[i].LastActiveAt = msg.CreatedAt
 		}
 	}
