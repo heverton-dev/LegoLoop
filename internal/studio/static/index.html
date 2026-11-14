@@ -53,7 +53,7 @@
     <aside class="sidebar" id="sidebar" aria-label="Peças e inventário">
       <div class="sidebar-header">
         <span class="sidebar-header-title panel__title">Catálogo</span>
-        <button id="btn-import-github" class="btn btn--ghost" type="button" title="Importar Skill do GitHub (Canonização HDSM)" style="font-size: 11px; padding: 2px 6px;"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Importar</button>
+        <button id="btn-import-github" class="btn btn--ghost btn-import-mini" type="button" title="Importar Skill do GitHub (Canonização HDSM)"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Importar</button>
         <button id="btn-toggle-sidebar" class="btn btn--ghost sidebar-collapse-btn" type="button" title="Recolher / Expandir barra lateral (Ctrl + B)">◂</button>
       </div>
       <div class="sidebar-collapsed-rail">PEÇAS & MODELOS</div>
@@ -316,18 +316,18 @@
       </div>
     </div>
     <form id="form-import" class="modal-item-body">
-      <p class="modal-desc" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+      <p class="modal-desc import-desc">
         Informe a URL do repositório ou subpasta no GitHub. O ativo será clonado para o diretório global do SO (<code>~/.gemini/config/skills/</code>) com cálculo de hash SHA-256 e canonização imediata.
       </p>
-      <div class="form-group" style="margin-bottom: 12px;">
-        <label for="import-url" class="form-label" style="display:block; margin-bottom: 4px; font-weight: 500; font-size: 12px;">URL do Repositório / Pasta:</label>
-        <input id="import-url" class="input" style="width: 100%; box-sizing: border-box;" placeholder="https://github.com/owner/repo ou /tree/main/skills/nome" required autocomplete="off" spellcheck="false">
+      <div class="form-group import-group">
+        <label for="import-url" class="form-label import-label">URL do Repositório / Pasta:</label>
+        <input id="import-url" class="input import-input" placeholder="https://github.com/owner/repo ou /tree/main/skills/nome" required autocomplete="off" spellcheck="false">
       </div>
-      <div class="form-group" style="margin-bottom: 16px;">
-        <label for="import-name" class="form-label" style="display:block; margin-bottom: 4px; font-weight: 500; font-size: 12px;">Nome da Skill (opcional):</label>
-        <input id="import-name" class="input" style="width: 100%; box-sizing: border-box;" placeholder="minha-skill" autocomplete="off" spellcheck="false">
+      <div class="form-group import-group-lg">
+        <label for="import-name" class="form-label import-label">Nome da Skill (opcional):</label>
+        <input id="import-name" class="input import-input" placeholder="minha-skill" autocomplete="off" spellcheck="false">
       </div>
-      <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 8px;">
+      <div class="modal-actions import-actions">
         <button id="btn-import-cancel" class="btn btn--ghost" type="button">Cancelar</button>
         <button id="btn-import-submit" class="btn btn--primary" type="submit">Importar & Canonizar</button>
       </div>
@@ -407,7 +407,7 @@
         <div id="processos-preview-container" class="processos-preview-container" hidden>
           <div id="processos-cartao-area"></div>
           <div id="processos-relatorio-area"></div>
-          <div class="fabricar-actions" style="margin-top: 12px;">
+          <div class="fabricar-actions import-mt">
             <button id="btn-processo-apply" class="btn btn--danger" type="button">Confirmar e Aplicar</button>
           </div>
         </div>
