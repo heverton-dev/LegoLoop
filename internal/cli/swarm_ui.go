@@ -83,6 +83,48 @@ func handleSwarmSSE(root, singleDir, procName string) http.HandlerFunc {
 	}
 }
 
+func handleSwarmPost(root, singleDir, procName string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req struct{ Proc, To, Body string }
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		dir := discoverBoards(root, singleDir, procName)[req.Proc]
+		if dir == "" {
+			dir = singleDir
+		}
+		sb, err := board.OpenSwarmBoard(dir)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		_, _ = sb.PostMessage("coordenador", req.To, req.Body)
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func handleSwarmKill(root, singleDir, procName string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req struct{ Proc, Name string }
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		dir := discoverBoards(root, singleDir, procName)[req.Proc]
+		if dir == "" {
+			dir = singleDir
+		}
+		sb, err := board.OpenSwarmBoard(dir)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		_ = sb.KillWorker(req.Name, ".")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
 func cmdSwarmUI(_ context.Context, args []string, d Deps) int {
 	fs := newFlags("swarm ui", d)
 	addr := fs.String("addr", "127.0.0.1:7879", "endereco HTTP do painel")
@@ -98,6 +140,8 @@ func cmdSwarmUI(_ context.Context, args []string, d Deps) int {
 		_, _ = w.Write([]byte(swarmUIHTML))
 	})
 	mux.HandleFunc("/api/events", handleSwarmSSE(*root, *dir, *proc))
+	mux.HandleFunc("/api/post", handleSwarmPost(*root, *dir, *proc))
+	mux.HandleFunc("/api/kill", handleSwarmKill(*root, *dir, *proc))
 	fmt.Fprintf(d.Stdout, "Painel Swarm em http://%s\n", *addr)
 	if err := http.ListenAndServe(*addr, mux); err != nil {
 		return fail(d, err)
@@ -144,24 +188,35 @@ html,body{height:100dvh;margin:0;overflow:hidden;font-family:var(--font-ui);back
 .crumb a{color:var(--accent);cursor:pointer;text-decoration:none;font-weight:600}
 .sub-btn{font-family:var(--font-mono);font-size:10px;padding:2px 7px;border-radius:6px;background:var(--surface);border:1px solid var(--border);color:var(--accent);cursor:pointer;white-space:nowrap;flex-shrink:0}
 .pager{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.ficha{flex-shrink:0;display:flex;gap:12px;align-items:center;padding:10px 12px;margin-bottom:10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)}
+.ficha-body{flex:1;min-width:0}
+.prog{height:5px;border-radius:999px;background:var(--border);overflow:hidden;margin-top:6px}
+.prog-bar{height:100%;background:var(--ok);transition:width .3s}
+.prog-bar.working{width:65%;animation:indet 1.4s infinite ease-in-out}
+@keyframes indet{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
 .btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px}
 .btn:disabled{opacity:.4;cursor:default}
 </style></head><body>
 <div class="app">
   <div class="top">
     <div class="brand"><span class="dot"></span><span>LegoLoop Swarm</span><span class="crumb" id="crumb"></span></div>
-    <div class="meta" id="summary">Conectando SSE...</div>
+    <div style="display:flex;align-items:center;gap:10px"><div class="meta" id="summary">Conectando SSE...</div><a class="btn" href="http://127.0.0.1:7878" target="_blank" style="text-decoration:none">Studio ↗</a></div>
   </div>
   <div class="tabs" id="tabs"></div>
   <div class="grid">
     <div class="card"><div class="card-hd"><h3>Agentes</h3><span class="meta" id="counts"></span></div><div class="scroll" id="workers"></div></div>
-    <div class="card"><div class="card-hd"><h3>Execução <span id="filter"></span></h3><span class="meta">Mais recente no topo</span></div><div class="scroll" id="msgs"></div><div class="pager" id="pager"></div></div>
+    <div class="card"><div class="card-hd"><h3>Execução <span id="filter"></span></h3><span class="meta">Mais recente no topo</span></div><div id="ficha"></div><div class="scroll" id="msgs"></div><div class="pager" id="pager"></div></div>
   </div>
 </div>
 <script>
-let sel="", page=0, curParent="", curProc=""; const PER_PAGE=20;
+let sel="", page=0, curParent="", curProc="", closedProcs={}; const PER_PAGE=20;
 const palette=['#8ab4f8','#f28b82','#fdd663','#81c995','#c58af9'];
-function botSVG(st,idx){const c=palette[idx%palette.length];return '<svg class="bot '+st+'" viewBox="0 0 8 8"><rect x="3" y="0" width="2" height="1" fill="'+c+'"/><rect x="1" y="1" width="6" height="4" fill="'+c+'"/><rect x="2" y="2" width="1" height="1" fill="#1e293b"/><rect x="5" y="2" width="1" height="1" fill="#1e293b"/><rect x="2" y="5" width="4" height="2" fill="'+c+'"/><rect x="2" y="7" width="1" height="1" fill="'+c+'"/><rect x="5" y="7" width="1" height="1" fill="'+c+'"/></svg>';}
+function botSVG(st,idx,kind){
+  const c=palette[idx%palette.length];
+  if(kind==='coord') return '<svg class="bot '+st+'" viewBox="0 0 8 8"><rect x="2" y="0" width="4" height="3" fill="'+c+'"/><rect x="3" y="1" width="1" height="1" fill="#1e293b"/><rect x="5" y="1" width="1" height="1" fill="#1e293b"/><rect x="1" y="3" width="6" height="4" fill="#334155"/><rect x="3" y="3" width="2" height="4" fill="#fff"/><rect x="3" y="4" width="2" height="2" fill="#d9480f"/><rect x="2" y="7" width="1" height="1" fill="#334155"/><rect x="5" y="7" width="1" height="1" fill="#334155"/></svg>';
+  if(kind==='ver') return '<svg class="bot '+st+'" viewBox="0 0 8 8"><rect x="2" y="0" width="4" height="3" fill="'+c+'"/><rect x="2" y="1" width="2" height="2" fill="#bae6fd"/><rect x="5" y="1" width="1" height="1" fill="#1e293b"/><rect x="1" y="3" width="5" height="4" fill="'+c+'"/><rect x="6" y="3" width="2" height="3" fill="#e2e8f0"/><rect x="2" y="7" width="1" height="1" fill="'+c+'"/><rect x="4" y="7" width="1" height="1" fill="'+c+'"/></svg>';
+  return '<svg class="bot '+st+'" viewBox="0 0 8 8"><rect x="1" y="0" width="6" height="1" fill="#facc15"/><rect x="2" y="1" width="4" height="2" fill="'+c+'"/><rect x="3" y="2" width="1" height="1" fill="#1e293b"/><rect x="5" y="2" width="1" height="1" fill="#1e293b"/><rect x="1" y="3" width="6" height="3" fill="'+c+'"/><rect x="1" y="5" width="6" height="1" fill="#78350f"/><rect x="2" y="6" width="1" height="2" fill="'+c+'"/><rect x="5" y="6" width="1" height="2" fill="'+c+'"/></svg>';
+}
 function setProc(p){curProc=p;curParent="";sel="";page=0;if(window._last)render(window._last);}
 function setSel(n){sel=(sel===n)?"":n;page=0;if(window._last)render(window._last);}
 function enterSub(n,e){e.stopPropagation();curParent=n;sel="";page=0;if(window._last)render(window._last);}
@@ -173,23 +228,46 @@ function renderCrumb(ws){
   for(const n of path) html+=' › <a onclick="enterSub(\''+n+'\',event)">'+n+'</a>';
   document.getElementById('crumb').innerHTML=html;
 }
-function renderGroup(title,list,offset,allWs){
+function closeTab(p,e){e.stopPropagation();closedProcs[p]=true;if(curProc===p)curProc="";if(window._last)render(window._last);}
+async function sendPost(to){const inp=document.getElementById('cmd-in');if(!inp||!inp.value.trim())return;await fetch('/api/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({proc:curProc,to:'@'+to,body:inp.value.trim()})});inp.value='';}
+async function sendKill(name){await fetch('/api/kill',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({proc:curProc,name})});}
+function renderGroup(title,list,offset,allWs,kind){
   if(!list.length)return '';
   return '<div class="grp"><span>'+title+'</span><span>'+list.length+'</span></div>'+list.map((w,i)=>{
     const subs=allWs.filter(x=>x.parent===w.name).length;
     const subBtn=subs?'<button class="sub-btn" onclick="enterSub(\''+w.name+'\',event)">'+subs+' sub ▶</button>':'';
     const bStyle=w.status==='working'?' style="border-color:'+palette[(offset+i)%palette.length]+'"':'';
-    return '<div class="w '+w.status+' '+(sel===w.name?'sel':'')+'"'+bStyle+' onclick="setSel(\''+w.name+'\')">'+botSVG(w.status,offset+i)+
+    return '<div class="w '+w.status+' '+(sel===w.name?'sel':'')+'"'+bStyle+' onclick="setSel(\''+w.name+'\')">'+botSVG(w.status,offset+i,kind)+
     '<div class="w-info"><div class="row"><b>'+w.name+'</b><span style="display:flex;gap:4px;align-items:center">'+subBtn+'<span class="badge '+w.status+'">'+w.status+'</span></span></div>'+
     '<div class="meta">'+w.role+' · '+(w.model||'-')+' · '+w.workspace_mode+'</div></div></div>';
   }).join('');
 }
+function fmtDur(iso){
+  if(!iso)return '0s';
+  const s=Math.max(0,Math.floor((Date.now()-new Date(iso).getTime())/1000));
+  const m=Math.floor(s/60); return m>0?(m+'m '+(s%60)+'s'):(s+'s');
+}
+function renderFicha(allWs,ms){
+  const el=document.getElementById('ficha');
+  if(!sel){el.innerHTML='';return;}
+  const idx=allWs.findIndex(w=>w.name===sel);
+  const w=idx>=0?allWs[idx]:{name:sel,role:'orquestrador',model:'maestro',workspace_mode:'inherit',status:'working'};
+  const ord=ms.find(m=>m.to==='@'+w.name||m.to==='@all');
+  const pct=w.status==='killed'?'100%':w.status==='waiting'?'10%':'65%';
+  const kind=w.role==='orquestrador'?'coord':w.role==='auditor-qualidade'?'ver':'trab';
+  el.innerHTML='<div class="ficha">'+botSVG(w.status,idx>=0?idx+1:0,kind)+'<div class="ficha-body">'+
+    '<div class="row"><b>'+w.name+'</b><span class="meta">⏱ '+fmtDur(w.created_at)+' · <span class="badge '+w.status+'">'+w.status+'</span></span></div>'+
+    '<div class="meta">Papel: '+w.role+' · Cérebro: '+(w.model||'-')+' · '+w.workspace_mode+'</div>'+
+    '<div class="meta">Ordem: '+(ord?ord.body:'aguardando instrução')+'</div>'+
+    '<div class="prog"><div class="prog-bar '+w.status+'" style="width:'+pct+'"></div></div>'+
+    '<div style="display:flex;gap:6px;margin-top:8px"><input id="cmd-in" class="btn" style="flex:1;text-align:left" placeholder="Enviar instrução para @'+w.name+'..."><button class="btn" onclick="sendPost(\''+w.name+'\')">Enviar</button><button class="btn" style="color:var(--fail)" onclick="sendKill(\''+w.name+'\')">Kill</button></div></div></div>';
+}
 function render(payload){
   window._last=payload;
-  const order=payload.order||[];
-  if(!curProc||!payload.processes[curProc])curProc=order[0]||"";
+  const order=(payload.order||[]).filter(p=>!closedProcs[p]);
+  if(!curProc||!payload.processes[curProc]||closedProcs[curProc])curProc=order[0]||"";
   document.getElementById('tabs').innerHTML=order.map(p=>
-    '<button class="tab '+(p===curProc?'active':'')+'" onclick="setProc(\''+p+'\')">'+p+'</button>'
+    '<button class="tab '+(p===curProc?'active':'')+'" onclick="setProc(\''+p+'\')">'+p+' <span onclick="closeTab(\''+p+'\',event)" style="margin-left:6px;opacity:.6">×</span></button>'
   ).join('');
   const d=(payload.processes&&payload.processes[curProc])||{workers:[],messages:[]};
   const allWs=d.workers||[], ms=(d.messages||[]).slice().reverse();
@@ -201,7 +279,8 @@ function render(payload){
   document.getElementById('counts').textContent=(ws.length+1)+' neste nível';
   document.getElementById('filter').textContent=sel?'(filtro: '+sel+')':'(todos)';
   const coord=[{name:curParent||'coordenador',role:'orquestrador',model:'maestro',workspace_mode:'inherit',status:'working'}];
-  document.getElementById('workers').innerHTML=renderGroup('Coordenador',coord,0,allWs)+renderGroup('Verificadores',ver,1,allWs)+renderGroup('Trabalhadores',trab,1+ver.length,allWs);
+  document.getElementById('workers').innerHTML=renderGroup('Coordenador',coord,0,allWs,'coord')+renderGroup('Verificadores',ver,1,allWs,'ver')+renderGroup('Trabalhadores',trab,1+ver.length,allWs,'trab');
+  renderFicha(allWs,ms);
   const fms=ms.filter(m=>!sel||m.from===sel||m.to==='@'+sel||m.to==='@all');
   const totalPages=Math.max(1,Math.ceil(fms.length/PER_PAGE));
   if(page>=totalPages)page=totalPages-1;
