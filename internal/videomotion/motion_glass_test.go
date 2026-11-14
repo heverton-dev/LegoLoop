@@ -6,8 +6,8 @@ import (
 	"legoloop/internal/videomotion"
 )
 
-func TestGlassCardComposition(t *testing.T) {
-	spec := videomotion.GlassCardSpec{
+func TestGlassTicketComposition(t *testing.T) {
+	spec := videomotion.GlassTicketSpec{
 		WidthPx:        800,
 		HeightPx:       500,
 		BorderRadiusPx: 24,
@@ -18,9 +18,9 @@ func TestGlassCardComposition(t *testing.T) {
 		DurationMs:     2400,
 	}
 
-	comp, err := videomotion.BuildGlassCard(spec)
+	comp, err := videomotion.BuildGlassTicket(spec)
 	if err != nil {
-		t.Fatalf("BuildGlassCard falhou: %v", err)
+		t.Fatalf("BuildGlassTicket falhou: %v", err)
 	}
 
 	if comp.WidthPx != 800 || comp.HeightPx != 500 {
@@ -43,12 +43,12 @@ func TestGlassCardComposition(t *testing.T) {
 	}
 }
 
-func TestGlassCardComposition_InvalidDimensions(t *testing.T) {
-	spec := videomotion.GlassCardSpec{
+func TestGlassTicketComposition_InvalidDimensions(t *testing.T) {
+	spec := videomotion.GlassTicketSpec{
 		WidthPx:  0,
 		HeightPx: -100,
 	}
-	_, err := videomotion.BuildGlassCard(spec)
+	_, err := videomotion.BuildGlassTicket(spec)
 	if err == nil {
 		t.Fatal("esperava erro para dimensões inválidas do cartão")
 	}

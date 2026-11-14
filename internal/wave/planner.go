@@ -43,7 +43,7 @@ func PlanWaves(tickets []board.Ticket) []board.Wave {
 	}
 	result := make([]board.Wave, len(slots))
 	for i, slot := range slots {
-		result[i] = board.Wave{Index: i, Cards: slot.tickets}
+		result[i] = board.Wave{Index: i, Tickets: slot.tickets}
 	}
 	return result
 }

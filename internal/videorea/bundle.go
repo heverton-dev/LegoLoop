@@ -19,7 +19,7 @@ type TargetBundle struct {
 	CurationPath       string `json:"curation_path"`
 	GovernanceDir      string `json:"governance_dir"`
 	BookDir            string `json:"book_dir"`
-	LoopDir            string `json:"loop_dir"`
+	ProcessoPath       string `json:"processo_dir"`
 	SkillDir           string `json:"skill_dir"`
 }
 
@@ -54,7 +54,7 @@ func NewTargetBundle(baseDir, slug string) (*TargetBundle, error) {
 		CurationPath:       filepath.Join(base, "curation.json"),
 		GovernanceDir:      filepath.Join(base, "governance"),
 		BookDir:            filepath.Join(base, "book"),
-		LoopDir:            filepath.Join(base, "loop"),
+		ProcessoPath:       filepath.Join(base, "processo"),
 		SkillDir:           filepath.Join(base, "skill"),
 	}, nil
 }
@@ -73,5 +73,5 @@ func (b *TargetBundle) Materialize() error {
 			return err
 		}
 	}
-	return nil
+	return os.MkdirAll(b.ProcessoPath, 0o755)
 }

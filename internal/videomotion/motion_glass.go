@@ -6,12 +6,12 @@ import (
 )
 
 var (
-	// ErrInvalidCardDimensions indica largura ou altura inválida.
-	ErrInvalidCardDimensions = errors.New("videomotion: dimensões do cartão de vidro inválidas")
+	// ErrInvalidTicketDimensions indica largura ou altura inválida.
+	ErrInvalidTicketDimensions = errors.New("videomotion: dimensões do cartão de vidro inválidas")
 )
 
-// GlassCardSpec especifica os parâmetros visuais e temporais do cartão 3D.
-type GlassCardSpec struct {
+// GlassTicketSpec especifica os parâmetros visuais e temporais do cartão 3D.
+type GlassTicketSpec struct {
 	WidthPx        int
 	HeightPx       int
 	BorderRadiusPx int
@@ -22,8 +22,8 @@ type GlassCardSpec struct {
 	DurationMs     int64
 }
 
-// GlassCardComposition encapsula as propriedades renderizáveis do cartão.
-type GlassCardComposition struct {
+// GlassTicketComposition encapsula as propriedades renderizáveis do cartão.
+type GlassTicketComposition struct {
 	WidthPx        int
 	HeightPx       int
 	BorderRadiusPx int
@@ -34,10 +34,10 @@ type GlassCardComposition struct {
 	DurationMs     int64
 }
 
-// BuildGlassCard valida as dimensões e constrói a composição do cartão de vidro.
-func BuildGlassCard(spec GlassCardSpec) (*GlassCardComposition, error) {
+// BuildGlassTicket valida as dimensões e constrói a composição do cartão de vidro.
+func BuildGlassTicket(spec GlassTicketSpec) (*GlassTicketComposition, error) {
 	if spec.WidthPx <= 0 || spec.HeightPx <= 0 {
-		return nil, ErrInvalidCardDimensions
+		return nil, ErrInvalidTicketDimensions
 	}
 	if spec.DurationMs <= 0 {
 		spec.DurationMs = 2000
@@ -46,7 +46,7 @@ func BuildGlassCard(spec GlassCardSpec) (*GlassCardComposition, error) {
 		spec.ScaleStart = 0.95
 		spec.ScaleEnd = 1.05
 	}
-	return &GlassCardComposition{
+	return &GlassTicketComposition{
 		WidthPx:        spec.WidthPx,
 		HeightPx:       spec.HeightPx,
 		BorderRadiusPx: spec.BorderRadiusPx,
@@ -59,7 +59,7 @@ func BuildGlassCard(spec GlassCardSpec) (*GlassCardComposition, error) {
 }
 
 // GenerateCSS produz os estilos CSS puro para Remotion/Web-Canvas.
-func (c *GlassCardComposition) GenerateCSS() string {
+func (c *GlassTicketComposition) GenerateCSS() string {
 	return fmt.Sprintf(
 		"width: %dpx; height: %dpx; border-radius: %dpx; backdrop-filter: blur(%dpx); border: 1px solid %s; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);",
 		c.WidthPx, c.HeightPx, c.BorderRadiusPx, c.BackdropBlurPx, c.BorderGlowHex,
@@ -67,7 +67,7 @@ func (c *GlassCardComposition) GenerateCSS() string {
 }
 
 // CalculateScaleAt calcula a escala do push-in suave em função do tempo decorrido.
-func (c *GlassCardComposition) CalculateScaleAt(elapsedMs int64) float64 {
+func (c *GlassTicketComposition) CalculateScaleAt(elapsedMs int64) float64 {
 	if elapsedMs <= 0 {
 		return c.ScaleStart
 	}

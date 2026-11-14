@@ -139,8 +139,8 @@ func (v *Vault) Load() error {
 	return nil
 }
 
-// MaskSecrets substitui valores sensíveis presentes no texto fornecido por ***MASKED***.
-func (v *Vault) MaskSecrets(raw string) string {
+// MaskSegredos substitui valores sensíveis presentes no texto fornecido por ***MASKED***.
+func (v *Vault) MaskSegredos(raw string) string {
 	v.mu.RLock()
 	defer v.mu.RUnlock()
 

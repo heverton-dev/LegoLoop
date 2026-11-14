@@ -26,12 +26,10 @@ type Ticket struct {
 	PRNumber  int      `json:"pr_number,omitempty"`
 }
 
-type Card = Ticket
-
 // Wave representa um lote de tickets que podem ser executados concorrentemente sem conflito.
 type Wave struct {
-	Index int      `json:"index"`
-	Cards []Ticket `json:"tickets"`
+	Index   int      `json:"index"`
+	Tickets []Ticket `json:"tickets"`
 }
 
 // BoardState captura a fotografia instantânea das colunas do projeto.

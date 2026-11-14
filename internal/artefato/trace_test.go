@@ -61,7 +61,7 @@ func TestCarregarCadeia(t *testing.T) {
 }
 
 func TestStopGateComSpecRefCobreAC(t *testing.T) {
-	dag := []byte(`{"nodes":[{"id":"N1","type":"unit_task","spec_ref":"AC-X-1.1"},{"id":"SG-A","type":"stop_gate","spec_ref":"AC-X-1.2"},{"id":"SG-B","type":"stop_gate"}]}`)
+	dag := []byte(`{"nodes":[{"id":"N1","type":"unit_no","spec_ref":"AC-X-1.1"},{"id":"SG-A","type":"stop_gate","spec_ref":"AC-X-1.2"},{"id":"SG-B","type":"stop_gate"}]}`)
 	var c Cadeia
 	if err := c.addDAG(dag); err != nil {
 		t.Fatal(err)

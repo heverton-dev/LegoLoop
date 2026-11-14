@@ -31,8 +31,8 @@ func TestPlanWaves_DisjointTicketsRunInSameWave(t *testing.T) {
 	if len(waves) != 1 {
 		t.Fatalf("esperava 1 onda para tickets totalmente disjuntos, obteve %d", len(waves))
 	}
-	if len(waves[0].Cards) != 3 {
-		t.Fatalf("esperava 3 tickets na primeira onda, obteve %d", len(waves[0].Cards))
+	if len(waves[0].Tickets) != 3 {
+		t.Fatalf("esperava 3 tickets na primeira onda, obteve %d", len(waves[0].Tickets))
 	}
 }
 
@@ -63,13 +63,13 @@ func TestPlanWaves_ConflictingTicketsPartitionedAcrossWaves(t *testing.T) {
 	waves := wave.PlanWaves(tickets)
 
 	for wIdx, w := range waves {
-		for i := 0; i < len(w.Cards); i++ {
-			filesI := wave.ExtractAffectedFiles(w.Cards[i])
-			for j := i + 1; j < len(w.Cards); j++ {
-				filesJ := wave.ExtractAffectedFiles(w.Cards[j])
+		for i := 0; i < len(w.Tickets); i++ {
+			filesI := wave.ExtractAffectedFiles(w.Tickets[i])
+			for j := i + 1; j < len(w.Tickets); j++ {
+				filesJ := wave.ExtractAffectedFiles(w.Tickets[j])
 				if wave.HasOverlap(filesI, filesJ) {
 					t.Fatalf("conflito detectado na onda %d entre Ticket #%d e Ticket #%d:\nArquivos I: %v\nArquivos J: %v",
-						wIdx, w.Cards[i].Number, w.Cards[j].Number, filesI, filesJ)
+						wIdx, w.Tickets[i].Number, w.Tickets[j].Number, filesI, filesJ)
 				}
 			}
 		}

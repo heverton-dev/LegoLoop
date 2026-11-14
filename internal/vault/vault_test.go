@@ -95,7 +95,7 @@ func TestVault_WrongMasterKeyFails(t *testing.T) {
 	}
 }
 
-func TestVault_MaskSecretsAndResolveEnv(t *testing.T) {
+func TestVault_MaskSegredosAndResolveEnv(t *testing.T) {
 	v, err := vault.New("", "test-key")
 	if err != nil {
 		t.Fatalf("falha ao criar vault in-memory: %v", err)
@@ -106,7 +106,7 @@ func TestVault_MaskSecretsAndResolveEnv(t *testing.T) {
 
 	// Teste de Mascaramento
 	rawLog := "Conectando ao provedor com token super-token-xyz-999 na porta 8080"
-	masked := v.MaskSecrets(rawLog)
+	masked := v.MaskSegredos(rawLog)
 	if strings.Contains(masked, "super-token-xyz-999") {
 		t.Fatalf("falha no mascaramento, segredo exposto no log: %s", masked)
 	}
