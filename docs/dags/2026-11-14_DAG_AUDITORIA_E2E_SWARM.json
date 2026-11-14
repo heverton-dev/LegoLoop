@@ -1,10 +1,11 @@
 {
   "id": "auditoria-e2e-swarm",
+  "name": "Auditoria E2E Swarm",
   "version": "1.0.0",
   "nodes": [
-    { "id": "t1_cli", "type": "exec", "deps": [] },
-    { "id": "t2_studio", "type": "exec", "deps": [] },
-    { "id": "t3_gates", "type": "gate", "deps": [] },
-    { "id": "t4_close", "type": "close", "deps": ["t1_cli", "t2_studio", "t3_gates"] }
+    { "id": "t1_cli", "type": "unit_no", "artifact": "docs/reports/2026-11-14_REPORT_AUDITORIA_E2E_SWARM.md", "depends_on": [] },
+    { "id": "t2_studio", "type": "unit_no", "artifact": "docs/reports/img/2026-11-14_studio_home.png", "depends_on": [] },
+    { "id": "t3_gates", "type": "unit_no", "artifact": "internal/board/swarm_runtime.go", "depends_on": [] },
+    { "id": "t4_close", "type": "unit_no", "artifact": "docs/plans/2026-11-14_PLAN_AUDITORIA_E2E_SWARM.md", "depends_on": ["t1_cli", "t2_studio", "t3_gates"] }
   ]
 }

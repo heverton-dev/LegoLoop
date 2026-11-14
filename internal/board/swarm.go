@@ -41,6 +41,7 @@ type Worker struct {
 	WorktreePath  string        `json:"worktree_path,omitempty"`
 	BranchName    string        `json:"branch_name,omitempty"`
 	Status        WorkerStatus  `json:"status"`
+	PID           int           `json:"pid,omitempty"`
 	CreatedAt     time.Time     `json:"created_at"`
 	LastActiveAt  time.Time     `json:"last_active_at"`
 }

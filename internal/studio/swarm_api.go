@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"path/filepath"
 	"sort"
 	"time"
@@ -18,6 +17,7 @@ func (s *Server) registerSwarmRoutes(mux *http.ServeMux) {
 		_, _ = w.Write([]byte(studioSwarmHTML))
 	})
 	mux.HandleFunc("GET /api/swarm/events", s.handleSwarmEvents)
+	mux.HandleFunc("POST /api/swarm/add", s.handleSwarmAdd)
 	mux.HandleFunc("POST /api/swarm/post", s.handleSwarmPost)
 	mux.HandleFunc("POST /api/swarm/kill", s.handleSwarmKill)
 }
@@ -29,26 +29,8 @@ func (s *Server) swarmRoot() string {
 	return "scratch"
 }
 
-func studioDiscoverBoards(root string) map[string]string {
-	out := map[string]string{}
-	entries, err := os.ReadDir(root)
-	if err != nil {
-		return out
-	}
-	for _, e := range entries {
-		if !e.IsDir() {
-			continue
-		}
-		p := filepath.Join(root, e.Name())
-		if _, err := os.Stat(filepath.Join(p, "swarm_board.json")); err == nil {
-			out[e.Name()] = p
-		}
-	}
-	return out
-}
-
 func studioBoardsPayload(root string) ([]byte, error) {
-	boards := studioDiscoverBoards(root)
+	boards := board.DiscoverBoards(root, "", "")
 	names := make([]string, 0, len(boards))
 	for k := range boards {
 		names = append(names, k)
@@ -65,6 +47,43 @@ func studioBoardsPayload(root string) ([]byte, error) {
 		procs[name] = map[string]any{"workers": st.Workers, "messages": msgs}
 	}
 	return json.Marshal(map[string]any{"order": names, "processes": procs})
+}
+
+func (s *Server) handleSwarmAdd(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Process       string              `json:"process"`
+		Name          string              `json:"name"`
+		Role          string              `json:"role"`
+		Model         string              `json:"model"`
+		WorkspaceMode board.WorkspaceMode `json:"workspace_mode"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	boards := board.DiscoverBoards(s.swarmRoot(), "", "")
+	bdir, ok := boards[req.Process]
+	if !ok {
+		http.Error(w, "processo não encontrado", http.StatusNotFound)
+		return
+	}
+	sb, err := board.OpenSwarmBoard(bdir)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	worker, err := sb.AddWorker(board.AddWorkerRequest{
+		Name:          req.Name,
+		Role:          req.Role,
+		Model:         req.Model,
+		WorkspaceMode: req.WorkspaceMode,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(worker)
 }
 
 func (s *Server) handleSwarmEvents(w http.ResponseWriter, r *http.Request) {
@@ -99,7 +118,7 @@ func (s *Server) handleSwarmPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	dir := studioDiscoverBoards(s.swarmRoot())[req.Proc]
+	dir := board.DiscoverBoards(s.swarmRoot(), "", "")[req.Proc]
 	if dir == "" {
 		http.Error(w, "processo nao encontrado", http.StatusNotFound)
 		return
@@ -119,7 +138,7 @@ func (s *Server) handleSwarmKill(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	dir := studioDiscoverBoards(s.swarmRoot())[req.Proc]
+	dir := board.DiscoverBoards(s.swarmRoot(), "", "")[req.Proc]
 	if dir == "" {
 		http.Error(w, "processo nao encontrado", http.StatusNotFound)
 		return
