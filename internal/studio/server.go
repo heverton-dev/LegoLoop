@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -28,6 +29,7 @@ import (
 	"legoloop/internal/processo"
 	"legoloop/internal/provider"
 	"legoloop/internal/reputation"
+	"legoloop/internal/runner"
 	"legoloop/internal/specgen"
 	"legoloop/internal/studiodoc"
 )
@@ -75,16 +77,35 @@ type Server struct {
 	FabricarMatriz fabricar.MatrizFunc
 	// StoreOverride força o store do processo diretamente (usado em testes).
 	StoreOverride *processo.Store
+	// RevealLauncher substitui a abertura do explorador do SO (usado em testes).
+	RevealLauncher func(path string, isDir bool) error
 
 	matrixOnce sync.Once
 	matrixReg  *reputation.RegistryMatrix
 
 	canonMu    sync.Mutex
 	fabricarMu sync.Mutex
+	favMu      sync.Mutex
+
+	dagMu    sync.Mutex
+	dagState dagRunState
 
 	invMu   sync.Mutex
 	inv     provider.Inventory
 	invTime time.Time
+}
+
+type dagRunState struct {
+	Status     string             `json:"status"`
+	Engine     string             `json:"engine"`
+	DAG        string             `json:"dag,omitempty"`
+	NodesTotal int                `json:"nodes_total,omitempty"`
+	NodesDone  int                `json:"nodes_done,omitempty"`
+	ActiveNode string             `json:"active_node,omitempty"`
+	DurationMs int64              `json:"duration_ms,omitempty"`
+	Tokens     *runner.TokenUsage `json:"tokens,omitempty"`
+	Error      string             `json:"error,omitempty"`
+	ActiveRuns int                `json:"-"`
 }
 
 // Handler monta o roteador com o middleware de segurança.
@@ -97,12 +118,21 @@ func (s *Server) Handler() http.Handler {
 	return s.secure(mux)
 }
 
+const faviconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#0f172a"/><rect x="7" y="11" width="18" height="12" rx="2" fill="#38bdf8"/><rect x="10" y="7" width="4" height="4" rx="1" fill="#38bdf8"/><rect x="18" y="7" width="4" height="4" rx="1" fill="#38bdf8"/></svg>`
+
+func handleFavicon(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "image/svg+xml; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(faviconSVG))
+}
+
 func (s *Server) registerStaticRoutes(mux *http.ServeMux) {
 	static, _ := fs.Sub(staticFS, "static")
 	files := http.FileServerFS(static)
 	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /processos.js", "GET /swarm.js", "GET /swarm.css", "GET /style.css", "GET /components/"} {
 		mux.Handle(p, files)
 	}
+	mux.HandleFunc("GET /favicon.ico", handleFavicon)
 	mux.HandleFunc("GET /inventario", handlePage("inventario.html"))
 }
 
@@ -163,10 +193,22 @@ func deprecada(h http.HandlerFunc) http.HandlerFunc {
 }
 
 func (s *Server) handleDAGStatus(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]any{
-		"status": "idle",
-		"engine": "orchestrix",
-	})
+	st := s.snapshotDAGState()
+	writeJSON(w, http.StatusOK, st)
+}
+
+func (s *Server) snapshotDAGState() dagRunState {
+	s.dagMu.Lock()
+	defer s.dagMu.Unlock()
+	st := s.dagState
+	if st.Status == "" {
+		st.Status = "idle"
+	}
+	st.Engine = "orchestrix"
+	if st.Error != "" {
+		st.Error = s.maskPaths(st.Error)
+	}
+	return st
 }
 
 func (s *Server) handleDAGGet(w http.ResponseWriter, r *http.Request) {
@@ -285,6 +327,10 @@ func (s *Server) handleMaterialize(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusUnprocessableEntity, res)
 		return
 	}
+	if !isSafeSkillSlug(d.Name) {
+		writeError(w, http.StatusBadRequest, fmt.Sprintf("%v: %q", errInvalidSkillSlug, d.Name))
+		return
+	}
 	data, err := d.Marshal()
 	if err == nil {
 		err = writeAtomic(s.ProjectDir, ArquivoDAGGravado, data)
@@ -293,44 +339,108 @@ func (s *Server) handleMaterialize(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, "falha ao gravar "+ArquivoDAGGravado)
 		return
 	}
-
-	s.writeOrchestratorSkill(d)
+	if err := s.writeOrchestratorSkill(d); err != nil {
+		writeError(w, http.StatusInternalServerError, s.maskPaths(err.Error()))
+		return
+	}
 	s.registrarProcesso(d)
-
 	res.Path = ArquivoDAGGravado
 	res.DAG = s.maskDAG(res.DAG) // o arquivo gravado tem os caminhos reais; a resposta, não
 	writeJSON(w, http.StatusOK, res)
 }
 
-// writeOrchestratorSkill grava a skill orquestradora (< 20 linhas) no Cofre canônico (R-RUN-3).
-func (s *Server) writeOrchestratorSkill(d *dag.DAG) {
-	vault := s.Vault
-	if vault == "" {
-		home := s.Home
-		if home == "" {
-			home, _ = os.UserHomeDir()
-		}
-		if home != "" {
-			vault = filepath.Join(home, ".aidd", "canonical")
-		}
-	}
-	if vault == "" || d == nil {
-		return
-	}
-	skillDir := filepath.Join(vault, "skills", "processo-"+d.Name)
-	_ = os.MkdirAll(skillDir, 0o755)
-	skillContent := fmt.Sprintf(`---
-name: processo-%s
-description: Executa o Processo %s
----
-# Processo %s
+var errInvalidSkillSlug = errors.New("nome de processo inválido para skill")
 
-Execute este Processo autônomo via LegoLoop:
-`+"```bash"+`
-legoloop run
-`+"```"+`
-`, d.Name, d.Name, d.Name)
-	_ = os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte(skillContent), 0o644)
+func isSafeSkillSlug(name string) bool {
+	if name == "" {
+		return false
+	}
+	for i := range len(name) {
+		c := name[i]
+		if !((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '-') {
+			return false
+		}
+	}
+	return true
+}
+
+func (s *Server) resolveSkillVaultDir() (string, error) {
+	if s.Vault != "" {
+		return filepath.Clean(s.Vault), nil
+	}
+	home := s.Home
+	if home == "" {
+		var err error
+		home, err = os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("falha ao obter diretório home: %w", err)
+		}
+	}
+	return filepath.Join(filepath.Clean(home), ".aidd", "canonical"), nil
+}
+
+func ensureDirInRoot(root *os.Root, rel string) error {
+	clean := filepath.Clean(rel)
+	cur := ""
+	for part := range strings.SplitSeq(clean, string(filepath.Separator)) {
+		if cur == "" {
+			cur = part
+		} else {
+			cur = filepath.Join(cur, part)
+		}
+		info, err := root.Lstat(cur)
+		if err == nil {
+			if isDisallowedLink(info.Mode()) {
+				return fmt.Errorf("symlink ou junction não permitido: %q", filepath.ToSlash(cur))
+			}
+			if !info.IsDir() {
+				return fmt.Errorf("caminho não é diretório: %q", filepath.ToSlash(cur))
+			}
+			continue
+		}
+		if !errors.Is(err, os.ErrNotExist) {
+			return err
+		}
+		if err := root.Mkdir(cur, 0o755); err != nil {
+			return err
+		}
+	}
+	return checkNoLinksRoot(root, clean)
+}
+
+// writeOrchestratorSkill grava a skill orquestradora (< 20 linhas) no Cofre canônico (R-RUN-3).
+func (s *Server) writeOrchestratorSkill(d *dag.DAG) error {
+	if d == nil {
+		return errors.New("dag nulo")
+	}
+	if !isSafeSkillSlug(d.Name) {
+		return fmt.Errorf("%w: %q", errInvalidSkillSlug, d.Name)
+	}
+	vault, err := s.resolveSkillVaultDir()
+	if err != nil {
+		return err
+	}
+	if info, err := os.Lstat(vault); err == nil && isDisallowedLink(info.Mode()) {
+		return errors.New("symlink ou junction não permitido no cofre")
+	}
+	if err := os.MkdirAll(vault, 0o755); err != nil {
+		return err
+	}
+	root, err := os.OpenRoot(vault)
+	if err != nil {
+		return err
+	}
+	defer root.Close()
+	skillDir := filepath.Join("skills", "processo-"+d.Name)
+	if err := ensureDirInRoot(root, skillDir); err != nil {
+		return err
+	}
+	skillFile := filepath.Join(skillDir, "SKILL.md")
+	if info, err := root.Lstat(skillFile); err == nil && isDisallowedLink(info.Mode()) {
+		return fmt.Errorf("symlink ou junction não permitido: %q", filepath.ToSlash(skillFile))
+	}
+	skillContent := fmt.Sprintf("---\nname: processo-%s\ndescription: Executa o Processo %s\n---\n# Processo %s\n\nExecute este Processo autônomo via LegoLoop:\n```bash\nlegoloop run\n```\n", d.Name, d.Name, d.Name)
+	return root.WriteFile(skillFile, []byte(skillContent), 0o644)
 }
 
 // registrarProcesso registra o Processo no acervo, se disponível (R-RUN-3).

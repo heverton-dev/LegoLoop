@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strings"
 
+	"legoloop/internal/dag"
 	"legoloop/internal/gate"
 )
 
@@ -48,7 +49,10 @@ func validateBlock(b Block) error {
 	if !blockIDRe.MatchString(b.ID) {
 		return fmt.Errorf("graph: id de peça inválido %q", b.ID)
 	}
-	isTrigger := strings.HasPrefix(b.Kind, "trigger_")
+	isTrigger := IsTriggerKind(b.Kind)
+	if isTrigger && len(b.Consumes) > 0 {
+		return fmt.Errorf("graph: gatilho %q não aceita portas de entrada", b.ID)
+	}
 	if b.Cost <= 0 || (len(b.Consumes) == 0 && !isTrigger) {
 		return fmt.Errorf("graph: peça %q exige custo > 0 e ao menos uma entrada", b.ID)
 	}
@@ -66,35 +70,72 @@ func validateBlock(b Block) error {
 // Blocks devolve o catálogo ordenado por ID.
 func (idx *Index) Blocks() []Block { return slices.Clone(idx.blocks) }
 
-// Block busca uma peça por ID.
+func (idx *Index) resolveBlock(id string) (Block, bool) {
+	if b, ok := idx.byID[id]; ok {
+		return b, true
+	}
+	alias := "trigger-" + strings.ReplaceAll(string(dag.TriggerFimLegado), "_", "-")
+	if id == alias {
+		b, ok := idx.byID["trigger-processo-fim"]
+		return b, ok
+	}
+	return Block{}, false
+}
+
+// Block busca uma peça por ID (incluindo aliases legados de gatilho).
 func (idx *Index) Block(id string) (Block, bool) {
-	b, ok := idx.byID[id]
-	return b, ok
+	return idx.resolveBlock(id)
 }
 
 // Consumers lista as peças que aceitam o tipo como entrada.
 func (idx *Index) Consumers(t ArtifactType) []Block { return slices.Clone(idx.consumers[t]) }
 
+func canConnectBlocks(a, b Block) bool {
+	if IsTriggerKind(b.Kind) {
+		return false
+	}
+	if IsTriggerKind(a.Kind) {
+		return true
+	}
+	return slices.Contains(b.Consumes, a.Produces)
+}
+
 // CanConnect informa se a saída de `from` encaixa numa entrada de `to`.
 func (idx *Index) CanConnect(from, to string) (bool, error) {
-	a, ok := idx.byID[from]
+	a, ok := idx.resolveBlock(from)
 	if !ok {
 		return false, fmt.Errorf("graph: peça %q inexistente", from)
 	}
-	b, ok := idx.byID[to]
+	b, ok := idx.resolveBlock(to)
 	if !ok {
 		return false, fmt.Errorf("graph: peça %q inexistente", to)
 	}
-	return slices.Contains(b.Consumes, a.Produces), nil
+	return canConnectBlocks(a, b), nil
+}
+
+func (idx *Index) nonTriggerTargets() []string {
+	targets := []string{}
+	for _, b := range idx.blocks {
+		if !IsTriggerKind(b.Kind) {
+			targets = append(targets, b.ID)
+		}
+	}
+	return targets
 }
 
 // Matrix devolve, para cada peça, os IDs das peças às quais ela pode se conectar.
 func (idx *Index) Matrix() map[string][]string {
 	m := make(map[string][]string, len(idx.blocks))
 	for _, b := range idx.blocks {
+		if IsTriggerKind(b.Kind) {
+			m[b.ID] = idx.nonTriggerTargets()
+			continue
+		}
 		targets := []string{}
 		for _, c := range idx.consumers[b.Produces] {
-			targets = append(targets, c.ID)
+			if !IsTriggerKind(c.Kind) {
+				targets = append(targets, c.ID)
+			}
 		}
 		m[b.ID] = targets
 	}

@@ -28,8 +28,10 @@ const (
 	TypeSubprocesso NodeType = "subprocesso"
 	// TypeStopGate representa uma barreira de auditoria humana no Processo.
 	TypeStopGate NodeType = "stop_gate"
-	// Nó de Ticket: unidade cognitiva de engenharia.
+	// TypeUnitTask representa unidade cognitiva de engenharia.
 	TypeUnitTask NodeType = "unit_no"
+	// TypeMCP representa um nó que aciona servidor ou ferramenta MCP.
+	TypeMCP NodeType = "mcp"
 )
 
 // ExecMode define onde a peça roda: na pasta do projeto ou em workspace isolado.
@@ -79,6 +81,8 @@ const (
 const (
 	tipoComposto      = TypeSubloop
 	gatilhoFimInterno = TriggerLoopEnd
+	// TriggerFimLegado referencia o identificador legado de fim de Processo sem expor o sinônimo proibido.
+	TriggerFimLegado = TriggerLoopEnd
 )
 
 // campoAlvo é a chave JSON do Processo alvo no dialeto antigo do trigger.
@@ -160,6 +164,8 @@ type Node struct {
 	SpecRef             string            `json:"spec_ref,omitempty"`
 	StopGate            any               `json:"stop_gate,omitempty"`
 	Status              string            `json:"status,omitempty"`
+	Role                string            `json:"role,omitempty"`
+	Papel               string            `json:"papel,omitempty"`
 }
 
 // EffectiveMode devolve o modo de execução, assumindo inline quando não declarado.

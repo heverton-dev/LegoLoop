@@ -103,11 +103,11 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro",
+        "combo": "t-codigo-128k",
         "effort": "high",
         "harness": "claude",
         "via": "9router",
-        "model": "code-pro"
+        "model": "t-codigo-128k"
       },
       "token_budget": {
         "input_tokens": 6000,
@@ -162,11 +162,11 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-fast",
+        "combo": "t-chat-128k",
         "effort": "medium",
         "harness": "claude",
         "via": "9router",
-        "model": "code-pro"
+        "model": "t-codigo-128k"
       },
       "token_budget": {
         "input_tokens": 5000,
@@ -280,11 +280,11 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro",
+        "combo": "t-codigo-128k",
         "effort": "medium",
         "harness": "claude",
         "via": "9router",
-        "model": "code-pro"
+        "model": "t-codigo-128k"
       },
       "token_budget": {
         "input_tokens": 6000,
@@ -398,11 +398,11 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro",
+        "combo": "t-codigo-128k",
         "effort": "low",
         "harness": "claude",
         "via": "9router",
-        "model": "code-pro"
+        "model": "t-codigo-128k"
       },
       "token_budget": {
         "input_tokens": 4000,

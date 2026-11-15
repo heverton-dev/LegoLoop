@@ -16,7 +16,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "internal/orchestrix/prompt.go",
@@ -39,7 +39,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "internal/router/",
@@ -65,7 +65,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "internal/runner/isolated.go",
@@ -91,7 +91,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "internal/fechar/",
@@ -117,7 +117,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "docs/reports/2026-11-14_FRONTEIRA_AI_DRIVEN.md",
@@ -145,7 +145,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "internal/cli/cli.go",

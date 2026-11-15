@@ -7,7 +7,7 @@ consumes: Artifact:Spec
 produces: Artifact:Code
 artifact: SKILL.md
 gate: has_binary_criteria('SKILL.md')
-suggested_model: code-pro
+suggested_model: t-codigo-128k
 metadata:
   version: "2.2.0"
   tier: "ouro"

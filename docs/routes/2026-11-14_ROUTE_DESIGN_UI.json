@@ -54,6 +54,8 @@
       "extreme": false,
       "class_rule": "nature=micro",
       "type": "unit_task",
+      "role": "engenheiro-frontend",
+      "papel": "engenheiro-frontend",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -77,11 +79,13 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "t-agente-128k"
         }
       },
       "tooling": {
@@ -149,8 +153,9 @@
       "routing": {
         "mode": "manual",
         "harness": "local",
+        "via": "oficial",
         "model": "script/local",
-        "effort": null,
+        "effort": "low",
         "fallback": null
       },
       "tooling": {

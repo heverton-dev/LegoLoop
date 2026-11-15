@@ -1,47 +1,129 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
-  "id": "legoloop-design-ui",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
   "name": "legoloop-design-ui",
   "description": "Processo especializado de UI/UX, motion scroll e 3D web integrando aidd-uiux, impeccable, emilkowalski-skills, aidd-dataviz, aidd-linter-design, web-perf e gates responsivos",
   "version": "1.0.0",
+  "date": "2026-11-14",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-14_ROUTE_DESIGN_UI.json",
+      "sha256": "457ffb6cfbb9579df66da43e69e4e2b32c519ee59d189ed24fa31dcb1455b9c0"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "max_parallel_workers": 2,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
   "trigger": {
     "type": "manual"
   },
   "nodes": [
     {
-      "id": "e01",
-      "name": "Planejar",
-      "type": "skill",
+      "id": "TICK-01.1",
+      "name": "Planejar — peça frontend-design-direction",
+      "type": "unit_no",
       "nature": "micro",
+      "role": "engenheiro-frontend",
+      "papel": "engenheiro-frontend",
       "cognitive_complexity": "simples",
       "ref": "skills/frontend-design-direction",
-      "timeout_sec": 600,
+      "depends_on": [],
+      "timeout_sec": 180,
       "routing": {
         "mode": "suggested",
-        "model": "sonnet",
-        "effort": "medium",
-        "fallback": "code-fast"
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
       },
-      "output": {
-        "artifact": "out/01_planejar.md",
-        "gate": "file_exists('out/01_planejar.md') \u0026\u0026 word_count('out/01_planejar.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_planejar.md', '\\{\\{')"
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
-        "workspace": "local"
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
       },
       "token_budget": {
-        "max_completion_tokens": 3000,
-        "max_prompt_tokens": 10000
+        "max_completion_tokens": 600,
+        "max_prompt_tokens": 16000
       },
+      "rollback_strategy": "stash_changes",
       "tooling": {
         "runtime": "powershell"
       },
+      "verification": {
+        "gate": "file_exists('out/01_planejar.md') && word_count('out/01_planejar.md') >= 30 && !has_pattern('out/01_planejar.md', '\\{\\{')"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_DESIGN_UI.md"
+      ],
       "context_out": [
         "out/01_planejar.md"
       ],
-      "status": "PENDING"
+      "output": {
+        "artifact": "out/01_planejar.md",
+        "gate": "file_exists('out/01_planejar.md') && word_count('out/01_planejar.md') >= 30 && !has_pattern('out/01_planejar.md', '\\{\\{')"
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "name": "Homologação Final",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "timeout_sec": 180,
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "via": "oficial",
+        "model": "script/local",
+        "effort": "low"
+      },
+      "execution": {
+        "mode": "inline"
+      },
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 300
+      },
+      "rollback_strategy": "abort_pipeline",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "context_in": [
+        "cmd/legoloop/main.go"
+      ],
+      "context_out": [
+        "bin/legoloop.exe"
+      ],
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      }
     }
   ]
 }

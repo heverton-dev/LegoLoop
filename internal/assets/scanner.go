@@ -176,4 +176,6 @@ func (s *Scanner) joinRoots(home, project []root) []root {
 }
 
 // skipDirName: diretórios que nunca contêm ativos do usuário.
-func skipDirName(name string) bool { return name == "node_modules" || name == ".git" }
+func skipDirName(name string) bool {
+	return name == "node_modules" || name == ".git" || name == ".trash" || name == ".vault_terceiros"
+}

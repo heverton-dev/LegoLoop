@@ -9,6 +9,7 @@ import (
 
 	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
+	"legoloop/internal/paths"
 	"legoloop/internal/studiodoc"
 )
 
@@ -254,5 +255,68 @@ func TestStoreListIgnoresForeignFilesAndCorruptFiles(t *testing.T) {
 	}
 	if len(list) != 1 || list[0].ID != "valido" {
 		t.Fatalf("esperava apenas 1 Processo válido, obteve %+v", list)
+	}
+}
+
+func TestStoreLegacySuffixCompatibility(t *testing.T) {
+	dir := t.TempDir()
+	store, err := studiodoc.NewStore(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw := []byte(`{"id":"legado","name":"Legado","version":"2.0.0","trigger":{"type":"manual"},"nodes":[{"id":"n1","type":"skill","name":"N1"}]}`)
+	if err := os.WriteFile(filepath.Join(dir, "legado"+paths.SufixoAntigo), raw, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	got, err := store.Get("legado")
+	if err != nil {
+		t.Fatalf("Get legado falhou: %v", err)
+	}
+	if got.ID != "legado" || got.Name != "Legado" {
+		t.Fatalf("processo inesperado: %+v", got)
+	}
+	list, err := store.List()
+	if err != nil || len(list) != 1 || list[0].ID != "legado" {
+		t.Fatalf("List legado falhou: %+v, err=%v", list, err)
+	}
+}
+
+func makeProcessoV2Fixture() *studiodoc.Processo {
+	return &studiodoc.Processo{
+		ID: "proc-v2", Name: "Processo V2", Description: "Descricao completa",
+		Version: "1.0.0", SchemaVersion: 2, Date: "2026-11-14",
+		ExecutionStrategy:  map[string]any{"supervision_level": "epic"},
+		UpstreamSignatures: map[string]any{"route": map[string]any{"sha256": "deadbeef"}},
+		Trigger:            &dag.Trigger{Type: dag.TriggerManual},
+		Nodes: []dag.Node{{
+			ID: "n1", Name: "No 1", Type: dag.TypeSkill, Nature: "micro", Role: "engenheiro-backend", Ref: "skills/exemplo",
+			Routing:          dag.RoutingConfig{Mode: dag.ModeSuggested, Harness: "9router", Via: "9router", Model: "t-codigo-128k", Effort: "high"},
+			Isolation:        map[string]any{"write_boundary": "strict"},
+			Limits:           map[string]any{"max_output_tokens": 300},
+			RollbackStrategy: "abort_processo", Tooling: map[string]any{"runtime": "powershell"},
+			Verification: map[string]any{"gate": "exit_code == 0"}, SpecRef: "AC-1", Status: "PENDING",
+			ContextIn: []string{"in.txt"}, ContextOut: []string{"out.txt"},
+			Output: dag.HandoffContract{Artifact: "out.txt", Gate: "file_exists('out.txt')"},
+		}},
+	}
+}
+
+func TestStorePreservaMetadadosV2(t *testing.T) {
+	store, err := studiodoc.NewStore(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := store.Save(makeProcessoV2Fixture()); err != nil {
+		t.Fatalf("Save v2 falhou: %v", err)
+	}
+	got, err := store.Get("proc-v2")
+	if err != nil {
+		t.Fatalf("Get v2 falhou: %v", err)
+	}
+	if got.SchemaVersion != 2 || got.Date != "2026-11-14" || got.Description != "Descricao completa" {
+		t.Fatalf("metadados basicos perdidos: %+v", got)
+	}
+	if got.ExecutionStrategy["supervision_level"] != "epic" || got.UpstreamSignatures["route"] == nil {
+		t.Fatalf("metadados compostos perdidos: exec=%+v sig=%+v", got.ExecutionStrategy, got.UpstreamSignatures)
 	}
 }

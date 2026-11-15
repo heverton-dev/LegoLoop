@@ -15,12 +15,9 @@ import (
 
 // runSubloop executa o sub-loop em diretório isolado e estéril (R-LOOP-4).
 func (o *Orchestrix) runSubloop(ctx context.Context, n dag.Node, workdir string) (runner.Result, error) {
-	if o.LoopStore == nil {
-		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: acervo de loops não configurado", n.ID)
-	}
-	lp, err := o.LoopStore.Get(n.Ref)
+	lp, err := o.loadSubProcess(n)
 	if err != nil {
-		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: sub-loop %q não encontrado: %w", n.ID, n.Ref, err)
+		return runner.Result{}, err
 	}
 	subWorkdir, err := os.MkdirTemp("", "legoloop-subloop-*")
 	if err != nil {
@@ -35,11 +32,7 @@ func (o *Orchestrix) runSubloop(ctx context.Context, n dag.Node, workdir string)
 	if err != nil {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
 	}
-	subReport, err := runner.Run(ctx, subDAG, runner.Options{
-		Workdir:     subWorkdir,
-		Parallelism: 1,
-		Executor:    o,
-	})
+	subReport, err := runner.Run(ctx, subDAG, o.subRunnerOptions(subWorkdir))
 	if err != nil {
 		return runner.Result{}, fmt.Errorf("orchestrix: sub-loop %q: %w", n.Ref, err)
 	}
@@ -49,14 +42,56 @@ func (o *Orchestrix) runSubloop(ctx context.Context, n dag.Node, workdir string)
 	return o.finalizeSubloop(n, workdir, subWorkdir, subReport)
 }
 
+func (o *Orchestrix) loadSubProcess(n dag.Node) (*studiodoc.Processo, error) {
+	if o.LoopStore == nil {
+		return nil, fmt.Errorf("orchestrix: nó %q: acervo de loops não configurado", n.ID)
+	}
+	lp, err := o.LoopStore.Get(n.Ref)
+	if err != nil {
+		return nil, fmt.Errorf("orchestrix: nó %q: sub-loop %q não encontrado: %w", n.ID, n.Ref, err)
+	}
+	return lp, nil
+}
+
+func (o *Orchestrix) subRunnerOptions(subWorkdir string) runner.Options {
+	return runner.Options{
+		Workdir:        subWorkdir,
+		Parallelism:    1,
+		DefaultTimeout: o.DefaultTimeout,
+		Executor:       o,
+		AllowScripts:   o.AllowScripts,
+		AutoApprove:    o.AutoApprove,
+		NonInteractive: o.NonInteractive,
+		Vars:           o.Vars,
+	}
+}
+
 func parseSubDAG(lp *studiodoc.Processo) (*dag.DAG, error) {
 	raw, err := json.Marshal(struct {
-		ID      string       `json:"id,omitempty"`
-		Name    string       `json:"name"`
-		Version string       `json:"version,omitempty"`
-		Trigger *dag.Trigger `json:"trigger,omitempty"`
-		Nodes   []dag.Node   `json:"nodes"`
-	}{ID: lp.ID, Name: lp.Name, Version: lp.Version, Trigger: lp.Trigger, Nodes: lp.Nodes})
+		Schema             string         `json:"$schema,omitempty"`
+		ID                 string         `json:"id,omitempty"`
+		Name               string         `json:"name"`
+		Description        string         `json:"description,omitempty"`
+		Version            string         `json:"version,omitempty"`
+		SchemaVersion      int            `json:"schema_version,omitempty"`
+		Date               string         `json:"date,omitempty"`
+		UpstreamSignatures map[string]any `json:"upstream_signatures,omitempty"`
+		ExecutionStrategy  map[string]any `json:"execution_strategy,omitempty"`
+		Trigger            *dag.Trigger   `json:"trigger,omitempty"`
+		Nodes              []dag.Node     `json:"nodes"`
+	}{
+		Schema:             lp.Schema,
+		ID:                 lp.ID,
+		Name:               lp.Name,
+		Description:        lp.Description,
+		Version:            lp.Version,
+		SchemaVersion:      lp.SchemaVersion,
+		Date:               lp.Date,
+		UpstreamSignatures: lp.UpstreamSignatures,
+		ExecutionStrategy:  lp.ExecutionStrategy,
+		Trigger:            lp.Trigger,
+		Nodes:              lp.Nodes,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -64,42 +99,117 @@ func parseSubDAG(lp *studiodoc.Processo) (*dag.DAG, error) {
 }
 
 func (o *Orchestrix) transferInputs(n dag.Node, lp *studiodoc.Processo, srcDir, dstDir string) error {
-	toCopy := make(map[string]bool)
-	for _, art := range n.Inputs {
-		if art != "" {
-			toCopy[filepath.Clean(art)] = true
-		}
+	toCopy, err := collectSubloopInputs(n, lp)
+	if err != nil {
+		return err
 	}
 	if len(toCopy) == 0 {
-		ports, err := studiodoc.DerivePorts(lp)
-		if err == nil {
+		return nil
+	}
+	srcRoot, err := os.OpenRoot(srcDir)
+	if err != nil {
+		return err
+	}
+	defer srcRoot.Close()
+	dstRoot, err := os.OpenRoot(dstDir)
+	if err != nil {
+		return err
+	}
+	defer dstRoot.Close()
+	for _, rel := range toCopy {
+		if err := copySubloopInput(srcRoot, dstRoot, rel); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func collectSubloopInputs(n dag.Node, lp *studiodoc.Processo) ([]string, error) {
+	seen := make(map[string]bool)
+	var out []string
+	add := func(raw string) error {
+		rel, err := sanitizeSubloopRel(raw)
+		if err != nil {
+			return err
+		}
+		if rel != "" && !seen[rel] {
+			seen[rel] = true
+			out = append(out, rel)
+		}
+		return nil
+	}
+	for _, art := range n.Inputs {
+		if err := add(art); err != nil {
+			return nil, err
+		}
+	}
+	if len(out) == 0 && lp != nil {
+		if ports, err := studiodoc.DerivePorts(lp); err == nil {
 			for _, c := range ports.Consumes {
-				if c != "" && c != studiodoc.AnyArtifact {
-					toCopy[filepath.Clean(c)] = true
+				if c == "" || c == studiodoc.AnyArtifact || (strings.Contains(c, ":") && !filepath.IsAbs(c)) {
+					continue
+				}
+				if err := add(c); err != nil {
+					return nil, err
 				}
 			}
 		}
 	}
-	for art := range toCopy {
-		src := filepath.Join(srcDir, art)
-		if data, err := os.ReadFile(src); err == nil {
-			dst := filepath.Join(dstDir, art)
-			if err := os.MkdirAll(filepath.Dir(dst), 0755); err != nil {
-				return err
-			}
-			if err := os.WriteFile(dst, data, 0600); err != nil {
-				return err
-			}
+	return out, nil
+}
+
+func sanitizeSubloopRel(raw string) (string, error) {
+	trimmed := strings.TrimSpace(raw)
+	if trimmed == "" {
+		return "", nil
+	}
+	rel := filepath.Clean(filepath.FromSlash(trimmed))
+	if !filepath.IsLocal(rel) || rel == "." {
+		return "", fmt.Errorf("path jail: entrada %q fora do workspace", raw)
+	}
+	if isSensitiveSubloopRel(rel) {
+		return "", fmt.Errorf("path jail: entrada sensível %q proibida", raw)
+	}
+	return rel, nil
+}
+
+func isSensitiveSubloopRel(rel string) bool {
+	for _, seg := range strings.Split(filepath.ToSlash(rel), "/") {
+		low := strings.ToLower(seg)
+		if low == ".git" || strings.HasPrefix(low, ".env") || strings.HasPrefix(low, "credential_") {
+			return true
 		}
 	}
-	return nil
+	return false
+}
+
+func copySubloopInput(srcRoot, dstRoot *os.Root, rel string) error {
+	info, err := srcRoot.Lstat(rel)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	if info.Mode()&os.ModeSymlink != 0 {
+		return fmt.Errorf("path jail: symlink %q proibido", rel)
+	}
+	data, err := srcRoot.ReadFile(rel)
+	if err != nil {
+		return err
+	}
+	return writeArtifact(dstRoot, rel, data)
 }
 
 func buildFailedResult(n dag.Node, rep runner.Report) (runner.Result, error) {
 	var msgs []string
 	for _, nr := range rep.Nodes {
 		if nr.Status != runner.StatusPassed {
-			msgs = append(msgs, fmt.Sprintf("nó %q: %s", nr.ID, nr.Status))
+			if nr.Error != "" {
+				msgs = append(msgs, fmt.Sprintf("nó %q: %s (%s)", nr.ID, nr.Status, nr.Error))
+			} else {
+				msgs = append(msgs, fmt.Sprintf("nó %q: %s", nr.ID, nr.Status))
+			}
 		}
 	}
 	return runner.Result{

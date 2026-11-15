@@ -105,6 +105,32 @@ func TestSecurityHeadersAndStatic(t *testing.T) {
 	}
 }
 
+func TestFaviconServedAndLinkedInPages(t *testing.T) {
+	s, _ := newServer(t)
+	h := s.Handler()
+
+	recFav := do(t, h, "GET", "/favicon.ico", "")
+	if recFav.Code != http.StatusOK {
+		t.Fatalf("GET /favicon.ico: esperava 200, obteve %d", recFav.Code)
+	}
+	if ct := recFav.Header().Get("Content-Type"); !strings.Contains(ct, "image/svg+xml") {
+		t.Errorf("GET /favicon.ico Content-Type = %q, esperava image/svg+xml", ct)
+	}
+	if !strings.Contains(recFav.Body.String(), "<svg") {
+		t.Errorf("GET /favicon.ico sem payload SVG: %s", recFav.Body.String())
+	}
+
+	for _, page := range []string{"/", "/inventario", "/swarm"} {
+		rec := do(t, h, "GET", page, "")
+		if rec.Code != http.StatusOK {
+			t.Fatalf("GET %s: status %d", page, rec.Code)
+		}
+		if !strings.Contains(rec.Body.String(), `<link rel="icon"`) {
+			t.Errorf("GET %s sem <link rel=\"icon\" para evitar 404 de favicon", page)
+		}
+	}
+}
+
 func TestDNSRebindingBlocked(t *testing.T) {
 	s, _ := newServer(t)
 	rec := do(t, s.Handler(), "GET", "/api/blocks", "", func(r *http.Request) { r.Host = "evil.example.com" })
@@ -196,6 +222,7 @@ func TestValidateDetectsProblems(t *testing.T) {
 
 func TestMaterializeWritesProcesso(t *testing.T) {
 	s, _ := newServer(t)
+	s.Vault = t.TempDir()
 	rec := do(t, s.Handler(), "POST", "/api/materialize", validComp)
 	if rec.Code != 200 {
 		t.Fatalf("status %d: %s", rec.Code, rec.Body.String())

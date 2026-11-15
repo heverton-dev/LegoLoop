@@ -24,14 +24,19 @@ func ValidateID(id string) error {
 }
 
 type Processo struct {
-	ID          string       `json:"id"`
-	Name        string       `json:"name"`
-	Description string       `json:"description,omitempty"`
-	Version     string       `json:"version,omitempty"`
-	Trigger     *dag.Trigger `json:"trigger,omitempty"`
-	Nodes       []dag.Node   `json:"nodes"`
-	CreatedAt   time.Time    `json:"created_at,omitempty"`
-	UpdatedAt   time.Time    `json:"updated_at,omitempty"`
+	Schema             string         `json:"$schema,omitempty"`
+	ID                 string         `json:"id"`
+	Name               string         `json:"name"`
+	Description        string         `json:"description,omitempty"`
+	Version            string         `json:"version,omitempty"`
+	SchemaVersion      int            `json:"schema_version,omitempty"`
+	Date               string         `json:"date,omitempty"`
+	UpstreamSignatures map[string]any `json:"upstream_signatures,omitempty"`
+	ExecutionStrategy  map[string]any `json:"execution_strategy,omitempty"`
+	Trigger            *dag.Trigger   `json:"trigger,omitempty"`
+	Nodes              []dag.Node     `json:"nodes"`
+	CreatedAt          time.Time      `json:"created_at,omitempty"`
+	UpdatedAt          time.Time      `json:"updated_at,omitempty"`
 }
 
 type Summary struct {

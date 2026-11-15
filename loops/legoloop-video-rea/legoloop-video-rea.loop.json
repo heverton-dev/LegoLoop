@@ -40,7 +40,7 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "fallback": "flash"
       },
       "isolation": {
@@ -95,7 +95,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "fallback": "flash"
       },
       "isolation": {
@@ -150,7 +150,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "fallback": "flash"
       },
       "isolation": {
@@ -259,7 +259,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "fallback": "flash"
       },
       "isolation": {
@@ -314,7 +314,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "fallback": "flash"
       },
       "isolation": {

@@ -37,11 +37,19 @@ func (s *Server) secure(next http.Handler) http.Handler {
 			writeError(w, http.StatusTooManyRequests, "muitas requisições")
 			return
 		}
-		if r.Method == http.MethodPost && !s.postAllowed(w, r) {
+		if isMutatingMethod(r.Method) && !s.mutationAllowed(w, r) {
 			return
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func isMutatingMethod(method string) bool {
+	switch method {
+	case http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete:
+		return true
+	}
+	return false
 }
 
 // hostAllowed bloqueia DNS rebinding: só o endereço de escuta (ou localhost na mesma porta).
@@ -53,8 +61,8 @@ func (s *Server) hostAllowed(host string) bool {
 	return err == nil && host == net.JoinHostPort("localhost", port)
 }
 
-// postAllowed exige mesma origem e application/json (impede CSRF por formulário simples).
-func (s *Server) postAllowed(w http.ResponseWriter, r *http.Request) bool {
+// mutationAllowed exige mesma origem em todos os métodos mutadores e application/json quando há corpo.
+func (s *Server) mutationAllowed(w http.ResponseWriter, r *http.Request) bool {
 	if o := r.Header.Get("Origin"); o != "" && o != "http://"+r.Host {
 		writeError(w, http.StatusForbidden, "origem cruzada bloqueada")
 		return false
@@ -63,10 +71,13 @@ func (s *Server) postAllowed(w http.ResponseWriter, r *http.Request) bool {
 		writeError(w, http.StatusForbidden, "requisição cross-site bloqueada")
 		return false
 	}
-	mt, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil || mt != "application/json" {
-		writeError(w, http.StatusUnsupportedMediaType, "Content-Type deve ser application/json")
-		return false
+	needsJSON := r.Method != http.MethodDelete || r.ContentLength > 0 || r.Header.Get("Content-Type") != ""
+	if needsJSON {
+		mt, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+		if err != nil || mt != "application/json" {
+			writeError(w, http.StatusUnsupportedMediaType, "Content-Type deve ser application/json")
+			return false
+		}
 	}
 	r.Body = http.MaxBytesReader(w, r.Body, maxBodyBytes)
 	return true

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"legoloop/internal/brain"
 	"legoloop/internal/fechar"
 )
 
@@ -69,8 +70,40 @@ func parseFecharEExecutar(ctx context.Context, d Deps, slug string, rawArgs []st
 		TaxaCambioBRL:      *taxaCambio,
 	}
 	req := fechar.Request{Slug: slug, DryRun: *dryRun, SkipBuild: *skipBuild, Telemetria: telem}
-	deps := fechar.Deps{Home: d.Home, SkipBuild: *skipBuild, Brain: b}
+	deps := buildFecharDeps(d, *skipBuild, b)
 	return runFechar(ctx, d, req, deps, *asJSON)
+}
+
+// FecharDeps permite injetar seams do comando fechar em testes sem tocar o repositório real.
+type FecharDeps struct {
+	RepoDir   string
+	Rebuilder func(dir string) error
+	Indexer   func(repo string) error
+	Portoes   func(repo string) error
+}
+
+func buildFecharDeps(d Deps, skipBuild bool, b brain.Brain) fechar.Deps {
+	deps := fechar.Deps{
+		Home:      d.Home,
+		SkipBuild: skipBuild,
+		Brain:     b,
+		Rebuilder: fechar.DefaultRebuilder,
+		Indexer:   fechar.DefaultIndexer,
+		Portoes:   fechar.DefaultPortoes,
+	}
+	if d.Fechar != nil {
+		deps.RepoDir = d.Fechar.RepoDir
+		if d.Fechar.Rebuilder != nil {
+			deps.Rebuilder = d.Fechar.Rebuilder
+		}
+		if d.Fechar.Indexer != nil {
+			deps.Indexer = d.Fechar.Indexer
+		}
+		if d.Fechar.Portoes != nil {
+			deps.Portoes = d.Fechar.Portoes
+		}
+	}
+	return deps
 }
 
 func runFechar(ctx context.Context, d Deps, req fechar.Request, deps fechar.Deps, asJSON bool) int {

@@ -68,7 +68,8 @@ func campoNoAusente(n Node) string {
 		{"status", n.Status == ""},
 		{"routing.harness", n.Routing.Harness == ""},
 		{"routing.via", n.Routing.Via == ""},
-		{"routing.model", n.Routing.Model == ""},
+		{"routing.model", n.Routing.Mode != ModeAuto && n.Routing.Model == ""},
+		{"routing.combo", n.Routing.Mode == ModeAuto && n.Routing.Combo == ""},
 		{"routing.effort", n.Routing.Effort == ""},
 	}
 	for _, c := range campos {

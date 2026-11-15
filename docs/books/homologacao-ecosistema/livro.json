@@ -1,0 +1,18 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Homologação Integral do Ecossistema LegoLoop",
+  "nome_base": "2026-11-14_HOMOLOGACAO-INTEGRAL-DO-ECOSSISTEMA-LEGOLOOP",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "fonte": "docs/manuals/2026-11-14_MANUAL_FUNCAO_HOMOLOGACAO_ECOSISTEMA_LEGOLOOP.md",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-arquitetura-frentes.md",
+    "02-meso-diagnostico-e-swarm.md",
+    "03-micro-verificacao-cega-e-studio.md",
+    "04-fechamento-e-apendices.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "9a207b502fe7bd3fed001f6767ea28a75f11fd5791548fdc6c85d5bc74820d3c",
+  "ultima_compilacao": "2026-11-14"
+}

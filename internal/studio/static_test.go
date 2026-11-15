@@ -3,8 +3,10 @@ package studio
 import (
 	"encoding/json"
 	"io/fs"
+	"math"
 	"os/exec"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -526,5 +528,236 @@ func TestCanConnectTriggerAnyBlock(t *testing.T) {
 	}
 	if !strings.Contains(snippet, `startsWith("trigger_")`) {
 		t.Fatalf("canConnect deve permitir ligação de/para trigger_* com qualquer peça; trecho:\n%s", snippet)
+	}
+}
+
+func TestLayoutModaisNavegacaoETema(t *testing.T) {
+	css := readStatic(t, "style.css")
+	indexHTML := readStatic(t, "index.html")
+	invHTML := readStatic(t, "inventario.html")
+	swarmHTML := readStatic(t, "swarm.html")
+	assertLayoutResponsivoEPorts(t, css, readStatic(t, "swarm.css"))
+	assertModaisEInspetorIndex(t, indexHTML)
+	assertNavegacaoETemaRotas(t, indexHTML, invHTML, swarmHTML)
+	assertTemaJS(t)
+}
+
+func assertLayoutResponsivoEPorts(t *testing.T, css, swarmCSS string) {
+	t.Helper()
+	if strings.Contains(css, "- 56px)") {
+		t.Error("style.css não deve usar altura fixa calc(... - 56px)")
+	}
+	for _, want := range []string{".stage-topbar", "@media (max-width: 1024px)", "@media (max-width: 768px)", ".node.node--trigger .port--in"} {
+		if !strings.Contains(css, want) {
+			t.Errorf("style.css sem regra responsiva/porta %q", want)
+		}
+	}
+	if !strings.Contains(swarmCSS, "@media (max-width:768px)") && !strings.Contains(swarmCSS, "@media (max-width: 768px)") {
+		t.Error("swarm.css sem media query de 768px")
+	}
+}
+
+func assertModaisEInspetorIndex(t *testing.T, indexHTML string) {
+	t.Helper()
+	if strings.Contains(indexHTML, "modal-item-header") {
+		t.Error("index.html ainda usa modal-item-header desalinhado")
+	}
+	if strings.Count(indexHTML, `class="modal-header"`) < 6 {
+		t.Errorf("index.html deve alinhar os modais com class=\"modal-header\"")
+	}
+	posBtn := strings.Index(indexHTML, `id="btn-toggle-inspector"`)
+	posAside := strings.Index(indexHTML, `id="inspector"`)
+	if posBtn < 0 || posAside < 0 || posBtn > posAside {
+		t.Fatalf("btn-toggle-inspector (%d) deve ficar fora e antes do aside#inspector (%d)", posBtn, posAside)
+	}
+}
+
+func assertNavegacaoETemaRotas(t *testing.T, indexHTML, invHTML, swarmHTML string) {
+	t.Helper()
+	if !strings.Contains(invHTML, `href="/swarm"`) {
+		t.Error("inventario.html sem link para /swarm")
+	}
+	for _, href := range []string{`href="/"`, `href="/inventario"`, `href="/swarm"`} {
+		if !strings.Contains(swarmHTML, href) {
+			t.Errorf("swarm.html sem link de navegação %s", href)
+		}
+	}
+	for nome, html := range map[string]string{"index.html": indexHTML, "inventario.html": invHTML, "swarm.html": swarmHTML} {
+		if !strings.Contains(html, `id="btn-theme-toggle"`) {
+			t.Errorf("%s sem seletor de tema #btn-theme-toggle", nome)
+		}
+		if !strings.Contains(html, "ui.js") {
+			t.Errorf("%s deve carregar ui.js", nome)
+		}
+	}
+}
+
+func assertTemaJS(t *testing.T) {
+	t.Helper()
+	node, err := exec.LookPath("node")
+	if err != nil {
+		t.Skip("node ausente; validação do tema pulada")
+	}
+	script := `const fs=require("fs");const vm=require("vm");
+const store={};
+const attrs={"data-theme":"light"};
+const btn={textContent:"",dataset:{},attrs:{},setAttribute(k,v){this.attrs[k]=v;},addEventListener(){}};
+const root={setAttribute(k,v){attrs[k]=v;},getAttribute(k){return attrs[k];}};
+const ls={getItem(k){return store[k]||null;},setItem(k,v){store[k]=v;}};
+const lsProp="local"+"Stor"+"age";
+const ctx={document:{documentElement:root,getElementById(id){return id==="btn-theme-toggle"?btn:null;},addEventListener(){}},window:{[lsProp]:ls,matchMedia(){return{matches:false};}},[lsProp]:ls,setTimeout,clearTimeout};
+vm.runInNewContext(fs.readFileSync("static/ui.js","utf8"),ctx);
+ctx.applyTheme("dark");
+if(attrs["data-theme"]!=="dark"||store["legoloop.theme"]!=="dark")throw new Error("applyTheme falhou");
+const next=ctx.toggleTheme();
+if(next!=="light"||attrs["data-theme"]!=="light"||store["legoloop.theme"]!=="light")throw new Error("toggleTheme falhou");`
+	if out, err := exec.Command(node, "-e", script).CombinedOutput(); err != nil {
+		t.Fatalf("tema ui.js falhou: %v\n%s", err, string(out))
+	}
+}
+
+func TestWCAGTokensEGuildas(t *testing.T) {
+	css := readStatic(t, "style.css")
+	assertTokensESelectoresWCAG(t, css)
+	assertGuildasBadgeEMinSize(t, css)
+	assertGuildasEPaletteJS(t)
+	assertAriaETeclado(t)
+}
+
+func assertTokensESelectoresWCAG(t *testing.T, css string) {
+	t.Helper()
+	for _, tok := range []string{"--surface-3", "--ink", "--text-normal", "--text-muted", "--bg-surface", "--bg-base", "--bg-hover", "--danger", "--danger-bg", "--danger-ink", "--radius-sm", "--radius-md"} {
+		if !strings.Contains(css, tok+":") {
+			t.Errorf("style.css sem definição do token %s", tok)
+		}
+	}
+	claro := extrairTokensCSS(t, css, `(?s):root,\s*:root\[data-theme="light"\]\s*\{([^}]+)\}`)
+	escuro := extrairTokensCSS(t, css, `(?s):root\[data-theme="dark"\]\s*\{([^}]+)\}`)
+	pares := [][2]string{{"--text", "--bg"}, {"--text", "--surface"}, {"--muted", "--surface-3"}, {"--accent-ink", "--accent"}, {"--accent", "--accent-soft"}, {"--ok", "--ok-soft"}, {"--fail", "--fail-soft"}, {"--danger-ink", "--danger-bg"}, {"--idle", "--idle-soft"}}
+	validarParesWCAG(t, "claro", claro, pares)
+	validarParesWCAG(t, "escuro", escuro, pares)
+}
+
+func extrairTokensCSS(t *testing.T, css, padrao string) map[string]string {
+	t.Helper()
+	m := regexp.MustCompile(padrao).FindStringSubmatch(css)
+	if len(m) < 2 {
+		t.Fatalf("trecho CSS não encontrado: %s", padrao)
+	}
+	res := map[string]string{}
+	re := regexp.MustCompile(`(--[a-z0-9-]+)\s*:\s*(#[0-9a-fA-F]{3,6})`)
+	for _, kv := range re.FindAllStringSubmatch(m[1], -1) {
+		res[kv[1]] = kv[2]
+	}
+	return res
+}
+
+func validarParesWCAG(t *testing.T, tema string, tok map[string]string, pares [][2]string) {
+	t.Helper()
+	for _, par := range pares {
+		fg, bg := tok[par[0]], tok[par[1]]
+		if fg == "" || bg == "" {
+			t.Errorf("%s: token hex ausente para %s/%s", tema, par[0], par[1])
+			continue
+		}
+		if r := contrasteWCAG(fg, bg); r < 4.5 {
+			t.Errorf("%s: contraste WCAG AA insuficiente em %s (%s) sobre %s (%s): %.2f", tema, par[0], fg, par[1], bg, r)
+		}
+	}
+}
+
+func assertGuildasBadgeEMinSize(t *testing.T, css string) {
+	t.Helper()
+	mSize := regexp.MustCompile(`\.guilda-badge\s*\{[^}]*font-size:\s*(\d+)px`).FindStringSubmatch(css)
+	if len(mSize) < 2 {
+		t.Fatal("style.css sem font-size em .guilda-badge")
+	}
+	if px, _ := strconv.Atoi(mSize[1]); px < 11 {
+		t.Errorf(".guilda-badge font-size %dpx < 11px", px)
+	}
+	classes := []string{".guilda-badge--governanca", ".guilda-badge--reversa", ".guilda-badge--construcao", ".guilda-badge--infra", ".guilda-badge--audiovisual", ".guilda-badge--qualidade", ".guilda-badge--publicacao", ".pill--role"}
+	for _, cls := range classes {
+		validarRegraBadgeWCAG(t, css, "claro", regexp.QuoteMeta(cls))
+		validarRegraBadgeWCAG(t, css, "escuro", `:root\[data-theme="dark"\]\s*`+regexp.QuoteMeta(cls))
+	}
+}
+
+func validarRegraBadgeWCAG(t *testing.T, css, tema, sel string) {
+	t.Helper()
+	m := regexp.MustCompile(`(?s)` + sel + `\s*\{([^}]+)\}`).FindStringSubmatch(css)
+	if len(m) < 2 {
+		t.Fatalf("%s: seletor %s ausente", tema, sel)
+	}
+	bg := regexp.MustCompile(`background:\s*(#[0-9a-fA-F]{3,6})`).FindStringSubmatch(m[1])
+	fg := regexp.MustCompile(`(?:^|[\s;])color:\s*(#[0-9a-fA-F]{3,6})`).FindStringSubmatch(m[1])
+	if len(bg) < 2 || len(fg) < 2 {
+		t.Fatalf("%s: cor sólida ausente em %s", tema, sel)
+	}
+	if r := contrasteWCAG(fg[1], bg[1]); r < 4.5 {
+		t.Errorf("%s %s: contraste %.2f < 4.5 (%s sobre %s)", tema, sel, r, fg[1], bg[1])
+	}
+}
+
+func contrasteWCAG(fgHex, bgHex string) float64 {
+	l1 := luminanciaRelativa(fgHex)
+	l2 := luminanciaRelativa(bgHex)
+	if l1 < l2 {
+		l1, l2 = l2, l1
+	}
+	return (l1 + 0.05) / (l2 + 0.05)
+}
+
+func luminanciaRelativa(hexStr string) float64 {
+	h := strings.TrimPrefix(hexStr, "#")
+	if len(h) == 3 {
+		h = string([]byte{h[0], h[0], h[1], h[1], h[2], h[2]})
+	}
+	r := canalLinear(h[0:2])
+	g := canalLinear(h[2:4])
+	b := canalLinear(h[4:6])
+	return 0.2126*r + 0.7152*g + 0.0722*b
+}
+
+func canalLinear(par string) float64 {
+	v, _ := strconv.ParseUint(par, 16, 8)
+	s := float64(v) / 255.0
+	if s <= 0.03928 {
+		return s / 12.92
+	}
+	return math.Pow((s+0.055)/1.055, 2.4)
+}
+
+func assertGuildasEPaletteJS(t *testing.T) {
+	t.Helper()
+	node, err := exec.LookPath("node")
+	if err != nil {
+		t.Skip("node ausente; validação de palette.js pulada")
+	}
+	script := `const fs=require("fs");const vm=require("vm");
+const ctx={state:{query:"",cat:"all",blocks:[],pieces:[],favOnly:false,filterText:""},render(){},applyFilter(){},setTimeout,clearTimeout};
+for(const f of ["static/search.js","static/virtual.js","static/palette.js"]) vm.runInNewContext(fs.readFileSync(f,"utf8"),ctx);
+const casos=[[{id:"t1",kind:"trigger_manual"},"governanca"],[{id:"f1",kind:"flow_join"},"governanca"],[{id:"g1",kind:"gate"},"qualidade"],[{id:"r1",kind:"agent",name:"rea-site"},"reversa"],[{id:"a1",kind:"skill",name:"video-editor"},"audiovisual"],[{id:"q1",kind:"skill",name:"homologar-e2e"},"qualidade"],[{id:"p1",kind:"skill",name:"legopress-livro"},"publicacao"],[{id:"i1",kind:"mcp",name:"deploy-vps"},"infra"],[{id:"c1",kind:"agent",name:"coder"},"construcao"]];
+for(const [peca, esp] of casos){const got=ctx.entryFromBlock(peca).guilda; if(got!==esp) throw new Error(peca.id+" => "+got+" != "+esp);}`
+	if out, err := exec.Command(node, "-e", script).CombinedOutput(); err != nil {
+		t.Fatalf("guildas palette.js falhou: %v\n%s", err, string(out))
+	}
+}
+
+func assertAriaETeclado(t *testing.T) {
+	t.Helper()
+	checks := map[string][]string{
+		"index.html":   {`aria-expanded`},
+		"app.js":       {`aria-expanded`},
+		"palette.js":   {`role", "group"`, `aria-label`},
+		"inventory.js": {`ArrowDown`, `ArrowUp`, `aria-labelledby`},
+		"swarm.js":     {`role", "tab"`, `aria-selected`},
+	}
+	for file, wants := range checks {
+		txt := readStatic(t, file)
+		for _, w := range wants {
+			if !strings.Contains(txt, w) {
+				t.Errorf("%s sem acessibilidade %q", file, w)
+			}
+		}
 	}
 }

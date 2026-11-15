@@ -131,6 +131,9 @@ func writeFabricarError(w http.ResponseWriter, err error) {
 	case errors.Is(err, fabricar.ErrLacuna):
 		writeErrorCode(w, http.StatusUnprocessableEntity, "lacuna",
 			"uma etapa não tem peça apta na matriz; dê um perfil a uma peça com legoloop matriz perfil definir, ou mude o objetivo")
+	case errors.Is(err, fabricar.ErrSemMatriz):
+		writeErrorCode(w, http.StatusUnprocessableEntity, "sem_matriz",
+			"matriz de aptidão ausente no cofre; gere a matriz com legoloop matriz gerar e tente novamente")
 	default:
 		writeError(w, http.StatusInternalServerError, "falha ao fabricar o processo")
 	}

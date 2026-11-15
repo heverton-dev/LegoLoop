@@ -1,223 +1,373 @@
 {
-  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
-  "id": "legoloop-swarm",
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
   "name": "legoloop-swarm",
-  "description": "Orquestrar execucao paralela de pipeline.dag.json em swarm por nivel topologico com roteamento de modelos pela Matriz de Papeis",
+  "description": "Orquestrar execucao paralela de processo em swarm por nivel topologico com roteamento de modelos pela Matriz de Papeis",
   "version": "1.0.0",
+  "date": "2026-11-14",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-14_ROUTE_SWARM.json",
+      "sha256": "6d1eb2022c4836c15ca3b69529f66b8e9a6ea82b35814531b8d720b7eda2068a"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "max_parallel_workers": 2,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_processo"
+  },
   "trigger": {
     "type": "manual"
   },
   "nodes": [
     {
-      "id": "e01",
-      "name": "Etapa 1",
-      "type": "skill",
+      "id": "TICK-01.1",
+      "name": "Etapa 1 — peça legoloop-piece-upgrader",
+      "type": "unit_no",
       "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
       "ref": "skills/legoloop-piece-upgrader",
-      "timeout_sec": 600,
+      "depends_on": [],
+      "timeout_sec": 180,
       "routing": {
         "mode": "suggested",
-        "model": "sonnet",
-        "effort": "medium",
-        "fallback": "code-fast"
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
       },
-      "output": {
-        "artifact": "out/01_etapa.md",
-        "gate": "file_exists('out/01_etapa.md') \u0026\u0026 word_count('out/01_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_etapa.md', '\\{\\{')"
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
-        "workspace": "local"
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
       },
       "token_budget": {
-        "max_completion_tokens": 3000,
-        "max_prompt_tokens": 10000
+        "max_completion_tokens": 600,
+        "max_prompt_tokens": 16000
       },
+      "rollback_strategy": "stash_changes",
       "tooling": {
         "runtime": "powershell"
       },
+      "verification": {
+        "gate": "file_exists('out/01_etapa.md') && word_count('out/01_etapa.md') >= 30 && !has_pattern('out/01_etapa.md', '\\{\\{')"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_SWARM.md"
+      ],
       "context_out": [
         "out/01_etapa.md"
       ],
-      "status": "PENDING"
+      "output": {
+        "artifact": "out/01_etapa.md",
+        "gate": "file_exists('out/01_etapa.md') && word_count('out/01_etapa.md') >= 30 && !has_pattern('out/01_etapa.md', '\\{\\{')"
+      }
     },
     {
-      "id": "e02",
-      "name": "Etapa 2",
-      "type": "skill",
+      "id": "TICK-01.2",
+      "name": "Etapa 2 — peça aidd-piece-upgrader",
+      "type": "unit_no",
       "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
       "ref": "skills/aidd-piece-upgrader",
       "depends_on": [
-        "e01"
+        "TICK-01.1"
       ],
-      "timeout_sec": 600,
+      "timeout_sec": 180,
       "routing": {
         "mode": "suggested",
-        "model": "sonnet",
-        "effort": "medium",
-        "fallback": "code-fast"
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
       },
       "inputs": {
         "e01": "file('out/01_etapa.md')"
       },
-      "output": {
-        "artifact": "out/02_etapa.md",
-        "gate": "file_exists('out/02_etapa.md') \u0026\u0026 word_count('out/02_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/02_etapa.md', '\\{\\{')"
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
-        "workspace": "local"
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
       },
       "token_budget": {
-        "max_completion_tokens": 3000,
-        "max_prompt_tokens": 10000
+        "max_completion_tokens": 600,
+        "max_prompt_tokens": 16000
       },
+      "rollback_strategy": "stash_changes",
       "tooling": {
         "runtime": "powershell"
       },
+      "verification": {
+        "gate": "file_exists('out/02_etapa.md') && word_count('out/02_etapa.md') >= 30 && !has_pattern('out/02_etapa.md', '\\{\\{')"
+      },
+      "spec_ref": "AC-E01.2",
+      "status": "PENDING",
       "context_in": [
         "out/01_etapa.md"
       ],
       "context_out": [
         "out/02_etapa.md"
       ],
-      "status": "PENDING"
+      "output": {
+        "artifact": "out/02_etapa.md",
+        "gate": "file_exists('out/02_etapa.md') && word_count('out/02_etapa.md') >= 30 && !has_pattern('out/02_etapa.md', '\\{\\{')"
+      }
     },
     {
-      "id": "e03",
-      "name": "Etapa 3",
-      "type": "skill",
+      "id": "TICK-01.3",
+      "name": "Etapa 3 — peça legoloop-mega-processo",
+      "type": "unit_no",
       "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
-      "ref": "skills/legoloop-mega-pipeline",
+      "ref": "skills/legoloop-mega-processo",
       "depends_on": [
-        "e02"
+        "TICK-01.2"
       ],
-      "timeout_sec": 600,
+      "timeout_sec": 180,
       "routing": {
         "mode": "suggested",
-        "model": "sonnet",
-        "effort": "medium",
-        "fallback": "code-fast"
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
       },
       "inputs": {
         "e02": "file('out/02_etapa.md')"
       },
-      "output": {
-        "artifact": "out/03_etapa.md",
-        "gate": "file_exists('out/03_etapa.md') \u0026\u0026 word_count('out/03_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/03_etapa.md', '\\{\\{')"
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
-        "workspace": "local"
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
       },
       "token_budget": {
-        "max_completion_tokens": 3000,
-        "max_prompt_tokens": 10000
+        "max_completion_tokens": 600,
+        "max_prompt_tokens": 16000
       },
+      "rollback_strategy": "stash_changes",
       "tooling": {
         "runtime": "powershell"
       },
+      "verification": {
+        "gate": "file_exists('out/03_etapa.md') && word_count('out/03_etapa.md') >= 30 && !has_pattern('out/03_etapa.md', '\\{\\{')"
+      },
+      "spec_ref": "AC-E01.3",
+      "status": "PENDING",
       "context_in": [
         "out/02_etapa.md"
       ],
       "context_out": [
         "out/03_etapa.md"
       ],
-      "status": "PENDING"
+      "output": {
+        "artifact": "out/03_etapa.md",
+        "gate": "file_exists('out/03_etapa.md') && word_count('out/03_etapa.md') >= 30 && !has_pattern('out/03_etapa.md', '\\{\\{')"
+      }
     },
     {
-      "id": "e04",
-      "name": "Etapa 4",
-      "type": "skill",
+      "id": "TICK-01.4",
+      "name": "Etapa 4 — peça aidd-legoloop-mega-processo",
+      "type": "unit_no",
       "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
-      "ref": "skills/aidd-legoloop-mega-pipeline",
+      "ref": "skills/aidd-legoloop-mega-processo",
       "depends_on": [
-        "e03"
+        "TICK-01.3"
       ],
-      "timeout_sec": 600,
+      "timeout_sec": 180,
       "routing": {
         "mode": "suggested",
-        "model": "sonnet",
-        "effort": "medium",
-        "fallback": "code-fast"
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
       },
       "inputs": {
         "e03": "file('out/03_etapa.md')"
       },
-      "output": {
-        "artifact": "out/04_etapa.md",
-        "gate": "file_exists('out/04_etapa.md') \u0026\u0026 word_count('out/04_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/04_etapa.md', '\\{\\{')"
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
-        "workspace": "local"
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
       },
       "token_budget": {
-        "max_completion_tokens": 3000,
-        "max_prompt_tokens": 10000
+        "max_completion_tokens": 600,
+        "max_prompt_tokens": 16000
       },
+      "rollback_strategy": "stash_changes",
       "tooling": {
         "runtime": "powershell"
       },
+      "verification": {
+        "gate": "file_exists('out/04_etapa.md') && word_count('out/04_etapa.md') >= 30 && !has_pattern('out/04_etapa.md', '\\{\\{')"
+      },
+      "spec_ref": "AC-E01.4",
+      "status": "PENDING",
       "context_in": [
         "out/03_etapa.md"
       ],
       "context_out": [
         "out/04_etapa.md"
       ],
-      "status": "PENDING"
+      "output": {
+        "artifact": "out/04_etapa.md",
+        "gate": "file_exists('out/04_etapa.md') && word_count('out/04_etapa.md') >= 30 && !has_pattern('out/04_etapa.md', '\\{\\{')"
+      }
     },
     {
-      "id": "e05",
-      "name": "Etapa 5",
-      "type": "skill",
+      "id": "TICK-01.5",
+      "name": "Etapa 5 — peça legoloop-video-master",
+      "type": "unit_no",
       "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
       "ref": "skills/legoloop-video-master",
       "depends_on": [
-        "e04"
+        "TICK-01.4"
       ],
-      "timeout_sec": 600,
+      "timeout_sec": 180,
       "routing": {
         "mode": "suggested",
-        "model": "sonnet",
-        "effort": "medium",
-        "fallback": "code-fast"
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
       },
       "inputs": {
         "e04": "file('out/04_etapa.md')"
       },
-      "output": {
-        "artifact": "out/05_etapa.md",
-        "gate": "file_exists('out/05_etapa.md') \u0026\u0026 word_count('out/05_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/05_etapa.md', '\\{\\{')"
+      "execution": {
+        "mode": "isolated"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
-        "workspace": "local"
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
       },
       "token_budget": {
-        "max_completion_tokens": 3000,
-        "max_prompt_tokens": 10000
+        "max_completion_tokens": 600,
+        "max_prompt_tokens": 16000
       },
+      "rollback_strategy": "stash_changes",
       "tooling": {
         "runtime": "powershell"
       },
+      "verification": {
+        "gate": "file_exists('out/05_etapa.md') && word_count('out/05_etapa.md') >= 30 && !has_pattern('out/05_etapa.md', '\\{\\{')"
+      },
+      "spec_ref": "AC-E01.5",
+      "status": "PENDING",
       "context_in": [
         "out/04_etapa.md"
       ],
       "context_out": [
         "out/05_etapa.md"
       ],
-      "status": "PENDING"
+      "output": {
+        "artifact": "out/05_etapa.md",
+        "gate": "file_exists('out/05_etapa.md') && word_count('out/05_etapa.md') >= 30 && !has_pattern('out/05_etapa.md', '\\{\\{')"
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "name": "Homologação Final",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": [
+        "TICK-01.5"
+      ],
+      "timeout_sec": 180,
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "via": "oficial",
+        "model": "script/local",
+        "effort": "low"
+      },
+      "execution": {
+        "mode": "inline"
+      },
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 300
+      },
+      "rollback_strategy": "abort_processo",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "spec_ref": "AC-E01.5",
+      "status": "PENDING",
+      "context_in": [
+        "cmd/legoloop/main.go"
+      ],
+      "context_out": [
+        "bin/legoloop.exe"
+      ],
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      }
     }
   ]
 }

@@ -5,7 +5,7 @@ consumes: Artifact:ProcessSlug
 produces: Artifact:CanonizedProcess
 artifact: docs/books/<slug>/<slug>.pdf
 gate: exit_code == 0
-suggested_model: code-fast
+suggested_model: t-chat-128k
 ---
 
 # 🏁 legoloop-fechar — Processo Universal de Canonização e Fechamento

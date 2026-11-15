@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"legoloop/internal/paths"
 	"legoloop/internal/triagem"
 )
 
@@ -21,7 +22,9 @@ func runTriagem(ctx context.Context, args []string, stdout, stderr io.Writer) in
 	fs.SetOutput(stderr)
 	workspace := fs.String("workspace", "", "diretório de trabalho para verificar artefatos ativos")
 	asJSON := fs.Bool("json", false, "emite decisão em formato JSON")
-	loopsDir := fs.String("loops-dir", "loops", "diretório raiz dos processos")
+	var processosDir string
+	fs.StringVar(&processosDir, "processos-dir", paths.DirAntigo, "diretório raiz dos processos")
+	fs.StringVar(&processosDir, paths.DirAntigo+"-dir", paths.DirAntigo, "alias legado de --processos-dir")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
@@ -33,7 +36,7 @@ func runTriagem(ctx context.Context, args []string, stdout, stderr io.Writer) in
 		fmt.Fprintln(stderr, "uso: legoloop triagem \"<entrada>\" [--workspace DIR] [--json]")
 		return 2
 	}
-	catalogo, err := carregarCatalogoTriagem(*loopsDir)
+	catalogo, err := carregarCatalogoTriagem(processosDir)
 	if err != nil {
 		fmt.Fprintf(stderr, "erro ao carregar catálogo de triagem: %v\n", err)
 		return 1
@@ -70,8 +73,8 @@ func imprimirDecisaoTriagem(stdout io.Writer, dec triagem.Decisao, asJSON bool) 
 	return 0
 }
 
-func carregarCatalogoTriagem(loopsDir string) ([]triagem.TriagemSpec, error) {
-	entries, err := os.ReadDir(loopsDir)
+func carregarCatalogoTriagem(processosDir string) ([]triagem.TriagemSpec, error) {
+	entries, err := os.ReadDir(processosDir)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, nil
@@ -83,7 +86,7 @@ func carregarCatalogoTriagem(loopsDir string) ([]triagem.TriagemSpec, error) {
 		if !e.IsDir() {
 			continue
 		}
-		spec, ok, err := lerTriagemSpec(filepath.Join(loopsDir, e.Name(), "triagem.json"))
+		spec, ok, err := lerTriagemSpec(filepath.Join(processosDir, e.Name(), "triagem.json"))
 		if err != nil {
 			return nil, err
 		}
@@ -115,16 +118,18 @@ func lerTriagemSpec(caminho string) (triagem.TriagemSpec, bool, error) {
 func runTriagemFinalizar(args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("triagem finalizar", flag.ContinueOnError)
 	fs.SetOutput(stderr)
-	loopsDir := fs.String("loops-dir", "loops", "diretório raiz dos processos")
+	var processosDir string
+	fs.StringVar(&processosDir, "processos-dir", paths.DirAntigo, "diretório raiz dos processos")
+	fs.StringVar(&processosDir, paths.DirAntigo+"-dir", paths.DirAntigo, "alias legado de --processos-dir")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
 	if fs.NArg() < 1 {
-		fmt.Fprintln(stderr, "uso: legoloop triagem finalizar <slug> [--loops-dir DIR]")
+		fmt.Fprintln(stderr, "uso: legoloop triagem finalizar <slug> [--processos-dir DIR]")
 		return 2
 	}
 	slug := fs.Arg(0)
-	if err := triagem.LimparMemoria(filepath.Join(*loopsDir, slug)); err != nil {
+	if err := triagem.LimparMemoria(filepath.Join(processosDir, slug)); err != nil {
 		fmt.Fprintf(stderr, "erro ao limpar memória de %s: %v\n", slug, err)
 		return 1
 	}

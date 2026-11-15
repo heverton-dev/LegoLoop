@@ -46,7 +46,7 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": "flash"
       },
@@ -86,7 +86,7 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "medium",
         "fallback": "flash"
       },
@@ -131,7 +131,7 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": "flash"
       },
@@ -176,7 +176,7 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "medium",
         "fallback": "flash"
       },
@@ -223,7 +223,7 @@
       "type": "script",
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "medium",
         "fallback": "flash"
       },

@@ -62,3 +62,22 @@ func TestVideoMotionCLI_SuporteAModelEEffort(t *testing.T) {
 		t.Errorf("esperava erro de modelo no stderr, obteve:\n%s", stderr.String())
 	}
 }
+
+func TestVideoMotionCLI_RespeitaAspect(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+	code := cli.Run(context.Background(), []string{"video-motion", "run", "video.mp4", "--aspect", "16:9"}, deps)
+	if code != 0 {
+		t.Fatalf("esperava exit 0 com --aspect 16:9, obteve %d (%s)", code, stderr.String())
+	}
+	if !bytes.Contains(stdout.Bytes(), []byte("16:9")) {
+		t.Errorf("esperava que video-motion run refletisse --aspect 16:9 na saída, obteve: %s", stdout.String())
+	}
+
+	stdout.Reset()
+	stderr.Reset()
+	codeInv := cli.Run(context.Background(), []string{"video-motion", "run", "video.mp4", "--aspect", "invalido"}, deps)
+	if codeInv == 0 {
+		t.Errorf("esperava rejeição para --aspect inválido, obteve exit 0")
+	}
+}

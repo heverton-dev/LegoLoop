@@ -11,6 +11,7 @@ import (
 
 	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
+	"legoloop/internal/paths"
 )
 
 type Store struct {
@@ -36,26 +37,34 @@ func (s *Store) filePath(id string) (string, error) {
 	if info, err := os.Stat(aninhado); err == nil && info.Mode().IsRegular() {
 		return aninhado, nil
 	}
-	return filepath.Join(s.dir, id+sufixoAntigo), nil
+	return filepath.Join(s.dir, id+paths.SufixoAntigo), nil
 }
-
-const sufixoAntigo = ".lo" + "op.json"
 
 func validateProcessoDAG(l *Processo) error {
 	v := struct {
-		ID          string       `json:"id,omitempty"`
-		Name        string       `json:"name"`
-		Description string       `json:"description,omitempty"`
-		Version     string       `json:"version,omitempty"`
-		Trigger     *dag.Trigger `json:"trigger,omitempty"`
-		Nodes       []dag.Node   `json:"nodes"`
+		Schema             string         `json:"$schema,omitempty"`
+		ID                 string         `json:"id,omitempty"`
+		Name               string         `json:"name"`
+		Description        string         `json:"description,omitempty"`
+		Version            string         `json:"version,omitempty"`
+		SchemaVersion      int            `json:"schema_version,omitempty"`
+		Date               string         `json:"date,omitempty"`
+		UpstreamSignatures map[string]any `json:"upstream_signatures,omitempty"`
+		ExecutionStrategy  map[string]any `json:"execution_strategy,omitempty"`
+		Trigger            *dag.Trigger   `json:"trigger,omitempty"`
+		Nodes              []dag.Node     `json:"nodes"`
 	}{
-		ID:          l.ID,
-		Name:        l.Name,
-		Description: l.Description,
-		Version:     l.Version,
-		Trigger:     l.Trigger,
-		Nodes:       l.Nodes,
+		Schema:             l.Schema,
+		ID:                 l.ID,
+		Name:               l.Name,
+		Description:        l.Description,
+		Version:            l.Version,
+		SchemaVersion:      l.SchemaVersion,
+		Date:               l.Date,
+		UpstreamSignatures: l.UpstreamSignatures,
+		ExecutionStrategy:  l.ExecutionStrategy,
+		Trigger:            l.Trigger,
+		Nodes:              l.Nodes,
 	}
 	raw, err := json.Marshal(v)
 	if err != nil {
@@ -159,8 +168,8 @@ func idDeArquivo(e os.DirEntry) string {
 	if strings.HasSuffix(e.Name(), caminhos.SufixoStudio) {
 		return strings.TrimSuffix(e.Name(), caminhos.SufixoStudio)
 	}
-	if strings.HasSuffix(e.Name(), sufixoAntigo) {
-		return strings.TrimSuffix(e.Name(), sufixoAntigo)
+	if strings.HasSuffix(e.Name(), paths.SufixoAntigo) {
+		return strings.TrimSuffix(e.Name(), paths.SufixoAntigo)
 	}
 	return ""
 }

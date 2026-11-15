@@ -7,21 +7,22 @@ import (
 	"io"
 
 	"legoloop/internal/migrar"
+	"legoloop/internal/paths"
 )
 
-func runMigrarLoops(args []string, stdout, stderr io.Writer) int {
-	fs := flag.NewFlagSet("migrar-loops", flag.ContinueOnError)
+func runMigrarProcessos(subcmd string, args []string, stdout, stderr io.Writer) int {
+	fs := flag.NewFlagSet(subcmd, flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	dryRun := fs.Bool("dry-run", false, "simula alterações sem gravar em disco")
-	apply := fs.Bool("apply", false, "aplica alterações em loops/")
-	dir := fs.String("dir", "loops", "diretório raiz dos processos")
+	apply := fs.Bool("apply", false, "aplica alterações no diretório de processos")
+	dir := fs.String("dir", paths.DirAntigo, "diretório raiz dos processos")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
 	efetivo := *apply && !*dryRun
-	rel, err := migrar.MigrarLoops(*dir, efetivo)
+	rel, err := migrar.MigrarProcessos(*dir, efetivo)
 	if err != nil {
-		fmt.Fprintf(stderr, "erro ao migrar loops: %v\n", err)
+		fmt.Fprintf(stderr, "erro ao migrar processos: %v\n", err)
 		return 1
 	}
 	enc := json.NewEncoder(stdout)

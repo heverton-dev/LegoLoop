@@ -43,6 +43,8 @@ type Deps struct {
 	Homologar *HomologarDeps
 	// Provider injeta cliente HTTP, arquivos e host canônico da sonda de provider (nil = ambiente real; usado em testes).
 	Provider *ProviderDeps
+	// Fechar injeta seams do comando fechar (nil = ambiente real; usado em testes).
+	Fechar *FecharDeps
 }
 
 func (d Deps) discover(ctx context.Context) provider.Inventory {
@@ -71,21 +73,22 @@ Comandos:
   homologar  [--pares H|V,...] [--yes] [--non-interactive] [--teto DUR] [--provider] [--corrigir-provider] [--json]  mede a conformidade de cada harness e via
   matriz     gerar|status|vocab|perfil|ver  gera e consulta a matriz de peças (qualidade e perfil de uso)
   listar     [--vault DIR] [--json]  mostra os processos do cofre (versão, natureza, harnesses, usado por)
+  dissecar   <alvo> [opções]                 dissecação técnica e extração estrutural de alvo
   refinar    <nome> --etapa ID [--peca P] [--caso C]... [--yes]  muda uma etapa, sobe a versão e guarda a anterior
-  remover    <nome> [--vault DIR] [--yes]  apaga um processo do cofre e os vínculos dele (falha se outro processo o usa)
+  remover    <nome> [--vault DIR] [--dry-run] [--force] [--yes] [--json]  apaga um processo do cofre e os vínculos dele
   compor     <nome> <legoloop-x@versão> [--depende ID]... [--yes]  liga um processo como etapa de outro (recusa ciclo)
   instalar-skills [--vault DIR] [--dry-run] [--json]  instala e vincula as skills nativas universais
   bootstrap       [--vault DIR] [--dry-run] [--json]  orquestra skills, mcp-router e ambiente sem config manual
   stept      [status|set|on|off|scan] [--harness H] [--modo M] [--pausa P] [--json]  alternador de governança STE-PT
-  sync-harnesses (--dry-run|--apply)         conecta harnesses ao legoloop mcp-router
+  sync-harnesses (--dry-run|--apply) [--json]         conecta harnesses ao legoloop mcp-router
   mcp-router                                 inicia servidor MCP STDIO com Lazy discovery
   legopress  [doctor|auditar|criar|editar|atualizar|adequar|preview]  processo industrial de livros técnicos
   video-motion <subcomando> [opções]          processo determinístico de edição e motion vídeo
-  video-capcut <subcomando> [opções]          processo soberano de edição talking-head com CapCut e FCPXML
   video-rea  <subcomando> [opções]             processo universal de engenharia reversa audiovisual
   canal      redc|gerar [opções]              processo REDC de canais e clonagem estrutural
   cartoon-shorts --theme "<tema>" [opções]    processo soberano de geração de Cartoon Shorts (1080x1920)
-  fechar     <slug> [--dry-run] [--skip-build] [--json]  cadeia determinística de 8 etapas de canonização e fechamento
+  swarm      <add|post|read|wait|status|kill|monitor|ui> [-dir DIR] [-addr HOST:PORT] [-root DIR]  painel de coordenação de agentes em enxame
+  fechar     <slug> [--dry-run] [--skip-build] [--json]  cadeia determinística de 9 etapas de canonização e fechamento
   version
 `
 
@@ -96,7 +99,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		return 2
 	}
 	cmds := map[string]func(context.Context, []string, Deps) int{
-		"doctor": cmdDoctor, "canonize": cmdCanonize, "validate": cmdValidate,
+		"doctor": cmdDoctor, "canonize": cmdCanonizeJSONSafe, "validate": cmdValidate,
 		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
 		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
 		"dissecar": cmdDissecar,
@@ -119,8 +122,27 @@ func Run(ctx context.Context, args []string, d Deps) int {
 			fmt.Fprintf(d.Stderr, "comando desconhecido %q\n\n%s", name, usage)
 			return 2
 		}
+		if hasHelpArg(args[1:]) {
+			return runSubcommandHelp(ctx, cmd, args[1:], d)
+		}
 		return cmd(ctx, args[1:], d)
 	}
+}
+
+func hasHelpArg(args []string) bool {
+	for _, a := range args {
+		if a == "--help" || a == "-h" {
+			return true
+		}
+	}
+	return false
+}
+
+func runSubcommandHelp(ctx context.Context, cmd func(context.Context, []string, Deps) int, args []string, d Deps) int {
+	dHelp := d
+	dHelp.Stderr = d.Stdout
+	_ = cmd(ctx, args, dHelp)
+	return 0
 }
 
 func cmdUpgrade(_ context.Context, args []string, d Deps) int {

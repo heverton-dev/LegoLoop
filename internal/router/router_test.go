@@ -62,3 +62,16 @@ func TestRouteCustomModels(t *testing.T) {
 		t.Fatalf("FrontierModel = %+v, want front-z with thinking", got)
 	}
 }
+
+func TestRouteDefaultModelsCertificados(t *testing.T) {
+	r := New(Config{})
+	if got := r.Route("simples").Model; got != "t-chat-128k" {
+		t.Fatalf("default FastModel = %q, want t-chat-128k", got)
+	}
+	if got := r.Route("medio").Model; got != "t-codigo-128k" {
+		t.Fatalf("default BalancedModel = %q, want t-codigo-128k", got)
+	}
+	if got := r.Route("alto").Model; got != "t-raciocinio-128k" {
+		t.Fatalf("default FrontierModel = %q, want t-raciocinio-128k", got)
+	}
+}

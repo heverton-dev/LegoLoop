@@ -41,7 +41,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "antigravity/flash"
       },
@@ -95,7 +95,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "antigravity/flash"
       },
@@ -151,7 +151,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-nano",
+        "model": "t-micro-8k",
         "effort": "low",
         "fallback": "antigravity/flash"
       },
@@ -249,7 +249,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "antigravity/flash"
       },
@@ -305,7 +305,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-nano",
+        "model": "t-micro-8k",
         "effort": "low",
         "fallback": "antigravity/flash"
       },
@@ -401,7 +401,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "antigravity/flash"
       },
@@ -457,7 +457,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "antigravity/flash"
       },
@@ -513,7 +513,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-nano",
+        "model": "t-micro-8k",
         "effort": "low",
         "fallback": "antigravity/flash"
       },
@@ -617,7 +617,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "antigravity/flash"
       },
@@ -675,7 +675,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-nano",
+        "model": "t-micro-8k",
         "effort": "low",
         "fallback": "antigravity/flash"
       },
@@ -772,7 +772,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "medium",
         "fallback": "ollama/deepseek-coder:6.7b"
       },
@@ -825,7 +825,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "medium",
         "fallback": "ollama/deepseek-coder:6.7b"
       },

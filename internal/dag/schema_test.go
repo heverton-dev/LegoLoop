@@ -174,12 +174,17 @@ func TestSchemasV1eV2ValidamProcessos(t *testing.T) {
 		}
 		// Arquivo que o parser recusa não é Processo válido (ex.: o documento
 		// legado do Studio ai-motion-graphics, fora do teste dourado): fica de fora.
-		if _, err := Parse(raw); err != nil {
+		d, err := Parse(raw)
+		if err != nil {
 			t.Logf("fora do gate (Parse recusa): %s: %v", filepath.Base(f), err)
 			continue
 		}
 		validados++
-		for nome, sc := range map[string]map[string]any{"v1": v1, "v2": v2} {
+		schemasAlvo := map[string]map[string]any{"v1": v1, "v2": v2}
+		if d.SchemaVersion == 2 {
+			schemasAlvo = map[string]map[string]any{"v2": v2}
+		}
+		for nome, sc := range schemasAlvo {
 			if erros := validarContra(t, sc, raw); len(erros) > 0 {
 				t.Errorf("%s não valida contra %s: %v", filepath.Base(f), nome, erros)
 			}

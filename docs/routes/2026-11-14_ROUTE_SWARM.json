@@ -37,7 +37,7 @@
     "max_parallel_workers": 2,
     "tdd_enforced": true,
     "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort_processo",
     "rollback_policy": {
       "action": "abort_and_clean",
       "git_strategy": "discard_uncommitted",
@@ -54,6 +54,8 @@
       "extreme": false,
       "class_rule": "nature=micro",
       "type": "unit_task",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -77,11 +79,13 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "t-agente-128k"
         }
       },
       "tooling": {
@@ -124,6 +128,8 @@
       "extreme": false,
       "class_rule": "nature=micro",
       "type": "unit_task",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -149,11 +155,13 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "t-agente-128k"
         }
       },
       "tooling": {
@@ -191,11 +199,13 @@
       "id": "TICK-01.3",
       "initiative_id": null,
       "epic_id": "E01",
-      "label": "`e03` — Etapa 3 — peça `legoloop-mega-pipeline`",
+      "label": "`e03` — Etapa 3 — peça `legoloop-mega-processo`",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
       "type": "unit_task",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -221,11 +231,13 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "t-agente-128k"
         }
       },
       "tooling": {
@@ -263,11 +275,13 @@
       "id": "TICK-01.4",
       "initiative_id": null,
       "epic_id": "E01",
-      "label": "`e04` — Etapa 4 — peça `aidd-legoloop-mega-pipeline`",
+      "label": "`e04` — Etapa 4 — peça `aidd-legoloop-mega-processo`",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
       "type": "unit_task",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -293,11 +307,13 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "t-agente-128k"
         }
       },
       "tooling": {
@@ -340,6 +356,8 @@
       "extreme": false,
       "class_rule": "nature=micro",
       "type": "unit_task",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -365,11 +383,13 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": {
-          "harness": "antigravity",
-          "model": "flash"
+          "harness": "9router",
+          "model": "t-agente-128k"
         }
       },
       "tooling": {
@@ -437,8 +457,9 @@
       "routing": {
         "mode": "manual",
         "harness": "local",
+        "via": "oficial",
         "model": "script/local",
-        "effort": null,
+        "effort": "low",
         "fallback": null
       },
       "tooling": {
@@ -456,7 +477,7 @@
       "spec_ref": null,
       "test_target": null,
       "defects": [],
-      "rollback_strategy": "abort_pipeline",
+      "rollback_strategy": "abort_processo",
       "output": {
         "artifacts": [
           "bin/legoloop.exe"

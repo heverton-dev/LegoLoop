@@ -65,7 +65,23 @@ func (w *Watcher) Snapshot() Snapshot {
 func (w *Watcher) Refresh(ctx context.Context) Snapshot {
 	w.refreshMu.Lock()
 	defer w.refreshMu.Unlock()
-	snap := w.scanner.Scan(ctx)
+	return w.publish(ctx, w.scanner.Scan(ctx))
+}
+
+// EnsureInitial devolve o inventário já publicado ou executa a primeira varredura sem duplicar trabalho.
+func (w *Watcher) EnsureInitial(ctx context.Context) Snapshot {
+	if snap := w.Snapshot(); snap.Version != 0 {
+		return snap
+	}
+	w.refreshMu.Lock()
+	defer w.refreshMu.Unlock()
+	if snap := w.Snapshot(); snap.Version != 0 {
+		return snap
+	}
+	return w.publish(ctx, w.scanner.Scan(ctx))
+}
+
+func (w *Watcher) publish(ctx context.Context, snap Snapshot) Snapshot {
 	if ctx.Err() != nil {
 		return w.Snapshot()
 	}

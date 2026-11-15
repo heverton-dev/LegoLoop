@@ -53,7 +53,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": "flash"
       },
@@ -111,7 +111,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "flash"
       },
@@ -171,9 +171,9 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
-        "fallback": "code-fast"
+        "fallback": "t-chat-128k"
       },
       "isolation": {
         "workspace": "local",
@@ -221,7 +221,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "low",
         "fallback": "flash"
       },
@@ -272,7 +272,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "sonnet"
       },
@@ -322,7 +322,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "low",
         "fallback": "flash"
       },
@@ -382,7 +382,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "medium",
         "fallback": "flash"
       },
@@ -442,7 +442,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": "flash"
       },
@@ -502,7 +502,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "flash"
       },
@@ -565,7 +565,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "medium",
         "fallback": "flash"
       },
@@ -627,7 +627,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "flash"
       },
@@ -677,7 +677,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "low",
         "fallback": "flash"
       },

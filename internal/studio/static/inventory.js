@@ -64,15 +64,35 @@ function humanBytes(n) {
 // ---------- Abas de Categorias ----------
 
 function renderTabs() {
-  $("tabs").replaceChildren(...TABS.map((t) => {
+  const buttons = TABS.map((t, idx) => {
     const b = el("button", "tab");
     b.type = "button";
+    b.id = `inv-tab-${t.id}`;
     b.setAttribute("role", "tab");
-    b.setAttribute("aria-selected", String(t.id === st.kind));
+    const active = t.id === st.kind;
+    b.setAttribute("aria-selected", String(active));
+    b.setAttribute("aria-controls", "list");
+    b.tabIndex = active ? 0 : -1;
     b.append(el("span", "tab__label", t.label), el("span", "tab__count", String(st.counts[t.id] ?? 0)));
     b.addEventListener("click", () => selectKind(t.id));
+    b.addEventListener("keydown", (e) => {
+      let nextIdx = -1;
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") nextIdx = (idx + 1) % TABS.length;
+      else if (e.key === "ArrowUp" || e.key === "ArrowLeft") nextIdx = (idx - 1 + TABS.length) % TABS.length;
+      else if (e.key === "Home") nextIdx = 0;
+      else if (e.key === "End") nextIdx = TABS.length - 1;
+      if (nextIdx >= 0) {
+        e.preventDefault();
+        selectKind(TABS[nextIdx].id).then(() => {
+          document.getElementById(`inv-tab-${TABS[nextIdx].id}`)?.focus();
+        });
+      }
+    });
     return b;
-  }));
+  });
+  $("tabs").replaceChildren(...buttons);
+  const activeTab = TABS.find((t) => t.id === st.kind);
+  if (activeTab) $("list")?.setAttribute("aria-labelledby", `inv-tab-${activeTab.id}`);
 }
 
 async function selectKind(kind) {

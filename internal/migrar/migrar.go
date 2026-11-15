@@ -23,6 +23,11 @@ type dagMinimo struct {
 	} `json:"nodes"`
 }
 
+// MigrarProcessos varre processosDir delegando para a rotina compatível de migração.
+func MigrarProcessos(processosDir string, apply bool) (Relatorio, error) {
+	return MigrarLoops(processosDir, apply)
+}
+
 // MigrarLoops varre processosDir, remove diretórios sem pipeline.dag.json válido e gera triagem.json.
 func MigrarLoops(processosDir string, apply bool) (Relatorio, error) {
 	var rel Relatorio

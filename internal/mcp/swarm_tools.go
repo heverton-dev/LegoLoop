@@ -3,6 +3,10 @@ package mcp
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -36,7 +40,15 @@ func (r *Router) handleSwarmTool(id any, name string, args map[string]any) (JSON
 	if !strings.HasPrefix(name, "swarm_") {
 		return JSONRPCResponse{}, false
 	}
-	sb, err := board.OpenSwarmBoard(strArg(args, "dir", ".legoloop-swarm"))
+	dir := strArg(args, "dir", ".legoloop-swarm")
+	if name == "swarm_status" {
+		st, err := readSwarmStatusReadOnly(dir)
+		if err != nil {
+			return r.toolCallError(id, err.Error()), true
+		}
+		return r.jsonResult(id, st), true
+	}
+	sb, err := board.OpenSwarmBoard(dir)
 	if err != nil {
 		return r.toolCallError(id, err.Error()), true
 	}
@@ -48,6 +60,48 @@ func (r *Router) handleSwarmTool(id any, name string, args map[string]any) (JSON
 		return r.toolCallError(id, err.Error()), true
 	}
 	return r.jsonResult(id, res), true
+}
+
+func readSwarmStatusReadOnly(dir string) (board.SwarmStatus, error) {
+	clean := filepath.Clean(strings.TrimSpace(dir))
+	if clean == "" {
+		clean = ".legoloop-swarm"
+	}
+	proj := clean
+	if base := filepath.Base(clean); base == ".legoloop-swarm" || base == ".swarm" {
+		proj = filepath.Dir(clean)
+	}
+	boardDir := filepath.Join(proj, ".legoloop-swarm")
+	candidates := []string{
+		filepath.Join(boardDir, "swarm.json"),
+		filepath.Join(boardDir, "swarm_board.json"),
+		filepath.Join(proj, ".swarm", "swarm.json"),
+		filepath.Join(proj, ".swarm", "swarm_board.json"),
+		filepath.Join(proj, "swarm_board.json"),
+	}
+	return loadFirstSwarmStatus(candidates)
+}
+
+func loadFirstSwarmStatus(candidates []string) (board.SwarmStatus, error) {
+	for _, p := range candidates {
+		info, err := os.Stat(p)
+		if err != nil || info.IsDir() {
+			continue
+		}
+		data, err := os.ReadFile(p)
+		if err != nil {
+			return board.SwarmStatus{}, err
+		}
+		var raw struct {
+			Workers  []board.Worker  `json:"workers"`
+			Messages []board.Message `json:"messages"`
+		}
+		if err := json.Unmarshal(data, &raw); err != nil {
+			return board.SwarmStatus{}, err
+		}
+		return board.SwarmStatus{Workers: raw.Workers, MessageCount: len(raw.Messages)}, nil
+	}
+	return board.SwarmStatus{Workers: []board.Worker{}, MessageCount: 0}, nil
 }
 
 func dispatchSwarmTool(sb *board.SwarmBoard, name string, args map[string]any) (any, bool, error) {
@@ -119,4 +173,106 @@ func durationArg(args map[string]any, key string, def time.Duration) time.Durati
 		return time.Duration(n) * time.Millisecond
 	}
 	return def
+}
+
+func swarmToolDefs() []map[string]any {
+	return []map[string]any{
+		swarmDef("swarm_add", "Registra um worker no quadro Swarm.", []string{"role"}),
+		swarmDef("swarm_post", "Publica uma mensagem no quadro Swarm.", []string{"body"}),
+		swarmDef("swarm_read", "Le mensagens do quadro Swarm.", nil),
+		swarmDef("swarm_wait", "Aguarda mensagens destinadas a um worker no quadro Swarm.", nil),
+		swarmDef("swarm_status", "Consulta o estado do quadro Swarm em modo somente leitura.", nil),
+		swarmDef("swarm_kill", "Encerra um worker do quadro Swarm.", []string{"name"}),
+		swarmDef("swarm_monitor", "Detecta workers estagnados no quadro Swarm.", nil),
+	}
+}
+
+func swarmDef(name, desc string, req []string) map[string]any {
+	schema := map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			"dir": map[string]any{"type": "string", "description": "Diretorio do projeto ou quadro Swarm"},
+		},
+	}
+	if len(req) > 0 {
+		schema["required"] = req
+	}
+	return map[string]any{"name": name, "description": desc, "inputSchema": schema}
+}
+
+type localVault struct {
+	home       string
+	vault      string
+	projectDir string
+	skills     *SkillEngine
+}
+
+func (v *localVault) Search(query string) []ToolMatch {
+	q := strings.ToLower(strings.TrimSpace(query))
+	var out []ToolMatch
+	for _, td := range swarmToolDefs() {
+		name, _ := td["name"].(string)
+		desc, _ := td["description"].(string)
+		if matchQuery(q, "swarm", name, desc) {
+			out = append(out, ToolMatch{Server: "swarm", Name: name, Description: desc})
+		}
+	}
+	if v.skills != nil {
+		for _, s := range v.skills.List() {
+			if matchQuery(q, "skills", s.ID, s.Resumo+" "+s.Nome) {
+				out = append(out, ToolMatch{Server: "skills", Name: s.ID, Description: s.Resumo})
+			}
+		}
+	}
+	return out
+}
+
+func matchQuery(q, srv, name, desc string) bool {
+	if q == "" {
+		return true
+	}
+	hay := strings.ToLower(srv + " " + name + " " + desc)
+	return strings.Contains(hay, q)
+}
+
+type localRunner struct {
+	router *Router
+}
+
+func (lr *localRunner) Run(server, tool string, args map[string]any) (string, error) {
+	if args == nil {
+		args = map[string]any{}
+	}
+	if server == "swarm" || strings.HasPrefix(tool, "swarm_") {
+		resp, ok := lr.router.handleSwarmTool(1, tool, args)
+		if !ok {
+			return "", fmt.Errorf("ferramenta swarm desconhecida: %s", tool)
+		}
+		return extractResponseText(resp)
+	}
+	if server == "skills" {
+		if _, ok := args["skill_id"]; !ok && tool != "skill_search" && tool != "call_skill" {
+			args["skill_id"] = tool
+		}
+		resp := lr.router.callSkill(1, args)
+		return extractResponseText(resp)
+	}
+	return "", errors.New("servidor MCP externo nao registrado para execucao direta")
+}
+
+func extractResponseText(resp JSONRPCResponse) (string, error) {
+	m, ok := resp.Result.(map[string]any)
+	if !ok {
+		return "", errors.New("resposta MCP em formato inesperado")
+	}
+	isErr, _ := m["isError"].(bool)
+	items, _ := m["content"].([]map[string]any)
+	var text string
+	if len(items) > 0 {
+		text, _ = items[0]["text"].(string)
+	}
+	if isErr {
+		return "", errors.New(text)
+	}
+	return text, nil
 }

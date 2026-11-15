@@ -2,6 +2,7 @@ package studio
 
 import (
 	"legoloop/internal/caminhos"
+	"legoloop/internal/dag"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -63,5 +64,55 @@ func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInProcessoStore(t 
 	}
 	if saved.Name != "meu-processo" {
 		t.Errorf("nome do Processo salvo = %q", saved.Name)
+	}
+}
+
+func TestWriteOrchestratorSkillSlugJailAndErrors(t *testing.T) {
+	vault := t.TempDir()
+	s, _ := newServer(t)
+	s.Vault = vault
+
+	// 1. Slugs inválidos devem retornar erro e nunca gravar no disco.
+	for _, badName := range []string{"", "../escape", `a\b`, "a/b", "foo..bar", "NomeComMaiuscula", "nome com espaco"} {
+		err := s.writeOrchestratorSkill(&dag.DAG{Name: badName})
+		if err == nil {
+			t.Errorf("esperava erro para slug inválido %q, obteve nil", badName)
+		}
+	}
+
+	// 2. Endpoint /api/materialize também bloqueia nome não-slug sem gravar fora do cofre.
+	badBody := `{
+		"name": "../escape",
+		"nodes": [
+			{"id":"n1","block":"interview","routing":{"mode":"auto","combo":"t-chat-128k"}}
+		],
+		"edges": []
+	}`
+	recBad := do(t, s.Handler(), "POST", "/api/materialize", badBody)
+	if recBad.Code == http.StatusOK {
+		t.Fatalf("POST /api/materialize deveria falhar para name inválido, obteve 200")
+	}
+
+	// 3. Symlink/junction em vault/skills apontando para fora deve ser bloqueado.
+	vaultLink := t.TempDir()
+	outside := t.TempDir()
+	skillsLink := filepath.Join(vaultLink, "skills")
+	createHardeningLink(t, outside, skillsLink)
+	sLink := &Server{Vault: vaultLink}
+	if err := sLink.writeOrchestratorSkill(&dag.DAG{Name: "via-link"}); err == nil {
+		t.Fatalf("writeOrchestratorSkill deveria bloquear symlink em skills")
+	}
+	if _, err := os.Stat(filepath.Join(outside, "processo-via-link", "SKILL.md")); err == nil {
+		t.Fatalf("arquivo foi criado através do symlink fora do cofre")
+	}
+
+	// 4. Erro de I/O quando skills é um arquivo regular não deve ser engolido silenciosamente.
+	vaultFileErr := t.TempDir()
+	if err := os.WriteFile(filepath.Join(vaultFileErr, "skills"), []byte("bloqueio"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	sErr := &Server{Vault: vaultFileErr}
+	if err := sErr.writeOrchestratorSkill(&dag.DAG{Name: "teste-erro"}); err == nil {
+		t.Fatalf("esperava erro de escrita quando skills não é diretório")
 	}
 }

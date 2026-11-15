@@ -1,361 +1,640 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
   "name": "legoloop-dissecar",
-  "version": "2.2.0",
-  "description": "Processo industrial de inspeção anatômica profunda, engenharia reversa estática e geração da tríade de motion graphics.",
+  "version": "1.0.0",
+  "date": "2026-11-10",
+  "description": "Espelho executável da ROUTE DISSECAR (I08 — Verbo e Processo de Dissecação Universal do LegoLoop)",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-10_ROUTE_DISSECAR.json",
+      "sha256": "373e96e6c5ad7653c4013515279a399f75b703510d7d11bb81e10b5b6e7a1d4b"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 2,
+    "default_timeout_sec": 60,
+    "rollback_on_failure": "abort_pipeline"
+  },
   "trigger": {
     "type": "manual"
   },
   "nodes": [
     {
-      "id": "n01_resolver_alvo",
+      "id": "TICK-01.1",
+      "name": "tick_01_1",
       "type": "unit_no",
-      "routing": {
-        "mode": "suggested",
-        "harness": "claude",
-        "via": "oficial",
-        "model": "sonnet",
-        "effort": "low",
-        "fallback": "haiku"
-      },
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": [],
       "timeout_sec": 30,
-      "execution": {
-        "mode": "isolated"
-      },
-      "inputs": {
-        "alvo": "var.alvo"
-      },
-      "output": {
-        "artifact": "target_resolved.json",
-        "gate": "file_exists('target_resolved.json')"
-      },
-      "name": "n01_resolver_alvo",
-      "nature": "micro",
-      "context_in": [],
-      "context_out": [
-        "target_resolved.json"
-      ],
-      "isolation": {
-        "write_boundary": "strict",
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "limits": {
-        "max_completion_tokens": 600,
-        "max_duration_sec": 180,
-        "max_prompt_tokens": 16000
-      },
-      "rollback_strategy": "stash_changes",
-      "tooling": {
-        "harness": "claude",
-        "mcps_allowed": [],
-        "mcps_required": false,
-        "runtime": "powershell"
-      },
-      "verification": {
-        "exit_code": 0,
-        "gate": "file_exists('target_resolved.json')"
-      },
-      "spec_ref": "n01_resolver_alvo",
-      "status": "PENDING"
-    },
-    {
-      "id": "n02_extrair_ast_metricas",
-      "type": "unit_no",
-      "depends_on": [
-        "n01_resolver_alvo"
-      ],
       "routing": {
         "mode": "suggested",
-        "harness": "claude",
-        "via": "oficial",
-        "model": "sonnet",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
         "effort": "medium",
-        "fallback": "haiku"
+        "fallback": "t-agente-128k"
       },
-      "timeout_sec": 45,
-      "execution": {
-        "mode": "isolated"
-      },
-      "inputs": {
-        "target": "file('target_resolved.json')"
-      },
-      "output": {
-        "artifact": "ast_metrics.json",
-        "gate": "file_exists('ast_metrics.json')"
-      },
-      "name": "n02_extrair_ast_metricas",
-      "nature": "micro",
-      "context_in": [],
-      "context_out": [
-        "ast_metrics.json"
-      ],
-      "isolation": {
-        "write_boundary": "strict",
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "limits": {
-        "max_completion_tokens": 600,
-        "max_duration_sec": 180,
-        "max_prompt_tokens": 16000
-      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1000 },
       "rollback_strategy": "stash_changes",
-      "tooling": {
-        "harness": "claude",
-        "mcps_allowed": [],
-        "mcps_required": false,
-        "runtime": "powershell"
-      },
-      "verification": {
-        "exit_code": 0,
-        "gate": "file_exists('ast_metrics.json')"
-      },
-      "spec_ref": "n02_extrair_ast_metricas",
-      "status": "PENDING"
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.2",
+      "status": "PENDING",
+      "context_in": ["docs/specs/2026-11-10_SPEC_DISSECAR.md"],
+      "context_out": ["internal/dissecar/tipos.go"],
+      "output": { "artifact": "internal/dissecar/tipos.go", "gate": "exit_code == 0" }
     },
     {
-      "id": "n03_auditar_governanca",
+      "id": "TICK-01.2",
+      "name": "tick_01_2",
       "type": "unit_no",
-      "depends_on": [
-        "n02_extrair_ast_metricas"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "harness": "claude",
-        "via": "oficial",
-        "model": "sonnet",
-        "effort": "low",
-        "fallback": "haiku"
-      },
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-01.1"],
       "timeout_sec": 30,
-      "execution": {
-        "mode": "isolated"
-      },
-      "inputs": {
-        "ast": "file('ast_metrics.json')"
-      },
-      "output": {
-        "artifact": "governance_audit.json",
-        "gate": "file_exists('governance_audit.json')"
-      },
-      "name": "n03_auditar_governanca",
-      "nature": "micro",
-      "context_in": [],
-      "context_out": [
-        "governance_audit.json"
-      ],
-      "isolation": {
-        "write_boundary": "strict",
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "limits": {
-        "max_completion_tokens": 600,
-        "max_duration_sec": 180,
-        "max_prompt_tokens": 16000
-      },
-      "rollback_strategy": "stash_changes",
-      "tooling": {
-        "harness": "claude",
-        "mcps_allowed": [],
-        "mcps_required": false,
-        "runtime": "powershell"
-      },
-      "verification": {
-        "exit_code": 0,
-        "gate": "file_exists('governance_audit.json')"
-      },
-      "spec_ref": "n03_auditar_governanca",
-      "status": "PENDING"
-    },
-    {
-      "id": "n04_sintetizar_dag_reverso",
-      "type": "unit_no",
-      "depends_on": [
-        "n03_auditar_governanca"
-      ],
       "routing": {
         "mode": "suggested",
-        "harness": "claude",
-        "via": "oficial",
-        "model": "sonnet",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
         "effort": "medium",
-        "fallback": "haiku"
+        "fallback": "t-agente-128k"
       },
-      "timeout_sec": 45,
-      "execution": {
-        "mode": "isolated"
-      },
-      "inputs": {
-        "ast": "file('ast_metrics.json')",
-        "gov": "file('governance_audit.json')"
-      },
-      "output": {
-        "artifact": "pipeline.dag.json",
-        "gate": "file_exists('pipeline.dag.json')"
-      },
-      "name": "n04_sintetizar_dag_reverso",
-      "nature": "micro",
-      "context_in": [],
-      "context_out": [
-        "pipeline.dag.json"
-      ],
-      "isolation": {
-        "write_boundary": "strict",
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "limits": {
-        "max_completion_tokens": 600,
-        "max_duration_sec": 180,
-        "max_prompt_tokens": 16000
-      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1000 },
       "rollback_strategy": "stash_changes",
-      "tooling": {
-        "harness": "claude",
-        "mcps_allowed": [],
-        "mcps_required": false,
-        "runtime": "powershell"
-      },
-      "verification": {
-        "exit_code": 0,
-        "gate": "file_exists('pipeline.dag.json')"
-      },
-      "spec_ref": "n04_sintetizar_dag_reverso",
-      "status": "PENDING"
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/tipos.go"],
+      "context_out": ["internal/dissecar/resolver.go"],
+      "output": { "artifact": "internal/dissecar/resolver.go", "gate": "exit_code == 0" }
     },
     {
-      "id": "n05_sintetizar_triade_motion",
+      "id": "TICK-01.3",
+      "name": "tick_01_3",
       "type": "unit_no",
-      "depends_on": [
-        "n04_sintetizar_dag_reverso"
-      ],
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-01.2"],
+      "timeout_sec": 45,
       "routing": {
         "mode": "suggested",
-        "harness": "claude",
-        "via": "oficial",
-        "model": "sonnet",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
         "effort": "medium",
-        "fallback": "haiku"
+        "fallback": "t-agente-128k"
       },
-      "timeout_sec": 45,
-      "execution": {
-        "mode": "isolated"
-      },
-      "inputs": {
-        "dag": "file('pipeline.dag.json')",
-        "gov": "file('governance_audit.json')"
-      },
-      "output": {
-        "artifact": "motion_graph.json",
-        "gate": "file_exists('motion_graph.json') && file_exists('anatomia.html') && file_exists('anatomia.svg')"
-      },
-      "name": "n05_sintetizar_triade_motion",
-      "nature": "micro",
-      "context_in": [],
-      "context_out": [
-        "motion_graph.json"
-      ],
-      "isolation": {
-        "write_boundary": "strict",
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "limits": {
-        "max_completion_tokens": 600,
-        "max_duration_sec": 180,
-        "max_prompt_tokens": 16000
-      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1500 },
       "rollback_strategy": "stash_changes",
-      "tooling": {
-        "harness": "claude",
-        "mcps_allowed": [],
-        "mcps_required": false,
-        "runtime": "powershell"
-      },
-      "verification": {
-        "exit_code": 0,
-        "gate": "file_exists('motion_graph.json') && file_exists('anatomia.html') && file_exists('anatomia.svg')"
-      },
-      "spec_ref": "n05_sintetizar_triade_motion",
-      "status": "PENDING"
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.3",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/resolver.go"],
+      "context_out": ["internal/dissecar/extrator.go"],
+      "output": { "artifact": "internal/dissecar/extrator.go", "gate": "exit_code == 0" }
     },
     {
-      "id": "n06_compilar_relatorio_final",
+      "id": "TICK-01.4",
+      "name": "tick_01_4",
       "type": "unit_no",
-      "depends_on": [
-        "n05_sintetizar_triade_motion"
-      ],
-      "routing": {
-        "mode": "suggested",
-        "harness": "claude",
-        "via": "oficial",
-        "model": "sonnet",
-        "effort": "low",
-        "fallback": "haiku"
-      },
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-01.3"],
       "timeout_sec": 30,
-      "execution": {
-        "mode": "isolated"
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
       },
-      "inputs": {
-        "motion": "file('motion_graph.json')",
-        "gov": "file('governance_audit.json')"
-      },
-      "output": {
-        "artifact": "ficha_anatomica.json",
-        "gate": "file_exists('ficha_anatomica.json') && file_exists('ANATOMIA.md')"
-      },
-      "name": "n06_compilar_relatorio_final",
-      "nature": "micro",
-      "context_in": [],
-      "context_out": [
-        "ficha_anatomica.json"
-      ],
-      "isolation": {
-        "write_boundary": "strict",
-        "workspace": "local",
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false
-      },
-      "limits": {
-        "max_completion_tokens": 600,
-        "max_duration_sec": 180,
-        "max_prompt_tokens": 16000
-      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1000 },
       "rollback_strategy": "stash_changes",
-      "tooling": {
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.4",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/extrator.go"],
+      "context_out": ["internal/dissecar/extrator_env.go"],
+      "output": { "artifact": "internal/dissecar/extrator_env.go", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-01.5",
+      "name": "tick_01_5",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-01.4"],
+      "timeout_sec": 30,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1000 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.5",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/extrator_env.go", "internal/taxonomy"],
+      "context_out": ["internal/dissecar/governanca.go"],
+      "output": { "artifact": "internal/dissecar/governanca.go", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-01.6",
+      "name": "tick_01_6",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-01.5"],
+      "timeout_sec": 45,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1500 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.7",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/governanca.go"],
+      "context_out": ["internal/dissecar/sintese_dag.go"],
+      "output": { "artifact": "internal/dissecar/sintese_dag.go", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-01.7",
+      "name": "tick_01_7",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-01.6"],
+      "timeout_sec": 45,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1500 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.8",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/sintese_dag.go"],
+      "context_out": ["internal/dissecar/sintese_motion.go"],
+      "output": { "artifact": "internal/dissecar/sintese_motion.go", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-01.8",
+      "name": "tick_01_8",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-01.7"],
+      "timeout_sec": 45,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1500 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.6",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/sintese_motion.go"],
+      "context_out": ["internal/dissecar/dissecar.go"],
+      "output": { "artifact": "internal/dissecar/dissecar.go", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "SG-E01",
+      "name": "sg_e01",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": ["TICK-01.8"],
+      "timeout_sec": 86400,
+      "routing": {
+        "mode": "manual",
         "harness": "claude",
-        "mcps_allowed": [],
-        "mcps_required": false,
-        "runtime": "powershell"
+        "via": "oficial",
+        "model": "t-chat-128k",
+        "effort": "low"
       },
-      "verification": {
-        "exit_code": 0,
-        "gate": "file_exists('ficha_anatomica.json') && file_exists('ANATOMIA.md')"
+      "execution": { "mode": "inline" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 300 },
+      "rollback_strategy": "abort_pipeline",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.6",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/dissecar.go"],
+      "context_out": ["scratch/gates/SG-E01.json"],
+      "output": { "artifact": "scratch/gates/SG-E01.json", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-02.1",
+      "name": "tick_02_1",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["SG-E01"],
+      "timeout_sec": 45,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
       },
-      "spec_ref": "n06_compilar_relatorio_final",
-      "status": "PENDING"
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1500 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/dissecar.go"],
+      "context_out": ["internal/cli/dissecar.go"],
+      "output": { "artifact": "internal/cli/dissecar.go", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-02.2",
+      "name": "tick_02_2",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-02.1"],
+      "timeout_sec": 30,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1000 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E02.2",
+      "status": "PENDING",
+      "context_in": ["internal/cli/dissecar.go"],
+      "context_out": ["internal/cli/dissecar_json_test.go"],
+      "output": { "artifact": "internal/cli/dissecar_json_test.go", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-02.3",
+      "name": "tick_02_3",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-02.2"],
+      "timeout_sec": 45,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1500 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E02.3",
+      "status": "PENDING",
+      "context_in": ["internal/cli/dissecar.go"],
+      "context_out": ["internal/cli/commands.go"],
+      "output": { "artifact": "internal/cli/commands.go", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "SG-E02",
+      "name": "sg_e02",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": ["TICK-02.3"],
+      "timeout_sec": 86400,
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "t-chat-128k",
+        "effort": "low"
+      },
+      "execution": { "mode": "inline" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 300 },
+      "rollback_strategy": "abort_pipeline",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E02.3",
+      "status": "PENDING",
+      "context_in": ["internal/cli/commands.go"],
+      "context_out": ["scratch/gates/SG-E02.json"],
+      "output": { "artifact": "scratch/gates/SG-E02.json", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-03.1",
+      "name": "tick_03_1",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["SG-E02"],
+      "timeout_sec": 45,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1500 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING",
+      "context_in": ["internal/dissecar/dissecar.go", "internal/studio/server.go"],
+      "context_out": ["internal/studio/dissecar_handler.go"],
+      "output": { "artifact": "internal/studio/dissecar_handler.go", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-03.2",
+      "name": "tick_03_2",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-03.1"],
+      "timeout_sec": 60,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 2000 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E03.2",
+      "status": "PENDING",
+      "context_in": ["internal/studio/dissecar_handler.go"],
+      "context_out": ["internal/studio/static/app.js"],
+      "output": { "artifact": "internal/studio/static/app.js", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-03.3",
+      "name": "tick_03_3",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-03.2"],
+      "timeout_sec": 45,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1500 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E03.4",
+      "status": "PENDING",
+      "context_in": ["internal/studio/static/app.js"],
+      "context_out": ["internal/studio/static/components/dissecar-modal.js"],
+      "output": { "artifact": "internal/studio/static/components/dissecar-modal.js", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "SG-E03",
+      "name": "sg_e03",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": ["TICK-03.3"],
+      "timeout_sec": 86400,
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "t-chat-128k",
+        "effort": "low"
+      },
+      "execution": { "mode": "inline" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 300 },
+      "rollback_strategy": "abort_pipeline",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E03.4",
+      "status": "PENDING",
+      "context_in": ["internal/studio/static/components/dissecar-modal.js"],
+      "context_out": ["scratch/gates/SG-E03.json"],
+      "output": { "artifact": "scratch/gates/SG-E03.json", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-04.1",
+      "name": "tick_04_1",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["SG-E03"],
+      "timeout_sec": 30,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1000 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "context_in": ["docs/specs/2026-11-10_SPEC_DISSECAR.md"],
+      "context_out": ["skills/legoloop-dissecar/SKILL.md"],
+      "output": { "artifact": "skills/legoloop-dissecar/SKILL.md", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-04.2",
+      "name": "tick_04_2",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-04.1"],
+      "timeout_sec": 30,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1000 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "context_in": ["skills/legoloop-dissecar/SKILL.md"],
+      "context_out": ["loops/legoloop-dissecar/pipeline.dag.json"],
+      "output": { "artifact": "loops/legoloop-dissecar/pipeline.dag.json", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "TICK-04.3",
+      "name": "tick_04_3",
+      "type": "script",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "depends_on": ["TICK-04.2"],
+      "command": ["go", "build", "-o", "bin/legoloop.exe", "./cmd/legoloop"],
+      "timeout_sec": 60,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "execution": { "mode": "isolated" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 1000 },
+      "rollback_strategy": "stash_changes",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E04.2",
+      "status": "PENDING",
+      "context_in": ["cmd/legoloop/main.go"],
+      "context_out": ["bin/legoloop.exe"],
+      "output": { "artifact": "bin/legoloop.exe", "gate": "exit_code == 0" }
+    },
+    {
+      "id": "SG-FINAL",
+      "name": "sg_final",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": ["TICK-04.3"],
+      "timeout_sec": 86400,
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "t-chat-128k",
+        "effort": "low"
+      },
+      "execution": { "mode": "inline" },
+      "isolation": { "write_boundary": "strict" },
+      "limits": { "max_output_tokens": 300 },
+      "rollback_strategy": "abort_pipeline",
+      "tooling": { "runtime": "powershell" },
+      "verification": { "gate": "exit_code == 0" },
+      "spec_ref": "AC-E04.2",
+      "status": "PENDING",
+      "context_in": ["bin/legoloop.exe"],
+      "context_out": ["scratch/gates/SG-FINAL.json"],
+      "output": { "artifact": "scratch/gates/SG-FINAL.json", "gate": "exit_code == 0" }
     }
-  ],
-  "schema_version": 2,
-  "date": "2026-11-10",
-  "execution_strategy": {
-    "supervision_level": "micro",
-    "max_parallel_workers": 1,
-    "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline"
-  },
-  "upstream_signatures": {
-    "route": {
-      "path": "docs/routes/2026-11-10_ROUTE_DISSECAR.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
-    }
-  }
+  ]
 }

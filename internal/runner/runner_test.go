@@ -386,3 +386,102 @@ func TestInteractivePromptContextCancellation(t *testing.T) {
 		t.Fatal("runner travou durante cancelamento em prompt interativo")
 	}
 }
+
+type isolatedGateExec struct {
+	payload string
+}
+
+func (e *isolatedGateExec) Execute(ctx context.Context, n dag.Node, workdir string) (Result, error) {
+	p := filepath.Join(workdir, filepath.FromSlash(n.Output.Artifact))
+	if err := os.WriteFile(p, []byte(e.payload), 0o644); err != nil {
+		return Result{}, err
+	}
+	return Result{ExitCode: 0, Model: "test/iso-gate"}, nil
+}
+
+func TestRunnerEvalGateBeforePromoteArtifact(t *testing.T) {
+	src := `{
+		"name": "iso-gate-order",
+		"version": "2.0.0",
+		"trigger": {"type": "manual"},
+		"nodes": [{
+			"id": "n_iso",
+			"type": "script",
+			"command": ["echo", "ok"],
+			"execution": {"mode": "isolated"},
+			"routing": {"mode": "manual", "model": "none"},
+			"output": {
+				"artifact": "declared.md",
+				"gate": "has_pattern('declared.md', 'CONTEUDO_VALIDO') && exit_code == 0"
+			}
+		}]
+	}`
+	d, err := dag.Parse([]byte(src))
+	if err != nil {
+		t.Fatalf("Parse: %v", err)
+	}
+
+	t.Run("GateReprovadoNaoPromoveArtefato", func(t *testing.T) {
+		workdir := t.TempDir()
+		mainTarget := filepath.Join(workdir, "declared.md")
+		if err := os.WriteFile(mainTarget, []byte("ORIGINAL_INTACTO"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+
+		rep, err := Run(context.Background(), d, Options{
+			Workdir:  workdir,
+			Executor: &isolatedGateExec{payload: "INVALIDO_CORROMPIDO"},
+		})
+		if err != nil {
+			t.Fatalf("Run retornou erro de configuração inesperado: %v", err)
+		}
+		if rep.OK || len(rep.Nodes) != 1 || rep.Nodes[0].Status != StatusGateFailed {
+			t.Fatalf("esperava StatusGateFailed, obteve: %+v", rep)
+		}
+		got, err := os.ReadFile(mainTarget)
+		if err != nil {
+			t.Fatalf("erro ao ler arquivo principal: %v", err)
+		}
+		if string(got) != "ORIGINAL_INTACTO" {
+			t.Fatalf("artefato foi promovido ANTES do gate falhar! conteúdo=%q", string(got))
+		}
+	})
+
+	t.Run("GateAprovadoPromoveArtefato", func(t *testing.T) {
+		workdir := t.TempDir()
+		rep, err := Run(context.Background(), d, Options{
+			Workdir:  workdir,
+			Executor: &isolatedGateExec{payload: "CONTEUDO_VALIDO"},
+		})
+		if err != nil {
+			t.Fatalf("Run: %v", err)
+		}
+		if !rep.OK || rep.Nodes[0].Status != StatusPassed {
+			t.Fatalf("esperava StatusPassed, obteve: %+v", rep)
+		}
+		got, err := os.ReadFile(filepath.Join(workdir, "declared.md"))
+		if err != nil {
+			t.Fatalf("artefato aprovado deveria ter sido promovido: %v", err)
+		}
+		if string(got) != "CONTEUDO_VALIDO" {
+			t.Fatalf("conteúdo promovido divergente: %q", string(got))
+		}
+	})
+}
+
+func TestRunnerUnsupportedNodeReturnsExplicitError(t *testing.T) {
+	d := diamond(t, 0)
+	d.Nodes[1].Type = "mcp"
+
+	ex := &fakeExec{}
+	_, err := Run(context.Background(), d, Options{Workdir: t.TempDir(), Executor: ex})
+	if err == nil {
+		t.Fatal("esperava erro explícito para nó tipo mcp em unsupported(d)")
+	}
+	if !strings.Contains(strings.ToLower(err.Error()), "mcp") {
+		t.Fatalf("mensagem de erro deveria identificar o recurso não suportado (mcp): %v", err)
+	}
+	if len(ex.order) != 0 {
+		t.Fatalf("nenhum nó deveria executar quando unsupported retorna erro, rodaram: %v", ex.order)
+	}
+}

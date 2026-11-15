@@ -8,19 +8,13 @@ import (
 	"path/filepath"
 )
 
-// FS embute todos os SKILL.md de legoloop-*.
+// FS embute todos os SKILL.md das skills nativas do LegoLoop.
 //
-//go:embed legoloop-*/*.md
+//go:embed legoloop-*/*.md ai-motion-graphics/*.md
 var FS embed.FS
 
-// naoNativas lista as skills legoloop-* embutidas que não são funções nativas.
-var naoNativas = map[string]bool{
-	"legoloop-canal-redc":     true,
-	"legoloop-cartoon-shorts": true,
-	"legoloop-gateway-agy":    true,
-	"legoloop-n10-foundry":    true,
-	"legoloop-video-edition":  true,
-}
+// naoNativas lista eventuais pastas embutidas que não sejam funções nativas.
+var naoNativas = map[string]bool{}
 
 // FuncoesNativas lista, em ordem alfabética, os nomes das 14 funções nativas do LegoLoop.
 // A lista vem das pastas embutidas em FS, menos as de naoNativas.

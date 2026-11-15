@@ -60,7 +60,7 @@ Identificação das Skills que o futuro Processo precisará acionar. Tipos permi
 | Identificador | Tipo da Peça | Especialidade / Skill | Papel no Processo |
 | :--- | :--- | :--- | :--- |
 | `PECA-01` | `skill` | {{skills/aidd-spec}} | {{Elaborar especificação formal com critérios BDD.}} |
-| `PECA-02` | `unit_task` | {{Código de produção (Go/TS)}} | {{Implementação da lógica via TDD Red-Green.}} |
+| `PECA-02` | `unit_no` | {{Código de produção (Go/TS)}} | {{Implementação da lógica via TDD Red-Green.}} |
 | `PECA-03` | `script` | `go test ./...` | Regressão mecânica e integridade (remova se não houver código Go). |
 | `PECA-04` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5; remova se não houver alteração em Go). |
 

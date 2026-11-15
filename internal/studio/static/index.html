@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LegoLoop Studio</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <link rel="stylesheet" href="style.css">
   <script src="icons.js" defer></script>
   <script src="ui.js" defer></script>
@@ -46,6 +47,7 @@
       <button id="btn-validate" class="btn" type="button">Validar</button>
       <button id="btn-run" class="btn btn--success" type="button" title="Executar DAG com streaming SSE"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Executar</button>
       <button id="btn-materialize" class="btn btn--primary" type="button">Materializar DAG</button>
+      <button id="btn-theme-toggle" class="btn btn--theme" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false">Tema: Claro</button>
     </div>
   </header>
 
@@ -104,32 +106,35 @@
     </aside>
 
     <section class="stage" aria-label="Canvas do DAG">
-      <!-- Header Global de Telemetria no Canvas (Zero Emojis) -->
-      <div id="canvas-telemetry-bar" class="canvas-telemetry-bar" role="status" aria-label="Telemetria do DAG">
-        <div class="telemetry-item telemetry-item--status">
-          <span class="telemetry-label">Status:</span>
-          <span id="telemetry-global-status" class="telemetry-value telemetry-status--idle">Pronto</span>
+      <!-- Header Global de Telemetria e Botão do Inspetor (Zero Emojis) -->
+      <div class="stage-topbar">
+        <div id="canvas-telemetry-bar" class="canvas-telemetry-bar" role="status" aria-label="Telemetria do DAG">
+          <div class="telemetry-item telemetry-item--status">
+            <span class="telemetry-label">Status:</span>
+            <span id="telemetry-global-status" class="telemetry-value telemetry-status--idle">Pronto</span>
+          </div>
+          <div class="telemetry-separator"></div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Tempo Total:</span>
+            <span id="telemetry-global-duration" class="telemetry-value">0.0s</span>
+          </div>
+          <div class="telemetry-separator"></div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Tokens Entrada:</span>
+            <span id="telemetry-global-tokens-in" class="telemetry-value">0</span>
+          </div>
+          <div class="telemetry-separator"></div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Tokens Saída:</span>
+            <span id="telemetry-global-tokens-out" class="telemetry-value">0</span>
+          </div>
+          <div class="telemetry-separator"></div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Custo Estimado:</span>
+            <span id="telemetry-global-cost" class="telemetry-value">$0.000</span>
+          </div>
         </div>
-        <div class="telemetry-separator"></div>
-        <div class="telemetry-item">
-          <span class="telemetry-label">Tempo Total:</span>
-          <span id="telemetry-global-duration" class="telemetry-value">0.0s</span>
-        </div>
-        <div class="telemetry-separator"></div>
-        <div class="telemetry-item">
-          <span class="telemetry-label">Tokens Entrada:</span>
-          <span id="telemetry-global-tokens-in" class="telemetry-value">0</span>
-        </div>
-        <div class="telemetry-separator"></div>
-        <div class="telemetry-item">
-          <span class="telemetry-label">Tokens Saída:</span>
-          <span id="telemetry-global-tokens-out" class="telemetry-value">0</span>
-        </div>
-        <div class="telemetry-separator"></div>
-        <div class="telemetry-item">
-          <span class="telemetry-label">Custo Estimado:</span>
-          <span id="telemetry-global-cost" class="telemetry-value">$0.000</span>
-        </div>
+        <button id="btn-toggle-inspector" class="btn btn--sm inspector-toggle-btn" type="button" aria-controls="inspector" aria-expanded="true" title="Recolher / Expandir Inspetor">Inspetor ▸</button>
       </div>
 
       <!-- Trilha de Breadcrumbs para Sub-Grafos e Mega-Pipelines (Zero Emojis) -->
@@ -170,9 +175,7 @@
     <aside id="inspector" class="inspector" aria-label="Inspetor do nó">
       <div class="inspector-header">
         <h2 class="panel__title">Inspetor</h2>
-        <button id="btn-toggle-inspector" class="btn btn--ghost inspector-collapse-btn" type="button" title="Recolher / Expandir Inspetor">▸</button>
       </div>
-      <div class="inspector-collapsed-rail">INSPETOR</div>
       <div id="inspector-body" class="inspector__body">
         <p class="panel__hint">Selecione um nó ou conexão para configurar.</p>
       </div>
@@ -184,7 +187,7 @@
 
   <!-- Modal de Fabricação de Processo: nome, modelo (cérebro), entrevista e criação -->
   <dialog id="modal-fabricar" class="modal-item modal-fabricar" aria-labelledby="modal-fabricar-title">
-    <div class="modal-item-header">
+    <div class="modal-header">
       <div class="modal-title-group">
         <h3 id="modal-fabricar-title" class="modal-title">Novo Processo</h3>
         <span class="modal-badge badge--canon">Fábrica</span>
@@ -235,7 +238,7 @@
 
   <!-- Modal do Cofre Canônico & Volumes -->
   <dialog id="modal-vault" class="modal-item" aria-labelledby="modal-vault-title">
-    <div class="modal-item-header">
+    <div class="modal-header">
       <div class="modal-title-group">
         <h3 id="modal-vault-title" class="modal-title">Cofre Canônico & Desduplicação do SO</h3>
         <span class="modal-badge badge--canon">SSOT Global</span>
@@ -262,7 +265,7 @@
 
   <!-- Modal de Execução SSE em Tempo Real -->
   <dialog id="modal-run" class="modal-item modal-run-item" aria-labelledby="modal-run-title">
-    <div class="modal-item-header">
+    <div class="modal-header">
       <div class="modal-title-group">
         <h3 id="modal-run-title" class="modal-title">Execução do DAG</h3>
         <span id="run-status-badge" class="modal-badge badge--ready">Pronto</span>
@@ -289,7 +292,7 @@
 
   <!-- Modal da Galeria de Templates (R-UI-5) -->
   <dialog id="modal-templates" class="modal-item modal-templates-item" aria-labelledby="modal-templates-title">
-    <div class="modal-item-header">
+    <div class="modal-header">
       <div class="modal-title-group">
         <h3 id="modal-templates-title" class="modal-title">Galeria de Templates Canônicos</h3>
         <span class="modal-badge badge--ready">Prontos para Uso</span>
@@ -306,7 +309,7 @@
 
   <!-- Modal de Importação do GitHub (Canonização Imediata) -->
   <dialog id="modal-import" class="modal-item" aria-labelledby="modal-import-title">
-    <div class="modal-item-header">
+    <div class="modal-header">
       <div class="modal-title-group">
         <h3 id="modal-import-title" class="modal-title">Importar Skill do GitHub</h3>
         <span class="modal-badge badge--canon">HDSM Global</span>
@@ -336,7 +339,7 @@
 
   <!-- Modal de Gestão de Processos do Cofre (Listar, Refinar, Compor, Remover) -->
   <dialog id="modal-processos" class="modal-item modal-processos" aria-labelledby="modal-processos-title">
-    <div class="modal-item-header">
+    <div class="modal-header">
       <div class="modal-title-group">
         <h3 id="modal-processos-title" class="modal-title">Processos do Cofre</h3>
         <span class="modal-badge badge--canon">Governança HDSM</span>

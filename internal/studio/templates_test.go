@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"legoloop/internal/combo"
 	"net/http"
+	"strings"
 	"testing"
 )
 
@@ -84,5 +85,41 @@ func TestTemplatesCombosHonestosCertificados(t *testing.T) {
 	}
 	if testados == 0 {
 		t.Fatal("nenhum combo encontrado nos templates para validar")
+	}
+}
+
+func TestTemplatesProibeCombosEModelosLegados(t *testing.T) {
+	legados := []string{
+		"code-pro",
+		"code-fast",
+		"code-free",
+		"fast",
+		"t" + "ask-micro",
+		"megacombo-coding",
+		"megacombo-reasoning",
+		"megacombo-vision",
+		"sonnet",
+		"haiku",
+		"opus",
+		"qwen2.5-coder:7b",
+		"llama3.1:8b",
+	}
+
+	raw := string(builtinTemplatesJSON)
+	for _, leg := range legados {
+		if strings.Contains(raw, `"`+leg+`"`) {
+			t.Errorf("templates.json ainda contém modelo/combo legado proibido: %q", leg)
+		}
+	}
+
+	for _, tmpl := range BuiltinTemplates() {
+		for _, n := range tmpl.Composition.Nodes {
+			if n.Routing.Mode != "auto" {
+				t.Errorf("template %s nó %s deve usar roteamento auto com combo certificado, obteve mode=%q", tmpl.ID, n.ID, n.Routing.Mode)
+			}
+			if _, err := combo.ObterCombo(n.Routing.Combo); err != nil {
+				t.Errorf("template %s nó %s usa combo não certificado %q: %v", tmpl.ID, n.ID, n.Routing.Combo, err)
+			}
+		}
 	}
 }

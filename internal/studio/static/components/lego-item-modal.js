@@ -6,15 +6,15 @@
  * 
  * Especialização por Família:
  * - Skill / Bloco: Fluxo IPO, Modelo Sugerido, Custo em Tokens, Artefato Físico e Gate.
- * - Gatilho (Trigger): Disparo Autônomo (Sem entrada prévia) ➔ Evento/Filtro ➔ Artefato Inicial.
- * - Controle (Flow): Grafo de Decisão (Entrada ➔ IF/Loop/Merge ➔ Ramos TRUE/FALSE/Merge).
+ * - Gatilho (Trigger): Disparo Autônomo (Sem entrada prévia) -> Evento/Filtro -> Artefato Inicial.
+ * - Controle (Flow): Grafo de Decisão (Entrada -> IF/Loop/Merge -> Ramos TRUE/FALSE/Merge).
  * - Gate: Decisão Binária (PASS/FAIL) com destaque explícito para o Tipo de Artefato Auditado.
- * - Sub-Loop: Portas Derivadas (Entrada Raízes ➔ Pipeline Interno ➔ Artefato Terminal).
+ * - Sub-Loop: Portas Derivadas (Entrada Raízes -> Pipeline Interno -> Artefato Terminal).
  * - MCP: Conector de Ferramentas com Transporte (stdio/sse/http) e Host.
  * - Hook / Script: Interceptador de Ciclo de Vida e Runtime.
  * 
  * Tríade de Compatibilidade:
- * - ⬅️ Antecessoras (Quem alimenta a peça)
+ * - Antecessoras (Quem alimenta a peça)
  * - Substitutas / Swap (Mesmo contrato de I/O)
  * - Sucessoras (Quem consome a entrega da peça)
  */
@@ -60,7 +60,7 @@ class LegoItemModal extends HTMLElement {
             <button id="btn-modal-reveal" class="btn btn--sm" type="button" title="Abrir pasta física no Windows Explorer">
               Abrir no Explorer
             </button>
-            <button id="btn-modal-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar modal">✕</button>
+            <button id="btn-modal-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar modal">&times;</button>
           </div>
         </header>
 
@@ -92,7 +92,7 @@ class LegoItemModal extends HTMLElement {
           <section id="tab-panel-overview" class="modal-panel is-active" role="tabpanel" aria-labelledby="tab-btn-overview">
             <div class="ipo-container">
               <div class="ipo-header-row">
-                <h4 class="prop-title" id="ipo-diagram-title">Fluxo IPO (Input ➔ Processamento ➔ Output)</h4>
+                <h4 class="prop-title" id="ipo-diagram-title">Fluxo IPO (Input -> Processamento -> Output)</h4>
                 <span class="ipo-badge-status" id="ipo-badge-type">Determinístico</span>
               </div>
               <div class="ipo-flow" id="ipo-flow-container">
@@ -105,7 +105,7 @@ class LegoItemModal extends HTMLElement {
                 </div>
 
                 <div class="ipo-connector">
-                  <span class="ipo-arrow" id="ipo-arrow-1">➔</span>
+                  <span class="ipo-arrow" id="ipo-arrow-1">-&gt;</span>
                 </div>
 
                 <div class="ipo-box ipo-proc">
@@ -117,7 +117,7 @@ class LegoItemModal extends HTMLElement {
                 </div>
 
                 <div class="ipo-connector">
-                  <span class="ipo-arrow" id="ipo-arrow-2">➔</span>
+                  <span class="ipo-arrow" id="ipo-arrow-2">-&gt;</span>
                 </div>
 
                 <div class="ipo-box ipo-out">
@@ -181,8 +181,8 @@ class LegoItemModal extends HTMLElement {
             </div>
 
             <div class="overview-footer-actions">
-              <button id="btn-copy-json" class="btn btn--sm" type="button">Copiar Copiar JSON</button>
-              <button id="btn-copy-markdown" class="btn btn--sm" type="button">📝 Copiar Markdown</button>
+              <button id="btn-copy-json" class="btn btn--sm" type="button">Copiar JSON</button>
+              <button id="btn-copy-markdown" class="btn btn--sm" type="button">Copiar Markdown</button>
             </div>
           </section>
 
@@ -217,7 +217,7 @@ class LegoItemModal extends HTMLElement {
             <div class="triad-filters" id="triad-filters" role="group" aria-label="Filtro de Relação Ontológica">
               <span class="triad-label">Relação:</span>
               <button class="btn btn--sm triad-filter is-active" data-rel="all" type="button">Todas</button>
-              <button class="btn btn--sm triad-filter" data-rel="predecessor" type="button" title="Peças que produzem o que esta peça consome">⬅️ Antecessoras</button>
+              <button class="btn btn--sm triad-filter" data-rel="predecessor" type="button" title="Peças que produzem o que esta peça consome">Antecessoras</button>
               <button class="btn btn--sm triad-filter" data-rel="substitute" type="button" title="Peças com o mesmo contrato de I/O para troca imediata">Substitutas (Swap)</button>
               <button class="btn btn--sm triad-filter" data-rel="successor" type="button" title="Peças que consomem o que esta peça entrega">Sucessoras</button>
             </div>
@@ -261,7 +261,7 @@ class LegoItemModal extends HTMLElement {
                 </div>
 
                 <div class="sandbox-actions">
-                  <button id="btn-sandbox-run" class="btn btn--primary btn--sm" type="button">▶️ Simular Execução</button>
+                  <button id="btn-sandbox-run" class="btn btn--primary btn--sm" type="button">Simular Execução</button>
                   <button id="btn-sandbox-reset" class="btn btn--sm" type="button">Limpar</button>
                 </div>
               </div>
@@ -286,7 +286,7 @@ class LegoItemModal extends HTMLElement {
             <div class="source-actions">
               <span id="modal-source-path" class="source-path"></span>
               <div class="source-actions-right">
-                <button id="btn-copy-source" class="btn btn--sm" type="button">Copiar Copiar Conteúdo</button>
+                <button id="btn-copy-source" class="btn btn--sm" type="button">Copiar Conteúdo</button>
                 <button id="btn-translate" class="btn btn--primary btn--sm" type="button">Traduzir para PT-BR</button>
               </div>
             </div>
@@ -492,14 +492,14 @@ class LegoItemModal extends HTMLElement {
 
     // Ícone e Título
     const iconMap = {
-      trigger: "⚡",
-      control: "🔀",
-      gate: "",
-      loop: "♾️",
-      mcp: "🔌",
-      hook: "🪝",
-      script: "📜",
-      skill: ""
+      trigger: "[Gatilho]",
+      control: "[Controle]",
+      gate: "[Gate]",
+      loop: "[Loop]",
+      mcp: "[MCP]",
+      hook: "[Hook]",
+      script: "[Script]",
+      skill: "[Skill]"
     };
     this.querySelector("#modal-item-icon").textContent = iconMap[family] || "[Peça]";
     this.querySelector("#modal-item-name").textContent = it.name || it.label || "Peça LegoLoop";
@@ -607,7 +607,7 @@ class LegoItemModal extends HTMLElement {
     artContainer.replaceChildren();
 
     // Reset de títulos e ícones padrão
-    this.querySelector("#ipo-diagram-title").textContent = "Fluxo IPO (Input ➔ Processamento ➔ Output)";
+    this.querySelector("#ipo-diagram-title").textContent = "Fluxo IPO (Input -> Processamento -> Output)";
     this.querySelector("#ipo-badge-type").textContent = family.toUpperCase();
     this.querySelector("#ipo-label-in").textContent = "ENTRADA (INPUT)";
     this.querySelector("#ipo-label-proc").textContent = "PROCESSAMENTO";
@@ -625,7 +625,7 @@ class LegoItemModal extends HTMLElement {
       case "trigger": {
         this.querySelector("#ipo-diagram-title").textContent = "Fluxo de Disparo Autônomo";
         this.querySelector("#ipo-label-in").textContent = "ORIGEM DO DISPARO";
-        this.querySelector("#ipo-icon-in").textContent = "⚡";
+        this.querySelector("#ipo-icon-in").textContent = "ORIGEM";
         ipoIn.append(this._createBadge("Disparo Autônomo (Sem entrada prévia)", "badge--muted"));
 
         ipoProc.append(this._createEl("span", "ipo-desc", `Detecção de evento: ${it.name}`));
@@ -644,7 +644,7 @@ class LegoItemModal extends HTMLElement {
       case "control": {
         this.querySelector("#ipo-diagram-title").textContent = "Grafo de Roteamento & Decisão Algorítmica";
         this.querySelector("#ipo-label-in").textContent = "ARTEFATO AVALIADO";
-        this.querySelector("#ipo-icon-in").textContent = "🔀";
+        this.querySelector("#ipo-icon-in").textContent = "FLUXO";
         const inList = it.consumes && it.consumes.length > 0 ? it.consumes : ["Briefing", "Spec", "Code", "Audit"];
         inList.forEach((c) => ipoIn.append(this._createBadge(String(c).replace("Artifact:", ""), "badge--accent")));
 
@@ -671,13 +671,13 @@ class LegoItemModal extends HTMLElement {
         this.querySelector("#gate-syntax-rule").textContent = it.gate || it.signature || `${it.name}(caminho)`;
 
         this.querySelector("#ipo-label-in").textContent = "ARTEFATO AUDITADO";
-        this.querySelector("#ipo-icon-in").textContent = "";
+        this.querySelector("#ipo-icon-in").textContent = "IN";
         ipoIn.append(this._createBadge(auditedArtifact, "badge--accent"));
 
         ipoProc.append(this._createEl("span", "ipo-desc", `Avaliação binária inegociável da regra ${it.name}`));
 
         this.querySelector("#ipo-label-out").textContent = "VEREDITO BINÁRIO";
-        this.querySelector("#ipo-icon-out").textContent = "⚖️";
+        this.querySelector("#ipo-icon-out").textContent = "GATE";
         ipoOut.append(this._createBadge("PASS (Avança)", "badge--accent"));
         ipoOut.append(this._createBadge("FAIL (Bloqueia)", "badge--warn"));
 
@@ -769,7 +769,7 @@ class LegoItemModal extends HTMLElement {
 
     // Roteamento & Orçamento
     const cost = it.cost || (family === "control" ? 1 : 0);
-    const model = it.suggested_model || (family === "control" || family === "gate" ? "N/A (Motor Nativo Go)" : "Heurística Automática");
+    const model = it.suggested_model || (family === "control" || family === "gate" ? "N/A (Motor Nativo Go)" : "t-codigo-128k (Combo Certificado)");
     this.querySelector("#modal-prop-routing").textContent = `Custo Estimado: ~${cost}k tokens · Modelo Sugerido: ${model}`;
   }
 
@@ -930,7 +930,7 @@ class LegoItemModal extends HTMLElement {
       strong.textContent = c.item.name;
 
       const relLabelMap = {
-        predecessor: "⬅️ Antecessora",
+        predecessor: "Antecessora",
         substitute: "Substituta (Swap)",
         successor: "Sucessora"
       };
@@ -957,7 +957,7 @@ class LegoItemModal extends HTMLElement {
         };
         actions.append(btnSwap);
       } else if (c.relation === "predecessor") {
-        const btnPre = this._createEl("button", "btn btn--sm", "⬅️ Conectar Antes");
+        const btnPre = this._createEl("button", "btn btn--sm", "Conectar Antes");
         btnPre.onclick = () => {
           this.close();
           this._showToast(`Conectando "${c.item.name}" como antecessora no Canvas.`);

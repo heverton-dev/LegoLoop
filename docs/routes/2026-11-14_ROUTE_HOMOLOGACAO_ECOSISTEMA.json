@@ -1,0 +1,1305 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "template_version": "2.2.0",
+  "name": "HOMOLOGACAO_ECOSISTEMA",
+  "version": "1.0.0",
+  "date": "2026-11-14",
+  "session_id": "7fb7b443-3368-4296-87f4-ca1316139cab",
+  "intent_ref": "docs/intents/2026-11-14_INTENT_HOMOLOGACAO_ECOSISTEMA.md",
+  "spec_ref": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md",
+  "plan_ref": "docs/plans/2026-11-14_PLAN_HOMOLOGACAO_ECOSISTEMA.md",
+  "initiative_ref": "I-A/I-B/I-C",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-14_INTENT_HOMOLOGACAO_ECOSISTEMA.md",
+      "sha256": "1800a786323ce0458a5b7a6993762cade91c646cf353c6c6a631a2f91e1a9945"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md",
+      "sha256": "3b8e5534419ce8f1c4197e2a5556065a18caa439328fda740a9eab69651f1aeb"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-14_PLAN_HOMOLOGACAO_ECOSISTEMA.md",
+      "sha256": "15d68933086b8b7259c0a8196fa552b0201bfe41757203813b6973598f2c559d"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "max_parallel": 4,
+      "join_barrier": true
+    },
+    "default_isolation": {
+      "workspace": "share",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "write_boundary": "strict"
+    },
+    "max_parallel_workers": 4,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "stash_changes",
+      "git_strategy": "worktree_ephemeral",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "I-A",
+      "epic_id": "E01",
+      "label": "Desbloqueio de suite Go, DAGs e remocao de segredos trackeados",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 16000,
+        "max_output": 600
+      },
+      "depends_on": [],
+      "dependencies": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E01.1",
+        "target_dag": "docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json",
+        "isolated_src": "internal/runner/isolated.go"
+      },
+      "context_in": [
+        "docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json",
+        "internal/runner/isolated.go",
+        "RELATORIO_AUDITORIA_GEMINI4.md",
+        "AUDITORIA_FONTE.txt",
+        "legoloop.exe"
+      ],
+      "context_out": [
+        "docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json",
+        "internal/runner/isolated.go",
+        "internal/runner/isolated_test.go"
+      ],
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/runner/isolated_test.go:TestIsolatedExcludesCredenciaisAndSymlinks",
+      "test_seam": {
+        "package": "internal/runner",
+        "test": "TestIsolatedExcludesCredenciaisAndSymlinks"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./tools/route2dag/...",
+          "./internal/runner/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json') && file_exists('internal/runner/isolated.go')"
+      },
+      "output": {
+        "artifact": "internal/runner/isolated.go",
+        "gate": "exit_code == 0 && file_exists('docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json') && file_exists('internal/runner/isolated.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "I-A",
+      "epic_id": "E01",
+      "label": "Paridade 1:1 Schema v2 com Parser Go, Peca Gatilho e pares ROUTE e DAG",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "dependencies": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E01.2",
+        "schema_v2": "schemas/dag.v2.json",
+        "dag_parser": "internal/dag/parse.go"
+      },
+      "context_in": [
+        "schemas/dag.v2.json",
+        "internal/dag/types.go",
+        "internal/dag/parse.go",
+        "internal/dag/schema_v2.go",
+        "internal/graph/ontology.go",
+        "internal/graph/index.go"
+      ],
+      "context_out": [
+        "schemas/dag.v2.json",
+        "internal/dag/types.go",
+        "internal/dag/parse.go",
+        "internal/dag/schema_v2.go",
+        "internal/dag/parity_v2_test.go",
+        "internal/graph/ontology.go",
+        "internal/graph/index.go",
+        "docs/dags/2026-11-10_DAG_DISSECAR.json",
+        "docs/dags/2026-11-13_DAG_STUDIO_PAPEIS_E_COMBOS.json",
+        "docs/dags/2026-11-14_DAG_DESIGN_UI.json",
+        "docs/dags/2026-11-14_DAG_SWARM.json"
+      ],
+      "spec_ref": "AC-E01.2",
+      "test_target": "internal/dag/parity_v2_test.go:TestSchemaV2AndTriggerParity",
+      "test_seam": {
+        "package": "internal/dag",
+        "test": "TestSchemaV2AndTriggerParity"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/dag/...",
+          "./internal/graph/...",
+          "./tools/route2dag/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/dag/parity_v2_test.go')"
+      },
+      "output": {
+        "artifact": "internal/dag/parity_v2_test.go",
+        "gate": "exit_code == 0 && file_exists('internal/dag/parity_v2_test.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-01.3",
+      "initiative_id": "I-A",
+      "epic_id": "E01",
+      "label": "Taxonomia ASD-STE100 zerada e migracao para combos certificados",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 20000,
+        "max_output": 600
+      },
+      "depends_on": [],
+      "dependencies": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E01.3",
+        "templates_dir": "docs/templates/",
+        "cli_main": "cmd/legoloop/main.go"
+      },
+      "context_in": [
+        "cmd/legoloop/main.go",
+        "cmd/legoloop/migrar.go",
+        "cmd/legoloop/triagem.go",
+        "cmd/legoloop/triagem_test.go",
+        "docs/templates/",
+        "internal/studiodoc/store.go",
+        "internal/router/",
+        "skills/"
+      ],
+      "context_out": [
+        "cmd/legoloop/main.go",
+        "docs/templates/templates_test.go",
+        "internal/studiodoc/store.go",
+        "internal/router/router.go"
+      ],
+      "spec_ref": "AC-E01.3",
+      "test_target": "docs/templates/templates_test.go:TestTaxonomiaTemplatesZeroViolacoes",
+      "test_seam": {
+        "package": "docs/templates",
+        "test": "TestTaxonomiaTemplatesZeroViolacoes"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./docs/templates/...",
+          "./cmd/legoloop/...",
+          "./internal/router/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/templates/templates_test.go')"
+      },
+      "output": {
+        "artifact": "docs/templates/templates_test.go",
+        "gate": "exit_code == 0 && file_exists('docs/templates/templates_test.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "I-A",
+      "epic_id": "E02",
+      "label": "Blindagem Path Jail, CORS/CSRF, data race SSE e ordem do runner",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "dependencies": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E02.1",
+        "studio_security": "internal/studio/security.go",
+        "runner_src": "internal/runner/runner.go"
+      },
+      "context_in": [
+        "internal/studio/reveal.go",
+        "internal/studio/piece_actions.go",
+        "internal/studio/security.go",
+        "internal/studio/run_api.go",
+        "internal/studio/server.go",
+        "internal/studio/processos_api.go",
+        "internal/runner/runner.go"
+      ],
+      "context_out": [
+        "internal/studio/reveal.go",
+        "internal/studio/piece_actions.go",
+        "internal/studio/security.go",
+        "internal/studio/run_api.go",
+        "internal/studio/server.go",
+        "internal/studio/security_hardening_test.go",
+        "internal/runner/runner.go",
+        "internal/runner/runner_test.go"
+      ],
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/studio/security_hardening_test.go:TestPathJailDeleteOriginAndSSERace",
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestPathJailDeleteOriginAndSSERace"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/...",
+          "./internal/runner/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/studio/security_hardening_test.go')"
+      },
+      "output": {
+        "artifact": "internal/studio/security_hardening_test.go",
+        "gate": "exit_code == 0 && file_exists('internal/studio/security_hardening_test.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "I-A",
+      "epic_id": "E02",
+      "label": "Substituicao integral de stubs de midia em motion e videorea",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 16000,
+        "max_output": 600
+      },
+      "depends_on": [],
+      "dependencies": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E02.2",
+        "motion_encode": "internal/motion/encode.go",
+        "cartoon_render": "internal/videorea/cartoon_render.go"
+      },
+      "context_in": [
+        "internal/motion/encode.go",
+        "internal/motion/render.go",
+        "internal/videorea/cartoon_render.go"
+      ],
+      "context_out": [
+        "internal/motion/encode.go",
+        "internal/motion/render.go",
+        "internal/motion/motion_real_test.go",
+        "internal/videorea/cartoon_render.go",
+        "internal/videorea/cartoon_render_test.go"
+      ],
+      "spec_ref": "AC-E02.2",
+      "test_target": "internal/motion/motion_real_test.go:TestEncoderERendererSemStubPlaceholder",
+      "test_seam": {
+        "package": "internal/motion",
+        "test": "TestEncoderERendererSemStubPlaceholder"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/motion/...",
+          "./internal/videorea/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/motion/motion_real_test.go')"
+      },
+      "output": {
+        "artifact": "internal/motion/motion_real_test.go",
+        "gate": "exit_code == 0 && file_exists('internal/motion/motion_real_test.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "I-B",
+      "epic_id": "E03",
+      "label": "MCP Router operacional e executor real de no mcp STDIO",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "depends_on": [
+        "TICK-01.2",
+        "TICK-04.2"
+      ],
+      "dependencies": [
+        "TICK-01.2",
+        "TICK-04.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E03.1",
+        "mcp_router": "internal/mcp/router.go",
+        "cli_mcp_router": "internal/cli/mcp_router.go"
+      },
+      "context_in": [
+        "internal/cli/mcp_router.go",
+        "internal/mcp/router.go",
+        "internal/mcp/swarm_tools.go",
+        "internal/orchestrix/orchestrix.go",
+        "internal/runner/runner.go"
+      ],
+      "context_out": [
+        "internal/cli/mcp_router.go",
+        "internal/mcp/router.go",
+        "internal/mcp/swarm_tools.go",
+        "internal/mcp/router_stdio_test.go",
+        "internal/orchestrix/mcp_client.go",
+        "internal/orchestrix/mcp_client_test.go"
+      ],
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/mcp/router_stdio_test.go:TestMCPRouterCofreSwarmEErro32700",
+      "test_seam": {
+        "package": "internal/mcp",
+        "test": "TestMCPRouterCofreSwarmEErro32700"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/mcp/...",
+          "./internal/orchestrix/...",
+          "./internal/cli/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/mcp_client.go')"
+      },
+      "output": {
+        "artifact": "internal/orchestrix/mcp_client.go",
+        "gate": "exit_code == 0 && file_exists('internal/orchestrix/mcp_client.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "I-B",
+      "epic_id": "E03",
+      "label": "Paridade CLI, harnesses, skills e fechar 100% real sem stubs",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 360,
+      "token_budget": {
+        "max_input": 28000,
+        "max_output": 900
+      },
+      "depends_on": [
+        "TICK-01.3",
+        "TICK-02.1"
+      ],
+      "dependencies": [
+        "TICK-01.3",
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E03.2",
+        "cli_dir": "internal/cli/",
+        "fechar_dir": "internal/fechar/"
+      },
+      "context_in": [
+        "internal/cli/",
+        "internal/fechar/",
+        "skills/embed.go",
+        "internal/processo/vinculo.go",
+        "internal/assets/scanner.go"
+      ],
+      "context_out": [
+        "internal/cli/cli.go",
+        "internal/cli/remover.go",
+        "internal/cli/stept.go",
+        "internal/cli/sync_harnesses.go",
+        "internal/cli/fechar.go",
+        "internal/fechar/fechar.go",
+        "internal/fechar/types.go",
+        "internal/fechar/fechar_real_test.go",
+        "skills/embed.go",
+        "internal/processo/vinculo.go",
+        "internal/assets/scanner.go"
+      ],
+      "spec_ref": "AC-E03.2",
+      "test_target": "internal/fechar/fechar_real_test.go:TestFecharSemStubsETelemetriaReal",
+      "test_seam": {
+        "package": "internal/fechar",
+        "test": "TestFecharSemStubsETelemetriaReal"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/cli/...",
+          "./internal/fechar/...",
+          "./internal/processo/...",
+          "./internal/assets/...",
+          "./skills/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/fechar/fechar_real_test.go')"
+      },
+      "output": {
+        "artifact": "internal/fechar/fechar_real_test.go",
+        "gate": "exit_code == 0 && file_exists('internal/fechar/fechar_real_test.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": "I-B",
+      "epic_id": "E04",
+      "label": "Integracao dos 9 motores N10 em producao e resiliencia Orchestrix",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 360,
+      "token_budget": {
+        "max_input": 28000,
+        "max_output": 900
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-03.1"
+      ],
+      "dependencies": [
+        "TICK-02.1",
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E04.1",
+        "runner_dir": "internal/runner/",
+        "orchestrix_dir": "internal/orchestrix/"
+      },
+      "context_in": [
+        "internal/runner/",
+        "internal/orchestrix/",
+        "internal/brain/",
+        "internal/combo/",
+        "internal/cli/commands.go"
+      ],
+      "context_out": [
+        "internal/runner/runner.go",
+        "internal/runner/n10_integration_test.go",
+        "internal/orchestrix/orchestrix.go",
+        "internal/orchestrix/backends.go",
+        "internal/orchestrix/unit_harness.go",
+        "internal/cli/commands.go"
+      ],
+      "spec_ref": "AC-E04.1",
+      "test_target": "internal/runner/n10_integration_test.go:TestN10EnginesConnectedInProduction",
+      "test_seam": {
+        "package": "internal/runner",
+        "test": "TestN10EnginesConnectedInProduction"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/runner/...",
+          "./internal/orchestrix/...",
+          "./internal/brain/...",
+          "./internal/combo/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/runner/n10_integration_test.go')"
+      },
+      "output": {
+        "artifact": "internal/runner/n10_integration_test.go",
+        "gate": "exit_code == 0 && file_exists('internal/runner/n10_integration_test.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-04.2",
+      "initiative_id": "I-B",
+      "epic_id": "E04",
+      "label": "Contrato unico de Swarm Board, file-lock e spawn/kill real",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 20000,
+        "max_output": 700
+      },
+      "depends_on": [],
+      "dependencies": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E04.2",
+        "board_swarm": "internal/board/swarm.go",
+        "board_runtime": "internal/board/swarm_runtime.go"
+      },
+      "context_in": [
+        "internal/board/swarm.go",
+        "internal/board/swarm_discovery.go",
+        "internal/board/swarm_runtime.go",
+        "internal/board/swarm_runtime_test.go"
+      ],
+      "context_out": [
+        "internal/board/swarm.go",
+        "internal/board/swarm_discovery.go",
+        "internal/board/swarm_runtime.go",
+        "internal/board/swarm_runtime_test.go",
+        "internal/board/swarm_unified_test.go"
+      ],
+      "spec_ref": "AC-E04.2",
+      "test_target": "internal/board/swarm_unified_test.go:TestUnifiedPathFileLockExactMentionAndPIDKill",
+      "test_seam": {
+        "package": "internal/board",
+        "test": "TestUnifiedPathFileLockExactMentionAndPIDKill"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/board/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/board/swarm_unified_test.go')"
+      },
+      "output": {
+        "artifact": "internal/board/swarm_unified_test.go",
+        "gate": "exit_code == 0 && file_exists('internal/board/swarm_unified_test.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-05.1",
+      "initiative_id": "I-C",
+      "epic_id": "E05",
+      "label": "Swarm UI unificado, zero XSS, preservacao de estado e gestao de workers",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-04.2"
+      ],
+      "dependencies": [
+        "TICK-02.1",
+        "TICK-04.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E05.1",
+        "cli_swarm_ui": "internal/cli/swarm_ui.go",
+        "studio_swarm_api": "internal/studio/swarm_api.go"
+      },
+      "context_in": [
+        "internal/cli/swarm_ui.go",
+        "internal/studio/swarm_api.go",
+        "internal/studio/static/swarm.js",
+        "internal/studio/static/swarm.html"
+      ],
+      "context_out": [
+        "internal/cli/swarm_ui.go",
+        "internal/studio/swarm_api.go",
+        "internal/studio/static/swarm.js",
+        "internal/studio/static/swarm.html",
+        "internal/studio/swarm_security_test.go"
+      ],
+      "spec_ref": "AC-E05.1",
+      "test_target": "internal/studio/swarm_security_test.go:TestSwarmUIUnifiedNoXSSAndRealKill",
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestSwarmUIUnifiedNoXSSAndRealKill"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/...",
+          "./internal/cli/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/studio/swarm_security_test.go')"
+      },
+      "output": {
+        "artifact": "internal/studio/swarm_security_test.go",
+        "gate": "exit_code == 0 && file_exists('internal/studio/swarm_security_test.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-05.2",
+      "initiative_id": "I-C",
+      "epic_id": "E05",
+      "label": "Desbloqueio E2E do Studio (#btn-run, ErrSemMatriz, Gatilho, SVG e Combos)",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "depends_on": [
+        "TICK-01.2",
+        "TICK-02.1"
+      ],
+      "dependencies": [
+        "TICK-01.2",
+        "TICK-02.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E05.2",
+        "studio_app": "internal/studio/static/app.js",
+        "fabricar_api": "internal/studio/fabricar_api.go"
+      },
+      "context_in": [
+        "internal/studio/static/app.js",
+        "internal/studio/static/inspector.js",
+        "internal/studio/static/lego-item-modal.js",
+        "internal/studio/fabricar_api.go",
+        "internal/studio/compose.go",
+        "internal/studio/templates.json"
+      ],
+      "context_out": [
+        "internal/studio/static/app.js",
+        "internal/studio/static/inspector.js",
+        "internal/studio/static/lego-item-modal.js",
+        "internal/studio/fabricar_api.go",
+        "internal/studio/compose.go",
+        "internal/studio/templates.json",
+        "internal/studio/studio_e2e_flow_test.go"
+      ],
+      "spec_ref": "AC-E05.2",
+      "test_target": "internal/studio/studio_e2e_flow_test.go:TestFabricarErrSemMatrizAndComposeTrigger",
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestFabricarErrSemMatrizAndComposeTrigger"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/studio/studio_e2e_flow_test.go')"
+      },
+      "output": {
+        "artifact": "internal/studio/studio_e2e_flow_test.go",
+        "gate": "exit_code == 0 && file_exists('internal/studio/studio_e2e_flow_test.go')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-06.1",
+      "initiative_id": "I-C",
+      "epic_id": "E06",
+      "label": "Layout responsivo, inspetor recuperavel, modais e seletor de tema",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 20000,
+        "max_output": 700
+      },
+      "depends_on": [
+        "TICK-05.1",
+        "TICK-05.2"
+      ],
+      "dependencies": [
+        "TICK-05.1",
+        "TICK-05.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E06.1",
+        "studio_css": "internal/studio/static/style.css",
+        "studio_html": "internal/studio/static/index.html"
+      },
+      "context_in": [
+        "internal/studio/static/index.html",
+        "internal/studio/static/inventario.html",
+        "internal/studio/static/swarm.html",
+        "internal/studio/static/style.css",
+        "internal/studio/static/ui.js"
+      ],
+      "context_out": [
+        "internal/studio/static/index.html",
+        "internal/studio/static/inventario.html",
+        "internal/studio/static/swarm.html",
+        "internal/studio/static/style.css",
+        "internal/studio/static/ui.js",
+        "internal/studio/static_test.go"
+      ],
+      "spec_ref": "AC-E06.1",
+      "test_target": "internal/studio/static_test.go:TestLayoutModaisNavegacaoETema",
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestLayoutModaisNavegacaoETema"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/style.css')"
+      },
+      "output": {
+        "artifact": "internal/studio/static/style.css",
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/style.css')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-06.2",
+      "initiative_id": "I-C",
+      "epic_id": "E06",
+      "label": "Contraste WCAG AA, guildas legiveis e acessibilidade ARIA",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "extreme": false,
+      "isolation": {
+        "workspace": "share",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_input": 20000,
+        "max_output": 700
+      },
+      "depends_on": [
+        "TICK-06.1"
+      ],
+      "dependencies": [
+        "TICK-06.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E06.2",
+        "palette_js": "internal/studio/static/palette.js"
+      },
+      "context_in": [
+        "internal/studio/static/style.css",
+        "internal/studio/static/palette.js",
+        "internal/studio/static/swarm.js",
+        "internal/studio/static_test.go"
+      ],
+      "context_out": [
+        "internal/studio/static/style.css",
+        "internal/studio/static/palette.js",
+        "internal/studio/static/swarm.js",
+        "internal/studio/static_test.go"
+      ],
+      "spec_ref": "AC-E06.2",
+      "test_target": "internal/studio/static_test.go:TestWCAGTokensEGuildas",
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestWCAGTokensEGuildas"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/..."
+        ],
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/palette.js')"
+      },
+      "output": {
+        "artifact": "internal/studio/static/palette.js",
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/palette.js')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-07.1",
+      "initiative_id": "I-C",
+      "epic_id": "E07",
+      "label": "Verificacao cega independente e auditoria E2E (Etapa 5)",
+      "nature": "micro",
+      "type": "script",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "extreme": false,
+      "isolation": {
+        "workspace": "inherit",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 600,
+      "token_budget": {
+        "max_input": 32000,
+        "max_output": 1200
+      },
+      "depends_on": [
+        "TICK-02.2",
+        "TICK-03.2",
+        "TICK-04.1",
+        "TICK-06.2"
+      ],
+      "dependencies": [
+        "TICK-02.2",
+        "TICK-03.2",
+        "TICK-04.1",
+        "TICK-06.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-agente-128k",
+        "effort": "high",
+        "fallback": "t-codigo-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": true,
+        "mcp_allowlist": [
+          "playwright:browser_navigate",
+          "chrome-devtools-mcp:list_pages",
+          "rea:inspect_web_page"
+        ]
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E07.1",
+        "binary": "bin/legoloop.exe"
+      },
+      "context_in": [
+        "bin/legoloop.exe",
+        "cmd/",
+        "internal/",
+        "tools/",
+        "schemas/",
+        "skills/"
+      ],
+      "context_out": [
+        "bin/legoloop.exe",
+        "scratch/gates/TICK-07.1.json"
+      ],
+      "spec_ref": "AC-E07.1",
+      "test_target": "internal/e2e/e2e_test.go:TestE2EFullBinary",
+      "test_seam": {
+        "package": "internal/e2e",
+        "test": "TestE2EFullBinary"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./..."
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "stop_gate": null
+    },
+    {
+      "id": "TICK-07.2",
+      "initiative_id": "I-C",
+      "epic_id": "E07",
+      "label": "Fechamento canonico universal (Etapa 6 - Lei #11)",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "extreme": false,
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 600,
+      "token_budget": {
+        "max_input": 32000,
+        "max_output": 1500
+      },
+      "depends_on": [
+        "TICK-07.1"
+      ],
+      "dependencies": [
+        "TICK-07.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-agente-128k",
+        "effort": "medium",
+        "fallback": "t-codigo-128k"
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": true,
+        "mcp_allowlist": [
+          "codebase-memory-mcp:index_repository"
+        ]
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E07.2",
+        "dag_doc": "docs/dags/2026-11-14_DAG_HOMOLOGACAO_ECOSISTEMA.json"
+      },
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md",
+        "docs/dags/2026-11-14_DAG_HOMOLOGACAO_ECOSISTEMA.json"
+      ],
+      "context_out": [
+        "docs/manuals/2026-11-14_MANUAL_FUNCAO_HOMOLOGACAO_ECOSISTEMA_LEGOLOOP.md",
+        "docs/books/homologacao-ecosistema/livro.json",
+        "skills/legoloop-homologacao/SKILL.md",
+        "docs/reports/2026-11-14_REPORT_HOMOLOGACAO_ECOSISTEMA.md"
+      ],
+      "spec_ref": "AC-E07.2",
+      "test_target": "internal/fechar/fechar_real_test.go:TestFecharHomologacaoIntegral",
+      "test_seam": {
+        "package": "internal/fechar",
+        "test": "TestFecharHomologacaoIntegral"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "install",
+          "./cmd/legoloop"
+        ],
+        "gate": "exit_code == 0 && file_exists('docs/reports/2026-11-14_REPORT_HOMOLOGACAO_ECOSISTEMA.md') && file_exists('skills/legoloop-homologacao/SKILL.md')"
+      },
+      "output": {
+        "artifact": "docs/reports/2026-11-14_REPORT_HOMOLOGACAO_ECOSISTEMA.md",
+        "gate": "exit_code == 0 && file_exists('docs/reports/2026-11-14_REPORT_HOMOLOGACAO_ECOSISTEMA.md') && file_exists('skills/legoloop-homologacao/SKILL.md')"
+      },
+      "stop_gate": null
+    }
+  ],
+  "gates": {
+    "SG-FINAL": {
+      "label": "Homologacao global e fechamento da demanda",
+      "gate": "exit_code == 0 && file_exists('bin/legoloop.exe') && file_exists('docs/reports/2026-11-14_REPORT_HOMOLOGACAO_ECOSISTEMA.md')"
+    }
+  }
+}

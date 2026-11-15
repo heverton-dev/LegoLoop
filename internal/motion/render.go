@@ -4,7 +4,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
+
+// CaptureFrames renderiza HTML headless via Playwright e retorna os caminhos PNG gerados.
+func CaptureFrames(html string, fps int, durationSec float64, resolution string, outDir string) ([]string, error) {
+	return captureFramesWith(&playwrightCapturer{}, html, fps, durationSec, resolution, outDir)
+}
 
 // captureFramesWith captures frames using the given capturer (seam for testing).
 func captureFramesWith(c frameCapturer, html string, fps int, durationSec float64, resolution string, outDir string) ([]string, error) {
@@ -18,19 +24,44 @@ func captureFramesWith(c frameCapturer, html string, fps int, durationSec float6
 }
 
 // playwrightCapturer captures frames via Playwright headless.
-type playwrightCapturer struct{}
+type playwrightCapturer struct {
+	runner commandRunner
+}
 
-// Capture writes HTML to a temp file and drives Playwright to screenshot frames.
+func (p *playwrightCapturer) effectiveRunner() commandRunner {
+	if p != nil && p.runner != nil {
+		return p.runner
+	}
+	return osCommandRunner{}
+}
+
+// Capture writes HTML to a temp file and drives Playwright CLI to screenshot frames.
 func (p *playwrightCapturer) Capture(html string, fps int, durationSec float64, resolution string, outDir string) ([]string, error) {
+	total := int(float64(fps) * durationSec)
+	if fps <= 0 || durationSec <= 0 || total <= 0 {
+		return nil, ErrInvalidRequest
+	}
+	r := p.effectiveRunner()
+	bin, err := r.LookPath("playwright")
+	if err != nil {
+		return nil, fmt.Errorf("%w: playwright ausente no PATH: %v", ErrRenderFailed, err)
+	}
+	if err := os.MkdirAll(outDir, 0755); err != nil {
+		return nil, fmt.Errorf("motion: mkdir %s: %w", outDir, err)
+	}
 	htmlPath := filepath.Join(outDir, "scene.html")
 	if err := os.WriteFile(htmlPath, []byte(html), 0644); err != nil {
 		return nil, fmt.Errorf("motion: write html: %w", err)
 	}
-	total := int(float64(fps) * durationSec)
+	return captureAllFrames(r, bin, htmlPath, fps, total, resolution, outDir)
+}
+
+func captureAllFrames(r commandRunner, bin, htmlPath string, fps, total int, resolution, outDir string) ([]string, error) {
 	frames := make([]string, 0, total)
 	for i := 0; i < total; i++ {
 		fp := filepath.Join(outDir, fmt.Sprintf("frame_%04d.png", i))
-		if err := captureSingleFrame(htmlPath, fp, resolution); err != nil {
+		waitMs := (i * 1000) / fps
+		if err := captureSingleFrame(r, bin, htmlPath, fp, resolution, waitMs); err != nil {
 			return nil, err
 		}
 		frames = append(frames, fp)
@@ -38,12 +69,45 @@ func (p *playwrightCapturer) Capture(html string, fps int, durationSec float64, 
 	return frames, nil
 }
 
-// captureSingleFrame is a placeholder that writes a blank PNG.
-// Real Playwright integration is a boundary call via os/exec.
-func captureSingleFrame(htmlPath, outPath, resolution string) error {
-	// Minimal 1x1 white PNG for smoke; real capture via Playwright CLI.
-	png := []byte{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xDE, 0x00, 0x00, 0x00, 0x0C, 0x49, 0x44, 0x41, 0x54, 0x08, 0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x00, 0x03, 0x00, 0x01, 0x86, 0x3E, 0x28, 0x6E, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82}
-	return os.WriteFile(outPath, png, 0644)
+func captureSingleFrame(r commandRunner, bin, htmlPath, outPath, resolution string, waitMs int) error {
+	args := playwrightScreenshotArgs(htmlPath, outPath, resolution, waitMs)
+	out, err := r.Run(bin, args...)
+	if err != nil {
+		_ = os.Remove(outPath)
+		return fmt.Errorf("%w: playwright screenshot falhou (%v): %s", ErrRenderFailed, err, trimCmdOutput(out))
+	}
+	return verifyNonEmptyFile(outPath, "frame PNG")
+}
+
+func playwrightScreenshotArgs(htmlPath, outPath, resolution string, waitMs int) []string {
+	return []string{
+		"screenshot",
+		"--browser", "chromium",
+		"--viewport-size=" + viewportSizeArg(resolution),
+		fmt.Sprintf("--wait-for-timeout=%d", waitMs),
+		localFileURL(htmlPath),
+		outPath,
+	}
+}
+
+func viewportSizeArg(resolution string) string {
+	clean := strings.ReplaceAll(strings.ToLower(strings.TrimSpace(resolution)), "x", ",")
+	if !strings.Contains(clean, ",") {
+		return "1920,1080"
+	}
+	return clean
+}
+
+func localFileURL(path string) string {
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		abs = path
+	}
+	slash := filepath.ToSlash(abs)
+	if strings.HasPrefix(slash, "/") {
+		return "file://" + slash
+	}
+	return "file:///" + slash
 }
 
 // frameCapturer is the seam for Playwright — injectable for testing.

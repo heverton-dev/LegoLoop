@@ -10,15 +10,45 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"legoloop/internal/dag"
 	"legoloop/internal/runner"
 )
 
-// maxResponseBytes limita a resposta de qualquer backend.
-const maxResponseBytes = 32 << 20
+const (
+	// maxResponseBytes limita a resposta de qualquer backend.
+	maxResponseBytes   = 32 << 20
+	maxStderrBytes     = 64 << 10
+	defaultHTTPTimeout = 30 * time.Second
+)
+
+var (
+	// ErrPayloadTooLarge indica HTTP 413 (payload acima da janela de contexto).
+	ErrPayloadTooLarge = errors.New("http 413 payload muito grande")
+	// ErrRateLimited indica HTTP 429 (limite de taxa excedido).
+	ErrRateLimited = errors.New("http 429 rate limit excedido")
+)
+
+type httpStatusError struct {
+	StatusCode int
+	Body       string
+}
+
+func (e httpStatusError) Error() string {
+	if e.Body == "" {
+		return fmt.Sprintf("status HTTP %d", e.StatusCode)
+	}
+	return fmt.Sprintf("status HTTP %d: %s", e.StatusCode, e.Body)
+}
+
+func (e httpStatusError) Is(target error) bool {
+	return (e.StatusCode == http.StatusRequestEntityTooLarge && target == ErrPayloadTooLarge) ||
+		(e.StatusCode == http.StatusTooManyRequests && target == ErrRateLimited)
+}
 
 // routerTokenOverhead: o normalizador do 9Router soma +2000 FALSOS a prompt_tokens
 // (código do servidor, 03/10). Medido em 31/10 na VPS com Llama 3.1 idêntico ao Ollama
@@ -77,27 +107,68 @@ func (o *Orchestrix) postJSON(ctx context.Context, url, bearer string, body, dst
 	if err != nil {
 		return err
 	}
+	client := o.HTTP
+	if client == nil {
+		client = &http.Client{Timeout: defaultHTTPTimeout}
+	}
+	for attempt := range 2 {
+		retryAfter, reqErr := o.doPostJSON(ctx, client, url, bearer, payload, dst)
+		if reqErr == nil || !errors.Is(reqErr, ErrRateLimited) || attempt == 1 {
+			return reqErr
+		}
+		if waitErr := waitRetryAfter(ctx, retryAfter); waitErr != nil {
+			return reqErr
+		}
+	}
+	return nil
+}
+
+func (o *Orchestrix) doPostJSON(ctx context.Context, client *http.Client, url, bearer string, payload []byte, dst any) (time.Duration, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
 	if err != nil {
-		return err
+		return 0, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	if bearer != "" {
 		req.Header.Set("Authorization", "Bearer "+bearer)
 	}
-	client := o.HTTP
-	if client == nil {
-		client = &http.Client{}
-	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("status HTTP %d", resp.StatusCode)
+		return parseRetryAfter(resp.Header.Get("Retry-After")), readHTTPError(resp.StatusCode, resp.Body)
 	}
-	return json.NewDecoder(io.LimitReader(resp.Body, maxResponseBytes)).Decode(dst)
+	return 0, json.NewDecoder(io.LimitReader(resp.Body, maxResponseBytes)).Decode(dst)
+}
+
+func readHTTPError(code int, body io.Reader) error {
+	raw, _ := io.ReadAll(io.LimitReader(body, 512))
+	return httpStatusError{StatusCode: code, Body: strings.TrimSpace(string(raw))}
+}
+
+func parseRetryAfter(val string) time.Duration {
+	secs, err := strconv.Atoi(strings.TrimSpace(val))
+	if err != nil || secs <= 0 {
+		return 15 * time.Millisecond
+	}
+	d := time.Duration(secs) * time.Second
+	if d > 100*time.Millisecond {
+		return 100 * time.Millisecond
+	}
+	return d
+}
+
+func waitRetryAfter(ctx context.Context, d time.Duration) error {
+	t := time.NewTimer(d)
+	defer t.Stop()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-t.C:
+		return nil
+	}
 }
 
 // callClaude abre um `claude -p` efêmero e isolado: cwd é um diretório temporário vazio
@@ -111,13 +182,17 @@ func (o *Orchestrix) callClaude(ctx context.Context, model, prompt string) (stri
 	defer os.RemoveAll(sandbox)
 	args := []string{"-p", "--model", model, "--output-format", "json", "--no-session-persistence",
 		"--strict-mcp-config", "--safe-mode", "--setting-sources", "user", "--tools", "", "--disable-slash-commands"}
-	out, code, err := o.spawn(ctx, o.Inventory.CLIPath("claude"), args, sandbox, strings.NewReader(prompt))
+	out, stderrOut, code, err := o.spawnEnvCaptured(ctx, o.Inventory.CLIPath("claude"), args, sandbox, strings.NewReader(prompt), nil)
 	if err != nil {
-		return "", runner.TokenUsage{}, err
+		return "", runner.TokenUsage{}, appendStderr(err, stderrOut)
 	}
 	r := parseClaudeOutput(out)
 	if code != 0 || r.isError {
-		return "", r.usage, fmt.Errorf("claude saiu com código %d: %s", code, r.reason())
+		reason := r.reason()
+		if len(stderrOut) > 0 && reason == "sem detalhes na saída" {
+			reason = trimStderr(stderrOut)
+		}
+		return "", r.usage, fmt.Errorf("claude saiu com código %d: %s", code, reason)
 	}
 	return r.text, r.usage, nil
 }
@@ -224,6 +299,14 @@ func (o *Orchestrix) spawn(ctx context.Context, bin string, args []string, dir s
 
 // spawnEnv é o spawn com variáveis extras só para este filho (o ambiente do pai não muda).
 func (o *Orchestrix) spawnEnv(ctx context.Context, bin string, args []string, dir string, stdin io.Reader, extra []string) ([]byte, int, error) {
+	out, stderrOut, code, err := o.spawnEnvCaptured(ctx, bin, args, dir, stdin, extra)
+	if err != nil {
+		return nil, code, appendStderr(err, stderrOut)
+	}
+	return out, code, nil
+}
+
+func (o *Orchestrix) spawnEnvCaptured(ctx context.Context, bin string, args []string, dir string, stdin io.Reader, extra []string) ([]byte, []byte, int, error) {
 	cmd := exec.CommandContext(ctx, bin, args...)
 	cmd.Dir = dir
 	cmd.Env = append(append(sterileEnv(os.Getenv), o.ExtraEnv...), extra...)
@@ -233,19 +316,35 @@ func (o *Orchestrix) spawnEnv(ctx context.Context, bin string, args []string, di
 	if stdout.limit <= 0 {
 		stdout.limit = maxResponseBytes
 	}
-	cmd.Stdout = stdout
+	stderr := &limitedBuffer{limit: maxStderrBytes}
+	cmd.Stdout, cmd.Stderr = stdout, stderr
 	err := cmd.Run()
 	if stdout.overflow {
-		return nil, -1, fmt.Errorf("saída do subprocesso excede o limite de %d bytes", stdout.limit)
+		return nil, stderr.Bytes(), -1, fmt.Errorf("saída do subprocesso excede o limite de %d bytes", stdout.limit)
 	}
 	var exitErr *exec.ExitError
 	if errors.As(err, &exitErr) && ctx.Err() == nil {
-		return stdout.Bytes(), exitErr.ExitCode(), nil
+		return stdout.Bytes(), stderr.Bytes(), exitErr.ExitCode(), nil
 	}
 	if err != nil {
-		return nil, -1, err
+		return nil, stderr.Bytes(), -1, err
 	}
-	return stdout.Bytes(), 0, nil
+	return stdout.Bytes(), stderr.Bytes(), 0, nil
+}
+
+func appendStderr(err error, stderrOut []byte) error {
+	if msg := trimStderr(stderrOut); msg != "" {
+		return fmt.Errorf("%w (stderr: %s)", err, msg)
+	}
+	return err
+}
+
+func trimStderr(b []byte) string {
+	msg := strings.TrimSpace(string(b))
+	if len(msg) > 300 {
+		return msg[:300] + "…"
+	}
+	return msg
 }
 
 // sterileEnv repassa só o mínimo para o SO e o harness localizarem config/autenticação.
@@ -267,12 +366,15 @@ func sterileEnv(getenv func(string) string) []string {
 // O buffer NÃO é embutido de propósito: bytes.Buffer expõe ReadFrom, e io.Copy usaria
 // esse atalho ignorando o limite deste Write.
 type limitedBuffer struct {
+	mu       sync.Mutex
 	buf      bytes.Buffer
 	limit    int
 	overflow bool
 }
 
 func (b *limitedBuffer) Write(p []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
 	if b.overflow || b.buf.Len()+len(p) > b.limit {
 		b.overflow = true
 		return len(p), nil
@@ -280,4 +382,10 @@ func (b *limitedBuffer) Write(p []byte) (int, error) {
 	return b.buf.Write(p)
 }
 
-func (b *limitedBuffer) Bytes() []byte { return b.buf.Bytes() }
+func (b *limitedBuffer) Bytes() []byte {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	out := make([]byte, b.buf.Len())
+	copy(out, b.buf.Bytes())
+	return out
+}

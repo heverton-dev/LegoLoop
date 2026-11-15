@@ -106,3 +106,66 @@ function choiceDialog({ title, message, choices, cancelLabel = "Cancelar" }) {
     cancel.focus();
   });
 }
+
+// ---------- Seletor de Tema (Claro / Escuro) ----------
+
+const THEME_STORAGE_KEY = "legoloop.theme";
+
+function resolveInitialTheme() {
+  try {
+    const saved = window.localStorage?.getItem(THEME_STORAGE_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+  } catch (_) {}
+  if (typeof window !== "undefined" && typeof window.matchMedia === "function") {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  return "light";
+}
+
+function syncThemeToggleButton(theme) {
+  if (typeof document === "undefined") return;
+  const btn = document.getElementById("btn-theme-toggle");
+  if (!btn) return;
+  const isDark = theme === "dark";
+  btn.setAttribute("aria-pressed", String(isDark));
+  btn.setAttribute("aria-label", isDark ? "Alternar para tema claro" : "Alternar para tema escuro");
+  btn.textContent = isDark ? "Tema: Escuro" : "Tema: Claro";
+}
+
+function applyTheme(theme) {
+  const next = theme === "dark" ? "dark" : "light";
+  if (typeof document !== "undefined" && document.documentElement) {
+    document.documentElement.setAttribute("data-theme", next);
+  }
+  try {
+    window.localStorage?.setItem(THEME_STORAGE_KEY, next);
+  } catch (_) {}
+  syncThemeToggleButton(next);
+  return next;
+}
+
+function toggleTheme() {
+  const cur = (typeof document !== "undefined" && document.documentElement.getAttribute("data-theme")) || resolveInitialTheme();
+  return applyTheme(cur === "dark" ? "light" : "dark");
+}
+
+function initTheme() {
+  const initial = resolveInitialTheme();
+  applyTheme(initial);
+  if (typeof document === "undefined") return;
+  const bind = () => {
+    const btn = document.getElementById("btn-theme-toggle");
+    if (btn && !btn.dataset.themeBound) {
+      btn.dataset.themeBound = "1";
+      btn.addEventListener("click", () => toggleTheme());
+    }
+    syncThemeToggleButton(document.documentElement.getAttribute("data-theme") || initial);
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bind, { once: true });
+  } else {
+    bind();
+  }
+}
+
+initTheme();

@@ -136,3 +136,35 @@ func TestRemoverUso(t *testing.T) {
 		}
 	}
 }
+
+func TestRemoverDryRunForceJSON(t *testing.T) {
+	home, vault := cofreListar(t)
+	completarCofreRemover(t, vault)
+	antes := fotoRemover(t, home)
+
+	// 1. --dry-run --json não toca o disco e emite JSON puro
+	var outDry, errDry bytes.Buffer
+	codeDry := Run(context.Background(), []string{"remover", "legoloop-b", "--vault", vault, "--dry-run", "--json"}, Deps{Stdout: &outDry, Stderr: &errDry, Home: home})
+	if codeDry != 0 {
+		t.Fatalf("remover --dry-run --json falhou (%d): %s", codeDry, errDry.String())
+	}
+	if fotoRemover(t, home) != antes {
+		t.Fatal("remover --dry-run alterou o disco")
+	}
+	if !strings.HasPrefix(strings.TrimSpace(outDry.String()), "{") {
+		t.Fatalf("esperava JSON puro em stdout no --dry-run --json, obteve: %q", outDry.String())
+	}
+
+	// 2. --force --json remove mesmo processo em uso (legoloop-a é usado por legoloop-b) e emite JSON puro
+	var outForce, errForce bytes.Buffer
+	codeForce := Run(context.Background(), []string{"remover", "legoloop-a", "--vault", vault, "--force", "--json"}, Deps{Stdout: &outForce, Stderr: &errForce, Home: home})
+	if codeForce != 0 {
+		t.Fatalf("remover --force --json falhou (%d): %s", codeForce, errForce.String())
+	}
+	if existeRem(processo.CaminhoNoCofre(vault, "legoloop-a")) {
+		t.Error("legoloop-a deveria ter sido removido com --force")
+	}
+	if !strings.HasPrefix(strings.TrimSpace(outForce.String()), "{") {
+		t.Fatalf("esperava JSON puro em stdout no --force --json, obteve: %q", outForce.String())
+	}
+}

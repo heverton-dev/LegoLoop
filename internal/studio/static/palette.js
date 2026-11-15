@@ -76,6 +76,19 @@ function entryFromItem(cat, it) {
   return e;
 }
 
+function guildaForBlock(b) {
+  const text = `${b.id || ""} ${b.name || ""}`.toLowerCase();
+  const kind = String(b.kind || "").toLowerCase();
+  if (kind.startsWith("trigger_") || kind.startsWith("flow_") || kind === "hook") return { guilda: "governanca", papelPrimario: "maestro", papelNome: "Orquestração e Gatilho" };
+  if (kind.startsWith("security_") || kind === "gate") return { guilda: "qualidade", papelPrimario: "auditor", papelNome: "Segurança e Conformidade" };
+  if (kind.startsWith("vcs_") || kind.startsWith("deploy_") || /(deploy|vps|docker|cloudflare|infra|ops|9router|gateway)/.test(text)) return { guilda: "infra", papelPrimario: "operador", papelNome: "Infraestrutura e Entrega" };
+  if (/(rea|obscura|reconstruct|clone)/.test(text)) return { guilda: "reversa", papelPrimario: "explorador", papelNome: "Engenharia Reversa" };
+  if (/(video|cartoon|impeccable|uiux|design|motion)/.test(text)) return { guilda: "audiovisual", papelPrimario: "designer", papelNome: "Design e Audiovisual" };
+  if (/(homolog|review|audit|test|tdd|diagnose|retro|gate|e2e|wcag|lint|valid)/.test(text)) return { guilda: "qualidade", papelPrimario: "auditor", papelNome: "Qualidade e Auditoria" };
+  if (/(doc|book|textbook|publish|report|legopress|livro|manual|pdf|docx|pptx)/.test(text)) return { guilda: "publicacao", papelPrimario: "redator", papelNome: "Documentação e Publicação" };
+  return { guilda: "construcao", papelPrimario: "construtor", papelNome: "Construção e Código" };
+}
+
 function entryFromBlock(b) {
   const isTrig = b.kind && b.kind.startsWith("trigger_");
   const isCtrl = b.kind && (b.kind.startsWith("flow_") || b.kind.startsWith("security_") || b.kind.startsWith("vcs_") || b.kind.startsWith("deploy_"));
@@ -88,7 +101,7 @@ function entryFromBlock(b) {
   if (isTrig) {
     cat = "trigger";
     badge = "gatilho";
-    desc = `Gatilho inicial → ${out || "pipeline"}`;
+    desc = `Gatilho inicial → ${out || "processo"}`;
   } else if (isCtrl) {
     cat = "control";
     if (b.kind.startsWith("security_")) {
@@ -107,6 +120,7 @@ function entryFromBlock(b) {
   } else {
     desc = `${ins} → ${out}`;
   }
+  const tax = guildaForBlock(b);
   return {
     key: `block:${b.id}`,
     cat,
@@ -124,6 +138,9 @@ function entryFromBlock(b) {
     gate: b.gate || "",
     cost: b.cost || 0,
     suggested_model: b.suggested_model || "",
+    guilda: tax.guilda,
+    papelPrimario: tax.papelPrimario,
+    papelNome: tax.papelNome,
     raw: b,
   };
 }
@@ -382,6 +399,7 @@ function createPalette(els, handlers) {
 
       if (!isClosed) {
         const itemsList = paletteEl("div", "treeview-items");
+        itemsList.setAttribute("role", "group");
         if (filtered.length === 0) {
           itemsList.append(paletteEl("p", "note", "Nenhum item nesta pasta."));
         } else {
@@ -392,6 +410,7 @@ function createPalette(els, handlers) {
             row.draggable = true;
             row.tabIndex = 0;
             row.setAttribute("role", "treeitem");
+            row.setAttribute("aria-label", item.name);
             row.title = item.desc || item.name;
 
             const main = paletteEl("div", "treeview-item-main");
@@ -427,6 +446,8 @@ function createPalette(els, handlers) {
             const btnFav = paletteEl("button", "btn-item-action btn-fav" + (item.favorite ? " is-favorited" : ""));
             btnFav.type = "button";
             btnFav.title = item.favorite ? "Desfavoritar peça" : "Favoritar como Padrão Canônico (SSOT)";
+            btnFav.setAttribute("aria-label", btnFav.title);
+            btnFav.setAttribute("aria-pressed", String(Boolean(item.favorite)));
             btnFav.append(createSvgIcon("star", "svg-icon--fav"));
             btnFav.addEventListener("click", async (e) => {
               e.stopPropagation();
@@ -441,6 +462,8 @@ function createPalette(els, handlers) {
                   item.favorite = data.favorited;
                   btnFav.classList.toggle("is-favorited", data.favorited);
                   btnFav.title = data.favorited ? "Desfavoritar peça" : "Favoritar como Padrão Canônico (SSOT)";
+                  btnFav.setAttribute("aria-label", btnFav.title);
+                  btnFav.setAttribute("aria-pressed", String(Boolean(data.favorited)));
                   if (typeof window.toast === "function") {
                     window.toast(data.favorited ? `Peça "${item.name}" favoritada como SSOT!` : `Peça "${item.name}" desfavoritada.`);
                   }
@@ -511,6 +534,7 @@ function createPalette(els, handlers) {
             const btnEye = paletteEl("button", "btn-eye-view");
             btnEye.type = "button";
             btnEye.title = "Inspecionar peça (Raio-X detalhado)";
+            btnEye.setAttribute("aria-label", `Inspecionar ${item.name}`);
             btnEye.append(createSvgIcon("eye"));
             btnEye.addEventListener("click", (e) => {
               e.stopPropagation();

@@ -16,7 +16,7 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "high",
-        "fallback": "code-fast"
+        "fallback": "t-chat-128k"
       },
       "timeout_sec": 600,
       "execution": {
@@ -41,7 +41,7 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "medium",
-        "fallback": "code-fast"
+        "fallback": "t-chat-128k"
       },
       "timeout_sec": 600,
       "inputs": {

@@ -5,7 +5,7 @@ consumes: Artifact:Theme
 produces: Artifact:CartoonShortMP4
 artifact: docs/videorea/legoloop-cartoon-shorts/scratch/short_final.mp4
 gate: exit_code == 0
-suggested_model: code-pro
+suggested_model: t-codigo-128k
 ---
 
 # 🎨 legoloop-cartoon-shorts — Processo Soberano de Shorts Animados Cartoon

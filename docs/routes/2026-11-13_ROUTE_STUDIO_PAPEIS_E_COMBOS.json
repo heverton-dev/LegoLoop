@@ -1,54 +1,200 @@
 {
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
   "schema_version": 2,
+  "template_version": "2.2.0",
   "route_id": "studio-papeis-e-combos",
-  "name": "Integração de Papéis e Combos no LegoLoop Studio Web",
+  "name": "STUDIO_PAPEIS_E_COMBOS",
+  "version": "1.0.0",
+  "date": "2026-11-13",
   "description": "Exposição de papéis canônicos, guildas e combos certificados na API e interface web do Studio",
   "category": "web",
+  "spec_ref": "docs/specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md",
+  "plan_ref": "docs/plans/2026-11-13_PLAN_STUDIO_PAPEIS_E_COMBOS.md",
+  "upstream_signatures": {
+    "spec": {
+      "path": "docs/specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "stop_on_gate_failure": true,
+    "max_parallel_workers": 1,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_pipeline"
+  },
   "nodes": [
     {
-      "id": "tick-st-01",
-      "name": "Backend API e Serialização",
-      "role": "backend-developer",
-      "routing": {
-        "model": "codestral",
-        "provider": "9router",
-        "combo": "t-codigo-128k",
-        "max_tokens": 8192,
-        "temperature": 0.1,
-        "requires_tools": false,
-        "fallback": "ministral-3b"
+      "id": "TICK-ST-01.1",
+      "name": "Serialização de papéis e guildas na API de peças",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-backend",
+      "papel": "engenheiro-backend",
+      "status": "PENDING",
+      "depends_on": [],
+      "timeout_sec": 180,
+      "isolation": {
+        "write_boundary": "strict"
       },
-      "gate": "go test -count=1 ./internal/studio/..."
+      "token_budget": {
+        "max_input_tokens": 8192,
+        "max_output_tokens": 600
+      },
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": {
+          "harness": "9router",
+          "model": "t-agente-128k"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "source_files": [
+          "docs/specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md#AC-ST-01"
+      },
+      "spec_ref": "AC-ST-01",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/pieces.go",
+          "internal/studio/pieces_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/studio/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
     },
     {
-      "id": "tick-st-02",
-      "name": "Atualização de Modelos do Studio",
-      "role": "architect",
-      "routing": {
-        "model": "codestral",
-        "provider": "9router",
-        "combo": "t-codigo-128k",
-        "max_tokens": 8192,
-        "temperature": 0.1,
-        "requires_tools": false,
-        "fallback": "ministral-3b"
+      "id": "TICK-ST-02.1",
+      "name": "Atualização de modelos do Studio para combos honestos",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "arquiteto",
+      "papel": "arquiteto",
+      "status": "PENDING",
+      "depends_on": [
+        "TICK-ST-01.1"
+      ],
+      "timeout_sec": 180,
+      "isolation": {
+        "write_boundary": "strict"
       },
-      "gate": "go test -count=1 ./internal/studio/templates_test.go"
+      "token_budget": {
+        "max_input_tokens": 8192,
+        "max_output_tokens": 600
+      },
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": {
+          "harness": "9router",
+          "model": "t-agente-128k"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/templates.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md#AC-ST-03"
+      },
+      "spec_ref": "AC-ST-03",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/templates.json"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/studio/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
     },
     {
-      "id": "tick-st-03",
-      "name": "Front-end Studio Canvas e Inspetor",
-      "role": "frontend-developer",
-      "routing": {
-        "model": "codestral",
-        "provider": "9router",
-        "combo": "t-codigo-128k",
-        "max_tokens": 8192,
-        "temperature": 0.1,
-        "requires_tools": false,
-        "fallback": "ministral-3b"
+      "id": "TICK-ST-03.1",
+      "name": "Front-end Studio Canvas e Inspetor com distintivos de guilda",
+      "type": "unit_no",
+      "nature": "micro",
+      "role": "engenheiro-frontend",
+      "papel": "engenheiro-frontend",
+      "status": "PENDING",
+      "depends_on": [
+        "TICK-ST-02.1"
+      ],
+      "timeout_sec": 180,
+      "isolation": {
+        "write_boundary": "strict"
       },
-      "gate": "go test -count=1 ./internal/studio/..."
+      "token_budget": {
+        "max_input_tokens": 8192,
+        "max_output_tokens": 600
+      },
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "combo": "t-codigo-128k",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": {
+          "harness": "9router",
+          "model": "t-agente-128k"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/static/app.js",
+          "internal/studio/static/style.css"
+        ],
+        "spec_anchor": "docs/specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md#AC-ST-02"
+      },
+      "spec_ref": "AC-ST-02",
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js",
+          "internal/studio/static/style.css"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/studio/..."
+          ]
+        ],
+        "gate": "exit_code == 0"
+      }
     }
   ]
 }

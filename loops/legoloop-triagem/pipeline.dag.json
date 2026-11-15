@@ -12,10 +12,10 @@
       "depends_on": [],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro",
+        "combo": "t-codigo-128k",
         "harness": "claude",
         "via": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "medium"
       },
       "output": {
@@ -64,10 +64,10 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro",
+        "combo": "t-codigo-128k",
         "harness": "claude",
         "via": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "medium"
       },
       "output": {
@@ -117,10 +117,10 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro",
+        "combo": "t-codigo-128k",
         "harness": "claude",
         "via": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "medium"
       },
       "output": {
@@ -169,10 +169,10 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro",
+        "combo": "t-codigo-128k",
         "harness": "claude",
         "via": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "medium"
       },
       "output": {
@@ -221,10 +221,10 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro",
+        "combo": "t-codigo-128k",
         "harness": "claude",
         "via": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "medium"
       },
       "output": {

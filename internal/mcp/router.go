@@ -2,10 +2,13 @@ package mcp
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -60,6 +63,7 @@ type Router struct {
 	runner    ProcessRunner
 	skills    *SkillEngine
 	skillRoot string
+	swarm     bool
 }
 
 // NewRouter instancia um novo Router.
@@ -67,28 +71,84 @@ func NewRouter(vault VaultRegistry, runner ProcessRunner) *Router {
 	return &Router{vault: vault, runner: runner}
 }
 
-// Serve processa as mensagens de entrada linha a linha via STDIO.
+// EnableSwarm habilita a exposicao de ferramentas swarm_* em tools/list.
+func (r *Router) EnableSwarm() {
+	r.swarm = true
+}
+
+// NewConfiguredRouter instancia um Router conectado ao cofre, skills reais e ferramentas Swarm.
+func NewConfiguredRouter(home, vault, projectDir string) *Router {
+	engine, skillRoot := loadRealSkillEngine(vault, projectDir)
+	lv := &localVault{home: home, vault: vault, projectDir: projectDir, skills: engine}
+	r := &Router{vault: lv, skills: engine, skillRoot: skillRoot, swarm: true}
+	r.runner = &localRunner{router: r}
+	return r
+}
+
+func loadRealSkillEngine(vault, projectDir string) (*SkillEngine, string) {
+	engine := NewSkillEngine()
+	vaultSkills := filepath.Join(vault, "skills")
+	if info, err := os.Stat(vaultSkills); err == nil && info.IsDir() {
+		_ = engine.IndexDirectory(vaultSkills)
+		if len(engine.List()) > 0 {
+			return engine, vault
+		}
+	}
+	projSkills := filepath.Join(projectDir, "skills")
+	if abs, err := filepath.Abs(projSkills); err == nil {
+		if info, stErr := os.Stat(abs); stErr == nil && info.IsDir() {
+			_ = engine.IndexDirectory(abs)
+			return engine, abs
+		}
+	}
+	if vault != "" {
+		return engine, vault
+	}
+	return engine, projectDir
+}
+
+// Serve processa as mensagens de entrada linha a linha via STDIO sem limite de 64KiB.
 func (r *Router) Serve(in io.Reader, out io.Writer) error {
-	scanner := bufio.NewScanner(in)
-	for scanner.Scan() {
-		line := scanner.Bytes()
-		if len(line) == 0 {
-			continue
+	reader := bufio.NewReader(in)
+	for {
+		line, err := reader.ReadBytes('\n')
+		trimmed := bytes.TrimSpace(line)
+		if len(trimmed) > 0 {
+			if wErr := r.processLine(trimmed, out); wErr != nil {
+				return wErr
+			}
 		}
-		var req JSONRPCRequest
-		if err := json.Unmarshal(line, &req); err != nil {
-			continue
+		if errors.Is(err, io.EOF) {
+			return nil
 		}
-		resp := r.handleRequest(req)
-		data, err := json.Marshal(resp)
 		if err != nil {
 			return err
 		}
-		if _, err := out.Write(append(data, '\n')); err != nil {
-			return err
-		}
 	}
-	return scanner.Err()
+}
+
+func (r *Router) processLine(line []byte, out io.Writer) error {
+	var req JSONRPCRequest
+	if err := json.Unmarshal(line, &req); err != nil || req.Method == "" {
+		return writeJSONRPC(out, JSONRPCResponse{
+			JSONRPC: "2.0",
+			ID:      nil,
+			Error:   map[string]any{"code": -32700, "message": "Parse error"},
+		})
+	}
+	if req.ID == nil && strings.HasPrefix(req.Method, "notifications/") {
+		return nil
+	}
+	return writeJSONRPC(out, r.handleRequest(req))
+}
+
+func writeJSONRPC(out io.Writer, resp JSONRPCResponse) error {
+	data, err := json.Marshal(resp)
+	if err != nil {
+		return err
+	}
+	_, err = out.Write(append(data, '\n'))
+	return err
 }
 
 // handleRequest despacha o metodo JSON-RPC apropriado.
@@ -96,6 +156,8 @@ func (r *Router) handleRequest(req JSONRPCRequest) JSONRPCResponse {
 	switch req.Method {
 	case "initialize":
 		return r.handleInitialize(req.ID)
+	case "notifications/initialized":
+		return JSONRPCResponse{JSONRPC: "2.0", ID: req.ID, Result: map[string]any{}}
 	case "tools/list":
 		return JSONRPCResponse{
 			JSONRPC: "2.0",
@@ -211,6 +273,9 @@ func (r *Router) minimalTools() []map[string]any {
 	tools := r.baseTools()
 	if r.skills != nil {
 		tools = append(tools, skillToolDefs()...)
+	}
+	if r.swarm || r.vault != nil || r.runner != nil {
+		tools = append(tools, swarmToolDefs()...)
 	}
 	return tools
 }

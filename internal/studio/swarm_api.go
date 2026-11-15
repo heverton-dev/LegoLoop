@@ -1,25 +1,31 @@
 package studio
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"net/http"
+	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	"legoloop/internal/board"
 )
 
 func (s *Server) registerSwarmRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("GET /swarm", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		_, _ = w.Write([]byte(studioSwarmHTML))
-	})
+	mux.HandleFunc("GET /swarm", handlePage("swarm.html"))
 	mux.HandleFunc("GET /api/swarm/events", s.handleSwarmEvents)
+	mux.HandleFunc("GET /api/events", s.handleSwarmEvents)
 	mux.HandleFunc("POST /api/swarm/add", s.handleSwarmAdd)
+	mux.HandleFunc("POST /api/swarm/spawn", s.handleSwarmSpawn)
+	mux.HandleFunc("POST /api/swarm/model", s.handleSwarmModel)
 	mux.HandleFunc("POST /api/swarm/post", s.handleSwarmPost)
+	mux.HandleFunc("POST /api/post", s.handleSwarmPost)
 	mux.HandleFunc("POST /api/swarm/kill", s.handleSwarmKill)
+	mux.HandleFunc("POST /api/kill", s.handleSwarmKill)
 }
 
 func (s *Server) swarmRoot() string {
@@ -29,8 +35,48 @@ func (s *Server) swarmRoot() string {
 	return "scratch"
 }
 
-func studioBoardsPayload(root string) ([]byte, error) {
-	boards := board.DiscoverBoards(root, "", "")
+func (s *Server) discoverSwarmBoards() map[string]string {
+	out := make(map[string]string)
+	if s.ProjectDir != "" {
+		proj := filepath.Clean(s.ProjectDir)
+		base := filepath.Base(proj)
+		if base == ".legoloop-swarm" || base == ".swarm" {
+			proj = filepath.Dir(proj)
+		}
+		maps.Copy(out, board.DiscoverBoards(proj, "", ""))
+		maps.Copy(out, board.DiscoverBoards(filepath.Join(proj, "scratch"), "", ""))
+		procName := filepath.Base(proj)
+		if procName == "" || procName == "." || procName == string(filepath.Separator) {
+			procName = "swarm"
+		}
+		if _, exists := out[procName]; !exists {
+			out[procName] = filepath.Join(proj, ".legoloop-swarm")
+		}
+		return out
+	}
+	maps.Copy(out, board.DiscoverBoards("scratch", "", ""))
+	if len(out) == 0 {
+		out["swarm"] = ".legoloop-swarm"
+	}
+	return out
+}
+
+func (s *Server) openSwarmBoardForProc(proc string) (*board.SwarmBoard, error) {
+	boards := s.discoverSwarmBoards()
+	dir := boards[strings.TrimSpace(proc)]
+	if dir == "" && len(boards) == 1 {
+		for _, v := range boards {
+			dir = v
+		}
+	}
+	if dir == "" {
+		return nil, fmt.Errorf("processo nao encontrado")
+	}
+	return board.OpenSwarmBoard(dir)
+}
+
+func (s *Server) studioBoardsPayload() ([]byte, error) {
+	boards := s.discoverSwarmBoards()
 	names := make([]string, 0, len(boards))
 	for k := range boards {
 		names = append(names, k)
@@ -49,41 +95,115 @@ func studioBoardsPayload(root string) ([]byte, error) {
 	return json.Marshal(map[string]any{"order": names, "processes": procs})
 }
 
+type swarmAddReq struct {
+	Process       string              `json:"process"`
+	Proc          string              `json:"proc"`
+	Name          string              `json:"name"`
+	Role          string              `json:"role"`
+	Parent        string              `json:"parent"`
+	Model         string              `json:"model"`
+	WorkspaceMode board.WorkspaceMode `json:"workspace_mode"`
+	Command       []string            `json:"command"`
+}
+
 func (s *Server) handleSwarmAdd(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Process       string              `json:"process"`
-		Name          string              `json:"name"`
-		Role          string              `json:"role"`
-		Model         string              `json:"model"`
-		WorkspaceMode board.WorkspaceMode `json:"workspace_mode"`
-	}
+	var req swarmAddReq
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	boards := board.DiscoverBoards(s.swarmRoot(), "", "")
-	bdir, ok := boards[req.Process]
-	if !ok {
-		http.Error(w, "processo não encontrado", http.StatusNotFound)
-		return
+	proc := req.Process
+	if proc == "" {
+		proc = req.Proc
 	}
-	sb, err := board.OpenSwarmBoard(bdir)
+	sb, err := s.openSwarmBoardForProc(proc)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeError(w, http.StatusNotFound, err.Error())
 		return
 	}
 	worker, err := sb.AddWorker(board.AddWorkerRequest{
-		Name:          req.Name,
-		Role:          req.Role,
-		Model:         req.Model,
-		WorkspaceMode: req.WorkspaceMode,
+		Name: req.Name, Role: req.Role, Parent: req.Parent, Model: req.Model,
+		WorkspaceMode: req.WorkspaceMode, RepoDir: s.swarmRepoDir(),
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(worker)
+	if len(req.Command) > 0 {
+		pid, err := sb.SpawnWorker(context.Background(), worker.Name, req.Command)
+		if err != nil {
+			writeError(w, http.StatusBadRequest, err.Error())
+			return
+		}
+		worker.PID = pid
+		worker.Status = board.WorkerWorking
+	}
+	writeJSON(w, http.StatusOK, worker)
+}
+
+func (s *Server) handleSwarmSpawn(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Process string   `json:"process"`
+		Proc    string   `json:"proc"`
+		Name    string   `json:"name"`
+		Command []string `json:"command"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	proc := req.Process
+	if proc == "" {
+		proc = req.Proc
+	}
+	sb, err := s.openSwarmBoardForProc(proc)
+	if err != nil {
+		writeError(w, http.StatusNotFound, err.Error())
+		return
+	}
+	cmdArgs := req.Command
+	if len(cmdArgs) == 0 {
+		exe, err := os.Executable()
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		cmdArgs = []string{exe, "swarm", "status"}
+	}
+	pid, err := sb.SpawnWorker(context.Background(), req.Name, cmdArgs)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"name": req.Name, "pid": pid, "status": board.WorkerWorking})
+}
+
+func (s *Server) handleSwarmModel(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Process string `json:"process"`
+		Proc    string `json:"proc"`
+		Name    string `json:"name"`
+		Model   string `json:"model"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	proc := req.Process
+	if proc == "" {
+		proc = req.Proc
+	}
+	sb, err := s.openSwarmBoardForProc(proc)
+	if err != nil {
+		writeError(w, http.StatusNotFound, err.Error())
+		return
+	}
+	worker, err := sb.SetWorkerModel(req.Name, req.Model)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, worker)
 }
 
 func (s *Server) handleSwarmEvents(w http.ResponseWriter, r *http.Request) {
@@ -92,6 +212,7 @@ func (s *Server) handleSwarmEvents(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "SSE nao suportado", http.StatusInternalServerError)
 		return
 	}
+	_ = http.NewResponseController(w).SetWriteDeadline(time.Time{})
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
@@ -99,7 +220,7 @@ func (s *Server) handleSwarmEvents(w http.ResponseWriter, r *http.Request) {
 	tick := time.NewTicker(250 * time.Millisecond)
 	defer tick.Stop()
 	for {
-		if data, err := studioBoardsPayload(s.swarmRoot()); err == nil && string(data) != last {
+		if data, err := s.studioBoardsPayload(); err == nil && string(data) != last {
 			last = string(data)
 			_, _ = fmt.Fprintf(w, "data: %s\n\n", last)
 			flusher.Flush()
@@ -113,58 +234,62 @@ func (s *Server) handleSwarmEvents(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleSwarmPost(w http.ResponseWriter, r *http.Request) {
-	var req struct{ Proc, To, Body string }
+	var req struct {
+		Process string `json:"process"`
+		Proc    string `json:"proc"`
+		To      string `json:"to"`
+		Body    string `json:"body"`
+	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	dir := board.DiscoverBoards(s.swarmRoot(), "", "")[req.Proc]
-	if dir == "" {
-		http.Error(w, "processo nao encontrado", http.StatusNotFound)
-		return
+	proc := req.Proc
+	if proc == "" {
+		proc = req.Process
 	}
-	sb, err := board.OpenSwarmBoard(dir)
+	sb, err := s.openSwarmBoardForProc(proc)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeError(w, http.StatusNotFound, err.Error())
 		return
 	}
-	_, _ = sb.PostMessage("coordenador", req.To, req.Body)
-	w.WriteHeader(http.StatusOK)
+	msg, err := sb.PostMessage("coordenador", req.To, req.Body)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, msg)
+}
+
+func (s *Server) swarmRepoDir() string {
+	if s.ProjectDir != "" {
+		return s.ProjectDir
+	}
+	return "."
 }
 
 func (s *Server) handleSwarmKill(w http.ResponseWriter, r *http.Request) {
-	var req struct{ Proc, Name string }
+	var req struct {
+		Process string `json:"process"`
+		Proc    string `json:"proc"`
+		Name    string `json:"name"`
+	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	dir := board.DiscoverBoards(s.swarmRoot(), "", "")[req.Proc]
-	if dir == "" {
-		http.Error(w, "processo nao encontrado", http.StatusNotFound)
-		return
+	proc := req.Proc
+	if proc == "" {
+		proc = req.Process
 	}
-	sb, err := board.OpenSwarmBoard(dir)
+	sb, err := s.openSwarmBoardForProc(proc)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeError(w, http.StatusNotFound, err.Error())
 		return
 	}
-	_ = sb.KillWorker(req.Name, ".")
-	w.WriteHeader(http.StatusOK)
+	if err := sb.KillWorker(req.Name, s.swarmRepoDir()); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]string{"status": "killed", "name": req.Name})
 }
-
-const studioSwarmHTML = `<!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><title>LegoLoop Studio — Swarm</title>
-<link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/swarm.css">
-</head><body>
-<div class="app">
-  <div class="top">
-    <div class="brand"><span class="dot"></span><span>LegoLoop Swarm</span><span class="crumb" id="crumb"></span></div>
-    <div class="hdr-right"><div class="meta" id="summary">Conectando SSE...</div><a class="btn link-clean" href="/">← Studio</a></div>
-  </div>
-  <div class="tabs" id="tabs"></div>
-  <div class="grid">
-    <div class="card"><div class="card-hd"><h3>Agentes</h3><span class="meta" id="counts"></span></div><div class="scroll" id="workers"></div></div>
-    <div class="card"><div class="card-hd"><h3>Execução <span id="filter"></span></h3><span class="meta">Mais recente no topo</span></div><div id="ficha"></div><div class="scroll" id="msgs"></div><div class="pager" id="pager"></div></div>
-  </div>
-</div>
-<script src="/swarm.js"></script></body></html>`

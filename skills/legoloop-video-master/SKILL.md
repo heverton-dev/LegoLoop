@@ -7,7 +7,7 @@ consumes: Artifact:Spec
 produces: Artifact:Code
 artifact: processos/legoloop-video-master/processo.dag.json
 gate: file_exists('processos/legoloop-video-master/processo.dag.json')
-suggested_model: code-pro
+suggested_model: t-codigo-128k
 metadata:
   version: "2.2.0"
   tier: "ouro"

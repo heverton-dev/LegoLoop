@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-// harnessesConhecidos são os harnesses que têm pasta de skills própria em ~/.<nome>/skills.
-var harnessesConhecidos = []string{"claude", "codex", "gemini", "opencode", "cursor", "kiro"}
+// harnessesConhecidos são os harnesses que têm pasta de skills própria em ~/.<nome>/skills ou ~/.gemini/config/skills.
+var harnessesConhecidos = []string{"claude", "codex", "gemini", "antigravity", "opencode", "cursor", "kiro"}
 
 // Harness é um harness detectado no HOME: o nome e a pasta onde ele lê skills.
 type Harness struct {
@@ -16,18 +16,28 @@ type Harness struct {
 	Skills string // ex.: ~/.claude/skills
 }
 
-// DetectarHarnesses devolve os harnesses cuja pasta ~/.<nome> existe, na ordem de harnessesConhecidos.
+// DetectarHarnesses devolve os harnesses cuja pasta existe no HOME, na ordem de harnessesConhecidos.
 func DetectarHarnesses(fsys FS, home string) []Harness {
 	if home == "" {
 		return nil
 	}
 	var out []Harness
 	for _, n := range harnessesConhecidos {
-		if info, err := fsys.Stat(filepath.Join(home, "."+n)); err == nil && info.IsDir() {
-			out = append(out, Harness{Nome: n, Skills: filepath.Join(home, "."+n, "skills")})
+		rootDir, skillsDir := caminhosHarness(home, n)
+		if info, err := fsys.Stat(rootDir); err == nil && info.IsDir() {
+			out = append(out, Harness{Nome: n, Skills: skillsDir})
 		}
 	}
 	return out
+}
+
+func caminhosHarness(home, nome string) (string, string) {
+	if nome == "antigravity" {
+		cfgDir := filepath.Join(home, ".gemini", "config")
+		return cfgDir, filepath.Join(cfgDir, "skills")
+	}
+	base := filepath.Join(home, "."+nome)
+	return base, filepath.Join(base, "skills")
 }
 
 // Vinculo liga a skill do cofre (Origem) à pasta de skills de um harness (Destino).

@@ -117,10 +117,14 @@ func runMotionRun(ctx context.Context, args []string, d Deps) int {
 	pos, flagsToParse := parseArgsAndFlags(args)
 	fs := newFlags("video-motion run", d)
 	in := fs.String("input", "", "arquivo de entrada")
-	_ = fs.String("aspect", "9:16", "proporção de tela")
+	aspect := fs.String("aspect", "9:16", "proporção de tela")
 	model := fs.String("model", "", "modelo para inferência")
 	effort := fs.String("effort", "", "esforço cognitivo")
 	if err := fs.Parse(flagsToParse); err != nil {
+		return 2
+	}
+	if !aspectValido(*aspect) {
+		fmt.Fprintf(d.Stderr, "erro: proporção --aspect inválida %q (use 9:16, 16:9, 1:1, 4:5 ou 21:9)\n", *aspect)
 		return 2
 	}
 	target := *in
@@ -135,6 +139,15 @@ func runMotionRun(ctx context.Context, args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro ao selecionar cérebro: %v\n", err)
 		return 1
 	}
-	fmt.Fprintf(d.Stdout, "[VideoMotion] Processo executado para %s\n", target)
+	fmt.Fprintf(d.Stdout, "[VideoMotion] Processo executado para %s (aspect=%s)\n", target, *aspect)
 	return 0
+}
+
+func aspectValido(a string) bool {
+	switch strings.TrimSpace(a) {
+	case "9:16", "16:9", "1:1", "4:5", "21:9":
+		return true
+	default:
+		return false
+	}
 }

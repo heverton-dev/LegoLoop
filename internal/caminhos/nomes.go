@@ -9,10 +9,11 @@ import (
 )
 
 const (
-	DirLoops      = "loops"
-	ArquivoDAG    = "pipeline.dag.json"
-	ChaveAPILoops = "loops"
-	SufixoLoop    = ".loop.json"
+	DirLoops           = "loops"
+	ArquivoDAG         = "pipeline.dag.json"
+	ChaveAPILoops      = "loops"
+	SufixoLoop         = ".loop.json"
+	TemplatePecaAntigo = "TEMPLATE_PIECE_LOOP.json"
 )
 
 const (

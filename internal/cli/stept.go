@@ -111,7 +111,7 @@ func despacharSubcomandoStept(sub string, op opcoesStept, d Deps, home, cfgPath 
 	}
 	switch sub {
 	case "status", "":
-		return salvarESincronizar(cfg, cfgPath, home, asJSON, d)
+		return consultarStatusSomenteLeitura(cfg, cfgPath, home, asJSON, d)
 	case "scan":
 		return executarSteptScan(home, asJSON, d)
 	case "set", "on", "off":
@@ -120,6 +120,28 @@ func despacharSubcomandoStept(sub string, op opcoesStept, d Deps, home, cfgPath 
 		fmt.Fprintf(d.Stderr, "subcomando stept desconhecido: %q\n", sub)
 		return 2
 	}
+}
+
+func consultarStatusSomenteLeitura(cfg *ste.Config, cfgPath, home string, asJSON bool, d Deps) int {
+	infos := ste.ScanHarnesses(home)
+	statusList := make([]ste.HarnessStatus, 0, len(infos))
+	for _, info := range infos {
+		perfil, origem := cfg.ResolverPerfil(info.ID)
+		statusList = append(statusList, ste.HarnessStatus{
+			ID:        info.ID,
+			Nome:      info.Nome,
+			Instalado: info.Instalado,
+			Caminho:   info.CaminhoRegras,
+			Ativo:     info.Ativo,
+			Perfil:    perfil,
+			Origem:    origem,
+		})
+	}
+	if asJSON {
+		return printJSON(d, statusList)
+	}
+	renderTabelaStatus(d.Stdout, statusList, cfgPath)
+	return 0
 }
 
 func processarComandoMutacao(sub string, op opcoesStept, d Deps, cfg *ste.Config, cfgPath, home string, asJSON bool) int {

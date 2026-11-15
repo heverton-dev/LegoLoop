@@ -74,19 +74,26 @@ func renderTabelaTokens(t *TelemetriaOrcamento) string {
 	if totEst > 0 {
 		desvioTot = (float64(totReal-totEst) / float64(totEst)) * 100.0
 	}
+	stTok := "OK"
+	if t.StatusMedicao == "nao medido" {
+		stTok = "nao medido"
+	}
 	modelos := strings.Join(t.Modelos, ", ")
+	if modelos == "" {
+		modelos = "nao medido"
+	}
 	return fmt.Sprintf("\n### 2.2 Balanço de Recursos Computacionais & Tokens\n"+
 		"| Recurso / Métrica | Orçado (Budget) | Consumido (Real) | Desvio (%%) | Status |\n"+
 		"| :--- | :---: | :---: | :---: | :---: |\n"+
-		"| **Tokens de Entrada** | %d | %d | %+.1f%% | OK |\n"+
-		"| **Tokens de Saída** | %d | %d | %+.1f%% | OK |\n"+
-		"| **Total de Tokens** | %d | %d | %+.1f%% | OK |\n"+
-		"| **Turnos / Tool Calls** | %d req | %d calls | N/A | OK |\n"+
-		"| **Modelos Cognitivos** | %s | %s | N/A | CONFORME |\n",
-		t.TokensInEstimados, t.TokensInGastos, desvioTokens(t.TokensInEstimados, t.TokensInGastos),
-		t.TokensOutEstimados, t.TokensOutGastos, desvioTokens(t.TokensOutEstimados, t.TokensOutGastos),
-		totEst, totReal, desvioTot,
-		t.TurnosRealizados, t.ToolCalls, modelos, modelos)
+		"| **Tokens de Entrada** | %d | %d | %+.1f%% | %s |\n"+
+		"| **Tokens de Saída** | %d | %d | %+.1f%% | %s |\n"+
+		"| **Total de Tokens** | %d | %d | %+.1f%% | %s |\n"+
+		"| **Turnos / Tool Calls** | %d req | %d calls | N/A | %s |\n"+
+		"| **Modelos Cognitivos** | %s | %s | N/A | %s |\n",
+		t.TokensInEstimados, t.TokensInGastos, desvioTokens(t.TokensInEstimados, t.TokensInGastos), stTok,
+		t.TokensOutEstimados, t.TokensOutGastos, desvioTokens(t.TokensOutEstimados, t.TokensOutGastos), stTok,
+		totEst, totReal, desvioTot, stTok,
+		t.TurnosRealizados, t.ToolCalls, stTok, modelos, modelos, stTok)
 }
 
 func desvioTokens(orcado, gasto int) float64 {

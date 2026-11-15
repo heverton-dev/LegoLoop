@@ -12,9 +12,9 @@ const (
 )
 
 const (
-	defaultFastModel     = "code-fast"
-	defaultBalancedModel = "code-pro"
-	defaultFrontierModel = "code-frontier"
+	defaultFastModel     = "t-chat-128k"
+	defaultBalancedModel = "t-codigo-128k"
+	defaultFrontierModel = "t-raciocinio-128k"
 )
 
 // Config define os modelos por faixa cognitiva.

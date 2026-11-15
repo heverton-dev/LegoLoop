@@ -40,7 +40,7 @@
     "max_parallel_workers": 2,
     "tdd_enforced": true,
     "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline",
+    "rollback_on_failure": "abort_processo",
     "rollback_policy": {
       "action": "abort_and_pause",
       "git_strategy": "checkpoint_commit",
@@ -57,7 +57,7 @@
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
-      "type": "unit_task",
+      "type": "unit_no",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "tdd_red_green",
@@ -81,7 +81,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": {
           "harness": "antigravity",
@@ -124,7 +124,7 @@
       "nature": "nano",
       "extreme": false,
       "class_rule": "nature=nano",
-      "type": "unit_task",
+      "type": "unit_no",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -150,7 +150,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": {
           "harness": "antigravity",
@@ -252,7 +252,7 @@
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
-      "type": "subloop",
+      "type": "subprocesso",
       "ref": "exemplo-processo-filho",
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -278,7 +278,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "medium",
         "fallback": {
           "harness": "ollama",

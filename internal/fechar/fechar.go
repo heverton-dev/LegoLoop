@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"legoloop/internal/caminhos"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -26,6 +27,7 @@ type Deps struct {
 	Auditor   func(pdfPath string) (bool, error)
 	Rebuilder func(dir string) error
 	Indexer   func(repo string) error
+	Portoes   func(repo string) error
 	Clock     func() time.Time
 }
 
@@ -60,43 +62,47 @@ func Executar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 		res.Telemetria = *req.Telemetria
 	}
 	executarEtapas(ctx, &deps, slug, canon, req.DryRun, res)
-	res.Duracao = deps.Clock().Sub(start)
-	res.Telemetria.EnsureDefaults(res.Duracao)
+	dur := deps.Clock().Sub(start)
+	res.Duracao = dur.Milliseconds()
+	if res.Duracao <= 0 {
+		res.Duracao = 1
+	}
+	res.Telemetria.EnsureDefaults(dur)
 	return res, nil
 }
 
 func executarEtapas(ctx context.Context, d *Deps, slug, canon string, dry bool, res *Result) {
-	runEtapa(res, 1, "Manual Operacional", func() (string, error) {
+	runEtapa(d, res, 1, "Manual Operacional", func() (string, error) {
 		return fecharManual(d, slug, canon, dry)
 	})
-	runEtapa(res, 2, "Livro Didático LegoPress", func() (string, error) {
+	runEtapa(d, res, 2, "Livro Didático LegoPress", func() (string, error) {
 		return fecharLivro(d, slug, canon, dry)
 	})
-	runEtapa(res, 3, "Skill Canônica Universal", func() (string, error) {
+	runEtapa(d, res, 3, "Skill Canônica Universal", func() (string, error) {
 		return fecharSkill(d, slug, canon, dry)
 	})
-	runEtapa(res, 4, "Processo & Grafo DAG", func() (string, error) {
+	runEtapa(d, res, 4, "Processo & Grafo DAG", func() (string, error) {
 		return fecharDAG(d, slug, canon, dry)
 	})
-	runEtapa(res, 5, "Recompilação Fresca do Binário", func() (string, error) {
+	runEtapa(d, res, 5, "Recompilação Fresca do Binário", func() (string, error) {
 		return fecharRebuild(d, dry)
 	})
-	runEtapa(res, 6, "Governança Viva (AGENTS e MEMORY)", func() (string, error) {
+	runEtapa(d, res, 6, "Governança Viva (AGENTS e MEMORY)", func() (string, error) {
 		return fecharGovernanca(d, slug, canon, dry)
 	})
-	runEtapa(res, 7, "Reindexação do Grafo Semântico", func() (string, error) {
+	runEtapa(d, res, 7, "Reindexação do Grafo Semântico", func() (string, error) {
 		return fecharGrafo(d, dry)
 	})
-	runEtapa(res, 8, "Portões Mecânicos & Commit", func() (string, error) {
+	runEtapa(d, res, 8, "Portões Mecânicos & Commit", func() (string, error) {
 		return fecharPortoes(d, dry)
 	})
-	runEtapa(res, 9, "Relatório de Conclusão & Telemetria", func() (string, error) {
+	runEtapa(d, res, 9, "Relatório de Conclusão & Telemetria", func() (string, error) {
 		return fecharReporte(d, slug, canon, res, dry)
 	})
 }
 
-func runEtapa(res *Result, num int, nome string, fn func() (string, error)) {
-	t0 := time.Now()
+func runEtapa(d *Deps, res *Result, num int, nome string, fn func() (string, error)) {
+	t0 := d.Clock()
 	art, err := fn()
 	st := "ok"
 	det := ""
@@ -110,7 +116,7 @@ func runEtapa(res *Result, num int, nome string, fn func() (string, error)) {
 		Nome:     nome,
 		Status:   st,
 		Artefato: art,
-		Duracao:  time.Since(t0),
+		Duracao:  d.Clock().Sub(t0).Milliseconds(),
 		Detalhe:  det,
 	})
 }
@@ -245,33 +251,129 @@ func upperSlug(slug string) string {
 }
 
 func fecharRebuild(d *Deps, dry bool) (string, error) {
+	binPath := filepath.Join(d.RepoDir, "bin", "legoloop.exe")
 	if d.SkipBuild || dry {
-		return "build_skipped", nil
+		return binPath, nil
 	}
-	if d.Rebuilder != nil {
-		return "rebuilt_via_custom", d.Rebuilder(d.RepoDir)
+	rebuild := d.Rebuilder
+	if rebuild == nil {
+		rebuild = DefaultRebuilder
 	}
-	return "bin/legoloop.exe", nil
+	return binPath, rebuild(d.RepoDir)
+}
+
+// DefaultRebuilder recompila e instala o binário Go via exec sem shell.
+func DefaultRebuilder(repoDir string) error {
+	binPath := filepath.Join(repoDir, "bin", "legoloop.exe")
+	if err := os.MkdirAll(filepath.Dir(binPath), 0o755); err != nil {
+		return err
+	}
+	cmdBuild := exec.Command("go", "build", "-o", binPath, "./cmd/legoloop")
+	cmdBuild.Dir = repoDir
+	if out, err := cmdBuild.CombinedOutput(); err != nil {
+		return fmt.Errorf("fechar: go build falhou: %w (%s)", err, strings.TrimSpace(string(out)))
+	}
+	cmdInstall := exec.Command("go", "install", "./cmd/legoloop")
+	cmdInstall.Dir = repoDir
+	if out, err := cmdInstall.CombinedOutput(); err != nil {
+		return fmt.Errorf("fechar: go install falhou: %w (%s)", err, strings.TrimSpace(string(out)))
+	}
+	return nil
 }
 
 func fecharGovernanca(d *Deps, slug, canon string, dry bool) (string, error) {
 	agents := filepath.Join(d.RepoDir, "AGENTS.md")
 	memory := filepath.Join(d.RepoDir, "MEMORY.md")
+	if !dry {
+		dataStr := d.Clock().Format("2006-01-02")
+		if err := registrarGovernancaArquivo(agents, slug, canon, dataStr); err != nil {
+			return "", err
+		}
+		if err := registrarGovernancaArquivo(memory, slug, canon, dataStr); err != nil {
+			return "", err
+		}
+	}
 	return fmt.Sprintf("%s, %s", filepath.Base(agents), filepath.Base(memory)), nil
 }
 
+func registrarGovernancaArquivo(caminho, slug, canon, dataStr string) error {
+	atual, err := os.ReadFile(caminho)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	texto := string(atual)
+	if strings.Contains(texto, canon) {
+		return nil
+	}
+	linha := fmt.Sprintf("\n* **Processo Canonizado `%s` (%s):** `skills/%s/SKILL.md` · `docs/reports/`\n", canon, dataStr, canon)
+	return os.WriteFile(caminho, []byte(texto+linha), 0o644)
+}
+
 func fecharGrafo(d *Deps, dry bool) (string, error) {
+	graphPath := filepath.Join(d.RepoDir, ".codebase-memory", "graph.db.zst")
 	if dry {
-		return "graph_skipped_dry_run", nil
+		return graphPath, nil
 	}
 	if d.Indexer != nil {
-		return "reindexed_custom", d.Indexer(d.RepoDir)
+		return graphPath, d.Indexer(d.RepoDir)
 	}
-	return ".codebase-memory/graph.db.zst", nil
+	if d.SkipBuild {
+		return graphPath, nil
+	}
+	return graphPath, DefaultIndexer(d.RepoDir)
+}
+
+// DefaultIndexer reindexa o grafo semântico via codebase-memory-mcp cli index_repository.
+func DefaultIndexer(repoDir string) error {
+	return DefaultIndexerWithLookPath(repoDir, exec.LookPath, nil)
+}
+
+// DefaultIndexerWithLookPath executa a indexação do grafo com LookPath e executor injetáveis.
+func DefaultIndexerWithLookPath(repoDir string, lookPath func(string) (string, error), run func(string, ...string) error) error {
+	if lookPath == nil {
+		lookPath = exec.LookPath
+	}
+	binPath, err := lookPath("codebase-memory-mcp")
+	if err != nil {
+		return fmt.Errorf("fechar: codebase-memory-mcp ausente no PATH: %w", err)
+	}
+	payload := fmt.Sprintf(`{"repo_path":%q}`, repoDir)
+	if run != nil {
+		return run(binPath, "cli", "index_repository", payload)
+	}
+	cmd := exec.Command(binPath, "cli", "index_repository", payload)
+	cmd.Dir = repoDir
+	if out, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("fechar: index_repository falhou: %w (%s)", err, strings.TrimSpace(string(out)))
+	}
+	return nil
 }
 
 func fecharPortoes(d *Deps, dry bool) (string, error) {
-	return "portoes_verificados", nil
+	alvo := filepath.Join(d.RepoDir, "go.mod")
+	if dry {
+		return alvo, nil
+	}
+	if d.Portoes != nil {
+		return alvo, d.Portoes(d.RepoDir)
+	}
+	if d.SkipBuild {
+		return alvo, nil
+	}
+	return alvo, DefaultPortoes(d.RepoDir)
+}
+
+// DefaultPortoes executa go vet sobre o repositório via exec sem shell.
+func DefaultPortoes(repoDir string) error {
+	if _, err := os.Stat(filepath.Join(repoDir, "go.mod")); os.IsNotExist(err) {
+		return nil
+	}
+	cmd := exec.Command("go", "vet", "./...")
+	cmd.Dir = repoDir
+	if out, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("%w: go vet: %v (%s)", ErrPortaoFalhou, err, strings.TrimSpace(string(out)))
+	}
+	return nil
 }
 
 func fecharReporte(d *Deps, slug, canon string, res *Result, dry bool) (string, error) {
@@ -283,7 +385,7 @@ func fecharReporte(d *Deps, slug, canon string, res *Result, dry bool) (string, 
 	target := filepath.Join(dir, name)
 	res.ReportPath = target
 	if !dry {
-		res.Telemetria.EnsureDefaults(res.Duracao)
+		res.Telemetria.EnsureDefaults(time.Duration(res.Duracao) * time.Millisecond)
 		md := GerarReportMD(slug, canon, res, d.Clock())
 		if err := os.WriteFile(target, []byte(md), 0o644); err != nil {
 			return target, err

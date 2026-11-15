@@ -82,7 +82,7 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "high",
-        "fallback": "code-pro"
+        "fallback": "t-codigo-128k"
       },
       "token_budget": {
         "input_tokens": 6000,
@@ -116,7 +116,7 @@
       "ref": "skills/aidd-lauren",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": "haiku"
       },
@@ -154,7 +154,7 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "high",
-        "fallback": "code-pro"
+        "fallback": "t-codigo-128k"
       },
       "token_budget": {
         "input_tokens": 8000,

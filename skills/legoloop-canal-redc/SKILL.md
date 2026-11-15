@@ -7,7 +7,7 @@ consumes: Artifact:VideoMetrics
 produces: Artifact:ChannelDossier
 artifact: docs/channels/canal_sample/repc/01_dossie_dna.json
 gate: file_exists('docs/channels/canal_sample/repc/01_dossie_dna.json')
-suggested_model: code-pro
+suggested_model: t-codigo-128k
 metadata:
   version: "2.2.0"
   tier: "ouro"

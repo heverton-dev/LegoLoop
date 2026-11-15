@@ -221,11 +221,16 @@ func TestSlotsInvalid(t *testing.T) {
 	parseErr(t, "campo desconhecido", v2(trig, n2("a", "", "A.md", `"slots":{"evil":[]}`)), "evil")
 }
 
-// R-MCP-3: mcp não executa. O nó subprocesso exige referência válida.
-func TestMCPNodeRejectedExplicitly(t *testing.T) {
-	src := v2(`{"type":"manual"}`, `{"id":"a","type":"mcp","ref":"rea",
+// R-MCP-3: nó MCP aceita referência válida e valida comando quando informado.
+func TestMCPNodeValidation(t *testing.T) {
+	okSrc := v2(`{"type":"manual"}`, `{"id":"a","type":"mcp","ref":"rea",
 	"routing":{"mode":"manual","model":"m"},"output":{"artifact":"A.md","gate":"true"}}`)
-	parseErr(t, "mcp", src, "MCP")
+	if _, err := Parse([]byte(okSrc)); err != nil {
+		t.Fatalf("mcp válido rejeitado: %v", err)
+	}
+	semRef := v2(`{"type":"manual"}`, `{"id":"a","type":"mcp",
+	"routing":{"mode":"manual","model":"m"},"output":{"artifact":"A.md","gate":"true"}}`)
+	parseErr(t, "mcp sem ref", semRef, "MCP")
 }
 
 func TestSubprocessoNode(t *testing.T) {

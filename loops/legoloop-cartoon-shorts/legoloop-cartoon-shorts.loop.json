@@ -40,8 +40,8 @@
       "type": "unit_no",
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
-        "fallback": "code-fast"
+        "model": "t-codigo-128k",
+        "fallback": "t-chat-128k"
       },
       "isolation": {
         "workspace": "local",
@@ -88,7 +88,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "fallback": "flash"
       },
       "isolation": {
@@ -136,8 +136,8 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
-        "fallback": "code-pro"
+        "model": "t-codigo-128k",
+        "fallback": "t-codigo-128k"
       },
       "isolation": {
         "workspace": "local",

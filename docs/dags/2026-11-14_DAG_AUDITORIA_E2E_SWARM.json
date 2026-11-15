@@ -1,11 +1,206 @@
 {
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
   "id": "auditoria-e2e-swarm",
   "name": "Auditoria E2E Swarm",
-  "version": "1.0.0",
+  "description": "Auditoria E2E da CLI, Studio Web e portoes mecanicos via Swarm.",
+  "version": "2.0.0",
+  "schema_version": 2,
+  "date": "2026-11-14",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-14_INTENT_AUDITORIA_E2E_SWARM.md",
+      "sha256": "0ff88cb2bc51224d2907b76aec13167f178f7ee14e1932bcc1cd22ae6bdab575"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-14_SPEC_AUDITORIA_E2E_SWARM.md",
+      "sha256": "95476c62b1b8efce1b23fa4e4579c98702bc02ae8a2b790a46f91ec623575c86"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-14_PLAN_AUDITORIA_E2E_SWARM.md",
+      "sha256": "5b0ca632dc6da4ea3ce4cc63264613b194f6e63a09d71a6a3874fdf1fb1ab143"
+    },
+    "route": {
+      "path": "docs/routes/2026-11-14_ROUTE_AUDITORIA_E2E_SWARM.json",
+      "sha256": "314c914aa5e7ab4261e401c5011060ae4f95361b00a650c435af0c16630b040e"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 3,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_processo"
+  },
+  "trigger": {
+    "type": "manual"
+  },
   "nodes": [
-    { "id": "t1_cli", "type": "unit_no", "artifact": "docs/reports/2026-11-14_REPORT_AUDITORIA_E2E_SWARM.md", "depends_on": [] },
-    { "id": "t2_studio", "type": "unit_no", "artifact": "docs/reports/img/2026-11-14_studio_home.png", "depends_on": [] },
-    { "id": "t3_gates", "type": "unit_no", "artifact": "internal/board/swarm_runtime.go", "depends_on": [] },
-    { "id": "t4_close", "type": "unit_no", "artifact": "docs/plans/2026-11-14_PLAN_AUDITORIA_E2E_SWARM.md", "depends_on": ["t1_cli", "t2_studio", "t3_gates"] }
+    {
+      "id": "t1_cli",
+      "name": "Prova real CLI e MCP STDIO em ambiente hermetico",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "context_in": [],
+      "context_out": [
+        "docs/reports/2026-11-14_REPORT_AUDITORIA_E2E_SWARM.md"
+      ],
+      "output": {
+        "artifact": "docs/reports/2026-11-14_REPORT_AUDITORIA_E2E_SWARM.md",
+        "gate": "file_exists('docs/reports/2026-11-14_REPORT_AUDITORIA_E2E_SWARM.md')"
+      },
+      "isolation": {
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "verification": {
+        "command": ["go", "test", "-count=1", "./internal/cli/...", "./internal/mcp/..."]
+      },
+      "spec_ref": "docs/specs/2026-11-14_SPEC_AUDITORIA_E2E_SWARM.md",
+      "status": "DONE"
+    },
+    {
+      "id": "t2_studio",
+      "name": "Prova real LegoLoop Studio e Playwright em porta dedicada",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "context_in": [],
+      "context_out": [
+        "docs/reports/img/2026-11-14_studio_home.png"
+      ],
+      "output": {
+        "artifact": "docs/reports/img/2026-11-14_studio_home.png",
+        "gate": "file_exists('docs/reports/img/2026-11-14_studio_home.png')"
+      },
+      "isolation": {
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "verification": {
+        "command": ["go", "test", "-count=1", "./internal/studio/..."]
+      },
+      "spec_ref": "docs/specs/2026-11-14_SPEC_AUDITORIA_E2E_SWARM.md",
+      "status": "DONE"
+    },
+    {
+      "id": "t3_gates",
+      "name": "Auditoria dos portoes mecanicos e correcao de formatacao",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "context_in": [],
+      "context_out": [
+        "internal/board/swarm_runtime.go"
+      ],
+      "output": {
+        "artifact": "internal/board/swarm_runtime.go",
+        "gate": "file_exists('internal/board/swarm_runtime.go')"
+      },
+      "isolation": {
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "verification": {
+        "command": ["go", "test", "-count=1", "./internal/board/..."]
+      },
+      "spec_ref": "docs/specs/2026-11-14_SPEC_AUDITORIA_E2E_SWARM.md",
+      "status": "DONE"
+    },
+    {
+      "id": "t4_close",
+      "name": "Fechamento do Quinteto ISO, relatorio final e reindexacao",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": ["t1_cli", "t2_studio", "t3_gates"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "context_in": [
+        "docs/reports/2026-11-14_REPORT_AUDITORIA_E2E_SWARM.md",
+        "docs/reports/img/2026-11-14_studio_home.png",
+        "internal/board/swarm_runtime.go"
+      ],
+      "context_out": [
+        "docs/plans/2026-11-14_PLAN_AUDITORIA_E2E_SWARM.md"
+      ],
+      "output": {
+        "artifact": "docs/plans/2026-11-14_PLAN_AUDITORIA_E2E_SWARM.md",
+        "gate": "file_exists('docs/plans/2026-11-14_PLAN_AUDITORIA_E2E_SWARM.md')"
+      },
+      "isolation": {
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell",
+        "mcp_required": false,
+        "mcp_allowlist": []
+      },
+      "verification": {
+        "command": ["go", "test", "-count=1", "./tools/route2dag/..."]
+      },
+      "spec_ref": "docs/specs/2026-11-14_SPEC_AUDITORIA_E2E_SWARM.md",
+      "status": "DONE"
+    }
   ]
 }

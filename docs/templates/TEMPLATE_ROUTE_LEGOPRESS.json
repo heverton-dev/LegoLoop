@@ -5,10 +5,10 @@
   "version": "2.2.0",
   "date": "2026-11-07",
   "session_id": "00000000-0000-0000-0000-000000000000",
-  "initiative_ref": "docs/intents/2026-11-06_INTENT_LEGOPRESS_PIPELINE.md",
-  "intent_ref": "docs/intents/2026-11-06_INTENT_LEGOPRESS_PIPELINE.md",
-  "spec_ref": "docs/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md",
-  "plan_ref": "docs/plans/2026-11-06_PLAN_LEGOPRESS_PIPELINE.md",
+  "initiative_ref": "docs/intents/2026-11-06_INTENT_LEGOPRESS.md",
+  "intent_ref": "docs/intents/2026-11-06_INTENT_LEGOPRESS.md",
+  "spec_ref": "docs/specs/2026-11-06_SPEC_LEGOPRESS.md",
+  "plan_ref": "docs/plans/2026-11-06_PLAN_LEGOPRESS.md",
   "upstream_signatures": {
     "intent_merkle": "0000000000000000000000000000000000000000000000000000000000000000",
     "spec_merkle": "0000000000000000000000000000000000000000000000000000000000000000",
@@ -20,7 +20,7 @@
       "worker_allocation": "per_epic"
     },
     "rollback_policy": {
-      "strategy": "abort_pipeline",
+      "strategy": "abort_processo",
       "auto_stash": true,
       "preserve_telemetry": true
     },
@@ -33,7 +33,7 @@
     "max_parallel_workers": 2,
     "tdd_enforced": true,
     "default_timeout_sec": 300,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort_processo"
   },
   "nodes": [
     {
@@ -43,7 +43,7 @@
       "label": "Entrevista Socrática & Alinhamento de Intenção",
       "nature": "micro",
       "extreme": false,
-      "type": "unit_task",
+      "type": "unit_no",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -61,13 +61,13 @@
       "retry_policy": {
         "max_retries": 1,
         "backoff_ms": 1000,
-        "fallback_model_on_retry": "code-fast"
+        "fallback_model_on_retry": "t-chat-128k"
       },
       "depends_on": [],
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": {
           "harness": "antigravity",
@@ -120,7 +120,7 @@
       "label": "Fatiamento Hierárquico em Tríade (Grande, Meso, Micro)",
       "nature": "nano",
       "extreme": false,
-      "type": "unit_task",
+      "type": "unit_no",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -146,7 +146,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": {
           "harness": "antigravity",
@@ -201,7 +201,7 @@
       "label": "Redação Estéril e Purificação Didática sem IA-Slop",
       "nature": "micro",
       "extreme": false,
-      "type": "unit_task",
+      "type": "unit_no",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "parallel",
@@ -219,7 +219,7 @@
       "retry_policy": {
         "max_retries": 1,
         "backoff_ms": 1000,
-        "fallback_model_on_retry": "code-pro"
+        "fallback_model_on_retry": "t-codigo-128k"
       },
       "depends_on": [
         "STEP-02-PARTITION"
@@ -227,7 +227,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "medium",
         "fallback": {
           "harness": "antigravity",
@@ -282,7 +282,7 @@
       "label": "Compilação Typst + Pandoc no Formato 170x240mm",
       "nature": "micro",
       "extreme": false,
-      "type": "unit_task",
+      "type": "unit_no",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -308,7 +308,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": {
           "harness": "antigravity",
@@ -364,7 +364,7 @@
       "label": "Auditoria Mecânica com PyMuPDF (Zero Quebras & Linha Única)",
       "nature": "micro",
       "extreme": false,
-      "type": "unit_task",
+      "type": "unit_no",
       "ref": null,
       "status": "PENDING",
       "execution_mode": "sequential",
@@ -382,7 +382,7 @@
       "retry_policy": {
         "max_retries": 1,
         "backoff_ms": 1000,
-        "fallback_model_on_retry": "code-pro"
+        "fallback_model_on_retry": "t-codigo-128k"
       },
       "depends_on": [
         "STEP-04-COMPILE"
@@ -390,7 +390,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": {
           "harness": "antigravity",
@@ -471,7 +471,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "9router",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": {
           "harness": "antigravity",

@@ -31,10 +31,11 @@ type TelemetriaOrcamento struct {
 	CustoEstimadoUSD   float64  `json:"custo_estimado_usd"`
 	CustoGastoUSD      float64  `json:"custo_gasto_usd"`
 	TaxaCambioBRL      float64  `json:"taxa_cambio_brl"`
+	StatusMedicao      string   `json:"status_medicao,omitempty"`
 	Modelos            []string `json:"modelos,omitempty"`
 }
 
-// EnsureDefaults preenche valores padrão saudáveis e calculados caso estejam zerados.
+// EnsureDefaults preenche valores calculados reais sem inventar tokens fictícios.
 func (t *TelemetriaOrcamento) EnsureDefaults(duracao time.Duration) {
 	if t.TaxaCambioBRL <= 0 {
 		t.TaxaCambioBRL = 5.80
@@ -42,42 +43,26 @@ func (t *TelemetriaOrcamento) EnsureDefaults(duracao time.Duration) {
 	if t.TempoGastoMin <= 0 && duracao > 0 {
 		t.TempoGastoMin = duracao.Minutes()
 	}
-	if t.TempoEstimadoMin <= 0 {
-		t.TempoEstimadoMin = t.TempoGastoMin * 1.25
-		if t.TempoEstimadoMin < 5.0 {
-			t.TempoEstimadoMin = 15.0
-		}
+	if t.TempoEstimadoMin <= 0 && t.TempoGastoMin > 0 {
+		t.TempoEstimadoMin = t.TempoGastoMin
 	}
 	t.ensureTokensEDemais()
 }
 
 func (t *TelemetriaOrcamento) ensureTokensEDemais() {
-	if t.TokensInEstimados <= 0 {
-		t.TokensInEstimados = 80000
+	medido := t.TokensInEstimados > 0 || t.TokensInGastos > 0 ||
+		t.TokensOutEstimados > 0 || t.TokensOutGastos > 0 ||
+		t.CustoEstimadoUSD > 0 || t.CustoGastoUSD > 0
+	if !medido {
+		t.StatusMedicao = "nao medido"
+		return
 	}
-	if t.TokensInGastos <= 0 {
-		t.TokensInGastos = 65000
-	}
-	if t.TokensOutEstimados <= 0 {
-		t.TokensOutEstimados = 20000
-	}
-	if t.TokensOutGastos <= 0 {
-		t.TokensOutGastos = 14500
-	}
-	if t.TurnosRealizados <= 0 {
-		t.TurnosRealizados = 12
-	}
-	if t.ToolCalls <= 0 {
-		t.ToolCalls = 28
-	}
-	if t.CustoEstimadoUSD <= 0 {
+	t.StatusMedicao = "medido"
+	if t.CustoEstimadoUSD <= 0 && (t.TokensInEstimados > 0 || t.TokensOutEstimados > 0) {
 		t.CustoEstimadoUSD = (float64(t.TokensInEstimados)*3.0 + float64(t.TokensOutEstimados)*15.0) / 1000000.0
 	}
-	if t.CustoGastoUSD <= 0 {
+	if t.CustoGastoUSD <= 0 && (t.TokensInGastos > 0 || t.TokensOutGastos > 0) {
 		t.CustoGastoUSD = (float64(t.TokensInGastos)*3.0 + float64(t.TokensOutGastos)*15.0) / 1000000.0
-	}
-	if len(t.Modelos) == 0 {
-		t.Modelos = []string{"claude-3-7-sonnet", "gemini-2.5-pro"}
 	}
 }
 
@@ -113,12 +98,12 @@ func NormalizeSlug(raw string) (string, string, error) {
 
 // EtapaStatus registra o resultado atômico de uma das 9 etapas de fechamento.
 type EtapaStatus struct {
-	Etapa    int           `json:"etapa"`
-	Nome     string        `json:"nome"`
-	Status   string        `json:"status"` // "ok", "skipped", "error"
-	Artefato string        `json:"artefato,omitempty"`
-	Duracao  time.Duration `json:"duracao_ms"`
-	Detalhe  string        `json:"detalhe,omitempty"`
+	Etapa    int    `json:"etapa"`
+	Nome     string `json:"nome"`
+	Status   string `json:"status"` // "ok", "skipped", "error"
+	Artefato string `json:"artefato,omitempty"`
+	Duracao  int64  `json:"duracao_ms"`
+	Detalhe  string `json:"detalhe,omitempty"`
 }
 
 type Result struct {
@@ -128,6 +113,6 @@ type Result struct {
 	Etapas     []EtapaStatus       `json:"etapas"`
 	Telemetria TelemetriaOrcamento `json:"telemetria"`
 	ReportPath string              `json:"report_path,omitempty"`
-	Duracao    time.Duration       `json:"duracao_total_ms"`
+	Duracao    int64               `json:"duracao_total_ms"`
 	Timestamp  time.Time           `json:"timestamp"`
 }

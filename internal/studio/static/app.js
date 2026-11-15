@@ -40,6 +40,7 @@ const state = {
   telemetry: new Map(),
   navStack: [],
   badEdges: new Set(),
+  lastDAG: null,
   swapping: null,
   gateDraft: null,
   suggest: new Map(),
@@ -163,10 +164,24 @@ function defaultTriggerConfig(kind) {
   switch (kind) {
     case "trigger_cron": return { type: "cron", cron: "0 * * * *" };
     case "trigger_file_change": return { type: "file_change", path: "docs" };
-    case "trigger_loop_end": return { type: "loop_end", loop: "" };
+    case "trigger_processo_fim": return { type: "processo_fim", processo: "upstream" };
+    case "trigger_loop_end": return { type: "loop_end", loop: "upstream" };
     case "trigger_board": return { type: "board", board: "backlog" };
     default: return { type: "manual" };
   }
+}
+
+function normalizeTriggerConfig(kind, cfg) {
+  const base = defaultTriggerConfig(kind);
+  const merged = { ...base, ...(cfg || {}) };
+  if (kind === "trigger_processo_fim" || kind === "trigger_loop_end" || merged.type === "processo_fim" || merged.type === "loop_end") {
+    const alvo = String(merged.processo || merged.loop || "").trim() || "upstream";
+    if (kind === "trigger_loop_end" || merged.type === "loop_end") {
+      return { type: "loop_end", loop: alvo };
+    }
+    return { type: "processo_fim", processo: alvo };
+  }
+  return merged;
 }
 
 function addNode(blockId, x, y) {
@@ -514,6 +529,16 @@ window.enterSubloop = enterSubloop;
 // ---------- Arestas ----------
 
 function portPoint(node, side) {
+  const root = typeof document !== "undefined" && typeof CSS !== "undefined"
+    ? document.querySelector(`.node[data-id="${CSS.escape(node.id)}"]`)
+    : null;
+  const port = root?.querySelector(side === "out" ? ".port--out" : ".port--in");
+  if (port && root && (port.offsetWidth > 0 || port.offsetHeight > 0)) {
+    return {
+      x: node.x + port.offsetLeft + port.offsetWidth / 2,
+      y: node.y + port.offsetTop + port.offsetHeight / 2,
+    };
+  }
   return { x: node.x + (side === "out" ? NODE_W : 0), y: node.y + PORT_Y };
 }
 
@@ -522,13 +547,14 @@ function curve(a, b) {
   return `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
 }
 
-// Peça genérica ou Gatilho (trigger_*) aceita e produz "Qualquer": liga com tudo. Entre blocos tipados vale a matriz.
+// Gatilho (trigger_*) só emite para nós não-gatilho; peça genérica liga com tudo; entre blocos tipados vale a matriz.
 function canConnect(fromId, toId) {
   const a = state.nodes.get(fromId);
   const b = state.nodes.get(toId);
   if (!a || !b || fromId === toId) return false;
+  if (blockOf(b)?.kind?.startsWith("trigger_")) return false;
+  if (blockOf(a)?.kind?.startsWith("trigger_")) return true;
   if (a.piece || b.piece) return true;
-  if (blockOf(a)?.kind?.startsWith("trigger_") || blockOf(b)?.kind?.startsWith("trigger_")) return true;
   return (state.matrix[a.block] || []).includes(b.block);
 }
 
@@ -791,8 +817,12 @@ function toggleInspector() {
   const insp = $("inspector");
   const isCollapsed = insp.classList.toggle("is-collapsed");
   ws.classList.toggle("is-inspector-collapsed", isCollapsed);
+  insp.classList.toggle("is-open", !isCollapsed);
   const btn = $("btn-toggle-inspector");
-  if (btn) btn.textContent = isCollapsed ? "◂" : "▸";
+  if (btn) {
+    btn.textContent = isCollapsed ? "◂ Inspetor" : "Inspetor ▸";
+    btn.setAttribute("aria-expanded", String(!isCollapsed));
+  }
 }
 
 // Histórico de Ações (Undo / Redo)
@@ -893,10 +923,9 @@ function autoLayout() {
     col.forEach((n, idx) => {
       n.x = 60 + lvl * (NODE_W + 90);
       n.y = 80 + idx * 160;
-      const elNode = document.querySelector(`.node[data-id="${n.id}"]`);
+      const elNode = document.querySelector(`.node[data-id="${CSS.escape(n.id)}"]`);
       if (elNode) {
-        elNode.style.left = `${n.x}px`;
-        elNode.style.top = `${n.y}px`;
+        elNode.style.transform = `translate(${n.x}px, ${n.y}px)`;
       }
     });
   });
@@ -985,7 +1014,7 @@ function trackLink(ev, fromId, onDrop) {
   const canvas = $("canvas");
   canvas.classList.add("is-linking");
   document.querySelectorAll(".node").forEach((n) => {
-    n.querySelector(".port--in").classList.toggle("is-compatible", canConnect(fromId, n.dataset.id));
+    n.querySelector(".port--in")?.classList.toggle("is-compatible", canConnect(fromId, n.dataset.id));
   });
   const nodeAt = (e) => document.elementFromPoint(e.clientX, e.clientY)?.closest(".node");
   const move = (e) => {
@@ -1174,7 +1203,7 @@ function composition() {
   for (const n of state.nodes.values()) {
     const b = blockOf(n);
     if (b && b.kind && b.kind.startsWith("trigger_")) {
-      trig = n.triggerConfig || defaultTriggerConfig(b.kind);
+      trig = normalizeTriggerConfig(b.kind, n.triggerConfig);
       break;
     }
   }
@@ -1196,7 +1225,48 @@ function compNode(n) {
   return out;
 }
 
+function compileDAG() {
+  if (state.lastDAG) return state.lastDAG;
+  const comp = composition();
+  const incoming = new Map();
+  comp.edges.forEach((e) => {
+    if (!incoming.has(e.to)) incoming.set(e.to, []);
+    incoming.get(e.to).push(e.from);
+  });
+  const nodes = [...state.nodes.values()].map((n) => {
+    const block = blockOf(n);
+    const deps = incoming.get(n.id) || [];
+    const inputs = {};
+    deps.forEach((fromId) => {
+      const src = state.nodes.get(fromId);
+      const srcArt = src ? blockOf(src).artifact : `${fromId}.md`;
+      inputs[fromId] = `file('${srcArt}')`;
+    });
+    const pieceKind = n.piece?.kind;
+    const type = pieceKind === "subloop" ? "subprocesso" : (pieceKind || (block.kind === "mcp" ? "mcp" : "skill"));
+    const out = {
+      id: n.id,
+      type,
+      ref: n.piece ? n.piece.ref : block.ref,
+      routing: n.routing,
+      output: { artifact: block.artifact, gate: block.gate || defaultGate(block.artifact) },
+    };
+    if (deps.length > 0) out.depends_on = deps;
+    if (Object.keys(inputs).length > 0) out.inputs = inputs;
+    if (n.execution === "isolated") out.execution = { mode: "isolated" };
+    return out;
+  });
+  return {
+    $schema: "https://legoloop.dev/schemas/dag.v1.json",
+    name: comp.name || "novo-dag",
+    version: "2.0.0",
+    trigger: comp.trigger || { type: "manual" },
+    nodes,
+  };
+}
+
 function clearValidation() {
+  state.lastDAG = null;
   if (state.status.size === 0 && state.badEdges.size === 0) return;
   state.status.clear();
   state.badEdges.clear();
@@ -1207,7 +1277,8 @@ function clearValidation() {
 function applyValidation(res) {
   state.status.clear();
   state.badEdges.clear();
-  const issues = res.issues || [];
+  state.lastDAG = res?.ok && res?.dag ? res.dag : null;
+  const issues = res.problemas || res.issues || [];
   issues.forEach((i) => {
     if (i.node) state.status.set(i.node, "fail");
     if (i.edge) state.badEdges.add(i.edge);
@@ -1245,13 +1316,14 @@ async function validate() {
     return false;
   }
   applyValidation(data);
-  toast(data.ok ? "DAG válido: todos os encaixes conferem." : `${data.issues.length} problema(s) encontrado(s).`, !data.ok);
+  const issues = data.problemas || data.issues || [];
+  toast(data.ok ? "DAG válido: todos os encaixes conferem." : `${issues.length} problema(s) encontrado(s).`, !data.ok);
   return Boolean(data.ok);
 }
 
 async function materialize() {
   const { ok, data } = await api("/api/materialize", composition());
-  if (data.issues) applyValidation(data);
+  if (data.problemas || data.issues) applyValidation(data);
   if (!ok) {
     toast(data.error || "Corrija os problemas antes de materializar.", true);
     return false;
@@ -1823,7 +1895,7 @@ function initRunModal() {
     const valid = await validate();
     if (!valid) return;
 
-    const hasScripts = Array.from(state.nodes.values()).some((n) => n.kind === "script");
+    const hasScripts = Array.from(state.nodes.values()).some((n) => (n.piece?.kind || blockOf(n)?.kind) === "script");
     let allowScripts = false;
     if (hasScripts) {
       const agreed = await confirmDialog({

@@ -38,7 +38,7 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 * **TDD Estrito:** `true` (Red ➔ Green ➔ Refactor obrigatório antes de qualquer código de produção)
 * **Limite de Workers Paralelos:** `2`
 * **Timeout Padrão por Ticket:** `180s`
-* **Política de Rollback:** global `abort_pipeline`; por nó `stash_changes`
+* **Política de Rollback:** global `abort_processo`; por nó `stash_changes`
 
 ---
 
@@ -63,7 +63,7 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 ### Épico 01 — {{NOME_DO_EPICO_01}}
 
 #### Ticket `TICK-01.1` — {{Descrição resumida da ação}}
-* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
+* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_no` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
 * **Dependências:** `[]`
 * **Isolamento:**
   * **Workspace:** `local` (ou `git_worktree` / `tempdir`)
@@ -73,7 +73,7 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
   * **Extreme:** `false` (`true` libera Opus, só com aprovação humana)
 * **Roteamento Cognitivo:**
   * **Modo:** `suggested`
-  * **Primário:** Harness `9router` · Modelo `code-pro` · Effort `high`
+  * **Primário:** Harness `9router` · Modelo `t-codigo-128k` · Effort `high`
   * **Fallback:** Harness `antigravity` · Modelo `flash`
 * **Tooling:**
   * **Runtime:** `powershell` (ou `node`, `obscura`, etc.)
@@ -95,10 +95,10 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 * **Escopo (opcional):** {{Detalhe do que o teste do ticket precisa provar, com valores concretos. Use quando o gate sozinho não explica o ticket. Só existe no PLAN: o ROUTE não tem este campo.}}
 
 #### Ticket `TICK-01.2` — {{Descrição resumida da ação}}
-* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E01` | **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E01` | **Nature:** `nano` | **Tipo:** `unit_no` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["TICK-01.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
-* **Roteamento:** Harness `9router` · Modelo `code-fast` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`
+* **Roteamento:** Harness `9router` · Modelo `t-chat-128k` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `8000` tokens · Teto de saída `300` tokens · Rollback `stash_changes`
 * **Inputs:** `internal/pkg/service.go` · Spec Anchor `docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E01.2`
@@ -120,11 +120,11 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 ### Épico 02 — {{NOME_DO_EPICO_02}}
 
 #### Ticket `TICK-02.1` — {{Descrição resumida da ação (Processo filho especialista)}}
-* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E02` | **Nature:** `micro` | **Tipo:** `subloop` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+* **Iniciativa:** `{{NOME_OU_ID_DA_INICIATIVA}}` | **Épico:** `E02` | **Nature:** `micro` | **Tipo:** `subprocesso` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["SG-E01"]`
 * **Ref do Processo filho:** `exemplo-processo-filho` (id de um Processo do acervo; nunca um caminho)
 * **Isolamento:** Workspace `tempdir` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
-* **Roteamento:** Harness `9router` · Modelo `code-fast` · Effort `medium` · Fallback Harness `ollama` · Modelo `deepseek-coder:6.7b`
+* **Roteamento:** Harness `9router` · Modelo `t-chat-128k` · Effort `medium` · Fallback Harness `ollama` · Modelo `deepseek-coder:6.7b`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `true` · Allowlist `["codebase-memory-mcp:search_code"]`
 * **Limites & Resiliência:** Timeout `300s` · Retries `1` · Entrada `32000` tokens · Teto de saída `1200` tokens · Rollback `stash_changes`
 * **Inputs:** Context Artifacts `["scratch/target_analysis.json"]` · Spec Anchor `docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E02.1`

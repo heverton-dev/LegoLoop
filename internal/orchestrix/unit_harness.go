@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"legoloop/internal/dag"
 	"legoloop/internal/provider"
@@ -36,16 +37,39 @@ func (o *Orchestrix) callHarnessInDir(ctx context.Context, src provider.Source, 
 		}
 		defer os.Remove(path)
 	}
-	out, code, err := o.spawn(ctx, o.Inventory.CLIPath(string(src)), args, dir, nil)
-	if err != nil {
-		return "", runner.TokenUsage{}, err
+	extra, gwErr := o.harnessGatewayEnv(src, model)
+	if gwErr != nil {
+		return "", runner.TokenUsage{}, o.semChave(gwErr)
 	}
+	out, stderrOut, code, err := o.spawnEnvCaptured(ctx, o.Inventory.CLIPath(string(src)), args, dir, nil, extra)
+	if err != nil {
+		return "", runner.TokenUsage{}, o.semChave(appendStderr(err, stderrOut))
+	}
+	return parseHarnessExecResult(string(src), spec, out, stderrOut, code)
+}
+
+func (o *Orchestrix) harnessGatewayEnv(src provider.Source, model string) ([]string, error) {
+	wantsRouter := strings.HasPrefix(model, "9router/") || o.RouterKey != "" || o.Inventory.RouterURL != ""
+	if !wantsRouter {
+		return nil, nil
+	}
+	env, err := o.envGateway(dag.Node{ID: string(src), Routing: dag.RoutingConfig{Via: viaRouter}})
+	if err != nil {
+		return nil, err
+	}
+	if src != provider.SourceClaudeCLI {
+		env = append(env, "OPENAI_BASE_URL="+o.Inventory.RouterURL, "OPENAI_API_KEY="+o.routerCredential())
+	}
+	return env, nil
+}
+
+func parseHarnessExecResult(src string, spec harnessSpec, out, stderrOut []byte, code int) (string, runner.TokenUsage, error) {
 	text, in, outTok, perr := spec.parse(out)
 	if perr == nil && code != 0 {
 		perr = errors.New("resposta recebida, mas o processo falhou")
 	}
 	if perr != nil {
-		return "", runner.TokenUsage{}, fmt.Errorf("%s saiu com código %d: %w", src, code, perr)
+		return "", runner.TokenUsage{}, appendStderr(fmt.Errorf("%s saiu com código %d: %w", src, code, perr), stderrOut)
 	}
 	return text, runner.TokenUsage{Input: in, Output: outTok}, nil
 }

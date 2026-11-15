@@ -12,9 +12,8 @@
           "id": "interview",
           "block": "interview",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "qwen2.5-coder:7b"
+            "mode": "auto",
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -67,9 +66,8 @@
           "id": "dissector",
           "block": "aidd-reconstruct",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "haiku"
+            "mode": "auto",
+            "combo": "t-raciocinio-128k"
           }
         }
       ],
@@ -102,9 +100,8 @@
           "id": "audit-report",
           "block": "aidd-spec",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "llama3.1:8b"
+            "mode": "auto",
+            "combo": "t-raciocinio-128k"
           }
         }
       ],
@@ -119,8 +116,8 @@
   {
     "id": "mega-processo",
     "name": "Mega Processo AIDD (5 Subprocessos)",
-    "description": "Processo mestre com os 5 subprocessos canonicos: Concepcao -\u003e Design -\u003e Triade de Planejamento -\u003e TDD -\u003e Homologacao.",
-    "category": "Orquestracao",
+    "description": "Processo mestre com os 5 subprocessos canônicos: Concepção -\u003e Design -\u003e Tríade de Planejamento -\u003e TDD -\u003e Homologação.",
+    "category": "Orquestração",
     "icon": "template",
     "composition": {
       "name": "mega-processo-completo",
@@ -129,9 +126,8 @@
           "id": "l1-concepcao",
           "block": "aidd-grill",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "haiku"
+            "mode": "auto",
+            "combo": "t-raciocinio-128k"
           }
         },
         {
@@ -154,9 +150,8 @@
           "id": "l4-tdd",
           "block": "aidd-tdd",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "llama3.1:8b"
+            "mode": "auto",
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -209,9 +204,8 @@
           "id": "etapa-construir",
           "block": "impeccable",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "haiku"
+            "mode": "auto",
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -274,7 +268,7 @@
   {
     "id": "matt-pocock",
     "name": "Processo Matt Pocock (6 Subprocessos)",
-    "description": "Processo de rigor de engenharia: Grilling \u0026 Dominio -\u003e Especificacao -\u003e Tickets em Grafo -\u003e TDD Estrito -\u003e Code Review 2 Eixos -\u003e Retroalimentacao.",
+    "description": "Processo de rigor de engenharia: Grilling \u0026 Domínio -\u003e Especificação -\u003e Tickets em Grafo -\u003e TDD Estrito -\u003e Code Review 2 Eixos -\u003e Retroalimentação.",
     "category": "Engenharia",
     "icon": "git",
     "composition": {
@@ -284,9 +278,8 @@
           "id": "etapa-grill-dominio",
           "block": "aidd-pocock",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "haiku"
+            "mode": "auto",
+            "combo": "t-raciocinio-128k"
           }
         },
         {
@@ -309,9 +302,8 @@
           "id": "etapa-tdd-construir",
           "block": "aidd-pocock",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "qwen2.5-coder:7b"
+            "mode": "auto",
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -359,7 +351,7 @@
     "id": "addy-osmani",
     "name": "Addy Osmani Web Performance \u0026 Rigor",
     "description": "Processo canônico de engenharia web focada em Web Vitals, TDD estrito, DevTools em runtime, auditoria 5 eixos e observabilidade.",
-    "category": "performance",
+    "category": "Performance",
     "icon": "trigger",
     "composition": {
       "name": "addy-osmani-processo",
@@ -368,9 +360,8 @@
           "id": "etapa-alinhar-contexto",
           "block": "aidd-osmani",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "haiku"
+            "mode": "auto",
+            "combo": "t-chat-128k"
           }
         },
         {
@@ -393,9 +384,8 @@
           "id": "etapa-construir-tdd",
           "block": "aidd-osmani",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "qwen2.5-coder:7b"
+            "mode": "auto",
+            "combo": "t-codigo-128k"
           }
         },
         {
@@ -410,9 +400,8 @@
           "id": "etapa-review-hardening",
           "block": "aidd-osmani",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "haiku"
+            "mode": "auto",
+            "combo": "t-raciocinio-128k"
           }
         },
         {
@@ -465,18 +454,16 @@
           "id": "inquiry",
           "block": "aidd-lauren",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "haiku"
+            "mode": "auto",
+            "combo": "t-raciocinio-128k"
           }
         },
         {
           "id": "architect",
           "block": "aidd-lauren",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "code-pro"
+            "mode": "auto",
+            "combo": "t-raciocinio-128k"
           }
         },
         {
@@ -491,18 +478,16 @@
           "id": "craft",
           "block": "aidd-lauren",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "code-pro"
+            "mode": "auto",
+            "combo": "t-codigo-128k"
           }
         },
         {
           "id": "verify",
           "block": "aidd-lauren",
           "routing": {
-            "mode": "suggested",
-            "model": "sonnet",
-            "fallback": "qwen2.5-coder:7b"
+            "mode": "auto",
+            "combo": "t-raciocinio-128k"
           }
         },
         {

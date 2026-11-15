@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"legoloop/internal/dag"
@@ -216,4 +217,143 @@ func TestRunIsolatedInjectsContextIn(t *testing.T) {
 	if len(checker.foundInputs) != 1 || checker.foundInputs[0] != "scratch/untracked_input.json" {
 		t.Fatalf("context_in untracked_input.json NÃO foi injetado no ambiente isolado! Encontrados: %v", checker.foundInputs)
 	}
+}
+
+func writeTestFile(t *testing.T, root, rel, body string) {
+	t.Helper()
+	full := filepath.Join(root, filepath.FromSlash(rel))
+	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(full, []byte(body), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func createTestLink(t *testing.T, target, link string) {
+	t.Helper()
+	if err := os.Symlink(target, link); err == nil {
+		return
+	}
+	if out, err := exec.Command("cmd", "/c", "mklink", "/J", link, target).CombinedOutput(); err != nil {
+		t.Fatalf("falha ao criar symlink/junction: %v (%s)", err, string(out))
+	}
+}
+
+func TestIsolatedExcludesCredenciaisAndSymlinks(t *testing.T) {
+	t.Run("ExcluiCredenciaisDoTemp", func(t *testing.T) {
+		workdir := t.TempDir()
+		writeTestFile(t, workdir, "main.go", "package main\n")
+		writeTestFile(t, workdir, "sub/helper.go", "package sub\n")
+		sensiveis := []string{
+			".env", ".env.local", ".env-empresa", ".env-full", ".env-pessoal",
+			"credential_gemini_backup.json", "sub/credential_prod.json",
+			"credentials.json", "cert.pem", "priv.key", ".npmrc", ".netrc",
+			"id_rsa", ".aws/credentials", "secret_app.json",
+		}
+		for _, rel := range sensiveis {
+			writeTestFile(t, workdir, rel, "SEGREDO=123\n")
+		}
+		isoDir, cleanup, err := createIsolationEnv(context.Background(), workdir)
+		if err != nil {
+			t.Fatalf("createIsolationEnv falhou: %v", err)
+		}
+		defer cleanup()
+		if _, err := os.Stat(filepath.Join(isoDir, "main.go")); err != nil {
+			t.Fatalf("main.go deveria ser copiado: %v", err)
+		}
+		for _, rel := range sensiveis {
+			p := filepath.Join(isoDir, filepath.FromSlash(rel))
+			if _, err := os.Stat(p); !os.IsNotExist(err) {
+				t.Errorf("arquivo sensível %q vazou para ambiente isolado", rel)
+			}
+		}
+	})
+
+	t.Run("RejeitaSymlinkComLstat", func(t *testing.T) {
+		outside := t.TempDir()
+		writeTestFile(t, outside, "segredo.txt", "TOP_SECRET")
+
+		workdir := t.TempDir()
+		writeTestFile(t, workdir, "interno/dado.txt", "OK")
+		createTestLink(t, outside, filepath.Join(workdir, "escape"))
+		createTestLink(t, filepath.Join(workdir, "interno"), filepath.Join(workdir, "atalho"))
+		if _, cleanup, err := createTempCopy(workdir); err == nil || !strings.Contains(err.Error(), "symlink") {
+			if cleanup != nil {
+				cleanup()
+			}
+			t.Fatalf("createTempCopy deveria rejeitar symlink/junction com mensagem de symlink, obteve: %v", err)
+		}
+
+		dst := t.TempDir()
+		if err := injectContextIn(workdir, dst, []string{"atalho/dado.txt"}); err == nil || !strings.Contains(err.Error(), "symlink") {
+			t.Fatalf("injectContextIn deveria rejeitar symlink/junction em context_in, obteve: %v", err)
+		}
+		if err := copyPath(filepath.Join(workdir, "atalho"), filepath.Join(dst, "atalho")); err == nil || !strings.Contains(err.Error(), "symlink") {
+			t.Fatalf("copyPath deveria rejeitar symlink/junction com erro, obteve: %v", err)
+		}
+		if err := promoteArtifact(workdir, dst, "atalho/dado.txt"); err == nil || !strings.Contains(err.Error(), "symlink") {
+			t.Fatalf("promoteArtifact deveria rejeitar symlink/junction na origem, obteve: %v", err)
+		}
+
+		iso := t.TempDir()
+		writeTestFile(t, iso, "atalho/out.txt", "payload")
+		if err := promoteArtifact(iso, workdir, "atalho/out.txt"); err == nil || !strings.Contains(err.Error(), "symlink") {
+			t.Fatalf("promoteArtifact deveria rejeitar symlink/junction no destino, obteve: %v", err)
+		}
+	})
+
+	t.Run("FallbackGitSemCommitExcluiCredenciais", func(t *testing.T) {
+		workdir := t.TempDir()
+		if out, err := exec.Command("git", "init", workdir).CombinedOutput(); err != nil {
+			t.Skipf("git indisponível: %v (%s)", err, string(out))
+		}
+		writeTestFile(t, workdir, "app.go", "package main\n")
+		writeTestFile(t, workdir, ".env-empresa", "TOKEN=segredo\n")
+		writeTestFile(t, workdir, "credential_gemini_backup.json", `{"key":"segredo"}`)
+
+		isoDir, cleanup, err := createIsolationEnv(context.Background(), workdir)
+		if err != nil {
+			t.Fatalf("createIsolationEnv falhou no fallback: %v", err)
+		}
+		defer cleanup()
+		if _, err := os.Stat(filepath.Join(isoDir, "app.go")); err != nil {
+			t.Fatalf("app.go deveria existir no fallback: %v", err)
+		}
+		for _, bad := range []string{".env-empresa", "credential_gemini_backup.json"} {
+			if _, err := os.Stat(filepath.Join(isoDir, bad)); !os.IsNotExist(err) {
+				t.Errorf("credencial %q vazou no fallback de git worktree", bad)
+			}
+		}
+	})
+
+	t.Run("BloqueiaCredenciaisEmContextIn", func(t *testing.T) {
+		src := t.TempDir()
+		dst := t.TempDir()
+		writeTestFile(t, src, ".env-empresa", "TOKEN=abc")
+		writeTestFile(t, src, "credential_gemini_backup.json", "{}")
+		for _, bad := range []string{".env-empresa", "credential_gemini_backup.json", "."} {
+			if err := injectContextIn(src, dst, []string{bad}); err == nil {
+				t.Errorf("injectContextIn deveria bloquear %q", bad)
+			}
+		}
+	})
+
+	t.Run("PropagaErrosCopyPathEPromoteArtifact", func(t *testing.T) {
+		src := t.TempDir()
+		dst := t.TempDir()
+		err := copyPath(filepath.Join(src, "nao-existe.txt"), filepath.Join(dst, "nao-existe.txt"))
+		if err == nil || !os.IsNotExist(err) {
+			t.Fatalf("copyPath deveria propagar erro de arquivo ausente, obteve: %v", err)
+		}
+		for _, badArt := range []string{"../fora.txt", "C:drive.txt", ".env-vazamento", "credential_x.json", "ausente.txt"} {
+			if err := promoteArtifact(src, dst, badArt); err == nil {
+				t.Errorf("promoteArtifact deveria falhar para %q", badArt)
+			}
+		}
+		writeTestFile(t, src, "sub/ok.txt", "ok")
+		if err := promoteArtifact(src, dst, "sub"); err == nil || !strings.Contains(err.Error(), "diretório") {
+			t.Errorf("promoteArtifact deveria falhar para diretório, obteve: %v", err)
+		}
+	})
 }

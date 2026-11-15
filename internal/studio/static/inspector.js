@@ -71,10 +71,40 @@ function modeSwitch(node) {
   ], node.routing.mode, (mode) => setMode(node, mode));
 }
 
+const CERTIFIED_COMBOS = [
+  "t-codigo-128k",
+  "t-agente-128k",
+  "t-raciocinio-128k",
+  "t-chat-128k",
+  "t-visao-128k",
+  "t-micro-8k",
+];
+
+const LEGACY_COMBO_MAP = {
+  "code-pro": "t-codigo-128k",
+  "code-fast": "t-chat-128k",
+  "fast": "t-chat-128k",
+  "code-free": "t-agente-128k",
+  "task-micro": "t-micro-8k",
+  "megacombo-coding": "t-codigo-128k",
+  "megacombo-reasoning": "t-raciocinio-128k",
+  "megacombo-vision": "t-visao-128k",
+};
+
+function resolveComboName(name) {
+  if (!name) return "";
+  return LEGACY_COMBO_MAP[name] || name;
+}
+
 function setMode(node, mode) {
   const block = blockOf(node);
   if (mode === "auto") {
-    node.routing = { mode, combo: modelIds("9router")[0] || "" };
+    const current = resolveComboName(node.routing?.combo || block?.suggested_model);
+    const routerFirst = resolveComboName(modelIds("9router")[0] || "");
+    const chosen = CERTIFIED_COMBOS.includes(current)
+      ? current
+      : (CERTIFIED_COMBOS.includes(routerFirst) ? routerFirst : CERTIFIED_COMBOS[0]);
+    node.routing = { mode, combo: chosen };
   } else {
     const base = defaultRouting(block);
     node.routing = { mode, model: node.routing.model || base.model, fallback: mode === "suggested" ? base.fallback : "" };
@@ -89,23 +119,28 @@ function onRoutingChanged(node) {
 }
 
 const COMBO_HONESTO_SPECS = {
-  "t-codigo-128k": { teto: "128k", tools: "Sim", modelos: "Codestral / Nemotron / Llama", desc: "Desenvolvimento e refatoração com suporte a ferramentas" },
-  "t-chat-128k": { teto: "128k", tools: "Sim", modelos: "Ministral 3B / Llama 4 Scout / Gemini Lite", desc: "Interação rápida e síntese conversacional" },
-  "t-raciocinio-128k": { teto: "128k", tools: "Não", modelos: "Dots 3 Note / DeepSeek R1", desc: "Raciocínio lógico e dedução sem chamadas externas" },
-  "t-visao-128k": { teto: "128k", tools: "Sim", modelos: "Llama 4 Scout / Gemini Lite", desc: "Inspeção multimodal e análise visual" },
-  "t-agente-128k": { teto: "128k", tools: "Sim", modelos: "Codestral / Nemotron Nano", desc: "Autonomia com loop fechado e ferramentas ativas" },
-  "t-micro-8k": { teto: "8k", tools: "Não", modelos: "Groq Llama 3.3 70B", desc: "Tarefas microscópicas com barreira estrita de 8k" },
+  "t-codigo-128k": { teto: "128k", tools: "Não", modelos: "Codestral / North Mini Code / Mistral Code", desc: "Geração e edição de código sem ferramentas" },
+  "t-agente-128k": { teto: "128k", tools: "Sim", modelos: "Ministral 3B / Gemini 3.5 Lite / Nemotron Nano / Llama 4 Scout", desc: "Agentes autônomos com suporte a ferramentas e chamadas de função" },
+  "t-raciocinio-128k": { teto: "128k", tools: "Não", modelos: "Gemini 3.5 Lite / Nemotron Nano / GPT-OSS / Gemini 3 Flash", desc: "Raciocínio complexo e inferência lógica de alto contexto" },
+  "t-chat-128k": { teto: "128k", tools: "Não", modelos: "Codestral / Gemini 3.5 Lite / Nemotron / Llama 4 Scout / Ministral 3B", desc: "Chat geral de alto contexto sem exigência de ferramentas" },
+  "t-visao-128k": { teto: "128k", tools: "Não", modelos: "Ministral 3B / Nemotron 3.5 VL / Dots 3 Note", desc: "Processamento multimodal e análise visual" },
+  "t-micro-8k": { teto: "8k", tools: "Não", modelos: "Groq GPT-OSS 120B / Groq GPT-OSS 20B", desc: "Requisições rápidas de baixo contexto (teto 8k)" },
 };
 
 function routingFields(node) {
   const r = node.routing;
   const out = [];
   if (r.mode === "auto") {
-    const defaultCombos = ["t-codigo-128k", "t-chat-128k", "t-agente-128k", "t-raciocinio-128k", "t-visao-128k", "t-micro-8k"];
-    const routerCombos = modelIds("9router");
-    const options = Array.from(new Set([...defaultCombos, ...routerCombos]));
-    out.push(selectField("Combo Honesto (9Router)", r.combo, options, (v) => { r.combo = v; onRoutingChanged(node); }));
-    const spec = COMBO_HONESTO_SPECS[r.combo] || { teto: "128k", tools: "Sim", modelos: "Auto", desc: "Combo certificado contra erro 413" };
+    const mapped = resolveComboName(r.combo);
+    if (CERTIFIED_COMBOS.includes(mapped)) {
+      r.combo = mapped;
+    } else if (!r.combo) {
+      r.combo = CERTIFIED_COMBOS[0];
+    }
+    const routerCombos = modelIds("9router").map(resolveComboName).filter(Boolean);
+    const options = Array.from(new Set([...CERTIFIED_COMBOS, ...routerCombos]));
+    out.push(selectField("Combo Honesto (9Router)", r.combo, options, (v) => { r.combo = resolveComboName(v); onRoutingChanged(node); }));
+    const spec = COMBO_HONESTO_SPECS[r.combo] || { teto: "128k", tools: "Não", modelos: "Auto", desc: "Combo certificado contra erro 413" };
     const card = el("div", "combo-info-card");
     card.append(
       el("div", "combo-info-header", `Teto: ${spec.teto} · Tools: ${spec.tools}`),
@@ -245,12 +280,22 @@ function triggerFields(node) {
       }));
       out.push(el("p", "note", "Dispara a esteira sempre que arquivos no caminho sofrerem alteração."));
       break;
+    case "trigger_processo_fim":
     case "trigger_loop_end":
-      out.push(textField("Loop anterior (Loop ID)", cfg.loop || "", "ex: pipeline-master", (v) => {
-        cfg.loop = v;
+      out.push(textField("Processo anterior (ID)", cfg.processo || cfg.loop || "upstream", "ex: upstream", (v) => {
+        const val = v.trim();
+        if (block.kind === "trigger_loop_end" || cfg.type === "loop_end") {
+          cfg.type = "loop_end";
+          cfg.loop = val;
+          delete cfg.processo;
+        } else {
+          cfg.type = "processo_fim";
+          cfg.processo = val;
+          delete cfg.loop;
+        }
         clearValidation();
       }));
-      out.push(el("p", "note", "Dispara ao término com sucesso do loop especificado."));
+      out.push(el("p", "note", "Dispara ao término com sucesso do processo especificado (padrão: upstream)."));
       break;
     case "trigger_board":
       out.push(textField("Coluna / Evento do Kanban", cfg.board || "backlog", "ex: ready", (v) => {
@@ -315,7 +360,7 @@ function renderNodePanel(body, node) {
     children.push(kv("Handoff imutável", block.artifact), kv("Gate", block.gate));
   }
   children.push(modeSwitch(node), ...routingFields(node));
-  if (!node.piece) {
+  if (!node.piece && node.routing?.mode !== "auto" && block.suggested_model) {
     children.push(el("p", "note", hasModel(block.suggested_model)
       ? `Sugestão de benchmark: ${block.suggested_model}`
       : `Sugestão ${block.suggested_model} não está no inventário desta máquina.`));

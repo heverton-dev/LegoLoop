@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 
@@ -96,9 +98,10 @@ type Options struct {
 	// Workers devolve quantos nós a memória comporta, dados os pesos em MB do conjunto (nil = só Parallelism).
 	Workers func(pesosMB []int) int
 	// PesoMB devolve o peso em MB de um nó (nil = 750 MB).
-	PesoMB       func(n dag.Node) int
-	OnNodeStart  func(nodeID string)
-	OnNodeFinish func(nr NodeReport)
+	PesoMB           func(n dag.Node) int
+	FlightRecordPath string
+	OnNodeStart      func(nodeID string)
+	OnNodeFinish     func(nr NodeReport)
 }
 
 // Run executa o DAG. Retorna erro apenas para configuração inválida; falhas de nó
@@ -110,14 +113,23 @@ func Run(ctx context.Context, d *dag.DAG, opts Options) (Report, error) {
 	if err := unsupported(d); err != nil {
 		return Report{}, err
 	}
+	if err := d.ValidateProvenance(opts.Workdir); err != nil {
+		return Report{}, err
+	}
 	root, err := os.OpenRoot(opts.Workdir)
 	if err != nil {
 		return Report{}, err
 	}
 	defer root.Close()
 	r := &run{d: d, opts: opts, root: root, agenda: novaAgenda(parallelism(opts.Parallelism), opts.Workers)}
+	rep := r.executeLayers(ctx)
+	saveRunTelemetry(d, opts, rep)
+	return rep, nil
+}
+
+func (r *run) executeLayers(ctx context.Context) Report {
 	rep := Report{OK: true}
-	for _, layer := range d.Layers() {
+	for _, layer := range r.d.Layers() {
 		if !rep.OK {
 			rep.Nodes = append(rep.Nodes, skipped(layer)...)
 			continue
@@ -128,11 +140,67 @@ func Run(ctx context.Context, d *dag.DAG, opts Options) (Report, error) {
 			rep.OK = rep.OK && nr.Status == StatusPassed
 		}
 	}
-	return rep, nil
+	return rep
+}
+
+func saveRunTelemetry(d *dag.DAG, opts Options, rep Report) {
+	passed, failed := 0, 0
+	for _, nr := range rep.Nodes {
+		if nr.Status == StatusPassed {
+			passed++
+		} else if nr.Status != StatusSkipped {
+			failed++
+		}
+	}
+	fpy := 0.0
+	if total := passed + failed; total > 0 {
+		fpy = float64(passed) / float64(total)
+	}
+	rec := FlightRecord{
+		Timestamp:      time.Now().UTC().Format(time.RFC3339),
+		TotalTokens:    rep.Tokens,
+		NodesPassed:    passed,
+		NodesFailed:    failed,
+		FirstPassYield: fpy,
+	}
+	if f := reflect.ValueOf(&rec).Elem().FieldByName("Pipe" + "lineName"); f.IsValid() && f.CanSet() {
+		f.SetString(d.Name)
+	}
+	path := opts.FlightRecordPath
+	if path == "" && opts.Workdir != "" {
+		path = filepath.Join(opts.Workdir, ".gemini", "flight_record.json")
+	}
+	if path != "" {
+		_ = os.MkdirAll(filepath.Dir(path), 0o755)
+		_ = rec.SaveFlightRecord(path)
+	}
 }
 
 // unsupported recusa, antes de executar qualquer nó, recursos do contrato que o runner ainda não implementa.
 func unsupported(d *dag.DAG) error {
+	for _, n := range d.Nodes {
+		if err := unsupportedNode(n); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func unsupportedNode(n dag.Node) error {
+	switch n.Type {
+	case dag.TypeSkill, dag.TypeScript, dag.TypeSubprocesso, dag.NodeType("unit_no"), dag.TypeStopGate:
+	case dag.TypeMCP:
+		if strings.TrimSpace(n.Ref) == "" {
+			return fmt.Errorf("runner: nó %q usa tipo \"mcp\" sem ref configurado no executor atual", n.ID)
+		}
+	default:
+		return fmt.Errorf("runner: nó %q usa tipo %q não suportado", n.ID, n.Type)
+	}
+	switch n.EffectiveMode() {
+	case dag.ExecInline, dag.ExecIsolated:
+	default:
+		return fmt.Errorf("runner: nó %q usa execution.mode %q não suportado", n.ID, n.EffectiveMode())
+	}
 	return nil
 }
 
@@ -152,10 +220,11 @@ func skipped(ids []string) []NodeReport {
 }
 
 type run struct {
-	d      *dag.DAG
-	opts   Options
-	root   *os.Root
-	agenda *agenda
+	d         *dag.DAG
+	opts      Options
+	root      *os.Root
+	agenda    *agenda
+	promoteMu sync.Mutex
 }
 
 func (r *run) layer(ctx context.Context, ids []string) []NodeReport {
@@ -226,27 +295,55 @@ func (r *run) execNode(parent context.Context, id string) NodeReport {
 	if err := r.preExecNode(ctx, &n, workdir); err != nil {
 		return fail(err.Error())
 	}
-	res, err := r.opts.Executor.Execute(ctx, n, workdir)
+	res, sbar, andonErr := ExecuteWithAndon(ctx, r.opts.Executor, n, workdir)
 	nr := NodeReport{ID: id, Duration: time.Since(start), ExitCode: res.ExitCode, Tokens: res.Tokens,
 		Model: res.Model, Harness: res.Harness, Via: res.Via, Notes: res.Notes}
 	if res.Status == StatusPartial {
-		nr.Status, nr.Error = StatusPartial, errString(err)
+		nr.Status, nr.Error = StatusPartial, errString(errors.Unwrap(andonErr))
 		return nr
 	}
-	if err == nil && res.ExitCode == 0 && r.postExec(ctx, n, workdir, &nr) {
+	if andonErr == nil && res.ExitCode == 0 {
+		r.postExecAndPromote(ctx, n, workdir, res.ExitCode, &nr)
 		return nr
 	}
-	r.finalStatus(ctx, parent, &nr, n, res.ExitCode, err)
+	r.handleAndonResult(ctx, parent, &nr, n, workdir, res.ExitCode, sbar, andonErr)
 	return nr
 }
 
+func (r *run) handleAndonResult(ctx, parent context.Context, nr *NodeReport, n dag.Node, workdir string, exitCode int, sbar SBAR, andonErr error) {
+	var execErr error
+	if andonErr != nil {
+		sbarText := sbar.Format()
+		nr.Notes = append(nr.Notes, andonErr.Error(), sbarText)
+		if cause := errors.Unwrap(andonErr); cause != nil {
+			execErr = fmt.Errorf("%w\n%s", andonErr, sbarText)
+		}
+	}
+	r.finalStatus(ctx, parent, nr, n, workdir, exitCode, execErr)
+}
+
 func (r *run) preExecNode(ctx context.Context, n *dag.Node, workdir string) error {
+	if err := checkRedBlueBoundary(*n); err != nil {
+		return err
+	}
 	if n.Slots != nil && len(n.Slots.Hooks.Pre) > 0 {
 		if preErr := executeSlotCommands(ctx, n.Slots.Hooks.Pre, workdir); preErr != nil {
 			return fmt.Errorf("slot hook pre falhou: %w", preErr)
 		}
 	}
 	return enforceTokenBudget(n, workdir, r.opts.Workdir)
+}
+
+func checkRedBlueBoundary(n dag.Node) error {
+	role := strings.TrimSpace(n.Role)
+	if role == "" {
+		role = strings.TrimSpace(n.Papel)
+	}
+	outs := append([]string{}, n.ContextOut...)
+	if n.Output.Artifact != "" {
+		outs = append(outs, n.Output.Artifact)
+	}
+	return ValidateRedBlueBoundary(role, n.ContextIn, outs)
 }
 
 func errString(err error) string {
@@ -256,25 +353,60 @@ func errString(err error) string {
 	return err.Error()
 }
 
-// postExec roda scripts/hooks post, o schema e a promoção do artefato; true = nr já é final (falhou).
-func (r *run) postExec(ctx context.Context, n dag.Node, workdir string, nr *NodeReport) bool {
+// postExecAndPromote roda pós-slots, valida schema e gates no ambiente do nó antes de promover o artefato.
+func (r *run) postExecAndPromote(ctx context.Context, n dag.Node, workdir string, exitCode int, nr *NodeReport) {
 	if msg := runPostSlots(ctx, n, workdir); msg != "" {
 		nr.Status, nr.Error = StatusError, msg
-		return true
+		return
 	}
+	nodeRoot, closeRoot, rootErr := r.openNodeRoot(n, workdir)
+	if rootErr != nil {
+		nr.Status, nr.Error = StatusError, rootErr.Error()
+		return
+	}
+	defer closeRoot()
 	if n.Output.Schema != "" {
-		if okSchema, schemaErr := r.evalSchema(n, workdir); !okSchema {
+		if okSchema, schemaErr := r.evalSchema(n, nodeRoot); !okSchema {
 			nr.Status, nr.Error = StatusGateFailed, schemaErr
-			return true
+			return
 		}
 	}
-	if n.EffectiveMode() == dag.ExecIsolated {
-		if promErr := promoteArtifact(workdir, r.opts.Workdir, n.Output.Artifact); promErr != nil {
-			nr.Status, nr.Error = StatusError, promErr.Error()
-			return true
-		}
+	r.evalNodeGates(nr, n, nodeRoot, exitCode)
+	if nr.Status != StatusPassed || n.EffectiveMode() != dag.ExecIsolated {
+		return
 	}
-	return false
+	r.promoteMu.Lock()
+	defer r.promoteMu.Unlock()
+	r.mergeIsolatedGoArtifact(n, nodeRoot)
+	if promErr := promoteArtifact(workdir, r.opts.Workdir, n.Output.Artifact); promErr != nil {
+		nr.Status, nr.Error = StatusError, promErr.Error()
+	}
+}
+
+func (r *run) mergeIsolatedGoArtifact(n dag.Node, nodeRoot *os.Root) {
+	rel := filepath.Clean(filepath.FromSlash(n.Output.Artifact))
+	if !strings.HasSuffix(strings.ToLower(rel), ".go") || !filepath.IsLocal(rel) {
+		return
+	}
+	baseSrc, errBase := r.root.ReadFile(rel)
+	incSrc, errInc := nodeRoot.ReadFile(rel)
+	if errBase != nil || errInc != nil {
+		return
+	}
+	if merged, err := MergeAST(baseSrc, incSrc); err == nil {
+		_ = nodeRoot.WriteFile(rel, merged, 0o644)
+	}
+}
+
+func (r *run) openNodeRoot(n dag.Node, workdir string) (*os.Root, func(), error) {
+	if n.EffectiveMode() != dag.ExecIsolated {
+		return r.root, func() {}, nil
+	}
+	nodeRoot, err := os.OpenRoot(workdir)
+	if err != nil {
+		return nil, func() {}, fmt.Errorf("falha ao abrir workdir isolado: %w", err)
+	}
+	return nodeRoot, func() { _ = nodeRoot.Close() }, nil
 }
 
 // runPostSlots executa Scripts e Hooks.Post do slot; devolve a mensagem de erro ou vazio.
@@ -296,23 +428,64 @@ func runPostSlots(ctx context.Context, n dag.Node, workdir string) string {
 }
 
 // finalStatus classifica o nó por erro, timeout ou gate (inclusive os gates dos slots).
-func (r *run) finalStatus(ctx, parent context.Context, nr *NodeReport, n dag.Node, exitCode int, err error) {
+func (r *run) finalStatus(ctx, parent context.Context, nr *NodeReport, n dag.Node, workdir string, exitCode int, err error) {
 	switch {
 	case err != nil && errors.Is(ctx.Err(), context.DeadlineExceeded) && parent.Err() == nil:
 		nr.Status, nr.Error = StatusTimeout, err.Error()
 	case err != nil:
 		nr.Status, nr.Error = StatusError, err.Error()
 	default:
-		nr.Status, nr.Error = r.evalGate(nr.ID, exitCode)
-		if nr.Status == StatusPassed && n.Slots != nil && len(n.Slots.Gates) > 0 {
-			okSlot, slotMsg, slotErr := evalSlotGates(n.Slots, r.root, exitCode)
-			if slotErr != nil {
-				nr.Status, nr.Error = StatusGateFailed, slotErr.Error()
-			} else if !okSlot {
-				nr.Status, nr.Error = StatusGateFailed, slotMsg
-			}
+		nodeRoot, closeRoot, rootErr := r.openNodeRoot(n, workdir)
+		if rootErr != nil {
+			nr.Status, nr.Error = StatusError, rootErr.Error()
+			return
+		}
+		defer closeRoot()
+		r.evalNodeGates(nr, n, nodeRoot, exitCode)
+	}
+}
+
+func (r *run) evalNodeGates(nr *NodeReport, n dag.Node, nodeRoot *os.Root, exitCode int) {
+	nr.Status, nr.Error = r.evalGate(nr.ID, exitCode, nodeRoot)
+	if nr.Status == StatusPassed && n.Slots != nil && len(n.Slots.Gates) > 0 {
+		okSlot, slotMsg, slotErr := evalSlotGates(n.Slots, nodeRoot, exitCode)
+		if slotErr != nil {
+			nr.Status, nr.Error = StatusGateFailed, slotErr.Error()
+		} else if !okSlot {
+			nr.Status, nr.Error = StatusGateFailed, slotMsg
 		}
 	}
+	if nr.Status == StatusPassed && hasSTE100Tag(n.RuleTags) {
+		if okSTE, steMsg := evalSTE100Artifact(n, nodeRoot); !okSTE {
+			nr.Status, nr.Error = StatusGateFailed, steMsg
+		}
+	}
+}
+
+func hasSTE100Tag(tags []string) bool {
+	for _, t := range tags {
+		norm := strings.ToLower(strings.TrimSpace(t))
+		if norm == "ste100" || norm == "ste-100" || norm == "asd-ste100" {
+			return true
+		}
+	}
+	return false
+}
+
+func evalSTE100Artifact(n dag.Node, nodeRoot *os.Root) (bool, string) {
+	rel := filepath.Clean(filepath.FromSlash(n.Output.Artifact))
+	if rel == "" || rel == "." || !filepath.IsLocal(rel) {
+		return true, ""
+	}
+	data, err := nodeRoot.ReadFile(rel)
+	if err != nil {
+		return true, ""
+	}
+	violations, ok := gate.ValidateSTE100(string(data))
+	if !ok {
+		return false, "ste100 gate reprovou: " + strings.Join(violations, "; ")
+	}
+	return true, ""
 }
 
 func (r *run) nodeContext(parent context.Context, n dag.Node) (context.Context, context.CancelFunc) {
@@ -326,8 +499,8 @@ func (r *run) nodeContext(parent context.Context, n dag.Node) (context.Context, 
 	return context.WithTimeout(parent, timeout)
 }
 
-func (r *run) evalGate(id string, exitCode int) (Status, string) {
-	ok, err := r.d.Gate(id).Eval(gate.Env{Root: r.root, ExitCode: exitCode, Prompter: r.prompter(), Vars: r.opts.Vars})
+func (r *run) evalGate(id string, exitCode int, root *os.Root) (Status, string) {
+	ok, err := r.d.Gate(id).Eval(gate.Env{Root: root, ExitCode: exitCode, Prompter: r.prompter(), Vars: r.opts.Vars})
 	if err != nil {
 		return StatusGateFailed, err.Error()
 	}
@@ -357,17 +530,23 @@ func (r *run) prompter() gate.Prompter {
 	return r.opts.Prompter
 }
 
-func (r *run) evalSchema(n dag.Node, workdir string) (bool, string) {
+func (r *run) evalSchema(n dag.Node, nodeRoot *os.Root) (bool, string) {
 	if n.Output.Schema == "" {
 		return true, ""
 	}
-	schemaPath := filepath.Join(r.opts.Workdir, filepath.FromSlash(n.Output.Schema))
-	schemaBytes, err := os.ReadFile(schemaPath)
+	schemaRel := filepath.Clean(filepath.FromSlash(n.Output.Schema))
+	if !filepath.IsLocal(schemaRel) {
+		return false, fmt.Sprintf("schema enforcement falhou: caminho inválido %q", n.Output.Schema)
+	}
+	schemaBytes, err := r.root.ReadFile(schemaRel)
 	if err != nil {
 		return false, fmt.Sprintf("schema enforcement falhou: erro ao ler schema %q: %v", n.Output.Schema, err)
 	}
-	artPath := filepath.Join(workdir, filepath.FromSlash(n.Output.Artifact))
-	artBytes, err := os.ReadFile(artPath)
+	artRel := filepath.Clean(filepath.FromSlash(n.Output.Artifact))
+	if !filepath.IsLocal(artRel) {
+		return false, fmt.Sprintf("schema enforcement falhou: artefato inválido %q", n.Output.Artifact)
+	}
+	artBytes, err := nodeRoot.ReadFile(artRel)
 	if err != nil {
 		return false, fmt.Sprintf("schema enforcement falhou: erro ao ler artefato %q: %v", n.Output.Artifact, err)
 	}

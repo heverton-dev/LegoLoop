@@ -46,7 +46,7 @@
       "type": "script",
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "harness": "claude",
         "via": "9router"
@@ -107,7 +107,7 @@
       ],
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "harness": "claude",
         "via": "9router"
@@ -167,7 +167,7 @@
       ],
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "harness": "claude",
         "via": "9router"
@@ -226,7 +226,7 @@
       ],
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "harness": "claude",
         "via": "9router"
@@ -285,7 +285,7 @@
       ],
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "harness": "claude",
         "via": "9router"
@@ -343,7 +343,7 @@
       ],
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "harness": "claude",
         "via": "9router"

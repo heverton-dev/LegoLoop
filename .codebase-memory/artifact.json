@@ -1,11 +1,12 @@
 {
     "schema_version": 2,
-    "commit": "12e4d649e48a04db49f709f718964877a20cd5cf",
-    "indexed_at": "2026-11-14T14:50:06Z",
+    "commit": "c9271b4eba1641b5dee27d1f7aede109028ee589",
+    "indexed_at": "2026-11-14T21:00:38Z",
     "project": "C-Users-trcnologia-Desktop-LegoLoop",
-    "nodes": 32542,
-    "edges": 70073,
-    "original_size": 123535360,
-    "compressed_size": 14487790,
-    "compression_level": 3
+    "nodes": 33632,
+    "edges": 72081,
+    "original_size": 126550016,
+    "compressed_size": 14894324,
+    "compression_level": 3,
+    "reconcile_basis": "git-clean-head"
 }

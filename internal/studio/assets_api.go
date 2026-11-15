@@ -93,12 +93,13 @@ func (s *Server) home() string {
 	return h
 }
 
-// snapshot devolve o inventário publicado; na primeira chamada faz a varredura inicial.
+// snapshot devolve o inventário publicado; na primeira chamada faz a varredura inicial sem duplicar.
 func (s *Server) snapshot(ctx context.Context) assets.Snapshot {
-	if snap := s.Assets.Snapshot(); snap.Version != 0 {
-		return snap
-	}
-	return s.Assets.Refresh(ctx)
+	return s.Assets.EnsureInitial(ctx)
+}
+
+func extendWriteDeadline(w http.ResponseWriter, d time.Duration) {
+	_ = http.NewResponseController(w).SetWriteDeadline(time.Now().Add(d))
 }
 
 func (s *Server) counts(ctx context.Context, snap assets.Snapshot) map[string]int {
@@ -124,6 +125,7 @@ func (s *Server) handleAssets(w http.ResponseWriter, r *http.Request) {
 		errNoInventory(w)
 		return
 	}
+	extendWriteDeadline(w, 3*time.Minute)
 	writeJSON(w, http.StatusOK, s.summary(r.Context(), s.snapshot(r.Context())))
 }
 
@@ -136,6 +138,7 @@ func (s *Server) handleAssetsRescan(w http.ResponseWriter, r *http.Request) {
 	if !decodeStrict(w, r, &req) {
 		return
 	}
+	extendWriteDeadline(w, 3*time.Minute)
 	writeJSON(w, http.StatusOK, s.summary(r.Context(), s.Assets.Refresh(r.Context())))
 }
 
@@ -144,6 +147,7 @@ func (s *Server) handleAssetsKind(w http.ResponseWriter, r *http.Request) {
 		errNoInventory(w)
 		return
 	}
+	extendWriteDeadline(w, 3*time.Minute)
 	kind := r.PathValue("kind")
 	items, ok := s.itemsOf(r.Context(), kind)
 	if !ok {
@@ -332,21 +336,14 @@ func (s *Server) getPieceRating(it assets.Item, rawPath string) reputation.Piece
 }
 
 func (s *Server) isFavorite(kind, id, name string) bool {
-	vaultDir := s.Vault
+	s.favMu.Lock()
+	defer s.favMu.Unlock()
+	vaultDir := s.studioVaultDir()
 	if vaultDir == "" {
-		home := s.Home
-		if home == "" {
-			home, _ = os.UserHomeDir()
-		}
-		vaultDir = filepath.Join(home, ".aidd", "canonical")
-	}
-	favFile := filepath.Join(vaultDir, "favorites.json")
-	data, err := os.ReadFile(favFile)
-	if err != nil {
 		return false
 	}
-	var favs map[string]bool
-	if err := json.Unmarshal(data, &favs); err != nil {
+	favs, err := readFavoritesMap(filepath.Join(vaultDir, "favorites.json"))
+	if err != nil {
 		return false
 	}
 	return favs[kind+":"+id] || favs[kind+":"+name]

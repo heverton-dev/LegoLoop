@@ -128,7 +128,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-fast",
+        "combo": "t-chat-128k",
         "effort": "medium"
       },
       "token_budget": {
@@ -170,7 +170,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-fast",
+        "combo": "t-chat-128k",
         "effort": "medium"
       },
       "token_budget": {
@@ -212,7 +212,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-fast",
+        "combo": "t-chat-128k",
         "effort": "medium"
       },
       "token_budget": {
@@ -254,7 +254,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-fast",
+        "combo": "t-chat-128k",
         "effort": "low"
       },
       "token_budget": {

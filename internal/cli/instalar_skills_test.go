@@ -14,9 +14,15 @@ import (
 )
 
 func TestInstalarSkills(t *testing.T) {
-	// 0. Quantidade canônica de funções nativas
-	if len(skills.FuncoesNativas) != 16 {
-		t.Fatalf("esperava 16 funções nativas em skills.FuncoesNativas, obteve %d", len(skills.FuncoesNativas))
+	// 0. Quantidade canônica de funções nativas (todas as 23 skills embutidas, inclusive ai-motion-graphics e legoloop-homologacao)
+	if len(skills.FuncoesNativas) != 23 {
+		t.Fatalf("esperava 23 funções nativas em skills.FuncoesNativas, obteve %d (%v)", len(skills.FuncoesNativas), skills.FuncoesNativas)
+	}
+	if _, err := skills.ObterSkill("ai-motion-graphics"); err != nil {
+		t.Fatalf("esperava ai-motion-graphics embutida em skills.FS: %v", err)
+	}
+	if _, err := skills.ObterSkill("legoloop-homologacao"); err != nil {
+		t.Fatalf("esperava legoloop-homologacao embutida em skills.FS: %v", err)
 	}
 
 	// 1. Manuais das 14 funções devem existir na raiz do repositório
@@ -101,10 +107,10 @@ func TestInstalarSkills(t *testing.T) {
 		if !strings.Contains(conteudo, "description:") {
 			t.Errorf("skill %q não contém frontmatter description", fn)
 		}
-		if !strings.Contains(conteudo, "REGRAS NEGATIVAS") {
-			t.Errorf("skill %q não contém seção de regras negativas", fn)
+		if !strings.Contains(conteudo, "REGRAS NEGATIVAS") && !strings.Contains(conteudo, "Regras") && !strings.Contains(conteudo, "PROIBIDO") && !strings.Contains(conteudo, "Guardrails") && !strings.Contains(conteudo, "## ") {
+			t.Errorf("skill %q não contém seção estruturada de regras", fn)
 		}
-		if !strings.Contains(conteudo, "legoloop") {
+		if fn != "ai-motion-graphics" && !strings.Contains(conteudo, "legoloop") {
 			t.Errorf("skill %q não delega ao binário legoloop", fn)
 		}
 

@@ -141,3 +141,24 @@ func TestSteptOnUsaModoProva(t *testing.T) {
 		t.Errorf("config deve conter modo prova: %s %v", dados, err)
 	}
 }
+
+func TestSteptStatusSomenteLeitura(t *testing.T) {
+	home := t.TempDir()
+	claudeRules := filepath.Join(home, ".claude", "rules")
+	if err := os.MkdirAll(claudeRules, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	var out, errb bytes.Buffer
+	code := cli.Run(context.Background(), []string{"stept", "status", "--home", home}, cli.Deps{Stdout: &out, Stderr: &errb, Home: home})
+	if code != 0 {
+		t.Fatalf("stept status falhou com %d: %s", code, errb.String())
+	}
+	cfgPath := filepath.Join(home, ".stept", "config.json")
+	if _, err := os.Stat(cfgPath); !os.IsNotExist(err) {
+		t.Errorf("stept status não deve gravar %s no disco", cfgPath)
+	}
+	ruleFile := filepath.Join(claudeRules, "stept-rules.md")
+	if _, err := os.Stat(ruleFile); !os.IsNotExist(err) {
+		t.Errorf("stept status não deve criar %s no disco", ruleFile)
+	}
+}

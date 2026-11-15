@@ -201,7 +201,7 @@ depends_on      → array de ids (vazio = ponto de entrada)
 routing:
   mode          → "suggested" | "manual" | "auto"
   harness       → "9router" | "antigravity" | "ollama"
-  model         → "code-pro" | "code-fast" | "code-nano"
+  model         → "t-codigo-128k" | "t-agente-128k" | "t-raciocinio-128k" | "t-chat-128k" | "t-visao-128k" | "t-micro-8k"
   effort        → "high" | "medium" | "low"
   fallback:
     harness     → "antigravity" | "ollama"
@@ -224,10 +224,10 @@ output:
 
 | Nature | Effort | model | fallback |
 |--------|--------|-------|---------|
-| `epic` | `high` | `9router/code-pro` | `sonnet` |
-| `micro` | `high` | `9router/code-pro` | `sonnet` |
-| `micro` | `medium` | `9router/code-fast` | `flash` |
-| `nano` | `low` | `9router/code-nano` | `flash-lite` |
+| `epic` | `high` | `9router/t-raciocinio-128k` | `sonnet` |
+| `micro` | `high` | `9router/t-codigo-128k` | `sonnet` |
+| `micro` | `medium` | `9router/t-chat-128k` | `flash` |
+| `nano` | `low` | `9router/t-micro-8k` | `flash-lite` |
 
 ### Regra de Namespacing de Artefatos (Anti-Colisão):
 

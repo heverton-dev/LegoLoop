@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -19,10 +20,27 @@ func defaultBoardDir() string {
 	return wd + "/.legoloop-swarm"
 }
 
+func printSwarmUsage(w io.Writer) {
+	fmt.Fprintln(w, "uso: legoloop swarm <add|post|read|wait|status|kill|monitor|ui> [opcoes]")
+	fmt.Fprintln(w, "subcomandos:")
+	fmt.Fprintln(w, "  add      registra worker no enxame (-dir, -agent)")
+	fmt.Fprintln(w, "  post     publica mensagem no quadro (-dir, -from, -msg)")
+	fmt.Fprintln(w, "  read     le mensagens do quadro (-dir, -since)")
+	fmt.Fprintln(w, "  wait     aguarda mensagem para o agente (-dir, -agent, -since)")
+	fmt.Fprintln(w, "  status   exibe status dos workers (-dir)")
+	fmt.Fprintln(w, "  kill     encerra worker do enxame (-dir, -agent)")
+	fmt.Fprintln(w, "  monitor  observa quadro do enxame (-dir)")
+	fmt.Fprintln(w, "  ui       inicia painel web (-addr, -dir, -root)")
+}
+
 func cmdSwarm(ctx context.Context, args []string, d Deps) int {
 	if len(args) == 0 {
-		fmt.Fprintln(d.Stderr, "uso: legoloop swarm <add|post|read|wait|status|kill|monitor> [opcoes]")
+		printSwarmUsage(d.Stderr)
 		return 2
+	}
+	if args[0] == "--help" || args[0] == "-h" || args[0] == "help" {
+		printSwarmUsage(d.Stdout)
+		return 0
 	}
 	sub := map[string]func(context.Context, []string, Deps) int{
 		"add": cmdSwarmAdd, "post": cmdSwarmPost, "read": cmdSwarmRead,

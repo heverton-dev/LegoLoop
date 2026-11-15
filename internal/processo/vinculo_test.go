@@ -136,4 +136,24 @@ func TestVinculo(t *testing.T) {
 			t.Fatal("não pode sobrescrever o que já existe")
 		}
 	})
+
+	t.Run("inclui ~/.gemini/config/skills para Antigravity", func(t *testing.T) {
+		home := t.TempDir()
+		agDir := filepath.Join(home, ".gemini", "config")
+		if err := os.MkdirAll(agDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		hs := processo.DetectarHarnesses(processo.OSFS(), home)
+		wantSkills := filepath.Join(home, ".gemini", "config", "skills")
+		achou := false
+		for _, h := range hs {
+			if h.Skills == wantSkills {
+				achou = true
+				break
+			}
+		}
+		if !achou {
+			t.Fatalf("esperava detectar %s em DetectarHarnesses, obteve %+v", wantSkills, hs)
+		}
+	})
 }

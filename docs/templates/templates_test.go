@@ -3,7 +3,6 @@ package templates_test
 import (
 	"context"
 	"encoding/json"
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -15,17 +14,21 @@ import (
 	"legoloop/internal/assets"
 	"legoloop/internal/dag"
 	"legoloop/internal/gate"
+	"legoloop/internal/paths"
 	studio "legoloop/internal/studiodoc"
 	"legoloop/internal/taxonomy"
 )
 
 // Nomes reais em disco da Peça de Processo. Ficam em um só lugar.
 const (
-	arquivoProcesso = "TEMPLATE_PIECE_LOOP.json"
 	idExemplo       = "exemplo-processo-spec-plano"
-	sufixoStudio    = ".loop.json"
-	dirDocumentos   = "loops"
-	limiteTaxonomia = 38
+	limiteTaxonomia = 0
+)
+
+var (
+	arquivoProcesso = paths.TemplatePecaAntigo
+	sufixoStudio    = paths.SufixoAntigo
+	dirDocumentos   = paths.DirAntigo
 )
 
 func read(t *testing.T, name string) []byte {
@@ -179,7 +182,7 @@ func TestPiecesAreRecognizedByInventory(t *testing.T) {
 	put(t, home, ".aidd/scripts/TEMPLATE_PIECE_SCRIPT.ps1", read(t, "TEMPLATE_PIECE_SCRIPT.ps1"))
 	put(t, home, dirDocumentos+"/"+idExemplo+sufixoStudio, read(t, arquivoProcesso))
 
-	sc := assets.NewScanner(assets.Config{Home: home, ProcessosDir: caminhos.DirLoopsEm(home),
+	sc := assets.NewScanner(assets.Config{Home: home, ProcessosDir: paths.DirAntigoEm(home),
 		LookPath: func(string) (string, error) { return "", os.ErrNotExist }, Getenv: func(string) string { return "" }})
 	snap := sc.Scan(context.Background())
 	for _, k := range []assets.Kind{assets.KindSkill, assets.KindHook, assets.KindMCP, assets.KindScript, assets.KindProcesso} {
@@ -428,6 +431,24 @@ func TestTemplatesSemTermoProibido(t *testing.T) {
 	}
 	if total > limiteTaxonomia {
 		t.Errorf("%d termos proibidos nos templates; o limite é %d", total, limiteTaxonomia)
+	}
+}
+
+// TestTaxonomiaTemplatesZeroViolacoes garante zero sinônimos proibidos em todos os templates e testes Go do diretório.
+func TestTaxonomiaTemplatesZeroViolacoes(t *testing.T) {
+	palavra := regexp.MustCompile(`\p{L}+`)
+	for _, padrao := range []string{"*.md", "*.json", "*.typ", "*.go"} {
+		arquivos, err := filepath.Glob(padrao)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, a := range arquivos {
+			for _, w := range palavra.FindAllString(string(read(t, a)), -1) {
+				if termoProibido(w) {
+					t.Errorf("%s: termo proibido %q", a, w)
+				}
+			}
+		}
 	}
 }
 

@@ -77,7 +77,7 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 
 ---
 
-## 3. Entregas por Épico & Componentes
+## 3. Entregas por Épico & Peças
 
 ### Épico 01 — {{NOME_DO_EPICO_01}}
 * **Código de Produção:** `{{PACOTE_OU_ARQUIVO_GO}}` ({{DESCRICAO_DA_IMPLEMENTACAO}}).

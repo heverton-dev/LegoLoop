@@ -2,7 +2,34 @@
 // (consome/produz), índice de compatibilidade de portas e cálculo de rota ótima.
 package graph
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+
+	"legoloop/internal/dag"
+)
+
+const (
+	KindTriggerManual      = "trigger_manual"
+	KindTriggerCron        = "trigger_cron"
+	KindTriggerFileChange  = "trigger_file_change"
+	KindTriggerProcessoFim = "trigger_" + string(dag.TriggerProcessoFim)
+	KindTriggerFimLegado   = "trigger_" + string(dag.TriggerFimLegado)
+	KindTriggerBoard       = "trigger_board"
+)
+
+// IsTriggerKind informa se o tipo representa uma peça de gatilho.
+func IsTriggerKind(kind string) bool {
+	return strings.HasPrefix(kind, "trigger_")
+}
+
+// CanonicalTriggerKind normaliza aliases legados de gatilho para o termo canônico.
+func CanonicalTriggerKind(kind string) string {
+	if kind == KindTriggerFimLegado {
+		return KindTriggerProcessoFim
+	}
+	return kind
+}
 
 // ArtifactType é o tipo de uma porta (entrada ou saída) de peça.
 type ArtifactType string
@@ -91,19 +118,19 @@ func ControlBlocks() []Block {
 // TriggerBlocks retorna os gatilhos formais do contrato DAG v2 para o início de Processos no Studio.
 func TriggerBlocks() []Block {
 	return []Block{
-		{ID: "trigger-manual", Label: "Disparo Manual", Ref: "core/trigger-manual", Kind: "trigger_manual",
+		{ID: "trigger-manual", Label: "Disparo Manual", Ref: "core/trigger-manual", Kind: KindTriggerManual,
 			Consumes: []ArtifactType{}, Produces: Idea,
 			Artifact: "TRIGGER_MANUAL.json", Gate: "file_exists('TRIGGER_MANUAL.json')", Cost: 1},
-		{ID: "trigger-cron", Label: "Agendador Cron", Ref: "core/trigger-cron", Kind: "trigger_cron",
+		{ID: "trigger-cron", Label: "Agendador Cron", Ref: "core/trigger-cron", Kind: KindTriggerCron,
 			Consumes: []ArtifactType{}, Produces: Idea,
 			Artifact: "TRIGGER_CRON.json", Gate: "file_exists('TRIGGER_CRON.json')", Cost: 1},
-		{ID: "trigger-file-change", Label: "Observador de Arquivo", Ref: "core/trigger-file-change", Kind: "trigger_file_change",
+		{ID: "trigger-file-change", Label: "Observador de Arquivo", Ref: "core/trigger-file-change", Kind: KindTriggerFileChange,
 			Consumes: []ArtifactType{}, Produces: Idea,
 			Artifact: "TRIGGER_FILE.json", Gate: "file_exists('TRIGGER_FILE.json')", Cost: 1},
-		{ID: "trigger-processo-fim", Label: "Encadeamento de Processo", Ref: "core/trigger-processo-fim", Kind: "trigger_processo_fim",
+		{ID: "trigger-processo-fim", Label: "Encadeamento de Processo", Ref: "core/trigger-processo-fim", Kind: KindTriggerProcessoFim,
 			Consumes: []ArtifactType{}, Produces: Idea,
 			Artifact: "TRIGGER_PROCESSO.json", Gate: "file_exists('TRIGGER_PROCESSO.json')", Cost: 1},
-		{ID: "github-board-trigger", Label: "Trigger: GitHub Board Kanban", Ref: "core/trigger-github-board", Kind: "trigger_board",
+		{ID: "github-board-trigger", Label: "Trigger: GitHub Board Kanban", Ref: "core/trigger-github-board", Kind: KindTriggerBoard,
 			Consumes: []ArtifactType{}, Produces: Spec,
 			Artifact: "WAVE_PLAN.json", Gate: "file_exists('WAVE_PLAN.json')", Cost: 2, SuggestedModel: "flash"},
 	}

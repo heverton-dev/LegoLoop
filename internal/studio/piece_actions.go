@@ -1,11 +1,14 @@
 package studio
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"legoloop/internal/reputation"
@@ -22,31 +25,57 @@ func (s *Server) handlePieceFavorite(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "kind e id são obrigatórios", http.StatusBadRequest)
 		return
 	}
-	newStatus := s.toggleFavorite(kind + ":" + id)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{"kind": kind, "id": id, "favorited": newStatus})
+	newStatus, err := s.toggleFavorite(kind + ":" + id)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "falha ao atualizar favorito: "+err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"kind": kind, "id": id, "favorited": newStatus})
 }
 
-// toggleFavorite alterna a chave em favorites.json do Cofre canônico e devolve o novo estado.
-func (s *Server) toggleFavorite(key string) bool {
-	vaultDir := s.Vault
+// toggleFavorite alterna a chave em favorites.json do Cofre canônico com exclusão mútua e tratamento real de erro.
+func (s *Server) toggleFavorite(key string) (bool, error) {
+	s.favMu.Lock()
+	defer s.favMu.Unlock()
+	vaultDir := s.studioVaultDir()
 	if vaultDir == "" {
-		home := s.Home
-		if home == "" {
-			home, _ = os.UserHomeDir()
-		}
-		vaultDir = filepath.Join(home, ".aidd", "canonical")
+		return false, errors.New("cofre canônico não disponível")
 	}
-	_ = os.MkdirAll(vaultDir, 0755)
+	if err := os.MkdirAll(vaultDir, 0o755); err != nil {
+		return false, fmt.Errorf("falha ao criar diretório do cofre: %w", err)
+	}
 	favFile := filepath.Join(vaultDir, "favorites.json")
-	favs := make(map[string]bool)
-	if data, err := os.ReadFile(favFile); err == nil {
-		_ = json.Unmarshal(data, &favs)
+	favs, err := readFavoritesMap(favFile)
+	if err != nil {
+		return false, err
 	}
 	favs[key] = !favs[key]
-	favBytes, _ := json.MarshalIndent(favs, "", "  ")
-	_ = os.WriteFile(favFile, favBytes, 0644)
-	return favs[key]
+	favBytes, err := json.MarshalIndent(favs, "", "  ")
+	if err != nil {
+		return false, fmt.Errorf("falha ao serializar favorites.json: %w", err)
+	}
+	if err := writeAtomic(vaultDir, "favorites.json", favBytes); err != nil {
+		return false, fmt.Errorf("falha ao gravar favorites.json: %w", err)
+	}
+	return favs[key], nil
+}
+
+func readFavoritesMap(favFile string) (map[string]bool, error) {
+	favs := make(map[string]bool)
+	data, err := os.ReadFile(favFile)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return favs, nil
+		}
+		return nil, fmt.Errorf("falha ao ler favorites.json: %w", err)
+	}
+	if len(bytes.TrimSpace(data)) == 0 {
+		return favs, nil
+	}
+	if err := json.Unmarshal(data, &favs); err != nil {
+		return nil, fmt.Errorf("favorites.json corrompido: %w", err)
+	}
+	return favs, nil
 }
 
 // findPiecePath localiza o arquivo físico da peça no inventário (vazio se ausente).
@@ -62,7 +91,7 @@ func (s *Server) findPiecePath(kind, id string) string {
 	return ""
 }
 
-// handlePieceUpgrade dispara o início do subprocesso de elevação para Padrão Ouro.
+// handlePieceUpgrade dispara o início do sub-processo de elevação para Padrão Ouro.
 func (s *Server) handlePieceUpgrade(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "método não permitido", http.StatusMethodNotAllowed)
@@ -79,7 +108,6 @@ func (s *Server) handlePieceUpgrade(w http.ResponseWriter, r *http.Request) {
 			rating = scored
 		}
 	}
-	// Inicia a entrevista socrática de elevação com o Addy Osmani
 	engine := s.getInterviewEngine(r.Context())
 	initialIdea := fmt.Sprintf("Elevar a peça %s/%s (Score Atual: %.2f - Tier: %s) para o Padrão Ouro (Score >= 0.85).",
 		kind, id, rating.TotalScore, rating.Tier)
@@ -88,8 +116,7 @@ func (s *Server) handlePieceUpgrade(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "falha ao iniciar entrevista de elevação: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{
+	writeJSON(w, http.StatusOK, map[string]any{
 		"status":         "UPGRADE_INITIATED",
 		"target_piece":   id,
 		"current_rating": rating,
@@ -106,7 +133,7 @@ func (s *Server) handlePieceDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	kind, id := r.PathValue("kind"), r.PathValue("id")
-	mode := r.URL.Query().Get("mode") // "local" ou "full"
+	mode := r.URL.Query().Get("mode")
 	if mode == "" {
 		mode = "local"
 	}
@@ -119,29 +146,91 @@ func (s *Server) handlePieceDelete(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, status)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{"status": "DELETED", "mode": mode, "eliminated": id})
+	writeJSON(w, http.StatusOK, map[string]any{"status": "DELETED", "mode": mode, "eliminated": id})
 }
 
-// eliminatePiece aplica o modo de eliminação; devolve status HTTP != 0 e mensagem se falhar.
+// eliminatePiece aplica o modo de eliminação com Path Jail estrito; devolve status HTTP != 0 e mensagem se falhar.
 func (s *Server) eliminatePiece(mode, targetPath, id string) (int, string) {
 	switch mode {
 	case "full":
-		// Eliminação completa do disco (expurgo profundo)
-		targetDir := targetPath
-		if !strings.EqualFold(filepath.Base(targetPath), id) {
-			targetDir = filepath.Dir(targetPath)
-		}
-		if err := os.RemoveAll(targetDir); err != nil {
-			return http.StatusInternalServerError, "falha ao eliminar arquivo físico: " + err.Error()
-		}
+		return s.eliminateFull(targetPath, id)
 	case "local":
-		// Eliminação a nível de projeto (remove do índice local)
-		if strings.HasPrefix(targetPath, s.ProjectDir) {
-			_ = os.Remove(targetPath)
-		}
+		return s.eliminateLocal(targetPath)
 	default:
 		return http.StatusBadRequest, "modo de eliminação inválido (use 'local' ou 'full')"
 	}
+}
+
+func (s *Server) eliminateFull(targetPath, id string) (int, string) {
+	target := targetPath
+	if !strings.EqualFold(filepath.Base(targetPath), id) {
+		target = filepath.Dir(targetPath)
+	}
+	rootDir, rel, ok := matchSubpathInRoots(target, s.deleteRoots())
+	if !ok {
+		return http.StatusForbidden, "path jail: exclusão fora do projeto ou cofre bloqueada"
+	}
+	if _, _, err := resolveInRoot(rootDir, rel, false); err != nil {
+		return http.StatusForbidden, "path jail: " + err.Error()
+	}
+	root, err := os.OpenRoot(rootDir)
+	if err != nil {
+		return http.StatusInternalServerError, "falha ao abrir raiz de exclusão: " + err.Error()
+	}
+	defer root.Close()
+	if err := root.RemoveAll(rel); err != nil {
+		return http.StatusInternalServerError, "falha ao eliminar arquivo físico: " + err.Error()
+	}
 	return 0, ""
+}
+
+func (s *Server) eliminateLocal(targetPath string) (int, string) {
+	rootDir, rel, ok := matchSubpathInRoots(targetPath, []string{s.ProjectDir})
+	if !ok {
+		return http.StatusForbidden, "path jail: exclusão local permitida apenas dentro do projeto"
+	}
+	if _, _, err := resolveInRoot(rootDir, rel, false); err != nil {
+		return http.StatusForbidden, "path jail: " + err.Error()
+	}
+	root, err := os.OpenRoot(rootDir)
+	if err != nil {
+		return http.StatusInternalServerError, "falha ao abrir raiz do projeto: " + err.Error()
+	}
+	defer root.Close()
+	if err := root.Remove(rel); err != nil {
+		return http.StatusInternalServerError, "falha ao remover arquivo local: " + err.Error()
+	}
+	return 0, ""
+}
+
+func (s *Server) deleteRoots() []string {
+	var out []string
+	for _, dir := range []string{s.ProjectDir, s.studioVaultDir()} {
+		if dir == "" {
+			continue
+		}
+		clean := filepath.Clean(dir)
+		if !slices.Contains(out, clean) {
+			out = append(out, clean)
+		}
+	}
+	return out
+}
+
+func matchSubpathInRoots(target string, roots []string) (string, string, bool) {
+	if strings.TrimSpace(target) == "" || strings.Contains(target, "..") {
+		return "", "", false
+	}
+	cleanTarget := filepath.Clean(target)
+	for _, base := range roots {
+		if base == "" {
+			continue
+		}
+		cleanBase := filepath.Clean(base)
+		rel, err := filepath.Rel(cleanBase, cleanTarget)
+		if err == nil && rel != "." && filepath.IsLocal(rel) {
+			return cleanBase, rel, true
+		}
+	}
+	return "", "", false
 }

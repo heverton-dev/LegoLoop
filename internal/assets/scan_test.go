@@ -191,3 +191,78 @@ func TestCacheDoesNotMixParsersReadingTheSameFile(t *testing.T) {
 		}
 	}
 }
+
+func TestScannerIgnoresTrashAndVaultTerceiros(t *testing.T) {
+	cfg, home, project := testCfg(t)
+	write(t, filepath.Join(home, ".claude", "skills", "valida", "SKILL.md"), "---\nname: valida\n---\n")
+	write(t, filepath.Join(home, ".claude", "skills", ".trash", "lixo", "SKILL.md"), "---\nname: lixo\n---\n")
+	write(t, filepath.Join(home, ".claude", "skills", ".vault_terceiros", "terceiro", "SKILL.md"), "---\nname: terceiro\n---\n")
+	write(t, filepath.Join(project, "scripts", ".trash", "ignorado.sh"), "echo lixo")
+	write(t, filepath.Join(project, "scripts", ".vault_terceiros", "ignorado2.sh"), "echo terceiro")
+
+	snap := NewScanner(cfg).Scan(t.Context())
+	skills := snap.Of(KindSkill)
+	if len(skills) != 1 || skills[0].Name != "valida" {
+		t.Fatalf("esperava apenas skill 'valida' (ignorando .trash e .vault_terceiros), obteve %+v", skills)
+	}
+	if scripts := snap.Of(KindScript); len(scripts) != 0 {
+		t.Fatalf("esperava 0 scripts (ignorando .trash e .vault_terceiros), obteve %+v", scripts)
+	}
+}
+
+func TestEnsureInitialAvoidsRedundantScan(t *testing.T) {
+	var calls atomic.Int32
+	cfg := Config{
+		Home:     t.TempDir(),
+		Projects: []string{t.TempDir()},
+		Getenv:   func(string) string { return "" },
+		LookPath: func(n string) (string, error) {
+			if n == "git" {
+				calls.Add(1)
+				time.Sleep(12 * time.Millisecond)
+				return "/usr/bin/git", nil
+			}
+			return "", os.ErrNotExist
+		},
+	}
+	w := NewWatcher(NewScanner(cfg), time.Hour)
+	ctx, cancel := context.WithCancel(t.Context())
+	defer cancel()
+	w.Start(ctx)
+	deadline := time.Now().Add(time.Second)
+	for calls.Load() == 0 && time.Now().Before(deadline) {
+		time.Sleep(time.Millisecond)
+	}
+	snap := w.EnsureInitial(ctx)
+	if snap.Version == 0 {
+		t.Fatal("EnsureInitial deve retornar snapshot inicial publicado")
+	}
+	if got := calls.Load(); got > 2 {
+		t.Fatalf("varredura duplicada detectada: git LookPath chamado %d vezes (max 2 numa varredura)", got)
+	}
+}
+
+func TestScanBinariesRunsConcurrently(t *testing.T) {
+	var inFlight, maxConcurrent atomic.Int32
+	cfg := Config{
+		Home:     t.TempDir(),
+		Projects: []string{t.TempDir()},
+		Getenv:   func(string) string { return "" },
+		LookPath: func(string) (string, error) {
+			cur := inFlight.Add(1)
+			for {
+				prev := maxConcurrent.Load()
+				if cur <= prev || maxConcurrent.CompareAndSwap(prev, cur) {
+					break
+				}
+			}
+			time.Sleep(15 * time.Millisecond)
+			inFlight.Add(-1)
+			return "", os.ErrNotExist
+		},
+	}
+	NewScanner(cfg).Scan(t.Context())
+	if maxConcurrent.Load() < 8 {
+		t.Fatalf("esperava LookPath concorrente em scanBinaries (>=8 em voo), max=%d", maxConcurrent.Load())
+	}
+}

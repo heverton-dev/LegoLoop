@@ -13,6 +13,8 @@ const (
 	ArquivoDAG = caminhos.ArquivoDAG
 	// SufixoAntigo é a extensão do documento do Studio no dialeto antigo.
 	SufixoAntigo = caminhos.SufixoLoop
+	// TemplatePecaAntigo é o arquivo de template de Processo no dialeto antigo.
+	TemplatePecaAntigo = caminhos.TemplatePecaAntigo
 	// DirProcessos é a pasta dos Processos no dialeto novo.
 	DirProcessos = caminhos.DirProcessos
 	// ArquivoProcessoDAG é o arquivo do contrato DAG no dialeto novo.

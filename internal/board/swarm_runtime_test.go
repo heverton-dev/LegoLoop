@@ -2,13 +2,15 @@ package board
 
 import (
 	"context"
+	"os"
 	"runtime"
 	"testing"
 	"time"
 )
 
 func TestSetWorkerModelAndSpawnWorker(t *testing.T) {
-	sb, err := OpenSwarmBoard(t.TempDir())
+	boardRoot := t.TempDir()
+	sb, err := OpenSwarmBoard(boardRoot)
 	if err != nil {
 		t.Fatalf("OpenSwarmBoard: %v", err)
 	}
@@ -28,11 +30,11 @@ func TestSetWorkerModelAndSpawnWorker(t *testing.T) {
 		t.Fatalf("expected model m2, got %q", updated.Model)
 	}
 
-	cmdArgs := []string{"sh", "-c", "sleep 0.1"}
+	cmdArgs := []string{"sh", "-c", "sleep 5"}
 	if runtime.GOOS == "windows" {
-		cmdArgs = []string{"cmd", "/c", "ping -n 1 127.0.0.1 >nul"}
+		cmdArgs = []string{"cmd", "/c", "ping -n 6 127.0.0.1 >nul"}
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	pid, err := sb.SpawnWorker(ctx, "w1", cmdArgs)
@@ -41,5 +43,16 @@ func TestSetWorkerModelAndSpawnWorker(t *testing.T) {
 	}
 	if pid <= 0 {
 		t.Fatalf("expected positive pid, got %d", pid)
+	}
+	t.Cleanup(func() { _ = sb.KillWorker("w1", "") })
+
+	if err := sb.KillWorker("w1", ""); err != nil {
+		t.Fatalf("KillWorker: %v", err)
+	}
+	if isOSProcessAlive(pid) {
+		t.Fatalf("processo %d ainda ativo apos KillWorker", pid)
+	}
+	if err := os.RemoveAll(boardRoot); err != nil {
+		t.Fatalf("vazamento impediu remocao de boardRoot: %v", err)
 	}
 }

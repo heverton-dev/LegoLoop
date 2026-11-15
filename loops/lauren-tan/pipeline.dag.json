@@ -101,7 +101,7 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "high",
-        "fallback": "code-pro",
+        "fallback": "t-codigo-128k",
         "harness": "claude",
         "via": "9router"
       },
@@ -154,7 +154,7 @@
       "ref": "skills/aidd-lauren",
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": "haiku",
         "harness": "claude",
@@ -211,7 +211,7 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "high",
-        "fallback": "code-pro",
+        "fallback": "t-codigo-128k",
         "harness": "claude",
         "via": "9router"
       },

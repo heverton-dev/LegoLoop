@@ -17,13 +17,13 @@
 
 {{CONTEUDO_ETAPA_2}}
 
-## 3. Etapa `e03`: `out/03_etapa.md` (skill `legoloop-mega-pipeline`)
+## 3. Etapa `e03`: `out/03_etapa.md` (skill `legoloop-fabricar`)
 
 * **Gate:** `file_exists('out/03_etapa.md') && word_count('out/03_etapa.md') >= 30 && !has_pattern('out/03_etapa.md', '\{\{')`
 
 {{CONTEUDO_ETAPA_3}}
 
-## 4. Etapa `e04`: `out/04_etapa.md` (skill `aidd-legoloop-mega-pipeline`)
+## 4. Etapa `e04`: `out/04_etapa.md` (skill `aidd-spec`)
 
 * **Gate:** `file_exists('out/04_etapa.md') && word_count('out/04_etapa.md') >= 30 && !has_pattern('out/04_etapa.md', '\{\{')`
 

@@ -6,7 +6,23 @@ import (
 	"path/filepath"
 )
 
-// DiscoverBoards localiza diretórios de quadros Swarm ativos.
+func findProjectBoardDir(projDir string) string {
+	candidates := []string{
+		filepath.Join(projDir, ".legoloop-swarm", "swarm.json"),
+		filepath.Join(projDir, ".legoloop-swarm", "swarm_board.json"),
+		filepath.Join(projDir, ".swarm", "swarm.json"),
+		filepath.Join(projDir, ".swarm", "swarm_board.json"),
+		filepath.Join(projDir, "swarm_board.json"),
+	}
+	for _, p := range candidates {
+		if info, err := os.Stat(p); err == nil && !info.IsDir() {
+			return filepath.Join(projDir, ".legoloop-swarm")
+		}
+	}
+	return ""
+}
+
+// DiscoverBoards localiza quadros Swarm em .legoloop-swarm/ e caminhos legados.
 func DiscoverBoards(root, singleDir, procName string) map[string]string {
 	boards := make(map[string]string)
 	if singleDir != "" {
@@ -21,8 +37,7 @@ func DiscoverBoards(root, singleDir, procName string) map[string]string {
 		if !e.IsDir() {
 			continue
 		}
-		bdir := filepath.Join(root, e.Name(), ".swarm")
-		if _, err := os.Stat(filepath.Join(bdir, "swarm.json")); err == nil {
+		if bdir := findProjectBoardDir(filepath.Join(root, e.Name())); bdir != "" {
 			boards[e.Name()] = bdir
 		}
 	}
@@ -38,8 +53,14 @@ func BoardsPayload(root, singleDir, procName string) ([]byte, error) {
 		if err != nil {
 			continue
 		}
-		st, _ := sb.Status()
-		msgs, _ := sb.ReadMessages(0, nil)
+		st, err := sb.Status()
+		if err != nil {
+			continue
+		}
+		msgs, err := sb.ReadMessages(0, nil)
+		if err != nil {
+			continue
+		}
 		out[name] = map[string]any{"status": st, "messages": msgs}
 	}
 	return json.Marshal(out)

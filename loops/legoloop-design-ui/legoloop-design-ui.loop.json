@@ -20,7 +20,7 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "medium",
-        "fallback": "code-fast"
+        "fallback": "t-chat-128k"
       },
       "output": {
         "artifact": "out/01_planejar.md",

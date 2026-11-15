@@ -19,7 +19,7 @@
       "depends_on": [],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "internal/triagem",
@@ -40,7 +40,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "internal/fabricar",
@@ -62,7 +62,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "cmd/legoloop",
@@ -83,7 +83,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "processos/",
@@ -104,7 +104,7 @@
       ],
       "routing": {
         "mode": "auto",
-        "combo": "code-pro"
+        "combo": "t-codigo-128k"
       },
       "output": {
         "artifact": "bin/legoloop.exe",

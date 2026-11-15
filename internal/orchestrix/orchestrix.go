@@ -13,13 +13,34 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
+	"legoloop/internal/combo"
 	"legoloop/internal/dag"
 	"legoloop/internal/provider"
 	"legoloop/internal/roteamento"
 	"legoloop/internal/runner"
 	"legoloop/internal/studiodoc"
 )
+
+// AntibodyStore persiste e consulta lições de falhas anteriores sem acoplamento circular.
+type AntibodyStore interface {
+	Record(pkg, errSig, rootCause, diffSol string) error
+	InjectPreventiveContext(pkg string) string
+}
+
+// SpeculativeAttempt executa uma tentativa especulativa isolada.
+type SpeculativeAttempt func(ctx context.Context, prompt string) (string, runner.TokenUsage, error)
+
+// SpeculativeCandidate descreve um candidato rápido ou pesado para hot-swap especulativo.
+type SpeculativeCandidate struct {
+	Name    string
+	Timeout time.Duration
+	Run     SpeculativeAttempt
+}
+
+// SpeculativeRunner encapsula ExecuteSpeculative para failover com contexto negativo.
+type SpeculativeRunner func(ctx context.Context, fast, heavy SpeculativeCandidate, prompt string) (string, string, runner.TokenUsage, error)
 
 // Orchestrix é o despachante. Implementa runner.Executor.
 type Orchestrix struct {
@@ -56,9 +77,28 @@ type Orchestrix struct {
 	Aviso func(string)
 	// MaxOutputBytes limita stdout de subprocessos (0 = maxResponseBytes).
 	MaxOutputBytes int
+	// DefaultTimeout define o timeout herdado por sub-processos e corrida especulativa.
+	DefaultTimeout time.Duration
+	// AutoApprove e NonInteractive propagam flags para sub-processos.
+	AutoApprove    bool
+	NonInteractive bool
+	// Antibodies armazena e injeta anticorpos preventivos no prompt dos nós.
+	Antibodies AntibodyStore
+	// Speculative executa hot-swap especulativo em ModeAuto/ModeSuggested.
+	Speculative SpeculativeRunner
 }
 
 var _ runner.Executor = (*Orchestrix)(nil)
+
+// SetAcervo configura o acervo de sub-processos sem expor termos legados.
+func (o *Orchestrix) SetAcervo(s *studiodoc.Store) {
+	o.LoopStore = s
+}
+
+// PermitirUnitNos ativa consentimento explícito para nós unit_no.
+func (o *Orchestrix) PermitirUnitNos() {
+	o.AllowUnitTasks = true
+}
 
 // Execute despacha o nó conforme seu tipo.
 func (o *Orchestrix) Execute(ctx context.Context, n dag.Node, workdir string) (runner.Result, error) {
@@ -71,6 +111,8 @@ func (o *Orchestrix) Execute(ctx context.Context, n dag.Node, workdir string) (r
 		return o.runSubloop(ctx, n, workdir)
 	case dag.TypeUnitTask:
 		return o.runUnitTask(ctx, n, workdir)
+	case dag.TypeMCP:
+		return o.runMCP(ctx, n, workdir)
 	case dag.TypeStopGate:
 		// Barreira humana: o Execute não faz nada. O runner avalia o prompt do gate depois.
 		return runner.Result{Model: "stop_gate/human"}, nil
@@ -91,27 +133,158 @@ func (o *Orchestrix) runSkill(ctx context.Context, n dag.Node, workdir string) (
 	if err != nil {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
 	}
-	prompt, err := o.buildPrompt(n, root)
+	prompt, err := o.prepareSkillPrompt(n, root)
 	if err != nil {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
 	}
-	var errs []error
-	for _, rt := range routes {
-		text, tokens, err := o.dispatch(ctx, rt.src, rt.model, prompt, n.Routing.Effort)
-		if err == nil {
-			notes := errStrings(errs)
-			if n.Routing.Effort != "" {
-				notes = append(notes, fmt.Sprintf("effort %s aplicado", n.Routing.Effort))
-			}
-			res := runner.Result{Tokens: tokens, Model: string(rt.src) + "/" + rt.model, Notes: notes}
-			return res, writeArtifact(root, n.Output.Artifact, []byte(text))
-		}
-		errs = append(errs, fmt.Errorf("via %s/%s: %w", rt.src, rt.model, err))
-		if ctx.Err() != nil {
-			break // timeout/cancelamento não gasta o fallback
+	if err := validateNodeCombo(n, prompt); err != nil {
+		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
+	}
+	text, model, tokens, errs, execErr := o.executeSkillRoutes(ctx, n, routes, prompt)
+	if execErr != nil {
+		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, execErr)
+	}
+	return buildSkillResult(root, n, model, text, tokens, errs)
+}
+
+func (o *Orchestrix) prepareSkillPrompt(n dag.Node, root *os.Root) (string, error) {
+	prompt, err := o.buildPrompt(n, root)
+	if err != nil {
+		return "", err
+	}
+	if o.Antibodies != nil {
+		if advice := o.Antibodies.InjectPreventiveContext(antibodyScope(n)); advice != "" {
+			prompt += advice
 		}
 	}
-	return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, errors.Join(errs...))
+	return prompt, nil
+}
+
+func buildSkillResult(root *os.Root, n dag.Node, model, text string, tokens runner.TokenUsage, errs []error) (runner.Result, error) {
+	notes := errStrings(errs)
+	if n.Routing.Effort != "" {
+		notes = append(notes, fmt.Sprintf("effort %s aplicado", n.Routing.Effort))
+	}
+	res := runner.Result{Tokens: tokens, Model: model, Notes: notes}
+	return res, writeArtifact(root, n.Output.Artifact, []byte(text))
+}
+
+func (o *Orchestrix) executeSkillRoutes(ctx context.Context, n dag.Node, routes []route, prompt string) (string, string, runner.TokenUsage, []error, error) {
+	if len(routes) >= 2 && (n.Routing.Mode == dag.ModeAuto || n.Routing.Mode == dag.ModeSuggested) {
+		return o.executeSpeculativeRoutes(ctx, n, routes, prompt)
+	}
+	return o.executeRoutesSequential(ctx, n, routes, prompt)
+}
+
+func (o *Orchestrix) executeRoutesSequential(ctx context.Context, n dag.Node, routes []route, prompt string) (string, string, runner.TokenUsage, []error, error) {
+	var errs []error
+	curPrompt := prompt
+	for _, rt := range routes {
+		text, tokens, err := o.dispatch(ctx, rt.src, rt.model, curPrompt, n.Routing.Effort)
+		if err == nil {
+			return text, string(rt.src) + "/" + rt.model, tokens, errs, nil
+		}
+		o.recordAntibody(n, rt.model, err)
+		errs = append(errs, fmt.Errorf("via %s/%s: %w", rt.src, rt.model, err))
+		if ctx.Err() != nil {
+			break
+		}
+		curPrompt = enrichNegativeContext(prompt, err)
+	}
+	return "", "", runner.TokenUsage{}, errs, errors.Join(errs...)
+}
+
+func (o *Orchestrix) executeSpeculativeRoutes(ctx context.Context, n dag.Node, routes []route, prompt string) (string, string, runner.TokenUsage, []error, error) {
+	if o.Speculative == nil {
+		return o.executeRoutesSequential(ctx, n, routes, prompt)
+	}
+	var errs []error
+	fastRt, heavyRt := routes[0], routes[1]
+	fast := o.makeCandidate(n, fastRt, &errs)
+	heavy := o.makeCandidate(n, heavyRt, &errs)
+	text, usedName, tokens, err := o.Speculative(ctx, fast, heavy, prompt)
+	if err == nil {
+		return text, usedName, tokens, errs, nil
+	}
+	if len(routes) > 2 && ctx.Err() == nil {
+		t2, m2, tok2, remErrs, seqErr := o.executeRoutesSequential(ctx, n, routes[2:], enrichNegativeContext(prompt, err))
+		errs = append(errs, remErrs...)
+		if seqErr == nil {
+			return t2, m2, tok2, errs, nil
+		}
+	}
+	return "", "", runner.TokenUsage{}, errs, errors.Join(errs...)
+}
+
+func (o *Orchestrix) makeCandidate(n dag.Node, rt route, errs *[]error) SpeculativeCandidate {
+	fullName := string(rt.src) + "/" + rt.model
+	return SpeculativeCandidate{
+		Name:    fullName,
+		Timeout: speculativeFastTimeout(o.DefaultTimeout),
+		Run: func(ctx context.Context, p string) (string, runner.TokenUsage, error) {
+			txt, tok, err := o.dispatch(ctx, rt.src, rt.model, p, n.Routing.Effort)
+			if err != nil {
+				o.recordAntibody(n, rt.model, err)
+				*errs = append(*errs, fmt.Errorf("via %s: %w", fullName, err))
+			}
+			return txt, tok, err
+		},
+	}
+}
+
+func speculativeFastTimeout(d time.Duration) time.Duration {
+	if d > 0 {
+		return d
+	}
+	return 15 * time.Second
+}
+
+func enrichNegativeContext(prompt string, err error) string {
+	return prompt + "\n\n[CONTEXTO NEGATIVO - EVITAR ABORDAGEM ANTERIOR QUE FALHOU]\n" + err.Error()
+}
+
+func (o *Orchestrix) recordAntibody(n dag.Node, model string, err error) {
+	if o.Antibodies == nil || err == nil {
+		return
+	}
+	cause := fmt.Sprintf("Falha ao executar %s: %s", model, trimStderr([]byte(err.Error())))
+	_ = o.Antibodies.Record(antibodyScope(n), err.Error(), cause, "Aplicar hot-swap e contexto preventivo")
+}
+
+func antibodyScope(n dag.Node) string {
+	if strings.TrimSpace(n.Ref) != "" {
+		return n.Ref
+	}
+	return n.ID
+}
+
+func validateNodeCombo(n dag.Node, prompt string) error {
+	raw := strings.TrimSpace(n.Routing.Combo)
+	if raw == "" && n.Routing.Mode != dag.ModeAuto {
+		raw = strings.TrimSpace(n.Routing.Model)
+	}
+	if raw == "" {
+		return nil
+	}
+	mapped := combo.MapearComboLegado(raw)
+	if _, err := combo.ObterCombo(mapped); err != nil {
+		return nil
+	}
+	estTokens := len(prompt) / 4
+	return combo.ValidarRequisicao(mapped, estTokens, nodeRequiresTools(n))
+}
+
+func nodeRequiresTools(n dag.Node) bool {
+	if n.Tooling == nil {
+		return false
+	}
+	if v, ok := n.Tooling["require_tools"].(bool); ok && v {
+		return true
+	}
+	if v, ok := n.Tooling["tools_required"].(bool); ok && v {
+		return true
+	}
+	return false
 }
 
 // runDireto chama a API do 9Router sem harness e grava só o artefato de saída.
@@ -124,12 +297,16 @@ func (o *Orchestrix) runDireto(ctx context.Context, n dag.Node, workdir string) 
 		return runner.Result{}, err
 	}
 	defer root.Close()
-	prompt, err := o.buildPrompt(n, root)
+	prompt, err := o.prepareSkillPrompt(n, root)
 	if err != nil {
+		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
+	}
+	if err := validateNodeCombo(n, prompt); err != nil {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
 	}
 	text, tokens, err := o.callRouter(ctx, n.Routing.Model, prompt)
 	if err != nil {
+		o.recordAntibody(n, n.Routing.Model, err)
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, o.semChave(err))
 	}
 	res := runner.Result{Tokens: tokens, Model: harnessDireto + "/" + viaRouter + "/" + n.Routing.Model, Harness: harnessDireto, Via: viaRouter}
@@ -168,10 +345,20 @@ type route struct {
 // e depois fallback (failover em tempo de execução). Nada fora do inventário roda.
 func (o *Orchestrix) routes(r dag.RoutingConfig) ([]route, error) {
 	if r.Mode == dag.ModeAuto {
-		if src, ok := o.Inventory.Source(r.Combo); ok && src == provider.SourceRouter {
-			return []route{{src, r.Combo}}, nil
+		src, ok := o.Inventory.Source(r.Combo)
+		if !ok || src != provider.SourceRouter {
+			return nil, fmt.Errorf("combo %q não está no inventário (9Router offline?)", r.Combo)
 		}
-		return nil, fmt.Errorf("combo %q não está no inventário (9Router offline?)", r.Combo)
+		out := []route{{src, r.Combo}}
+		for _, fb := range []string{r.Fallback, r.Model, "t-raciocinio-128k", "t-chat-128k"} {
+			if fb != "" && fb != r.Combo {
+				if fbSrc, fbOK := o.Inventory.Source(fb); fbOK {
+					out = append(out, route{fbSrc, fb})
+					break
+				}
+			}
+		}
+		return out, nil
 	}
 	candidates := []string{r.Model}
 	if r.Mode == dag.ModeSuggested && r.Fallback != r.Model {

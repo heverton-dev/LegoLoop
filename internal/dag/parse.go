@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"legoloop/internal/gate"
+	"legoloop/internal/taxonomy"
 )
 
 // MaxDAGBytes limita o tamanho do contrato aceito (proteção contra payload abusivo).
@@ -164,17 +165,33 @@ func validateNode(n Node) error {
 		}
 	case TypeStopGate:
 		// stop_gate não exige ref nem command; atua como barreira humana através de seu gate.
-	case "mcp":
-		return errors.New("nó MCP ainda não é executável: não há cliente MCP (etapa 2)")
+	case TypeMCP:
+		if err := validateMCPNode(n); err != nil {
+			return err
+		}
 	default:
 		return fmt.Errorf("tipo desconhecido %q", n.Type)
 	}
 	return validateNodeCommon(n)
 }
 
+func validateMCPNode(n Node) error {
+	ref := strings.TrimSpace(n.Ref)
+	if ref == "" || ref != n.Ref || strings.ContainsAny(ref, " \t\n\r\\:") || strings.Contains(ref, "..") {
+		return fmt.Errorf("nó MCP exige ref válido, recebeu %q", n.Ref)
+	}
+	if len(n.Command) > 0 {
+		return validateCommand(n.Command)
+	}
+	return nil
+}
+
 func validateNodeCommon(n Node) error {
 	if n.TimeoutSec < 0 || n.TimeoutSec > MaxTimeoutSec {
 		return fmt.Errorf("timeout_sec deve estar entre 0 e %d", MaxTimeoutSec)
+	}
+	if err := validateRolePapel(n); err != nil {
+		return err
 	}
 	if err := validateOutput(n); err != nil {
 		return err
@@ -186,6 +203,23 @@ func validateNodeCommon(n Node) error {
 		return err
 	}
 	return validateRouting(n.Routing)
+}
+
+func validateRolePapel(n Node) error {
+	if n.Role != "" {
+		if err := taxonomy.ValidarPapel(n.Role); err != nil {
+			return err
+		}
+	}
+	if n.Papel != "" {
+		if err := taxonomy.ValidarPapel(n.Papel); err != nil {
+			return err
+		}
+	}
+	if n.Role != "" && n.Papel != "" && n.Role != n.Papel {
+		return fmt.Errorf("role %q diverge de papel %q", n.Role, n.Papel)
+	}
+	return nil
 }
 
 // ValidateCommand aplica ao argv a mesma regra dos nós script e dos slots (SEC-01): o executável
@@ -238,6 +272,19 @@ func ValidateArtifact(artifact string) error { return validateArtifact(artifact)
 
 // validatePath exige caminho relativo ao projeto, sem ":" (letra de unidade e streams NTFS),
 // sem nomes curtos 8.3 e fora dos diretórios sensíveis.
+func isSensitiveSegment(part string) bool {
+	for _, bad := range sensitiveDirs() {
+		if strings.EqualFold(part, bad) {
+			return true
+		}
+	}
+	lower := strings.ToLower(part)
+	if strings.HasPrefix(lower, ".env") {
+		return true
+	}
+	return strings.HasPrefix(lower, "credential_") && strings.HasSuffix(lower, ".json")
+}
+
 func validatePath(label, p string) error {
 	native := filepath.FromSlash(p)
 	if strings.Contains(p, ":") || !filepath.IsLocal(native) {
@@ -247,10 +294,8 @@ func validatePath(label, p string) error {
 		if shortNameRe.MatchString(part) {
 			return fmt.Errorf("%s %q usa nome curto 8.3", label, p)
 		}
-		for _, bad := range sensitiveDirs() {
-			if strings.EqualFold(part, bad) {
-				return fmt.Errorf("%s %q não pode ficar em %s", label, p, bad)
-			}
+		if isSensitiveSegment(part) {
+			return fmt.Errorf("%s %q não pode ficar em caminho sensível %s", label, p, part)
 		}
 	}
 	return nil

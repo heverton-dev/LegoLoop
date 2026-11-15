@@ -15,7 +15,7 @@
         "mode": "suggested",
         "model": "sonnet",
         "effort": "high",
-        "fallback": "code-fast"
+        "fallback": "t-chat-128k"
       },
       "timeout_sec": 600,
       "execution": {
@@ -42,7 +42,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": "flash-lite"
       },
@@ -64,7 +64,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "medium",
         "fallback": "flash"
       },
@@ -93,7 +93,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "low",
         "fallback": "flash-lite"
       },
@@ -119,7 +119,7 @@
       ],
       "routing": {
         "mode": "suggested",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high",
         "fallback": "sonnet"
       },

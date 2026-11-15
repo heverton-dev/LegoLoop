@@ -350,7 +350,7 @@ O repositório divide seus templates canônicos em dois pilares complementares: 
 #question-block("3. Como é utilizado?", [
   - O documento organiza os tickets agrupados em Épicos funcionais. Cada ticket descreve:
     - *Identificador Canônico:* Padrão `TICK-NN.M`.
-    - *Natureza:* `nano` (ajustes mínimos), `micro` (unidade com TDD), `macro` (integração de subsistema).
+    - *Natureza:* `nano` (ajustes mínimos), `micro` (unidade com TDD), `epic` (integração de subsistema).
     - *Modo de Execução:* `tdd_red_green`, `sequential` ou `parallel`.
     - *Isolamento e Roteamento Cognitivo:* Agente de harness proibido; subagente efêmero só com `subagents_allowed: "ephemeral"` (AGENTS.md, regra 4), definição de modelo primário (ex: Claude Sonnet via 9Router) e modelo de contingência/fallback.
     - *Contratos de Tooling e I/O:* Arquivos que podem ser tocados (`source_files`, `test_files`). O agente é impedido de modificar arquivos fora dessa lista fechada.
@@ -674,7 +674,7 @@ Abaixo, a tabela-mestra consolidada respondendo de forma sintética e conclusiva
   [Ao final de nós e tickets; embutido em `output.gate` de DAGs e rotas.],
   [Compilador `internal/gate` (`gate.Compile`) e desenvolvedor humano.],
 
-  [`TEMPLATE_PIECE_LOOP.json`],
+  [`TEMPLATE_PIECE_PROCESSO.json`],
   [Superar prompts encadeados lineares através da teoria de grafos (DAG).],
   [Definir Processos complexos com dependências, timeouts e modelos adequados.],
   [JSON validado por `dag.Parse`; nós com dependências acíclicas e gates.],

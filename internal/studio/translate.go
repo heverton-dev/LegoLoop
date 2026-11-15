@@ -24,6 +24,13 @@ type TranslationRecord struct {
 
 func (s *Server) translationCacheDir() (string, error) {
 	home := s.Home
+	if home == "" && s.Vault != "" {
+		dir := filepath.Join(s.Vault, ".cache", "translations")
+		if err := os.MkdirAll(dir, 0700); err != nil {
+			return "", err
+		}
+		return dir, nil
+	}
 	if home == "" {
 		var err error
 		home, err = os.UserHomeDir()
@@ -38,25 +45,71 @@ func (s *Server) translationCacheDir() (string, error) {
 	return dir, nil
 }
 
+func (s *Server) findRevealRootRel(abs string) (string, string, bool) {
+	cleanAbs := filepath.Clean(abs)
+	for _, rootDir := range s.revealRoots() {
+		rel, err := filepath.Rel(rootDir, cleanAbs)
+		if err != nil {
+			continue
+		}
+		if rel != "." && filepath.IsLocal(rel) {
+			return rootDir, rel, true
+		}
+	}
+	return "", "", false
+}
+
 func (s *Server) validateSafeAssetPath(raw string) (string, error) {
-	if strings.Contains(raw, "..") {
-		return "", errors.New("caminho com path traversal rejeitado")
-	}
-	clean := raw
-	if strings.HasPrefix(clean, "~/") || strings.HasPrefix(clean, `~\`) || clean == "~" {
-		clean = filepath.Join(s.home(), clean[1:])
-	} else if strings.HasPrefix(clean, "<projeto>/") || strings.HasPrefix(clean, "<projeto>\\") {
-		clean = filepath.Join(s.ProjectDir, clean[len("<projeto>/"):])
-	}
-	abs, err := filepath.Abs(clean)
+	abs, isDir, err := s.resolveSafePath(raw)
 	if err != nil {
 		return "", err
 	}
-	st, err := os.Stat(abs)
-	if err != nil || st.IsDir() {
+	if isDir {
 		return "", errors.New("arquivo de ativo inexistente ou inválido")
 	}
+	if _, _, ok := s.findRevealRootRel(abs); !ok {
+		return "", errors.New("path jail: caminho fora das raízes permitidas")
+	}
 	return abs, nil
+}
+
+func (s *Server) readAssetInRevealRoots(abs string) ([]byte, error) {
+	rootDir, rel, ok := s.findRevealRootRel(abs)
+	if !ok {
+		return nil, errors.New("path jail: caminho fora das raízes permitidas")
+	}
+	root, err := os.OpenRoot(rootDir)
+	if err != nil {
+		return nil, errors.New("raiz do ativo inacessível")
+	}
+	defer root.Close()
+	if err := checkNoLinksRoot(root, rel); err != nil {
+		return nil, err
+	}
+	return root.ReadFile(rel)
+}
+
+func (s *Server) maskAssetText(text string) string {
+	out := s.maskPaths(text)
+	if s.Vault != "" {
+		v := filepath.Clean(s.Vault)
+		fwd := filepath.ToSlash(v)
+		out = strings.NewReplacer(
+			v, "<cofre>",
+			fwd, "<cofre>",
+			strings.ReplaceAll(fwd, "/", `\`), "<cofre>",
+			strings.ReplaceAll(v, `\`, `\\`), "<cofre>",
+		).Replace(out)
+	}
+	return out
+}
+
+func (s *Server) maskAssetSourcePath(abs string) string {
+	masked := s.maskAssetText(abs)
+	if filepath.IsAbs(masked) {
+		return s.displayPath(abs)
+	}
+	return masked
 }
 
 func (s *Server) readCachedTranslation(hash string) (*TranslationRecord, error) {
@@ -111,21 +164,23 @@ func (s *Server) handleAssetTranslate(w http.ResponseWriter, r *http.Request) {
 	}
 	cleanPath, err := s.validateSafeAssetPath(req.Path)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, s.maskAssetText(err.Error()), http.StatusBadRequest)
 		return
 	}
-	content, err := os.ReadFile(cleanPath)
+	content, err := s.readAssetInRevealRoots(cleanPath)
 	if err != nil {
-		http.Error(w, "erro ao ler ativo: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao ler ativo: "+s.maskAssetText(err.Error()), http.StatusInternalServerError)
 		return
 	}
+	maskedSource := s.maskAssetSourcePath(cleanPath)
 	h := sha256.Sum256(content)
 	hash := hex.EncodeToString(h[:])
 	if rec, err := s.readCachedTranslation(hash); err == nil && rec != nil {
+		rec.SourcePath = maskedSource
 		writeJSON(w, http.StatusOK, rec)
 		return
 	}
-	rec := buildDidacticExplanation(cleanPath, content)
+	rec := buildDidacticExplanation(maskedSource, content)
 	_ = s.saveCachedTranslation(&rec)
 	writeJSON(w, http.StatusOK, rec)
 }

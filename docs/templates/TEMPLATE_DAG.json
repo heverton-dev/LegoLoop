@@ -15,7 +15,7 @@
     "supervision_level": "micro",
     "max_parallel_workers": 2,
     "default_timeout_sec": 180,
-    "rollback_on_failure": "abort_pipeline"
+    "rollback_on_failure": "abort_processo"
   },
   "trigger": {
     "type": "manual"
@@ -122,7 +122,7 @@
     {
       "id": "n03_subprocesso",
       "name": "Subprocesso especialista",
-      "type": "subloop",
+      "type": "subprocesso",
       "nature": "micro",
       "ref": "video-motion",
       "depends_on": [
@@ -133,7 +133,7 @@
         "harness": "claude",
         "model": "sonnet",
         "effort": "medium",
-        "combo": "code-fast"
+        "combo": "t-chat-128k"
       },
       "timeout_sec": 900,
       "execution": {
@@ -194,7 +194,7 @@
       "limits": {
         "max_output_tokens": 300
       },
-      "rollback_strategy": "abort_pipeline",
+      "rollback_strategy": "abort_processo",
       "tooling": {
         "runtime": "powershell"
       },

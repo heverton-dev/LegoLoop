@@ -34,7 +34,7 @@
       "nature": "micro",
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "medium"
       },
       "context_in": [],
@@ -60,7 +60,7 @@
       ],
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "medium"
       },
       "context_in": [
@@ -88,7 +88,7 @@
       ],
       "routing": {
         "mode": "manual",
-        "model": "code-pro",
+        "model": "t-codigo-128k",
         "effort": "high"
       },
       "context_in": [
@@ -116,7 +116,7 @@
       ],
       "routing": {
         "mode": "manual",
-        "model": "code-fast",
+        "model": "t-chat-128k",
         "effort": "medium"
       },
       "context_in": [

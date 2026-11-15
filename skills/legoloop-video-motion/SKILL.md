@@ -5,7 +5,7 @@ consumes: Artifact:Media
 produces: Artifact:BroadcastBundle
 artifact: dist/<job_id>/bundle_manifest.json
 gate: exit_code == 0
-suggested_model: code-fast
+suggested_model: t-chat-128k
 ---
 
 # 🎬 legoloop-video-motion — Processo Canônico de Motion Video e Edição por Código

@@ -23,6 +23,7 @@ func deps(t *testing.T) (Deps, *bytes.Buffer, *bytes.Buffer) {
 	var out, errb bytes.Buffer
 	return Deps{
 		Stdout: &out, Stderr: &errb,
+		Home: t.TempDir(),
 		// hermético: o gancho da matriz no canonize não pode varrer o HOME real de quem roda os testes
 		Matriz: &MatrizDeps{Scan: func(context.Context, string) ([]assets.Item, error) { return nil, nil }},
 		Discover: func(context.Context) provider.Inventory {
@@ -282,6 +283,37 @@ func TestStudioWiresAssetInventory(t *testing.T) {
 	}
 }
 
+func TestStudioIsolatesEnvWhenHomeOverridden(t *testing.T) {
+	d, _, _ := deps(t)
+	d.Home = t.TempDir()
+	fakeAppData := t.TempDir()
+	claudeCfg := filepath.Join(fakeAppData, "Claude", "claude_desktop_config.json")
+	if err := os.MkdirAll(filepath.Dir(claudeCfg), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(claudeCfg, []byte(`{"mcpServers":{"vazado":{"command":"npx"}}}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("APPDATA", fakeAppData)
+
+	addr, stop := startStudio(t, d, "--project", t.TempDir())
+	defer stop()
+	resp, err := http.Get("http://" + addr + "/api/assets")
+	if err != nil || resp.StatusCode != 200 {
+		t.Fatalf("/api/assets: %v %v", err, resp)
+	}
+	var body struct {
+		Counts map[string]int `json:"counts"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if body.Counts["mcp"] != 0 {
+		t.Fatalf("studio vazou APPDATA real mesmo com d.Home sobrescrito: counts[mcp]=%d", body.Counts["mcp"])
+	}
+}
+
 func TestStudioRejectsInvalidCanonRoot(t *testing.T) {
 	d, _, errb := deps(t)
 	missing := filepath.Join(t.TempDir(), "nao-existe")
@@ -462,5 +494,46 @@ func TestImportCLIValidation(t *testing.T) {
 	}
 	if !strings.Contains(errb2.String(), "apenas URLs do github.com") {
 		t.Fatalf("mensagem esperada sobre github: %s", errb2.String())
+	}
+}
+
+func TestUsageParidadeComHandlersEHelpExit0(t *testing.T) {
+	if strings.Contains(usage, "video-capcut") {
+		t.Errorf("usage não deve anunciar subcomando inexistente 'video-capcut'")
+	}
+	for _, obrigatorio := range []string{"dissecar", "swarm"} {
+		if !strings.Contains(usage, obrigatorio) {
+			t.Errorf("usage deve listar o subcomando registrado %q", obrigatorio)
+		}
+	}
+	for _, sub := range []string{
+		"doctor", "canonize", "validate", "run", "route", "studio", "forge",
+		"import", "upgrade", "matrix", "fabricar", "matriz", "listar", "dissecar",
+		"refinar", "remover", "compor", "instalar-skills", "stept", "sync-harnesses",
+		"bootstrap", "legopress", "video-motion", "video-rea", "fechar",
+		"rota", "homologar", "canal", "cartoon-shorts", "swarm",
+	} {
+		d, out, errb := deps(t)
+		code := run(t, d, sub, "--help")
+		if code != 0 {
+			t.Errorf("%s --help retornou exit %d (esperava 0); stderr=%q", sub, code, errb.String())
+		}
+		if out.Len() == 0 && errb.Len() == 0 {
+			t.Errorf("%s --help não produziu saída de ajuda", sub)
+		}
+	}
+}
+
+func TestCanonizeJSONPuroSemTextoExtra(t *testing.T) {
+	root, vault := canonFixture(t)
+	// Sem override de Matriz: exercita o caminho completo com ganchos da matriz
+	var out, errb bytes.Buffer
+	d := Deps{Stdout: &out, Stderr: &errb, Home: t.TempDir()}
+	if code := run(t, d, "canonize", "--root", root, "--vault", vault, "--dry-run", "--json"); code != 0 {
+		t.Fatalf("canonize --dry-run --json falhou (%d): %s", code, errb.String())
+	}
+	trimmed := strings.TrimSpace(out.String())
+	if !strings.HasPrefix(trimmed, "{") || !strings.HasSuffix(trimmed, "}") || !json.Valid([]byte(trimmed)) {
+		t.Fatalf("canonize --dry-run --json deve emitir JSON puro em stdout, obteve:\n%s", out.String())
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"legoloop/internal/combo"
 	"legoloop/internal/dag"
 	"legoloop/internal/graph"
 	"legoloop/internal/provider"
@@ -131,11 +132,16 @@ func resolveNodes(idx *graph.Index, inv provider.Inventory, res Resolver, nodes 
 	return infos, slots, problemas
 }
 
-// routingProblem aplica a Regra de Ouro ao canvas: só modelos verdes no inventário.
+// routingProblem aplica a Regra de Ouro ao canvas: modelos verdes no inventário ou combos certificados.
 func routingProblem(inv provider.Inventory, r dag.RoutingConfig) string {
 	candidates := []string{r.Model}
 	switch r.Mode {
 	case dag.ModeAuto:
+		if r.Combo != "" {
+			if _, err := combo.ResolverCombo(r.Combo); err == nil {
+				return ""
+			}
+		}
 		candidates = []string{r.Combo}
 	case dag.ModeSuggested:
 		candidates = append(candidates, r.Fallback)
@@ -170,8 +176,14 @@ func checkEdges(idx *graph.Index, infos map[string]nodeInfo, edges []CompEdge) [
 	return problemas
 }
 
-// edgeProblem: peça genérica liga com tudo; entre peças tipadas vale a matriz de compatibilidade do grafo.
+// edgeProblem: gatilhos só emitem para não-gatilhos; peça genérica liga com tudo; entre peças tipadas vale a matriz.
 func edgeProblem(idx *graph.Index, from, to nodeInfo) string {
+	if to.Block != nil && graph.IsTriggerKind(to.Block.Kind) {
+		return fmt.Sprintf("%s é um gatilho e não aceita conexões de entrada", to.Label)
+	}
+	if from.Block != nil && graph.IsTriggerKind(from.Block.Kind) {
+		return ""
+	}
 	if from.generic() || to.generic() {
 		return ""
 	}
@@ -186,7 +198,7 @@ func buildDAG(c Composition, infos map[string]nodeInfo, slots map[string]*dag.Sl
 	for _, e := range c.Edges {
 		incoming[e.To] = append(incoming[e.To], e.From)
 	}
-	d := dag.DAG{Schema: "https://legoloop.dev/schemas/dag.v1.json", Name: c.Name, Version: "2.0.0", Trigger: c.Trigger}
+	d := dag.DAG{Schema: "https://legoloop.dev/schemas/dag.v1.json", Name: c.Name, Version: "2.0.0", Trigger: normalizeTriggerTarget(c.Trigger)}
 	if d.Trigger == nil {
 		d.Trigger = inferTrigger(c, infos)
 	}
@@ -199,6 +211,24 @@ func buildDAG(c Composition, infos map[string]nodeInfo, slots map[string]*dag.Sl
 		})
 	}
 	return d
+}
+
+func normalizeTriggerTarget(t *dag.Trigger) *dag.Trigger {
+	if t == nil {
+		return nil
+	}
+	cp := *t
+	switch cp.Type {
+	case dag.TriggerProcessoFim:
+		if cp.Processo == "" && cp.Loop == "" {
+			cp.Processo = "upstream"
+		}
+	case dag.TriggerFimLegado:
+		if cp.Loop == "" && cp.Processo == "" {
+			cp.Loop = "upstream"
+		}
+	}
+	return &cp
 }
 
 // inferTrigger deduz o gatilho do primeiro nó de gatilho da composição; padrão manual.
@@ -217,13 +247,15 @@ func inferTrigger(c Composition, infos map[string]nodeInfo) *dag.Trigger {
 
 func triggerForKind(kind string) *dag.Trigger {
 	switch kind {
-	case "trigger_cron":
+	case graph.KindTriggerCron:
 		return &dag.Trigger{Type: dag.TriggerCron, Cron: "0 * * * *"}
-	case "trigger_file_change":
+	case graph.KindTriggerFileChange:
 		return &dag.Trigger{Type: dag.TriggerFileChange, Path: "docs"}
-	case "trigger_loop_end":
-		return &dag.Trigger{Type: dag.TriggerLoopEnd, Loop: "upstream"}
-	case "trigger_manual", "trigger_board":
+	case graph.KindTriggerProcessoFim:
+		return &dag.Trigger{Type: dag.TriggerProcessoFim, Processo: "upstream"}
+	case graph.KindTriggerFimLegado:
+		return &dag.Trigger{Type: dag.TriggerFimLegado, Loop: "upstream"}
+	case graph.KindTriggerManual, graph.KindTriggerBoard:
 		return &dag.Trigger{Type: dag.TriggerManual}
 	}
 	return nil

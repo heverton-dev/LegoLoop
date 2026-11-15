@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"legoloop/internal/gate"
 )
@@ -46,46 +47,78 @@ func yesNo(b bool) string {
 }
 
 func (s *Scanner) scanHarnesses(ctx context.Context) []Item {
+	defs := harnessDefs()
+	slots := make([]Item, len(defs))
+	ok := make([]bool, len(defs))
+	var wg sync.WaitGroup
+	for i, h := range defs {
+		wg.Go(func() { slots[i], ok[i] = s.scanOneHarness(ctx, h) })
+	}
+	wg.Wait()
 	var out []Item
-	for _, h := range harnessDefs() {
-		if ctx.Err() != nil {
-			return out
+	for i, hit := range ok {
+		if hit {
+			out = append(out, slots[i])
 		}
-		binPath := ""
-		for _, b := range h.bins {
-			if p := s.findBinary(b); p != "" {
-				binPath = p
-				break
-			}
-		}
-		cfgDir := ""
-		for _, d := range h.dirs {
-			if p := filepath.Join(s.cfg.Home, filepath.FromSlash(d)); isDir(p) {
-				cfgDir = p
-				break
-			}
-		}
-		if binPath == "" && cfgDir == "" {
-			continue
-		}
-		path := binPath
-		if path == "" {
-			path = cfgDir
-		}
-		out = append(out, Item{Kind: KindHarness, Name: h.name, Path: path, Scope: "system", Origin: "path",
-			Meta: map[string]string{"cli": yesNo(binPath != ""), "config": yesNo(cfgDir != "")}})
 	}
 	return out
 }
 
-func (s *Scanner) scanBinaries(ctx context.Context) []Item {
-	var out []Item
-	for _, name := range knownBinaries() {
-		if ctx.Err() != nil {
-			return out
+func (s *Scanner) scanOneHarness(ctx context.Context, h harnessDef) (Item, bool) {
+	if ctx.Err() != nil {
+		return Item{}, false
+	}
+	binPath, cfgDir := s.findAnyBinary(h.bins), s.findHarnessDir(h.dirs)
+	if binPath == "" && cfgDir == "" {
+		return Item{}, false
+	}
+	path := binPath
+	if path == "" {
+		path = cfgDir
+	}
+	return Item{Kind: KindHarness, Name: h.name, Path: path, Scope: "system", Origin: "path",
+		Meta: map[string]string{"cli": yesNo(binPath != ""), "config": yesNo(cfgDir != "")}}, true
+}
+
+func (s *Scanner) findAnyBinary(bins []string) string {
+	for _, b := range bins {
+		if p := s.findBinary(b); p != "" {
+			return p
 		}
-		if p := s.findBinary(name); p != "" {
-			out = append(out, Item{Kind: KindBinary, Name: name, Path: p, Scope: "system", Origin: "path"})
+	}
+	return ""
+}
+
+func (s *Scanner) findHarnessDir(dirs []string) string {
+	for _, d := range dirs {
+		if p := filepath.Join(s.cfg.Home, filepath.FromSlash(d)); isDir(p) {
+			return p
+		}
+	}
+	return ""
+}
+
+func (s *Scanner) scanBinaries(ctx context.Context) []Item {
+	names := knownBinaries()
+	slots := make([]Item, len(names))
+	ok := make([]bool, len(names))
+	var wg sync.WaitGroup
+	for i, name := range names {
+		wg.Go(func() {
+			if ctx.Err() != nil {
+				return
+			}
+			if p := s.findBinary(name); p != "" {
+				slots[i] = Item{Kind: KindBinary, Name: name, Path: p, Scope: "system", Origin: "path"}
+				ok[i] = true
+			}
+		})
+	}
+	wg.Wait()
+	var out []Item
+	for i, hit := range ok {
+		if hit {
+			out = append(out, slots[i])
 		}
 	}
 	return out

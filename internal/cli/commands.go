@@ -16,16 +16,20 @@ import (
 	"time"
 
 	"legoloop/internal/assets"
+	"legoloop/internal/brain"
 	"legoloop/internal/canon"
 	"legoloop/internal/dag"
 	"legoloop/internal/gate"
 	"legoloop/internal/graph"
+	"legoloop/internal/interview"
 	"legoloop/internal/orchestrix"
 	"legoloop/internal/provider"
 	"legoloop/internal/runner"
 	"legoloop/internal/studio"
 	"legoloop/internal/studiodoc"
 )
+
+const defaultHTTPClientTimeout = 10 * time.Second
 
 // cmdCanonize implementa TICK-104: --dry-run (só plano) ou --apply (links reais).
 func cmdCanonize(ctx context.Context, args []string, d Deps) int {
@@ -234,6 +238,9 @@ func cmdRun(ctx context.Context, args []string, d Deps) int {
 	}
 	ox.AllowScripts = f.allowScripts
 	ox.AllowUnitTasks = f.allowUnitTicket
+	ox.DefaultTimeout = f.timeout
+	ox.AutoApprove = f.autoApprove
+	ox.NonInteractive = f.nonInteractive
 	rep, err := runner.Run(ctx, p, f.runnerOptions(ox, f.prompter(d)))
 	if err != nil {
 		return fail(d, err)
@@ -286,8 +293,9 @@ func newOrchestrix(ctx context.Context, d Deps, skills string, vars map[string]s
 	}
 	cfg := provider.DefaultConfig()
 	ox := &orchestrix.Orchestrix{
-		Inventory: d.discover(ctx), HTTP: &http.Client{}, OllamaURL: cfg.OllamaURL,
+		Inventory: d.discover(ctx), HTTP: &http.Client{Timeout: defaultHTTPClientTimeout}, OllamaURL: cfg.OllamaURL,
 		RouterKey: cfg.RouterKey, RouterKeyURL: cfg.TrustedRouterURL(), SkillsDir: dir, Vars: vars,
+		Antibodies: brain.NewAntibodiesDB(), Speculative: runSpeculativeWithBrain,
 	}
 	if err := ligarRoteamento(ox, d); err != nil {
 		return nil, err
@@ -298,6 +306,42 @@ func newOrchestrix(ctx context.Context, d Deps, skills string, vars map[string]s
 		}
 	}
 	return ox, nil
+}
+
+type speculativeBrain struct {
+	cand  orchestrix.SpeculativeCandidate
+	usage runner.TokenUsage
+}
+
+func (b *speculativeBrain) Chat(ctx context.Context, msgs []interview.Message) (string, error) {
+	if len(msgs) == 0 {
+		return "", errors.New("sem mensagens")
+	}
+	return b.Infer(ctx, msgs[len(msgs)-1].Content)
+}
+
+func (b *speculativeBrain) Infer(ctx context.Context, prompt string) (string, error) {
+	txt, tok, err := b.cand.Run(ctx, prompt)
+	b.usage = tok
+	return txt, err
+}
+
+func (b *speculativeBrain) Name() string           { return b.cand.Name }
+func (b *speculativeBrain) Model() string          { return b.cand.Name }
+func (b *speculativeBrain) Timeout() time.Duration { return b.cand.Timeout }
+func (b *speculativeBrain) Effort() brain.Effort   { return brain.EffortMedium }
+
+func runSpeculativeWithBrain(ctx context.Context, fast, heavy orchestrix.SpeculativeCandidate, prompt string) (string, string, runner.TokenUsage, error) {
+	fb := &speculativeBrain{cand: fast}
+	hb := &speculativeBrain{cand: heavy}
+	txt, used, err := brain.ExecuteSpeculative(ctx, fb, hb, prompt, fast.Timeout)
+	if err != nil {
+		return "", "", runner.TokenUsage{}, err
+	}
+	if used == hb.Name() {
+		return txt, used, hb.usage, nil
+	}
+	return txt, used, fb.usage, nil
 }
 
 func dirExists(p string) bool {
@@ -384,10 +428,18 @@ func cmdStudio(ctx context.Context, args []string, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
-	w := assets.NewWatcher(assets.NewScanner(assets.Config{Home: d.Home, Projects: []string{dir}, AutoDiscover: true}), assetScanInterval)
+	w := newStudioWatcher(dir, d)
 	w.Start(ctx)
 	srv := &studio.Server{Index: idx, ProjectDir: dir, Discover: d.discover, Assets: w, Home: d.Home, CanonRoots: canonRoots}
 	return serveStudio(ctx, srv, *addr, d)
+}
+
+func newStudioWatcher(dir string, d Deps) *assets.Watcher {
+	cfg := assets.Config{Home: d.Home, Projects: []string{dir}, AutoDiscover: true}
+	if d.Home != "" {
+		cfg.Getenv = func(string) string { return "" }
+	}
+	return assets.NewWatcher(assets.NewScanner(cfg), assetScanInterval)
 }
 
 func cmdForge(ctx context.Context, args []string, d Deps) int {
@@ -415,7 +467,7 @@ func cmdForge(ctx context.Context, args []string, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
-	w := assets.NewWatcher(assets.NewScanner(assets.Config{Home: d.Home, Projects: []string{dir}, AutoDiscover: true}), assetScanInterval)
+	w := newStudioWatcher(dir, d)
 	// TICK-1203: Dispara a primeira varredura antes de servir
 	w.Refresh(ctx)
 	w.Start(ctx)

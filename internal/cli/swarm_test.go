@@ -58,3 +58,27 @@ func TestCmdSwarm_AddPostReadStatus(t *testing.T) {
 		t.Fatalf("worker w1 ausente em status: %q", out.String())
 	}
 }
+
+func TestCmdSwarm_HelpFlagsAndUsageParity(t *testing.T) {
+	for _, helpArg := range []string{"--help", "-h", "help"} {
+		d, out, errBuf := deps(t)
+		code := Run(context.Background(), []string{"swarm", helpArg}, d)
+		if code != 0 {
+			t.Fatalf("swarm %s: code = %d, want 0; stderr=%q", helpArg, code, errBuf.String())
+		}
+		if strings.Contains(out.String(), "subcomando swarm desconhecido") || strings.Contains(errBuf.String(), "subcomando swarm desconhecido") {
+			t.Fatalf("swarm %s emitiu erro de subcomando desconhecido: out=%q err=%q", helpArg, out.String(), errBuf.String())
+		}
+		for _, sub := range []string{"add", "post", "read", "wait", "status", "kill", "monitor", "ui", "-dir", "-addr", "-root"} {
+			if !strings.Contains(out.String(), sub) {
+				t.Errorf("swarm %s omitiu %q na ajuda:\n%s", helpArg, sub, out.String())
+			}
+		}
+	}
+
+	for _, want := range []string{"<add|post|read|wait|status|kill|monitor|ui>", "-dir", "-addr", "-root"} {
+		if !strings.Contains(usage, want) {
+			t.Errorf("usage em cli.go omitiu %q:\n%s", want, usage)
+		}
+	}
+}

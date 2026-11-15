@@ -55,7 +55,7 @@ Cada Peça usa o formato que o repositório (ou o harness) realmente lê, agora 
 | **3. Hook** | [`TEMPLATE_PIECE_HOOK.json`](TEMPLATE_PIECE_HOOK.json) | Trecho de `settings.json`: `hooks.PreToolUse` e `hooks.PostToolUse` com saída de bloqueio exit 2 e formatador | `internal/assets/hooks.go` |
 | **4. MCP** | [`TEMPLATE_PIECE_MCP.json`](TEMPLATE_PIECE_MCP.json) | Trecho de `.mcp.json`: `mcpServers.<nome>{command, args, env, autoApprove}` com `uvx` / `npx` e proibição de stdout | `internal/assets/mcps.go` |
 | **5. Gate** | [`TEMPLATE_PIECE_GATE.json`](TEMPLATE_PIECE_GATE.json) | Receitas de gate binário v2.2.0 com thresholds e retry policy tipada | `gate.Compile` (DSL determinístico de `internal/gate`) |
-| **6. Processo** | [Template de Processo](TEMPLATE_PIECE_LOOP.json) | DAG v2 / documento do Studio (`nodes` com `depends_on`, `routing`, `execution`, `output.{artifact,gate}`) | `dag.Parse`, `legoloop validate` e `legoloop run` |
+| **6. Processo** | [Template de Processo](TEMPLATE_PIECE_PROCESSO.json) | DAG v2 / documento do Studio (`nodes` com `depends_on`, `routing`, `execution`, `output.{artifact,gate}`) | `dag.Parse`, `legoloop validate` e `legoloop run` |
 
 ### Regra Taxonômica de Nomenclatura (Namespace Canônico)
 * **Funções Nativas da Plataforma:** Exclusivamente as 10 ferramentas do LegoLoop utilizam o prefixo `legoloop-*` (`legoloop-fabricar`, `legoloop-matriz`, `legoloop-listar`, `legoloop-refinar`, `legoloop-remover`, `legoloop-compor`, `legoloop-legopress`, `legoloop-piece-upgrader` e as duas ferramentas de mapa e de orquestração em massa).
@@ -134,13 +134,13 @@ O diagnóstico é `legoloop upgrade <arquivo> --diagnose`; a validação pós-re
 Os valores literais do campo `type` do ROUTE estão em `schemas/route.v2.json`.
 
 ### Enumerações do ROUTE
-* `nature`: `nano` | `micro` | `macro`
+* `nature`: `nano` | `micro` | `skill` | `epic`
 * `status`: `PENDING` | `RUNNING` | `PASSED` | `FAILED` | `SKIPPED` | `BLOCKED`
 * `execution_mode`: `tdd_red_green` | `sequential` | `parallel`
 * `isolation.workspace`: `local` | `git_worktree` | `tempdir`; `isolation.executor`: `orchestrix_hermetic` | `local_process`
 * `isolation.subagents_allowed`: `false` (padrão) ou `"ephemeral"` (AGENTS.md, regra 4: subagente efêmero só com as seis condições; a lista de ferramentas fica em `tooling.mcps_allowed`). Agente de harness continua proibido.
 * `extreme` (por nó): `false` (padrão) ou `true`. `true` libera Opus e exige aprovação humana.
-* `rollback_strategy` (por nó) e `rollback_on_failure` (global): `abort_pipeline` | `stash_changes` | `skip_optional`
+* `rollback_strategy` (por nó) e `rollback_on_failure` (global): `abort_processo` | `stash_changes` | `skip_optional`
 * `routing.mode`: `suggested` | `manual` | `auto`; `routing.effort`: `low` | `medium` | `high` | `null`
 * `defects[]`: `{ "id", "severity": "blocker|major|minor", "summary", "resolved" }`, preenchido durante a execução
 * `output.verify[]`: lista de argv (cada comando é um array, **sem shell**); `output.gate`: DSL de gate avaliado com o `exit_code` da verificação
@@ -156,7 +156,7 @@ Os valores literais do campo `type` do ROUTE estão em `schemas/route.v2.json`.
 
 ```powershell
 # O Processo é um DAG válido (esperado: exit 0)
-legoloop validate docs/templates/TEMPLATE_PIECE_LOOP.json
+legoloop validate docs/templates/TEMPLATE_PIECE_PROCESSO.json
 
 # Script sem erro de sintaxe (esperado: 0 erros)
 $e=$null; [System.Management.Automation.Language.Parser]::ParseFile("$PWD\docs\templates\TEMPLATE_PIECE_SCRIPT.ps1",[ref]$null,[ref]$e) | Out-Null; $e.Count

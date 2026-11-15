@@ -50,7 +50,7 @@
         "properties": {
           "id": { "type": "string", "pattern": "^[A-Za-z0-9_-]([A-Za-z0-9_.-]{0,62}[A-Za-z0-9_-])?$" },
           "name": { "type": "string" },
-          "type": { "type": "string", "enum": ["skill", "script", "subprocesso", "stop_gate", "unit_no"] },
+          "type": { "type": "string", "enum": ["skill", "script", "subprocesso", "stop_gate", "unit_no", "mcp"] },
           "nature": { "type": "string", "enum": ["nano", "micro", "skill", "epic"] },
           "cognitive_complexity": { "type": "string" },
           "ref": { "type": "string" },
@@ -64,6 +64,8 @@
             "properties": {
               "mode": { "type": "string", "enum": ["suggested", "manual", "auto"] },
               "harness": { "type": "string" },
+              "via": { "type": "string" },
+              "combo": { "type": "string" },
               "model": { "type": "string" },
               "effort": { "type": "string", "enum": ["low", "medium", "high"] },
               "fallback": { "type": "string" }
@@ -88,6 +90,9 @@
               "mode": { "type": "string", "enum": ["inline", "isolated"] }
             }
           },
+          "rule_tags": { "type": ["array", "null"], "items": { "type": "string" } },
+          "token_budget": { "type": ["object", "null"] },
+          "test_seam": { "type": ["object", "null"] },
           "slots": { "type": "object" },
           "isolation": { "type": "object" },
           "limits": { "type": "object" },
