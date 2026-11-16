@@ -1,0 +1,12 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-video-rea-relatorio",
+      "titulo": "Skill"
+    }
+  ],
+  "descricao": "Pipeline automatizado que processa URL de vídeo, extrai áudio/metadados, transcreve via whisper-cli.exe e gera relatório técnico estruturado.",
+  "slug": "legoloop-video-rea-relatorio",
+  "titulo": "Manual Didático: legoloop-video-rea-relatorio"
+}

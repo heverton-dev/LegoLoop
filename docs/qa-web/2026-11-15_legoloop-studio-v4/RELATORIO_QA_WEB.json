@@ -1,0 +1,113 @@
+{
+  "date": "2026-11-15",
+  "alvo": "legoloop-studio-v4",
+  "targetUrl": "http://127.0.0.1:7897",
+  "routes": [
+    "/",
+    "/inventario",
+    "/swarm"
+  ],
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "storageState": null,
+  "status": "FAILED",
+  "failures": [
+    "playwright: console=0, rotas=6",
+    "renderlint: 3 violação(ões) de layout/botão"
+  ],
+  "metrics": {
+    "lychee": {
+      "brokenLinks": 0
+    },
+    "playwright": {
+      "consoleErrors": 0,
+      "routeErrors": 6
+    },
+    "axe": {
+      "critical": 0,
+      "serious": 0
+    },
+    "renderlint": {
+      "violations": 3
+    },
+    "designLinter": {
+      "violations": 0
+    },
+    "obscura": {
+      "errors": 0
+    },
+    "unlighthouse": {
+      "minScore": 100
+    },
+    "lostPixel": {
+      "hasBaseline": false,
+      "diffCount": 0
+    }
+  },
+  "findings": [
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/ (desktop)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7897/\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7897/\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/inventario (desktop)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7897/inventario\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7897/inventario\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/swarm (desktop)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7897/swarm\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7897/swarm\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/ (mobile)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7897/\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7897/\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/inventario (mobile)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7897/inventario\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7897/inventario\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/swarm (mobile)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7897/swarm\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7897/swarm\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  / @375px dark: 0 finding(s) in 143ms\n  / @768px dark: 0 finding(s) in 116ms\n  / @1280px dark: 0 finding(s) in 206ms\n  /inventario @375px light: 0 finding(s) in 121ms\n  /inventario @768px light: 0 finding(s) in 112ms\n  /inventario @1280px light: 0 finding(s) in 118ms\n  /swarm @375px light: 0 finding(s) in 126ms\n  /swarm @768px light: 0 finding(s) in 107ms\n  /swarm @1280px light: 0 finding(s) in 84ms\n  data stress skipped on http://127.0.0.1:7897/: page.reload: net::ERR_CONNECTION_REFUSED\n  data stress skipped on http://127.0.0.1:7897/: page.reload: net::ERR_CONNECTION_REFUSED\n  / @1280px light: 44 finding(s) in 3569ms\n  data stress skipped on http://127.0.0.1:7897/: page.reload: net::ERR_CONNECTION_REFUSED\n  / @768px light: 92 finding(s) in 3593ms\n  loading-state check skipped on http://127.0.0.1:7897/: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7897/\n  / @375px light: 107 finding(s) in 3893ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/inventario",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /inventario @768px light: 0 finding(s) in 3346ms\n  /inventario @375px light: 0 finding(s) in 3350ms\n  /inventario @1280px light: 0 finding(s) in 3348ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/swarm",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /swarm @375px dark: 0 finding(s) in 119ms\n  /swarm @768px dark: 0 finding(s) in 113ms\n  /swarm @1280px dark: 0 finding(s) in 111ms\n  / @375px light: 0 finding(s) in 114ms\n  / @768px light: 0 finding(s) in 95ms\n  / @1280px light: 0 finding(s) in 110ms\n  /inventario @375px light: 0 finding(s) in 129ms\n  /inventario @768px light: 0 finding(s) in 117ms\n  data stress skipped on http://127.0.0.1:7897/swarm: page.reload: net::ERR_CONNECTION_REFUSED\n  /inventario @1280px light: 0 finding(s) in 116ms\n  loading-state check skipped on http://127.0.0.1:7897/swarm: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7897/swarm\n  /swarm @375px light: 10 finding(s) in 2243ms\n  data stress skipped on http://127.0.0.1:7897/swarm: page.reload: net::ERR_CONNECTION_REFUSED\n  /swarm @768px light: 11 finding(s) in 2437ms\n  data stress skipped on http://127.0.0.1:7897/swarm: page.reload: net::ERR_CONNECTION_REFUSED\n  /swarm @1280px light: 11 finding(s) in 2467ms"
+    }
+  ]
+}

@@ -52,6 +52,9 @@ type ForensicsDossier struct {
 	HiddenPrompts   []string `json:"hidden_prompts"`
 	ToolsIdentified []string `json:"tools_identified"`
 	HiddenTools     []string `json:"hidden_tools"`
+	Concepts        []string `json:"concepts"`
+	Processes       []string `json:"processes"`
+	Repositories    []string `json:"repositories"`
 	OCRFindings     []string `json:"ocr_findings"`
 	SuggestedSlugs  []string `json:"suggested_slugs"`
 }
@@ -59,7 +62,8 @@ type ForensicsDossier struct {
 // ValidateStrict rejeita o dossiê que não traz nenhum achado forense.
 func (d *ForensicsDossier) ValidateStrict() error {
 	if len(d.ToolsIdentified) == 0 && len(d.HiddenTools) == 0 && len(d.ExplicitPrompts) == 0 &&
-		len(d.HiddenPrompts) == 0 && len(d.OCRFindings) == 0 {
+		len(d.HiddenPrompts) == 0 && len(d.OCRFindings) == 0 && len(d.Concepts) == 0 &&
+		len(d.Processes) == 0 && len(d.Repositories) == 0 {
 		return ErrIncompleteDossier
 	}
 	return nil
@@ -148,6 +152,7 @@ type CurationReport struct {
 	Replacements     map[string]string `json:"replacements"`
 	SubstitutedTools []SubstitutedTool `json:"substituted_tools,omitempty"`
 	AdoptedTools     []AdoptedTool     `json:"adopted_tools,omitempty"`
+	Findings         []Finding         `json:"findings,omitempty"`
 	OriginalMatrix   *OriginalMatrix   `json:"original_matrix,omitempty"`
 	Approved         bool              `json:"approved"`
 }

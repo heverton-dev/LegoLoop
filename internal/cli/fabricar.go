@@ -36,6 +36,7 @@ type fabricarOpts struct {
 	semEntrevista, aceitar         bool
 	entrevista                     string
 	goal, model, category, effort  string
+	peca                           string
 	vault, docs                    string
 	link                           listFlag
 }
@@ -50,6 +51,7 @@ func newFabricarFlags(o *fabricarOpts) *flag.FlagSet {
 	fs.StringVar(&o.goal, "goal", "", "objetivo em linguagem natural (padrão: o próprio nome)")
 	fs.StringVar(&o.model, "model", "", "modelo que conduz a fabricação, executor 9router (padrão: o primeiro listado por legoloop doctor)")
 	fs.StringVar(&o.effort, "effort", "", "esforço cognitivo (low, medium, high)")
+	fs.StringVar(&o.peca, "peca", "", "fabrica uma peça única do tipo dado (script, skill, gate, hook, mcp ou processo), sem processo completo")
 	fs.StringVar(&o.category, "category", "build", "categoria: build, reverse, web ou mobile")
 	fs.StringVar(&o.vault, "vault", "", "cofre canônico (padrão ~/.aidd/canonical)")
 	fs.StringVar(&o.docs, "docs", "", "raiz do projeto que recebe docs/ (padrão: diretório atual)")
@@ -109,7 +111,7 @@ func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
 		return code
 	}
 	req := fabricar.Request{RawName: name, Goal: o.goal, Category: fabricar.Category(o.category), ModelChoice: o.model,
-		Interactive: !o.yes, Force: o.force, DryRun: o.dry, TrustRemovable: o.trust, LinkHarnesses: o.link, NoLink: o.noLink}
+		Interactive: !o.yes, Force: o.force, DryRun: o.dry, TrustRemovable: o.trust, LinkHarnesses: o.link, NoLink: o.noLink, Peca: o.peca}
 	probe := req
 	if probe.ModelChoice == "" {
 		probe.ModelChoice = "auto" // só para validar nome e categoria antes de consultar o inventário

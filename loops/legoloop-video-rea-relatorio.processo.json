@@ -1,0 +1,23 @@
+{
+  "nome": "legoloop-video-rea-relatorio",
+  "versao": "1.0.0",
+  "natureza": "qualquer",
+  "objetivo": "Gravar docs/reports/AAAA-MM-DD_REPORT_\u003cslug\u003e.md com frontmatter YAML e as três classes DEVE, PODE e NÃO PODE. Cada item traz o porquê e o como.",
+  "etapas": [
+    {
+      "id": "e01",
+      "titulo": "Skill",
+      "tipo": "skill",
+      "peca": "legoloop-video-rea-relatorio",
+      "consome": null,
+      "produz": {
+        "caminho": "out/01_skill.md",
+        "tipo": "markdown",
+        "promete": true
+      },
+      "gate": "file_exists('out/01_skill.md') \u0026\u0026 word_count('out/01_skill.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_skill.md', '\\{\\{')",
+      "depende": null
+    }
+  ],
+  "criado_em": "2026-11-15T18:10:12.6513475Z"
+}

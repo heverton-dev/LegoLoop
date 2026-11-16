@@ -66,6 +66,9 @@ func ExtractForensicsWithBrain(ctx context.Context, input VideoInput, transcript
 		ExplicitPrompts: findExplicitPrompts(combined),
 		HiddenPrompts:   reconstructHiddenPrompts(combined),
 		ToolsIdentified: findMentionedTools(combined),
+		Concepts:        findLabeled(conceptPattern, combined),
+		Processes:       findLabeled(processPattern, combined),
+		Repositories:    findRepositories(combined),
 		SuggestedSlugs:  SuggestCanonicalNames(title),
 	}
 	if b != nil {
@@ -75,7 +78,7 @@ func ExtractForensicsWithBrain(ctx context.Context, input VideoInput, transcript
 }
 
 func enrichWithBrain(ctx context.Context, d *ForensicsDossier, text string, b brain.Brain) {
-	prompt := fmt.Sprintf("Analise a transcrição e descrição e deduza prompts ocultos e ferramentas:\n\n%s", text)
+	prompt := fmt.Sprintf("Analise a transcrição e descrição e deduza prompts ocultos, ferramentas, conceitos, processos e repositórios (linhas PROMPT_OCULTO:, FERRAMENTA_OCULTA:, CONCEITO:, PROCESSO:, REPOSITORIO:):\n\n%s", text)
 	resp, err := b.Infer(ctx, prompt)
 	if err != nil || strings.TrimSpace(resp) == "" {
 		return
@@ -86,6 +89,8 @@ func enrichWithBrain(ctx context.Context, d *ForensicsDossier, text string, b br
 			d.HiddenPrompts = append(d.HiddenPrompts, strings.TrimSpace(strings.TrimPrefix(clean, "PROMPT_OCULTO:")))
 		} else if strings.HasPrefix(clean, "FERRAMENTA_OCULTA:") {
 			d.HiddenTools = append(d.HiddenTools, strings.TrimSpace(strings.TrimPrefix(clean, "FERRAMENTA_OCULTA:")))
+		} else {
+			applyBrainFindings(d, clean)
 		}
 	}
 }

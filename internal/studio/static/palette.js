@@ -67,6 +67,9 @@ function entryFromItem(cat, it) {
     tier: meta.tier || "",
     badgeColor: meta.badge_color || "",
     favorite: meta.favorite === "true",
+    consumes: meta.consumes ? String(meta.consumes).split(",").map((s) => s.trim()).filter(Boolean) : undefined,
+    produces: meta.produces ? String(meta.produces).split(",").map((s) => s.trim()).filter(Boolean) : undefined,
+    artifact: meta.artifact || undefined,
     papelPrimario: meta.papel_primario || "",
     guilda: meta.guilda || "",
     papelNome: meta.papel_nome || "",
@@ -347,15 +350,16 @@ function createSvgIcon(name, cls) {
 
 // createPalette liga o modelo aos elementos da página. Suporta treeview e lista virtualizada.
 function createPalette(els, handlers) {
-  const st = { model: buildPaletteModel([], {}), cat: "all", query: "", flat: [], raf: 0, activeCategory: "trigger" };
+  const st = { model: buildPaletteModel([], {}), cat: "trigger", query: "", flat: [], raf: 0, activeCategory: "trigger" };
 
   function renderTreeview() {
     if (!els.treeview) return;
     const q = String(st.query || "").trim();
     const groups = [];
     let totalMatches = 0;
+    const catsToShow = q ? PALETTE_ORDER : [st.activeCategory || "trigger"];
 
-    for (const cat of PALETTE_ORDER) {
+    for (const cat of catsToShow) {
       const items = st.model[cat] || [];
       const filtered = q ? items.filter((e) => matchesQuery(e.search, q)) : items;
       totalMatches += filtered.length;
@@ -363,53 +367,38 @@ function createPalette(els, handlers) {
       if (q && filtered.length === 0) continue;
 
       const groupEl = paletteEl("div", "treeview-group");
-      // Sanfona estrita: só 1 grupo aberto por vez (inicialmente Controle)
-      const isClosed = q ? false : (st.activeCategory !== cat);
-      if (isClosed) groupEl.classList.add("is-closed");
+      groupEl.setAttribute("role", "group");
+      groupEl.setAttribute("aria-label", CAT_LABELS[cat] || cat);
+      const isClosed = false;
 
       const head = paletteEl("div", "treeview-group-head");
       head.tabIndex = 0;
-      head.setAttribute("role", "button");
-      head.setAttribute("aria-expanded", String(!isClosed));
 
       const titleWrap = paletteEl("div", "treeview-group-head-title");
-      const chevron = createSvgIcon("chevron", "svg-icon--chevron");
       const icon = createSvgIcon(cat, "palette-cat-icon");
       const label = paletteEl("span", "treeview-group-label", CAT_LABELS[cat] || cat);
-      titleWrap.append(chevron, icon, label);
+      titleWrap.append(icon, label);
 
       const countBadge = paletteEl("span", "treeview-item-badge", String(filtered.length));
       head.append(titleWrap, countBadge);
-
-      head.addEventListener("click", () => {
-        if (st.activeCategory === cat) st.activeCategory = null;
-        else st.activeCategory = cat;
-        renderTreeview();
-      });
-      head.addEventListener("keydown", (ev) => {
-        if (ev.key === "Enter" || ev.key === " ") {
-          ev.preventDefault();
-          if (st.activeCategory === cat) st.activeCategory = null;
-          else st.activeCategory = cat;
-          renderTreeview();
-        }
-      });
 
       groupEl.append(head);
 
       if (!isClosed) {
         const itemsList = paletteEl("div", "treeview-items");
-        itemsList.setAttribute("role", "group");
+        itemsList.tabIndex = 0;
+        itemsList.setAttribute("aria-label", CAT_LABELS[cat] || cat);
         if (filtered.length === 0) {
           itemsList.append(paletteEl("p", "note", "Nenhum item nesta pasta."));
         } else {
+          itemsList.setAttribute("role", "list");
           const limit = st.expandedLimits?.[cat] || 40;
           const visibleSlice = filtered.slice(0, limit);
           for (const item of visibleSlice) {
             const row = paletteEl("div", "treeview-item");
             row.draggable = true;
             row.tabIndex = 0;
-            row.setAttribute("role", "treeitem");
+            row.setAttribute("role", "listitem");
             row.setAttribute("aria-label", item.name);
             row.title = item.desc || item.name;
 
@@ -442,112 +431,13 @@ function createPalette(els, handlers) {
               actions.append(paletteEl("span", "treeview-item-badge", item.badge));
             }
 
-            // 2. Botão Favoritar (Ícone SVG Canônico)
-            const btnFav = paletteEl("button", "btn-item-action btn-fav" + (item.favorite ? " is-favorited" : ""));
-            btnFav.type = "button";
-            btnFav.title = item.favorite ? "Desfavoritar peça" : "Favoritar como Padrão Canônico (SSOT)";
-            btnFav.setAttribute("aria-label", btnFav.title);
-            btnFav.setAttribute("aria-pressed", String(Boolean(item.favorite)));
-            btnFav.append(createSvgIcon("star", "svg-icon--fav"));
-            btnFav.addEventListener("click", async (e) => {
-              e.stopPropagation();
-              try {
-                const res = await fetch(`/api/assets/${encodeURIComponent(item.kind)}/${encodeURIComponent(item.itemId || item.name)}/favorite`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: "{}"
-                });
-                if (res.ok) {
-                  const data = await res.json();
-                  item.favorite = data.favorited;
-                  btnFav.classList.toggle("is-favorited", data.favorited);
-                  btnFav.title = data.favorited ? "Desfavoritar peça" : "Favoritar como Padrão Canônico (SSOT)";
-                  btnFav.setAttribute("aria-label", btnFav.title);
-                  btnFav.setAttribute("aria-pressed", String(Boolean(data.favorited)));
-                  if (typeof window.toast === "function") {
-                    window.toast(data.favorited ? `Peça "${item.name}" favoritada como SSOT!` : `Peça "${item.name}" desfavoritada.`);
-                  }
-                }
-              } catch (err) {
-                console.error("Falha ao favoritar:", err);
-              }
-            });
-            actions.append(btnFav);
-
-            // 3. Botão Elevar (Ícone SVG Canônico)
-            const btnUpgrade = paletteEl("button", "btn-item-action btn-upgrade");
-            btnUpgrade.type = "button";
-            btnUpgrade.title = "Elevar peça para Padrão Ouro (Entrevista + Tríade)";
-            btnUpgrade.append(createSvgIcon("upgrade", "svg-icon--upgrade"));
-            btnUpgrade.addEventListener("click", async (e) => {
-              e.stopPropagation();
-              try {
-                const res = await fetch(`/api/assets/${encodeURIComponent(item.kind)}/${encodeURIComponent(item.itemId || item.name)}/upgrade`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: "{}"
-                });
-                if (res.ok) {
-                  const data = await res.json();
-                  if (typeof window.toast === "function") {
-                    window.toast(`Elevação iniciada para "${item.name}"! Score atual: ${data.current_rating?.total_score}`);
-                  }
-                }
-              } catch (err) {
-                if (typeof window.toast === "function") {
-                  window.toast("Erro ao disparar elevação: " + err.message, true);
-                }
-              }
-            });
-            actions.append(btnUpgrade);
-
-            // 4. Botão Eliminar (Ícone SVG Canônico)
-            const btnDelete = paletteEl("button", "btn-item-action btn-delete");
-            btnDelete.type = "button";
-            btnDelete.title = "Eliminar peça profunda";
-            btnDelete.append(createSvgIcon("trash", "svg-icon--trash"));
-            btnDelete.addEventListener("click", async (e) => {
-              e.stopPropagation();
-              try {
-                const res = await fetch(`/api/assets/${encodeURIComponent(item.kind)}/${encodeURIComponent(item.itemId || item.name)}?mode=full`, {
-                  method: "DELETE"
-                });
-                if (res.ok) {
-                  row.remove();
-                  if (typeof window.toast === "function") {
-                    window.toast(`Peça "${item.name}" eliminada.`);
-                  }
-                } else {
-                  if (typeof window.toast === "function") {
-                    window.toast("Falha ao eliminar peça: " + (await res.text()), true);
-                  }
-                }
-              } catch (err) {
-                if (typeof window.toast === "function") {
-                  window.toast("Erro ao eliminar peça: " + err.message, true);
-                }
-              }
-            });
-            actions.append(btnDelete);
-
-            // 5. Botão de Olho para Inspeção (Raio-X Rico sem adicionar ao canvas)
-            const btnEye = paletteEl("button", "btn-eye-view");
-            btnEye.type = "button";
-            btnEye.title = "Inspecionar peça (Raio-X detalhado)";
-            btnEye.setAttribute("aria-label", `Inspecionar ${item.name}`);
-            btnEye.append(createSvgIcon("eye"));
-            btnEye.addEventListener("click", (e) => {
-              e.stopPropagation();
-              if (handlers.onInspect) handlers.onInspect(item);
-            });
-            actions.append(btnEye);
-
+            // Ações de inspeção (Raio-X), favoritar, canonizar, elevar e excluir ficam no cabeçalho fixo do Inspetor direito.
             row.append(main, actions);
 
             row.addEventListener("dragstart", (e) => {
               const payload = {
                 cat: item.cat, kind: item.kind, blockId: item.blockId, itemId: item.itemId,
-                name: item.name, event: item.event, gateName: item.gateName,
+                name: item.name, event: item.event, gateName: item.gateName, meta: item.meta,
               };
               e.dataTransfer.setData(PIECE_MIME, JSON.stringify(payload));
               e.dataTransfer.setData("text/plain", item.name);
@@ -595,17 +485,33 @@ function createPalette(els, handlers) {
   }
   function renderCats() {
     const counts = paletteCounts(st.model);
-    els.cats.replaceChildren(...PALETTE_CATS.map((c) => {
-      const b = paletteEl("button", "cat");
+    const activeCat = st.activeCategory || "trigger";
+    els.cats.className = "cats palette-grid-4x2";
+    els.cats.replaceChildren(...PALETTE_ORDER.map((c) => {
+      const selected = c === activeCat;
+      const b = paletteEl("button", `cat palette-cat-btn${selected ? " is-active" : ""}`);
       b.type = "button";
+      b.dataset.cat = c;
       b.setAttribute("role", "tab");
-      b.setAttribute("aria-selected", String(c.id === st.cat));
-      b.append(paletteEl("span", "cat__label", c.label), paletteEl("span", "cat__count", String(counts[c.id])));
-      b.addEventListener("click", () => { st.cat = c.id; els.list.scrollTop = 0; rebuild(); });
+      b.setAttribute("aria-selected", String(selected));
+      b.title = `${CAT_LABELS[c] || c} (${counts[c] || 0})`;
+      const icon = createSvgIcon(c, "palette-cat-btn__icon");
+      const lbl = paletteEl("span", "cat__label", CAT_LABELS[c] || c);
+      const cnt = paletteEl("span", "cat__count", String(counts[c] || 0));
+      b.append(icon, lbl, cnt);
+      b.addEventListener("click", () => {
+        st.activeCategory = c;
+        st.cat = c;
+        if (els.list) els.list.scrollTop = 0;
+        rebuild();
+      });
       return b;
     }));
-    els.hint.textContent = PALETTE_HINT[st.cat] || "";
-    els.hint.hidden = !PALETTE_HINT[st.cat];
+    const hintText = PALETTE_HINT[activeCat] || "";
+    if (els.hint) {
+      els.hint.textContent = hintText;
+      els.hint.hidden = !hintText;
+    }
   }
 
   function renderRows() {

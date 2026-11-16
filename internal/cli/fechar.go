@@ -112,19 +112,30 @@ func runFechar(ctx context.Context, d Deps, req fechar.Request, deps fechar.Deps
 		fmt.Fprintf(d.Stderr, "erro no fechamento: %v\n", err)
 		return 1
 	}
+	code := 0
+	if !res.Sucesso {
+		code = 1
+	}
 	if asJSON {
 		b, _ := json.MarshalIndent(res, "", "  ")
 		fmt.Fprintln(d.Stdout, string(b))
-		return 0
+		return code
 	}
 	reportFechar(d, res)
-	return 0
+	return code
 }
 
 func reportFechar(d Deps, res *fechar.Result) {
-	fmt.Fprintf(d.Stdout, "✓ Processo %s (%s) canonizado com sucesso!\n", res.Slug, res.CanonName)
+	if res.Sucesso {
+		fmt.Fprintf(d.Stdout, "✓ Processo %s (%s) canonizado com sucesso!\n", res.Slug, res.CanonName)
+	} else {
+		fmt.Fprintf(d.Stdout, "✗ Fechamento do processo %s (%s) falhou: há etapa em erro.\n", res.Slug, res.CanonName)
+	}
 	for _, e := range res.Etapas {
 		fmt.Fprintf(d.Stdout, "  [%d/9] %s: %s (%s)\n", e.Etapa, e.Nome, e.Status, e.Artefato)
+		if e.Detalhe != "" {
+			fmt.Fprintf(d.Stdout, "        %s\n", e.Detalhe)
+		}
 	}
 	if res.ReportPath != "" {
 		fmt.Fprintf(d.Stdout, "  📄 Relatório: %s\n", res.ReportPath)

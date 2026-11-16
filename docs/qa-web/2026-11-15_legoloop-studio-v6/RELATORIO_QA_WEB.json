@@ -1,0 +1,96 @@
+{
+  "date": "2026-11-15",
+  "alvo": "legoloop-studio-v6",
+  "targetUrl": "http://127.0.0.1:7897",
+  "routes": [
+    "/",
+    "/inventario",
+    "/swarm"
+  ],
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "storageState": null,
+  "status": "FAILED",
+  "failures": [
+    "axe-core: critical=0, serious=2",
+    "renderlint: 3 violação(ões) de layout/botão",
+    "unlighthouse: nota mínima 77 < 90"
+  ],
+  "metrics": {
+    "lychee": {
+      "brokenLinks": 0
+    },
+    "playwright": {
+      "consoleErrors": 0,
+      "routeErrors": 0
+    },
+    "axe": {
+      "critical": 0,
+      "serious": 2
+    },
+    "renderlint": {
+      "violations": 3
+    },
+    "designLinter": {
+      "violations": 0
+    },
+    "obscura": {
+      "errors": 0
+    },
+    "unlighthouse": {
+      "minScore": 77
+    },
+    "lostPixel": {
+      "hasBaseline": false,
+      "diffCount": 0
+    }
+  },
+  "findings": [
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (desktop)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (2 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (mobile)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (2 elemento(s))"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  / @1280px light: 40 finding(s) in 6671ms\n  / @768px light: 76 finding(s) in 6679ms\n  / @375px dark: 83 finding(s) in 5488ms\n  / @375px light: 99 finding(s) in 10025ms\n  / @768px dark: 61 finding(s) in 4036ms\n  /inventario @1280px light: 11 finding(s) in 1495ms\n  / @1280px dark: 40 finding(s) in 5905ms\n  /swarm @768px light: 5 finding(s) in 1267ms\n  /inventario @768px light: 10 finding(s) in 5607ms\n  /inventario @375px light: 4 finding(s) in 9567ms\n  /swarm @375px light: 30 finding(s) in 7971ms\n  /swarm @1280px light: 6 finding(s) in 6866ms\n  /inventario @375px dark: 3 finding(s) in 5193ms\n  /inventario @768px dark: 3 finding(s) in 5128ms\n  /inventario @1280px dark: 3 finding(s) in 3281ms\n  /swarm @1280px dark: 3 finding(s) in 765ms\n  /swarm @375px dark: 13 finding(s) in 5102ms\n  /swarm @768px dark: 10 finding(s) in 5135ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/inventario",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /inventario @768px light: 3 finding(s) in 6913ms\n  /inventario @1280px light: 3 finding(s) in 7042ms\n  /inventario @375px dark: 3 finding(s) in 5455ms\n  /inventario @375px light: 4 finding(s) in 10376ms\n  /inventario @1280px dark: 3 finding(s) in 3494ms\n  /inventario @768px dark: 3 finding(s) in 5481ms\n  / @375px light: 99 finding(s) in 8104ms\n  / @1280px light: 40 finding(s) in 7398ms\n  / @768px light: 77 finding(s) in 7892ms\n  /swarm @375px light: 6 finding(s) in 7598ms\n  /swarm @768px light: 11 finding(s) in 5756ms\n  /swarm @1280px light: 6 finding(s) in 5722ms\n  / @1280px dark: 44 finding(s) in 1028ms\n  / @768px dark: 62 finding(s) in 3856ms\n  / @375px dark: 84 finding(s) in 5739ms\n  /swarm @768px dark: 6 finding(s) in 841ms\n  /swarm @1280px dark: 5 finding(s) in 784ms\n  /swarm @375px dark: 13 finding(s) in 5080ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/swarm",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /swarm @1280px light: 6 finding(s) in 6508ms\n  /swarm @768px light: 11 finding(s) in 6659ms\n  /swarm @375px dark: 13 finding(s) in 5171ms\n  /swarm @375px light: 30 finding(s) in 8618ms\n  /swarm @768px dark: 10 finding(s) in 5407ms\n  /swarm @1280px dark: 6 finding(s) in 5458ms\n  / @768px light: 76 finding(s) in 4529ms\n  / @375px light: 99 finding(s) in 9890ms\n  / @1280px light: 41 finding(s) in 6777ms\n  /inventario @768px light: 3 finding(s) in 5615ms\n  /inventario @375px light: 4 finding(s) in 9279ms\n  / @1280px dark: 40 finding(s) in 1010ms\n  /inventario @1280px light: 3 finding(s) in 6867ms\n  / @768px dark: 62 finding(s) in 6264ms\n  / @375px dark: 84 finding(s) in 6339ms\n  /inventario @375px dark: 3 finding(s) in 5207ms\n  /inventario @768px dark: 3 finding(s) in 5067ms\n  /inventario @1280px dark: 3 finding(s) in 5087ms"
+    },
+    {
+      "tool": "unlighthouse",
+      "severity": "serious",
+      "route": "http://127.0.0.1:7897",
+      "message": "[Unlighthouse] ℹ Using system Chrome located at: C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe.\n[Unlighthouse] ✔ Successfully connected to http://127.0.0.1:7897. (Status: 200).\n[Unlighthouse] ℹ Sitemap appears to be missing, falling back to crawler mode.\n[Unlighthouse] ✔ Unlighthouse has finished scanning http://127.0.0.1:7897: 3 routes in 56s.\n[Unlighthouse] ℹ Running score budgets. 90\n[Unlighthouse] ✔ Generated jsonSimple report ./.unlighthouse/ci-result.json\n\n\n[Unlighthouse]  WARN  You seem to be missing a robots.txt.\n\n\n[Unlighthouse]  ERROR  / has invalid score 0.77 for category performance."
+    }
+  ]
+}

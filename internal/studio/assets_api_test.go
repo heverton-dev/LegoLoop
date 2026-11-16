@@ -388,3 +388,23 @@ papel_primario: arquiteto
 		t.Error("skill minha-spec não encontrada na resposta")
 	}
 }
+
+// TestPresentNaoMutaMetaDoItemCompartilhado impede o crash "concurrent map writes":
+// present precisa decorar uma cópia, nunca o Meta do item vindo do snapshot cacheado.
+func TestPresentNaoMutaMetaDoItemCompartilhado(t *testing.T) {
+	s, _, _ := newAssetsServer(t)
+	meta := map[string]string{"sha256": "abc"}
+	it := assets.Item{Kind: assets.KindSkill, ID: "peca-x", Name: "peca-x", Meta: meta}
+
+	out := s.present(it)
+
+	if _, ok := meta["score"]; ok {
+		t.Fatal("present escreveu no Meta do item compartilhado (risco de concurrent map writes)")
+	}
+	if out.Meta["score"] == "" {
+		t.Fatal("present não decorou a nota da peça")
+	}
+	if out.Meta["sha256"] != "abc" {
+		t.Fatalf("present perdeu metadados originais: %v", out.Meta)
+	}
+}

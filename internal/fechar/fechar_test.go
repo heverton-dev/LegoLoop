@@ -1,6 +1,8 @@
 package fechar_test
 
 import (
+	"context"
+	"encoding/json"
 	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
@@ -8,7 +10,11 @@ import (
 	"testing"
 
 	"legoloop/internal/fechar"
+	"legoloop/internal/triagem"
 )
+
+// dirDialetoAntigo é a pasta de Processos do dialeto antigo; os testes de fechamento a usam por este nome.
+var dirDialetoAntigo = caminhos.DirLoops
 
 func TestValidateAndNormalizeSlug(t *testing.T) {
 	tests := []struct {
@@ -79,6 +85,8 @@ func TestValidateAndNormalizeSlug(t *testing.T) {
 
 func TestExecutarNoveEtapasEGerarReportComTelemetria(t *testing.T) {
 	tmp := t.TempDir()
+	semearDocs(t, tmp, "video-motion")
+	semearDAG(t, tmp, "video-motion")
 	deps := fechar.Deps{
 		RepoDir:   tmp,
 		VaultDir:  tmp,
@@ -170,12 +178,13 @@ func TestParidadeDoisNomes(t *testing.T) {
 	if err := os.MkdirAll(dagsDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	conteudo := []byte(`{"name":"x","version":"1.0.0"}`)
+	conteudo := []byte(`{"name":"x","version":"1.0.0","nodes":[{"id":"01-alfa"}]}`)
 	procs := []struct{ slug, pasta, arquivo string }{
 		{"alfa", caminhos.DirLoops, caminhos.ArquivoDAG},
 		{"beta", caminhos.DirProcessos, caminhos.ArquivoProcessoDAG},
 	}
 	for _, p := range procs {
+		semearDocs(t, dir, p.slug)
 		pdir := filepath.Join(dir, p.pasta, p.slug)
 		if err := os.MkdirAll(pdir, 0o755); err != nil {
 			t.Fatal(err)
@@ -195,7 +204,7 @@ func TestParidadeDoisNomes(t *testing.T) {
 		}
 	}
 	novo := filepath.Join(dir, caminhos.DirProcessos, "beta", caminhos.ArquivoProcessoDAG)
-	if err := os.WriteFile(novo, []byte(`{"name":"diverge"}`), 0o644); err != nil {
+	if err := os.WriteFile(novo, []byte(`{"name":"diverge","nodes":[{"id":"01-alfa"}]}`), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	res, _ := fechar.Executar(nil, fechar.Request{Slug: "beta"}, deps)
@@ -206,6 +215,7 @@ func TestParidadeDoisNomes(t *testing.T) {
 
 func testarParidadeSHA256(t *testing.T, pasta, arquivo string) {
 	dir := t.TempDir()
+	semearDocs(t, dir, "teste")
 	dagsDir := filepath.Join(dir, "docs", "dags")
 	procDir := filepath.Join(dir, pasta, "teste")
 	_ = os.MkdirAll(dagsDir, 0o755)
@@ -215,8 +225,9 @@ func testarParidadeSHA256(t *testing.T, pasta, arquivo string) {
 	procDag := filepath.Join(procDir, arquivo)
 
 	// Caso 1: Idênticos -> Sucesso
-	_ = os.WriteFile(dagIso, []byte(`{"name":"teste","version":"1.0.0"}`), 0o644)
-	_ = os.WriteFile(procDag, []byte(`{"name":"teste","version":"1.0.0"}`), 0o644)
+	dagReal := []byte(`{"name":"teste","version":"1.0.0","nodes":[{"id":"01-alfa"}]}`)
+	_ = os.WriteFile(dagIso, dagReal, 0o644)
+	_ = os.WriteFile(procDag, dagReal, 0o644)
 
 	deps := fechar.Deps{RepoDir: dir, SkipBuild: true}
 	req := fechar.Request{Slug: "teste"}
@@ -226,12 +237,124 @@ func testarParidadeSHA256(t *testing.T, pasta, arquivo string) {
 	}
 
 	// Caso 2: Divergentes -> Erro na etapa 4
-	_ = os.WriteFile(procDag, []byte(`{"name":"teste-divergente"}`), 0o644)
+	_ = os.WriteFile(procDag, []byte(`{"name":"teste-divergente","nodes":[{"id":"01-alfa"}]}`), 0o644)
 	resDiv, _ := fechar.Executar(nil, req, deps)
 	if resDiv.Sucesso {
 		t.Fatalf("esperava falha quando DAGs divergem em SHA-256")
 	}
 	if resDiv.Etapas[3].Status != "error" || !strings.Contains(resDiv.Etapas[3].Detalhe, "divergente") {
 		t.Errorf("etapa 4 deveria falhar com erro de divergência: %+v", resDiv.Etapas[3])
+	}
+}
+
+func rodarFecharSimples(t *testing.T, repo, slug string) *fechar.Result {
+	t.Helper()
+	semearDocs(t, repo, slug)
+	deps := fechar.Deps{RepoDir: repo, VaultDir: repo, Home: repo, SkipBuild: true,
+		Indexer: func(string) error { return nil }, Portoes: func(string) error { return nil }}
+	res, err := fechar.Executar(context.Background(), fechar.Request{Slug: slug}, deps)
+	if err != nil || !res.Sucesso {
+		t.Fatalf("esperava sucesso: err=%v res=%+v", err, res)
+	}
+	return res
+}
+
+func prepararProcessoCanonico(t *testing.T, repo, canon string) string {
+	t.Helper()
+	proc := filepath.Join(repo, caminhos.DirLoops, canon)
+	if err := os.MkdirAll(proc, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	dag := `{"name":"` + canon + `","version":"1.0.0","nodes":[{"id":"01-alfa"},{"id":"02-beta"}]}`
+	if err := os.WriteFile(filepath.Join(proc, caminhos.ArquivoDAG), []byte(dag), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	return proc
+}
+
+func TestFecharPrefereDiretoriosCanonicos(t *testing.T) {
+	repo := t.TempDir()
+	prepararProcessoCanonico(t, repo, "legoloop-foo")
+	livro := filepath.Join(repo, "docs", "books", "legoloop-foo")
+	if err := os.MkdirAll(livro, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	rodarFecharSimples(t, repo, "foo")
+	for _, dup := range []string{filepath.Join(repo, caminhos.DirLoops, "foo"), filepath.Join(repo, "docs", "books", "foo")} {
+		if _, err := os.Stat(dup); err == nil {
+			t.Errorf("pasta duplicada criada: %s", dup)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(livro, "livro.json")); err != nil {
+		t.Errorf("livro.json deveria estar em docs/books/legoloop-foo: %v", err)
+	}
+}
+
+func TestFecharGeraQuartetoPadrao(t *testing.T) {
+	repo := t.TempDir()
+	proc := prepararProcessoCanonico(t, repo, "legoloop-bar")
+	rodarFecharSimples(t, repo, "bar")
+	for _, nome := range []string{"legoloop-bar" + caminhos.SufixoLoop, caminhos.ArquivoDAG, "triagem.json", "memoria_execucao.json"} {
+		if _, err := os.Stat(filepath.Join(proc, nome)); err != nil {
+			t.Errorf("arquivo padrão ausente %s: %v", nome, err)
+		}
+	}
+	raw, err := os.ReadFile(filepath.Join(proc, "triagem.json"))
+	if err != nil || !strings.Contains(string(raw), "02-beta") {
+		t.Errorf("triagem.json deve conter IDs dos nós do DAG: err=%v raw=%s", err, raw)
+	}
+}
+
+func TestFecharDryRunNaoGravaQuarteto(t *testing.T) {
+	repo := t.TempDir()
+	deps := fechar.Deps{RepoDir: repo, VaultDir: repo, Home: repo, SkipBuild: true,
+		Indexer: func(string) error { return nil }, Portoes: func(string) error { return nil }}
+	if _, err := fechar.Executar(context.Background(), fechar.Request{Slug: "baz", DryRun: true}, deps); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(repo, caminhos.DirLoops)); err == nil {
+		t.Errorf("dry-run não deve criar a pasta de Processos")
+	}
+}
+
+func TestFecharPrefereCanonicoSobreSlugQuandoAmbosExistem(t *testing.T) {
+	repo := t.TempDir()
+	canon := prepararProcessoCanonico(t, repo, "legoloop-qux")
+	if err := os.MkdirAll(filepath.Join(repo, caminhos.DirLoops, "qux"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	rodarFecharSimples(t, repo, "qux")
+	if _, err := os.Stat(filepath.Join(canon, "triagem.json")); err != nil {
+		t.Errorf("pasta canônica deveria receber os arquivos padrão: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(repo, caminhos.DirLoops, "qux", caminhos.ArquivoDAG)); err == nil {
+		t.Errorf("pasta do slug não deveria receber o DAG")
+	}
+}
+
+func TestFecharPecaDeUmNoNaoGeraTriagem(t *testing.T) {
+	repo := t.TempDir()
+	proc := prepararProcessoCanonico(t, repo, "legoloop-uno")
+	dag := `{"name":"legoloop-uno","version":"1.0.0","nodes":[{"id":"e01"}]}`
+	if err := os.WriteFile(filepath.Join(proc, caminhos.ArquivoDAG), []byte(dag), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	rodarFecharSimples(t, repo, "uno")
+	if _, err := os.Stat(filepath.Join(proc, "triagem.json")); err == nil {
+		t.Error("um nó só não tem triagem")
+	}
+}
+
+func TestFecharCompletaATriagemQueNaoCobreTodosOsNos(t *testing.T) {
+	repo := t.TempDir()
+	proc := prepararProcessoCanonico(t, repo, "legoloop-duo")
+	velha := triagem.GerarTriagemPadrao("legoloop-duo", []string{"01-alfa"})
+	b, _ := json.Marshal(velha)
+	if err := os.WriteFile(filepath.Join(proc, "triagem.json"), b, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	rodarFecharSimples(t, repo, "duo")
+	if err := triagem.Conferir(proc, []string{"01-alfa", "02-beta"}); err != nil {
+		t.Errorf("o fechar deve deixar a triagem cobrindo todos os nós: %v", err)
 	}
 }

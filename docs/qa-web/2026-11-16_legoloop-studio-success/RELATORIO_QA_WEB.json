@@ -1,0 +1,102 @@
+{
+  "date": "2026-11-16",
+  "alvo": "legoloop-studio-success",
+  "targetUrl": "http://127.0.0.1:7897",
+  "routes": [
+    "/",
+    "/inventario",
+    "/swarm"
+  ],
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "storageState": null,
+  "status": "FAILED",
+  "failures": [
+    "axe-core: critical=2, serious=1",
+    "renderlint: 3 violação(ões) de layout/botão",
+    "unlighthouse: nota mínima 89 < 90"
+  ],
+  "metrics": {
+    "lychee": {
+      "brokenLinks": 0
+    },
+    "playwright": {
+      "consoleErrors": 0,
+      "routeErrors": 0
+    },
+    "axe": {
+      "critical": 2,
+      "serious": 1
+    },
+    "renderlint": {
+      "violations": 3
+    },
+    "designLinter": {
+      "violations": 0
+    },
+    "obscura": {
+      "errors": 0
+    },
+    "unlighthouse": {
+      "minScore": 89
+    },
+    "lostPixel": {
+      "hasBaseline": false,
+      "diffCount": 0
+    }
+  },
+  "findings": [
+    {
+      "tool": "axe-core",
+      "severity": "critical",
+      "route": "/ (desktop)",
+      "message": "aria-required-children: Certain ARIA roles must contain particular children (1 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "critical",
+      "route": "/ (mobile)",
+      "message": "aria-required-children: Certain ARIA roles must contain particular children (1 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (mobile)",
+      "message": "scrollable-region-focusable: Scrollable region must have keyboard access (1 elemento(s))"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  / @768px light: 37 finding(s) in 7312ms\n  / @1280px light: 40 finding(s) in 7468ms\n  / @375px dark: 35 finding(s) in 5792ms\n  / @375px light: 37 finding(s) in 9575ms\n  / @1280px dark: 49 finding(s) in 3556ms\n  / @768px dark: 36 finding(s) in 6626ms\n  /inventario @768px light: 3 finding(s) in 5864ms\n  /inventario @1280px light: 3 finding(s) in 6389ms\n  /inventario @375px light: 4 finding(s) in 9331ms\n  /swarm @768px light: 6 finding(s) in 5781ms\n  /swarm @375px light: 8 finding(s) in 7716ms\n  /inventario @1280px dark: 9 finding(s) in 885ms\n  /swarm @1280px light: 6 finding(s) in 5684ms\n  /swarm @375px dark: 5 finding(s) in 750ms\n  /inventario @375px dark: 3 finding(s) in 5210ms\n  /inventario @768px dark: 3 finding(s) in 5280ms\n  /swarm @768px dark: 6 finding(s) in 5061ms\n  /swarm @1280px dark: 6 finding(s) in 5003ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/inventario",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /inventario @768px light: 3 finding(s) in 6198ms\n  /inventario @1280px light: 3 finding(s) in 6541ms\n  /inventario @375px dark: 3 finding(s) in 5178ms\n  /inventario @375px light: 4 finding(s) in 9600ms\n  /inventario @1280px dark: 3 finding(s) in 3385ms\n  / @768px light: 38 finding(s) in 1753ms\n  /inventario @768px dark: 3 finding(s) in 5280ms\n  / @1280px light: 40 finding(s) in 6470ms\n  /swarm @768px light: 6 finding(s) in 5983ms\n  / @375px light: 37 finding(s) in 9797ms\n  /swarm @375px light: 8 finding(s) in 7847ms\n  / @375px dark: 36 finding(s) in 4463ms\n  /swarm @1280px light: 6 finding(s) in 5687ms\n  / @768px dark: 37 finding(s) in 4375ms\n  /swarm @1280px dark: 3 finding(s) in 794ms\n  / @1280px dark: 40 finding(s) in 3721ms\n  /swarm @375px dark: 7 finding(s) in 5100ms\n  /swarm @768px dark: 6 finding(s) in 5122ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/swarm",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /swarm @1280px light: 1 finding(s) in 6376ms\n  /swarm @768px light: 6 finding(s) in 6509ms\n  /swarm @375px dark: 7 finding(s) in 5221ms\n  /swarm @375px light: 8 finding(s) in 8470ms\n  / @768px light: 26 finding(s) in 1800ms\n  /swarm @768px dark: 6 finding(s) in 5184ms\n  /swarm @1280px dark: 3 finding(s) in 5276ms\n  / @1280px light: 41 finding(s) in 2189ms\n  /inventario @768px light: 3 finding(s) in 6014ms\n  / @375px light: 37 finding(s) in 10146ms\n  /inventario @1280px light: 3 finding(s) in 6039ms\n  / @1280px dark: 25 finding(s) in 1608ms\n  /inventario @375px light: 4 finding(s) in 9506ms\n  / @375px dark: 36 finding(s) in 5864ms\n  / @768px dark: 37 finding(s) in 6892ms\n  /inventario @375px dark: 3 finding(s) in 5287ms\n  /inventario @768px dark: 3 finding(s) in 5258ms\n  /inventario @1280px dark: 3 finding(s) in 5118ms"
+    },
+    {
+      "tool": "unlighthouse",
+      "severity": "serious",
+      "route": "http://127.0.0.1:7897",
+      "message": "[Unlighthouse] ℹ Using system Chrome located at: C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe.\n[Unlighthouse] ✔ Successfully connected to http://127.0.0.1:7897. (Status: 200).\n[Unlighthouse] ℹ Sitemap appears to be missing, falling back to crawler mode.\n[Unlighthouse] ✔ Unlighthouse has finished scanning http://127.0.0.1:7897: 3 routes in 58s.\n[Unlighthouse] ℹ Running score budgets. 90\n[Unlighthouse] ✔ Generated jsonSimple report ./.unlighthouse/ci-result.json\n\nERRO: o processo com PID 26932 (processo filho de PID 26292) não pôde ser finalizado.\r\nRazão: Não há ocorrência da tarefa em execução.\r\r\nERRO: o processo com PID 18872 (processo filho de PID 26292) não pôde ser finalizado.\r\nRazão: Não há ocorrência da tarefa em execução.\r\r\n\n[Unlighthouse]  WARN  You seem to be missing a robots.txt.\n\n\n[Unlighthouse]  ERROR  /inventario has invalid score 0.89 for category performance."
+    }
+  ]
+}

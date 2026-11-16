@@ -1,0 +1,125 @@
+{
+  "date": "2026-11-15",
+  "alvo": "legoloop-studio",
+  "targetUrl": "http://127.0.0.1:7892",
+  "routes": [
+    "/",
+    "/inventario",
+    "/swarm"
+  ],
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "storageState": null,
+  "status": "FAILED",
+  "failures": [
+    "axe-core: critical=2, serious=8",
+    "renderlint: 1 violação(ões) de layout/botão"
+  ],
+  "metrics": {
+    "lychee": {
+      "brokenLinks": 0
+    },
+    "playwright": {
+      "consoleErrors": 0,
+      "routeErrors": 0
+    },
+    "axe": {
+      "critical": 2,
+      "serious": 8
+    },
+    "renderlint": {
+      "violations": 1
+    },
+    "designLinter": {
+      "violations": 0
+    },
+    "obscura": {
+      "errors": 0
+    },
+    "unlighthouse": {
+      "minScore": 100
+    },
+    "lostPixel": {
+      "hasBaseline": false,
+      "diffCount": 0
+    }
+  },
+  "findings": [
+    {
+      "tool": "axe-core",
+      "severity": "critical",
+      "route": "/ (desktop)",
+      "message": "aria-required-children: Certain ARIA roles must contain particular children (1 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (desktop)",
+      "message": "color-contrast: Elements must meet minimum color contrast ratio thresholds (2 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (desktop)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (6 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/inventario (desktop)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (1 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/swarm (desktop)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (1 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "critical",
+      "route": "/ (mobile)",
+      "message": "aria-required-children: Certain ARIA roles must contain particular children (1 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (mobile)",
+      "message": "color-contrast: Elements must meet minimum color contrast ratio thresholds (2 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (mobile)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (1 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/inventario (mobile)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (1 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/swarm (mobile)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (1 elemento(s))"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7892",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  / @768px light: 94 finding(s) in 7692ms\n  / @1280px light: 60 finding(s) in 7754ms\n  / @375px dark: 54 finding(s) in 4210ms\n  / @375px light: 63 finding(s) in 10228ms\n  / @768px dark: 78 finding(s) in 4975ms\n  / @1280px dark: 59 finding(s) in 5316ms\n  /inventario @768px light: 60 finding(s) in 4957ms\n  /inventario @375px light: 33 finding(s) in 7392ms\n  /inventario @1280px light: 73 finding(s) in 5718ms\n  data stress skipped on http://127.0.0.1:7892/swarm: page.reload: net::ERR_CONNECTION_REFUSED\n  /swarm @768px light: 13 finding(s) in 3345ms\n  /inventario @375px dark: 0 finding(s) in 237ms\n  data stress skipped on http://127.0.0.1:7892/swarm: page.reload: net::ERR_CONNECTION_REFUSED\n  /swarm @1280px light: 13 finding(s) in 3403ms\n  /inventario @768px dark: 0 finding(s) in 163ms\n  /inventario @1280px dark: 0 finding(s) in 118ms\n  /swarm @375px dark: 0 finding(s) in 157ms\n  /swarm @768px dark: 0 finding(s) in 129ms\n  /swarm @1280px dark: 0 finding(s) in 97ms\n  /swarm @375px light: 19 finding(s) in 6325ms"
+    }
+  ]
+}

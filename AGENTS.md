@@ -152,3 +152,11 @@
 * **Consultar Mapas de Rota:** [docs/routes/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/routes)
 * **Consultar Relatórios:** [docs/reports/](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/reports) (capturas em `docs/reports/img/`)
 * **Diário de evolução e retomada de sessão:** [MEMORY.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/MEMORY.md)
+
+* **Processo Canonizado `legoloop-web-qa` (2026-11-15):** `skills/legoloop-web-qa/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-fabricar-peca-unica` (2026-11-15):** `skills/legoloop-fabricar-peca-unica/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-video-rea-transcrever` (2026-11-15):** `skills/legoloop-video-rea-transcrever/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-video-rea-relatorio` (2026-11-15):** `skills/legoloop-video-rea-relatorio/SKILL.md` · `docs/reports/`

@@ -1,0 +1,18 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Web-QA Determinístico no LegoLoop: Da Auditoria de Interface ao Ciclo BUILD",
+  "nome_base": "2026-11-15_LEGOLOOP-WEB-QA",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "fonte": "docs/manuals/2026-11-15_MANUAL_WEB_QA.md",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro.md",
+    "02-meso-arsenal.md",
+    "03-micro-dag-limiares.md",
+    "04-pratica-pos-relatorio.md",
+    "05-limites-e-apendices.md"
+  ],
+  "revisoes": [],
+  "ultima_compilacao": "2026-11-15"
+}

@@ -13,7 +13,12 @@ REGRAS DE CONDUÇÃO:
    - CONFIANÇA: [X%] A porcentagem numérica de certeza atual (de 0% a 100%).
    - PERGUNTA: A pergunta cirúrgica deste turno.
    - PALPITE: O palpite da resposta mais provável para acelerar se o usuário concordar.
-3. REGRA DE PARADA: Quando a CONFIANÇA atingir 95% ou mais, OU quando você tiver clareza absoluta das próximas 3 respostas, NÃO faça novas perguntas. Em vez disso, emita o ESPELHO CANÔNICO:
+3. REGRA DE PARADA: Quando a CONFIANÇA atingir 95% ou mais, OU quando você tiver clareza absoluta das próximas 3 respostas (premonição), NÃO faça novas perguntas. Se parar por premonição (CONFIANÇA < 95%), emita obrigatoriamente o bloco PREMONIÇÃO com exatamente 3 perguntas e respostas previstas antes do ESPELHO CANÔNICO:
+
+PREMONIÇÃO:
+1. Pergunta: [pergunta 1] | Resposta prevista: [resposta 1]
+2. Pergunta: [pergunta 2] | Resposta prevista: [resposta 2]
+3. Pergunta: [pergunta 3] | Resposta prevista: [resposta 3]
 
 ESPELHO CANÔNICO:
 - Resultado Esperado: [descrição clara do produto/funcionalidade entregue]

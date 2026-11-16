@@ -1,0 +1,12 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-fabricar-peca-unica",
+      "titulo": "Processo"
+    }
+  ],
+  "descricao": "Fabricar uma peça única (nó solto) de qualquer tipo, refinar com --adicionar e compor com --depende; triagem só com mais de um nó, exigida por validate e fechar.",
+  "slug": "legoloop-fabricar-peca-unica",
+  "titulo": "Manual Didático: legoloop-fabricar-peca-unica"
+}

@@ -4,11 +4,40 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/cli"
 )
+
+// semearRepoFechar monta um repositório de teste com o manual, o livro, a Skill e o DAG reais mínimos.
+func semearRepoFechar(t *testing.T, slug string) string {
+	t.Helper()
+	repo := t.TempDir()
+	canon := "legoloop-" + slug
+	manual := "2026-11-15_MANUAL_" + strings.ToUpper(strings.ReplaceAll(slug, "-", "_")) + ".md"
+	skill := "---\nname: " + canon + "\n---\n" + strings.Repeat("Passo operacional.\n", 12)
+	dag := `{"name":"` + canon + `","version":"1.0.0","nodes":[{"id":"n01"}]}`
+	arquivos := map[string]string{
+		filepath.Join("docs", "manuals", manual):                                 "# Manual\n",
+		filepath.Join("docs", "books", canon, "livro.json"):                      `{"titulo":"t","slug":"s","capitulos":[]}`,
+		filepath.Join("skills", canon, "SKILL.md"):                               skill,
+		filepath.Join(caminhos.DirProcessos, canon, caminhos.ArquivoProcessoDAG): dag,
+	}
+	for rel, conteudo := range arquivos {
+		caminho := filepath.Join(repo, rel)
+		if err := os.MkdirAll(filepath.Dir(caminho), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(caminho, []byte(conteudo), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return repo
+}
 
 func TestCmdFechar(t *testing.T) {
 	t.Run("help do comando fechar", func(t *testing.T) {
@@ -25,7 +54,7 @@ func TestCmdFechar(t *testing.T) {
 
 	t.Run("execucao dry-run com json", func(t *testing.T) {
 		var stdout, stderr bytes.Buffer
-		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, Fechar: &cli.FecharDeps{RepoDir: semearRepoFechar(t, "video-motion")}}
 		code := cli.Run(context.Background(), []string{"fechar", "video-motion", "--dry-run", "--json"}, deps)
 		if code != 0 {
 			t.Fatalf("esperava exit 0 para dry-run json, obteve %d. Stderr: %s", code, stderr.String())
@@ -58,7 +87,7 @@ func TestCmdFechar(t *testing.T) {
 
 	t.Run("execucao com telemetria personalizada", func(t *testing.T) {
 		var stdout, stderr bytes.Buffer
-		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, Fechar: &cli.FecharDeps{RepoDir: semearRepoFechar(t, "video-motion")}}
 		code := cli.Run(context.Background(), []string{
 			"fechar", "video-motion", "--dry-run", "--json",
 			"--tempo-min", "30", "--tokens-in", "90000", "--custo-usd", "0.55",
@@ -99,6 +128,40 @@ func TestCmdFechar(t *testing.T) {
 		}
 		if !strings.Contains(stderr.String(), "cérebro") && !strings.Contains(stderr.String(), "modelo") {
 			t.Errorf("esperava erro de modelo no stderr: %s", stderr.String())
+		}
+	})
+}
+
+func TestCmdFecharFalhaNaoImprimeSucessoESaiComCodigo1(t *testing.T) {
+	repo := t.TempDir()
+	ok := func(string) error { return nil }
+	deps := func(out, errb *bytes.Buffer) cli.Deps {
+		return cli.Deps{Stdout: out, Stderr: errb, Fechar: &cli.FecharDeps{RepoDir: repo, Indexer: ok, Portoes: ok, Rebuilder: ok}}
+	}
+	t.Run("texto", func(t *testing.T) {
+		var stdout, stderr bytes.Buffer
+		code := cli.Run(context.Background(), []string{"fechar", "sem-artefatos", "--skip-build"}, deps(&stdout, &stderr))
+		if code != 1 {
+			t.Fatalf("esperava exit 1 com etapa em erro, obteve %d. Stdout: %s", code, stdout.String())
+		}
+		if strings.Contains(stdout.String(), "canonizado com sucesso") {
+			t.Errorf("imprimiu sucesso falso:\n%s", stdout.String())
+		}
+		if !strings.Contains(stdout.String(), "falhou") {
+			t.Errorf("esperava a palavra falhou na saída:\n%s", stdout.String())
+		}
+	})
+	t.Run("json", func(t *testing.T) {
+		var stdout, stderr bytes.Buffer
+		code := cli.Run(context.Background(), []string{"fechar", "sem-artefatos", "--skip-build", "--json"}, deps(&stdout, &stderr))
+		if code != 1 {
+			t.Fatalf("esperava exit 1 também com --json, obteve %d", code)
+		}
+		var res struct {
+			Sucesso bool `json:"sucesso"`
+		}
+		if err := json.Unmarshal(stdout.Bytes(), &res); err != nil || res.Sucesso {
+			t.Errorf("esperava JSON válido com sucesso=false: err=%v raw=%s", err, stdout.String())
 		}
 	})
 }

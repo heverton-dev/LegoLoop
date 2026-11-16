@@ -85,7 +85,8 @@
     },
     {
       "id": "n02_forensics_dissection",
-      "name": "Dissecação Forense, Transcrição Whisper e Cortes",
+      "peca": "legoloop-video-rea-transcrever",
+      "name": "Dissecação Forense, Transcrição Whisper, Cortes, Conceitos, Processos e Repositórios",
       "nature": "micro",
       "cognitive_complexity": "media",
       "type": "script",
@@ -131,7 +132,7 @@
       ],
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/dossier.json",
-        "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json')"
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json') && has_pattern('docs/videorea/${SLUG}/scratch/dossier.json', 'repositories')"
       },
       "test_seam": {
         "type": "unit_test_gate",
@@ -140,7 +141,8 @@
     },
     {
       "id": "n03_matrix_curation",
-      "name": "Curadoria da Matriz Original e Adoção de Ferramentas",
+      "peca": "legoloop-video-rea-relatorio",
+      "name": "Curadoria da Matriz Original e Classificação DEVE, PODE e NÃO PODE",
       "nature": "micro",
       "cognitive_complexity": "media",
       "type": "script",
@@ -186,7 +188,7 @@
       ],
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/curation.json",
-        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json')"
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json') && has_pattern('docs/videorea/${SLUG}/scratch/curation.json', 'findings')"
       },
       "test_seam": {
         "type": "unit_test_gate",

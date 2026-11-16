@@ -14,9 +14,17 @@ import (
 )
 
 func TestInstalarSkills(t *testing.T) {
-	// 0. Quantidade canônica de funções nativas (todas as 23 skills embutidas, inclusive ai-motion-graphics e legoloop-homologacao)
-	if len(skills.FuncoesNativas) != 23 {
-		t.Fatalf("esperava 23 funções nativas em skills.FuncoesNativas, obteve %d (%v)", len(skills.FuncoesNativas), skills.FuncoesNativas)
+	// 0. Quantidade canônica de funções nativas (todas as 27 skills embutidas, incluindo legoloop-web-qa, legoloop-fabricar-peca-unica, legoloop-video-rea-transcrever e legoloop-video-rea-relatorio)
+	if len(skills.FuncoesNativas) != 27 {
+		t.Fatalf("esperava 27 funções nativas em skills.FuncoesNativas, obteve %d (%v)", len(skills.FuncoesNativas), skills.FuncoesNativas)
+	}
+	for _, nome := range []string{"legoloop-video-rea-transcrever", "legoloop-video-rea-relatorio"} {
+		if _, err := skills.ObterSkill(nome); err != nil {
+			t.Fatalf("esperava %s embutida em skills.FS: %v", nome, err)
+		}
+	}
+	if _, err := skills.ObterSkill("legoloop-web-qa"); err != nil {
+		t.Fatalf("esperava legoloop-web-qa embutida em skills.FS: %v", err)
 	}
 	if _, err := skills.ObterSkill("ai-motion-graphics"); err != nil {
 		t.Fatalf("esperava ai-motion-graphics embutida em skills.FS: %v", err)

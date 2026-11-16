@@ -13,19 +13,23 @@
 </head>
 <body class="page-inventory">
   <header class="topbar">
-    <div class="brand">
-      <span class="brand__mark" aria-hidden="true"></span>
-      <span class="brand__name">LegoLoop Studio</span>
+    <div class="topbar__left">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__name">LegoLoop</span>
+      </div>
+      <span class="topbar__divider" aria-hidden="true"></span>
+      <nav class="topnav" aria-label="Páginas">
+        <a class="topnav__link" href="/">Canvas</a>
+        <a class="topnav__link is-current" href="/inventario" aria-current="page">Inventário</a>
+        <a class="topnav__link" href="/swarm">Swarm</a>
+      </nav>
     </div>
-    <nav class="topnav" aria-label="Páginas">
-      <a class="topnav__link" href="/">Canvas</a>
-      <a class="topnav__link is-current" href="/inventario" aria-current="page">Inventário</a>
-      <a class="topnav__link" href="/swarm">Swarm</a>
-    </nav>
     <div class="topbar__actions">
       <span id="scanned" class="topbar__meta" aria-live="polite"></span>
-      <button id="btn-rescan" class="btn" type="button">Re-varrer</button>
-      <button id="btn-theme-toggle" class="btn btn--theme" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false">Tema: Claro</button>
+      <button id="btn-rescan" class="btn btn--sm" type="button">Re-varrer</button>
+      <span class="topbar__divider" aria-hidden="true"></span>
+      <button id="btn-theme-toggle" class="btn btn--sm btn--icon-ctrl" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false" title="Alternar tema"></button>
     </div>
   </header>
 

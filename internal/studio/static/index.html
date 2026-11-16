@@ -20,34 +20,46 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">
-      <span class="brand__mark" aria-hidden="true"></span>
-      <span class="brand__name">LegoLoop Studio</span>
+    <div class="topbar__left">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__name">LegoLoop</span>
+      </div>
+      <span class="topbar__divider" aria-hidden="true"></span>
+      <nav class="topnav" aria-label="Páginas">
+        <a class="topnav__link is-current" href="/" aria-current="page">Canvas</a>
+        <a class="topnav__link" href="/inventario">Inventário</a>
+        <a class="topnav__link" href="/swarm">Swarm</a>
+      </nav>
     </div>
-    <nav class="topnav" aria-label="Páginas">
-      <a class="topnav__link is-current" href="/" aria-current="page">Canvas</a>
-      <a class="topnav__link" href="/inventario">Inventário</a>
-      <a class="topnav__link" href="/swarm">Swarm</a>
-    </nav>
-    <label class="topfield">
-      <span class="topfield__label">DAG</span>
-      <input id="pipeline-name" class="input" value="novo-dag" maxlength="64" spellcheck="false" autocomplete="off">
-    </label>
-    <div class="route" role="group" aria-label="Rota ótima">
-      <select id="route-from" class="input" aria-label="Artefato de entrada"></select>
-      <span class="route__arrow" aria-hidden="true">→</span>
-      <select id="route-to" class="input" aria-label="Artefato objetivo"></select>
-      <button id="btn-route" class="btn" type="button">Traçar rota</button>
+    <div class="topbar__center">
+      <label class="topfield" title="Identificador do DAG atual">
+        <span class="topfield__label">DAG</span>
+        <input id="pipeline-name" class="input" value="novo-dag" maxlength="64" spellcheck="false" autocomplete="off">
+      </label>
+      <div class="route" role="group" aria-label="Rota ótima">
+        <select id="route-from" class="input" aria-label="Artefato de entrada"></select>
+        <span class="route__arrow" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        <select id="route-to" class="input" aria-label="Artefato objetivo"></select>
+        <button id="btn-route" class="btn btn--sm" type="button" title="Traçar rota ótima entre artefatos">Traçar</button>
+      </div>
     </div>
     <div class="topbar__actions">
-      <button id="btn-novo-processo" class="btn btn--primary" type="button" title="Cria um processo novo: skill, loop e DAG">+ Novo Processo</button>
-      <button id="btn-processos" class="btn" type="button" title="Gerenciar processos do cofre: listar, refinar, remover e compor"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Processos</button>
-      <button id="btn-templates" class="btn" type="button" title="Galeria de Templates de DAG"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Templates</button>
-      <button id="btn-vault" class="btn" type="button" title="Gerenciar Cofre Canônico e Volumes do SO"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="7" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="17"/></svg> Cofre Canônico</button>
-      <button id="btn-validate" class="btn" type="button">Validar</button>
-      <button id="btn-run" class="btn btn--success" type="button" title="Executar DAG com streaming SSE"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Executar</button>
-      <button id="btn-materialize" class="btn btn--primary" type="button">Materializar DAG</button>
-      <button id="btn-theme-toggle" class="btn btn--theme" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false">Tema: Claro</button>
+      <div class="topbar__group" role="group" aria-label="Acervo e Fábrica">
+        <button id="btn-novo-processo" class="btn btn--sm btn--accent-ghost" type="button" title="Cria um processo novo: skill, loop e DAG"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Processo</button>
+        <button id="btn-processos" class="btn btn--sm btn--ghost" type="button" title="Gerenciar processos do cofre: listar, refinar, remover e compor">Processos</button>
+        <button id="btn-templates" class="btn btn--sm btn--ghost" type="button" title="Galeria de Templates de DAG">Templates</button>
+        <button id="btn-vault" class="btn btn--sm btn--ghost" type="button" title="Gerenciar Cofre Canônico e Volumes do SO">Cofre</button>
+      </div>
+      <span class="topbar__divider" aria-hidden="true"></span>
+      <div class="topbar__group" role="group" aria-label="Execução e Simulação">
+        <button id="btn-validate" class="btn btn--sm btn--ghost" type="button">Validar</button>
+        <button id="btn-simular-swarm" class="btn btn--sm btn--swarm" type="button" title="Enviar este processo para simulação passo a passo no Swarm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.3 10.9 15.7 7.1M8.3 13.1l7.4 3.8"/></svg> Simular Swarm</button>
+        <button id="btn-run" class="btn btn--sm btn--success" type="button" title="Executar DAG com streaming SSE">Executar</button>
+        <button id="btn-materialize" class="btn btn--sm btn--primary" type="button">Materializar</button>
+      </div>
+      <span class="topbar__divider" aria-hidden="true"></span>
+      <button id="btn-theme-toggle" class="btn btn--sm btn--icon-ctrl" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false" title="Alternar tema"></button>
     </div>
   </header>
 
@@ -80,10 +92,10 @@
       <!-- Painel 1: Peças Disponíveis (Ocupa o espaço total restante) -->
       <section class="palette-panel sidebar-content-view is-active" id="section-palette" aria-label="Peças">
         <div id="palette-accordion-body" class="accordion-body-full">
-          <div id="palette-cats" class="cats" role="tablist" aria-label="Categorias de peças" hidden></div>
+          <div id="palette-cats" class="cats palette-grid-4x2" role="tablist" aria-label="Categorias de peças"></div>
           <p id="palette-hint" class="note" hidden></p>
           <p id="palette-banner" class="palette-banner" role="status" hidden></p>
-          <div id="palette-treeview" class="treeview-container" role="tree" aria-label="Árvore de peças"></div>
+          <div id="palette-treeview" class="treeview-container" role="region" aria-label="Árvore de peças"></div>
           <div id="palette-list" class="palette-list" role="listbox" aria-label="Peças disponíveis" hidden>
             <div id="palette-spacer" class="palette-spacer">
               <ul id="palette-rows" class="palette"></ul>
@@ -99,7 +111,7 @@
       <!-- Painel 2: Modelos Vivos (Ocupa o espaço total restante quando ativo) -->
       <section class="models-panel sidebar-content-view" id="section-models" aria-label="Modelos" hidden>
         <div id="models-accordion-body" class="accordion-body-full">
-          <div id="models-treeview" class="treeview-container" role="tree" aria-label="Árvore de modelos por harness"></div>
+          <div id="models-treeview" class="treeview-container" role="region" aria-label="Árvore de modelos por harness"></div>
           <div id="inventory" class="inventory" aria-live="polite" hidden></div>
         </div>
       </section>
@@ -134,13 +146,24 @@
             <span id="telemetry-global-cost" class="telemetry-value">$0.000</span>
           </div>
         </div>
-        <button id="btn-toggle-inspector" class="btn btn--sm inspector-toggle-btn" type="button" aria-controls="inspector" aria-expanded="true" title="Recolher / Expandir Inspetor">Inspetor ▸</button>
       </div>
 
       <!-- Trilha de Breadcrumbs para Sub-Grafos e Mega-Pipelines (Zero Emojis) -->
       <nav id="canvas-breadcrumbs" class="canvas-breadcrumbs" aria-label="Hierarquia do DAG" hidden>
         <ol id="canvas-breadcrumbs-list" class="breadcrumbs-list"></ol>
       </nav>
+
+      <!-- Explicação Visual Explícita da Ordem e Modo de Execução (Síncrono vs Assíncrono) -->
+      <div id="execution-flow-strip" class="execution-strip" aria-label="Ordem e modo de execução do DAG" hidden>
+        <div class="execution-strip__header">
+          <span class="execution-strip__title">Fluxo de Execução (Ordem Topológica)</span>
+          <span class="execution-strip__legend">
+            <span class="exec-legend-item exec-legend-item--sync">Linha contínua: Sequencial (Síncrono)</span>
+            <span class="exec-legend-item exec-legend-item--async">Linha tracejada: Paralelo (Assíncrono)</span>
+          </span>
+        </div>
+        <div id="execution-flow-steps" class="execution-strip__steps"></div>
+      </div>
 
       <div id="canvas" class="canvas" tabindex="0">
         <div id="canvas-surface" class="canvas-surface">
@@ -172,10 +195,36 @@
       </div>
     </section>
 
-    <aside id="inspector" class="inspector" aria-label="Inspetor do nó">
-      <div class="inspector-header">
-        <h2 class="panel__title">Inspetor</h2>
+    <aside id="inspector" class="inspector is-open" aria-label="Inspetor do nó">
+      <div class="inspector-sticky-top">
+        <div class="inspector-header">
+          <h2 class="panel__title inspector-header-title">Inspetor</h2>
+          <button id="btn-inspector-collapse" class="btn btn--ghost btn--icon inspector-inline-toggle" type="button" aria-label="Recolher ou expandir Inspetor" aria-expanded="true" title="Recolher / Expandir Inspetor">▸</button>
+        </div>
+        <div id="inspector-actions-bar" class="inspector-actions-bar" role="toolbar" aria-label="Ações da peça">
+          <button id="btn-insp-eye" class="insp-act-btn" type="button" title="Inspecionar peça (Raio-X)" aria-label="Raio-X: Inspecionar peça (Raio-X)" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Raio-X</span>
+          </button>
+          <button id="btn-insp-fav" class="insp-act-btn insp-act-btn--fav" type="button" title="Favoritar peça como Padrão Canônico (SSOT)" aria-label="Favoritar peça como Padrão Canônico" aria-pressed="false" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Favoritar</span>
+          </button>
+          <button id="btn-insp-canon" class="insp-act-btn insp-act-btn--canon" type="button" title="Canonizar esta peça no cofre central" aria-label="Canonizar peça no cofre central" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+            <span>Canonizar</span>
+          </button>
+          <button id="btn-insp-upgrade" class="insp-act-btn insp-act-btn--upgrade" type="button" title="Elevar peça para Padrão Ouro (determinístico)" aria-label="Elevar peça para Padrão Ouro" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+            <span>Elevar</span>
+          </button>
+          <button id="btn-insp-delete" class="insp-act-btn insp-act-btn--danger" type="button" title="Excluir peça física ou remover nó" aria-label="Excluir peça ou remover nó" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>Excluir</span>
+          </button>
+        </div>
       </div>
+      <div id="inspector-collapsed-rail" class="inspector-collapsed-rail" role="button" tabindex="0" aria-label="Restaurar Inspetor" title="Clique para restaurar o Inspetor">INSPETOR ◂</div>
       <div id="inspector-body" class="inspector__body">
         <p class="panel__hint">Selecione um nó ou conexão para configurar.</p>
       </div>
@@ -193,7 +242,7 @@
         <span class="modal-badge badge--canon">Fábrica</span>
       </div>
       <div class="modal-header-actions">
-        <button id="btn-modal-fabricar-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">&times;</button>
+        <button id="btn-modal-fabricar-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
       </div>
     </div>
     <div class="modal-item-body fabricar-body">
@@ -244,7 +293,7 @@
         <span class="modal-badge badge--canon">SSOT Global</span>
       </div>
       <div class="modal-header-actions">
-        <button id="btn-modal-vault-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">&times;</button>
+        <button id="btn-modal-vault-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
       </div>
     </div>
     <div class="modal-item-body modal-vault-content">
@@ -271,7 +320,7 @@
         <span id="run-status-badge" class="modal-badge badge--ready">Pronto</span>
       </div>
       <div class="modal-header-actions">
-        <button id="btn-modal-run-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">&times;</button>
+        <button id="btn-modal-run-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
       </div>
     </div>
     <div class="modal-item-body modal-run-content">
@@ -298,7 +347,7 @@
         <span class="modal-badge badge--ready">Prontos para Uso</span>
       </div>
       <div class="modal-header-actions">
-        <button id="btn-modal-templates-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">&times;</button>
+        <button id="btn-modal-templates-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
       </div>
     </div>
     <div class="modal-item-body modal-templates-content">
@@ -315,7 +364,7 @@
         <span class="modal-badge badge--canon">HDSM Global</span>
       </div>
       <div class="modal-header-actions">
-        <button id="btn-modal-import-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">&times;</button>
+        <button id="btn-modal-import-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
       </div>
     </div>
     <form id="form-import" class="modal-item-body">
@@ -345,7 +394,7 @@
         <span class="modal-badge badge--canon">Governança HDSM</span>
       </div>
       <div class="modal-header-actions">
-        <button id="btn-modal-processos-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar">&times;</button>
+        <button id="btn-modal-processos-close" class="btn btn--ghost modal-close" type="button" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
       </div>
     </div>
     <div class="modal-item-body processos-body">

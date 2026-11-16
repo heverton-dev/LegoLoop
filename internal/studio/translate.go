@@ -143,14 +143,22 @@ func (s *Server) saveCachedTranslation(rec *TranslationRecord) error {
 func buildDidacticExplanation(path string, content []byte) TranslationRecord {
 	h := sha256.Sum256(content)
 	hash := hex.EncodeToString(h[:])
-	name := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
+	base := filepath.Base(path)
+	name := strings.TrimSuffix(base, filepath.Ext(base))
+	if strings.EqualFold(base, "SKILL.md") || strings.EqualFold(base, "README.md") {
+		if parent := filepath.Base(filepath.Dir(path)); parent != "." && parent != "" {
+			name = parent
+		}
+	}
+	text := string(content)
+	desc, body, _ := parseInspectDocument(text)
 	return TranslationRecord{
 		SHA256:          hash,
 		SourcePath:      path,
-		WhatItIs:        fmt.Sprintf("Peça do ecossistema: %s.", name),
-		WhatItDoes:      "Executa rotinas especializadas de automação, engenharia de software e testes.",
-		WhatItDelivers:  "Entrega artefatos validados, relatórios estruturados e código de produção em conformidade.",
-		FullContentPTBR: string(content),
+		WhatItIs:        firstNonEmpty(desc, fmt.Sprintf("Peça física: %s.", name)),
+		WhatItDoes:      extractInspectSummary(body, "peça", name),
+		WhatItDelivers:  fmt.Sprintf("Conteúdo técnico completo de %s (%d linhas).", name, strings.Count(text, "\n")+1),
+		FullContentPTBR: text,
 	}
 }
 

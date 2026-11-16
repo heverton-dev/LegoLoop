@@ -49,9 +49,11 @@ suggested_model: sonnet
 ### Etapa 1: Forense & Matriz Original
 * Extração bruta dos metadados, transcrição e OCR em `dossier.json`.
 * Mapeamento da stack tecnológica do autor em `original_matrix.json` (custos mensais, licenças e timestamps de evidência).
+* O `dossier.json` traz também `concepts`, `processes` e `repositories` citados no vídeo. O gate do nó exige o campo `repositories`.
 
 ### Etapa 2: Curadoria Soberana com Diagnóstico de Host
 * Mapeamento de alternativas abertas a custo R$ 0,00/mês em `curation.json`.
+* Classificação de todos os achados em `findings`: DEVE, PODE ou NÃO PODE integrar ao LegoLoop, cada um com o porquê e o como. O gate do nó exige o campo `findings`.
 * Diagnóstico de encaixe Lego no SO do operador (`installed_on_host`, `host_location`, `fit_status`, `fit_solution`, `gold_standard`, `install_command`).
 * 🛑 **STOP-GATE 01 (`SG-CURADORIA`):** O operador avalia o raio-X das ferramentas e aprova o plano de soberania.
 

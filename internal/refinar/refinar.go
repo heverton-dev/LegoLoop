@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/matriz"
 	"legoloop/internal/processo"
 	"legoloop/internal/ste"
@@ -87,6 +88,10 @@ type Mudanca struct {
 	Peca   string   `json:"peca,omitempty"`
 	Titulo string   `json:"titulo,omitempty"`
 	Casos  []string `json:"casos,omitempty"`
+	// Adicionar cria a etapa Etapa (id novo, no fim do processo) em vez de mudar uma existente.
+	// Depende lista as etapas que vêm antes da nova; vazio liga na última.
+	Adicionar bool     `json:"adicionar,omitempty"`
+	Depende   []string `json:"depende,omitempty"`
 }
 
 // Request é o pedido: o processo e a mudança.
@@ -220,8 +225,9 @@ func planejar(req Request, d Deps) (Plano, error) {
 	}
 	depois := novo.Etapas[indiceDe(novo.Etapas, req.Mudanca.Etapa)]
 	return Plano{Nome: novo.Nome, De: atual.Versao, Para: novo.Versao, Antes: antes, Depois: depois, Arquivos: arqs,
-		Mudanca: Mudanca{Etapa: depois.ID, Peca: depois.Peca, Titulo: depois.Titulo, Casos: depois.Casos},
-		Avisos:  avisosDaPeca(roots.Vault, depois.Peca, antes.Peca), files: files}, nil
+		Mudanca: Mudanca{Etapa: depois.ID, Peca: depois.Peca, Titulo: depois.Titulo, Casos: depois.Casos,
+			Adicionar: req.Mudanca.Adicionar, Depende: req.Mudanca.Depende},
+		Avisos: avisosDaPeca(roots.Vault, depois.Peca, antes.Peca), files: files}, nil
 }
 
 // lerProcesso lê o .processo.json do cofre. Processo da v1 (só o documento do Studio) não se refina.
@@ -250,6 +256,9 @@ func indiceDe(etapas []processo.Etapa, id string) int {
 
 // aplicar devolve o processo com a etapa mudada (sem tocar no original) e a etapa como era.
 func aplicar(p processo.Processo, m Mudanca) (processo.Processo, processo.Etapa, error) {
+	if m.Adicionar {
+		return adicionarEtapa(p, m)
+	}
 	i := indiceDe(p.Etapas, m.Etapa)
 	if i < 0 {
 		ids := make([]string, len(p.Etapas))
@@ -351,17 +360,32 @@ func montar(p processo.Processo, m Mudanca, now time.Time, roots processo.Roots)
 		return nil, nil, err
 	}
 	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
+	dagPath, studioPath := caminhos.DestinosDoProcesso(roots.Vault, p.Nome, paths.SufixoAntigo)
 	todos := []processo.File{
 		{Kind: "INTENT", Path: intentPath, Data: intent},
 		{Kind: "SPEC", Path: filepath.Join(docs, "specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Kind: "PLAN", Path: filepath.Join(docs, "plans", pr.PlanNome), Data: []byte(pr.Plan)},
 		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
-		{Kind: "DAG", Path: vault(paths.DirAntigo, p.Nome+".dag.json"), Data: pr.DAG},
-		{Kind: "loop", Path: vault(paths.DirAntigo, p.Nome+paths.SufixoAntigo), Data: pr.Studio},
+		{Kind: "DAG", Path: dagPath, Data: pr.DAG},
+		{Kind: "loop", Path: studioPath, Data: pr.Studio},
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 	}
+	if todos, err = comDerivados(todos, docs, dagPath, p, pr); err != nil {
+		return nil, nil, err
+	}
 	return comparar(todos)
+}
+
+// comDerivados acrescenta o que depende do estado do processo e do projeto: o DAG espelho que já existe e a triagem
+// exigida por mais de um nó.
+func comDerivados(todos []processo.File, docs, dagPath string, p processo.Processo, pr *processo.Projecoes) ([]processo.File, error) {
+	todos = append(todos, dagIsoExistente(docs, pr)...)
+	tri, err := processo.TriagemDoProcesso(dagPath, p)
+	if err != nil || tri == nil {
+		return todos, err
+	}
+	return append(todos, *tri), nil
 }
 
 // projetar usa a data do refinar para o documento do Studio e a data da SPEC que já existe para SPEC, PLAN e ROUTE: assim os
@@ -381,8 +405,8 @@ func projetar(p processo.Processo, now, dataDocs time.Time) (*processo.Projecoes
 	if err != nil {
 		return nil, err
 	}
-	pr.Spec, pr.Plan, pr.Route = pd.Spec, pd.Plan, pd.Route
-	pr.SpecNome, pr.PlanNome, pr.RouteNome = pd.SpecNome, pd.PlanNome, pd.RouteNome
+	pr.Spec, pr.Plan, pr.Route, pr.Skill = pd.Spec, pd.Plan, pd.Route, pd.Skill // a skill cita o DAG espelho pelo nome datado
+	pr.SpecNome, pr.PlanNome, pr.RouteNome, pr.DAGNome = pd.SpecNome, pd.PlanNome, pd.RouteNome, pd.DAGNome
 	return pr, nil
 }
 
@@ -605,4 +629,14 @@ func (p Plano) Cartao() ste.Cartao {
 	}
 	c.Aviso = strings.Join(append([]string{ste.Msg("refinar.cartao_aviso", trocas)}, p.Avisos...), " ")
 	return c
+}
+
+// dagIsoExistente devolve o DAG espelho em docs/dags quando o projeto já o tem (o fabricar o grava). A skill aponta para
+// ele, então ele acompanha a mudança. Sem espelho no projeto, o refinar não cria um.
+func dagIsoExistente(docs string, pr *processo.Projecoes) []processo.File {
+	caminho := filepath.Join(docs, "dags", pr.DAGNome)
+	if _, err := os.Stat(caminho); err != nil {
+		return nil
+	}
+	return []processo.File{{Kind: "DAG_ISO", Path: caminho, Data: pr.DAG}}
 }

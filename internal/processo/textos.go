@@ -2,6 +2,7 @@ package processo
 
 import (
 	"fmt"
+	"legoloop/internal/paths"
 	"strings"
 
 	"legoloop/docs/templates"
@@ -26,9 +27,9 @@ func projetarSpec(p Processo, ord []Etapa) string {
 	return b.String()
 }
 
+// dagNoCofre é o DAG do processo no cofre, no layout que o fabricar grava: uma pasta por processo.
 func dagNoCofre(nome string) string {
-	arquivo := strings.TrimSuffix(CaminhoNoCofre("~/.aidd/canonical", nome), sufixoProcesso)
-	return strings.ReplaceAll(arquivo, "\\", "/") + ".dag.json"
+	return "~/.aidd/canonical/" + paths.DirAntigo + "/" + nome + "/" + paths.ArquivoDAG
 }
 
 func writeSpecContratos(b *strings.Builder, ord []Etapa) {
@@ -53,13 +54,13 @@ func writeSpecCriterios(b *strings.Builder, p Processo, ord []Etapa) {
 
 // projetarSkill gera o SKILL.md do processo: frontmatter, procedimento com uma linha por etapa, regras
 // negativas e critério de parada. O mapeamento etapa → peça mora na linha de cada etapa.
-func projetarSkill(p Processo, ord []Etapa) string {
+func projetarSkill(p Processo, ord []Etapa, dagNome string) string {
 	last := ord[len(ord)-1]
 	desc := limite(limpo(fmt.Sprintf("Use quando precisar executar o processo %s: %s. NÃO use para outros Processos.", p.Nome, p.Objetivo)), maxDescSkill)
 	var b strings.Builder
 	fmt.Fprintf(&b, "---\nname: %s\ndescription: %s\nconsumes: Artifact:Idea\nproduces: %s\nartifact: %s\ngate: %s\nsuggested_model: %s\n---\n\n",
 		p.Nome, desc, produzPadrao, last.Produz.Caminho, limpo(last.Gate), modeloPadrao)
-	dagPath := dagNoCofre(p.Nome)
+	dagPath := "docs/dags/" + dagNome // o DAG espelho do projeto: o mesmo grafo, sem depender do cofre do usuário
 	fmt.Fprintf(&b, "# 🧩 %s — %s\n\n> **Versão:** %s  \n> **Gerada por:** `legoloop fabricar`  \n\n---\n\n", p.Nome, limpo(p.Objetivo), p.Versao)
 	fmt.Fprintf(&b, "## 1. Contexto & Contratos de I/O\n\n**Quando usar:** quando o objetivo for: %s  \n**Quando NÃO usar:** para qualquer outro Processo.\n\n", limpo(p.Objetivo))
 	b.WriteString("* **Produces (Saídas Mecânicas):**\n")

@@ -1,0 +1,243 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "name": "correcao-studio-qa-web",
+  "version": "1.0.0",
+  "date": "2026-11-15",
+  "description": "DAG executável de correção dos 338 achados de QA Web do LegoLoop Studio v2",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-15_ROUTE_CORRECAO_STUDIO_QA_WEB.json",
+      "sha256": "2813d8fe742c65b7ffd2a9087e49847733be8df1598ede6e16d580495e2071a5"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 3,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_processo"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "name": "Clonar it.Meta e blindar acesso concorrente em assets_api.go",
+      "type": "script",
+      "nature": "micro",
+      "depends_on": [],
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/studio/..."
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "via": "oficial",
+        "model": "gemini-4-hydrogen-high",
+        "effort": "high",
+        "fallback": "gemini-4-hydrogen-medium"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "go"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('internal/studio/assets_api.go')"
+      },
+      "context_in": [
+        "docs/qa-web/2026-11-15_legoloop-studio-v2/RELATORIO_QA_WEB.json"
+      ],
+      "context_out": [
+        "internal/studio/assets_api.go",
+        "internal/studio/assets_api_test.go"
+      ],
+      "output": {
+        "artifact": "internal/studio/assets_api.go",
+        "gate": "exit_code == 0 && file_exists('internal/studio/assets_api.go')"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-02.1",
+      "name": "Corrigir ARIA (axe-core) e layout/controles (renderlint) no Studio",
+      "type": "script",
+      "nature": "micro",
+      "depends_on": [],
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/studio/..."
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "via": "oficial",
+        "model": "gemini-4-hydrogen-high",
+        "effort": "high",
+        "fallback": "gemini-4-hydrogen-medium"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "go"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/index.html')"
+      },
+      "context_in": [
+        "docs/qa-web/2026-11-15_legoloop-studio-v2/RELATORIO_QA_WEB.json"
+      ],
+      "context_out": [
+        "internal/studio/static/index.html",
+        "internal/studio/static/palette.js"
+      ],
+      "output": {
+        "artifact": "internal/studio/static/index.html",
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/index.html')"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-03.1",
+      "name": "Extrair tokens.css SSOT e migrar 328 cores hardcoded em style.css e swarm.css",
+      "type": "script",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "command": [
+        "node",
+        "--test",
+        "tools/webqa/webqa.test.mjs"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "via": "oficial",
+        "model": "gemini-4-hydrogen-high",
+        "effort": "high",
+        "fallback": "gemini-4-hydrogen-medium"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "node"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/tokens.css')"
+      },
+      "context_in": [
+        "internal/studio/static/index.html",
+        "internal/studio/static/style.css",
+        "internal/studio/static/swarm.css"
+      ],
+      "context_out": [
+        "internal/studio/static/tokens.css",
+        "internal/studio/static/style.css",
+        "internal/studio/static/swarm.css"
+      ],
+      "output": {
+        "artifact": "internal/studio/static/tokens.css",
+        "gate": "exit_code == 0 && file_exists('internal/studio/static/tokens.css')"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-04.1",
+      "name": "Recompilar binário e validar legoloop web-qa run --project . zerado",
+      "type": "script",
+      "nature": "nano",
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-02.1",
+        "TICK-03.1"
+      ],
+      "command": [
+        "legoloop",
+        "web-qa",
+        "run",
+        "--project",
+        ".",
+        "--port",
+        "7895",
+        "--alvo",
+        "legoloop-studio-v3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "antigravity",
+        "via": "oficial",
+        "model": "gemini-4-hydrogen-high",
+        "effort": "medium",
+        "fallback": "gemini-4-hydrogen-medium"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 300
+      },
+      "rollback_strategy": "abort_processo",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('docs/qa-web/2026-11-15_legoloop-studio-v3/RELATORIO_QA_WEB.json')"
+      },
+      "context_in": [
+        "internal/studio/assets_api.go",
+        "internal/studio/static/tokens.css",
+        "internal/studio/static/index.html"
+      ],
+      "context_out": [
+        "docs/qa-web/2026-11-15_legoloop-studio-v3/RELATORIO_QA_WEB.json"
+      ],
+      "output": {
+        "artifact": "docs/qa-web/2026-11-15_legoloop-studio-v3/RELATORIO_QA_WEB.json",
+        "gate": "exit_code == 0 && file_exists('docs/qa-web/2026-11-15_legoloop-studio-v3/RELATORIO_QA_WEB.json')"
+      },
+      "spec_ref": "AC-E03.2",
+      "status": "PENDING"
+    }
+  ]
+}

@@ -47,6 +47,19 @@ func projetar(name, objetivo string, c *consulta, now time.Time) (processo.Proce
 	return p, pr, nil
 }
 
+// projetarPara escolhe o Processo: o de uma etapa na peça única, o das necessidades nos demais.
+func projetarPara(req Request, name, objetivo string, c *consulta, now time.Time) (processo.Processo, *processo.Projecoes, error) {
+	if req.Peca == "" {
+		return projetar(name, objetivo, c, now)
+	}
+	p, err := ProcessoPeca(name, objetivo, req.Peca, now)
+	if err != nil {
+		return processo.Processo{}, nil, err
+	}
+	pr, err := processo.Projetar(p, now)
+	return p, pr, err
+}
+
 // msgLacuna é a orientação STE-PT para as etapas sem peça: a mesma no erro e no aviso do cartão.
 func msgLacuna(etapas []string) string {
 	chave := "fabricar.lacuna_sem_peca"
@@ -113,7 +126,7 @@ func memoriaDe(p processo.Processo) ([]byte, error) {
 	return json.MarshalIndent(triagem.MemoriaExecucao{Processo: p.Nome, AtualizadoEm: ts}, "", "  ")
 }
 
-func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, intent namedFile) ([]PlannedFile, error) {
+func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, intent namedFile, peca string) ([]PlannedFile, error) {
 	pj, err := p.Marshal()
 	if err != nil {
 		return nil, err
@@ -142,5 +155,5 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, inte
 	for _, f := range pr.Fichas {
 		files = append(files, PlannedFile{Kind: "fichas_tecnicas", Path: docs("fichas", filepath.Join(p.Nome, f.EtapaID+".md")), Data: []byte(f.Conteudo)})
 	}
-	return files, nil
+	return ajustarPeca(files, roots, p, peca)
 }

@@ -1,0 +1,147 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-web-qa",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-web-qa",
+      "comandos_cli": [
+        "legoloop legoloop-web-qa",
+        "/legoloop-legoloop-web-qa"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-web-qa",
+    "etapas": [
+      "n01_preflight",
+      "n02_boot_e_descoberta",
+      "n03_links_lychee",
+      "n04_obscura_e_playwright",
+      "n05_renderlint_e_design",
+      "n06_axe_acessibilidade",
+      "n07_unlighthouse_rotas",
+      "n08_lost_pixel_visual",
+      "n09_sg_baseline_visual",
+      "n10_relatorio_consolidado",
+      "n11_entrevista_correcao",
+      "n12_governanca_build"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_preflight",
+      "palavras_chave": [
+        "preflight",
+        "preflight"
+      ],
+      "slash_command": "/legoloop-web-qa-preflight",
+      "flag_cli": "--etapa n01_preflight"
+    },
+    {
+      "id": "n02_boot_e_descoberta",
+      "palavras_chave": [
+        "boot e descoberta",
+        "boot-e-descoberta"
+      ],
+      "slash_command": "/legoloop-web-qa-boot-e-descoberta",
+      "flag_cli": "--etapa n02_boot_e_descoberta"
+    },
+    {
+      "id": "n03_links_lychee",
+      "palavras_chave": [
+        "links lychee",
+        "links-lychee"
+      ],
+      "slash_command": "/legoloop-web-qa-links-lychee",
+      "flag_cli": "--etapa n03_links_lychee"
+    },
+    {
+      "id": "n04_obscura_e_playwright",
+      "palavras_chave": [
+        "obscura e playwright",
+        "obscura-e-playwright"
+      ],
+      "slash_command": "/legoloop-web-qa-obscura-e-playwright",
+      "flag_cli": "--etapa n04_obscura_e_playwright"
+    },
+    {
+      "id": "n05_renderlint_e_design",
+      "palavras_chave": [
+        "renderlint e design",
+        "renderlint-e-design"
+      ],
+      "slash_command": "/legoloop-web-qa-renderlint-e-design",
+      "flag_cli": "--etapa n05_renderlint_e_design"
+    },
+    {
+      "id": "n06_axe_acessibilidade",
+      "palavras_chave": [
+        "axe acessibilidade",
+        "axe-acessibilidade"
+      ],
+      "slash_command": "/legoloop-web-qa-axe-acessibilidade",
+      "flag_cli": "--etapa n06_axe_acessibilidade"
+    },
+    {
+      "id": "n07_unlighthouse_rotas",
+      "palavras_chave": [
+        "unlighthouse rotas",
+        "unlighthouse-rotas"
+      ],
+      "slash_command": "/legoloop-web-qa-unlighthouse-rotas",
+      "flag_cli": "--etapa n07_unlighthouse_rotas"
+    },
+    {
+      "id": "n08_lost_pixel_visual",
+      "palavras_chave": [
+        "lost pixel visual",
+        "lost-pixel-visual"
+      ],
+      "slash_command": "/legoloop-web-qa-lost-pixel-visual",
+      "flag_cli": "--etapa n08_lost_pixel_visual"
+    },
+    {
+      "id": "n09_sg_baseline_visual",
+      "palavras_chave": [
+        "sg baseline visual",
+        "sg-baseline-visual"
+      ],
+      "slash_command": "/legoloop-web-qa-sg-baseline-visual",
+      "flag_cli": "--etapa n09_sg_baseline_visual"
+    },
+    {
+      "id": "n10_relatorio_consolidado",
+      "palavras_chave": [
+        "relatorio consolidado",
+        "relatorio-consolidado"
+      ],
+      "slash_command": "/legoloop-web-qa-relatorio-consolidado",
+      "flag_cli": "--etapa n10_relatorio_consolidado"
+    },
+    {
+      "id": "n11_entrevista_correcao",
+      "palavras_chave": [
+        "entrevista correcao",
+        "entrevista-correcao"
+      ],
+      "slash_command": "/legoloop-web-qa-entrevista-correcao",
+      "flag_cli": "--etapa n11_entrevista_correcao"
+    },
+    {
+      "id": "n12_governanca_build",
+      "palavras_chave": [
+        "governanca build",
+        "governanca-build"
+      ],
+      "slash_command": "/legoloop-web-qa-governanca-build",
+      "flag_cli": "--etapa n12_governanca_build"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

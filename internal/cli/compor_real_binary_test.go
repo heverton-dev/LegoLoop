@@ -86,7 +86,7 @@ func TestComporProcessosReais(t *testing.T) {
 	if r.code != 0 || !strings.Contains(r.out, "Processo legoloop-cp-b@1.0.0 ligado a legoloop-cp-a na etapa e03") {
 		t.Fatalf("compor: código %d\nstdout:\n%s\nstderr:\n%s", r.code, r.out, r.errb)
 	}
-	dagA := filepath.Join(vault, caminhos.DirLoops, "legoloop-cp-a.dag.json")
+	dagA := caminhos.CaminhoDAG(filepath.Join(vault, caminhos.DirLoops, "legoloop-cp-a"))
 	if v := runBinaryEm(t, bin, router, root, proj, "validate", dagA); v.code != 0 {
 		t.Fatalf("validate: código %d\n%s%s", v.code, v.out, v.errb)
 	}

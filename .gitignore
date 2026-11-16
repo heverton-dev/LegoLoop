@@ -16,6 +16,8 @@ bin/
 credential_gemini_backup.json
 
 # Testes, caches e temporários
+node_modules/
+tools/webqa/vendor/
 .worktrees/
 .playwright-mcp/
 scratch/
@@ -34,3 +36,8 @@ docs/videorea/**/scratch/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# QA web
+.renderlint/
+.unlighthouse/
+.lostpixel/

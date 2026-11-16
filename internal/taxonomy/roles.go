@@ -102,3 +102,28 @@ func ListarGuildas() []Guilda {
 	copy(out, guildasOrdem)
 	return out
 }
+
+// ListarPapeis retorna todos os papeis canonicos ordenados por guilda e slug.
+func ListarPapeis() []Papel {
+	out := make([]Papel, 0, len(CatalogoCanonico))
+	for _, g := range guildasOrdem {
+		out = append(out, PapeisPorGuilda(g)...)
+	}
+	return out
+}
+
+// PapeisPorGuilda retorna os papeis da guilda ordenados pelo slug.
+func PapeisPorGuilda(g Guilda) []Papel {
+	var list []Papel
+	for _, p := range CatalogoCanonico {
+		if p.Guilda == g {
+			list = append(list, p)
+		}
+	}
+	for i := 1; i < len(list); i++ {
+		for j := i; j > 0 && list[j-1].Slug > list[j].Slug; j-- {
+			list[j-1], list[j] = list[j], list[j-1]
+		}
+	}
+	return list
+}

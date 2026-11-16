@@ -1,0 +1,12 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-video-rea-transcrever",
+      "titulo": "Script"
+    }
+  ],
+  "descricao": "Pipeline automatizado que processa URL de vídeo, extrai áudio/metadados, transcreve via whisper-cli.exe e gera relatório técnico estruturado.",
+  "slug": "legoloop-video-rea-transcrever",
+  "titulo": "Manual Didático: legoloop-video-rea-transcrever"
+}

@@ -7,6 +7,7 @@ import (
 	"mime"
 	"net"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -33,7 +34,7 @@ func (s *Server) secure(next http.Handler) http.Handler {
 			writeError(w, http.StatusMisdirectedRequest, "host não permitido")
 			return
 		}
-		if !lim.allow() {
+		if !isStaticAsset(r) && !lim.allow() {
 			writeError(w, http.StatusTooManyRequests, "muitas requisições")
 			return
 		}
@@ -134,6 +135,16 @@ func (l *limiter) allow() bool {
 	}
 	l.tokens--
 	return true
+}
+
+// isStaticAsset identifica GET/HEAD de páginas e assets estáticos isentos do rate limiter.
+func isStaticAsset(r *http.Request) bool {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
+		return false
+	}
+	p := r.URL.Path
+	return p == "/" || p == "/inventario" || p == "/swarm" ||
+		p == "/favicon.ico" || strings.HasPrefix(p, "/static/")
 }
 
 // atEOF confirma que não há nada além do objeto JSON (inclusive '}' ou ']' soltos).

@@ -198,7 +198,7 @@ function collectText(root) {
   return s;
 }
 const roots = {};
-for (const id of ["crumb","summary","tabs","counts","workers","filter","ficha","msgs","pager","swarm-error"]) {
+for (const id of ["crumb","summary","tabs","counts","workers","filter","ficha","msgs","pager","swarm-error","add-worker-panel"]) {
   roots[id] = makeEl("div", id);
 }
 let docClick = null;
@@ -265,6 +265,34 @@ if (!tabText.includes("procB")) throw new Error("aba fechada procB nao reabriu: 
 // Verificar zero tag IMG criada no DOM de mensagens
 const msgTags = collectTags(roots.msgs);
 if (msgTags.includes("IMG") || win.__xssProbe) throw new Error("XSS executou ou gerou IMG");
+
+// Abrir formulario Novo Worker e validar 20 papeis, selects de modelo/workspace/tipo, chips multi-peca e ticket inferido
+docClick({ target: { closest: () => ({ dataset: { act: "toggle-add", val: "" } }) }, stopPropagation(){} });
+const selRole = doc.getElementById("add-worker-role");
+const selModel = doc.getElementById("add-worker-model");
+const selKind = doc.getElementById("add-worker-piece-kind");
+const ticketIn = doc.getElementById("add-worker-ticket");
+if (!selRole || selRole.tagName !== "SELECT") throw new Error("add-worker-role deve ser SELECT");
+if (!selModel || selModel.tagName !== "SELECT") throw new Error("add-worker-model deve ser SELECT");
+if (!selKind || selKind.tagName !== "SELECT") throw new Error("add-worker-piece-kind deve ser SELECT");
+if (!ticketIn || !ticketIn.value.includes("engenheiro-backend")) throw new Error("ticket nao foi auto-inferido: " + (ticketIn && ticketIn.value));
+
+// Worker concluido (status: done) deixa coordenador e item como done (sem pulsar)
+ctx.render({
+  order: ["procDone"],
+  processes: {
+    procDone: {
+      workers: [{ name: "w-done", role: "engenheiro-backend", model: "m1", workspace_mode: "inherit", status: "done", pieces: [{ kind: "skill", name: "aidd-tdd" }, { kind: "mcp", name: "ctx" }] }],
+      messages: []
+    }
+  }
+});
+const workersText = collectText(roots.workers);
+if (!workersText.includes("aidd-tdd") || !workersText.includes("ctx")) throw new Error("multiplas pecas nao renderizadas");
+if (!JSON.stringify(roots.workers).includes("done")) throw new Error("status done nao propagado para coordenador");
+if (JSON.stringify(roots.workers).includes('"w worker working') || JSON.stringify(roots.workers).includes('"bot working"')) {
+  throw new Error("coordenador continuou pulsando (working) apos fim do processo");
+}
 console.log(JSON.stringify({ ok: true }));
 `
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

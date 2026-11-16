@@ -118,12 +118,13 @@
         "max_duration_sec": 600,
         "max_prompt_tokens": 12000
       },
-      "name": "Dissecação Forense, Transcrição Whisper e Cortes",
+      "name": "Dissecação Forense, Transcrição Whisper, Cortes, Conceitos, Processos e Repositórios",
       "nature": "micro",
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/dossier.json",
-        "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json')"
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json') && has_pattern('docs/videorea/${SLUG}/scratch/dossier.json', 'repositories')"
       },
+      "peca": "legoloop-video-rea-transcrever",
       "rollback_strategy": "stash_changes",
       "routing": {
         "effort": "medium",
@@ -145,7 +146,7 @@
       },
       "type": "script",
       "verification": {
-        "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json')"
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/dossier.json') && has_pattern('docs/videorea/${SLUG}/scratch/dossier.json', 'repositories')"
       }
     },
     {
@@ -183,12 +184,13 @@
         "max_duration_sec": 300,
         "max_prompt_tokens": 10000
       },
-      "name": "Curadoria da Matriz Original e Adoção de Ferramentas",
+      "name": "Curadoria da Matriz Original e Classificação DEVE, PODE e NÃO PODE",
       "nature": "micro",
       "output": {
         "artifact": "docs/videorea/${SLUG}/scratch/curation.json",
-        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json')"
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json') && has_pattern('docs/videorea/${SLUG}/scratch/curation.json', 'findings')"
       },
+      "peca": "legoloop-video-rea-relatorio",
       "rollback_strategy": "stash_changes",
       "routing": {
         "effort": "medium",
@@ -210,7 +212,7 @@
       },
       "type": "script",
       "verification": {
-        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json')"
+        "gate": "file_exists('docs/videorea/${SLUG}/scratch/curation.json') && has_pattern('docs/videorea/${SLUG}/scratch/curation.json', 'findings')"
       }
     },
     {

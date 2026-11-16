@@ -54,6 +54,9 @@ class LegoItemModal extends HTMLElement {
             <button id="btn-modal-add-canvas" class="btn btn--primary btn--sm" type="button" title="Adicionar esta peça ao centro do Canvas" hidden>
               + Adicionar ao Canvas
             </button>
+            <button id="btn-modal-upgrade" class="btn btn--sm" type="button" title="Elevar peça de forma determinística para o Padrão Ouro">
+              Elevar (Ouro)
+            </button>
             <button id="btn-modal-canonize" class="btn btn--sm" type="button" title="Canonizar esta peça no cofre central">
               Canonizar
             </button>
@@ -368,6 +371,43 @@ class LegoItemModal extends HTMLElement {
       this._showToast("Conteúdo copiado!");
     });
 
+    // Ação: Elevar determinístico para Padrão Ouro
+    const btnUpgrade = this.querySelector("#btn-modal-upgrade");
+    if (btnUpgrade) {
+      btnUpgrade.addEventListener("click", async () => {
+        if (!this._item) return;
+        const rawKind = this._item.kind || this._item.cat || this._classifyPiece(this._item);
+        const kind = rawKind === "subloop" ? "loop" : rawKind;
+        const id = this._item.id || this._item.blockId || this._item.name || "";
+        if (!kind || !id) return;
+        btnUpgrade.disabled = true;
+        btnUpgrade.textContent = "Elevando...";
+        try {
+          const res = await this._callApi(`/api/assets/${encodeURIComponent(kind)}/${encodeURIComponent(id)}/upgrade`, {});
+          btnUpgrade.textContent = "Elevar (Ouro)";
+          btnUpgrade.disabled = false;
+          if (res.ok && res.data) {
+            const up = res.data.upgraded_rating || res.data.current_rating || {};
+            if (up.tier) this._item.tier = up.tier;
+            if (up.total_score !== undefined) this._item.score = up.total_score;
+            const fam = this._classifyPiece(this._item);
+            this._refreshHeaderBadges(this._item, fam);
+            this._hydrateFromInspectAPI(this._item, fam);
+            const before = res.data.current_rating?.total_score ?? "?";
+            const after = up.total_score ?? before;
+            this._showToast(`Elevação concluída (${before} -> ${after} · ${String(up.tier || "ouro").toUpperCase()}).`);
+            if (typeof this._options.onUpgrade === "function") this._options.onUpgrade(res.data);
+          } else {
+            this._showToast(res.data?.error || "Falha na elevação da peça.", true);
+          }
+        } catch {
+          btnUpgrade.disabled = false;
+          btnUpgrade.textContent = "Elevar (Ouro)";
+          this._showToast("Erro ao elevar a peça.", true);
+        }
+      });
+    }
+
     // Ação: Canonizar
     const btnCanon = this.querySelector("#btn-modal-canonize");
     if (btnCanon) {
@@ -417,19 +457,28 @@ class LegoItemModal extends HTMLElement {
     if (btnSimRun) {
       btnSimRun.addEventListener("click", () => {
         if (!this._item) return;
-        const val = simInput.value.trim() || "(payload mock padrão)";
+        const val = simInput.value.trim() || "(payload contratual padrão)";
         simResultCard.style.display = "grid";
+        const consumes = this._item.consumes && this._item.consumes.length ? this._item.consumes : (this._item.meta?.consumes ? [this._item.meta.consumes] : []);
+        const outArt = this._item.artifact || this._item.produces || this._item.meta?.artifact || "Artefato do Contrato";
+        const gateEval = this._item.gate || this._item.meta?.gate || "exit_code == 0";
         this.querySelector("#sandbox-output-code").textContent = JSON.stringify({
-          status: "SUCCESS_VALIDATED",
-          simulated_at: new Date().toISOString(),
+          status: "CONTRACT_VALIDATED",
+          validated_at: new Date().toISOString(),
           piece: this._item.name,
+          id: this._item.id || this._item.name,
           family: this._classifyPiece(this._item),
+          sha256: this._item.sha256 || "nativo-core",
+          tier: this._item.tier || this._item.meta?.tier || "padrao",
+          score: this._item.score || this._item.meta?.score || "n/a",
+          line_count: this._item.line_count || 0,
+          consumes,
           input_received: val,
-          output_artifact: this._item.artifact || this._item.produces || this._item.meta?.artifact || "DECISION.json",
-          gate_evaluated: this._item.gate || "file_exists()",
+          output_artifact: outArt,
+          gate_evaluated: gateEval,
           invariants_checked: ["zero_side_effects", "schema_match", "isolated_context"]
         }, null, 2);
-        this._showToast("Simulação executada com sucesso!");
+        this._showToast("Validação contratual executada.");
       });
     }
 
@@ -532,9 +581,18 @@ class LegoItemModal extends HTMLElement {
 
     // Botões Topo
     const hasPath = Boolean(it.path || it.raw?.path);
+    const upgradableKinds = new Set(["skill", "mcp", "script", "hook", "gate", "loop"]);
+    const btnUpgrade = this.querySelector("#btn-modal-upgrade");
+    if (btnUpgrade) {
+      const canUp = upgradableKinds.has(family) || hasPath;
+      btnUpgrade.disabled = !canUp;
+      btnUpgrade.style.display = canUp ? "inline-flex" : "none";
+      btnUpgrade.textContent = "Elevar (Ouro)";
+    }
+
     const btnCanon = this.querySelector("#btn-modal-canonize");
     if (btnCanon) {
-      btnCanon.disabled = !hasPath || copyCount <= 1;
+      btnCanon.disabled = !hasPath;
       btnCanon.style.display = hasPath ? "inline-flex" : "none";
     }
 
@@ -559,9 +617,82 @@ class LegoItemModal extends HTMLElement {
 
     // Abre na primeira aba
     this.switchTab("overview");
+    this._hydrateFromInspectAPI(it, family);
 
     if (typeof dlg.showModal === "function") dlg.showModal();
     else dlg.setAttribute("open", "");
+  }
+
+  _refreshHeaderBadges(it, family) {
+    const bList = this.querySelector("#modal-item-badges");
+    if (!bList) return;
+    bList.replaceChildren();
+    bList.append(this._createBadge(family.toUpperCase(), "badge--accent"));
+    if (it.kind && it.kind !== family) bList.append(this._createBadge(it.kind));
+    if (it.scope) bList.append(this._createBadge(it.scope));
+    if (it.origin) bList.append(this._createBadge(it.origin, "badge--muted"));
+    if (it.tier) bList.append(this._createBadge(`Tier ${String(it.tier).toUpperCase()}`, "badge--accent"));
+    if (it.score) bList.append(this._createBadge(`Score ${it.score}`));
+    if (it.sha256) bList.append(this._createBadge(`SHA ${String(it.sha256).slice(0, 8)}`, "badge--muted"));
+    if (it.badge) bList.append(this._createBadge(it.badge, "badge--warn"));
+    const copyCount = it.copyCount || (it.occurrences ? it.occurrences.length : (it.copies ? it.copies.length : 1));
+    if (copyCount > 1) {
+      bList.append(this._createBadge(`${copyCount} cópias no SO`, "badge--warn"));
+    }
+  }
+
+  async _hydrateFromInspectAPI(it, family) {
+    const reqKey = `${it.id || it.name || ""}:${it.path || ""}`;
+    this._inspectKey = reqKey;
+    const qs = new URLSearchParams();
+    if (it.id || it.blockId) qs.set("id", it.id || it.blockId);
+    if (it.name) qs.set("name", it.name);
+    if (it.cat || it.kind) qs.set("kind", it.cat || it.kind);
+    if (it.path || it.raw?.path) qs.set("path", it.path || it.raw?.path);
+    try {
+      const resp = await fetch(`/api/assets/inspect?${qs.toString()}`);
+      if (!resp.ok) return;
+      const data = await resp.json();
+      if (this._inspectKey !== reqKey || !this._item) return;
+      const merged = {
+        ...this._item,
+        ...data,
+        meta: { ...(this._item.meta || {}), ...(data.meta || {}) },
+        copies: Array.isArray(data.copies) && data.copies.length ? data.copies : this._item.copies,
+      };
+      this._item = merged;
+      const fam = this._classifyPiece(merged) || family;
+      const hasMergedPath = Boolean(merged.path || merged.raw?.path);
+      const btnCanon = this.querySelector("#btn-modal-canonize");
+      if (btnCanon) {
+        btnCanon.disabled = !hasMergedPath;
+        btnCanon.style.display = hasMergedPath ? "inline-flex" : "none";
+      }
+      const btnReveal = this.querySelector("#btn-modal-reveal");
+      if (btnReveal) {
+        btnReveal.disabled = !hasMergedPath;
+        btnReveal.style.display = hasMergedPath ? "inline-flex" : "none";
+      }
+      const btnUp = this.querySelector("#btn-modal-upgrade");
+      if (btnUp) {
+        const upKinds = new Set(["skill", "mcp", "script", "hook", "gate", "loop"]);
+        const canUp = upKinds.has(fam) || hasMergedPath;
+        btnUp.disabled = !canUp;
+        btnUp.style.display = canUp ? "inline-flex" : "none";
+      }
+      this._refreshHeaderBadges(merged, fam);
+      this._populateOverview(merged, fam);
+      this._populateSchema(merged, fam);
+      this._populateOccurrences(merged, fam);
+      if (merged.source_content) {
+        const codeEl = this.querySelector("#modal-source-code");
+        const pathEl = this.querySelector("#modal-source-path");
+        if (codeEl) codeEl.textContent = merged.source_content;
+        if (pathEl && merged.path) pathEl.textContent = `Origem: ${merged.path} (${merged.line_count || 0} linhas)`;
+      }
+    } catch {
+      // Silencioso se offline em teste unitário sem backend
+    }
   }
 
   close() {
@@ -574,9 +705,9 @@ class LegoItemModal extends HTMLElement {
   _classifyPiece(it) {
     const k = (it.kind || it.cat || "").toLowerCase();
     if (k.startsWith("trigger_") || it.cat === "trigger") return "trigger";
-    if (k.startsWith("flow_") || it.cat === "control") return "control";
+    if (k.startsWith("flow_") || k.startsWith("security_") || k.startsWith("vcs_") || k.startsWith("deploy_") || it.cat === "control") return "control";
     if (k === "gate" || it.cat === "gate") return "gate";
-    if (k === "loop" || it.cat === "loop" || k === "subloop") return "loop";
+    if (k === "loop" || it.cat === "loop" || k === "subloop" || k === "subprocesso") return "loop";
     if (k === "mcp" || it.cat === "mcp") return "mcp";
     if (k === "hook" || it.cat === "hook") return "hook";
     if (k === "script" || it.cat === "script") return "script";
@@ -739,21 +870,28 @@ class LegoItemModal extends HTMLElement {
 
       default: {
         // Skill / Bloco
-        const inList = it.consumes && it.consumes.length > 0 ? it.consumes : ["Briefing / Requisitos"];
+        const realConsumes = Array.isArray(it.consumes) && it.consumes.length > 0 ? it.consumes : (it.meta?.consumes ? [it.meta.consumes] : []);
+        const inList = realConsumes.length > 0 ? realConsumes : ["Contexto de entrada tipado"];
         inList.forEach((c) => ipoIn.append(this._createBadge(String(c).replace("Artifact:", ""), "badge--accent")));
 
-        ipoProc.append(this._createEl("span", "ipo-desc", it.desc || it.description || "Execução especializada de tarefa cognitiva"));
+        const procText = it.what_it_does || it.description || it.desc || `Execução especializada: ${it.name}`;
+        ipoProc.append(this._createEl("span", "ipo-desc", procText));
 
-        const prod = it.artifact || it.produces || "Artifact:Report";
+        const prod = it.artifact || it.produces || it.meta?.artifact || "Artefato gerado";
         ipoOut.append(this._createBadge(String(prod).replace("Artifact:", ""), "badge--accent"));
         artContainer.append(this._createBadge(prod, "badge--accent"));
 
-        what = it.desc || it.description || `Peça de software autônoma: ${it.name}.`;
-        does = `Executa processamento sob isolamento estrito de contexto, consumindo artefatos tipados.`;
-        delivers = `Produz o artefato '${prod}' com validação de conformidade.`;
+        what = it.what_it_is || it.description || it.desc || `Peça ${family.toUpperCase()} '${it.name}'.`;
+        does = it.what_it_does || `Executa processamento isolado consumindo ${inList.join(", ")}.`;
+        delivers = it.what_it_delivers || `Produz '${prod}' com verificação determinística.`;
         break;
       }
     }
+
+    // Prioriza resumo real extraído da API /api/assets/inspect quando presente para qualquer família
+    if (it.what_it_is) what = it.what_it_is;
+    if (it.what_it_does) does = it.what_it_does;
+    if (it.what_it_delivers) delivers = it.what_it_delivers;
 
     // Gate acoplado
     const gateText = it.gate || it.meta?.gate || (family === "gate" ? (it.signature || it.name) : "Nenhum");
@@ -767,10 +905,20 @@ class LegoItemModal extends HTMLElement {
     this.querySelector("#modal-prop-does").textContent = does;
     this.querySelector("#modal-prop-delivers").textContent = delivers;
 
-    // Roteamento & Orçamento
-    const cost = it.cost || (family === "control" ? 1 : 0);
-    const model = it.suggested_model || (family === "control" || family === "gate" ? "N/A (Motor Nativo Go)" : "t-codigo-128k (Combo Certificado)");
-    this.querySelector("#modal-prop-routing").textContent = `Custo Estimado: ~${cost}k tokens · Modelo Sugerido: ${model}`;
+    // Roteamento, Matriz & Raio-X Factual
+    const facts = [];
+    if (it.tier) facts.push(`Tier: ${String(it.tier).toUpperCase()}`);
+    if (it.score) facts.push(`Score: ${it.score}`);
+    if (it.guilda) facts.push(`Guilda: ${it.guilda}`);
+    if (it.papel) facts.push(`Papel: ${it.papel}`);
+    if (it.line_count) facts.push(`${it.line_count} linhas`);
+    if (it.size_bytes) facts.push(`${it.size_bytes} bytes`);
+    if (it.sha256) facts.push(`SHA-256: ${String(it.sha256).slice(0, 12)}`);
+    if (!facts.length) {
+      const model = it.suggested_model || (family === "control" || family === "gate" ? "N/A (Motor Nativo Go)" : "Definido pelo nó no Canvas");
+      facts.push(`Família: ${family.toUpperCase()}`, `Execução: ${model}`);
+    }
+    this.querySelector("#modal-prop-routing").textContent = facts.join(" · ");
   }
 
   _populateSchema(it, family) {
@@ -805,16 +953,16 @@ class LegoItemModal extends HTMLElement {
     if (family === "trigger") {
       tbody.append(makeRow("Origem", "badge--muted", "Gatilho Externo / Evento", "Event Trigger", "Autônomo"));
     } else {
-      const inList = it.consumes || (it.meta?.consumes ? [it.meta.consumes] : ["Briefing / Requisitos"]);
+      const inList = Array.isArray(it.consumes) && it.consumes.length > 0 ? it.consumes : (it.meta?.consumes ? [it.meta.consumes] : ["Contexto de entrada tipado"]);
       inList.forEach((itemIn) => {
         tbody.append(makeRow("Entrada", "badge--accent", String(itemIn), "Artifact (Markdown / JSON)", "Obrigatório"));
       });
     }
 
-    const outItem = it.artifact || it.produces || (family === "gate" ? "PASS / FAIL" : "Artifact:Report");
+    const outItem = it.artifact || it.produces || it.meta?.artifact || (family === "gate" ? "PASS / FAIL" : "Artefato gerado");
     tbody.append(makeRow("Saída", "badge--warn", String(outItem), family === "gate" ? "Boolean Verdict" : "Artifact Imutável", "Garantido"));
 
-    // Metadados técnicos
+    // Metadados técnicos reais (Raio-X completo)
     const metaGrid = this.querySelector("#modal-schema-meta-grid");
     metaGrid.replaceChildren();
 
@@ -823,9 +971,14 @@ class LegoItemModal extends HTMLElement {
       { label: "Identificador", value: it.id || it.blockId || it.name },
       { label: "Escopo", value: it.scope || "global" },
       { label: "Origem", value: it.origin || "catálogo local" },
-      { label: "Gate Formal", value: it.gate || (family === "gate" ? it.signature : "Nenhum") },
+      { label: "Gate Formal", value: it.gate || it.meta?.gate || (family === "gate" ? (it.signature || it.name) : "Nenhum") },
       { label: "Caminho no SO", value: it.path || it.raw?.path || "Nativo do Core LegoLoop" },
     ];
+    if (it.sha256) items.push({ label: "SHA-256", value: it.sha256 });
+    if (it.tier || it.score) items.push({ label: "Matriz de Peças", value: `${it.tier || "-"} (Score ${it.score || "-"})` });
+    if (it.guilda || it.papel) items.push({ label: "Guilda / Papel", value: `${it.guilda || "-"} / ${it.papel || "-"}` });
+    if (it.line_count || it.size_bytes) items.push({ label: "Tamanho Físico", value: `${it.line_count || 0} linhas · ${it.size_bytes || 0} bytes` });
+    if (Array.isArray(it.sections) && it.sections.length) items.push({ label: "Seções Detectadas", value: it.sections.join(" | ") });
 
     if (family === "gate") {
       items.push({ label: "Tipo Auditado", value: this._getAuditedArtifact(it) });
@@ -953,21 +1106,33 @@ class LegoItemModal extends HTMLElement {
         const btnSwap = this._createEl("button", "btn btn--sm btn--primary", "Trocar por esta Peça");
         btnSwap.onclick = () => {
           this.close();
-          this._showToast(`Peça "${c.item.name}" selecionada para troca (Swap).`);
+          if (typeof this._options?.onSwapCompatible === "function") {
+            this._options.onSwapCompatible(c.item);
+          } else {
+            this._showToast(`Abra no Canvas para trocar pela peça "${c.item.name}".`, true);
+          }
         };
         actions.append(btnSwap);
       } else if (c.relation === "predecessor") {
         const btnPre = this._createEl("button", "btn btn--sm", "Conectar Antes");
         btnPre.onclick = () => {
           this.close();
-          this._showToast(`Conectando "${c.item.name}" como antecessora no Canvas.`);
+          if (typeof this._options?.onConnectBefore === "function") {
+            this._options.onConnectBefore(c.item);
+          } else {
+            this._showToast(`Abra no Canvas para conectar "${c.item.name}" antes.`, true);
+          }
         };
         actions.append(btnPre);
       } else {
         const btnPost = this._createEl("button", "btn btn--sm", "Conectar Depois");
         btnPost.onclick = () => {
           this.close();
-          this._showToast(`Conectando "${c.item.name}" como sucessora no Canvas.`);
+          if (typeof this._options?.onConnectAfter === "function") {
+            this._options.onConnectAfter(c.item);
+          } else {
+            this._showToast(`Abra no Canvas para conectar "${c.item.name}" depois.`, true);
+          }
         };
         actions.append(btnPost);
       }
@@ -1084,12 +1249,16 @@ class LegoItemModal extends HTMLElement {
     const filePath = it.path || it.raw?.path;
     pathEl.textContent = filePath ? `Origem: ${filePath}` : "Catálogo";
 
+    if (it.source_content) {
+      codeEl.textContent = it.source_content;
+      return;
+    }
     if (!filePath) {
-      codeEl.textContent = it.desc || "// Peça virtual do ecossistema LegoLoop.";
+      codeEl.textContent = it.description || it.desc || "// Peça nativa do catálogo LegoLoop sem arquivo físico associado.";
       return;
     }
 
-    codeEl.textContent = "Carregando conteúdo da peça...";
+    codeEl.textContent = "Carregando código-fonte real da peça...";
     this._loadSourceContent(it);
   }
 

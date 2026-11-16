@@ -1,0 +1,14 @@
+{
+  "peca": "legoloop-video-rea-transcrever",
+  "tipo": "script",
+  "workers": 1,
+  "ticket": "T1-video-rea-transcrever",
+  "ferramentas": [
+    "Read",
+    "Write",
+    "Edit",
+    "Bash"
+  ],
+  "write_boundary": "strict",
+  "subagentes": "ephemeral"
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "legoloop-video-rea-transcrever",
+  "name": "legoloop-video-rea-transcrever",
+  "description": "Converter o áudio aac em wav 16 kHz mono com ffmpeg e transcrever com C:\\Users\\trcnologia\\tools\\whisper-cpp\\Release\\whisper-cli.exe e o modelo C:\\Users\\trcnologia\\.cache\\whisper-models\\ggml-small.bin. Verificar que os dois caminhos existem antes de usar. Plano B: read_file multimodal do áudio. Saída: transcricao.txt.",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "e01",
+      "name": "Script",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-video-rea-transcrever",
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "output": {
+        "artifact": "out/01_script.md",
+        "gate": "file_exists('out/01_script.md') \u0026\u0026 word_count('out/01_script.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_script.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_out": [
+        "out/01_script.md"
+      ],
+      "status": "PENDING"
+    }
+  ]
+}

@@ -593,3 +593,11 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
 - **Status da Branch:** `main` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).
 - **Documentação & Relatórios:** `docs/manuals/`, `docs/books/`, `skills/`, `loops/`, `docs/reports/`, `schemas/`, `AGENTS.md` e `README.md`.
+
+* **Processo Canonizado `legoloop-web-qa` (2026-11-15):** `skills/legoloop-web-qa/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-fabricar-peca-unica` (2026-11-15):** `skills/legoloop-fabricar-peca-unica/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-video-rea-transcrever` (2026-11-15):** `skills/legoloop-video-rea-transcrever/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-video-rea-relatorio` (2026-11-15):** `skills/legoloop-video-rea-relatorio/SKILL.md` · `docs/reports/`

@@ -4,10 +4,11 @@ import (
 	"net/http"
 
 	"legoloop/internal/assets"
+	"legoloop/internal/caminhos"
 	"legoloop/internal/suggest"
 )
 
-var suggestKinds = map[string]bool{"skill": true, "script": true, "mcp": true, "subprocesso": true}
+var suggestKinds = map[string]bool{"skill": true, "script": true, "mcp": true, "subprocesso": true, caminhos.TipoSubprocessoAntigo: true}
 
 type suggestResponse struct {
 	Gates     []suggest.Gate     `json:"gates"`
@@ -60,6 +61,9 @@ func (s *Server) suggestContext(block, kind, artifact string) (suggest.Context, 
 		return suggest.Context{}, http.StatusBadRequest, "kind desconhecido"
 	case artifact == "" || len(artifact) > maxArtifactLen:
 		return suggest.Context{}, http.StatusBadRequest, "artifact é obrigatório (até 128 caracteres)"
+	}
+	if kind == caminhos.TipoSubprocessoAntigo {
+		kind = "subprocesso"
 	}
 	return suggest.Context{Kind: kind, Artifact: artifact}, 0, ""
 }

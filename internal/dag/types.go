@@ -162,6 +162,7 @@ type Node struct {
 	Limits              map[string]any    `json:"limits,omitempty"`
 	RollbackStrategy    string            `json:"rollback_strategy,omitempty"`
 	SpecRef             string            `json:"spec_ref,omitempty"`
+	Peca                string            `json:"peca,omitempty"` // Processo que a peça do nó materializa; só vínculo, o nó mantém o próprio comando
 	StopGate            any               `json:"stop_gate,omitempty"`
 	Status              string            `json:"status,omitempty"`
 	Role                string            `json:"role,omitempty"`

@@ -32,6 +32,7 @@ type Request struct {
 	LinkHarnesses  []string `json:"link_harnesses"`  // Ex: ["claude"]; vazio = todos os harnesses detectados
 	NoLink         bool     `json:"no_link"`         // true = só o cofre, nenhum vínculo a harness
 	DryRun         bool     `json:"dry_run"`         // true = calcula tudo e não grava nada
+	Peca           string   `json:"peca,omitempty"`  // tipo da peça única (script, skill, gate, hook, mcp, processo); vazio = processo completo
 }
 
 // Validate normaliza e checa o pedido antes de qualquer E/S.
@@ -43,6 +44,9 @@ func (r Request) Validate() error {
 	case CategoryBuild, CategoryReverse, CategoryWeb, CategoryMobile:
 	default:
 		return fmt.Errorf("%w: categoria %q", ErrInvalidRequest, r.Category)
+	}
+	if r.Peca != "" && !TipoPecaValido(r.Peca) {
+		return errTipoPeca(r.Peca)
 	}
 	if strings.TrimSpace(r.ModelChoice) == "" {
 		return fmt.Errorf("%w: model_choice é obrigatório", ErrInvalidRequest)

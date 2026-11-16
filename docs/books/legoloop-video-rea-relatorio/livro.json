@@ -1,0 +1,12 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-video-rea-relatorio",
+      "titulo": "Skill"
+    }
+  ],
+  "descricao": "Gravar docs/reports/AAAA-MM-DD_REPORT_\u003cslug\u003e.md com frontmatter YAML e as três classes DEVE, PODE e NÃO PODE. Cada item traz o porquê e o como.",
+  "slug": "legoloop-video-rea-relatorio",
+  "titulo": "Manual Didático: legoloop-video-rea-relatorio"
+}

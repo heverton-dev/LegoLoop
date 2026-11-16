@@ -212,7 +212,7 @@ func ParseTurnResult(raw string) *TurnResult {
 	turn.Guess, _ = capture(reGuess, raw)
 	// Se houver espelho canônico ou confiança >= 95%
 	if strings.Contains(strings.ToUpper(raw), "ESPELHO CANÔNICO") || turn.Confidence >= 95 {
-		completeTurn(turn, parseMirror(raw))
+		completeTurn(turn, parseMirror(raw), hasThreePremonitions(raw))
 	}
 	return turn
 }
@@ -233,12 +233,24 @@ func parseMirror(raw string) *Mirror {
 	return m
 }
 
-// completeTurn dá o turno por concluído quando o espelho traz o resultado esperado ou a confiança chegou a 95%.
-func completeTurn(turn *TurnResult, mirror *Mirror) {
-	if mirror.Outcome == "" && turn.Confidence < 95 {
+var rePremonicaoItem = regexp.MustCompile(`(?im)^\s*[1-3]\.\s*Pergunta:\s*[^\n|]+\|\s*Resposta prevista:\s*[^\n]+`)
+
+// hasThreePremonitions verifica se há bloco PREMONIÇÃO com exatamente 3 perguntas e respostas previstas.
+func hasThreePremonitions(raw string) bool {
+	if !strings.Contains(strings.ToUpper(raw), "PREMONIÇÃO") {
+		return false
+	}
+	return len(rePremonicaoItem.FindAllString(raw, -1)) >= 3
+}
+
+// completeTurn dá o turno por concluído quando a confiança chegou a 95% ou quando há espelho + premonição das 3 perguntas.
+func completeTurn(turn *TurnResult, mirror *Mirror, premonicaoOK bool) {
+	if mirror.Outcome != "" {
+		turn.Mirror = mirror
+	}
+	if turn.Confidence < 95 && (mirror.Outcome == "" || !premonicaoOK) {
 		return
 	}
-	turn.Mirror = mirror
 	turn.Status = StatusCompleted
 }
 

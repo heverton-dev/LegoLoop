@@ -1,0 +1,23 @@
+{
+  "nome": "legoloop-fabricar-peca-unica",
+  "versao": "1.0.0",
+  "natureza": "qualquer",
+  "objetivo": "Fabricar uma peça única (nó solto) de qualquer tipo, refinar com --adicionar e compor com --depende; triagem só com mais de um nó, exigida por validate e fechar.",
+  "etapas": [
+    {
+      "id": "e01",
+      "titulo": "Processo",
+      "tipo": "processo",
+      "peca": "legoloop-fabricar-peca-unica",
+      "consome": null,
+      "produz": {
+        "caminho": "out/01_processo.md",
+        "tipo": "markdown",
+        "promete": true
+      },
+      "gate": "file_exists('out/01_processo.md') \u0026\u0026 word_count('out/01_processo.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_processo.md', '\\{\\{')",
+      "depende": null
+    }
+  ],
+  "criado_em": "2026-11-15T17:54:56.2652758Z"
+}

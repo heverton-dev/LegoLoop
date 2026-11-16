@@ -253,6 +253,9 @@ async function openItemModal(it) {
     onCanonize: async () => {
       await refreshSummary(true);
     },
+    onUpgrade: async () => {
+      await refreshSummary(true);
+    },
   });
 }
 
@@ -273,12 +276,40 @@ async function refreshSummary(force = false) {
   if (changed || force) await loadItems();
 }
 
+function showLegoLoading(label = "Varrendo...") {
+  let ov = document.getElementById("lego-loading-overlay");
+  if (!ov) {
+    ov = el("div", "lego-loading-overlay");
+    ov.id = "lego-loading-overlay";
+    const box = el("div", "lego-loading-box");
+    const stack = el("div", "lego-loading-stack");
+    ["lego-brick--a", "lego-brick--b", "lego-brick--c"].forEach((c) => {
+      const b = el("div", `lego-brick ${c}`);
+      b.append(el("span", "lego-stud"), el("span", "lego-stud"));
+      stack.append(b);
+    });
+    const txt = el("div", "lego-loading-text", label);
+    box.append(stack, txt);
+    ov.append(box);
+    document.body.append(ov);
+  }
+  ov.querySelector(".lego-loading-text").textContent = label;
+  ov.hidden = false;
+}
+
+function hideLegoLoading() {
+  const ov = document.getElementById("lego-loading-overlay");
+  if (ov) ov.hidden = true;
+}
+
 async function rescan(btn) {
   btn.disabled = true;
+  showLegoLoading("Varrendo...");
   try {
     await refreshSummary(true);
     toast("Inventário atualizado.");
   } finally {
+    hideLegoLoading();
     btn.disabled = false;
   }
 }

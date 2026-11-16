@@ -159,6 +159,16 @@ func TestSuggestForGenericPiece(t *testing.T) {
 	}
 }
 
+func TestSuggestAcceptsSubloopKind(t *testing.T) {
+	s, _, _ := piecesFixture(t)
+	for _, kind := range []string{"subloop", "subprocesso"} {
+		rec := do(t, s.Handler(), "GET", "/api/suggest?kind="+kind+"&artifact=OUT.md", "")
+		if rec.Code != 200 {
+			t.Fatalf("kind=%s retornou status %d: %s", kind, rec.Code, rec.Body)
+		}
+	}
+}
+
 func TestSuggestValidatesTheRequest(t *testing.T) {
 	s, _, _ := piecesFixture(t)
 	cases := map[string]int{

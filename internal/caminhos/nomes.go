@@ -9,11 +9,13 @@ import (
 )
 
 const (
-	DirLoops           = "loops"
-	ArquivoDAG         = "pipeline.dag.json"
-	ChaveAPILoops      = "loops"
-	SufixoLoop         = ".loop.json"
-	TemplatePecaAntigo = "TEMPLATE_PIECE_LOOP.json"
+	DirLoops              = "loops"
+	ArquivoDAG            = "pipeline.dag.json"
+	ChaveAPILoops         = "loops"
+	ChaveMetaProcessoID   = "loop_id"
+	SufixoLoop            = ".loop.json"
+	TipoSubprocessoAntigo = "subloop"
+	TemplatePecaAntigo    = "TEMPLATE_PIECE_LOOP.json"
 )
 
 const (
@@ -57,4 +59,15 @@ func CaminhoDAGLeitura(dir string) string {
 		return novo
 	}
 	return CaminhoDAG(dir)
+}
+
+// DestinosDoProcesso diz onde gravar o DAG e o documento do Studio de um processo do cofre. Se a pasta
+// loops/<nome>/ existe (layout do fabricar), os dois ficam nela; senão, ficam soltos em loops/ (layout antigo).
+func DestinosDoProcesso(vault, nome, sufixoSolto string) (dag, studio string) {
+	loops := DirLoopsEm(vault)
+	pasta := filepath.Join(loops, nome)
+	if info, err := os.Stat(pasta); err == nil && info.IsDir() {
+		return CaminhoDAG(pasta), filepath.Join(pasta, nome+SufixoStudio)
+	}
+	return filepath.Join(loops, nome+".dag.json"), filepath.Join(loops, nome+sufixoSolto)
 }

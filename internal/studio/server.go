@@ -147,6 +147,7 @@ func (s *Server) registerAPIRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/blocks", s.handleBlocks)
 	mux.HandleFunc("GET /api/inventory", s.handleInventory)
 	mux.HandleFunc("POST /api/assets/translate", s.handleAssetTranslate)
+	mux.HandleFunc("GET /api/assets/inspect", s.handleAssetInspect)
 	mux.HandleFunc("GET /api/assets/compatible", s.handleAssetCompatible)
 	mux.HandleFunc("POST /api/assets/reveal", s.handleAssetReveal)
 	mux.HandleFunc("POST /api/assets/import", s.handleAssetImport)

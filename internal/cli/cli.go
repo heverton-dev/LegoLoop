@@ -45,6 +45,8 @@ type Deps struct {
 	Provider *ProviderDeps
 	// Fechar injeta seams do comando fechar (nil = ambiente real; usado em testes).
 	Fechar *FecharDeps
+	// WebQARunner injeta o executor do script Node do comando web-qa (nil = node real; usado em testes).
+	WebQARunner func(ctx context.Context, args []string, stdout, stderr io.Writer) int
 }
 
 func (d Deps) discover(ctx context.Context) provider.Inventory {
@@ -89,6 +91,7 @@ Comandos:
   cartoon-shorts --theme "<tema>" [opções]    processo soberano de geração de Cartoon Shorts (1080x1920)
   swarm      <add|post|read|wait|status|kill|monitor|ui> [-dir DIR] [-addr HOST:PORT] [-root DIR]  painel de coordenação de agentes em enxame
   fechar     <slug> [--dry-run] [--skip-build] [--json]  cadeia determinística de 9 etapas de canonização e fechamento
+  web-qa     <preflight|run|corrigir> [opções]  QA web determinístico (Playwright, axe-core, lychee, Obscura, renderlint, unlighthouse, lost-pixel)
   version
 `
 
@@ -107,7 +110,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
-		"swarm": cmdSwarm,
+		"swarm": cmdSwarm, "web-qa": cmdWebQA,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

@@ -30,15 +30,28 @@ type WorkerStatus string
 const (
 	WorkerWaiting WorkerStatus = "waiting"
 	WorkerWorking WorkerStatus = "working"
+	WorkerDone    WorkerStatus = "done"
 	WorkerStopped WorkerStatus = "stopped"
 	WorkerKilled  WorkerStatus = "killed"
 )
+
+// WorkerPiece associa uma peca do catalogo ao worker.
+type WorkerPiece struct {
+	Kind string `json:"kind"`
+	Name string `json:"name"`
+}
 
 type Worker struct {
 	Name          string        `json:"name"`
 	Role          string        `json:"role"`
 	Parent        string        `json:"parent,omitempty"`
 	Model         string        `json:"model,omitempty"`
+	Piece         string        `json:"piece,omitempty"`
+	PieceKind     string        `json:"piece_kind,omitempty"`
+	Pieces        []WorkerPiece `json:"pieces,omitempty"`
+	Ticket        string        `json:"ticket,omitempty"`
+	Step          int           `json:"step,omitempty"`
+	Mode          string        `json:"mode,omitempty"`
 	WorkspaceMode WorkspaceMode `json:"workspace_mode"`
 	WorktreePath  string        `json:"worktree_path,omitempty"`
 	BranchName    string        `json:"branch_name,omitempty"`
@@ -67,8 +80,25 @@ type AddWorkerRequest struct {
 	Role          string        `json:"role"`
 	Parent        string        `json:"parent,omitempty"`
 	Model         string        `json:"model,omitempty"`
+	Piece         string        `json:"piece,omitempty"`
+	PieceKind     string        `json:"piece_kind,omitempty"`
+	Pieces        []WorkerPiece `json:"pieces,omitempty"`
+	Ticket        string        `json:"ticket,omitempty"`
+	Step          int           `json:"step,omitempty"`
+	Mode          string        `json:"mode,omitempty"`
 	WorkspaceMode WorkspaceMode `json:"workspace_mode,omitempty"`
 	RepoDir       string        `json:"repo_dir,omitempty"`
+}
+
+// UpdateWorkerRequest atualiza os atributos operacionais e associacoes de um worker.
+type UpdateWorkerRequest struct {
+	Name      string        `json:"name"`
+	Role      string        `json:"role,omitempty"`
+	Model     string        `json:"model,omitempty"`
+	Piece     string        `json:"piece,omitempty"`
+	PieceKind string        `json:"piece_kind,omitempty"`
+	Pieces    []WorkerPiece `json:"pieces,omitempty"`
+	Ticket    string        `json:"ticket,omitempty"`
 }
 
 type swarmState struct {
@@ -349,8 +379,11 @@ func (sb *SwarmBoard) addWorkerLocked(req AddWorkerRequest, mode WorkspaceMode, 
 			repoDir = abs
 		}
 	}
+	pieces, firstPiece, firstKind := normalizeWorkerPieces(req.Pieces, req.Piece, req.PieceKind)
 	w := Worker{
 		Name: name, Role: req.Role, Parent: req.Parent, Model: req.Model,
+		Piece: firstPiece, PieceKind: firstKind, Pieces: pieces,
+		Ticket: strings.TrimSpace(req.Ticket), Step: req.Step, Mode: strings.TrimSpace(req.Mode),
 		WorkspaceMode: mode, WorktreePath: wtPath, BranchName: branch,
 		RepoDir: repoDir, Status: WorkerWaiting,
 		CreatedAt: now, LastActiveAt: now,
@@ -375,6 +408,29 @@ func (sb *SwarmBoard) PostMessage(from, to, body string) (Message, error) {
 		st.NextSeq++
 		st.Messages = append(st.Messages, msg)
 		applyMessageTargets(st.Workers, from, to, body, msg.CreatedAt)
+		return sb.saveLocked(st)
+	})
+	return msg, err
+}
+
+// FinishSimulation publica a conclusao da simulacao e marca workers ativos como concluidos.
+func (sb *SwarmBoard) FinishSimulation(body string) (Message, error) {
+	var msg Message
+	err := sb.withLock(func() error {
+		st, err := sb.loadLocked()
+		if err != nil {
+			return err
+		}
+		now := time.Now().UTC()
+		msg = Message{Seq: st.NextSeq, From: "coordenador", To: "registro", Body: body, CreatedAt: now}
+		st.NextSeq++
+		st.Messages = append(st.Messages, msg)
+		for i := range st.Workers {
+			if st.Workers[i].Status != WorkerKilled {
+				st.Workers[i].Status = WorkerDone
+				st.Workers[i].LastActiveAt = now
+			}
+		}
 		return sb.saveLocked(st)
 	})
 	return msg, err
@@ -623,6 +679,114 @@ func (sb *SwarmBoard) markWorkerKilled(name string) error {
 				st.Workers[i].Status = WorkerKilled
 				st.Workers[i].PID = 0
 				st.Workers[i].LastActiveAt = time.Now().UTC()
+				return sb.saveLocked(st)
+			}
+		}
+		return fmt.Errorf("board: worker %q nao encontrado", name)
+	})
+}
+
+// UpdateWorker atualiza papel, modelo, peça associada e ticket de um worker existente.
+func (sb *SwarmBoard) UpdateWorker(req UpdateWorkerRequest) (Worker, error) {
+	if req.Role != "" {
+		if err := taxonomy.ValidarPapel(req.Role); err != nil {
+			return Worker{}, err
+		}
+	}
+	var updated Worker
+	err := sb.withLock(func() error {
+		return sb.updateWorkerLocked(req, &updated)
+	})
+	return updated, err
+}
+
+func (sb *SwarmBoard) updateWorkerLocked(req UpdateWorkerRequest, out *Worker) error {
+	st, err := sb.loadLocked()
+	if err != nil {
+		return err
+	}
+	for i := range st.Workers {
+		if st.Workers[i].Name == req.Name {
+			applyWorkerPatch(&st.Workers[i], req)
+			st.Workers[i].LastActiveAt = time.Now().UTC()
+			*out = st.Workers[i]
+			return sb.saveLocked(st)
+		}
+	}
+	return fmt.Errorf("board: worker %q nao encontrado", req.Name)
+}
+
+func applyWorkerPatch(w *Worker, req UpdateWorkerRequest) {
+	if strings.TrimSpace(req.Role) != "" {
+		w.Role = strings.TrimSpace(req.Role)
+	}
+	if strings.TrimSpace(req.Model) != "" {
+		w.Model = strings.TrimSpace(req.Model)
+	}
+	pieces, firstPiece, firstKind := normalizeWorkerPieces(req.Pieces, req.Piece, req.PieceKind)
+	w.Piece = firstPiece
+	w.PieceKind = firstKind
+	w.Pieces = pieces
+	w.Ticket = strings.TrimSpace(req.Ticket)
+}
+
+func normalizeWorkerPieces(in []WorkerPiece, single, kind string) ([]WorkerPiece, string, string) {
+	var out []WorkerPiece
+	seen := make(map[string]bool)
+	for _, p := range in {
+		name := strings.TrimSpace(p.Name)
+		k := strings.TrimSpace(p.Kind)
+		if name == "" {
+			continue
+		}
+		key := strings.ToLower(k + ":" + name)
+		if !seen[key] {
+			seen[key] = true
+			out = append(out, WorkerPiece{Kind: k, Name: name})
+		}
+	}
+	if len(out) == 0 && strings.TrimSpace(single) != "" {
+		out = append(out, WorkerPiece{Kind: strings.TrimSpace(kind), Name: strings.TrimSpace(single)})
+	}
+	if len(out) == 0 {
+		return nil, "", ""
+	}
+	return out, out[0].Name, out[0].Kind
+}
+
+// RemoveWorker encerra PID/worktree do worker e o remove definitivamente do quadro.
+func (sb *SwarmBoard) RemoveWorker(name, repoDir string) error {
+	w, err := sb.lookupWorker(name)
+	if err != nil {
+		return err
+	}
+	sb.cleanupWorkerResources(w, repoDir)
+	return sb.deleteWorkerRecord(name)
+}
+
+func (sb *SwarmBoard) cleanupWorkerResources(w Worker, repoDir string) {
+	if w.PID > 0 {
+		_ = killOSProcess(w.PID)
+		sb.waitActiveExit(w.PID, 3*time.Second)
+	}
+	effectiveRepo := strings.TrimSpace(repoDir)
+	if w.RepoDir != "" && (effectiveRepo == "" || effectiveRepo == ".") {
+		effectiveRepo = w.RepoDir
+	}
+	if w.WorktreePath != "" {
+		removeWorktree(effectiveRepo, w.WorktreePath)
+	}
+}
+
+func (sb *SwarmBoard) deleteWorkerRecord(name string) error {
+	return sb.withLock(func() error {
+		st, err := sb.loadLocked()
+		if err != nil {
+			return err
+		}
+		for i := range st.Workers {
+			if st.Workers[i].Name == name {
+				st.Workers = append(st.Workers[:i], st.Workers[i+1:]...)
 				return sb.saveLocked(st)
 			}
 		}

@@ -121,7 +121,7 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if err := preflight(deps, name, req.Force); err != nil {
 		return nil, err
 	}
-	fonte, err := deps.Matriz() // antes da entrevista: sem matriz não vale a pena perguntar nada
+	fonte, err := matrizDoPedido(req, deps) // antes da entrevista: sem matriz não vale a pena perguntar nada
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func Fabricar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if err := deps.confirmDraft(clar); err != nil {
 		return nil, err
 	}
-	c, err := consultar(ctx, req, deps, clar, fonte)
+	c, err := consultarOuPeca(ctx, req, deps, clar, fonte)
 	if err != nil {
 		return nil, err
 	}
@@ -198,6 +198,22 @@ func consultar(ctx context.Context, req Request, d Deps, clar Clarification, fon
 	return consulta{fonte: fonte, needs: needs, m: m, avisos: append(avisos, cortes...)}, nil
 }
 
+// matrizDoPedido lê a matriz; a peça única não a usa e segue sem ela.
+func matrizDoPedido(req Request, d Deps) (FonteMatriz, error) {
+	if req.Peca != "" {
+		return FonteMatriz{}, nil
+	}
+	return d.Matriz()
+}
+
+// consultarOuPeca pula a Fusão na peça única: a peça é a própria etapa e não há peça apta a escolher.
+func consultarOuPeca(ctx context.Context, req Request, d Deps, clar Clarification, fonte FonteMatriz) (consulta, error) {
+	if req.Peca != "" {
+		return consulta{fonte: fonte}, nil
+	}
+	return consultar(ctx, req, d, clar, fonte)
+}
+
 // objetivoDe é o objetivo do pedido; sem ele, o próprio nome.
 func objetivoDe(req Request) string {
 	if strings.TrimSpace(req.Goal) != "" {
@@ -211,7 +227,7 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	m := c.m
 	now := d.Clock().UTC()
 	d.progress(4, "Tríade")
-	p, pr, err := projetar(name, objetivoDoProcesso(req, clar), &c, now)
+	p, pr, err := projetarPara(req, name, objetivoDoProcesso(req, clar), &c, now)
 	if req.DryRun && errors.Is(err, ErrLacuna) {
 		return relatorioDaLacuna(d, name, clar, c, p, now), err // a lacuna não para antes do relatório
 	}
@@ -220,7 +236,7 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	}
 	m = c.m
 	d.progress(5, "Template e gravação")
-	files, err := plannedFiles(d.Roots, p, pr, intentDe(name, clar, p.Natureza, now))
+	files, err := plannedFiles(d.Roots, p, pr, intentDe(name, clar, p.Natureza, now), req.Peca)
 	if err != nil {
 		return nil, err
 	}

@@ -14,7 +14,7 @@ import (
 
 func init() {
 	for id, msg := range map[string]string{
-		"refinar.uso":          "Uso: legoloop refinar <nome> --etapa ID [--peca P] [--caso C] [--titulo T] [--vault DIR] [--docs DIR] [--yes] [--json]",
+		"refinar.uso":          "Uso: legoloop refinar <nome> --etapa ID [--peca P] [--caso C] [--titulo T] [--adicionar [--depende ID]] [--vault DIR] [--docs DIR] [--yes] [--json]",
 		"refinar.sem_terminal": "Não há terminal para confirmar. Use --yes para seguir sem perguntar.",
 		"refinar.segue_yes":    "Segue sem perguntar, por causa do --yes.",
 	} {
@@ -24,9 +24,9 @@ func init() {
 
 // refinarOpts reúne as flags do comando.
 type refinarOpts struct {
-	yes, asJSON                      bool
+	yes, asJSON, adicionar           bool
 	vault, docs, etapa, peca, titulo string
-	caso                             listFlag
+	caso, depende                    listFlag
 }
 
 // cmdRefinar muda uma etapa de um processo do cofre. Mostra o diff e o cartão, pede a confirmação e grava.
@@ -41,6 +41,8 @@ func cmdRefinar(ctx context.Context, args []string, d Deps) int {
 	fs.StringVar(&o.peca, "peca", "", "peça nova da etapa")
 	fs.StringVar(&o.titulo, "titulo", "", "título novo da etapa")
 	fs.Var(&o.caso, "caso", "caso de uso da etapa (repetível)")
+	fs.BoolVar(&o.adicionar, "adicionar", false, "cria a etapa --etapa (id novo, no fim) em vez de mudar uma existente")
+	fs.Var(&o.depende, "depende", "com --adicionar: etapa que vem antes da nova (repetível; padrão: a última)")
 	nome, rest := splitPositional(args)
 	if err := fs.Parse(rest); err != nil {
 		return 2
@@ -68,7 +70,8 @@ func runRefinar(ctx context.Context, nome string, o refinarOpts, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
-	req := refinar.Request{Nome: nome, Mudanca: refinar.Mudanca{Etapa: o.etapa, Peca: o.peca, Titulo: o.titulo, Casos: o.caso}}
+	req := refinar.Request{Nome: nome, Mudanca: refinar.Mudanca{Etapa: o.etapa, Peca: o.peca, Titulo: o.titulo, Casos: o.caso,
+		Adicionar: o.adicionar, Depende: o.depende}}
 	res, err := refinar.Run(ctx, req, refinar.Deps{Store: processo.Store{Roots: roots}, Confirm: confirm})
 	if err != nil {
 		return falhaRefinar(d, err)

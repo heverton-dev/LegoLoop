@@ -122,14 +122,46 @@ function resolveInitialTheme() {
   return "light";
 }
 
+function buildThemeIconSvg(isDark) {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("width", "15");
+  svg.setAttribute("height", "15");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+  const add = (tag, attrs) => {
+    const el = document.createElementNS(ns, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    svg.appendChild(el);
+  };
+  if (isDark) {
+    add("circle", { cx: "12", cy: "12", r: "4" });
+    add("path", { d: "M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" });
+  } else {
+    add("path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" });
+  }
+  return svg;
+}
+
 function syncThemeToggleButton(theme) {
   if (typeof document === "undefined") return;
   const btn = document.getElementById("btn-theme-toggle");
   if (!btn) return;
   const isDark = theme === "dark";
+  const label = isDark ? "Alternar para tema claro" : "Alternar para tema escuro";
   btn.setAttribute("aria-pressed", String(isDark));
-  btn.setAttribute("aria-label", isDark ? "Alternar para tema claro" : "Alternar para tema escuro");
-  btn.textContent = isDark ? "Tema: Escuro" : "Tema: Claro";
+  btn.setAttribute("aria-label", label);
+  btn.setAttribute("title", label);
+  if (typeof document.createElementNS === "function" && typeof btn.replaceChildren === "function") {
+    btn.replaceChildren(buildThemeIconSvg(isDark));
+  } else {
+    btn.textContent = isDark ? "Tema: Escuro" : "Tema: Claro";
+  }
 }
 
 function applyTheme(theme) {

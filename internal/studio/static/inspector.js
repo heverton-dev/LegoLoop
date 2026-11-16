@@ -5,6 +5,143 @@
 // tudo aqui só roda em eventos, quando app.js já definiu `state`).
 
 const EMPTY_SUGGEST = { gates: [], scripts: [], hooks: { pre: [], post: [], skipped: 0 }, neighbors: [] };
+let inspectorActionsBound = false;
+
+function resolveInspectorTarget(sel) {
+  if (!sel || sel.kind !== "node" || typeof state === "undefined" || !state.nodes.has(sel.id)) return null;
+  const node = state.nodes.get(sel.id);
+  const item = typeof buildInspectableItemFromNode === "function" ? buildInspectableItemFromNode(node) : null;
+  const rawKind = (item?.kind === "subloop" ? "loop" : item?.kind) || node.piece?.kind || "";
+  const kind = rawKind === "subloop" ? "loop" : rawKind;
+  const id = item?.id || item?.name || node.piece?.ref || node.block || node.id;
+  const path = item?.path || item?.raw?.path || "";
+  const sha256 = item?.sha256 || item?.meta?.sha256 || "";
+  return { node, item, kind, id, path, sha256 };
+}
+
+async function runInspectorCanonize(target, btn) {
+  if (!target?.path) return toast("Peça sem arquivo físico para canonizar.", true);
+  let sha = target.sha256;
+  if (!sha && target.kind && target.id) {
+    const info = await api(`/api/assets/${encodeURIComponent(target.kind)}/${encodeURIComponent(target.id)}/inspect`);
+    if (info.ok && info.data?.sha256) sha = info.data.sha256;
+  }
+  if (!sha) return toast("Hash SHA-256 indisponível para canonizar esta peça.", true);
+  btn.disabled = true;
+  try {
+    const { ok, data } = await api("/api/canonize/piece", { method: "POST", body: JSON.stringify({ sha256: sha }) });
+    if (!ok) return toast(data?.error || "Falha na canonização.", true);
+    toast(`Peça canonizada no cofre (${data?.linked || 0} vínculos).`);
+    if (typeof loadItems === "function") await loadItems();
+  } finally {
+    renderInspector();
+  }
+}
+
+async function runInspectorFavorite(target, btn) {
+  if (!target?.kind || !target?.id) return;
+  btn.disabled = true;
+  try {
+    const { ok, data } = await api(`/api/assets/${encodeURIComponent(target.kind)}/${encodeURIComponent(target.id)}/favorite`, {
+      method: "POST", body: "{}",
+    });
+    if (!ok) return toast(data?.error || "Falha ao favoritar peça.", true);
+    if (target.item) target.item.favorite = Boolean(data?.favorited);
+    toast(data?.favorited ? `Peça "${target.id}" favoritada como SSOT.` : `Peça "${target.id}" desfavoritada.`);
+    if (typeof loadItems === "function") await loadItems();
+  } finally {
+    renderInspector();
+  }
+}
+
+async function runInspectorUpgrade(target, btn) {
+  if (!target?.kind || !target?.id) return;
+  btn.disabled = true;
+  try {
+    const { ok, data } = await api(`/api/assets/${encodeURIComponent(target.kind)}/${encodeURIComponent(target.id)}/upgrade`, {
+      method: "POST", body: "{}",
+    });
+    if (!ok) return toast(data?.error || "Falha ao elevar peça.", true);
+    const prevScore = data?.current_rating?.total_score ?? "?";
+    const nextScore = data?.upgraded_rating?.total_score ?? prevScore;
+    const nextTier = data?.upgraded_rating?.tier || "ouro";
+    toast(`Elevação determinística concluída (${prevScore} -> ${nextScore} · ${nextTier.toUpperCase()}).`);
+    if (typeof loadItems === "function") await loadItems();
+    if (typeof renderAllNodes === "function") renderAllNodes();
+  } finally {
+    renderInspector();
+  }
+}
+
+async function runInspectorDelete(target) {
+  if (!target?.node) return;
+  if (target.path && target.kind && target.id) {
+    const msg = `Eliminar permanentemente "${target.item?.name || target.id}" do disco e removê-la do Canvas?`;
+    const confirmed = typeof confirmDialog === "function" ? await confirmDialog(msg, "Eliminar Peça", "Eliminar") : true;
+    if (!confirmed) return;
+    const { ok, data } = await api(`/api/assets/${encodeURIComponent(target.kind)}/${encodeURIComponent(target.id)}?mode=full`, {
+      method: "DELETE",
+    });
+    if (!ok) return toast(data?.error || "Falha ao eliminar peça.", true);
+    if (typeof loadItems === "function") await loadItems();
+    toast(`Peça "${target.item?.name || target.id}" eliminada.`);
+  }
+  removeNode(target.node.id);
+  select(null);
+}
+
+function bindInspectorActions() {
+  if (inspectorActionsBound) return;
+  inspectorActionsBound = true;
+  const actions = {
+    "btn-insp-eye": () => {
+      const t = resolveInspectorTarget(state?.selected);
+      if (t && typeof openItemModal === "function") openItemModal(t.item || buildInspectableItemFromNode(t.node), t.node);
+    },
+    "btn-insp-fav": (ev) => runInspectorFavorite(resolveInspectorTarget(state?.selected), ev.currentTarget),
+    "btn-insp-canon": (ev) => runInspectorCanonize(resolveInspectorTarget(state?.selected), ev.currentTarget),
+    "btn-insp-upgrade": (ev) => runInspectorUpgrade(resolveInspectorTarget(state?.selected), ev.currentTarget),
+    "btn-insp-delete": () => runInspectorDelete(resolveInspectorTarget(state?.selected)),
+  };
+  Object.entries(actions).forEach(([id, fn]) => {
+    const b = document.getElementById(id);
+    if (b) b.addEventListener("click", fn);
+  });
+}
+
+function syncInspectorActions(sel) {
+  bindInspectorActions();
+  const target = resolveInspectorTarget(sel);
+  const hasNode = Boolean(target);
+  const assetKinds = new Set(["skill", "mcp", "script", "hook", "gate", "loop", "processo"]);
+  const canAsset = hasNode && assetKinds.has(target.kind);
+  const canPhys = hasNode && Boolean(target.path);
+  const eyeBtn = document.getElementById("btn-insp-eye");
+  const favBtn = document.getElementById("btn-insp-fav");
+  const canonBtn = document.getElementById("btn-insp-canon");
+  const upgBtn = document.getElementById("btn-insp-upgrade");
+  const delBtn = document.getElementById("btn-insp-delete");
+  if (eyeBtn) eyeBtn.disabled = !hasNode;
+  if (favBtn) {
+    const isFav = Boolean(target?.item?.favorite);
+    favBtn.disabled = !canAsset;
+    favBtn.classList.toggle("is-favorited", hasNode && isFav);
+    favBtn.setAttribute("aria-pressed", String(Boolean(hasNode && isFav)));
+    favBtn.title = isFav ? "Desfavoritar peça (SSOT)" : "Favoritar peça como Padrão Canônico (SSOT)";
+  }
+  if (canonBtn) {
+    canonBtn.disabled = !canPhys;
+    canonBtn.title = canPhys ? "Canonizar esta peça no cofre central" : "Disponível apenas para peças físicas em disco";
+  }
+  if (upgBtn) {
+    upgBtn.disabled = !canAsset;
+    upgBtn.title = canPhys ? "Elevar peça para Padrão Ouro (determinístico)" : "Avaliar / elevar peça para Padrão Ouro";
+  }
+  if (delBtn) {
+    delBtn.disabled = !hasNode;
+    delBtn.title = canPhys ? "Eliminar peça física e remover nó do Canvas" : "Remover nó selecionado do Canvas";
+  }
+}
 
 function kv(k, v) {
   const box = el("div", "kv");
@@ -228,6 +365,9 @@ function ensureSuggestions(node) {
 }
 
 async function fetchSuggestions(node, signal) {
+  if (node.piece && (node.piece.kind === "hook" || node.piece.kind === "gate")) {
+    return EMPTY_SUGGEST;
+  }
   const q = node.piece
     ? `kind=${encodeURIComponent(node.piece.kind)}&artifact=${encodeURIComponent(node.piece.artifact)}`
     : `block=${encodeURIComponent(node.block)}`;
@@ -392,6 +532,7 @@ function renderInspector() {
   const body = $("inspector-body");
   const sel = state.selected;
   $("inspector").classList.toggle("is-open", Boolean(sel));
+  syncInspectorActions(sel);
   if (sel?.kind === "process" && state.process) return renderProcessPanel(body, state.process);
   if (sel?.kind === "edge") return renderEdgePanel(body, sel.id);
   if (!sel || sel.kind !== "node" || !state.nodes.has(sel.id)) {

@@ -138,6 +138,7 @@ func fileExists(env Env, args []value, _ *regexp.Regexp) (value, error) {
 // readGateFile abre uma única vez, exige arquivo regular e lê no máximo o limite
 // (sem janela entre Stat e leitura; FIFO/diretório recusados).
 func readGateFile(env Env, name string) ([]byte, error) {
+	name = expandGateVars(env, name)
 	f, err := env.Root.Open(filepath.FromSlash(name))
 	if err != nil {
 		return nil, fmt.Errorf("gate: %q: %w", name, err)

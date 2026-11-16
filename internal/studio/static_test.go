@@ -565,10 +565,9 @@ func assertModaisEInspetorIndex(t *testing.T, indexHTML string) {
 	if strings.Count(indexHTML, `class="modal-header"`) < 6 {
 		t.Errorf("index.html deve alinhar os modais com class=\"modal-header\"")
 	}
-	posBtn := strings.Index(indexHTML, `id="btn-toggle-inspector"`)
 	posAside := strings.Index(indexHTML, `id="inspector"`)
-	if posBtn < 0 || posAside < 0 || posBtn > posAside {
-		t.Fatalf("btn-toggle-inspector (%d) deve ficar fora e antes do aside#inspector (%d)", posBtn, posAside)
+	if posAside < 0 {
+		t.Fatalf("aside#inspector não encontrado em index.html")
 	}
 }
 
@@ -759,5 +758,101 @@ func assertAriaETeclado(t *testing.T) {
 				t.Errorf("%s sem acessibilidade %q", file, w)
 			}
 		}
+	}
+}
+
+func TestDebitosStudioEContratoDOM(t *testing.T) {
+	html := readStatic(t, "index.html")
+	if strings.Contains(html, `id="palette-cats" hidden`) || !strings.Contains(html, "palette-grid-4x2") {
+		t.Error("index.html deve manter #palette-cats visível em grid 4x2")
+	}
+	if !strings.Contains(html, `id="inspector-collapsed-rail"`) || !strings.Contains(html, `id="btn-inspector-collapse"`) {
+		t.Error("index.html precisa dos controles de recolher/restaurar inspetor")
+	}
+	pal := readStatic(t, "palette.js")
+	if !strings.Contains(pal, `activeCategory: "trigger"`) || !strings.Contains(pal, `cat: "trigger"`) {
+		t.Error("palette.js deve iniciar com categoria Trigger aberta")
+	}
+	app := readStatic(t, "app.js")
+	if strings.Contains(app, `Math.max(8,`) || strings.Contains(app, `Math.max(16,`) {
+		t.Error("app.js não pode limitar coordenadas negativas do canvas")
+	}
+	if !strings.Contains(app, `"/api/assets/loop"`) {
+		t.Error("app.js deve consultar /api/assets/loop ao resolver sub-loops")
+	}
+}
+
+func TestZeroEmojisStudioStatic(t *testing.T) {
+	err := fs.WalkDir(staticFS, "static", func(p string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		b, rerr := staticFS.ReadFile(p)
+		if rerr != nil {
+			return rerr
+		}
+		for _, r := range string(b) {
+			if (r >= 0x1F300 && r <= 0x1FAFF) || (r >= 0x2600 && r <= 0x27BF) || (r >= 0x23F0 && r <= 0x23FA) || r == 0xFE0F {
+				t.Errorf("emoji proibido (%U) detectado em %s", r, p)
+				break
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("falha ao varrer static: %v", err)
+	}
+}
+
+func TestContratoUXStudioNosEdgesModalESwarm(t *testing.T) {
+	css := readStatic(t, "style.css")
+	for _, want := range []string{".node--trigger", ".node--control", ".node--skill", ".node--mcp", ".node--loop", ".node--script", ".node--hook", ".node--gate", "transform-box: fill-box"} {
+		if !strings.Contains(css, want) {
+			t.Errorf("style.css sem regra obrigatória %q", want)
+		}
+	}
+	html := readStatic(t, "index.html")
+	for _, id := range []string{`id="btn-simular-swarm"`, `id="execution-flow-strip"`} {
+		if !strings.Contains(html, id) {
+			t.Errorf("index.html sem elemento obrigatório %s", id)
+		}
+	}
+	app := readStatic(t, "app.js")
+	for _, sym := range []string{`node__eye`, `curveMidpoint`, `edge-arrow-sync`, `computeExecutionLevels`, `simulateCurrentDagInSwarm`} {
+		if !strings.Contains(app, sym) {
+			t.Errorf("app.js sem implementação %q", sym)
+		}
+	}
+	modal := readStatic(t, "components/lego-item-modal.js")
+	if strings.Contains(modal, `selecionada para troca (Swap)`) || !strings.Contains(modal, `_hydrateFromInspectAPI`) {
+		t.Error("lego-item-modal.js deve hidratar dados reais e evitar stubs")
+	}
+}
+
+func TestContratoInspetorModalPaletaESubgrafoZoom(t *testing.T) {
+	html := readStatic(t, "index.html")
+	for _, id := range []string{`id="inspector-actions-bar"`, `id="btn-insp-eye"`, `id="btn-insp-fav"`, `id="btn-insp-canon"`, `id="btn-insp-upgrade"`, `id="btn-insp-delete"`} {
+		if !strings.Contains(html, id) {
+			t.Errorf("index.html deve manter %s no cabeçalho fixo do inspetor", id)
+		}
+	}
+	if strings.Contains(html, `role="tree"`) {
+		t.Error("index.html não deve usar role=tree em container com filhos heterogêneos (aria-required-children)")
+	}
+	pal := readStatic(t, "palette.js")
+	if strings.Contains(pal, `"btn-eye-view"`) || strings.Contains(pal, `btn-item-action btn-fav`) {
+		t.Error("palette.js não deve renderizar botões inline de ação nos itens da paleta esquerda")
+	}
+	insp := readStatic(t, "inspector.js")
+	if !strings.Contains(insp, `syncInspectorActions`) || !strings.Contains(insp, `runInspectorUpgrade`) || !strings.Contains(insp, `runInspectorCanonize`) {
+		t.Error("inspector.js deve implementar ações fixas no cabeçalho do inspetor")
+	}
+	modal := readStatic(t, "components/lego-item-modal.js")
+	if !strings.Contains(modal, `id="btn-modal-upgrade"`) || strings.Contains(modal, `copyCount <= 1;`) {
+		t.Error("lego-item-modal.js deve expor #btn-modal-upgrade e habilitar Canonizar quando há caminho físico")
+	}
+	app := readStatic(t, "app.js")
+	if !strings.Contains(app, `autoLayout({ fit: false`) || !strings.Contains(app, `focusViewportStart(`) {
+		t.Error("app.js não deve forçar fitToScreen em sub-grafos bloqueando leitura e zoom")
 	}
 }

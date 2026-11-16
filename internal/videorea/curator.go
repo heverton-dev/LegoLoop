@@ -72,7 +72,9 @@ func CurateAgainstMatrixWithOriginal(dossier *ForensicsDossier, orig *OriginalMa
 		return nil, ErrEmptyDossier
 	}
 	repl, substituted, adopted, origCost := curateOriginalTools(orig)
-	return buildCurationReport(dossier.Title, origCost, repl, substituted, adopted, orig), nil
+	report := buildCurationReport(dossier.Title, origCost, repl, substituted, adopted, orig)
+	report.Findings = classifyFindings(dossier, substituted, adopted)
+	return report, nil
 }
 
 func curateOriginalTools(orig *OriginalMatrix) (map[string]string, []SubstitutedTool, []AdoptedTool, string) {

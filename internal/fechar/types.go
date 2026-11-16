@@ -12,6 +12,8 @@ var (
 	ErrSlugInvalido = errors.New("fechar: slug do processo inválido")
 	// ErrArtefatoAusente indica que um arquivo essencial não foi encontrado.
 	ErrArtefatoAusente = errors.New("fechar: artefato obrigatório ausente")
+	// ErrArtefatoStub indica que o artefato existe, mas é um stub (casca vazia).
+	ErrArtefatoStub = errors.New("fechar: artefato é stub")
 	// ErrPortaoFalhou indica que a validação de portão mecânico falhou.
 	ErrPortaoFalhou = errors.New("fechar: portão de qualidade reprovado")
 )

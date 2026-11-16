@@ -73,13 +73,13 @@ func Executar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 
 func executarEtapas(ctx context.Context, d *Deps, slug, canon string, dry bool, res *Result) {
 	runEtapa(d, res, 1, "Manual Operacional", func() (string, error) {
-		return fecharManual(d, slug, canon, dry)
+		return fecharManual(d, slug)
 	})
 	runEtapa(d, res, 2, "Livro Didático LegoPress", func() (string, error) {
-		return fecharLivro(d, slug, canon, dry)
+		return fecharLivro(d, slug, canon)
 	})
 	runEtapa(d, res, 3, "Skill Canônica Universal", func() (string, error) {
-		return fecharSkill(d, slug, canon, dry)
+		return fecharSkill(d, canon)
 	})
 	runEtapa(d, res, 4, "Processo & Grafo DAG", func() (string, error) {
 		return fecharDAG(d, slug, canon, dry)
@@ -121,111 +121,65 @@ func runEtapa(d *Deps, res *Result, num int, nome string, fn func() (string, err
 	})
 }
 
-func fecharManual(d *Deps, slug, canon string, dry bool) (string, error) {
-	dir := filepath.Join(d.RepoDir, "docs", "manuals")
-	if !dry {
-		_ = os.MkdirAll(dir, 0o755)
-	}
-	target := filepath.Join(dir, fmt.Sprintf("%s_MANUAL_FUNCAO_%s_LEGOLOOP.md", d.Clock().Format("2006-01-02"), slug))
-	if _, err := os.Stat(target); os.IsNotExist(err) && !dry {
-		conteudo := buildManualContent(slug, canon, d.Clock().Format("2006-01-02"))
-		_ = os.WriteFile(target, []byte(conteudo), 0o644)
-	}
-	return target, nil
+func fecharManual(d *Deps, slug string) (string, error) {
+	return exigirManual(d.RepoDir, slug)
 }
 
-func buildManualContent(slug, canon, data string) string {
-	return fmt.Sprintf(`# 📘 MANUAL OPERACIONAL: %s
-
-> **Status:** ATIVO · PADRÃO CANÔNICO LEGOLOOP  
-> **Processo Canônico:** %s  
-> **Data de Canonização:** %s  
-> **Governança:** AGENTS.md Regra #11  
-
----
-
-## 1. Visão Geral e Propósito
-Este manual documenta a cadeia operacional e os gatilhos do processo %s.
-Opera sob a política de Zero Stubs com integridade e reprodutibilidade determinística.
-
----
-
-## 2. Comandos e Interfaces
-* **CLI:** legoloop %s [opções]
-* **Chat:** /legoloop-%s
-* **Studio Web:** Ticket de processo no dashboard local.
-
----
-
-## 3. Uso Operacional
-1. **Entrada e Validação:** Parsing de parâmetros e seleção cognitiva via internal/brain.
-2. **Execução Hermética:** Processamento em contexto estéril com isolamento em scratch/.
-3. **Portão de Saída:** Auditoria mecânica antes de qualquer emissão de artefatos.
-
----
-
-## 4. Telemetria e Fechamento
-Relatório de conclusão compilado em docs/reports/ com balanço auditável de tempo e recursos.
-`, slug, canon, data, canon, slug, slug)
-}
-
-func fecharLivro(d *Deps, slug, canon string, dry bool) (string, error) {
-	dir := filepath.Join(d.RepoDir, "docs", "books", slug)
-	if !dry {
-		_ = os.MkdirAll(dir, 0o755)
+func fecharLivro(d *Deps, slug, canon string) (string, error) {
+	dir := resolverDirLivro(d.RepoDir, slug, canon)
+	if _, err := exigirLivro(d.RepoDir, dir); err != nil {
+		return dir, err
 	}
-	manifest := filepath.Join(dir, "livro.json")
-	if _, err := os.Stat(manifest); os.IsNotExist(err) && !dry {
-		data := fmt.Sprintf(`{"nome_base": %q, "titulo": %q}`, slug, canon)
-		_ = os.WriteFile(manifest, []byte(data), 0o644)
+	if d.Auditor == nil {
+		return dir, nil
 	}
-	if d.Auditor != nil {
-		pdf := filepath.Join(dir, fmt.Sprintf("%s.pdf", slug))
-		_, _ = d.Auditor(pdf)
+	pdf := filepath.Join(dir, fmt.Sprintf("%s.pdf", filepath.Base(dir)))
+	if ok, err := d.Auditor(pdf); err != nil || !ok {
+		return dir, fmt.Errorf("%w: auditoria do livro %s (ok=%v, err=%v)", ErrPortaoFalhou, relativo(d.RepoDir, pdf), ok, err)
 	}
 	return dir, nil
 }
 
-func fecharSkill(d *Deps, slug, canon string, dry bool) (string, error) {
-	dir := filepath.Join(d.RepoDir, "skills", canon)
-	if !dry {
-		_ = os.MkdirAll(dir, 0o755)
-	}
-	skillPath := filepath.Join(dir, "SKILL.md")
-	if _, err := os.Stat(skillPath); os.IsNotExist(err) && !dry {
-		data := fmt.Sprintf("---\nname: %s\ndescription: Skill universal de %s\n---\n# %s\n", canon, slug, canon)
-		_ = os.WriteFile(skillPath, []byte(data), 0o644)
-	}
-	return skillPath, nil
+func fecharSkill(d *Deps, canon string) (string, error) {
+	return exigirSkill(d.RepoDir, filepath.Join(d.RepoDir, "skills", canon, "SKILL.md"))
 }
 
 func fecharDAG(d *Deps, slug, canon string, dry bool) (string, error) {
-	dir := resolverDirProcesso(d.RepoDir, slug)
-	if !dry {
-		_ = os.MkdirAll(dir, 0o755)
-	}
+	dir := resolverDirProcesso(d.RepoDir, slug, canon)
 	dagPath := caminhos.CaminhoDAGLeitura(dir)
-	if _, err := os.Stat(dagPath); os.IsNotExist(err) && !dry {
-		content := fmt.Sprintf(`{"name": %q, "version": "1.0.0", "nodes": []}`, canon)
-		_ = os.WriteFile(dagPath, []byte(content), 0o644)
+	if err := exigirNosDoDAG(d.RepoDir, dagPath); err != nil {
+		return dagPath, err
 	}
 	if err := auditDAGParity(d.RepoDir, slug, dagPath); err != nil {
 		return dagPath, err
 	}
-	return dagPath, nil
+	if dry {
+		return dagPath, nil
+	}
+	return dagPath, garantirQuarteto(dir, dagPath)
 }
 
 // resolverDirProcesso devolve a pasta existente do Processo nos dois dialetos,
-// com preferência para o novo. Sem pasta existente, devolve a do dialeto
-// antigo, que é o dialeto de gravação.
-func resolverDirProcesso(repoDir, slug string) string {
+// com preferência para o novo e para o nome canônico sobre o slug. Sem pasta
+// existente, devolve a do dialeto antigo, que é o dialeto de gravação.
+func resolverDirProcesso(repoDir, slug, canon string) string {
+	nomes := []string{slug}
+	if canon != "" {
+		nomes = []string{canon, slug}
+	}
 	for _, base := range caminhos.DirsLeitura(repoDir) {
-		dir := filepath.Join(base, slug)
-		if info, err := os.Stat(dir); err == nil && info.IsDir() {
-			return dir
+		for _, nome := range nomes {
+			if dir := filepath.Join(base, nome); ehDiretorio(dir) {
+				return dir
+			}
 		}
 	}
-	return filepath.Join(caminhos.DirLoopsEm(repoDir), slug)
+	return filepath.Join(caminhos.DirLoopsEm(repoDir), nomes[0])
+}
+
+// nomeEspelho devolve o nome do arquivo espelho do DAG na pasta do Processo.
+func nomeEspelho(nome string) string {
+	return nome + caminhos.SufixoLoop
 }
 
 func auditDAGParity(repoDir, slug, procDAGPath string) error {
@@ -330,12 +284,9 @@ func DefaultIndexer(repoDir string) error {
 
 // DefaultIndexerWithLookPath executa a indexação do grafo com LookPath e executor injetáveis.
 func DefaultIndexerWithLookPath(repoDir string, lookPath func(string) (string, error), run func(string, ...string) error) error {
-	if lookPath == nil {
-		lookPath = exec.LookPath
-	}
-	binPath, err := lookPath("codebase-memory-mcp")
+	binPath, err := resolveCodebaseMemoryMCP(lookPath)
 	if err != nil {
-		return fmt.Errorf("fechar: codebase-memory-mcp ausente no PATH: %w", err)
+		return err
 	}
 	payload := fmt.Sprintf(`{"repo_path":%q}`, repoDir)
 	if run != nil {
@@ -347,6 +298,30 @@ func DefaultIndexerWithLookPath(repoDir string, lookPath func(string) (string, e
 		return fmt.Errorf("fechar: index_repository falhou: %w (%s)", err, strings.TrimSpace(string(out)))
 	}
 	return nil
+}
+
+func resolveCodebaseMemoryMCP(lookPath func(string) (string, error)) (string, error) {
+	if lookPath == nil {
+		lookPath = exec.LookPath
+	}
+	binPath, err := lookPath("codebase-memory-mcp")
+	if err == nil {
+		return binPath, nil
+	}
+	if home, homeErr := os.UserHomeDir(); homeErr == nil && home != "" {
+		candidatos := []string{
+			filepath.Join(home, "tools", "codebase-memory-mcp", "codebase-memory-mcp.exe"),
+			filepath.Join(home, "tools", "codebase-memory-mcp", "codebase-memory-mcp"),
+			filepath.Join(home, ".local", "bin", "codebase-memory-mcp.exe"),
+			filepath.Join(home, ".local", "bin", "codebase-memory-mcp"),
+		}
+		for _, cand := range candidatos {
+			if info, statErr := os.Stat(cand); statErr == nil && !info.IsDir() {
+				return cand, nil
+			}
+		}
+	}
+	return "", fmt.Errorf("fechar: codebase-memory-mcp ausente no PATH: %w", err)
 }
 
 func fecharPortoes(d *Deps, dry bool) (string, error) {

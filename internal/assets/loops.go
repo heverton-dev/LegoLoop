@@ -49,6 +49,23 @@ func (s *Scanner) processoRoots(ctx context.Context) []root {
 	return roots
 }
 
+func processoSubdirFile(dir, slug string) string {
+	if strings.HasPrefix(slug, ".") {
+		return ""
+	}
+	cands := []string{
+		filepath.Join(dir, slug, slug+caminhos.SufixoStudio),
+		filepath.Join(dir, slug, slug+sufixoAntigo),
+		filepath.Join(dir, slug, caminhos.ArquivoDAG),
+	}
+	for _, c := range cands {
+		if info, err := os.Stat(c); err == nil && info.Mode().IsRegular() {
+			return c
+		}
+	}
+	return ""
+}
+
 func (s *Scanner) scanProcessos(ctx context.Context) []Item {
 	var items []Item
 	seen := map[string]bool{}
@@ -61,11 +78,8 @@ func (s *Scanner) scanProcessos(ctx context.Context) []Item {
 			if ctx.Err() != nil {
 				return items
 			}
-			if e.IsDir() || !isProcessoDoc(e.Name()) {
-				continue
-			}
-			p := filepath.Join(r.dir, e.Name())
-			if seen[p] {
+			p := s.resolveProcessoEntry(r.dir, e)
+			if p == "" || seen[p] {
 				continue
 			}
 			seen[p] = true
@@ -75,6 +89,27 @@ func (s *Scanner) scanProcessos(ctx context.Context) []Item {
 		}
 	}
 	return items
+}
+
+func (s *Scanner) resolveProcessoEntry(dir string, e os.DirEntry) string {
+	if e.IsDir() {
+		return processoSubdirFile(dir, e.Name())
+	}
+	if !isProcessoDoc(e.Name()) {
+		return ""
+	}
+	return filepath.Join(dir, e.Name())
+}
+
+func resolveProcessoID(docID, path string) string {
+	if docID != "" {
+		return docID
+	}
+	base := filepath.Base(path)
+	if base == caminhos.ArquivoDAG {
+		return filepath.Base(filepath.Dir(path))
+	}
+	return trimProcessoDoc(base)
 }
 
 func parseProcessoItem(path string, r root) []Item {
@@ -92,15 +127,13 @@ func parseProcessoItem(path string, r root) []Item {
 	if err := json.Unmarshal(data, &doc); err != nil {
 		return nil
 	}
-	id := doc.ID
-	if id == "" {
-		id = trimProcessoDoc(filepath.Base(path))
-	}
+	id := resolveProcessoID(doc.ID, path)
 	name := doc.Name
 	if name == "" {
 		name = id
 	}
 	meta := buildProcessoMeta(doc.Nodes, doc.Trigger)
+	meta[caminhos.ChaveMetaProcessoID] = id
 	return []Item{{
 		Kind:        kindProcesso,
 		Name:        name,

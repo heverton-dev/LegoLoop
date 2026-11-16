@@ -60,3 +60,39 @@ func TestPieceActions_Delete(t *testing.T) {
 		t.Errorf("esperava 404 para peça inexistente, obteve %d", rec.Code)
 	}
 }
+
+func TestPieceActions_DeterministicUpgradePhysicalFile(t *testing.T) {
+	s, _, proj := newAssetsServer(t)
+	skillDir := filepath.Join(proj, ".claude", "skills", "toxica-skill")
+	if err := os.MkdirAll(skillDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	skillPath := filepath.Join(skillDir, "SKILL.md")
+	if err := os.WriteFile(skillPath, []byte("# Toxica Skill\n\nSem contratos.\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	s.Assets.Refresh(t.Context())
+
+	h := s.Handler()
+	rec := do(t, h, http.MethodPost, "/api/assets/skill/toxica-skill/upgrade", "{}")
+	if rec.Code != http.StatusOK {
+		t.Fatalf("esperava 200 em upgrade fisico, obteve %d: %s", rec.Code, rec.Body.String())
+	}
+	var resp struct {
+		Status        string `json:"status"`
+		Mode          string `json:"mode"`
+		CurrentRating struct {
+			Tier       string  `json:"tier"`
+			TotalScore float64 `json:"total_score"`
+		} `json:"current_rating"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &resp); err != nil {
+		t.Fatal(err)
+	}
+	if resp.Status != "UPGRADE_COMPLETED" || resp.Mode != "deterministic" {
+		t.Fatalf("esperava elevacao deterministica concluida, obteve %+v", resp)
+	}
+	if resp.CurrentRating.Tier != "ouro" || resp.CurrentRating.TotalScore < 0.85 {
+		t.Fatalf("esperava tier ouro >= 0.85, obteve %+v", resp.CurrentRating)
+	}
+}

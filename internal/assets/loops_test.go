@@ -47,3 +47,23 @@ func TestScanProcessos(t *testing.T) {
 		t.Fatalf("meta divergente: %+v", p.Meta)
 	}
 }
+
+func TestScanProcessosSubpastaDAG(t *testing.T) {
+	dir := t.TempDir()
+	subDir := filepath.Join(dir, caminhos.DirProcessos, "video-motion")
+	if err := os.MkdirAll(subDir, 0700); err != nil {
+		t.Fatal(err)
+	}
+	content := `{"nodes":[{"id":"n1","output":{"artifact":"OUT.mp4"}}]}`
+	if err := os.WriteFile(filepath.Join(subDir, caminhos.ArquivoDAG), []byte(content), 0600); err != nil {
+		t.Fatal(err)
+	}
+	scanner := assets.NewScanner(assets.Config{Home: t.TempDir(), ProcessosDir: filepath.Join(dir, caminhos.DirProcessos)})
+	items := scanner.Scan(context.Background()).Of(kindProcesso)
+	if len(items) != 1 {
+		t.Fatalf("esperava 1 Processo em subpasta, obteve %d", len(items))
+	}
+	if items[0].Name != "video-motion" || items[0].Meta[caminhos.ChaveMetaProcessoID] != "video-motion" {
+		t.Fatalf("identificador de processo da subpasta ausente: %+v", items[0])
+	}
+}

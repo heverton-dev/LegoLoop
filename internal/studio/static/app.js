@@ -10,8 +10,8 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const MODE_LABEL = { suggested: "Sugerido", manual: "Manual", auto: "Auto" };
 const POLL_MS = 10000;
 const ITEM_KINDS = ["skill", "mcp", "script", "hook", "gate", "loop"];
-const PIECE_KIND = { skill: "skill", script: "script", mcp: "mcp", loop: "subloop" };
-const PIECE_LABEL = { skill: "skill", script: "script", mcp: "MCP", subloop: "sub-loop" };
+const PIECE_KIND = { skill: "skill", script: "script", mcp: "mcp", loop: "subloop", hook: "hook", gate: "gate" };
+const PIECE_LABEL = { skill: "skill", script: "script", mcp: "MCP", subloop: "sub-loop", hook: "hook", gate: "gate" };
 
 function toKebabCase(s) {
   return s
@@ -116,7 +116,7 @@ function defaultGate(artifact) {
 function pieceBlock(node) {
   const p = node.piece;
   return {
-    id: `piece:${p.kind}`, label: node.label, ref: "", consumes: [ANY_TYPE], produces: ANY_TYPE,
+    id: `piece:${p.kind}`, kind: p.kind, label: node.label, ref: p.ref || "", consumes: [ANY_TYPE], produces: ANY_TYPE,
     artifact: p.artifact, gate: p.gate || defaultGate(p.artifact), generic: true,
   };
 }
@@ -145,7 +145,7 @@ function newNodeId(label) {
 }
 
 function baseNode(id, x, y) {
-  return { id, x: Math.max(16, x), y: Math.max(16, y), slots: emptySlots(), execution: "inline" };
+  return { id, x: Math.round(Number(x) || 0), y: Math.round(Number(y) || 0), slots: emptySlots(), execution: "inline" };
 }
 
 function register(node) {
@@ -188,16 +188,6 @@ function addNode(blockId, x, y) {
   const block = state.blocks.get(blockId);
   if (!block) return null;
   const isTrig = block.kind && block.kind.startsWith("trigger_");
-  if (isTrig) {
-    for (const [id, n] of state.nodes.entries()) {
-      const b = blockOf(n);
-      if (b && b.kind && b.kind.startsWith("trigger_")) {
-        removeNode(id);
-        toast(`Gatilho substituído por ${block.label}.`);
-        break;
-      }
-    }
-  }
   const node = { ...baseNode(newNodeId(blockId), x, y), block: blockId, routing: defaultRouting(block) };
   if (isTrig) {
     node.triggerConfig = defaultTriggerConfig(block.kind);
@@ -209,11 +199,13 @@ function addNode(blockId, x, y) {
 function addPiece(entry, x, y) {
   const kind = PIECE_KIND[entry.cat];
   if (!kind) return null;
+  const ref = entry.cat === "loop" ? (entry.meta?.loop_id || entry.itemId || entry.name) : entry.itemId;
   const node = {
     ...baseNode(newNodeId(entry.name), x, y), label: entry.name,
-    piece: { kind, ref: entry.itemId, artifact: "", gate: "" }, routing: defaultRouting({}),
+    nature: entry.meta?.nature || entry.nature || "",
+    piece: { kind, ref, artifact: entry.meta?.artifact || "", gate: "" }, routing: defaultRouting({}),
   };
-  node.piece.artifact = uniqueArtifact(entry.name, node.id);
+  node.piece.artifact = node.piece.artifact || uniqueArtifact(entry.name, node.id);
   return register(node);
 }
 
@@ -237,10 +229,6 @@ function isTriggerEntry(entry) {
 
 // addEntry cria o nó de uma entrada da paleta (bloco tipado ou peça do inventário).
 function addEntry(entry, x, y) {
-  if (!hasTrigger() && !isTriggerEntry(entry)) {
-    toast("Todo loop precisa começar com um Gatilho. Arraste uma peça de Trigger primeiro.", true);
-    return null;
-  }
   if (entry.kind === "block" || entry.blockId) return addNode(entry.blockId, x, y);
   if (!PIECE_KIND[entry.cat]) {
     toast("Hooks e gates encaixam sobre uma peça. Solte sobre um nó ou selecione um e dê duplo clique.", true);
@@ -263,19 +251,151 @@ function removeNode(id) {
 function nodeCategoryClass(block) {
   const k = block.kind || "";
   if (k.startsWith("trigger_")) return "node--trigger";
-  if (k.startsWith("flow_")) return "node--control";
+  if (k.startsWith("flow_") || k.startsWith("security_") || k.startsWith("vcs_") || k.startsWith("deploy_") || k === "control") return "node--control";
   if (k === "mcp") return "node--mcp";
-  if (k === "subloop" || k === "loop") return "node--loop";
+  if (k === "subloop" || k === "loop" || k === "subprocesso") return "node--loop";
   if (k === "script") return "node--script";
   if (k === "hook") return "node--hook";
   if (k === "gate") return "node--gate";
   return "node--skill";
 }
 
+const NODE_FAMILY_LABEL = {
+  trigger: "TRIGGER",
+  control: "CONTROLE",
+  skill: "SKILL",
+  mcp: "MCP",
+  loop: "LOOP",
+  script: "SCRIPT",
+  hook: "HOOK",
+  gate: "GATE",
+};
+
+function buildInspectableItemFromNode(node) {
+  const block = blockOf(node);
+  if (node.piece && node.piece.ref) {
+    const kind = node.piece.kind === "subloop" ? "loop" : node.piece.kind;
+    const pool = state.items[kind] || [];
+    const found = pool.find((x) => x.id === node.piece.ref || x.name === node.piece.ref || x.name === node.label);
+    if (found) return { ...found, cat: kind };
+    return {
+      id: node.piece.ref,
+      name: node.label || block.label || node.id,
+      kind,
+      cat: kind,
+      description: block.description || "",
+      artifact: node.piece.artifact || block.artifact || "",
+      gate: node.piece.gate || block.gate || "",
+      meta: { artifact: node.piece.artifact || block.artifact || "", role: node.role || "" },
+    };
+  }
+  const blkId = node.block || node.id;
+  const blkKind = block.kind || "control";
+  const allPool = Object.values(state.items || {}).flat();
+  const invMatch = allPool.find((x) => x.id === blkId || x.name === block.label || x.id === block.ref);
+  if (invMatch) {
+    return {
+      ...invMatch,
+      cat: nodeCategoryClass(block).replace("node--", ""),
+      consumes: block.consumes || invMatch.consumes || [],
+      produces: block.produces || invMatch.produces || "",
+      artifact: block.artifact || invMatch.artifact || "",
+      gate: block.gate || invMatch.gate || "",
+      suggested_model: block.suggested_model || "",
+    };
+  }
+  return {
+    id: blkId,
+    name: block.label || node.id,
+    kind: blkKind,
+    cat: nodeCategoryClass(block).replace("node--", ""),
+    description: block.description || "",
+    consumes: block.consumes || [],
+    produces: block.produces || "",
+    artifact: block.artifact || "",
+    gate: block.gate || "",
+    suggested_model: block.suggested_model || "",
+    meta: { role: node.role || "", kind: blkKind },
+  };
+}
+
+function computeExecutionLevels() {
+  const nodeIds = Array.from(state.nodes.keys());
+  const levelMap = new Map();
+  if (!nodeIds.length) {
+    state.execLevels = levelMap;
+    return [];
+  }
+  const indeg = new Map(nodeIds.map((id) => [id, 0]));
+  const adj = new Map(nodeIds.map((id) => [id, []]));
+  const outdeg = new Map(nodeIds.map((id) => [id, 0]));
+  for (const e of state.edges) {
+    if (!state.nodes.has(e.from) || !state.nodes.has(e.to)) continue;
+    adj.get(e.from).push(e.to);
+    indeg.set(e.to, (indeg.get(e.to) || 0) + 1);
+    outdeg.set(e.from, (outdeg.get(e.from) || 0) + 1);
+  }
+  const levels = [];
+  let queue = nodeIds.filter((id) => indeg.get(id) === 0);
+  const visited = new Set();
+  while (queue.length > 0) {
+    const mode = queue.length > 1 ? "async" : "sync";
+    const step = levels.length + 1;
+    levels.push({ step, mode, ids: [...queue] });
+    const next = [];
+    for (const id of queue) {
+      visited.add(id);
+      levelMap.set(id, { step, mode, levelSize: queue.length, outdeg: outdeg.get(id) || 0 });
+      for (const nxt of adj.get(id) || []) {
+        const d = (indeg.get(nxt) || 1) - 1;
+        indeg.set(nxt, d);
+        if (d === 0 && !visited.has(nxt)) next.push(nxt);
+      }
+    }
+    queue = next;
+  }
+  // Nós em ciclos ainda não visitados recebem passo final explícito
+  const remaining = nodeIds.filter((id) => !visited.has(id));
+  if (remaining.length > 0) {
+    const step = levels.length + 1;
+    const mode = remaining.length > 1 ? "async" : "sync";
+    levels.push({ step, mode, ids: remaining, cycle: true });
+    for (const id of remaining) {
+      levelMap.set(id, { step, mode, levelSize: remaining.length, outdeg: outdeg.get(id) || 0, cycle: true });
+    }
+  }
+  state.execLevels = levelMap;
+  return levels;
+}
+
+function renderExecutionStrip(levels) {
+  const strip = $("execution-flow-strip");
+  const box = $("execution-flow-steps");
+  if (!strip || !box) return;
+  if (!levels || levels.length === 0) {
+    strip.hidden = true;
+    box.replaceChildren();
+    return;
+  }
+  strip.hidden = false;
+  const chips = [];
+  levels.forEach((lvl, idx) => {
+    if (idx > 0) chips.push(el("span", "exec-step-arrow", "->"));
+    const labels = lvl.ids.map((id) => {
+      const n = state.nodes.get(id);
+      return n ? (blockOf(n).label || id) : id;
+    });
+    const modeTag = lvl.mode === "async" ? `Paralelo (${lvl.ids.length})` : "Síncrono";
+    const chipText = `P${lvl.step} [${modeTag}]: ${labels.join(" + ")}${lvl.cycle ? " (ciclo)" : ""}`;
+    chips.push(el("span", `exec-step-chip${lvl.mode === "async" ? " exec-step-chip--async" : ""}`, chipText));
+  });
+  box.replaceChildren(...chips);
+}
+
 function nodeEl(node) {
   const block = blockOf(node);
   const isTrig = block.kind && block.kind.startsWith("trigger_");
-  const isSubloop = (node.piece && (node.piece.kind === "subloop" || node.piece.kind === "loop")) || (block.kind && (block.kind === "loop" || block.kind === "flow_loop"));
+  const isSubloop = (node.piece && ["subloop", "loop", "subprocesso"].includes(node.piece.kind)) || (block.kind && ["loop", "flow_loop", "subprocesso"].includes(block.kind));
   const catClass = nodeCategoryClass(block);
   const root = el("div", `node ${catClass}${isSubloop ? " node--macro" : ""}`);
   root.id = `node-${node.id}`;
@@ -287,33 +407,46 @@ function nodeEl(node) {
   if (isSubloop) {
     root.addEventListener("dblclick", (ev) => {
       ev.stopPropagation();
-      enterSubloop(node.piece?.ref || block.id, block.label);
+      enterSubloop(node.piece?.ref || node.block || node.id, block.label);
     });
   }
 
   const head = el("div", "node__head");
-  head.append(el("span", "node__title", isTrig ? `[Gatilho] ${block.label}` : block.label), el("span", "node__id", node.id));
+  const titleEl = el("span", "node__title", isTrig ? `[Gatilho] ${block.label}` : block.label);
+  const idEl = el("span", "node__id", node.id);
+  const eyeBtn = el("button", "node__eye");
+  eyeBtn.type = "button";
+  eyeBtn.title = "Inspecionar ficha técnica completa da peça";
+  eyeBtn.setAttribute("aria-label", `Inspecionar ${block.label}`);
+  if (typeof createSvgIconNode === "function") {
+    eyeBtn.append(createSvgIconNode("eye"));
+  } else {
+    eyeBtn.textContent = "Ver";
+  }
+  eyeBtn.addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    openItemModal(buildInspectableItemFromNode(node), node);
+  });
+  head.append(titleEl, idEl, eyeBtn);
   if (isSubloop) {
     head.append(el("span", "node__macro-hint", "Duplo clique para abrir"));
   }
 
   const ports = el("div", "node__ports");
-  const inLabel = isTrig ? "[Gatilho]" : (block.consumes || []).map(shortType).join(" | ");
+  const inLabel = isTrig ? "Universal (*)" : (block.consumes || []).map(shortType).join(" | ");
   ports.append(
     el("span", "node__port-label", inLabel),
-    el("span", "node__port-label node__port-label--out", shortType(block.produces)),
+    el("span", "node__port-label node__port-label--out", isTrig ? "Universal (*)" : shortType(block.produces)),
   );
 
   const portIn = el("span", "port port--in");
   portIn.dataset.port = "in";
-  portIn.title = isTrig ? "Gatilho inicial (sem entrada)" : `Entrada: ${(block.consumes || []).map(shortType).join(", ")}`;
+  portIn.title = isTrig ? "Entrada universal (Gatilho) — conecte de ou para qualquer peça" : `Entrada: ${(block.consumes || []).map(shortType).join(", ")}`;
   const portOut = el("span", "port port--out");
   portOut.dataset.port = "out";
-  portOut.title = `Saída: ${shortType(block.produces)} — arraste para conectar`;
+  portOut.title = isTrig ? "Saída universal (Gatilho) — arraste para conectar" : `Saída: ${shortType(block.produces)} — arraste para conectar`;
 
-  const children = [head, ports, el("div", "node__badges")];
-  if (!isTrig) children.push(portIn);
-  children.push(portOut);
+  const children = [head, ports, el("div", "node__badges"), portIn, portOut];
   root.append(...children);
   return root;
 }
@@ -325,7 +458,8 @@ function renderNode(node) {
     $("nodes").append(root);
   }
   const block = blockOf(node);
-  root.querySelector(".node__title").textContent = block.label;
+  const isTrig = block.kind && block.kind.startsWith("trigger_");
+  root.querySelector(".node__title").textContent = isTrig ? `[Gatilho] ${block.label}` : block.label;
   root.style.transform = `translate(${node.x}px, ${node.y}px)`;
   root.classList.toggle("is-selected", state.selected?.kind === "node" && state.selected.id === node.id);
   root.classList.toggle("is-fail", state.status.get(node.id) === "fail");
@@ -370,16 +504,34 @@ function renderBadges(node, box) {
     : status === "fail" ? pill("pill--fail", "com erro", block.gate)
     : pill("", "gate pendente", block.gate);
   const pills = [];
+  if (node.nature) {
+    const nat = String(node.nature).toLowerCase();
+    const natCls = nat === "macro" ? "pill--nature-macro" : nat === "nano" ? "pill--nature-nano" : "pill--nature-micro";
+    pills.push(pill(natCls, nat.toUpperCase(), `Nível hierárquico: ${nat.toUpperCase()}`));
+  }
   if (node.role) pills.push(pill("pill--role", node.role, `Papel Canônico: ${node.role}`));
-  if (node.piece) pills.push(pill("pill--kind", PIECE_LABEL[node.piece.kind] || node.piece.kind, "Peça do inventário (entrada e saída: Qualquer)"));
+  const fam = nodeCategoryClass(block).replace("node--", "");
+  pills.push(pill("pill--kind", NODE_FAMILY_LABEL[fam] || fam.toUpperCase(), `Categoria: ${fam}`));
   pills.push(pill("pill--handoff", block.artifact, "Handoff imutável"), pill("pill--route", routingLabel(node.routing), "Roteamento"), gate);
   const slots = slotCount(node.slots);
   if (slots > 0) pills.push(pill("pill--slots", `${slots} slot${slots > 1 ? "s" : ""}`, "Gates, scripts e hooks encaixados"));
   if (node.execution === "isolated") pills.push(pill("pill--exec", "isolada", "Executa em workspace separado"));
+  const lvlInfo = state.execLevels?.get(node.id);
+  if (lvlInfo) {
+    const isAsync = lvlInfo.mode === "async";
+    const cls = isAsync ? "pill--exec-async" : "pill--exec-sync";
+    const lbl = isAsync ? `Passo ${lvlInfo.step} · Assíncrono` : `Passo ${lvlInfo.step} · Síncrono`;
+    const tip = isAsync
+      ? `Passo ${lvlInfo.step} executa em paralelo com ${lvlInfo.levelSize - 1} outra(s) peça(s) deste nível`
+      : `Passo ${lvlInfo.step} executa sequencialmente após o nível anterior`;
+    pills.push(pill(cls, lbl, tip));
+  }
   box.replaceChildren(...pills);
 }
 
 function renderAllNodes() {
+  const levels = computeExecutionLevels();
+  renderExecutionStrip(levels);
   state.nodes.forEach(renderNode);
   renderEdges();
 }
@@ -421,6 +573,213 @@ function restoreCanvasSnapshot(snap) {
   updateEmpty();
 }
 
+function extractLoopCandidates(rawRef, label) {
+  const out = [];
+  const push = (v) => {
+    const s = String(v || "").trim();
+    if (s && !out.includes(s)) out.push(s);
+  };
+  if (rawRef) {
+    const clean = String(rawRef).replace(/\\/g, "/").replace(/\.(loop|studio)\.json$/i, "").replace(/\/pipeline\.dag\.json$/i, "");
+    const segs = clean.split("/").filter(Boolean);
+    if (segs.length > 0) {
+      push(segs[segs.length - 1]);
+      if (segs.length > 1 && segs[0] === "loops") push(segs[1]);
+    }
+    push(clean);
+    push(toKebabCase(clean));
+  }
+  if (label) {
+    push(label);
+    push(toKebabCase(label));
+  }
+  return out;
+}
+
+const VALID_LOOP_ID_RE = /^[a-z0-9][a-z0-9_-]{1,63}$/;
+
+async function listKnownProcesses() {
+  const combined = [];
+  const seen = new Set();
+  const pushItem = (rawId, rawName) => {
+    const id = String(rawId || "").trim();
+    const name = String(rawName || id).trim();
+    if (!id || seen.has(id.toLowerCase())) return;
+    seen.add(id.toLowerCase());
+    combined.push({ id, name });
+  };
+  await Promise.all([
+    fetch("/api/assets/loop").then((r) => (r.ok ? r.json() : null)).then((d) => {
+      for (const it of (d?.items || [])) pushItem(it.meta?.loop_id || it.id, it.name);
+    }).catch(() => {}),
+    fetch("/api/processos").then((r) => (r.ok ? r.json() : null)).then((d) => {
+      for (const l of (d?.processos || d?.loops || [])) pushItem(l.id || l.nome, l.name || l.nome);
+    }).catch(() => {}),
+  ]);
+  return combined;
+}
+
+async function resolveAndFetchLoop(rawRef, label, knownList) {
+  const cands = extractLoopCandidates(rawRef, label);
+  const loops = knownList || await listKnownProcesses();
+  const tried = new Set();
+  const tryFetch = async (id) => {
+    if (!id || tried.has(id) || !VALID_LOOP_ID_RE.test(id)) return null;
+    tried.add(id);
+    try {
+      const resp = await fetch(`/api/processos/${encodeURIComponent(id)}`);
+      if (resp.ok) return await resp.json();
+    } catch (_) {}
+    return null;
+  };
+  if (loops.length > 0) {
+    const byKey = new Map();
+    loops.forEach((l) => {
+      if (l.id) byKey.set(String(l.id).toLowerCase(), l.id);
+      if (l.name) byKey.set(toKebabCase(l.name), l.id);
+    });
+    for (const c of cands) {
+      const match = byKey.get(String(c).toLowerCase()) || byKey.get(toKebabCase(c));
+      const doc = await tryFetch(match);
+      if (doc) return doc;
+    }
+  }
+  for (const id of cands) {
+    const doc = await tryFetch(id);
+    if (doc) return doc;
+  }
+  return null;
+}
+
+function nodeSubloopTarget(n) {
+  if (!n) return "";
+  const t = String(n.type || n.piece?.kind || "").toLowerCase();
+  if (n.subloop) return String(n.subloop);
+  if (t === "subloop" || t === "loop" || t === "subprocesso" || t === "flow_loop") {
+    return String(n.piece?.ref || n.ref || n.id || "");
+  }
+  return "";
+}
+
+async function collectLoopTreeDocs(rootId, rootDoc, treeMap, visited, depth, knownList) {
+  if (!rootDoc || depth > 4) return;
+  const key = toKebabCase(rootId || rootDoc.id || rootDoc.name);
+  if (visited.has(key)) return;
+  visited.add(key);
+  treeMap.set(key, rootDoc);
+  const subRefs = [];
+  for (const n of (rootDoc.nodes || [])) {
+    const target = nodeSubloopTarget(n);
+    if (target) subRefs.push({ target, label: n.name || n.label });
+  }
+  await Promise.all(subRefs.map(async (s) => {
+    const k = toKebabCase(extractLoopCandidates(s.target, s.label)[0] || s.target);
+    if (visited.has(k)) return;
+    const subDoc = await resolveAndFetchLoop(s.target, s.label, knownList);
+    if (subDoc) await collectLoopTreeDocs(subDoc.id || k, subDoc, treeMap, visited, depth + 1, knownList);
+  }));
+}
+
+function buildNodeFromProcessDoc(n, id, x, y, depth) {
+  const defaultNat = depth === 0 ? "macro" : depth === 1 ? "micro" : "nano";
+  const nat = String(n.nature || defaultNat).toLowerCase();
+  if (n.block && state.blocks.has(n.block)) {
+    const blk = state.blocks.get(n.block);
+    return {
+      ...baseNode(id, x, y),
+      block: n.block,
+      nature: nat,
+      routing: n.routing && n.routing.mode ? { ...defaultRouting(blk), ...n.routing } : defaultRouting(blk),
+      slots: n.slots || emptySlots(),
+      execution: n.execution?.mode || n.execution || "inline",
+    };
+  }
+  const t = String(n.type || n.piece?.kind || "skill").toLowerCase();
+  const mappedKind = t === "subprocesso" || t === "loop" || t === "flow_loop" ? "subloop" : (PIECE_KIND[t] || t || "skill");
+  const ref = n.piece?.ref || n.ref || n.id || id;
+  const label = n.name || n.label || String(ref).split("/").pop() || n.id || id;
+  const artifact = (n.output && n.output.artifact) || n.piece?.artifact || `${slugOf(label).toUpperCase()}.md`;
+  const gate = (n.output && n.output.gate) || n.piece?.gate || defaultGate(artifact);
+  return {
+    ...baseNode(id, x, y),
+    label,
+    nature: nat,
+    piece: { kind: mappedKind, ref, artifact, gate },
+    routing: n.routing && n.routing.mode ? { mode: n.routing.mode, model: n.routing.model || "", fallback: n.routing.fallback || "", combo: n.routing.combo || "" } : defaultRouting({}),
+    slots: n.slots || emptySlots(),
+    execution: n.execution?.mode || n.execution || "inline",
+  };
+}
+
+function triggerBlockIdForConfig(trg) {
+  const t = String(trg?.type || "manual").toLowerCase();
+  const candidates = [`trigger_${t}`, "trigger_manual", "trigger"];
+  for (const c of candidates) {
+    if (state.blocks.has(c)) return c;
+  }
+  for (const [id, b] of state.blocks.entries()) {
+    if (b.kind && b.kind.startsWith("trigger_")) return id;
+  }
+  return "";
+}
+
+function appendLoopTreeToCanvas(doc, treeMap, prefix, entryFromId, depth, expandedSet, nodeIndexRef) {
+  const src = doc.nodes || [];
+  const localMap = new Map();
+  const childrenMap = new Map();
+
+  src.forEach((n) => {
+    const uid = prefix ? `${prefix}_${n.id}` : n.id;
+    const col = nodeIndexRef.idx++;
+    const node = buildNodeFromProcessDoc(n, uid, 60 + col * (NODE_W + 70), 80 + depth * 180, depth);
+    state.nodes.set(uid, node);
+    localMap.set(n.id, uid);
+    childrenMap.set(uid, []);
+  });
+
+  const hasIncoming = new Set();
+  src.forEach((n) => {
+    const toUid = localMap.get(n.id);
+    (n.depends_on || []).forEach((dep) => {
+      const fromUid = localMap.get(dep);
+      if (fromUid && toUid && fromUid !== toUid) {
+        state.edges.push({ from: fromUid, to: toUid });
+        hasIncoming.add(toUid);
+      }
+    });
+  });
+  (doc.edges || []).forEach((e) => {
+    const fromUid = localMap.get(e.from);
+    const toUid = localMap.get(e.to);
+    if (fromUid && toUid && fromUid !== toUid && !state.edges.some((x) => x.from === fromUid && x.to === toUid)) {
+      state.edges.push({ from: fromUid, to: toUid });
+      hasIncoming.add(toUid);
+    }
+  });
+
+  if (entryFromId) {
+    src.forEach((n) => {
+      const uid = localMap.get(n.id);
+      if (uid && !hasIncoming.has(uid)) {
+        state.edges.push({ from: entryFromId, to: uid });
+      }
+    });
+  }
+
+  // Expande sub-processos referenciados para exibir toda a árvore MACRO -> MICRO -> NANO.
+  src.forEach((n) => {
+    const subTarget = nodeSubloopTarget(n);
+    if (!subTarget) return;
+    const uid = localMap.get(n.id);
+    const cands = extractLoopCandidates(subTarget, n.name || n.label);
+    const hitKey = cands.map(toKebabCase).find((k) => treeMap.has(k) && !expandedSet.has(k));
+    if (hitKey && uid) {
+      expandedSet.add(hitKey);
+      appendLoopTreeToCanvas(treeMap.get(hitKey), treeMap, uid, uid, depth + 1, expandedSet, nodeIndexRef);
+    }
+  });
+}
+
 async function enterSubloop(subloopId, subloopLabel) {
   if (!subloopId) return;
   const currentSnap = serializeCanvasSnapshot();
@@ -428,42 +787,55 @@ async function enterSubloop(subloopId, subloopLabel) {
   state.navStack.push(currentSnap);
 
   try {
-    const resp = await fetch(`/api/processos/${encodeURIComponent(subloopId)}`);
-    if (!resp.ok) {
-      toast("Não foi possível carregar o sub-grafo do acervo", true);
+    const knownList = await listKnownProcesses();
+    const loopData = await resolveAndFetchLoop(subloopId, subloopLabel, knownList);
+    if (!loopData) {
+      toast("Não foi possível carregar o processo completo do acervo", true);
       state.navStack.pop();
       return;
     }
-    const loopData = await resp.json();
 
-    [...state.nodes.keys()].forEach(removeNode);
+    const treeMap = new Map();
+    await collectLoopTreeDocs(loopData.id || subloopId, loopData, treeMap, new Set(), 0, knownList);
+
+    pushState();
+    [...state.nodes.keys()].forEach((id) => document.querySelector(`.node[data-id="${CSS.escape(id)}"]`)?.remove());
+    state.nodes.clear();
+    state.edges = [];
 
     if ($("pipeline-name")) {
-      $("pipeline-name").value = loopData.name || subloopId;
+      $("pipeline-name").value = loopData.name || loopData.id || subloopId;
     }
 
-    const nodeMap = new Map();
-    (loopData.nodes || []).forEach((n, i) => {
-      const added = addNode(n.block || n.id, 60 + i * (NODE_W + 80), 100 + (i % 2) * 40);
-      if (added) {
-        nodeMap.set(n.id, added.id);
-      }
-    });
+    let rootEntryId = null;
+    const trgBlk = triggerBlockIdForConfig(loopData.trigger);
+    if (trgBlk) {
+      const blk = state.blocks.get(trgBlk);
+      const trgNode = {
+        ...baseNode("trg_root", 40, 80),
+        block: trgBlk,
+        nature: "macro",
+        triggerConfig: normalizeTriggerConfig(blk.kind, loopData.trigger),
+        routing: defaultRouting(blk),
+      };
+      state.nodes.set(trgNode.id, trgNode);
+      rootEntryId = trgNode.id;
+    }
 
-    (loopData.edges || []).forEach((e) => {
-      const fromId = nodeMap.get(e.from);
-      const toId = nodeMap.get(e.to);
-      if (fromId && toId) {
-        addEdge(fromId, toId);
-      }
-    });
+    const rootKey = toKebabCase(loopData.id || loopData.name || subloopId);
+    const expanded = new Set([rootKey]);
+    appendLoopTreeToCanvas(loopData, treeMap, "", rootEntryId, 0, expanded, { idx: 1 });
 
+    clearValidation();
+    renderAllNodes();
+    updateEmpty();
     renderBreadcrumbs();
-    autoLayout();
-    fitToScreen();
-    toast(`Sub-grafo aberto: ${subloopLabel || loopData.name || subloopId}`);
+    autoLayout({ fit: false, notify: false });
+    focusViewportStart(0.9);
+    select(null);
+    toast(`Processo aberto (${state.nodes.size} nó(s) MACRO/MICRO/NANO): ${subloopLabel || loopData.name || subloopId}`);
   } catch (err) {
-    toast("Erro ao abrir sub-grafo: " + err.message, true);
+    toast("Erro ao abrir processo/sub-grafo: " + err.message, true);
     state.navStack.pop();
   }
 }
@@ -542,26 +914,97 @@ function portPoint(node, side) {
   return { x: node.x + (side === "out" ? NODE_W : 0), y: node.y + PORT_Y };
 }
 
-function curve(a, b) {
-  const dx = Math.max(60, Math.abs(b.x - a.x) * 0.5);
-  return `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
+function curvePoints(a, b) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  if (dx >= 28) {
+    const offset = Math.max(56, Math.min(220, Math.abs(dx) * 0.45));
+    return {
+      c1: { x: a.x + offset, y: a.y },
+      c2: { x: b.x - offset, y: b.y },
+    };
+  }
+  // Alvo à esquerda ou alinhado verticalmente: contorna os cards sem retorcer a curva
+  const signY = dy >= 0 ? 1 : -1;
+  const spanY = Math.max(76, Math.min(180, Math.abs(dy) * 0.55 + 64));
+  const arcX = Math.max(84, Math.min(160, Math.abs(dx) * 0.25 + 84));
+  return {
+    c1: { x: a.x + arcX, y: a.y + signY * spanY },
+    c2: { x: b.x - arcX, y: b.y + signY * spanY },
+  };
 }
 
-// Gatilho (trigger_*) só emite para nós não-gatilho; peça genérica liga com tudo; entre blocos tipados vale a matriz.
+function curve(a, b) {
+  const { c1, c2 } = curvePoints(a, b);
+  return `M ${a.x} ${a.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${b.x} ${b.y}`;
+}
+
+function curveMidpoint(a, b) {
+  const { c1, c2 } = curvePoints(a, b);
+  // Avaliação exata da Bézier cúbica em t = 0.5
+  return {
+    x: 0.125 * a.x + 0.375 * c1.x + 0.375 * c2.x + 0.125 * b.x,
+    y: 0.125 * a.y + 0.375 * c1.y + 0.375 * c2.y + 0.125 * b.y,
+  };
+}
+
+function buildArrowMarker(id, color) {
+  const m = document.createElementNS(SVG_NS, "marker");
+  m.setAttribute("id", id);
+  m.setAttribute("viewBox", "0 0 10 10");
+  m.setAttribute("refX", "8");
+  m.setAttribute("refY", "5");
+  m.setAttribute("markerWidth", "6");
+  m.setAttribute("markerHeight", "6");
+  m.setAttribute("orient", "auto-start-reverse");
+  const p = document.createElementNS(SVG_NS, "path");
+  p.setAttribute("d", "M 1 1.5 L 8.5 5 L 1 8.5 z");
+  p.setAttribute("fill", color);
+  m.append(p);
+  return m;
+}
+
+function ensureEdgeDefs(svg) {
+  const defs = document.createElementNS(SVG_NS, "defs");
+  defs.append(
+    buildArrowMarker("edge-arrow-sync", "var(--edge)"),
+    buildArrowMarker("edge-arrow-async", "#0284c7"),
+    buildArrowMarker("edge-arrow-selected", "var(--accent)"),
+    buildArrowMarker("edge-arrow-invalid", "var(--fail)")
+  );
+  svg.append(defs);
+}
+
+// Gatilho (trigger_*) conecta universalmente com qualquer peça; peças/fluxo/Any ligam livremente; blocos tipados usam a matriz.
 function canConnect(fromId, toId) {
   const a = state.nodes.get(fromId);
   const b = state.nodes.get(toId);
   if (!a || !b || fromId === toId) return false;
-  if (blockOf(b)?.kind?.startsWith("trigger_")) return false;
-  if (blockOf(a)?.kind?.startsWith("trigger_")) return true;
+  const ba = blockOf(a);
+  const bb = blockOf(b);
+  if (ba?.kind?.startsWith("trigger_") || bb?.kind?.startsWith("trigger_")) return true;
   if (a.piece || b.piece) return true;
+  if (ba?.kind?.startsWith("flow_") || bb?.kind?.startsWith("flow_")) return true;
+  if (ba?.produces === ANY_TYPE || (bb?.consumes || []).includes(ANY_TYPE)) return true;
   return (state.matrix[a.block] || []).includes(b.block);
+}
+
+function isAsyncEdge(e) {
+  if (e.async || e.mode === "async") return true;
+  const a = state.nodes.get(e.from);
+  const b = state.nodes.get(e.to);
+  if (a?.async || b?.async || a?.mode === "async" || b?.mode === "async") return true;
+  const lvl = state.execLevels?.get(e.to);
+  if (lvl && lvl.mode === "async") return true;
+  const fromLvl = state.execLevels?.get(e.from);
+  return Boolean(fromLvl && fromLvl.outdeg > 1);
 }
 
 function edgeClass(e, i) {
   const sel = state.selected?.kind === "edge" && state.selected.id === i;
   const bad = state.badEdges.has(`${e.from}→${e.to}`) || !canConnect(e.from, e.to);
-  return `edge${sel ? " is-selected" : ""}${bad ? " is-invalid" : ""}`;
+  const modeCls = isAsyncEdge(e) ? "edge--async" : "edge--sync";
+  return `edge ${modeCls}${sel ? " is-selected" : ""}${bad ? " is-invalid" : ""}`;
 }
 
 function edgeHandle(point, i) {
@@ -581,49 +1024,55 @@ function renderEdges() {
   const svg = $("edges");
   const temp = svg.querySelector(".edge--temp");
   svg.replaceChildren();
+  ensureEdgeDefs(svg);
   state.edges.forEach((e, i) => {
     const a = state.nodes.get(e.from);
     const b = state.nodes.get(e.to);
+    if (!a || !b) return;
+    const pA = portPoint(a, "out");
     const end = portPoint(b, "in");
-    const d = curve(portPoint(a, "out"), end);
+    const d = curve(pA, end);
     const hit = document.createElementNS(SVG_NS, "path");
     hit.setAttribute("d", d);
     hit.setAttribute("class", "edge-hit");
     hit.dataset.edge = String(i);
     const path = document.createElementNS(SVG_NS, "path");
     path.setAttribute("d", d);
-    path.setAttribute("class", edgeClass(e, i) + " edge--animated");
+    const sel = state.selected?.kind === "edge" && state.selected.id === i;
+    const bad = state.badEdges.has(`${e.from}→${e.to}`) || !canConnect(e.from, e.to);
+    const asyncEdge = isAsyncEdge(e);
+    path.setAttribute("class", edgeClass(e, i));
+    const markerId = bad ? "edge-arrow-invalid" : sel ? "edge-arrow-selected" : asyncEdge ? "edge-arrow-async" : "edge-arrow-sync";
+    path.setAttribute("marker-end", `url(#${markerId})`);
     path.dataset.edge = String(i);
     svg.append(path, hit);
 
-    // Botão de desconexão rápida no meio da aresta com área de clique aprimorada
-    const pA = portPoint(a, "out");
-    const midX = (pA.x + end.x) / 2;
-    const midY = (pA.y + end.y) / 2;
+    // Botão de desconexão rápida posicionado exatamente sobre o ponto médio da curva Bézier
+    const mid = curveMidpoint(pA, end);
     const btnDel = document.createElementNS(SVG_NS, "g");
     btnDel.setAttribute("class", "edge-del-group");
     btnDel.dataset.edge = String(i);
-    btnDel.style.cursor = "pointer";
+    const tip = document.createElementNS(SVG_NS, "title");
+    tip.textContent = `Remover conexão (${asyncEdge ? "Paralela/Assíncrona" : "Sequencial/Síncrona"})`;
     const circ = document.createElementNS(SVG_NS, "circle");
-    circ.setAttribute("cx", String(midX));
-    circ.setAttribute("cy", String(midY));
-    circ.setAttribute("r", "12");
+    circ.setAttribute("cx", String(mid.x));
+    circ.setAttribute("cy", String(mid.y));
+    circ.setAttribute("r", "11");
     circ.setAttribute("class", "edge-btn-remove");
     circ.dataset.edge = String(i);
-    circ.style.cursor = "pointer";
     const txt = document.createElementNS(SVG_NS, "text");
-    txt.setAttribute("x", String(midX));
-    txt.setAttribute("y", String(midY + 4));
+    txt.setAttribute("x", String(mid.x));
+    txt.setAttribute("y", String(mid.y + 4));
     txt.setAttribute("text-anchor", "middle");
     txt.setAttribute("font-size", "12");
     txt.setAttribute("font-weight", "bold");
     txt.setAttribute("fill", "#fff");
     txt.setAttribute("pointer-events", "none");
     txt.textContent = "x";
-    btnDel.append(circ, txt);
+    btnDel.append(tip, circ, txt);
     svg.append(btnDel);
 
-    if (state.selected?.kind === "edge" && state.selected.id === i) svg.append(edgeHandle(end, i));
+    if (sel) svg.append(edgeHandle(end, i));
   });
   if (temp) svg.append(temp);
 }
@@ -642,7 +1091,7 @@ function addEdge(from, to) {
   pushState();
   state.edges.push({ from, to });
   clearValidation();
-  renderEdges();
+  renderAllNodes();
 }
 
 function disconnect(index) {
@@ -749,13 +1198,13 @@ function addNeighbor(node, n) {
 
 // ---------- Interações de ponteiro ----------
 
-const MAX_PAN = 10000;
+const MAX_PAN = 1e7;
 
 function updateCanvasTransform() {
   const surface = $("canvas-surface");
   if (surface) {
-    state.pan.x = Math.max(-MAX_PAN, Math.min(MAX_PAN, state.pan.x));
-    state.pan.y = Math.max(-MAX_PAN, Math.min(MAX_PAN, state.pan.y));
+    state.pan.x = Math.max(-MAX_PAN, Math.min(MAX_PAN, state.pan.x || 0));
+    state.pan.y = Math.max(-MAX_PAN, Math.min(MAX_PAN, state.pan.y || 0));
     surface.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
     surface.style.transformOrigin = "0 0";
   }
@@ -803,6 +1252,26 @@ function fitToScreen() {
   updateCanvasTransform();
 }
 
+// Posiciona o viewport no primeiro nó com zoom legível, sem reduzir grafos grandes a miniatura nem travar o zoom livre.
+function focusViewportStart(targetZoom = 0.9) {
+  if (state.nodes.size === 0) {
+    state.pan = { x: 40, y: 40 };
+    state.zoom = 1.0;
+    updateCanvasTransform();
+    return;
+  }
+  let minX = Infinity, minY = Infinity;
+  for (const n of state.nodes.values()) {
+    minX = Math.min(minX, n.x);
+    minY = Math.min(minY, n.y);
+  }
+  const zoom = Math.min(1.5, Math.max(0.55, targetZoom));
+  state.zoom = zoom;
+  state.pan.x = 48 - minX * zoom;
+  state.pan.y = 48 - minY * zoom;
+  updateCanvasTransform();
+}
+
 function toggleSidebar() {
   const ws = $("workspace");
   const sb = $("sidebar");
@@ -822,6 +1291,12 @@ function toggleInspector() {
   if (btn) {
     btn.textContent = isCollapsed ? "◂ Inspetor" : "Inspetor ▸";
     btn.setAttribute("aria-expanded", String(!isCollapsed));
+  }
+  const inlineBtn = $("btn-inspector-collapse");
+  if (inlineBtn) {
+    inlineBtn.textContent = isCollapsed ? "◂" : "▸";
+    inlineBtn.setAttribute("aria-expanded", String(!isCollapsed));
+    inlineBtn.title = isCollapsed ? "Expandir Inspetor" : "Recolher Inspetor";
   }
 }
 
@@ -882,8 +1357,11 @@ function redo() {
   toast("Ação refeita.");
 }
 
-function autoLayout() {
+function autoLayout(opts) {
   if (state.nodes.size === 0) return toast("Canvas vazio.");
+  const explicit = Boolean(opts && typeof opts === "object" && !opts.target && !opts.currentTarget);
+  const doFit = explicit ? Boolean(opts.fit) : true;
+  const doNotify = explicit ? (opts.notify !== false) : true;
   pushState();
   const nodes = Array.from(state.nodes.values());
   const inDegree = new Map();
@@ -930,8 +1408,8 @@ function autoLayout() {
     });
   });
   renderEdges();
-  fitToScreen();
-  toast("DAG organizado automaticamente!");
+  if (doFit) fitToScreen();
+  if (doNotify) toast("DAG organizado automaticamente!");
 }
 
 function toggleAccordion(name) {
@@ -966,8 +1444,8 @@ function toggleAccordion(name) {
 function canvasPoint(ev) {
   const c = $("canvas");
   const r = c.getBoundingClientRect();
-  const screenX = ev.clientX - r.left;
-  const screenY = ev.clientY - r.top;
+  const screenX = ev.clientX - r.left + (c.scrollLeft || 0);
+  const screenY = ev.clientY - r.top + (c.scrollTop || 0);
   return {
     x: (screenX - state.pan.x) / state.zoom,
     y: (screenY - state.pan.y) / state.zoom,
@@ -978,20 +1456,27 @@ function startNodeDrag(ev, node) {
   const start = canvasPoint(ev);
   const origin = { x: node.x, y: node.y };
   const root = $(`node-${node.id}`) || document.querySelector(`.node[data-id="${CSS.escape(node.id)}"]`);
-  if (root) {
-    root.classList.add("is-dragging");
-    try { root.setPointerCapture(ev.pointerId); } catch (_) {}
-  }
+  let captured = false;
 
   const move = (e) => {
     const p = canvasPoint(e);
-    node.x = Math.max(8, origin.x + p.x - start.x);
-    node.y = Math.max(8, origin.y + p.y - start.y);
+    const dx = p.x - start.x;
+    const dy = p.y - start.y;
+    if (!captured && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+      captured = true;
+      if (root) {
+        root.classList.add("is-dragging");
+        try { root.setPointerCapture(ev.pointerId); } catch (_) {}
+      }
+    }
+    if (!captured) return;
+    node.x = origin.x + dx;
+    node.y = origin.y + dy;
     renderNode(node);
     renderEdges();
   };
   const up = () => {
-    if (root) {
+    if (root && captured) {
       root.classList.remove("is-dragging");
       try { root.releasePointerCapture(ev.pointerId); } catch (_) {}
     }
@@ -1005,27 +1490,50 @@ function startNodeDrag(ev, node) {
   window.addEventListener("pointerup", up);
 }
 
-// trackLink desenha a curva temporária de uma conexão sendo arrastada a partir de fromId.
-function trackLink(ev, fromId, onDrop) {
-  const from = state.nodes.get(fromId);
+function findLinkTargetAt(e, anchorId, startPort) {
+  const direct = document.elementFromPoint(e.clientX, e.clientY)?.closest(".node");
+  if (direct && direct.dataset.id !== anchorId) return direct;
+  const wantPort = startPort === "in" ? ".port--out" : ".port--in";
+  let best = null;
+  let bestDist = Infinity;
+  document.querySelectorAll(".node").forEach((n) => {
+    if (n.dataset.id === anchorId) return;
+    const port = n.querySelector(wantPort);
+    if (port) {
+      const pr = port.getBoundingClientRect();
+      const pad = 18;
+      if (e.clientX >= pr.left - pad && e.clientX <= pr.right + pad && e.clientY >= pr.top - pad && e.clientY <= pr.bottom + pad) {
+        const d = Math.hypot(e.clientX - (pr.left + pr.width / 2), e.clientY - (pr.top + pr.height / 2));
+        if (d < bestDist) { bestDist = d; best = n; }
+        return;
+      }
+    }
+    const r = n.getBoundingClientRect();
+    if (e.clientX >= r.left - 8 && e.clientX <= r.right + 8 && e.clientY >= r.top - 8 && e.clientY <= r.bottom + 8) {
+      best = n;
+    }
+  });
+  return best;
+}
+
+// trackLink desenha a curva temporária de uma conexão sendo arrastada a partir de uma porta ("out" ou "in").
+function trackLink(ev, anchorId, onDrop, startPort = "out") {
+  const anchor = state.nodes.get(anchorId);
   const temp = document.createElementNS(SVG_NS, "path");
   temp.setAttribute("class", "edge edge--temp");
   $("edges").append(temp);
   const canvas = $("canvas");
   canvas.classList.add("is-linking");
   document.querySelectorAll(".node").forEach((n) => {
-    n.querySelector(".port--in")?.classList.toggle("is-compatible", canConnect(fromId, n.dataset.id));
+    const ok = startPort === "in" ? canConnect(n.dataset.id, anchorId) : canConnect(anchorId, n.dataset.id);
+    const sel = startPort === "in" ? ".port--out" : ".port--in";
+    n.querySelector(sel)?.classList.toggle("is-compatible", ok);
   });
-  const nodeAt = (e) => document.elementFromPoint(e.clientX, e.clientY)?.closest(".node");
-  const move = (e) => {
-    const target = nodeAt(e);
-    temp.classList.toggle("is-bad", Boolean(target) && !canConnect(fromId, target.dataset.id));
-    temp.setAttribute("d", curve(portPoint(from, "out"), canvasPoint(e)));
-  };
   const cleanup = () => {
     window.removeEventListener("pointermove", move);
     window.removeEventListener("pointerup", up);
     window.removeEventListener("keydown", onKeyDown);
+    document.querySelectorAll(".port--in, .port--out").forEach((p) => p.classList.remove("is-compatible"));
     temp.remove();
     canvas.classList.remove("is-linking");
   };
@@ -1035,9 +1543,21 @@ function trackLink(ev, fromId, onDrop) {
       onDrop(null);
     }
   };
+  const move = (e) => {
+    const target = findLinkTargetAt(e, anchorId, startPort);
+    const ok = target ? (startPort === "in" ? canConnect(target.dataset.id, anchorId) : canConnect(anchorId, target.dataset.id)) : true;
+    temp.classList.toggle("is-bad", Boolean(target) && !ok);
+    const pAnchor = portPoint(anchor, startPort);
+    let pCursor = canvasPoint(e);
+    if (target && ok) {
+      const targetNode = state.nodes.get(target.dataset.id);
+      if (targetNode) pCursor = portPoint(targetNode, startPort === "in" ? "out" : "in");
+    }
+    temp.setAttribute("d", startPort === "in" ? curve(pCursor, pAnchor) : curve(pAnchor, pCursor));
+  };
   const up = (e) => {
     cleanup();
-    onDrop(nodeAt(e)?.dataset.id || null);
+    onDrop(findLinkTargetAt(e, anchorId, startPort)?.dataset.id || null);
   };
   window.addEventListener("pointermove", move);
   window.addEventListener("pointerup", up);
@@ -1045,10 +1565,12 @@ function trackLink(ev, fromId, onDrop) {
   move(ev);
 }
 
-function startLink(ev, fromId) {
-  trackLink(ev, fromId, (targetId) => {
-    if (targetId && targetId !== fromId) addEdge(fromId, targetId);
-  });
+function startLink(ev, anchorId, startPort = "out") {
+  trackLink(ev, anchorId, (targetId) => {
+    if (!targetId || targetId === anchorId) return;
+    if (startPort === "in") addEdge(targetId, anchorId);
+    else addEdge(anchorId, targetId);
+  }, startPort);
 }
 
 // startEdgeRetarget arrasta a ponta de uma conexão: solta noutra peça religa, solta no vazio remove.
@@ -1077,9 +1599,11 @@ function onNodesPointerDown(ev) {
   const node = state.nodes.get(nodeRoot.dataset.id);
   if (!node) return;
 
-  if (ev.target.dataset.port === "out") {
+  const portEl = ev.target.closest(".port");
+  if (portEl && (portEl.dataset.port === "out" || portEl.dataset.port === "in")) {
     ev.preventDefault();
-    startLink(ev, node.id);
+    ev.stopPropagation();
+    startLink(ev, node.id, portEl.dataset.port);
     return;
   }
 
@@ -1361,22 +1885,107 @@ async function traceRoute() {
 
 function addEntryToCenter(entry) {
   const cv = $("canvas");
-  const cx = (-state.pan.x + cv.clientWidth / 2) / state.zoom - 118;
-  const cy = (-state.pan.y + cv.clientHeight / 2) / state.zoom - 50;
-  addEntry(entry, Math.round(cx), Math.round(cy));
-  toast(`Peça "${entry.name}" adicionada ao Canvas`);
+  let cx = Math.round((-state.pan.x + cv.clientWidth / 2) / state.zoom - 118);
+  let cy = Math.round((-state.pan.y + cv.clientHeight / 2) / state.zoom - 50);
+  const existing = [...state.nodes.values()];
+  for (let i = 0; i < 16 && existing.some((n) => Math.abs(n.x - cx) < 36 && Math.abs(n.y - cy) < 28); i++) {
+    cx += 44;
+    cy += 36;
+  }
+  const added = addEntry(entry, cx, cy);
+  if (added) toast(`Peça "${entry.name}" adicionada ao Canvas`);
+  return added;
 }
 
 let activeModalItem = null;
 
-async function openItemModal(it) {
+async function simulateCurrentDagInSwarm() {
+  if (state.nodes.size === 0) {
+    toast("Adicione pelo menos uma peça ao canvas antes de simular no Swarm.", true);
+    return;
+  }
+  const name = $("pipeline-name")?.value.trim() || "novo-dag";
+  const nodes = Array.from(state.nodes.values()).map((n) => {
+    const blk = blockOf(n);
+    return {
+      id: n.id,
+      label: n.label || blk.label || n.id,
+      kind: n.piece?.kind || blk.kind || "skill",
+      role: n.role || blk.role || "",
+      block: n.block || "",
+      piece: n.piece?.ref || n.block || n.id,
+      execution: n.execution || "shared",
+      artifact: n.piece?.artifact || blk.artifact || "",
+      gate: n.piece?.gate || blk.gate || "",
+    };
+  });
+  const edges = state.edges.map((e) => ({ from: e.from, to: e.to }));
+  const res = await api("/api/swarm/simulate", { name, nodes, edges });
+  if (!res.ok) {
+    toast("Falha ao simular no Swarm: " + (res.data?.error || res.status), true);
+    return;
+  }
+  const url = res.data?.url || `/swarm?proc=${encodeURIComponent(res.data?.slug || "")}`;
+  window.location.href = url;
+}
+
+function entryFromCompatItem(raw) {
+  if (!raw) return null;
+  const cat = raw.cat || (raw.kind === "subloop" ? "loop" : raw.kind) || "skill";
+  return {
+    cat,
+    kind: raw.kind || cat,
+    name: raw.name || raw.id,
+    itemId: raw.id || raw.name,
+    blockId: String(raw.kind || "").includes("_") || raw.kind === "control" ? (raw.id || raw.name) : undefined,
+    meta: raw.meta || {},
+  };
+}
+
+async function openItemModal(it, sourceNode = null) {
   const modal = $("modal-item");
   if (!modal) return;
   activeModalItem = it;
+  const resolveTargetNode = () => {
+    if (sourceNode && state.nodes.has(sourceNode.id)) return sourceNode;
+    if (state.selected?.kind === "node") return state.nodes.get(state.selected.id) || null;
+    return null;
+  };
   modal.open(it, {
     showCanvasAction: true,
     onAddToCanvas: (entry) => addEntryToCenter(entry),
-    onCanonize: () => pollItems(),
+    onCanonize: () => loadItems(),
+    onUpgrade: async () => {
+      await loadItems();
+      renderAllNodes();
+      renderInspector();
+    },
+    onSimulateSwarm: () => simulateCurrentDagInSwarm(),
+    onSwapCompatible: (compat) => {
+      const target = resolveTargetNode();
+      const entry = entryFromCompatItem(compat);
+      if (!target) return toast("Selecione um card no canvas para trocar por esta peça.", true);
+      if (!entry) return;
+      swapNode(target.id, entry);
+    },
+    onConnectBefore: (compat) => {
+      const target = resolveTargetNode();
+      const entry = entryFromCompatItem(compat);
+      if (!entry) return;
+      const x = target ? target.x - 280 : 120;
+      const y = target ? target.y : 120;
+      const newNode = addEntry(entry, x, y);
+      if (newNode && target) addEdge(newNode.id, target.id);
+    },
+    onConnectAfter: (compat) => {
+      const target = resolveTargetNode();
+      const entry = entryFromCompatItem(compat);
+      if (!entry) return;
+      const x = target ? target.x + 280 : 380;
+      const y = target ? target.y : 120;
+      const newNode = addEntry(entry, x, y);
+      if (newNode && target) addEdge(target.id, newNode.id);
+    },
   });
 }
 
@@ -1594,23 +2203,23 @@ async function boot() {
   $("edges").addEventListener("pointerdown", onEdgesPointerDown);
   $("edges").addEventListener("click", onEdgesClick);
   document.addEventListener("keydown", onKey);
-  // Canvas N8N Pan & Zoom
+  // Canvas Pan & Zoom livre (roda faz zoom direto centrado no cursor; Shift+roda faz pan)
   const cv = $("canvas");
   cv.addEventListener("wheel", (ev) => {
-    if (ev.ctrlKey || ev.metaKey) {
-      ev.preventDefault();
-      const r = cv.getBoundingClientRect();
-      zoomBy(ev.deltaY < 0 ? 1.15 : 1 / 1.15, { x: ev.clientX - r.left, y: ev.clientY - r.top });
-    } else {
-      ev.preventDefault();
-      if (ev.shiftKey && ev.deltaX === 0) {
+    ev.preventDefault();
+    if (ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
+      if (ev.deltaX === 0) {
         state.pan.x -= ev.deltaY;
       } else {
         state.pan.x -= ev.deltaX;
         state.pan.y -= ev.deltaY;
       }
       updateCanvasTransform();
+      return;
     }
+    const r = cv.getBoundingClientRect();
+    const factor = ev.deltaY < 0 ? 1.12 : 1 / 1.12;
+    zoomBy(factor, { x: ev.clientX - r.left, y: ev.clientY - r.top });
   }, { passive: false });
 
   // Pressionar e segurar barra de Espaço ativa o modo Pan N8N
@@ -1713,6 +2322,12 @@ async function boot() {
   $("btn-toggle-sidebar").addEventListener("click", toggleSidebar);
   document.querySelector(".sidebar-collapsed-rail")?.addEventListener("click", toggleSidebar);
   $("btn-toggle-inspector")?.addEventListener("click", toggleInspector);
+  $("btn-inspector-collapse")?.addEventListener("click", toggleInspector);
+  const inspRail = document.querySelector(".inspector-collapsed-rail");
+  inspRail?.addEventListener("click", toggleInspector);
+  inspRail?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleInspector(); }
+  });
   $("btn-toggle-palette").addEventListener("click", () => toggleAccordion("palette"));
   $("btn-toggle-models").addEventListener("click", () => toggleAccordion("models"));
 
@@ -1735,6 +2350,7 @@ async function boot() {
 
 
   $("btn-validate").addEventListener("click", (e) => withBusy(e.currentTarget, validate));
+  $("btn-simular-swarm")?.addEventListener("click", (e) => withBusy(e.currentTarget, simulateCurrentDagInSwarm));
   $("btn-materialize").addEventListener("click", (e) => withBusy(e.currentTarget, materialize));
   $("btn-route").addEventListener("click", (e) => withBusy(e.currentTarget, traceRoute));
   $("btn-close-issues").addEventListener("click", () => { $("issues").hidden = true; });
@@ -1997,7 +2613,7 @@ function initRunModal() {
             }
 
             case "node_start": {
-              appendLog(`[${new Date().toLocaleTimeString()}] ▶ Nó "${evData.id}" em execução...`);
+              appendLog(`[${new Date().toLocaleTimeString()}] [RUN] Nó "${evData.id}" em execução...`);
 
               state.telemetry.set(evData.id, { status: "running" });
               const targetNode = state.nodes.get(evData.id);

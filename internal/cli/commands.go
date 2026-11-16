@@ -27,6 +27,7 @@ import (
 	"legoloop/internal/runner"
 	"legoloop/internal/studio"
 	"legoloop/internal/studiodoc"
+	"legoloop/internal/triagem"
 )
 
 const defaultHTTPClientTimeout = 10 * time.Second
@@ -143,10 +144,26 @@ func loadDAG(path string) (*dag.DAG, error) {
 	return dag.Parse(data)
 }
 
+// exigirTriagem aplica a regra do processo: com mais de um nó, a pasta do DAG do processo precisa de uma
+// triagem.json válida que cubra todos os nós. Outros nomes de DAG (espelhos, arquivos soltos) não têm pasta de processo.
+func exigirTriagem(path string, p *dag.DAG) error {
+	if b := filepath.Base(path); (b != caminhos.ArquivoDAG && b != caminhos.ArquivoProcessoDAG) || !triagem.Exigida(len(p.Nodes)) {
+		return nil
+	}
+	ids := make([]string, len(p.Nodes))
+	for i, n := range p.Nodes {
+		ids[i] = n.ID
+	}
+	return triagem.Conferir(filepath.Dir(path), ids)
+}
+
 func cmdValidate(_ context.Context, args []string, d Deps) int {
 	path, _ := splitPositional(args)
 	p, err := loadDAG(path)
 	if err != nil {
+		return fail(d, err)
+	}
+	if err := exigirTriagem(path, p); err != nil {
 		return fail(d, err)
 	}
 	fmt.Fprintf(d.Stdout, "✓ %s v%s — %d nós válidos, sem ciclos\n", p.Name, p.Version, len(p.Nodes))

@@ -17,6 +17,8 @@ import (
 func TestFecharSemStubsETelemetriaReal(t *testing.T) {
 	t.Run("telemetria sem valores ficticios 80000/65000 e duracao em ms reais", func(t *testing.T) {
 		tmp := t.TempDir()
+		semearDocs(t, tmp, "video-motion")
+		semearDAG(t, tmp, "video-motion")
 		tick := 0
 		clock := func() time.Time {
 			tick++
@@ -93,6 +95,8 @@ func TestFecharSemStubsETelemetriaReal(t *testing.T) {
 
 	t.Run("execucao real de Rebuilder, Governanca, Indexer e Portoes via seams", func(t *testing.T) {
 		tmp := t.TempDir()
+		semearDocs(t, tmp, "video-rea")
+		semearDAG(t, tmp, "video-rea")
 		var rebuildCalled, indexCalled, portoesCalled bool
 		deps := fechar.Deps{
 			RepoDir:   tmp,
@@ -136,6 +140,8 @@ func TestFecharSemStubsETelemetriaReal(t *testing.T) {
 
 	t.Run("erro explicito quando codebase-memory-mcp ausente no DefaultIndexer", func(t *testing.T) {
 		tmp := t.TempDir()
+		t.Setenv("USERPROFILE", tmp)
+		t.Setenv("HOME", tmp)
 		err := fechar.DefaultIndexerWithLookPath(tmp, func(file string) (string, error) {
 			return "", errors.New("executable file not found")
 		}, nil)
@@ -143,5 +149,36 @@ func TestFecharSemStubsETelemetriaReal(t *testing.T) {
 			t.Fatalf("esperava erro explicito de codebase-memory-mcp ausente, obteve: %v", err)
 		}
 		_ = bytes.Buffer{}
+	})
+
+	t.Run("fallback encontra codebase-memory-mcp.exe quando ausente no PATH", func(t *testing.T) {
+		tmp := t.TempDir()
+		t.Setenv("USERPROFILE", tmp)
+		t.Setenv("HOME", tmp)
+		esperado := filepath.Join(tmp, "tools", "codebase-memory-mcp", "codebase-memory-mcp.exe")
+		if err := os.MkdirAll(filepath.Dir(esperado), 0o755); err != nil {
+			t.Fatalf("mkdir fallback: %v", err)
+		}
+		if err := os.WriteFile(esperado, []byte("stub"), 0o755); err != nil {
+			t.Fatalf("write fallback: %v", err)
+		}
+		var chamadoBin string
+		var chamadoArgs []string
+		err := fechar.DefaultIndexerWithLookPath(tmp, func(file string) (string, error) {
+			return "", errors.New("executable file not found")
+		}, func(bin string, args ...string) error {
+			chamadoBin = bin
+			chamadoArgs = args
+			return nil
+		})
+		if err != nil {
+			t.Fatalf("esperava sucesso via fallback, obteve erro: %v", err)
+		}
+		if chamadoBin != esperado {
+			t.Fatalf("binario esperado=%q obteve=%q", esperado, chamadoBin)
+		}
+		if len(chamadoArgs) != 3 || chamadoArgs[0] != "cli" || chamadoArgs[1] != "index_repository" {
+			t.Fatalf("args inesperados: %+v", chamadoArgs)
+		}
 	})
 }

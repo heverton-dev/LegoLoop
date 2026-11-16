@@ -2,22 +2,54 @@
 
 const PER_PAGE = 20;
 const palette = ["#8ab4f8", "#f28b82", "#fdd663", "#81c995", "#c58af9"];
-const roleTools = {
-  orquestrador: "LegoLoop CLI",
-  planejador: "PLAN v2",
-  arquiteto: "Templates v2",
-  "engenheiro-backend": "Go / REST",
-  "engenheiro-tdd": "Go Test / Vitest",
-  "engenheiro-frontend": "React / Tailwind",
-  "engenheiro-secops": "Security Gates",
-  "dissecador-web": "REA Web",
-  "auditor-qualidade": "Taxlinter / Funclen",
-  "redator-tecnico": "Manual Creator"
-};
+const DEFAULT_SWARM_ROLES = [
+  { slug: "orquestrador", nome: "Orquestrador Geral", guilda: "maestro", ferramentas_tipicas: "LegoLoop CLI" },
+  { slug: "planejador", nome: "Planejador Estrategico", guilda: "maestro", ferramentas_tipicas: "PLAN v2" },
+  { slug: "product-owner", nome: "Product Owner", guilda: "maestro", ferramentas_tipicas: "INTENT / SPEC" },
+  { slug: "scrum-master", nome: "Scrum Master", guilda: "maestro", ferramentas_tipicas: "Board / Tickets" },
+  { slug: "arquiteto", nome: "Arquiteto de Sistemas", guilda: "arquiteto", ferramentas_tipicas: "Templates v2" },
+  { slug: "arquiteto-dados", nome: "Arquiteto de Dados", guilda: "arquiteto", ferramentas_tipicas: "SQL / Schemas" },
+  { slug: "engenheiro-ux", nome: "Engenheiro de UI/UX", guilda: "arquiteto", ferramentas_tipicas: "Tokens / Figma" },
+  { slug: "engenheiro-backend", nome: "Engenheiro Backend", guilda: "construtor", ferramentas_tipicas: "Go / REST" },
+  { slug: "engenheiro-frontend", nome: "Engenheiro Frontend", guilda: "construtor", ferramentas_tipicas: "HTML / JS / CSS" },
+  { slug: "engenheiro-infra", nome: "Engenheiro Infra/Ops", guilda: "construtor", ferramentas_tipicas: "Docker / VPS" },
+  { slug: "engenheiro-tdd", nome: "Engenheiro TDD", guilda: "verificador", ferramentas_tipicas: "Go Test / Node" },
+  { slug: "engenheiro-secops", nome: "Engenheiro SecOps", guilda: "verificador", ferramentas_tipicas: "Security Gates" },
+  { slug: "auditor-qualidade", nome: "Auditor de Qualidade", guilda: "verificador", ferramentas_tipicas: "Taxlinter / Funclen" },
+  { slug: "engenheiro-qa", nome: "Engenheiro de QA", guilda: "verificador", ferramentas_tipicas: "Playwright / Axe" },
+  { slug: "integrador-ci", nome: "Integrador CI/CD", guilda: "integrador", ferramentas_tipicas: "Git / Worktrees" },
+  { slug: "engenheiro-release", nome: "Engenheiro de Release", guilda: "integrador", ferramentas_tipicas: "Fechar / Build" },
+  { slug: "redator-tecnico", nome: "Redator Tecnico", guilda: "documentador", ferramentas_tipicas: "Manual Creator" },
+  { slug: "editor-didatico", nome: "Editor LegoPress", guilda: "documentador", ferramentas_tipicas: "LegoPress / Typst" },
+  { slug: "dissecador-web", nome: "Dissecador Web/REA", guilda: "analista", ferramentas_tipicas: "REA Web" },
+  { slug: "analista-forense", nome: "Analista Forense", guilda: "analista", ferramentas_tipicas: "Video-REA / Trace" }
+];
+const DEFAULT_WORKSPACES = [
+  { id: "inherit", label: "Herdado (mesmo workspace do coordenador)" },
+  { id: "share", label: "Compartilhado (worktree git própria)" },
+  { id: "branch", label: "Nova Branch (clone git isolado)" }
+];
+const roleTools = Object.fromEntries(DEFAULT_SWARM_ROLES.map(r => [r.slug, r.ferramentas_tipicas || "CLI"]));
+const PIECE_KINDS = [
+  { id: "", label: "Todos os tipos" },
+  { id: "skill", label: "Skill" },
+  { id: "mcp", label: "MCP" },
+  { id: "loop", label: "Processo / Sub-DAG" },
+  { id: "script", label: "Script" },
+  { id: "gate", label: "Gate" },
+  { id: "hook", label: "Hook" }
+];
 
-let curProc = "";
+let curProc = (typeof URLSearchParams === "function" && window.location?.search)
+  ? (new URLSearchParams(window.location.search).get("proc") || "")
+  : "";
 let closedProcs = {};
 let addPanelOpen = false;
+let availablePieces = [];
+let swarmMeta = { roles: DEFAULT_SWARM_ROLES, models: [], workspaces: DEFAULT_WORKSPACES };
+let selectedAddPieces = [];
+let selectedEditPieces = [];
+let selectedEditPiecesAgent = "";
 const tabState = {};
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -92,6 +124,220 @@ function setError(msg) {
   box.hidden = false;
 }
 
+async function loadSwarmMeta() {
+  try {
+    const res = await fetch("/api/swarm/meta");
+    if (!res.ok) return;
+    const data = await res.json();
+    if (Array.isArray(data.roles) && data.roles.length) {
+      swarmMeta.roles = data.roles;
+      data.roles.forEach(r => { roleTools[r.slug] = r.ferramentas_tipicas || "CLI"; });
+    }
+    if (Array.isArray(data.models)) swarmMeta.models = data.models;
+    if (Array.isArray(data.workspaces) && data.workspaces.length) swarmMeta.workspaces = data.workspaces;
+    if (addPanelOpen) {
+      const selRole = document.getElementById("add-worker-role");
+      const selModel = document.getElementById("add-worker-model");
+      const selWs = document.getElementById("add-worker-ws");
+      if (selRole) populateRoleSelect(selRole, selRole.value || "engenheiro-backend");
+      if (selModel) populateModelSelect(selModel, selModel.value);
+      if (selWs) populateWorkspaceSelect(selWs, selWs.value || "inherit");
+    }
+    if (window._last) render(window._last);
+  } catch (_) {}
+}
+
+function populateRoleSelect(sel, currentRole) {
+  const cur = String(currentRole || "engenheiro-backend");
+  const roles = swarmMeta.roles && swarmMeta.roles.length ? swarmMeta.roles : DEFAULT_SWARM_ROLES;
+  const byGuild = new Map();
+  roles.forEach(r => {
+    const g = String(r.guilda || "geral").toUpperCase();
+    if (!byGuild.has(g)) byGuild.set(g, []);
+    byGuild.get(g).push(r);
+  });
+  const nodes = [];
+  let matched = false;
+  byGuild.forEach((list, guildLabel) => {
+    const grp = el("optgroup");
+    grp.label = `Guilda ${guildLabel}`;
+    list.forEach(r => {
+      const opt = el("option", "", `${r.nome || r.slug} (${r.slug})`);
+      opt.value = r.slug;
+      if (r.slug === cur) {
+        opt.selected = true;
+        matched = true;
+      }
+      grp.appendChild(opt);
+    });
+    nodes.push(grp);
+  });
+  if (cur && !matched) {
+    const custom = el("option", "", cur);
+    custom.value = cur;
+    custom.selected = true;
+    nodes.unshift(custom);
+  }
+  sel.replaceChildren(...nodes);
+  sel.value = cur;
+}
+
+function populateModelSelect(sel, currentModel) {
+  const cur = String(currentModel || "");
+  const models = Array.isArray(swarmMeta.models) ? swarmMeta.models : [];
+  const opts = [];
+  let matched = false;
+  if (!models.length && !cur) {
+    const def = el("option", "", "Padrao do sistema (auto)");
+    def.value = "";
+    opts.push(def);
+  }
+  models.forEach((m, idx) => {
+    const id = typeof m === "string" ? m : (m.id || "");
+    if (!id) return;
+    const src = typeof m === "object" && m.source ? ` [${m.source}]` : "";
+    const opt = el("option", "", `${id}${src}`);
+    opt.value = id;
+    if ((cur && id === cur) || (!cur && idx === 0)) {
+      opt.selected = true;
+      matched = true;
+    }
+    opts.push(opt);
+  });
+  if (cur && !matched) {
+    const custom = el("option", "", `${cur} (atual)`);
+    custom.value = cur;
+    custom.selected = true;
+    opts.unshift(custom);
+  }
+  sel.replaceChildren(...opts);
+  if (cur) sel.value = cur;
+  else if (opts.length) sel.value = opts[0].value;
+}
+
+function populateWorkspaceSelect(sel, currentWs) {
+  const cur = String(currentWs || "inherit");
+  const wsList = swarmMeta.workspaces && swarmMeta.workspaces.length ? swarmMeta.workspaces : DEFAULT_WORKSPACES;
+  const opts = wsList.map(w => {
+    const opt = el("option", "", w.label || w.id);
+    opt.value = w.id;
+    if (w.id === cur) opt.selected = true;
+    return opt;
+  });
+  sel.replaceChildren(...opts);
+  sel.value = cur;
+}
+
+function populatePieceKindSelect(sel, curKind) {
+  const cur = String(curKind || "");
+  const opts = PIECE_KINDS.map(k => {
+    const opt = el("option", "", k.label);
+    opt.value = k.id;
+    if (k.id === cur) opt.selected = true;
+    return opt;
+  });
+  sel.replaceChildren(...opts);
+  sel.value = cur;
+}
+
+function inferWorkerTicketText(role, pieces, wsMode) {
+  const pNames = (pieces || []).map(p => (p.kind ? `${p.kind}:${p.name}` : p.name)).filter(Boolean);
+  const mode = wsMode || "inherit";
+  if (pNames.length) {
+    return `Executar ${role || "worker"} (${mode}) com ${pNames.join(", ")}`;
+  }
+  return `Executar papel ${role || "worker"} no workspace ${mode}`;
+}
+
+function inferWorkerSpawnPreview(role, model, pieces) {
+  const pFlag = (pieces && pieces.length) ? ` --pieces ${pieces.map(p => p.name).join(",")}` : "";
+  const mFlag = model ? ` --model ${model}` : "";
+  return `Auto: board spawn --role ${role || "worker"}${mFlag}${pFlag}`;
+}
+
+function renderPieceChips(container, pieces, remAct) {
+  if (!container) return;
+  if (!pieces || !pieces.length) {
+    container.replaceChildren(el("span", "meta", "Nenhuma peca associada ainda."));
+    return;
+  }
+  const chips = pieces.map(p => {
+    const chip = el("span", "piece-chip");
+    chip.append(document.createTextNode(`${p.kind ? `[${p.kind}] ` : ""}${p.name}`));
+    const btn = actEl("button", "piece-chip__x", remAct, `${p.kind || ""}:${p.name}`, "×");
+    btn.title = `Remover ${p.name}`;
+    chip.appendChild(btn);
+    return chip;
+  });
+  container.replaceChildren(...chips);
+}
+
+function addPieceToSelection(list, pieceEl, kindFilterEl) {
+  const name = pieceEl ? String(pieceEl.value || "").trim() : "";
+  if (!name) return false;
+  const found = availablePieces.find(p => p.name === name || p.id === name);
+  const kind = found?.kind || (kindFilterEl ? String(kindFilterEl.value || "") : "");
+  if (list.some(p => p.name === name && p.kind === kind)) return false;
+  list.push({ kind, name });
+  return true;
+}
+
+async function loadPieceCatalog() {
+  try {
+    const kinds = ["skill", "script", "mcp", "loop", "gate", "hook"];
+    const resList = await Promise.all(kinds.map(k => fetch(`/api/assets/${k}`).then(r => (r.ok ? r.json() : { items: [] })).catch(() => ({ items: [] }))));
+    const list = [];
+    const seen = new Set();
+    kinds.forEach((k, idx) => {
+      const items = resList[idx]?.items || [];
+      items.forEach(it => {
+        const key = `${k}:${it.name}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        list.push({ id: it.id || it.name, name: it.name, kind: k });
+      });
+    });
+    availablePieces = list;
+    if (addPanelOpen) {
+      const sel = document.getElementById("add-worker-piece");
+      const kindSel = document.getElementById("add-worker-piece-kind");
+      if (sel) populatePieceSelect(sel, sel.value, kindSel ? kindSel.value : "");
+    }
+    if (window._last) render(window._last);
+  } catch (_) {}
+}
+
+function populatePieceSelect(sel, currentVal, kindFilter) {
+  const cur = String(currentVal || "");
+  const kf = String(kindFilter || "").toLowerCase();
+  const prevFocus = document.activeElement === sel;
+  const opts = [];
+  const emptyOpt = el("option", "", kf ? `-- Selecionar (${kf}) --` : "-- Selecionar peca do catalogo --");
+  emptyOpt.value = "";
+  opts.push(emptyOpt);
+  let foundCur = !cur;
+  availablePieces
+    .filter(p => !kf || p.kind === kf)
+    .forEach(p => {
+      const opt = el("option", "", `[${p.kind}] ${p.name}`);
+      opt.value = p.name;
+      opt.setAttribute("data-kind", p.kind);
+      if (p.name === cur || p.id === cur) {
+        opt.selected = true;
+        foundCur = true;
+      }
+      opts.push(opt);
+    });
+  if (cur && !foundCur) {
+    const customOpt = el("option", "", `[custom] ${cur}`);
+    customOpt.value = cur;
+    customOpt.selected = true;
+    opts.push(customOpt);
+  }
+  sel.replaceChildren(...opts);
+  if (prevFocus) sel.focus();
+}
+
 function captureCurrentInputs() {
   if (!curProc) return;
   const st = getState(curProc);
@@ -117,7 +363,7 @@ function renderCrumb(ws, st) {
   }
   const nodes = [actEl("a", "", "sub", "", "Macro")];
   for (const n of path) {
-    nodes.push(document.createTextNode(" › "));
+    nodes.push(document.createTextNode(" > "));
     nodes.push(actEl("a", "", "sub", n, n));
   }
   crumb.replaceChildren(...nodes);
@@ -132,23 +378,62 @@ function renderGroupNodes(title, list, allWs, kind, st) {
     const subs = allWs.filter(x => x.parent === w.name).length;
     const ci = colorIdx(w.name);
     const isSel = st.selectedAgent === w.name;
-    const card = actEl("div", `w ${w.status || "waiting"} c${ci}${isSel ? " sel" : ""}`, "sel", w.name);
+    const card = actEl("div", `w worker ${w.status || "waiting"} c${ci}${isSel ? " sel" : ""}`, "sel", w.name);
     card.appendChild(botSVGNode(w.status, w.name, kind));
     const info = el("div", "w-info");
     const row = el("div", "row");
     row.appendChild(el("b", "", w.name));
     const gap = el("span", "row-gap");
     if (subs > 0) {
-      gap.appendChild(actEl("button", "sub-btn", "sub", w.name, `${subs} sub ▶`));
+      gap.appendChild(actEl("button", "sub-btn", "sub", w.name, `${subs} sub`));
+    }
+    if (w.step) {
+      const mCls = w.mode === "async" ? "mode-async" : "mode-sync";
+      const mTxt = w.mode === "async" ? `P${w.step} PARALELO` : `P${w.step} SÍNCRONO`;
+      gap.appendChild(el("span", `badge ${mCls}`, mTxt));
     }
     gap.appendChild(el("span", `badge ${w.status || "waiting"}`, w.status || "waiting"));
     row.appendChild(gap);
     const metaText = `${w.role || "-"} · ${w.model || "-"} · ${w.workspace_mode || "inherit"}${w.pid ? ` · PID ${w.pid}` : ""}`;
     info.append(row, el("div", "meta", metaText));
+    const pieceList = Array.isArray(w.pieces) && w.pieces.length ? w.pieces : (w.piece ? [{ kind: w.piece_kind || "", name: w.piece }] : []);
+    if (pieceList.length || w.ticket) {
+      const tags = el("div", "w-tags");
+      pieceList.forEach(p => tags.appendChild(el("span", "w-tag", `${p.kind ? `${p.kind}: ` : "Peca: "}${p.name}`)));
+      if (w.ticket) tags.appendChild(el("span", "w-tag", `Ticket: ${w.ticket}`));
+      info.appendChild(tags);
+    }
+    if (kind !== "coord") {
+      const mini = el("div", "w-actions-mini");
+      const btnRem = actEl("button", "btn btn--xs btn-danger", "remove", w.name, "Remover");
+      btnRem.title = "Remover este worker do processo";
+      mini.appendChild(btnRem);
+      info.appendChild(mini);
+    }
     card.appendChild(info);
     out.push(card);
   }
   return out;
+}
+
+function makeLabeledField(labelText, inputEl) {
+  const wrap = el("div", "worker-form-field");
+  wrap.append(el("label", "", labelText), inputEl);
+  return wrap;
+}
+
+function syncAddWorkerInference() {
+  const role = document.getElementById("add-worker-role")?.value || "engenheiro-backend";
+  const model = document.getElementById("add-worker-model")?.value || "";
+  const ws = document.getElementById("add-worker-ws")?.value || "inherit";
+  const ticketEl = document.getElementById("add-worker-ticket");
+  const cmdEl = document.getElementById("add-worker-cmd");
+  if (ticketEl && ticketEl.getAttribute("data-manual") !== "1") {
+    ticketEl.value = inferWorkerTicketText(role, selectedAddPieces, ws);
+  }
+  if (cmdEl) {
+    cmdEl.placeholder = inferWorkerSpawnPreview(role, model, selectedAddPieces);
+  }
 }
 
 function renderAddWorkerPanel() {
@@ -156,38 +441,87 @@ function renderAddWorkerPanel() {
   if (!panel) return;
   panel.hidden = !addPanelOpen;
   if (!addPanelOpen || panel.children.length > 0) return;
-  const body = el("div", "ficha-body");
-  const row1 = el("div", "ficha-actions");
-  const inpName = el("input", "btn cmd-in");
+
+  const grid = el("div", "worker-form-grid");
+  const inpName = el("input", "input");
   inpName.id = "add-worker-name";
-  inpName.placeholder = "Nome do worker (ex: w-dev)";
-  const selRole = el("select", "btn");
+  inpName.placeholder = "Ex: w-dev-backend";
+
+  const selRole = el("select", "input");
   selRole.id = "add-worker-role";
-  for (const r of Object.keys(roleTools)) {
-    const opt = el("option", "", r);
-    opt.value = r;
-    selRole.appendChild(opt);
-  }
-  const inpModel = el("input", "btn");
-  inpModel.id = "add-worker-model";
-  inpModel.placeholder = "Modelo (ex: t-codigo-128k)";
-  inpModel.value = "t-codigo-128k";
-  const selWs = el("select", "btn");
+  populateRoleSelect(selRole, "engenheiro-backend");
+
+  const rowAB = el("div", "worker-form-row2");
+  rowAB.append(makeLabeledField("Nome do Worker", inpName), makeLabeledField("Papel Canonico (7 Guildas)", selRole));
+
+  const selModel = el("select", "input");
+  selModel.id = "add-worker-model";
+  populateModelSelect(selModel, "");
+
+  const selWs = el("select", "input");
   selWs.id = "add-worker-ws";
-  for (const mode of ["inherit", "share", "branch"]) {
-    const opt = el("option", "", mode);
-    opt.value = mode;
-    selWs.appendChild(opt);
-  }
-  row1.append(inpName, selRole, inpModel, selWs);
-  const row2 = el("div", "ficha-actions");
-  const inpCmd = el("input", "btn cmd-in");
+  populateWorkspaceSelect(selWs, "inherit");
+
+  const rowCD = el("div", "worker-form-row2");
+  rowCD.append(makeLabeledField("Modelo do Sistema", selModel), makeLabeledField("Workspace", selWs));
+
+  const selKind = el("select", "input");
+  selKind.id = "add-worker-piece-kind";
+  populatePieceKindSelect(selKind, "");
+
+  const selPiece = el("select", "input");
+  selPiece.id = "add-worker-piece";
+  populatePieceSelect(selPiece, "", "");
+
+  const btnAddPiece = actEl("button", "btn btn--sm", "add-piece-item", "", "+ Associar");
+  const piecePickerRow = el("div", "piece-picker-row");
+  piecePickerRow.append(selKind, selPiece, btnAddPiece);
+
+  const piecesChips = el("div", "piece-chips");
+  piecesChips.id = "add-worker-pieces-list";
+  renderPieceChips(piecesChips, selectedAddPieces, "rem-piece-item");
+
+  const inpTicket = el("input", "input");
+  inpTicket.id = "add-worker-ticket";
+  inpTicket.placeholder = "Inferido automaticamente pelos campos acima";
+
+  const inpCmd = el("input", "input");
   inpCmd.id = "add-worker-cmd";
-  inpCmd.placeholder = "Comando opcional para spawn imediato (ex: cmd /c echo ok)";
-  const btnCreate = actEl("button", "btn", "create-worker", "", "Criar Worker");
-  row2.append(inpCmd, btnCreate);
-  body.append(row1, row2);
-  panel.replaceChildren(body);
+
+  selRole.addEventListener("change", syncAddWorkerInference);
+  selModel.addEventListener("change", syncAddWorkerInference);
+  selWs.addEventListener("change", syncAddWorkerInference);
+  selKind.addEventListener("change", () => populatePieceSelect(selPiece, "", selKind.value));
+  selPiece.addEventListener("change", () => {
+    if (addPieceToSelection(selectedAddPieces, selPiece, selKind)) {
+      renderPieceChips(piecesChips, selectedAddPieces, "rem-piece-item");
+      syncAddWorkerInference();
+    }
+  });
+  inpTicket.addEventListener("input", () => inpTicket.setAttribute("data-manual", inpTicket.value.trim() ? "1" : ""));
+
+  const acts = el("div", "worker-form-actions");
+  acts.append(
+    actEl("button", "btn btn--sm", "toggle-add", "", "Cancelar"),
+    actEl("button", "btn btn--sm btn--primary", "create-worker", "", "Criar Worker")
+  );
+
+  grid.append(
+    rowAB,
+    rowCD,
+    makeLabeledField("Pecas Associadas (Tipo + Catalogo)", piecePickerRow),
+    piecesChips,
+    makeLabeledField("Ticket / Tarefa (Auto-inferido, editavel)", inpTicket),
+    makeLabeledField("Comando Spawn (Auto se vazio)", inpCmd),
+    acts
+  );
+  panel.replaceChildren(grid);
+  syncAddWorkerInference();
+}
+
+function isEditingControlInside(container) {
+  const active = document.activeElement;
+  return Boolean(active && container.contains(active) && (active.tagName === "INPUT" || active.tagName === "SELECT" || active.tagName === "TEXTAREA"));
 }
 
 function renderFicha(allWs, ms, st) {
@@ -199,17 +533,18 @@ function renderFicha(allWs, ms, st) {
   }
   const idx = allWs.findIndex(w => w.name === st.selectedAgent);
   const w = idx >= 0 ? allWs[idx] : { name: st.selectedAgent, role: "orquestrador", model: "maestro", workspace_mode: "inherit", status: "working" };
+  const isCoord = idx < 0;
+  if (isEditingControlInside(container) && container.dataset.agent === w.name) {
+    return;
+  }
+  container.dataset.agent = w.name;
+
   const ord = ms.find(m => m.to === "@" + w.name || m.to === "@all");
   const out = ms.find(m => m.from === w.name);
   const subs = allWs.filter(x => x.parent === w.name).map(x => x.name);
   const iso = (w.workspace_mode === "share" || w.workspace_mode === "branch") ? "Isolado (git worktree)" : "Conjunto (inherit)";
-  const pCls = w.status === "killed" ? "p-100" : w.status === "waiting" ? "p-15" : "p-70";
+  const pCls = (w.status === "killed" || w.status === "done") ? "p-100" : w.status === "waiting" ? "p-15" : "p-70";
   const kind = w.role === "orquestrador" ? "coord" : w.role === "auditor-qualidade" ? "ver" : "trab";
-
-  const existingCmd = document.getElementById("cmd-in");
-  const existingModel = document.getElementById("model-in");
-  const cmdVal = existingCmd && existingCmd.dataset && existingCmd.dataset.agent === w.name ? existingCmd.value : (st.draftCmd || "");
-  const modelVal = existingModel && existingModel.dataset && existingModel.dataset.agent === w.name ? existingModel.value : (st.draftModel || w.model || "");
 
   const ficha = el("div", "ficha");
   ficha.appendChild(botSVGNode(w.status, w.name, kind, false));
@@ -218,11 +553,17 @@ function renderFicha(allWs, ms, st) {
   const topRow = el("div", "row");
   topRow.appendChild(el("b", "", w.name));
   const rightMeta = el("span", "meta");
-  rightMeta.append(document.createTextNode(`⏱ ${fmtDur(w.created_at)} · `), el("span", `badge ${w.status || "waiting"}`, w.status || "waiting"));
+  const modeInfo = w.step ? `Passo ${w.step} (${w.mode === "async" ? "Paralelo" : "Síncrono"}) · ` : "";
+  rightMeta.append(document.createTextNode(`${modeInfo}Duração: ${fmtDur(w.created_at)} · `), el("span", `badge ${w.status || "waiting"}`, w.status || "waiting"));
   topRow.appendChild(rightMeta);
   body.appendChild(topRow);
 
   body.appendChild(el("div", "meta", `Papel: ${w.role || "-"} · Cérebro: ${w.model || "-"} · Ferramentas: ${roleTools[w.role] || "CLI"} · Modo: ${iso}`));
+  const wPieces = Array.isArray(w.pieces) && w.pieces.length ? w.pieces : (w.piece ? [{ kind: w.piece_kind || "", name: w.piece }] : []);
+  if (wPieces.length || w.ticket) {
+    const pText = wPieces.length ? wPieces.map(p => `${p.kind ? `${p.kind}:` : ""}${p.name}`).join(", ") : "(nenhuma)";
+    body.appendChild(el("div", "meta", `Pecas: ${pText} · Ticket: ${w.ticket || "(nenhum)"}`));
+  }
   body.appendChild(el("div", "meta", `Input: ${ord ? ord.body : "aguardando"} · Output: ${out ? out.body : "-"}`));
   if (subs.length) {
     body.appendChild(el("div", "meta", `Subprocessos: ${subs.join(", ")}`));
@@ -231,27 +572,88 @@ function renderFicha(allWs, ms, st) {
   prog.appendChild(el("div", `prog-bar ${pCls}`));
   body.appendChild(prog);
 
+  if (!isCoord) {
+    if (selectedEditPiecesAgent !== w.name) {
+      selectedEditPiecesAgent = w.name;
+      selectedEditPieces = wPieces.map(p => ({ kind: p.kind || "", name: p.name }));
+    }
+    const editGrid = el("div", "ficha-edit-grid");
+    const editRole = el("select", "input");
+    editRole.id = "edit-worker-role";
+    populateRoleSelect(editRole, w.role || "engenheiro-backend");
+
+    const editPieceKind = el("select", "input");
+    editPieceKind.id = "edit-worker-piece-kind";
+    populatePieceKindSelect(editPieceKind, "");
+
+    const editPiece = el("select", "input");
+    editPiece.id = "edit-worker-piece";
+    populatePieceSelect(editPiece, wPieces[0]?.name || "", "");
+
+    const btnAddEditPiece = actEl("button", "btn btn--sm", "edit-add-piece-item", w.name, "+ Peca");
+    const editPicker = el("div", "piece-picker-row");
+    editPicker.append(editPieceKind, editPiece, btnAddEditPiece);
+
+    const editChips = el("div", "piece-chips");
+    editChips.id = "edit-worker-pieces-list";
+    renderPieceChips(editChips, selectedEditPieces, "edit-rem-piece-item");
+
+    editPieceKind.addEventListener("change", () => populatePieceSelect(editPiece, "", editPieceKind.value));
+    editPiece.addEventListener("change", () => {
+      if (addPieceToSelection(selectedEditPieces, editPiece, editPieceKind)) {
+        renderPieceChips(editChips, selectedEditPieces, "edit-rem-piece-item");
+      }
+    });
+
+    const editTicket = el("input", "input");
+    editTicket.id = "edit-worker-ticket";
+    editTicket.placeholder = "Ticket / tarefa atribuida";
+    editTicket.value = w.ticket || "";
+
+    const btnSave = actEl("button", "btn btn--sm btn--primary", "update-worker", w.name, "Salvar Associacao");
+    const helpEdit = el("p", "muted", "Associe este worker a um papel canônico, peças do catálogo e ticket/tarefa, depois clique em Salvar Associação.");
+    helpEdit.style.gridColumn = "1 / -1";
+    helpEdit.style.margin = "0 0 6px 0";
+    helpEdit.style.fontSize = "12px";
+    editGrid.append(
+      helpEdit,
+      makeLabeledField("Papel Canonico", editRole),
+      makeLabeledField("Pecas (Tipo + Catalogo)", editPicker),
+      makeLabeledField("Ticket / Tarefa", editTicket),
+      btnSave
+    );
+    body.append(editGrid, editChips);
+  }
+
   const actions = el("div", "ficha-actions");
-  const inpCmd = el("input", "btn cmd-in");
+  const inpCmd = el("input", "input cmd-in");
   inpCmd.id = "cmd-in";
   inpCmd.setAttribute("data-agent", w.name);
-  inpCmd.placeholder = `Enviar instrução para @${w.name}...`;
-  inpCmd.value = cmdVal;
-  st.draftCmd = cmdVal;
+  inpCmd.placeholder = `Enviar instrucao para @${w.name}...`;
+  inpCmd.value = st.draftCmd || "";
 
-  const btnPost = actEl("button", "btn", "post", w.name, "Enviar");
-  const inpModel = el("input", "btn");
-  inpModel.id = "model-in";
-  inpModel.setAttribute("data-agent", w.name);
-  inpModel.placeholder = "Novo modelo";
-  inpModel.value = modelVal;
-  st.draftModel = modelVal;
+  const btnPost = actEl("button", "btn btn--sm", "post", w.name, "Enviar");
+  btnPost.title = "Enviar instrução/mensagem no mural para este worker";
+  const selMod = el("select", "input");
+  selMod.id = "model-in";
+  selMod.style.width = "180px";
+  selMod.setAttribute("data-agent", w.name);
+  selMod.title = "Escolha o modelo de IA para este worker";
+  populateModelSelect(selMod, st.draftModel || w.model || "");
 
-  const btnModel = actEl("button", "btn", "model", w.name, "Trocar Modelo");
-  const btnSpawn = actEl("button", "btn", "spawn", w.name, "Spawn");
-  const btnKill = actEl("button", "btn btn-danger", "kill", w.name, "Kill");
+  const btnModel = actEl("button", "btn btn--sm", "model", w.name, "Trocar Modelo");
+  btnModel.title = "Aplicar o modelo de IA selecionado acima";
+  actions.append(inpCmd, btnPost, selMod, btnModel);
 
-  actions.append(inpCmd, btnPost, inpModel, btnModel, btnSpawn, btnKill);
+  if (!isCoord) {
+    const bSpawn = actEl("button", "btn btn--sm", "spawn", w.name, "Spawn");
+    bSpawn.title = "Iniciar ou reativar este worker";
+    const bKill = actEl("button", "btn btn--sm btn-danger", "kill", w.name, "Kill");
+    bKill.title = "Encerrar execução deste worker";
+    const bRem = actEl("button", "btn btn--sm btn-danger", "remove", w.name, "Remover");
+    bRem.title = "Remover worker da lista";
+    actions.append(bSpawn, bKill, bRem);
+  }
   body.appendChild(actions);
   ficha.appendChild(body);
   container.replaceChildren(ficha);
@@ -271,10 +673,6 @@ function renderTabs(allOrder, openOrder) {
     closeSpan.setAttribute("aria-label", `Fechar aba ${p}`);
     btn.appendChild(closeSpan);
     nodes.push(btn);
-  }
-  const closedList = allOrder.filter(p => closedProcs[p]);
-  for (const p of closedList) {
-    nodes.push(actEl("button", "tab", "reopen", p, `+ ${p}`));
   }
   tabsEl.replaceChildren(...nodes);
 }
@@ -296,7 +694,7 @@ function renderMessages(ms, st) {
     meta.append(
       document.createTextNode(`#${m.seq} `),
       el("b", "", m.from || ""),
-      document.createTextNode(" → "),
+      document.createTextNode(" -> "),
       el("span", "mention", m.to || "@all")
     );
     const body = el("div", "msg-body", m.body || "");
@@ -305,9 +703,9 @@ function renderMessages(ms, st) {
   });
   msgsEl.replaceChildren(...msgNodes);
 
-  const prevBtn = actEl("button", "btn", "page", st.page - 1, "Anterior");
+  const prevBtn = actEl("button", "btn btn--sm", "page", st.page - 1, "Anterior");
   prevBtn.disabled = st.page <= 0;
-  const nextBtn = actEl("button", "btn", "page", st.page + 1, "Próxima");
+  const nextBtn = actEl("button", "btn btn--sm", "page", st.page + 1, "Próxima");
   nextBtn.disabled = st.page >= totalPages - 1;
   pagerEl.replaceChildren(prevBtn, el("span", "", `Página ${st.page + 1} de ${totalPages}`), nextBtn);
 }
@@ -327,21 +725,29 @@ function render(payload) {
   const st = getState(curProc);
   const d = (payload.processes && payload.processes[curProc]) || { workers: [], messages: [] };
   const allWs = d.workers || [];
+  if (st.selectedAgent && st.selectedAgent !== (st.curParent || "coordenador") && !allWs.some(w => w.name === st.selectedAgent)) {
+    st.selectedAgent = "";
+  }
   const ms = (d.messages || []).slice().reverse();
 
   renderCrumb(allWs, st);
   const ws = allWs.filter(w => (w.parent || "") === st.curParent);
-  const ver = ws.filter(w => w.role === "auditor-qualidade");
-  const trab = ws.filter(w => w.role !== "auditor-qualidade");
+  const procDone = d.status === "done" || d.status === "completed" || d.status === "finished" || d.finished === true;
+  const normWs = procDone ? ws.map(w => (w.status === "working" ? { ...w, status: "done" } : w)) : ws;
+  const ver = normWs.filter(w => w.role === "auditor-qualidade");
+  const trab = normWs.filter(w => w.role !== "auditor-qualidade");
 
   const sumEl = document.getElementById("summary");
   if (sumEl) sumEl.textContent = `1 coordenador · ${ver.length} verificador(es) · ${trab.length} trabalhador(es) · ${ms.length} posts`;
   const countsEl = document.getElementById("counts");
-  if (countsEl) countsEl.textContent = `${ws.length + 1} neste nível`;
+  if (countsEl) countsEl.textContent = `${normWs.length + 1} neste nível`;
   const filterEl = document.getElementById("filter");
   if (filterEl) filterEl.textContent = st.selectedAgent ? `(filtro: ${st.selectedAgent})` : "(todos)";
 
-  const coord = [{ name: st.curParent || "coordenador", role: "orquestrador", model: "maestro", workspace_mode: "inherit", status: "working" }];
+  const hasWorking = !procDone && normWs.some(w => w.status === "working");
+  const allFinished = procDone || (normWs.length > 0 && normWs.every(w => w.status === "done" || w.status === "killed" || w.status === "stopped"));
+  const coordStatus = hasWorking ? "working" : allFinished ? "done" : "waiting";
+  const coord = [{ name: st.curParent || "coordenador", role: "orquestrador", model: "maestro", workspace_mode: "inherit", status: coordStatus }];
   const workersEl = document.getElementById("workers");
   if (workersEl) {
     workersEl.replaceChildren(
@@ -419,21 +825,84 @@ document.addEventListener("click", async e => {
     render(window._last);
   } else if (act === "toggle-add") {
     addPanelOpen = !addPanelOpen;
+    if (!addPanelOpen) {
+      selectedAddPieces = [];
+      document.getElementById("add-worker-panel")?.replaceChildren();
+    } else {
+      if (availablePieces.length === 0) loadPieceCatalog();
+      if (!swarmMeta.models.length) loadSwarmMeta();
+    }
     renderAddWorkerPanel();
+  } else if (act === "add-piece-item") {
+    const pieceEl = document.getElementById("add-worker-piece");
+    const kindEl = document.getElementById("add-worker-piece-kind");
+    if (addPieceToSelection(selectedAddPieces, pieceEl, kindEl)) {
+      renderPieceChips(document.getElementById("add-worker-pieces-list"), selectedAddPieces, "rem-piece-item");
+      syncAddWorkerInference();
+    }
+  } else if (act === "rem-piece-item") {
+    selectedAddPieces = selectedAddPieces.filter(p => `${p.kind || ""}:${p.name}` !== val);
+    renderPieceChips(document.getElementById("add-worker-pieces-list"), selectedAddPieces, "rem-piece-item");
+    syncAddWorkerInference();
+  } else if (act === "edit-add-piece-item") {
+    const pieceEl = document.getElementById("edit-worker-piece");
+    const kindEl = document.getElementById("edit-worker-piece-kind");
+    if (addPieceToSelection(selectedEditPieces, pieceEl, kindEl)) {
+      renderPieceChips(document.getElementById("edit-worker-pieces-list"), selectedEditPieces, "edit-rem-piece-item");
+    }
+  } else if (act === "edit-rem-piece-item") {
+    selectedEditPieces = selectedEditPieces.filter(p => `${p.kind || ""}:${p.name}` !== val);
+    renderPieceChips(document.getElementById("edit-worker-pieces-list"), selectedEditPieces, "edit-rem-piece-item");
   } else if (act === "create-worker") {
     const nameEl = document.getElementById("add-worker-name");
     const roleEl = document.getElementById("add-worker-role");
     const modelEl = document.getElementById("add-worker-model");
     const wsEl = document.getElementById("add-worker-ws");
+    const pieceEl = document.getElementById("add-worker-piece");
+    const kindEl = document.getElementById("add-worker-piece-kind");
+    const ticketEl = document.getElementById("add-worker-ticket");
     const cmdEl = document.getElementById("add-worker-cmd");
     const name = nameEl ? nameEl.value.trim() : "";
     const role = roleEl ? roleEl.value.trim() : "engenheiro-backend";
     const model = modelEl ? modelEl.value.trim() : "";
     const workspace_mode = wsEl ? wsEl.value.trim() : "inherit";
+    addPieceToSelection(selectedAddPieces, pieceEl, kindEl);
+    const pieces = selectedAddPieces.slice();
+    const piece = pieces[0]?.name || "";
+    const piece_kind = pieces[0]?.kind || "";
+    const ticket = (ticketEl && ticketEl.value.trim()) ? ticketEl.value.trim() : inferWorkerTicketText(role, pieces, workspace_mode);
     const rawCmd = cmdEl ? cmdEl.value.trim() : "";
     const command = rawCmd ? rawCmd.split(/\s+/) : [];
-    const ok = await callSwarmAPI("/api/swarm/add", { process: curProc, name, role, model, workspace_mode, parent: st.curParent, command });
-    if (ok && nameEl) nameEl.value = "";
+    const ok = await callSwarmAPI("/api/swarm/add", { process: curProc, name, role, model, workspace_mode, piece, piece_kind, pieces, ticket, parent: st.curParent, command });
+    if (ok) {
+      if (nameEl) nameEl.value = "";
+      if (ticketEl) ticketEl.value = "";
+      selectedAddPieces = [];
+      addPanelOpen = false;
+      document.getElementById("add-worker-panel")?.replaceChildren();
+      renderAddWorkerPanel();
+      if (typeof window.toast === "function") window.toast("Worker criado com sucesso.");
+    }
+  } else if (act === "update-worker") {
+    const roleEl = document.getElementById("edit-worker-role");
+    const modelEl = document.getElementById("model-in");
+    const pieceEl = document.getElementById("edit-worker-piece");
+    const kindEl = document.getElementById("edit-worker-piece-kind");
+    const ticketEl = document.getElementById("edit-worker-ticket");
+    const role = roleEl ? roleEl.value.trim() : "";
+    const model = modelEl ? modelEl.value.trim() : "";
+    addPieceToSelection(selectedEditPieces, pieceEl, kindEl);
+    const pieces = selectedEditPieces.slice();
+    const piece = pieces[0]?.name || "";
+    const piece_kind = pieces[0]?.kind || "";
+    const ticket = ticketEl ? ticketEl.value.trim() : "";
+    const ok = await callSwarmAPI("/api/swarm/update", { process: curProc, name: val, role, model, piece, piece_kind, pieces, ticket });
+    if (ok) {
+      selectedEditPiecesAgent = "";
+      const f = document.getElementById("ficha");
+      if (f) f.setAttribute("data-agent", "");
+      if (typeof window.toast === "function") window.toast(`Associacao de "${val}" atualizada.`);
+    }
   } else if (act === "post") {
     const inp = document.getElementById("cmd-in");
     if (!inp || !inp.value.trim()) return;
@@ -454,9 +923,18 @@ document.addEventListener("click", async e => {
   } else if (act === "spawn") {
     await callSwarmAPI("/api/swarm/spawn", { process: curProc, name: val });
   } else if (act === "kill") {
-    await callSwarmAPI("/api/swarm/kill", { proc: curProc, name: val });
+    await callSwarmAPI("/api/swarm/kill", { process: curProc, name: val });
+  } else if (act === "remove") {
+    e.stopPropagation();
+    const ok = await callSwarmAPI("/api/swarm/remove", { process: curProc, name: val });
+    if (ok) {
+      if (st.selectedAgent === val) st.selectedAgent = "";
+      if (typeof window.toast === "function") window.toast(`Worker "${val}" removido.`);
+    }
   }
 });
 
+loadSwarmMeta();
+loadPieceCatalog();
 const es = new EventSource("/api/swarm/events");
 es.onmessage = e => render(JSON.parse(e.data));

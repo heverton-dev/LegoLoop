@@ -217,3 +217,46 @@ func TestDossierValidateStrict(t *testing.T) {
 		}
 	}
 }
+
+func TestExtractForensics_ConceitosProcessosRepositorios(t *testing.T) {
+	input := videorea.VideoInput{URL: "https://www.youtube.com/watch?v=FJZkfjM8WhI"}
+	transcript := "Conceito: DAG acíclico de execução. Processo: ingestão, transcrição e corte. " +
+		"O código está em github.com/obra/superpowers. Veja também https://github.com/mattpocock/skills."
+	dossier, err := videorea.ExtractForensics(input, transcript, "Conceito: DAG acíclico de execução.")
+	if err != nil {
+		t.Fatalf("ExtractForensics falhou: %v", err)
+	}
+	if len(dossier.Concepts) != 1 || dossier.Concepts[0] != "DAG acíclico de execução" {
+		t.Errorf("conceitos = %v, esperado 1 conceito sem duplicata", dossier.Concepts)
+	}
+	if len(dossier.Processes) != 1 || dossier.Processes[0] != "ingestão, transcrição e corte" {
+		t.Errorf("processos = %v", dossier.Processes)
+	}
+	want := []string{"github.com/obra/superpowers", "github.com/mattpocock/skills"}
+	if strings.Join(dossier.Repositories, "|") != strings.Join(want, "|") {
+		t.Errorf("repositórios = %v, esperado %v", dossier.Repositories, want)
+	}
+}
+
+func TestForensicsDossier_ValidateStrictAceitaSoRepositorio(t *testing.T) {
+	d := &videorea.ForensicsDossier{Repositories: []string{"github.com/obra/superpowers"}}
+	if err := d.ValidateStrict(); err != nil {
+		t.Fatalf("dossiê só com repositório deve valer: %v", err)
+	}
+	vazio := &videorea.ForensicsDossier{}
+	if err := vazio.ValidateStrict(); err == nil {
+		t.Fatal("dossiê vazio deve ser recusado")
+	}
+}
+
+func TestExtractForensicsWithBrain_LePrefixosNovos(t *testing.T) {
+	resp := "CONCEITO: Gate mecânico\nPROCESSO: Fechar em 9 etapas\nREPOSITORIO: github.com/obra/superpowers"
+	d, err := videorea.ExtractForensicsWithBrain(context.Background(),
+		videorea.VideoInput{URL: "https://youtu.be/x"}, "texto qualquer", "", &fakeBrain{response: resp})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(d.Concepts) != 1 || len(d.Processes) != 1 || len(d.Repositories) != 1 {
+		t.Errorf("cérebro: conceitos=%v processos=%v repositórios=%v", d.Concepts, d.Processes, d.Repositories)
+	}
+}

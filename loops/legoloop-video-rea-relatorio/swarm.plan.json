@@ -1,0 +1,13 @@
+{
+  "peca": "legoloop-video-rea-relatorio",
+  "tipo": "skill",
+  "workers": 1,
+  "ticket": "T1-video-rea-relatorio",
+  "ferramentas": [
+    "Read",
+    "Write",
+    "Edit"
+  ],
+  "write_boundary": "strict",
+  "subagentes": "ephemeral"
+}

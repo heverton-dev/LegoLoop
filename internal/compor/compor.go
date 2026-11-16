@@ -479,17 +479,26 @@ func montar(p processo.Processo, e processo.Etapa, now time.Time, roots processo
 		return nil, nil, err
 	}
 	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
-	return comparar([]processo.File{
+	dagPath, studioPath := caminhos.DestinosDoProcesso(roots.Vault, p.Nome, caminhos.SufixoStudio)
+	todos := []processo.File{
 		{Kind: "INTENT", Path: intentPath, Data: intent},
 		{Kind: "SPEC", Path: filepath.Join(docs, "specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Kind: "PLAN", Path: filepath.Join(docs, "plans", pr.PlanNome), Data: []byte(pr.Plan)},
 		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
 		{Kind: "DAG_ISO", Path: filepath.Join(docs, "dags", pr.DAGNome), Data: pr.DAG},
-		{Kind: "DAG", Path: filepath.Join(pastaProcessos(roots.Vault), p.Nome+".dag.json"), Data: pr.DAG},
-		{Kind: "studio", Path: filepath.Join(pastaProcessos(roots.Vault), p.Nome+caminhos.SufixoStudio), Data: pr.Studio},
+		{Kind: "DAG", Path: dagPath, Data: pr.DAG},
+		{Kind: "studio", Path: studioPath, Data: pr.Studio},
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
-	})
+	}
+	tri, err := processo.TriagemDoProcesso(dagPath, p)
+	if err != nil {
+		return nil, nil, err
+	}
+	if tri != nil {
+		todos = append(todos, *tri)
+	}
+	return comparar(todos)
 }
 
 // projetar usa a data do compor para o documento do Studio e a data da SPEC que já existe para SPEC, PLAN e ROUTE: assim os

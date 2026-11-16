@@ -1,0 +1,89 @@
+{
+  "date": "2026-11-15",
+  "alvo": "legoloop-studio-v7",
+  "targetUrl": "http://127.0.0.1:7897",
+  "routes": [
+    "/",
+    "/inventario",
+    "/swarm"
+  ],
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "storageState": null,
+  "status": "FAILED",
+  "failures": [
+    "axe-core: critical=0, serious=2",
+    "renderlint: 3 violação(ões) de layout/botão"
+  ],
+  "metrics": {
+    "lychee": {
+      "brokenLinks": 0
+    },
+    "playwright": {
+      "consoleErrors": 0,
+      "routeErrors": 0
+    },
+    "axe": {
+      "critical": 0,
+      "serious": 2
+    },
+    "renderlint": {
+      "violations": 3
+    },
+    "designLinter": {
+      "violations": 0
+    },
+    "obscura": {
+      "errors": 0
+    },
+    "unlighthouse": {
+      "minScore": 100
+    },
+    "lostPixel": {
+      "hasBaseline": false,
+      "diffCount": 0
+    }
+  },
+  "findings": [
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (desktop)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (1 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (mobile)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (1 elemento(s))"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  / @768px light: 36 finding(s) in 7043ms\n  / @1280px light: 39 finding(s) in 7235ms\n  / @375px dark: 36 finding(s) in 5765ms\n  / @375px light: 36 finding(s) in 10509ms\n  / @768px dark: 37 finding(s) in 5579ms\n  / @1280px dark: 40 finding(s) in 6700ms\n  /inventario @1280px light: 7 finding(s) in 1546ms\n  /inventario @768px light: 3 finding(s) in 6915ms\n  /inventario @375px light: 4 finding(s) in 9216ms\n  /inventario @375px dark: 11 finding(s) in 781ms\n  /swarm @768px light: 1 finding(s) in 5603ms\n  /swarm @375px light: 7 finding(s) in 8022ms\n  /swarm @1280px light: 6 finding(s) in 5644ms\n  /inventario @1280px dark: 3 finding(s) in 5272ms\n  /inventario @768px dark: 3 finding(s) in 6058ms\n  /swarm @375px dark: 7 finding(s) in 5054ms\n  /swarm @768px dark: 6 finding(s) in 5078ms\n  /swarm @1280px dark: 6 finding(s) in 5035ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/inventario",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /inventario @768px light: 3 finding(s) in 6814ms\n  /inventario @1280px light: 3 finding(s) in 7002ms\n  /inventario @375px dark: 3 finding(s) in 5434ms\n  /inventario @375px light: 4 finding(s) in 10245ms\n  /inventario @768px dark: 3 finding(s) in 5269ms\n  /inventario @1280px dark: 3 finding(s) in 5335ms\n  / @768px light: 36 finding(s) in 3046ms\n  /swarm @768px light: 6 finding(s) in 5683ms\n  / @1280px light: 40 finding(s) in 7013ms\n  / @375px dark: 32 finding(s) in 979ms\n  /swarm @375px light: 8 finding(s) in 7775ms\n  / @375px light: 37 finding(s) in 11439ms\n  /swarm @375px dark: 3 finding(s) in 732ms\n  /swarm @1280px light: 6 finding(s) in 5610ms\n  / @1280px dark: 41 finding(s) in 5622ms\n  / @768px dark: 38 finding(s) in 5663ms\n  /swarm @768px dark: 6 finding(s) in 5011ms\n  /swarm @1280px dark: 6 finding(s) in 5078ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/swarm",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /swarm @1280px light: 6 finding(s) in 5857ms\n  /swarm @768px light: 6 finding(s) in 5880ms\n  /swarm @375px dark: 7 finding(s) in 5172ms\n  /swarm @375px light: 8 finding(s) in 7736ms\n  /swarm @768px dark: 6 finding(s) in 5257ms\n  /swarm @1280px dark: 6 finding(s) in 5296ms\n  / @768px light: 39 finding(s) in 4779ms\n  / @1280px light: 27 finding(s) in 2752ms\n  / @375px light: 36 finding(s) in 9692ms\n  /inventario @1280px light: 3 finding(s) in 3944ms\n  /inventario @768px light: 3 finding(s) in 5746ms\n  / @375px dark: 24 finding(s) in 1078ms\n  /inventario @375px dark: 9 finding(s) in 813ms\n  /inventario @375px light: 4 finding(s) in 9597ms\n  / @768px dark: 38 finding(s) in 3631ms\n  /inventario @768px dark: 3 finding(s) in 5564ms\n  / @1280px dark: 41 finding(s) in 6567ms\n  /inventario @1280px dark: 3 finding(s) in 5107ms"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "peca": "legoloop-fabricar-peca-unica",
+  "tipo": "processo",
+  "workers": 1,
+  "ticket": "T1-fabricar-peca-unica",
+  "ferramentas": [
+    "Read",
+    "Write",
+    "Edit"
+  ],
+  "write_boundary": "strict",
+  "subagentes": "ephemeral"
+}

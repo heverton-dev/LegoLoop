@@ -23,6 +23,8 @@ const MaxTimeoutSec = 24 * 60 * 60
 
 var (
 	idRe = regexp.MustCompile(`^[A-Za-z0-9_-]{1,64}$`)
+	// pecaRe é o nome canônico de Processo, o mesmo contrato de internal/processo.
+	pecaRe = regexp.MustCompile(`^legoloop-[a-z0-9]+(-[a-z0-9]+)*$`)
 	// nodeIDRe valida o id de nó: aceita ponto no meio (TICK-01.1), nunca no início nem no fim.
 	nodeIDRe = regexp.MustCompile(`^[A-Za-z0-9_-]([A-Za-z0-9_.-]{0,62}[A-Za-z0-9_-])?$`)
 	// shortNameRe detecta nomes curtos 8.3 do NTFS (GIT~1 ⇒ .git).
@@ -192,6 +194,9 @@ func validateNodeCommon(n Node) error {
 	}
 	if err := validateRolePapel(n); err != nil {
 		return err
+	}
+	if n.Peca != "" && !pecaRe.MatchString(n.Peca) {
+		return fmt.Errorf("peca %q inválida (use legoloop-<kebab-case>)", n.Peca)
 	}
 	if err := validateOutput(n); err != nil {
 		return err

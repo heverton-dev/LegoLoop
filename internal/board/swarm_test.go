@@ -126,3 +126,88 @@ func TestSwarmBoardStallMonitor(t *testing.T) {
 		t.Fatalf("CheckStall falhou: %+v err=%v", stalled, err)
 	}
 }
+
+func TestSwarmBoardUpdateAndRemoveWorker(t *testing.T) {
+	repo := initTestGitRepo(t)
+	boardDir := filepath.Join(t.TempDir(), "board")
+	sb, err := OpenSwarmBoard(boardDir)
+	if err != nil {
+		t.Fatalf("OpenSwarmBoard: %v", err)
+	}
+	w, err := sb.AddWorker(AddWorkerRequest{
+		Name:          "w-dev",
+		Role:          "engenheiro-backend",
+		WorkspaceMode: WorkspaceShare,
+		Model:         "t-codigo-128k",
+		Piece:         "aidd-tdd",
+		PieceKind:     "skill",
+		Ticket:        "Implementar endpoint CRUD",
+		RepoDir:       repo,
+	})
+	if err != nil {
+		t.Fatalf("AddWorker: %v", err)
+	}
+	if w.Piece != "aidd-tdd" || w.Ticket != "Implementar endpoint CRUD" {
+		t.Fatalf("metadados de peça/ticket ausentes: %+v", w)
+	}
+	upd, err := sb.UpdateWorker(UpdateWorkerRequest{
+		Name:      "w-dev",
+		Role:      "engenheiro-tdd",
+		Model:     "t-audit-128k",
+		Piece:     "aidd-spec",
+		PieceKind: "skill",
+		Ticket:    "Escrever testes unitários",
+	})
+	if err != nil {
+		t.Fatalf("UpdateWorker: %v", err)
+	}
+	if upd.Role != "engenheiro-tdd" || upd.Piece != "aidd-spec" || upd.Ticket != "Escrever testes unitários" {
+		t.Fatalf("UpdateWorker não aplicou campos: %+v", upd)
+	}
+	if err := sb.RemoveWorker("w-dev", repo); err != nil {
+		t.Fatalf("RemoveWorker: %v", err)
+	}
+	st, err := sb.Status()
+	if err != nil {
+		t.Fatalf("Status: %v", err)
+	}
+	if len(st.Workers) != 0 {
+		t.Fatalf("esperava 0 workers após remoção, obteve %d", len(st.Workers))
+	}
+}
+
+func TestSwarmBoardMultiPiecesAndFinishSimulation(t *testing.T) {
+	boardDir := filepath.Join(t.TempDir(), "board")
+	sb, err := OpenSwarmBoard(boardDir)
+	if err != nil {
+		t.Fatalf("OpenSwarmBoard: %v", err)
+	}
+	w, err := sb.AddWorker(AddWorkerRequest{
+		Name:          "w-multi",
+		Role:          "engenheiro-backend",
+		WorkspaceMode: WorkspaceInherit,
+		Pieces: []WorkerPiece{
+			{Kind: "skill", Name: "aidd-tdd"},
+			{Kind: "mcp", Name: "context7"},
+		},
+	})
+	if err != nil {
+		t.Fatalf("AddWorker: %v", err)
+	}
+	if len(w.Pieces) != 2 || w.Piece != "aidd-tdd" || w.PieceKind != "skill" {
+		t.Fatalf("esperava 2 pecas sincronizadas, obteve: %+v", w)
+	}
+	if err := sb.TouchWorker(w.Name, WorkerWorking, time.Now()); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := sb.FinishSimulation("Simulação concluída."); err != nil {
+		t.Fatalf("FinishSimulation: %v", err)
+	}
+	st, err := sb.Status()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(st.Workers) != 1 || st.Workers[0].Status != WorkerDone {
+		t.Fatalf("worker deveria estar done apos concluir simulacao, obteve: %+v", st.Workers)
+	}
+}

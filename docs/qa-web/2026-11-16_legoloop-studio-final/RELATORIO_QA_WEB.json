@@ -1,0 +1,64 @@
+{
+  "date": "2026-11-16",
+  "alvo": "legoloop-studio-final",
+  "targetUrl": "http://127.0.0.1:7897",
+  "routes": [
+    "/",
+    "/inventario",
+    "/swarm"
+  ],
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "storageState": null,
+  "status": "FAILED",
+  "failures": [
+    "renderlint: 1 violação(ões) de layout/botão"
+  ],
+  "metrics": {
+    "lychee": {
+      "brokenLinks": 0
+    },
+    "playwright": {
+      "consoleErrors": 0,
+      "routeErrors": 0
+    },
+    "axe": {
+      "critical": 0,
+      "serious": 0
+    },
+    "renderlint": {
+      "violations": 1
+    },
+    "designLinter": {
+      "violations": 0
+    },
+    "obscura": {
+      "errors": 0
+    },
+    "unlighthouse": {
+      "minScore": 100
+    },
+    "lostPixel": {
+      "hasBaseline": false,
+      "diffCount": 0
+    }
+  },
+  "findings": [
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/",
+      "message": "Checking 1 page(s) at 375/768/1280px…\n  / @375px light: 23 finding(s) in 11593ms\n  / @768px light: 36 finding(s) in 6459ms\n  / @1280px light: 39 finding(s) in 7458ms\n  / @375px dark: 36 finding(s) in 5960ms\n  / @768px dark: 45 finding(s) in 5629ms\n  / @1280px dark: 40 finding(s) in 5921ms"
+    }
+  ]
+}

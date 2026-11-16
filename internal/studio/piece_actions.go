@@ -91,7 +91,7 @@ func (s *Server) findPiecePath(kind, id string) string {
 	return ""
 }
 
-// handlePieceUpgrade dispara o início do sub-processo de elevação para Padrão Ouro.
+// handlePieceUpgrade executa a elevação determinística para Padrão Ouro (ou entrevista quando solicitado).
 func (s *Server) handlePieceUpgrade(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "método não permitido", http.StatusMethodNotAllowed)
@@ -102,8 +102,51 @@ func (s *Server) handlePieceUpgrade(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "kind e id são obrigatórios", http.StatusBadRequest)
 		return
 	}
+	var req struct {
+		Mode string `json:"mode"`
+	}
+	_ = json.NewDecoder(r.Body).Decode(&req)
+	piecePath := s.findPiecePath(kind, id)
+	if strings.TrimSpace(req.Mode) != "interview" && piecePath != "" {
+		s.upgradeDeterministic(w, r, kind, id, piecePath)
+		return
+	}
+	s.upgradeWithInterview(w, r, kind, id, piecePath)
+}
+
+func (s *Server) upgradeDeterministic(w http.ResponseWriter, r *http.Request, kind, id, piecePath string) {
+	rootDir, rel, ok := matchSubpathInRoots(piecePath, s.upgradeRoots())
+	if !ok {
+		writeError(w, http.StatusForbidden, "path jail: elevação fora das raízes permitidas")
+		return
+	}
+	if _, _, err := resolveInRoot(rootDir, rel, false); err != nil {
+		writeError(w, http.StatusForbidden, "path jail: "+err.Error())
+		return
+	}
+	rep, err := reputation.UpgradePieceFile(piecePath)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "falha ao elevar peça: "+err.Error())
+		return
+	}
+	if s.Assets != nil {
+		s.Assets.Refresh(r.Context())
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"status":         "UPGRADE_COMPLETED",
+		"mode":           "deterministic",
+		"kind":           kind,
+		"target_piece":   id,
+		"changed":        rep.Changed,
+		"before_rating":  rep.Before,
+		"current_rating": rep.After,
+		"added_sections": rep.AddedSections,
+	})
+}
+
+func (s *Server) upgradeWithInterview(w http.ResponseWriter, r *http.Request, kind, id, piecePath string) {
 	rating := reputation.PieceRating{Ref: id, Name: id, TotalScore: 0.50, Tier: reputation.TierBronze}
-	if piecePath := s.findPiecePath(kind, id); piecePath != "" {
+	if piecePath != "" {
 		if scored, err := reputation.ScoreFile(piecePath); err == nil {
 			rating = scored
 		}
@@ -124,6 +167,17 @@ func (s *Server) handlePieceUpgrade(w http.ResponseWriter, r *http.Request) {
 		"first_turn":     turn,
 		"processo_alvo":  "docs/intents/INTENT_UPGRADE_" + strings.ToUpper(id) + ".md",
 	})
+}
+
+func (s *Server) upgradeRoots() []string {
+	roots := s.deleteRoots()
+	if s.Home != "" {
+		cleanHome := filepath.Clean(s.Home)
+		if !slices.Contains(roots, cleanHome) {
+			roots = append(roots, cleanHome)
+		}
+	}
+	return roots
 }
 
 // handlePieceDelete executa a eliminação profunda (modo local ou full).

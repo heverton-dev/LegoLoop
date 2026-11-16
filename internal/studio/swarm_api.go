@@ -13,13 +13,18 @@ import (
 	"time"
 
 	"legoloop/internal/board"
+	"legoloop/internal/taxonomy"
 )
 
 func (s *Server) registerSwarmRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /swarm", handlePage("swarm.html"))
+	mux.HandleFunc("GET /api/swarm/meta", s.handleSwarmMeta)
 	mux.HandleFunc("GET /api/swarm/events", s.handleSwarmEvents)
 	mux.HandleFunc("GET /api/events", s.handleSwarmEvents)
 	mux.HandleFunc("POST /api/swarm/add", s.handleSwarmAdd)
+	mux.HandleFunc("POST /api/swarm/update", s.handleSwarmUpdate)
+	mux.HandleFunc("POST /api/swarm/remove", s.handleSwarmRemove)
+	mux.HandleFunc("POST /api/swarm/simulate", s.handleSwarmSimulate)
 	mux.HandleFunc("POST /api/swarm/spawn", s.handleSwarmSpawn)
 	mux.HandleFunc("POST /api/swarm/model", s.handleSwarmModel)
 	mux.HandleFunc("POST /api/swarm/post", s.handleSwarmPost)
@@ -102,8 +107,56 @@ type swarmAddReq struct {
 	Role          string              `json:"role"`
 	Parent        string              `json:"parent"`
 	Model         string              `json:"model"`
+	Piece         string              `json:"piece"`
+	PieceKind     string              `json:"piece_kind"`
+	Pieces        []board.WorkerPiece `json:"pieces"`
+	Ticket        string              `json:"ticket"`
 	WorkspaceMode board.WorkspaceMode `json:"workspace_mode"`
 	Command       []string            `json:"command"`
+}
+
+func (s *Server) handleSwarmMeta(w http.ResponseWriter, r *http.Request) {
+	models := s.inventory(r.Context()).Models()
+	if models == nil {
+		models = nil
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"roles":      taxonomy.ListarPapeis(),
+		"guilds":     taxonomy.ListarGuildas(),
+		"models":     models,
+		"workspaces": swarmWorkspaceOptions(),
+	})
+}
+
+func swarmWorkspaceOptions() []map[string]string {
+	return []map[string]string{
+		{"id": string(board.WorkspaceInherit), "label": "Herdado (mesmo workspace)"},
+		{"id": string(board.WorkspaceShare), "label": "Compartilhado (worktree proprio)"},
+		{"id": string(board.WorkspaceBranch), "label": "Nova Branch (clone isolado)"},
+	}
+}
+
+func inferSwarmTicket(role string, pieces []board.WorkerPiece, single string, mode board.WorkspaceMode) string {
+	var names []string
+	for _, p := range pieces {
+		if strings.TrimSpace(p.Name) != "" {
+			names = append(names, strings.TrimSpace(p.Name))
+		}
+	}
+	if len(names) == 0 && strings.TrimSpace(single) != "" {
+		names = append(names, strings.TrimSpace(single))
+	}
+	wsLabel := string(mode)
+	if wsLabel == "" {
+		wsLabel = "inherit"
+	}
+	if len(names) > 0 {
+		return fmt.Sprintf("Executar %s como %s (%s)", strings.Join(names, ", "), firstNonEmpty(role, "worker"), wsLabel)
+	}
+	if strings.TrimSpace(role) != "" {
+		return fmt.Sprintf("Executar papel %s em workspace %s", role, wsLabel)
+	}
+	return ""
 }
 
 func (s *Server) handleSwarmAdd(w http.ResponseWriter, r *http.Request) {
@@ -112,33 +165,99 @@ func (s *Server) handleSwarmAdd(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	proc := req.Process
-	if proc == "" {
-		proc = req.Proc
-	}
-	sb, err := s.openSwarmBoardForProc(proc)
+	sb, err := s.openSwarmBoardForProc(firstNonEmpty(req.Process, req.Proc))
 	if err != nil {
 		writeError(w, http.StatusNotFound, err.Error())
 		return
 	}
+	ticket := strings.TrimSpace(req.Ticket)
+	if ticket == "" {
+		ticket = inferSwarmTicket(req.Role, req.Pieces, req.Piece, req.WorkspaceMode)
+	}
 	worker, err := sb.AddWorker(board.AddWorkerRequest{
 		Name: req.Name, Role: req.Role, Parent: req.Parent, Model: req.Model,
-		WorkspaceMode: req.WorkspaceMode, RepoDir: s.swarmRepoDir(),
+		Piece: req.Piece, PieceKind: req.PieceKind, Pieces: req.Pieces,
+		Ticket: ticket, WorkspaceMode: req.WorkspaceMode, RepoDir: s.swarmRepoDir(),
 	})
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	if len(req.Command) > 0 {
-		pid, err := sb.SpawnWorker(context.Background(), worker.Name, req.Command)
-		if err != nil {
+		if err := spawnAddedWorker(sb, &worker, req.Command); err != nil {
 			writeError(w, http.StatusBadRequest, err.Error())
 			return
 		}
-		worker.PID = pid
-		worker.Status = board.WorkerWorking
 	}
 	writeJSON(w, http.StatusOK, worker)
+}
+
+func spawnAddedWorker(sb *board.SwarmBoard, w *board.Worker, cmd []string) error {
+	pid, err := sb.SpawnWorker(context.Background(), w.Name, cmd)
+	if err != nil {
+		return err
+	}
+	w.PID = pid
+	w.Status = board.WorkerWorking
+	return nil
+}
+
+func (s *Server) handleSwarmUpdate(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Process   string              `json:"process"`
+		Proc      string              `json:"proc"`
+		Name      string              `json:"name"`
+		Role      string              `json:"role"`
+		Model     string              `json:"model"`
+		Piece     string              `json:"piece"`
+		PieceKind string              `json:"piece_kind"`
+		Pieces    []board.WorkerPiece `json:"pieces"`
+		Ticket    string              `json:"ticket"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	sb, err := s.openSwarmBoardForProc(firstNonEmpty(req.Process, req.Proc))
+	if err != nil {
+		writeError(w, http.StatusNotFound, err.Error())
+		return
+	}
+	ticket := strings.TrimSpace(req.Ticket)
+	if ticket == "" && (len(req.Pieces) > 0 || strings.TrimSpace(req.Piece) != "") {
+		ticket = inferSwarmTicket(req.Role, req.Pieces, req.Piece, "")
+	}
+	worker, err := sb.UpdateWorker(board.UpdateWorkerRequest{
+		Name: req.Name, Role: req.Role, Model: req.Model,
+		Piece: req.Piece, PieceKind: req.PieceKind, Pieces: req.Pieces, Ticket: ticket,
+	})
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, worker)
+}
+
+func (s *Server) handleSwarmRemove(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Process string `json:"process"`
+		Proc    string `json:"proc"`
+		Name    string `json:"name"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	sb, err := s.openSwarmBoardForProc(firstNonEmpty(req.Process, req.Proc))
+	if err != nil {
+		writeError(w, http.StatusNotFound, err.Error())
+		return
+	}
+	if err := sb.RemoveWorker(req.Name, s.swarmRepoDir()); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]string{"status": "removed", "name": req.Name})
 }
 
 func (s *Server) handleSwarmSpawn(w http.ResponseWriter, r *http.Request) {

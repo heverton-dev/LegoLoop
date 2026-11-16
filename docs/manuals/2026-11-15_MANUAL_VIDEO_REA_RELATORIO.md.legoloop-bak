@@ -1,0 +1,7 @@
+# Manual Operacional: legoloop-video-rea-relatorio
+
+Pipeline automatizado que processa URL de vídeo, extrai áudio/metadados, transcreve via whisper-cli.exe e gera relatório técnico estruturado.
+
+## Etapas
+
+- `e01`: Skill

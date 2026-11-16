@@ -18,6 +18,7 @@ import (
 
 	"legoloop/internal/assets"
 	"legoloop/internal/canon"
+	"legoloop/internal/graph"
 	"legoloop/internal/reputation"
 	"legoloop/internal/studiodoc"
 	"legoloop/internal/taxonomy"
@@ -215,9 +216,10 @@ func appendProcessoItems(out []assets.Item, seen map[string]bool, list []studiod
 			Origin:      origin,
 			Scope:       scope,
 			Meta: map[string]string{
-				"nodes":    strconv.Itoa(l.NodesCount),
-				"artifact": l.FinalArtifact,
-				"trigger":  l.TriggerType,
+				"nodes":                      strconv.Itoa(l.NodesCount),
+				"artifact":                   l.FinalArtifact,
+				"trigger":                    l.TriggerType,
+				caminhos.ChaveMetaProcessoID: l.ID,
 			},
 		})
 	}
@@ -235,9 +237,12 @@ func (s *Server) present(it assets.Item) assets.Item {
 		it.Description = truncateRunes(it.Description, maxHookDisplay)
 	}
 
-	if it.Meta == nil {
-		it.Meta = make(map[string]string)
+	// Cópia própria: o item vem do snapshot cacheado e é lido por requisições concorrentes.
+	meta := make(map[string]string, len(it.Meta)+4)
+	for k, v := range it.Meta {
+		meta[k] = v
 	}
+	it.Meta = meta
 
 	rating := s.getPieceRating(it, rawPath)
 	it.Meta["score"] = fmt.Sprintf("%.2f", rating.TotalScore)
@@ -558,23 +563,81 @@ func (s *Server) handleAssetCompatible(w http.ResponseWriter, r *http.Request) {
 		errNoInventory(w)
 		return
 	}
-	id := r.URL.Query().Get("id")
-	snap := s.Assets.Snapshot()
-	var target assets.Item
-	found := false
-	for _, it := range snap.Items {
-		if it.ID == id || it.Path == id || it.Name == id {
-			target = it
-			found = true
-			break
-		}
-	}
+	id := strings.TrimSpace(r.URL.Query().Get("id"))
+	pool := s.buildCompatPool(r)
+	target, found := findCompatTarget(id, pool)
 	if !found {
 		writeJSON(w, http.StatusOK, map[string]any{"compatible": []assets.CompatibleItem{}})
 		return
 	}
-	comp := assets.FindCompatible(target, snap.Items)
+	comp := computeCompatMatches(target, pool)
 	writeJSON(w, http.StatusOK, map[string]any{"compatible": comp})
+}
+
+func (s *Server) buildCompatPool(r *http.Request) []assets.Item {
+	snap := s.Assets.Snapshot()
+	pool := make([]assets.Item, 0, len(snap.Items)+32)
+	for _, it := range snap.Items {
+		pool = append(pool, s.present(it))
+	}
+	if s.Index != nil {
+		for _, b := range s.Index.Blocks() {
+			pool = append(pool, blockToCompatItem(b))
+		}
+	}
+	return pool
+}
+
+func blockToCompatItem(b graph.Block) assets.Item {
+	cons := make([]string, len(b.Consumes))
+	for i, c := range b.Consumes {
+		cons[i] = string(c)
+	}
+	return assets.Item{
+		ID:          b.ID,
+		Kind:        assets.Kind(b.Kind),
+		Name:        b.Label,
+		Description: fmtBlockWhat(b),
+		Origin:      "catalogo",
+		Meta: map[string]string{
+			"consumes": strings.Join(cons, ","),
+			"produces": string(b.Produces),
+			"artifact": b.Artifact,
+			"gate":     b.Gate,
+		},
+	}
+}
+
+func findCompatTarget(id string, pool []assets.Item) (assets.Item, bool) {
+	for _, it := range pool {
+		if strings.EqualFold(it.ID, id) || strings.EqualFold(it.Path, id) || strings.EqualFold(it.Name, id) {
+			return it, true
+		}
+	}
+	return assets.Item{}, false
+}
+
+func computeCompatMatches(target assets.Item, pool []assets.Item) []assets.CompatibleItem {
+	comp := assets.FindCompatible(target, pool)
+	if len(comp) > 0 || !strings.HasPrefix(string(target.Kind), "trigger_") {
+		return comp
+	}
+	for _, it := range pool {
+		if it.ID == target.ID || strings.HasPrefix(string(it.Kind), "trigger_") {
+			continue
+		}
+		if it.Kind == assets.KindSkill || it.Kind == "block" {
+			comp = append(comp, assets.CompatibleItem{
+				Item:   it,
+				Role:   "downstream",
+				Reason: "Gatilho universal inicia diretamente esta peça",
+			})
+			if len(comp) >= 12 {
+				break
+			}
+		}
+	}
+	return comp
 }
 
 // handlePage serve um HTML embutido (rota limpa, sem extensão).

@@ -1,0 +1,84 @@
+package fechar
+
+import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+
+	"legoloop/internal/triagem"
+)
+
+func ehDiretorio(caminho string) bool {
+	info, err := os.Stat(caminho)
+	return err == nil && info.IsDir()
+}
+
+// resolverDirLivro prefere docs/books/<canon> quando a pasta já existe;
+// caso contrário mantém docs/books/<slug>.
+func resolverDirLivro(repoDir, slug, canon string) string {
+	base := filepath.Join(repoDir, "docs", "books")
+	if canon != "" && ehDiretorio(filepath.Join(base, canon)) {
+		return filepath.Join(base, canon)
+	}
+	return filepath.Join(base, slug)
+}
+
+type dagNos struct {
+	Nodes []struct {
+		ID string `json:"id"`
+	} `json:"nodes"`
+}
+
+// garantirQuarteto cria os arquivos padrão ausentes do Processo:
+// espelho do DAG, triagem.json e memoria_execucao.json.
+func garantirQuarteto(dir, dagPath string) error {
+	dados, err := os.ReadFile(dagPath)
+	if err != nil {
+		return err
+	}
+	nome := filepath.Base(dir)
+	espelhoPath := filepath.Join(dir, nomeEspelho(nome))
+	if _, err := os.Stat(espelhoPath); os.IsNotExist(err) {
+		if err := os.WriteFile(espelhoPath, dados, 0o644); err != nil {
+			return err
+		}
+	}
+	if err := garantirTriagem(dir, nome, dados); err != nil {
+		return err
+	}
+	if _, err := os.Stat(filepath.Join(dir, triagem.ArquivoMemoria)); os.IsNotExist(err) {
+		return triagem.SalvarMemoria(dir, triagem.MemoriaExecucao{Processo: nome})
+	}
+	return nil
+}
+
+// garantirTriagem aplica a regra: um nó só não tem triagem; dois ou mais exigem uma triagem que cubra todos.
+// A ausente nasce, a existente ganha só as regras que faltam, e no fim o Conferir prova a cobertura.
+func garantirTriagem(dir, nome string, dagJSON []byte) error {
+	var dag dagNos
+	_ = json.Unmarshal(dagJSON, &dag)
+	var etapas []string
+	for _, n := range dag.Nodes {
+		if n.ID != "" {
+			etapas = append(etapas, n.ID)
+		}
+	}
+	if !triagem.Exigida(len(etapas)) {
+		return nil
+	}
+	path := filepath.Join(dir, triagem.ArquivoTriagem)
+	var atual triagem.TriagemSpec
+	if b, err := os.ReadFile(path); err == nil {
+		if err := json.Unmarshal(b, &atual); err != nil {
+			return err
+		}
+	}
+	saida, err := json.MarshalIndent(triagem.Completar(atual, nome, etapas), "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(path, append(saida, '\n'), 0o644); err != nil {
+		return err
+	}
+	return triagem.Conferir(dir, etapas)
+}

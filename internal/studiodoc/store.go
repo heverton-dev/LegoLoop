@@ -110,25 +110,43 @@ func writeAtomic(dest string, data []byte) error {
 	return nil
 }
 
+func (s *Store) readCandidate(id, primary string) ([]byte, error) {
+	cands := []string{
+		primary,
+		filepath.Join(s.dir, id, filepath.Base(primary)),
+		filepath.Join(s.dir, id, id+paths.SufixoAntigo),
+		filepath.Join(s.dir, id, caminhos.ArquivoDAG),
+	}
+	for _, c := range cands {
+		data, err := os.ReadFile(c)
+		if err == nil {
+			return data, nil
+		}
+		if !os.IsNotExist(err) {
+			return nil, err
+		}
+	}
+	return nil, ErrNotFound
+}
+
 func (s *Store) Get(id string) (*Processo, error) {
 	p, err := s.filePath(id)
 	if err != nil {
 		return nil, err
 	}
-	data, err := os.ReadFile(p)
-	if os.IsNotExist(err) {
-		nested := filepath.Join(s.dir, id, filepath.Base(p))
-		data, err = os.ReadFile(nested)
-	}
+	data, err := s.readCandidate(id, p)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, ErrNotFound
-		}
 		return nil, err
 	}
 	var lp Processo
 	if err := json.Unmarshal(data, &lp); err != nil {
 		return nil, fmt.Errorf("decodificar Processo: %w", err)
+	}
+	if lp.ID == "" {
+		lp.ID = id
+	}
+	if lp.Name == "" {
+		lp.Name = id
 	}
 	return &lp, nil
 }

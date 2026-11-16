@@ -320,3 +320,30 @@ func TestStorePreservaMetadadosV2(t *testing.T) {
 		t.Fatalf("metadados compostos perdidos: exec=%+v sig=%+v", got.ExecutionStrategy, got.UpstreamSignatures)
 	}
 }
+
+func TestStoreSubpastaEDAG(t *testing.T) {
+	dir := t.TempDir()
+	store, err := studiodoc.NewStore(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	subDAG := filepath.Join(dir, "proc-sub")
+	if err := os.MkdirAll(subDAG, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	dagRaw := []byte(`{"name":"Processo DAG","nodes":[{"id":"a","type":"skill","name":"A"}]}`)
+	if err := os.WriteFile(filepath.Join(subDAG, caminhos.ArquivoDAG), dagRaw, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	got, err := store.Get("proc-sub")
+	if err != nil {
+		t.Fatalf("Get %s em subpasta falhou: %v", caminhos.ArquivoDAG, err)
+	}
+	if got.ID != "proc-sub" || got.Name != "Processo DAG" || len(got.Nodes) != 1 {
+		t.Fatalf("processo de subpasta divergente: %+v", got)
+	}
+	list, err := store.List()
+	if err != nil || len(list) != 1 || list[0].ID != "proc-sub" {
+		t.Fatalf("List subpasta falhou: %+v err=%v", list, err)
+	}
+}

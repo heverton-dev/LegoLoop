@@ -36,16 +36,17 @@ type MaterializePlan struct {
 
 // CanonicalArtifacts consolida os caminhos gerados.
 type CanonicalArtifacts struct {
-	IntentPath   string   `json:"intent_path"`
-	SpecPath     string   `json:"spec_path"`
-	PlanPath     string   `json:"plan_path"`
-	RoutePath    string   `json:"route_path"`
-	TemplatePath string   `json:"template_path"`
-	SkillPath    string   `json:"skill_path"`
-	DagPath      string   `json:"dag_path"`
-	DagIsoPath   string   `json:"dag_iso_path"`
-	ProcessoPath string   `json:"processo_path"` // <nome>.processo.json no cofre: o que listar, refinar e compor leem
-	SkillLinks   []string `json:"skill_links"`   // links nas pastas dos harnesses (no dry-run, os que seriam criados; vazio com --no-link)
+	IntentPath    string   `json:"intent_path"`
+	SpecPath      string   `json:"spec_path"`
+	PlanPath      string   `json:"plan_path"`
+	RoutePath     string   `json:"route_path"`
+	TemplatePath  string   `json:"template_path"`
+	SkillPath     string   `json:"skill_path"`
+	DagPath       string   `json:"dag_path"`
+	DagIsoPath    string   `json:"dag_iso_path"`
+	SwarmPlanPath string   `json:"swarm_plan_path,omitempty"` // só na peça única: contrato declarativo do worker efêmero
+	ProcessoPath  string   `json:"processo_path"`             // <nome>.processo.json no cofre: o que listar, refinar e compor leem
+	SkillLinks    []string `json:"skill_links"`               // links nas pastas dos harnesses (no dry-run, os que seriam criados; vazio com --no-link)
 }
 
 // Materialize grava todos os arquivos do plano de forma atômica, delegando ao núcleo (processo.Store).
@@ -99,6 +100,8 @@ func artifactsOf(files []PlannedFile) CanonicalArtifacts {
 			a.DagIsoPath = f.Path
 		case "processo":
 			a.ProcessoPath = f.Path
+		case "swarm_plan":
+			a.SwarmPlanPath = f.Path
 		}
 	}
 	return a

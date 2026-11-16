@@ -303,3 +303,14 @@ func TestFileExistsExpandsVars(t *testing.T) {
 		t.Error("slug diferente não pode encontrar o arquivo")
 	}
 }
+
+func TestReadersExpandVars(t *testing.T) {
+	env := newEnv(t, map[string]string{"docs/videorea/meu-slug/scratch/dossier.json": `{"repositories":[]}`}, 0)
+	env.Vars = map[string]string{"SLUG": "meu-slug"}
+	if !evalExpr(t, "has_pattern('docs/videorea/${SLUG}/scratch/dossier.json', 'repositories')", env) {
+		t.Error("has_pattern deve expandir ${SLUG} a partir de Env.Vars")
+	}
+	if !evalExpr(t, "word_count('docs/videorea/${SLUG}/scratch/dossier.json') >= 1", env) {
+		t.Error("word_count deve expandir ${SLUG} a partir de Env.Vars")
+	}
+}

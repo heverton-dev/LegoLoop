@@ -1,0 +1,2089 @@
+{
+  "date": "2026-11-15",
+  "alvo": "legoloop-studio-v2",
+  "targetUrl": "http://127.0.0.1:7893",
+  "routes": [
+    "/",
+    "/inventario",
+    "/swarm"
+  ],
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "storageState": null,
+  "status": "FAILED",
+  "failures": [
+    "playwright: console=1, rotas=5",
+    "axe-core: critical=1, serious=0",
+    "renderlint: 3 violação(ões) de layout/botão",
+    "aidd-linter-design: 328 violação(ões) de token"
+  ],
+  "metrics": {
+    "lychee": {
+      "brokenLinks": 0
+    },
+    "playwright": {
+      "consoleErrors": 1,
+      "routeErrors": 5
+    },
+    "axe": {
+      "critical": 1,
+      "serious": 0
+    },
+    "renderlint": {
+      "violations": 3
+    },
+    "designLinter": {
+      "violations": 328
+    },
+    "obscura": {
+      "errors": 0
+    },
+    "unlighthouse": {
+      "minScore": 100
+    },
+    "lostPixel": {
+      "hasBaseline": false,
+      "diffCount": 0
+    }
+  },
+  "findings": [
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/ (desktop)",
+      "message": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "critical",
+      "route": "/ (desktop)",
+      "message": "aria-required-children: Certain ARIA roles must contain particular children (1 elemento(s))"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/inventario (desktop)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7893/inventario\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7893/inventario\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/swarm (desktop)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7893/swarm\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7893/swarm\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/ (mobile)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7893/\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7893/\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/inventario (mobile)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7893/inventario\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7893/inventario\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/swarm (mobile)",
+      "message": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7893/swarm\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:7893/swarm\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7893/",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  / @768px light: 88 finding(s) in 6768ms\n  / @1280px light: 38 finding(s) in 6798ms\n  / @375px dark: 84 finding(s) in 5510ms\n  / @375px light: 92 finding(s) in 10084ms\n  / @1280px dark: 38 finding(s) in 5506ms\n  / @768px dark: 61 finding(s) in 5610ms\n  /swarm @375px light: 5 finding(s) in 1146ms\n  /inventario @375px light: 3 finding(s) in 6298ms\n  /swarm @1280px light: 0 finding(s) in 75ms\n  /inventario @768px light: 3 finding(s) in 4729ms\n  /inventario @375px dark: 0 finding(s) in 61ms\n  /inventario @768px dark: 0 finding(s) in 54ms\n  /inventario @1280px dark: 0 finding(s) in 53ms\n  /swarm @375px dark: 0 finding(s) in 66ms\n  /swarm @768px dark: 0 finding(s) in 60ms\n  /swarm @1280px dark: 0 finding(s) in 63ms\n  /swarm @768px light: 0 finding(s) in 1943ms\n  data stress skipped on http://127.0.0.1:7893/inventario: page.reload: net::ERR_CONNECTION_REFUSED\n  /inventario @1280px light: 3 finding(s) in 3474ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7893/inventario",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /inventario @768px light: 3 finding(s) in 6135ms\n  /inventario @1280px light: 3 finding(s) in 6284ms\n  /inventario @375px dark: 3 finding(s) in 8392ms\n  /inventario @768px dark: 3 finding(s) in 5167ms\n  /inventario @1280px dark: 3 finding(s) in 5110ms\n  data stress skipped on http://127.0.0.1:7893/: page.reload: net::ERR_CONNECTION_REFUSED\n  data stress skipped on http://127.0.0.1:7893/: page.reload: net::ERR_CONNECTION_REFUSED\n  / @1280px light: 50 finding(s) in 2973ms\n  loading-state check skipped on http://127.0.0.1:7893/: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7893/\n  / @375px light: 93 finding(s) in 3212ms\n  /swarm @375px light: 0 finding(s) in 91ms\n  /swarm @768px light: 0 finding(s) in 67ms\n  /swarm @1280px light: 0 finding(s) in 75ms\n  / @375px dark: 0 finding(s) in 97ms\n  / @768px dark: 0 finding(s) in 82ms\n  /inventario @375px light: 4 finding(s) in 14658ms\n  / @1280px dark: 0 finding(s) in 66ms\n  data stress skipped on http://127.0.0.1:7893/: page.reload: net::ERR_CONNECTION_REFUSED\n  / @768px light: 89 finding(s) in 3390ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7893/swarm",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /swarm @1280px light: 9 finding(s) in 9979ms\n  /swarm @768px light: 9 finding(s) in 9994ms\n  /swarm @375px dark: 8 finding(s) in 5202ms\n  /swarm @375px light: 9 finding(s) in 11854ms\n  data stress skipped on http://127.0.0.1:7893/: page.reload: net::ERR_CONNECTION_REFUSED\n  loading-state check skipped on http://127.0.0.1:7893/: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:7893/\n  / @375px light: 93 finding(s) in 2555ms\n  data stress skipped on http://127.0.0.1:7893/: page.reload: net::ERR_CONNECTION_REFUSED\n  / @768px light: 92 finding(s) in 2396ms\n  / @1280px light: 0 finding(s) in 78ms\n  /inventario @375px light: 0 finding(s) in 89ms\n  /inventario @768px light: 0 finding(s) in 80ms\n  /inventario @1280px light: 0 finding(s) in 91ms\n  / @375px dark: 0 finding(s) in 70ms\n  / @768px dark: 0 finding(s) in 66ms\n  / @1280px dark: 0 finding(s) in 69ms\n  /swarm @768px dark: 1 finding(s) in 4588ms\n  /swarm @1280px dark: 9 finding(s) in 5104ms"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f4f3ef\" (linha 18); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ffffff\" (linha 19); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#eeece6\" (linha 20); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#e3dfd6\" (linha 21); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#d6d1c6\" (linha 22); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#9f998c\" (linha 23); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1a1917\" (linha 24); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#524e46\" (linha 25); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#d9d5ca\" (linha 26); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#b83908\" (linha 27); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ffffff\" (linha 28); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fde8de\" (linha 29); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1f6f31\" (linha 30); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ffffff\" (linha 31); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#e6f6ea\" (linha 32); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#b91c1c\" (linha 33); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fde8e8\" (linha 34); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#b91c1c\" (linha 35); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ffffff\" (linha 36); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#52585f\" (linha 37); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#eceef0\" (linha 38); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#6f6a5e\" (linha 39); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.06)\" (linha 40); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.06)\" (linha 40); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#121210\" (linha 55); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1b1b19\" (linha 56); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#242420\" (linha 57); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#2e2e29\" (linha 58); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#363530\" (linha 59); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#57544c\" (linha 60); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f0efe9\" (linha 61); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#b0aca0\" (linha 62); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#2a2926\" (linha 63); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ff8247\" (linha 64); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1a0b04\" (linha 65); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#3a2116\" (linha 66); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#4ade80\" (linha 67); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#042f1e\" (linha 68); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#142c1d\" (linha 69); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ff7b7b\" (linha 70); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#3b1919\" (linha 71); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#c92a2a\" (linha 72); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ffffff\" (linha 73); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#a8aeb4\" (linha 74); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#26282a\" (linha 75); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#878276\" (linha 76); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.4)\" (linha 77); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.35)\" (linha 77); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#121210\" (linha 83); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1b1b19\" (linha 84); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#242420\" (linha 85); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#2e2e29\" (linha 86); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#363530\" (linha 87); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#57544c\" (linha 88); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f0efe9\" (linha 89); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#b0aca0\" (linha 90); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#2a2926\" (linha 91); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ff8247\" (linha 92); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1a0b04\" (linha 93); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#3a2116\" (linha 94); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#4ade80\" (linha 95); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#042f1e\" (linha 96); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#142c1d\" (linha 97); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ff7b7b\" (linha 98); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#3b1919\" (linha 99); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#c92a2a\" (linha 100); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ffffff\" (linha 101); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#a8aeb4\" (linha 102); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#26282a\" (linha 103); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#878276\" (linha 104); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.4)\" (linha 105); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.35)\" (linha 105); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.22)\" (linha 194); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(14, 165, 233, 0.12)\" (linha 280); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0284c7\" (linha 280); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0369a1\" (linha 280); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(14, 165, 233, 0.22)\" (linha 281); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0284c7\" (linha 281); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#38bdf8\" (linha 282); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(56, 189, 248, 0.55)\" (linha 282); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#38bdf8\" (linha 284); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(56, 189, 248, 0.55)\" (linha 284); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0284c7\" (linha 600); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0284c7\" (linha 651); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0284c7\" (linha 673); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(14, 165, 233, 0.12)\" (linha 674); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f59e0b\" (linha 707); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(245, 158, 11, 0.22)\" (linha 708); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fbbf24\" (linha 711); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(245, 158, 11, 0.35)\" (linha 712); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fbbf24\" (linha 712); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(245, 158, 11, 0.08)\" (linha 715); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(245, 158, 11, 0.2)\" (linha 716); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#9a3412\" (linha 719); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fbbf24\" (linha 722); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fbbf24\" (linha 726); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f59e0b\" (linha 730); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(14, 165, 233, 0.14)\" (linha 783); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0369a1\" (linha 783); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0284c7\" (linha 783); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#38bdf8\" (linha 784); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#38bdf8\" (linha 786); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.45)\" (linha 903); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.65)\" (linha 1184); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(255 255 255 / 0.05)\" (linha 1184); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(0 0 0 / 0.7)\" (linha 1200); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(239 68 68 / 0.08)\" (linha 1315); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ef4444\" (linha 1316); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ef4444\" (linha 1338); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fff\" (linha 1422); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgb(59 130 246 / 0.15)\" (linha 1763); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(0, 0, 0, 0.15)\" (linha 1901); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fff\" (linha 1905); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f59e0b\" (linha 2269); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(245, 158, 11, 0.1)\" (linha 2270); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#10b981\" (linha 2273); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(16, 185, 129, 0.1)\" (linha 2274); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ef4444\" (linha 2277); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(239, 68, 68, 0.1)\" (linha 2278); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0f172a\" (linha 2281); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#38bdf8\" (linha 2282); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(0, 0, 0, 0.2)\" (linha 2322); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f97316\" (linha 2376); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f97316\" (linha 2376); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(249, 115, 22, 0.18)\" (linha 2376); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#eab308\" (linha 2377); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#eab308\" (linha 2377); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(234, 179, 8, 0.16)\" (linha 2377); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#8b5cf6\" (linha 2378); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#8b5cf6\" (linha 2378); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(139, 92, 246, 0.16)\" (linha 2378); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#06b6d4\" (linha 2379); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#06b6d4\" (linha 2379); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(6, 182, 212, 0.16)\" (linha 2379); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#2563eb\" (linha 2380); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#2563eb\" (linha 2380); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(37, 99, 235, 0.16)\" (linha 2380); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#10b981\" (linha 2381); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#10b981\" (linha 2381); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(16, 185, 129, 0.16)\" (linha 2381); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ec4899\" (linha 2382); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ec4899\" (linha 2382); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(236, 72, 153, 0.16)\" (linha 2382); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ef4444\" (linha 2383); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ef4444\" (linha 2383); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(239, 68, 68, 0.16)\" (linha 2383); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#9a3412\" (linha 2385); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(249, 115, 22, 0.18)\" (linha 2385); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(249, 115, 22, 0.35)\" (linha 2385); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#854d0e\" (linha 2386); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(234, 179, 8, 0.20)\" (linha 2386); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(234, 179, 8, 0.35)\" (linha 2386); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#5b21b6\" (linha 2387); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(139, 92, 246, 0.17)\" (linha 2387); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(139, 92, 246, 0.34)\" (linha 2387); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0e7490\" (linha 2388); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(6, 182, 212, 0.17)\" (linha 2388); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(6, 182, 212, 0.34)\" (linha 2388); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1d4ed8\" (linha 2389); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(37, 99, 235, 0.17)\" (linha 2389); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(37, 99, 235, 0.34)\" (linha 2389); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#047857\" (linha 2390); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(16, 185, 129, 0.17)\" (linha 2390); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(16, 185, 129, 0.34)\" (linha 2390); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#be185d\" (linha 2391); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(236, 72, 153, 0.17)\" (linha 2391); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(236, 72, 153, 0.34)\" (linha 2391); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#b91c1c\" (linha 2392); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(239, 68, 68, 0.17)\" (linha 2392); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(239, 68, 68, 0.34)\" (linha 2392); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(249, 115, 22, 0.14)\" (linha 2394); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#9a3412\" (linha 2394); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(234, 179, 8, 0.16)\" (linha 2395); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#854d0e\" (linha 2395); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(139, 92, 246, 0.14)\" (linha 2396); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#5b21b6\" (linha 2396); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(6, 182, 212, 0.14)\" (linha 2397); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0e7490\" (linha 2397); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(37, 99, 235, 0.14)\" (linha 2398); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1d4ed8\" (linha 2398); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(16, 185, 129, 0.14)\" (linha 2399); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#047857\" (linha 2399); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(236, 72, 153, 0.14)\" (linha 2400); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#be185d\" (linha 2400); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(239, 68, 68, 0.14)\" (linha 2401); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#b91c1c\" (linha 2401); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fdba74\" (linha 2404); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fde047\" (linha 2406); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#c4b5fd\" (linha 2408); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#67e8f9\" (linha 2410); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#93c5fd\" (linha 2412); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#6ee7b7\" (linha 2414); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f9a8d4\" (linha 2416); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fca5a5\" (linha 2418); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fdba74\" (linha 2421); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fde047\" (linha 2423); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#c4b5fd\" (linha 2425); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#67e8f9\" (linha 2427); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#93c5fd\" (linha 2429); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#6ee7b7\" (linha 2431); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f9a8d4\" (linha 2433); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fca5a5\" (linha 2435); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1d4ed8\" (linha 2503); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#60a5fa\" (linha 2516); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#60a5fa\" (linha 2520); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(0, 0, 0, 0.04)\" (linha 2536); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(59, 130, 246, 0.15)\" (linha 2561); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#3b82f6\" (linha 2562); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(16, 185, 129, 0.15)\" (linha 2566); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#10b981\" (linha 2567); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(239, 68, 68, 0.15)\" (linha 2571); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ef4444\" (linha 2572); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(0, 0, 0, 0.03)\" (linha 2580); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(0, 0, 0, 0.05)\" (linha 2614); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(37, 99, 235, 0.22)\" (linha 2632); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(37, 99, 235, 0.10)\" (linha 2632); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#3b82f6\" (linha 2637); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#3b82f6\" (linha 2638); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(59, 130, 246, 0.35)\" (linha 2638); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(59, 130, 246, 0.18)\" (linha 2638); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f59e0b\" (linha 2681); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#3b82f6\" (linha 2685); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ef4444\" (linha 2689); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#e5484d\" (linha 2742); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(255, 255, 255, 0.02)\" (linha 2781); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f1f5f9\" (linha 2801); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(255, 255, 255, 0.05)\" (linha 2825); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(255, 255, 255, 0.03)\" (linha 2834); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(255, 255, 255, 0.02)\" (linha 2852); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f1f5f9\" (linha 2866); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#e5484d\" (linha 2869); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(229, 72, 77, 0.08)\" (linha 2870); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#e5484d\" (linha 2876); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f1f5f9\" (linha 2879); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f1f5f9\" (linha 2897); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"rgba(255, 255, 255, 0.01)\" (linha 2915); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#38bdf8\" (linha 2926); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#38bdf8\" (linha 2934); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f1f5f9\" (linha 2939); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0b0f17\" (linha 2956); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f1f5f9\" (linha 2962); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#dbeafe\" (linha 2981); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1e40af\" (linha 2982); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#93c5fd\" (linha 2983); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#ede9fe\" (linha 2987); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#5b21b6\" (linha 2988); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#c4b5fd\" (linha 2989); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#d1fae5\" (linha 2993); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#065f46\" (linha 2994); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#6ee7b7\" (linha 2995); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fef3c7\" (linha 2999); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#92400e\" (linha 3000); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fcd34d\" (linha 3001); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fce7f3\" (linha 3005); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#9d174d\" (linha 3006); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f9a8d4\" (linha 3007); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#cffafe\" (linha 3011); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#155e75\" (linha 3012); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#67e8f9\" (linha 3013); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#e0e7ff\" (linha 3017); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#3730a3\" (linha 3018); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#a5b4fc\" (linha 3019); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#e0e7ff\" (linha 3024); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#312e81\" (linha 3025); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#a5b4fc\" (linha 3026); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#172554\" (linha 3031); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#93c5fd\" (linha 3032); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1d4ed8\" (linha 3033); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#2e1065\" (linha 3037); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#d8b4fe\" (linha 3038); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#6d28d9\" (linha 3039); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#064e3b\" (linha 3043); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#6ee7b7\" (linha 3044); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#047857\" (linha 3045); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#451a03\" (linha 3049); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fcd34d\" (linha 3050); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#b45309\" (linha 3051); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#500724\" (linha 3055); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f9a8d4\" (linha 3056); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#be185d\" (linha 3057); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#083344\" (linha 3061); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#67e8f9\" (linha 3062); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0e7490\" (linha 3063); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1e1b4b\" (linha 3067); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#a5b4fc\" (linha 3068); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#4338ca\" (linha 3069); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1e1b4b\" (linha 3073); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#c7d2fe\" (linha 3074); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#4338ca\" (linha 3075); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#172554\" (linha 3080); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#93c5fd\" (linha 3081); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1d4ed8\" (linha 3082); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#2e1065\" (linha 3085); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#d8b4fe\" (linha 3086); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#6d28d9\" (linha 3087); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#064e3b\" (linha 3090); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#6ee7b7\" (linha 3091); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#047857\" (linha 3092); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#451a03\" (linha 3095); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#fcd34d\" (linha 3096); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#b45309\" (linha 3097); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#500724\" (linha 3100); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#f9a8d4\" (linha 3101); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#be185d\" (linha 3102); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#083344\" (linha 3105); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#67e8f9\" (linha 3106); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#0e7490\" (linha 3107); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1e1b4b\" (linha 3110); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#a5b4fc\" (linha 3111); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#4338ca\" (linha 3112); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#1e1b4b\" (linha 3115); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#c7d2fe\" (linha 3116); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/style.css",
+      "message": "Cor literal hardcoded \"#4338ca\" (linha 3117); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#8ab4f8\" (linha 57); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#8ab4f8\" (linha 57); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#8ab4f8\" (linha 57); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#f28b82\" (linha 58); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#f28b82\" (linha 58); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#f28b82\" (linha 58); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#fdd663\" (linha 59); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#fdd663\" (linha 59); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#fdd663\" (linha 59); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#81c995\" (linha 60); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#81c995\" (linha 60); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#81c995\" (linha 60); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#c58af9\" (linha 61); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#c58af9\" (linha 61); use var(--*) de tokens.css"
+    },
+    {
+      "tool": "aidd-linter-design",
+      "severity": "serious",
+      "route": "internal/studio/static/swarm.css",
+      "message": "Cor literal hardcoded \"#c58af9\" (linha 61); use var(--*) de tokens.css"
+    }
+  ]
+}

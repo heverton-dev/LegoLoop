@@ -1,0 +1,108 @@
+{
+  "date": "2026-11-15",
+  "alvo": "legoloop-studio-v5",
+  "targetUrl": "http://127.0.0.1:7897",
+  "routes": [
+    "/",
+    "/inventario",
+    "/swarm"
+  ],
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "storageState": null,
+  "status": "FAILED",
+  "failures": [
+    "playwright: console=3, rotas=0",
+    "axe-core: critical=0, serious=4",
+    "renderlint: 3 violação(ões) de layout/botão"
+  ],
+  "metrics": {
+    "lychee": {
+      "brokenLinks": 0
+    },
+    "playwright": {
+      "consoleErrors": 3,
+      "routeErrors": 0
+    },
+    "axe": {
+      "critical": 0,
+      "serious": 4
+    },
+    "renderlint": {
+      "violations": 3
+    },
+    "designLinter": {
+      "violations": 0
+    },
+    "obscura": {
+      "errors": 0
+    },
+    "unlighthouse": {
+      "minScore": 100
+    },
+    "lostPixel": {
+      "hasBaseline": false,
+      "diffCount": 0
+    }
+  },
+  "findings": [
+    {
+      "tool": "playwright",
+      "severity": "critical",
+      "route": "/ (desktop)",
+      "message": "Failed to load resource: the server responded with a status of 429 (Too Many Requests) | Failed to load resource: the server responded with a status of 429 (Too Many Requests) | Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (desktop)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (2 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/swarm (desktop)",
+      "message": "color-contrast: Elements must meet minimum color contrast ratio thresholds (2 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/ (mobile)",
+      "message": "label-content-name-mismatch: Elements must have their visible text as part of their accessible name (2 elemento(s))"
+    },
+    {
+      "tool": "axe-core",
+      "severity": "serious",
+      "route": "/swarm (mobile)",
+      "message": "color-contrast: Elements must meet minimum color contrast ratio thresholds (2 elemento(s))"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  / @768px light: 91 finding(s) in 6752ms\n  / @1280px light: 43 finding(s) in 6759ms\n  / @1280px dark: 45 finding(s) in 1103ms\n  / @768px dark: 53 finding(s) in 1200ms\n  / @375px dark: 90 finding(s) in 5786ms\n  /inventario @375px light: 9 finding(s) in 1323ms\n  /inventario @768px light: 7 finding(s) in 1436ms\n  / @375px light: 106 finding(s) in 10224ms\n  /inventario @1280px light: 3 finding(s) in 6021ms\n  /swarm @768px light: 11 finding(s) in 6027ms\n  /swarm @1280px light: 11 finding(s) in 5929ms\n  /swarm @375px light: 11 finding(s) in 7945ms\n  /inventario @375px dark: 3 finding(s) in 5211ms\n  /inventario @768px dark: 3 finding(s) in 5220ms\n  /inventario @1280px dark: 3 finding(s) in 5213ms\n  /swarm @375px dark: 8 finding(s) in 5130ms\n  /swarm @768px dark: 9 finding(s) in 5106ms\n  /swarm @1280px dark: 9 finding(s) in 5098ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/inventario",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /inventario @375px dark: 3 finding(s) in 5202ms\n  /inventario @768px light: 3 finding(s) in 6052ms\n  /inventario @1280px light: 3 finding(s) in 6200ms\n  /inventario @375px light: 5 finding(s) in 7559ms\n  / @768px light: 93 finding(s) in 3001ms\n  /inventario @1280px dark: 3 finding(s) in 5315ms\n  /inventario @768px dark: 3 finding(s) in 5352ms\n  / @375px light: 106 finding(s) in 8388ms\n  /swarm @768px light: 11 finding(s) in 6002ms\n  /swarm @375px light: 11 finding(s) in 7951ms\n  /swarm @1280px light: 11 finding(s) in 5764ms\n  / @375px dark: 91 finding(s) in 5678ms\n  / @768px dark: 67 finding(s) in 5961ms\n  /swarm @375px dark: 8 finding(s) in 5105ms\n  /swarm @768px dark: 9 finding(s) in 5104ms\n  / @1280px dark: 44 finding(s) in 10281ms\n  / @1280px light: 44 finding(s) in 21167ms\n  /swarm @1280px dark: 9 finding(s) in 5153ms"
+    },
+    {
+      "tool": "renderlint",
+      "severity": "critical",
+      "route": "http://127.0.0.1:7897/swarm",
+      "message": "Checking 1 page(s) (+ crawling links) at 375/768/1280px…\n  /swarm @1280px light: 11 finding(s) in 6876ms\n  /swarm @768px light: 11 finding(s) in 6947ms\n  /swarm @375px dark: 8 finding(s) in 5144ms\n  /swarm @375px light: 11 finding(s) in 8894ms\n  /swarm @768px dark: 9 finding(s) in 5220ms\n  /swarm @1280px dark: 9 finding(s) in 5215ms\n  / @375px light: 106 finding(s) in 10201ms\n  / @1280px light: 44 finding(s) in 6938ms\n  /inventario @375px light: 4 finding(s) in 9362ms\n  /inventario @768px light: 3 finding(s) in 6207ms\n  /inventario @1280px light: 3 finding(s) in 5998ms\n  / @375px dark: 91 finding(s) in 6692ms\n  / @1280px dark: 44 finding(s) in 5878ms\n  / @768px dark: 67 finding(s) in 6575ms\n  / @768px light: 92 finding(s) in 23484ms\n  /inventario @375px dark: 3 finding(s) in 5225ms\n  /inventario @1280px dark: 3 finding(s) in 5474ms\n  /inventario @768px dark: 3 finding(s) in 6169ms"
+    }
+  ]
+}
