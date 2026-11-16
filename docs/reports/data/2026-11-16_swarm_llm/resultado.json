@@ -1,0 +1,41 @@
+{
+  "dag": "swarm-auditoria-llm",
+  "levels": [
+    {
+      "level": 0,
+      "started_at": "2026-11-16T17:17:13.0353098Z",
+      "ended_at": "2026-11-16T17:17:30.6737543Z",
+      "workers": [
+        {
+          "name": "a",
+          "role": "auditor-qualidade",
+          "pid": 0,
+          "exit_code": 0,
+          "status": "stopped"
+        },
+        {
+          "name": "b",
+          "role": "engenheiro-tdd",
+          "pid": 0,
+          "exit_code": 0,
+          "status": "stopped"
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "started_at": "2026-11-16T17:17:30.6737543Z",
+      "ended_at": "2026-11-16T17:18:58.2299823Z",
+      "workers": [
+        {
+          "name": "c",
+          "role": "engenheiro-backend",
+          "pid": 0,
+          "exit_code": 0,
+          "status": "stopped"
+        }
+      ]
+    }
+  ],
+  "skipped": null
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "id": "swarm-auditoria-llm",
+  "name": "swarm-auditoria-llm",
+  "description": "Dois agentes de LLM auditam em paralelo o swarm run (somente leitura); um terceiro consolida.",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "a",
+      "name": "Auditoria a",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-swarm-cli",
+      "role": "auditor-qualidade",
+      "depends_on": [],
+      "timeout_sec": 240,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-agente-128k",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "output": {
+        "artifact": "out/a_riscos.md",
+        "gate": "file_exists('out/a_riscos.md') && word_count('out/a_riscos.md') >= 80 && has_pattern('out/a_riscos.md', 'Risco 1')"
+      }
+    },
+    {
+      "id": "b",
+      "name": "Auditoria b",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-swarm-cli",
+      "role": "engenheiro-tdd",
+      "depends_on": [],
+      "timeout_sec": 240,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-agente-128k",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "output": {
+        "artifact": "out/b_riscos.md",
+        "gate": "file_exists('out/b_riscos.md') && word_count('out/b_riscos.md') >= 80 && has_pattern('out/b_riscos.md', 'Risco 1')"
+      }
+    },
+    {
+      "id": "c",
+      "name": "Auditoria c",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-swarm-cli",
+      "role": "engenheiro-backend",
+      "depends_on": [
+        "a",
+        "b"
+      ],
+      "timeout_sec": 240,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-agente-128k",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "output": {
+        "artifact": "out/c_consolidado.md",
+        "gate": "file_exists('out/c_consolidado.md') && word_count('out/c_consolidado.md') >= 80 && has_pattern('out/c_consolidado.md', 'Recomenda')"
+      }
+    }
+  ]
+}
