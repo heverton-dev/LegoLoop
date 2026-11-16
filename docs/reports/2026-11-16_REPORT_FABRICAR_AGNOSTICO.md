@@ -138,7 +138,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 | `docs/plans/2026-11-16_PLAN_FABRICAR_AGNOSTICO.md` | Doc (novo) | Plano de tickets | `C62A92443F12F893` |
 | `docs/routes/2026-11-16_ROUTE_FABRICAR_AGNOSTICO.json` | Doc (novo) | Mapa de rota dos épicos | `45B9F99B002B62B0` |
 
-> **Assinatura de Fechamento Merkle:** pendente do commit (a ser preenchido no `git log` após o commit autorizado).
+> **Assinatura de Fechamento Merkle:** commit `aea30a2` (push pendente de pedido explícito do usuário).
 
 ---
 
