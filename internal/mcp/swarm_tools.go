@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"legoloop/internal/board"
+	"legoloop/internal/dag"
 )
 
 func strArg(args map[string]any, key, def string) string {
@@ -99,10 +100,7 @@ func loadFirstSwarmStatus(candidates []string) (board.SwarmStatus, error) {
 		if err := json.Unmarshal(data, &raw); err != nil {
 			return board.SwarmStatus{}, err
 		}
-		if raw.Workers == nil {
-			raw.Workers = []board.Worker{}
-		}
-		return board.SwarmStatus{Workers: raw.Workers, MessageCount: len(raw.Messages)}, nil
+		return board.SwarmStatus{Workers: board.LiveView(raw.Workers), MessageCount: len(raw.Messages)}, nil
 	}
 	return board.SwarmStatus{Workers: []board.Worker{}, MessageCount: 0}, nil
 }
@@ -114,6 +112,9 @@ func dispatchSwarmTool(sb *board.SwarmBoard, name string, args map[string]any) (
 		return w, true, err
 	case "swarm_spawn":
 		res, err := swarmSpawnWorker(sb, args)
+		return res, true, err
+	case "swarm_run":
+		res, err := swarmRunDAG(sb, args)
 		return res, true, err
 	case "swarm_post":
 		m, err := sb.PostMessage(strArg(args, "from", "coordenador"), strArg(args, "to", "@all"), strArg(args, "body", ""))
@@ -163,6 +164,40 @@ func swarmSpawnWorker(sb *board.SwarmBoard, args map[string]any) (any, error) {
 	return map[string]any{"name": name, "pid": pid, "status": board.WorkerWorking}, nil
 }
 
+// swarmRunDAG executa o DAG por nivel topologico (workers paralelos por nivel, worktree proprio) e devolve o
+// desfecho de cada nivel. Bloqueia ate o fim ou ate o tempo maximo por nivel.
+func swarmRunDAG(sb *board.SwarmBoard, args map[string]any) (any, error) {
+	path := strArg(args, "dag", "")
+	if path == "" {
+		return nil, errors.New("swarm_run exige dag (caminho do pipeline.dag.json)")
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	p, err := dag.Parse(data)
+	if err != nil {
+		return nil, err
+	}
+	levels, skipped, err := board.LevelsFromDAG(p, stringListArg(args, "command"))
+	if err != nil {
+		return nil, err
+	}
+	keep, _ := args["keep"].(bool)
+	results, runErr := sb.RunLevels(context.Background(), levels, board.RunOptions{
+		Mode:           board.WorkspaceMode(strArg(args, "workspace", "share")),
+		RepoDir:        strArg(args, "repo", "."),
+		Keep:           keep,
+		DefaultTimeout: durationArg(args, "timeout", 10*time.Minute),
+	})
+	out := map[string]any{"dag": p.Name, "levels": results, "skipped": skipped}
+	if runErr != nil {
+		partial, _ := json.Marshal(out)
+		return nil, fmt.Errorf("%w; parcial: %s", runErr, partial)
+	}
+	return out, nil
+}
+
 func stringListArg(args map[string]any, key string) []string {
 	raw, _ := args[key].([]any)
 	var out []string
@@ -210,6 +245,7 @@ func swarmToolDefs() []map[string]any {
 	return []map[string]any{
 		swarmDef("swarm_add", "Registra um worker no quadro Swarm.", []string{"role"}),
 		swarmSpawnDef(),
+		swarmRunDef(),
 		swarmDef("swarm_post", "Publica uma mensagem no quadro Swarm.", []string{"body"}),
 		swarmDef("swarm_read", "Le mensagens do quadro Swarm.", nil),
 		swarmDef("swarm_wait", "Aguarda mensagens destinadas a um worker no quadro Swarm.", nil),
@@ -217,6 +253,18 @@ func swarmToolDefs() []map[string]any {
 		swarmDef("swarm_kill", "Encerra um worker do quadro Swarm.", []string{"name"}),
 		swarmDef("swarm_monitor", "Detecta workers estagnados no quadro Swarm.", nil),
 	}
+}
+
+func swarmRunDef() map[string]any {
+	d := swarmDef("swarm_run", "Executa o DAG por nivel topologico: workers paralelos por nivel, worktree proprio, ordem garantida.", []string{"dag"})
+	props := d["inputSchema"].(map[string]any)["properties"].(map[string]any)
+	props["dag"] = map[string]any{"type": "string", "description": "Caminho do pipeline.dag.json"}
+	props["command"] = map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "Comando global dos workers (o command do no vale antes)"}
+	props["repo"] = map[string]any{"type": "string", "description": "Repositorio git dos worktrees"}
+	props["workspace"] = map[string]any{"type": "string", "description": "share, branch ou inherit"}
+	props["timeout"] = map[string]any{"type": "string", "description": "Tempo maximo por nivel, ex.: 10m"}
+	props["keep"] = map[string]any{"type": "boolean", "description": "Mantem workers e worktrees apos o sucesso"}
+	return d
 }
 
 func swarmSpawnDef() map[string]any {

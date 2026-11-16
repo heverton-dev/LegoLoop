@@ -833,3 +833,11 @@ func removeWorktree(repoDir, wtPath string) {
 	}
 	_ = os.RemoveAll(wtPath)
 }
+
+// LiveView devolve uma copia dos workers com o PID morto marcado como stopped, sem gravar nada. Serve a leituras
+// somente leitura (MCP swarm_status) que precisam mostrar o mesmo estado que Status() grava.
+func LiveView(workers []Worker) []Worker {
+	out := append([]Worker{}, workers...)
+	reconcileDeadPIDs(out)
+	return out
+}
