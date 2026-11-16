@@ -20,7 +20,7 @@ var docs = map[string]Doc{
 	"schema_valid":            {Signature: "schema_valid(schema, alvo)", Description: "Verdadeiro se o arquivo JSON no caminho alvo cumpre o JSON Schema informado."},
 	"interactive":             {Signature: "interactive(pergunta)", Description: "Pausa a execução e solicita confirmação humana (Stop-Gate interativo)."},
 	"prompt":                  {Signature: "prompt(pergunta)", Description: "Alias de interactive(pergunta) para Stop-Gates humanos."},
-	"cites_exist":             {Signature: "cites_exist(artefato, base)", Description: "Verdadeiro se o artefato traz ao menos uma citação arquivo:linha e todas existem sob a pasta base (o arquivo existe e o intervalo cabe nele). Não prova o sentido da linha."},
+	"cites_exist":             {Signature: "cites_exist(artefato, base)", Description: "Verdadeiro se o artefato traz ao menos uma citação arquivo:linha e todas existem sob a pasta base (o arquivo existe e o intervalo cabe nele), e cada identificador entre crases na mesma linha da citação aparece no arquivo citado. Não prova o sentido da linha."},
 	"no_stubs":                {Signature: "no_stubs(caminho)", Description: "Verdadeiro se o arquivo existe e não contém stubs vazios, TODOs ou mocks simulados."},
 }
 

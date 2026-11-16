@@ -20,8 +20,8 @@ func repoCites(t *testing.T) (RootFS, string) {
 			t.Fatal(err)
 		}
 	}
-	must("a.go", "l1\nl2\nl3\n")
-	must("sub/b.go", "1\n2\n3\n4\n5")
+	must("a.go", "package a\nfunc Bar() {}\nl3\n")
+	must("sub/b.go", "1\n2\n3\nfunc Foo() {}\n5")
 	root, err := os.OpenRoot(dir)
 	if err != nil {
 		t.Fatal(err)
@@ -76,6 +76,54 @@ func TestCitesExist(t *testing.T) {
 				t.Errorf("cites_exist(%q) = %v, quer %v", c.texto, got, c.quer)
 			}
 		})
+	}
+}
+
+// Coerencia de nomes: identificador entre crases na mesma linha da citacao precisa existir no arquivo citado.
+func TestCitesExistIdentificadores(t *testing.T) {
+	root, _ := repoCites(t)
+	casos := []struct {
+		nome, texto string
+		quer        bool
+	}{
+		{"identificador presente", "`a.go:3` chama `Bar`", true},
+		{"identificador ausente reprova", "`a.go:3` usa `Baz`", false},
+		{"identificador em outra linha do artefato e ignorado", "`a.go:3`\nCorrecao: use `Baz`", true},
+		{"com parenteses e trecho pontuado", "`a.go:3` com `Bar()` e `x.Bar`", true},
+		{"pontuado usa o ultimo trecho", "`a.go:3` com `sync.Mutex`", false},
+		{"identificador curto e ignorado", "`a.go:3` e `id`", true},
+		{"caminho entre crases nao e identificador", "`sub/b.go:4` e `a.go`", true},
+		{"vale se estiver em um dos arquivos citados na linha", "a.go:3 e sub/b.go:4 usam `Foo`", true},
+		{"palavra inteira, nao pedaco", "`a.go:3` usa `Ba`", true}, // "Ba" tem menos de 3 letras: ignorado
+		{"pedaco de palavra nao vale", "`a.go:3` usa `Barr`", false},
+		{"texto que nao e identificador e ignorado", "`a.go:3` faz `x + y`", true},
+	}
+	for _, c := range casos {
+		t.Run(c.nome, func(t *testing.T) {
+			if got := evalCites(t, root, c.texto, "."); got != c.quer {
+				t.Errorf("cites_exist(%q) = %v, quer %v", c.texto, got, c.quer)
+			}
+		})
+	}
+}
+
+func TestCiteVerdictsApontaOQueFalhou(t *testing.T) {
+	root, dir := repoCites(t)
+	if err := os.WriteFile(filepath.Join(dir, "out.md"), []byte("`a.go:3` usa `Baz`\n`a.go:9`\n`sub/b.go:4` com `Foo`\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	vs, err := CiteVerdicts(root, "out.md", ".")
+	if err != nil || len(vs) != 3 {
+		t.Fatalf("CiteVerdicts: %v %+v", err, vs)
+	}
+	if !vs[0].InRange || len(vs[0].MissingIdent) != 1 || vs[0].MissingIdent[0] != "Baz" || vs[0].OK() {
+		t.Errorf("primeira: existe mas Baz ausente: %+v", vs[0])
+	}
+	if vs[1].InRange || vs[1].OK() {
+		t.Errorf("segunda: linha 9 fora do arquivo: %+v", vs[1])
+	}
+	if !vs[2].OK() {
+		t.Errorf("terceira deveria passar: %+v", vs[2])
 	}
 }
 

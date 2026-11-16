@@ -1,0 +1,1 @@
+erro: nivel 0: gate reprovou em 2 no(s): a: file_exists('out/a_riscos.md') && word_count('out/a_riscos.md') >= 80 && has_pattern('out/a_riscos.md', 'Risco 1') && cites_exist('out/a_riscos.md', '.'); b: file_exists('out/b_riscos.md') && word_count('out/b_riscos.md') >= 80 && has_pattern('out/b_riscos.md', 'Risco 1') && cites_exist('out/b_riscos.md', '.')
