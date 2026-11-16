@@ -3,7 +3,11 @@ package board
 import (
 	"context"
 	"fmt"
+	"os"
+	"strings"
 	"time"
+
+	"legoloop/internal/gate"
 )
 
 // RunNode descreve um worker de um nivel: o no do DAG ja resolvido (nome, papel, modelo e comando).
@@ -13,6 +17,7 @@ type RunNode struct {
 	Model   string
 	Command []string
 	Timeout time.Duration // 0 = RunOptions.DefaultTimeout
+	Gate    string        // gate do no (output.gate); avaliado so com RunOptions.CheckGates
 }
 
 // RunOptions controla RunLevels.
@@ -22,6 +27,9 @@ type RunOptions struct {
 	Keep           bool          // mantem os workers e worktrees ao fim de uma execucao com sucesso
 	DefaultTimeout time.Duration // por nivel; padrao 10 minutos
 	Poll           time.Duration // padrao 100 ms
+	// CheckGates avalia o gate de cada no depois que o worker sai com codigo 0. A raiz do gate e o worktree do
+	// worker (ou o repositorio, no modo inherit): os caminhos do gate sao relativos a ela.
+	CheckGates bool
 }
 
 // RunWorkerResult e o desfecho de um worker do nivel.
@@ -31,6 +39,7 @@ type RunWorkerResult struct {
 	PID      int          `json:"pid"`
 	ExitCode int          `json:"exit_code"`
 	Status   WorkerStatus `json:"status"`
+	GateOK   *bool        `json:"gate_ok,omitempty"`
 }
 
 // RunLevelResult e o desfecho de um nivel topologico.
@@ -104,17 +113,75 @@ func (sb *SwarmBoard) runLevel(ctx context.Context, li int, lvl []RunNode, opt R
 	if err != nil {
 		return res, names, fmt.Errorf("nivel %d: %w", li, err)
 	}
+	gates := make(map[string]string, len(lvl))
+	for _, n := range lvl {
+		gates[n.Name] = n.Gate
+	}
 	for _, w := range final {
 		code := -1
 		if w.ExitCode != nil {
 			code = *w.ExitCode
 		}
-		res.Workers = append(res.Workers, RunWorkerResult{Name: w.Name, Role: w.Role, ExitCode: code, Status: w.Status})
+		res.Workers = append(res.Workers, RunWorkerResult{Name: w.Name, Role: w.Role, PID: w.PID, ExitCode: code, Status: w.Status})
 		if code != 0 {
 			return res, names, fmt.Errorf("nivel %d: worker %s saiu com codigo %d", li, w.Name, code)
 		}
 	}
+	if opt.CheckGates {
+		if err := sb.checkLevelGates(li, res, final, gates, opt.RepoDir); err != nil {
+			return res, names, err
+		}
+	}
 	return res, names, nil
+}
+
+// checkLevelGates avalia o gate de cada worker do nivel e registra gate_ok. Reprova o nivel inteiro com a lista
+// dos gates que falharam.
+func (sb *SwarmBoard) checkLevelGates(li int, res *RunLevelResult, final []Worker, gates map[string]string, repoDir string) error {
+	var failed []string
+	for i, w := range final {
+		expr := strings.TrimSpace(gates[w.Name])
+		if expr == "" {
+			continue
+		}
+		ok, err := evalNodeGate(expr, gateRoot(w, repoDir, sb.projDir))
+		if err != nil {
+			return fmt.Errorf("nivel %d: gate do no %s invalido: %w", li, w.Name, err)
+		}
+		res.Workers[i].GateOK = &ok
+		if !ok {
+			failed = append(failed, fmt.Sprintf("%s: %s", w.Name, expr))
+		}
+	}
+	if len(failed) > 0 {
+		return fmt.Errorf("nivel %d: gate reprovou em %d no(s): %s", li, len(failed), strings.Join(failed, "; "))
+	}
+	return nil
+}
+
+func gateRoot(w Worker, repoDir, projDir string) string {
+	switch {
+	case w.WorktreePath != "":
+		return w.WorktreePath
+	case w.RepoDir != "":
+		return w.RepoDir
+	case strings.TrimSpace(repoDir) != "":
+		return repoDir
+	}
+	return projDir
+}
+
+func evalNodeGate(expr, dir string) (bool, error) {
+	x, err := gate.Compile(expr)
+	if err != nil {
+		return false, err
+	}
+	root, err := os.OpenRoot(dir)
+	if err != nil {
+		return false, err
+	}
+	defer root.Close()
+	return x.Eval(gate.Env{Root: root})
 }
 
 // waitLevelStopped bloqueia ate todos os workers pararem com codigo de saida registrado.

@@ -59,7 +59,7 @@ func LevelsFromDAG(p *dag.DAG, global []string) ([][]RunNode, []string, error) {
 			}
 			lvl = append(lvl, RunNode{
 				Name: WorkerNameFromNode(id, usados), Role: role, Model: n.Routing.Model,
-				Command: cmd, Timeout: time.Duration(n.TimeoutSec) * time.Second,
+				Command: cmd, Timeout: time.Duration(n.TimeoutSec) * time.Second, Gate: n.Output.Gate,
 			})
 		}
 		if len(lvl) > 0 {

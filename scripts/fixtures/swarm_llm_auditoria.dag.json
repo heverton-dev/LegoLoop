@@ -28,7 +28,7 @@
       },
       "output": {
         "artifact": "out/a_riscos.md",
-        "gate": "file_exists('out/a_riscos.md') && word_count('out/a_riscos.md') >= 80 && has_pattern('out/a_riscos.md', 'Risco 1')"
+        "gate": "file_exists('out/a_riscos.md') && word_count('out/a_riscos.md') >= 80 && has_pattern('out/a_riscos.md', 'Risco 1') && cites_exist('out/a_riscos.md', '.')"
       }
     },
     {
@@ -51,7 +51,7 @@
       },
       "output": {
         "artifact": "out/b_riscos.md",
-        "gate": "file_exists('out/b_riscos.md') && word_count('out/b_riscos.md') >= 80 && has_pattern('out/b_riscos.md', 'Risco 1')"
+        "gate": "file_exists('out/b_riscos.md') && word_count('out/b_riscos.md') >= 80 && has_pattern('out/b_riscos.md', 'Risco 1') && cites_exist('out/b_riscos.md', '.')"
       }
     },
     {
@@ -77,7 +77,7 @@
       },
       "output": {
         "artifact": "out/c_consolidado.md",
-        "gate": "file_exists('out/c_consolidado.md') && word_count('out/c_consolidado.md') >= 80 && has_pattern('out/c_consolidado.md', 'Recomenda')"
+        "gate": "file_exists('out/c_consolidado.md') && word_count('out/c_consolidado.md') >= 80 && has_pattern('out/c_consolidado.md', 'Recomenda') && cites_exist('out/c_consolidado.md', '.')"
       }
     }
   ]

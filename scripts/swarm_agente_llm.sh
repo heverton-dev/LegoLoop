@@ -36,6 +36,7 @@ for tentativa in 1 2; do
     --strict-mcp-config --mcp-config '{"mcpServers":{}}' </dev/null > "$OUT/$ART.tmp" 2> "$OUT/$NAME.stderr"
   if [ $? -eq 0 ] && [ -s "$OUT/$ART.tmp" ]; then
     mv "$OUT/$ART.tmp" "$OUT/$ART"
+    mkdir -p out && cp "$OUT/$ART" "out/$ART"   # o gate do swarm run le o artefato no worktree do worker
     date +%s%N > "$OUT/$NAME.end"
     echo "$NAME tentativa=$tentativa modelo=$MODEL" > "$OUT/$NAME.meta"
     exit 0

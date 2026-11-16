@@ -47,6 +47,10 @@ func TestHelperSwarmRunWorker(t *testing.T) {
 	if name == os.Getenv("GO_SWARM_RUN_FAIL") {
 		os.Exit(7)
 	}
+	if name != os.Getenv("GO_SWARM_RUN_NOFILE") {
+		_ = os.MkdirAll("out", 0o755)
+		_ = os.WriteFile(filepath.Join("out", name+".md"), []byte("ok\n"), 0o644)
+	}
 	stamp("end")
 	os.Exit(0)
 }
@@ -76,7 +80,7 @@ func writeRunDAG(t *testing.T, dir string) string {
 	return p
 }
 
-func runSwarmRun(t *testing.T, repo, dagPath, fail string) (int, string, string) {
+func runSwarmRun(t *testing.T, repo, dagPath, fail string, extra ...string) (int, string, string) {
 	t.Helper()
 	exe, err := os.Executable()
 	if err != nil {
@@ -87,10 +91,9 @@ func runSwarmRun(t *testing.T, repo, dagPath, fail string) (int, string, string)
 	t.Setenv("GO_SWARM_RUN_OUT", out)
 	t.Setenv("GO_SWARM_RUN_FAIL", fail)
 	var so, se bytes.Buffer
-	code := Run(context.Background(), []string{
-		"swarm", "run", dagPath, "-dir", repo, "-repo", repo, "-timeout", "40s",
-		"--", exe, "-test.run=^TestHelperSwarmRunWorker$",
-	}, Deps{Stdout: &so, Stderr: &se})
+	args := []string{"swarm", "run", dagPath, "-dir", repo, "-repo", repo, "-timeout", "40s"}
+	args = append(append(args, extra...), "--", exe, "-test.run=^TestHelperSwarmRunWorker$")
+	code := Run(context.Background(), args, Deps{Stdout: &so, Stderr: &se})
 	return code, so.String() + "\x00" + se.String() + "\x00" + out, out
 }
 
@@ -190,4 +193,64 @@ func TestSwarmRunFalhaEncerraELimpa(t *testing.T) {
 		t.Error("o nivel 1 nao devia ter comecado apos a falha do nivel 0")
 	}
 	assertBoardClean(t, repo)
+}
+
+// TestSwarmRunGatesAprovaQuandoTodosProduzemArtefato: com -gates, o gate de cada no e avaliado no worktree do worker.
+func TestSwarmRunGatesAprovaQuandoTodosProduzemArtefato(t *testing.T) {
+	if testing.Short() {
+		t.Skip("E2E real sobe processos")
+	}
+	repo := e2eGitRepo(t)
+	code, joined, _ := runSwarmRun(t, repo, writeRunDAG(t, t.TempDir()), "", "-gates")
+	parts := strings.Split(joined, "\x00")
+	if code != 0 {
+		t.Fatalf("esperava 0: stdout=%s stderr=%s", parts[0], parts[1])
+	}
+	var res struct {
+		Levels []board.RunLevelResult `json:"levels"`
+	}
+	if err := json.Unmarshal([]byte(parts[0]), &res); err != nil {
+		t.Fatal(err)
+	}
+	for _, l := range res.Levels {
+		for _, w := range l.Workers {
+			if w.GateOK == nil || !*w.GateOK {
+				t.Errorf("worker %s deveria ter gate_ok=true: %+v", w.Name, w)
+			}
+		}
+	}
+	assertBoardClean(t, repo)
+}
+
+// TestSwarmRunGatesReprovaNivel: worker com codigo 0 mas sem o artefato do gate derruba o nivel e limpa tudo.
+func TestSwarmRunGatesReprovaNivel(t *testing.T) {
+	if testing.Short() {
+		t.Skip("E2E real sobe processos")
+	}
+	repo := e2eGitRepo(t)
+	t.Setenv("GO_SWARM_RUN_NOFILE", "b")
+	code, joined, out := runSwarmRun(t, repo, writeRunDAG(t, t.TempDir()), "", "-gates")
+	parts := strings.Split(joined, "\x00")
+	if code != 1 || !strings.Contains(parts[1], "gate reprovou") || !strings.Contains(parts[1], "b: file_exists('out/b.md')") {
+		t.Fatalf("esperava codigo 1 e gate reprovado no no b: code=%d stderr=%s", code, parts[1])
+	}
+	if strings.Contains(parts[1], "a: file_exists") {
+		t.Errorf("o no a produziu o artefato e nao deveria reprovar: %s", parts[1])
+	}
+	if _, err := os.Stat(filepath.Join(out, "c.start")); err == nil {
+		t.Error("o nivel 1 nao devia ter comecado apos o gate reprovar")
+	}
+	assertBoardClean(t, repo)
+}
+
+// Sem -gates o comportamento antigo vale: gate do no nao e avaliado.
+func TestSwarmRunSemGatesIgnoraGateDoNo(t *testing.T) {
+	if testing.Short() {
+		t.Skip("E2E real sobe processos")
+	}
+	repo := e2eGitRepo(t)
+	t.Setenv("GO_SWARM_RUN_NOFILE", "b")
+	if code, joined, _ := runSwarmRun(t, repo, writeRunDAG(t, t.TempDir()), ""); code != 0 {
+		t.Fatalf("sem -gates o run deveria passar: %s", joined)
+	}
 }

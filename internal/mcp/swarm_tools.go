@@ -184,10 +184,12 @@ func swarmRunDAG(sb *board.SwarmBoard, args map[string]any) (any, error) {
 		return nil, err
 	}
 	keep, _ := args["keep"].(bool)
+	gates, _ := args["gates"].(bool)
 	results, runErr := sb.RunLevels(context.Background(), levels, board.RunOptions{
 		Mode:           board.WorkspaceMode(strArg(args, "workspace", "share")),
 		RepoDir:        strArg(args, "repo", "."),
 		Keep:           keep,
+		CheckGates:     gates,
 		DefaultTimeout: durationArg(args, "timeout", 10*time.Minute),
 	})
 	out := map[string]any{"dag": p.Name, "levels": results, "skipped": skipped}
@@ -264,6 +266,7 @@ func swarmRunDef() map[string]any {
 	props["workspace"] = map[string]any{"type": "string", "description": "share, branch ou inherit"}
 	props["timeout"] = map[string]any{"type": "string", "description": "Tempo maximo por nivel, ex.: 10m"}
 	props["keep"] = map[string]any{"type": "boolean", "description": "Mantem workers e worktrees apos o sucesso"}
+	props["gates"] = map[string]any{"type": "boolean", "description": "Avalia o gate de cada no no worktree do worker; gate falso reprova o nivel"}
 	return d
 }
 

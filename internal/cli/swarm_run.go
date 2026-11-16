@@ -19,6 +19,7 @@ func cmdSwarmRun(ctx context.Context, args []string, d Deps) int {
 	ws := fs.String("workspace", "share", "share|branch|inherit")
 	timeout := fs.Duration("timeout", 10*time.Minute, "tempo maximo por nivel")
 	keep := fs.Bool("keep", false, "mantem workers e worktrees apos o sucesso")
+	gates := fs.Bool("gates", false, "avalia o gate de cada no no worktree do worker; gate falso reprova o nivel")
 	if err := fs.Parse(rest); err != nil {
 		return 2
 	}
@@ -26,7 +27,7 @@ func cmdSwarmRun(ctx context.Context, args []string, d Deps) int {
 		path = fs.Arg(0)
 	}
 	if path == "" {
-		fmt.Fprintln(d.Stderr, "uso: legoloop swarm run <dag.json> [-dir D] [-repo R] [-workspace M] [-timeout T] [-keep] [-- comando args...]")
+		fmt.Fprintln(d.Stderr, "uso: legoloop swarm run <dag.json> [-dir D] [-repo R] [-workspace M] [-timeout T] [-keep] [-gates] [-- comando args...]")
 		return 2
 	}
 	p, err := loadDAG(path)
@@ -42,7 +43,7 @@ func cmdSwarmRun(ctx context.Context, args []string, d Deps) int {
 		return fail(d, err)
 	}
 	results, runErr := sb.RunLevels(ctx, levels, board.RunOptions{
-		Mode: board.WorkspaceMode(*ws), RepoDir: *repo, Keep: *keep, DefaultTimeout: *timeout,
+		Mode: board.WorkspaceMode(*ws), RepoDir: *repo, Keep: *keep, DefaultTimeout: *timeout, CheckGates: *gates,
 	})
 	out := map[string]any{"dag": p.Name, "levels": results, "skipped": skipped}
 	if code := printJSON(d, out); code != 0 {

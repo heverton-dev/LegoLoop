@@ -44,6 +44,7 @@ func builtins() map[string]builtin {
 		"interactive":             {[]valKind{kStr}, kBool, interactivePrompt},
 		"prompt":                  {[]valKind{kStr}, kBool, interactivePrompt},
 		"no_stubs":                {[]valKind{kStr}, kBool, noStubs},
+		"cites_exist":             {[]valKind{kStr, kStr}, kBool, citesExist},
 	}
 }
 
@@ -78,7 +79,7 @@ func compileCallLiterals(c callNode) (node, error) {
 	if lit, ok := c.args[0].(litNode); ok && !filepath.IsLocal(lit.v.s) {
 		return nil, fmt.Errorf("gate: caminho %q fora do workdir", lit.v.s)
 	}
-	if c.name == "schema_valid" {
+	if c.name == "schema_valid" || c.name == "cites_exist" {
 		if lit, ok := c.args[1].(litNode); ok && !filepath.IsLocal(lit.v.s) {
 			return nil, fmt.Errorf("gate: caminho %q fora do workdir", lit.v.s)
 		}
