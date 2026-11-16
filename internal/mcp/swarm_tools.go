@@ -99,6 +99,9 @@ func loadFirstSwarmStatus(candidates []string) (board.SwarmStatus, error) {
 		if err := json.Unmarshal(data, &raw); err != nil {
 			return board.SwarmStatus{}, err
 		}
+		if raw.Workers == nil {
+			raw.Workers = []board.Worker{}
+		}
 		return board.SwarmStatus{Workers: raw.Workers, MessageCount: len(raw.Messages)}, nil
 	}
 	return board.SwarmStatus{Workers: []board.Worker{}, MessageCount: 0}, nil
@@ -109,6 +112,9 @@ func dispatchSwarmTool(sb *board.SwarmBoard, name string, args map[string]any) (
 	case "swarm_add":
 		w, err := swarmAddWorker(sb, args)
 		return w, true, err
+	case "swarm_spawn":
+		res, err := swarmSpawnWorker(sb, args)
+		return res, true, err
 	case "swarm_post":
 		m, err := sb.PostMessage(strArg(args, "from", "coordenador"), strArg(args, "to", "@all"), strArg(args, "body", ""))
 		return m, true, err
@@ -141,6 +147,31 @@ func swarmAddWorker(sb *board.SwarmBoard, args map[string]any) (any, error) {
 		WorkspaceMode: board.WorkspaceMode(strArg(args, "workspace", "inherit")),
 		RepoDir:       strArg(args, "repo", "."),
 	})
+}
+
+// swarmSpawnWorker inicia o processo real do worker; "command" aceita lista de strings.
+func swarmSpawnWorker(sb *board.SwarmBoard, args map[string]any) (any, error) {
+	name := strArg(args, "name", "")
+	cmd := stringListArg(args, "command")
+	if name == "" || len(cmd) == 0 {
+		return nil, errors.New("swarm_spawn exige name e command (lista)")
+	}
+	pid, err := sb.SpawnWorker(context.Background(), name, cmd)
+	if err != nil {
+		return nil, err
+	}
+	return map[string]any{"name": name, "pid": pid, "status": board.WorkerWorking}, nil
+}
+
+func stringListArg(args map[string]any, key string) []string {
+	raw, _ := args[key].([]any)
+	var out []string
+	for _, v := range raw {
+		if s, ok := v.(string); ok {
+			out = append(out, s)
+		}
+	}
+	return out
 }
 
 func swarmWaitMessages(sb *board.SwarmBoard, args map[string]any) (any, error) {
@@ -178,6 +209,7 @@ func durationArg(args map[string]any, key string, def time.Duration) time.Durati
 func swarmToolDefs() []map[string]any {
 	return []map[string]any{
 		swarmDef("swarm_add", "Registra um worker no quadro Swarm.", []string{"role"}),
+		swarmSpawnDef(),
 		swarmDef("swarm_post", "Publica uma mensagem no quadro Swarm.", []string{"body"}),
 		swarmDef("swarm_read", "Le mensagens do quadro Swarm.", nil),
 		swarmDef("swarm_wait", "Aguarda mensagens destinadas a um worker no quadro Swarm.", nil),
@@ -185,6 +217,14 @@ func swarmToolDefs() []map[string]any {
 		swarmDef("swarm_kill", "Encerra um worker do quadro Swarm.", []string{"name"}),
 		swarmDef("swarm_monitor", "Detecta workers estagnados no quadro Swarm.", nil),
 	}
+}
+
+func swarmSpawnDef() map[string]any {
+	d := swarmDef("swarm_spawn", "Inicia o processo real de um worker registrado, no seu worktree.", []string{"name", "command"})
+	props := d["inputSchema"].(map[string]any)["properties"].(map[string]any)
+	props["name"] = map[string]any{"type": "string", "description": "Nome do worker ja registrado"}
+	props["command"] = map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "Comando e argumentos"}
+	return d
 }
 
 func swarmDef(name, desc string, req []string) map[string]any {

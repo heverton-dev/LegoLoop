@@ -12,7 +12,11 @@ import (
 	"legoloop/internal/board"
 )
 
+// defaultBoardDir prioriza o quadro herdado do worker (LEGOLOOP_SWARM_BOARD) e cai no diretorio atual.
 func defaultBoardDir() string {
+	if env := strings.TrimSpace(os.Getenv("LEGOLOOP_SWARM_BOARD")); env != "" {
+		return env
+	}
 	wd, err := os.Getwd()
 	if err != nil {
 		return ".legoloop-swarm"
@@ -21,14 +25,15 @@ func defaultBoardDir() string {
 }
 
 func printSwarmUsage(w io.Writer) {
-	fmt.Fprintln(w, "uso: legoloop swarm <add|post|read|wait|status|kill|monitor|ui> [opcoes]")
+	fmt.Fprintln(w, "uso: legoloop swarm <add|spawn|post|read|wait|status|kill|monitor|ui> [opcoes]")
 	fmt.Fprintln(w, "subcomandos:")
-	fmt.Fprintln(w, "  add      registra worker no enxame (-dir, -agent)")
-	fmt.Fprintln(w, "  post     publica mensagem no quadro (-dir, -from, -msg)")
+	fmt.Fprintln(w, "  add      registra worker no enxame (-dir, -role, -name, -workspace, -repo)")
+	fmt.Fprintln(w, "  spawn    inicia o processo real do worker (-dir, -name, -- comando args...)")
+	fmt.Fprintln(w, "  post     publica mensagem no quadro (-dir, -from, -to, -body)")
 	fmt.Fprintln(w, "  read     le mensagens do quadro (-dir, -since)")
-	fmt.Fprintln(w, "  wait     aguarda mensagem para o agente (-dir, -agent, -since)")
+	fmt.Fprintln(w, "  wait     aguarda mensagem para o worker (-dir, -target, -since, -timeout)")
 	fmt.Fprintln(w, "  status   exibe status dos workers (-dir)")
-	fmt.Fprintln(w, "  kill     encerra worker do enxame (-dir, -agent)")
+	fmt.Fprintln(w, "  kill     encerra worker do enxame (-dir, -name, -repo)")
 	fmt.Fprintln(w, "  monitor  observa quadro do enxame (-dir)")
 	fmt.Fprintln(w, "  ui       inicia painel web (-addr, -dir, -root)")
 }
@@ -43,7 +48,7 @@ func cmdSwarm(ctx context.Context, args []string, d Deps) int {
 		return 0
 	}
 	sub := map[string]func(context.Context, []string, Deps) int{
-		"add": cmdSwarmAdd, "post": cmdSwarmPost, "read": cmdSwarmRead,
+		"add": cmdSwarmAdd, "spawn": cmdSwarmSpawn, "post": cmdSwarmPost, "read": cmdSwarmRead,
 		"wait": cmdSwarmWait, "status": cmdSwarmStatus, "kill": cmdSwarmKill, "monitor": cmdSwarmMonitor,
 		"ui": cmdSwarmUI,
 	}
@@ -83,7 +88,7 @@ func cmdSwarmAdd(_ context.Context, args []string, d Deps) int {
 
 func cmdSwarmPost(_ context.Context, args []string, d Deps) int {
 	fs := newFlags("swarm post", d)
-	from := fs.String("from", "coordenador", "remetente")
+	from := fs.String("from", envOr("LEGOLOOP_SWARM_WORKER", "coordenador"), "remetente")
 	to := fs.String("to", "@all", "destinatario")
 	body := fs.String("body", "", "mensagem")
 	dir := fs.String("dir", defaultBoardDir(), "diretorio do quadro")
@@ -135,7 +140,7 @@ func cmdSwarmRead(_ context.Context, args []string, d Deps) int {
 
 func cmdSwarmWait(ctx context.Context, args []string, d Deps) int {
 	fs := newFlags("swarm wait", d)
-	target := fs.String("target", "", "alvo (@nome ou @all)")
+	target := fs.String("target", workerTargetFromEnv(), "alvo (@nome ou @all)")
 	since := fs.Int64("since", 0, "sequencia inicial")
 	timeout := fs.Duration("timeout", 30*time.Second, "tempo maximo de espera")
 	dir := fs.String("dir", defaultBoardDir(), "diretorio do quadro")
@@ -206,4 +211,52 @@ func cmdSwarmMonitor(_ context.Context, args []string, d Deps) int {
 		return fail(d, err)
 	}
 	return printJSON(d, map[string]any{"stalled": stalled})
+}
+
+func envOr(key, def string) string {
+	if v := strings.TrimSpace(os.Getenv(key)); v != "" {
+		return v
+	}
+	return def
+}
+
+func workerTargetFromEnv() string {
+	if w := strings.TrimSpace(os.Getenv("LEGOLOOP_SWARM_WORKER")); w != "" {
+		return "@" + w
+	}
+	return ""
+}
+
+// cmdSwarmSpawn inicia o processo real do worker no seu worktree. O comando vem apos "--".
+// O processo sobrevive ao CLI; o encerramento posterior usa o PID gravado no quadro (swarm kill).
+func cmdSwarmSpawn(ctx context.Context, args []string, d Deps) int {
+	own, cmdArgs := splitSpawnArgs(args)
+	fs := newFlags("swarm spawn", d)
+	name := fs.String("name", "", "nome do worker ja registrado")
+	dir := fs.String("dir", defaultBoardDir(), "diretorio do quadro")
+	if err := fs.Parse(own); err != nil {
+		return 2
+	}
+	if strings.TrimSpace(*name) == "" || len(cmdArgs) == 0 {
+		fmt.Fprintln(d.Stderr, "uso: legoloop swarm spawn -name W [-dir D] -- comando [args...]")
+		return 2
+	}
+	sb, err := board.OpenSwarmBoard(*dir)
+	if err != nil {
+		return fail(d, err)
+	}
+	pid, err := sb.SpawnWorker(context.WithoutCancel(ctx), *name, cmdArgs)
+	if err != nil {
+		return fail(d, err)
+	}
+	return printJSON(d, map[string]any{"name": *name, "pid": pid, "status": board.WorkerWorking})
+}
+
+func splitSpawnArgs(args []string) ([]string, []string) {
+	for i, a := range args {
+		if a == "--" {
+			return args[:i], args[i+1:]
+		}
+	}
+	return args, nil
 }

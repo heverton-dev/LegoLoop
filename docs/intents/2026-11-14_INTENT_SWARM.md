@@ -87,3 +87,39 @@ Cada critério precisa ter uma forma mecânica de prova.
 🛑 **STOP-GATE 01 DE AUDITORIA HUMANA:**  
 *A intenção consolidada com 0% de certeza factual atende à sua expectativa?*  
 *Somente após a aprovação explícita do usuário, deve-se gerar a SPEC (`TEMPLATE_SPEC.md`).*
+
+## Refinamento 1.1.0
+
+* Data: 2026-11-16
+* Versão: 1.0.0 para 1.1.0
+* Etapa: e01 ()
+* Peça: legoloop-loop-map
+* Título: Validar o DAG e calcular os niveis topologicos
+* Casos: legoloop validate pipeline.dag.json deve sair com codigo 0, agrupar os nos por nivel topologico e gravar a lista de cada nivel em out/01_niveis.md
+
+## Refinamento 1.2.0
+
+* Data: 2026-11-16
+* Versão: 1.1.0 para 1.2.0
+* Etapa: e03 ()
+* Peça: legoloop-swarm-cli
+* Título: Subir o processo real de cada worker
+* Casos: legoloop swarm spawn -dir REPO -name NOME -- COMANDO ARGS (o processo roda no worktree do worker), o worker herda LEGOLOOP_SWARM_BOARD e LEGOLOOP_SWARM_WORKER; swarm post e swarm wait dispensam -dir e -from, gravar o PID de cada worker em out/03_spawn.md; dois ou mais workers do mesmo nivel rodam em paralelo
+
+## Refinamento 1.3.0
+
+* Data: 2026-11-16
+* Versão: 1.2.0 para 1.3.0
+* Etapa: e04 ()
+* Peça: legoloop-swarm-cli
+* Título: Coordenar o nivel pelo quadro em disco
+* Casos: legoloop swarm post -dir REPO -to @NOME -body MENSAGEM e legoloop swarm wait -target @coordenador, legoloop swarm status -dir REPO e legoloop swarm monitor -timeout 60s para achar worker parado, o proximo nivel so comeca quando todos os workers do nivel atual estiverem stopped; registrar em out/04_coordenacao.md
+
+## Refinamento 1.4.0
+
+* Data: 2026-11-16
+* Versão: 1.3.0 para 1.4.0
+* Etapa: e05 ()
+* Peça: legoloop-swarm-cli
+* Título: Encerrar os workers e conferir a limpeza
+* Casos: legoloop swarm kill -dir REPO -repo REPO -name NOME para cada worker ainda vivo, conferir status killed, PID 0 e worktree removido do disco e de git worktree list, gravar a conferencia em out/05_encerramento.md

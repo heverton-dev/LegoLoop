@@ -65,7 +65,7 @@ func TestMCPRouterCofreSwarmEErro32700(t *testing.T) {
 		for _, want := range []string{
 			"mcp_search", "call_mcp_tool",
 			"skill_search", "call_skill",
-			"swarm_add", "swarm_post", "swarm_read", "swarm_wait", "swarm_status", "swarm_kill", "swarm_monitor",
+			"swarm_add", "swarm_spawn", "swarm_post", "swarm_read", "swarm_wait", "swarm_status", "swarm_kill", "swarm_monitor",
 		} {
 			if !toolNames[want] {
 				t.Errorf("ferramenta esperada %q ausente em tools/list: %v", want, toolNames)

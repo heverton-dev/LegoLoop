@@ -1,0 +1,87 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-swarm",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-swarm",
+      "comandos_cli": [
+        "legoloop legoloop-swarm",
+        "/legoloop-legoloop-swarm"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-swarm",
+    "etapas": [
+      "TICK-01.1",
+      "TICK-01.2",
+      "TICK-01.3",
+      "TICK-01.4",
+      "TICK-01.5",
+      "SG-FINAL"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "TICK-01.1",
+      "palavras_chave": [
+        "TICK 01.1",
+        "TICK-01.1"
+      ],
+      "slash_command": "/legoloop-swarm-TICK-01.1",
+      "flag_cli": "--etapa TICK-01.1"
+    },
+    {
+      "id": "TICK-01.2",
+      "palavras_chave": [
+        "TICK 01.2",
+        "TICK-01.2"
+      ],
+      "slash_command": "/legoloop-swarm-TICK-01.2",
+      "flag_cli": "--etapa TICK-01.2"
+    },
+    {
+      "id": "TICK-01.3",
+      "palavras_chave": [
+        "TICK 01.3",
+        "TICK-01.3"
+      ],
+      "slash_command": "/legoloop-swarm-TICK-01.3",
+      "flag_cli": "--etapa TICK-01.3"
+    },
+    {
+      "id": "TICK-01.4",
+      "palavras_chave": [
+        "TICK 01.4",
+        "TICK-01.4"
+      ],
+      "slash_command": "/legoloop-swarm-TICK-01.4",
+      "flag_cli": "--etapa TICK-01.4"
+    },
+    {
+      "id": "TICK-01.5",
+      "palavras_chave": [
+        "TICK 01.5",
+        "TICK-01.5"
+      ],
+      "slash_command": "/legoloop-swarm-TICK-01.5",
+      "flag_cli": "--etapa TICK-01.5"
+    },
+    {
+      "id": "SG-FINAL",
+      "palavras_chave": [
+        "SG FINAL",
+        "SG-FINAL"
+      ],
+      "slash_command": "/legoloop-swarm-SG-FINAL",
+      "flag_cli": "--etapa SG-FINAL"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

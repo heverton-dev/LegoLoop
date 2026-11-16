@@ -28,7 +28,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E01.5]
 * **TDD Estrito:** `true` (Red ➔ Green ➔ Refactor obrigatório antes de qualquer código de produção)
 * **Limite de Workers Paralelos:** `2`
 * **Timeout Padrão por Peça:** `180s`
-* **Política de Rollback:** global `abort_pipeline`; por nó `stash_changes`
+* **Política de Rollback:** global `abort_processo`; por nó `stash_changes`
 
 ---
 
@@ -46,74 +46,74 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E01.5]
 
 ### Épico 01 — legoloop-swarm
 
-#### Ticket `TICK-01.1` — `e01` — Etapa 1 — peça `legoloop-piece-upgrader`
-* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+#### Ticket `TICK-01.1` — `e01` — Validar o DAG e calcular os niveis topologicos — peça `legoloop-loop-map`
+* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_no` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `[]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `code-pro` · Effort `high` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
-* **Inputs:** Source Files `out/01_etapa.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.1` · Context Artifacts `[]`
+* **Inputs:** Source Files `out/01_niveis.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.1` · Context Artifacts `[]`
 * **Alvo de Teste TDD:** `nenhum`
-* **Outputs:** Artifacts `out/01_etapa.md`
-* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm.dag.json`
-* **Gate (DSL):** `file_exists('out/01_etapa.md') && word_count('out/01_etapa.md') >= 30 && !has_pattern('out/01_etapa.md', '\{\{')`
+* **Outputs:** Artifacts `out/01_niveis.md`
+* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm/pipeline.dag.json`
+* **Gate (DSL):** `file_exists('out/01_niveis.md') && has_pattern('out/01_niveis.md', 'nivel 0') && !has_pattern('out/01_niveis.md', '\{\{')`
 * **Spec Ref:** `AC-E01.1`
 
-#### Ticket `TICK-01.2` — `e02` — Etapa 2 — peça `aidd-piece-upgrader`
-* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+#### Ticket `TICK-01.2` — `e02` — Registrar os workers do nivel com papel da Matriz e worktree isolado — peça `legoloop-matriz`
+* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_no` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["TICK-01.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `code-pro` · Effort `high` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
-* **Inputs:** Source Files `out/02_etapa.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.2` · Context Artifacts `[]`
+* **Inputs:** Source Files `out/02_workers.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.2` · Context Artifacts `[]`
 * **Alvo de Teste TDD:** `nenhum`
-* **Outputs:** Artifacts `out/02_etapa.md`
-* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm.dag.json`
-* **Gate (DSL):** `file_exists('out/02_etapa.md') && word_count('out/02_etapa.md') >= 30 && !has_pattern('out/02_etapa.md', '\{\{')`
+* **Outputs:** Artifacts `out/02_workers.md`
+* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm/pipeline.dag.json`
+* **Gate (DSL):** `file_exists('out/02_workers.md') && has_pattern('out/02_workers.md', 'worktree') && !has_pattern('out/02_workers.md', '\{\{')`
 * **Spec Ref:** `AC-E01.2`
 
-#### Ticket `TICK-01.3` — `e03` — Etapa 3 — peça `legoloop-mega-pipeline`
-* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+#### Ticket `TICK-01.3` — `e03` — Subir o processo real de cada worker — peça `legoloop-swarm-cli`
+* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_no` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["TICK-01.2"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `code-pro` · Effort `high` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
-* **Inputs:** Source Files `out/03_etapa.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.3` · Context Artifacts `[]`
+* **Inputs:** Source Files `out/03_spawn.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.3` · Context Artifacts `[]`
 * **Alvo de Teste TDD:** `nenhum`
-* **Outputs:** Artifacts `out/03_etapa.md`
-* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm.dag.json`
-* **Gate (DSL):** `file_exists('out/03_etapa.md') && word_count('out/03_etapa.md') >= 30 && !has_pattern('out/03_etapa.md', '\{\{')`
+* **Outputs:** Artifacts `out/03_spawn.md`
+* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm/pipeline.dag.json`
+* **Gate (DSL):** `file_exists('out/03_spawn.md') && has_pattern('out/03_spawn.md', 'pid') && !has_pattern('out/03_spawn.md', '\{\{')`
 * **Spec Ref:** `AC-E01.3`
 
-#### Ticket `TICK-01.4` — `e04` — Etapa 4 — peça `aidd-legoloop-mega-pipeline`
-* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+#### Ticket `TICK-01.4` — `e04` — Coordenar o nivel pelo quadro em disco — peça `legoloop-swarm-cli`
+* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_no` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["TICK-01.3"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `code-pro` · Effort `high` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
-* **Inputs:** Source Files `out/04_etapa.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.4` · Context Artifacts `[]`
+* **Inputs:** Source Files `out/04_coordenacao.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.4` · Context Artifacts `[]`
 * **Alvo de Teste TDD:** `nenhum`
-* **Outputs:** Artifacts `out/04_etapa.md`
-* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm.dag.json`
-* **Gate (DSL):** `file_exists('out/04_etapa.md') && word_count('out/04_etapa.md') >= 30 && !has_pattern('out/04_etapa.md', '\{\{')`
+* **Outputs:** Artifacts `out/04_coordenacao.md`
+* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm/pipeline.dag.json`
+* **Gate (DSL):** `file_exists('out/04_coordenacao.md') && has_pattern('out/04_coordenacao.md', 'concluid') && !has_pattern('out/04_coordenacao.md', '\{\{')`
 * **Spec Ref:** `AC-E01.4`
 
-#### Ticket `TICK-01.5` — `e05` — Etapa 5 — peça `legoloop-video-master`
-* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
+#### Ticket `TICK-01.5` — `e05` — Encerrar os workers e conferir a limpeza — peça `legoloop-swarm-cli`
+* **Iniciativa:** `nenhum` | **Épico:** `E01` | **Nature:** `micro` | **Tipo:** `unit_no` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["TICK-01.4"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `code-pro` · Effort `high` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
-* **Inputs:** Source Files `out/05_etapa.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.5` · Context Artifacts `[]`
+* **Inputs:** Source Files `out/05_encerramento.md` · Spec Anchor `docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.5` · Context Artifacts `[]`
 * **Alvo de Teste TDD:** `nenhum`
-* **Outputs:** Artifacts `out/05_etapa.md`
-* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm.dag.json`
-* **Gate (DSL):** `file_exists('out/05_etapa.md') && word_count('out/05_etapa.md') >= 30 && !has_pattern('out/05_etapa.md', '\{\{')`
+* **Outputs:** Artifacts `out/05_encerramento.md`
+* **Verificação (argv, sem shell):** `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm/pipeline.dag.json`
+* **Gate (DSL):** `file_exists('out/05_encerramento.md') && has_pattern('out/05_encerramento.md', 'killed') && !has_pattern('out/05_encerramento.md', '\{\{')`
 * **Spec Ref:** `AC-E01.5`
 
 ## 4. Homologação Final & Fechamento da Demanda (`SG-FINAL`)

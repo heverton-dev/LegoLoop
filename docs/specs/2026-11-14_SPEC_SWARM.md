@@ -1,7 +1,7 @@
 # 📋 SPEC: legoloop-swarm
 
 > **Status:** Proposta para Revisão  
-> **Versão:** 1.0.0  
+> **Versão:** 1.4.0  
 > **Gerada por:** `legoloop fabricar` (projeção do processo)  
 > **Template:** TEMPLATE_SPEC.md v2.2.0  
 
@@ -22,38 +22,38 @@ As etapas rodam em ordem de dependência; cada uma grava um artefato e passa por
 ## 4. Contratos de Dados & Schemas Formais
 | Etapa | Quem executa | Produz | Tipo |
 | :--- | :--- | :--- | :--- |
-| `e01` | peça `legoloop-piece-upgrader` | `out/01_etapa.md` | markdown |
-| `e02` | peça `aidd-piece-upgrader` | `out/02_etapa.md` | markdown |
-| `e03` | peça `legoloop-mega-pipeline` | `out/03_etapa.md` | markdown |
-| `e04` | peça `aidd-legoloop-mega-pipeline` | `out/04_etapa.md` | markdown |
-| `e05` | peça `legoloop-video-master` | `out/05_etapa.md` | markdown |
+| `e01` | peça `legoloop-loop-map` | `out/01_niveis.md` | markdown |
+| `e02` | peça `legoloop-matriz` | `out/02_workers.md` | markdown |
+| `e03` | peça `legoloop-swarm-cli` | `out/03_spawn.md` | markdown |
+| `e04` | peça `legoloop-swarm-cli` | `out/04_coordenacao.md` | markdown |
+| `e05` | peça `legoloop-swarm-cli` | `out/05_encerramento.md` | markdown |
 
 ## 5. Critérios Binários de Aceite por Nó / Ticket (BDD)
 
 ### Épico 01 — legoloop-swarm
 
-* [ ] `AC-E01.1`: **Etapa `e01`: Etapa 1**
-  * **Dado que:** o artefato `out/01_etapa.md` ainda não existe
-  * **Quando:** a etapa `e01` roda com a peça `legoloop-piece-upgrader`
-  * **Então:** o gate `file_exists('out/01_etapa.md') && word_count('out/01_etapa.md') >= 30 && !has_pattern('out/01_etapa.md', '\{\{')` passa
-* [ ] `AC-E01.2`: **Etapa `e02`: Etapa 2**
-  * **Dado que:** o artefato `out/02_etapa.md` ainda não existe
-  * **Quando:** a etapa `e02` roda com a peça `aidd-piece-upgrader`
-  * **Então:** o gate `file_exists('out/02_etapa.md') && word_count('out/02_etapa.md') >= 30 && !has_pattern('out/02_etapa.md', '\{\{')` passa
-* [ ] `AC-E01.3`: **Etapa `e03`: Etapa 3**
-  * **Dado que:** o artefato `out/03_etapa.md` ainda não existe
-  * **Quando:** a etapa `e03` roda com a peça `legoloop-mega-pipeline`
-  * **Então:** o gate `file_exists('out/03_etapa.md') && word_count('out/03_etapa.md') >= 30 && !has_pattern('out/03_etapa.md', '\{\{')` passa
-* [ ] `AC-E01.4`: **Etapa `e04`: Etapa 4**
-  * **Dado que:** o artefato `out/04_etapa.md` ainda não existe
-  * **Quando:** a etapa `e04` roda com a peça `aidd-legoloop-mega-pipeline`
-  * **Então:** o gate `file_exists('out/04_etapa.md') && word_count('out/04_etapa.md') >= 30 && !has_pattern('out/04_etapa.md', '\{\{')` passa
-* [ ] `AC-E01.5`: **Etapa `e05`: Etapa 5**
-  * **Dado que:** o artefato `out/05_etapa.md` ainda não existe
-  * **Quando:** a etapa `e05` roda com a peça `legoloop-video-master`
-  * **Então:** o gate `file_exists('out/05_etapa.md') && word_count('out/05_etapa.md') >= 30 && !has_pattern('out/05_etapa.md', '\{\{')` passa
+* [ ] `AC-E01.1`: **Etapa `e01`: Validar o DAG e calcular os niveis topologicos**
+  * **Dado que:** o artefato `out/01_niveis.md` ainda não existe
+  * **Quando:** a etapa `e01` roda com a peça `legoloop-loop-map`
+  * **Então:** o gate `file_exists('out/01_niveis.md') && has_pattern('out/01_niveis.md', 'nivel 0') && !has_pattern('out/01_niveis.md', '\{\{')` passa
+* [ ] `AC-E01.2`: **Etapa `e02`: Registrar os workers do nivel com papel da Matriz e worktree isolado**
+  * **Dado que:** o artefato `out/02_workers.md` ainda não existe
+  * **Quando:** a etapa `e02` roda com a peça `legoloop-matriz`
+  * **Então:** o gate `file_exists('out/02_workers.md') && has_pattern('out/02_workers.md', 'worktree') && !has_pattern('out/02_workers.md', '\{\{')` passa
+* [ ] `AC-E01.3`: **Etapa `e03`: Subir o processo real de cada worker**
+  * **Dado que:** o artefato `out/03_spawn.md` ainda não existe
+  * **Quando:** a etapa `e03` roda com a peça `legoloop-swarm-cli`
+  * **Então:** o gate `file_exists('out/03_spawn.md') && has_pattern('out/03_spawn.md', 'pid') && !has_pattern('out/03_spawn.md', '\{\{')` passa
+* [ ] `AC-E01.4`: **Etapa `e04`: Coordenar o nivel pelo quadro em disco**
+  * **Dado que:** o artefato `out/04_coordenacao.md` ainda não existe
+  * **Quando:** a etapa `e04` roda com a peça `legoloop-swarm-cli`
+  * **Então:** o gate `file_exists('out/04_coordenacao.md') && has_pattern('out/04_coordenacao.md', 'concluid') && !has_pattern('out/04_coordenacao.md', '\{\{')` passa
+* [ ] `AC-E01.5`: **Etapa `e05`: Encerrar os workers e conferir a limpeza**
+  * **Dado que:** o artefato `out/05_encerramento.md` ainda não existe
+  * **Quando:** a etapa `e05` roda com a peça `legoloop-swarm-cli`
+  * **Então:** o gate `file_exists('out/05_encerramento.md') && has_pattern('out/05_encerramento.md', 'killed') && !has_pattern('out/05_encerramento.md', '\{\{')` passa
 
 ## 6. Comandos Operacionais & Critério de Conclusão Global (Addy Osmani)
-* Validar: `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm.dag.json`
+* Validar: `legoloop validate ~/.aidd/canonical/loops/legoloop-swarm/pipeline.dag.json`
 
 🛑 **STOP-GATE 02 DE AUDITORIA HUMANA:**

@@ -587,10 +587,37 @@ func (sb *SwarmBoard) Status() (SwarmStatus, error) {
 		if err != nil {
 			return err
 		}
-		out = SwarmStatus{Workers: st.Workers, MessageCount: len(st.Messages)}
+		if reconcileDeadPIDs(st.Workers) {
+			if err := sb.saveLocked(st); err != nil {
+				return err
+			}
+		}
+		workers := st.Workers
+		if workers == nil {
+			workers = []Worker{}
+		}
+		out = SwarmStatus{Workers: workers, MessageCount: len(st.Messages)}
 		return nil
 	})
 	return out, err
+}
+
+// reconcileDeadPIDs marca como stopped os workers cujo processo morreu sem que o dono do spawn
+// (outro processo do CLI) pudesse registrar a saida. Retorna true se alterou algo.
+func reconcileDeadPIDs(workers []Worker) bool {
+	changed := false
+	now := time.Now().UTC()
+	for i := range workers {
+		w := &workers[i]
+		if w.PID <= 0 || w.Status == WorkerKilled || isOSProcessAlive(w.PID) {
+			continue
+		}
+		w.Status = WorkerStopped
+		w.PID = 0
+		w.LastActiveAt = now
+		changed = true
+	}
+	return changed
 }
 
 // TouchWorker atualiza status e timestamp de atividade de um worker.
@@ -613,7 +640,7 @@ func (sb *SwarmBoard) TouchWorker(name string, status WorkerStatus, at time.Time
 
 // CheckStall retorna workers em execucao sem atividade dentro de timeout.
 func (sb *SwarmBoard) CheckStall(timeout time.Duration) ([]Worker, error) {
-	var stalled []Worker
+	stalled := []Worker{}
 	err := sb.withLock(func() error {
 		st, err := sb.loadLocked()
 		if err != nil {

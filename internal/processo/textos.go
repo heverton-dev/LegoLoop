@@ -80,6 +80,10 @@ func writeSkillProcedimento(b *strings.Builder, ord []Etapa, dagPath string) {
 			acao = "execute o processo `" + e.Compoe + "`"
 		}
 		fmt.Fprintf(b, "%d. Etapa `%s`: %s; a saída é `%s` e o gate é `%s`.\n", i+2, e.ID, acao, e.Produz.Caminho, limpo(e.Gate))
+		fmt.Fprintf(b, "   - Título: %s\n", limpo(e.Titulo))
+		for _, caso := range e.Casos {
+			fmt.Fprintf(b, "   - Caso: %s\n", limpo(caso))
+		}
 	}
 	fmt.Fprintf(b, "%d. Pare no Stop-Gate humano antes de qualquer gravação definitiva.\n\n---\n\n", len(ord)+2)
 }

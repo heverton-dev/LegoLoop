@@ -49,7 +49,7 @@
       "id": "TICK-01.1",
       "initiative_id": null,
       "epic_id": "E01",
-      "label": "`e01` — Etapa 1 — peça `legoloop-piece-upgrader`",
+      "label": "`e01` — Validar o DAG e calcular os niveis topologicos — peça `legoloop-loop-map`",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
@@ -95,7 +95,7 @@
       },
       "inputs": {
         "source_files": [
-          "out/01_etapa.md"
+          "out/01_niveis.md"
         ],
         "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.1",
         "context_artifacts": []
@@ -106,7 +106,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "out/01_etapa.md"
+          "out/01_niveis.md"
         ],
         "verify": [
           [
@@ -115,7 +115,7 @@
             "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
           ]
         ],
-        "gate": "file_exists('out/01_etapa.md') \u0026\u0026 word_count('out/01_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/01_niveis.md') && has_pattern('out/01_niveis.md', 'nivel 0') && !has_pattern('out/01_niveis.md', '\\{\\{')"
       },
       "telemetry": null
     },
@@ -123,7 +123,7 @@
       "id": "TICK-01.2",
       "initiative_id": null,
       "epic_id": "E01",
-      "label": "`e02` — Etapa 2 — peça `aidd-piece-upgrader`",
+      "label": "`e02` — Registrar os workers do nivel com papel da Matriz e worktree isolado — peça `legoloop-matriz`",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
@@ -171,7 +171,7 @@
       },
       "inputs": {
         "source_files": [
-          "out/02_etapa.md"
+          "out/02_workers.md"
         ],
         "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.2",
         "context_artifacts": []
@@ -182,7 +182,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "out/02_etapa.md"
+          "out/02_workers.md"
         ],
         "verify": [
           [
@@ -191,7 +191,7 @@
             "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
           ]
         ],
-        "gate": "file_exists('out/02_etapa.md') \u0026\u0026 word_count('out/02_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/02_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/02_workers.md') && has_pattern('out/02_workers.md', 'worktree') && !has_pattern('out/02_workers.md', '\\{\\{')"
       },
       "telemetry": null
     },
@@ -199,7 +199,7 @@
       "id": "TICK-01.3",
       "initiative_id": null,
       "epic_id": "E01",
-      "label": "`e03` — Etapa 3 — peça `legoloop-mega-processo`",
+      "label": "`e03` — Subir o processo real de cada worker — peça `legoloop-swarm-cli`",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
@@ -247,7 +247,7 @@
       },
       "inputs": {
         "source_files": [
-          "out/03_etapa.md"
+          "out/03_spawn.md"
         ],
         "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.3",
         "context_artifacts": []
@@ -258,7 +258,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "out/03_etapa.md"
+          "out/03_spawn.md"
         ],
         "verify": [
           [
@@ -267,7 +267,7 @@
             "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
           ]
         ],
-        "gate": "file_exists('out/03_etapa.md') \u0026\u0026 word_count('out/03_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/03_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/03_spawn.md') && has_pattern('out/03_spawn.md', 'pid') && !has_pattern('out/03_spawn.md', '\\{\\{')"
       },
       "telemetry": null
     },
@@ -275,7 +275,7 @@
       "id": "TICK-01.4",
       "initiative_id": null,
       "epic_id": "E01",
-      "label": "`e04` — Etapa 4 — peça `aidd-legoloop-mega-processo`",
+      "label": "`e04` — Coordenar o nivel pelo quadro em disco — peça `legoloop-swarm-cli`",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
@@ -323,7 +323,7 @@
       },
       "inputs": {
         "source_files": [
-          "out/04_etapa.md"
+          "out/04_coordenacao.md"
         ],
         "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.4",
         "context_artifacts": []
@@ -334,7 +334,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "out/04_etapa.md"
+          "out/04_coordenacao.md"
         ],
         "verify": [
           [
@@ -343,7 +343,7 @@
             "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
           ]
         ],
-        "gate": "file_exists('out/04_etapa.md') \u0026\u0026 word_count('out/04_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/04_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/04_coordenacao.md') && has_pattern('out/04_coordenacao.md', 'concluid') && !has_pattern('out/04_coordenacao.md', '\\{\\{')"
       },
       "telemetry": null
     },
@@ -351,7 +351,7 @@
       "id": "TICK-01.5",
       "initiative_id": null,
       "epic_id": "E01",
-      "label": "`e05` — Etapa 5 — peça `legoloop-video-master`",
+      "label": "`e05` — Encerrar os workers e conferir a limpeza — peça `legoloop-swarm-cli`",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
@@ -399,7 +399,7 @@
       },
       "inputs": {
         "source_files": [
-          "out/05_etapa.md"
+          "out/05_encerramento.md"
         ],
         "spec_anchor": "docs/specs/2026-11-14_SPEC_SWARM.md#AC-E01.5",
         "context_artifacts": []
@@ -410,7 +410,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "out/05_etapa.md"
+          "out/05_encerramento.md"
         ],
         "verify": [
           [
@@ -419,7 +419,7 @@
             "~/.aidd/canonical/loops/legoloop-swarm.dag.json"
           ]
         ],
-        "gate": "file_exists('out/05_etapa.md') \u0026\u0026 word_count('out/05_etapa.md') \u003e= 30 \u0026\u0026 !has_pattern('out/05_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/05_encerramento.md') && has_pattern('out/05_encerramento.md', 'killed') && !has_pattern('out/05_encerramento.md', '\\{\\{')"
       },
       "telemetry": null
     },
@@ -427,7 +427,7 @@
       "id": "SG-FINAL",
       "initiative_id": null,
       "epic_id": null,
-      "label": "Homologação Final (Regressão Global \u0026 Recompilação Fresca)",
+      "label": "Homologação Final (Regressão Global & Recompilação Fresca)",
       "nature": "nano",
       "extreme": false,
       "class_rule": "stop_gate",
@@ -501,7 +501,7 @@
             "./cmd/legoloop"
           ]
         ],
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
       },
       "telemetry": null
     }

@@ -8,7 +8,7 @@
   "upstream_signatures": {
     "route": {
       "path": "docs/routes/2026-11-14_ROUTE_SWARM.json",
-      "sha256": "6d1eb2022c4836c15ca3b69529f66b8e9a6ea82b35814531b8d720b7eda2068a"
+      "sha256": "89a3c4da482e77edda5effd2a747266ec12b3a568bde3fa1d37ad1524efbadee"
     }
   },
   "execution_strategy": {
@@ -23,13 +23,13 @@
   "nodes": [
     {
       "id": "TICK-01.1",
-      "name": "Etapa 1 — peça legoloop-piece-upgrader",
+      "name": "Validar o DAG e calcular os niveis topologicos — peça legoloop-loop-map",
       "type": "unit_no",
       "nature": "micro",
       "role": "engenheiro-backend",
       "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
-      "ref": "skills/legoloop-piece-upgrader",
+      "ref": "skills/legoloop-loop-map",
       "depends_on": [],
       "timeout_sec": 180,
       "routing": {
@@ -62,7 +62,7 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "file_exists('out/01_etapa.md') && word_count('out/01_etapa.md') >= 30 && !has_pattern('out/01_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/01_niveis.md') && has_pattern('out/01_niveis.md', 'nivel 0') && !has_pattern('out/01_niveis.md', '\\{\\{')"
       },
       "spec_ref": "AC-E01.1",
       "status": "PENDING",
@@ -70,22 +70,22 @@
         "docs/specs/2026-11-14_SPEC_SWARM.md"
       ],
       "context_out": [
-        "out/01_etapa.md"
+        "out/01_niveis.md"
       ],
       "output": {
-        "artifact": "out/01_etapa.md",
-        "gate": "file_exists('out/01_etapa.md') && word_count('out/01_etapa.md') >= 30 && !has_pattern('out/01_etapa.md', '\\{\\{')"
+        "artifact": "out/01_niveis.md",
+        "gate": "file_exists('out/01_niveis.md') && has_pattern('out/01_niveis.md', 'nivel 0') && !has_pattern('out/01_niveis.md', '\\{\\{')"
       }
     },
     {
       "id": "TICK-01.2",
-      "name": "Etapa 2 — peça aidd-piece-upgrader",
+      "name": "Registrar os workers do nivel com papel da Matriz e worktree isolado — peça legoloop-matriz",
       "type": "unit_no",
       "nature": "micro",
       "role": "engenheiro-backend",
       "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
-      "ref": "skills/aidd-piece-upgrader",
+      "ref": "skills/legoloop-matriz",
       "depends_on": [
         "TICK-01.1"
       ],
@@ -123,7 +123,7 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "file_exists('out/02_etapa.md') && word_count('out/02_etapa.md') >= 30 && !has_pattern('out/02_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/02_workers.md') && has_pattern('out/02_workers.md', 'worktree') && !has_pattern('out/02_workers.md', '\\{\\{')"
       },
       "spec_ref": "AC-E01.2",
       "status": "PENDING",
@@ -131,22 +131,22 @@
         "out/01_etapa.md"
       ],
       "context_out": [
-        "out/02_etapa.md"
+        "out/02_workers.md"
       ],
       "output": {
-        "artifact": "out/02_etapa.md",
-        "gate": "file_exists('out/02_etapa.md') && word_count('out/02_etapa.md') >= 30 && !has_pattern('out/02_etapa.md', '\\{\\{')"
+        "artifact": "out/02_workers.md",
+        "gate": "file_exists('out/02_workers.md') && has_pattern('out/02_workers.md', 'worktree') && !has_pattern('out/02_workers.md', '\\{\\{')"
       }
     },
     {
       "id": "TICK-01.3",
-      "name": "Etapa 3 — peça legoloop-mega-processo",
+      "name": "Subir o processo real de cada worker — peça legoloop-swarm-cli",
       "type": "unit_no",
       "nature": "micro",
       "role": "engenheiro-backend",
       "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
-      "ref": "skills/legoloop-mega-processo",
+      "ref": "skills/legoloop-swarm-cli",
       "depends_on": [
         "TICK-01.2"
       ],
@@ -184,7 +184,7 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "file_exists('out/03_etapa.md') && word_count('out/03_etapa.md') >= 30 && !has_pattern('out/03_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/03_spawn.md') && has_pattern('out/03_spawn.md', 'pid') && !has_pattern('out/03_spawn.md', '\\{\\{')"
       },
       "spec_ref": "AC-E01.3",
       "status": "PENDING",
@@ -192,22 +192,22 @@
         "out/02_etapa.md"
       ],
       "context_out": [
-        "out/03_etapa.md"
+        "out/03_spawn.md"
       ],
       "output": {
-        "artifact": "out/03_etapa.md",
-        "gate": "file_exists('out/03_etapa.md') && word_count('out/03_etapa.md') >= 30 && !has_pattern('out/03_etapa.md', '\\{\\{')"
+        "artifact": "out/03_spawn.md",
+        "gate": "file_exists('out/03_spawn.md') && has_pattern('out/03_spawn.md', 'pid') && !has_pattern('out/03_spawn.md', '\\{\\{')"
       }
     },
     {
       "id": "TICK-01.4",
-      "name": "Etapa 4 — peça aidd-legoloop-mega-processo",
+      "name": "Coordenar o nivel pelo quadro em disco — peça legoloop-swarm-cli",
       "type": "unit_no",
       "nature": "micro",
       "role": "engenheiro-backend",
       "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
-      "ref": "skills/aidd-legoloop-mega-processo",
+      "ref": "skills/legoloop-swarm-cli",
       "depends_on": [
         "TICK-01.3"
       ],
@@ -245,7 +245,7 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "file_exists('out/04_etapa.md') && word_count('out/04_etapa.md') >= 30 && !has_pattern('out/04_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/04_coordenacao.md') && has_pattern('out/04_coordenacao.md', 'concluid') && !has_pattern('out/04_coordenacao.md', '\\{\\{')"
       },
       "spec_ref": "AC-E01.4",
       "status": "PENDING",
@@ -253,22 +253,22 @@
         "out/03_etapa.md"
       ],
       "context_out": [
-        "out/04_etapa.md"
+        "out/04_coordenacao.md"
       ],
       "output": {
-        "artifact": "out/04_etapa.md",
-        "gate": "file_exists('out/04_etapa.md') && word_count('out/04_etapa.md') >= 30 && !has_pattern('out/04_etapa.md', '\\{\\{')"
+        "artifact": "out/04_coordenacao.md",
+        "gate": "file_exists('out/04_coordenacao.md') && has_pattern('out/04_coordenacao.md', 'concluid') && !has_pattern('out/04_coordenacao.md', '\\{\\{')"
       }
     },
     {
       "id": "TICK-01.5",
-      "name": "Etapa 5 — peça legoloop-video-master",
+      "name": "Encerrar os workers e conferir a limpeza — peça legoloop-swarm-cli",
       "type": "unit_no",
       "nature": "micro",
       "role": "engenheiro-backend",
       "papel": "engenheiro-backend",
       "cognitive_complexity": "simples",
-      "ref": "skills/legoloop-video-master",
+      "ref": "skills/legoloop-swarm-cli",
       "depends_on": [
         "TICK-01.4"
       ],
@@ -306,7 +306,7 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "file_exists('out/05_etapa.md') && word_count('out/05_etapa.md') >= 30 && !has_pattern('out/05_etapa.md', '\\{\\{')"
+        "gate": "file_exists('out/05_encerramento.md') && has_pattern('out/05_encerramento.md', 'killed') && !has_pattern('out/05_encerramento.md', '\\{\\{')"
       },
       "spec_ref": "AC-E01.5",
       "status": "PENDING",
@@ -314,11 +314,11 @@
         "out/04_etapa.md"
       ],
       "context_out": [
-        "out/05_etapa.md"
+        "out/05_encerramento.md"
       ],
       "output": {
-        "artifact": "out/05_etapa.md",
-        "gate": "file_exists('out/05_etapa.md') && word_count('out/05_etapa.md') >= 30 && !has_pattern('out/05_etapa.md', '\\{\\{')"
+        "artifact": "out/05_encerramento.md",
+        "gate": "file_exists('out/05_encerramento.md') && has_pattern('out/05_encerramento.md', 'killed') && !has_pattern('out/05_encerramento.md', '\\{\\{')"
       }
     },
     {
