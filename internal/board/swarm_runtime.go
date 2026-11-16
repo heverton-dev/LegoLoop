@@ -127,6 +127,7 @@ func (sb *SwarmBoard) recordSpawn(name string, pid int) error {
 		for i := range st.Workers {
 			if st.Workers[i].Name == name {
 				st.Workers[i].PID = pid
+				st.Workers[i].ExitCode = nil
 				st.Workers[i].Status = WorkerWorking
 				st.Workers[i].LastActiveAt = time.Now().UTC()
 				return sb.saveLocked(st)
@@ -169,25 +170,38 @@ func (sb *SwarmBoard) waitActiveExit(pid int, timeout time.Duration) {
 func (sb *SwarmBoard) waitWorkerExit(name string, pid int, cmd *exec.Cmd, done chan struct{}) {
 	defer sb.untrackActive(pid, done)
 	_ = cmd.Wait()
-	_ = sb.finishWorkerExit(name, pid)
+	code := -1
+	if cmd.ProcessState != nil {
+		code = cmd.ProcessState.ExitCode()
+	}
+	_ = sb.finishWorkerExit(name, pid, code)
 }
 
-func (sb *SwarmBoard) finishWorkerExit(name string, pid int) error {
+func (sb *SwarmBoard) finishWorkerExit(name string, pid, code int) error {
 	return sb.withLock(func() error {
 		st, err := sb.loadLocked()
 		if err != nil {
 			return err
 		}
 		for i := range st.Workers {
-			if st.Workers[i].Name != name {
+			w := &st.Workers[i]
+			if w.Name != name {
 				continue
 			}
-			if st.Workers[i].Status == WorkerKilled || st.Workers[i].PID != pid {
+			switch {
+			case w.Status == WorkerKilled:
+				return nil
+			case w.PID == pid:
+				w.Status = WorkerStopped
+				w.PID = 0
+			case w.PID == 0 && w.Status == WorkerStopped && w.ExitCode == nil:
+				// Status() ja marcou o PID morto como stopped; falta so o codigo de saida.
+			default:
 				return nil
 			}
-			st.Workers[i].Status = WorkerStopped
-			st.Workers[i].PID = 0
-			st.Workers[i].LastActiveAt = time.Now().UTC()
+			c := code
+			w.ExitCode = &c
+			w.LastActiveAt = time.Now().UTC()
 			return sb.saveLocked(st)
 		}
 		return nil

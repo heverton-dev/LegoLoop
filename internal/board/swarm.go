@@ -58,6 +58,7 @@ type Worker struct {
 	RepoDir       string        `json:"repo_dir,omitempty"`
 	Status        WorkerStatus  `json:"status"`
 	PID           int           `json:"pid,omitempty"`
+	ExitCode      *int          `json:"exit_code,omitempty"`
 	CreatedAt     time.Time     `json:"created_at"`
 	LastActiveAt  time.Time     `json:"last_active_at"`
 }

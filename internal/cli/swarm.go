@@ -25,10 +25,11 @@ func defaultBoardDir() string {
 }
 
 func printSwarmUsage(w io.Writer) {
-	fmt.Fprintln(w, "uso: legoloop swarm <add|spawn|post|read|wait|status|kill|monitor|ui> [opcoes]")
+	fmt.Fprintln(w, "uso: legoloop swarm <add|spawn|run|post|read|wait|status|kill|monitor|ui> [opcoes]")
 	fmt.Fprintln(w, "subcomandos:")
 	fmt.Fprintln(w, "  add      registra worker no enxame (-dir, -role, -name, -workspace, -repo)")
 	fmt.Fprintln(w, "  spawn    inicia o processo real do worker (-dir, -name, -- comando args...)")
+	fmt.Fprintln(w, "  run      executa o DAG por nivel topologico, workers paralelos (-dir, -repo, -workspace, -timeout, -keep, -- comando)")
 	fmt.Fprintln(w, "  post     publica mensagem no quadro (-dir, -from, -to, -body)")
 	fmt.Fprintln(w, "  read     le mensagens do quadro (-dir, -since)")
 	fmt.Fprintln(w, "  wait     aguarda mensagem para o worker (-dir, -target, -since, -timeout)")
@@ -48,7 +49,7 @@ func cmdSwarm(ctx context.Context, args []string, d Deps) int {
 		return 0
 	}
 	sub := map[string]func(context.Context, []string, Deps) int{
-		"add": cmdSwarmAdd, "spawn": cmdSwarmSpawn, "post": cmdSwarmPost, "read": cmdSwarmRead,
+		"add": cmdSwarmAdd, "spawn": cmdSwarmSpawn, "run": cmdSwarmRun, "post": cmdSwarmPost, "read": cmdSwarmRead,
 		"wait": cmdSwarmWait, "status": cmdSwarmStatus, "kill": cmdSwarmKill, "monitor": cmdSwarmMonitor,
 		"ui": cmdSwarmUI,
 	}

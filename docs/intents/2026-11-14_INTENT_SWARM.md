@@ -132,3 +132,12 @@ Cada critério precisa ter uma forma mecânica de prova.
 * Peça: legoloop-swarm-cli
 * Título: Encerrar os workers e conferir a limpeza
 * Casos: legoloop swarm kill -dir REPO -repo REPO -name NOME para cada worker ainda vivo, conferir status killed, PID 0 e worktree removido do disco e de git worktree list, gravar a conferencia em out/05_encerramento.md
+
+## Refinamento 1.6.0
+
+* Data: 2026-11-16
+* Versão: 1.5.0 para 1.6.0
+* Etapa: e03 ()
+* Peça: legoloop-swarm-cli
+* Título: Subir o processo real de cada worker
+* Casos: legoloop swarm spawn -dir REPO -name NOME -- COMANDO ARGS (o processo roda no worktree do worker), o worker herda LEGOLOOP_SWARM_BOARD e LEGOLOOP_SWARM_WORKER; swarm post e swarm wait dispensam -dir e -from, gravar o PID de cada worker em out/03_spawn.md; dois ou mais workers do mesmo nivel rodam em paralelo, alternativa automatica: legoloop swarm run DAG.json -dir REPO -repo REPO -- COMANDO ARGS sobe cada nivel em paralelo e so avanca quando todos pararam com codigo 0
