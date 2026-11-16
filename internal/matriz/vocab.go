@@ -67,7 +67,8 @@ func DefaultVocab() Vocab {
 	return v
 }
 
-// LoadVocab lê o vocabulário do cofre; sem arquivo, usa o padrão (e não grava nada).
+// LoadVocab lê o vocabulário do cofre e soma por acréscimo os termos aos da semente embutida; a semente nunca
+// é reescrita. Sem arquivo, vale só a semente (e nada é gravado).
 func LoadVocab(vault string) (Vocab, error) {
 	b, err := os.ReadFile(filepath.Join(vault, vocabFile))
 	if errors.Is(err, os.ErrNotExist) {
@@ -76,11 +77,33 @@ func LoadVocab(vault string) (Vocab, error) {
 	if err != nil {
 		return Vocab{}, err
 	}
-	var v Vocab
-	if err := json.Unmarshal(b, &v); err != nil || v.Versao == 0 {
+	var extra Vocab
+	if err := json.Unmarshal(b, &extra); err != nil || extra.Versao == 0 {
 		return Vocab{}, fmt.Errorf("matriz: %s inválido: %v", vocabFile, err)
 	}
-	return v, nil
+	return somar(DefaultVocab(), extra), nil
+}
+
+// somar devolve a semente com os termos do cofre acrescentados, sem repetir nomes por categoria. A versão é a
+// do cofre (é ele que sobe de versão a cada aprovação).
+func somar(semente, cofre Vocab) Vocab {
+	out := semente
+	out.Versao = cofre.Versao
+	out.Etapas = juntarTermos(semente.Etapas, cofre.Etapas)
+	out.Naturezas = juntarTermos(semente.Naturezas, cofre.Naturezas)
+	out.CasosDeUso = juntarTermos(semente.CasosDeUso, cofre.CasosDeUso)
+	return out
+}
+
+// juntarTermos acrescenta os termos novos à lista base, na ordem das duas fontes e sem repetir nomes.
+func juntarTermos(base, extra []Termo) []Termo {
+	out := slices.Clone(base)
+	for _, t := range extra {
+		if !slices.ContainsFunc(out, func(x Termo) bool { return x.Nome == t.Nome }) {
+			out = append(out, t)
+		}
+	}
+	return out
 }
 
 // Termos devolve a lista da categoria.

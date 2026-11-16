@@ -47,13 +47,15 @@ type Deps struct {
 	Workspace string
 }
 
-// Plano é o que Executar vai apagar. Planejar não toca o disco.
+// Plano é o que Executar vai apagar. Planejar não toca o disco. Rollback guarda o original em
+// .legoloop-bak em vez de apagar: é o caso da peça solta com contrato.
 type Plano struct {
 	Nome      string     `json:"nome"`
 	Versao    string     `json:"versao"`
 	Harnesses []string   `json:"harnesses"`
 	Links     []string   `json:"links"`    // pastas em ~/.<harness>/skills
 	Arquivos  []string   `json:"arquivos"` // itens do cofre, com o processo.json por último
+	Rollback  bool       `json:"rollback"`
 	Cartao    ste.Cartao `json:"cartao"`
 }
 
@@ -83,6 +85,9 @@ func Planejar(ctx context.Context, d Deps, nome string) (Plano, error) {
 	}
 	alvo := acharProcesso(procs, nome)
 	if alvo == nil {
+		if p, ok := planejarPeca(d, nome); ok {
+			return p, nil
+		}
 		return Plano{}, fmt.Errorf("%w: %s", ErrNaoEncontrado, ste.Msg("remover.nao_achou", vault, nome))
 	}
 	usadoPor := processo.MapearUsadoPor(procs)
@@ -99,6 +104,20 @@ func acharProcesso(procs []processo.ProcessoCofre, nome string) *processo.Proces
 		}
 	}
 	return nil
+}
+
+const sufixoBackup = ".legoloop-bak"
+
+// planejarPeca acha a peça solta com contrato declarado (contrato.json ao lado do SKILL.md).
+// A peça sai com rollback: o original vira <dir>.legoloop-bak e nada é apagado de vez.
+func planejarPeca(d Deps, nome string) (Plano, bool) {
+	dir := filepath.Join(d.Store.Roots.Vault, "skills", nome)
+	if _, err := os.Stat(filepath.Join(dir, "contrato.json")); err != nil {
+		return Plano{}, false
+	}
+	p := Plano{Nome: nome, Harnesses: []string{}, Links: []string{}, Arquivos: []string{dir}, Rollback: true}
+	p.Cartao = cartao(p)
+	return p, true
 }
 
 // nomeValido aceita só legoloop-<algo> sem separador de caminho: o nome vira caminho no disco.
@@ -169,6 +188,12 @@ func Executar(ctx context.Context, p Plano) error {
 	for _, caminho := range append(append([]string{}, p.Links...), p.Arquivos...) {
 		if err := ctx.Err(); err != nil {
 			return err
+		}
+		if p.Rollback {
+			if err := os.Rename(caminho, caminho+sufixoBackup); err != nil {
+				return fmt.Errorf("remover %s: %w", caminho, err)
+			}
+			continue
 		}
 		if err := os.RemoveAll(caminho); err != nil {
 			return fmt.Errorf("remover %s: %w", caminho, err)

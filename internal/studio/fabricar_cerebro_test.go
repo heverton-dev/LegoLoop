@@ -52,8 +52,10 @@ func TestStudioCerebro_OllamaSemRouterFabrica(t *testing.T) {
 		}
 		return nil
 	})
-	if n != 9 {
-		t.Errorf("devia gravar os 9 documentos no projeto, gravou %d", n)
+	// 11 documentos desde o Sexteto completo do mandato AC-E03.1: INTERVIEW e REPORT
+	// entraram no plano e elevaram a contagem de 9 para 11.
+	if n != 11 {
+		t.Errorf("devia gravar os 11 documentos no projeto, gravou %d", n)
 	}
 }
 

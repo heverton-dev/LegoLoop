@@ -82,12 +82,18 @@ func init() {
 }
 
 // Mudanca é a alteração de uma etapa. Peca, Titulo e Casos vazios mantêm o valor atual; ao menos um deles
-// precisa trazer valor novo. Depois da mudança a etapa precisa ter ao menos um caso de uso.
+// precisa trazer valor novo. Mudança de Peca ou Casos exige etapa com ao menos um caso de uso depois.
 type Mudanca struct {
 	Etapa  string   `json:"etapa"`
 	Peca   string   `json:"peca,omitempty"`
 	Titulo string   `json:"titulo,omitempty"`
 	Casos  []string `json:"casos,omitempty"`
+	// Sai troca o artefato produzido pela etapa (I/O de saída); Entra troca os artefatos consumidos.
+	// Gate e Natureza sobrescrevem o gate derivado do artefato e a natureza do nó.
+	Sai      *processo.Artefato `json:"sai,omitempty"`
+	Entra    []string           `json:"entra,omitempty"`
+	Gate     string             `json:"gate,omitempty"`
+	Natureza string             `json:"natureza,omitempty"`
 	// Adicionar cria a etapa Etapa (id novo, no fim do processo) em vez de mudar uma existente.
 	// Depende lista as etapas que vêm antes da nova; vazio liga na última.
 	Adicionar bool     `json:"adicionar,omitempty"`
@@ -226,6 +232,7 @@ func planejar(req Request, d Deps) (Plano, error) {
 	depois := novo.Etapas[indiceDe(novo.Etapas, req.Mudanca.Etapa)]
 	return Plano{Nome: novo.Nome, De: atual.Versao, Para: novo.Versao, Antes: antes, Depois: depois, Arquivos: arqs,
 		Mudanca: Mudanca{Etapa: depois.ID, Peca: depois.Peca, Titulo: depois.Titulo, Casos: depois.Casos,
+			Sai: req.Mudanca.Sai, Entra: req.Mudanca.Entra, Gate: req.Mudanca.Gate, Natureza: req.Mudanca.Natureza,
 			Adicionar: req.Mudanca.Adicionar, Depende: req.Mudanca.Depende},
 		Avisos: append(avisosDaPeca(roots.Vault, depois.Peca, antes.Peca), avisosV2...), files: files}, nil
 }
@@ -281,13 +288,14 @@ func erroMudanca(id string, args ...any) error {
 	return fmt.Errorf("%w: %s", ErrMudanca, ste.Msg(id, args...))
 }
 
-// mudar aplica Peca, Titulo e Casos na etapa. Fica com os casos pedidos; sem eles, com os que a etapa já tinha.
+// mudar aplica Peca, Titulo, Casos, Sai, Entra, Gate e Natureza na etapa. Fica com os casos pedidos; sem
+// eles, com os que a etapa já tinha.
 func mudar(e processo.Etapa, m Mudanca) (processo.Etapa, error) {
 	peca, titulo, casos := strings.TrimSpace(m.Peca), strings.TrimSpace(m.Titulo), limpar(m.Casos)
 	switch {
 	case e.Compoe != "":
 		return e, erroMudanca("refinar.etapa_composta", e.ID)
-	case peca == "" && titulo == "" && len(casos) == 0:
+	case peca == "" && titulo == "" && len(casos) == 0 && m.Sai == nil && len(m.Entra) == 0 && m.Gate == "" && m.Natureza == "":
 		return e, erroMudanca("refinar.sem_mudanca", e.ID)
 	}
 	if peca != "" {
@@ -299,10 +307,38 @@ func mudar(e processo.Etapa, m Mudanca) (processo.Etapa, error) {
 	if len(casos) > 0 {
 		e.Casos = casos
 	}
-	if len(e.Casos) == 0 {
+	if err := mudarIO(&e, m); err != nil {
+		return e, err
+	}
+	if (peca != "" || len(casos) > 0) && len(e.Casos) == 0 {
 		return e, erroMudanca("refinar.sem_caso", e.ID)
 	}
 	return e, nil
+}
+
+// mudarIO aplica o I/O novo da etapa. Sai troca o artefato e deriva o gate dele; Entra troca o consumo.
+// Gate e Natureza sobrescrevem o que veio derivado.
+func mudarIO(e *processo.Etapa, m Mudanca) error {
+	if m.Sai != nil {
+		e.Produz = *m.Sai
+		if m.Gate == "" {
+			g, err := processo.GateParaArtefato(e.Produz)
+			if err != nil {
+				return err
+			}
+			e.Gate = g
+		}
+	}
+	if m.Gate != "" {
+		e.Gate = m.Gate
+	}
+	if len(m.Entra) > 0 {
+		e.Consome = limpar(m.Entra)
+	}
+	if m.Natureza != "" {
+		e.Natureza = m.Natureza
+	}
+	return nil
 }
 
 // limpar tira os espaços, os vazios e os repetidos, mantendo a ordem.
@@ -359,18 +395,8 @@ func montar(anterior, p processo.Processo, m Mudanca, now time.Time, roots proce
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
 	dagPath, studioPath := caminhos.DestinosDoProcesso(roots.Vault, p.Nome, paths.SufixoAntigo)
-	todos := []processo.File{
-		{Kind: "INTENT", Path: intentPath, Data: intent},
-		{Kind: "SPEC", Path: filepath.Join(docs, "specs", pr.SpecNome), Data: []byte(pr.Spec)},
-		{Kind: "PLAN", Path: filepath.Join(docs, "plans", pr.PlanNome), Data: []byte(pr.Plan)},
-		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
-		{Kind: "DAG", Path: dagPath, Data: pr.DAG},
-		{Kind: "loop", Path: studioPath, Data: pr.Studio},
-		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
-	}
+	todos := projecoesDe(p, pr, pj, intentPath, intent, roots, dagPath, studioPath)
 	if todos, err = comDerivados(todos, docs, dagPath, p, pr); err != nil {
 		return nil, nil, nil, err
 	}
@@ -381,6 +407,23 @@ func montar(anterior, p processo.Processo, m Mudanca, now time.Time, roots proce
 	todos, avisos := curados(todos, roots.Docs, docs, p, pr, prAnterior.Route)
 	arqs, gravar, err := comparar(todos)
 	return arqs, gravar, avisos, err
+}
+
+// projecoesDe monta a lista dos arquivos do processo novo: o INTENT nas docs e as
+// projeções do processo no repositório e no cofre. O processo.json vai por último.
+func projecoesDe(p processo.Processo, pr *processo.Projecoes, pj []byte, intentPath string, intent []byte, roots processo.Roots, dagPath, studioPath string) []processo.File {
+	docs := filepath.Join(roots.Docs, "docs")
+	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
+	return []processo.File{
+		{Kind: "INTENT", Path: intentPath, Data: intent},
+		{Kind: "SPEC", Path: filepath.Join(docs, "specs", pr.SpecNome), Data: []byte(pr.Spec)},
+		{Kind: "PLAN", Path: filepath.Join(docs, "plans", pr.PlanNome), Data: []byte(pr.Plan)},
+		{Kind: "ROUTE", Path: filepath.Join(docs, "routes", pr.RouteNome), Data: pr.Route},
+		{Kind: "DAG", Path: dagPath, Data: pr.DAG},
+		{Kind: "loop", Path: studioPath, Data: pr.Studio},
+		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
+		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
+	}
 }
 
 // comDerivados acrescenta o que depende do estado do processo e do projeto: o DAG espelho que já existe e a triagem

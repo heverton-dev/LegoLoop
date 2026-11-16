@@ -147,8 +147,11 @@ func TestSugestaoPerfilDefinir(t *testing.T) {
 		escrever(t, filepath.Join(vault, "vocab.json"), `{"versao": 2, "etapas": [{"nome": "coletar"}], "naturezas": [],
 			"casos_de_uso": [{"nome": "so-do-cofre", "etapas": ["coletar"]}]}`)
 		it := listarUm(t, vault)
-		if len(it.Sugestoes) != 1 || it.Sugestoes[0].Caso != "so-do-cofre" {
-			t.Fatalf("os casos vêm do vocabulário do cofre: %+v", it.Sugestoes)
+		if len(it.Sugestoes) != 3 || it.Sugestoes[2].Caso != "so-do-cofre" {
+			t.Fatalf("o vocabulário do cofre soma ao embutido sem descartar termo: %+v", it.Sugestoes)
+		}
+		if it.Sugestoes[0].Caso != "pesquisa" || it.Sugestoes[1].Caso != "coleta-de-dados" {
+			t.Errorf("os casos do embutido permanecem: %+v", it.Sugestoes)
 		}
 	})
 	t.Run("processo sem lacuna", func(t *testing.T) {

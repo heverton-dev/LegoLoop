@@ -202,3 +202,59 @@ func TestRankMinimoMaiorQueUmSemCasosNaoQuebra(t *testing.T) {
 		t.Errorf("motivo inválido: %+v", x)
 	}
 }
+
+// TestAptidaoPorIO cobre a AC-E05.1: a aptidão considera a compatibilidade Sai→Consome quando há
+// contrato; sem contrato, ou sem consumo pedido, o comportamento atual está preservado.
+func TestAptidaoPorIO(t *testing.T) {
+	consomeDados := Needs{Natureza: "dados", Etapas: []string{"coletar"},
+		Casos: []string{"coleta-de-dados"}, Consome: []string{"dados"}}
+	comIO := func(ref string, sai ...string) Entrada {
+		e := entrada(ref, 0.5, perfil([]string{"coletar"}, []string{"dados"}))
+		e.ContratoIO = &IOContrato{Sai: sai}
+		return e
+	}
+
+	t.Run("contrato que cobre o consumo dá aptidão um sem caso de uso", func(t *testing.T) {
+		a := comIO("a-io", "dados")
+		r := achar(t, Rank(consomeDados, []Entrada{a}, 0), "a-io")
+		if r.Excluida {
+			t.Fatalf("I/O compatível não pode excluir a peça: %s", r.Motivo)
+		}
+		if r.Aptidao != 1 {
+			t.Errorf("aptidão devia ser 1, foi %.2f (%s)", r.Aptidao, r.Motivo)
+		}
+	})
+
+	t.Run("peça sem contrato mantém o comportamento atual", func(t *testing.T) {
+		b := entrada("b-io", 0.9, perfil([]string{"coletar"}, []string{"dados"}))
+		r := achar(t, Rank(consomeDados, []Entrada{b}, 0), "b-io")
+		if !r.Excluida {
+			t.Fatalf("sem contrato o comportamento atual é excluir por caso de uso")
+		}
+	})
+
+	t.Run("contrato que não cobre o consumo não resgata a peça", func(t *testing.T) {
+		c := comIO("c-io", "texto")
+		r := achar(t, Rank(consomeDados, []Entrada{c}, 0), "c-io")
+		if !r.Excluida {
+			t.Fatalf("contrato que não cobre o consumo não pode resgatar a peça")
+		}
+	})
+
+	t.Run("sem consumo pedido vale o comportamento atual mesmo com contrato", func(t *testing.T) {
+		semConsumo := Needs{Natureza: "dados", Etapas: []string{"coletar"}, Casos: []string{"coleta-de-dados"}}
+		d := comIO("d-io", "dados")
+		r := achar(t, Rank(semConsumo, []Entrada{d}, 0), "d-io")
+		if !r.Excluida {
+			t.Fatalf("sem consumo pedido o contrato não pode resgatar a peça")
+		}
+	})
+
+	t.Run("peça sem perfil e sem contrato continua fora", func(t *testing.T) {
+		e := entrada("e-io", 0.9, nil)
+		r := Rank(consomeDados, []Entrada{e}, 0)
+		if len(escolhidas(r)) != 0 {
+			t.Fatalf("peça sem perfil continua fora do resultado: %v", escolhidas(r))
+		}
+	})
+}

@@ -13,15 +13,16 @@ const VersaoMatriz = "2.0.0"
 
 // Entrada é uma peça na matriz: identidade, hash do conteúdo, nota de qualidade e perfil de uso.
 type Entrada struct {
-	Ref      string                 `json:"ref"`
-	Nome     string                 `json:"nome"`
-	Tipo     string                 `json:"tipo"` // skill | mcp | script | hook | gate | loop
-	Hash     string                 `json:"hash"` // SHA-256 do conteúdo (ou da identidade, em MCP e hook)
-	Perfil   *PerfilDeUso           `json:"perfil,omitempty"`
-	Tipado   map[string]any         `json:"tipado,omitempty"`   // campos da matriz por tipo; só nos arquivos por tipo
-	Retentar bool                   `json:"retentar,omitempty"` // o cérebro falhou nesta peça: tentar de novo na próxima geração
-	Alertas  []string               `json:"alertas,omitempty"`  // texto da peça que parece ordem (citado como dado)
-	Rating   reputation.PieceRating `json:"-"`                  // preenchido ao ler, a partir de Ratings (mesma Ref)
+	Ref        string                 `json:"ref"`
+	Nome       string                 `json:"nome"`
+	Tipo       string                 `json:"tipo"` // skill | mcp | script | hook | gate | loop
+	Hash       string                 `json:"hash"` // SHA-256 do conteúdo (ou da identidade, em MCP e hook)
+	Perfil     *PerfilDeUso           `json:"perfil,omitempty"`
+	Tipado     map[string]any         `json:"tipado,omitempty"`   // campos da matriz por tipo; só nos arquivos por tipo
+	Retentar   bool                   `json:"retentar,omitempty"` // o cérebro falhou nesta peça: tentar de novo na próxima geração
+	Alertas    []string               `json:"alertas,omitempty"`  // texto da peça que parece ordem (citado como dado)
+	Rating     reputation.PieceRating `json:"-"`                  // preenchido ao ler, a partir de Ratings (mesma Ref)
+	ContratoIO *IOContrato            `json:"-"`                  // recorte do contrato.json ao lado do SKILL.md; nil = sem manifesto
 }
 
 // Registro é o arquivo registry_matrix.json. O array `ratings` mantém o formato da v1, para os leitores

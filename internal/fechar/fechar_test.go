@@ -8,8 +8,10 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"legoloop/internal/fechar"
+	"legoloop/internal/processo"
 	"legoloop/internal/triagem"
 )
 
@@ -357,4 +359,109 @@ func TestFecharCompletaATriagemQueNaoCobreTodosOsNos(t *testing.T) {
 	if err := triagem.Conferir(proc, []string{"01-alfa", "02-beta"}); err != nil {
 		t.Errorf("o fechar deve deixar a triagem cobrindo todos os nós: %v", err)
 	}
+}
+
+// semearProcesso grava o processo do slug no cofre com a natureza pedida.
+func semearProcesso(t *testing.T, repo, slug, natureza string) {
+	t.Helper()
+	p := processo.Processo{
+		Nome:     "legoloop-" + slug,
+		Versao:   "1.0.0",
+		Natureza: natureza,
+		Objetivo: "processo de teste da natureza " + natureza,
+		CriadoEm: time.Now(),
+		Etapas: []processo.Etapa{{
+			ID:     "e01",
+			Titulo: "Etapa única",
+			Tipo:   "construir",
+			Gate:   "file_exists('out/e01.md')",
+			Produz: processo.Artefato{Caminho: "out/e01.md", Tipo: "markdown"},
+		}},
+	}
+	data, err := p.Marshal()
+	if err != nil {
+		t.Fatal(err)
+	}
+	escrever(t, processo.CaminhoNoCofre(repo, p.Nome), string(data))
+}
+
+// etapaDe devolve a etapa num (1-based) do resultado.
+func etapaDe(t *testing.T, res *fechar.Result, num int) fechar.EtapaStatus {
+	t.Helper()
+	for _, e := range res.Etapas {
+		if e.Etapa == num {
+			return e
+		}
+	}
+	t.Fatalf("etapa %d ausente do resultado: %+v", num, res.Etapas)
+	return fechar.EtapaStatus{}
+}
+
+// TestFecharPorNatureza prova a AC-E03.3: a etapa 5 (Recompilação do Binário) só vale
+// para naturezas Go-cêntricas. Processo de natureza midia omite a etapa 5 como não
+// aplicável e a cadeia restante executa com sucesso.
+func TestFecharPorNatureza(t *testing.T) {
+	t.Run("midia com dry-run omite a recompilacao", func(t *testing.T) {
+		repo := t.TempDir()
+		semearDocs(t, repo, "video-motion")
+		semearDAG(t, repo, "video-motion")
+		semearProcesso(t, repo, "video-motion", "midia")
+		res, err := fechar.Executar(context.Background(),
+			fechar.Request{Slug: "video-motion", DryRun: true}, depsFechar(repo))
+		if err != nil {
+			t.Fatal(err)
+		}
+		e5 := etapaDe(t, res, 5)
+		if e5.Status != "skipped" {
+			t.Errorf("etapa 5 deveria ser skipped para natureza midia: %+v", e5)
+		}
+		if !strings.Contains(e5.Detalhe, "não aplicável") {
+			t.Errorf("detalhe da etapa 5 deve dizer não aplicável: %q", e5.Detalhe)
+		}
+		if !res.Sucesso {
+			t.Errorf("cadeia restante deve executar com sucesso: %+v", res.Etapas)
+		}
+		for _, n := range []int{1, 2, 3, 4, 6, 7, 8, 9} {
+			if e := etapaDe(t, res, n); e.Status != "ok" {
+				t.Errorf("etapa %d deveria executar normalmente: %+v", n, e)
+			}
+		}
+	})
+
+	t.Run("midia sem dry-run nao chama o Rebuilder", func(t *testing.T) {
+		repo := t.TempDir()
+		semearDocs(t, repo, "video-motion")
+		semearDAG(t, repo, "video-motion")
+		semearProcesso(t, repo, "video-motion", "midia")
+		rebuilds := 0
+		deps := depsFechar(repo)
+		deps.SkipBuild = false
+		deps.Rebuilder = func(string) error { rebuilds++; return nil }
+		res, err := fechar.Executar(context.Background(),
+			fechar.Request{Slug: "video-motion"}, deps)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if rebuilds != 0 {
+			t.Errorf("Rebuilder não pode rodar para natureza midia: %d chamadas", rebuilds)
+		}
+		if e5 := etapaDe(t, res, 5); e5.Status != "skipped" {
+			t.Errorf("etapa 5 deveria ser skipped para natureza midia: %+v", e5)
+		}
+	})
+
+	t.Run("software mantem a etapa 5", func(t *testing.T) {
+		repo := t.TempDir()
+		semearDocs(t, repo, "video-motion")
+		semearDAG(t, repo, "video-motion")
+		semearProcesso(t, repo, "video-motion", "software")
+		res, err := fechar.Executar(context.Background(),
+			fechar.Request{Slug: "video-motion", DryRun: true}, depsFechar(repo))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e5 := etapaDe(t, res, 5); e5.Status != "ok" {
+			t.Errorf("etapa 5 deve continuar valendo para natureza software: %+v", e5)
+		}
+	})
 }

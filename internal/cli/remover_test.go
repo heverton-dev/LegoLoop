@@ -121,7 +121,7 @@ func TestRemoverUso(t *testing.T) {
 	}{
 		{"sem nome", []string{"remover"}, 2, "Uso: legoloop remover"},
 		{"argumento a mais", []string{"remover", "legoloop-b", "extra"}, 2, "Uso: legoloop remover"},
-		{"nome fora do padrão", []string{"remover", "../x", "--yes"}, 1, "não é de um processo"},
+		{"nome fora do padrão", []string{"remover", "../x", "--yes"}, 2, "não é de um processo"},
 		{"não existe", []string{"remover", "legoloop-zzz", "--yes"}, 1, "não tem o processo legoloop-zzz"},
 		{"sem terminal e sem --yes", []string{"remover", "legoloop-b"}, 1, "Use --yes"},
 	}
@@ -166,5 +166,14 @@ func TestRemoverDryRunForceJSON(t *testing.T) {
 	}
 	if !strings.HasPrefix(strings.TrimSpace(outForce.String()), "{") {
 		t.Fatalf("esperava JSON puro em stdout no --force --json, obteve: %q", outForce.String())
+	}
+}
+
+// TestRemoverNomeInvalidoExitDois cobre a AC-E05.2: nome fora do padrao sai com exit 2 (erro de uso).
+func TestRemoverNomeInvalidoExitDois(t *testing.T) {
+	d, _, errb := deps(t)
+	if code := run(t, d, "remover", "sem-prefixo", "--vault", t.TempDir()); code != 2 ||
+		!strings.Contains(errb.String(), "legoloop-") {
+		t.Fatalf("code=%d stderr=%q", code, errb.String())
 	}
 }

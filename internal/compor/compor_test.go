@@ -713,3 +713,24 @@ func TestCompor_RegeraDAGIso(t *testing.T) {
 		t.Errorf("compor deve regerar e persistir docs/dags: %+v", res.Arquivos)
 	}
 }
+
+// TestComporNaturezaMidia prova a AC-E03.2: o compor aceita nó de qualquer natureza e a etapa composta
+// persiste Compoe, sem exigir natureza de software.
+func TestComporNaturezaMidia(t *testing.T) {
+	root := t.TempDir()
+	c := cofre{vault: filepath.Join(root, "vault"), docs: filepath.Join(root, "proj")}
+	a, b := processoDe(nomeA, 3), processoDe(nomeB, 2)
+	a.Natureza, b.Natureza = "midia", "midia"
+	gravar(t, c, a)
+	gravar(t, c, b)
+	if _, err := ligar(c, nomeA, nomeB+"@1.0.0"); err != nil {
+		t.Fatal(err)
+	}
+	e := lerProcesso(t, c, nomeA).Etapas[3]
+	if e.Compoe != nomeB+"@1.0.0" {
+		t.Errorf("a etapa composta devia persistir Compoe: %+v", e)
+	}
+	if e.Natureza != processo.NaturezaProcesso {
+		t.Errorf("a etapa composta devia ter natureza %q: %+v", processo.NaturezaProcesso, e)
+	}
+}

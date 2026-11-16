@@ -34,14 +34,25 @@ type Artefato struct {
 	Esquema string `json:"esquema,omitempty"` // JSON: caminho do JSON Schema que o artefato deve cumprir
 }
 
+// Naturezas canônicas do nó. A validação aceita qualquer natureza (o vocabulário de nós é aberto por
+// acréscimo); estas são só as referências usadas pelo motor.
+const (
+	NaturezaPeca        = "peca"        // executável (skill, script, hook, gate, mcp)
+	NaturezaSubprocesso = "subprocesso" // peça que embrulha processo
+	NaturezaProcesso    = "processo"    // composição: a etapa é outro processo
+)
+
 // Etapa é a unidade única do processo. SPEC, PLAN, ROUTE, DAG, documento do Studio e skill são projeções dela.
 type Etapa struct {
-	ID     string   `json:"id"`
-	Titulo string   `json:"titulo"`
-	Tipo   string   `json:"tipo"`             // etapa do vocabulário (ex.: "construir")
-	Peca   string   `json:"peca"`             // "" = lacuna declarada
-	Casos  []string `json:"casos,omitempty"`  // casos de uso pedidos para esta etapa (o listar usa na lacuna)
-	Compoe string   `json:"compoe,omitempty"` // "nome@versao" se a etapa é outro processo
+	ID     string `json:"id"`
+	Titulo string `json:"titulo"`
+	Tipo   string `json:"tipo"` // etapa do vocabulário (ex.: "construir")
+	Peca   string `json:"peca"` // "" = lacuna declarada
+	// Natureza do nó: peca | subprocesso | processo. Vazua vale peca; composição (Compoe) exige processo.
+	// Qualquer outra natureza é aceita (vocabulário aberto por acréscimo).
+	Natureza string   `json:"natureza,omitempty"`
+	Casos    []string `json:"casos,omitempty"`  // casos de uso pedidos para esta etapa (o listar usa na lacuna)
+	Compoe   string   `json:"compoe,omitempty"` // "nome@versao" se a etapa é outro processo
 	// Origem só vale com Compoe: o caminho do artefato dentro do processo composto. Produz.Caminho é o caminho
 	// no processo que recebe a etapa. Vazia = o mesmo caminho dos dois lados (etapas compostas antigas).
 	Origem  string   `json:"origem,omitempty"`
@@ -128,7 +139,19 @@ func (e Etapa) validate(ids map[string]bool) error {
 	if err := e.validarOrigem(); err != nil {
 		return err
 	}
+	if err := e.validarNatureza(); err != nil {
+		return err
+	}
 	return gateNaoTrivial(e, g)
+}
+
+// validarNatureza aceita qualquer natureza (vocabulário de nós aberto por acréscimo). Só a coerência com a
+// composição vale: a etapa que compõe outro processo é um processo, nunca peça ou subprocesso.
+func (e Etapa) validarNatureza() error {
+	if e.Compoe != "" && e.Natureza != "" && e.Natureza != NaturezaProcesso {
+		return invalido("etapa %q compõe %q e a natureza precisa ser %q", e.ID, e.Compoe, NaturezaProcesso)
+	}
+	return nil
 }
 
 // caminhoLocal: relativo e dentro da raiz. filepath.IsLocal já recusa o vazio e o caminho que começa com "/"

@@ -84,9 +84,7 @@ func executarEtapas(ctx context.Context, d *Deps, slug, canon string, dry bool, 
 	runEtapa(d, res, 4, "Processo & Grafo DAG", func() (string, error) {
 		return fecharDAG(d, slug, canon, dry)
 	})
-	runEtapa(d, res, 5, "Recompilação Fresca do Binário", func() (string, error) {
-		return fecharRebuild(d, dry)
-	})
+	runEtapaRebuild(d, res, dry, naturezaDoProcesso(d.VaultDir, canon, slug))
 	runEtapa(d, res, 6, "Governança Viva (AGENTS e MEMORY)", func() (string, error) {
 		return fecharGovernanca(d, slug, canon, dry)
 	})

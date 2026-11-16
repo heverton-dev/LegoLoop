@@ -67,6 +67,7 @@ type routerLLM struct {
 	needsCalls       int
 	explainCalls     int
 	needsPrompt      string // o que o cérebro recebeu para dar as necessidades
+	needs            string // resposta de necessidades alternativa (natureza fora de software)
 }
 
 // needsReply são as necessidades que o cérebro de teste devolve: software, construir (tdd) e verificar (qualidade).
@@ -83,6 +84,9 @@ func (r *routerLLM) Chat(_ context.Context, msgs []interview.Message) (string, e
 	case strings.Contains(msgs[0].Content, "vocabulário fechado do LegoLoop"):
 		r.needsCalls++
 		r.needsPrompt = msgs[len(msgs)-1].Content
+		if r.needs != "" {
+			return r.needs, nil
+		}
 		return needsReply, nil
 	case strings.Contains(msgs[0].Content, "explicador da Fusão"):
 		r.explainCalls++

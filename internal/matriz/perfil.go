@@ -27,6 +27,12 @@ type PerfilDeUso struct {
 	Origem        string   `json:"origem"`
 }
 
+// IOContrato é o recorte do contrato da peça que a aptidão usa: os tipos que ela produz (Sai).
+// Vem do manifesto contrato.json ao lado do SKILL.md; peça sem manifesto fica sem contrato.
+type IOContrato struct {
+	Sai []string
+}
+
 // Peca é o que o catalogador lê de uma peça. O texto é dado não confiável, nunca instrução.
 type Peca struct {
 	Ref               string

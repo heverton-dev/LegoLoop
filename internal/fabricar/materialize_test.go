@@ -7,10 +7,15 @@ import (
 	"legoloop/internal/paths"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
+	"legoloop/internal/assets"
 	"legoloop/internal/fabricar"
+	"legoloop/internal/listar"
+	"legoloop/internal/matriz"
+	"legoloop/internal/processo"
 )
 
 // failFS delega ao disco real e falha na N-ésima gravação ou renomeação (1-based; 0 = nunca).
@@ -234,5 +239,93 @@ func TestMaterialize_PersisteDAGIso(t *testing.T) {
 	b, err := os.ReadFile(dagIsoPath)
 	if err != nil || string(b) != `{"name":"dag-iso"}` {
 		t.Errorf("conteúdo de DAG ISO incorreto: %q err=%v", b, err)
+	}
+}
+
+// pecaContratada cria uma skill de mídia com manifesto contrato.json ao lado do SKILL.md.
+func pecaContratada(t *testing.T) matriz.Entrada {
+	t.Helper()
+	dir := t.TempDir()
+	ref := filepath.Join(dir, "midia-x", "SKILL.md")
+	if err := os.MkdirAll(filepath.Dir(ref), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(ref, []byte("# skill"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	contrato := `{"nome":"midia-x","tipo":"skill","naturezas":["midia"],"sai":[{"tipo":"texto","caminho_padrao":"out/video.md","promete":true}]}`
+	if err := os.WriteFile(filepath.Join(dir, "midia-x", "contrato.json"), []byte(contrato), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	p := skillApta("midia-x", ref, 0.9, "construir")
+	p.Perfil.Naturezas = []string{"midia"}
+	p.Perfil.CasosDeUso = []string{"geracao-de-midia"}
+	return p
+}
+
+// TestSextetoCompleto prova a AC-E03.1: dry-run de natureza midia com peça contratada lista os 6
+// artefatos do Sexteto com caminhos ISO YYYY-MM-DD_* e o contrato da peça dirige o gate da etapa.
+func TestSextetoCompleto(t *testing.T) {
+	r := newRig(t, []matriz.Entrada{pecaContratada(t)})
+	r.llm.needs = `{"natureza": "midia", "etapas": ["construir"], "casos": ["geracao-de-midia"]}`
+	r.req.DryRun = true
+	res := r.run(t)
+	familias := map[string]bool{}
+	re := regexp.MustCompile(`^\d{4}-\d{2}-\d{2}_(INTERVIEW|INTENT|SPEC|PLAN|ROUTE|DAG|REPORT|TEMPLATE)_`)
+	for _, a := range res.Report.Gravacao.Arquivos {
+		if m := re.FindStringSubmatch(filepath.Base(a)); m != nil {
+			familias[m[1]] = true
+		}
+	}
+	slots := map[string]bool{
+		"INTERVIEW":       familias["INTERVIEW"],
+		"INTENT":          familias["INTENT"],
+		"SPEC":            familias["SPEC"],
+		"PLAN":            familias["PLAN"],
+		"ROUTE/DAG":       familias["ROUTE"] || familias["DAG"],
+		"TEMPLATE/REPORT": familias["TEMPLATE"] || familias["REPORT"],
+	}
+	for nome, ok := range slots {
+		if !ok {
+			t.Errorf("falta o artefato %s do Sexteto com caminho ISO YYYY-MM-DD_*: %v", nome, res.Report.Gravacao.Arquivos)
+		}
+	}
+	if len(res.Report.Triade.Gates) == 0 || !strings.Contains(res.Report.Triade.Gates[0], "out/video.md") {
+		t.Errorf("o contrato da peça contratada deve dirigir o gate da etapa: %v", res.Report.Triade.Gates)
+	}
+	verboSemPedidoNaoGeraProcesso(t)
+}
+
+// verboSemPedidoNaoGeraProcesso prova a premissa anti-reimplementação na camada de teste:
+// verbos sem pedido do usuário (matriz, listar) não geram processo novo nem etapa que
+// produz artefato. Só o fabricar, que recebe pedido, gera processo.
+func verboSemPedidoNaoGeraProcesso(t *testing.T) {
+	t.Helper()
+	vault := t.TempDir()
+	ctx := context.Background()
+	if _, err := matriz.Generate(ctx, matriz.Options{Vault: vault}, matriz.Deps{
+		Scan: func(context.Context) ([]assets.Item, error) { return nil, nil },
+		Home: vault,
+	}); err != nil {
+		t.Fatalf("matriz gerar não deve falhar num cofre vazio: %v", err)
+	}
+	if _, err := listar.Run(ctx, listar.Deps{
+		Store: processo.Store{Roots: processo.Roots{Vault: vault}},
+		Home:  vault,
+	}); err != nil {
+		t.Fatalf("listar não deve falhar num cofre vazio: %v", err)
+	}
+	err := filepath.WalkDir(vault, func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		if strings.HasSuffix(path, ".processo.json") {
+			t.Errorf("verbo sem pedido gerou processo novo com etapa que produz artefato: %s",
+				strings.TrimPrefix(path, vault+string(os.PathSeparator)))
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
 }

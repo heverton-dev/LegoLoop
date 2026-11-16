@@ -56,10 +56,19 @@ func cmdRemover(ctx context.Context, args []string, d Deps) int {
 			plano, err = planejarRemoverForcado(rd, nome)
 		}
 		if err != nil {
-			return fail(d, err)
+			return failRemover(d, err)
 		}
 	}
 	return executarPlanoRemover(ctx, d, plano, op)
+}
+
+// failRemover mapeia erro de uso para exit 2 e o resto para exit 1.
+func failRemover(d Deps, err error) int {
+	if errors.Is(err, remover.ErrNomeInvalido) {
+		fmt.Fprintln(d.Stderr, "erro:", err)
+		return 2
+	}
+	return fail(d, err)
 }
 
 func parseRemoverFlags(args []string, d Deps) (string, removerOpcoes, int) {

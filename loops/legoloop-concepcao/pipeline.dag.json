@@ -1,0 +1,254 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "id": "legoloop-concepcao",
+  "name": "legoloop-concepcao",
+  "version": "1.0.0",
+  "schema_version": 2,
+  "date": "2026-11-16",
+  "description": "Subprocesso único de Concepção e Alinhamento de Intenção: entrevista socrática pelo motor oficial legoloop fabricar entrevista até confiança maior ou igual a 95% com Espelho Canônico, INTERVIEW gravada, INTENT materializada em docs/intents/ e Stop-Gate 01 humano de aprovação.",
+  "upstream_signatures": {
+    "ideia": "entrada em linguagem natural do usuário",
+    "interview": "INTERVIEW gravada (sessão intv_* no cofre de sessões)",
+    "template_intent": "docs/templates/TEMPLATE_INTENT.md"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": false,
+    "default_timeout_sec": 1800,
+    "rollback_on_failure": "abort_and_pause",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "none",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "entrevista_socratica",
+      "name": "Entrevista Socrática com Espelho Canônico até confiança maior ou igual a 95%",
+      "nature": "micro",
+      "type": "script",
+      "command": [
+        "legoloop",
+        "fabricar",
+        "entrevista",
+        "iniciar"
+      ],
+      "ref": "legoloop fabricar entrevista",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "opus",
+        "harness": "claude",
+        "via": "9router"
+      },
+      "timeout_sec": 3600,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "docs/intents/"
+      ],
+      "context_out": [
+        "docs/intents/INTERVIEW.md"
+      ],
+      "output": {
+        "artifact": "docs/intents/INTERVIEW.md",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-entrevista_socratica",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 3600
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "interview_gravada",
+      "name": "INTERVIEW gravada no cofre e Espelho Canônico consolidado em registro",
+      "nature": "micro",
+      "type": "unit_no",
+      "ref": "legoloop fabricar entrevista",
+      "depends_on": [
+        "entrevista_socratica"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "via": "9router"
+      },
+      "timeout_sec": 900,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "docs/intents/INTERVIEW.md"
+      ],
+      "context_out": [
+        "docs/intents/ESPELHO_CANONICO.md"
+      ],
+      "output": {
+        "artifact": "docs/intents/ESPELHO_CANONICO.md",
+        "gate": "file_exists('docs/intents/ESPELHO_CANONICO.md')"
+      },
+      "spec_ref": "AC-interview_gravada",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 900
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "file_exists('docs/intents/ESPELHO_CANONICO.md')"
+      }
+    },
+    {
+      "id": "materializar_intent",
+      "name": "Materialização da INTENT em docs/intents/ a partir do Espelho Canônico",
+      "nature": "micro",
+      "type": "script",
+      "command": [
+        "legoloop",
+        "fabricar",
+        "entrevista",
+        "intent"
+      ],
+      "ref": "legoloop fabricar entrevista",
+      "depends_on": [
+        "interview_gravada"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet",
+        "harness": "claude",
+        "via": "9router"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "docs/intents/ESPELHO_CANONICO.md"
+      ],
+      "context_out": [
+        "docs/intents/INTENT.md"
+      ],
+      "output": {
+        "artifact": "docs/intents/INTENT.md",
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      },
+      "spec_ref": "AC-materializar_intent",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      }
+    },
+    {
+      "id": "stop_gate_01",
+      "name": "Stop-Gate 01 humano de aprovação da INTENT",
+      "nature": "nano",
+      "type": "stop_gate",
+      "depends_on": [
+        "materializar_intent"
+      ],
+      "routing": {
+        "mode": "manual",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet",
+        "harness": "claude",
+        "via": "9router"
+      },
+      "timeout_sec": 3600,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "docs/intents/INTENT.md"
+      ],
+      "context_out": [
+        "docs/intents/INTENT_APROVADA.md"
+      ],
+      "output": {
+        "artifact": "docs/intents/INTENT_APROVADA.md",
+        "gate": "prompt('Aprovar a INTENT materializada em docs/intents/INTENT.md?')"
+      },
+      "spec_ref": "AC-stop_gate_01",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 3600
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "prompt('Aprovar a INTENT materializada em docs/intents/INTENT.md?')"
+      }
+    }
+  ]
+}

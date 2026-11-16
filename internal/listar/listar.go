@@ -42,10 +42,11 @@ type Item struct {
 	Sugestoes []Sugestao `json:"sugestoes,omitempty"` // peças que podem cobrir a lacuna com perfil definir
 }
 
-// Resultado é a lista ordenada por nome.
+// Resultado é a lista ordenada por nome. Pecas são as peças soltas com contrato declarado.
 type Resultado struct {
-	Vault     string `json:"vault"`
-	Processos []Item `json:"processos"`
+	Vault     string     `json:"vault"`
+	Processos []Item     `json:"processos"`
+	Pecas     []ItemPeca `json:"pecas"`
 }
 
 // MensagemVazio é o texto para o cofre sem processos.
@@ -77,6 +78,7 @@ func Run(ctx context.Context, d Deps) (Resultado, error) {
 		compostos[p.Nome] = p.Etapas
 	}
 	sugerir(vault, res.Processos, compostos)
+	res.Pecas = pecasComContrato(vault)
 	return res, nil
 }
 

@@ -364,7 +364,8 @@ func novaEtapa(a, b processo.Processo, l Ligacao) (processo.Etapa, error) {
 		titulo = ste.Msg("compor.titulo_padrao", b.Nome)
 	}
 	e := processo.Etapa{ID: proximoID(a.Etapas), Titulo: titulo, Tipo: fim.Tipo, Compoe: b.Nome + "@" + b.Versao,
-		Origem: fim.Produz.Caminho, Produz: produz, Gate: gateNoPai(fim.Gate, fim.Produz.Caminho, produz.Caminho), Depende: deps}
+		Natureza: processo.NaturezaProcesso,
+		Origem:   fim.Produz.Caminho, Produz: produz, Gate: gateNoPai(fim.Gate, fim.Produz.Caminho, produz.Caminho), Depende: deps}
 	for _, d := range deps {
 		e.Consome = append(e.Consome, a.Etapas[indiceDe(a.Etapas, d)].Produz.Caminho)
 	}

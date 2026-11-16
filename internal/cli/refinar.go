@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"path/filepath"
+	"slices"
+	"strings"
 
 	"legoloop/internal/processo"
 	"legoloop/internal/refinar"
@@ -14,7 +16,7 @@ import (
 
 func init() {
 	for id, msg := range map[string]string{
-		"refinar.uso":          "Uso: legoloop refinar <nome> --etapa ID [--peca P] [--caso C] [--titulo T] [--adicionar [--depende ID]] [--vault DIR] [--docs DIR] [--yes] [--json]",
+		"refinar.uso":          "Uso: legoloop refinar <nome> --etapa ID [--peca P] [--caso C] [--titulo T] [--sai A] [--entra A] [--gate G] [--natureza N] [--adicionar] [--depende ID] [--yes] [--json]",
 		"refinar.sem_terminal": "Não há terminal para confirmar. Use --yes para seguir sem perguntar.",
 		"refinar.segue_yes":    "Segue sem perguntar, por causa do --yes.",
 	} {
@@ -26,7 +28,8 @@ func init() {
 type refinarOpts struct {
 	yes, asJSON, adicionar           bool
 	vault, docs, etapa, peca, titulo string
-	caso, depende                    listFlag
+	sai, gate, natureza              string
+	caso, entra, depende             listFlag
 }
 
 // cmdRefinar muda uma etapa de um processo do cofre. Mostra o diff e o cartão, pede a confirmação e grava.
@@ -40,6 +43,10 @@ func cmdRefinar(ctx context.Context, args []string, d Deps) int {
 	fs.StringVar(&o.etapa, "etapa", "", "id da etapa que muda (obrigatório)")
 	fs.StringVar(&o.peca, "peca", "", "peça nova da etapa")
 	fs.StringVar(&o.titulo, "titulo", "", "título novo da etapa")
+	fs.StringVar(&o.sai, "sai", "", "artefato novo da etapa: caminho[:tipo]")
+	fs.Var(&o.entra, "entra", "artefato consumido pela etapa (repetível)")
+	fs.StringVar(&o.gate, "gate", "", "gate novo da etapa (DSL)")
+	fs.StringVar(&o.natureza, "natureza", "", "natureza nova do nó")
 	fs.Var(&o.caso, "caso", "caso de uso da etapa (repetível)")
 	fs.BoolVar(&o.adicionar, "adicionar", false, "cria a etapa --etapa (id novo, no fim) em vez de mudar uma existente")
 	fs.Var(&o.depende, "depende", "com --adicionar: etapa que vem antes da nova (repetível; padrão: a última)")
@@ -71,12 +78,27 @@ func runRefinar(ctx context.Context, nome string, o refinarOpts, d Deps) int {
 		return fail(d, err)
 	}
 	req := refinar.Request{Nome: nome, Mudanca: refinar.Mudanca{Etapa: o.etapa, Peca: o.peca, Titulo: o.titulo, Casos: o.caso,
+		Sai: artefatoSai(o.sai), Entra: o.entra, Gate: o.gate, Natureza: o.natureza,
 		Adicionar: o.adicionar, Depende: o.depende}}
 	res, err := refinar.Run(ctx, req, refinar.Deps{Store: processo.Store{Roots: roots}, Confirm: confirm})
 	if err != nil {
 		return falhaRefinar(d, err)
 	}
 	return imprimirRefinar(d, res, o.asJSON)
+}
+
+// artefatoSai interpreta --sai caminho[:tipo]. Sem tipo, vale markdown com promessa de conteúdo.
+func artefatoSai(s string) *processo.Artefato {
+	if s == "" {
+		return nil
+	}
+	caminho, tipo := s, "markdown"
+	if i := strings.LastIndex(s, ":"); i > 0 {
+		if t := s[i+1:]; slices.Contains([]string{"markdown", "json", "codigo", "dados", "marcador"}, t) {
+			caminho, tipo = s[:i], t
+		}
+	}
+	return &processo.Artefato{Caminho: caminho, Tipo: tipo, Promete: tipo != "marcador"}
 }
 
 func refinarRoots(o refinarOpts, d Deps) (processo.Roots, error) {

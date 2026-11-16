@@ -236,7 +236,8 @@ func assemble(ctx context.Context, req Request, d Deps, name string, clar Clarif
 	}
 	m = c.m
 	d.progress(5, "Template e gravação")
-	files, err := plannedFiles(d.Roots, p, pr, intentDe(name, clar, p.Natureza, now), req.Peca)
+	files, err := plannedFiles(d.Roots, p, pr,
+		[3]namedFile{interviewDe(name, clar, now), intentDe(name, clar, p.Natureza, now), reportDe(name, p, now)}, req.Peca)
 	if err != nil {
 		return nil, err
 	}

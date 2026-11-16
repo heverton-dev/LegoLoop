@@ -4,6 +4,8 @@ import (
 	stdctx "context"
 	"encoding/json"
 	"errors"
+	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
@@ -218,6 +220,132 @@ func TestNaturezaAbertaProcessoDeSemEtapasPedidasUsaOsPassosDaFusao(t *testing.T
 	p, err := fabricar.ProcessoDe("legoloop-x", "fazer x", matriz.Needs{Natureza: "qualquer"}, m, agora)
 	if err != nil || len(p.Etapas) != 2 || p.Etapas[0].Peca != "aidd-spec" || p.Etapas[1].Peca != "aidd-tickets" {
 		t.Errorf("%+v %v", p, err)
+	}
+}
+
+// TestProcessoDeComContratosContratoDirigeArtefatoEGate: o contrato da peça escolhida dirige o artefato e o
+// gate da etapa; sem contrato (ou sem caminho padrão) vale o molde do motor, como antes.
+func TestProcessoDeComContratosContratoDirigeArtefatoEGate(t *testing.T) {
+	n := matriz.Needs{Natureza: "dados", Etapas: []string{"coletar"}}
+	m := fabricar.Merged{Decisoes: []fabricar.Decisao{{Etapa: "coletar", Peca: "coletor-csv", Entrou: true}}}
+	c := processo.Contrato{Nome: "coletor-csv", Tipo: "skill", Naturezas: []string{"dados"},
+		Sai: []processo.Saida{{Tipo: "dados", CaminhoPadrao: "out/coleta.csv", Promete: true,
+			GateSugerido: "line_count('out/coleta.csv') >= 2"}}}
+	p, err := fabricar.ProcessoDeComContratos("legoloop-x", "coletar coisas", n, m, agora,
+		map[string]*processo.Contrato{"coletor-csv": &c})
+	if err != nil {
+		t.Fatal(err)
+	}
+	e := p.Etapas[0]
+	if e.Produz.Caminho != "out/coleta.csv" || e.Produz.Tipo != "dados" || e.Gate != "line_count('out/coleta.csv') >= 2" {
+		t.Errorf("o contrato deve dirigir artefato e gate: %+v", e)
+	}
+	if err := p.Validate(); err != nil {
+		t.Errorf("o processo com artefato do contrato deve ser válido: %v", err)
+	}
+
+	molde := fabricar.ArtefatoDe("coletar", "dados", 1)
+	p2, err := fabricar.ProcessoDeComContratos("legoloop-x", "coletar coisas", n, m, agora, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p2.Etapas[0].Produz != molde {
+		t.Errorf("sem contrato vale o molde do motor: %+v", p2.Etapas[0].Produz)
+	}
+
+	cSemCaminho := c
+	cSemCaminho.Sai = []processo.Saida{{Tipo: "dados", Promete: true}}
+	p3, err := fabricar.ProcessoDeComContratos("legoloop-x", "coletar coisas", n, m, agora,
+		map[string]*processo.Contrato{"coletor-csv": &cSemCaminho})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p3.Etapas[0].Produz.Caminho != molde.Caminho || p3.Etapas[0].Produz.Tipo != "dados" || !p3.Etapas[0].Produz.Promete {
+		t.Errorf("sem caminho padrão: caminho do molde e tipo do contrato: %+v", p3.Etapas[0].Produz)
+	}
+}
+
+// TestNoPorNatureza (AC-E02.1): o nó aceita as 3 naturezas (peca, subprocesso, processo) e o artefato deriva
+// do Sai do contrato; sem contrato vale o molde. Nenhuma natureza é rejeitada por ficar fora do vocabulário
+// embutido.
+func TestNoPorNatureza(t *testing.T) {
+	contratos := map[string]*processo.Contrato{
+		"coletor-csv": {Nome: "coletor-csv", Tipo: "skill", Naturezas: []string{"dados"},
+			Sai: []processo.Saida{{Tipo: "dados", CaminhoPadrao: "out/coleta.csv", Promete: true}}},
+		"embrulha-proc": {Nome: "embrulha-proc", Tipo: "processo", Naturezas: []string{"midia"},
+			Sai: []processo.Saida{{Tipo: "marcador", Promete: true}}},
+	}
+	n := matriz.Needs{Natureza: "midia", Etapas: []string{"coletar", "embrulhar"}}
+	m := fabricar.Merged{
+		Decisoes: []fabricar.Decisao{{Etapa: "coletar", Peca: "coletor-csv", Entrou: true},
+			{Etapa: "embrulhar", Peca: "embrulha-proc", Entrou: true}},
+		Steps: []fabricar.Step{{Piece: "alvo", Compoe: "legoloop-alvo@1.0.0"}},
+	}
+	p, err := fabricar.ProcessoDeComContratos("legoloop-x", "fazer a coisa", n, m, agora, contratos)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(p.Etapas) != 3 {
+		t.Fatalf("3 etapas: %+v", p.Etapas)
+	}
+	e1, e2, e3 := p.Etapas[0], p.Etapas[1], p.Etapas[2]
+	if e1.Natureza != "peca" || e1.Produz.Tipo != "dados" || e1.Produz.Caminho != "out/coleta.csv" {
+		t.Errorf("peça contratada dirige artefato: %+v", e1)
+	}
+	if e2.Natureza != "subprocesso" || e2.Produz.Tipo != "marcador" || e2.Produz.Caminho != fabricar.ArtefatoDe("embrulhar", "midia", 2).Caminho {
+		t.Errorf("peça que embrulha processo é subprocesso com tipo do contrato e caminho do molde: %+v", e2)
+	}
+	if e3.Natureza != "processo" || e3.Compoe != "legoloop-alvo@1.0.0" || e3.Produz != fabricar.ArtefatoDe("", "midia", 3) {
+		t.Errorf("composição sem contrato cai no molde: %+v", e3)
+	}
+	if err := p.Validate(); err != nil {
+		t.Errorf("processo montado deve ser válido: %v", err)
+	}
+
+	fora := p
+	fora.Etapas = append([]processo.Etapa{}, p.Etapas...)
+	fora.Etapas[0].Natureza = "stop_gate"
+	if err := fora.Validate(); err != nil {
+		t.Errorf("natureza fora do vocabulário embutido não é rejeitada: %v", err)
+	}
+	inc := fora
+	inc.Etapas = append([]processo.Etapa{}, fora.Etapas...)
+	inc.Etapas[2].Natureza = "peca"
+	if err := inc.Validate(); err == nil {
+		t.Errorf("etapa que compõe processo não pode declarar natureza peca")
+	}
+}
+
+// TestVocabularioPorAcrescimo (AC-E02.2): os termos do cofre somam-se aos da semente embutida sem recompilar;
+// o termo do cofre não é descartado pelo cérebro e a semente nunca é reescrita.
+func TestVocabularioPorAcrescimo(t *testing.T) {
+	vault := t.TempDir()
+	parcial, _ := json.Marshal(matriz.Vocab{Versao: 2,
+		Etapas: []matriz.Termo{{Nome: "renderizar", Palavras: []string{"renderizar"}}}})
+	if err := os.WriteFile(filepath.Join(vault, "vocab.json"), parcial, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	v, err := matriz.LoadVocab(vault)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !v.Has(matriz.CatEtapa, "renderizar") || !v.Has(matriz.CatEtapa, "coletar") {
+		t.Errorf("termos do cofre somam-se aos da semente: renderizar=%v coletar=%v",
+			v.Has(matriz.CatEtapa, "renderizar"), v.Has(matriz.CatEtapa, "coletar"))
+	}
+
+	c := &cerebro{reply: `{"natureza":"dados","etapas":["renderizar","coletar"],"casos":["coleta-de-dados"]}`}
+	n, avisos, _ := fabricar.Necessidades(bg(), c, "renderizar a coleta de preços", espelhoPrecos(), v)
+	if !slices.Contains(n.Etapas, "renderizar") || !slices.Contains(n.Etapas, "coletar") {
+		t.Errorf("etapa do cofre e da semente passam sem descarte: %+v", n)
+	}
+	for _, a := range avisos {
+		if strings.Contains(a, "descartado") {
+			t.Errorf("termo do cofre não gera aviso de descarte: %v", avisos)
+		}
+	}
+	if matriz.DefaultVocab().Has(matriz.CatEtapa, "renderizar") {
+		t.Errorf("a semente embutida nunca é reescrita")
 	}
 }
 

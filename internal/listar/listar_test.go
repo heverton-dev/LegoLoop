@@ -141,3 +141,51 @@ func TestListar(t *testing.T) {
 		}
 	})
 }
+
+// TestListarPecaComContrato cobre a AC-E05.2: a peça solta com contrato aparece com o contrato
+// resumido; a peça sem contrato.json não aparece; o contrato inválido aparece com Erro.
+func TestListarPecaComContrato(t *testing.T) {
+	manifesto := "{\"nome\":\"legoloop-peca\",\"tipo\":\"script\",\"naturezas\":[\"dados\"]," +
+		"\"entra\":[{\"tipo\":\"texto\"}],\"sai\":[{\"tipo\":\"dados\",\"promete\":true}],\"efeitos\":[\"arquivo\"]}"
+	rodar := func(t *testing.T, vault, home string) listar.Resultado {
+		t.Helper()
+		res, err := listar.Run(context.Background(), listar.Deps{Store: processo.Store{Roots: processo.Roots{Vault: vault}}, Home: home})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return res
+	}
+	t.Run("peca com contrato aparece resumida", func(t *testing.T) {
+		vault, home := cofreDeTres(t)
+		escrever(t, filepath.Join(vault, "skills", "legoloop-peca", "SKILL.md"), "# peca\n")
+		escrever(t, filepath.Join(vault, "skills", "legoloop-peca", "contrato.json"), manifesto)
+		res := rodar(t, vault, home)
+		if len(res.Pecas) != 1 {
+			t.Fatalf("pecas: %+v", res.Pecas)
+		}
+		g := res.Pecas[0]
+		if g.Nome != "legoloop-peca" || g.Erro != "" || g.Contrato.Tipo != "script" ||
+			!slices.Equal(g.Contrato.Naturezas, []string{"dados"}) ||
+			!slices.Equal(g.Contrato.Entra, []string{"texto"}) ||
+			!slices.Equal(g.Contrato.Sai, []string{"dados"}) ||
+			!slices.Equal(g.Contrato.Efeitos, []string{"arquivo"}) {
+			t.Fatalf("resumo: %+v", g)
+		}
+	})
+	t.Run("peca sem contrato nao aparece", func(t *testing.T) {
+		vault, home := cofreDeTres(t)
+		escrever(t, filepath.Join(vault, "skills", "legoloop-solta", "SKILL.md"), "# solta\n")
+		if res := rodar(t, vault, home); len(res.Pecas) != 0 {
+			t.Fatalf("peca sem contrato.json nao e alvo: %+v", res.Pecas)
+		}
+	})
+	t.Run("contrato invalido aparece com erro", func(t *testing.T) {
+		vault, home := cofreDeTres(t)
+		escrever(t, filepath.Join(vault, "skills", "legoloop-quebrada", "SKILL.md"), "# q\n")
+		escrever(t, filepath.Join(vault, "skills", "legoloop-quebrada", "contrato.json"), "{ nao e json")
+		res := rodar(t, vault, home)
+		if len(res.Pecas) != 1 || res.Pecas[0].Erro == "" {
+			t.Fatalf("contrato invalido aparece com erro: %+v", res.Pecas)
+		}
+	})
+}

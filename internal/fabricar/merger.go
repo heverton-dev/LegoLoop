@@ -4,7 +4,8 @@ import "legoloop/internal/matriz"
 
 // Step é um passo escolhido pela Fusão: a skill que executa a etapa.
 type Step struct {
-	Piece string // nome da skill
+	Piece  string // nome da skill
+	Compoe string // "nome@versao" quando o passo compõe outro processo; peça que embrulha processo
 }
 
 // MergeOptions controla a Camada 3.

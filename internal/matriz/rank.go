@@ -8,11 +8,13 @@ import (
 	"legoloop/internal/reputation"
 )
 
-// Needs é o que o espelho da entrevista pede, em termos do vocabulário.
+// Needs é o que o espelho da entrevista pede, em termos do vocabulário. Consome são os tipos de
+// artefato que o pedido consome (compatíveis com o Sai do contrato da peça).
 type Needs struct {
 	Natureza string
 	Etapas   []string
 	Casos    []string
+	Consome  []string
 }
 
 // Ranked é uma peça avaliada para um Needs. Motivo é determinístico: diz o que casou ou qual exclusão agiu.
@@ -55,6 +57,9 @@ func avaliar(n Needs, e Entrada, minAptidao float64) Ranked {
 		return r
 	}
 	casos := casados(n.Casos, e.Perfil.CasosDeUso)
+	if porIO(&r, e, n) { // AC-E05.1: o I/O do contrato vale como aptidão plena
+		return r
+	}
 	apt := 1.0
 	if len(n.Casos) > 0 {
 		if len(casos) == 0 { // só a etapa e a natureza casaram: a aptidão ao pedido é zero
@@ -75,6 +80,32 @@ func avaliar(n Needs, e Entrada, minAptidao float64) Ranked {
 		r.Motivo += "; perfil: " + o
 	}
 	return r
+}
+
+// porIO preenche o ranking quando o contrato da peça cobre o consumo do pedido (AC-E05.1):
+// aptidão plena, mesmo sem caso de uso casado. Diz se o caso foi tratado.
+func porIO(r *Ranked, e Entrada, n Needs) bool {
+	if !ioCobre(e.ContratoIO, n.Consome) {
+		return false
+	}
+	r.Aptidao = 1
+	r.naturezaExplicita = declara(e.Perfil.Naturezas, n.Natureza)
+	r.Motivo = fmt.Sprintf("I/O: a peça produz %s, que o pedido consome", listar(n.Consome))
+	return true
+}
+
+// ioCobre diz se o contrato da peça produz tudo o que o pedido consome (Sai→Consome). Sem
+// contrato ou sem consumo pedido, vale o comportamento atual.
+func ioCobre(c *IOContrato, consome []string) bool {
+	if c == nil || len(consome) == 0 {
+		return false
+	}
+	for _, tipo := range consome {
+		if !slices.Contains(c.Sai, tipo) {
+			return false
+		}
+	}
+	return true
 }
 
 // inferido diz se o perfil é só palpite do cérebro (declarado e confirmado valem mais no empate).

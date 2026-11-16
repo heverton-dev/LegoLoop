@@ -1,0 +1,67 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-concepcao",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-concepcao",
+      "comandos_cli": [
+        "legoloop concepcao",
+        "/legoloop-concepcao"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-concepcao",
+    "etapas": [
+      "entrevista_socratica",
+      "interview_gravada",
+      "materializar_intent",
+      "stop_gate_01"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "entrevista_socratica",
+      "palavras_chave": [
+        "entrevista socratica",
+        "entrevista-socratica"
+      ],
+      "slash_command": "/legoloop-concepcao-entrevista-socratica",
+      "flag_cli": "--etapa entrevista_socratica"
+    },
+    {
+      "id": "interview_gravada",
+      "palavras_chave": [
+        "interview gravada",
+        "interview-gravada"
+      ],
+      "slash_command": "/legoloop-concepcao-interview-gravada",
+      "flag_cli": "--etapa interview_gravada"
+    },
+    {
+      "id": "materializar_intent",
+      "palavras_chave": [
+        "materializar intent",
+        "materializar-intent"
+      ],
+      "slash_command": "/legoloop-concepcao-materializar-intent",
+      "flag_cli": "--etapa materializar_intent"
+    },
+    {
+      "id": "stop_gate_01",
+      "palavras_chave": [
+        "stop gate 01",
+        "stop-gate-01"
+      ],
+      "slash_command": "/legoloop-concepcao-stop-gate-01",
+      "flag_cli": "--etapa stop_gate_01"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

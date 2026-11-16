@@ -1,6 +1,7 @@
 package refinar
 
 import (
+	"regexp"
 	"slices"
 	"strings"
 
@@ -8,11 +9,14 @@ import (
 	"legoloop/internal/ste"
 )
 
+// reIDNomeado aceita o id da etapa: minúsculas, números, _ ou -, começando com letra. Vale e04 e renderizar_video.
+var reIDNomeado = regexp.MustCompile(`^[a-z][a-z0-9_-]*$`)
+
 func init() {
 	ste.Default.Register("refinar.etapa_existe", "A etapa %s já existe em %s. Para mudar uma etapa existente, tire --adicionar.")
 	ste.Default.Register("refinar.adicionar_sem_peca", "A etapa nova %s precisa de uma peça. Informe com --peca.")
 	ste.Default.Register("refinar.depende_desconhecido", "A etapa %s depende de %s, que não existe. As etapas são: %s.")
-	ste.Default.Register("refinar.id_invalido", "O id %s não vale. Use e seguido de dois ou mais dígitos, como e04.")
+	ste.Default.Register("refinar.id_invalido", "O id %s não vale. Use letras minúsculas, números, _ ou -, começando com letra, como e04 ou renderizar_video.")
 }
 
 // adicionarEtapa põe uma etapa nova no fim do processo, ligada a Depende (padrão: a última etapa).
@@ -34,8 +38,7 @@ func adicionarEtapa(p processo.Processo, m Mudanca) (processo.Processo, processo
 	if err != nil {
 		return p, processo.Etapa{}, err
 	}
-	art := processo.Artefato{Caminho: "out/" + id + ".md", Tipo: "markdown", Promete: true}
-	gate, err := processo.GateParaArtefato(art)
+	art, gate, err := artefatoDaMudanca(m)
 	if err != nil {
 		return p, processo.Etapa{}, err
 	}
@@ -43,12 +46,29 @@ func adicionarEtapa(p processo.Processo, m Mudanca) (processo.Processo, processo
 	if titulo == "" {
 		titulo = "Etapa " + id
 	}
-	e := processo.Etapa{ID: id, Titulo: titulo, Peca: peca, Casos: casos, Produz: art, Gate: gate, Depende: deps}
+	e := processo.Etapa{ID: id, Titulo: titulo, Peca: peca, Casos: casos, Natureza: m.Natureza, Produz: art, Gate: gate, Depende: deps}
 	for _, d := range deps {
 		e.Consome = append(e.Consome, p.Etapas[indiceDe(p.Etapas, d)].Produz.Caminho)
 	}
 	p.Etapas = append(slices.Clone(p.Etapas), e)
 	return p, processo.Etapa{}, nil
+}
+
+// artefatoDaMudanca devolve o artefato da etapa nova e o gate que o cobre. O artefato vem
+// do Sai pedido; sem gate pedido, o gate deriva do artefato.
+func artefatoDaMudanca(m Mudanca) (processo.Artefato, string, error) {
+	art := processo.Artefato{Caminho: "out/" + strings.TrimSpace(m.Etapa) + ".md", Tipo: "markdown", Promete: true}
+	if m.Sai != nil {
+		art = *m.Sai
+	}
+	gate := m.Gate
+	if gate == "" {
+		var err error
+		if gate, err = processo.GateParaArtefato(art); err != nil {
+			return art, "", err
+		}
+	}
+	return art, gate, nil
 }
 
 func idsDe(etapas []processo.Etapa) []string {
@@ -59,17 +79,7 @@ func idsDe(etapas []processo.Etapa) []string {
 	return ids
 }
 
-func idValido(id string) bool {
-	if len(id) < 3 || id[0] != 'e' {
-		return false
-	}
-	for _, r := range id[1:] {
-		if r < '0' || r > '9' {
-			return false
-		}
-	}
-	return true
-}
+func idValido(id string) bool { return reIDNomeado.MatchString(id) }
 
 // dependenciasDe confere cada id pedido; sem pedido, liga na última etapa.
 func dependenciasDe(p processo.Processo, pedidas, ids []string) ([]string, error) {

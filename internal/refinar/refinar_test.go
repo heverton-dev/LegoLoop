@@ -747,3 +747,54 @@ func testContexto(t *testing.T) {
 	}
 	igual(t, antes, arvore(t, c))
 }
+
+// TestRefinarSai prova a AC-E03.2: --sai e --entra mudam o I/O da etapa e o .processo.json persiste o novo
+// Sai; o adicionar aceita id nomeado com artefato, gate e natureza custom; sem mudança pedida, ErrMudanca.
+func TestRefinarSai(t *testing.T) {
+	t.Run("sai e entram persistem no processo.json", func(t *testing.T) {
+		c := semear(t, processoDeTeste(), inicio, true)
+		m := refinar.Mudanca{Etapa: "e02",
+			Sai:   &processo.Artefato{Caminho: "docs/intents/INTENT.md", Tipo: "markdown", Promete: true},
+			Entra: []string{"out/e01.md", "fontes/entrada.csv"}}
+		if _, err := refinar.Run(context.Background(), refinar.Request{Nome: nome, Mudanca: m}, depsDe(c, nil, seguir, inicio)); err != nil {
+			t.Fatal(err)
+		}
+		e := lerProcesso(t, c).Etapas[1]
+		if e.Produz.Caminho != "docs/intents/INTENT.md" || !e.Produz.Promete {
+			t.Errorf("o .processo.json devia persistir o novo Sai: %+v", e.Produz)
+		}
+		if !slices.Equal(e.Consome, []string{"out/e01.md", "fontes/entrada.csv"}) {
+			t.Errorf("o .processo.json devia persistir o novo Entra: %v", e.Consome)
+		}
+		if !strings.Contains(e.Gate, "docs/intents/INTENT.md") {
+			t.Errorf("o gate devia derivar do novo artefato: %q", e.Gate)
+		}
+	})
+
+	t.Run("adicionar aceita id nomeado com artefato, gate e natureza custom", func(t *testing.T) {
+		c := semear(t, processoDeTeste(), inicio, true)
+		m := refinar.Mudanca{Etapa: "renderizar_video", Adicionar: true, Peca: "aidd-tdd", Casos: []string{"geracao-de-midia"},
+			Sai:      &processo.Artefato{Caminho: "out/video.md", Tipo: "markdown", Promete: true},
+			Gate:     "has_pattern('out/video.md', 'render')",
+			Natureza: "subprocesso"}
+		if _, err := refinar.Run(context.Background(), refinar.Request{Nome: nome, Mudanca: m}, depsDe(c, nil, seguir, inicio)); err != nil {
+			t.Fatal(err)
+		}
+		etapas := lerProcesso(t, c).Etapas
+		e := etapas[len(etapas)-1]
+		if e.ID != "renderizar_video" || e.Natureza != "subprocesso" {
+			t.Errorf("o id nomeado e a natureza custom deviam persistir: %+v", e)
+		}
+		if e.Produz.Caminho != "out/video.md" || e.Gate != "has_pattern('out/video.md', 'render')" {
+			t.Errorf("o artefato e o gate custom deviam persistir: %+v gate=%q", e.Produz, e.Gate)
+		}
+	})
+
+	t.Run("sem peca, caso, titulo, sai ou entra devolve ErrMudanca", func(t *testing.T) {
+		c := semear(t, processoDeTeste(), inicio, true)
+		_, err := refinar.Run(context.Background(), refinar.Request{Nome: nome, Mudanca: refinar.Mudanca{Etapa: "e02"}}, depsDe(c, nil, seguir, inicio))
+		if !errors.Is(err, refinar.ErrMudanca) {
+			t.Fatalf("erro %v; esperava ErrMudanca", err)
+		}
+	})
+}

@@ -589,6 +589,14 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
     4. *Frente 4 (Taxonomia e Governança ASD-STE100):* Varredura com `tools/taxlinter` para zerar termos proibidos residuais e garantir conformidade com a Lei #15.
   - **Materialização Prévia para Retomada:** Elaborar o Quinteto ISO de Auditoria (`INTENT`, `SPEC`, `PLAN`, `ROUTE`, `DAG`) antes do disparo dos workers estéreis do Swarm.
 
+- **16/11/2026** — ✅ **Demanda Fabricar Agnóstico (Épicos 01–05, SG-FINAL aprovado):**
+  - **Sessão:** `ab938316-779d-4aa8-9045-fb0d43336880` (swarm, coordinator `8e1ac50d`).
+  - **Entregas:** contrato de I/O da peça (`internal/processo/contrato_peca.go`, path jail, `ErrContratoInvalido`); molde agnóstico por natureza (`internal/fabricar/natureza.go`, `internal/matriz/perfil.go`); cadeia Sexteto INTERVIEW→INTENT→SPEC→PLAN→ROUTE→DAG (`internal/fabricar/sexteto.go`) e correção das 4 limitações do `refinar` (id nomeado, artefato custom, gate custom, natureza de nó); gate anti-reimplementação (`internal/processo/reimplementacao.go`); varredura dos verbos: aptidão por I/O `Sai→Consome` (`internal/matriz/rank.go`), `listar` com resumo de peça (`internal/listar/pecas.go`), `remover` de peça com rollback `.legoloop-bak` e exit 2 para nome inválido (`internal/remover/remover.go`, `internal/cli/remover.go`).
+  - **TDD:** RED comprovado em todos os tickets; 6 mutações mordidas e restauradas (MA1–MA3, MB1–MB3). `go test -count=1 ./...` exit 0 (40 pacotes), `go vet` limpo, `gofmt -l .` vazio, `go.mod/go.sum` inalterados, `go build` exit 0.
+  - **Não provado:** `-race` (CGO/Windows), LLM real (testes herméticos com LLM falso), `go install` (lock do `legoloop.exe` pelo Studio aberto — repetir após fechar), grafo semântico (MCP indisponível).
+  - **Débitos herdados (fora do escopo):** taxlinter 14 violações (`internal/refinar/curado_v2*`, `loops/legoloop-swarm`); funclen 3 estouros (`internal/board/swarm_run.go:90`, `internal/cli/swarm_run.go:13`, `internal/gate/cites.go:129`).
+  - **Relatório:** `docs/reports/2026-11-16_REPORT_FABRICAR_AGNOSTICO.md`. Commit pendente de autorização de push (commit local autorizado em board #62).
+
 ## Estado Atual do Repositório
 - **Status da Branch:** `main` — 17 skills canônicas universais, meta-sistema N10 Foundry completo, governança de proveniência de contexto, 6 motores de fronteira ativos e dupla superfície operacional.
 - **Binário Oficial:** `bin/legoloop.exe` recompilado com sucesso e instalado no PATH (`C:\Users\trcnologia\go\bin\legoloop.exe`).

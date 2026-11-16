@@ -20,7 +20,7 @@ func MergeByFit(n matriz.Needs, es []matriz.Entrada, opts MergeOptions) Merged {
 	if max <= 0 {
 		max = defaultMaxSteps
 	}
-	skills := dedupeCopies(onlySkills(es))
+	skills := comContratos(dedupeCopies(onlySkills(es)))
 	grupos := [][]string{nil} // sem etapas pedidas: um ranking geral
 	if len(n.Etapas) > 0 {
 		grupos = nil
@@ -38,7 +38,7 @@ func MergeByFit(n matriz.Needs, es []matriz.Entrada, opts MergeOptions) Merged {
 				continue
 			}
 		}
-		ranked := matriz.Rank(matriz.Needs{Natureza: n.Natureza, Etapas: etapas, Casos: casos}, skills, 0)
+		ranked := matriz.Rank(matriz.Needs{Natureza: n.Natureza, Etapas: etapas, Casos: casos, Consome: n.Consome}, skills, 0)
 		m.noteExclusions(ranked, avisadas)
 		if !m.addBest(ranked, etapas, max) {
 			break

@@ -356,3 +356,47 @@ func TestRemoverComWorkspace(t *testing.T) {
 		}
 	}
 }
+
+// TestRemoverPecaComContrato cobre a AC-E05.2: a peça solta com contrato sai do cofre com o
+// original guardado em .legoloop-bak, e a peça sem contrato.json não é alvo do remover.
+func TestRemoverPecaComContrato(t *testing.T) {
+	manifesto := "{\"nome\":\"legoloop-peca\",\"tipo\":\"script\",\"naturezas\":[\"dados\"]," +
+		"\"entra\":[{\"tipo\":\"texto\"}],\"sai\":[{\"tipo\":\"dados\",\"promete\":true}]}"
+	peca := func(t *testing.T) (remover.Deps, string) {
+		t.Helper()
+		d, _ := cofre(t)
+		dir := filepath.Join(d.Store.Roots.Vault, "skills", "legoloop-peca")
+		escrever(t, filepath.Join(dir, "SKILL.md"), "# peca\n")
+		escrever(t, filepath.Join(dir, "contrato.json"), manifesto)
+		return d, dir
+	}
+	t.Run("peca com contrato sai com backup", func(t *testing.T) {
+		d, dir := peca(t)
+		plano, err := remover.Planejar(context.Background(), d, "legoloop-peca")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := remover.Executar(context.Background(), plano); err != nil {
+			t.Fatal(err)
+		}
+		if existe(dir) {
+			t.Fatal("a peca devia ter saido do lugar")
+		}
+		if !existe(dir + ".legoloop-bak") {
+			t.Fatalf("o backup %s.legoloop-bak devia existir", dir)
+		}
+	})
+	t.Run("peca sem contrato nao e alvo", func(t *testing.T) {
+		d, _ := cofre(t)
+		escrever(t, filepath.Join(d.Store.Roots.Vault, "skills", "legoloop-solta", "SKILL.md"), "# solta\n")
+		if _, err := remover.Planejar(context.Background(), d, "legoloop-solta"); !errors.Is(err, remover.ErrNaoEncontrado) {
+			t.Fatalf("esperava ErrNaoEncontrado: %v", err)
+		}
+	})
+	t.Run("nome fora do padrao continua recusado", func(t *testing.T) {
+		d, _ := peca(t)
+		if _, err := remover.Planejar(context.Background(), d, "peca-sem-prefixo"); !errors.Is(err, remover.ErrNomeInvalido) {
+			t.Fatalf("esperava ErrNomeInvalido: %v", err)
+		}
+	})
+}
