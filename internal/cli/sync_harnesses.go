@@ -9,12 +9,15 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"legoloop/internal/mcp"
 )
 
 type syncTargetResult struct {
-	Path   string `json:"path"`
-	Status string `json:"status"`
-	Backup string `json:"backup,omitempty"`
+	Path   string   `json:"path"`
+	Status string   `json:"status"`
+	Backup string   `json:"backup,omitempty"`
+	Moved  []string `json:"moved_to_registry,omitempty"`
 }
 
 type syncHarnessesReport struct {
@@ -22,7 +25,7 @@ type syncHarnessesReport struct {
 	Targets []syncTargetResult `json:"targets"`
 }
 
-func parseSyncHarnessesFlags(args []string, errOut io.Writer) (dryRun, apply, jsonOut bool, err error) {
+func parseSyncHarnessesFlags(args []string, errOut io.Writer) (dryRun, apply, jsonOut bool, extra []string, err error) {
 	fs := flag.NewFlagSet("sync-harnesses", flag.ContinueOnError)
 	if errOut != nil {
 		fs.SetOutput(errOut)
@@ -30,8 +33,12 @@ func parseSyncHarnessesFlags(args []string, errOut io.Writer) (dryRun, apply, js
 	fs.BoolVar(&dryRun, "dry-run", false, "Simula alterações sem gravar")
 	fs.BoolVar(&apply, "apply", false, "Aplica as configurações e cria backups")
 	fs.BoolVar(&jsonOut, "json", false, "Emite saída estruturada em JSON")
+	cfg := fs.String("config", "", "Arquivos de config extras (separados por vírgula), ex.: perfil Claude do Orca")
 	err = fs.Parse(args)
-	return dryRun, apply, jsonOut, err
+	if *cfg != "" {
+		extra = strings.Split(*cfg, ",")
+	}
+	return dryRun, apply, jsonOut, extra, err
 }
 
 func targetConfigs(home string) []string {
@@ -41,22 +48,31 @@ func targetConfigs(home string) []string {
 		filepath.Join(home, ".config", "opencode", "opencode.json"),
 		filepath.Join(home, ".cursor", "mcp.json"),
 		filepath.Join(home, ".codeium", "windsurf", "mcp_config.json"),
+		filepath.Join(home, ".gemini", "config", "mcp_config.json"),
+		filepath.Join(home, ".gemini", "settings.json"),
+		filepath.Join(home, ".gemini", "antigravity", "mcp_config.json"),
+		filepath.Join(home, ".gemini", "antigravity-ide", "mcp_config.json"),
+		filepath.Join(home, ".copilot", "mcp-config.json"),
+		filepath.Join(home, "AppData", "Roaming", "Code", "User", "mcp.json"),
+		filepath.Join(home, "AppData", "Roaming", "Trae", "User", "mcp.json"),
+		filepath.Join(home, ".codex", "config.toml"),
+		filepath.Join(home, "AppData", "Local", "hermes", "config.yaml"),
 	}
 }
 
 func cmdSyncHarnesses(_ context.Context, args []string, d Deps) int {
-	dryRun, apply, jsonOut, err := parseSyncHarnessesFlags(args, d.Stderr)
+	dryRun, apply, jsonOut, extra, err := parseSyncHarnessesFlags(args, d.Stderr)
 	if err != nil || (!dryRun && !apply) {
 		fmt.Fprintln(d.Stderr, "Uso: legoloop sync-harnesses (--dry-run|--apply) [--json]")
 		return 2
 	}
 	home := resolveHome(d, "")
 	report := syncHarnessesReport{DryRun: dryRun, Targets: []syncTargetResult{}}
-	for _, target := range targetConfigs(home) {
+	for _, target := range append(targetConfigs(home), extra...) {
 		if _, err := os.Stat(target); os.IsNotExist(err) {
 			continue
 		}
-		res, err := syncFileResult(target, dryRun)
+		res, err := syncFileResult(home, target, dryRun)
 		if err != nil {
 			fmt.Fprintf(d.Stderr, "Erro ao sincronizar %s: %v\n", target, err)
 			return 1
@@ -74,6 +90,9 @@ func cmdSyncHarnesses(_ context.Context, args []string, d Deps) int {
 
 func backupFile(path string) error {
 	bak := path + ".bak_legoloop"
+	if _, err := os.Stat(bak); err == nil {
+		return nil
+	}
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return err
@@ -98,17 +117,18 @@ func injectMimoConfig(obj map[string]any) {
 }
 
 func injectStandardConfig(obj map[string]any) {
-	var servers map[string]any
-	if existing, ok := obj["mcpServers"].(map[string]any); ok && existing != nil {
-		servers = existing
-	} else {
+	key, entry := "mcpServers", map[string]any{"command": "legoloop", "args": []string{"mcp-router"}}
+	if _, hasStd := obj["mcpServers"].(map[string]any); !hasStd {
+		if _, hasVS := obj["servers"].(map[string]any); hasVS {
+			key, entry["type"] = "servers", "stdio"
+		}
+	}
+	servers, _ := obj[key].(map[string]any)
+	if servers == nil {
 		servers = make(map[string]any)
 	}
-	servers["legoloop"] = map[string]any{
-		"command": "legoloop",
-		"args":    []string{"mcp-router"},
-	}
-	obj["mcpServers"] = servers
+	servers["legoloop"] = entry
+	obj[key] = servers
 }
 
 func isMimoOrOpencode(path string) bool {
@@ -116,11 +136,20 @@ func isMimoOrOpencode(path string) bool {
 	return strings.Contains(lower, "mimocode") || strings.Contains(lower, "opencode")
 }
 
-func injectServerConfig(path string, raw []byte) ([]byte, error) {
+func injectServerConfig(path string, raw []byte) ([]byte, map[string]mcp.ServerSpec, error) {
+	switch strings.ToLower(filepath.Ext(path)) {
+	case ".toml":
+		out, specs := injectTOML(raw)
+		return out, specs, nil
+	case ".yaml", ".yml":
+		out, specs := injectYAML(raw)
+		return out, specs, nil
+	}
 	var obj map[string]any
 	if err := json.Unmarshal(stripJSONC(raw), &obj); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
+	specs := lazyExtract(path, obj)
 	if isMimoOrOpencode(path) {
 		injectMimoConfig(obj)
 	} else {
@@ -128,12 +157,12 @@ func injectServerConfig(path string, raw []byte) ([]byte, error) {
 	}
 	encoded, err := json.MarshalIndent(obj, "", "  ")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if header := extractJSONCHeader(raw); header != "" {
-		return []byte(header + string(encoded) + "\n"), nil
+		return []byte(header + string(encoded) + "\n"), specs, nil
 	}
-	return encoded, nil
+	return encoded, specs, nil
 }
 
 func extractJSONCHeader(raw []byte) string {
@@ -256,16 +285,7 @@ func writeSyncLine(out io.Writer, res syncTargetResult) {
 	fmt.Fprintf(out, "Sincronizado %s com sucesso (backup criado)\n", res.Path)
 }
 
-func syncFile(path string, dryRun bool, out io.Writer) error {
-	res, err := syncFileResult(path, dryRun)
-	if err != nil {
-		return err
-	}
-	writeSyncLine(out, res)
-	return nil
-}
-
-func syncFileResult(path string, dryRun bool) (syncTargetResult, error) {
+func syncFileResult(home, path string, dryRun bool) (syncTargetResult, error) {
 	if dryRun {
 		return syncTargetResult{Path: path, Status: "dry-run"}, nil
 	}
@@ -276,12 +296,15 @@ func syncFileResult(path string, dryRun bool) (syncTargetResult, error) {
 	if err != nil {
 		return syncTargetResult{}, err
 	}
-	updated, err := injectServerConfig(path, raw)
+	updated, specs, err := injectServerConfig(path, raw)
 	if err != nil {
+		return syncTargetResult{}, err
+	}
+	if err := persistSpecs(home, specs); err != nil {
 		return syncTargetResult{}, err
 	}
 	if err := os.WriteFile(path, updated, 0644); err != nil {
 		return syncTargetResult{}, err
 	}
-	return syncTargetResult{Path: path, Status: "synced", Backup: path + ".bak_legoloop"}, nil
+	return syncTargetResult{Path: path, Status: "synced", Backup: path + ".bak_legoloop", Moved: specNames(specs)}, nil
 }

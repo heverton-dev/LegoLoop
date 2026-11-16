@@ -245,11 +245,30 @@ type localVault struct {
 	vault      string
 	projectDir string
 	skills     *SkillEngine
+	specs      map[string]ServerSpec
+	catalog    map[string][]CatalogEntry
+}
+
+// searchExternal procura nos MCPs externos registrados, sem subir nenhum processo.
+func (v *localVault) searchExternal(q string) []ToolMatch {
+	var out []ToolMatch
+	for srv := range v.specs {
+		tools := v.catalog[srv]
+		for _, t := range tools {
+			if matchQuery(q, srv, t.Name, t.Description) {
+				out = append(out, ToolMatch{Server: srv, Name: t.Name, Description: t.Description})
+			}
+		}
+		if len(tools) == 0 && q != "" && strings.Contains(strings.ToLower(srv), q) {
+			out = append(out, ToolMatch{Server: srv, Name: "*", Description: "servidor registrado, ferramentas nao indexadas: rode 'legoloop mcp-registry refresh'"})
+		}
+	}
+	return out
 }
 
 func (v *localVault) Search(query string) []ToolMatch {
 	q := strings.ToLower(strings.TrimSpace(query))
-	var out []ToolMatch
+	out := v.searchExternal(q)
 	for _, td := range swarmToolDefs() {
 		name, _ := td["name"].(string)
 		desc, _ := td["description"].(string)
@@ -297,7 +316,10 @@ func (lr *localRunner) Run(server, tool string, args map[string]any) (string, er
 		resp := lr.router.callSkill(1, args)
 		return extractResponseText(resp)
 	}
-	return "", errors.New("servidor MCP externo nao registrado para execucao direta")
+	if lr.router.proxy == nil {
+		return "", errors.New("servidor MCP externo nao registrado para execucao direta")
+	}
+	return lr.router.proxy.CallTool(server, tool, args)
 }
 
 func extractResponseText(resp JSONRPCResponse) (string, error) {

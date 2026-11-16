@@ -27,6 +27,7 @@ func cmdMcpRouter(_ context.Context, args []string, d Deps) int {
 	}
 	home, vault := resolveMcpRouterPaths(d.Home, *vaultFlag)
 	router := mcp.NewConfiguredRouter(home, vault, *projectFlag)
+	defer router.Close()
 	if err := router.Serve(d.Stdin, d.Stdout); err != nil {
 		fmt.Fprintf(d.Stderr, "mcp-router encerrou com erro: %v\n", err)
 		return 1

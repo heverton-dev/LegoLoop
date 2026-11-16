@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var (
@@ -64,6 +65,17 @@ type Router struct {
 	skills    *SkillEngine
 	skillRoot string
 	swarm     bool
+	proxy     *Proxy
+}
+
+// idleMcp e o tempo sem uso apos o qual um MCP externo e encerrado.
+const idleMcp = 2 * time.Minute
+
+// Close encerra os servidores MCP externos que o proxy subiu sob demanda.
+func (r *Router) Close() {
+	if r.proxy != nil {
+		r.proxy.Close()
+	}
 }
 
 // NewRouter instancia um novo Router.
@@ -79,8 +91,11 @@ func (r *Router) EnableSwarm() {
 // NewConfiguredRouter instancia um Router conectado ao cofre, skills reais e ferramentas Swarm.
 func NewConfiguredRouter(home, vault, projectDir string) *Router {
 	engine, skillRoot := loadRealSkillEngine(vault, projectDir)
-	lv := &localVault{home: home, vault: vault, projectDir: projectDir, skills: engine}
+	specs, _ := LoadRegistry(RegistryPath(home))
+	catalog, _ := LoadCatalog(CatalogPath(home))
+	lv := &localVault{home: home, vault: vault, projectDir: projectDir, skills: engine, specs: specs, catalog: catalog}
 	r := &Router{vault: lv, skills: engine, skillRoot: skillRoot, swarm: true}
+	r.proxy = NewProxy(specs, idleMcp)
 	r.runner = &localRunner{router: r}
 	return r
 }
