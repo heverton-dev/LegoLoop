@@ -219,7 +219,7 @@ func planejar(req Request, d Deps) (Plano, error) {
 		return Plano{}, err
 	}
 	novo.Historico = append(slices.Clone(atual.Historico), atual.Versao)
-	arqs, files, err := montar(novo, req.Mudanca, d.agora(), roots)
+	arqs, files, avisosV2, err := montar(atual, novo, req.Mudanca, d.agora(), roots)
 	if err != nil {
 		return Plano{}, err
 	}
@@ -227,7 +227,7 @@ func planejar(req Request, d Deps) (Plano, error) {
 	return Plano{Nome: novo.Nome, De: atual.Versao, Para: novo.Versao, Antes: antes, Depois: depois, Arquivos: arqs,
 		Mudanca: Mudanca{Etapa: depois.ID, Peca: depois.Peca, Titulo: depois.Titulo, Casos: depois.Casos,
 			Adicionar: req.Mudanca.Adicionar, Depende: req.Mudanca.Depende},
-		Avisos: avisosDaPeca(roots.Vault, depois.Peca, antes.Peca), files: files}, nil
+		Avisos: append(avisosDaPeca(roots.Vault, depois.Peca, antes.Peca), avisosV2...), files: files}, nil
 }
 
 // lerProcesso lê o .processo.json do cofre. Processo da v1 (só o documento do Studio) não se refina.
@@ -343,21 +343,21 @@ func avisosDaPeca(vault, nova, antiga string) []string {
 // montar regera as projeções do processo novo e compara cada uma com o que está no disco. Devolve o diff de
 // todos os arquivos e a lista do que será gravado (o que não muda fica de fora). O processo.json vai por
 // último: ele é quem diz a versão.
-func montar(p processo.Processo, m Mudanca, now time.Time, roots processo.Roots) ([]Arquivo, []processo.File, error) {
+func montar(anterior, p processo.Processo, m Mudanca, now time.Time, roots processo.Roots) ([]Arquivo, []processo.File, []string, error) {
 	slug := strings.ToUpper(strings.ReplaceAll(strings.TrimPrefix(p.Nome, "legoloop-"), "-", "_"))
 	docs := filepath.Join(roots.Docs, "docs")
 	dataDocs := dataDaSpec(filepath.Join(docs, "specs"), slug, now)
 	pr, err := projetar(p, now, dataDocs)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	pj, err := p.Marshal()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	intentPath, intent, err := intentDe(filepath.Join(docs, "intents"), slug, p, m, now)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
 	dagPath, studioPath := caminhos.DestinosDoProcesso(roots.Vault, p.Nome, paths.SufixoAntigo)
@@ -372,9 +372,15 @@ func montar(p processo.Processo, m Mudanca, now time.Time, roots processo.Roots)
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 	}
 	if todos, err = comDerivados(todos, docs, dagPath, p, pr); err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
-	return comparar(todos)
+	prAnterior, err := projetar(anterior, now, dataDocs)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	todos, avisos := curados(todos, roots.Docs, docs, p, pr, prAnterior.Route)
+	arqs, gravar, err := comparar(todos)
+	return arqs, gravar, avisos, err
 }
 
 // comDerivados acrescenta o que depende do estado do processo e do projeto: o DAG espelho que já existe e a triagem

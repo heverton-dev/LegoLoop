@@ -123,3 +123,12 @@ Cada critério precisa ter uma forma mecânica de prova.
 * Peça: legoloop-swarm-cli
 * Título: Encerrar os workers e conferir a limpeza
 * Casos: legoloop swarm kill -dir REPO -repo REPO -name NOME para cada worker ainda vivo, conferir status killed, PID 0 e worktree removido do disco e de git worktree list, gravar a conferencia em out/05_encerramento.md
+
+## Refinamento 1.5.0
+
+* Data: 2026-11-16
+* Versão: 1.4.0 para 1.5.0
+* Etapa: e05 ()
+* Peça: legoloop-swarm-cli
+* Título: Encerrar os workers e conferir a limpeza
+* Casos: legoloop swarm kill -dir REPO -repo REPO -name NOME para cada worker ainda vivo, conferir status killed, PID 0 e worktree removido do disco e de git worktree list, gravar a conferencia em out/05_encerramento.md

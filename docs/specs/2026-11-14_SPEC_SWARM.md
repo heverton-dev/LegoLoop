@@ -1,7 +1,7 @@
 # 📋 SPEC: legoloop-swarm
 
 > **Status:** Proposta para Revisão  
-> **Versão:** 1.4.0  
+> **Versão:** 1.5.0  
 > **Gerada por:** `legoloop fabricar` (projeção do processo)  
 > **Template:** TEMPLATE_SPEC.md v2.2.0  
 
