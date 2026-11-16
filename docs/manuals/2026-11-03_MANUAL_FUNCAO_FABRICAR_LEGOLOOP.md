@@ -1,10 +1,10 @@
 # 📘 MANUAL OPERACIONAL: FUNÇÃO FABRICAR (FÁBRICA DE PROCESSOS) NO LEGOLOOP
 
-> **Data:** 2026-11-03  
+> **Data:** 2026-11-03 (última atualização: 2026-11-16 — alinhamento com a skill `legoloop-fabricar` v1.1.0, o subprocesso de curadoria e o commit `d09afee`)  
 > **Autoridade:** Ecossistema LegoLoop & AIDD (demanda `LEGOLOOP_FABRICAR`, `SG-FINAL` aprovado)  
 > **Status:** Canônico  
-> **Escopo:** Criar processos novos (skill + loop + pipeline + governança) a partir de uma ideia, pela CLI, pelo Chat ou pelo Studio  
-> **Fontes de verdade:** `docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md` · `internal/fabricar/` · relatório `docs/reports/2026-11-03_REPORT_LEGOLOOP_FABRICAR.md`
+> **Escopo:** Criar processos novos (skill + loop + pipeline + governança) ou peças únicas a partir de uma ideia, pela CLI, pelo Chat ou pelo Studio  
+> **Fontes de verdade:** `docs/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md` · `internal/fabricar/` · `skills/legoloop-fabricar/SKILL.md` · relatório `docs/reports/2026-11-03_REPORT_LEGOLOOP_FABRICAR.md`
 
 ---
 
@@ -54,15 +54,24 @@ São independentes: usar um não altera o outro.
 ### 3.1 CLI
 
 ```bash
-# Autônomo: sem perguntas. O objetivo é --goal ou, sem ele, o próprio nome.
-legoloop fabricar "extrator de audio" --yes --goal "Extrair o áudio de vídeos locais em mp3, em lote"
+# Entrevista primeiro (obrigatória no modo autônomo): inicia e responde.
+legoloop fabricar entrevista iniciar "quero um extrator de audio"
+legoloop fabricar entrevista responder <sessao> "mp3, em lote, de uma pasta"
+
+# Autônomo com entrevista concluída: não faz mais perguntas.
+legoloop fabricar "extrator de audio" --yes --entrevista <sessao> --goal "Extrair o áudio de vídeos locais em mp3, em lote"
 
 # Prévia: calcula tudo e NÃO grava nada. Faça sempre antes da primeira vez.
-legoloop fabricar "extrator de audio" --yes --dry-run
+legoloop fabricar "extrator de audio" --yes --entrevista <sessao> --dry-run
+
+# Autônomo sem entrevista: exige --sem-entrevista; a INTENT nasce DRAFT (confiança 0%).
+legoloop fabricar "extrator de audio" --yes --sem-entrevista --goal "Extrair áudio em mp3"
 
 # Interativo (sem --yes): lista os drives, faz a entrevista e pede confirmação.
 legoloop fabricar "extrator de audio"
 ```
+
+> **Regra do modo autônomo:** `--yes` sem `--entrevista` é recusado (exit 2) a menos que você declare `--sem-entrevista`. `--entrevista` e `--sem-entrevista` juntos também são recusados. `--aceitar-rascunho` só vale junto de `--entrevista`.
 
 No modo interativo, o terminal conduz três momentos:
 1. **Drives:** lista os discos detectados; digite os números a desmarcar (separados por vírgula) ou Enter para manter todos. Desmarcar todos é inválido.
@@ -73,13 +82,13 @@ Entrada inválida reaparece até 3 vezes e depois aborta; EOF no stdin também a
 
 ### 3.2 Chat (skill `legoloop-fabricar`)
 
-Digite `/legoloop-fabricar` ou descreva o processo que quer. A skill (em `skills/legoloop-fabricar/SKILL.md`):
-1. conduz a entrevista, uma pergunta por vez (objetivo, nome, categoria e modelo);
-2. roda a **prévia** `legoloop fabricar "<nome>" --yes --goal "..." --dry-run`;
+Digite `/legoloop-fabricar` ou descreva o processo que quer. A skill (em `skills/legoloop-fabricar/SKILL.md`, v1.1.0):
+1. roda `legoloop fabricar entrevista iniciar "<ideia>"` e faz **uma pergunta por vez**, mostrando o `palpite` e a `confianca` do JSON (nunca inventa número); repete até `status: COMPLETED` ou 12 turnos, definindo **nome**, **categoria** e **modelo**;
+2. roda a **prévia** `legoloop fabricar "<nome>" --yes --entrevista <sessao> --category <cat> --model <mod> --dry-run`;
 3. **para no stop-gate humano**: mostra o resumo e só continua com um "sim" explícito;
-4. roda o mesmo comando sem `--dry-run` e informa os caminhos.
+4. roda o mesmo comando sem `--dry-run` e informa os caminhos. Se a `confianca` ficar abaixo da `meta`, mostra as `lacunas` e só repete com `--aceitar-rascunho` após novo "sim" explícito.
 
-A skill não duplica a lógica: ela só conduz a conversa. Quem varre, funde, gera e grava é o comando.
+A skill não duplica a lógica: ela só conduz a conversa e o gate. Quem varre, funde, gera e grava é o comando. Códigos de saída que a skill trata: `0` sucesso · `2` nome/categoria inválidos · `1` falha (inclusive "processo já existe", que exige pedido explícito para usar `--force`).
 
 ### 3.3 Studio
 
@@ -108,6 +117,21 @@ Duas confirmações protegem você:
 | 5 | **Template e gravação** | Gera o gabarito e grava | `TEMPLATE_<NOME>.md` e gravação **atômica** de tudo (ou nada) |
 
 O progresso aparece como `[1/5] Clarificação...` até `[5/5] Template e gravação...`.
+
+### 4.1 Subprocesso obrigatório: Curadoria e Composição de Fronteira (6 etapas)
+
+Antes das camadas, a skill executa o subprocesso de `SubprocessoCuradoriaFronteira()` (`internal/fabricar/curadoria_fronteira.go`), com stop-gate humano avaliado por `AvaliarStopGateCuradoria`:
+
+1. **Entrevista e Escopo:** define objetivo, critérios binários de aceite, restrições e nível de qualidade (0 a 10).
+2. **Inventário Local:** varre SO + Cofre (Matriz de Peças, skills, MCPs e processos instalados).
+3. **Curadoria Externa:** busca em GitHub quando há lacuna, importa via `legoloop import` e descarta repositórios temporários após canonizar.
+4. **Elevação e Canonização:** roda `legoloop upgrade --diagnose`, corrige I/O Contracts e Negative Guardrails, e canoniza por SHA-256.
+5. **Composição do DAG Completo:** compõe nós reais com `context_in`, `context_out`, `routing` e gates determinísticos (nunca 1 nó genérico).
+6. **Projeção Padrão no Cofre:** gera os 4 arquivos padrão do processo (manifesto, DAG, triagem e memória de execução), o Quinteto em `docs/` e valida com `legoloop validate`.
+
+### 4.2 Modo peça única (`--peca`)
+
+A flag `--peca <tipo>` fabrica **uma peça isolada** ( `script`, `skill`, `gate`, `hook`, `mcp` ou `processo`) em vez do processo completo. O tipo passa por `TipoPecaValido` e a montagem sai de `ProcessoPeca` (`internal/fabricar/peca_unica.go`, commit `d09afee`). O processo derivado tem skill, loop, DAG, triagem e manual próprios em `skills/legoloop-fabricar-peca-unica/`.
 
 ---
 
@@ -162,19 +186,27 @@ legoloop fabricar "<nome>" [opções]
 
 | Flag | Padrão | Efeito |
 |:---|:---|:---|
-| `--yes` | desligado | modo autônomo (não pergunta nada) |
+| `--yes` | desligado | modo autônomo (não pergunta nada); **exige** `--entrevista <sessao>` ou `--sem-entrevista` |
+| `--entrevista SESSAO` | vazio | reutiliza a entrevista feita no Chat (`legoloop fabricar entrevista iniciar/responder`) |
+| `--sem-entrevista` | desligado | com `--yes`: segue sem entrevista; a INTENT nasce `DRAFT` (confiança 0%) |
+| `--aceitar-rascunho` | desligado | com `--entrevista`: gera a SPEC mesmo com a `confianca` abaixo da `meta`; exige "sim" explícito no Chat |
 | `--goal TEXTO` | o próprio nome | objetivo em linguagem natural |
 | `--model M` | primeiro do inventário | modelo que conduz a fabricação; precisa ser do **9Router** e estar no inventário |
+| `--effort N` | vazio | esforço cognitivo: `low`, `medium` ou `high` |
 | `--category` | `build` | `build`, `reverse`, `web` ou `mobile` |
+| `--peca TIPO` | vazio | fabrica só uma peça (`script`, `skill`, `gate`, `hook`, `mcp`, `processo`) em vez do processo completo |
 | `--vault DIR` | `~/.aidd/canonical` | cofre que recebe skill, loop e DAG |
 | `--docs DIR` | pasta atual | **raiz do projeto**; os documentos vão em `DIR/docs/...` |
 | `--force` | desligado | sobrescreve um processo existente, guardando o original como `.legoloop-bak` |
 | `--dry-run` | desligado | calcula tudo, imprime os caminhos e **não grava nada** |
 | `--trust-removable` | desligado | aceita peças de mídia removível/rede na fusão |
-| `--link-harness H` | nenhum | liga a skill à pasta de skills do harness (ex.: `claude`); repetível; **opt-in** |
+| `--link-harness H` | todos os detectados | liga só aos harnesses citados (ex.: `claude`); repetível |
+| `--no-link` | desligado | grava só no cofre, sem ligar a nenhum harness |
 | `--json` | desligado | imprime o resultado como JSON (o progresso vai para o stderr) |
 
-**Códigos de saída:** `0` sucesso · `1` falha de execução (modelo fora do inventário, processo já existente, LLM indisponível, SPEC fora do contrato, cancelado) · `2` uso inválido (nome ou categoria inválidos, flag desconhecida, sem nome).
+**Subcomandos da entrevista:** `legoloop fabricar entrevista iniciar "<ideia>"` · `entrevista responder <sessao> "<texto>"` · `entrevista intent <sessao>`.
+
+**Códigos de saída:** `0` sucesso · `1` falha de execução (modelo fora do inventário, processo já existente, LLM indisponível, SPEC fora do contrato, confiança abaixo da meta sem `--aceitar-rascunho`, cancelado) · `2` uso inválido (nome ou categoria inválidos, `--yes` sem entrevista, `--entrevista` + `--sem-entrevista` juntos, flag desconhecida, sem nome).
 
 ---
 
@@ -263,12 +295,16 @@ legoloop run       ~/.aidd/canonical/loops/legoloop-extrator-de-audio.dag.json -
 | Peça | Onde |
 |:---|:---|
 | Orquestrador e camadas | `internal/fabricar/engine.go` (`Fabricar`, `Deps`, `Result`) |
-| Nome, drives, scanner, fusão, gravação | `name.go`, `drives.go`, `scanner.go`, `merger.go`, `materialize.go` |
-| Tríade e repetição da SPEC | `triad.go`, `repair.go` (`specgen`, `plangen.Render`, `interview.RenderIntent`) |
-| Emissores | `emit_skill.go`, `emit_loop.go`, `emit_dag.go`, `template.go` |
-| Cérebro e chave | `brain.go` (`BrainFor`), `internal/provider/trusted.go` (`TrustedRouterKey`) |
-| CLI | `internal/cli/fabricar.go`, `fabricar_interactive.go` |
-| Skill do Chat | `skills/legoloop-fabricar/SKILL.md` |
-| Studio | `internal/studio/fabricar_api.go`, `static/fabricar.js`, `static/app.js`, `static/inspector.js` |
+| Entrevista e confiança | `clarifier.go`, `confianca.go`, `interview_bridge.go`, `lacunas.go`; CLI em `internal/cli/fabricar_entrevista.go` |
+| Varredura, drives e Matriz | `fonte_matriz.go`, `pieces.go` (drives e scanner vivem no motor, não em arquivo próprio) |
+| Fusão e confiança de peças | `merger.go`, `merger_fit.go`, `untrusted_windows.go`, `untrusted_other.go` |
+| Curadoria de fronteira | `curadoria_fronteira.go` (`SubprocessoCuradoriaFronteira`, `AvaliarStopGateCuradoria`) |
+| Tríade e repetição da SPEC | `camada4.go`, `natureza.go` (`specgen`, `plangen.Render`, `interview.RenderIntent`) |
+| Peça única | `peca_unica.go` (`TipoPecaValido`, `ProcessoPeca`) — commit `d09afee` |
+| Emissores e gravação | `materialize.go`, `template.go`, `link.go`, `report.go` |
+| Cérebro e chave | `internal/brain`, `internal/provider` (`TrustedRouterKey` em `trusted.go`) |
+| CLI | `internal/cli/fabricar.go`, `fabricar_interactive.go`, `fabricar_entrevista.go` |
+| Skill do Chat | `skills/legoloop-fabricar/SKILL.md` (v1.1.0) |
+| Studio | `internal/studio/fabricar_api.go`, `static/fabricar.js`, `static/app.js`, `static/inspector.js`, rotas `/api/interview/*` |
 
 Verificação: `go test -count=1 ./...`, `go vet ./...`, `go run ./tools/funclen internal/fabricar`, `gofmt -l .` (vazio). A SPEC tem 12 critérios binários (`AC-E01.1` a `AC-E03.3`), todos atendidos e rastreados no relatório final.
