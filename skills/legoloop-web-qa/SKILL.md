@@ -72,3 +72,22 @@ legoloop web-qa corrigir --relatorio docs/qa-web/YYYY-MM-DD_meu-app/RELATORIO_QA
 - [ ] `node --test tools/webqa/webqa.test.mjs` retornou exit code 0.
 - [ ] Relatório consolidado salvo em `docs/qa-web/YYYY-MM-DD_<alvo>/RELATORIO_QA_WEB.{json,md}`.
 - [ ] Entrevista socrática iniciada sobre os achados antes do ciclo `BUILD`.
+
+---
+
+## 5. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `n01_preflight` | Preflight estrito das 8 ferramentas obrigatórias | Validação e verificação binária de todo o ferramental de QA |
+| `n02_boot_e_descoberta` | Boot opcional de app local e descoberta de rotas e viewports | Inicialização do servidor local e mapeamento de rotas |
+| `n03_links_lychee` | Auditoria determinística de links e assets com lychee | Verificação de integridade de links internos, externos e assets |
+| `n04_obscura_e_playwright` | Inspeção de rotas, console e navegação com obscura e playwright | Checagem de status HTTP e captura de erros de runtime/console |
+| `n05_renderlint_e_design` | Auditoria de botões mortos, layout e tokens com renderlint e aidd-linter-design | Análise de layout, controles mortos e conformidade de design |
+| `n06_axe_acessibilidade` | Auditoria de acessibilidade WCAG (critical e serious) com axe-core | Testes automatizados de conformidade com padrões de acessibilidade |
+| `n07_unlighthouse_rotas` | Varredura Lighthouse multi-rota (nota mínima 90) com unlighthouse | Auditoria de performance, SEO e melhores práticas web |
+| `n08_lost_pixel_visual` | Regressão visual open-source e snapshot inicial com lost-pixel | Captura de snapshots e comparação de regressão visual |
+| `n10_relatorio_consolidado` | Consolidação de relatório JSON + Markdown em docs/qa-web/ | Unificação dos diagnósticos em relatório JSON e Markdown |
+| `n11_entrevista_correcao` | Entrevista socrática de afunilamento sobre correções do relatório | Afunilamento investigativo das falhas encontradas |
+| `n12_governanca_build` | Geração da cadeia INTERVIEW -> INTENT -> SPEC -> PLAN -> ROUTE -> DAG -> SWARM para BUILD | Materialização do ciclo formal para remediação e build |
+

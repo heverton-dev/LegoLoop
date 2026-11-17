@@ -60,3 +60,14 @@ suggested_model: t-codigo-128k
 
 4. **Invocação via Chat dos Agentes:**
    Basta digitar `/legoloop-cartoon-shorts <tema>` em qualquer conversa. O agente ativará o Processo determinístico e entregará o MP4 compilado.
+
+---
+
+## 5. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `n01_script_engine` | Geração do Roteiro de Curiosidades com Tags de Emoção | Elaboração do roteiro cronometrado e tags de emoção |
+| `n02_edge_tts` | Síntese de Voz Soberana Edge-TTS pt-BR | Síntese de voz neural gratuita em português brasileiro |
+| `n03_threejs_render` | Renderização Visual Three.js e Muxing Determinístico FFmpeg | Renderização gráfica 3D/2D e multiplexação com FFmpeg |
+

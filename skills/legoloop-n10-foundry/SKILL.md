@@ -45,3 +45,15 @@ legoloop run processo.dag.json --parallel 2 --json
 # Abrir o Studio Visual:
 legoloop studio --addr 127.0.0.1:7878
 ```
+
+---
+
+## 4. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `n01_contracts_and_schemas` | Saneamento de Schemas e Proveniência de Contexto | Validação de contratos, proveniência e integridade semântica |
+| `n02_andon_and_sbar` | Disjuntor Jidoka Andon Cord e Formatador SBAR | Mecanismo de parada imediata e escalonamento padronizado |
+| `n03_n10_frontier_engines` | Motores de Fronteira Industrial N10 | Acionamento dos motores autônomos de engenharia N10 |
+| `n04_double_surface` | Dupla Superfície Autopilot e LegoPress | Integração da superfície de execução com geração documental |
+

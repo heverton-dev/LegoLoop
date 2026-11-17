@@ -84,3 +84,15 @@ legoloop validate processos/legoloop-canal-redc/processo.dag.json
 - [ ] Árvore `docs/channels/<canal>/` gerada contendo `repc/`, `processos/` e `outputs/`.
 - [ ] Dossiê DNA sintetizado com tom de voz, ritmo e tokens visuais/motion.
 - [ ] DAG validado com exit code 0 por `legoloop validate`.
+
+---
+
+## 5. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `n01_catalogar_clusterizar` | Catalogação e Clusterização de Canais | Triagem, catalogação e clusterização das métricas do canal |
+| `n02_deep_redc_dna` | Engenharia Reversa Profunda & DNA | Extração forense de tom, ganchos e tokens de DNA |
+| `n03_gerar_processos_metodos` | Gerador de Processos & Métodos | Materialização dos métodos ensinados em processos operacionais |
+| `n04_gerador_brand_swap` | Gerador de Vídeos com Brand Swap | Criação de roteiros e estrutura de vídeo com marca personalizada |
+

@@ -343,3 +343,18 @@ O Mega Processo integra diretamente os comandos do CLI nativo:
 2. **NUNCA** ignore um Stop-Gate humano ou avance de Etapa por conta própria.
 3. **NUNCA** produza funções com `TODO`, `pass` ou mocks de produção em código do LegoLoop.
 4. **NUNCA** pule a recompilação fresca do binário `legoloop.exe` ao alterar arquivos em Go.
+
+---
+
+## 9. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `l1-concepcao` | Concepção & Alinhamento Socrático | Entrevista socrática de alinhamento e geração da INTENT |
+| `l2-design` | Design Pass & Direção Visual | Design de interface, UX e tokens visuais |
+| `l3-triade` | Tríade de Especificação & Rota | Materialização formal de SPEC, PLAN e ROUTE |
+| `l3b-swarm` | Orquestração Swarm por Nível Topológico | Execução coordenada e paralela em níveis topológicos |
+| `l4-tdd` | Construção TDD por Épico | Construção estrita guiada por testes Red-Green-Refactor |
+| `l5-homologue` | Homologação E2E & Auditoria Full-Stack | Homologação ponta a ponta e auditoria de qualidade |
+| `l6-fechar-canonico` | Fechamento Canônico Universal | 9 etapas mecânicas de canonização, manual, livro e build |
+

@@ -20,3 +20,16 @@ legoloop triagem "<entrada>" --workspace "<DIR>" --json
 ## REGRAS NEGATIVAS
 - Nunca acione um LLM para entradas que possuem comando, slug ou estado de artefato inequívoco no disco.
 - Nunca invente rotas ou processos que não constem no catálogo validado de `triagem.json`.
+
+---
+
+## Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `t1-motor-triagem` | Motor de Triagem | Classificação determinística em 4 camadas de precisão |
+| `t2-fabricar-13-artefatos` | Fabricar 13 Artefatos | Geração dos manifestos canônicos de triagem |
+| `t3-pontos-entrada` | Pontos de Entrada | Integração da triagem com CLI e comandos de chat |
+| `t4-saneamento-processos` | Saneamento de Processos | Limpeza e alinhamento de processos legados |
+| `t5-portoes-fechamento` | Portões e Fechamento | Validação mecânica e fechamento do ciclo de triagem |
+

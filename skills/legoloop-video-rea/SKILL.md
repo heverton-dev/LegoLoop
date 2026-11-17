@@ -86,3 +86,17 @@ suggested_model: sonnet
 
 ### Etapa 7: Canonização e Fechamento com Telemetria
 * Execução de `legoloop fechar "<slug>"` para emissão do relatório final com balanço financeiro, orçado vs realizado e recompilação do binário no PATH.
+
+---
+
+## 4. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `n01_crawler_ingest` | Ingestão e Download de Metadados e Áudio Bruto | Download e extração de áudio e metadados de vídeo |
+| `n02_forensics_dissection` | Dissecação Forense, Transcrição Whisper, Cortes, Conceitos, Processos e Repositórios | Transcrição, identificação de conceitos e ferramentas |
+| `n03_matrix_curation` | Curadoria da Matriz Original e Classificação DEVE, PODE e NÃO PODE | Análise de viabilidade soberana e classificação |
+| `n04_stopgate_approval` | Stop-Gate Humano de Aprovação da Curadoria | Aprovação humana formal da curadoria e ferramentas |
+| `n05_governance_factory` | Fábrica e Materialização dos Artefatos de Governança | Materialização de INTENT, SPEC, PLAN e ROUTE |
+| `n06_legopress_book` | Compilação e Auditoria do Livro Didático LegoPress | Geração e verificação geométrica do livro técnico |
+
