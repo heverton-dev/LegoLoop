@@ -1,0 +1,3762 @@
+﻿{
+    "$schema":  "https://legoloop.dev/schemas/route.v2.json",
+    "schema_version":  2,
+    "template_version":  "2.2.0",
+    "name":  "MEGA_PLANO_PRODUCAO",
+    "version":  "1.0.0",
+    "date":  "2026-11-16",
+    "session_id":  "8e1ac50d-4232-4ce2-883a-c4bd3bbc222c",
+    "intent_ref":  "docs/intents/2026-11-16_INTENT_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md",
+    "spec_ref":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md",
+    "plan_ref":  "docs/plans/2026-11-16_PLAN_MEGA_PLANO_PRODUCAO.md",
+    "initiative_ref":  "Mega-Plano-Producao",
+    "upstream_signatures":  {
+                                "intent":  {
+                                               "path":  "docs/intents/2026-11-16_INTENT_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md",
+                                               "sha256":  "760d8e393007cde259aeb9ea47df6a9ecf4949d79f30db3413b7723134b303f9"
+                                           },
+                                "spec":  {
+                                             "path":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md",
+                                             "sha256":  "3eadc0d1e55d1d7866e2f7f2bbb2aeeff76388dcb40683b28a44411104754da4"
+                                         },
+                                "plan":  {
+                                             "path":  "docs/plans/2026-11-16_PLAN_MEGA_PLANO_PRODUCAO.md",
+                                             "sha256":  "331925ddf9b43c929321ce9ea2ce70e767d2d6f358b920bda2bbb1d1730a7bdc"
+                                         }
+                            },
+    "execution_strategy":  {
+                               "supervision_level":  "micro",
+                               "concurrency":  {
+                                                   "mode":  "hybrid",
+                                                   "max_parallel_subagents":  4,
+                                                   "harness_capability":  "subagent_cli_isolated",
+                                                   "rate_limit_throttle_ms":  500
+                                               },
+                               "default_isolation":  {
+                                                         "workspace":  "local",
+                                                         "executor":  "orchestrix_hermetic",
+                                                         "subagents_allowed":  "ephemeral"
+                                                     },
+                               "max_parallel_workers":  4,
+                               "tdd_enforced":  true,
+                               "default_timeout_sec":  300,
+                               "rollback_on_failure":  "abort_processo",
+                               "rollback_policy":  {
+                                                       "action":  "abort_and_pause",
+                                                       "git_strategy":  "checkpoint_commit",
+                                                       "preserve_artifacts":  true,
+                                                       "commit_on_node_pass":  true
+                                                   }
+                           },
+    "nodes":  [
+                  {
+                      "id":  "TICK-01.1",
+                      "initiative_id":  "I0",
+                      "epic_id":  "E01",
+                      "label":  "Inventario classificado de todo docs (SWARM por diretorio)",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  600,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  32000,
+                                           "max_output_tokens":  1200
+                                       },
+                      "depends_on":  [
+
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "docs/**"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E01.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E01.1",
+                      "test_target":  "internal/inventario/inventario_test.go:TestClassificaTodosArquivos",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "docs/reports/2026-11-16_INVENTARIO_DOCS.md",
+                                                       "internal/inventario/inventario.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/inventario/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0 \u0026\u0026 file_exists(\u0027docs/reports/2026-11-16_INVENTARIO_DOCS.md\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-01.2",
+                      "initiative_id":  "I0",
+                      "epic_id":  "E01",
+                      "label":  "Migracao para docs/archive (videorea, sessions, reports historicos)",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  600,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  16000,
+                                           "max_output_tokens":  600
+                                       },
+                      "depends_on":  [
+                                         "TICK-01.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "docs/videorea/**",
+                                                          "docs/sessions/**",
+                                                          "docs/reports/**"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E01.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E01.2",
+                      "test_target":  "internal/inventario/migrar_test.go:TestMigraParaArchive",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/inventario/migrar.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/inventario/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0 \u0026\u0026 dir_exists(\u0027docs/archive\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-01.3",
+                      "initiative_id":  "I0",
+                      "epic_id":  "E01",
+                      "label":  "Guard de protecao de lei (templates e vocab indeleveis)",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-01.2"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/inventario/migrar.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E01.3",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E01.3",
+                      "test_target":  "internal/inventario/guard_test.go:TestRecusaDelecaoTemplate",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/inventario/guard.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/inventario/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-01.4",
+                      "initiative_id":  "I0",
+                      "epic_id":  "E01",
+                      "label":  "Pendentes sem dono viram tickets do PLAN",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-01.3"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "docs/reports/2026-11-16_INVENTARIO_DOCS.md"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E01.4",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E01.4",
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "vet",
+                                                        "./internal/inventario/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-E01",
+                      "initiative_id":  "I0",
+                      "epic_id":  "E01",
+                      "label":  "Stop-Gate Humano do Epico 01",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "none"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-01.1",
+                                         "TICK-01.2",
+                                         "TICK-01.3",
+                                         "TICK-01.4"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+
+                                                ],
+                                     "gate":  "prompt(\u0027Inventario e arquivo morto do docs aprovados? Autoriza iniciar E02 (Nascimento 5/5)?\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-02.1",
+                      "initiative_id":  "I1",
+                      "epic_id":  "E02",
+                      "label":  "Templates canonicos TRIAGEM MEMORIA_EXECUCAO ANTICORPOS",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  16000,
+                                           "max_output_tokens":  600
+                                       },
+                      "depends_on":  [
+                                         "SG-E01"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "docs/templates/templates_test.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E02.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E02.2",
+                      "test_target":  "docs/templates/templates_test.go:TestTemplatesNascimento",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "docs/templates/TEMPLATE_TRIAGEM.json",
+                                                       "docs/templates/TEMPLATE_MEMORIA_EXECUCAO.json",
+                                                       "docs/templates/TEMPLATE_ANTICORPOS.json"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./docs/templates/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0 \u0026\u0026 file_exists(\u0027docs/templates/TEMPLATE_TRIAGEM.json\u0027) \u0026\u0026 file_exists(\u0027docs/templates/TEMPLATE_MEMORIA_EXECUCAO.json\u0027) \u0026\u0026 file_exists(\u0027docs/templates/TEMPLATE_ANTICORPOS.json\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-02.2",
+                      "initiative_id":  "I1",
+                      "epic_id":  "E02",
+                      "label":  "fabricar instancia scaffold 5/5 validado por schema",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  24000,
+                                           "max_output_tokens":  900
+                                       },
+                      "depends_on":  [
+                                         "TICK-02.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/fabricar/*"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E02.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E02.1",
+                      "test_target":  "internal/fabricar/scaffold_test.go:TestNasceCincoPorCinco",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/fabricar/scaffold.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/fabricar/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-02.3",
+                      "initiative_id":  "I1",
+                      "epic_id":  "E02",
+                      "label":  "Adequacao dos processos existentes a 5/5",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-02.2"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "loops/**"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E02.3",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E02.3",
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "legoloop",
+                                                        "validate"
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-02.4",
+                      "initiative_id":  "I1",
+                      "epic_id":  "E02",
+                      "label":  "Slug invalido exit 2 sem diretorio criado",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-02.2"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/cli/fabricar.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E02.4",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E02.4",
+                      "test_target":  "internal/cli/fabricar_test.go:TestNomeInvalidoExitDois",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/cli/fabricar.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/cli/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-E02",
+                      "initiative_id":  "I1",
+                      "epic_id":  "E02",
+                      "label":  "Stop-Gate Humano do Epico 02",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "none"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-02.1",
+                                         "TICK-02.2",
+                                         "TICK-02.3",
+                                         "TICK-02.4"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+
+                                                ],
+                                     "gate":  "prompt(\u0027Nascimento 5/5 e templates aprovados? Autoriza iniciar E03/E04 (memoria e anticorpos)?\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-03.1",
+                      "initiative_id":  "I2",
+                      "epic_id":  "E03",
+                      "label":  "Biblioteca de lock por arquivo Session+PID em internal/triagem",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  24000,
+                                           "max_output_tokens":  900
+                                       },
+                      "depends_on":  [
+                                         "SG-E02"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/triagem/memoria.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E03.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E03.1",
+                      "test_target":  "internal/triagem/memoria_test.go:TestLockConcorrente",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/triagem/lock.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/triagem/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-03.2",
+                      "initiative_id":  "I2",
+                      "epic_id":  "E03",
+                      "label":  "Zerar memoria no fechar",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-03.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/fechar/quarteto.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E03.3",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E03.3",
+                      "test_target":  "internal/fechar/quarteto_test.go:TestZeraMemoria",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/fechar/quarteto.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/fechar/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-03.3",
+                      "initiative_id":  "I2",
+                      "epic_id":  "E03",
+                      "label":  "Memoria corrompida sentinela e backup .legoloop-bak",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-03.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/triagem/memoria.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E03.4",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E03.4",
+                      "test_target":  "internal/triagem/memoria_test.go:TestCorrompidoBackup",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/triagem/memoria.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/triagem/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-E03",
+                      "initiative_id":  "I2",
+                      "epic_id":  "E03",
+                      "label":  "Stop-Gate Humano do Epico 03",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "none"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-03.1",
+                                         "TICK-03.2",
+                                         "TICK-03.3"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+
+                                                ],
+                                     "gate":  "prompt(\u0027Memoria concorrente segura aprovada? Autoriza iniciar E05 (VSA)?\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-04.1",
+                      "initiative_id":  "I3",
+                      "epic_id":  "E04",
+                      "label":  "Persistencia em anticorpos.json + schema anticorpos.v1",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  24000,
+                                           "max_output_tokens":  900
+                                       },
+                      "depends_on":  [
+                                         "SG-E02"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/brain/antibodies.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E04.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E04.1",
+                      "test_target":  "internal/brain/antibodies_test.go:TestPersisteVacina",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "schemas/anticorpos.v1.json",
+                                                       "internal/brain/antibodies.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/brain/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0 \u0026\u0026 file_exists(\u0027schemas/anticorpos.v1.json\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-04.2",
+                      "initiative_id":  "I3",
+                      "epic_id":  "E04",
+                      "label":  "Vacinacao de reincidencia SHA-256 e injecao preventiva",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  24000,
+                                           "max_output_tokens":  900
+                                       },
+                      "depends_on":  [
+                                         "TICK-04.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/brain/antibodies.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E04.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E04.2",
+                      "test_target":  "internal/brain/antibodies_test.go:TestVacinaReincidencia",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/brain/antibodies.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/brain/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-04.3",
+                      "initiative_id":  "I3",
+                      "epic_id":  "E04",
+                      "label":  "Escopo global infra LLM vs dominio local",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-04.2"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/brain/antibodies.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E04.3",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E04.3",
+                      "test_target":  "internal/brain/antibodies_test.go:TestEscopoGlobalDominio",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/brain/antibodies.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/brain/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-04.4",
+                      "initiative_id":  "I3",
+                      "epic_id":  "E04",
+                      "label":  "anticorpos.json corrompido backup nao trava",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-04.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/brain/antibodies.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E04.4",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E04.4",
+                      "test_target":  "internal/brain/antibodies_test.go:TestCorrompidoNaoTrava",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/brain/antibodies.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/brain/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-E04",
+                      "initiative_id":  "I3",
+                      "epic_id":  "E04",
+                      "label":  "Stop-Gate Humano do Epico 04",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "none"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-04.1",
+                                         "TICK-04.2",
+                                         "TICK-04.3",
+                                         "TICK-04.4"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+
+                                                ],
+                                     "gate":  "prompt(\u0027Anticorpos persistentes e vacinacao aprovados? Autoriza iniciar E05 (VSA)?\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-05.1",
+                      "initiative_id":  "I4",
+                      "epic_id":  "E05",
+                      "label":  "Scaffold do slice manifesto + docs do processo",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  24000,
+                                           "max_output_tokens":  900
+                                       },
+                      "depends_on":  [
+                                         "SG-E03",
+                                         "SG-E04"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/fabricar/scaffold.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E05.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E05.1",
+                      "test_target":  "internal/fabricar/scaffold_test.go:TestSliceAutocontido",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/fabricar/scaffold.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/fabricar/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-05.2",
+                      "initiative_id":  "I4",
+                      "epic_id":  "E05",
+                      "label":  "Migracao do Quinteto 286 docs para os slices",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  600,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  32000,
+                                           "max_output_tokens":  1200
+                                       },
+                      "depends_on":  [
+                                         "TICK-05.1",
+                                         "SG-E01"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "docs/intents/**",
+                                                          "docs/specs/**",
+                                                          "docs/plans/**",
+                                                          "docs/routes/**",
+                                                          "docs/dags/**"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E05.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E05.2",
+                      "test_target":  "internal/inventario/migrar_test.go:TestMigraQuinteto",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/inventario/migrar.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/inventario/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-05.3",
+                      "initiative_id":  "I4",
+                      "epic_id":  "E05",
+                      "label":  "Abstracao por SO pecas ps1 sh resolvidas",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-05.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/fabricar/scaffold.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E05.3",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E05.3",
+                      "test_target":  "internal/fabricar/scaffold_test.go:TestResolvePorSO",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/fabricar/scaffold.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/fabricar/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-05.4",
+                      "initiative_id":  "I4",
+                      "epic_id":  "E05",
+                      "label":  "Orfaos do Quinteto para docs/archive com registro",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-05.2"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "docs/reports/2026-11-16_INVENTARIO_DOCS.md"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E05.4",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E05.4",
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "vet",
+                                                        "./internal/inventario/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-E05",
+                      "initiative_id":  "I4",
+                      "epic_id":  "E05",
+                      "label":  "Stop-Gate Humano do Epico 05",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "none"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-05.1",
+                                         "TICK-05.2",
+                                         "TICK-05.3",
+                                         "TICK-05.4"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+
+                                                ],
+                                     "gate":  "prompt(\u0027Arquitetura VSA consolidada? Autoriza iniciar E06 (rename loops para processos)?\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-06.1",
+                      "initiative_id":  "I5",
+                      "epic_id":  "E06",
+                      "label":  "Rename loops para processos + referencias migradas",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  600,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  32000,
+                                           "max_output_tokens":  1200
+                                       },
+                      "depends_on":  [
+                                         "SG-E05"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "loops/**"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E06.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E06.1",
+                      "test_target":  "internal/caminhos/caminhos_test.go:TestReferenciasProcessos",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "processos/**"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0 \u0026\u0026 dir_exists(\u0027processos\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-06.2",
+                      "initiative_id":  "I5",
+                      "epic_id":  "E06",
+                      "label":  "Binario e schemas apontam processos",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-06.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/fechar/quarteto.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E06.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E06.2",
+                      "test_target":  "internal/fechar/quarteto_test.go:TestGravaEmProcessos",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/fechar/quarteto.go",
+                                                       "internal/caminhos"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/fechar/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-06.3",
+                      "initiative_id":  "I5",
+                      "epic_id":  "E06",
+                      "label":  "Comando legado loops exit 2 com guia de migracao",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-06.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/cli"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E06.3",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E06.3",
+                      "test_target":  "internal/cli/legado_test.go:TestLoopsLegadoExitDois",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/cli/legado.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/cli/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-E06",
+                      "initiative_id":  "I5",
+                      "epic_id":  "E06",
+                      "label":  "Stop-Gate Humano do Epico 06",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "none"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-06.1",
+                                         "TICK-06.2",
+                                         "TICK-06.3"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+
+                                                ],
+                                     "gate":  "prompt(\u0027Rename concluido sem quebra? Autoriza iniciar E07 (tripla via)?\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-07.1",
+                      "initiative_id":  "I6",
+                      "epic_id":  "E07",
+                      "label":  "Via CLI legoloop exec slug",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  24000,
+                                           "max_output_tokens":  900
+                                       },
+                      "depends_on":  [
+                                         "SG-E06"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/cli"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E07.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E07.1",
+                      "test_target":  "internal/cli/exec_test.go:TestExecProcesso",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/cli/exec.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/cli/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-07.2",
+                      "initiative_id":  "I6",
+                      "epic_id":  "E07",
+                      "label":  "Via harness SKILL slash e instalar-skills",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  24000,
+                                           "max_output_tokens":  900
+                                       },
+                      "depends_on":  [
+                                         "TICK-07.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/skills"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E07.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E07.2",
+                      "test_target":  "internal/skills/instalar_test.go:TestDistribuiTodosHarness",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/skills/instalar.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/skills/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-07.3",
+                      "initiative_id":  "I6",
+                      "epic_id":  "E07",
+                      "label":  "Via Studio peca registrada automaticamente",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  24000,
+                                           "max_output_tokens":  900
+                                       },
+                      "depends_on":  [
+                                         "TICK-07.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/studio"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E07.3",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E07.3",
+                      "test_target":  "internal/studio/pecas_test.go:TestRegistraPecaAutomatica",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/studio/pecas.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/studio/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-07.4",
+                      "initiative_id":  "I6",
+                      "epic_id":  "E07",
+                      "label":  "SKILL invalido exit distinto de zero harness integro",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-07.2"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/skills/instalar.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E07.4",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E07.4",
+                      "test_target":  "internal/skills/instalar_test.go:TestSkillInvalidoExit",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/skills/instalar.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/skills/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-E07",
+                      "initiative_id":  "I6",
+                      "epic_id":  "E07",
+                      "label":  "Stop-Gate Humano do Epico 07",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "none"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-07.1",
+                                         "TICK-07.2",
+                                         "TICK-07.3",
+                                         "TICK-07.4"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+
+                                                ],
+                                     "gate":  "prompt(\u0027Tripla via funcionando? Autoriza iniciar E08 (auditoria universal)?\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-08.1",
+                      "initiative_id":  "I7",
+                      "epic_id":  "E08",
+                      "label":  "Processo auditoria-atomica agnostico de alvo",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  600,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  32000,
+                                           "max_output_tokens":  1200
+                                       },
+                      "depends_on":  [
+                                         "SG-E07"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/fabricar"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E08.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E08.1",
+                      "test_target":  "internal/fabricar/auditoria_test.go:TestAlvoArbitrario",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "processos/auditoria-atomica/pipeline.dag.json",
+                                                       "skills/auditoria-atomica/SKILL.md"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/fabricar/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0 \u0026\u0026 file_exists(\u0027processos/auditoria-atomica/pipeline.dag.json\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-08.2",
+                      "initiative_id":  "I7",
+                      "epic_id":  "E08",
+                      "label":  "Auditoria profunda dos 6 verbos matriz listar refinar remover compor fechar",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  1800,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  32000,
+                                           "max_output_tokens":  1200
+                                       },
+                      "depends_on":  [
+                                         "TICK-08.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/matriz",
+                                                          "internal/listar",
+                                                          "internal/refinar",
+                                                          "internal/remover",
+                                                          "internal/compor",
+                                                          "internal/fechar"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E08.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E08.2",
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "docs/reports/2026-11-17_REPORT_AUDITORIA_6_VERBOS.md"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-count=1",
+                                                        "./..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0 \u0026\u0026 file_exists(\u0027docs/reports/2026-11-17_REPORT_AUDITORIA_6_VERBOS.md\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-08.3",
+                      "initiative_id":  "I7",
+                      "epic_id":  "E08",
+                      "label":  "Mutacoes provadas Green-Red-Green em todo teste novo",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-08.2"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E08.3",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E08.3",
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-count=1",
+                                                        "./..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-08.4",
+                      "initiative_id":  "I7",
+                      "epic_id":  "E08",
+                      "label":  "Alvo inexistente exit 2 zero artefato orfao",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-08.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/fabricar/auditoria.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E08.4",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E08.4",
+                      "test_target":  "internal/fabricar/auditoria_test.go:TestAlvoInexistenteExitDois",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/fabricar/auditoria.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/fabricar/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-E08",
+                      "initiative_id":  "I7",
+                      "epic_id":  "E08",
+                      "label":  "Stop-Gate Humano do Epico 08",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "none"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-08.1",
+                                         "TICK-08.2",
+                                         "TICK-08.3",
+                                         "TICK-08.4"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+
+                                                ],
+                                     "gate":  "prompt(\u0027Auditoria universal e 6 verbos aprovados? Autoriza iniciar E09 (MCP)?\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-09.1",
+                      "initiative_id":  "I8",
+                      "epic_id":  "E09",
+                      "label":  "Router como interface unica de tools dos processos",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  300,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  16000,
+                                           "max_output_tokens":  600
+                                       },
+                      "depends_on":  [
+                                         "SG-E08"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/mcp"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E09.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E09.1",
+                      "test_target":  "internal/mcp/router_test.go:TestToolsViaRouter",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/mcp/router.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/mcp/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-09.2",
+                      "initiative_id":  "I8",
+                      "epic_id":  "E09",
+                      "label":  "Conflito de nome de tool registro recusado",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-09.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/mcp/router.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E09.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E09.2",
+                      "test_target":  "internal/mcp/router_test.go:TestConflitoToolExit",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/mcp/router.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/mcp/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-E09",
+                      "initiative_id":  "I8",
+                      "epic_id":  "E09",
+                      "label":  "Stop-Gate Humano do Epico 09",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "none"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-09.1",
+                                         "TICK-09.2"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+
+                                                ],
+                                     "gate":  "prompt(\u0027MCP unico via router aprovado? Autoriza iniciar E10 (provas e higiene)?\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-10.1",
+                      "initiative_id":  "I9",
+                      "epic_id":  "E10",
+                      "label":  "Debitos zerados taxlinter 14 e funclen 3",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  600,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  24000,
+                                           "max_output_tokens":  900
+                                       },
+                      "depends_on":  [
+                                         "SG-E09"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/refinar",
+                                                          "loops/legoloop-swarm",
+                                                          "internal/board/swarm_run.go",
+                                                          "internal/gate/cites.go"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E10.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E10.1",
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "run",
+                                                        "./tools/taxlinter",
+                                                        "internal",
+                                                        "cmd",
+                                                        "loops",
+                                                        "skills",
+                                                        "docs/templates"
+                                                    ],
+                                                    [
+                                                        "go",
+                                                        "run",
+                                                        "./tools/funclen",
+                                                        "internal"
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-10.2",
+                      "initiative_id":  "I9",
+                      "epic_id":  "E10",
+                      "label":  "Dois testes flaky estaveis em 3 execucoes",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  600,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  16000,
+                                           "max_output_tokens":  600
+                                       },
+                      "depends_on":  [
+                                         "TICK-10.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/board",
+                                                          "internal/mcp"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E10.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E10.2",
+                      "test_target":  "internal/board/board_test.go:TestUnifiedPathFileLockExactMentionAndPIDKill",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-count=1",
+                                                        "./internal/board/...",
+                                                        "./internal/mcp/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-10.3",
+                      "initiative_id":  "I9",
+                      "epic_id":  "E10",
+                      "label":  "Provas ausentes race LLM real grafo semantico",
+                      "nature":  "micro",
+                      "extreme":  false,
+                      "class_rule":  "nature=micro",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  900,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  16000,
+                                           "max_output_tokens":  600
+                                       },
+                      "depends_on":  [
+                                         "TICK-10.2"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-pro",
+                                      "effort":  "high",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E10.3",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-E10.3",
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "docs/reports/2026-11-17_REPORT_PROVAS_AUSENTES.md"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-race",
+                                                        "-count=1",
+                                                        "./..."
+                                                    ]
+                                                ],
+                                     "gate":  "file_exists(\u0027docs/reports/2026-11-17_REPORT_PROVAS_AUSENTES.md\u0027)"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-10.4",
+                      "initiative_id":  "I9",
+                      "epic_id":  "E10",
+                      "label":  "Path Jail hostil tres pontos JSON malicioso PID falso",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-10.1"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/paths"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-NF.1",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-NF.1",
+                      "test_target":  "internal/paths/jail_test.go:TestEntradaHostil",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/paths/jail.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "./internal/paths/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "TICK-10.5",
+                      "initiative_id":  "I9",
+                      "epic_id":  "E10",
+                      "label":  "Carga 50 workers sem lock global memoria integra",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "nature=nano",
+                      "type":  "unit_no",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "tdd_red_green",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "orchestrix_hermetic",
+                                        "subagents_allowed":  "ephemeral",
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  600,
+                      "retry_policy":  {
+                                           "max_retries":  1,
+                                           "backoff_ms":  1000,
+                                           "fallback_model_on_retry":  true
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  8000,
+                                           "max_output_tokens":  300
+                                       },
+                      "depends_on":  [
+                                         "TICK-10.4"
+                                     ],
+                      "routing":  {
+                                      "mode":  "suggested",
+                                      "harness":  "9router",
+                                      "model":  "code-fast",
+                                      "effort":  "low",
+                                      "fallback":  {
+                                                       "harness":  "antigravity",
+                                                       "model":  "flash"
+                                                   }
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "internal/triagem"
+                                                      ],
+                                     "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-NF.2",
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  "AC-NF.2",
+                      "test_target":  "internal/triagem/carga_test.go:TestCinquentaWorkers",
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "internal/triagem/carga_test.go"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-v",
+                                                        "-count=1",
+                                                        "./internal/triagem/..."
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0"
+                                 },
+                      "telemetry":  null
+                  },
+                  {
+                      "id":  "SG-FINAL",
+                      "initiative_id":  null,
+                      "epic_id":  null,
+                      "label":  "Homologacao Final (Regressao Global e Recompilacao Fresca)",
+                      "nature":  "nano",
+                      "extreme":  false,
+                      "class_rule":  "stop_gate",
+                      "type":  "stop_gate",
+                      "ref":  null,
+                      "status":  "PENDING",
+                      "execution_mode":  "sequential",
+                      "isolation":  {
+                                        "workspace":  "local",
+                                        "executor":  "local_process",
+                                        "subagents_allowed":  false,
+                                        "write_boundary":  "strict"
+                                    },
+                      "timeout_sec":  180,
+                      "retry_policy":  {
+                                           "max_retries":  0,
+                                           "backoff_ms":  0,
+                                           "fallback_model_on_retry":  false
+                                       },
+                      "token_budget":  {
+                                           "max_input_tokens":  0,
+                                           "max_output_tokens":  0
+                                       },
+                      "depends_on":  [
+                                         "TICK-10.1",
+                                         "TICK-10.2",
+                                         "TICK-10.3",
+                                         "TICK-10.4",
+                                         "TICK-10.5"
+                                     ],
+                      "routing":  {
+                                      "mode":  "manual",
+                                      "harness":  "local",
+                                      "model":  "human/operator",
+                                      "effort":  null,
+                                      "fallback":  null
+                                  },
+                      "tooling":  {
+                                      "runtime":  "powershell",
+                                      "mcps_required":  false,
+                                      "mcps_allowed":  [
+
+                                                       ]
+                                  },
+                      "inputs":  {
+                                     "source_files":  [
+                                                          "cmd/legoloop/main.go"
+                                                      ],
+                                     "spec_anchor":  null,
+                                     "context_artifacts":  [
+
+                                                           ]
+                                 },
+                      "spec_ref":  null,
+                      "test_target":  null,
+                      "defects":  [
+
+                                  ],
+                      "rollback_strategy":  "stash_changes",
+                      "output":  {
+                                     "artifacts":  [
+                                                       "bin/legoloop.exe"
+                                                   ],
+                                     "verify":  [
+                                                    [
+                                                        "go",
+                                                        "test",
+                                                        "-count=1",
+                                                        "./..."
+                                                    ],
+                                                    [
+                                                        "go",
+                                                        "vet",
+                                                        "./..."
+                                                    ],
+                                                    [
+                                                        "go",
+                                                        "build",
+                                                        "-o",
+                                                        "bin/legoloop.exe",
+                                                        "./cmd/legoloop"
+                                                    ]
+                                                ],
+                                     "gate":  "exit_code == 0 \u0026\u0026 file_exists(\u0027bin/legoloop.exe\u0027)"
+                                 },
+                      "telemetry":  null
+                  }
+              ]
+}
