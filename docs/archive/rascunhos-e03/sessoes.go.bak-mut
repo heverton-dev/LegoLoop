@@ -1,0 +1,69 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+
+	"legoloop/internal/caminhos"
+	"legoloop/internal/triagem"
+)
+
+// runSessoes lista as sessões ativas do processo (Lei 11 de Governança Viva).
+func runSessoes(ctx context.Context, args []string, stdout, stderr io.Writer) int {
+	_ = ctx
+	var slug, processosDir string
+	jsonOut := false
+	restantes := []string{}
+	for i := 0; i < len(args); i++ {
+		switch args[i] {
+		case "--json":
+			jsonOut = true
+		case "--processos-dir":
+			i++
+			if i >= len(args) {
+				fmt.Fprintln(stderr, "sessoes: --processos-dir exige caminho")
+				return 2
+			}
+			processosDir = args[i]
+		default:
+			restantes = append(restantes, args[i])
+		}
+	}
+	if len(restantes) != 1 {
+		fmt.Fprintln(stderr, "uso: legoloop sessoes <slug> [--json] [--processos-dir DIR]")
+		return 2
+	}
+	slug = restantes[0]
+	if processosDir == "" {
+		processosDir = caminhos.DirAntigo
+	}
+	dir := filepath.Join(processosDir, slug)
+	if _, err := os.Stat(dir); err != nil {
+		fmt.Fprintln(stderr, "sessoes: processo não encontrado")
+		return 1
+	}
+	ativas := triagem.ListarSessoesAtivas(dir)
+	if jsonOut {
+		saidas := make([]triagem.SessaoAtiva, 0, len(ativas))
+		for _, m := range ativas {
+			saidas = append(saidas, triagem.SessaoAtiva{
+				SessaoID:    m.SessaoID,
+				PID:         m.PID,
+				EtapaAtual:  m.EtapaAtual,
+				ProximoPasso: m.ProximoPasso,
+			})
+		}
+		enc := json.NewEncoder(stdout)
+		enc.SetIndent("", "  ")
+		_ = enc.Encode(saidas)
+		return 0
+	}
+	for _, m := range ativas {
+		fmt.Fprintf(stdout, "%s pid=%d etapa=%s\n", m.SessaoID, m.PID, m.EtapaAtual)
+	}
+	return 0
+}

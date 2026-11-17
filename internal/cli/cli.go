@@ -93,6 +93,7 @@ Comandos:
   swarm      <add|post|read|wait|status|kill|monitor|ui> [-dir DIR] [-addr HOST:PORT] [-root DIR]  painel de coordenação de agentes em enxame
   fechar     <slug> [--dry-run] [--skip-build] [--json]  cadeia determinística de 9 etapas de canonização e fechamento
   web-qa     <preflight|run|corrigir> [opções]  QA web determinístico (Playwright, axe-core, lychee, Obscura, renderlint, unlighthouse, lost-pixel)
+  sessoes    <slug> [--json] [--processos-dir DIR]  lista as sessões ativas do processo (memória de execução)
   version
 `
 
@@ -111,7 +112,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
-		"swarm": cmdSwarm, "web-qa": cmdWebQA,
+		"swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

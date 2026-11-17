@@ -327,6 +327,7 @@ func (r *run) handleAndonResult(ctx, parent context.Context, nr *NodeReport, n d
 }
 
 func (r *run) preExecNode(ctx context.Context, n *dag.Node, workdir string) error {
+	r.registrarEtapaMemoria(n.ID)
 	if err := checkRedBlueBoundary(*n); err != nil {
 		return err
 	}

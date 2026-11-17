@@ -1,0 +1,68 @@
+package main
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
+	"legoloop/internal/triagem"
+)
+
+func TestSessoesAtivasLista2Sessoes(t *testing.T) {
+	dir := t.TempDir()
+	proc := filepath.Join(dir, "p")
+	salvarSessaoTeste(t, proc, "s1", os.Getpid(), "N1", "N2")
+	salvarSessaoTeste(t, proc, "s2", os.Getpid(), "N3", "")
+	var out, errBuf bytes.Buffer
+	code := runSessoes(context.Background(), []string{"p", "--json", "--processos-dir", dir}, &out, &errBuf)
+	if code != 0 {
+		t.Fatalf("exit code = %d, stderr=%s", code, errBuf.String())
+	}
+	var lista []map[string]any
+	if err := json.Unmarshal(out.Bytes(), &lista); err != nil {
+		t.Fatalf("JSON inválido: %v", err)
+	}
+	if len(lista) != 2 {
+		t.Fatalf("sessões ativas = %d, esperado 2", len(lista))
+	}
+	for _, s := range lista {
+		if _, ok := s["sessao_id"]; !ok {
+			t.Errorf("sessao_id ausente: %v", s)
+		}
+		if _, ok := s["etapa_atual"]; !ok {
+			t.Errorf("etapa_atual ausente: %v", s)
+		}
+	}
+	if strings.Contains(out.String(), proc) {
+		t.Errorf("saída expõe caminho absoluto: %s", out.String())
+	}
+}
+
+func TestSessoesAtivasVazio(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "p"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	var out, errBuf bytes.Buffer
+	code := runSessoes(context.Background(), []string{"p", "--json", "--processos-dir", dir}, &out, &errBuf)
+	if code != 0 {
+		t.Fatalf("exit code = %d, stderr=%s", code, errBuf.String())
+	}
+	if strings.TrimSpace(out.String()) != "[]" {
+		t.Errorf("saída = %q, esperado []", strings.TrimSpace(out.String()))
+	}
+}
+
+func salvarSessaoTeste(t *testing.T, dir, sessao string, pid int, etapa, proximo string) {
+	t.Helper()
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := triagem.SalvarMemoria(dir, sessao, pid, etapa, proximo); err != nil {
+		t.Fatal(err)
+	}
+}

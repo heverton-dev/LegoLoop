@@ -355,3 +355,25 @@ func TestMemoriaCorrompidaSentinelaBackup(t *testing.T) {
 		t.Errorf("esperado ErrMemoriaCorrompida na gravação, obtido: %v", err)
 	}
 }
+
+func TestListarSessoesAtivasFiltraPIDMorto(t *testing.T) {
+	dir := t.TempDir()
+	viva := MemoriaExecucao{SessaoID: "viva", PID: os.Getpid(), EtapaAtual: "N1"}
+	morta := MemoriaExecucao{SessaoID: "morta", PID: 99999999, EtapaAtual: "N2"}
+	if err := SalvarMemoria(dir, viva); err != nil {
+		t.Fatal(err)
+	}
+	if err := SalvarMemoria(dir, morta); err != nil {
+		t.Fatal(err)
+	}
+	ativas := ListarSessoesAtivas(dir)
+	if len(ativas) != 1 {
+		t.Fatalf("ativas = %d, esperado 1", len(ativas))
+	}
+	if ativas[0].SessaoID != "viva" {
+		t.Errorf("sessão ativa = %q, esperado \"viva\"", ativas[0].SessaoID)
+	}
+	if ativas[0].EtapaAtual != "N1" {
+		t.Errorf("etapa atual = %q, esperado \"N1\"", ativas[0].EtapaAtual)
+	}
+}

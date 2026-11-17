@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -59,8 +60,8 @@ type MemoriaExecucao struct {
 
 // EstadoMemoria agrupa o estado por sessão persistido em ArquivoMemoria.
 type EstadoMemoria struct {
-	SchemaVersion string                    `json:"schema_version"`
-	Processo      string                    `json:"processo"`
+	SchemaVersion string                     `json:"schema_version"`
+	Processo      string                     `json:"processo"`
 	Sessoes       map[string]MemoriaExecucao `json:"sessoes"`
 }
 
@@ -260,6 +261,23 @@ func LerMemoria(dir string, sessaoID ...string) (MemoriaExecucao, error) {
 }
 
 // LimparMemoria remove o arquivo de memória de curto prazo do diretório informado.
+// ListarSessoesAtivas devolve as sessões cujo PID ainda está vivo, ordenadas
+// por sessao_id para saída determinística (controle de progresso Lei 11).
+func ListarSessoesAtivas(dir string) []MemoriaExecucao {
+	est, err := lerEstadoDisco(dir)
+	if err != nil {
+		return nil
+	}
+	var ativas []MemoriaExecucao
+	for _, mem := range est.Sessoes {
+		if mem.PID > 0 && pidVivo(mem.PID) {
+			ativas = append(ativas, mem)
+		}
+	}
+	sort.Slice(ativas, func(i, j int) bool { return ativas[i].SessaoID < ativas[j].SessaoID })
+	return ativas
+}
+
 func LimparMemoria(dir string) error {
 	err := os.Remove(filepath.Join(dir, ArquivoMemoria))
 	if os.IsNotExist(err) {
