@@ -1,3 +1,13 @@
+---
+name: legoloop-memoria-anticorpos
+description: "Use quando o usuário pedir controle de progresso de sessão, memória de execução, anticorpos de erro, gate anti-reincidência ou o comando legoloop sessoes, e no fechamento da demanda MEMORIA_CONCORRENTE_ANTICORPOS."
+consumes: Artifact:ProcessoDir
+produces: Artifact:MemoriaExecucao
+artifact: memoria_execucao.json
+gate: exit_code == 0
+suggested_model: sonnet
+---
+
 # Skill: legoloop-memoria-anticorpos
 
 > **Nome canônico:** `legoloop-memoria-anticorpos`
@@ -26,7 +36,7 @@ progresso por sessão. O banco de anticorpos evita reincidência de erro.
 3. A saída nunca expõe caminho absoluto (Lei 8).
 4. Processo sem sessão viva devolve `[]` e exit 0.
 5. Para erro conhecido, use `brain.GateAntiReincidencia` antes de executar o nó.
-6. O gate devolve `AcaoFluxoNormal`, `AcaoAntidoto` ou `AcaoBloqueado`.
+6. O gate devolve `AcaoNormal`, `AcaoAntidoto` ou `AcaoBloqueado`.
 7. O bloqueio devolve `ErrGateAntiReincidencia` com a causa raiz na saída.
 
 ## Schemas
@@ -48,4 +58,4 @@ progresso por sessão. O banco de anticorpos evita reincidência de erro.
 - `go vet ./...`
 - `gofmt -l .` com saída vazia
 - `go run ./tools/funclen internal` sem estouro novo
-- `go run ./tools/taxlinter internal cmd loops skills docs/templates` sem violação nova
+- `go run ./tools/taxlinter internal cmd skills docs/templates` sem violação nova

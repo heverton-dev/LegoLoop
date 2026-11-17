@@ -45,8 +45,8 @@ const (
 type AcaoGate int
 
 const (
-	// AcaoFluxoNormal: erro desconhecido, execução segue sem intervenção.
-	AcaoFluxoNormal AcaoGate = iota
+	// AcaoNormal: erro desconhecido, execução segue sem intervenção.
+	AcaoNormal AcaoGate = iota
 	// AcaoAntidoto: erro conhecido com antídoto aplicável.
 	AcaoAntidoto
 	// AcaoBloqueado: erro conhecido sem antídoto aplicável, execução bloqueia.
@@ -347,7 +347,7 @@ func (db *AntibodiesDB) AntidotoAplicado(pkg, errSig string) (string, bool) {
 func (db *AntibodiesDB) GateAntiReincidencia(pkg, errSig string) (AcaoGate, string, error) {
 	ab, ok := db.Find(pkg, errSig)
 	if !ok {
-		return AcaoFluxoNormal, "", nil
+		return AcaoNormal, "", nil
 	}
 	if ab.DiffSolution != "" {
 		return AcaoAntidoto, ab.DiffSolution, nil

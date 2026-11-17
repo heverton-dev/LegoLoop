@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
 	"legoloop/internal/runner"
 	"legoloop/internal/triagem"
@@ -132,7 +133,7 @@ func verificarPosFechar(t *testing.T, dir string) {
 func TestFecharSessaoDona(t *testing.T) {
 	dir := t.TempDir()
 	raw := dagCicloMonta(t)
-	dagPath := filepath.Join(dir, "pipeline.dag.json")
+	dagPath := filepath.Join(dir, caminhos.ArquivoDAG)
 	if err := os.WriteFile(dagPath, raw, 0o644); err != nil {
 		t.Fatalf("escrita do DAG falhou: %v", err)
 	}
@@ -166,5 +167,38 @@ func TestFecharSessaoInexistenteNaoAlteraDisco(t *testing.T) {
 	}
 	if string(antes) != string(depois) {
 		t.Errorf("memória alterada apesar do erro:\nantes=%s\ndepois=%s", antes, depois)
+	}
+}
+
+// TestZeraMemoria prova AC-E03.3 do mega plano: ao fim do fechar, a memória de
+// execução está zerada — envelope válido no schema e sem histórico inflado.
+func TestZeraMemoria(t *testing.T) {
+	dir := t.TempDir()
+	raw := dagCicloMonta(t)
+	dagPath := filepath.Join(dir, caminhos.ArquivoDAG)
+	if err := os.WriteFile(dagPath, raw, 0o644); err != nil {
+		t.Fatalf("escrita do DAG falhou: %v", err)
+	}
+	donaID := rodarCicloCenario(t, dir)
+	if err := garantirQuarteto(dir, dagPath, donaID); err != nil {
+		t.Fatalf("garantirQuarteto falhou: %v", err)
+	}
+	// Sessão ativa plantada também sai no fechar total: zera tudo e valida o schema.
+	if err := zerarMemoriaSessao(dir, "sessao-ativa"); err != nil {
+		t.Fatalf("zerarMemoriaSessao da ativa falhou: %v", err)
+	}
+	dados, err := os.ReadFile(filepath.Join(dir, triagem.ArquivoMemoria))
+	if err != nil {
+		t.Fatalf("memória deveria existir zerada: %v", err)
+	}
+	var est triagem.EstadoMemoria
+	if err := json.Unmarshal(dados, &est); err != nil {
+		t.Fatalf("envelope zerado inválido: %v", err)
+	}
+	if est.SchemaVersion != triagem.SchemaMemoria {
+		t.Errorf("schema_version = %q, esperado %q", est.SchemaVersion, triagem.SchemaMemoria)
+	}
+	if len(est.Sessoes) != 0 {
+		t.Errorf("memória deveria estar zerada sem histórico, obtido: %v", est.Sessoes)
 	}
 }

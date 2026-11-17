@@ -609,3 +609,9 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
 * **Processo Canonizado `legoloop-video-rea-transcrever` (2026-11-15):** `skills/legoloop-video-rea-transcrever/SKILL.md` · `docs/reports/`
 
 * **Processo Canonizado `legoloop-video-rea-relatorio` (2026-11-15):** `skills/legoloop-video-rea-relatorio/SKILL.md` · `docs/reports/`
+
+## 2026-11-16 — Demanda MEMORIA_CONCORRENTE_ANTICORPOS (integração E03/E04)
+- TICK-INT-01: mapeamento dos 11 tickets + 15 nós da ROUTE paralela × 19 ACs paralelos + 8 ACs do mega SPEC, com status por linha.
+- TICK-INT-02: gaps fechados com TDD estrito — schemas `anticorpos.v1`/`memoria_execucao.v1` como fonte da persistência, lock órfão tomado, backup `.legoloop-bak`, escopo global/domínio, gate anti-reincidência, `TestZeraMemoria` (AC-E03.3), CLI `legoloop sessoes`, memória de runtime por nó.
+- Mutações provadas e restauradas em triagem, brain, fechar, cli e runner.
+- Épico 03 (Lei 11): manual operacional, livro LegoPress `docs/books/memoria-anticorpos/` (16 páginas, auditoria geométrica 100%), skill `skills/legoloop-memoria-anticorpos/SKILL.md`, DAG paralelo validado (15 nós).

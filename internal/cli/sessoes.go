@@ -47,7 +47,7 @@ func cmdSessoes(_ context.Context, args []string, d Deps) int {
 }
 
 // resolverDirSessoes acha a pasta do processo na base informada ou nos dialetos
-// padrão (processos/ e loops/ sob o diretório corrente).
+// padrão sob o diretório corrente (novo e legado).
 func resolverDirSessoes(slug, dirBase string) string {
 	bases := []string{dirBase}
 	if dirBase == "" {

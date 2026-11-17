@@ -368,7 +368,7 @@ func TestGateAntiReincidencia(t *testing.T) {
 	db := NewAntibodiesDB()
 
 	acao, antidoto, err := db.GateAntiReincidencia("pkgA", "E-desconhecido")
-	if acao != AcaoFluxoNormal || err != nil || antidoto != "" {
+	if acao != AcaoNormal || err != nil || antidoto != "" {
 		t.Errorf("erro desconhecido devia seguir normal: acao=%v antidoto=%q err=%v", acao, antidoto, err)
 	}
 
