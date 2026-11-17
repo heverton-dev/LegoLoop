@@ -299,3 +299,155 @@ func skillsDirDeTeste(t *testing.T) string {
 	}
 	return dir
 }
+
+// TestEscopoGlobalDominio prova AC-E04.3: erro de infraestrutura/LLM vai para globais
+// (compartilhado entre processos); erro de regra de domínio fica local do processo.
+func TestEscopoGlobalDominio(t *testing.T) {
+	dirGlobal := t.TempDir()
+	dirA, dirB := t.TempDir(), t.TempDir()
+	dbA, err := NewAntibodiesDBPersistenteComGlobal(dirA, dirGlobal)
+	if err != nil {
+		t.Fatalf("NewAntibodiesDBPersistenteComGlobal(A): %v", err)
+	}
+	if err := dbA.RecordComEscopo(EscopoGlobal, "infra", "HTTP 429", "rate limit do roteador", "backoff exponencial"); err != nil {
+		t.Fatalf("RecordComEscopo global: %v", err)
+	}
+	if err := dbA.RecordComEscopo(EscopoDominio, "pkgA", "regra X violada", "regra de domínio", "corrigir regra X"); err != nil {
+		t.Fatalf("RecordComEscopo domínio: %v", err)
+	}
+
+	dbB, err := NewAntibodiesDBPersistenteComGlobal(dirB, dirGlobal)
+	if err != nil {
+		t.Fatalf("NewAntibodiesDBPersistenteComGlobal(B): %v", err)
+	}
+	if _, ok := dbB.Find("infra", "HTTP 429"); !ok {
+		t.Error("vacina global deveria ser compartilhada entre processos")
+	}
+	if _, ok := dbB.Find("pkgA", "regra X violada"); ok {
+		t.Error("vacina de domínio não deve vazar do processo A para o B")
+	}
+	if _, ok := dbA.Find("pkgA", "regra X violada"); !ok {
+		t.Error("vacina de domínio deve existir no processo dono")
+	}
+}
+
+// TestCorrompidoNaoTrava prova AC-E04.4: anticorpos.json corrompido cria backup
+// .legoloop-bak, devolve erro sentinela e o processo segue sem vacina (não trava).
+func TestCorrompidoNaoTrava(t *testing.T) {
+	dir := t.TempDir()
+	caminho := filepath.Join(dir, "anticorpos.json")
+	lixo := []byte("{corrompido !!")
+	if err := os.WriteFile(caminho, lixo, 0o644); err != nil {
+		t.Fatalf("preparação: %v", err)
+	}
+	db, err := NewAntibodiesDBPersistente(dir)
+	if !errors.Is(err, ErrAnticorposCorrompidos) {
+		t.Fatalf("esperado ErrAnticorposCorrompidos, obtido: %v", err)
+	}
+	if db == nil {
+		t.Fatal("banco deveria devolver vazio funcional para o processo seguir sem vacina")
+	}
+	backup, err := os.ReadFile(caminho + sufixoBackup)
+	if err != nil {
+		t.Fatalf("backup .legoloop-bak não criado: %v", err)
+	}
+	if string(backup) != string(lixo) {
+		t.Errorf("backup difere do original: %s", backup)
+	}
+	if ctx := db.InjectPreventiveContext("pkgX"); ctx != "" {
+		t.Errorf("processo deveria seguir sem vacina, contexto: %s", ctx)
+	}
+	if err := db.Record("pkgA", "E9", "causa nova", "solução nova"); err != nil {
+		t.Fatalf("registro após corrupção não deveria travar: %v", err)
+	}
+}
+
+// TestGateAntiReincidencia prova AC-E02.7/AC-E02.8: erro conhecido aplica antídoto,
+// sem antídoto aplicável bloqueia citando o errSig; erro desconhecido segue normal.
+func TestGateAntiReincidencia(t *testing.T) {
+	db := NewAntibodiesDB()
+
+	acao, antidoto, err := db.GateAntiReincidencia("pkgA", "E-desconhecido")
+	if acao != AcaoFluxoNormal || err != nil || antidoto != "" {
+		t.Errorf("erro desconhecido devia seguir normal: acao=%v antidoto=%q err=%v", acao, antidoto, err)
+	}
+
+	if err := db.Record("pkgA", "E2", "causa", "solução correta"); err != nil {
+		t.Fatalf("Record E2: %v", err)
+	}
+	acao, antidoto, err = db.GateAntiReincidencia("pkgA", "E2")
+	if acao != AcaoAntidoto || antidoto != "solução correta" || err != nil {
+		t.Errorf("erro conhecido devia aplicar antídoto: acao=%v antidoto=%q err=%v", acao, antidoto, err)
+	}
+
+	if err := db.Record("pkgA", "E3", "causa", ""); err != nil {
+		t.Fatalf("Record E3: %v", err)
+	}
+	acao, _, err = db.GateAntiReincidencia("pkgA", "E3")
+	if acao != AcaoBloqueado {
+		t.Errorf("sem antídoto aplicável devia bloquear: acao=%v", acao)
+	}
+	if !errors.Is(err, ErrGateAntiReincidencia) || !strings.Contains(err.Error(), "E3") {
+		t.Errorf("bloqueio devia citar o errSig E3: %v", err)
+	}
+}
+
+// TestPersistenciaSegueSchemaV1 prova que a persistência nasce do schema anticorpos.v1:
+// schema_version, processo e vacinas com assinatura SHA-256 em globais/dominio.
+func TestPersistenciaSegueSchemaV1(t *testing.T) {
+	dir := t.TempDir()
+	db, err := NewAntibodiesDBPersistente(dir)
+	if err != nil {
+		t.Fatalf("NewAntibodiesDBPersistente: %v", err)
+	}
+	if err := db.RecordComEscopo(EscopoGlobal, "infra", "E1", "causa", "antídoto"); err != nil {
+		t.Fatalf("RecordComEscopo: %v", err)
+	}
+	dados, err := os.ReadFile(filepath.Join(dir, "anticorpos.json"))
+	if err != nil {
+		t.Fatalf("lendo banco: %v", err)
+	}
+	var raw map[string]any
+	if err := json.Unmarshal(dados, &raw); err != nil {
+		t.Fatalf("banco não é JSON: %v", err)
+	}
+	if raw["schema_version"] != SchemaAnticorpos {
+		t.Errorf("schema_version = %v, esperado %q", raw["schema_version"], SchemaAnticorpos)
+	}
+	if _, ok := raw["processo"].(string); !ok {
+		t.Errorf("processo ausente: %v", raw["processo"])
+	}
+	if _, ok := raw["globais"].([]any); !ok {
+		t.Errorf("globais ausente: %v", raw)
+	}
+	if _, ok := raw["dominio"].([]any); !ok {
+		t.Errorf("dominio ausente: %v", raw)
+	}
+	globais := raw["globais"].([]any)
+	v := globais[0].(map[string]any)
+	assinatura, _ := v["assinatura"].(string)
+	if !strings.HasPrefix(assinatura, "sha256:") || len(assinatura) != len("sha256:")+64 {
+		t.Errorf("assinatura deveria ser SHA-256 do erro: %q", assinatura)
+	}
+}
+
+// TestCargaLegadaAnticorpos prova a retrocompatibilidade (premissa 5): o formato
+// legado (mapa pacote→anticorpos) é lido e migrado sem perda.
+func TestCargaLegadaAnticorpos(t *testing.T) {
+	dir := t.TempDir()
+	legado := `{"pkgA":[{"package":"pkgA","error_signature":"E1","root_cause":"causa","diff_solution":"solução","timestamp":"2026-11-16T00:00:00Z","recorrencias":2}]}`
+	if err := os.WriteFile(filepath.Join(dir, "anticorpos.json"), []byte(legado), 0o644); err != nil {
+		t.Fatalf("preparação: %v", err)
+	}
+	db, err := NewAntibodiesDBPersistente(dir)
+	if err != nil {
+		t.Fatalf("carga legada: %v", err)
+	}
+	ab, ok := db.Find("pkgA", "E1")
+	if !ok {
+		t.Fatal("anticorpo legado não localizado após carga")
+	}
+	if ab.Recorrencias != 2 || ab.RootCause != "causa" {
+		t.Errorf("dados legados alterados: %+v", ab)
+	}
+}
