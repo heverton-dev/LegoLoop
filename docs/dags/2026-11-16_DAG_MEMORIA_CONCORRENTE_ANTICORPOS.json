@@ -1,0 +1,666 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "name": "MEMORIA_CONCORRENTE_ANTICORPOS",
+  "version": "2.2.0",
+  "date": "2026-11-16",
+  "description": "Espelho executável 1:1 da ROUTE MEMORIA_CONCORRENTE_ANTICORPOS: memória de execução concorrente com lock e sessão + anticorpos persistidos com vacinação de reincidência; fechamento canônico Lei 11.",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-16_ROUTE_MEMORIA_CONCORRENTE_ANTICORPOS.json",
+      "sha256": "ffca4a93bb8ec78d807ae58e2f58518be48185120ee28168e0b2a9cf5493f833"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 2,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_processo"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "SG-M01",
+      "name": "Stop-Gate Humano Pós-Planejamento (Quinteto)",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": [],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low",
+        "fallback": null
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "isolation": {
+        "write_boundary": "none"
+      },
+      "limits": {
+        "max_output_tokens": 0
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "prompt('Quinteto aprovado? Autoriza executar M1.1 e M2.1?')"
+      },
+      "spec_ref": "SG-M01",
+      "status": "PENDING",
+      "context_in": [],
+      "context_out": [],
+      "inputs": {},
+      "output": {
+        "artifact": "scratch/gates/SG-M01.json",
+        "gate": "prompt('Quinteto aprovado? Autoriza executar M1.1 e M2.1?')"
+      }
+    },
+    {
+      "id": "M1.1",
+      "name": "Modelo MemoriaExecucao ganha chave de sessão (ID de sessão + PID)",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": ["SG-M01"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('internal/triagem/memoria.go') && file_exists('internal/triagem/memoria_test.go')"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "context_in": [],
+      "context_out": ["internal/triagem/memoria.go", "internal/triagem/memoria_test.go"],
+      "inputs": {
+        "source": "internal/triagem/memoria.go"
+      },
+      "output": {
+        "artifact": "scratch/gates/M1.1.json",
+        "gate": "exit_code == 0 && file_exists('internal/triagem/memoria.go') && file_exists('internal/triagem/memoria_test.go')"
+      }
+    },
+    {
+      "id": "M1.2",
+      "name": "Lock de arquivo com PID (padrão internal/board) em SalvarMemoria/LerMemoria",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": ["M1.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E01.3",
+      "status": "PENDING",
+      "context_in": ["internal/triagem/memoria.go"],
+      "context_out": ["internal/triagem/memoria.go", "internal/triagem/memoria_test.go"],
+      "inputs": {
+        "source": "internal/board/swarm_lock.go"
+      },
+      "output": {
+        "artifact": "internal/triagem/memoria_test.go",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "M1.3",
+      "name": "Runner grava por sessão; fechar zera só a sessão dona e limpa arquivo órfão",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": ["M1.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E01.5",
+      "status": "PENDING",
+      "context_in": ["internal/triagem/memoria.go"],
+      "context_out": ["internal/fechar/quarteto.go", "internal/fechar/quarteto_test.go"],
+      "inputs": {
+        "source": "internal/fechar/quarteto.go"
+      },
+      "output": {
+        "artifact": "internal/fechar/quarteto_test.go",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "M1.4",
+      "name": "CLI/Studio expõe sessões ativas do processo",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": ["M1.3"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-chat-128k",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E01.7",
+      "status": "PENDING",
+      "context_in": ["internal/triagem/memoria.go"],
+      "context_out": ["cmd/legoloop/main.go", "cmd/legoloop/main_test.go"],
+      "inputs": {
+        "source": "cmd/legoloop/main.go"
+      },
+      "output": {
+        "artifact": "cmd/legoloop/main_test.go",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "M2.1",
+      "name": "AntibodiesDB persiste em loops/slug/anticorpos.json (carrega ao iniciar, grava ao registrar)",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": ["SG-M01"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "context_in": [],
+      "context_out": ["internal/brain/antibodies.go", "internal/brain/antibodies_test.go"],
+      "inputs": {
+        "source": "internal/brain/antibodies.go"
+      },
+      "output": {
+        "artifact": "scratch/gates/M2.1.json",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "M2.2",
+      "name": "Vacinação de reincidência: Record deduplica por errSig; reincidência aplica antídoto",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": ["M2.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E02.3",
+      "status": "PENDING",
+      "context_in": ["internal/brain/antibodies.go"],
+      "context_out": ["internal/brain/antibodies.go", "internal/brain/antibodies_test.go"],
+      "inputs": {
+        "source": "internal/brain/antibodies.go"
+      },
+      "output": {
+        "artifact": "scratch/gates/M2.2.json",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "M2.3",
+      "name": "Injeção preventiva no início da execução (InjectPreventiveContext vira passo do processo)",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": ["M2.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E02.5",
+      "status": "PENDING",
+      "context_in": ["internal/brain/antibodies.go"],
+      "context_out": ["internal/brain/antibodies.go", "internal/brain/antibodies_test.go"],
+      "inputs": {
+        "source": "internal/triagem/memoria.go"
+      },
+      "output": {
+        "artifact": "scratch/gates/M2.3.json",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "M2.4",
+      "name": "Gate anti-reincidência em runtime (erro conhecido aplica antídoto ou bloqueia com saída clara)",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": ["M2.3"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E02.7",
+      "status": "PENDING",
+      "context_in": ["internal/brain/antibodies.go"],
+      "context_out": ["internal/brain/antibodies.go", "internal/brain/antibodies_test.go"],
+      "inputs": {
+        "source": "internal/brain/antibodies.go"
+      },
+      "output": {
+        "artifact": "scratch/gates/M2.4.json",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "SG-M02",
+      "name": "Stop-Gate Humano Pós-M1 (Memória Concorrente)",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": ["M1.4"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low",
+        "fallback": null
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "isolation": {
+        "write_boundary": "none"
+      },
+      "limits": {
+        "max_output_tokens": 0
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "prompt('Evidências de M1 aprovadas? Autoriza iniciar o Fechamento M3?')"
+      },
+      "spec_ref": "SG-M02",
+      "status": "PENDING",
+      "context_in": [],
+      "context_out": [],
+      "inputs": {},
+      "output": {
+        "artifact": "scratch/gates/SG-M02.json",
+        "gate": "prompt('Evidências de M1 aprovadas? Autoriza iniciar o Fechamento M3?')"
+      }
+    },
+    {
+      "id": "SG-M03",
+      "name": "Stop-Gate Humano Pós-M2 (Anticorpos)",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": ["M2.4"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low",
+        "fallback": null
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "isolation": {
+        "write_boundary": "none"
+      },
+      "limits": {
+        "max_output_tokens": 0
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "prompt('Evidências de M2 aprovadas? Autoriza iniciar M3.1?')"
+      },
+      "spec_ref": "SG-M03",
+      "status": "PENDING",
+      "context_in": [],
+      "context_out": [],
+      "inputs": {},
+      "output": {
+        "artifact": "scratch/gates/SG-M03.json",
+        "gate": "prompt('Evidências de M2 aprovadas? Autoriza iniciar M3.1?')"
+      }
+    },
+    {
+      "id": "M3.1",
+      "name": "Manual operacional em docs/manuals/",
+      "type": "unit_no",
+      "nature": "nano",
+      "depends_on": ["SG-M02", "SG-M03"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-chat-128k",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1200
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "file_exists('docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md') && !has_pattern('docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md', '\\{\\{')"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING",
+      "context_in": ["docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md"],
+      "context_out": ["docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md"],
+      "inputs": {
+        "source": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md"
+      },
+      "output": {
+        "artifact": "docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md",
+        "gate": "file_exists('docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md') && !has_pattern('docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md', '\\{\\{')"
+      }
+    },
+    {
+      "id": "M3.2",
+      "name": "Livro LegoPress + skill canônica + DAG validado (legoloop validate)",
+      "type": "subprocesso",
+      "nature": "nano",
+      "ref": "legoloop-legopress",
+      "depends_on": ["M3.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-chat-128k",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1200
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('docs/books/memoria-anticorpos/livro.json') && file_exists('skills/legoloop-memoria-anticorpos/SKILL.md')"
+      },
+      "spec_ref": "AC-E03.2",
+      "status": "PENDING",
+      "context_in": ["docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md"],
+      "context_out": ["docs/books/memoria-anticorpos/livro.json", "docs/books/memoria-anticorpos/livro.pdf", "skills/legoloop-memoria-anticorpos/SKILL.md"],
+      "inputs": {
+        "source": "docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md"
+      },
+      "output": {
+        "artifact": "docs/books/memoria-anticorpos/livro.json",
+        "sub_artifact": "skills/legoloop-memoria-anticorpos/SKILL.md",
+        "gate": "exit_code == 0 && file_exists('docs/books/memoria-anticorpos/livro.json') && file_exists('skills/legoloop-memoria-anticorpos/SKILL.md')"
+      }
+    },
+    {
+      "id": "M3.3",
+      "name": "Build + install, governança viva, reindex do grafo, relatório com telemetria",
+      "type": "unit_no",
+      "nature": "nano",
+      "depends_on": ["M3.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "oficial",
+        "model": "t-chat-128k",
+        "effort": "medium",
+        "fallback": "flash"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1200
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('docs/reports/2026-11-16_REPORT_MEMORIA_CONCORRENTE_ANTICORPOS.md')"
+      },
+      "spec_ref": "AC-E03.3",
+      "status": "PENDING",
+      "context_in": ["docs/books/memoria-anticorpos/livro.json"],
+      "context_out": ["bin/legoloop.exe", "docs/reports/2026-11-16_REPORT_MEMORIA_CONCORRENTE_ANTICORPOS.md"],
+      "inputs": {
+        "source": "cmd/legoloop/main.go"
+      },
+      "output": {
+        "artifact": "docs/reports/2026-11-16_REPORT_MEMORIA_CONCORRENTE_ANTICORPOS.md",
+        "gate": "exit_code == 0 && file_exists('docs/reports/2026-11-16_REPORT_MEMORIA_CONCORRENTE_ANTICORPOS.md')"
+      }
+    },
+    {
+      "id": "SG-FINAL-M",
+      "name": "Homologação Final (Regressão Global e Recompilação Fresca)",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": ["M3.3"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "via": "oficial",
+        "model": "script/local",
+        "effort": "low",
+        "fallback": null
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "inline"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 0
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "spec_ref": "SG-FINAL-M",
+      "status": "PENDING",
+      "context_in": ["docs/reports/2026-11-16_REPORT_MEMORIA_CONCORRENTE_ANTICORPOS.md"],
+      "context_out": ["bin/legoloop.exe"],
+      "inputs": {
+        "source": "cmd/legoloop/main.go"
+      },
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      }
+    }
+  ]
+}

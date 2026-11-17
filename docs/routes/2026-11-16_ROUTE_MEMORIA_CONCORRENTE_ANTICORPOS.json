@@ -1,0 +1,945 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "MEMORIA_CONCORRENTE_ANTICORPOS",
+  "version": "1.0.0",
+  "date": "2026-11-16",
+  "session_id": "114be398-2ecd-4ac7-a726-e0a3dc25f1ea",
+  "intent_ref": "docs/intents/2026-11-16_INTENT_MEMORIA_EXECUCAO_ANTICORPOS.md",
+  "spec_ref": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md",
+  "plan_ref": "docs/plans/2026-11-16_PLAN_MEMORIA_CONCORRENTE_ANTICORPOS.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-16_INTENT_MEMORIA_EXECUCAO_ANTICORPOS.md",
+      "sha256": "1035090b8afcc36658bcbeb98c6a32b654888d3749509b2d0c66ddac16623cd8"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md",
+      "sha256": "eb26e390294d9f6ca9857a407a5cf0739bdb3d432c6149fc0e5f32c2e715eb9f"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-16_PLAN_MEMORIA_CONCORRENTE_ANTICORPOS.md",
+      "sha256": "fb963b83189ac8640c4320da2ef157fccd70deccc54889035b687c8cb7db9238"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "SG-M01",
+      "initiative_id": null,
+      "epic_id": null,
+      "label": "Stop-Gate Humano Pós-Planejamento (Quinteto)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 86400,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Quinteto aprovado? Autoriza executar M1.1 e M2.1?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M1.1",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Modelo MemoriaExecucao ganha chave de sessão (ID de sessão + PID)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["SG-M01"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/triagem/memoria.go"],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/triagem/memoria_test.go:TestMemoriaSessao",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/triagem/memoria.go", "internal/triagem/memoria_test.go"],
+        "verify": [["go", "test", "-count=1", "./internal/triagem/..."]],
+        "gate": "exit_code == 0 && file_exists('internal/triagem/memoria.go') && file_exists('internal/triagem/memoria_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M1.2",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Lock de arquivo com PID (padrão internal/board) em SalvarMemoria/LerMemoria",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["M1.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/triagem/memoria.go", "internal/board/swarm_lock.go"],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/triagem/memoria_test.go:TestMemoriaLockConcorrente",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/triagem/memoria.go", "internal/triagem/memoria_test.go"],
+        "verify": [["go", "test", "-count=1", "./internal/triagem/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M1.3",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Runner grava por sessão; fechar zera só a sessão dona e limpa arquivo órfão",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["M1.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/fechar/quarteto.go", "internal/triagem/memoria.go"],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E01.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.5",
+      "test_target": "internal/fechar/quarteto_test.go:TestFecharSessaoDona",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/fechar/quarteto.go", "internal/fechar/quarteto_test.go"],
+        "verify": [["go", "test", "-count=1", "./internal/fechar/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M1.4",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "CLI/Studio expõe sessões ativas do processo",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 12000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["M1.3"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-chat-128k",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["cmd/legoloop/main.go", "internal/triagem/memoria.go"],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E01.7",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.7",
+      "test_target": "cmd/legoloop/main_test.go:TestSessoesAtivas",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["cmd/legoloop/main.go", "cmd/legoloop/main_test.go"],
+        "verify": [["go", "test", "-count=1", "./cmd/legoloop/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M2.1",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "AntibodiesDB persiste em loops/slug/anticorpos.json (carrega ao iniciar, grava ao registrar)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["SG-M01"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/brain/antibodies.go"],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/brain/antibodies_test.go:TestAnticorposPersistencia",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/brain/antibodies.go", "internal/brain/antibodies_test.go"],
+        "verify": [["go", "test", "-count=1", "./internal/brain/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M2.2",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Vacinação de reincidência: Record deduplica por errSig; reincidência aplica antídoto",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["M2.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/brain/antibodies.go"],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E02.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.3",
+      "test_target": "internal/brain/antibodies_test.go:TestVacinaReincidencia",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/brain/antibodies.go", "internal/brain/antibodies_test.go"],
+        "verify": [["go", "test", "-count=1", "./internal/brain/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M2.3",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Injeção preventiva no início da execução (InjectPreventiveContext vira passo do processo)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["M2.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/brain/antibodies.go", "internal/triagem/memoria.go"],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E02.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.5",
+      "test_target": "internal/brain/antibodies_test.go:TestInjecaoPreventiva",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/brain/antibodies.go", "internal/brain/antibodies_test.go"],
+        "verify": [["go", "test", "-count=1", "./internal/brain/...", "./internal/triagem/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M2.4",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Gate anti-reincidência em runtime (erro conhecido ⇒ antídoto ou bloqueio com saída clara)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": ["M2.3"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["internal/brain/antibodies.go"],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E02.7",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.7",
+      "test_target": "internal/brain/antibodies_test.go:TestGateAntiReincidencia",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["internal/brain/antibodies.go", "internal/brain/antibodies_test.go"],
+        "verify": [["go", "test", "-count=1", "./internal/brain/..."]],
+        "gate": "exit_code == 0"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-M02",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano Pós-M1 (Memória Concorrente)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 86400,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": ["M1.4"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências de M1 aprovadas? Autoriza iniciar o Fechamento M3?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-M03",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano Pós-M2 (Anticorpos)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 86400,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": ["M2.4"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências de M2 aprovadas? Autoriza iniciar M3.1?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M3.1",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Manual operacional em docs/manuals/",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 12000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": ["SG-M02", "SG-M03"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-chat-128k",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E03.1",
+        "context_artifacts": ["docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md"]
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md"],
+        "verify": [["powershell", "-NoProfile", "-Command", "Test-Path docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md"]],
+        "gate": "file_exists('docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md') && !has_pattern('docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md', '\\{\\{')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M3.2",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Livro LegoPress + skill canônica + DAG validado (legoloop validate)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "subprocesso",
+      "ref": "legoloop-legopress",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": ["M3.1"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-chat-128k",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E03.2",
+        "context_artifacts": ["docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md"]
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["docs/books/memoria-anticorpos/livro.json", "docs/books/memoria-anticorpos/livro.pdf", "skills/legoloop-memoria-anticorpos/SKILL.md"],
+        "verify": [["legoloop", "validate"]],
+        "gate": "exit_code == 0 && file_exists('docs/books/memoria-anticorpos/livro.json') && file_exists('skills/legoloop-memoria-anticorpos/SKILL.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "M3.3",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Build + install, governança viva, reindex do grafo, relatório com telemetria",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": ["M3.2"],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "t-chat-128k",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["cmd/legoloop/main.go", "AGENTS.md", "MEMORY.md", "README.md"],
+        "spec_anchor": "docs/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md#AC-E03.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.3",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["bin/legoloop.exe", "docs/reports/2026-11-16_REPORT_MEMORIA_CONCORRENTE_ANTICORPOS.md"],
+        "verify": [["go", "install", "./cmd/legoloop"]],
+        "gate": "exit_code == 0 && file_exists('docs/reports/2026-11-16_REPORT_MEMORIA_CONCORRENTE_ANTICORPOS.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL-M",
+      "initiative_id": null,
+      "epic_id": null,
+      "label": "Homologação Final (Regressão Global e Recompilação Fresca)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": ["M3.3"],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "powershell",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": ["cmd/legoloop/main.go"],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": ["bin/legoloop.exe"],
+        "verify": [
+          ["go", "test", "-count=1", "./..."],
+          ["go", "vet", "./..."],
+          ["go", "build", "-o", "bin/legoloop.exe", "./cmd/legoloop"]
+        ],
+        "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    }
+  ]
+}
