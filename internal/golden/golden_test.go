@@ -18,7 +18,7 @@ const (
 	fixtureDir  = "testdata/[p]rocessos"
 	invalidDir  = "testdata/invalid"
 	manifest    = "testdata/golden.json"
-	wantFixture = 15
+	wantFixture = 14
 )
 
 type Entry struct {

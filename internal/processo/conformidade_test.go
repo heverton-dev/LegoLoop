@@ -70,15 +70,16 @@ func manifestosValidos(t *testing.T, dir, nome string) {
 		}
 	}
 	if !temDocumentoDoProcesso(dir) {
-		t.Errorf("%s: sem documento do Processo (dialeto %s ou %s)", nome, paths.SufixoAntigo, paths.SufixoStudio)
+		t.Errorf("%s: sem documento do Processo (dialeto %s, %s ou %s)", nome, paths.SufixoAntigo, paths.SufixoStudio, caminhos.ArquivoDAG)
 	}
 }
 
-// temDocumentoDoProcesso procura o documento do Processo em qualquer dialeto gravado.
+// temDocumentoDoProcesso procura o documento do Processo em qualquer dialeto gravado,
+// inclusive o contrato DAG padrão herdado do espelho removido.
 func temDocumentoDoProcesso(dir string) bool {
 	achou := false
 	_ = filepath.WalkDir(dir, func(p string, e os.DirEntry, err error) error {
-		if err == nil && !e.IsDir() && (strings.HasSuffix(p, paths.SufixoAntigo) || strings.HasSuffix(p, paths.SufixoStudio)) {
+		if err == nil && !e.IsDir() && (strings.HasSuffix(p, paths.SufixoAntigo) || strings.HasSuffix(p, paths.SufixoStudio) || filepath.Base(p) == caminhos.ArquivoDAG) {
 			achou = true
 		}
 		return nil

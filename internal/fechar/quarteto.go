@@ -29,20 +29,15 @@ type dagNos struct {
 	} `json:"nodes"`
 }
 
-// garantirQuarteto cria os arquivos padrão ausentes do Processo e aplica o
-// zeramento seletivo da memória: zera só a sessão dona e limpa os órfãos.
+// garantirQuarteto cria os arquivos padrão ausentes do Processo (DAG, triagem,
+// memória) e aplica o zeramento seletivo da memória: zera só a sessão dona e
+// limpa os órfãos.
 func garantirQuarteto(dir, dagPath, sessaoID string) error {
 	dados, err := os.ReadFile(dagPath)
 	if err != nil {
 		return err
 	}
 	nome := filepath.Base(dir)
-	espelhoPath := filepath.Join(dir, nomeEspelho(nome))
-	if _, err := os.Stat(espelhoPath); os.IsNotExist(err) {
-		if err := os.WriteFile(espelhoPath, dados, 0o644); err != nil {
-			return err
-		}
-	}
 	if err := garantirTriagem(dir, nome, dados); err != nil {
 		return err
 	}

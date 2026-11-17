@@ -56,9 +56,6 @@ var allowedExceptions = map[string]map[string]bool{
 		"card":     true,
 		"pipeline": true,
 	},
-	"internal/golden/testdata/processos/mega-pipeline.loop.json": {
-		"pipeline": true,
-	},
 	"internal/interview/intent_render.go": {
 		"task": true,
 	},

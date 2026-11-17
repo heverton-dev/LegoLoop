@@ -16,10 +16,9 @@ var vinculosVideoREA = map[string]string{
 	"n03_matrix_curation":      "legoloop-video-rea-relatorio",
 }
 
-// copiasDoDAGVideoREA são as quatro cópias do DAG do video-rea, todas com o mesmo vínculo.
+// copiasDoDAGVideoREA são as três cópias do DAG do video-rea, todas com o mesmo vínculo.
 var copiasDoDAGVideoREA = []string{
-	"processos/legoloop-video-rea/pipeline.dag.json",
-	"processos/legoloop-video-rea/legoloop-video-rea.loop.json",
+	"processos/legoloop-video-rea/" + caminhos.ArquivoDAG,
 	"docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json",
 	"internal/golden/testdata/processos/legoloop-video-rea.dag.json",
 }

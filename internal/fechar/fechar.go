@@ -175,11 +175,6 @@ func resolverDirProcesso(repoDir, slug, canon string) string {
 	return filepath.Join(caminhos.DirProcessosEm(repoDir), nomes[0])
 }
 
-// nomeEspelho devolve o nome do arquivo espelho do DAG na pasta do Processo.
-func nomeEspelho(nome string) string {
-	return nome + caminhos.SufixoLoop
-}
-
 func auditDAGParity(repoDir, slug, procDAGPath string) error {
 	dagsDir := filepath.Join(repoDir, "docs", "dags")
 	pattern := filepath.Join(dagsDir, fmt.Sprintf("*_DAG_%s.json", upperSlug(slug)))

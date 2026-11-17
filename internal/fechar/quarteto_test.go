@@ -225,10 +225,13 @@ func TestGravaEmProcessos(t *testing.T) {
 	if err := garantirQuarteto(dir, dagPath, donaID); err != nil {
 		t.Fatalf("garantirQuarteto falhou: %v", err)
 	}
-	for _, nome := range []string{caminhos.ArquivoDAG, nomeEspelho("legoloop-x"), triagem.ArquivoMemoria} {
+	for _, nome := range []string{caminhos.ArquivoDAG, triagem.ArquivoMemoria} {
 		if _, err := os.Stat(filepath.Join(dir, nome)); err != nil {
 			t.Errorf("artefato %q ausente em processos/: %v", nome, err)
 		}
+	}
+	if _, err := os.Stat(filepath.Join(dir, "legoloop-x"+caminhos.SufixoLoop)); !os.IsNotExist(err) {
+		t.Errorf("o espelho %s não pode mais ser criado: %v", "legoloop-x"+caminhos.SufixoLoop, err)
 	}
 	if _, err := os.Stat(filepath.Join(repo, caminhos.DirLoops)); !os.IsNotExist(err) {
 		t.Fatalf("runtime recriou o diretório legado: %v", err)

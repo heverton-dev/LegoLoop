@@ -23,7 +23,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 
 ## 1. Resumo Executivo
 
-* **Objetivo Alcançado:** O Mega Plano LegoLoop para Produção foi executado integralmente (I0–I9 + Épico 11): saneamento do inventário (3636 arquivos, 2494 para arquivo morto), nascimento 5/5, migração do Quinteto para fatias VSA, rename `loops/` → `processos/`, tríplice via de execução (CLI | SKILL+slash | Studio), auditoria dos 6 verbos de processo, MCP router único, higiene de qualidade e resgate da demanda paralela de Memória/Anticorpos. Todos os épicos fecharam com evidência mecânica e veredito de AUDITOR.
+* **Objetivo Alcançado:** O Mega Plano LegoLoop para Produção foi executado integralmente (I0–I9 + Épico 11): saneamento do inventário (3636 arquivos, 2494 para arquivo morto), nascimento 5/5, migração do Quinteto para fatias VSA, rename do diretório antigo → `processos/`, tríplice via de execução (CLI | SKILL+slash | Studio), auditoria dos 6 verbos de processo, MCP router único, higiene de qualidade e resgate da demanda paralela de Memória/Anticorpos. Todos os épicos fecharam com evidência mecânica e veredito de AUDITOR.
 * **Impacto Arquitetural:** `docs/` inventariado e arquivado; processos em `processos/` (escrita canônica, leitura dual); scaffold 5/5 no `fabricar`; motor de auditoria atômica em `internal/fabricar`; tools de Processos via MCP router único; Path Jail hostil em `internal/paths`; locks por arquivo com memória por nó em `internal/triagem`; governança viva (AGENTS.md, Leis 13–15) atualizada.
 * **Veredito Geral:** APROVADO_COM_DEBITO_TECNICO
 
@@ -86,8 +86,8 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 ### E05 — VSA / Migração do Quinteto (`598c5e5` `9c2c0b8` `0e9bb5c` `2a2a8ef` `676a40d` `a77ed6f`)
 * **Integrações & Grafos:** 293 docs do Quinteto migrados para fatias; 234 órfãos registrados (nenhum silencioso); abstração por SO (`ResolveParaSO`); relatório ORQUESTRA 02.
 
-### E06 — Rename `loops/` → `processos/` (`886f783`)
-* **Código de Produção:** escrita canônica em `processos/`, leitura dual preservando `loops/` legado, hook de caminho legado exit 2. [Relatório E06](2026-11-17_REPORT_E06_RENAME_PROCESSOS.md). Nota de integridade: ver §6.
+### E06 — Rename do diretório antigo → `processos/` (`886f783`)
+* **Código de Produção:** escrita canônica em `processos/`, leitura dual preservando o diretório antigo, hook de caminho legado exit 2. [Relatório E06](2026-11-17_REPORT_E06_RENAME_PROCESSOS.md). Nota de integridade: ver §6.
 
 ### E07 — Tríplice Via de Execução (`a1ff332` `c632896` `60d082d` `1a5b301` `5e296b9`)
 * **CLI & Ferramentas:** `legoloop exec <slug>`; SKILL + slash distribuído por `instalar-skills`; peça do Studio invocável por `POST /api/pecas/{id}/exec`. Paridade SHA-256 do contrato DAG entre as três vias (teste de paridade com mutação provada).
@@ -144,7 +144,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 | SG-E03 | Resgate Memória/Anticorpos (EINT) | **APROVADO** | Commits `3153922`, `98a132e`–`5f0fc50`; 14 mutações; Lei 11 fechada |
 | SG-E04 | Épico 11 absorvido no EINT | **APROVADO** | Livro LegoPress + manual Lei 11 + skill canônica + DAG validado |
 | SG-E05 | VSA / Migração do Quinteto | **APROVADO** | Commits `598c5e5`–`a77ed6f`; 293 docs migrados; 234 órfãos registrados |
-| SG-E06 | Rename `loops/` → `processos/` | **APROVADO_COM_RESSALVA** | Commit `886f783`; ver incidente de integridade abaixo |
+| SG-E06 | Rename do diretório antigo → `processos/` | **APROVADO_COM_RESSALVA** | Commit `886f783`; ver incidente de integridade abaixo |
 | SG-E07 | Tríplice Via de Execução | **APROVADO** | Commits `a1ff332`–`5e296b9`; paridade SHA-256 do contrato DAG |
 | SG-E08 | Auditoria dos 6 Verbos | **APROVADO** | Commits `69e21c2`–`19b86a7`; 6/6 APROVADO com mutações provadas |
 | SG-E09 | MCP Router + Higiene (E09/E10) | **APROVADO** | Commits `0fe4593`–`2fb73ec`; gates finais 3× EXIT=0 auditados |

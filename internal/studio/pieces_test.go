@@ -421,6 +421,54 @@ func TestComposeSubprocessoSuccess(t *testing.T) {
 	}
 }
 
+// TestComposeSubprocessoRefDoSlug prova que o ref do subprocesso é o slug do Processo,
+// nunca o nome do arquivo do documento (contrato DAG padrão ou <slug>.studio.json).
+func TestComposeSubprocessoRefDoSlug(t *testing.T) {
+	s, _, project := newAssetsServer(t)
+	doc := func(id string) string {
+		raw, err := json.Marshal(&studiodoc.Processo{
+			ID: id, Name: "Sub " + id, Version: "1.0.0",
+			Trigger: &dag.Trigger{Type: dag.TriggerManual},
+			Nodes: []dag.Node{{
+				ID: "n1", Type: dag.TypeScript, Command: []string{"go", "version"},
+				Routing: dag.RoutingConfig{Mode: dag.ModeManual, Model: "local"},
+				Output:  dag.HandoffContract{Artifact: "OUT.md", Gate: "true"},
+			}},
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return string(raw)
+	}
+	for _, c := range []struct{ dir, arquivo string }{
+		{"sub-dag", caminhos.ArquivoDAG},
+		{"sub-studio", "sub-studio" + caminhos.SufixoStudio},
+	} {
+		writeFile(t, filepath.Join(project, "processos", c.dir, c.arquivo), doc(c.dir))
+	}
+	s.Assets.Refresh(context.Background())
+	for _, esperado := range []string{"sub-dag", "sub-studio"} {
+		var item assets.Item
+		for _, it := range s.Assets.Snapshot().Of(assets.KindProcesso) {
+			if it.Name == "Sub "+esperado {
+				item = it
+				break
+			}
+		}
+		if item.ID == "" {
+			t.Fatalf("Processo %s não encontrado no inventário", esperado)
+		}
+		body := comp([]string{pieceJSON("n1", fmt.Sprintf(`{"kind":"subprocesso","ref":%q,"artifact":"OUT.md"}`, item.ID), "")}, "")
+		code, res, raw := post(t, s, "/api/validate", body)
+		if code != 200 || !res.OK {
+			t.Fatalf("%s: validação falhou: %d %s", esperado, code, raw)
+		}
+		if !strings.Contains(raw, fmt.Sprintf(`"ref":%q`, esperado)) {
+			t.Errorf("%s: ref do subprocesso deve ser o slug, não o arquivo: %s", esperado, raw)
+		}
+	}
+}
+
 func TestBoardTriggerPiece(t *testing.T) {
 	s, _, _ := piecesFixture(t)
 	fullIdx, err := graph.NewIndex(graph.FullCatalog())

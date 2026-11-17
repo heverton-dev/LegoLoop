@@ -128,9 +128,25 @@ func subprocessoPeca(res Resolver, ref string) (nodeInfo, string) {
 	}
 	refName := it.Name
 	if it.Path != "" {
-		refName = strings.TrimSuffix(filepath.Base(it.Path), ".loop.json")
+		refName = refDeProcesso(it)
 	}
 	return nodeInfo{Label: it.Name, Type: dag.TypeSubloop, Ref: refName}, ""
+}
+
+// refDeProcesso devolve o slug do Processo: a meta canônica quando existe e,
+// senão, o nome do arquivo do documento sem o sufixo (o espelho .loop.json saiu).
+func refDeProcesso(it assets.Item) string {
+	if id := it.Meta[caminhos.ChaveMetaProcessoID]; id != "" {
+		return id
+	}
+	base := filepath.Base(it.Path)
+	if base == caminhos.ArquivoDAG {
+		return filepath.Base(filepath.Dir(it.Path))
+	}
+	for _, suf := range []string{caminhos.SufixoLoop, caminhos.SufixoStudio, ".processo.json"} {
+		base = strings.TrimSuffix(base, suf)
+	}
+	return base
 }
 
 func skillPiece(res Resolver, ref string) (nodeInfo, string) {

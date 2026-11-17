@@ -296,10 +296,13 @@ func TestFecharGeraQuartetoPadrao(t *testing.T) {
 	repo := t.TempDir()
 	proc := prepararProcessoCanonico(t, repo, "legoloop-bar")
 	rodarFecharSimples(t, repo, "bar")
-	for _, nome := range []string{"legoloop-bar" + caminhos.SufixoLoop, caminhos.ArquivoDAG, "triagem.json", "memoria_execucao.json"} {
+	for _, nome := range []string{caminhos.ArquivoDAG, "triagem.json", "memoria_execucao.json"} {
 		if _, err := os.Stat(filepath.Join(proc, nome)); err != nil {
 			t.Errorf("arquivo padrão ausente %s: %v", nome, err)
 		}
+	}
+	if _, err := os.Stat(filepath.Join(proc, "legoloop-bar"+caminhos.SufixoLoop)); !os.IsNotExist(err) {
+		t.Errorf("o espelho .loop.json não pode mais ser criado: %v", err)
 	}
 	raw, err := os.ReadFile(filepath.Join(proc, "triagem.json"))
 	if err != nil || !strings.Contains(string(raw), "02-beta") {
