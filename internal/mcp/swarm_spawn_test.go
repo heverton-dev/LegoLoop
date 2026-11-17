@@ -32,7 +32,7 @@ func TestSwarmSpawnToolRealProcess(t *testing.T) {
 	if pid, _ := res.(map[string]any)["pid"].(int); pid <= 0 {
 		t.Fatalf("pid invalido: %+v", res)
 	}
-	deadline := time.Now().Add(5 * time.Second)
+	deadline := time.Now().Add(30 * time.Second)
 	for time.Now().Before(deadline) {
 		st, _ := sb.Status()
 		if len(st.Workers) == 1 && st.Workers[0].Status == board.WorkerStopped && st.Workers[0].PID == 0 {

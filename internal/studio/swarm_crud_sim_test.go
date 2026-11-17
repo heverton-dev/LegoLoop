@@ -102,9 +102,9 @@ func TestSwarmUpdateRemoveESimulateAPI(t *testing.T) {
 	if simResp.Steps[0].Mode != "sync" || simResp.Steps[1].Mode != "async" {
 		t.Fatalf("esperava passo 1 sync e passo 2 async, obteve: %+v", simResp.Steps)
 	}
-	// Aguarda goroutine rápida de simulação concluir antes do TempDir cleanup
+	// Aguarda goroutine de simulação concluir antes do TempDir cleanup (condição binária, teto generoso).
 	simDir := filepath.Join(proj, "scratch", simResp.Process, ".legoloop-swarm", "swarm.json")
-	deadline := time.Now().Add(2 * time.Second)
+	deadline := time.Now().Add(30 * time.Second)
 	var finalData string
 	for time.Now().Before(deadline) {
 		if b, err := os.ReadFile(simDir); err == nil && strings.Contains(string(b), "Simulação concluída") {

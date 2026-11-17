@@ -16,11 +16,15 @@ import (
 )
 
 // fakeExec grava o artefato do nó e mede a concorrência real observada.
+// hold/holdN formam uma barreira de sobreposição: os nós marcados em hold só saem
+// quando holdN nós estão em execução ao mesmo tempo (prova de paralelismo sem depender de relógio).
 type fakeExec struct {
 	delay    time.Duration
 	exitCode map[string]int
 	fail     map[string]bool
 	skipFile map[string]bool
+	holdN    int32
+	hold     map[string]bool
 	active   atomic.Int32
 	maxSeen  atomic.Int32
 	mu       sync.Mutex
@@ -39,6 +43,9 @@ func (f *fakeExec) Execute(ctx context.Context, n dag.Node, workdir string) (Res
 	f.mu.Lock()
 	f.order = append(f.order, n.ID)
 	f.mu.Unlock()
+	if f.hold[n.ID] {
+		f.esperarPares()
+	}
 	select {
 	case <-time.After(f.delay):
 	case <-ctx.Done():
@@ -55,6 +62,18 @@ func (f *fakeExec) Execute(ctx context.Context, n dag.Node, workdir string) (Res
 	}
 	return Result{ExitCode: f.exitCode[n.ID], Tokens: TokenUsage{Input: 10, Output: 5},
 		Model: "fake/" + n.ID, Notes: []string{"nota " + n.ID}}, nil
+}
+
+// esperarPares segura o nó marcado em hold até que holdN nós estejam em execução ao mesmo
+// tempo (barreira de sobreposição), com teto de 30s para falhar claro se o escalonador serializar.
+func (f *fakeExec) esperarPares() {
+	if f.holdN <= 1 {
+		return
+	}
+	prazo := time.Now().Add(30 * time.Second)
+	for f.active.Load() < f.holdN && time.Now().Before(prazo) {
+		time.Sleep(time.Millisecond)
+	}
 }
 
 func diamond(t *testing.T, timeoutSec int) *dag.DAG {
@@ -81,7 +100,8 @@ func statuses(r Report) map[string]Status {
 }
 
 func TestRunAllPassParallel(t *testing.T) {
-	ex := &fakeExec{delay: 50 * time.Millisecond}
+	// Barreira de sobreposição: b e c só saem quando estão juntos — paralelismo provado sem relógio.
+	ex := &fakeExec{delay: 50 * time.Millisecond, holdN: 2, hold: map[string]bool{"b": true, "c": true}}
 	rep, err := Run(context.Background(), diamond(t, 0), Options{Workdir: t.TempDir(), Parallelism: 4, Executor: ex})
 	if err != nil {
 		t.Fatal(err)

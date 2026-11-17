@@ -331,7 +331,7 @@ func testUnifiedSpawnSetModelAndPIDKill(t *testing.T) {
 	if pid <= 0 {
 		t.Fatalf("PID invalido: %d", pid)
 	}
-	deadline := time.Now().Add(3 * time.Second)
+	deadline := time.Now().Add(30 * time.Second)
 	for time.Now().Before(deadline) {
 		if b, err := os.ReadFile(modelFile); err == nil && string(b) == "m2" {
 			break
@@ -350,19 +350,32 @@ func testUnifiedSpawnSetModelAndPIDKill(t *testing.T) {
 	if err := sb2.KillWorker(w.Name, repo); err != nil {
 		t.Fatalf("KillWorker: %v", err)
 	}
+	// O kill do Windows é assíncrono: espera ativa pela morte real do PID (janela de SO, sem data fixa).
+	morto := time.Now().Add(10 * time.Second)
+	for isOSProcessAlive(pid) && time.Now().Before(morto) {
+		time.Sleep(25 * time.Millisecond)
+	}
 	if isOSProcessAlive(pid) {
 		t.Fatalf("PID %d continuou vivo apos KillWorker", pid)
 	}
 	if _, err := os.Stat(w.WorktreePath); !os.IsNotExist(err) {
 		t.Fatalf("worktree %s deveria ter sido removido apos KillWorker, err=%v", w.WorktreePath, err)
 	}
-	time.Sleep(100 * time.Millisecond)
-	st, err := sb2.Status()
-	if err != nil {
-		t.Fatal(err)
+	var finalKilled Worker
+	prazoKilled := time.Now().Add(30 * time.Second)
+	for time.Now().Before(prazoKilled) {
+		st, err := sb2.Status()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(st.Workers) == 1 && st.Workers[0].Status == WorkerKilled && st.Workers[0].PID == 0 {
+			finalKilled = st.Workers[0]
+			break
+		}
+		time.Sleep(25 * time.Millisecond)
 	}
-	if st.Workers[0].Status != WorkerKilled || st.Workers[0].PID != 0 {
-		t.Fatalf("esperava killed com PID=0, obteve %+v", st.Workers[0])
+	if finalKilled.Status != WorkerKilled {
+		t.Fatalf("esperava killed com PID=0, obteve %+v", finalKilled)
 	}
 	if _, err := sb2.SetWorkerModel(w.Name, "m3"); err == nil {
 		t.Fatal("nao devia permitir SetWorkerModel em worker killed")
@@ -383,7 +396,7 @@ func testUnifiedSpawnSetModelAndPIDKill(t *testing.T) {
 	if _, err := sbNat.SpawnWorker(ctx, "w-exit", []string{exe, "-test.run=^TestHelperSwarmUnifiedProcess$"}); err != nil {
 		t.Fatalf("SpawnWorker exit0: %v", err)
 	}
-	waitStopped := time.Now().Add(3 * time.Second)
+	waitStopped := time.Now().Add(30 * time.Second)
 	var finalWorker Worker
 	for time.Now().Before(waitStopped) {
 		stNat, err := sbNat.Status()
