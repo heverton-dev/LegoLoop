@@ -42,9 +42,11 @@ func gerar() {
 	}
 }
 
-// auditar roda a auditoria universal dos seis verbos e grava o relatório com o veredito de cada um.
+// auditar roda a auditoria universal dos seis verbos e grava o relatório atômico
+// de cada verbo mais o relatório consolidado com o veredito de cada um.
 func auditar() {
-	rels, codigos, err := fabricar.AuditarVerbos(".", fabricar.TestePadraoEm("."))
+	dirAtomicos := filepath.Join("docs", "reports", "auditoria-6-verbos")
+	rels, codigos, err := fabricar.AuditarVerbosEGravar(".", fabricar.TestePadraoEm("."), dirAtomicos)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "auditar: %v\n", err)
 		os.Exit(2)
@@ -54,6 +56,7 @@ func auditar() {
 		fmt.Fprintf(os.Stderr, "gravar relatório: %v\n", err)
 		os.Exit(1)
 	}
+	fmt.Println("relatórios atômicos:", dirAtomicos)
 	fmt.Println("relatório:", saida)
 	exit := 0
 	for i, rel := range rels {

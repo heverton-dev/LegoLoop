@@ -414,6 +414,21 @@ func AuditarVerbos(raiz string, teste TesteFunc) ([]Relatorio, []int, error) {
 	return rels, codigos, nil
 }
 
+// AuditarVerbosEGravar audita os seis verbos e grava o relatório atômico de cada um
+// em dir/<verbo>.md, com lacunas, tickets, veredito e evidência mecânica.
+func AuditarVerbosEGravar(raiz string, teste TesteFunc, dir string) ([]Relatorio, []int, error) {
+	rels, codigos, err := AuditarVerbos(raiz, teste)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, rel := range rels {
+		if err := EscreverRelatorio(filepath.Join(dir, rel.Alvo.Nome+".md"), Renderizar(rel)); err != nil {
+			return nil, nil, err
+		}
+	}
+	return rels, codigos, nil
+}
+
 // TestePadraoEm roda o critério binário real do verbo: go test -count=1 no pacote dele sob a raiz.
 func TestePadraoEm(raiz string) TesteFunc {
 	return func(a Alvo) ResultadoTeste {
