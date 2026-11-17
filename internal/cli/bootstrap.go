@@ -38,7 +38,7 @@ func cmdBootstrap(ctx context.Context, args []string, d Deps) int {
 }
 
 func runBootstrap(ctx context.Context, d Deps, vault string, dry bool) (*bootstrapResult, error) {
-	skRes, err := runInstalarSkills(d, vault, dry)
+	skRes, err := runInstalarSkills(d, vault, "", dry)
 	if err != nil {
 		return nil, fmt.Errorf("skills: %w", err)
 	}
