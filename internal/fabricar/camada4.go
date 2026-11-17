@@ -173,5 +173,6 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, sext
 	for _, f := range pr.Fichas {
 		files = append(files, PlannedFile{Kind: "fichas_tecnicas", Path: docs("fichas", filepath.Join(p.Nome, f.EtapaID+".md")), Data: []byte(f.Conteudo)})
 	}
+	files = append(files, DocsDoSlice(roots, p, pr, sexteto)...)
 	return ajustarPeca(files, roots, p, peca)
 }

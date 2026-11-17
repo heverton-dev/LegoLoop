@@ -1,8 +1,11 @@
 package fabricar
 
 import (
+	"bytes"
 	"encoding/json"
+	"path/filepath"
 
+	"legoloop/internal/paths"
 	"legoloop/internal/processo"
 )
 
@@ -36,4 +39,32 @@ func AnticorposPadrao(nome string) ([]byte, error) {
 // anticorposDe renderiza o anticorpos.json ligado ao Processo recém-projetado.
 func anticorposDe(p processo.Processo) ([]byte, error) {
 	return AnticorposPadrao(p.Nome)
+}
+
+// DocsDoSlice espelha o Sexteto da raiz docs/ dentro da fatia vertical
+// <pasta-do-Processo>/docs/<sub>/ (AC-E05.1). A raiz docs/ continua sendo escrita:
+// o espelhamento é dupla-escrita até a virada de escopo E06+. Kind é livre;
+// "slice_doc" não vira artefato canônico (artifactsOf ignora kinds desconhecidos).
+func DocsDoSlice(roots Roots, p processo.Processo, pr *processo.Projecoes, sexteto [3]namedFile) []PlannedFile {
+	base := filepath.Join(roots.Vault, paths.DirAntigo, p.Nome, "docs")
+	entradas := []struct {
+		sub, nome string
+		data      []byte
+	}{
+		{"interviews", sexteto[0].Name, sexteto[0].Data},
+		{"intents", sexteto[1].Name, sexteto[1].Data},
+		{"specs", pr.SpecNome, []byte(pr.Spec)},
+		{"plans", pr.PlanNome, []byte(pr.Plan)},
+		{"routes", pr.RouteNome, pr.Route},
+		{"reports", sexteto[2].Name, sexteto[2].Data},
+		{"manuals", pr.ManualNome, []byte(pr.Manual)},
+	}
+	var out []PlannedFile
+	for _, e := range entradas {
+		if len(bytes.TrimSpace(e.data)) == 0 {
+			continue
+		}
+		out = append(out, PlannedFile{Kind: "slice_doc", Path: filepath.Join(base, e.sub, e.nome), Data: e.data})
+	}
+	return out
 }

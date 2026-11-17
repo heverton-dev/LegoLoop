@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"legoloop/internal/caminhos"
@@ -12,6 +13,37 @@ import (
 	"legoloop/internal/paths"
 	"legoloop/internal/triagem"
 )
+
+// TestSliceAutocontido cobre o AC-E05.1: o Processo nasce como fatia vertical autocontida —
+// manifestos + docs/ do processo (INTENT, SPEC, PLAN, ROUTE, REPORT, MANUAL) dentro da fatia,
+// pronta para executar como mini-projeto.
+func TestSliceAutocontido(t *testing.T) {
+	r := newRig(t, goodPieces())
+	res := r.run(t)
+	dir := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName)
+	for _, manifesto := range []string{"triagem.json", triagem.ArquivoMemoria, "anticorpos.json", caminhos.ArquivoDAG} {
+		if _, err := os.Stat(filepath.Join(dir, manifesto)); err != nil {
+			t.Errorf("manifesto ausente na fatia: %s (%v)", manifesto, err)
+		}
+	}
+	for _, sub := range []string{"intents", "specs", "plans", "routes", "reports", "manuals"} {
+		subDir := filepath.Join(dir, "docs", sub)
+		entradas, err := os.ReadDir(subDir)
+		if err != nil {
+			t.Fatalf("fatia sem docs/%s: %v", sub, err)
+		}
+		if len(entradas) == 0 {
+			t.Errorf("docs/%s vazio na fatia", sub)
+			continue
+		}
+		for _, e := range entradas {
+			b := lerManifesto(t, filepath.Join(subDir, e.Name()))
+			if len(strings.TrimSpace(string(b))) < 20 {
+				t.Errorf("documento raso demais em docs/%s/%s", sub, e.Name())
+			}
+		}
+	}
+}
 
 // TestNasceCincoPorCinco cobre o AC-E02.1: o fabricar instancia o scaffold 5/5 do
 // nascimento do Processo — documento do Processo, DAG, triagem, memória de execução e
