@@ -18,7 +18,7 @@ const dagPecaUmNo = `{"name":"p","version":"2.0.0","trigger":{"type":"manual"},"
   "output":{"artifact":"GO_VERSION_PECAS.txt","gate":"exit_code == 0"}}]}`
 
 // TestRegistraPecaAutomatica (AC-E07.3): dado processo criado; a peça
-// correspondente está registrada e invocável no Studio (card arrastável),
+// correspondente está registrada e invocável no Studio (arrastável na interface),
 // sem registro manual.
 func TestRegistraPecaAutomatica(t *testing.T) {
 	s, _ := newServer(t)

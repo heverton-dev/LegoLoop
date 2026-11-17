@@ -11,7 +11,7 @@ import (
 	"legoloop/internal/dag"
 )
 
-// PecaProcesso é a peça invocável de um Processo no Studio (card arrastável).
+// PecaProcesso é a peça invocável de um Processo no Studio (arrastável na interface).
 type PecaProcesso struct {
 	ID      string `json:"id"`
 	Nome    string `json:"nome"`
