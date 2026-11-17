@@ -1,9 +1,14 @@
 package inventario
 
 import (
+	"encoding/json"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
+
+	"legoloop/internal/paths"
 )
 
 // ResultadoMigracao resume a movimentação para o arquivo morto.
@@ -99,4 +104,231 @@ func registrarMovido(res *ResultadoMigracao, raizDocs, destino string) {
 		rel = destino
 	}
 	res.Movidos = append(res.Movidos, filepath.ToSlash(rel))
+}
+
+// tiposQuinteto são as pastas de documento do Quinteto que migram para as fatias.
+var tiposQuinteto = []string{"intents", "specs", "plans", "routes"}
+
+// reDataTipo separa o nome-base do documento do prefixo de data e tipo.
+var reDataTipo = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}_(INTENT|SPEC|PLAN|ROUTE|DAG|INTERVIEW|REPORT|MANUAL)_`)
+
+// EntradaOrfao registra um documento do Quinteto sem dono (AC-E05.4).
+type EntradaOrfao struct {
+	Caminho string `json:"caminho"` // origem relativa a docs/
+	Destino string `json:"destino"` // destino relativo a docs/
+	Tipo    string `json:"tipo"`
+	Motivo  string `json:"motivo"`
+}
+
+// Movimento registra um documento migrado: par origem-destino relativo à raiz.
+type Movimento struct {
+	Caminho string `json:"caminho"`
+	Destino string `json:"destino"`
+}
+
+// ResultadoQuinteto resume a migração do Quinteto para as fatias.
+type ResultadoQuinteto struct {
+	Migrados   []Movimento
+	Orfaos     []EntradaOrfao
+	Protegidos []string // caminhos relativos a docs/ mantidos na raiz
+}
+
+// posse é o mapa de donos: rota exata e token normalizado para a fatia.
+type posse struct {
+	porRota  map[string]string
+	porToken map[string]string
+}
+
+// MigrarQuinteto move o Quinteto da raiz docs/ para as fatias (AC-E05.2).
+// Documento com dono vai para <fatia>/docs/<tipo>/. Sem dono, vai para
+// docs/archive/quinteto/ com registro. Protegidos ficam. Nunca deleta.
+func MigrarQuinteto(raiz string, protegidos []string) (ResultadoQuinteto, error) {
+	var res ResultadoQuinteto
+	pos, err := donosDe(raiz)
+	if err != nil {
+		return res, err
+	}
+	docs := filepath.Join(raiz, "docs")
+	for _, tipo := range tiposQuinteto {
+		if err := migrarTipo(docs, tipo, raiz, pos, protegidos, &res); err != nil {
+			return res, err
+		}
+	}
+	return res, registrarOrfaos(docs, res.Orfaos)
+}
+
+// donosDe lê os manifestos de fatia e devolve a posse por rota e por token.
+func donosDe(raiz string) (posse, error) {
+	pos := posse{porRota: map[string]string{}, porToken: map[string]string{}}
+	base := filepath.Join(raiz, paths.DirAntigo)
+	entradas, err := os.ReadDir(base)
+	if os.IsNotExist(err) {
+		return pos, nil
+	}
+	if err != nil {
+		return pos, err
+	}
+	for _, e := range entradas {
+		if !e.IsDir() {
+			continue
+		}
+		slug := e.Name()
+		manifesto := filepath.Join(base, slug, slug+paths.SufixoStudio)
+		rota, errR := rotaDoManifesto(manifesto)
+		if errR != nil {
+			return pos, errR
+		}
+		registrarPosse(pos, slug, rota)
+	}
+	return pos, nil
+}
+
+// registrarPosse grava a fatia por rota exata e por token, o primeiro vence.
+func registrarPosse(pos posse, slug, rota string) {
+	if rota != "" {
+		if _, ok := pos.porRota[rota]; !ok {
+			pos.porRota[rota] = slug
+		}
+		if token := normalizarToken(filepath.Base(rota)); token != "" {
+			if _, ok := pos.porToken[token]; !ok {
+				pos.porToken[token] = slug
+			}
+		}
+	}
+	token := normalizarToken(slug)
+	if _, ok := pos.porToken[token]; !ok {
+		pos.porToken[token] = slug
+	}
+}
+
+// rotaDoManifesto extrai o caminho da rota upstream (texto ou objeto com path).
+func rotaDoManifesto(caminho string) (string, error) {
+	dados, err := os.ReadFile(caminho)
+	if os.IsNotExist(err) {
+		return "", nil
+	}
+	if err != nil {
+		return "", err
+	}
+	var m struct {
+		Upstream map[string]any `json:"upstream_signatures"`
+	}
+	if err := json.Unmarshal(dados, &m); err != nil {
+		return "", err
+	}
+	switch v := m.Upstream["route"].(type) {
+	case string:
+		return filepath.ToSlash(v), nil
+	case map[string]any:
+		if p, ok := v["path"].(string); ok {
+			return filepath.ToSlash(p), nil
+		}
+	}
+	return "", nil
+}
+
+// normalizarToken reduz nome de documento ou de fatia a um token comparável.
+func normalizarToken(nome string) string {
+	base := strings.TrimSuffix(filepath.Base(nome), filepath.Ext(nome))
+	base = reDataTipo.ReplaceAllString(base, "")
+	base = strings.ToLower(base)
+	base = strings.ReplaceAll(base, "_", "-")
+	return strings.TrimPrefix(base, "legoloop-")
+}
+
+// resolverDono devolve a fatia dona do documento, ou vazio se órfão.
+func resolverDono(pos posse, relDoc string) string {
+	if slug, ok := pos.porRota[filepath.ToSlash(relDoc)]; ok {
+		return slug
+	}
+	return pos.porToken[normalizarToken(filepath.Base(relDoc))]
+}
+
+// migrarTipo move os documentos de um tipo do Quinteto para donos ou arquivo morto.
+func migrarTipo(docs, tipo, raiz string, pos posse, protegidos []string, res *ResultadoQuinteto) error {
+	origem := filepath.Join(docs, tipo)
+	if _, err := os.Stat(origem); os.IsNotExist(err) {
+		return nil
+	}
+	return filepath.WalkDir(origem, func(p string, e fs.DirEntry, err error) error {
+		if err != nil || e.IsDir() {
+			return err
+		}
+		base := filepath.Base(p)
+		if casarAlgum(protegidos, base) {
+			rel, _ := filepath.Rel(docs, p)
+			res.Protegidos = append(res.Protegidos, filepath.ToSlash(rel))
+			return nil
+		}
+		rel, _ := filepath.Rel(raiz, p)
+		if slug := resolverDono(pos, rel); slug != "" {
+			return moverParaFatia(raiz, slug, tipo, p, rel, res)
+		}
+		return arquivarOrfao(docs, tipo, p, res)
+	})
+}
+
+// casarAlgum diz se o nome-base casa algum glob de proteção.
+func casarAlgum(globs []string, base string) bool {
+	for _, g := range globs {
+		if ok, err := filepath.Match(g, base); err == nil && ok {
+			return true
+		}
+	}
+	return false
+}
+
+// moverParaFatia move o documento para <fatia>/docs/<tipo>/ e registra o par.
+func moverParaFatia(raiz, slug, tipo, origem, rel string, res *ResultadoQuinteto) error {
+	alvo := filepath.Join(raiz, paths.DirAntigo, slug, "docs", tipo, filepath.Base(origem))
+	if err := moverArquivo(origem, alvo); err != nil {
+		return err
+	}
+	relD, _ := filepath.Rel(raiz, alvo)
+	res.Migrados = append(res.Migrados, Movimento{Caminho: filepath.ToSlash(rel), Destino: filepath.ToSlash(relD)})
+	return nil
+}
+
+// arquivarOrfao move o documento sem dono para docs/archive/quinteto/ e registra.
+func arquivarOrfao(docs, tipo, origem string, res *ResultadoQuinteto) error {
+	relO, _ := filepath.Rel(docs, origem)
+	alvo := filepath.Join(docs, "archive", "quinteto", tipo, filepath.Base(origem))
+	if err := moverArquivo(origem, alvo); err != nil {
+		return err
+	}
+	relD, _ := filepath.Rel(docs, alvo)
+	res.Orfaos = append(res.Orfaos, EntradaOrfao{
+		Caminho: filepath.ToSlash(relO), Destino: filepath.ToSlash(relD), Tipo: tipo, Motivo: "sem_dono",
+	})
+	return nil
+}
+
+// registrarOrfaos grava o registro dos órfãos no arquivo morto (AC-E05.4).
+func registrarOrfaos(docs string, orfaos []EntradaOrfao) error {
+	if len(orfaos) == 0 {
+		return nil
+	}
+	alvo := filepath.Join(docs, "archive", "quinteto", "registro_orfaos.json")
+	if err := os.MkdirAll(filepath.Dir(alvo), 0o755); err != nil {
+		return err
+	}
+	dados, err := json.MarshalIndent(orfaos, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(alvo, dados, 0o644)
+}
+
+// OrfaosDe lê o registro de órfãos do Quinteto no arquivo morto.
+func OrfaosDe(raiz string) ([]EntradaOrfao, error) {
+	caminho := filepath.Join(raiz, "docs", "archive", "quinteto", "registro_orfaos.json")
+	dados, err := os.ReadFile(caminho)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	var orfaos []EntradaOrfao
+	return orfaos, json.Unmarshal(dados, &orfaos)
 }

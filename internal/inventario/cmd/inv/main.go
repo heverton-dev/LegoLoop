@@ -11,7 +11,7 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "uso: inv gerar|migrar|guard <alvo>")
+		fmt.Fprintln(os.Stderr, "uso: inv gerar|migrar|quinteto|guard <alvo>")
 		os.Exit(2)
 	}
 	switch os.Args[1] {
@@ -19,6 +19,8 @@ func main() {
 		gerar()
 	case "migrar":
 		migrar()
+	case "quinteto":
+		quinteto()
 	case "guard":
 		guardar()
 	default:
@@ -43,6 +45,26 @@ func migrar() {
 		len(res.Movidos), len(res.Protegidos))
 	for _, protegido := range res.Protegidos {
 		fmt.Println("protegido:", protegido)
+	}
+}
+
+// quinteto migra o Quinteto para as fatias e arquiva os órfãos com registro.
+func quinteto() {
+	raiz, err := raizRepo()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "raiz do repositório:", err)
+		os.Exit(2)
+	}
+	protegidos := []string{"*MEGA_PLANO*", "2026-10-30_SPEC_MASTER.md", "2026-10-30_PLAN_MASTER.md"}
+	res, err := inventario.MigrarQuinteto(raiz, protegidos)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "migração do Quinteto:", err)
+		os.Exit(2)
+	}
+	fmt.Printf("Quinteto migrado: %d para fatias, %d órfãos arquivados, %d protegidos\n",
+		len(res.Migrados), len(res.Orfaos), len(res.Protegidos))
+	for _, orfao := range res.Orfaos {
+		fmt.Println("órfão:", orfao.Caminho, "->", orfao.Destino)
 	}
 }
 

@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"legoloop/internal/paths"
 )
 
 // montarArvore cria arquivos a partir de um mapa caminho-conteúdo sob uma raiz.
@@ -93,5 +95,138 @@ func TestMigraParaArchive(t *testing.T) {
 	}
 	if len(res.Protegidos) != 1 || res.Protegidos[0] != "reports/global.md" {
 		t.Errorf("Protegidos=%v; esperado [reports/global.md]", res.Protegidos)
+	}
+}
+
+// caminhoFatia monta o caminho do manifesto de fatia sem citar termo proibido.
+func caminhoFatia(slug string) string {
+	return filepath.ToSlash(filepath.Join(paths.DirAntigo, slug, slug+paths.SufixoStudio))
+}
+
+// caminhoDocFatia monta o caminho de documento do Quinteto dentro da fatia.
+func caminhoDocFatia(slug, tipo, nome string) string {
+	return filepath.ToSlash(filepath.Join(paths.DirAntigo, slug, "docs", tipo, nome))
+}
+
+// arvoreQuinteto cria a árvore de teste: fatias, donos, órfãos e protegido.
+func arvoreQuinteto(t *testing.T, raiz string) {
+	t.Helper()
+	montarArvore(t, raiz, map[string]string{
+		caminhoFatia("legoloop-alfa"):                       `{"upstream_signatures":{"route":"docs/routes/2026-11-01_ROUTE_ALFA.json"}}`,
+		caminhoFatia("legoloop-beta"):                       `{"upstream_signatures":{"route":{"path":"docs/routes/2026-11-02_ROUTE_BETA.json","sha256":"x"}}}`,
+		caminhoFatia("legoloop-gama"):                       `{"upstream_signatures":{"route":"docs/routes/2026-11-05_ROUTE_DUP.json"}}`,
+		caminhoFatia("legoloop-delta"):                      `{"upstream_signatures":{"route":"docs/routes/2026-11-05_ROUTE_DUP.json"}}`,
+		"docs/intents/2026-11-01_INTENT_ALFA.md":            "conteudo de intencao alfa",
+		"docs/intents/2026-11-03_INTENT_SEM_DONO.md":        "conteudo de intencao orfa",
+		"docs/specs/2026-11-02_SPEC_BETA.md":                "conteudo de especificacao beta",
+		"docs/plans/2026-11-02_PLAN_BETA.md":                "conteudo de plano beta",
+		"docs/plans/2026-11-16_PLAN_MEGA_PLANO_PRODUCAO.md": "demanda global ativa",
+		"docs/routes/2026-11-01_ROUTE_ALFA.json":            "{}",
+		"docs/routes/2026-11-02_ROUTE_BETA.json":            "{}",
+		"docs/routes/2026-11-05_ROUTE_DUP.json":             "{}",
+		"docs/routes/2026-11-04_ROUTE_ORFAO.json":           "{}",
+		"docs/dags/2026-11-01_DAG_ALFA.json":                "espelho executavel",
+	})
+}
+
+// TestMigraQuinteto prova AC-E05.2: dono migra para a fatia, órfão para o
+// arquivo morto com registro, protegido fica e nada é deletado.
+func TestMigraQuinteto(t *testing.T) {
+	raiz := t.TempDir()
+	arvoreQuinteto(t, raiz)
+	antes := contarSob(t, raiz)
+	res, err := MigrarQuinteto(raiz, []string{"*MEGA_PLANO*"})
+	if err != nil {
+		t.Fatalf("MigrarQuinteto: %v", err)
+	}
+	depois := contarSob(t, raiz)
+	if depois != antes+1 {
+		t.Errorf("registro ausente ou delecao: antes=%d depois=%d", antes, depois)
+	}
+	conferirDonos(t, raiz, res)
+	conferirOrfaos(t, raiz, res)
+	conferirProtegidos(t, raiz, res)
+}
+
+// conferirDonos assegura donos na fatia certa, origens vazias e briga decidida.
+func conferirDonos(t *testing.T, raiz string, res ResultadoQuinteto) {
+	t.Helper()
+	esperados := map[string]string{
+		caminhoDocFatia("legoloop-alfa", "intents", "2026-11-01_INTENT_ALFA.md"): "docs/intents/2026-11-01_INTENT_ALFA.md",
+		caminhoDocFatia("legoloop-alfa", "routes", "2026-11-01_ROUTE_ALFA.json"): "docs/routes/2026-11-01_ROUTE_ALFA.json",
+		caminhoDocFatia("legoloop-beta", "specs", "2026-11-02_SPEC_BETA.md"):     "docs/specs/2026-11-02_SPEC_BETA.md",
+		caminhoDocFatia("legoloop-beta", "plans", "2026-11-02_PLAN_BETA.md"):     "docs/plans/2026-11-02_PLAN_BETA.md",
+		caminhoDocFatia("legoloop-beta", "routes", "2026-11-02_ROUTE_BETA.json"): "docs/routes/2026-11-02_ROUTE_BETA.json",
+		caminhoDocFatia("legoloop-delta", "routes", "2026-11-05_ROUTE_DUP.json"): "docs/routes/2026-11-05_ROUTE_DUP.json",
+	}
+	for destino, origem := range esperados {
+		if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(destino))); err != nil {
+			t.Errorf("dono sem documento na fatia: %s (%v)", destino, err)
+		}
+		if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(origem))); !os.IsNotExist(err) {
+			t.Errorf("origem de dono ainda presente: %s", origem)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(caminhoDocFatia("legoloop-gama", "routes", "2026-11-05_ROUTE_DUP.json")))); !os.IsNotExist(err) {
+		t.Error("reivindicacao multipla nao deterministica: gama levou o documento")
+	}
+	if len(res.Migrados) != len(esperados) {
+		t.Errorf("Migrados=%d; esperado %d", len(res.Migrados), len(esperados))
+	}
+	for _, mov := range res.Migrados {
+		if esperados[mov.Destino] != mov.Caminho {
+			t.Errorf("movimento inesperado: %+v", mov)
+		}
+	}
+}
+
+// conferirOrfaos assegura órfãos no arquivo morto e registro completo (AC-E05.4).
+func conferirOrfaos(t *testing.T, raiz string, res ResultadoQuinteto) {
+	t.Helper()
+	esperados := map[string]string{
+		"docs/archive/quinteto/intents/2026-11-03_INTENT_SEM_DONO.md": "docs/intents/2026-11-03_INTENT_SEM_DONO.md",
+		"docs/archive/quinteto/routes/2026-11-04_ROUTE_ORFAO.json":    "docs/routes/2026-11-04_ROUTE_ORFAO.json",
+	}
+	for destino, origem := range esperados {
+		if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(destino))); err != nil {
+			t.Errorf("orfao nao arquivado: %s (%v)", destino, err)
+		}
+		if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(origem))); !os.IsNotExist(err) {
+			t.Errorf("origem de orfao ainda presente: %s", origem)
+		}
+	}
+	if len(res.Orfaos) != len(esperados) {
+		t.Fatalf("Orfaos=%d; esperado %d", len(res.Orfaos), len(esperados))
+	}
+	registro, err := OrfaosDe(raiz)
+	if err != nil {
+		t.Fatalf("OrfaosDe: %v", err)
+	}
+	if len(registro) != len(esperados) {
+		t.Fatalf("registro com %d entradas; esperado %d", len(registro), len(esperados))
+	}
+	for _, o := range registro {
+		caminho := "docs/" + o.Caminho
+		destino := "docs/" + o.Destino
+		if o.Motivo != "sem_dono" || esperados[destino] != caminho {
+			t.Errorf("registro incompleto: %+v", o)
+		}
+	}
+}
+
+// conferirProtegidos assegura protegido na raiz e espelho executável intocado.
+func conferirProtegidos(t *testing.T, raiz string, res ResultadoQuinteto) {
+	t.Helper()
+	intactos := []string{
+		"docs/plans/2026-11-16_PLAN_MEGA_PLANO_PRODUCAO.md",
+		"docs/dags/2026-11-01_DAG_ALFA.json",
+	}
+	for _, caminho := range intactos {
+		if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(caminho))); err != nil {
+			t.Errorf("arquivo intocado saiu do lugar: %s (%v)", caminho, err)
+		}
+	}
+	if len(res.Protegidos) != 1 || res.Protegidos[0] != "plans/2026-11-16_PLAN_MEGA_PLANO_PRODUCAO.md" {
+		t.Errorf("Protegidos=%v; esperado plans/2026-11-16_PLAN_MEGA_PLANO_PRODUCAO.md", res.Protegidos)
 	}
 }

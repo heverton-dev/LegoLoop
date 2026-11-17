@@ -1,0 +1,1406 @@
+[
+  {
+    "caminho": "intents/2026-10-31_INTENT_BLINDAGEM_WORKSPACE.md",
+    "destino": "archive/quinteto/intents/2026-10-31_INTENT_BLINDAGEM_WORKSPACE.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-10-31_INTENT_CANONIZACAO_SO.md",
+    "destino": "archive/quinteto/intents/2026-10-31_INTENT_CANONIZACAO_SO.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-10-31_INTENT_CANONIZE_SKILL_UI.md",
+    "destino": "archive/quinteto/intents/2026-10-31_INTENT_CANONIZE_SKILL_UI.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-10-31_INTENT_EP16_SIDEBAR_TREEVIEW.md",
+    "destino": "archive/quinteto/intents/2026-10-31_INTENT_EP16_SIDEBAR_TREEVIEW.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-01_INTENT_AUDITORIA_PROFUNDA_LEGOLOOP.md",
+    "destino": "archive/quinteto/intents/2026-11-01_INTENT_AUDITORIA_PROFUNDA_LEGOLOOP.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-01_INTENT_BLINDAGEM_ROTA_SKILL.md",
+    "destino": "archive/quinteto/intents/2026-11-01_INTENT_BLINDAGEM_ROTA_SKILL.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-01_INTENT_EP17_TRIGGERS_CATALOG_CANVAS.md",
+    "destino": "archive/quinteto/intents/2026-11-01_INTENT_EP17_TRIGGERS_CATALOG_CANVAS.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-01_INTENT_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md",
+    "destino": "archive/quinteto/intents/2026-11-01_INTENT_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-01_INTENT_HARNESS_ENGINEERING_GO.md",
+    "destino": "archive/quinteto/intents/2026-11-01_INTENT_HARNESS_ENGINEERING_GO.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-01_INTENT_ONTOLOGIA_ASSETS_SO_E_MEGA_PIPELINE_TEMPLATES.md",
+    "destino": "archive/quinteto/intents/2026-11-01_INTENT_ONTOLOGIA_ASSETS_SO_E_MEGA_PIPELINE_TEMPLATES.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-01_INTENT_REFATORACAO_MODAL_ITEM.md",
+    "destino": "archive/quinteto/intents/2026-11-01_INTENT_REFATORACAO_MODAL_ITEM.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-01_INTENT_REFATORACAO_SKILL_MEGA_PIPELINE.md",
+    "destino": "archive/quinteto/intents/2026-11-01_INTENT_REFATORACAO_SKILL_MEGA_PIPELINE.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-01_INTENT_SUPER_BOARD_INTEGRATION.md",
+    "destino": "archive/quinteto/intents/2026-11-01_INTENT_SUPER_BOARD_INTEGRATION.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-02_INTENT_AUDITORIA_EXAUSTIVA_LEGOLOOP.md",
+    "destino": "archive/quinteto/intents/2026-11-02_INTENT_AUDITORIA_EXAUSTIVA_LEGOLOOP.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-02_INTENT_CORRECAO_DEFEITOS_LEGOLOOP.md",
+    "destino": "archive/quinteto/intents/2026-11-02_INTENT_CORRECAO_DEFEITOS_LEGOLOOP.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-02_INTENT_ESTEIRA_CORRECOES_LEGOLOOP.md",
+    "destino": "archive/quinteto/intents/2026-11-02_INTENT_ESTEIRA_CORRECOES_LEGOLOOP.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-02_INTENT_ESTUDIO_CANVAS_FRONTEND.md",
+    "destino": "archive/quinteto/intents/2026-11-02_INTENT_ESTUDIO_CANVAS_FRONTEND.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-02_INTENT_PECAS_HIBRIDAS_E_GOVERNANCA_SLOTS.md",
+    "destino": "archive/quinteto/intents/2026-11-02_INTENT_PECAS_HIBRIDAS_E_GOVERNANCA_SLOTS.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-03_INTENT_LEGOLOOP_FABRICAR.md",
+    "destino": "archive/quinteto/intents/2026-11-03_INTENT_LEGOLOOP_FABRICAR.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-04_INTENT_FABRICAR_V2.md",
+    "destino": "archive/quinteto/intents/2026-11-04_INTENT_FABRICAR_V2.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-05_INTENT_STEPT_SWITCH.md",
+    "destino": "archive/quinteto/intents/2026-11-05_INTENT_STEPT_SWITCH.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-06_INTENT_GOVERNANCA_LAZY_UNIVERSAL.md",
+    "destino": "archive/quinteto/intents/2026-11-06_INTENT_GOVERNANCA_LAZY_UNIVERSAL.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-06_INTENT_LEGOPRESS_PIPELINE.md",
+    "destino": "archive/quinteto/intents/2026-11-06_INTENT_LEGOPRESS_PIPELINE.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-07_INTENT_FECHAR_CANONICO.md",
+    "destino": "archive/quinteto/intents/2026-11-07_INTENT_FECHAR_CANONICO.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-07_INTENT_HIERARQUIA_INICIATIVA.md",
+    "destino": "archive/quinteto/intents/2026-11-07_INTENT_HIERARQUIA_INICIATIVA.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+    "destino": "archive/quinteto/intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-07_INTENT_ROUTE_V2_GOVERNANCE.md",
+    "destino": "archive/quinteto/intents/2026-11-07_INTENT_ROUTE_V2_GOVERNANCE.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-07_INTENT_VIDEO_MOTION_PIPELINE.md",
+    "destino": "archive/quinteto/intents/2026-11-07_INTENT_VIDEO_MOTION_PIPELINE.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-08_INTENT_VIDEO_001.md",
+    "destino": "archive/quinteto/intents/2026-11-08_INTENT_VIDEO_001.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-08_INTENT_VIDEO_BUNDLE.md",
+    "destino": "archive/quinteto/intents/2026-11-08_INTENT_VIDEO_BUNDLE.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-09_INTENT_QUINTETO_GOVERNANCA_ISO.md",
+    "destino": "archive/quinteto/intents/2026-11-09_INTENT_QUINTETO_GOVERNANCA_ISO.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md",
+    "destino": "archive/quinteto/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-10_INTENT_NORMALIZACAO_TAXONOMICA_LEI15.md",
+    "destino": "archive/quinteto/intents/2026-11-10_INTENT_NORMALIZACAO_TAXONOMICA_LEI15.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-10_INTENT_NOVO_VERBO_E_PROCESSO_DISSECAR.md",
+    "destino": "archive/quinteto/intents/2026-11-10_INTENT_NOVO_VERBO_E_PROCESSO_DISSECAR.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-12_INTENT_ROTEAMENTO_HONESTO.md",
+    "destino": "archive/quinteto/intents/2026-11-12_INTENT_ROTEAMENTO_HONESTO.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-12_INTENT_SEXTETO_E_TEMPLATES.md",
+    "destino": "archive/quinteto/intents/2026-11-12_INTENT_SEXTETO_E_TEMPLATES.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-13_INTENT_COMBOS_HONESTOS_9ROUTER.md",
+    "destino": "archive/quinteto/intents/2026-11-13_INTENT_COMBOS_HONESTOS_9ROUTER.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-13_INTENT_MIGRACAO_LEGADOS.md",
+    "destino": "archive/quinteto/intents/2026-11-13_INTENT_MIGRACAO_LEGADOS.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-13_INTENT_STUDIO_PAPEIS_E_COMBOS.md",
+    "destino": "archive/quinteto/intents/2026-11-13_INTENT_STUDIO_PAPEIS_E_COMBOS.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-14_INTENT_AUDITORIA_E2E_SWARM.md",
+    "destino": "archive/quinteto/intents/2026-11-14_INTENT_AUDITORIA_E2E_SWARM.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-14_INTENT_AUDITORIA_PROFUNDA_SWARM.md",
+    "destino": "archive/quinteto/intents/2026-11-14_INTENT_AUDITORIA_PROFUNDA_SWARM.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-14_INTENT_AUDITORIA_TOTAL.md",
+    "destino": "archive/quinteto/intents/2026-11-14_INTENT_AUDITORIA_TOTAL.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-14_INTENT_CORRECAO_AUDITORIA_SWARM.md",
+    "destino": "archive/quinteto/intents/2026-11-14_INTENT_CORRECAO_AUDITORIA_SWARM.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-14_INTENT_HOMOLOGACAO_ECOSISTEMA.md",
+    "destino": "archive/quinteto/intents/2026-11-14_INTENT_HOMOLOGACAO_ECOSISTEMA.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-14_INTENT_SWARM.md.legoloop-bak",
+    "destino": "archive/quinteto/intents/2026-11-14_INTENT_SWARM.md.legoloop-bak",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-14_INTENT_TRIAGEM_UNIVERSAL_E_ARTEFATOS.md",
+    "destino": "archive/quinteto/intents/2026-11-14_INTENT_TRIAGEM_UNIVERSAL_E_ARTEFATOS.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-15_INTENT_CORRIGIR_OS_ACHADOS_DO_QA_WEB_.md",
+    "destino": "archive/quinteto/intents/2026-11-15_INTENT_CORRIGIR_OS_ACHADOS_DO_QA_WEB_.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-15_INTENT_PROCESSO_QUE_RECEBE_A_URL_DE_U.md",
+    "destino": "archive/quinteto/intents/2026-11-15_INTENT_PROCESSO_QUE_RECEBE_A_URL_DE_U.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-15_INTENT_VIDEO_REA_RELATORIO.md.legoloop-bak",
+    "destino": "archive/quinteto/intents/2026-11-15_INTENT_VIDEO_REA_RELATORIO.md.legoloop-bak",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-15_INTENT_VIDEO_REA_TRANSCREVER.md.legoloop-bak",
+    "destino": "archive/quinteto/intents/2026-11-15_INTENT_VIDEO_REA_TRANSCREVER.md.legoloop-bak",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-16_INTENT_FABRICAR_AGNOSTICO.md",
+    "destino": "archive/quinteto/intents/2026-11-16_INTENT_FABRICAR_AGNOSTICO.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-16_INTENT_FABRICAR_A_PECA_CANONICA_LEGOL.md",
+    "destino": "archive/quinteto/intents/2026-11-16_INTENT_FABRICAR_A_PECA_CANONICA_LEGOL.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-16_INTENT_FORJAR.md",
+    "destino": "archive/quinteto/intents/2026-11-16_INTENT_FORJAR.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/2026-11-16_INTENT_MEMORIA_EXECUCAO_ANTICORPOS.md",
+    "destino": "archive/quinteto/intents/2026-11-16_INTENT_MEMORIA_EXECUCAO_ANTICORPOS.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/ESPELHO_CANONICO.md",
+    "destino": "archive/quinteto/intents/ESPELHO_CANONICO.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/INTENT.md",
+    "destino": "archive/quinteto/intents/INTENT.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "intents/INTENT_APROVADA.md",
+    "destino": "archive/quinteto/intents/INTENT_APROVADA.md",
+    "tipo": "intents",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-30_SPEC_LOOPING_ENGINEERING.md",
+    "destino": "archive/quinteto/specs/2026-10-30_SPEC_LOOPING_ENGINEERING.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-30_SPEC_ORCHESTRIX_PROVIDER_AWARE.md",
+    "destino": "archive/quinteto/specs/2026-10-30_SPEC_ORCHESTRIX_PROVIDER_AWARE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-30_SPEC_ORCHESTRIX_UNIVERSAL_MODELS.md",
+    "destino": "archive/quinteto/specs/2026-10-30_SPEC_ORCHESTRIX_UNIVERSAL_MODELS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-30_SPEC_ROTEAMENTO_CANONIZACAO.md",
+    "destino": "archive/quinteto/specs/2026-10-30_SPEC_ROTEAMENTO_CANONIZACAO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-30_SPEC_STUDIO_GRAPH_CANONIZACAO.md",
+    "destino": "archive/quinteto/specs/2026-10-30_SPEC_STUDIO_GRAPH_CANONIZACAO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-31_SPEC_BLINDAGEM_WORKSPACE.md",
+    "destino": "archive/quinteto/specs/2026-10-31_SPEC_BLINDAGEM_WORKSPACE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-31_SPEC_CANONIZACAO_SO.md",
+    "destino": "archive/quinteto/specs/2026-10-31_SPEC_CANONIZACAO_SO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-31_SPEC_CANONIZE_SKILL_UI.md",
+    "destino": "archive/quinteto/specs/2026-10-31_SPEC_CANONIZE_SKILL_UI.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-31_SPEC_EP14_CANVAS_N8N_INVENTARIO.md",
+    "destino": "archive/quinteto/specs/2026-10-31_SPEC_EP14_CANVAS_N8N_INVENTARIO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-31_SPEC_EP15_CANVAS_N8N_ENTERPRISE.md",
+    "destino": "archive/quinteto/specs/2026-10-31_SPEC_EP15_CANVAS_N8N_ENTERPRISE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-31_SPEC_EP16_SIDEBAR_TREEVIEW.md",
+    "destino": "archive/quinteto/specs/2026-10-31_SPEC_EP16_SIDEBAR_TREEVIEW.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-31_SPEC_SCANNER_CASCATA_PROFUNDA.md",
+    "destino": "archive/quinteto/specs/2026-10-31_SPEC_SCANNER_CASCATA_PROFUNDA.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-10-31_SPEC_STUDIO_V3.md",
+    "destino": "archive/quinteto/specs/2026-10-31_SPEC_STUDIO_V3.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_AUDITORIA_PROFUNDA_LEGOLOOP.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_AUDITORIA_PROFUNDA_LEGOLOOP.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_BLINDAGEM_ROTA_SKILL.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_BLINDAGEM_ROTA_SKILL.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_EP17_TRIGGERS_CATALOG_CANVAS.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_EP17_TRIGGERS_CATALOG_CANVAS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_EP21_COFRE_CREDENCIAIS_E_PECAS_GIT_DEPLOY.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_EP21_COFRE_CREDENCIAIS_E_PECAS_GIT_DEPLOY.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_EP22_TELEMETRIA_TEMPO_REAL_CANVAS.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_EP22_TELEMETRIA_TEMPO_REAL_CANVAS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_EP23_SUBGRAFOS_DRILLDOWN_BREADCRUMBS.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_EP23_SUBGRAFOS_DRILLDOWN_BREADCRUMBS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_EP24_IMPORTADOR_GITHUB_E_FORK_CANONIZACAO.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_EP24_IMPORTADOR_GITHUB_E_FORK_CANONIZACAO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_HARNESS_ENGINEERING_GO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_MODAL_ITEM_FACTUAL.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_MODAL_ITEM_FACTUAL.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_MODAL_ITEM_WEBCOMPONENT.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_MODAL_ITEM_WEBCOMPONENT.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_REFATORACAO_SKILL_MEGA_PIPELINE.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_REFATORACAO_SKILL_MEGA_PIPELINE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-01_SPEC_SUPER_BOARD_INTEGRATION.md",
+    "destino": "archive/quinteto/specs/2026-11-01_SPEC_SUPER_BOARD_INTEGRATION.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-02_SPEC_AUDITORIA_EXAUSTIVA_LEGOLOOP.md",
+    "destino": "archive/quinteto/specs/2026-11-02_SPEC_AUDITORIA_EXAUSTIVA_LEGOLOOP.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-02_SPEC_CORRECAO_DEFEITOS_LEGOLOOP.md",
+    "destino": "archive/quinteto/specs/2026-11-02_SPEC_CORRECAO_DEFEITOS_LEGOLOOP.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-02_SPEC_ESTEIRA_CORRECOES_LEGOLOOP.md",
+    "destino": "archive/quinteto/specs/2026-11-02_SPEC_ESTEIRA_CORRECOES_LEGOLOOP.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-02_SPEC_ESTUDIO_CANVAS_FRONTEND.md",
+    "destino": "archive/quinteto/specs/2026-11-02_SPEC_ESTUDIO_CANVAS_FRONTEND.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-02_SPEC_PECAS_HIBRIDAS_E_GOVERNANCA_SLOTS.md",
+    "destino": "archive/quinteto/specs/2026-11-02_SPEC_PECAS_HIBRIDAS_E_GOVERNANCA_SLOTS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md",
+    "destino": "archive/quinteto/specs/2026-11-03_SPEC_LEGOLOOP_FABRICAR.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-04_SPEC_FABRICAR_V2.md",
+    "destino": "archive/quinteto/specs/2026-11-04_SPEC_FABRICAR_V2.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-05_SPEC_STEPT_SWITCH.md",
+    "destino": "archive/quinteto/specs/2026-11-05_SPEC_STEPT_SWITCH.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md",
+    "destino": "archive/quinteto/specs/2026-11-06_SPEC_GOVERNANCA_LAZY_UNIVERSAL.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md",
+    "destino": "archive/quinteto/specs/2026-11-06_SPEC_LEGOPRESS_PIPELINE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-07_SPEC_FECHAR_CANONICO.md",
+    "destino": "archive/quinteto/specs/2026-11-07_SPEC_FECHAR_CANONICO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md",
+    "destino": "archive/quinteto/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+    "destino": "archive/quinteto/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md",
+    "destino": "archive/quinteto/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md",
+    "destino": "archive/quinteto/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-08_SPEC_VIDEO_001.md",
+    "destino": "archive/quinteto/specs/2026-11-08_SPEC_VIDEO_001.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-08_SPEC_VIDEO_BUNDLE.md",
+    "destino": "archive/quinteto/specs/2026-11-08_SPEC_VIDEO_BUNDLE.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-09_SPEC_QUINTETO_GOVERNANCA_ISO.md",
+    "destino": "archive/quinteto/specs/2026-11-09_SPEC_QUINTETO_GOVERNANCA_ISO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md",
+    "destino": "archive/quinteto/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md",
+    "destino": "archive/quinteto/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md",
+    "destino": "archive/quinteto/specs/2026-11-12_SPEC_ROTEAMENTO_HONESTO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+    "destino": "archive/quinteto/specs/2026-11-12_SPEC_SEXTETO_E_TEMPLATES.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md",
+    "destino": "archive/quinteto/specs/2026-11-13_SPEC_COMBOS_HONESTOS_9ROUTER.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md",
+    "destino": "archive/quinteto/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md",
+    "destino": "archive/quinteto/specs/2026-11-13_SPEC_STUDIO_PAPEIS_E_COMBOS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-14_SPEC_AUDITORIA_E2E_SWARM.md",
+    "destino": "archive/quinteto/specs/2026-11-14_SPEC_AUDITORIA_E2E_SWARM.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-14_SPEC_AUDITORIA_PROFUNDA_SWARM.md",
+    "destino": "archive/quinteto/specs/2026-11-14_SPEC_AUDITORIA_PROFUNDA_SWARM.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-14_SPEC_AUDITORIA_TOTAL.md",
+    "destino": "archive/quinteto/specs/2026-11-14_SPEC_AUDITORIA_TOTAL.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-14_SPEC_CORRECAO_AUDITORIA_SWARM.md",
+    "destino": "archive/quinteto/specs/2026-11-14_SPEC_CORRECAO_AUDITORIA_SWARM.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md",
+    "destino": "archive/quinteto/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-14_SPEC_SWARM.md.legoloop-bak",
+    "destino": "archive/quinteto/specs/2026-11-14_SPEC_SWARM.md.legoloop-bak",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-14_SPEC_TRIAGEM_UNIVERSAL_E_ARTEFATOS.md",
+    "destino": "archive/quinteto/specs/2026-11-14_SPEC_TRIAGEM_UNIVERSAL_E_ARTEFATOS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-15_SPEC_CORRECAO_STUDIO_QA_WEB.md",
+    "destino": "archive/quinteto/specs/2026-11-15_SPEC_CORRECAO_STUDIO_QA_WEB.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-15_SPEC_VIDEO_REA_RELATORIO.md.legoloop-bak",
+    "destino": "archive/quinteto/specs/2026-11-15_SPEC_VIDEO_REA_RELATORIO.md.legoloop-bak",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-15_SPEC_VIDEO_REA_TRANSCREVER.md.legoloop-bak",
+    "destino": "archive/quinteto/specs/2026-11-15_SPEC_VIDEO_REA_TRANSCREVER.md.legoloop-bak",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-16_SPEC_FABRICAR_AGNOSTICO.md",
+    "destino": "archive/quinteto/specs/2026-11-16_SPEC_FABRICAR_AGNOSTICO.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md",
+    "destino": "archive/quinteto/specs/2026-11-16_SPEC_MEMORIA_CONCORRENTE_ANTICORPOS.md",
+    "tipo": "specs",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-10-31_PLAN_BLINDAGEM_WORKSPACE.md",
+    "destino": "archive/quinteto/plans/2026-10-31_PLAN_BLINDAGEM_WORKSPACE.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-10-31_PLAN_CANONIZACAO_SO.md",
+    "destino": "archive/quinteto/plans/2026-10-31_PLAN_CANONIZACAO_SO.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-10-31_PLAN_CANONIZE_SKILL_UI.md",
+    "destino": "archive/quinteto/plans/2026-10-31_PLAN_CANONIZE_SKILL_UI.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-10-31_PLAN_EP14_CANVAS_N8N_INVENTARIO.md",
+    "destino": "archive/quinteto/plans/2026-10-31_PLAN_EP14_CANVAS_N8N_INVENTARIO.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-10-31_PLAN_EP15_CANVAS_N8N_ENTERPRISE.md",
+    "destino": "archive/quinteto/plans/2026-10-31_PLAN_EP15_CANVAS_N8N_ENTERPRISE.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-10-31_PLAN_EP16_SIDEBAR_TREEVIEW.md",
+    "destino": "archive/quinteto/plans/2026-10-31_PLAN_EP16_SIDEBAR_TREEVIEW.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-10-31_PLAN_SCANNER_CASCATA.md",
+    "destino": "archive/quinteto/plans/2026-10-31_PLAN_SCANNER_CASCATA.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-10-31_PLAN_V3.md",
+    "destino": "archive/quinteto/plans/2026-10-31_PLAN_V3.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_AUDITORIA_PROFUNDA_LEGOLOOP.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_AUDITORIA_PROFUNDA_LEGOLOOP.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_BLINDAGEM_ROTA_SKILL.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_BLINDAGEM_ROTA_SKILL.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_EP17_TRIGGERS_CATALOG_CANVAS.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_EP17_TRIGGERS_CATALOG_CANVAS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_EP21_COFRE_CREDENCIAIS_E_PECAS_GIT_DEPLOY.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_EP21_COFRE_CREDENCIAIS_E_PECAS_GIT_DEPLOY.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_EP22_TELEMETRIA_TEMPO_REAL_CANVAS.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_EP22_TELEMETRIA_TEMPO_REAL_CANVAS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_EP23_SUBGRAFOS_DRILLDOWN_BREADCRUMBS.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_EP23_SUBGRAFOS_DRILLDOWN_BREADCRUMBS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_EP24_IMPORTADOR_GITHUB_E_FORK_CANONIZACAO.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_EP24_IMPORTADOR_GITHUB_E_FORK_CANONIZACAO.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_FIX_INVENTORY_BOOT_REFERENCE_ERROR.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_HARNESS_ENGINEERING_GO.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_HARNESS_ENGINEERING_GO.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_MODAL_ITEM_FACTUAL.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_MODAL_ITEM_FACTUAL.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_MODAL_ITEM_WEBCOMPONENT.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_MODAL_ITEM_WEBCOMPONENT.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_REFATORACAO_SKILL_MEGA_PIPELINE.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_REFATORACAO_SKILL_MEGA_PIPELINE.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-01_PLAN_SUPER_BOARD_INTEGRATION.md",
+    "destino": "archive/quinteto/plans/2026-11-01_PLAN_SUPER_BOARD_INTEGRATION.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-02_PLAN_AUDITORIA_EXAUSTIVA_LEGOLOOP.md",
+    "destino": "archive/quinteto/plans/2026-11-02_PLAN_AUDITORIA_EXAUSTIVA_LEGOLOOP.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-02_PLAN_CORRECAO_DEFEITOS_LEGOLOOP.md",
+    "destino": "archive/quinteto/plans/2026-11-02_PLAN_CORRECAO_DEFEITOS_LEGOLOOP.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-02_PLAN_ESTEIRA_CORRECOES_LEGOLOOP.md",
+    "destino": "archive/quinteto/plans/2026-11-02_PLAN_ESTEIRA_CORRECOES_LEGOLOOP.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-02_PLAN_ESTUDIO_CANVAS_FRONTEND.md",
+    "destino": "archive/quinteto/plans/2026-11-02_PLAN_ESTUDIO_CANVAS_FRONTEND.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-02_PLAN_PECAS_HIBRIDAS_E_GOVERNANCA_SLOTS.md",
+    "destino": "archive/quinteto/plans/2026-11-02_PLAN_PECAS_HIBRIDAS_E_GOVERNANCA_SLOTS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-03_PLAN_LEGOLOOP_FABRICAR.md",
+    "destino": "archive/quinteto/plans/2026-11-03_PLAN_LEGOLOOP_FABRICAR.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-04_PLAN_FABRICAR_V2.md",
+    "destino": "archive/quinteto/plans/2026-11-04_PLAN_FABRICAR_V2.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-05_PLAN_STEPT_SWITCH.md",
+    "destino": "archive/quinteto/plans/2026-11-05_PLAN_STEPT_SWITCH.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-06_PLAN_GOVERNANCA_LAZY_UNIVERSAL.md",
+    "destino": "archive/quinteto/plans/2026-11-06_PLAN_GOVERNANCA_LAZY_UNIVERSAL.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-06_PLAN_LEGOPRESS_PIPELINE.md",
+    "destino": "archive/quinteto/plans/2026-11-06_PLAN_LEGOPRESS_PIPELINE.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-07_PLAN_FECHAR_CANONICO.md",
+    "destino": "archive/quinteto/plans/2026-11-07_PLAN_FECHAR_CANONICO.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-07_PLAN_HIERARQUIA_INICIATIVA.md",
+    "destino": "archive/quinteto/plans/2026-11-07_PLAN_HIERARQUIA_INICIATIVA.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+    "destino": "archive/quinteto/plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-07_PLAN_ROUTE_V2_GOVERNANCE.md",
+    "destino": "archive/quinteto/plans/2026-11-07_PLAN_ROUTE_V2_GOVERNANCE.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-07_PLAN_VIDEO_MOTION_PIPELINE.md",
+    "destino": "archive/quinteto/plans/2026-11-07_PLAN_VIDEO_MOTION_PIPELINE.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-08_PLAN_VIDEO_001.md",
+    "destino": "archive/quinteto/plans/2026-11-08_PLAN_VIDEO_001.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-08_PLAN_VIDEO_BUNDLE.md",
+    "destino": "archive/quinteto/plans/2026-11-08_PLAN_VIDEO_BUNDLE.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-09_PLAN_QUINTETO_GOVERNANCA_ISO.md",
+    "destino": "archive/quinteto/plans/2026-11-09_PLAN_QUINTETO_GOVERNANCA_ISO.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md",
+    "destino": "archive/quinteto/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-10_PLAN_NORMALIZACAO_TAXONOMICA_LEI15.md",
+    "destino": "archive/quinteto/plans/2026-11-10_PLAN_NORMALIZACAO_TAXONOMICA_LEI15.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-10_PLAN_ORCHESTRIX_UNIT_TASK.md",
+    "destino": "archive/quinteto/plans/2026-11-10_PLAN_ORCHESTRIX_UNIT_TASK.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-12_PLAN_ROTEAMENTO_HONESTO.md",
+    "destino": "archive/quinteto/plans/2026-11-12_PLAN_ROTEAMENTO_HONESTO.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-12_PLAN_SEXTETO_E_TEMPLATES.md",
+    "destino": "archive/quinteto/plans/2026-11-12_PLAN_SEXTETO_E_TEMPLATES.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-13_PLAN_COMBOS_HONESTOS_9ROUTER.md",
+    "destino": "archive/quinteto/plans/2026-11-13_PLAN_COMBOS_HONESTOS_9ROUTER.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-13_PLAN_MIGRACAO_LEGADOS.md",
+    "destino": "archive/quinteto/plans/2026-11-13_PLAN_MIGRACAO_LEGADOS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-13_PLAN_STUDIO_PAPEIS_E_COMBOS.md",
+    "destino": "archive/quinteto/plans/2026-11-13_PLAN_STUDIO_PAPEIS_E_COMBOS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-13_RASCUNHO_COMBOS_9ROUTER.md",
+    "destino": "archive/quinteto/plans/2026-11-13_RASCUNHO_COMBOS_9ROUTER.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-14_PLAN_AUDITORIA_E2E_SWARM.md",
+    "destino": "archive/quinteto/plans/2026-11-14_PLAN_AUDITORIA_E2E_SWARM.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-14_PLAN_AUDITORIA_PROFUNDA_SWARM.md",
+    "destino": "archive/quinteto/plans/2026-11-14_PLAN_AUDITORIA_PROFUNDA_SWARM.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-14_PLAN_AUDITORIA_TOTAL.md",
+    "destino": "archive/quinteto/plans/2026-11-14_PLAN_AUDITORIA_TOTAL.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-14_PLAN_CORRECAO_AUDITORIA_SWARM.md",
+    "destino": "archive/quinteto/plans/2026-11-14_PLAN_CORRECAO_AUDITORIA_SWARM.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-14_PLAN_HOMOLOGACAO_ECOSISTEMA.md",
+    "destino": "archive/quinteto/plans/2026-11-14_PLAN_HOMOLOGACAO_ECOSISTEMA.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-14_PLAN_TRIAGEM_UNIVERSAL_E_ARTEFATOS.md",
+    "destino": "archive/quinteto/plans/2026-11-14_PLAN_TRIAGEM_UNIVERSAL_E_ARTEFATOS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-15_PLAN_CORRECAO_STUDIO_QA_WEB.md",
+    "destino": "archive/quinteto/plans/2026-11-15_PLAN_CORRECAO_STUDIO_QA_WEB.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-15_PLAN_VIDEO_REA_RELATORIO.md.legoloop-bak",
+    "destino": "archive/quinteto/plans/2026-11-15_PLAN_VIDEO_REA_RELATORIO.md.legoloop-bak",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-15_PLAN_VIDEO_REA_TRANSCREVER.md.legoloop-bak",
+    "destino": "archive/quinteto/plans/2026-11-15_PLAN_VIDEO_REA_TRANSCREVER.md.legoloop-bak",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-15_SWARM_CORRECAO_STUDIO_QA_WEB.md",
+    "destino": "archive/quinteto/plans/2026-11-15_SWARM_CORRECAO_STUDIO_QA_WEB.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-16_PLAN_FABRICAR_AGNOSTICO.md",
+    "destino": "archive/quinteto/plans/2026-11-16_PLAN_FABRICAR_AGNOSTICO.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "plans/2026-11-16_PLAN_MEMORIA_CONCORRENTE_ANTICORPOS.md",
+    "destino": "archive/quinteto/plans/2026-11-16_PLAN_MEMORIA_CONCORRENTE_ANTICORPOS.md",
+    "tipo": "plans",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-10-31_ROUTE_CANONIZE_SKILL_UI.json",
+    "destino": "archive/quinteto/routes/2026-10-31_ROUTE_CANONIZE_SKILL_UI.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-10-31_ROUTE_V3.json",
+    "destino": "archive/quinteto/routes/2026-10-31_ROUTE_V3.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_AUDITORIA_PROFUNDA_LEGOLOOP.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_AUDITORIA_PROFUNDA_LEGOLOOP.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_CANVAS_RESTORATION_ZERO_EMOJIS_IMPECCABLE.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_EP17_TRIGGERS_CATALOG_CANVAS.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_EP17_TRIGGERS_CATALOG_CANVAS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_EP20_INFERENCIA_ONTOLOGICA_E_HUMAN_GATE.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_EP21_COFRE_CREDENCIAIS_E_PECAS_GIT_DEPLOY.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_EP21_COFRE_CREDENCIAIS_E_PECAS_GIT_DEPLOY.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_EP22_TELEMETRIA_TEMPO_REAL_CANVAS.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_EP22_TELEMETRIA_TEMPO_REAL_CANVAS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_EP23_SUBGRAFOS_DRILLDOWN_BREADCRUMBS.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_EP23_SUBGRAFOS_DRILLDOWN_BREADCRUMBS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_EP24_IMPORTADOR_GITHUB_E_FORK_CANONIZACAO.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_EP24_IMPORTADOR_GITHUB_E_FORK_CANONIZACAO.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_FIX_INVENTORY_BOOT_REFERENCE_ERROR.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_FIX_INVENTORY_BOOT_REFERENCE_ERROR.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_HARNESS_ENGINEERING_GO.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_HARNESS_ENGINEERING_GO.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_MODAL_ITEM_FACTUAL.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_MODAL_ITEM_FACTUAL.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-01_ROUTE_SUPER_BOARD_INTEGRATION.json",
+    "destino": "archive/quinteto/routes/2026-11-01_ROUTE_SUPER_BOARD_INTEGRATION.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-02_ROUTE_AUDITORIA_EXAUSTIVA_LEGOLOOP.json",
+    "destino": "archive/quinteto/routes/2026-11-02_ROUTE_AUDITORIA_EXAUSTIVA_LEGOLOOP.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-02_ROUTE_CORRECAO_DEFEITOS_LEGOLOOP.json",
+    "destino": "archive/quinteto/routes/2026-11-02_ROUTE_CORRECAO_DEFEITOS_LEGOLOOP.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-02_ROUTE_ESTEIRA_CORRECOES_LEGOLOOP.json",
+    "destino": "archive/quinteto/routes/2026-11-02_ROUTE_ESTEIRA_CORRECOES_LEGOLOOP.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-02_ROUTE_ESTUDIO_CANVAS_FRONTEND.json",
+    "destino": "archive/quinteto/routes/2026-11-02_ROUTE_ESTUDIO_CANVAS_FRONTEND.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-02_ROUTE_PECAS_HIBRIDAS_E_GOVERNANCA_SLOTS.json",
+    "destino": "archive/quinteto/routes/2026-11-02_ROUTE_PECAS_HIBRIDAS_E_GOVERNANCA_SLOTS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-03_ROUTE_LEGOLOOP_FABRICAR.json",
+    "destino": "archive/quinteto/routes/2026-11-03_ROUTE_LEGOLOOP_FABRICAR.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-04_ROUTE_FABRICAR_V2.json",
+    "destino": "archive/quinteto/routes/2026-11-04_ROUTE_FABRICAR_V2.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-05_ROUTE_STEPT_SWITCH.json",
+    "destino": "archive/quinteto/routes/2026-11-05_ROUTE_STEPT_SWITCH.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-06_ROUTE_GOVERNANCA_LAZY_UNIVERSAL.json",
+    "destino": "archive/quinteto/routes/2026-11-06_ROUTE_GOVERNANCA_LAZY_UNIVERSAL.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-06_ROUTE_LEGOPRESS_PIPELINE.json",
+    "destino": "archive/quinteto/routes/2026-11-06_ROUTE_LEGOPRESS_PIPELINE.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-07_ROUTE_FECHAR_CANONICO.json",
+    "destino": "archive/quinteto/routes/2026-11-07_ROUTE_FECHAR_CANONICO.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-07_ROUTE_HIERARQUIA_INICIATIVA.json",
+    "destino": "archive/quinteto/routes/2026-11-07_ROUTE_HIERARQUIA_INICIATIVA.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-07_ROUTE_NORMALIZACAO_TAXONOMIA_SKILLS.json",
+    "destino": "archive/quinteto/routes/2026-11-07_ROUTE_NORMALIZACAO_TAXONOMIA_SKILLS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-07_ROUTE_ROUTE_V2_GOVERNANCE.json",
+    "destino": "archive/quinteto/routes/2026-11-07_ROUTE_ROUTE_V2_GOVERNANCE.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-07_ROUTE_VIDEO_MOTION_PIPELINE.json",
+    "destino": "archive/quinteto/routes/2026-11-07_ROUTE_VIDEO_MOTION_PIPELINE.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-08_ROUTE_VIDEO_001.json",
+    "destino": "archive/quinteto/routes/2026-11-08_ROUTE_VIDEO_001.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-08_ROUTE_VIDEO_BUNDLE.json",
+    "destino": "archive/quinteto/routes/2026-11-08_ROUTE_VIDEO_BUNDLE.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-09_ROUTE_QUINTETO_GOVERNANCA_ISO.json",
+    "destino": "archive/quinteto/routes/2026-11-09_ROUTE_QUINTETO_GOVERNANCA_ISO.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-10_ROUTE_MATRIZ_PAPEIS.json",
+    "destino": "archive/quinteto/routes/2026-11-10_ROUTE_MATRIZ_PAPEIS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-10_ROUTE_NORMALIZACAO_TAXONOMICA_LEI15.json",
+    "destino": "archive/quinteto/routes/2026-11-10_ROUTE_NORMALIZACAO_TAXONOMICA_LEI15.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-12_ROUTE_ROTEAMENTO_HONESTO.json",
+    "destino": "archive/quinteto/routes/2026-11-12_ROUTE_ROTEAMENTO_HONESTO.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-12_ROUTE_SEXTETO_E_TEMPLATES.json",
+    "destino": "archive/quinteto/routes/2026-11-12_ROUTE_SEXTETO_E_TEMPLATES.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-13_ROUTE_COMBOS_HONESTOS_9ROUTER.json",
+    "destino": "archive/quinteto/routes/2026-11-13_ROUTE_COMBOS_HONESTOS_9ROUTER.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-13_ROUTE_MIGRACAO_LEGADOS.json",
+    "destino": "archive/quinteto/routes/2026-11-13_ROUTE_MIGRACAO_LEGADOS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-13_ROUTE_STUDIO_PAPEIS_E_COMBOS.json",
+    "destino": "archive/quinteto/routes/2026-11-13_ROUTE_STUDIO_PAPEIS_E_COMBOS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-14_ROUTE_AUDITORIA_E2E_SWARM.json",
+    "destino": "archive/quinteto/routes/2026-11-14_ROUTE_AUDITORIA_E2E_SWARM.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-14_ROUTE_AUDITORIA_PROFUNDA_SWARM.json",
+    "destino": "archive/quinteto/routes/2026-11-14_ROUTE_AUDITORIA_PROFUNDA_SWARM.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-14_ROUTE_AUDITORIA_TOTAL.json",
+    "destino": "archive/quinteto/routes/2026-11-14_ROUTE_AUDITORIA_TOTAL.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-14_ROUTE_CORRECAO_AUDITORIA_SWARM.json",
+    "destino": "archive/quinteto/routes/2026-11-14_ROUTE_CORRECAO_AUDITORIA_SWARM.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-14_ROUTE_HOMOLOGACAO_ECOSISTEMA.json",
+    "destino": "archive/quinteto/routes/2026-11-14_ROUTE_HOMOLOGACAO_ECOSISTEMA.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-14_ROUTE_TRIAGEM_UNIVERSAL_E_ARTEFATOS.json",
+    "destino": "archive/quinteto/routes/2026-11-14_ROUTE_TRIAGEM_UNIVERSAL_E_ARTEFATOS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-15_ROUTE_CORRECAO_STUDIO_QA_WEB.json",
+    "destino": "archive/quinteto/routes/2026-11-15_ROUTE_CORRECAO_STUDIO_QA_WEB.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-15_ROUTE_VIDEO_REA_RELATORIO.json.legoloop-bak",
+    "destino": "archive/quinteto/routes/2026-11-15_ROUTE_VIDEO_REA_RELATORIO.json.legoloop-bak",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-15_ROUTE_VIDEO_REA_TRANSCREVER.json.legoloop-bak",
+    "destino": "archive/quinteto/routes/2026-11-15_ROUTE_VIDEO_REA_TRANSCREVER.json.legoloop-bak",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-16_ROUTE_FABRICAR_AGNOSTICO.json",
+    "destino": "archive/quinteto/routes/2026-11-16_ROUTE_FABRICAR_AGNOSTICO.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  },
+  {
+    "caminho": "routes/2026-11-16_ROUTE_MEMORIA_CONCORRENTE_ANTICORPOS.json",
+    "destino": "archive/quinteto/routes/2026-11-16_ROUTE_MEMORIA_CONCORRENTE_ANTICORPOS.json",
+    "tipo": "routes",
+    "motivo": "sem_dono"
+  }
+]
