@@ -540,3 +540,17 @@ Ao concluir todos os épicos, executar nesta ordem (cada comando é um argv, sem
 🛑 **STOP-GATE 03 DE AUDITORIA HUMANA:**
 *O plano acima mapeia 100% dos requisitos da SPEC e possui isolamento e gates mecânicos claros?*
 *Aprovado este documento e gerado o `docs/routes/2026-11-16_ROUTE_MEGA_PLANO_PRODUCAO.json`, o BUILD pode ser iniciado.*
+
+---
+
+## Integração da Demanda Paralela (resgate 2026-11-16 21:38 BRT)
+
+Outro agente executava a demanda `Memória Concorrente + Anticorpos` (PLAN/ROUTE/DAG/SPEC `2026-11-16_*_MEMORIA_CONCORRENTE_ANTICORPOS`), com sobreposição direta aos Épicos 03 e 04 deste plano, mais um Épico 03 próprio (Fechamento Canônico Lei 11).
+O processo paralelo foi interrompido pelo usuário e todo o trabalho foi resgatado.
+
+- Resgate commitado: `3153922` (13 arquivos, 604 inserções) — `internal/triagem` (lock por arquivo + pidvivo), `internal/brain` (AC-E02.5/E02.6), `internal/orchestrix` (injeção no caminho real), `internal/fechar` (quarteto Lei 11), `internal/runner` (token_budget).
+- Prova de sanidade: `go test -count=1` verde em triagem, brain, runner, fechar, orchestrix.
+- Regra de absorção: os Épicos 03 e 04 deste plano passam a ser executados pelo plano paralelo (37 tickets), auditados ticket a ticket pelo AUDITOR autônomo deste mega plano. O Épico 03 paralelo (Fechamento Canônico Lei 11) entra como Épico 11 deste plano (escopo novo, nada fica fora).
+- TICK-INT-01 (novo): mapear os 37 tickets do plano paralelo nos ACs E03.x/E04.x deste PLAN; declarar coberto/pendente; implementar o que faltar.
+- TICK-INT-02 (novo): completar o alcance parcial (DAG paralelo declara `ALCANCE 1/2`), incluindo os templates `triagem.json`, `memoria_execucao.json` e `anticorpos.json` se não forem criados lá.
+- Nenhum trabalho paralelo foi descartado; nenhuma duplicidade de ticket será executada duas vezes.

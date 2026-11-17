@@ -17,9 +17,30 @@ func main() {
 	switch os.Args[1] {
 	case "gerar":
 		gerar()
+	case "migrar":
+		migrar()
 	default:
 		fmt.Fprintln(os.Stderr, "comando desconhecido:", os.Args[1])
 		os.Exit(2)
+	}
+}
+
+// migrar move a documentação de construção de docs/ para docs/archive/.
+func migrar() {
+	raiz, err := raizRepo()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "raiz do repositório:", err)
+		os.Exit(2)
+	}
+	res, err := inventario.Migrar(raiz)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "migração:", err)
+		os.Exit(2)
+	}
+	fmt.Printf("migração concluída: %d arquivos movidos, %d relatórios globais protegidos\n",
+		len(res.Movidos), len(res.Protegidos))
+	for _, protegido := range res.Protegidos {
+		fmt.Println("protegido:", protegido)
 	}
 }
 
