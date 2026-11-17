@@ -13,7 +13,6 @@ import (
 	"legoloop/internal/combo"
 	"legoloop/internal/dag"
 	"legoloop/internal/graph"
-	"legoloop/internal/paths"
 	"legoloop/internal/taxonomy"
 )
 
@@ -232,9 +231,9 @@ type parRouteDag struct {
 	dag   string
 }
 
-// rotaDeFatia aponta a rota migrada para a fatia do processo (AC-E05.2).
-func rotaDeFatia(slug, nome string) string {
-	return filepath.Join("..", "..", paths.DirProcessos, slug, "docs", "routes", nome)
+// rotaMigrada aponta a rota migrada para docs/routes/ na raiz (AC-E05.2).
+func rotaMigrada(nome string) string {
+	return filepath.Join("..", "..", "docs", "routes", nome)
 }
 
 // rotaDeArquivoMorto aponta a rota órfã arquivada com registro (AC-E05.4).
@@ -244,10 +243,10 @@ func rotaDeArquivoMorto(nome string) string {
 
 func testQuatroParesAlinhados(t *testing.T) {
 	pares := []parRouteDag{
-		{rotaDeFatia("legoloop-dissecar", "2026-11-10_ROUTE_DISSECAR.json"), "../../docs/dags/2026-11-10_DAG_DISSECAR.json"},
+		{rotaMigrada("2026-11-10_ROUTE_DISSECAR.json"), "../../docs/dags/2026-11-10_DAG_DISSECAR.json"},
 		{rotaDeArquivoMorto("2026-11-13_ROUTE_STUDIO_PAPEIS_E_COMBOS.json"), "../../docs/dags/2026-11-13_DAG_STUDIO_PAPEIS_E_COMBOS.json"},
-		{rotaDeFatia("legoloop-design-ui", "2026-11-14_ROUTE_DESIGN_UI.json"), "../../docs/dags/2026-11-14_DAG_DESIGN_UI.json"},
-		{rotaDeFatia("legoloop-swarm", "2026-11-14_ROUTE_SWARM.json"), "../../docs/dags/2026-11-14_DAG_SWARM.json"},
+		{rotaMigrada("2026-11-14_ROUTE_DESIGN_UI.json"), "../../docs/dags/2026-11-14_DAG_DESIGN_UI.json"},
+		{rotaMigrada("2026-11-14_ROUTE_SWARM.json"), "../../docs/dags/2026-11-14_DAG_SWARM.json"},
 	}
 	for _, p := range pares {
 		validarParRouteDag(t, p)
