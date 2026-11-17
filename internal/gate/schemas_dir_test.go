@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/gate"
 )
 
@@ -23,7 +24,7 @@ func TestSchemaV2AceitaDialetos(t *testing.T) {
 	v1 := lerSchemaV2(t, "dag.v1.json")
 	v2 := lerSchemaV2(t, "dag.v2.json")
 
-	dags, err := filepath.Glob(filepath.Join("..", "..", "lo"+"ops", "*", "pipe"+"line.dag.json"))
+	dags, err := filepath.Glob(filepath.Join("..", "..", caminhos.DirProcessos, "*", "pipe"+"line.dag.json"))
 	if err != nil || len(dags) == 0 {
 		t.Fatalf("nenhum DAG encontrado na pasta de Processos: %v", err)
 	}

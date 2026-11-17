@@ -6,7 +6,7 @@
 > **Autor:** Ecossistema LegoLoop (Fusão Addy Osmani + Matt Pocock + AIDD-Spec)  
 > **Iniciativa:** Canonização Universal do Ciclo de Vida do LegoLoop  
 > **Referência da Intenção:** [docs/intents/2026-11-07_INTENT_FECHAR_CANONICO.md](../intents/2026-11-07_INTENT_FECHAR_CANONICO.md)  
-> **Alvo Primário:** `internal/fechar`, `internal/cli/fechar.go`, `skills/legoloop-fechar`, `loops/fechar`  
+> **Alvo Primário:** `internal/fechar`, `internal/cli/fechar.go`, `skills/legoloop-fechar`, `processos/fechar`  
 > **Consome:** INTENT aprovada · **Produz:** PLAN e ROUTE  
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 
@@ -17,7 +17,7 @@
 > [!IMPORTANT]
 > A IA lista abaixo todas as premissas técnicas adotadas para evitar decisões silenciosas:
 1. **Runtime Go:** Biblioteca padrão Go pura, conforme `go.mod`, zero dependências externas novas.
-2. **Armazenamento e Idempotência:** Arquivos locais do sistema operacional em diretórios canônicos (`docs/manuals/`, `docs/books/`, `skills/`, `loops/`). A execução múltipla do comando para o mesmo processo deve ser segura e idempotente.
+2. **Armazenamento e Idempotência:** Arquivos locais do sistema operacional em diretórios canônicos (`docs/manuals/`, `docs/books/`, `skills/`, `processos/`). A execução múltipla do comando para o mesmo processo deve ser segura e idempotente.
 3. **Reuso de Motores Existentes:**
    - O gerador/auditor de livros reusa `internal/legopress` (`legopress.NewAuditor()`).
    - A distribuição nos harnesses reusa `internal/cli` (`runInstalarSkills`).
@@ -46,7 +46,7 @@
 
 ## 3. Visão Geral, Arquitetura & Costuras de Teste (Test Seams — Pocock)
 
-O motor `internal/fechar` encapsula o pipeline determinístico em 8 etapas e expõe uma API Go clara, um comando de CLI (`legoloop fechar <slug>`) e um grafo DAG (`loops/fechar/pipeline.dag.json`):
+O motor `internal/fechar` encapsula o pipeline determinístico em 8 etapas e expõe uma API Go clara, um comando de CLI (`legoloop fechar <slug>`) e um grafo DAG (`processos/fechar/pipeline.dag.json`):
 
 ```mermaid
 flowchart TD
@@ -162,10 +162,10 @@ type Result struct {
 ### Épico 03 — Grafo DAG e Acoplamento nos Motores
 
 * [ ] `AC-E03.1`: **Validação do Grafo DAG de Fechamento**
-  * **Dado que:** O arquivo `loops/fechar/pipeline.dag.json` é criado.
-  * **Quando:** `legoloop validate loops/fechar/pipeline.dag.json` é executado.
+  * **Dado que:** O arquivo `processos/fechar/pipeline.dag.json` é criado.
+  * **Quando:** `legoloop validate processos/fechar/pipeline.dag.json` é executado.
   * **Então:** Retorna exit code 0 com camadas acíclicas válidas.
-* [ ] `AC-E03.2`: **Composição no `loops/mega-pipeline.loop.json`**
+* [ ] `AC-E03.2`: **Composição no `processos/mega-pipeline.loop.json`**
   * **Dado que:** O Nó 5 do `mega-pipeline` compõe o sub-loop `fechar`.
   * **Quando:** O validador de processos inspeciona a esteira.
   * **Então:** Mapeia a etapa 5 como dependência direta do fechamento universal.

@@ -22,7 +22,7 @@ import (
 func TestSliceAutocontido(t *testing.T) {
 	r := newRig(t, goodPieces())
 	res := r.run(t)
-	dir := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName)
+	dir := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName)
 	for _, manifesto := range []string{"triagem.json", triagem.ArquivoMemoria, "anticorpos.json", caminhos.ArquivoDAG} {
 		if _, err := os.Stat(filepath.Join(dir, manifesto)); err != nil {
 			t.Errorf("manifesto ausente na fatia: %s (%v)", manifesto, err)
@@ -53,7 +53,7 @@ func TestSliceAutocontido(t *testing.T) {
 func TestNasceCincoPorCinco(t *testing.T) {
 	r := newRig(t, goodPieces())
 	res := r.run(t)
-	dir := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName)
+	dir := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName)
 
 	comSchema := map[string]string{
 		"triagem.json":         "triagem.v1.json",

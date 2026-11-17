@@ -1,4 +1,4 @@
-// Comando adequar5por5 completa o nascimento 5/5 dos Processos já gravados em loops/:
+// Comando adequar5por5 completa o nascimento 5/5 dos Processos já gravados em processos/:
 // complementa só o que falta (anticorpos, triagem, memória de execução e documento do
 // Processo), nunca sobrescreve conteúdo existente e nunca toca em pipeline.dag.json.
 // Cada manifesto novo passa pelo schema oficial e pelo linter taxonômico antes de gravar.
@@ -22,7 +22,7 @@ import (
 var agora = time.Now().UTC()
 
 func main() {
-	raiz := "loops"
+	raiz := "processos"
 	entradas, err := os.ReadDir(raiz)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ler %s: %v\n", raiz, err)

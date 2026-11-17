@@ -48,6 +48,6 @@ func SubprocessoCuradoriaFronteira() []EtapaCuradoriaFronteira {
 		{3, "curadoria_externa", "Curadoria Externa", "Buscar em GitHub/Fontes quando houver lacuna, importar via legoloop import e descartar repositórios temporários após canonizar."},
 		{4, "elevacao_canonizacao", "Elevação e Canonização", "Executar legoloop upgrade --diagnose, corrigir I/O Contracts e Negative Guardrails e canonizar por SHA-256."},
 		{5, "composicao_dag", "Composição do DAG Completo", "Compor nós reais com context_in, context_out, routing e gates determinísticos; nunca 1 nó genérico."},
-		{6, "projecao_padrao", "Projeção Padrão em loops/<slug>/", "Gerar os 4 arquivos padrão (<slug>.loop.json, pipeline.dag.json, triagem.json, memoria_execucao.json), Sexteto em docs/ e validar com legoloop validate."},
+		{6, "projecao_padrao", "Projeção Padrão em processos/<slug>/", "Gerar os 4 arquivos padrão (<slug>.loop.json, pipeline.dag.json, triagem.json, memoria_execucao.json), Sexteto em docs/ e validar com legoloop validate."},
 	}
 }

@@ -26,7 +26,7 @@ O **ÉPICO 24** consolida a soberania do Sistema Operacional sobre ativos extern
    * Permite importar diretamente via terminal: `legoloop import <url> [--name <custom-name>]`.
 
 4. **Fork e Versionamento de Loops (Copy-on-Write):**
-   * Endpoint `POST /api/loops/{id}/fork`: clona o sub-loop incrementando a versão ou adicionando sufixo de fork sem tocar no original.
+   * Endpoint `POST /api/processos/{id}/fork`: clona o sub-loop incrementando a versão ou adicionando sufixo de fork sem tocar no original.
    * Proteção de integridade dos templates embutidos (`mega-pipeline`, `tdd-subloop`, etc.).
 
 5. **Interface do Usuário (Zero Emojis):**
@@ -41,5 +41,5 @@ O **ÉPICO 24** consolida a soberania do Sistema Operacional sobre ativos extern
 * [ ] **CA-24.2 (Instalação e Canonização SHA-256):** `ImportSkill` baixa o conteúdo para `~/.gemini/config/skills/<nome>`, calcula o hash SHA-256 dos arquivos e valida o `SKILL.md`.
 * [ ] **CA-24.3 (Endpoint Studio `/api/assets/import`):** A rota HTTP POST processa a requisição, invoca o importador e dispara o refresh do inventário.
 * [ ] **CA-24.4 (Comando CLI `legoloop import`):** A CLI expõe o comando `import` com saída clara em stdout e código de saída 0 em caso de sucesso.
-* [ ] **CA-24.5 (Endpoint de Fork `/api/loops/{id}/fork`):** Duplicação imutável Copy-on-Write cria nova versão com ID derivado sem alterar o original.
+* [ ] **CA-24.5 (Endpoint de Fork `/api/processos/{id}/fork`):** Duplicação imutável Copy-on-Write cria nova versão com ID derivado sem alterar o original.
 * [ ] **CA-24.6 (Zero Regressões & 100% Testes Verdes):** Toda a suíte de testes passa com sucesso (`go test ./...`) e o binário é recompilado.

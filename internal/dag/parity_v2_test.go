@@ -234,7 +234,7 @@ type parRouteDag struct {
 
 // rotaDeFatia aponta a rota migrada para a fatia do processo (AC-E05.2).
 func rotaDeFatia(slug, nome string) string {
-	return filepath.Join("..", "..", paths.DirAntigo, slug, "docs", "routes", nome)
+	return filepath.Join("..", "..", paths.DirProcessos, slug, "docs", "routes", nome)
 }
 
 // rotaDeArquivoMorto aponta a rota órfã arquivada com registro (AC-E05.4).

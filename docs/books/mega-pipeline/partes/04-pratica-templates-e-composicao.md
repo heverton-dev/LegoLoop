@@ -56,7 +56,7 @@ Imagine que você fabricou um processo chamado `subloop-tdd` contendo o ciclo co
 
 ### Como a Composição Funciona nos Bastidores
 
-1. **Validação Estrutural:** O comando verifica se ambos os loops existem no cofre (`~/.aidd/loops/` ou repositório) e confere as assinaturas de entrada e saída.
+1. **Validação Estrutural:** O comando verifica se ambos os loops existem no cofre (`~/.aidd/processos/` ou repositório) e confere as assinaturas de entrada e saída.
 2. **Prevenção Mecânica de Ciclos:** O resolvedor de grafos simula a injeção. Se o loop `A` compuser o loop `B`, e o loop `B` já contiver referências ao loop `A`, o sistema aborta com erro fatal `ErrCiclo`.
 3. **Mapeamento de Artefatos com `sub_artifact`:** Para impedir que o artefato final do sub-loop colida com o artefato do pipeline pai (um bug clássico em geradores de código), o motor grava o campo `sub_artifact`. O sub-loop opera em sua pasta própria (`out/<subloop>/`) e a Orchestrix entrega apenas o resultado final no destino do pai.
 

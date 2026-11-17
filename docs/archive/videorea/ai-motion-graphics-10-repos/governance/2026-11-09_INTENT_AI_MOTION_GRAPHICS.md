@@ -4,7 +4,7 @@
 > **Data:** 2026-11-09  
 > **Autor:** MiMoCode (via legoloop-video-rea)  
 > **Iniciativa:** I-AIMG — AI Motion Graphics  
-> **Alvo:** `loops/ai-motion-graphics/`, `skills/ai-motion-graphics/`, `docs/books/ai-motion-graphics/`  
+> **Alvo:** `processos/ai-motion-graphics/`, `skills/ai-motion-graphics/`, `docs/books/ai-motion-graphics/`  
 > **Sessão:** ses_ffe5e3d81734fffeURpuQcduSB  
 > **Confiança da Entrevista:** 96%  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  

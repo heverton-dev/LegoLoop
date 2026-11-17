@@ -1,0 +1,752 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "2026-11-15_ROUTE_WEB_QA",
+  "version": "1.1.0",
+  "date": "2026-11-15",
+  "session_id": null,
+  "intent_ref": null,
+  "spec_ref": "docs/specs/2026-11-15_SPEC_WEB_QA.md",
+  "plan_ref": "docs/plans/2026-11-15_PLAN_WEB_QA.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "spec": {
+      "path": "docs/specs/2026-11-15_SPEC_WEB_QA.md",
+      "sha256": "9857ca6ed106bb9696db55efc393ac619c445d40ac00352658d9069870f461cb"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-15_PLAN_WEB_QA.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "write_boundary": "strict"
+    },
+    "max_parallel_workers": 4,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "n01_preflight",
+      "epic_id": "E01",
+      "label": "Preflight estrito das 8 ferramentas obrigatórias",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 60,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "sonnet"
+        }
+      },
+      "tooling": {
+        "runtime": "node"
+      },
+      "context_in": [],
+      "context_out": [
+        "scratch/webqa/preflight.json"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/preflight.json",
+        "gate": "exit_code == 0"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-n01_preflight"
+    },
+    {
+      "id": "n02_boot_e_descoberta",
+      "epic_id": "E01",
+      "label": "Boot opcional de app local e descoberta de rotas e viewports",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 120,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n01_preflight"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "sonnet"
+        }
+      },
+      "tooling": {
+        "runtime": "node"
+      },
+      "context_in": [
+        "scratch/webqa/preflight.json"
+      ],
+      "context_out": [
+        "scratch/webqa/routes_manifest.json"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/routes_manifest.json",
+        "gate": "exit_code == 0 && file_exists('scratch/webqa/routes_manifest.json')"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('scratch/webqa/routes_manifest.json')"
+      },
+      "spec_ref": "AC-n02_boot_e_descoberta"
+    },
+    {
+      "id": "n03_links_lychee",
+      "epic_id": "E01",
+      "label": "Auditoria determinística de links e assets com lychee",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n02_boot_e_descoberta"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "sonnet"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "scratch/webqa/routes_manifest.json"
+      ],
+      "context_out": [
+        "scratch/webqa/lychee.json"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/lychee.json",
+        "gate": "exit_code == 0"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-n03_links_lychee"
+    },
+    {
+      "id": "n04_obscura_e_playwright",
+      "epic_id": "E01",
+      "label": "Inspeção de rotas, console e navegação com obscura e playwright",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n02_boot_e_descoberta"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "opus"
+        }
+      },
+      "tooling": {
+        "runtime": "node"
+      },
+      "context_in": [
+        "scratch/webqa/routes_manifest.json"
+      ],
+      "context_out": [
+        "scratch/webqa/playwright_obscura.json"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/playwright_obscura.json",
+        "gate": "exit_code == 0"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-n04_obscura_e_playwright"
+    },
+    {
+      "id": "n05_renderlint_e_design",
+      "epic_id": "E01",
+      "label": "Auditoria de botões mortos, layout e tokens com renderlint e aidd-linter-design",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": "skills/aidd-linter-design",
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n02_boot_e_descoberta"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "opus"
+        }
+      },
+      "tooling": {
+        "runtime": "node"
+      },
+      "context_in": [
+        "scratch/webqa/routes_manifest.json"
+      ],
+      "context_out": [
+        "scratch/webqa/renderlint_design.json"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/renderlint_design.json",
+        "gate": "exit_code == 0 && file_exists('scratch/webqa/renderlint_design.json')"
+      },
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('scratch/webqa/renderlint_design.json')"
+      },
+      "spec_ref": "AC-n05_renderlint_e_design"
+    },
+    {
+      "id": "n06_axe_acessibilidade",
+      "epic_id": "E01",
+      "label": "Auditoria de acessibilidade WCAG (critical e serious) com axe-core",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 240,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n02_boot_e_descoberta"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "sonnet"
+        }
+      },
+      "tooling": {
+        "runtime": "node"
+      },
+      "context_in": [
+        "scratch/webqa/routes_manifest.json"
+      ],
+      "context_out": [
+        "scratch/webqa/axe.json"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/axe.json",
+        "gate": "exit_code == 0"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-n06_axe_acessibilidade"
+    },
+    {
+      "id": "n07_unlighthouse_rotas",
+      "epic_id": "E01",
+      "label": "Varredura Lighthouse multi-rota (nota mínima 90) com unlighthouse",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "parallel",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 600,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n02_boot_e_descoberta"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "sonnet"
+        }
+      },
+      "tooling": {
+        "runtime": "node"
+      },
+      "context_in": [
+        "scratch/webqa/routes_manifest.json"
+      ],
+      "context_out": [
+        "scratch/webqa/unlighthouse.json"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/unlighthouse.json",
+        "gate": "exit_code == 0"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-n07_unlighthouse_rotas"
+    },
+    {
+      "id": "n08_lost_pixel_visual",
+      "epic_id": "E01",
+      "label": "Regressão visual open-source e snapshot inicial com lost-pixel",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 300,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n04_obscura_e_playwright"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "opus"
+        }
+      },
+      "tooling": {
+        "runtime": "node"
+      },
+      "context_in": [
+        "scratch/webqa/playwright_obscura.json"
+      ],
+      "context_out": [
+        "scratch/webqa/lost_pixel.json"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/lost_pixel.json",
+        "gate": "file_exists('scratch/webqa/lost_pixel.json')"
+      },
+      "verification": {
+        "gate": "file_exists('scratch/webqa/lost_pixel.json')"
+      },
+      "spec_ref": "AC-n08_lost_pixel_visual"
+    },
+    {
+      "id": "n09_sg_baseline_visual",
+      "epic_id": "E01",
+      "label": "Stop-Gate humano de promoção da baseline visual (lost-pixel)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 3600,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n08_lost_pixel_visual"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "claude",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "sonnet"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "scratch/webqa/lost_pixel.json"
+      ],
+      "context_out": [
+        "scratch/webqa/baseline_aprovada.json"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/baseline_aprovada.json",
+        "gate": "prompt('Aprovar baseline visual ou confirmar diff do lost-pixel?')"
+      },
+      "verification": {
+        "gate": "prompt('Aprovar baseline visual ou confirmar diff do lost-pixel?')"
+      },
+      "spec_ref": "AC-n09_sg_baseline_visual"
+    },
+    {
+      "id": "n10_relatorio_consolidado",
+      "epic_id": "E01",
+      "label": "Consolidação de relatório JSON + Markdown em docs/qa-web/",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 600,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n03_links_lychee",
+        "n05_renderlint_e_design",
+        "n06_axe_acessibilidade",
+        "n07_unlighthouse_rotas",
+        "n09_sg_baseline_visual"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "opus"
+        }
+      },
+      "tooling": {
+        "runtime": "node"
+      },
+      "context_in": [
+        "scratch/webqa/lychee.json",
+        "scratch/webqa/renderlint_design.json",
+        "scratch/webqa/axe.json",
+        "scratch/webqa/unlighthouse.json",
+        "scratch/webqa/baseline_aprovada.json"
+      ],
+      "context_out": [
+        "docs/qa-web/RELATORIO_QA_WEB.json",
+        "docs/qa-web/RELATORIO_QA_WEB.md"
+      ],
+      "output": {
+        "artifact": "docs/qa-web/RELATORIO_QA_WEB.md",
+        "gate": "file_exists('docs/qa-web/RELATORIO_QA_WEB.md') && file_exists('docs/qa-web/RELATORIO_QA_WEB.json')"
+      },
+      "verification": {
+        "gate": "file_exists('docs/qa-web/RELATORIO_QA_WEB.md') && file_exists('docs/qa-web/RELATORIO_QA_WEB.json')"
+      },
+      "spec_ref": "AC-n10_relatorio_consolidado"
+    },
+    {
+      "id": "n11_entrevista_correcao",
+      "epic_id": "E01",
+      "label": "Entrevista socrática de afunilamento sobre correções do relatório",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": "skills/aidd-grill",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 900,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n10_relatorio_consolidado"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "opus"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "docs/qa-web/RELATORIO_QA_WEB.md",
+        "docs/qa-web/RELATORIO_QA_WEB.json"
+      ],
+      "context_out": [
+        "scratch/webqa/INTERVIEW_CORRECAO.md"
+      ],
+      "output": {
+        "artifact": "scratch/webqa/INTERVIEW_CORRECAO.md",
+        "gate": "file_exists('scratch/webqa/INTERVIEW_CORRECAO.md') && word_count('scratch/webqa/INTERVIEW_CORRECAO.md') >= 50"
+      },
+      "verification": {
+        "gate": "file_exists('scratch/webqa/INTERVIEW_CORRECAO.md') && word_count('scratch/webqa/INTERVIEW_CORRECAO.md') >= 50"
+      },
+      "spec_ref": "AC-n11_entrevista_correcao"
+    },
+    {
+      "id": "n12_governanca_build",
+      "epic_id": "E01",
+      "label": "Geração da cadeia INTERVIEW -> INTENT -> SPEC -> PLAN -> ROUTE -> DAG -> SWARM para BUILD",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": "skills/legoloop-fabricar",
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 900,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 1200
+      },
+      "depends_on": [
+        "n11_entrevista_correcao"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "model": "opus",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "sonnet"
+        }
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "scratch/webqa/INTERVIEW_CORRECAO.md",
+        "docs/qa-web/RELATORIO_QA_WEB.json"
+      ],
+      "context_out": [
+        "docs/qa-web/PACOTE_BUILD_SWARM.json"
+      ],
+      "output": {
+        "artifact": "docs/qa-web/PACOTE_BUILD_SWARM.json",
+        "gate": "file_exists('docs/qa-web/PACOTE_BUILD_SWARM.json')"
+      },
+      "verification": {
+        "gate": "file_exists('docs/qa-web/PACOTE_BUILD_SWARM.json')"
+      },
+      "spec_ref": "AC-n12_governanca_build"
+    }
+  ]
+}

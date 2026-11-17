@@ -348,10 +348,10 @@
         "subagents_allowed": false
       },
       "context_in": [
-        "loops/video-rea/pipeline.dag.json"
+        "processos/video-rea/pipeline.dag.json"
       ],
       "context_out": [
-        "loops/legoloop-video-rea/pipeline.dag.json",
+        "processos/legoloop-video-rea/pipeline.dag.json",
         "docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json"
       ],
       "test_seam": {
@@ -394,12 +394,12 @@
         "subagents_allowed": false
       },
       "context_in": [
-        "loops/"
+        "processos/"
       ],
       "context_out": [
-        "loops/legoloop-video-motion/",
-        "loops/legoloop-video-edition/",
-        "loops/legoloop-fechar/",
+        "processos/legoloop-video-motion/",
+        "processos/legoloop-video-edition/",
+        "processos/legoloop-fechar/",
         "docs/dags/"
       ],
       "test_seam": {

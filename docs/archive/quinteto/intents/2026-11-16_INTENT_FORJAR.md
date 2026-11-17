@@ -66,7 +66,7 @@ covers: [Q1, Q2, Q3, Q4, Q5]
 ## 4. Governança Operacional e Restrições Inegociáveis
 
 * **Gatilho Operacional de Disparo (Trigger):** `manual` (operador dispara `legoloop forjar "<nome>"` para épico).
-* **Nível de Risco & Blast Radius:** `Médio` — gera artefatos em `docs/` e `loops/<slug>/.forjar/`; não toca código de produção até F4.
+* **Nível de Risco & Blast Radius:** `Médio` — gera artefatos em `docs/` e `processos/<slug>/.forjar/`; não toca código de produção até F4.
 * **Política de Privacidade & Orçamento Cognitivo:** `Teto: modelos Flash/Fast` para o debate simulado; disjuntor de turnos por persona e teto de tokens por fase. Dados sensíveis ou segredos envolvidos: nenhum.
 * **Contrato de Evidência Factual (Definition of Done Visual/Real):** `legoloop forjar --dry-run` numa demanda real mostra as 5 fases com seus artefatos em disco e para no SG correto; debate de exemplo termina com transcrição e lista de furações vazia.
 * **Premissas Assumidas (a confirmar no Stop-Gate 01):**
@@ -90,7 +90,7 @@ covers: [Q1, Q2, Q3, Q4, Q5]
 | 1 | Todas as invariantes do Processo passam com zero stubs e zero mocks provisórios. | Suíte verde e busca por stubs vazia | `go test ./...` com exit code 0 |
 | 2 | Cobertura de testes mantida ou expandida (TDD Red-Green). | Teste novo falhando antes do código | `go test -count=1 ./internal/forjar/...` |
 | 3 | As 5 fases do `forjar` geram os artefatos previstos e param no Stop-Gate humano, sem avanço automático. | Dry-run real mostra cada fase e trava | `legoloop forjar "<nome>" --dry-run --json` |
-| 4 | O AgentVerse nasce do INTENT e morre após entregar o artefato, sem resíduo permanente. | `loops/<slug>/.forjar/` efêmero e Quinteto íntegro em `docs/` | inspeção de disco pós-execução |
+| 4 | O AgentVerse nasce do INTENT e morre após entregar o artefato, sem resíduo permanente. | `processos/<slug>/.forjar/` efêmero e Quinteto íntegro em `docs/` | inspeção de disco pós-execução |
 
 ---
 

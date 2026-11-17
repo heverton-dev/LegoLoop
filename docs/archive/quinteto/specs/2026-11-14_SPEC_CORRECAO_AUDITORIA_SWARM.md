@@ -13,7 +13,7 @@ covers: [R1, R2, R3]
 > **Data:** 2026-11-14  
 > **Versão:** 1.0.0  
 > **Autor:** Antigravity (Coordinator)  
-> **Alvo Primário:** `internal/studio/static/`, `loops/`  
+> **Alvo Primário:** `internal/studio/static/`, `processos/`  
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 
 ---

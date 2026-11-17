@@ -8,7 +8,7 @@
 
 ### Lacuna 1 — Gestão concorrente da memória de execução
 
-O arquivo `loops/<slug>/memoria_execucao.json` é o checkpoint vivo do processo (etapa atual, próximo passo, zerado no fechar). Hoje é **arquivo único por processo**, sem chave de sessão e sem lock (`internal/triagem/memoria.go:11-22`). Se 5 agentes executam a mesma etapa simultaneamente, todos gravam o mesmo arquivo: corrida e corrupção de estado.
+O arquivo `processos/<slug>/memoria_execucao.json` é o checkpoint vivo do processo (etapa atual, próximo passo, zerado no fechar). Hoje é **arquivo único por processo**, sem chave de sessão e sem lock (`internal/triagem/memoria.go:11-22`). Se 5 agentes executam a mesma etapa simultaneamente, todos gravam o mesmo arquivo: corrida e corrupção de estado.
 
 **Desejo:** gestão de sessões concorrentes com lock e estado por sessão; zera no fechar sem inflar disco.
 
@@ -51,7 +51,7 @@ O Motor III de anticorpos existe (`internal/brain/antibodies.go:10-67`) com trip
 | M1.2 | Memória concorrente | Lock de arquivo com PID (padrão `internal/board`) em `SalvarMemoria`/`LerMemoria` | teste de corrida (2 sessões simultâneas sem corrupção) + mutação |
 | M1.3 | Memória concorrente | `runner` grava por sessão; `fechar` zera só a sessão dona e limpa arquivo órfão | teste ciclo completo + mutação |
 | M1.4 | Memória concorrente | CLI/Studio expõe sessões ativas do processo | contrato de CLI testado |
-| M2.1 | Anticorpos | `AntibodiesDB` persiste em `loops/<slug>/anticorpos.json` (carrega ao iniciar, grava ao registrar) | teste de persistência entre execuções + mutação |
+| M2.1 | Anticorpos | `AntibodiesDB` persiste em `processos/<slug>/anticorpos.json` (carrega ao iniciar, grava ao registrar) | teste de persistência entre execuções + mutação |
 | M2.2 | Anticorpos | Vacinação de reincidência: `Record` deduplica por `errSig`; reincidência aplica antídoto automaticamente | teste: mesmo erro 2× ⇒ antídoto aplicado, erro não repete + mutação |
 | M2.3 | Anticorpos | Injeção preventiva no início da execução (`InjectPreventiveContext` vira passo do processo) | teste: contexto injetado antes do nó 1 + mutação |
 | M2.4 | Anticorpos | Gate anti-reincidência em runtime (erro conhecido ⇒ antídoto ou bloqueio com saída clara) | teste de gate + mutação |

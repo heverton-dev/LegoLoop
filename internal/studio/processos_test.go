@@ -15,7 +15,7 @@ func TestStudioProcessos(t *testing.T) {
 	tmp := t.TempDir()
 	vault := filepath.Join(tmp, "vault")
 	docs := filepath.Join(tmp, "docs")
-	_ = os.MkdirAll(caminhos.DirLoopsEm(vault), 0o755)
+	_ = os.MkdirAll(caminhos.DirProcessosEm(vault), 0o755)
 	_ = os.MkdirAll(filepath.Join(vault, "skills"), 0o755)
 	_ = os.MkdirAll(docs, 0o755)
 
@@ -41,11 +41,11 @@ func TestStudioProcessos(t *testing.T) {
 	store := processo.Store{Roots: processo.Roots{Vault: vault, Docs: docs}}
 	dataA, _ := json.Marshal(procA)
 	_ = os.WriteFile(processo.CaminhoNoCofre(vault, procA.Nome), dataA, 0o644)
-	_ = os.WriteFile(filepath.Join(vault, caminhos.DirLoops, procA.Nome+".loop.json"), []byte(`{"version":"1.0.0"}`), 0o644)
+	_ = os.WriteFile(filepath.Join(vault, caminhos.DirProcessos, procA.Nome+".loop.json"), []byte(`{"version":"1.0.0"}`), 0o644)
 
 	dataB, _ := json.Marshal(procB)
 	_ = os.WriteFile(processo.CaminhoNoCofre(vault, procB.Nome), dataB, 0o644)
-	_ = os.WriteFile(filepath.Join(vault, caminhos.DirLoops, procB.Nome+".loop.json"), []byte(`{"version":"1.0.0"}`), 0o644)
+	_ = os.WriteFile(filepath.Join(vault, caminhos.DirProcessos, procB.Nome+".loop.json"), []byte(`{"version":"1.0.0"}`), 0o644)
 
 	srv, _ := newServer(t)
 	srv.Vault = vault

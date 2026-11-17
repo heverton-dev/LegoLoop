@@ -19,7 +19,7 @@ Os termos abaixo já existem no LegoLoop; o `fabricar` não é nenhum deles, ele
 | Termo | O que é no LegoLoop | Onde vive | O `fabricar`... |
 |:---|:---|:---|:---|
 | **Peça** | Unidade encaixável no Canvas. Tem 8 naturezas: Trigger, Controle, **Skill**, MCP, **Loop**, Script, Hook, Gate | `SKILL.md`, scripts, MCPs, hooks, gates | **consome** peças existentes (skills dos seus discos) e **cria** uma peça Skill nova |
-| **Loop** | Esteira/sub-grafo reutilizável, guardada no acervo e usada como sub-loop em outras esteiras | `~/.aidd/canonical/loops/<nome>.loop.json` | **cria** um |
+| **Loop** | Esteira/sub-grafo reutilizável, guardada no acervo e usada como sub-loop em outras esteiras | `~/.aidd/canonical/processos/<nome>.loop.json` | **cria** um |
 | **Pipeline** | O DAG executável: nós, dependências, artefatos e gates. Roda com `legoloop run <caminho>` | `<nome>.dag.json` | **cria** um |
 | **Função** | Capacidade do próprio binário LegoLoop, com uma ou mais "portas" (CLI, Chat, Studio). Não vira nó do Canvas e não é executada pelo Orchestrix | `legoloop fabricar`, `legoloop canonize`, `legoloop route`... | **é** uma |
 | **Processo** | O produto do `fabricar`: o conjunto `legoloop-<slug>` = **1 Skill + 1 Loop + 1 Pipeline + 5 documentos de governança** | vários arquivos (seção 5) | é o que ele entrega |
@@ -142,8 +142,8 @@ Para `legoloop fabricar "extrator de audio"` o nome canônico é `legoloop-extra
 | Meio / documento | Caminho (padrão) | Para quê |
 |:---|:---|:---|
 | **Skill** (peça, Chat) | `~/.aidd/canonical/skills/legoloop-extrator-de-audio/SKILL.md` | aparece no inventário do Studio; vira `/legoloop-extrator-de-audio` no Chat depois de ligada a um harness com `--link-harness` |
-| **Loop** (acervo, Studio) | `~/.aidd/canonical/loops/legoloop-extrator-de-audio.loop.json` | carrega no Canvas; usável como sub-loop |
-| **Pipeline** (CLI) | `~/.aidd/canonical/loops/legoloop-extrator-de-audio.dag.json` | `legoloop run <caminho>` |
+| **Loop** (acervo, Studio) | `~/.aidd/canonical/processos/legoloop-extrator-de-audio.loop.json` | carrega no Canvas; usável como sub-loop |
+| **Pipeline** (CLI) | `~/.aidd/canonical/processos/legoloop-extrator-de-audio.dag.json` | `legoloop run <caminho>` |
 | INTENT | `<docs>/docs/intents/AAAA-MM-DD_INTENT_EXTRATOR_DE_AUDIO.md` | o que se quer e por quê |
 | SPEC | `<docs>/docs/specs/AAAA-MM-DD_SPEC_EXTRATOR_DE_AUDIO.md` | contratos e critérios binários de aceite |
 | PLAN | `<docs>/docs/plans/AAAA-MM-DD_PLAN_EXTRATOR_DE_AUDIO.md` | tickets e stop-gates |
@@ -251,8 +251,8 @@ Limite conhecido: um HD externo USB que se anuncia como disco fixo é tratado co
 ## 9. Usando o Processo Fabricado
 
 ```bash
-legoloop validate  ~/.aidd/canonical/loops/legoloop-extrator-de-audio.dag.json
-legoloop run       ~/.aidd/canonical/loops/legoloop-extrator-de-audio.dag.json --var idea="..."
+legoloop validate  ~/.aidd/canonical/processos/legoloop-extrator-de-audio.dag.json
+legoloop run       ~/.aidd/canonical/processos/legoloop-extrator-de-audio.dag.json --var idea="..."
 ```
 
 * **No Chat:** a skill `legoloop-extrator-de-audio` só chega a um harness (ex.: `~/.claude/skills`) com `--link-harness`, porque o cofre não é lido por eles.

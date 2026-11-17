@@ -43,7 +43,7 @@ Para cada um dos três cenários, foram verificadas as seguintes invariantes ine
 4. **Gates Não Triviais:**
    * Todo nó da esteira possui um gate compilável via DSL (`gate.Compile`), exigindo condições reais como `exit_code == 0 && file_exists('output.txt')`. Gates vazios ou `true` são proibidos.
 5. **Processo Cadastrado e Vinculado:**
-   * Os processos são indexados na pasta `loops/` do cofre e vinculados nos diretórios de skills de cada harness detectado (`~/.<harness>/skills/`).
+   * Os processos são indexados na pasta `processos/` do cofre e vinculados nos diretórios de skills de cada harness detectado (`~/.<harness>/skills/`).
 
 ---
 

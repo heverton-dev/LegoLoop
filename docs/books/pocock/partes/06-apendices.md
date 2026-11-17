@@ -28,7 +28,7 @@ Comparação entre o manual de 01/11/2026 e o repositório em 07/11/2026.
 
 | Ponto verificado        | Manual                    | Código ou upstream            | Situação       |
 | :---------------------- | :------------------------ | :---------------------------- | :------------- |
-| Arquivo do loop         | `matt-pocock.loop.json`     | Existe em `loops/`              | Conforme       |
+| Arquivo do loop         | `matt-pocock.loop.json`     | Existe em `processos/`              | Conforme       |
 | Validação do DAG        | Não citada                | 6 nós, sem ciclos             | Conforme       |
 | Sub-loop 2, Exploração  | Sub-loop próprio          | Sem nó no JSON                | Diverge        |
 | Sub-loop 5, Diagnóstico | Sub-loop próprio          | Sem nó no JSON                | Diverge        |

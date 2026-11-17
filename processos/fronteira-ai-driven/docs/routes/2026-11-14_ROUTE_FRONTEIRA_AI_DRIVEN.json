@@ -1,0 +1,16 @@
+{
+  "schema": "route.v2",
+  "id": "fronteira-ai-driven-2026-11-14",
+  "intent": "docs/intents/2026-11-14_INTENT_FRONTEIRA_AI_DRIVEN.md",
+  "spec": "docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md",
+  "plan": "docs/plans/2026-11-14_PLAN_FRONTEIRA_AI_DRIVEN.md",
+  "dag": "docs/dags/2026-11-14_DAG_FRONTEIRA_AI_DRIVEN.json",
+  "nodes": [
+    {"id": "T-01", "title": "Lazy de Regras por tag", "depends_on": []},
+    {"id": "T-02", "title": "Roteamento Cognitivo", "depends_on": []},
+    {"id": "T-03", "title": "Mutacao e Rollback", "depends_on": ["T-01"]},
+    {"id": "T-04", "title": "Destilacao e Limpeza", "depends_on": ["T-03"]},
+    {"id": "T-05", "title": "Sanitizacao e Allowlist", "depends_on": ["T-01"]},
+    {"id": "T-06", "title": "Bootstrap Unico", "depends_on": ["T-02", "T-04", "T-05"]}
+  ]
+}

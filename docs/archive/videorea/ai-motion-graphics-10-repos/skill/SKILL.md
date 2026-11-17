@@ -34,14 +34,14 @@ Esta peça opera estritamente sob os seguintes contratos de entrada e saída:
   - Request JSON com `prompt`, `scenario`, `resolution`, `duration`
 * **Produces (Saídas Mecânicas):**
   - MP4 renderizado com codec h264, resolução e duração conforme Request
-  - `loops/ai-motion-graphics/pipeline.dag.json` validado
+  - `processos/ai-motion-graphics/pipeline.dag.json` validado
 * **Target Files (Escopo de escrita permitido / Blast Radius):**
-  - `internal/motion/`, `scripts/beat_detect.py`, `skills/ai-motion-graphics/`, `docs/books/ai-motion-graphics/`, `loops/ai-motion-graphics/`, `docs/videorea/ai-motion-graphics-10-repos/`
+  - `internal/motion/`, `scripts/beat_detect.py`, `skills/ai-motion-graphics/`, `docs/books/ai-motion-graphics/`, `processos/ai-motion-graphics/`, `docs/videorea/ai-motion-graphics-10-repos/`
 
 ```json
 {
   "consumes": ["Request{prompt, scenario, resolution, duration}"],
-  "produces": ["output.mp4", "loops/ai-motion-graphics/pipeline.dag.json"],
+  "produces": ["output.mp4", "processos/ai-motion-graphics/pipeline.dag.json"],
   "gate": "has_binary_criteria('output.mp4')"
 }
 ```
@@ -86,7 +86,7 @@ gofmt -l internal/motion/
 go run ./tools/funclen internal
 
 # Validação do DAG
-legoloop validate loops/ai-motion-graphics/pipeline.dag.json
+legoloop validate processos/ai-motion-graphics/pipeline.dag.json
 
 # Verificação do MP4 entregue
 ffprobe -v quiet -show_entries format=duration -show_entries stream=codec_name,width,height -of json output.mp4

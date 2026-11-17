@@ -2,7 +2,7 @@
 
 ## Topologia em 8 Camadas
 
-O grafo `loops/legoloop-web-qa/pipeline.dag.json` (`schema_version: 2`) organiza 12 nós em 8 camadas topológicas, garantindo isolamento estrito (`orchestrix_hermetic`) e `write_boundary: strict`:
+O grafo `processos/legoloop-web-qa/pipeline.dag.json` (`schema_version: 2`) organiza 12 nós em 8 camadas topológicas, garantindo isolamento estrito (`orchestrix_hermetic`) e `write_boundary: strict`:
 
 1. **Camada 1 (`n01_preflight`):** Verifica presença real das 8 peças no PATH, `node_modules` local e cofre de skills.
 2. **Camada 2 (`n02_boot_e_descoberta`):** Sobe o servidor local se `--cmd` e `--port` forem fornecidos e descobre rotas via crawl HTML + `/sitemap.xml` + lista explícita `--routes`.

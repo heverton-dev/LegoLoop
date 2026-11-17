@@ -14,7 +14,7 @@
 | :--- | :--- | :--- | :--- |
 | Contagem de tickets | O brief cita 37 tickets paralelos | O PLAN paralelo tem 11 tickets (M1.1–M3.3) e a ROUTE tem 15 nós (11 tickets + 4 stop-gates) | Mapeei os 11 tickets, os 15 nós e os 27 ACs (19 paralelos + 8 mega); nenhuma linha ficou sem status |
 | Nome de erro de lock | Mega SPEC cita `ErrLockAtivo` | O código usa `ErrLockOcupado` (`internal/triagem/memoria.go:33`) | Comportamento idêntico; divergência de nome registrada, sem renomear API |
-| Pasta de Processos | Schemas citam `processos/<slug>/` | O acervo real vive em `loops/<slug>/` (26 Processos) | O conteúdo segue os schemas `anticorpos.v1`/`memoria_execucao.v1`; a pasta segue o dialeto do acervo |
+| Pasta de Processos | Schemas citam `processos/<slug>/` | O acervo real vive em `processos/<slug>/` (26 Processos) | O conteúdo segue os schemas `anticorpos.v1`/`memoria_execucao.v1`; a pasta segue o dialeto do acervo |
 
 ## 2. TICK-INT-01 — Tabela A: tickets paralelos × ACs × status
 
@@ -64,7 +64,7 @@
 | mega AC-E03.2 | Lock órfão tomado e `atualizado` avança | COBERTO por TICK-INT-02 (`98a132e`) | `internal/triagem/memoria.go` (`limparLockOrfao`), mutações 1 |
 | mega AC-E03.3 | Fechar zera `memoria_execucao.json` (schema válido) | COBERTO por TICK-INT-02 (`4b7a512`) | `internal/fechar/quarteto_test.go` (`TestZeraMemoria`), mutação 14 |
 | mega AC-E03.4 | Corrompido: sentinela + backup `.legoloop-bak` + sem escrita cega | COBERTO por TICK-INT-02 (`98a132e`) | `internal/triagem/memoria.go` (`ErrMemoriaCorrompida`, `backupCorrompido`), mutações 2–3 |
-| mega AC-E04.1 | Persistência em `anticorpos.json` (schema `anticorpos.v1`) | COBERTO por TICK-INT-02 (`57fe915`) | `internal/brain/antibodies.go` (`bancoJSON`); divergência 3 (pasta `loops/<slug>`) |
+| mega AC-E04.1 | Persistência em `anticorpos.json` (schema `anticorpos.v1`) | COBERTO por TICK-INT-02 (`57fe915`) | `internal/brain/antibodies.go` (`bancoJSON`); divergência 3 (pasta `processos/<slug>`) |
 | mega AC-E04.2 | Reincidência incrementa e antídoto é injetado antes do nó | COBERTO por 3153922 + `57fe915` | `Find` + `InjectPreventiveContext` em `orchestrix.go` |
 | mega AC-E04.3 | Escopo global (infra/LLM) vs domínio (regra local) | COBERTO por TICK-INT-02 (`57fe915`) | `RecordComEscopo`, `NewAntibodiesDBPersistenteComGlobal`, mutação 5 |
 | mega AC-E04.4 | Corrompido: sentinela + backup; processo segue sem vacina | COBERTO por TICK-INT-02 (`57fe915`) | `ErrAnticorposCorrompidos` + banco vazio funcional, mutação 6 |
@@ -103,7 +103,7 @@ Saída literal de cada portão, rodada em 2026-11-16 no estado final da árvore:
 2. **`go vet ./...`** — `VET_EXIT=0`, saída vazia.
 3. **`gofmt -l .`** — `GOFMT_LIST=[]` (lista vazia, nenhum arquivo fora do formato).
 4. **`go run ./tools/funclen internal`** — `FUNCLEN_EXIT=1` apenas pelos 3 estouros **pré-existentes** (baseline herdado): `internal\board\swarm_run.go:90 runLevel 45 linhas`, `internal\cli\swarm_run.go:13 cmdSwarmRun 42 linhas`, `internal\gate\cites.go:129 CiteVerdicts 47 linhas`. **Zero estouro novo.**
-5. **`go run ./tools/taxlinter internal cmd loops skills docs/templates`** — `TAX_EXIT=1`, `VIOLACOES=31`, **todas pré-existentes** (arquivos herdados: `swarm_run_e2e_test.go`, `sync_yaml.go`, golden, `loops/legoloop-swarm`, etc.). **Zero violação nova** (correção final: `AcaoFluxoNormal` → `AcaoNormal` também no SKILL.md, linha 39).
+5. **`go run ./tools/taxlinter internal cmd loops skills docs/templates`** — `TAX_EXIT=1`, `VIOLACOES=31`, **todas pré-existentes** (arquivos herdados: `swarm_run_e2e_test.go`, `sync_yaml.go`, golden, `processos/legoloop-swarm`, etc.). **Zero violação nova** (correção final: `AcaoFluxoNormal` → `AcaoNormal` também no SKILL.md, linha 39).
 6. **`git diff --exit-code -- go.mod go.sum`** — `GOMOD_EXIT=0`, saída vazia (somente stdlib).
 
 ## 8. NAO_PROVADO

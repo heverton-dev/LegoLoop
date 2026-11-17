@@ -3,6 +3,7 @@ package processo
 import (
 	"encoding/json"
 	"errors"
+	"legoloop/internal/caminhos"
 	"legoloop/internal/paths"
 	"os"
 	"path/filepath"
@@ -28,16 +29,27 @@ type ProcessoCofre struct {
 	Etapas   []Etapa
 }
 
-// ProcessosDoCofre lê a pasta de Processos do cofre e devolve os processos ordenados por nome.
+// ProcessosDoCofre lê as pastas de Processos do cofre, nos dois dialetos, e
+// devolve os processos ordenados por nome.
 func ProcessosDoCofre(vault string) ([]ProcessoCofre, error) {
-	entradas, err := os.ReadDir(paths.DirAntigoEm(vault))
-	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return []ProcessoCofre{}, nil
+	vistos := map[string]bool{}
+	for _, dir := range caminhos.DirsLeitura(vault) {
+		entradas, err := os.ReadDir(dir)
+		if err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				continue
+			}
+			return nil, err
 		}
-		return nil, err
+		for _, nome := range nomesProcessos(entradas) {
+			vistos[nome] = true
+		}
 	}
-	nomes := nomesProcessos(entradas)
+	nomes := make([]string, 0, len(vistos))
+	for nome := range vistos {
+		nomes = append(nomes, nome)
+	}
+	slices.Sort(nomes)
 	out := make([]ProcessoCofre, 0, len(nomes))
 	for _, nome := range nomes {
 		out = append(out, lerProcessoCofre(vault, nome))
@@ -68,7 +80,7 @@ func nomesProcessos(entradas []os.DirEntry) []string {
 
 func lerProcessoCofre(vault, nome string) ProcessoCofre {
 	proc := ProcessoCofre{Nome: nome, Origem: "v2"}
-	caminho := CaminhoNoCofre(vault, nome)
+	caminho := CaminhoNoCofreLeitura(vault, nome)
 	if _, err := os.Stat(caminho); err == nil {
 		p, err := Ler(caminho)
 		if err != nil {
@@ -79,8 +91,20 @@ func lerProcessoCofre(vault, nome string) ProcessoCofre {
 		return proc
 	}
 	proc.Origem, proc.Natureza = "v1", NaturezaDesconhecida
-	proc.Versao = versaoV1(filepath.Join(paths.DirAntigoEm(vault), nome+sufixoV1))
+	proc.Versao = versaoV1(caminhoV1Leitura(vault, nome))
 	return proc
+}
+
+// caminhoV1Leitura resolve o documento v1 do processo nos dois dialetos.
+func caminhoV1Leitura(vault, nome string) string {
+	alvo := nome + sufixoV1
+	for _, dir := range caminhos.DirsLeitura(vault) {
+		p := filepath.Join(dir, alvo)
+		if info, err := os.Stat(p); err == nil && info.Mode().IsRegular() {
+			return p
+		}
+	}
+	return filepath.Join(caminhos.DirProcessosEm(vault), alvo)
 }
 
 func versaoV1(path string) string {

@@ -52,7 +52,7 @@ A presente iniciativa estabelece o **8º verbo canônico: `dissecar`**, focado e
 * **Pergunta 3:** Quais tipos de alvos o comando `legoloop dissecar <alvo>` deve ser capaz de inspecionar?
   * **Decisão do Usuário:** **Universal Completo (LegoLoop + Código Fonte Externo + URLs Git).**
   * **Mapeamento Arquitetural:**
-    * Peças locais em `skills/`, `loops/`, `docs/`, `internal/`.
+    * Peças locais em `skills/`, `processos/`, `docs/`, `internal/`.
     * Armazém canônico central `~/.aidd/canonical/`.
     * Scripts do sistema operacional (`.ps1`, `.sh`, `.bat`, `.py`).
     * Repositórios de código externos e pacotes Go locais com isolamento via *Path Jail*.

@@ -19,7 +19,7 @@
 * Rota HTTP para importação instantânea de ativos com canonização e atualização dinâmica do inventário do Studio (`s.Assets.Refresh(ctx)`).
 * Teste unitário `TestAssetImportRejectsInvalidURL` em `internal/studio/assets_api_test.go`.
 
-### 🔹 TICK-2403: Endpoint de Fork Copy-on-Write (`POST /api/loops/{id}/fork`)
+### 🔹 TICK-2403: Endpoint de Fork Copy-on-Write (`POST /api/processos/{id}/fork`)
 * Mecanismo de duplicação determinística para sub-loops e esteiras, permitindo edição versionada sem corrupção dos templates originais.
 * Teste unitário em `internal/studio/loops_api_test.go`.
 

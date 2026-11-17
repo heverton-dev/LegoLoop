@@ -18,10 +18,10 @@ var vinculosVideoREA = map[string]string{
 
 // copiasDoDAGVideoREA são as quatro cópias do DAG do video-rea, todas com o mesmo vínculo.
 var copiasDoDAGVideoREA = []string{
-	"loops/legoloop-video-rea/pipeline.dag.json",
-	"loops/legoloop-video-rea/legoloop-video-rea.loop.json",
+	"processos/legoloop-video-rea/pipeline.dag.json",
+	"processos/legoloop-video-rea/legoloop-video-rea.loop.json",
 	"docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json",
-	"internal/golden/testdata/loops/legoloop-video-rea.dag.json",
+	"internal/golden/testdata/processos/legoloop-video-rea.dag.json",
 }
 
 func pecasPorNo(t *testing.T, caminho string) map[string]string {

@@ -59,7 +59,7 @@ func processoDe(nome string, n int) processo.Processo {
 
 type cofre struct{ vault, docs string }
 
-func pastaDoCofre(vault string) string { return caminhos.DirLoopsEm(vault) }
+func pastaDoCofre(vault string) string { return caminhos.DirProcessosEm(vault) }
 
 func slugDe(nome string) string {
 	return strings.ToUpper(strings.ReplaceAll(strings.TrimPrefix(nome, "legoloop-"), "-", "_"))

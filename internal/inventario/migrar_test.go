@@ -100,12 +100,12 @@ func TestMigraParaArchive(t *testing.T) {
 
 // caminhoFatia monta o caminho do manifesto de fatia sem citar termo proibido.
 func caminhoFatia(slug string) string {
-	return filepath.ToSlash(filepath.Join(paths.DirAntigo, slug, slug+paths.SufixoStudio))
+	return filepath.ToSlash(filepath.Join(paths.DirProcessos, slug, slug+paths.SufixoStudio))
 }
 
 // caminhoDocFatia monta o caminho de documento do Quinteto dentro da fatia.
 func caminhoDocFatia(slug, tipo, nome string) string {
-	return filepath.ToSlash(filepath.Join(paths.DirAntigo, slug, "docs", tipo, nome))
+	return filepath.ToSlash(filepath.Join(paths.DirProcessos, slug, "docs", tipo, nome))
 }
 
 // arvoreQuinteto cria a árvore de teste: fatias, donos, órfãos e protegido.

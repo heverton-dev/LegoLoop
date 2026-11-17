@@ -34,7 +34,7 @@ Decididas em 2026-11-03. A 1 por escolha do autor; as demais, pela recomendaçã
 | 1 | Nome do comando | **`legoloop fabricar`**, comando próprio; `AC-E02.3` é "legado intacto" | `TICK-02.1` a `TICK-02.4`, `TICK-04.1` |
 | 2 | Executável da CLI | `.dag.json` por caminho (`legoloop run <caminho>`), separado do ROUTE; `legoloop run` **não** é alterado | `TICK-01.6`, `TICK-02.1` |
 | 3 | Skill nos harnesses | Só no cofre; link nos harnesses apenas com `--link-harness` (opt-in) | `TICK-01.8`, `TICK-02.1` |
-| 4 | Local do `.dag.json` | `~/.aidd/canonical/loops/` (nenhum diretório novo no cofre) | `TICK-01.4`, `TICK-01.6` |
+| 4 | Local do `.dag.json` | `~/.aidd/canonical/processos/` (nenhum diretório novo no cofre) | `TICK-01.4`, `TICK-01.6` |
 
 ---
 
@@ -419,7 +419,7 @@ Tickets de verificação, sem código novo. Cada comando é um argv, sem shell.
   * `go install ./cmd/legoloop`
   * `bin/legoloop.exe fabricar teste-smoke --yes --dry-run --vault scratch/smoke-fabricar/vault --docs scratch/smoke-fabricar/docs`
   * `bin/legoloop.exe fabricar teste-smoke --yes --vault scratch/smoke-fabricar/vault --docs scratch/smoke-fabricar/docs`
-  * `bin/legoloop.exe validate scratch/smoke-fabricar/vault/loops/legoloop-teste-smoke.dag.json`
+  * `bin/legoloop.exe validate scratch/smoke-fabricar/vault/processos/legoloop-teste-smoke.dag.json`
   * `powershell -NoProfile -Command "Remove-Item -Recurse -Force scratch/smoke-fabricar"`
 * **Gate (DSL):** `exit_code == 0 && file_exists('bin/legoloop.exe')`
 * **Spec Ref:** `AC-E03.2`

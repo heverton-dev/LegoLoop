@@ -15,7 +15,7 @@ func runMigrarProcessos(subcmd string, args []string, stdout, stderr io.Writer) 
 	fs.SetOutput(stderr)
 	dryRun := fs.Bool("dry-run", false, "simula alterações sem gravar em disco")
 	apply := fs.Bool("apply", false, "aplica alterações no diretório de processos")
-	dir := fs.String("dir", paths.DirAntigo, "diretório raiz dos processos")
+	dir := fs.String("dir", paths.DirProcessos, "diretório raiz dos processos")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}

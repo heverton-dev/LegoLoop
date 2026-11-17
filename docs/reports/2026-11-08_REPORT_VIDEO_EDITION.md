@@ -78,7 +78,7 @@ O processo `legoloop-video-edition` foi canonizado com sucesso através do Pipel
 - `C:\Users\trcnologia\Desktop\LegoLoop\docs\manuals\2026-11-08_MANUAL_FUNCAO_video-edition_LEGOLOOP.md`: Etapa 1 (Manual Operacional)
 - `C:\Users\trcnologia\Desktop\LegoLoop\docs\books\video-edition`: Etapa 2 (Livro Didático LegoPress)
 - `C:\Users\trcnologia\Desktop\LegoLoop\skills\legoloop-video-edition\SKILL.md`: Etapa 3 (Skill Canônica Universal)
-- `C:\Users\trcnologia\Desktop\LegoLoop\loops\video-edition\pipeline.dag.json`: Etapa 4 (Loop & Grafo DAG)
+- `C:\Users\trcnologia\Desktop\LegoLoop\processos\video-edition\pipeline.dag.json`: Etapa 4 (Loop & Grafo DAG)
 - `bin/legoloop.exe`: Etapa 5 (Recompilação Fresca do Binário)
 - `AGENTS.md, MEMORY.md`: Etapa 6 (Governança Viva (AGENTS e MEMORY))
 - `.codebase-memory/graph.db.zst`: Etapa 7 (Reindexação do Grafo Semântico)

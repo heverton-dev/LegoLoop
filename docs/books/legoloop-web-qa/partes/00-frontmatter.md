@@ -26,7 +26,7 @@ abstract: |
 
   A Parte I apresenta o problema de interfaces quebradas e o modelo mental macro de auditoria antes da mutação de código. A Parte II detalha as oito peças do arsenal e suas responsabilidades complementares. A Parte III disseca as oito camadas do DAG `pipeline.dag.json`, os viewports (`1440x900` e `390x844`) e os limiares numéricos de reprovação. A Parte IV demonstra a operação prática via `tools/webqa/webqa.mjs` e o encadeamento obrigatório pós-relatório (`INTERVIEW -> INTENT -> SPEC -> PLAN -> ROUTE -> DAG -> SWARM -> BUILD`). A Parte V consolida guardrails negativos, matriz de falhas FMEA e apêndices de rastreabilidade.
 
-  Fonte primária: `docs/manuals/2026-11-15_MANUAL_WEB_QA.md`, `docs/specs/2026-11-15_SPEC_WEB_QA.md` e `loops/legoloop-web-qa/pipeline.dag.json`.
+  Fonte primária: `docs/manuals/2026-11-15_MANUAL_WEB_QA.md`, `docs/specs/2026-11-15_SPEC_WEB_QA.md` e `processos/legoloop-web-qa/pipeline.dag.json`.
 ---
 
 # Como ler este livro

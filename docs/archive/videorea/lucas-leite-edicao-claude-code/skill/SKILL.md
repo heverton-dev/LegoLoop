@@ -14,7 +14,7 @@ Pipeline canônico de edição audiovisual assistida por IA, dissecado via engen
 
 * **Linha de Comando (CLI):**  
   ```bash
-  legoloop run loops/video-edition/pipeline.dag.json --var input_video="caminho/do/video.mp4"
+  legoloop run processos/video-edition/pipeline.dag.json --var input_video="caminho/do/video.mp4"
   ```
 * **Chat Interativo:**  
   * `/legoloop-video-edition`

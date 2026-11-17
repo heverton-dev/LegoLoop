@@ -110,7 +110,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 | **Análise Estática (Vet)** | `go vet ./...` | Zero warnings ou erros | **PASS** |
 | **Formatação Canônica** | `gofmt -l .` | Saída 100% vazia | **PASS** (3 arquivos corrigidos com `gofmt -w`) |
 | **Limite de Complexidade** | `go run ./tools/funclen internal` | Nenhuma função > 35 linhas | **DEBITO** (3 estouros herdados, não alterados: `internal/board/swarm_run.go:90` 45L, `internal/cli/swarm_run.go:13` 42L, `internal/gate/cites.go:129` 47L) |
-| **Taxonomia ASD-STE100** | `go run ./tools/taxlinter internal cmd loops skills docs/templates` | Zero violação nova | **DEBITO** (14 violações herdadas em `internal/refinar/curado_v2*` e `loops/legoloop-swarm`; nenhuma em arquivo desta demanda) |
+| **Taxonomia ASD-STE100** | `go run ./tools/taxlinter internal cmd loops skills docs/templates` | Zero violação nova | **DEBITO** (14 violações herdadas em `internal/refinar/curado_v2*` e `processos/legoloop-swarm`; nenhuma em arquivo desta demanda) |
 | **Compilação Limpa** | `go build -o bin/legoloop.exe ./cmd/legoloop` | Binário gerado sem warnings | **PASS** (exit 0) |
 | **Instalação no PATH** | `go install ./cmd/legoloop` | Binário atualizado no PATH | **NAO_PROVADO** (lock de `legoloop.exe` pelo Studio aberto; repetir após fechar o Studio) |
 | **Auditoria Geométrica** | `legoloop legopress auditar <pdf>` | 0 linhas órfãs | **N/A** (nenhum PDF gerado nesta demanda) |
@@ -148,7 +148,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 * **Próximos Passos Recomendados:**
   1. Fechar o Studio do usuário e rodar `go install ./cmd/legoloop` para atualizar o PATH (Lei 5).
   2. Rodar `go test -race ./...` no CI Linux.
-  3. Ticket de normalização dos débitos herdados: `internal/refinar/curado_v2*` e `loops/legoloop-swarm` (taxlinter) e `swarm_run.go`/`cites.go` (funclen).
+  3. Ticket de normalização dos débitos herdados: `internal/refinar/curado_v2*` e `processos/legoloop-swarm` (taxlinter) e `swarm_run.go`/`cites.go` (funclen).
   4. Reindexar o grafo semântico quando o MCP `codebase-memory` estiver disponível.
   5. Fluxo de ponta a ponta com LLM real (não provado: testes usam LLM falso hermeticamente).
 * **Procedimento de Rollback:**

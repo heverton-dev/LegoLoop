@@ -36,8 +36,8 @@ O Mega-Pipeline Soberano `legoloop-video-master` foi concebido, dissecado e cano
   * Dossiê forense estruturado com 43 vídeos e 4 pilares: `docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json`
   * Relatório de curadoria e Stop-Gate aprovado: `docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json`
 * **Épico 02 — Grafo DAG Acíclico & Golden Fixture:**
-  * Grafo mestre acíclico validado: `loops/legoloop-video-master/pipeline.dag.json`
-  * Manifesto do loop: `loops/legoloop-video-master/legoloop-video-master.loop.json`
+  * Grafo mestre acíclico validado: `processos/legoloop-video-master/pipeline.dag.json`
+  * Manifesto do loop: `processos/legoloop-video-master/legoloop-video-master.loop.json`
   * Golden Fixture determinística de 3s: `testdata/fixtures/video_master_fixture_3s.mp4`
 * **Épico 03 — Livro LegoPress & Skill Universal:**
   * Livro Didático completo com 7 partes em `docs/books/video-master/`
@@ -50,7 +50,7 @@ O Mega-Pipeline Soberano `legoloop-video-master` foi concebido, dissecado e cano
 
 | Portão Mecânico de Aceite | Comando de Verificação | Resultado Observado | Status |
 | :--- | :--- | :--- | :--- |
-| Validação do Grafo DAG | `legoloop validate loops/legoloop-video-master/pipeline.dag.json` | 5 nós válidos, 4 camadas, sem ciclos | **APROVADO** |
+| Validação do Grafo DAG | `legoloop validate processos/legoloop-video-master/pipeline.dag.json` | 5 nós válidos, 4 camadas, sem ciclos | **APROVADO** |
 | Auditoria Geométrica do Livro | `legoloop legopress auditar docs/books/video-master/*.pdf` | 10 páginas, zero quebras, zero órfãs | **APROVADO** |
 | Suíte Global de Testes Go | `go test -count=1 ./...` | Todos os 38 pacotes passaram com exit code 0 | **APROVADO** |
 | Verificação de Formatação | `gofmt -l .` | Saída vazia (código limpo) | **APROVADO** |
@@ -64,7 +64,7 @@ O Mega-Pipeline Soberano `legoloop-video-master` foi concebido, dissecado e cano
 * `docs/specs/2026-11-07_SPEC_VIDEO_MASTER.md` — SHA256: `2e9145e1b3ac57c83401e526f756b3b535396b8df0f635b9c505baafd0950da3`
 * `docs/plans/2026-11-07_PLAN_VIDEO_MASTER.md` — SHA256: `f1ca4d4b0f78da78ddbd592a92284834c3597554e1c555e387a010639a0f96d2`
 * `docs/routes/2026-11-07_ROUTE_VIDEO_MASTER.json` — Rota executável v2.2.0 espelho 1:1
-* `loops/legoloop-video-master/pipeline.dag.json` — Grafo DAG compilado
+* `processos/legoloop-video-master/pipeline.dag.json` — Grafo DAG compilado
 * `docs/books/video-master/2026-11-07_LIVRO_LEGOLOOP_VIDEO_MASTER.pdf` — Livro compilado e auditado
 
 ---
@@ -73,4 +73,4 @@ O Mega-Pipeline Soberano `legoloop-video-master` foi concebido, dissecado e cano
 
 * **Conclusão:** O ecossistema LegoLoop agora dispõe de uma esteira completa de engenharia reversa e geração audiovisual soberana, capaz de sintetizar conhecimento de referências públicas e compilar livros técnicos e código executável de forma 100% autônoma.
 * **Recomendações:** Integrar o gatilho `legoloop-video-master` ao Looping Studio para disparos visuais de produção em lote com 1 clique.
-* **Rollback:** Em caso de reversão necessária, remover o diretório `loops/legoloop-video-master/`, `docs/books/video-master/` e `skills/legoloop-video-master/`.
+* **Rollback:** Em caso de reversão necessária, remover o diretório `processos/legoloop-video-master/`, `docs/books/video-master/` e `skills/legoloop-video-master/`.

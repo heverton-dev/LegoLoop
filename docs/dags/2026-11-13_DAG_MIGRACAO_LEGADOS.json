@@ -30,7 +30,7 @@
         "powershell",
         "-NoProfile",
         "-Command",
-        "Get-ChildItem docs/dags/*.json, loops/*/pipeline.dag.json | Select-Object FullName | ConvertTo-Json | Set-Content scratch/i6_inventario_legados.json"
+        "Get-ChildItem docs/dags/*.json, processos/*/pipeline.dag.json | Select-Object FullName | ConvertTo-Json | Set-Content scratch/i6_inventario_legados.json"
       ],
       "depends_on": [],
       "routing": {
@@ -208,7 +208,7 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (loops/)?')"
+        "gate": "prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (processos/)?')"
       },
       "spec_ref": "AC-I6-01.3",
       "status": "PENDING",
@@ -225,12 +225,12 @@
       },
       "output": {
         "artifact": "scratch/gates/SG-I6-E01.json",
-        "gate": "prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (loops/)?')"
+        "gate": "prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (processos/)?')"
       }
     },
     {
       "id": "TICK-I6-02.1",
-      "name": "Migrar Lote Vídeo I em loops/ (4 arquivos)",
+      "name": "Migrar Lote Vídeo I em processos/ (4 arquivos)",
       "type": "unit_no",
       "nature": "micro",
       "depends_on": [
@@ -259,7 +259,7 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "exit_code == 0 && file_exists('loops/ai-motion-graphics/pipeline.dag.json')"
+        "gate": "exit_code == 0 && file_exists('processos/ai-motion-graphics/pipeline.dag.json')"
       },
       "spec_ref": "AC-I6-02.1",
       "status": "PENDING",
@@ -267,22 +267,22 @@
         "scratch/gates/SG-I6-E01.json"
       ],
       "context_out": [
-        "loops/ai-motion-graphics/pipeline.dag.json",
-        "loops/legoloop-video-edition/pipeline.dag.json",
-        "loops/legoloop-video-master/pipeline.dag.json",
-        "loops/legoloop-video-motion/pipeline.dag.json"
+        "processos/ai-motion-graphics/pipeline.dag.json",
+        "processos/legoloop-video-edition/pipeline.dag.json",
+        "processos/legoloop-video-master/pipeline.dag.json",
+        "processos/legoloop-video-motion/pipeline.dag.json"
       ],
       "inputs": {
         "checkpoint": "file('scratch/gates/SG-I6-E01.json')"
       },
       "output": {
-        "artifact": "loops/ai-motion-graphics/pipeline.dag.json",
+        "artifact": "processos/ai-motion-graphics/pipeline.dag.json",
         "gate": "exit_code == 0"
       }
     },
     {
       "id": "TICK-I6-02.2",
-      "name": "Migrar Lote Vídeo II em loops/ (3 arquivos)",
+      "name": "Migrar Lote Vídeo II em processos/ (3 arquivos)",
       "type": "unit_no",
       "nature": "micro",
       "depends_on": [
@@ -311,7 +311,7 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "exit_code == 0 && file_exists('loops/legoloop-canal-redc/pipeline.dag.json')"
+        "gate": "exit_code == 0 && file_exists('processos/legoloop-canal-redc/pipeline.dag.json')"
       },
       "spec_ref": "AC-I6-02.2",
       "status": "PENDING",
@@ -319,21 +319,21 @@
         "scratch/gates/SG-I6-E01.json"
       ],
       "context_out": [
-        "loops/legoloop-canal-redc/pipeline.dag.json",
-        "loops/legoloop-cartoon-shorts/pipeline.dag.json",
-        "loops/legoloop-video-rea/pipeline.dag.json"
+        "processos/legoloop-canal-redc/pipeline.dag.json",
+        "processos/legoloop-cartoon-shorts/pipeline.dag.json",
+        "processos/legoloop-video-rea/pipeline.dag.json"
       ],
       "inputs": {
         "checkpoint": "file('scratch/gates/SG-I6-E01.json')"
       },
       "output": {
-        "artifact": "loops/legoloop-canal-redc/pipeline.dag.json",
+        "artifact": "processos/legoloop-canal-redc/pipeline.dag.json",
         "gate": "exit_code == 0"
       }
     },
     {
       "id": "TICK-I6-02.3",
-      "name": "Migrar Lote Governança em loops/ (3 arquivos)",
+      "name": "Migrar Lote Governança em processos/ (3 arquivos)",
       "type": "unit_no",
       "nature": "micro",
       "depends_on": [
@@ -362,7 +362,7 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "exit_code == 0 && file_exists('loops/legoloop-fechar/pipeline.dag.json')"
+        "gate": "exit_code == 0 && file_exists('processos/legoloop-fechar/pipeline.dag.json')"
       },
       "spec_ref": "AC-I6-02.3",
       "status": "PENDING",
@@ -370,21 +370,21 @@
         "scratch/gates/SG-I6-E01.json"
       ],
       "context_out": [
-        "loops/legoloop-dissecar/pipeline.dag.json",
-        "loops/legoloop-fechar/pipeline.dag.json",
-        "loops/legoloop-n10-foundry/pipeline.dag.json"
+        "processos/legoloop-dissecar/pipeline.dag.json",
+        "processos/legoloop-fechar/pipeline.dag.json",
+        "processos/legoloop-n10-foundry/pipeline.dag.json"
       ],
       "inputs": {
         "checkpoint": "file('scratch/gates/SG-I6-E01.json')"
       },
       "output": {
-        "artifact": "loops/legoloop-fechar/pipeline.dag.json",
+        "artifact": "processos/legoloop-fechar/pipeline.dag.json",
         "gate": "exit_code == 0"
       }
     },
     {
       "id": "SG-I6-E02",
-      "name": "Stop-Gate Humano do Épico 02 (loops/)",
+      "name": "Stop-Gate Humano do Épico 02 (processos/)",
       "type": "stop_gate",
       "nature": "nano",
       "depends_on": [
@@ -414,24 +414,24 @@
         "runtime": "powershell"
       },
       "verification": {
-        "gate": "prompt('Os 10 pipeline.dag.json de loops/ validam em v2? Autoriza validação final E03?')"
+        "gate": "prompt('Os 10 pipeline.dag.json de processos/ validam em v2? Autoriza validação final E03?')"
       },
       "spec_ref": "AC-I6-02.3",
       "status": "PENDING",
       "context_in": [
-        "loops/ai-motion-graphics/pipeline.dag.json",
-        "loops/legoloop-fechar/pipeline.dag.json"
+        "processos/ai-motion-graphics/pipeline.dag.json",
+        "processos/legoloop-fechar/pipeline.dag.json"
       ],
       "context_out": [
         "scratch/gates/SG-I6-E02.json"
       ],
       "inputs": {
-        "lote_1": "file('loops/ai-motion-graphics/pipeline.dag.json')",
-        "lote_3": "file('loops/legoloop-fechar/pipeline.dag.json')"
+        "lote_1": "file('processos/ai-motion-graphics/pipeline.dag.json')",
+        "lote_3": "file('processos/legoloop-fechar/pipeline.dag.json')"
       },
       "output": {
         "artifact": "scratch/gates/SG-I6-E02.json",
-        "gate": "prompt('Os 10 pipeline.dag.json de loops/ validam em v2? Autoriza validação final E03?')"
+        "gate": "prompt('Os 10 pipeline.dag.json de processos/ validam em v2? Autoriza validação final E03?')"
       }
     },
     {

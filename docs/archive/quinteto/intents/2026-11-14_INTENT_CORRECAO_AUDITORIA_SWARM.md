@@ -13,7 +13,7 @@ covers: [Q1]
 > **Data:** 2026-11-14  
 > **Autor:** Antigravity (Coordinator)  
 > **Iniciativa:** Correção Auditoria Swarm  
-> **Alvo:** `internal/studio/static/components/lego-item-modal.js`, `internal/studio/static/style.css`, `loops/*/*.loop.json`  
+> **Alvo:** `internal/studio/static/components/lego-item-modal.js`, `internal/studio/static/style.css`, `processos/*/*.loop.json`  
 > **Sessão:** `2b93726e-e3b1-4f72-aa2a-d2ddcd8ca025`  
 > **Confiança da Entrevista:** 98%  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -32,7 +32,7 @@ covers: [Q1]
 ### O que ESTÁ no Escopo:
 * [ ] Objetivo 1 (`AUD-03`): Substituir emojis Unicode em `internal/studio/static/components/lego-item-modal.js` por ícones SVG de `icons.js` ou texto limpo.
 * [ ] Objetivo 2 (`AUD-04`): Adicionar media query `<= 768px` em `internal/studio/static/style.css` para recolher/adaptar a sidebar.
-* [ ] Objetivo 3 (`AUD-05`): Padronizar `schema_version` nos 15 arquivos `.loop.json` em `loops/` mantendo `go test -count=1 ./...` 100% verde.
+* [ ] Objetivo 3 (`AUD-05`): Padronizar `schema_version` nos 15 arquivos `.loop.json` em `processos/` mantendo `go test -count=1 ./...` 100% verde.
 
 ### O que NÃO ESTÁ no Escopo:
 * ⛔ Não alterar contratos de API HTTP do Studio nem adicionar dependências JS/Go externas.

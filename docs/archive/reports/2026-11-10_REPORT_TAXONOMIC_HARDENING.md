@@ -15,7 +15,7 @@ Data: 2026-11-10
 
 - `internal/studio/server.go`: `/api/processos` (listar e gerenciar) e `/api/dag` (status e leitura) são as rotas canônicas. `/api/loops` continua registrada como rota legada deprecada.
 - `internal/studio/static/app.js` e `index.html`: rótulos "esteira" viraram "DAG" ou "Processo". O `app.js` chama `/api/processos/`.
-- Corrigi `TestFabricarInspectorHasAProcessPanel`, que exigia a string `/api/loops/` no `app.js`; agora exige `/api/processos/`.
+- Corrigi `TestFabricarInspectorHasAProcessPanel`, que exigia a string `/api/processos/` no `app.js`; agora exige `/api/processos/`.
 - `internal/vault/vault.go`: comentários dizem "Cofre de Segredos". A CLI já usava "cofre canônico" para `~/.aidd/canonical/`.
 - Não existe `static/processos.js` com rótulos a trocar além dos já tratados no `app.js` e no `index.html`.
 

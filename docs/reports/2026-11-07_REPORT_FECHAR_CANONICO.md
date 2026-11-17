@@ -28,9 +28,9 @@ Criou-se o 6º verbo de ciclo de vida do LegoLoop: o **`fechar`**, que funciona 
 - **Expansão Universal:** `skills/embed.go` atualizado com as 13 funções canônicas e distribuído universalmente para todos os 6 harnesses (`claude`, `gemini`, `cursor`, `codex`, `opencode`, `kiro`).
 
 ### Épico 03 — Grafo DAG e Acoplamento nos Motores
-- **Grafo DAG Acíclico (`loops/fechar/pipeline.dag.json`):** 6 nós ordenados por camadas topológicas, validados com sucesso por `legoloop validate` (`AC-E03.1`).
-- **Acoplamento no Mega Pipeline (`loops/mega-pipeline.loop.json`):** Adicionado o 6º nó compulsório `l6-fechar-canonico` que compõe o sub-loop `fechar` como fechamento obrigatório (`AC-E03.2`).
-- **Manifesto de Loop (`loops/fechar.loop.json`):** Sincronizado para o cofre `~/.aidd/canonical/loops/`.
+- **Grafo DAG Acíclico (`processos/fechar/pipeline.dag.json`):** 6 nós ordenados por camadas topológicas, validados com sucesso por `legoloop validate` (`AC-E03.1`).
+- **Acoplamento no Mega Pipeline (`processos/mega-pipeline.loop.json`):** Adicionado o 6º nó compulsório `l6-fechar-canonico` que compõe o sub-loop `fechar` como fechamento obrigatório (`AC-E03.2`).
+- **Manifesto de Loop (`processos/fechar.loop.json`):** Sincronizado para o cofre `~/.aidd/canonical/processos/`.
 
 ---
 

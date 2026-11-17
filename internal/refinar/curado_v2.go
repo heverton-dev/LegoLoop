@@ -148,7 +148,7 @@ func comSHARota(data []byte, rota []byte) []byte {
 }
 
 // curados troca, em todos, o ROUTE e os DAGs v2 curados pela versão adaptada. O DAG espelho (docs/dags) e o DAG da
-// projeção padrão (loops/<nome>/pipeline.dag.json) acompanham, com o sha do ROUTE novo. Devolve os avisos de arquivos
+// projeção padrão (processos/<nome>/pipeline.dag.json) acompanham, com o sha do ROUTE novo. Devolve os avisos de arquivos
 // que o programa deixou como estavam. O ROUTE só é curado se difere da projeção da versão anterior do processo: o igual
 // foi gerado pelo programa e pode ser regerado.
 func curados(todos []processo.File, raiz, docs string, p processo.Processo, pr *processo.Projecoes, rotaGerada []byte) ([]processo.File, []string) {
@@ -178,7 +178,7 @@ func curados(todos []processo.File, raiz, docs string, p processo.Processo, pr *
 			todos[i].Data, avisos = adaptarDag(atual, p, rota, todos[i].Path, avisos)
 		}
 	}
-	loopsDag := caminhos.CaminhoDAG(filepath.Join(caminhos.DirLoopsEm(raiz), p.Nome))
+	loopsDag := caminhos.CaminhoDAG(filepath.Join(caminhos.DirProcessosEm(raiz), p.Nome))
 	if atual, err := os.ReadFile(loopsDag); err == nil && ehV2Curado(atual) {
 		novo, avisos2 := adaptarDag(atual, p, rota, loopsDag, avisos)
 		todos = append(todos, processo.File{Kind: "DAG_LOOP", Path: loopsDag, Data: novo})

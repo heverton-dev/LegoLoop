@@ -245,7 +245,7 @@ Processo sem sessão viva devolve `[]` e exit 0.
 | :--- | :--- |
 | Contagem de tickets | O brief cita 37 tickets; o plano paralelo tem 11 tickets e a ROUTE tem 15 nós |
 | Nome de erro | O mega SPEC cita `ErrLockAtivo`; o código usa `ErrLockOcupado` |
-| Pasta de Processos | Os schemas citam `processos/<slug>`; o acervo real vive em `loops/<slug>` |
+| Pasta de Processos | Os schemas citam `processos/<slug>`; o acervo real vive em `processos/<slug>` |
 
 ## 3. Apêndice B — Portões de qualidade
 

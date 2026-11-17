@@ -78,7 +78,7 @@ O processo `legoloop-fronteira-ai-driven` foi canonizado com sucesso através do
 - `C:\Users\trcnologia\Desktop\LegoLoop\docs\manuals\2026-11-14_MANUAL_FUNCAO_fronteira-ai-driven_LEGOLOOP.md`: Etapa 1 (Manual Operacional)
 - `C:\Users\trcnologia\Desktop\LegoLoop\docs\books\fronteira-ai-driven`: Etapa 2 (Livro Didático LegoPress)
 - `C:\Users\trcnologia\Desktop\LegoLoop\skills\legoloop-fronteira-ai-driven\SKILL.md`: Etapa 3 (Skill Canônica Universal)
-- `C:\Users\trcnologia\Desktop\LegoLoop\loops\fronteira-ai-driven\pipeline.dag.json`: Etapa 4 (Processo & Grafo DAG)
+- `C:\Users\trcnologia\Desktop\LegoLoop\processos\fronteira-ai-driven\pipeline.dag.json`: Etapa 4 (Processo & Grafo DAG)
 - `bin/legoloop.exe`: Etapa 5 (Recompilação Fresca do Binário)
 - `AGENTS.md, MEMORY.md`: Etapa 6 (Governança Viva (AGENTS e MEMORY))
 - `.codebase-memory/graph.db.zst`: Etapa 7 (Reindexação do Grafo Semântico)

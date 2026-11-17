@@ -49,16 +49,16 @@
 
 | Arquivo / Manifesto | Estado Anterior (Legado) | Estado Atual (Modernizado N10) |
 | :--- | :--- | :--- |
-| `loops/addy-osmani.loop.json` | Sem upstream signatures, sem execution_strategy, sem context_in/out | `$schema` formal, SHA-256 upstream, `execution_strategy`, `context_in`/`context_out`, `test_seam` |
-| `loops/impeccable-design.loop.json` | Sem upstream signatures, sem execution_strategy, sem context_in/out | `$schema` formal, SHA-256 upstream, `execution_strategy`, `context_in`/`context_out`, `test_seam` |
-| `loops/matt-pocock.loop.json` | Sem upstream signatures, sem execution_strategy, sem context_in/out | `$schema` formal, SHA-256 upstream, `execution_strategy`, `context_in`/`context_out`, `test_seam` |
-| `loops/fechar.loop.json` | Nós script sem routing, caminhos desatualizados | `$schema` formal, routing explícito, caminhos canônicos, `test_seam` |
-| `loops/mega-pipeline.loop.json` | Nós genéricos sem delimitadores de contexto | `$schema` formal, SHA-256 upstream, `context_in`/`context_out`, `token_budget`, `test_seam` |
-| `loops/legoloop-canal-redc/pipeline.dag.json` | Sem schema, sem execution_strategy, sem nature | `$schema` formal, SHA-256 upstream, `nature`, `token_budget`, `test_seam` |
-| `loops/legoloop-canal-redc/legoloop-canal-redc.loop.json` | Formato v1 resumido desatualizado | Paridade 1:1 com pipeline.dag.json N10 |
-| `loops/legoloop-video-master/pipeline.dag.json` | Sem schema, sem execution_strategy, sem context_in/out | `$schema` formal, SHA-256 upstream, `execution_strategy`, `test_seam` |
-| `loops/legoloop-video-master/legoloop-video-master.loop.json` | Formato v1 resumido desatualizado | Paridade 1:1 com pipeline.dag.json N10 |
-| `loops/legoloop-n10-foundry/legoloop-n10-foundry.loop.json` | Chave `author` desconhecida quebrava parser | Manifesto DAG completo e válido com 4 nós |
+| `processos/addy-osmani.loop.json` | Sem upstream signatures, sem execution_strategy, sem context_in/out | `$schema` formal, SHA-256 upstream, `execution_strategy`, `context_in`/`context_out`, `test_seam` |
+| `processos/impeccable-design.loop.json` | Sem upstream signatures, sem execution_strategy, sem context_in/out | `$schema` formal, SHA-256 upstream, `execution_strategy`, `context_in`/`context_out`, `test_seam` |
+| `processos/matt-pocock.loop.json` | Sem upstream signatures, sem execution_strategy, sem context_in/out | `$schema` formal, SHA-256 upstream, `execution_strategy`, `context_in`/`context_out`, `test_seam` |
+| `processos/fechar.loop.json` | Nós script sem routing, caminhos desatualizados | `$schema` formal, routing explícito, caminhos canônicos, `test_seam` |
+| `processos/mega-pipeline.loop.json` | Nós genéricos sem delimitadores de contexto | `$schema` formal, SHA-256 upstream, `context_in`/`context_out`, `token_budget`, `test_seam` |
+| `processos/legoloop-canal-redc/pipeline.dag.json` | Sem schema, sem execution_strategy, sem nature | `$schema` formal, SHA-256 upstream, `nature`, `token_budget`, `test_seam` |
+| `processos/legoloop-canal-redc/legoloop-canal-redc.loop.json` | Formato v1 resumido desatualizado | Paridade 1:1 com pipeline.dag.json N10 |
+| `processos/legoloop-video-master/pipeline.dag.json` | Sem schema, sem execution_strategy, sem context_in/out | `$schema` formal, SHA-256 upstream, `execution_strategy`, `test_seam` |
+| `processos/legoloop-video-master/legoloop-video-master.loop.json` | Formato v1 resumido desatualizado | Paridade 1:1 com pipeline.dag.json N10 |
+| `processos/legoloop-n10-foundry/legoloop-n10-foundry.loop.json` | Chave `author` desconhecida quebrava parser | Manifesto DAG completo e válido com 4 nós |
 
 ---
 
@@ -88,4 +88,4 @@
 * **`go test ./...`:** Código 0, 100% dos pacotes Go aprovados (inclusive suíte CLI, DAG e Studio).
 * **`legoloop validate` em todos os loops:** Código 0, 100% dos 14 pipelines validados sem ciclos.
 * **`go build -o bin/legoloop.exe ./cmd/legoloop` & `go install ./cmd/legoloop`:** Código 0, binário limpo atualizado no disco e no PATH do sistema.
-* **`git status`:** Modificações estritamente circunscritas a manifestos em `loops/`, documentação raiz (`README.md`, `AGENTS.md`, `MEMORY.md`) e este relatório.
+* **`git status`:** Modificações estritamente circunscritas a manifestos em `processos/`, documentação raiz (`README.md`, `AGENTS.md`, `MEMORY.md`) e este relatório.

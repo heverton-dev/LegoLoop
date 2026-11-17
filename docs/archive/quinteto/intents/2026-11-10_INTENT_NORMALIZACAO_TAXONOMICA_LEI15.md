@@ -3,7 +3,7 @@
 > **Status:** UNDER_REVIEW  
 > **Data:** 2026-11-10  
 > **Autor:** Claude (a pedido do usuário)  
-> **Alvo:** `internal/`, `cmd/`, `loops/`, `skills/`, `docs/templates/`, `schemas/`, `tools/taxlinter`  
+> **Alvo:** `internal/`, `cmd/`, `processos/`, `skills/`, `docs/templates/`, `schemas/`, `tools/taxlinter`  
 > **Sessão:** 9520cb21-e300-42c1-83f2-c6fab90c3188  
 > **Base das decisões:** decisões D1 a D8 confirmadas pelo usuário na sessão de 2026-11-10  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -20,7 +20,7 @@ O usuário também quer que o Orchestrix execute os tickets sobre o Claude Code,
 
 ### O que ESTÁ no Escopo:
 * [ ] Normalizar código, schema, nomes de arquivo, rotas, templates, prompts, CLI, skills e documentação para a Lei #15.
-* [ ] Migrar os contratos em disco com leitor retrocompatível. Os loops existentes (15 em `loops/` e 6 no Cofre) continuam válidos.
+* [ ] Migrar os contratos em disco com leitor retrocompatível. Os loops existentes (15 em `processos/` e 6 no Cofre) continuam válidos.
 * [ ] Implementar o Orchestrix sobre Claude Code: executor de subagente efêmero, roteador, raias do `agy`, modelo por natureza, paralelismo e telemetria.
 * [ ] Ampliar o `taxlinter` para medir o valor real das violações.
 
@@ -49,7 +49,7 @@ O usuário também quer que o Orchestrix execute os tickets sobre o Claude Code,
 ## 5. Critérios de Sucesso de Alto Nível
 
 * `go run ./tools/taxlinter internal cmd loops skills docs/templates` retorna exit 0 com o linter ampliado.
-* Os 15 loops de `loops/` e os 6 do Cofre validam antes e depois de cada ticket.
+* Os 15 loops de `processos/` e os 6 do Cofre validam antes e depois de cada ticket.
 * Um Processo novo gerado pelo `fabricar` não contém termo proibido.
 * Um Processo de duas etapas roda de ponta a ponta com o binário real e LLM real, com roteamento e telemetria no REPORT.
 

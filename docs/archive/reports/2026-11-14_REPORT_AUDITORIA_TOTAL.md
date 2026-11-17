@@ -9,7 +9,7 @@
    - `skills/legoloop-fronteira-ai-driven/SKILL.md`: adicionada seção `## REGRAS NEGATIVAS (Proibido)`.
    - `internal/orchestrix/prompt_sanitize_test.go`: formatado com `gofmt -w`.
    - `internal/processo/projecoes.go` e `internal/mcp/swarm_tools.go`: refatoradas para <= 35 linhas (`funclen internal` exit 0).
-2. **Processos em `loops/` (`fix-loops`, seq #26):**
+2. **Processos em `processos/` (`fix-loops`, seq #26):**
    - Corrigidos os 8 `pipeline.dag.json` inválidos (`matt-pocock`, `mega-pipeline`, `addy-osmani`, `fechar`, `impeccable-design`, `lauren-tan`, `legoloop-triagem`, `fronteira-ai-driven`).
    - `go run ./cmd/legoloop validate`: 19/19 válidos (`TOTAL OK: 19, FAIL: 0`).
 3. **LegoLoop Studio (`fix-studio`, seq #22):**
@@ -26,4 +26,4 @@
 - CLI: `.\bin\legoloop.exe listar --json` exit 0.
 - MCP (`mcp-router`): `initialize` + `tools/list` via JSON-RPC retornou `mcp_search` e `call_mcp_tool` com exit 0.
 - Studio via Playwright (`http://127.0.0.1:19876`): carregado sem erros de JS/CSP (apenas 404 de `favicon.ico`); `#btn-toggle-sidebar` e `#btn-toggle-inspector` presentes no DOM.
-- Pendências declaradas: `taxlinter` ainda possui violações herdadas em `loops/`, `skills/` e `internal/`; suíte completa `go test -count=1 ./...` em execução final (`task-124`).
+- Pendências declaradas: `taxlinter` ainda possui violações herdadas em `processos/`, `skills/` e `internal/`; suíte completa `go test -count=1 ./...` em execução final (`task-124`).

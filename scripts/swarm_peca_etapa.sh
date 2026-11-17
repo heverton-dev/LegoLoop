@@ -10,7 +10,7 @@ case "$LEGOLOOP_SWARM_WORKER" in
 TICK-01-1)
   {
     echo "# Niveis topologicos"
-    "$BIN" validate "$PROJ/loops/legoloop-swarm/pipeline.dag.json" | awk '/camada/ {n=$2; gsub(":","",n); printf "nivel %d (camada %d): %s\n", n-1, n, $3}'
+    "$BIN" validate "$PROJ/processos/legoloop-swarm/pipeline.dag.json" | awk '/camada/ {n=$2; gsub(":","",n); printf "nivel %d (camada %d): %s\n", n-1, n, $3}'
     echo "Validacao: codigo 0"
   } > "$OUT/01_niveis.md"
   ;;

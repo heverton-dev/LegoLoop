@@ -9,7 +9,7 @@ A Iniciativa I4 (DISSECAR) foi auditada, validada e fechada com êxito. Todos os
 
 ## 2. Artefatos Entregues
 - Skill Canônica: `skills/legoloop-dissecar/SKILL.md`
-- Grafo DAG: `loops/legoloop-dissecar/pipeline.dag.json`
+- Grafo DAG: `processos/legoloop-dissecar/pipeline.dag.json`
 - Handlers REST e Testes do Studio: `internal/studio/dissecar_handler.go` e `internal/studio/dissecar_handler_test.go` (commitados via `swarm-studio-builder-2`).
 
 ## 3. Qualidade e Portões Mecânicos

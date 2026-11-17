@@ -350,7 +350,7 @@
       "id": "M2.1",
       "initiative_id": null,
       "epic_id": "E02",
-      "label": "AntibodiesDB persiste em loops/slug/anticorpos.json (carrega ao iniciar, grava ao registrar)",
+      "label": "AntibodiesDB persiste em processos/slug/anticorpos.json (carrega ao iniciar, grava ao registrar)",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",

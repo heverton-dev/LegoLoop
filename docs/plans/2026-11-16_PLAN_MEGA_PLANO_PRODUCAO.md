@@ -46,7 +46,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-E02.3, A
 | **E03** | I2 · Memória Concorrente | 3 | `AC-E03.1`–`AC-E03.4` | `micro` |
 | **E04** | I3 · Anticorpos Persistentes | 4 | `AC-E04.1`–`AC-E04.4` | `micro` |
 | **E05** | I4 · VSA por Processo | 4 | `AC-E05.1`–`AC-E05.4` | `micro` |
-| **E06** | I5 · Rename `loops/`→`processos/` | 3 | `AC-E06.1`–`AC-E06.3` | `micro` |
+| **E06** | I5 · Rename `processos/`→`processos/` | 3 | `AC-E06.1`–`AC-E06.3` | `micro` |
 | **E07** | I6 · Tríplice Via de Invocação | 4 | `AC-E07.1`–`AC-E07.4` | `micro` |
 | **E08** | I7 · Auditoria Universal + 6 Verbos | 4 | `AC-E08.1`–`AC-E08.4` | `micro` |
 | **E09** | I8 · MCP Único via Router | 2 | `AC-E09.1`, `AC-E09.2` | `micro` |
@@ -59,7 +59,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-E02.3, A
 | `R3` | Memória concorrente | `AC-E03.1`–`AC-E03.4` | `TICK-03.1`–`TICK-03.3` |
 | `R4` | Anticorpos persistentes | `AC-E04.1`–`AC-E04.4` | `TICK-04.1`–`TICK-04.4` |
 | `R5` | VSA por processo | `AC-E05.1`–`AC-E05.4` | `TICK-05.1`–`TICK-05.4` |
-| `R6` | Rename `loops/`→`processos/` | `AC-E06.1`–`AC-E06.3` | `TICK-06.1`–`TICK-06.3` |
+| `R6` | Rename `processos/`→`processos/` | `AC-E06.1`–`AC-E06.3` | `TICK-06.1`–`TICK-06.3` |
 | `R7` | Tríplice via | `AC-E07.1`–`AC-E07.4` | `TICK-07.1`–`TICK-07.4` |
 | `R8` | Auditoria universal + 6 verbos | `AC-E08.1`–`AC-E08.4` | `TICK-08.1`–`TICK-08.4` |
 | `R9` | MCP único via router | `AC-E09.1`, `AC-E09.2` | `TICK-09.1`, `TICK-09.2` |
@@ -148,7 +148,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-E02.3, A
 #### Ticket `TICK-02.3` — Adequação dos processos existentes a 5/5
 * **Nature:** `nano` | **Tipo:** `unit_no` | **Modo:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["TICK-02.2"]` · **Limites:** Timeout `300s` · Retries `1` · Entrada `8000` · Saída `300`
-* **Inputs:** `loops/**` (5 processos) · Spec Anchor `#AC-E02.3`
+* **Inputs:** `processos/**` (5 processos) · Spec Anchor `#AC-E02.3`
 * **Outputs:** processos com 5/5 ou exceção documentada
 * **Verificação:** `legoloop validate` em cada processo
 * **Gate (DSL):** `exit_code == 0`
@@ -305,19 +305,19 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-E02.3, A
 ---
 
 ### 🛑 STOP-GATE HUMANO — ÉPICO 05 (`SG-E05`)
-* **Gate (DSL):** `prompt('Arquitetura VSA consolidada? Autoriza iniciar E06 (rename loops/→processos/)?')`
+* **Gate (DSL):** `prompt('Arquitetura VSA consolidada? Autoriza iniciar E06 (rename processos/→processos/)?')`
 - [ ] 100% dos tickets de E05 com PASS.
 - [ ] Slice exemplar apresentado; docs/ raiz enxuto comprovado.
 - [ ] Autorização explícita do usuário (rename mexe em Lei — mudança deliberada).
 
 ---
 
-### Épico 06 — I5 · Renomeação `loops/` → `processos/`
+### Épico 06 — I5 · Renomeação `processos/` → `processos/`
 
 #### Ticket `TICK-06.1` — Rename + migração de todas as referências vivas
 * **Nature:** `micro` | **Tipo:** `unit_no` | **Modo:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["SG-E05"]` · **Limites:** Timeout `600s` · Retries `1` · Entrada `32000` · Saída `1200`
-* **Inputs:** `loops/**`, código Go, schemas, skills, docs · Spec Anchor `#AC-E06.1`
+* **Inputs:** `processos/**`, código Go, schemas, skills, docs · Spec Anchor `#AC-E06.1`
 * **Alvo de Teste TDD:** `internal/caminhos/caminhos_test.go:TestReferenciasProcessos`
 * **Outputs:** `processos/**` + referências migradas
 * **Verificação:** `go test -v ./...`
@@ -333,7 +333,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-E02.3, A
 * **Gate (DSL):** `exit_code == 0`
 * **Spec Ref:** `AC-E06.2`
 
-#### Ticket `TICK-06.3` — Comando legado `loops/`: exit 2 com guia de migração
+#### Ticket `TICK-06.3` — Comando legado `processos/`: exit 2 com guia de migração
 * **Nature:** `nano` | **Tipo:** `unit_no` | **Modo:** `tdd_red_green` | **Status:** `PENDING`
 * **Dependências:** `["TICK-06.1"]` · **Limites:** Timeout `180s` · Retries `1` · Entrada `8000` · Saída `300`
 * **Alvo de Teste TDD:** `internal/cli/legado_test.go:TestLoopsLegadoExitDois`
@@ -347,7 +347,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-E02.3, A
 ### 🛑 STOP-GATE HUMANO — ÉPICO 06 (`SG-E06`)
 * **Gate (DSL):** `prompt('Rename concluído sem quebra? Autoriza iniciar E07 (tríplice via)?')`
 - [ ] 100% dos tickets de E06 com PASS.
-- [ ] `git grep "loops/"` sem referências vivas.
+- [ ] `git grep "processos/"` sem referências vivas.
 - [ ] Autorização explícita do usuário.
 
 ---
@@ -481,7 +481,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-E02.3, A
 #### Ticket `TICK-10.1` — Débitos zerados: taxlinter 14 + funclen 3
 * **Nature:** `micro` | **Tipo:** `unit_no` | **Modo:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["SG-E09"]` · **Limites:** Timeout `600s` · Retries `1` · Entrada `24000` · Saída `900`
-* **Outputs:** normalização `internal/refinar/curado_v2*`, `loops/legoloop-swarm`, `swarm_run.go`, `cites.go`
+* **Outputs:** normalização `internal/refinar/curado_v2*`, `processos/legoloop-swarm`, `swarm_run.go`, `cites.go`
 * **Verificação:** `go run ./tools/taxlinter internal cmd loops skills docs/templates` + `go run ./tools/funclen internal`
 * **Gate (DSL):** `exit_code == 0`
 * **Spec Ref:** `AC-E10.1`

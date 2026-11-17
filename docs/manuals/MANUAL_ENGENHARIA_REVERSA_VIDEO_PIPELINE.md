@@ -73,7 +73,7 @@ Nenhum pipeline LegoLoop pode depender de serviços pagos ou APIs proprietárias
 
 ## 6. Fase 5: Montagem do Grafo DAG e Integração CLI
 
-1. **Criação do Loop DAG (`loops/<nome>/pipeline.dag.json`):**
+1. **Criação do Loop DAG (`processos/<nome>/pipeline.dag.json`):**
    * Definir nós acíclicos com camadas estritas (`layers`).
    * Associar comandos CLI nativos: `["legoloop", "<modulo>", "<subcomando>"]`.
    * Configurar modo de roteamento: `suggested`.

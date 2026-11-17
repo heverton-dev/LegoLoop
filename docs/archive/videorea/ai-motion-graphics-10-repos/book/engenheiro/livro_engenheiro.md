@@ -278,7 +278,7 @@ go run ./tools/funclen internal            # Funções ≤ 35 linhas
 go build -o bin/legoloop.exe ./cmd/legoloop
 
 # === VALIDAÇÃO ===
-legoloop validate loops/ai-motion-graphics/pipeline.dag.json
+legoloop validate processos/ai-motion-graphics/pipeline.dag.json
 
 # === SKILL ===
 legoloop instalar-skills --dry-run --json

@@ -202,3 +202,35 @@ func TestZeraMemoria(t *testing.T) {
 		t.Errorf("memória deveria estar zerada sem histórico, obtido: %v", est.Sessoes)
 	}
 }
+
+// TestGravaEmProcessos prova AC-E06.2: após o rename, o dialeto de gravação do
+// runtime é processos/ — o quarteto do Processo nasce em processos/<slug>/ e o
+// caminho legado nunca é recriado.
+func TestGravaEmProcessos(t *testing.T) {
+	repo := t.TempDir()
+	dir := resolverDirProcesso(repo, "legoloop-x", "")
+	esp := filepath.Join(repo, caminhos.DirProcessos, "legoloop-x")
+	if dir != esp {
+		t.Fatalf("resolverDirProcesso devolveu %q, esperado %q", dir, esp)
+	}
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatalf("criação de %s: %v", dir, err)
+	}
+	raw := dagCicloMonta(t)
+	dagPath := filepath.Join(dir, caminhos.ArquivoDAG)
+	if err := os.WriteFile(dagPath, raw, 0o644); err != nil {
+		t.Fatalf("escrita do DAG falhou: %v", err)
+	}
+	donaID := rodarCicloCenario(t, dir)
+	if err := garantirQuarteto(dir, dagPath, donaID); err != nil {
+		t.Fatalf("garantirQuarteto falhou: %v", err)
+	}
+	for _, nome := range []string{caminhos.ArquivoDAG, nomeEspelho("legoloop-x"), triagem.ArquivoMemoria} {
+		if _, err := os.Stat(filepath.Join(dir, nome)); err != nil {
+			t.Errorf("artefato %q ausente em processos/: %v", nome, err)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(repo, caminhos.DirLoops)); !os.IsNotExist(err) {
+		t.Fatalf("runtime recriou o diretório legado: %v", err)
+	}
+}

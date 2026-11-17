@@ -273,11 +273,11 @@
 * **Roteamento:** Harness `9router` · Modelo `code-pro` · Effort `high` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
-* **Inputs:** `loops/video-motion/pipeline.dag.json`, `internal/cli/video_motion.go` · Spec Anchor `docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E05.1`
+* **Inputs:** `processos/video-motion/pipeline.dag.json`, `internal/cli/video_motion.go` · Spec Anchor `docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E05.1`
 * **Alvo de Teste TDD:** `internal/cli/video_motion_test.go:TestVideoMotionCLI`
-* **Outputs:** `loops/video-motion/pipeline.dag.json`, `internal/cli/video_motion.go`, `internal/cli/video_motion_test.go`
+* **Outputs:** `processos/video-motion/pipeline.dag.json`, `internal/cli/video_motion.go`, `internal/cli/video_motion_test.go`
 * **Verificação (argv, sem shell):** `go test -v ./internal/cli/... -run TestVideoMotionCLI`
-* **Gate (DSL):** `exit_code == 0 && file_exists('loops/video-motion/pipeline.dag.json') && file_exists('internal/cli/video_motion.go')`
+* **Gate (DSL):** `exit_code == 0 && file_exists('processos/video-motion/pipeline.dag.json') && file_exists('internal/cli/video_motion.go')`
 * **Spec Ref:** `AC-E05.1`
 
 #### Ticket `TICK-05.2` — Gerador do Livro Didático Canônico de Uso (LegoPress)

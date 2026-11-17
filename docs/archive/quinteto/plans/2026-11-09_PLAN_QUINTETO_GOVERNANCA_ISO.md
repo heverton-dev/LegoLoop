@@ -132,7 +132,7 @@
 
 ---
 
-### Épico 05 — Saneamento do Acervo de Loops (`loops/`, `docs/dags/`)
+### Épico 05 — Saneamento do Acervo de Loops (`processos/`, `docs/dags/`)
 
 #### Ticket TICK-05.1: Saneamento e emissão de DAG ISO para `legoloop-video-rea`
 * **Nome Canônico:** `saneamento_video_rea_dag`
@@ -140,8 +140,8 @@
 * **Complexidade Cognitiva:** `simples`
 * **Roteamento de Modelo:** `code-fast` (fallback: `flash`)
 * **Dependências:** `["TICK-01.2", "TICK-03.1"]`
-* **Entradas de Contexto:** `loops/video-rea/pipeline.dag.json`
-* **Saídas Contratadas:** `loops/legoloop-video-rea/pipeline.dag.json`, `docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json`
+* **Entradas de Contexto:** `processos/video-rea/pipeline.dag.json`
+* **Saídas Contratadas:** `processos/legoloop-video-rea/pipeline.dag.json`, `docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json`
 * **Costura de Teste:** `TestVideoREADAG_SemURLHardcoded`
 * **Comando de Verificação:** `go test -v ./internal/videorea -run TestDetectPlatform`
 * **Critério Coberto:** `AC-E05.1`
@@ -153,8 +153,8 @@
 * **Complexidade Cognitiva:** `simples`
 * **Roteamento de Modelo:** `code-fast` (fallback: `flash`)
 * **Dependências:** `["TICK-05.1"]`
-* **Entradas de Contexto:** `loops/`
-* **Saídas Contratadas:** `loops/legoloop-video-motion/`, `loops/legoloop-video-edition/`, `loops/legoloop-fechar/`, `docs/dags/`
+* **Entradas de Contexto:** `processos/`
+* **Saídas Contratadas:** `processos/legoloop-video-motion/`, `processos/legoloop-video-edition/`, `processos/legoloop-fechar/`, `docs/dags/`
 * **Costura de Teste:** `TestAcervoLoops_PrefixoCanonico`
 * **Comando de Verificação:** `go test -v ./internal/loop -run TestListarLoops`
 * **Critério Coberto:** `AC-E05.2`

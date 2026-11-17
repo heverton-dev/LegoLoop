@@ -21,7 +21,7 @@ Cada vídeo analisado recebe um diretório dedicado em `docs/videorea/<slug>/` c
 6. `loop/`: Grafo executável (`pipeline.dag.json`) e Golden Fixture (`fixture_3s.mp4`).
 7. `skill/`: Skill canônica instalável (`SKILL.md`).
 
-Além do isolamento, a fábrica executa a **Projeção Canônica**: espelha ou registra o grafo em `loops/<slug>/` e a skill em `skills/<slug>/`, garantindo consumo natural e sem atrito pelo LegoLoop e seus agentes.
+Além do isolamento, a fábrica executa a **Projeção Canônica**: espelha ou registra o grafo em `processos/<slug>/` e a skill em `skills/<slug>/`, garantindo consumo natural e sem atrito pelo LegoLoop e seus agentes.
 
 ---
 
@@ -76,5 +76,5 @@ type TargetBundle struct {
 ## 4. Costuras de Teste (Test Seams — Pocock)
 
 * **Costura Primária:** Validação da materialização completa da árvore de diretórios via `InitTargetBundle` e `MaterializeBundle`.
-* **Costura Secundária:** Verificação da projeção canônica em `loops/` e `skills/` em diretório temporário (`t.TempDir()`).
+* **Costura Secundária:** Verificação da projeção canônica em `processos/` e `skills/` em diretório temporário (`t.TempDir()`).
 * **Dublês:** Mídia sintética de 3s gerada deterministicamente via `SynthesizeGoldenFixture`.

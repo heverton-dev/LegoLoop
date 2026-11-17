@@ -98,7 +98,7 @@ Para eliminar definitivamente os gaps encontrados no confronto das sessões e na
 * **Portão de Teste:** `go test -v -run TestDossierValidateStrict ./internal/videorea/...`
 
 #### Ticket `TICK-GAP-03` — Confinamento com *Path Jail* no Workspace do Bundle
-* **Alvo:** `internal/videorea/bundle.go` e `loops/legoloop-video-rea/pipeline.dag.json`
+* **Alvo:** `internal/videorea/bundle.go` e `processos/legoloop-video-rea/pipeline.dag.json`
 * **Problema Herdado:** Caminhos arbitrários gravados em `scratch/videorea/raw.json` na raiz.
 * **Ação Cirúrgica:**
   1. Implementar `sanitizeBundlePath(baseDir, slug string) (string, error)` aplicando `filepath.Clean` e barreira contra path traversal.
@@ -111,7 +111,7 @@ Para eliminar definitivamente os gaps encontrados no confronto das sessões e na
 * **Alvo:** `internal/studio/templates.go`, `internal/studio/run_api.go`, `internal/canon/importer.go`
 * **Problema Herdado:** 23 funções herdadas das primeiras sessões ultrapassam o limite de 35 linhas de `tools/funclen`.
 * **Ação Cirúrgica:**
-  1. Substituir os 454 linhas de templates hardcoded em `templates.go` pelo carregamento via `embed.FS` dos arquivos JSON canônicos existentes em `loops/`.
+  1. Substituir os 454 linhas de templates hardcoded em `templates.go` pelo carregamento via `embed.FS` dos arquivos JSON canônicos existentes em `processos/`.
   2. Decompor `handleRunDAG` (95 linhas) e `InstallAndCanonizeSkill` (72 linhas) em subfunções puras (< 35 linhas).
 * **Portão de Teste:** `go run ./tools/funclen internal` com **0 falhas**.
 

@@ -58,8 +58,8 @@
       "routing": { "mode": "suggested", "harness": "9router", "via": "9router", "model": "code-fast", "effort": "low" },
       "isolation": { "write_boundary": "strict" },
       "context_in": [],
-      "context_out": ["loops/manifest.json"],
-      "output": { "artifact": "loops/manifest.json", "gate": "exit_code == 0" },
+      "context_out": ["processos/manifest.json"],
+      "output": { "artifact": "processos/manifest.json", "gate": "exit_code == 0" },
       "spec_ref": "AC-E03.1",
       "status": "PENDING"
     }

@@ -1,4 +1,4 @@
-﻿{
+{
     "$schema":  "https://legoloop.dev/schemas/route.v2.json",
     "schema_version":  2,
     "template_version":  "2.2.0",
@@ -651,7 +651,7 @@
                                   },
                       "inputs":  {
                                      "source_files":  [
-                                                          "loops/**"
+                                                          "processos/**"
                                                       ],
                                      "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E02.3",
                                      "context_artifacts":  [
@@ -1977,7 +1977,7 @@
                                   },
                       "inputs":  {
                                      "source_files":  [
-                                                          "loops/**"
+                                                          "processos/**"
                                                       ],
                                      "spec_anchor":  "docs/specs/2026-11-16_SPEC_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md#AC-E06.1",
                                      "context_artifacts":  [
@@ -3305,7 +3305,7 @@
                       "inputs":  {
                                      "source_files":  [
                                                           "internal/refinar",
-                                                          "loops/legoloop-swarm",
+                                                          "processos/legoloop-swarm",
                                                           "internal/board/swarm_run.go",
                                                           "internal/gate/cites.go"
                                                       ],
@@ -3331,7 +3331,7 @@
                                                         "./tools/taxlinter",
                                                         "internal",
                                                         "cmd",
-                                                        "loops",
+                                                        "processos",
                                                         "skills",
                                                         "docs/templates"
                                                     ],

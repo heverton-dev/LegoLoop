@@ -136,7 +136,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E01.5, AC-E01.6, AC-E01.7, A
 
 ### Épico 02 — Anticorpos Persistidos
 
-#### Ticket `M2.1` — `AntibodiesDB` persiste em `loops/<slug>/anticorpos.json`
+#### Ticket `M2.1` — `AntibodiesDB` persiste em `processos/<slug>/anticorpos.json`
 * **Iniciativa:** `MEMORIA_CONCORRENTE_ANTICORPOS` | **Épico:** `E02` | **Nature:** `micro` | **Tipo:** `unit_no` | **Modo de Execução:** `tdd_red_green` | **Status:** `PENDING`
 * **Dependências:** `["SG-M01"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `ephemeral` · Write Boundary `strict`

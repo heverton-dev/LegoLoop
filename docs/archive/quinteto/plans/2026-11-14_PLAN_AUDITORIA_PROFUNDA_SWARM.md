@@ -66,7 +66,7 @@ covers: [AC-E01.1, AC-E02.1, AC-E03.1, AC-E04.1]
 * **Dependências:** `[]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `code-fast` · Effort `low`
-* **Verificação:** `legoloop validate` nos DAGs em `loops/`
+* **Verificação:** `legoloop validate` nos DAGs em `processos/`
 * **Gate (DSL):** `exit_code == 0 && file_exists('docs/reports/audit_f3_dags.json')`
 * **Spec Ref:** `AC-E03.1`
 

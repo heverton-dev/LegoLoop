@@ -197,7 +197,7 @@
             "./tools/taxlinter",
             "internal",
             "cmd",
-            "loops",
+            "processos",
             "skills",
             "docs/templates"
           ]

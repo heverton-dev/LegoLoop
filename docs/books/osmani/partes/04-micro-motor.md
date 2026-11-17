@@ -68,7 +68,7 @@ O Playbook L é comparado ao loop mestre no capítulo 6.
 
 ## 20. Integração no LegoLoop
 
-O arquivo `loops/addy-osmani.loop.json` segue o esquema `dag.v1`, tem gatilho manual e declara sete nós em cadeia linear, todos apontando para `skills/aidd-osmani`.
+O arquivo `processos/addy-osmani.loop.json` segue o esquema `dag.v1`, tem gatilho manual e declara sete nós em cadeia linear, todos apontando para `skills/aidd-osmani`.
 
 | Nó                                   | Artefato exigido pelo gate     | Modelo sugerido  |
 | :----------------------------------- | :----------------------------- | :--------------- |
@@ -85,8 +85,8 @@ Cada gate é do tipo `file_exists(...)`: confirma que o artefato existe, não qu
 Os comandos reais do CLI para operar a esteira são:
 
 ```bash
-legoloop validate loops/addy-osmani.loop.json
-legoloop run loops/addy-osmani.loop.json --var target_route=/checkout
+legoloop validate processos/addy-osmani.loop.json
+legoloop run processos/addy-osmani.loop.json --var target_route=/checkout
 legoloop studio        # padrão: 127.0.0.1:7878
 ```
 

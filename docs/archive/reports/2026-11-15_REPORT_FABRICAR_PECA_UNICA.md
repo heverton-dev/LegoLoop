@@ -78,7 +78,7 @@ O processo `legoloop-fabricar-peca-unica` foi canonizado com sucesso através do
 - `C:\Users\trcnologia\Desktop\LegoLoop\docs\manuals\2026-11-15_MANUAL_FUNCAO_fabricar-peca-unica_LEGOLOOP.md`: Etapa 1 (Manual Operacional)
 - `C:\Users\trcnologia\Desktop\LegoLoop\docs\books\legoloop-fabricar-peca-unica`: Etapa 2 (Livro Didático LegoPress)
 - `C:\Users\trcnologia\Desktop\LegoLoop\skills\legoloop-fabricar-peca-unica\SKILL.md`: Etapa 3 (Skill Canônica Universal)
-- `C:\Users\trcnologia\Desktop\LegoLoop\loops\legoloop-fabricar-peca-unica\pipeline.dag.json`: Etapa 4 (Processo & Grafo DAG)
+- `C:\Users\trcnologia\Desktop\LegoLoop\processos\legoloop-fabricar-peca-unica\pipeline.dag.json`: Etapa 4 (Processo & Grafo DAG)
 - `C:\Users\trcnologia\Desktop\LegoLoop\bin\legoloop.exe`: Etapa 5 (Recompilação Fresca do Binário)
 - `AGENTS.md, MEMORY.md`: Etapa 6 (Governança Viva (AGENTS e MEMORY))
 - `C:\Users\trcnologia\Desktop\LegoLoop\.codebase-memory\graph.db.zst`: Etapa 7 (Reindexação do Grafo Semântico)

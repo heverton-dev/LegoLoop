@@ -317,8 +317,8 @@ func newOrchestrix(ctx context.Context, d Deps, skills string, vars map[string]s
 	if err := ligarRoteamento(ox, d); err != nil {
 		return nil, err
 	}
-	if acervo := caminhos.DirLoopsEm(dir); dirExists(acervo) {
-		if ox.LoopStore, err = studiodoc.NewStore(acervo); err != nil {
+	if acervos := caminhos.DirsLeitura(dir); len(acervos) > 0 {
+		if ox.LoopStore, err = studiodoc.NewStore(acervos[0]); err != nil {
 			return nil, err
 		}
 	}

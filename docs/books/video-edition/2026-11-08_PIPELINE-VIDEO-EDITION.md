@@ -545,12 +545,12 @@ O operador pode disparar o pipeline diretamente pelo terminal através do execut
 
 ### Disparo Padrão com Variável de Entrada
 ```bash
-legoloop run loops/video-edition/pipeline.dag.json --var input_video="entrada/minha_aula.mp4"
+legoloop run processos/video-edition/pipeline.dag.json --var input_video="entrada/minha_aula.mp4"
 ```
 
 ### Disparo Customizado com Ajuste Fino de Parâmetros
 ```bash
-legoloop run loops/video-edition/pipeline.dag.json \
+legoloop run processos/video-edition/pipeline.dag.json \
   --var input_video="gravacao_bruta.mov" \
   --var pre_roll_ms=50 \
   --var ducking_db="-20dB" \

@@ -75,7 +75,7 @@ No LegoLoop, o pipeline existe em duas formas canônicas, ambas verificáveis no
 
 ### A peça de loop no acervo
 
-O arquivo `loops/impeccable-design.loop.json` segue o esquema `dag.v1` e se chama "Pipeline de Design Impeccable (6 Sub-Loops)", versão 1.0.0. Ele declara seis nós em cadeia linear, cada um dependente do anterior, com o artefato exigido e o modelo sugerido em `routing`:
+O arquivo `processos/impeccable-design.loop.json` segue o esquema `dag.v1` e se chama "Pipeline de Design Impeccable (6 Sub-Loops)", versão 1.0.0. Ele declara seis nós em cadeia linear, cada um dependente do anterior, com o artefato exigido e o modelo sugerido em `routing`:
 
 | Nó                            | Artefato que o gate exige                  | Modelo sugerido  |
 | :---------------------------- | :----------------------------------------- | :--------------- |
@@ -110,10 +110,10 @@ Três comandos do CLI `legoloop` bastam para confirmar que a esteira está ínte
 
 ```bash
 # 1. Valida contrato, gates e ciclos do DAG
-legoloop validate loops/impeccable-design.loop.json
+legoloop validate processos/impeccable-design.loop.json
 
 # 2. Executa a esteira pelo motor DAG
-legoloop run loops/impeccable-design.loop.json
+legoloop run processos/impeccable-design.loop.json
 
 # 3. Abre o Looping Studio (padrão: 127.0.0.1:7878)
 legoloop studio

@@ -29,7 +29,7 @@ func projetarSpec(p Processo, ord []Etapa) string {
 
 // dagNoCofre é o DAG do processo no cofre, no layout que o fabricar grava: uma pasta por processo.
 func dagNoCofre(nome string) string {
-	return "~/.aidd/canonical/" + paths.DirAntigo + "/" + nome + "/" + paths.ArquivoDAG
+	return "~/.aidd/canonical/" + paths.DirProcessos + "/" + nome + "/" + paths.ArquivoDAG
 }
 
 func writeSpecContratos(b *strings.Builder, ord []Etapa) {

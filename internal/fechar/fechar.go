@@ -159,7 +159,7 @@ func fecharDAG(d *Deps, slug, canon, sessaoID string, dry bool) (string, error) 
 
 // resolverDirProcesso devolve a pasta existente do Processo nos dois dialetos,
 // com preferência para o novo e para o nome canônico sobre o slug. Sem pasta
-// existente, devolve a do dialeto antigo, que é o dialeto de gravação.
+// existente, devolve a do dialeto novo, que é o dialeto de gravação.
 func resolverDirProcesso(repoDir, slug, canon string) string {
 	nomes := []string{slug}
 	if canon != "" {
@@ -172,7 +172,7 @@ func resolverDirProcesso(repoDir, slug, canon string) string {
 			}
 		}
 	}
-	return filepath.Join(caminhos.DirLoopsEm(repoDir), nomes[0])
+	return filepath.Join(caminhos.DirProcessosEm(repoDir), nomes[0])
 }
 
 // nomeEspelho devolve o nome do arquivo espelho do DAG na pasta do Processo.

@@ -4,7 +4,7 @@
 > **Data:** 2026-11-07  
 > **Autor:** Ecossistema LegoLoop  
 > **Iniciativa:** Canonização Universal do Ciclo de Vida do LegoLoop  
-> **Alvo:** `internal/fechar`, `internal/cli`, `skills/legoloop-fechar`, `loops/fechar`, `AGENTS.md`  
+> **Alvo:** `internal/fechar`, `internal/cli`, `skills/legoloop-fechar`, `processos/fechar`, `AGENTS.md`  
 > **Sessão:** 9408084d-aa3e-40a3-a924-418ca1f67855  
 > **Confiança da Entrevista:** 100%  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -26,8 +26,8 @@
 ### O que ESTÁ no Escopo (Objetivos Primários):
 * [ ] Objetivo 1: Criar o motor em Go `internal/fechar` com orquestração mecânica das 8 etapas de canonização universal.
 * [ ] Objetivo 2: Expor o subcomando CLI `legoloop fechar <slug> [--yes] [--json]` e a skill nativa universal `skills/legoloop-fechar/SKILL.md` (distribuída a todos os harnesses).
-* [ ] Objetivo 3: Criar o grafo DAG acíclico `loops/fechar/pipeline.dag.json` e o manifesto `.loop.json` para permitir composição como sub-loop final de qualquer processo.
-* [ ] Objetivo 4: Acoplar o gancho final de fechamento no motor `internal/fabricar`, no `internal/videorea` e no `loops/mega-pipeline.loop.json`.
+* [ ] Objetivo 3: Criar o grafo DAG acíclico `processos/fechar/pipeline.dag.json` e o manifesto `.loop.json` para permitir composição como sub-loop final de qualquer processo.
+* [ ] Objetivo 4: Acoplar o gancho final de fechamento no motor `internal/fabricar`, no `internal/videorea` e no `processos/mega-pipeline.loop.json`.
 
 ### O que NÃO ESTÁ no Escopo (Não-Objetivos / Out-of-Scope):
 * ⛔ Não faremos refatorações oportunistas fora dos módulos declarados em `Alvo`.
@@ -44,7 +44,7 @@
 | `BLOCO-01` | `skill` | `skills/aidd-spec` | Elaborar especificação formal com critérios BDD e contratos. |
 | `BLOCO-02` | `unit_task` | `internal/fechar` | Motor de orquestração mecânica das 8 etapas em Go via TDD. |
 | `BLOCO-03` | `unit_task` | `internal/cli/fechar.go` | Subcomando CLI `legoloop fechar` com flags e telemetria STE-PT. |
-| `BLOCO-04` | `subloop` | `loops/fechar` | Grafo DAG acíclico executável e composível em outros loops. |
+| `BLOCO-04` | `subloop` | `processos/fechar` | Grafo DAG acíclico executável e composível em outros loops. |
 | `BLOCO-05` | `script` | `go test -count=1 ./...` | Regressão mecânica global, funclen, go vet e gofmt. |
 | `BLOCO-06` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca e instalação no PATH. |
 

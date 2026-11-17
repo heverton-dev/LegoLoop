@@ -14,7 +14,7 @@ No LegoLoop, a criação de um pipeline não é a geração isolada de um script
 | Termo | O que é no LegoLoop | Onde vive | Papel na Esteira |
 | :--- | :--- | :--- | :--- |
 | **Peça** | Unidade modular encaixável no Canvas (8 naturezas: Trigger, Controle, Skill, MCP, Loop, Script, Hook, Gate) | `SKILL.md`, scripts, MCPs, hooks, gates | Consome peças existentes do cofre e gera uma peça Skill nova |
-| **Loop** | Esteira/sub-grafo reutilizável no acervo | `~/.aidd/canonical/loops/<nome>.loop.json` e `loops/<slug>/` | Criação de peça de composição hierárquica |
+| **Loop** | Esteira/sub-grafo reutilizável no acervo | `~/.aidd/canonical/processos/<nome>.loop.json` e `processos/<slug>/` | Criação de peça de composição hierárquica |
 | **Pipeline (DAG)** | O grafo acíclico executável com nós, comandos, saídas e gates | `<nome>.dag.json` | O motor executável via `legoloop run` |
 | **Função** | Capacidade nativa do binário em Go | `legoloop fabricar`, `legoloop fechar` | O executor da esteira de criação e canonização |
 | **Processo** | O produto final completo | `legoloop-<slug>` | 1 Skill + 1 Loop + 1 Pipeline DAG + 5 Docs Governança + Livro + Manual |
@@ -85,8 +85,8 @@ flowchart LR
    Ativo sintético mínimo de teste (ex.: `fixture_3s.mp4` para vídeo, ou dataset mínimo estruturado) gerado em `loop/` para validar a execução ponta a ponta sem falhas de integração. $\rightarrow$ 🛑 **`SG-DAG-FIXTURE`**
 3. **Skill Canônica Universal (`skills/<slug>/SKILL.md`):**  
    A peça de invocação do agente. Define quando usar e quando NÃO usar, contratos de entrada e saída (`consumes` / `produces`), invariantes negativas e modelos recomendados.
-4. **Loop Reutilizável (`loops/<slug>/<slug>.loop.json`):**  
-   Registra a esteira no acervo (`~/.aidd/canonical/loops/`), permitindo que este pipeline seja consumido como sub-loop em outros pipelines via `/legoloop-compor`.
+4. **Loop Reutilizável (`processos/<slug>/<slug>.loop.json`):**  
+   Registra a esteira no acervo (`~/.aidd/canonical/processos/`), permitindo que este pipeline seja consumido como sub-loop em outros pipelines via `/legoloop-compor`.
 5. **Livro Didático LegoPress (`docs/books/<slug>/`):**  
    Compilado pelo motor editorial: `livro.json`, capítulos em `partes/`, `slug.md` e `slug.pdf` gerado via Typst/Pandoc com auditoria geométrica contra páginas órfãs.
 6. **Manual Operacional (`docs/manuals/YYYY-MM-DD_MANUAL_FUNCAO_<SLUG>_LEGOLOOP.md`):**  

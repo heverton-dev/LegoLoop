@@ -239,14 +239,17 @@ func planejar(req Request, d Deps) (Plano, error) {
 
 // lerProcesso lê o .processo.json do cofre. Processo da v1 (só o documento do Studio) não se refina.
 func lerProcesso(vault, nome string) (processo.Processo, error) {
-	caminho := processo.CaminhoNoCofre(vault, nome)
+	caminho := processo.CaminhoNoCofreLeitura(vault, nome)
 	if _, err := os.Stat(caminho); err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			return processo.Processo{}, err
 		}
 		msg := ste.Msg("refinar.nao_existe", nome, vault)
-		if _, err := os.Stat(filepath.Join(vault, paths.DirAntigo, nome+paths.SufixoAntigo)); err == nil {
-			msg = ste.Msg("refinar.so_v1", nome)
+		for _, dir := range paths.DirsLeitura(vault) {
+			if _, err := os.Stat(filepath.Join(dir, nome+paths.SufixoAntigo)); err == nil {
+				msg = ste.Msg("refinar.so_v1", nome)
+				break
+			}
 		}
 		return processo.Processo{}, fmt.Errorf("%w: %s", ErrNaoExiste, msg)
 	}

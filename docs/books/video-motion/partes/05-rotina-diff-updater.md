@@ -2,7 +2,7 @@
 
 ## Governança Viva de Documentação
 
-No ecossistema LegoLoop, nenhuma documentação pode se tornar obsoleta em relação ao código real. Sempre que um arquivo do pipeline (`internal/videomotion/` ou `loops/video-motion/`) for alterado via commit ou refatoração, o motor **LegoPress** sincroniza a obra técnica automaticamente.
+No ecossistema LegoLoop, nenhuma documentação pode se tornar obsoleta em relação ao código real. Sempre que um arquivo do pipeline (`internal/videomotion/` ou `processos/video-motion/`) for alterado via commit ou refatoração, o motor **LegoPress** sincroniza a obra técnica automaticamente.
 
 ## Comandos de Manutenção do Livro
 

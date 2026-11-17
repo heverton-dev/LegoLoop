@@ -79,10 +79,10 @@ O Mega-Pipeline é operado com total simplicidade via linha de comando ou pelo c
 
 ```bash
 # 1. Validação estrita do grafo acíclico DAG (zero ciclos, 4 camadas)
-legoloop validate loops/legoloop-video-master/pipeline.dag.json
+legoloop validate processos/legoloop-video-master/pipeline.dag.json
 
 # 2. Execução do pipeline completo a partir de um roteiro JSON
-legoloop run loops/legoloop-video-master/pipeline.dag.json --workdir ./output
+legoloop run processos/legoloop-video-master/pipeline.dag.json --workdir ./output
 
 # 3. Auditoria geométrica e compilação do livro técnico LegoPress
 legoloop legopress auditar docs/books/video-master/2026-11-07_LIVRO_LEGOLOOP_VIDEO_MASTER.pdf

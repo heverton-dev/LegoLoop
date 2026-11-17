@@ -473,7 +473,7 @@
       "id": "TICK-03.1",
       "initiative_id": null,
       "epic_id": "E03",
-      "label": "Grafo DAG loops/fechar/pipeline.dag.json",
+      "label": "Grafo DAG processos/fechar/pipeline.dag.json",
       "nature": "nano",
       "type": "unit_task",
       "ref": null,
@@ -517,23 +517,23 @@
       },
       "inputs": {
         "source_files": [
-          "loops/fechar/pipeline.dag.json"
+          "processos/fechar/pipeline.dag.json"
         ],
         "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E03.1",
         "context_artifacts": []
       },
       "outputs": {
         "artifacts": [
-          "loops/fechar/pipeline.dag.json"
+          "processos/fechar/pipeline.dag.json"
         ],
         "verification": [
           "go",
           "run",
           "./cmd/legoloop",
           "validate",
-          "loops/fechar/pipeline.dag.json"
+          "processos/fechar/pipeline.dag.json"
         ],
-        "gate": "exit_code == 0 && file_exists('loops/fechar/pipeline.dag.json')"
+        "gate": "exit_code == 0 && file_exists('processos/fechar/pipeline.dag.json')"
       },
       "dependencies": [
         "SG-E02"
@@ -550,7 +550,7 @@
       "id": "TICK-03.2",
       "initiative_id": null,
       "epic_id": "E03",
-      "label": "Acoplamento no loops/mega-pipeline.loop.json",
+      "label": "Acoplamento no processos/mega-pipeline.loop.json",
       "nature": "nano",
       "type": "unit_task",
       "ref": null,
@@ -594,21 +594,21 @@
       },
       "inputs": {
         "source_files": [
-          "loops/mega-pipeline.loop.json"
+          "processos/mega-pipeline.loop.json"
         ],
         "spec_anchor": "docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E03.2",
         "context_artifacts": []
       },
       "outputs": {
         "artifacts": [
-          "loops/mega-pipeline.loop.json"
+          "processos/mega-pipeline.loop.json"
         ],
         "verification": [
           "go",
           "run",
           "./cmd/legoloop",
           "validate",
-          "loops/mega-pipeline.loop.json"
+          "processos/mega-pipeline.loop.json"
         ],
         "gate": "exit_code == 0"
       },

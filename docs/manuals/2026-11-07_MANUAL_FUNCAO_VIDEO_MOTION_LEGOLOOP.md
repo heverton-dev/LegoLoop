@@ -4,7 +4,7 @@
 > **Autoridade:** Ecossistema LegoLoop  
 > **Status:** Canônico  
 > **Escopo:** Pipeline determinístico de edição e motion vídeo para redes sociais e documentários  
-> **Fontes de verdade:** `internal/videomotion/` · `skills/legoloop-video-motion/SKILL.md` · `loops/video-motion/pipeline.dag.json`
+> **Fontes de verdade:** `internal/videomotion/` · `skills/legoloop-video-motion/SKILL.md` · `processos/video-motion/pipeline.dag.json`
 
 ---
 

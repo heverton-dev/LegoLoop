@@ -35,7 +35,7 @@ O sistema foi projetado para ingerir URLs de vídeos (YouTube, Instagram Reels, 
 - **Golden Fixture Sintética:** Criação de vídeo fixture de 3.0 segundos (`testdata/fixture_3s.mp4`) para execução de testes TDD do novo pipeline em menos de 2 segundos.
 
 ### Épico 05 — Orquestrador DAG, CLI, Livro LegoPress e Skill
-- **Grafo DAG Acíclico (`loops/video-rea/pipeline.dag.json`):** 6 nós ordenados por camadas topológicas, validados com sucesso por `legoloop validate`.
+- **Grafo DAG Acíclico (`processos/video-rea/pipeline.dag.json`):** 6 nós ordenados por camadas topológicas, validados com sucesso por `legoloop validate`.
 - **Comando CLI Nativo (`internal/cli/video_rea.go`):** Subcomandos `ingest`, `forensics`, `curate`, `gate`, `govern`, `book` e `run` registrados em `legoloop video-rea`.
 - **Livro Didático LegoPress (`docs/books/video-rea/`):** 5 capítulos + frontmatter + manifesto `livro.json`, compilados em PDF (9 páginas) com auditoria geométrica 100% válida.
 - **Skill Canônica:** `skills/legoloop-video-rea/SKILL.md` pronta para acionamento nos chats via `/legoloop-video-rea`.

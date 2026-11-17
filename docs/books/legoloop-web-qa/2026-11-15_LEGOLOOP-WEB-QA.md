@@ -26,7 +26,7 @@ abstract: |
 
   A Parte I apresenta o problema de interfaces quebradas e o modelo mental macro de auditoria antes da mutação de código. A Parte II detalha as oito peças do arsenal e suas responsabilidades complementares. A Parte III disseca as oito camadas do DAG `pipeline.dag.json`, os viewports (`1440x900` e `390x844`) e os limiares numéricos de reprovação. A Parte IV demonstra a operação prática via `tools/webqa/webqa.mjs` e o encadeamento obrigatório pós-relatório (`INTERVIEW -> INTENT -> SPEC -> PLAN -> ROUTE -> DAG -> SWARM -> BUILD`). A Parte V consolida guardrails negativos, matriz de falhas FMEA e apêndices de rastreabilidade.
 
-  Fonte primária: `docs/manuals/2026-11-15_MANUAL_WEB_QA.md`, `docs/specs/2026-11-15_SPEC_WEB_QA.md` e `loops/legoloop-web-qa/pipeline.dag.json`.
+  Fonte primária: `docs/manuals/2026-11-15_MANUAL_WEB_QA.md`, `docs/specs/2026-11-15_SPEC_WEB_QA.md` e `processos/legoloop-web-qa/pipeline.dag.json`.
 ---
 
 # Como ler este livro
@@ -87,7 +87,7 @@ O motor `obscura` executa verificação ultrarrápida em V8 nativo (~30MB de RAM
 
 ## Topologia em 8 Camadas
 
-O grafo `loops/legoloop-web-qa/pipeline.dag.json` (`schema_version: 2`) organiza 12 nós em 8 camadas topológicas, garantindo isolamento estrito (`orchestrix_hermetic`) e `write_boundary: strict`:
+O grafo `processos/legoloop-web-qa/pipeline.dag.json` (`schema_version: 2`) organiza 12 nós em 8 camadas topológicas, garantindo isolamento estrito (`orchestrix_hermetic`) e `write_boundary: strict`:
 
 1. **Camada 1 (`n01_preflight`):** Verifica presença real das 8 peças no PATH, `node_modules` local e cofre de skills.
 2. **Camada 2 (`n02_boot_e_descoberta`):** Sobe o servidor local se `--cmd` e `--port` forem fornecidos e descobre rotas via crawl HTML + `/sitemap.xml` + lista explícita `--routes`.
@@ -114,7 +114,7 @@ A função `evaluateThresholds` em `tools/webqa/webqa.mjs` aplica critérios bin
 Antes de rodar qualquer auditoria, valide a integridade do grafo e do ambiente:
 
 ```bash
-legoloop validate loops/legoloop-web-qa/pipeline.dag.json
+legoloop validate processos/legoloop-web-qa/pipeline.dag.json
 node --test tools/webqa/webqa.test.mjs
 node tools/webqa/webqa.mjs preflight --json
 ```
@@ -170,7 +170,7 @@ Concluída a entrevista, a Camada 8 (`n12_governanca_build`) emite a cadeia comp
 ## Apêndice: Rastreabilidade dos Artefatos
 
 - **Skill Canônica:** `skills/legoloop-web-qa/SKILL.md`
-- **DAG Executivo (v2):** `loops/legoloop-web-qa/pipeline.dag.json` e `docs/dags/2026-11-15_DAG_WEB_QA.json`
+- **DAG Executivo (v2):** `processos/legoloop-web-qa/pipeline.dag.json` e `docs/dags/2026-11-15_DAG_WEB_QA.json`
 - **Rota v2:** `docs/routes/2026-11-15_ROUTE_WEB_QA.json`
 - **SPEC e PLAN:** `docs/specs/2026-11-15_SPEC_WEB_QA.md` e `docs/plans/2026-11-15_PLAN_WEB_QA.md`
 - **Fichas Técnicas:** `docs/fichas/legoloop-web-qa/n01.md` a `n12.md`

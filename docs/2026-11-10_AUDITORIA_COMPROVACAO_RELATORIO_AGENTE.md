@@ -29,7 +29,7 @@ A presente auditoria confrontou, de forma cirúrgica e mecânica, cada uma das a
 
 ### 1.1. Falso `ingest` no Módulo `video-rea`
 * **Caso Apresentado:** A função `runIngest` promete fazer a ingestão de um vídeo, mas apenas captura `--url`, instancia `VideoInput{URL: *rawURL}`, salva o JSON e encerra com exit code 0 sem chamar `yt-dlp` ou baixar áudio/metadados.
-* **Código Real:** [internal/cli/video_rea.go](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/cli/video_rea.go#L70-L84) e [loops/legoloop-video-rea/pipeline.dag.json](file:///C:/Users/trcnologia/Desktop/LegoLoop/loops/legoloop-video-rea/pipeline.dag.json#L35-L85).
+* **Código Real:** [internal/cli/video_rea.go](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/cli/video_rea.go#L70-L84) e [processos/legoloop-video-rea/pipeline.dag.json](file:///C:/Users/trcnologia/Desktop/LegoLoop/processos/legoloop-video-rea/pipeline.dag.json#L35-L85).
 ```go
 func runIngest(args []string, d Deps) int {
 	fs := newFlags("video-rea ingest", d)
@@ -48,7 +48,7 @@ func runIngest(args []string, d Deps) int {
 }
 ```
 * **Veredito:** **PROCEDE TOTALMENTE.**
-* **Prova Comprobatória:** O nó `n01_crawler_ingest` em `loops/legoloop-video-rea/pipeline.dag.json` intitula-se *"Ingestão e Download de Metadados e Áudio Bruto"*, mas a função Go invocada (`runIngest`) apenas persiste a URL pura no arquivo de saída sem realizar qualquer download ou chamada a extratores (`yt-dlp`). O motor Go em `internal/videorea/crawler.go` possui apenas o método `DetectPlatform` (checagem de string de host), sem nenhuma implementação de crawler de áudio ou metadados.
+* **Prova Comprobatória:** O nó `n01_crawler_ingest` em `processos/legoloop-video-rea/pipeline.dag.json` intitula-se *"Ingestão e Download de Metadados e Áudio Bruto"*, mas a função Go invocada (`runIngest`) apenas persiste a URL pura no arquivo de saída sem realizar qualquer download ou chamada a extratores (`yt-dlp`). O motor Go em `internal/videorea/crawler.go` possui apenas o método `DetectPlatform` (checagem de string de host), sem nenhuma implementação de crawler de áudio ou metadados.
 * **Micro-Ticket Cirúrgico:**
   * **Ticket ID:** `TICK-FIX-VREA-01`
   * **Alvo:** `internal/videorea/crawler.go` e `internal/cli/video_rea.go`
@@ -78,7 +78,7 @@ func runIngest(args []string, d Deps) int {
 
 ### 1.3. Poluição da Raiz e Falta de Path Jail (`bundle.go`)
 * **Caso Apresentado:** Ferramentas de I/O aceitam caminhos arbitrários sem sandbox estrito (`filepath.Clean` + checagem de prefixo em `docs/videorea/<slug>/`). O modelo gravou arquivos em `scratch/` diretamente na raiz em vez de confiná-los no bundle.
-* **Código Real:** [internal/videorea/bundle.go](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/videorea/bundle.go#L22-L37) e [loops/legoloop-video-rea/pipeline.dag.json](file:///C:/Users/trcnologia/Desktop/LegoLoop/loops/legoloop-video-rea/pipeline.dag.json#L65-L79).
+* **Código Real:** [internal/videorea/bundle.go](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/videorea/bundle.go#L22-L37) e [processos/legoloop-video-rea/pipeline.dag.json](file:///C:/Users/trcnologia/Desktop/LegoLoop/processos/legoloop-video-rea/pipeline.dag.json#L65-L79).
 ```go
 func NewTargetBundle(baseDir, slug string) *TargetBundle {
 	base := filepath.Join(baseDir, slug)
@@ -91,10 +91,10 @@ func NewTargetBundle(baseDir, slug string) *TargetBundle {
 * **Veredito:** **PROCEDE TOTALMENTE.**
 * **Prova Comprobatória:** 
   1. Em `internal/videorea/bundle.go`, `NewTargetBundle` concatena diretamente caminhos com `filepath.Join` sem sanitizar com `filepath.Clean` e sem validar se o caminho resultante escapa de `baseDir` via traversals (`../`).
-  2. No próprio DAG `loops/legoloop-video-rea/pipeline.dag.json` (linhas 65 e 75), os comandos fixam saída em `"scratch/videorea/raw.json"` (na raiz do repositório) em vez de respeitar a hierarquia do bundle em `docs/videorea/<slug>/scratch/`.
+  2. No próprio DAG `processos/legoloop-video-rea/pipeline.dag.json` (linhas 65 e 75), os comandos fixam saída em `"scratch/videorea/raw.json"` (na raiz do repositório) em vez de respeitar a hierarquia do bundle em `docs/videorea/<slug>/scratch/`.
 * **Micro-Ticket Cirúrgico:**
   * **Ticket ID:** `TICK-FIX-VREA-03`
-  * **Alvo:** `internal/videorea/bundle.go` e `loops/legoloop-video-rea/pipeline.dag.json`
+  * **Alvo:** `internal/videorea/bundle.go` e `processos/legoloop-video-rea/pipeline.dag.json`
   * **Ação:** Adicionar função de confinamento seguro `sanitizeBundlePath(baseDir, slug string) (string, error)` aplicando `filepath.Clean` e rejeitando qualquer prefixo fora de `baseDir`. Ajustar os nós do DAG do `video-rea` para utilizarem o caminho relativo ao workspace do bundle.
 
 ---
@@ -176,7 +176,7 @@ func NewTargetBundle(baseDir, slug string) *TargetBundle {
 * **Micro-Ticket Cirúrgico:**
   * **Ticket ID:** `TICK-DEBT-FUNCLEN-01`
   * **Alvo:** `internal/canon/importer.go`, `internal/assets/skills.go` e `internal/studio/`
-  * **Ação:** Decompor `BuiltinTemplates` (454 linhas) carregando os templates a partir dos arquivos `.json` existentes em `loops/` via `embed.FS`, e decompor as funções de roteador HTTP do Studio em handlers menores.
+  * **Ação:** Decompor `BuiltinTemplates` (454 linhas) carregando os templates a partir dos arquivos `.json` existentes em `processos/` via `embed.FS`, e decompor as funções de roteador HTTP do Studio em handlers menores.
 
 ---
 
@@ -198,9 +198,9 @@ func NewTargetBundle(baseDir, slug string) *TargetBundle {
 * **Caso Apresentado:**
   1. Gates fracos no DAG: manual promete 4 gates rigorosos de julgamento, mas `impeccable-design.loop.json` usa apenas `file_exists(...)`.
   2. Roteamento incompleto: últimos 4 nós não declaram modelo.
-  3. Duplicação JSON vs Go: esteira declarada em `loops/impeccable-design.loop.json` e hardcoded em `internal/studio/templates.go`.
+  3. Duplicação JSON vs Go: esteira declarada em `processos/impeccable-design.loop.json` e hardcoded em `internal/studio/templates.go`.
   4. Typo no manual: `impeccabe-finish-reviewer`.
-* **Código Real:** [loops/impeccable-design.loop.json](file:///C:/Users/trcnologia/Desktop/LegoLoop/loops/impeccable-design.loop.json), [internal/studio/templates.go](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/templates.go#L188-L245) e [docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md#L66).
+* **Código Real:** [processos/impeccable-design.loop.json](file:///C:/Users/trcnologia/Desktop/LegoLoop/processos/impeccable-design.loop.json), [internal/studio/templates.go](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/templates.go#L188-L245) e [docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md#L66).
 * **Veredito:** **PROCEDE TOTALMENTE.**
 * **Prova Comprobatória:**
   1. Todos os nós de `impeccable-design.loop.json` possuem como único gate `file_exists(...)` (ex.: `file_exists('src/styles/theme.css')`).
@@ -212,7 +212,7 @@ func NewTargetBundle(baseDir, slug string) *TargetBundle {
   * **Alvo:** `docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md:66`
   * **Ação:** Corrigir typo para `impeccable-finish-reviewer`.
   * **Ticket ID:** `TICK-FIX-IMP-02`
-  * **Alvo:** `internal/studio/templates.go` e `loops/impeccable-design.loop.json`
+  * **Alvo:** `internal/studio/templates.go` e `processos/impeccable-design.loop.json`
   * **Ação:** Unificar a SSOT fazendo `internal/studio` deserializar `impeccable-design.loop.json` via `embed.FS` em vez de manter uma struct duplicada em Go. Evoluir os gates para validar conformidade CSS (`has_pattern('src/styles/theme.css', ':root')`).
 
 ---
@@ -292,7 +292,7 @@ func NewTargetBundle(baseDir, slug string) *TargetBundle {
 | `TICK-FIX-VREA-03` | **P0** | `internal/videorea/bundle.go` | Implementar *Path Jail* estrito com sanitização de caminho. |
 | `TICK-DEBT-FUNCLEN-01` | **P1** | `internal/studio/templates.go` | Extrair os 454 linhas de templates para arquivos JSON embarcados via `embed.FS`. |
 | `TICK-FIX-IMP-01` | **P2** | `docs/manuals/` | Corrigir typo `impeccabe-finish-reviewer` no manual do Impeccable. |
-| `TICK-FIX-IMP-02` | **P2** | `internal/studio`, `loops/` | Eliminar código Go duplicado da esteira Impeccable, carregando do JSON canônico. |
+| `TICK-FIX-IMP-02` | **P2** | `internal/studio`, `processos/` | Eliminar código Go duplicado da esteira Impeccable, carregando do JSON canônico. |
 | `TICK-TOOL-GOFMT-01` | **P3** | `tools/checkfmt/main.go` | Criar ferramenta wrapper de `gofmt` retornando exit code 1 se houver diffs. |
 | `TICK-TEST-SYMLINK-01` | **P3** | `internal/assets/` | Criar teste unitário em memória para proteção contra loop de symlink. |
 | `TICK-ARCH-PORT-01` | **P4** | `internal/plangen/` | Parametrizar `.exe` e `powershell` nas rotas para portabilidade POSIX. |

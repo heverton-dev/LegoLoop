@@ -236,7 +236,7 @@
     },
     {
       "id": "M2.1",
-      "name": "AntibodiesDB persiste em loops/slug/anticorpos.json (carrega ao iniciar, grava ao registrar)",
+      "name": "AntibodiesDB persiste em processos/slug/anticorpos.json (carrega ao iniciar, grava ao registrar)",
       "type": "unit_no",
       "nature": "micro",
       "depends_on": ["SG-M01"],

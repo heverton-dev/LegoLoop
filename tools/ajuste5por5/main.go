@@ -1,4 +1,4 @@
-// Comando ajuste5por5 resolve as pendências finais do nascimento 5/5 em loops/:
+// Comando ajuste5por5 resolve as pendências finais do nascimento 5/5 em processos/:
 // regenera triagens antigas que não validam contra triagem.v1, completa os manifestos
 // que faltam com nome taxonômico seguro e grava o documento do Processo com nós só de
 // identificação quando o DAG herda termos proibidos. Nunca toca em pipeline.dag.json.
@@ -20,10 +20,10 @@ import (
 
 // casos lista os Processos pendentes e o nome taxonômico seguro de cada um.
 var casos = []struct{ dir, nome string }{
-	{"loops/fronteira-ai-driven", "fronteira-ai-driven"},
-	{"loops/legoloop-design-ui", "legoloop-design-ui"},
-	{"loops/mega-pipeline", "mega-processo"},
-	{"loops/legoloop-swarm", "legoloop-swarm"},
+	{"processos/fronteira-ai-driven", "fronteira-ai-driven"},
+	{"processos/legoloop-design-ui", "legoloop-design-ui"},
+	{"processos/mega-pipeline", "mega-processo"},
+	{"processos/legoloop-swarm", "legoloop-swarm"},
 }
 
 func main() {

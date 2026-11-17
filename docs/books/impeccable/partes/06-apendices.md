@@ -32,7 +32,7 @@ Este apêndice compara o manual de 01/11/2026 com o estado do repositório em 07
 
 | Ponto verificado       | Manual                          | Código                         | Situação        |
 | :--------------------- | :------------------------------ | :----------------------------- | :-------------- |
-| Arquivo do loop        | `impeccable-design.loop.json`     | Existe em `loops/`               | Conforme        |
+| Arquivo do loop        | `impeccable-design.loop.json`     | Existe em `processos/`               | Conforme        |
 | Número de nós          | 6 sub-loops                     | 6 nós lineares                 | Conforme        |
 | Sexto nó               | Iterar                          | `subloop-iterar-documentar`      | Diverge no nome |
 | Peça executora         | Não especificada                | `skills/impeccable` em todos     | Informativo     |

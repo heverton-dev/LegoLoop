@@ -1537,7 +1537,7 @@
           [
             "bin/legoloop.exe",
             "validate",
-            "scratch/smoke-fabricar/vault/loops/legoloop-teste-smoke.dag.json"
+            "scratch/smoke-fabricar/vault/processos/legoloop-teste-smoke.dag.json"
           ],
           [
             "powershell",

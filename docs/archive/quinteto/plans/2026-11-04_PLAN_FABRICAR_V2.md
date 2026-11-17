@@ -487,7 +487,7 @@
 * **Verificação (argv, sem shell):** `go test -count=1 -v -run ^TestProcessoReal ./internal/fabricar/... ./internal/processo/... ./internal/cli/...`; `go vet ./internal/fabricar/... ./internal/processo/... ./internal/cli/...`; `go run ./tools/funclen internal/fabricar`; `go run ./tools/funclen internal/processo`; `go run ./tools/funclen internal/cli`; `go build -o bin/legoloop.exe ./cmd/legoloop`
 * **Gate (DSL):** `exit_code == 0 && file_exists('internal/fabricar/engine.go') && file_exists('internal/fabricar/processo_real_test.go')`
 * **Spec Ref:** `AC-E02.9`
-* **Escopo:** O motor monta o Processo com ProcessoDe e grava SPEC, PLAN, ROUTE, DAG, loop e skill gerados por Projetar (coerência por Verificar), o INTENT da entrevista e loops/<nome>.processo.json, tudo no mesmo plano atômico. Prova pelo binário em --dry-run e gravação em cofre descartável: o processo.json relido valida e tem a natureza; as seis visões listam os mesmos ids.
+* **Escopo:** O motor monta o Processo com ProcessoDe e grava SPEC, PLAN, ROUTE, DAG, loop e skill gerados por Projetar (coerência por Verificar), o INTENT da entrevista e processos/<nome>.processo.json, tudo no mesmo plano atômico. Prova pelo binário em --dry-run e gravação em cofre descartável: o processo.json relido valida e tem a natureza; as seis visões listam os mesmos ids.
 
 #### Ticket `TICK-02.18` — Calibrar a Fusão: aptidão mínima e casos de uso por etapa
 * **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `tdd_red_green` | **Status:** `PASSED`

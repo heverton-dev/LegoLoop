@@ -259,7 +259,7 @@ func lerPar(vault, nome, alvo, versao string) (processo.Processo, processo.Proce
 
 // lerProcesso lê <nome>.processo.json. Processo da v1 não entra na composição.
 func lerProcesso(vault, nome string) (processo.Processo, error) {
-	caminho := processo.CaminhoNoCofre(vault, nome)
+	caminho := processo.CaminhoNoCofreLeitura(vault, nome)
 	if _, err := os.Stat(caminho); err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			return processo.Processo{}, err
@@ -278,13 +278,17 @@ func lerProcesso(vault, nome string) (processo.Processo, error) {
 }
 
 func pastaProcessos(vault string) string {
-	return caminhos.DirLoopsEm(vault)
+	return caminhos.DirProcessosEm(vault)
 }
 
+// temLegado procura o arquivo solto do layout antigo nos dois dialetos do cofre:
+// o de gravação e o legado, que ainda recebe leitura compat.
 func temLegado(vault, nome string) bool {
-	for _, sufixo := range []string{caminhos.SufixoLoop, caminhos.SufixoStudio} {
-		if _, err := os.Stat(filepath.Join(pastaProcessos(vault), nome+sufixo)); err == nil {
-			return true
+	for _, base := range []string{caminhos.DirProcessosEm(vault), caminhos.DirLoopsEm(vault)} {
+		for _, sufixo := range []string{caminhos.SufixoLoop, caminhos.SufixoStudio} {
+			if _, err := os.Stat(filepath.Join(base, nome+sufixo)); err == nil {
+				return true
+			}
 		}
 	}
 	return false
@@ -310,7 +314,7 @@ func caminhoAte(vault, de, fim string, visto map[string]bool) ([]string, error) 
 		return nil, nil
 	}
 	visto[de] = true
-	p, err := processo.Ler(processo.CaminhoNoCofre(vault, de))
+	p, err := processo.Ler(processo.CaminhoNoCofreLeitura(vault, de))
 	if errors.Is(err, os.ErrNotExist) {
 		return nil, nil
 	}

@@ -28,7 +28,7 @@ var manifestosComSchema = map[string]string{
 // antigos tem os 5 manifestos do nascimento válidos contra os schemas oficiais e passa
 // em legoloop validate, ou é exceção documentada com dono.
 func TestProcessosCincoPorCinco(t *testing.T) {
-	raiz := filepath.Join("..", "..", paths.DirAntigo)
+	raiz := filepath.Join("..", "..", paths.DirProcessos)
 	entradas, err := os.ReadDir(raiz)
 	if err != nil {
 		t.Fatalf("ler %s: %v", raiz, err)

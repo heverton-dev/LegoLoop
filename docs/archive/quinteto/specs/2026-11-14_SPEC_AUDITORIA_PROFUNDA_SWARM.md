@@ -15,7 +15,7 @@ covers: [R1, R2, R3, R4]
 > **Autor:** Antigravity (Coordinator)  
 > **Iniciativa:** Auditoria Profunda Swarm  
 > **Referência da Intenção:** [docs/intents/2026-11-14_INTENT_AUDITORIA_PROFUNDA_SWARM.md](../intents/2026-11-14_INTENT_AUDITORIA_PROFUNDA_SWARM.md)  
-> **Alvo Primário:** `internal/`, `cmd/legoloop/`, `internal/studio/`, `loops/`, `schemas/`  
+> **Alvo Primário:** `internal/`, `cmd/legoloop/`, `internal/studio/`, `processos/`, `schemas/`  
 > **Consome:** INTENT aprovada · **Produz:** PLAN, ROUTE e DAG  
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 

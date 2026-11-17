@@ -1216,7 +1216,7 @@
       },
       "inputs": {
         "source_files": [
-          "loops/video-motion/pipeline.dag.json",
+          "processos/video-motion/pipeline.dag.json",
           "internal/cli/video_motion.go"
         ],
         "spec_anchor": "docs/specs/2026-11-07_SPEC_VIDEO_MOTION_PIPELINE.md#AC-E05.1",
@@ -1226,7 +1226,7 @@
       "test_target": "internal/cli/video_motion_test.go:TestVideoMotionCLI",
       "output": {
         "artifacts": [
-          "loops/video-motion/pipeline.dag.json",
+          "processos/video-motion/pipeline.dag.json",
           "internal/cli/video_motion.go",
           "internal/cli/video_motion_test.go"
         ],
@@ -1238,7 +1238,7 @@
           "-run",
           "TestVideoMotionCLI"
         ],
-        "gate": "exit_code == 0 && file_exists('loops/video-motion/pipeline.dag.json') && file_exists('internal/cli/video_motion.go')"
+        "gate": "exit_code == 0 && file_exists('processos/video-motion/pipeline.dag.json') && file_exists('internal/cli/video_motion.go')"
       }
     },
     {

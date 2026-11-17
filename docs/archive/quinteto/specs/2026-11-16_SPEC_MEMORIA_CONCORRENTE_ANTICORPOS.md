@@ -26,7 +26,7 @@ covers: [R1, R2, R3]
 > [!IMPORTANT]
 > A IA lista abaixo todas as premissas técnicas adotadas para evitar decisões silenciosas. Alertar no SG-M01 caso alguma premissa esteja incorreta:
 1. Runtime Go conforme o `go.mod`; somente stdlib; zero dependências externas novas (`git diff --exit-code -- go.mod go.sum`).
-2. Armazenamento em arquivos locais do Processo (`loops/<slug>/memoria_execucao.json` e `loops/<slug>/anticorpos.json`); sem banco externo.
+2. Armazenamento em arquivos locais do Processo (`processos/<slug>/memoria_execucao.json` e `processos/<slug>/anticorpos.json`); sem banco externo.
 3. Lock de arquivo com PID, copiando o padrão de `internal/board` (`swarm_lock.go` + sufixos por SO); compatível com Windows e POSIX.
 4. Reuso: tipos `MemoriaExecucao` (`internal/triagem/memoria.go`) e `AntibodiesDB` (`internal/brain/antibodies.go`) evoluem no lugar; `internal/fechar/quarteto.go` ajusta só o zeramento; nenhum outro verbo é alterado além do necessário.
 5. Compatibilidade: `memoria_execucao.json` legado (sem sessão) é lido como sessão `legado` e migrado sem perda; `anticorpos.json` nasce vazio em Processo sem histórico.
@@ -52,13 +52,13 @@ O Processo e os agentes devem respeitar estritamente o sistema de fronteiras em 
   * Commitar arquivos temporários, segredos ou variáveis de ambiente no git.
   * Ignorar testes falhando ou quebrar a suíte global de testes.
   * Tocar no Cofre (`~/.aidd`) fora de verbos oficiais; nunca `taskkill /IM legoloop.exe`.
-  * Nunca editar `loops/<slug>/*.json` à mão — só verbos oficiais.
+  * Nunca editar `processos/<slug>/*.json` à mão — só verbos oficiais.
 
 ---
 
 ## 3. Visão Geral, Arquitetura & Costuras de Teste (Test Seams — Pocock)
 
-Duas lacunas fecham em paralelo. A Lacuna 1 transforma `memoria_execucao.json` em estado por sessão (ID de sessão + PID) protegido por lock de arquivo; o `fechar` zera só a sessão dona e limpa arquivos órfãos. A Lacuna 2 persiste `AntibodiesDB` em `loops/<slug>/anticorpos.json`, deduplica por `errSig`, vacina reincidência com antídoto automático, injeta contexto preventivo antes do Nó 1 e bloqueia erro conhecido em runtime. As cadeias M1 e M2 são independentes e rodam em paralelo; M3 (fechamento canônico Lei 11) só começa após SG-M02 e SG-M03.
+Duas lacunas fecham em paralelo. A Lacuna 1 transforma `memoria_execucao.json` em estado por sessão (ID de sessão + PID) protegido por lock de arquivo; o `fechar` zera só a sessão dona e limpa arquivos órfãos. A Lacuna 2 persiste `AntibodiesDB` em `processos/<slug>/anticorpos.json`, deduplica por `errSig`, vacina reincidência com antídoto automático, injeta contexto preventivo antes do Nó 1 e bloqueia erro conhecido em runtime. As cadeias M1 e M2 são independentes e rodam em paralelo; M3 (fechamento canônico Lei 11) só começa após SG-M02 e SG-M03.
 
 ### Diagrama de Fronteiras (Mermaid)
 
@@ -190,7 +190,7 @@ type Antibody struct {
 ### Épico 02 — Anticorpos Persistidos
 
 * [ ] `AC-E02.1`: **Anticorpos persistem entre execuções (M2.1 — caminho feliz)**
-  * **Dado que:** um `AntibodiesDB` persistido em `loops/<slug>/anticorpos.json` registra 1 anticorpo
+  * **Dado que:** um `AntibodiesDB` persistido em `processos/<slug>/anticorpos.json` registra 1 anticorpo
   * **Quando:** uma nova instância for carregada do mesmo diretório
   * **Então:** `Find` localiza o anticorpo registrado e o arquivo JSON é válido.
 * [ ] `AC-E02.2`: **Arquivo corrompido falha com erro sentinela (M2.1 — caminho de falha)**

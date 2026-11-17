@@ -13,7 +13,7 @@ covers: [Q1, Q2, Q3]
 > **Data:** 2026-11-13  
 > **Autor:** i6-preparer (Arquiteto I6)  
 > **Iniciativa:** I6 — Migração dos Legados  
-> **Alvo:** `docs/dags/*.json` (9 arquivos) e `loops/*/pipeline.dag.json` (10 arquivos)  
+> **Alvo:** `docs/dags/*.json` (9 arquivos) e `processos/*/pipeline.dag.json` (10 arquivos)  
 > **Sessão:** `8e0c5643-39a6-4215-ac57-d16e07b7b41f`  
 > **Confiança:** 100%  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -22,7 +22,7 @@ covers: [Q1, Q2, Q3]
 
 ## 1. Contexto e Motivação
 
-* **O Problema Real:** Todos os 19 DAGs alvo em `docs/dags/*.json` (9 arquivos, excluído `2026-11-10_DAG_MATRIZ_PAPEIS.json` tratado na I5) e `loops/*/pipeline.dag.json` (10 arquivos) operam sem `schema_version: 2` e mantêm roteamento legado (`code-fast`, `code-pro`, `code-nano`, `flash`, `harness` ausente e `routing.via` ausente).
+* **O Problema Real:** Todos os 19 DAGs alvo em `docs/dags/*.json` (9 arquivos, excluído `2026-11-10_DAG_MATRIZ_PAPEIS.json` tratado na I5) e `processos/*/pipeline.dag.json` (10 arquivos) operam sem `schema_version: 2` e mantêm roteamento legado (`code-fast`, `code-pro`, `code-nano`, `flash`, `harness` ausente e `routing.via` ausente).
 * **Quem Sofre:** O motor de validação (`legoloop validate`), o resolvedor de roteamento da I3 (`internal/roteamento`) e os executores hermeticamente isolados que não conseguem aplicar `routing.via`, `routing.harness`, `routing.model` e `routing.effort` nos Processos legados.
 * **O Porquê:** As iniciativas I2 (`schema_version: 2`) e I3 (`roteamento honesto`) já estabilizaram os contratos no código Go. Migrar os 19 DAGs elimina o modo legado e coloca todo o Inventário sob validação estrita e roteamento homologado.
 * **Estado Atual vs. Estado Desejado:**
@@ -34,7 +34,7 @@ covers: [Q1, Q2, Q3]
 ## 2. Escopo Inegociável
 
 ### O que ESTÁ no Escopo (Objetivos Primários):
-* [ ] Objetivo 1: Inventariar os 19 DAGs legados em `docs/dags/*.json` e `loops/*/pipeline.dag.json` com mapeamento determinístico para `schema_version: 2` e roteamento I3.
+* [ ] Objetivo 1: Inventariar os 19 DAGs legados em `docs/dags/*.json` e `processos/*/pipeline.dag.json` com mapeamento determinístico para `schema_version: 2` e roteamento I3.
 * [ ] Objetivo 2: Migrar os 19 DAGs em camadas paralelas por pasta/arquivo com `write_boundary` disjunto, preservando a topologia de dependências e `spec_ref` existentes.
 * [ ] Objetivo 3: Validar todos os 19 DAGs migrados com `legoloop validate`, `go test -count=1 ./internal/dag/...` e `taxlinter`.
 
@@ -51,7 +51,7 @@ covers: [Q1, Q2, Q3]
 | :--- | :--- | :--- | :--- |
 | `PECA-01` | `script` | Inventário de DAGs legados | Listar arquivos e nós sem `schema_version: 2` |
 | `PECA-02` | `unit_task` | Migração de `docs/dags/*.json` | Atualizar 9 DAGs em lotes disjuntos |
-| `PECA-03` | `unit_task` | Migração de `loops/*/pipeline.dag.json` | Atualizar 10 DAGs em lotes disjuntos por pasta |
+| `PECA-03` | `unit_task` | Migração de `processos/*/pipeline.dag.json` | Atualizar 10 DAGs em lotes disjuntos por pasta |
 | `PECA-04` | `script` | `legoloop validate` | Validação mecânica v2 dos 19 DAGs |
 
 ---

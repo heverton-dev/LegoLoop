@@ -92,7 +92,7 @@
         "./internal/golden/..."
       ],
       "context_in": [
-        "loops/",
+        "processos/",
         "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
       ],
       "context_out": [
@@ -2420,7 +2420,7 @@
         "-pkgs",
         "./...",
         "-tax",
-        "internal/golden/golden_test.go,internal/golden/testdata/golden.json,internal/golden/testdata/loops/addy-osmani.loop.json,internal/golden/testdata/loops/ai-motion-graphics.dag.json,internal/golden/testdata/loops/fechar.loop.json,internal/golden/testdata/loops/impeccable-design.loop.json,internal/golden/testdata/loops/lauren-tan.loop.json,internal/golden/testdata/loops/legoloop-canal-redc.dag.json,internal/golden/testdata/loops/legoloop-cartoon-shorts.dag.json,internal/golden/testdata/loops/legoloop-fechar.dag.json,internal/golden/testdata/loops/legoloop-n10-foundry.dag.json,internal/golden/testdata/loops/legoloop-video-edition.dag.json",
+        "internal/golden/golden_test.go,internal/golden/testdata/golden.json,internal/golden/testdata/processos/addy-osmani.loop.json,internal/golden/testdata/processos/ai-motion-graphics.dag.json,internal/golden/testdata/processos/fechar.loop.json,internal/golden/testdata/processos/impeccable-design.loop.json,internal/golden/testdata/processos/lauren-tan.loop.json,internal/golden/testdata/processos/legoloop-canal-redc.dag.json,internal/golden/testdata/processos/legoloop-cartoon-shorts.dag.json,internal/golden/testdata/processos/legoloop-fechar.dag.json,internal/golden/testdata/processos/legoloop-n10-foundry.dag.json,internal/golden/testdata/processos/legoloop-video-edition.dag.json",
         "-tax-max",
         "0",
         "-gold"
@@ -2431,16 +2431,16 @@
       "context_out": [
         "internal/golden/golden_test.go",
         "internal/golden/testdata/golden.json",
-        "internal/golden/testdata/loops/addy-osmani.loop.json",
-        "internal/golden/testdata/loops/ai-motion-graphics.dag.json",
-        "internal/golden/testdata/loops/fechar.loop.json",
-        "internal/golden/testdata/loops/impeccable-design.loop.json",
-        "internal/golden/testdata/loops/lauren-tan.loop.json",
-        "internal/golden/testdata/loops/legoloop-canal-redc.dag.json",
-        "internal/golden/testdata/loops/legoloop-cartoon-shorts.dag.json",
-        "internal/golden/testdata/loops/legoloop-fechar.dag.json",
-        "internal/golden/testdata/loops/legoloop-n10-foundry.dag.json",
-        "internal/golden/testdata/loops/legoloop-video-edition.dag.json"
+        "internal/golden/testdata/processos/addy-osmani.loop.json",
+        "internal/golden/testdata/processos/ai-motion-graphics.dag.json",
+        "internal/golden/testdata/processos/fechar.loop.json",
+        "internal/golden/testdata/processos/impeccable-design.loop.json",
+        "internal/golden/testdata/processos/lauren-tan.loop.json",
+        "internal/golden/testdata/processos/legoloop-canal-redc.dag.json",
+        "internal/golden/testdata/processos/legoloop-cartoon-shorts.dag.json",
+        "internal/golden/testdata/processos/legoloop-fechar.dag.json",
+        "internal/golden/testdata/processos/legoloop-n10-foundry.dag.json",
+        "internal/golden/testdata/processos/legoloop-video-edition.dag.json"
       ],
       "depends_on": [
         "TICK-03.7-a"
@@ -2483,7 +2483,7 @@
       "type": "unit_no",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/golden/golden_test.go,internal/golden/testdata/golden.json,internal/golden/testdata/loops/addy-osmani.loop.json,internal/golden/testdata/loops/ai-motion-graphics.dag.json,internal/golden/testdata/loops/fechar.loop.json,internal/golden/testdata/loops/impeccable-design.loop.json,internal/golden/testdata/loops/lauren-tan.loop.json,internal/golden/testdata/loops/legoloop-canal-redc.dag.json,internal/golden/testdata/loops/legoloop-cartoon-shorts.dag.json,internal/golden/testdata/loops/legoloop-fechar.dag.json,internal/golden/testdata/loops/legoloop-n10-foundry.dag.json,internal/golden/testdata/loops/legoloop-video-edition.dag.json -tax-max 0 -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/golden/golden_test.go,internal/golden/testdata/golden.json,internal/golden/testdata/processos/addy-osmani.loop.json,internal/golden/testdata/processos/ai-motion-graphics.dag.json,internal/golden/testdata/processos/fechar.loop.json,internal/golden/testdata/processos/impeccable-design.loop.json,internal/golden/testdata/processos/lauren-tan.loop.json,internal/golden/testdata/processos/legoloop-canal-redc.dag.json,internal/golden/testdata/processos/legoloop-cartoon-shorts.dag.json,internal/golden/testdata/processos/legoloop-fechar.dag.json,internal/golden/testdata/processos/legoloop-n10-foundry.dag.json,internal/golden/testdata/processos/legoloop-video-edition.dag.json -tax-max 0 -gold"
       }
     },
     {
@@ -2494,7 +2494,7 @@
         "-pkgs",
         "./...",
         "-tax",
-        "internal/golden/testdata/loops/legoloop-video-master.dag.json,internal/golden/testdata/loops/legoloop-video-motion.dag.json,internal/golden/testdata/loops/legoloop-video-rea.dag.json,internal/golden/testdata/loops/matt-pocock.loop.json,internal/golden/testdata/loops/mega-pipeline.loop.json,internal/interview/context.go,internal/interview/context_test.go,internal/interview/intent_render.go,internal/interview/intent_template_test.go,internal/interview/interview_test.go,internal/interview/prompt.go,internal/legopress/auditor_test.go",
+        "internal/golden/testdata/processos/legoloop-video-master.dag.json,internal/golden/testdata/processos/legoloop-video-motion.dag.json,internal/golden/testdata/processos/legoloop-video-rea.dag.json,internal/golden/testdata/processos/matt-pocock.loop.json,internal/golden/testdata/processos/mega-pipeline.loop.json,internal/interview/context.go,internal/interview/context_test.go,internal/interview/intent_render.go,internal/interview/intent_template_test.go,internal/interview/interview_test.go,internal/interview/prompt.go,internal/legopress/auditor_test.go",
         "-tax-max",
         "8",
         "-gold"
@@ -2503,11 +2503,11 @@
         "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
       ],
       "context_out": [
-        "internal/golden/testdata/loops/legoloop-video-master.dag.json",
-        "internal/golden/testdata/loops/legoloop-video-motion.dag.json",
-        "internal/golden/testdata/loops/legoloop-video-rea.dag.json",
-        "internal/golden/testdata/loops/matt-pocock.loop.json",
-        "internal/golden/testdata/loops/mega-pipeline.loop.json",
+        "internal/golden/testdata/processos/legoloop-video-master.dag.json",
+        "internal/golden/testdata/processos/legoloop-video-motion.dag.json",
+        "internal/golden/testdata/processos/legoloop-video-rea.dag.json",
+        "internal/golden/testdata/processos/matt-pocock.loop.json",
+        "internal/golden/testdata/processos/mega-pipeline.loop.json",
         "internal/interview/context.go",
         "internal/interview/context_test.go",
         "internal/interview/intent_render.go",
@@ -2557,7 +2557,7 @@
       "type": "unit_no",
       "verification": {
         "exit_code": 0,
-        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/golden/testdata/loops/legoloop-video-master.dag.json,internal/golden/testdata/loops/legoloop-video-motion.dag.json,internal/golden/testdata/loops/legoloop-video-rea.dag.json,internal/golden/testdata/loops/matt-pocock.loop.json,internal/golden/testdata/loops/mega-pipeline.loop.json,internal/interview/context.go,internal/interview/context_test.go,internal/interview/intent_render.go,internal/interview/intent_template_test.go,internal/interview/interview_test.go,internal/interview/prompt.go,internal/legopress/auditor_test.go -tax-max 8 -gold"
+        "test_command": "go run ./tools/ticketgate -pkgs ./... -tax internal/golden/testdata/processos/legoloop-video-master.dag.json,internal/golden/testdata/processos/legoloop-video-motion.dag.json,internal/golden/testdata/processos/legoloop-video-rea.dag.json,internal/golden/testdata/processos/matt-pocock.loop.json,internal/golden/testdata/processos/mega-pipeline.loop.json,internal/interview/context.go,internal/interview/context_test.go,internal/interview/intent_render.go,internal/interview/intent_template_test.go,internal/interview/interview_test.go,internal/interview/prompt.go,internal/legopress/auditor_test.go -tax-max 8 -gold"
       }
     },
     {
@@ -3061,7 +3061,7 @@
         "-gold"
       ],
       "context_in": [
-        "loops/",
+        "processos/",
         "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md"
       ],
       "context_out": [

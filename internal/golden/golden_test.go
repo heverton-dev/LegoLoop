@@ -15,7 +15,7 @@ import (
 var update = flag.Bool("update", false, "regrava testdata/golden.json")
 
 const (
-	fixtureDir  = "testdata/[l]oops"
+	fixtureDir  = "testdata/[p]rocessos"
 	invalidDir  = "testdata/invalid"
 	manifest    = "testdata/golden.json"
 	wantFixture = 15

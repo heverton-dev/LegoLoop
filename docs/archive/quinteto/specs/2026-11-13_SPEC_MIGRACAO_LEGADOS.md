@@ -15,7 +15,7 @@ covers: [R1, R2, R3]
 > **Autor:** i6-preparer (Arquiteto I6)  
 > **Iniciativa:** I6 — Migração dos Legados  
 > **Referência da Intenção:** [docs/intents/2026-11-13_INTENT_MIGRACAO_LEGADOS.md](../intents/2026-11-13_INTENT_MIGRACAO_LEGADOS.md)  
-> **Alvo Primário:** `docs/dags/*.json` (9 arquivos) e `loops/*/pipeline.dag.json` (10 arquivos)  
+> **Alvo Primário:** `docs/dags/*.json` (9 arquivos) e `processos/*/pipeline.dag.json` (10 arquivos)  
 > **Consome:** INTENT-I6 · **Produz:** PLAN-I6, ROUTE-I6 e DAG-I6  
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 
@@ -87,7 +87,7 @@ flowchart TD
 | ID | Requisito |
 | :--- | :--- |
 | `R1` | Inventariar e migrar os 9 DAGs de `docs/dags/` (excluído `2026-11-10_DAG_MATRIZ_PAPEIS.json`) para `schema_version: 2` e roteamento I3 em camada paralela disjunta. |
-| `R2` | Migrar os 10 `pipeline.dag.json` de `loops/*/` para `schema_version: 2` e roteamento I3 em 3 Tickets paralelos com `write_boundary` disjunto por pasta. |
+| `R2` | Migrar os 10 `pipeline.dag.json` de `processos/*/` para `schema_version: 2` e roteamento I3 em 3 Tickets paralelos com `write_boundary` disjunto por pasta. |
 | `R3` | Validar todos os 19 DAGs migrados com `legoloop validate`, `go test -count=1 ./internal/dag/...` e ausência de termos/modelos legados. |
 
 ---
@@ -97,7 +97,7 @@ flowchart TD
 ### Épico 01 — Inventário e Migração de `docs/dags/`
 
 * [ ] `AC-I6-01.1`: **Inventário determinístico dos 19 DAGs legados**
-  * **Dado que:** existem 10 JSONs em `docs/dags/` (1 reservado à I5) e 10 `pipeline.dag.json` em `loops/*/`.
+  * **Dado que:** existem 10 JSONs em `docs/dags/` (1 reservado à I5) e 10 `pipeline.dag.json` em `processos/*/`.
   * **Quando:** o script de inventário inspeciona os 19 alvos da I6.
   * **Então:** gera `scratch/i6_inventario_legados.json` listando os 19 caminhos, suas contagens de nós e campos v2 ausentes, com código de saída `0`.
 
@@ -111,21 +111,21 @@ flowchart TD
   * **Quando:** o Ticket migra apenas esses 5 arquivos para `schema_version: 2` e roteamento I3.
   * **Então:** `go run ./cmd/legoloop validate` retorna `exit_code == 0` para os 5 arquivos e `2026-11-10_DAG_MATRIZ_PAPEIS.json` permanece intocado.
 
-### Épico 02 — Migração Paralela de `loops/*/pipeline.dag.json`
+### Épico 02 — Migração Paralela de `processos/*/pipeline.dag.json`
 
-* [ ] `AC-I6-02.1`: **Migração do Lote Vídeo I em `loops/` (4 arquivos)**
+* [ ] `AC-I6-02.1`: **Migração do Lote Vídeo I em `processos/` (4 arquivos)**
   * **Dado que:** `SG-I6-E01` foi aprovado.
-  * **Quando:** o Ticket migra `loops/ai-motion-graphics/pipeline.dag.json`, `loops/legoloop-video-edition/pipeline.dag.json`, `loops/legoloop-video-master/pipeline.dag.json` e `loops/legoloop-video-motion/pipeline.dag.json`.
+  * **Quando:** o Ticket migra `processos/ai-motion-graphics/pipeline.dag.json`, `processos/legoloop-video-edition/pipeline.dag.json`, `processos/legoloop-video-master/pipeline.dag.json` e `processos/legoloop-video-motion/pipeline.dag.json`.
   * **Então:** `go run ./cmd/legoloop validate` retorna `exit_code == 0` para os 4 arquivos com `schema_version: 2` e `routing.via` preenchido.
 
-* [ ] `AC-I6-02.2`: **Migração do Lote Vídeo II em `loops/` (3 arquivos)**
+* [ ] `AC-I6-02.2`: **Migração do Lote Vídeo II em `processos/` (3 arquivos)**
   * **Dado que:** `SG-I6-E01` foi aprovado.
-  * **Quando:** o Ticket migra `loops/legoloop-canal-redc/pipeline.dag.json`, `loops/legoloop-cartoon-shorts/pipeline.dag.json` e `loops/legoloop-video-rea/pipeline.dag.json`.
+  * **Quando:** o Ticket migra `processos/legoloop-canal-redc/pipeline.dag.json`, `processos/legoloop-cartoon-shorts/pipeline.dag.json` e `processos/legoloop-video-rea/pipeline.dag.json`.
   * **Então:** `go run ./cmd/legoloop validate` retorna `exit_code == 0` para os 3 arquivos com `schema_version: 2` e `routing.via` preenchido.
 
-* [ ] `AC-I6-02.3`: **Migração do Lote Governança em `loops/` (3 arquivos)**
+* [ ] `AC-I6-02.3`: **Migração do Lote Governança em `processos/` (3 arquivos)**
   * **Dado que:** `SG-I6-E01` foi aprovado.
-  * **Quando:** o Ticket migra `loops/legoloop-dissecar/pipeline.dag.json`, `loops/legoloop-fechar/pipeline.dag.json` e `loops/legoloop-n10-foundry/pipeline.dag.json`.
+  * **Quando:** o Ticket migra `processos/legoloop-dissecar/pipeline.dag.json`, `processos/legoloop-fechar/pipeline.dag.json` e `processos/legoloop-n10-foundry/pipeline.dag.json`.
   * **Então:** `go run ./cmd/legoloop validate` retorna `exit_code == 0` para os 3 arquivos com `schema_version: 2` e `routing.via` preenchido.
 
 ### Épico 03 — Validação Global e Homologação

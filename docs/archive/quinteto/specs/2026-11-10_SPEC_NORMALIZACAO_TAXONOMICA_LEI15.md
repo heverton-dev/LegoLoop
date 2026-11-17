@@ -14,7 +14,7 @@
 ## 1. Premissas Técnicas Assumidas
 
 1. Go conforme o `go.mod`, só stdlib. Nenhuma dependência nova.
-2. Os Processos vivem em arquivos locais. O Cofre real (`~/.aidd/canonical/`) tem 6 loops `.loop.json` (v1). O repositório tem 15 itens em `loops/`: 9 pastas com `pipeline.dag.json` e 6 arquivos `.loop.json`. Os 15 passam hoje em `legoloop validate` (verificado em 2026-11-10).
+2. Os Processos vivem em arquivos locais. O Cofre real (`~/.aidd/canonical/`) tem 6 loops `.loop.json` (v1). O repositório tem 15 itens em `processos/`: 9 pastas com `pipeline.dag.json` e 6 arquivos `.loop.json`. Os 15 passam hoje em `legoloop validate` (verificado em 2026-11-10).
 3. O Cofre guarda até três arquivos por Processo: `.loop.json` (documento do Studio), `.dag.json` (contrato da CLI) e `.processo.json` (registro v2). Os dois últimos já estão em uso e **permanecem**.
 4. O `taxlinter` lê hoje só comentários e literais Go sem `/`, `\`, `-` ou `.`, chaves JSON simples e títulos de Markdown. Ele não lê identificadores Go, chaves compostas (`loop_end`), valores JSON, corpo de Markdown nem `.typ` (experimento de 2026-11-10). A marca "LegoLoop" não é violação no linter atual. O número 412 é um piso.
 5. O ROUTE v1.0.0 usa o contrato 2.2.0 vigente: `subagents_allowed: false` (booleano). O valor `ephemeral` e o campo `extreme` entram no contrato no `TICK-00.3`.
@@ -104,7 +104,7 @@ Nomes canônicos aprovados pelo usuário em 2026-11-10:
 | :--- | :--- | :--- |
 | `pipeline.dag.json` | `processo.dag.json` | O leitor aceita os dois. |
 | `<nome>.loop.json` | `<nome>.studio.json` | `.dag.json` e `.processo.json` permanecem. |
-| `loops/` | `processos/` | `git mv` no `TICK-04.1`. |
+| `processos/` | `processos/` | `git mv` no `TICK-04.1`. |
 | Nó `subloop` | `subprocesso` | Schema v2. |
 | Gatilho `loop_end` | `processo_fim` | Schema v2. |
 | Campo `loop` | `processo` | Schema v2. |
@@ -122,7 +122,7 @@ Nomes canônicos aprovados pelo usuário em 2026-11-10:
   * **Quando:** o `TICK-00.1` gera `scratch/tax_triagem.json`.
   * **Então:** `texto + contrato == N`.
 * [ ] `AC-E00.2`: **Teste dourado dos loops**
-  * **Dado que:** os 15 loops de `loops/` (e cópias autorizadas dos 6 do Cofre) estão em fixtures.
+  * **Dado que:** os 15 loops de `processos/` (e cópias autorizadas dos 6 do Cofre) estão em fixtures.
   * **Quando:** `go test ./internal/golden/...` roda.
   * **Então:** exit 0. Um loop inválido plantado em fixture faz o teste falhar (mutação).
 * [ ] `AC-E00.3`: **Governança atualizada**
@@ -150,7 +150,7 @@ Nomes canônicos aprovados pelo usuário em 2026-11-10:
   * **Então:** os dois produzem a mesma estrutura. Um DAG com mistura inválida retorna erro sentinela. Um nó com id `TICK-01.1` (com ponto) é aceito, e o `ref` de subprocesso com ponto continua recusado.
 * [ ] `AC-E01.3`: **Schema v2**
   * **Dado que:** `schemas/dag.v1.json` e `schemas/dag.v2.json`.
-  * **Quando:** todos os loops de `loops/` são validados.
+  * **Quando:** todos os loops de `processos/` são validados.
   * **Então:** validam contra v1 e contra v2.
 * [ ] `AC-E01.4`: **Migrador idempotente**
   * **Dado que:** um Processo v1 só com `.loop.json` em `t.TempDir()`.
@@ -222,7 +222,7 @@ Nomes canônicos aprovados pelo usuário em 2026-11-10:
 ### Épico 04 — Dados e diretórios
 
 * [ ] `AC-E04.1`: **Diretório renomeado**
-  * **Dado que:** `loops/` tem 15 itens (9 pastas com `pipeline.dag.json` e 6 `.loop.json`).
+  * **Dado que:** `processos/` tem 15 itens (9 pastas com `pipeline.dag.json` e 6 `.loop.json`).
   * **Quando:** o `TICK-04.1` executa `git mv loops processos` e `legoloop migrar` nos 15.
   * **Então:** os 15 validam sob os nomes novos (`processo.dag.json` e `.studio.json`). O teste dourado continua passando com as cópias dos nomes antigos.
 * [ ] `AC-E04.2`: **Cofre migrado com backup**
@@ -270,7 +270,7 @@ Nomes canônicos aprovados pelo usuário em 2026-11-10:
 * [ ] `AC-E06.1`: **Gate global**
   * **Dado que:** todos os épicos concluídos.
   * **Quando:** a cadeia de fechamento do `AGENTS.md` item 11 roda.
-  * **Então:** `taxlinter internal cmd processos skills docs/templates` exit 0 com o linter ampliado (`processos` é o nome de `loops/` após o `TICK-04.1`), o binário existe e a ressalva "alvos já normalizados" some do `AGENTS.md`.
+  * **Então:** `taxlinter internal cmd processos skills docs/templates` exit 0 com o linter ampliado (`processos` é o nome de `processos/` após o `TICK-04.1`), o binário existe e a ressalva "alvos já normalizados" some do `AGENTS.md`.
 
 ### Não funcionais
 

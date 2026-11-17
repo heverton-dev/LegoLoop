@@ -4,7 +4,7 @@
 - **INTENT:** `docs/intents/2026-11-14_INTENT_TRIAGEM_UNIVERSAL_E_ARTEFATOS.md`
 
 ## 1. Contrato da Peça de Triagem (`triagem.json`)
-Cada processo possui uma Peça de Triagem (`loops/<slug>/triagem.json` e projeção no cofre) com:
+Cada processo possui uma Peça de Triagem (`processos/<slug>/triagem.json` e projeção no cofre) com:
 - `schema_version`: `"triagem.v1"`
 - `processo`: slug do processo
 - `regras_deterministicas`: lista de `{padrao_slug, comandos_cli, artefatos_ativos, prioridade}`
@@ -33,5 +33,5 @@ Remover `template` de `plannedFiles` (`internal/fabricar/camada4.go`) e garantir
 - **Chat/Skill:** seção de triagem padronizada em `SKILL.md` instruindo o agente a invocar `legoloop triagem` antes de adivinhar rota.
 - **Studio:** endpoint `POST /api/triagem` e barra de entrada rápida no Studio consumindo `internal/triagem`.
 
-## 5. Saneamento de `loops/`
-Auditar os 10 diretórios em `loops/`, remover processos/peças legadas inúteis ou quebradas e gerar `triagem.json` + artefatos faltantes via `legoloop migrar-loops`.
+## 5. Saneamento de `processos/`
+Auditar os 10 diretórios em `processos/`, remover processos/peças legadas inúteis ou quebradas e gerar `triagem.json` + artefatos faltantes via `legoloop migrar-loops`.

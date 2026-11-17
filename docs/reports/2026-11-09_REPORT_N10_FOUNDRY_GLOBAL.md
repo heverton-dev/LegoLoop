@@ -7,7 +7,7 @@
 > **Processo / Slug:** `legoloop-n10-foundry`  
 > **Sessão:** e1b269c9-1dab-4c59-9055-bdd0dc2c04bf  
 > **Template:** TEMPLATE_REPORT.md v2.2.0  
-> **Referências:** [Manual Operacional](docs/manuals/2026-11-09_MANUAL_FUNCAO_N10_FOUNDRY_HARNESS_LEGOLOOP.md) · [Livro Didático](docs/books/n10-foundry/livro.json) · [Skill Canônica](skills/legoloop-n10-foundry/SKILL.md) · [Pipeline DAG](loops/legoloop-n10-foundry/pipeline.dag.json)
+> **Referências:** [Manual Operacional](docs/manuals/2026-11-09_MANUAL_FUNCAO_N10_FOUNDRY_HARNESS_LEGOLOOP.md) · [Livro Didático](docs/books/n10-foundry/livro.json) · [Skill Canônica](skills/legoloop-n10-foundry/SKILL.md) · [Pipeline DAG](processos/legoloop-n10-foundry/pipeline.dag.json)
 
 ---
 

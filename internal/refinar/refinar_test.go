@@ -72,8 +72,8 @@ func semear(t *testing.T, p processo.Processo, data time.Time, comIntent bool) c
 	doc := func(sub, file string) string { return filepath.Join(c.docs, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(c.vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(c.vault, paths.DirAntigo, p.Nome+paths.SufixoAntigo), Data: pr.Studio},
-		{Path: filepath.Join(c.vault, paths.DirAntigo, p.Nome+".dag.json"), Data: pr.DAG},
+		{Path: filepath.Join(c.vault, paths.DirProcessos, p.Nome+paths.SufixoAntigo), Data: pr.Studio},
+		{Path: filepath.Join(c.vault, paths.DirProcessos, p.Nome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(c.vault, p.Nome), Data: pj},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
 		{Path: doc("plans", pr.PlanNome), Data: []byte(pr.Plan)},
@@ -378,8 +378,8 @@ func conferirBackups(t *testing.T, antes map[string]string, res *refinar.Resulta
 func conferirProjecoes(t *testing.T, c cofre) {
 	t.Helper()
 	skill := ler(t, filepath.Join(c.vault, "skills", nome, "SKILL.md"))
-	studioJSON := ler(t, filepath.Join(c.vault, paths.DirAntigo, nome+paths.SufixoAntigo))
-	dagJSON := ler(t, filepath.Join(c.vault, paths.DirAntigo, nome+".dag.json"))
+	studioJSON := ler(t, filepath.Join(c.vault, paths.DirProcessos, nome+paths.SufixoAntigo))
+	dagJSON := ler(t, filepath.Join(c.vault, paths.DirProcessos, nome+".dag.json"))
 	for rotulo, quer := range map[string]struct{ texto, termo string }{
 		"skill traz a peça nova":   {skill, "aidd-qa"},
 		"skill traz a versão nova": {skill, "1.1.0"},
@@ -595,7 +595,7 @@ func testDataAntiga(t *testing.T) {
 	if !strings.Contains(route, "2026-10-01_SPEC_X.md") || strings.Contains(route, "2026-11-06_SPEC_X.md") {
 		t.Error("o ROUTE tem de citar a SPEC que existe, com o nome antigo")
 	}
-	if studioJSON := ler(t, filepath.Join(c.vault, paths.DirAntigo, nome+paths.SufixoAntigo)); !strings.Contains(studioJSON, "2026-11-06") {
+	if studioJSON := ler(t, filepath.Join(c.vault, paths.DirProcessos, nome+paths.SufixoAntigo)); !strings.Contains(studioJSON, "2026-11-06") {
 		t.Error("o documento deve levar a data do refinar em updated_at")
 	}
 }

@@ -4,7 +4,7 @@
 > **Data:** 2026-11-08  
 > **Autor:** LegoLoop Video-REA Engine  
 > **Iniciativa:** Mega-Pipeline Audiovisual Soberano  
-> **Alvo:** `loops/video-edition`, `skills/legoloop-video-edition`, `docs/videorea/lucas-leite-edicao-claude-code`  
+> **Alvo:** `processos/video-edition`, `skills/legoloop-video-edition`, `docs/videorea/lucas-leite-edicao-claude-code`  
 > **Sessão:** intv_1794143944778492400  
 > **Confiança da Entrevista:** 95% (Meta de 95% atingida via motor socrático oficial)  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -54,7 +54,7 @@
 ---
 
 ## 4. Governança Operacional e Restrições Inegociáveis
-* **Gatilho Operacional de Disparo (Trigger):** `manual` (via CLI `legoloop run loops/video-edition/pipeline.dag.json` ou skill `/legoloop-video-edition`).
+* **Gatilho Operacional de Disparo (Trigger):** `manual` (via CLI `legoloop run processos/video-edition/pipeline.dag.json` ou skill `/legoloop-video-edition`).
 * **Nível de Risco & Blast Radius:** Baixo (opera estritamente dentro da pasta isolada `docs/videorea/lucas-leite-edicao-claude-code/`).
 * **Política de Privacidade & Orçamento Cognitivo:** Exclusivamente Local; modelos via 9Router; chaves de API restritas e protegidas.
 * **Contrato de Evidência Factual (Definition of Done Visual/Real):** Execução ponta a ponta gerando arquivo MP4 1080p60 sincronizado sem artefatos de áudio/vídeo e FCPXML válido importável no Premiere/DaVinci com cortes e trilhas de SFX alinhados.
@@ -68,7 +68,7 @@
 | # | Critério | Como se prova | Comando / Evidência |
 | :--- | :--- | :--- | :--- |
 | 1 | Curadoria aprovada com custo R$ 0,00/mês e diagnósticos de host integrados. | Inspeção de `curation.json` com `approved: true` | `Test-Path docs/videorea/lucas-leite-edicao-claude-code/curation.json` |
-| 2 | Grafo DAG compilado e validado em 8 etapas acíclicas sob o slug `video-edition`. | Validador oficial do LegoLoop | `go run ./cmd/legoloop validate loops/video-edition/pipeline.dag.json` |
+| 2 | Grafo DAG compilado e validado em 8 etapas acíclicas sob o slug `video-edition`. | Validador oficial do LegoLoop | `go run ./cmd/legoloop validate processos/video-edition/pipeline.dag.json` |
 | 3 | Entrega de MP4 1080p60 e FCPXML sincronizados. | Verificação de existência e integridade dos arquivos | `Test-Path output/final_edit.mp4; Test-Path output/final_edit.fcpxml` |
 
 ---

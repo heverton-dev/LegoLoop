@@ -23,9 +23,9 @@
     },
     {
       "id": "t4-saneamento-loops",
-      "title": "Saneamento e migração dos processos em loops/",
+      "title": "Saneamento e migração dos processos em processos/",
       "depends_on": ["t3-pontos-entrada"],
-      "write_boundary": ["loops/**", "internal/migrar/**"]
+      "write_boundary": ["processos/**", "internal/migrar/**"]
     },
     {
       "id": "t5-portoes-fechamento",

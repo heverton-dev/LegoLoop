@@ -17,7 +17,7 @@
 ### 🔹 TICK-2302: Mecânica de Drill-Down, Pilha de Navegação e Retorno (`app.js` & `inspector.js`)
 * Suporte a snapshots do canvas na pilha de navegação (`state.navStack`), preservando nomes, nós, posições e arestas.
 * Disparo de drill-down via duplo clique (`dblclick`) em qualquer Macro-Card de sub-loop no canvas ou pelo botão de ação direta "Abrir Sub-grafo (Drill-Down)" no Inspetor lateral.
-* Resolução e carregamento automático do sub-grafo correspondente via `/api/loops/{id}`.
+* Resolução e carregamento automático do sub-grafo correspondente via `/api/processos/{id}`.
 * Mecânica de desempilhamento (`leaveSubloop`), restaurando instantaneamente o estado original da esteira pai ao clicar em qualquer nó ancestral no breadcrumb.
 
 ### 🔹 TICK-2303: Blindagem Zero Emojis e Validação de Interface

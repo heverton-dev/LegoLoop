@@ -36,7 +36,7 @@ O objetivo desta demanda foi decompor o tutorial do YouTube da criadora Kaye Cre
 - **Exportação FCPXML v1.9 (`internal/videomotion/fcpxml.go`):** Linha de tempo com marcadores de corte direto para DaVinci Resolve Studio.
 
 ### Épico 05 — Orquestrador LegoLoop, Livro Didático LegoPress & Meta-Processo
-- **Grafo DAG Acíclico (`loops/video-motion/pipeline.dag.json`):** 6 nós orquestrados com camadas e roteamento canônico validados por `legoloop validate`.
+- **Grafo DAG Acíclico (`processos/video-motion/pipeline.dag.json`):** 6 nós orquestrados com camadas e roteamento canônico validados por `legoloop validate`.
 - **CLI Dedicada (`internal/cli/video_motion.go`):** Subcomandos `silence`, `punch`, `assets`, `preview`, `bundle` e `run`.
 - **Livro Didático Canônico (`docs/manuals/livro-video-motion/`):** 5 capítulos técnicos + manifesto `livro.json` gerados e prontos para governança contínua via LegoPress.
 - **Manual do Meta-Processo (`docs/manuals/MANUAL_ENGENHARIA_REVERSA_VIDEO_PIPELINE.md`):** Metodologia completa de engenharia reversa para novos pipelines de vídeo.

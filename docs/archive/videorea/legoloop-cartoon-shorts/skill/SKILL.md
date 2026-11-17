@@ -55,7 +55,7 @@ suggested_model: code-pro
 
 3. **Execução via Grafo DAG no Looping Engine:**
    ```bash
-   legoloop run loops/legoloop-cartoon-shorts/pipeline.dag.json
+   legoloop run processos/legoloop-cartoon-shorts/pipeline.dag.json
    ```
 
 4. **Invocação via Chat dos Agentes:**

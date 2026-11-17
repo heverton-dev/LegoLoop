@@ -31,6 +31,11 @@ func DirLoopsEm(base string) string {
 	return filepath.Join(base, DirLoops)
 }
 
+// DirProcessosEm resolve a pasta dos Processos no dialeto de gravação sob a base.
+func DirProcessosEm(base string) string {
+	return filepath.Join(base, DirProcessos)
+}
+
 // CaminhoDAG resolve o caminho do arquivo DAG dentro da pasta informada.
 func CaminhoDAG(dir string) string {
 	return filepath.Join(dir, ArquivoDAG)
@@ -61,13 +66,23 @@ func CaminhoDAGLeitura(dir string) string {
 	return CaminhoDAG(dir)
 }
 
-// DestinosDoProcesso diz onde gravar o DAG e o documento do Studio de um processo do cofre. Se a pasta
-// loops/<nome>/ existe (layout do fabricar), os dois ficam nela; senão, ficam soltos em loops/ (layout antigo).
+// DirAcervoLeitura devolve a pasta de Processos a abrir como acervo: a do
+// dialeto novo quando existe, depois a do antigo, e a nova se nenhuma existe.
+func DirAcervoLeitura(base string) string {
+	if dirs := DirsLeitura(base); len(dirs) > 0 {
+		return dirs[0]
+	}
+	return DirProcessosEm(base)
+}
+
+// DestinosDoProcesso diz onde gravar o DAG e o documento do Studio de um processo do cofre. O dialeto de
+// gravação é processos/: se a pasta processos/<nome>/ existe (layout do fabricar), os dois ficam nela;
+// senão, ficam soltos em processos/ (layout antigo de arquivos soltos).
 func DestinosDoProcesso(vault, nome, sufixoSolto string) (dag, studio string) {
-	loops := DirLoopsEm(vault)
-	pasta := filepath.Join(loops, nome)
+	proc := DirProcessosEm(vault)
+	pasta := filepath.Join(proc, nome)
 	if info, err := os.Stat(pasta); err == nil && info.IsDir() {
 		return CaminhoDAG(pasta), filepath.Join(pasta, nome+SufixoStudio)
 	}
-	return filepath.Join(loops, nome+".dag.json"), filepath.Join(loops, nome+sufixoSolto)
+	return filepath.Join(proc, nome+".dag.json"), filepath.Join(proc, nome+sufixoSolto)
 }

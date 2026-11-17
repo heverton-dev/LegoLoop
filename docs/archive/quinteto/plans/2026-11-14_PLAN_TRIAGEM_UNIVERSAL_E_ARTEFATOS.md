@@ -19,8 +19,8 @@
   - Expor `POST /api/triagem` e entrada no Studio (`internal/studio`).
   - Atualizar template de `SKILL.md` para instruir triagem na entrada.
 
-- **T4 — Saneamento e Migração de `loops/`:**
-  - Implementar `legoloop migrar-loops [--dry-run] [--apply]` para auditar os 10 diretórios em `loops/`, remover legados inúteis/quebrados e gerar `triagem.json` + artefatos faltantes.
+- **T4 — Saneamento e Migração de `processos/`:**
+  - Implementar `legoloop migrar-loops [--dry-run] [--apply]` para auditar os 10 diretórios em `processos/`, remover legados inúteis/quebrados e gerar `triagem.json` + artefatos faltantes.
   - Executar migração e validar com `legoloop validate`.
 
 - **T5 — Portões de Qualidade e Fechamento:**

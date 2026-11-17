@@ -42,5 +42,5 @@ legoloop refinar legoloop-extrator --etapa e01 --peca nova-skill-coleta --yes --
 
 ## 3. Invariantes
 - A etapa alvo deve existir no processo; caso contrário, a execução falha com exit code 1.
-- O histórico de alterações é preservado no arquivo de processo (`loops/<nome>.processo.json`).
+- O histórico de alterações é preservado no arquivo de processo (`processos/<nome>.processo.json`).
 - Qualquer falha no sistema de arquivos reverte automaticamente o processo para a versão anterior.

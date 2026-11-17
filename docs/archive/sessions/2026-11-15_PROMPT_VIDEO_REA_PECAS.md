@@ -6,7 +6,7 @@ Estado herdado (provado em 15/11/2026)
 - REFINAR adiciona etapa: legoloop refinar <nome> --adicionar --etapa e0N --peca P --caso C [--depende ID] --yes.
 - COMPOR liga processo: legoloop compor <alvo> <sub@versão> [--depende ID].
 - Regra: triagem só com mais de um nó. validate, fechar, refinar e compor exigem triagem.json cobrindo todos os nós (triagem.Exigida em internal/triagem/exigencia.go).
-- DAG e Studio ficam na pasta loops/<nome>/ (caminhos.DestinosDoProcesso).
+- DAG e Studio ficam na pasta processos/<nome>/ (caminhos.DestinosDoProcesso).
 - Fechamento da capacidade: docs/reports/2026-11-15_REPORT_FABRICAR_PECA_UNICA.md. Sem commit feito.
 - Use sempre --model code-pro. O modelo code-fast devolve INTENT vazio.
 - Entrevista socrática: cada pergunta traz fato provado (arquivo:linha ou comando) e a sua recomendação. Não responda pela pessoa.
@@ -18,7 +18,7 @@ Fabricar duas peças para o processo legoloop-video-rea com a capacidade nova:
 Depois refine os nós:
 - n02 forensics: acrescentar conceitos, processos e repositórios (internal/videorea/types.go:46-56).
 - n03 curate: classificar todos os achados em DEVE, PODE e NÃO PODE.
-Atualize junto internal/golden/testdata/loops/legoloop-video-rea.dag.json.
+Atualize junto internal/golden/testdata/processos/legoloop-video-rea.dag.json.
 Já existe a entrevista intv_1794760080406643600 (100%) e o INTENT docs/intents/2026-11-15_INTENT_PROCESSO_QUE_RECEBE_A_URL_DE_U.md para a análise de vídeo.
 
 Como conduzir

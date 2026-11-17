@@ -192,7 +192,7 @@ func (s *Server) processoItems() []assets.Item {
 		out = appendProcessoItems(out, seen, list, "acervo", "global")
 	}
 	if s.ProjectDir != "" {
-		if pStore, err := studiodoc.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); err == nil {
+		if pStore, err := studiodoc.NewStore(caminhos.DirAcervoLeitura(s.ProjectDir)); err == nil {
 			if list, err := pStore.List(); err == nil {
 				out = appendProcessoItems(out, seen, list, "project", "project")
 			}

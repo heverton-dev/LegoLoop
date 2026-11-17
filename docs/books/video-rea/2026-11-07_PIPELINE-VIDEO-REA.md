@@ -152,7 +152,7 @@ Testar pipelines de vídeo não pode depender de renderizar clipes de 10 minutos
 ## A Regra de Ouro da Nomenclatura: `legoloop-*`
 
 Todo pipeline concebido a partir de engenharia reversa herda obrigatoriamente a assinatura institucional do ecossistema:
-- O novo diretório de loops adota `loops/<slug>/pipeline.dag.json` com campo `"name": "legoloop-<slug>"`.
+- O novo diretório de loops adota `processos/<slug>/pipeline.dag.json` com campo `"name": "legoloop-<slug>"`.
 - A nova CLI é registrada como subcomando de primeiro nível: `legoloop <slug>`.
 - A nova skill do agente é distribuída no cofre: `skills/legoloop-<slug>/SKILL.md`.
 

@@ -186,7 +186,7 @@
       },
       "inputs": {
         "source_files": [
-          "loops/"
+          "processos/"
         ],
         "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E00.2",
         "context_artifacts": []
@@ -2872,16 +2872,16 @@
         "artifacts": [
           "internal/golden/golden_test.go",
           "internal/golden/testdata/golden.json",
-          "internal/golden/testdata/loops/addy-osmani.loop.json",
-          "internal/golden/testdata/loops/ai-motion-graphics.dag.json",
-          "internal/golden/testdata/loops/fechar.loop.json",
-          "internal/golden/testdata/loops/impeccable-design.loop.json",
-          "internal/golden/testdata/loops/lauren-tan.loop.json",
-          "internal/golden/testdata/loops/legoloop-canal-redc.dag.json",
-          "internal/golden/testdata/loops/legoloop-cartoon-shorts.dag.json",
-          "internal/golden/testdata/loops/legoloop-fechar.dag.json",
-          "internal/golden/testdata/loops/legoloop-n10-foundry.dag.json",
-          "internal/golden/testdata/loops/legoloop-video-edition.dag.json"
+          "internal/golden/testdata/processos/addy-osmani.loop.json",
+          "internal/golden/testdata/processos/ai-motion-graphics.dag.json",
+          "internal/golden/testdata/processos/fechar.loop.json",
+          "internal/golden/testdata/processos/impeccable-design.loop.json",
+          "internal/golden/testdata/processos/lauren-tan.loop.json",
+          "internal/golden/testdata/processos/legoloop-canal-redc.dag.json",
+          "internal/golden/testdata/processos/legoloop-cartoon-shorts.dag.json",
+          "internal/golden/testdata/processos/legoloop-fechar.dag.json",
+          "internal/golden/testdata/processos/legoloop-n10-foundry.dag.json",
+          "internal/golden/testdata/processos/legoloop-video-edition.dag.json"
         ],
         "verify": [
           [
@@ -2891,7 +2891,7 @@
             "-pkgs",
             "./...",
             "-tax",
-            "internal/golden/golden_test.go,internal/golden/testdata/golden.json,internal/golden/testdata/loops/addy-osmani.loop.json,internal/golden/testdata/loops/ai-motion-graphics.dag.json,internal/golden/testdata/loops/fechar.loop.json,internal/golden/testdata/loops/impeccable-design.loop.json,internal/golden/testdata/loops/lauren-tan.loop.json,internal/golden/testdata/loops/legoloop-canal-redc.dag.json,internal/golden/testdata/loops/legoloop-cartoon-shorts.dag.json,internal/golden/testdata/loops/legoloop-fechar.dag.json,internal/golden/testdata/loops/legoloop-n10-foundry.dag.json,internal/golden/testdata/loops/legoloop-video-edition.dag.json",
+            "internal/golden/golden_test.go,internal/golden/testdata/golden.json,internal/golden/testdata/processos/addy-osmani.loop.json,internal/golden/testdata/processos/ai-motion-graphics.dag.json,internal/golden/testdata/processos/fechar.loop.json,internal/golden/testdata/processos/impeccable-design.loop.json,internal/golden/testdata/processos/lauren-tan.loop.json,internal/golden/testdata/processos/legoloop-canal-redc.dag.json,internal/golden/testdata/processos/legoloop-cartoon-shorts.dag.json,internal/golden/testdata/processos/legoloop-fechar.dag.json,internal/golden/testdata/processos/legoloop-n10-foundry.dag.json,internal/golden/testdata/processos/legoloop-video-edition.dag.json",
             "-tax-max",
             "0",
             "-gold"
@@ -2956,11 +2956,11 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "internal/golden/testdata/loops/legoloop-video-master.dag.json",
-          "internal/golden/testdata/loops/legoloop-video-motion.dag.json",
-          "internal/golden/testdata/loops/legoloop-video-rea.dag.json",
-          "internal/golden/testdata/loops/matt-pocock.loop.json",
-          "internal/golden/testdata/loops/mega-pipeline.loop.json",
+          "internal/golden/testdata/processos/legoloop-video-master.dag.json",
+          "internal/golden/testdata/processos/legoloop-video-motion.dag.json",
+          "internal/golden/testdata/processos/legoloop-video-rea.dag.json",
+          "internal/golden/testdata/processos/matt-pocock.loop.json",
+          "internal/golden/testdata/processos/mega-pipeline.loop.json",
           "internal/interview/context.go",
           "internal/interview/context_test.go",
           "internal/interview/intent_render.go",
@@ -2977,7 +2977,7 @@
             "-pkgs",
             "./...",
             "-tax",
-            "internal/golden/testdata/loops/legoloop-video-master.dag.json,internal/golden/testdata/loops/legoloop-video-motion.dag.json,internal/golden/testdata/loops/legoloop-video-rea.dag.json,internal/golden/testdata/loops/matt-pocock.loop.json,internal/golden/testdata/loops/mega-pipeline.loop.json,internal/interview/context.go,internal/interview/context_test.go,internal/interview/intent_render.go,internal/interview/intent_template_test.go,internal/interview/interview_test.go,internal/interview/prompt.go,internal/legopress/auditor_test.go",
+            "internal/golden/testdata/processos/legoloop-video-master.dag.json,internal/golden/testdata/processos/legoloop-video-motion.dag.json,internal/golden/testdata/processos/legoloop-video-rea.dag.json,internal/golden/testdata/processos/matt-pocock.loop.json,internal/golden/testdata/processos/mega-pipeline.loop.json,internal/interview/context.go,internal/interview/context_test.go,internal/interview/intent_render.go,internal/interview/intent_template_test.go,internal/interview/interview_test.go,internal/interview/prompt.go,internal/legopress/auditor_test.go",
             "-tax-max",
             "8",
             "-gold"
@@ -3563,7 +3563,7 @@
       "id": "TICK-04.1",
       "initiative_id": null,
       "epic_id": "E04",
-      "label": "Renomear loops/ para processos/ e migrar os 15 itens para os nomes novos",
+      "label": "Renomear processos/ para processos/ e migrar os 15 itens para os nomes novos",
       "nature": "macro",
       "type": "unit_task",
       "ref": null,
@@ -3605,7 +3605,7 @@
       },
       "inputs": {
         "source_files": [
-          "loops/"
+          "processos/"
         ],
         "spec_anchor": "docs/specs/2026-11-10_SPEC_NORMALIZACAO_TAXONOMICA_LEI15.md#AC-E04.1",
         "context_artifacts": []

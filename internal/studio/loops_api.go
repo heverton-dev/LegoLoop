@@ -17,7 +17,7 @@ func (s *Server) acervoStore() (*studiodoc.Store, error) {
 	if err != nil {
 		return nil, err
 	}
-	store, err := studiodoc.NewStore(caminhos.DirLoopsEm(v))
+	store, err := studiodoc.NewStore(caminhos.DirAcervoLeitura(v))
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (s *Server) handleProcessosLista(w http.ResponseWriter, r *http.Request) {
 		seen[l.ID] = true
 	}
 	if s.ProjectDir != "" {
-		if pStore, err := studiodoc.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); err == nil {
+		if pStore, err := studiodoc.NewStore(caminhos.DirAcervoLeitura(s.ProjectDir)); err == nil {
 			if pList, err := pStore.List(); err == nil {
 				for _, l := range pList {
 					if !seen[l.ID] {
@@ -67,7 +67,7 @@ func (s *Server) handleProcessosObter(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	doc, err := store.Get(id)
 	if err != nil && s.ProjectDir != "" {
-		if pStore, pErr := studiodoc.NewStore(caminhos.DirLoopsEm(s.ProjectDir)); pErr == nil {
+		if pStore, pErr := studiodoc.NewStore(caminhos.DirAcervoLeitura(s.ProjectDir)); pErr == nil {
 			if pDoc, pGetErr := pStore.Get(id); pGetErr == nil {
 				doc = pDoc
 				err = nil

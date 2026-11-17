@@ -4,7 +4,7 @@
 > **Data:** 2026-11-09  
 > **Autor:** LegoLoop Team & Antigravity  
 > **Iniciativa:** I05 — Governança Pentafásica e Harmonia de Grafos Executáveis  
-> **Alvo:** `internal/processo/`, `internal/fabricar/`, `internal/compor/`, `internal/fechar/`, `internal/dag/`, `internal/videorea/`, `docs/templates/`, `loops/`, `docs/dags/`  
+> **Alvo:** `internal/processo/`, `internal/fabricar/`, `internal/compor/`, `internal/fechar/`, `internal/dag/`, `internal/videorea/`, `docs/templates/`, `processos/`, `docs/dags/`  
 > **Sessão:** 17bc79c3-324a-4324-88ca-3914b46981e6  
 > **Confiança da Entrevista:** 99% (validado em auditoria de integridade com o operador)  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -17,7 +17,7 @@
 * **O Porquê:** O LegoLoop exige o Princípio da Harmonia Estrita. A Skill (prosa), a Rota (plano de voo) e o DAG (grafo executável) devem ser espelhos fiéis e completos. O DAG não pode ser uma versão podada ou mutilada da ROUTE; deve carregar paridade integral de contratos e metadados.
 * **Estado Atual vs. Estado Desejado:**
   * **Hoje:** A governança formal em `docs/` parava no `ROUTE.json`. Quando projetado, o DAG sofria perda de parâmetros cognitivos, virando um mero runner de terminal sem instruções de inferência.
-  * **Amanhã:** O **Quinteto de Governança ISO** (`[INTENT -> SPEC -> PLAN -> ROUTE -> DAG]`) é lei em todo o ecossistema com **Paridade Total de Metadados**. O arquivo `docs/dags/YYYY-MM-DD_DAG_<SLUG>.json` é gerado atomicamente contendo todos os contratos de isolamento, tokens, tooling, costuras de teste e contexto da ROUTE, projetado para `loops/` com validação de hash SHA-256 no fechamento.
+  * **Amanhã:** O **Quinteto de Governança ISO** (`[INTENT -> SPEC -> PLAN -> ROUTE -> DAG]`) é lei em todo o ecossistema com **Paridade Total de Metadados**. O arquivo `docs/dags/YYYY-MM-DD_DAG_<SLUG>.json` é gerado atomicamente contendo todos os contratos de isolamento, tokens, tooling, costuras de teste e contexto da ROUTE, projetado para `processos/` com validação de hash SHA-256 no fechamento.
 
 ---
 
@@ -45,7 +45,7 @@
 | `BLOCO-01` | `skill` | `skills/aidd-spec` | Elaborar especificação formal com critérios BDD para o Quinteto e Paridade Total. |
 | `BLOCO-02` | `unit_task` | `internal/dag`, `internal/processo`, `internal/fabricar` | Suporte a metadados cognitivos no DAG, gerador e projetor do 5º elemento com TDD. |
 | `BLOCO-03` | `unit_task` | `internal/compor`, `internal/fechar` | Ajuste da recomposição e auditoria mecânica de paridade SHA-256. |
-| `BLOCO-04` | `unit_task` | `docs/templates`, `loops/` | Inclusão de `TEMPLATE_DAG.json` na suíte e saneamento dos loops `legoloop-*`. |
+| `BLOCO-04` | `unit_task` | `docs/templates`, `processos/` | Inclusão de `TEMPLATE_DAG.json` na suíte e saneamento dos loops `legoloop-*`. |
 | `BLOCO-05` | `script` | `go test ./...` | Regressão mecânica e integridade total (100% verde). |
 | `BLOCO-06` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5). |
 
@@ -58,7 +58,7 @@
 * **Contrato de Evidência Factual (Definition of Done Visual/Real):**  
   1. Diretório `docs/dags/` existente e povoado com arquivos ISO válidos e ricos em parâmetros cognitivos.  
   2. Suíte de testes `go test -count=1 ./...` passando com zero falhas.  
-  3. `legoloop fechar` auditando paridade mecânica entre `docs/dags/` e `loops/`.  
+  3. `legoloop fechar` auditando paridade mecânica entre `docs/dags/` e `processos/`.  
   4. Loop `legoloop-video-rea` saneado sem URLs *hardcoded*.
 * **Premissas Assumidas:**  
   * O schema `dag.v2.json` / `dag.v1.json` absorve ou mapeia transparentemente todos os blocos contratuais da ROUTE sem quebra de retrocompatibilidade.

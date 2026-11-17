@@ -13,7 +13,7 @@ covers: [Q1]
 > **Data:** 2026-11-14  
 > **Autor:** Antigravity (Coordinator)  
 > **Iniciativa:** Auditoria Profunda Swarm  
-> **Alvo:** `internal/`, `cmd/legoloop/`, `internal/studio/`, `loops/`, `schemas/`  
+> **Alvo:** `internal/`, `cmd/legoloop/`, `internal/studio/`, `processos/`, `schemas/`  
 > **Sessão:** `2b93726e-e3b1-4f72-aa2a-d2ddcd8ca025`  
 > **Confiança da Entrevista:** 96%  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  

@@ -72,7 +72,7 @@ func anticorposDe(p processo.Processo) ([]byte, error) {
 // o espelhamento é dupla-escrita até a virada de escopo E06+. Kind é livre;
 // "slice_doc" não vira artefato canônico (artifactsOf ignora kinds desconhecidos).
 func DocsDoSlice(roots Roots, p processo.Processo, pr *processo.Projecoes, sexteto [3]namedFile) []PlannedFile {
-	base := filepath.Join(roots.Vault, paths.DirAntigo, p.Nome, "docs")
+	base := filepath.Join(roots.Vault, paths.DirProcessos, p.Nome, "docs")
 	entradas := []struct {
 		sub, nome string
 		data      []byte

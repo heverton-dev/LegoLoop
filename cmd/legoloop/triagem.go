@@ -23,8 +23,8 @@ func runTriagem(ctx context.Context, args []string, stdout, stderr io.Writer) in
 	workspace := fs.String("workspace", "", "diretório de trabalho para verificar artefatos ativos")
 	asJSON := fs.Bool("json", false, "emite decisão em formato JSON")
 	var processosDir string
-	fs.StringVar(&processosDir, "processos-dir", paths.DirAntigo, "diretório raiz dos processos")
-	fs.StringVar(&processosDir, paths.DirAntigo+"-dir", paths.DirAntigo, "alias legado de --processos-dir")
+	fs.StringVar(&processosDir, "processos-dir", paths.DirProcessos, "diretório raiz dos processos")
+	fs.StringVar(&processosDir, paths.DirAntigo+"-dir", paths.DirProcessos, "alias legado de --processos-dir")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
@@ -119,8 +119,8 @@ func runTriagemFinalizar(args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("triagem finalizar", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	var processosDir string
-	fs.StringVar(&processosDir, "processos-dir", paths.DirAntigo, "diretório raiz dos processos")
-	fs.StringVar(&processosDir, paths.DirAntigo+"-dir", paths.DirAntigo, "alias legado de --processos-dir")
+	fs.StringVar(&processosDir, "processos-dir", paths.DirProcessos, "diretório raiz dos processos")
+	fs.StringVar(&processosDir, paths.DirAntigo+"-dir", paths.DirProcessos, "alias legado de --processos-dir")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}

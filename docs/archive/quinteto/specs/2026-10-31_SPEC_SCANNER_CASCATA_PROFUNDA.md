@@ -38,7 +38,7 @@ A varredura opera estritamente nas **5 Camadas Canônicas** do ecossistema:
   - Global: `~/.aidd/scripts/`, `~/.claude/scripts/`.
   - Scaffold: `~/.aidd/scaffolds/**/scripts/`.
   - Projeto: pastas `scripts/`, `tools/`, `bin/` de cada projeto descoberto.
-- **CRIT-PECA-5 (Loops no Acervo & Projetos):** Indexa arquivos `*.loop.json` tanto do cofre canônico (`~/.aidd/canonical/loops/`, escopo `global`) quanto de pastas de scaffolds (`escopo scaffold`) e de projetos locais (`escopo project`).
+- **CRIT-PECA-5 (Loops no Acervo & Projetos):** Indexa arquivos `*.loop.json` tanto do cofre canônico (`~/.aidd/canonical/processos/`, escopo `global`) quanto de pastas de scaffolds (`escopo scaffold`) e de projetos locais (`escopo project`).
 - **CRIT-PECA-6 (Harnesses e Binários Expandidos):** Além do `PATH`, varre pastas conhecidas de ferramentas (`~/.cargo/bin`, `~/.local/bin`, `AppData/Local/Programs`, `~/go/bin`).
 
 ### 2.3 Desempenho e Governança de Recursos

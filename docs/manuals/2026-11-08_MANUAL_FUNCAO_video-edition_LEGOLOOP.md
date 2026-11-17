@@ -23,12 +23,12 @@ O pipeline `video-edition` executa a montagem automatizada e soberana de produç
 
 ### 2.1 Disparo Básico
 ```bash
-legoloop run loops/video-edition/pipeline.dag.json --var input_video="caminho/do/video.mp4"
+legoloop run processos/video-edition/pipeline.dag.json --var input_video="caminho/do/video.mp4"
 ```
 
 ### 2.2 Disparo com Ajuste Fino de Calibração
 ```bash
-legoloop run loops/video-edition/pipeline.dag.json \
+legoloop run processos/video-edition/pipeline.dag.json \
   --var input_video="gravacao_bruta.mov" \
   --var pre_roll_ms=50 \
   --var ducking_db="-20dB" \

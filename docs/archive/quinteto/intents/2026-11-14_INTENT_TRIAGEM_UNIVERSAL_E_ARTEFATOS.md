@@ -10,10 +10,10 @@ Pedidos em linguagem natural ou fluxos existentes não possuem um roteador únic
 1. Projetar e implementar a **Peça de Triagem / Roteador Universal de Entrada** com decisão híbrida (determinística por regras/artefatos + probabilística apenas na ambiguidade).
 2. Operar a triagem nos 3 pontos de entrada: **CLI** (`legoloop triagem`), **Chat/Skill** e **Studio**.
 3. Atualizar `legoloop fabricar` para remover `template` e gerar **13 artefatos** (`skill`, `loop`, `dag`, `processo`, `intent`, `spec`, `plan`, `route`, `dag_iso`, `triagem`, `manual`, `livro`, `fichas_tecnicas`).
-4. Adequar e sanear todos os processos existentes em `loops/` (atualmente 10 diretórios) removendo legados inúteis ou quebrados e gerando suas Peças de Triagem e artefatos faltantes.
+4. Adequar e sanear todos os processos existentes em `processos/` (atualmente 10 diretórios) removendo legados inúteis ou quebrados e gerando suas Peças de Triagem e artefatos faltantes.
 
 ## 3. Critério de Sucesso
 - Todo processo criado via `legoloop fabricar` sai pronto com os 13 artefatos validados.
 - `legoloop triagem "<entrada>"` resolve deterministicamente comandos/slugs/estado em disco e só chama LLM quando há ambiguidade.
 - Studio e Chat/Skill consomem o mesmo motor de triagem.
-- Todos os processos em `loops/` estão saneados e possuem Peça de Triagem válida.
+- Todos os processos em `processos/` estão saneados e possuem Peça de Triagem válida.

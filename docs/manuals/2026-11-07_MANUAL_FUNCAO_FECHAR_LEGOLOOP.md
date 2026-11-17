@@ -14,7 +14,7 @@ A função **`legoloop-fechar`** é o 6º verbo de ciclo de vida do LegoLoop e o
 1. **Manual Didático:** em `docs/manuals/YYYY-MM-DD_MANUAL_FUNCAO_<SLUG>_LEGOLOOP.md`.
 2. **Livro Didático LegoPress:** em `docs/books/<slug>/` com auditoria geométrica.
 3. **Skill Universal:** em `skills/legoloop-<slug>/SKILL.md` vinculada aos harnesses do SO.
-4. **Loop & Grafo DAG:** em `loops/<slug>/pipeline.dag.json` validado.
+4. **Loop & Grafo DAG:** em `processos/<slug>/pipeline.dag.json` validado.
 5. **Recompilação Fresca do Binário:** `bin/legoloop.exe` e `go install ./cmd/legoloop`.
 6. **Governança Viva:** `AGENTS.md` e `MEMORY.md`.
 7. **Reindexação do Grafo Semântico:** via `codebase-memory-mcp`.

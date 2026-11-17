@@ -38,13 +38,13 @@ covers: [AC-I6-01.1, AC-I6-01.2, AC-I6-01.3, AC-I6-02.1, AC-I6-02.2, AC-I6-02.3,
 | Épico ID | Nome do Épico | Total Tickets | Critérios de Aceite Cobertos | Natureza Dominante |
 |---|---|---|---|---|
 | **E01** | Inventário e Migração de `docs/dags/` | 3 | `AC-I6-01.1`, `AC-I6-01.2`, `AC-I6-01.3` | `micro` |
-| **E02** | Migração Paralela de `loops/*/pipeline.dag.json` | 3 | `AC-I6-02.1`, `AC-I6-02.2`, `AC-I6-02.3` | `micro` |
+| **E02** | Migração Paralela de `processos/*/pipeline.dag.json` | 3 | `AC-I6-02.1`, `AC-I6-02.2`, `AC-I6-02.3` | `micro` |
 | **E03** | Validação Global e Homologação | 1 | `AC-I6-03.1` | `nano` |
 
 | R | Requisito | AC | Ticket |
 | :--- | :--- | :--- | :--- |
 | R1 | Inventário e migração dos 9 DAGs de `docs/dags/` | `AC-I6-01.1`, `AC-I6-01.2`, `AC-I6-01.3` | `TICK-I6-01.1`, `TICK-I6-01.2`, `TICK-I6-01.3` |
-| R2 | Migração paralela dos 10 DAGs de `loops/*/` | `AC-I6-02.1`, `AC-I6-02.2`, `AC-I6-02.3` | `TICK-I6-02.1`, `TICK-I6-02.2`, `TICK-I6-02.3` |
+| R2 | Migração paralela dos 10 DAGs de `processos/*/` | `AC-I6-02.1`, `AC-I6-02.2`, `AC-I6-02.3` | `TICK-I6-02.1`, `TICK-I6-02.2`, `TICK-I6-02.3` |
 | R3 | Validação mecânica integral dos 19 DAGs | `AC-I6-03.1` | `TICK-I6-03.1` |
 
 ---
@@ -60,7 +60,7 @@ covers: [AC-I6-01.1, AC-I6-01.2, AC-I6-01.3, AC-I6-02.1, AC-I6-02.2, AC-I6-02.3,
 * **Roteamento:** Harness `claude` · Via `oficial` · Modelo `haiku` · Effort `low`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `120s` · Retries `1` · Entrada `8000` tokens · Teto de saída `300` tokens · Rollback `stash_changes`
-* **Inputs:** `docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json`, `loops/legoloop-fechar/pipeline.dag.json` · Spec Anchor `docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-01.1`
+* **Inputs:** `docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json`, `processos/legoloop-fechar/pipeline.dag.json` · Spec Anchor `docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-01.1`
 * **Outputs:** `scratch/i6_inventario_legados.json`
 * **Verificação:** `go run ./cmd/legoloop validate docs/dags/2026-11-13_DAG_MIGRACAO_LEGADOS.json`
 * **Gate (DSL):** `exit_code == 0 && file_exists('scratch/i6_inventario_legados.json')`
@@ -93,13 +93,13 @@ covers: [AC-I6-01.1, AC-I6-01.2, AC-I6-01.3, AC-I6-02.1, AC-I6-02.2, AC-I6-02.3,
 * **Spec Ref:** `AC-I6-01.3`
 
 ### 🛑 STOP-GATE HUMANO — ÉPICO 01 (`SG-I6-E01`)
-* **Gate (DSL):** `prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (loops/)?')`
+* **Gate (DSL):** `prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (processos/)?')`
 
 ---
 
-### Épico 02 — Migração Paralela de `loops/*/pipeline.dag.json`
+### Épico 02 — Migração Paralela de `processos/*/pipeline.dag.json`
 
-#### Ticket `TICK-I6-02.1` — Migrar Lote Vídeo I em `loops/` (4 arquivos)
+#### Ticket `TICK-I6-02.1` — Migrar Lote Vídeo I em `processos/` (4 arquivos)
 * **Iniciativa:** `I6` | **Épico:** `E02` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `parallel` | **Status:** `PENDING`
 * **Dependências:** `["SG-I6-E01"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
@@ -107,12 +107,12 @@ covers: [AC-I6-01.1, AC-I6-01.2, AC-I6-01.3, AC-I6-02.1, AC-I6-02.2, AC-I6-02.3,
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
 * **Inputs:** `scratch/i6_inventario_legados.json` · Spec Anchor `docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.1`
-* **Outputs:** `loops/ai-motion-graphics/pipeline.dag.json`, `loops/legoloop-video-edition/pipeline.dag.json`, `loops/legoloop-video-master/pipeline.dag.json`, `loops/legoloop-video-motion/pipeline.dag.json`
-* **Verificação:** `go run ./cmd/legoloop validate loops/ai-motion-graphics/pipeline.dag.json`
+* **Outputs:** `processos/ai-motion-graphics/pipeline.dag.json`, `processos/legoloop-video-edition/pipeline.dag.json`, `processos/legoloop-video-master/pipeline.dag.json`, `processos/legoloop-video-motion/pipeline.dag.json`
+* **Verificação:** `go run ./cmd/legoloop validate processos/ai-motion-graphics/pipeline.dag.json`
 * **Gate (DSL):** `exit_code == 0`
 * **Spec Ref:** `AC-I6-02.1`
 
-#### Ticket `TICK-I6-02.2` — Migrar Lote Vídeo II em `loops/` (3 arquivos)
+#### Ticket `TICK-I6-02.2` — Migrar Lote Vídeo II em `processos/` (3 arquivos)
 * **Iniciativa:** `I6` | **Épico:** `E02` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `parallel` | **Status:** `PENDING`
 * **Dependências:** `["SG-I6-E01"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
@@ -120,12 +120,12 @@ covers: [AC-I6-01.1, AC-I6-01.2, AC-I6-01.3, AC-I6-02.1, AC-I6-02.2, AC-I6-02.3,
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
 * **Inputs:** `scratch/i6_inventario_legados.json` · Spec Anchor `docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.2`
-* **Outputs:** `loops/legoloop-canal-redc/pipeline.dag.json`, `loops/legoloop-cartoon-shorts/pipeline.dag.json`, `loops/legoloop-video-rea/pipeline.dag.json`
-* **Verificação:** `go run ./cmd/legoloop validate loops/legoloop-canal-redc/pipeline.dag.json`
+* **Outputs:** `processos/legoloop-canal-redc/pipeline.dag.json`, `processos/legoloop-cartoon-shorts/pipeline.dag.json`, `processos/legoloop-video-rea/pipeline.dag.json`
+* **Verificação:** `go run ./cmd/legoloop validate processos/legoloop-canal-redc/pipeline.dag.json`
 * **Gate (DSL):** `exit_code == 0`
 * **Spec Ref:** `AC-I6-02.2`
 
-#### Ticket `TICK-I6-02.3` — Migrar Lote Governança em `loops/` (3 arquivos)
+#### Ticket `TICK-I6-02.3` — Migrar Lote Governança em `processos/` (3 arquivos)
 * **Iniciativa:** `I6` | **Épico:** `E02` | **Nature:** `micro` | **Tipo:** `unit_task` | **Modo de Execução:** `parallel` | **Status:** `PENDING`
 * **Dependências:** `["SG-I6-E01"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
@@ -133,13 +133,13 @@ covers: [AC-I6-01.1, AC-I6-01.2, AC-I6-01.3, AC-I6-02.1, AC-I6-02.2, AC-I6-02.3,
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
 * **Inputs:** `scratch/i6_inventario_legados.json` · Spec Anchor `docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.3`
-* **Outputs:** `loops/legoloop-dissecar/pipeline.dag.json`, `loops/legoloop-fechar/pipeline.dag.json`, `loops/legoloop-n10-foundry/pipeline.dag.json`
-* **Verificação:** `go run ./cmd/legoloop validate loops/legoloop-fechar/pipeline.dag.json`
+* **Outputs:** `processos/legoloop-dissecar/pipeline.dag.json`, `processos/legoloop-fechar/pipeline.dag.json`, `processos/legoloop-n10-foundry/pipeline.dag.json`
+* **Verificação:** `go run ./cmd/legoloop validate processos/legoloop-fechar/pipeline.dag.json`
 * **Gate (DSL):** `exit_code == 0`
 * **Spec Ref:** `AC-I6-02.3`
 
 ### 🛑 STOP-GATE HUMANO — ÉPICO 02 (`SG-I6-E02`)
-* **Gate (DSL):** `prompt('Os 10 pipeline.dag.json de loops/ validam em v2? Autoriza validação final E03?')`
+* **Gate (DSL):** `prompt('Os 10 pipeline.dag.json de processos/ validam em v2? Autoriza validação final E03?')`
 
 ---
 

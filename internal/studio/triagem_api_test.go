@@ -14,7 +14,7 @@ import (
 
 func TestHandleTriagemDeterministico(t *testing.T) {
 	projDir := t.TempDir()
-	loopDir := filepath.Join(projDir, "loops", "demo-proc")
+	loopDir := filepath.Join(projDir, "processos", "demo-proc")
 	if err := os.MkdirAll(loopDir, 0o755); err != nil {
 		t.Fatal(err)
 	}

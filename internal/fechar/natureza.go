@@ -14,7 +14,7 @@ func naturezaDoProcesso(vault, canon, slug string) string {
 		if nome == "" {
 			continue
 		}
-		p, err := processo.Ler(processo.CaminhoNoCofre(vault, nome))
+		p, err := processo.Ler(processo.CaminhoNoCofreLeitura(vault, nome))
 		if err == nil {
 			return strings.TrimSpace(p.Natureza)
 		}

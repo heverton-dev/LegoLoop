@@ -3,7 +3,7 @@
 > **Status:** Concluído  
 > **Data:** 2026-11-10  
 > **Norma de Referência:** ASD-STE100 (Simplified Technical English) — Regra 1: *"One word, one meaning. One meaning, one word."*  
-> **Escopo Auditado:** 9.028 arquivos (`internal/`, `cmd/`, `loops/`, `skills/`, `schemas/`, `docs/`)  
+> **Escopo Auditado:** 9.028 arquivos (`internal/`, `cmd/`, `processos/`, `skills/`, `schemas/`, `docs/`)  
 > **Objetivo:** Erradicar a ambiguidade terminológica, ruído vetorial e alucinações de inferência para agentes de IA e desenvolvedores humanos.
 
 ---
@@ -31,7 +31,7 @@ A varredura mecânica do repositório identificou **6 grandes zonas de colisão 
 * **Termos em Conflito:** `processo`, `loop`, `pipeline`, `esteira`, `grafo`, `dag`, `fluxo`.
 * **Impacto Cognitivo:** 
   * O LLM não sabe se `legoloop run` consome um "loop", um "pipeline" ou um "dag".
-  * Estrutura física: a pasta chama-se `loops/`, o arquivo interno chama-se `pipeline.dag.json`, o parser Go chama-se `dag.DAG`, o comando do CLI chama-se `fabricar <nome>` (para criar um processo) e a API do Studio expõe simultaneamente `/api/loops` e `/api/processos`.
+  * Estrutura física: a pasta chama-se `processos/`, o arquivo interno chama-se `pipeline.dag.json`, o parser Go chama-se `dag.DAG`, o comando do CLI chama-se `fabricar <nome>` (para criar um processo) e a API do Studio expõe simultaneamente `/api/loops` e `/api/processos`.
   * **Efeito em IA:** O modelo gera rotas chamando ora `pipeline_id`, ora `loop_id`, ora `processo_id`, quebrando schemas estritos JSON com `DisallowUnknownFields`.
 
 ### Zona 2: Unidade Básica Reutilizável de Trabalho

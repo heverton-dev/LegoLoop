@@ -13,7 +13,7 @@
 |---|---|---|---|
 | **TICK-2401** | Motor de Importação GitHub e Hashing SHA-256 | `internal/canon/importer.go`, `internal/canon/importer_test.go` | `go test -v -run TestImport ./internal/canon/...` |
 | **TICK-2402** | Endpoint de Importação no Studio (`POST /api/assets/import`) | `internal/studio/assets_api.go`, `internal/studio/assets_api_test.go` | `go test -v -run TestAssetImport ./internal/studio/...` |
-| **TICK-2403** | Endpoint de Fork Copy-on-Write (`POST /api/loops/{id}/fork`) | `internal/studio/loops_api.go`, `internal/studio/loops_api_test.go` | `go test -v -run TestLoops ./internal/studio/...` |
+| **TICK-2403** | Endpoint de Fork Copy-on-Write (`POST /api/processos/{id}/fork`) | `internal/studio/loops_api.go`, `internal/studio/loops_api_test.go` | `go test -v -run TestLoops ./internal/studio/...` |
 | **TICK-2404** | Comando CLI `legoloop import` | `internal/cli/commands.go`, `internal/cli/cli_test.go` | `go test -v -run TestCLI ./internal/cli/...` |
 | **TICK-2405** | UI no Studio (Botão/Modal de Importação) e Recompilação | `internal/studio/static/`, `bin/legoloop.exe` | `go test ./...` e `go build` |
 

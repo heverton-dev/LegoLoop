@@ -16,7 +16,7 @@
 * **Impacto Arquitetural:** 
   - Criação dos módulos `internal/videorea/script_engine.go`, `tts_edge.go` e `cartoon_render.go` com TDD estrito e zero stubs.
   - Criação do comando CLI `legoloop cartoon-shorts` e registro em `internal/cli/cli.go`.
-  - Construção do grafo DAG validado em `loops/legoloop-cartoon-shorts/pipeline.dag.json` (3 nós sequenciais sem ciclos).
+  - Construção do grafo DAG validado em `processos/legoloop-cartoon-shorts/pipeline.dag.json` (3 nós sequenciais sem ciclos).
   - Publicação da skill canônica `skills/legoloop-cartoon-shorts/SKILL.md`.
   - Compilação do livro didático do processo (`2026-11-09_PIPELINE-CARTOON-SHORTS.pdf`) e da Bíblia de Harness Engineering (`2026-11-09_ENGENHARIA-DE-HARNESS.pdf`, 30 páginas).
   - Recompilação fresca de `bin/legoloop.exe` e instalação no PATH.
@@ -68,7 +68,7 @@
 | `AC-E03.1` | Composição visual e muxing FFmpeg -6 dB | `TestRenderCartoonScenes_ExecutaComandoMuxing` | ✅ Aprovado |
 | `AC-E03.2` | Golden Fixture MP4 de 3 segundos | `TestGenerateCartoonFixture3s` | ✅ Aprovado |
 | `AC-E04.1` | Disparo via CLI `legoloop cartoon-shorts` | `TestCartoonShortsCLI_TemaValidoComDryRun` | ✅ Aprovado |
-| `AC-E04.2` | Validação do DAG sem ciclos e com 3 nós | `legoloop validate loops/legoloop-cartoon-shorts/...` | ✅ Aprovado |
+| `AC-E04.2` | Validação do DAG sem ciclos e com 3 nós | `legoloop validate processos/legoloop-cartoon-shorts/...` | ✅ Aprovado |
 
 ---
 

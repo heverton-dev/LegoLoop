@@ -21,7 +21,7 @@ Este registro serve de HANDOFF. A sessão seguinte lê este arquivo e retoma a t
 | E01 Compatibilidade | Implementado em 2026-11-10 | Os arquivos do `context_out` existem. O gate de cada nó (01.1 a 01.6) sai com exit 0. |
 | E02 Geradores, templates, skills | Implementado em 2026-11-10 | Os arquivos do `context_out` existem. O gate de cada nó (02.1 a 02.5) sai com exit 0. |
 | E03 Código interno | Concluído em 2026-11-11 | Todos os nós têm gate verde. `go test -count=1 ./...` verde. `taxlinter internal cmd`: 318 violações, limite 531. |
-| E04 Dados e diretórios | Não iniciado | `processos/` não existe. `loops/` mantém o nome antigo. O gate do 04.3 falha: "PDF reprovado na auditoria". |
+| E04 Dados e diretórios | Não iniciado | `processos/` não existe. `processos/` mantém o nome antigo. O gate do 04.3 falha: "PDF reprovado na auditoria". |
 | E05 Orchestrix sobre Claude Code | Não iniciado | Os 12 arquivos novos do `context_out` não existem (`executor_efemero.go`, `router.go`, `raias.go`, `modelo.go`, `conflito.go`, `telemetria.go` e os testes). |
 | E06 Fechamento | Não iniciado | O gate do 06.1 falha: `taxlinter internal cmd processos skills docs/templates` sai com exit 1. |
 
@@ -118,7 +118,7 @@ Os nós que não aparecem não têm custo registrado neste levantamento.
 
 ## 7. Handoff: o que falta
 
-1. `TICK-04.1`: criar `processos/` a partir de `loops/` (sem tocar o Cofre real).
+1. `TICK-04.1`: criar `processos/` a partir de `processos/` (sem tocar o Cofre real).
 2. `TICK-04.3`: corrigir os PDFs reprovados em `docs/books` e `docs/videorea`.
 3. `SG-E04-COFRE`, depois `TICK-04.2` e `TICK-04.4`. O Cofre real só muda com o gate e o backup.
 4. `TICK-05.1` a `TICK-05.6`: criar os arquivos do `orchestrix` e do `runner`, com testes novos que uma mutação faz falhar.

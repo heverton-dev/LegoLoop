@@ -136,10 +136,10 @@ legoloop video-motion bundle  --input video.mp4 --output dist/job_01/
 
 ### 3. Via Grafo DAG e LegoLoop Studio
 
-O pipeline é formalmente orquestrado pelo arquivo `loops/video-motion/pipeline.dag.json`:
+O pipeline é formalmente orquestrado pelo arquivo `processos/video-motion/pipeline.dag.json`:
 
 ```bash
-legoloop run loops/video-motion/pipeline.dag.json --var input_media="video.mp4"
+legoloop run processos/video-motion/pipeline.dag.json --var input_media="video.mp4"
 ```
 
 No painel visual do **LegoLoop Studio**, o operador acompanha o progresso nó a nó:
@@ -194,7 +194,7 @@ dist/job_20261107_01/
 
 ## Governança Viva de Documentação
 
-No ecossistema LegoLoop, nenhuma documentação pode se tornar obsoleta em relação ao código real. Sempre que um arquivo do pipeline (`internal/videomotion/` ou `loops/video-motion/`) for alterado via commit ou refatoração, o motor **LegoPress** sincroniza a obra técnica automaticamente.
+No ecossistema LegoLoop, nenhuma documentação pode se tornar obsoleta em relação ao código real. Sempre que um arquivo do pipeline (`internal/videomotion/` ou `processos/video-motion/`) for alterado via commit ou refatoração, o motor **LegoPress** sincroniza a obra técnica automaticamente.
 
 ## Comandos de Manutenção do Livro
 

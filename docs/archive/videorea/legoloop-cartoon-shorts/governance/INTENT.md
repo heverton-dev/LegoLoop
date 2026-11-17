@@ -4,7 +4,7 @@
 > **Data:** 2026-11-09  
 > **Autor:** LegoLoop (Video-REA Engine)  
 > **Iniciativa:** Soberania Audiovisual Local Tier Ouro  
-> **Alvo:** `internal/videorea/`, `internal/cli/`, `loops/legoloop-cartoon-shorts/`, `skills/legoloop-cartoon-shorts/`, `web/studio/`  
+> **Alvo:** `internal/videorea/`, `internal/cli/`, `processos/legoloop-cartoon-shorts/`, `skills/legoloop-cartoon-shorts/`, `web/studio/`  
 > **Sessão:** intv_1794238593016059900  
 > **Confiança da Entrevista:** 100%  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  

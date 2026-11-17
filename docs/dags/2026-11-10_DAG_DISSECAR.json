@@ -8,7 +8,7 @@
   "upstream_signatures": {
     "route": {
       "path": "docs/routes/2026-11-10_ROUTE_DISSECAR.json",
-      "sha256": "373e96e6c5ad7653c4013515279a399f75b703510d7d11bb81e10b5b6e7a1d4b"
+      "sha256": "4100d4d6d433e4a2d3ce7fcfb07cae83d48177d33ef9f07b83d5c8844428df48"
     }
   },
   "execution_strategy": {
@@ -576,8 +576,8 @@
       "spec_ref": "AC-E04.1",
       "status": "PENDING",
       "context_in": ["skills/legoloop-dissecar/SKILL.md"],
-      "context_out": ["loops/legoloop-dissecar/pipeline.dag.json"],
-      "output": { "artifact": "loops/legoloop-dissecar/pipeline.dag.json", "gate": "exit_code == 0" }
+      "context_out": ["processos/legoloop-dissecar/pipeline.dag.json"],
+      "output": { "artifact": "processos/legoloop-dissecar/pipeline.dag.json", "gate": "exit_code == 0" }
     },
     {
       "id": "TICK-04.3",

@@ -6,7 +6,7 @@ Auditoria profunda executada via Swarm nativo em `C:\Users\trcnologia\Desktop\Le
 ## 2. Achados Consolidados por Domínio
 
 ### 2.1 Core Go (`audit-core`, seq #7)
-- `go test -count=1 ./...`: FAIL em `internal/cli` (`TestInstalarSkills` esperava 15 funções nativas, obteve 16) e `internal/gate` (`TestSchemaV2AceitaDialetos` falhou em `loops/matt-pocock/pipeline.dag.json` e `loops/mega-pipeline/pipeline.dag.json`).
+- `go test -count=1 ./...`: FAIL em `internal/cli` (`TestInstalarSkills` esperava 15 funções nativas, obteve 16) e `internal/gate` (`TestSchemaV2AceitaDialetos` falhou em `processos/matt-pocock/pipeline.dag.json` e `processos/mega-pipeline/pipeline.dag.json`).
 - `go vet ./...`: PASS (0 warnings).
 - `gofmt -l .`: FAIL em `internal/orchestrix/prompt_sanitize_test.go`.
 - `go run ./tools/funclen internal`: FAIL com 2 funções >35 linhas: `internal/mcp/swarm_tools.go:34` (`handleSwarmTool`, 59 linhas) e `internal/processo/projecoes.go:64` (`Projetar`, 38 linhas).
@@ -19,12 +19,12 @@ Auditoria profunda executada via Swarm nativo em `C:\Users\trcnologia\Desktop\Le
 
 ### 2.3 Processos e Peças (`audit-processos`, seq #8)
 - `docs/templates/...`: PASS.
-- `loops/` (19 processos): 11 válidos e 8 falhando em `legoloop validate`:
+- `processos/` (19 processos): 11 válidos e 8 falhando em `legoloop validate`:
   - `addy-osmani`, `fechar`, `impeccable-design`, `lauren-tan`: `unknown field ""`.
   - `fronteira-ai-driven`: `nó "T-01": gate: caractere inesperado '.' na posição 8`.
   - `legoloop-triagem`: `unknown field "description"`.
   - `matt-pocock`, `mega-pipeline`: UTF-8 BOM (`\ufeff`).
-- 457 violações `taxlinter` em `loops/`, `skills/`, `docs/templates/`.
+- 457 violações `taxlinter` em `processos/`, `skills/`, `docs/templates/`.
 
 ### 2.4 LegoLoop Studio (`audit-studio`, seq #12)
 - `go test -count=1 ./internal/studio/...`: PASS.

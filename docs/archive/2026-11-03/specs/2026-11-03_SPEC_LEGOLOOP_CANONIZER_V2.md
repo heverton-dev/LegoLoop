@@ -108,10 +108,10 @@ A Fábrica de Processos (`legoloop-canonizer`) é um motor unificado em Go que r
                                      ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │ MATERIALIZAÇÃO TRIPARTIDA INTEROPERÁVEL:                               │
-│   ├── [CLI]:    ~/.aidd/canonical/loops/legoloop-<slug>.dag.json       │
+│   ├── [CLI]:    ~/.aidd/canonical/processos/legoloop-<slug>.dag.json       │
 │   ├── [Chat]:   ~/.aidd/canonical/skills/legoloop-<slug>/SKILL.md      │
 │   │             (+ link opcional em pastas de skills dos harnesses)    │
-│   └── [Studio]: ~/.aidd/canonical/loops/legoloop-<slug>.loop.json      │
+│   └── [Studio]: ~/.aidd/canonical/processos/legoloop-<slug>.loop.json      │
 │ GOVERNANÇA (docs/, prefixo ISO):                                       │
 │   INTENT, SPEC, PLAN, ROUTE (TEMPLATE_ROUTE.json), TEMPLATE            │
 └────────────────────────────────────────────────────────────────────────┘
@@ -209,8 +209,8 @@ type CanonicalArtifacts struct {
 	RoutePath    string   `json:"route_path"`    // docs/routes/YYYY-MM-DD_ROUTE_legoloop-<slug>.json (TEMPLATE_ROUTE)
 	TemplatePath string   `json:"template_path"` // docs/templates/TEMPLATE_...
 	SkillPath    string   `json:"skill_path"`    // ~/.aidd/canonical/skills/legoloop-<slug>/SKILL.md
-	LoopPath     string   `json:"loop_path"`     // ~/.aidd/canonical/loops/legoloop-<slug>.loop.json
-	DagPath      string   `json:"dag_path"`      // ~/.aidd/canonical/loops/legoloop-<slug>.dag.json (executável por legoloop run)
+	LoopPath     string   `json:"loop_path"`     // ~/.aidd/canonical/processos/legoloop-<slug>.loop.json
+	DagPath      string   `json:"dag_path"`      // ~/.aidd/canonical/processos/legoloop-<slug>.dag.json (executável por legoloop run)
 	SkillLinks   []string `json:"skill_links"`   // Links criados nas pastas dos harnesses (vazio sem confirmação)
 }
 
@@ -347,7 +347,7 @@ type DiscoveredPiece struct {
 * **Dependências Intactas:** `git diff --exit-code go.mod go.sum`
 * **Compilação do Binário:** `go build -o bin/legoloop.exe ./cmd/legoloop`
 * **Instalação Global no PATH:** `go install ./cmd/legoloop`
-* **Smoke Hermético (sem tocar o cofre real):** `legoloop canonize "teste-smoke" --yes --dry-run --vault <TMP> --docs <TMP>` e, depois, a mesma chamada sem `--dry-run`, seguida de `legoloop validate <TMP>/loops/legoloop-teste-smoke.dag.json`.
+* **Smoke Hermético (sem tocar o cofre real):** `legoloop canonize "teste-smoke" --yes --dry-run --vault <TMP> --docs <TMP>` e, depois, a mesma chamada sem `--dry-run`, seguida de `legoloop validate <TMP>/processos/legoloop-teste-smoke.dag.json`.
 
 ### Critério de Done Global
 A especificação técnica é considerada **100% CONCLUÍDA** quando:
@@ -367,6 +367,6 @@ A especificação técnica é considerada **100% CONCLUÍDA** quando:
 1. *`legoloop canonize <nome>` coexiste com o `canonize --root` legado por despacho de flags (AC-E02.3). Alternativa: um nome novo, como `legoloop fabricar`.*
 2. *O executável da CLI é um `.dag.json` (aceito por `legoloop run <caminho>`), separado do `ROUTE` de governança. A Intent fala em `legoloop run legoloop-<nome>`, mas `run` hoje recebe caminho; resolver por nome exigiria alterar `run`.*
 3. *A skill é gravada no cofre e só é ligada às pastas dos harnesses com confirmação, pois o Claude Code não lê o cofre.*
-4. *O `.dag.json` fica em `~/.aidd/canonical/loops/` para não criar diretório novo no cofre (o `loop.Store` só lista `*.loop.json`).*
+4. *O `.dag.json` fica em `~/.aidd/canonical/processos/` para não criar diretório novo no cofre (o `loop.Store` só lista `*.loop.json`).*
 
 *Somente após a aprovação explícita do usuário, iniciaremos o PLAN (`docs/plans/2026-11-03_PLAN_LEGOLOOP_CANONIZER.md`) e a ROUTE (`docs/routes/2026-11-03_ROUTE_LEGOLOOP_CANONIZER.json`).*

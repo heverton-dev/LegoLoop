@@ -4,7 +4,7 @@
 > **Data:** 2026-11-07  
 > **Autor:** Antigravity & User (LegoLoop Mega Pipeline)  
 > **Iniciativa:** I01 — LegoLoop Creative Engines  
-> **Alvo:** `internal/pipeline`, `loops/video-motion`, `skills/video-motion`  
+> **Alvo:** `internal/pipeline`, `processos/video-motion`, `skills/video-motion`  
 > **Sessão:** 217415b3-cbf6-432f-bbe6-b267fa3fddea  
 > **Confiança da Entrevista:** 98%  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -21,7 +21,7 @@
 * **O Porquê:** O LegoLoop foi projetado para elevar o inventário do sistema operacional a **Padrão Ouro**. O SO já contém compilador Go, FFmpeg, Python, Node, o kit de engenharia de 29 regras de `remotion-video-creation`, motores de alinhamento fonético milimétrico (`speech-sync`) e conectores de IA generativa (Google AI Studio Gemini 2.0 / Imagen 3 / Veo 2). Unificar essas peças em um pipeline acíclico DAG modular elimina 100% dos custos de After Effects e transforma o processo em uma esteira industrial determinística.
 * **Estado Atual vs. Estado Desejado:**
   * **Hoje:** O usuário precisa executar scripts manuais em Python, abrir After Effects para ajustar cartões de vidro, depender de APIs pagas de vídeo do Higgsfield e rodar comandos cegos sem preview em tempo real.
-  * **Amanhã:** Um comando LegoLoop único (`legoloop run loops/video-motion/pipeline.dag.json`) ingere um vídeo ou áudio bruto, corta silêncios milimetricamente no ataque das sílabas, alinha cada palavra em um JSON canônico (`words.json`), gera ativos pontuais via Google AI Studio, monta a cena em código reativo (Remotion/Canvas) com preview no navegador (hot-reload), valida os gates binários (áudio em -14 LUFS, zero colisão de texto, conformidade cromática) e renderiza um MP4 broadcast final com opção de exportação FCPXML/EDL para DaVinci Resolve.
+  * **Amanhã:** Um comando LegoLoop único (`legoloop run processos/video-motion/pipeline.dag.json`) ingere um vídeo ou áudio bruto, corta silêncios milimetricamente no ataque das sílabas, alinha cada palavra em um JSON canônico (`words.json`), gera ativos pontuais via Google AI Studio, monta a cena em código reativo (Remotion/Canvas) com preview no navegador (hot-reload), valida os gates binários (áudio em -14 LUFS, zero colisão de texto, conformidade cromática) e renderiza um MP4 broadcast final com opção de exportação FCPXML/EDL para DaVinci Resolve.
 
 ---
 

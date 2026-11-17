@@ -10,7 +10,7 @@
 
 ## 1. Visão Geral
 
-O comando **`legoloop listar`** inspeciona o cofre (`~/.aidd/canonical/loops/`) e exibe todos os processos gerenciados (`legoloop-*`). Ele detalha versão atual, natureza do processo, quais harnesses possuem a skill vinculada, dependências de uso cruzado (`Usado por`) e etapas que apresentam lacuna.
+O comando **`legoloop listar`** inspeciona o cofre (`~/.aidd/canonical/processos/`) e exibe todos os processos gerenciados (`legoloop-*`). Ele detalha versão atual, natureza do processo, quais harnesses possuem a skill vinculada, dependências de uso cruzado (`Usado por`) e etapas que apresentam lacuna.
 
 ---
 

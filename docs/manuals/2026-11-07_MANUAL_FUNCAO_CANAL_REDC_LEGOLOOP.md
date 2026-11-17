@@ -4,7 +4,7 @@
 > **Autoridade:** Ecossistema LegoLoop  
 > **Status:** Canônico  
 > **Escopo:** Mega-Pipeline de Engenharia Reversa Profunda de Canais (REDC) e Clonagem Metodológica/Estrutural com Brand Swap  
-> **Fontes de verdade:** `loops/legoloop-canal-redc/pipeline.dag.json` · `skills/legoloop-canal-redc/SKILL.md` · `internal/redc`
+> **Fontes de verdade:** `processos/legoloop-canal-redc/pipeline.dag.json` · `skills/legoloop-canal-redc/SKILL.md` · `internal/redc`
 
 ---
 
@@ -51,5 +51,5 @@ legoloop canal redc <origem-dir> --canal <slug-do-canal> --json
 legoloop canal gerar <slug-do-canal> --tema "Como dominar IA" --nome-marca "MinhaMarca" --cor-primaria "#3B82F6" --json
 
 # 3. Validação do grafo DAG do canal
-legoloop validate loops/legoloop-canal-redc/pipeline.dag.json
+legoloop validate processos/legoloop-canal-redc/pipeline.dag.json
 ```

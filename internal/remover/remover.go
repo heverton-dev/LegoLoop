@@ -171,7 +171,7 @@ func caminhosCofre(vault, nome string) []string {
 		filepath.Join(vault, "skills", nome),
 		filepath.Join(vault, caminhos.DirLoops, nome+".loop.json"),
 		filepath.Join(vault, caminhos.DirLoops, nome+".dag.json"),
-		processo.CaminhoNoCofre(vault, nome),
+		processo.CaminhoNoCofreLeitura(vault, nome),
 	}
 }
 

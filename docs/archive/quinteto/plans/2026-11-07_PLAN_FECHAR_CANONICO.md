@@ -121,7 +121,7 @@
 
 ### Épico 03 — Grafo DAG Acíclico e Acoplamento nos Motores
 
-#### Ticket `TICK-03.1` — Grafo DAG `loops/fechar/pipeline.dag.json`
+#### Ticket `TICK-03.1` — Grafo DAG `processos/fechar/pipeline.dag.json`
 * **Iniciativa:** `Canonização Universal` | **Épico:** `E03` | **Nature:** `nano` | **Tipo:** `unit_task` | **Modo de Execução:** `sequential` | **Status:** `PENDING`
 * **Dependências:** `["SG-E02"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
@@ -129,9 +129,9 @@
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `120s` · Retries `1` · Entrada `6000` tokens · Teto de saída `300` tokens · Rollback `stash_changes`
 * **Inputs:** Spec Anchor `docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E03.1`
-* **Outputs:** `loops/fechar/pipeline.dag.json`
-* **Verificação (argv, sem shell):** `go run ./cmd/legoloop validate loops/fechar/pipeline.dag.json`
-* **Gate (DSL):** `exit_code == 0 && file_exists('loops/fechar/pipeline.dag.json')`
+* **Outputs:** `processos/fechar/pipeline.dag.json`
+* **Verificação (argv, sem shell):** `go run ./cmd/legoloop validate processos/fechar/pipeline.dag.json`
+* **Gate (DSL):** `exit_code == 0 && file_exists('processos/fechar/pipeline.dag.json')`
 * **Spec Ref:** `AC-E03.1`
 
 #### Ticket `TICK-03.2` — Acoplamento no `mega-pipeline.loop.json`
@@ -141,9 +141,9 @@
 * **Roteamento:** Harness `9router` · Modelo `code-nano` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `120s` · Retries `1` · Entrada `6000` tokens · Teto de saída `300` tokens · Rollback `stash_changes`
-* **Inputs:** `loops/mega-pipeline.loop.json` · Spec Anchor `docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E03.2`
-* **Outputs:** `loops/mega-pipeline.loop.json`
-* **Verificação (argv, sem shell):** `go run ./cmd/legoloop validate loops/mega-pipeline.loop.json`
+* **Inputs:** `processos/mega-pipeline.loop.json` · Spec Anchor `docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md#AC-E03.2`
+* **Outputs:** `processos/mega-pipeline.loop.json`
+* **Verificação (argv, sem shell):** `go run ./cmd/legoloop validate processos/mega-pipeline.loop.json`
 * **Gate (DSL):** `exit_code == 0`
 * **Spec Ref:** `AC-E03.2`
 

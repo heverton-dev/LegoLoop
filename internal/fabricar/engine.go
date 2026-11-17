@@ -161,6 +161,9 @@ func preflight(d Deps, name string, force bool) error {
 		{Path: filepath.Join(d.Roots.Vault, paths.DirAntigo, name+paths.SufixoStudio)},
 		{Path: filepath.Join(d.Roots.Vault, paths.DirAntigo, name+paths.SufixoAntigo)},
 		{Path: filepath.Join(d.Roots.Vault, paths.DirAntigo, name+".dag.json")},
+		{Path: filepath.Join(d.Roots.Vault, paths.DirProcessos, name+paths.SufixoStudio)},
+		{Path: filepath.Join(d.Roots.Vault, paths.DirProcessos, name+paths.SufixoAntigo)},
+		{Path: filepath.Join(d.Roots.Vault, paths.DirProcessos, name+".dag.json")},
 		{Path: processo.CaminhoNoCofre(d.Roots.Vault, name)},
 	}
 	if found := processo.Existentes(d.FS, probe); len(found) > 0 {

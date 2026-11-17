@@ -51,7 +51,7 @@
    * **Comando:** `legoloop fabricar <nome>`, comando próprio. Não há despacho por flags dentro de `canonize`, e o `canonize --root/--dry-run/--apply` legado não é tocado.
    * **Executável da CLI:** `.dag.json` por caminho (`legoloop run <caminho>`). O comando `run` **não** é alterado; a forma `legoloop run legoloop-<nome>` é descartada.
    * **Skill nos harnesses:** só no cofre por padrão; o link nos harnesses exige `--link-harness`.
-   * **Local do `.dag.json`:** `~/.aidd/canonical/loops/`, sem criar diretório novo no cofre (o `loop.Store` só lista `*.loop.json`).
+   * **Local do `.dag.json`:** `~/.aidd/canonical/processos/`, sem criar diretório novo no cofre (o `loop.Store` só lista `*.loop.json`).
    * **Nomenclatura:** comando, pacote (`internal/fabricar`), skill (`legoloop-fabricar`) e rota (`/api/fabricar/run`) usam o mesmo nome. "Canonizar" designa outra função do repositório (desduplicar por SHA-256 e ligar ao cofre, em `internal/canon`) e não é usado para nomear a fábrica.
 
 ---
@@ -282,8 +282,8 @@ type CanonicalArtifacts struct {
 	RoutePath    string   `json:"route_path"`    // docs/routes/YYYY-MM-DD_ROUTE_... (TEMPLATE_ROUTE v2)
 	TemplatePath string   `json:"template_path"` // docs/templates/TEMPLATE_...
 	SkillPath    string   `json:"skill_path"`    // ~/.aidd/canonical/skills/legoloop-<slug>/SKILL.md
-	LoopPath     string   `json:"loop_path"`     // ~/.aidd/canonical/loops/legoloop-<slug>.loop.json
-	DagPath      string   `json:"dag_path"`      // ~/.aidd/canonical/loops/legoloop-<slug>.dag.json
+	LoopPath     string   `json:"loop_path"`     // ~/.aidd/canonical/processos/legoloop-<slug>.loop.json
+	DagPath      string   `json:"dag_path"`      // ~/.aidd/canonical/processos/legoloop-<slug>.dag.json
 	SkillLinks   []string `json:"skill_links"`   // Links criados nas pastas dos harnesses (vazio sem --link-harness)
 }
 
@@ -423,7 +423,7 @@ type DiscoveredPiece struct {
 * **Corrida de Dados (quando o toolchain tiver CGO; obrigatório em CI Linux):** `go test -race ./internal/fabricar/...`
 * **Dependências intactas:** `git diff --exit-code go.mod go.sum`
 * **Instalação Global no PATH:** `go install ./cmd/legoloop`
-* **Smoke Hermético (sem tocar o cofre real):** `legoloop fabricar "teste-smoke" --yes --dry-run --vault <TMP> --docs <TMP>` e, depois, a mesma chamada sem `--dry-run`, seguida de `legoloop validate <TMP>/loops/legoloop-teste-smoke.dag.json`.
+* **Smoke Hermético (sem tocar o cofre real):** `legoloop fabricar "teste-smoke" --yes --dry-run --vault <TMP> --docs <TMP>` e, depois, a mesma chamada sem `--dry-run`, seguida de `legoloop validate <TMP>/processos/legoloop-teste-smoke.dag.json`.
 
 ### Critério de Done Global
 A especificação técnica é considerada **100% CONCLUÍDA** quando:

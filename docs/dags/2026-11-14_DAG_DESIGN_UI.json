@@ -8,7 +8,7 @@
   "upstream_signatures": {
     "route": {
       "path": "docs/routes/2026-11-14_ROUTE_DESIGN_UI.json",
-      "sha256": "457ffb6cfbb9579df66da43e69e4e2b32c519ee59d189ed24fa31dcb1455b9c0"
+      "sha256": "148d51514c44a2f47647e28013922252481221a7079bfd3395d0ef5a4a7ad52e"
     }
   },
   "execution_strategy": {

@@ -2,7 +2,7 @@
 
 > **Sessão:** `95d7dbd7-0074-4021-91ef-bcd376890df0`
 > **Data:** 2026-11-14
-> **Alvo:** `loops/mega-pipeline.loop.json`
+> **Alvo:** `processos/mega-pipeline.loop.json`
 > **Objetivo:** Auditar e homologar cada camada no nível nanométrico (do nano ao macro), garantindo uso de peças Padrão Ouro e contratos fechados.
 
 ---
@@ -10,7 +10,7 @@
 ## Método Repetível de Auditoria por Camada (4 Passos)
 
 1. **Auditar a peça/etapa atual:** passo a passo, subcomandos, funções, entradas, saídas, gates, hooks e dependências.
-2. **Investigar no ecossistema interno:** buscar em `loops/`, `MEMORY.md` e `docs/` se a fase já foi lapidada ou transformada em motor nativo.
+2. **Investigar no ecossistema interno:** buscar em `processos/`, `MEMORY.md` e `docs/` se a fase já foi lapidada ou transformada em motor nativo.
 3. **Consultar a Matriz de Peças:** filtrar `legoloop matriz ver --json` para identificar a melhor peça de encaixe (Ouro/Prata/Bronze/Tóxica).
 4. **Consolidar e decidir:** registrar o diagnóstico neste documento antes de editar contratos ou avançar para a próxima camada.
 
@@ -50,7 +50,7 @@
 
 - **Ficha Técnica Visual ("Carta de Trunfo"):** Deve ser derivada em tempo real no Studio (ou regerada deterministicamente em `fabricar`, `refinar` e `fechar`) direto do `pipeline.dag.json` + Matriz de Peças (SSOT), nunca mantida à mão.
 - **Canonização Universal (SO + Harnesses):** Todo processo do LegoLoop deve residir no cofre (`~/.aidd/canonical`) e estar vinculado dinamicamente a todos os harnesses detectados na máquina do usuário (`legoloop doctor` / `instalar-skills`) para uso imediato no SO e em qualquer agente.
-- **Gap Identificado (Processos Antigos em `loops/`):** Processos criados via `legoloop fabricar` já nascem no cofre, mas processos legados em `loops/` não possuem registro v2 (`.processo.json`) em `~/.aidd/canonical` e ficam invisíveis para `listar`, `compor`, `refinar` e `remover`.
+- **Gap Identificado (Processos Antigos em `processos/`):** Processos criados via `legoloop fabricar` já nascem no cofre, mas processos legados em `processos/` não possuem registro v2 (`.processo.json`) em `~/.aidd/canonical` e ficam invisíveis para `listar`, `compor`, `refinar` e `remover`.
 
 ## Camada 2 — `l2-design` (Ficha Técnica Completa)
 

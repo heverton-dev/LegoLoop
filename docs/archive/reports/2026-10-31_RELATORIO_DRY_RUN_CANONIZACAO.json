@@ -34403,7 +34403,7 @@
     {
       "sha256": "c2db797295500b9c2b31d9dd2451ef28727346c739b5d1d3366f0f9ea2e823dc",
       "canonical": {
-        "path": "C:\\Users\\trcnologia\\.gemini\\antigravity-cli\\skills\\aidd-ecc\\upstream\\skills\\autonomous-loops\\SKILL.md",
+        "path": "C:\\Users\\trcnologia\\.gemini\\antigravity-cli\\skills\\aidd-ecc\\upstream\\skills\\autonomous-processos\\SKILL.md",
         "size": 24851,
         "mod_time": "2026-10-20T20:07:11.1067882-03:00",
         "sha256": "c2db797295500b9c2b31d9dd2451ef28727346c739b5d1d3366f0f9ea2e823dc",
@@ -34411,9 +34411,9 @@
       },
       "vault_path": "C:\\Users\\trcnologia\\.aidd\\canonical\\c2\\c2db797295500b9c2b31d9dd2451ef28727346c739b5d1d3366f0f9ea2e823dc\\SKILL.md",
       "links": [
-        "C:\\Users\\trcnologia\\.gemini\\antigravity-cli\\skills\\aidd-ecc\\upstream\\skills\\autonomous-loops\\SKILL.md",
-        "C:\\Users\\trcnologia\\.gemini\\antigravity\\skills\\aidd-ecc\\upstream\\skills\\autonomous-loops\\SKILL.md",
-        "C:\\Users\\trcnologia\\.gemini\\skills\\aidd-ecc\\upstream\\skills\\autonomous-loops\\SKILL.md"
+        "C:\\Users\\trcnologia\\.gemini\\antigravity-cli\\skills\\aidd-ecc\\upstream\\skills\\autonomous-processos\\SKILL.md",
+        "C:\\Users\\trcnologia\\.gemini\\antigravity\\skills\\aidd-ecc\\upstream\\skills\\autonomous-processos\\SKILL.md",
+        "C:\\Users\\trcnologia\\.gemini\\skills\\aidd-ecc\\upstream\\skills\\autonomous-processos\\SKILL.md"
       ],
       "saved_bytes": 49702
     },

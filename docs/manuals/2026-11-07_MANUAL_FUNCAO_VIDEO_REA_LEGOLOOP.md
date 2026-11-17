@@ -4,7 +4,7 @@
 > **Autoridade:** Ecossistema LegoLoop  
 > **Status:** Canônico  
 > **Escopo:** Pipeline universal de engenharia reversa audiovisual, dissecação forense e fábrica de governança  
-> **Fontes de verdade:** `internal/videorea/` · `skills/legoloop-video-rea/SKILL.md` · `loops/video-rea/pipeline.dag.json`
+> **Fontes de verdade:** `internal/videorea/` · `skills/legoloop-video-rea/SKILL.md` · `processos/video-rea/pipeline.dag.json`
 
 ---
 
@@ -22,7 +22,7 @@ Cada vídeo analisado recebe um bundle autocontido para não poluir o repositór
 * `book/`: Livro Didático LegoPress local (`livro.json`).
 * `loop/`: Grafo executável local (`pipeline.dag.json`) e fixture 3s.
 * `skill/`: Definição local da skill (`SKILL.md`).
-* **Projeção Canônica:** Na aprovação, o motor projeta os vínculos na raiz (`loops/<slug>/` e `skills/<slug>/`) para consumo transparente pelo LegoLoop.
+* **Projeção Canônica:** Na aprovação, o motor projeta os vínculos na raiz (`processos/<slug>/` e `skills/<slug>/`) para consumo transparente pelo LegoLoop.
 
 ---
 

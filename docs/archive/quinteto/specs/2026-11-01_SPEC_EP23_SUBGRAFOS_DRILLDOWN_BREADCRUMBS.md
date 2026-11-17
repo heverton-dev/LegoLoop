@@ -16,7 +16,7 @@ O **ÉPICO 23** expande o Looping Studio para operar com **Mega-Pipelines Hierá
 
 2. **Navegação Drill-Down por Duplo Clique (`dblclick`):**
    * O duplo clique sobre o Macro-Card ou acionamento pelo Inspector armazena o snapshot da esteira atual na pilha de navegação (`state.navStack`).
-   * Faz a busca do sub-grafo via `/api/loops/{id}` e renderiza seus nós e arestas no Canvas com auto-layout limpo.
+   * Faz a busca do sub-grafo via `/api/processos/{id}` e renderiza seus nós e arestas no Canvas com auto-layout limpo.
 
 3. **Barra de Breadcrumbs no Canvas (`#canvas-breadcrumbs`):**
    * Barra horizontal localizada acima da superfície do canvas com a trilha de navegação (ex: `Principal > Sub-Loop: L4 Construção TDD`).
@@ -25,7 +25,7 @@ O **ÉPICO 23** expande o Looping Studio para operar com **Mega-Pipelines Hierá
 
 4. **Política Copy-on-Write (Fork Versionado):**
    * Prevenção de corrupção acidental em templates compartilhados.
-   * Suporte a disparo de duplicação/fork (`POST /api/loops/{id}/duplicate`) antes de mutações destrutivas.
+   * Suporte a disparo de duplicação/fork (`POST /api/processos/{id}/duplicate`) antes de mutações destrutivas.
 
 ---
 

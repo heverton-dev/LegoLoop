@@ -127,11 +127,20 @@ func Run(ctx context.Context, args []string, d Deps) int {
 			fmt.Fprintf(d.Stderr, "comando desconhecido %q\n\n%s", name, usage)
 			return 2
 		}
-		if hasHelpArg(args[1:]) {
-			return runSubcommandHelp(ctx, cmd, args[1:], d)
-		}
-		return cmd(ctx, args[1:], d)
+		return executarSubcomando(ctx, cmd, args, d)
 	}
+}
+
+// executarSubcomando aplica o guia de migração do caminho legado, o help do
+// subcomando e só então despacha o comando.
+func executarSubcomando(ctx context.Context, cmd func(context.Context, []string, Deps) int, args []string, d Deps) int {
+	if alvo := caminhoLegado(args[1:]); alvo != "" {
+		return guiaMigracaoEscrever(d.Stderr, alvo)
+	}
+	if hasHelpArg(args[1:]) {
+		return runSubcommandHelp(ctx, cmd, args[1:], d)
+	}
+	return cmd(ctx, args[1:], d)
 }
 
 func hasHelpArg(args []string) bool {

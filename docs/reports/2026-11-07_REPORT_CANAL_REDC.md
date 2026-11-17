@@ -13,7 +13,7 @@
 
 ## 1. Resumo Executivo
 * **Objetivo Alcançado:** Implementação fim a fim do Mega-Pipeline REDC (Reverse Engineering Deep Channel), viabilizando a análise sistemática de vídeos virais de canais sociais (YouTube, Instagram, TikTok, LinkedIn) com amostragem inteligente (Top 15 vídeos de pico para extração do DNA visual/comportamental e catalogação de 100 vídeos), geração de micro-pipelines canônicos para cada método detectado e gerador de vídeos com Brand Swap (injeção autoral de tema e marca do usuário) em uma árvore autocontida `docs/channels/<canal>/`.
-* **Impacto Arquitetural:** Criação do pacote Go hermético `internal/redc`, extensão da CLI `legoloop canal redc|gerar` em `internal/cli`, definição do grafo acíclico canônico `loops/legoloop-canal-redc/pipeline.dag.json` (aprovado pelo validador), criação da skill universal `skills/legoloop-canal-redc/SKILL.md` (vinculada a 6 harnesses), manual operacional e livro técnico LegoPress.
+* **Impacto Arquitetural:** Criação do pacote Go hermético `internal/redc`, extensão da CLI `legoloop canal redc|gerar` em `internal/cli`, definição do grafo acíclico canônico `processos/legoloop-canal-redc/pipeline.dag.json` (aprovado pelo validador), criação da skill universal `skills/legoloop-canal-redc/SKILL.md` (vinculada a 6 harnesses), manual operacional e livro técnico LegoPress.
 * **Veredito Geral:** APROVADO_SEM_RESSALVAS
 
 ---
@@ -77,7 +77,7 @@
 ### Épico 04 — Integração CLI, Grafo DAG e Skill Canônica
 * **Código de Produção:** `internal/cli/canal.go` e plug em `internal/cli/cli.go`.
 * **CLI & Ferramentas:** `legoloop canal redc` e `legoloop canal gerar`.
-* **Grafo DAG & Validação:** `loops/legoloop-canal-redc/pipeline.dag.json` (aprovado pelo validador do LegoLoop).
+* **Grafo DAG & Validação:** `processos/legoloop-canal-redc/pipeline.dag.json` (aprovado pelo validador do LegoLoop).
 * **Skill Canônica:** `skills/legoloop-canal-redc/SKILL.md` (vinculada aos harnesses `claude`, `gemini`, `codex`, `opencode`, `cursor`, `kiro`).
 
 ---
@@ -91,7 +91,7 @@
 | **Análise Estática (Vet)** | `go vet ./...` | Zero warnings ou erros | **PASS** |
 | **Formatação Canônica** | `gofmt -l internal/redc internal/cli/canal.go` | Saída 100% vazia | **PASS** |
 | **Limite de Complexidade** | `go run ./tools/funclen internal/redc internal/cli/canal.go` | Nenhuma função > 35 linhas | **PASS** |
-| **Validação de Grafo DAG** | `legoloop validate loops/legoloop-canal-redc/pipeline.dag.json` | 0 ciclos e nós válidos | **PASS** |
+| **Validação de Grafo DAG** | `legoloop validate processos/legoloop-canal-redc/pipeline.dag.json` | 0 ciclos e nós válidos | **PASS** |
 | **Compilação Limpa & Instalação** | `go build -o bin/legoloop.exe ./cmd/legoloop && go install` | Binário gerado e no PATH | **PASS** |
 | **Grafo Semântico** | `codebase-memory-mcp cli index_repository` | Grafo indexado no disco | **PASS** |
 
@@ -106,7 +106,7 @@
 | `internal/redc/pipeline_gen.go` | Go | Gerador de micro-pipelines dos métodos | `4639450F14DDB16515870F3B0F9662BE29B26FB59D988324D7CAC51A4D7095B7` |
 | `internal/redc/brand_swap.go` | Go | Motor de substituição de marca e roteiro | `453E52619C3B4185412F681293E12927A7B61E1A94833DC597AF2960CB61C603` |
 | `internal/cli/canal.go` | Go | Subcomandos CLI legoloop canal redc e gerar | `FB9EC4D4E250E5FA2AC5E3522C624CB78CC67D02393EF5C01DAA4E549EE6737B` |
-| `loops/legoloop-canal-redc/pipeline.dag.json` | JSON | Grafo DAG acíclico do Mega-Pipeline | `17EF9F1C38313F626194A00241CCC7120EB6F29167FC85C23F4EC0D56CAED98A` |
+| `processos/legoloop-canal-redc/pipeline.dag.json` | JSON | Grafo DAG acíclico do Mega-Pipeline | `17EF9F1C38313F626194A00241CCC7120EB6F29167FC85C23F4EC0D56CAED98A` |
 | `skills/legoloop-canal-redc/SKILL.md` | Skill | Skill universal instalada nos harnesses | `832D55DD8A00A4BC46E6F178CDA2A9B31E82001A4942353CAE965F12B673AB1A` |
 | `docs/manuals/2026-11-07_MANUAL_FUNCAO_CANAL_REDC_LEGOLOOP.md` | Doc | Manual operacional da função canal | `F8B94ED84DAA64A84A3F89403D50709FBBED00986AA6A9992B1FAB2B927726EE` |
 
@@ -120,7 +120,7 @@
 * **Procedimento de Rollback:**
   ```powershell
   git checkout HEAD -- internal/cli/cli.go
-  Remove-Item -Recurse -Force internal/redc, internal/cli/canal.go, internal/cli/canal_test.go, loops/legoloop-canal-redc, skills/legoloop-canal-redc
+  Remove-Item -Recurse -Force internal/redc, internal/cli/canal.go, internal/cli/canal_test.go, processos/legoloop-canal-redc, skills/legoloop-canal-redc
   go build -o bin/legoloop.exe ./cmd/legoloop
   go install ./cmd/legoloop
   ```

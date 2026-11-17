@@ -91,7 +91,7 @@
 * **Natureza:** `micro`
 * **Tipo:** `script`
 * **Executor:** `legoloop validate` e `tools/funclen`
-* **Comando de Verificação:** `go run ./cmd/legoloop validate loops/video-edition/pipeline.dag.json && go run ./tools/funclen internal/videorea`
+* **Comando de Verificação:** `go run ./cmd/legoloop validate processos/video-edition/pipeline.dag.json && go run ./tools/funclen internal/videorea`
 * **Critério de Saída (Gate):** `exit_code == 0`
 
 ---

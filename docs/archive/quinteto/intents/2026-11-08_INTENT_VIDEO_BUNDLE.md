@@ -16,7 +16,7 @@
 * **O Porquê:** Ao encapsular cada análise em seu próprio Target Bundle (`docs/videorea/<slug>/`), garantimos isolamento cirúrgico de ciclo de vida (camada volátil em `scratch/`, forense em `dossier.json`, curadoria em `curation.json`, governança em `governance/`, livro em `book/` e grafo em `loop/`), sem quebrar a interoperabilidade do LegoLoop.
 * **Estado Atual vs. Estado Desejado:**
   * **Hoje:** Arquivos de análise espalhados por diretórios raiz globais.
-  * **Amanhã:** Cada vídeo possui sua pasta autocontida e, após aprovação do Stop-Gate, realiza a projeção canônica leve em `loops/<slug>/` e `skills/<slug>/`.
+  * **Amanhã:** Cada vídeo possui sua pasta autocontida e, após aprovação do Stop-Gate, realiza a projeção canônica leve em `processos/<slug>/` e `skills/<slug>/`.
 
 ---
 
@@ -25,7 +25,7 @@
 ### O que ESTÁ no Escopo:
 * [x] Definir e implementar a estrutura `TargetBundle` em `internal/videorea/`.
 * [x] Atualizar `factory_bridge.go` para materializar a árvore de diretórios do bundle (`scratch/`, `governance/`, `book/`, `loop/`, `skill/`).
-* [x] Implementar a projeção canônica automática (registro leve em `loops/` e `skills/` para consumo transparente pelo LegoLoop e pelos harnesses).
+* [x] Implementar a projeção canônica automática (registro leve em `processos/` e `skills/` para consumo transparente pelo LegoLoop e pelos harnesses).
 * [x] Atualizar `internal/cli/video_rea.go` para adotar a nova estrutura por padrão ou via flag explícita.
 * [x] Blindar o repositório adicionando `docs/videorea/**/scratch/` ao `.gitignore`.
 * [x] Cobrir 100% com testes unitários em `internal/videorea/`.

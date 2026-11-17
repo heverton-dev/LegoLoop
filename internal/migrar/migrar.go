@@ -10,7 +10,7 @@ import (
 	"legoloop/internal/triagem"
 )
 
-// Relatorio resume o saneamento e a geração de triagem.json em loops/.
+// Relatorio resume o saneamento e a geração de triagem.json em processos/.
 type Relatorio struct {
 	Validos         []string `json:"validos"`
 	Removidos       []string `json:"removidos"`

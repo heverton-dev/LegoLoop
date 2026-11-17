@@ -68,7 +68,7 @@ func plantarV2(t *testing.T, c cofre, nTicks int) (rota, espelho, loops string) 
 	nosR, nosD = append(nosR, stopGate), append(nosD, stopGate)
 	rota = filepath.Join(c.docs, "docs", "routes", pr.RouteNome)
 	espelho = filepath.Join(c.docs, "docs", "dags", pr.DAGNome)
-	loops = filepath.Join(c.docs, "loops", nome, "pipeline.dag.json")
+	loops = filepath.Join(c.docs, "processos", nome, "pipeline.dag.json")
 	cabDag := "  \"upstream_signatures\": {\n    \"route\": {\n      \"path\": \"docs/routes/" + pr.RouteNome +
 		"\",\n      \"sha256\": \"" + strings.Repeat("0", 64) + "\"\n    }\n  },\n"
 	for p, conteudo := range map[string]string{

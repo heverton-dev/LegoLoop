@@ -7,7 +7,7 @@ Data: 2026-11-16. Janela da execução: 17:11:34Z a 17:11:38Z (4 s).
 Comando (binário compilado do repositório, sem harness externo):
 
 ```bash
-legoloop swarm run loops/legoloop-swarm/pipeline.dag.json \
+legoloop swarm run processos/legoloop-swarm/pipeline.dag.json \
   -dir <repo-externo> -repo <repo-externo> -timeout 150s \
   -- bash scripts/swarm_peca_etapa.sh
 ```

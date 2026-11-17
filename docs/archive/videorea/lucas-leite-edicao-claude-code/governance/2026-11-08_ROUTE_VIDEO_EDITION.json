@@ -421,7 +421,7 @@
       },
       "inputs": {
         "source_files": [
-          "loops/video-edition/pipeline.dag.json"
+          "processos/video-edition/pipeline.dag.json"
         ],
         "spec_anchor": "docs/videorea/lucas-leite-edicao-claude-code/governance/2026-11-08_SPEC_VIDEO_EDITION.md#AC-NF.1",
         "context_artifacts": []
@@ -432,7 +432,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "loops/video-edition/pipeline.dag.json"
+          "processos/video-edition/pipeline.dag.json"
         ],
         "verify": [
           ["go", "run", "./tools/funclen", "internal/videorea"]

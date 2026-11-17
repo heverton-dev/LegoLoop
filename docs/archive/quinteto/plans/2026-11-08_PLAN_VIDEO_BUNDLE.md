@@ -16,7 +16,7 @@
 
 ### TICKET-02: Materialização da Árvore e Projeção Canônica
 * **Alvo:** `internal/videorea/factory_bridge.go`
-* **Critério de Aceitação:** Criação das subpastas (`scratch/`, `governance/`, `book/`, `loop/`, `skill/`), gravação dos artefatos e projeção em `loops/<slug>/` e `skills/<slug>/`; teste passando (Green).
+* **Critério de Aceitação:** Criação das subpastas (`scratch/`, `governance/`, `book/`, `loop/`, `skill/`), gravação dos artefatos e projeção em `processos/<slug>/` e `skills/<slug>/`; teste passando (Green).
 
 ### TICKET-03: Integração no CLI e Blindagem do `.gitignore`
 * **Alvo:** `internal/cli/video_rea.go`, `.gitignore`

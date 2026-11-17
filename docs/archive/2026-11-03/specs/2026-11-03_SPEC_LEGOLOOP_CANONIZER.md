@@ -72,7 +72,7 @@ A Fábrica de Processos (`legoloop-canonizer`) é um motor unificado em Go que r
 │ MATERIALIZAÇÃO TRIPARTIDA INTEROPERÁVEL:                               │
 │   ├── [CLI]:    docs/routes/YYYY-MM-DD_ROUTE_legoloop-<slug>.json      │
 │   ├── [Chat]:   ~/.aidd/canonical/skills/legoloop-<slug>/SKILL.md      │
-│   └── [Studio]: ~/.aidd/canonical/loops/legoloop-<slug>.loop.json      │
+│   └── [Studio]: ~/.aidd/canonical/processos/legoloop-<slug>.loop.json      │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -124,7 +124,7 @@ type CanonicalArtifacts struct {
 	PlanPath     string `json:"plan_path"`     // docs/plans/YYYY-MM-DD_PLAN_...
 	RoutePath    string `json:"route_path"`    // docs/routes/YYYY-MM-DD_ROUTE_...
 	SkillPath    string `json:"skill_path"`    // ~/.aidd/canonical/skills/legoloop-.../SKILL.md
-	LoopPath     string `json:"loop_path"`     // ~/.aidd/canonical/loops/legoloop-....loop.json
+	LoopPath     string `json:"loop_path"`     // ~/.aidd/canonical/processos/legoloop-....loop.json
 	TemplatePath string `json:"template_path"` // docs/templates/TEMPLATE_...
 }
 

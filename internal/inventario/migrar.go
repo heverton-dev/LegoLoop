@@ -160,7 +160,7 @@ func MigrarQuinteto(raiz string, protegidos []string) (ResultadoQuinteto, error)
 // donosDe lê os manifestos de fatia e devolve a posse por rota e por token.
 func donosDe(raiz string) (posse, error) {
 	pos := posse{porRota: map[string]string{}, porToken: map[string]string{}}
-	base := filepath.Join(raiz, paths.DirAntigo)
+	base := filepath.Join(raiz, paths.DirProcessos)
 	entradas, err := os.ReadDir(base)
 	if os.IsNotExist(err) {
 		return pos, nil
@@ -280,7 +280,7 @@ func casarAlgum(globs []string, base string) bool {
 
 // moverParaFatia move o documento para <fatia>/docs/<tipo>/ e registra o par.
 func moverParaFatia(raiz, slug, tipo, origem, rel string, res *ResultadoQuinteto) error {
-	alvo := filepath.Join(raiz, paths.DirAntigo, slug, "docs", tipo, filepath.Base(origem))
+	alvo := filepath.Join(raiz, paths.DirProcessos, slug, "docs", tipo, filepath.Base(origem))
 	if err := moverArquivo(origem, alvo); err != nil {
 		return err
 	}

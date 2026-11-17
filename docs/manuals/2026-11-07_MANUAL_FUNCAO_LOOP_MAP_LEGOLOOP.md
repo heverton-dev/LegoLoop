@@ -31,5 +31,5 @@ A função **`legoloop-loop-map`** automatiza a transformação de metodologias 
 
 1. **Fase 1 (Dissecação Semântica):** Análise do grafo semântico e separação entre fluxo mestre e sub-loops modulares ➔ **Stop-Gate G1**.
 2. **Fase 2 (Redação do Manual ISO):** Síntese da filosofia e contratos operacionais no manual `docs/manuals/` ➔ **Stop-Gate G2**.
-3. **Fase 3 (Materialização DAG JSON):** Geração do `loops/<slug>.loop.json` validado pelo schema `dag.v1.json`.
+3. **Fase 3 (Materialização DAG JSON):** Geração do `processos/<slug>.loop.json` validado pelo schema `dag.v1.json`.
 4. **Fase 4 (Injeção TDD em Go & Build):** Inserção do template no Looping Studio Canvas (`internal/studio/templates.go`), testes e recompilação do binário ➔ **Stop-Gate G3**.

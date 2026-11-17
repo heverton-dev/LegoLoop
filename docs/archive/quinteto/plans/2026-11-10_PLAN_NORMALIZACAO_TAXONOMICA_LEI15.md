@@ -20,7 +20,7 @@
 | :--- | :--- |
 | D1 | Refatoração **completa e profunda**. Os contratos em disco entram na migração. |
 | D2 | O nome da marca continua **LegoLoop**. O dicionário ganha uma exceção de marca. |
-| D3 | Os loops existentes **não podem quebrar**: 15 em `loops/` e 6 no Cofre. O leitor dos nomes antigos permanece. |
+| D3 | Os loops existentes **não podem quebrar**: 15 em `processos/` e 6 no Cofre. O leitor dos nomes antigos permanece. |
 | D4 | Ordem de roteamento (soft, o ticket sobrescreve com justificativa): 9Router, Antigravity, Mimocode, OpenCode, Claude Code, Ollama (ids no código: `9router`, `agy`, `mimo`, `opencode`, `claude`, `ollama`). O Claude Code é conta secundária por enquanto. |
 | D5 | Modelo por natureza: `nano` Haiku. `micro` e `macro` Sonnet. Opus só com a marca `extreme` e aprovação no Stop-Gate. |
 | D6 | Subagente efêmero permitido (regra da seção 3). Fork e workflow livre continuam proibidos. |
@@ -42,7 +42,7 @@
 | fluxo | 15 | Processo |
 | demais (macro, issue, componente, capacidade, tarefa, módulo, task, storage, grade) | 37 | ver dicionário |
 
-Superfície de contrato (medida): `pipeline.dag.json` em 39 literais Go e 195 arquivos de docs e skills. `loops/` em 90 literais Go. `internal/loop` com 22 imports. O `fabricar` e o `compor` gravam `*.loop.json`. O `fechar` exige `pipeline.dag.json` (`internal/fechar/fechar.go:201`). O schema tem `loop_end`, `subloop` e o campo `loop` (29 referências Go).
+Superfície de contrato (medida): `pipeline.dag.json` em 39 literais Go e 195 arquivos de docs e skills. `processos/` em 90 literais Go. `internal/loop` com 22 imports. O `fabricar` e o `compor` gravam `*.loop.json`. O `fechar` exige `pipeline.dag.json` (`internal/fechar/fechar.go:201`). O schema tem `loop_end`, `subloop` e o campo `loop` (29 referências Go).
 
 ## 3. Estratégia de execução
 
@@ -74,7 +74,7 @@ Superfície de contrato (medida): `pipeline.dag.json` em 39 literais Go e 195 ar
 | **E01** | Compatibilidade: leitor dual, schema v2, migrador e projeção ROUTE para DAG | 6 | `macro` |
 | **E02** | Geradores, templates, prompts, CLI e skills | 5 | `micro` |
 | **E03** | Código interno por pacote | 7 | `macro` |
-| **E04** | Dados e diretórios: `loops/`, Cofre e documentação | 4 | `macro` |
+| **E04** | Dados e diretórios: `processos/`, Cofre e documentação | 4 | `macro` |
 | **E05** | Orchestrix sobre Claude Code: roteamento, raias, paralelismo | 6 | `macro` |
 | **E06** | Fechamento | 1 | `micro` |
 
@@ -89,7 +89,7 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 | Ticket | Ação | Nature / Modelo | Dep. | Gate |
 | :--- | :--- | :--- | :--- | :--- |
 | `TICK-00.1` | Triar as 412 violações em `texto` ou `contrato`. A marca "LegoLoop" não é violação no linter atual (verificado em 2026-11-10). | `micro` Sonnet | `[]` | `file_exists('scratch/tax_triagem.json')` e soma das classes igual ao total |
-| `TICK-00.2` | **Teste dourado:** congelar `legoloop validate` nos 15 loops de `loops/` e em cópias dos 6 do Cofre (cópia feita só com autorização explícita). Falha se qualquer loop deixar de validar. | `micro` Sonnet | `[]` | `go test ./internal/golden/...` verde |
+| `TICK-00.2` | **Teste dourado:** congelar `legoloop validate` nos 15 loops de `processos/` e em cópias dos 6 do Cofre (cópia feita só com autorização explícita). Falha se qualquer loop deixar de validar. | `micro` Sonnet | `[]` | `go test ./internal/golden/...` verde |
 | `TICK-00.3` | Atualizar `AGENTS.md` (regra 4: subagente efêmero; item 12: exceção de marca LegoLoop; ordem de roteamento e raias) e `TEMPLATE_PLAN.md` / `TEMPLATE_ROUTE.json` (`Subagentes: efêmero` com lista de ferramentas, campo `extreme`). Trocar o combo `code-nano`, que não existe no 9Router vivo, por `code-fast` em `plangen/route.go:221` e nos templates. | `micro` Sonnet | `[]` | `go test ./docs/templates/...` verde |
 | `TICK-00.4` | Ampliar o `taxlinter`: identificadores Go (camelCase e snake_case), chaves JSON compostas, valores JSON, corpo de Markdown, `.typ` e literais com `/`, `-` ou `.`. Exceção para a marca "LegoLoop". Gerar o baseline real. | `macro` Sonnet | `TICK-00.1` | `go test ./tools/taxlinter/...` verde e `scratch/tax_baseline.txt` existe |
 | `TICK-00.5` | Criar a peça `tools/ticketgate`: a bateria única de verificação (seção 3). `gofmt` sujo faz o comando falhar. | `macro` Sonnet | `[]` | `go test ./tools/ticketgate/...` verde e `file_exists('tools/ticketgate/main.go')` |
@@ -107,7 +107,7 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 | :--- | :--- | :--- | :--- | :--- |
 | `TICK-01.1` | Centralizar os 90 literais `"loops"` e os 39 de `pipeline.dag.json` em uma constante e uma função de resolução únicas. Sem mudar comportamento. | `macro` Sonnet | `SG-E00` | Teste dourado verde e `grep` dos literais fora do pacote central retorna vazio |
 | `TICK-01.2` | Leitor dual: o parser de DAG aceita o nome antigo e o novo, os tipos `subloop` e `loop_end` e os novos equivalentes, e o campo `loop` e o novo. Aceitar ponto no id de nó (`TICK-01.1`): o parser recusa hoje (`parse.go:24`) e `legoloop validate` falha no DAG existente `docs/dags/2026-11-09_DAG_QUINTETO_GOVERNANCA_ISO.json`. O `ref` de subprocesso mantém a regex estrita. | `macro` Sonnet | `TICK-01.1` | Teste de tabela com os dois dialetos, id com ponto aceito e teste dourado verde |
-| `TICK-01.3` | `schemas/dag.v2.json` aceita os dois dialetos. O arquivo antigo `dag.v1.json` permanece. | `micro` Sonnet | `TICK-01.2` | Todos os loops de `loops/` validam contra v1 e v2 |
+| `TICK-01.3` | `schemas/dag.v2.json` aceita os dois dialetos. O arquivo antigo `dag.v1.json` permanece. | `micro` Sonnet | `TICK-01.2` | Todos os loops de `processos/` validam contra v1 e v2 |
 | `TICK-01.4` | `legoloop migrar`: converte um Processo do dialeto antigo para o novo. Idempotente, com backup e rollback. Usa só diretórios de teste. | `macro` Sonnet | `TICK-01.2` | Teste de ida e volta: migrar e validar equivale ao original |
 | `TICK-01.5` | A paridade SHA-256 do `legoloop fechar` aceita os dois nomes de arquivo. | `micro` Sonnet | `TICK-01.1` | `go test ./internal/fechar/...` verde com os dois nomes |
 | `TICK-01.6` | Criar `tools/route2dag`: projeta a ROUTE em DAG (`command` = primeiro argv de `verify`; `output.artifact` = `scratch/gates/<id>.json`, único por nó; Stop-Gate com roteamento manual). Gerar o DAG espelho desta ROUTE em `docs/dags/` e validar todos os DAGs de `docs/dags/`. | `macro` Sonnet | `TICK-01.2` | `go test ./tools/route2dag/...` verde e `file_exists('docs/dags/2026-11-10_DAG_NORMALIZACAO_TAXONOMICA_LEI15.json')` |
@@ -155,7 +155,7 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 
 | Ticket | Ação | Nature / Modelo | Dep. | Gate |
 | :--- | :--- | :--- | :--- | :--- |
-| `TICK-04.1` | Renomear `loops/` para `processos/` (`git mv`) e migrar os 15 itens (9 pastas com `pipeline.dag.json` e 6 `.loop.json`) para os nomes novos com `legoloop migrar`. O teste dourado continua lendo cópias dos nomes antigos. | `macro` Sonnet | `SG-E03` | Teste dourado verde, os 15 validam sob os nomes novos e `file_exists('processos/legoloop-fechar/processo.dag.json')` |
+| `TICK-04.1` | Renomear `processos/` para `processos/` (`git mv`) e migrar os 15 itens (9 pastas com `pipeline.dag.json` e 6 `.loop.json`) para os nomes novos com `legoloop migrar`. O teste dourado continua lendo cópias dos nomes antigos. | `macro` Sonnet | `SG-E03` | Teste dourado verde, os 15 validam sob os nomes novos e `file_exists('processos/legoloop-fechar/processo.dag.json')` |
 | `TICK-04.2` | Migrar os 6 loops do Cofre real com `legoloop migrar`. **Ação destrutiva: exige backup e autorização explícita.** | `micro` Sonnet | `SG-E04-COFRE` | `legoloop validate` verde nos 6 e backup existe |
 | `TICK-04.3` | Atualizar as referências em docs, manuais e livros (195 arquivos). Recompilar os livros pelo LegoPress. | `macro` Sonnet | `TICK-04.1` | `go run ./tools/ticketgate -livros docs/books,docs/videorea` exit 0 (executa `legoloop legopress auditar <pdf>` em cada um dos 27 PDFs) |
 | `TICK-04.4` | Marcar o leitor dos nomes antigos como depreciado com aviso na CLI. **Não remover** (D3). | `nano` Haiku | `TICK-04.2` | Aviso aparece e os loops antigos continuam válidos |
@@ -185,7 +185,7 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 
 | Ticket | Ação | Nature / Modelo | Dep. | Gate |
 | :--- | :--- | :--- | :--- | :--- |
-| `TICK-06.1` | Cadeia de fechamento do `AGENTS.md` item 11: manual, livro LegoPress, skill, loop, build e install, governança viva, reindexação, portões e REPORT. Incluir os cinco alvos no gate global do `taxlinter` e remover a ressalva "alvos já normalizados". | `micro` Sonnet | `TICK-04.3`, `TICK-04.4`, `TICK-05.6` | `taxlinter internal cmd processos skills docs/templates` exit 0 (`processos` é o nome de `loops/` após o `TICK-04.1`) e `file_exists('bin/legoloop.exe')` |
+| `TICK-06.1` | Cadeia de fechamento do `AGENTS.md` item 11: manual, livro LegoPress, skill, loop, build e install, governança viva, reindexação, portões e REPORT. Incluir os cinco alvos no gate global do `taxlinter` e remover a ressalva "alvos já normalizados". | `micro` Sonnet | `TICK-04.3`, `TICK-04.4`, `TICK-05.6` | `taxlinter internal cmd processos skills docs/templates` exit 0 (`processos` é o nome de `processos/` após o `TICK-04.1`) e `file_exists('bin/legoloop.exe')` |
 
 ---
 
@@ -195,7 +195,7 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 | :--- | :--- | :--- |
 | `pipeline.dag.json` | `processo.dag.json` | O leitor aceita os dois. |
 | `<nome>.loop.json` | `<nome>.studio.json` (aprovado em 2026-11-10) | O Cofre tem **três** arquivos por Processo: `.loop.json` (documento do Studio), `.dag.json` (contrato da CLI, gravado por `fabricar`, `compor`, `refinar`) e `.processo.json` (registro v2). Os nomes `.dag.json` e `.processo.json` **já estão em uso** e **permanecem**. Verificado em 2026-11-10: os 6 loops do Cofre real têm só `.loop.json` (v1). |
-| `loops/` | `processos/` | `git mv` no `TICK-04.1`. |
+| `processos/` | `processos/` | `git mv` no `TICK-04.1`. |
 | Nó `subloop` | `subprocesso` | Schema v2. |
 | Gatilho `loop_end` | `processo_fim` | Schema v2. |
 | Campo `loop` | `processo` | Schema v2. |
@@ -218,7 +218,7 @@ Ordem: E00, E01, E02, E03, E04, E05, E06. E02 vem antes de E03 para os Processos
 
 | Fato | Como verifiquei |
 | :--- | :--- |
-| `loops/` tem 15 itens: 9 pastas com `pipeline.dag.json` e 6 `.loop.json`. Os 15 passam em `legoloop validate`. | `ls` e `legoloop validate` em cada item |
+| `processos/` tem 15 itens: 9 pastas com `pipeline.dag.json` e 6 `.loop.json`. Os 15 passam em `legoloop validate`. | `ls` e `legoloop validate` em cada item |
 | O Cofre real tem 6 `.loop.json` (v1), sem `.dag.json` nem `.processo.json`. | `ls ~/.aidd/canonical/loops` |
 | `.dag.json` e `.processo.json` já estão em uso. `.studio.json`, `processo.dag.json`, `processos/`, `internal/{golden,paths,migrar,studiodoc}` e `schemas/dag.v2.json` estão livres. | `grep` e `ls` |
 | O linter não lê identificadores, chaves compostas, valores JSON, corpo de Markdown nem `.typ`. A marca "LegoLoop" não é violação. | Seis arquivos de teste em diretório temporário, saída do `taxlinter` |

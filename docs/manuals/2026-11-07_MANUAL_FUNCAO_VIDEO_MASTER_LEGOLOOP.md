@@ -4,7 +4,7 @@
 > **Autoridade:** Ecossistema LegoLoop  
 > **Status:** Canônico  
 > **Escopo:** Mega-Pipeline soberano de produção audiovisual unificado em 4 pilares tecnológicos  
-> **Fontes de verdade:** `loops/legoloop-video-master/pipeline.dag.json` · `skills/legoloop-video-master/SKILL.md` · `docs/books/video-master/`
+> **Fontes de verdade:** `processos/legoloop-video-master/pipeline.dag.json` · `skills/legoloop-video-master/SKILL.md` · `docs/books/video-master/`
 
 ---
 
@@ -26,10 +26,10 @@ A função **`legoloop-video-master`** unifica a produção audiovisual soberana
 ### 2.2 Pela CLI Mecânica
 ```bash
 # Validação do grafo DAG mestre
-legoloop validate loops/legoloop-video-master/pipeline.dag.json
+legoloop validate processos/legoloop-video-master/pipeline.dag.json
 
 # Execução do pipeline completo
-legoloop run loops/legoloop-video-master/pipeline.dag.json
+legoloop run processos/legoloop-video-master/pipeline.dag.json
 
 # Auditoria da integridade do livro didático LegoPress
 legoloop legopress auditar docs/books/video-master/2026-11-07_LIVRO_LEGOLOOP_VIDEO_MASTER.pdf

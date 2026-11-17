@@ -36,7 +36,7 @@ Com `--project <dir>` (por exemplo, `--project .` para auditar o próprio LegoLo
 ## 4. Comandos de Operação e Verificação
 
 ```bash
-legoloop validate loops/legoloop-web-qa/pipeline.dag.json
+legoloop validate processos/legoloop-web-qa/pipeline.dag.json
 node --test tools/webqa/webqa.test.mjs
 node tools/webqa/webqa.mjs preflight --json
 node tools/webqa/webqa.mjs run --url http://127.0.0.1:3000 --alvo meu-app

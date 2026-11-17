@@ -63,7 +63,7 @@ func TestFabricarFromInterview_ConectaIntentComoContextIn(t *testing.T) {
 	}
 
 	// Verifica os 4 arquivos padrão no diretório do Processo e SPEC, PLAN, ROUTE, DAG em docs/.
-	procDir := filepath.Join(r.deps.Roots.Vault, paths.DirAntigo, res.CanonicalName)
+	procDir := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName)
 	for _, f := range []string{res.CanonicalName + ".studio.json", caminhos.ArquivoDAG, "triagem.json", "memoria_execucao.json"} {
 		if _, err := os.Stat(filepath.Join(procDir, f)); err != nil {
 			t.Errorf("arquivo padrão ausente no diretório do Processo: %s (%v)", f, err)

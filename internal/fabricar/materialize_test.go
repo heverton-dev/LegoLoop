@@ -54,8 +54,8 @@ func newEnv(t *testing.T) env {
 	roots := fabricar.Roots{Vault: vault, Docs: docs}
 	return env{vault: vault, docs: docs, plan: fabricar.MaterializePlan{Name: "legoloop-x", Roots: roots, Files: []fabricar.PlannedFile{
 		{Kind: "skill", Path: filepath.Join(vault, "skills", "legoloop-x", "SKILL.md"), Data: []byte("skill")},
-		{Kind: "processo", Path: filepath.Join(vault, paths.DirAntigo, "legoloop-x"+paths.SufixoAntigo), Data: []byte("processo")},
-		{Kind: "dag", Path: filepath.Join(vault, paths.DirAntigo, "legoloop-x.dag.json"), Data: []byte("dag")},
+		{Kind: "processo", Path: filepath.Join(vault, paths.DirProcessos, "legoloop-x"+paths.SufixoAntigo), Data: []byte("processo")},
+		{Kind: "dag", Path: filepath.Join(vault, paths.DirProcessos, "legoloop-x.dag.json"), Data: []byte("dag")},
 		{Kind: "intent", Path: filepath.Join(docs, "docs", "intents", "2026-11-03_INTENT_X.md"), Data: []byte("intent")},
 		{Kind: "route", Path: filepath.Join(docs, "docs", "routes", "2026-11-03_ROUTE_X.json"), Data: []byte("route")},
 	}}}
@@ -98,7 +98,7 @@ func TestMaterialize_WritesEverythingAndFillsArtifacts(t *testing.T) {
 
 func TestMaterialize_RejectsPathsOutsideTheRoots(t *testing.T) {
 	e := newEnv(t)
-	e.plan.Files[1].Path = filepath.Join(e.vault, paths.DirAntigo, "..", "..", "fora.json")
+	e.plan.Files[1].Path = filepath.Join(e.vault, paths.DirProcessos, "..", "..", "fora.json")
 	if _, err := fabricar.Materialize(context.Background(), e.plan, fabricar.OSFS()); err == nil {
 		t.Fatal("caminho fora das raízes deve ser recusado")
 	}

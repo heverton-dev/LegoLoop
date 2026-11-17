@@ -6,7 +6,7 @@
 > **Autor:** Antigravity (LegoLoop Mega Pipeline — Fusão Addy Osmani + Matt Pocock + AIDD-Spec)  
 > **Iniciativa:** I01 — LegoLoop Creative Engines  
 > **Referência da Intenção:** [docs/intents/2026-11-07_INTENT_VIDEO_MOTION_PIPELINE.md](../intents/2026-11-07_INTENT_VIDEO_MOTION_PIPELINE.md)  
-> **Alvo Primário:** `internal/videomotion`, `loops/video-motion`, `cmd/legoloop`  
+> **Alvo Primário:** `internal/videomotion`, `processos/video-motion`, `cmd/legoloop`  
 > **Consome:** INTENT aprovada · **Produz:** PLAN e ROUTE  
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 
@@ -260,8 +260,8 @@ func (c PipelineConfig) Validate() error {
 ### Épico 05 — Orquestrador LegoLoop, Livro Didático LegoPress & Meta-Processo (`E05`)
 
 * [ ] `AC-E05.1`: **Execução Estéril por Bloco via DAG Canônico**
-  * **Dado que:** O arquivo de orquestração `loops/video-motion/pipeline.dag.json`.
-  * **Quando:** Executado via `legoloop run loops/video-motion/pipeline.dag.json --json`.
+  * **Dado que:** O arquivo de orquestração `processos/video-motion/pipeline.dag.json`.
+  * **Quando:** Executado via `legoloop run processos/video-motion/pipeline.dag.json --json`.
   * **Então:** Cada nó nasce em contexto estéril, consome exclusivamente o artefato pai, produz o artefato contratado e encerra com exit code 0.
 * [ ] `AC-E05.2`: **Geração do Livro Didático Canônico de Uso (LegoPress)**
   * **Dado que:** A conclusão das peças do pipeline de vídeo motion.

@@ -11,8 +11,20 @@ import (
 // sufixoProcesso é o fim do arquivo do processo no cofre, ao lado do DAG e do documento do Studio.
 const sufixoProcesso = ".processo.json"
 
-// CaminhoNoCofre devolve onde o processo fica no cofre. É o arquivo que listar, refinar e compor leem.
+// CaminhoNoCofre devolve onde o processo fica no cofre, no dialeto de gravação.
+// É o arquivo que refinar e compor gravam.
 func CaminhoNoCofre(vault, nome string) string {
+	return filepath.Join(vault, caminhos.DirProcessos, nome+sufixoProcesso)
+}
+
+// CaminhoNoCofreLeitura resolve o arquivo do processo para leitura: prefere o
+// dialeto novo e cai no antigo quando só ele existe. É o arquivo que listar,
+// refinar e compor leem.
+func CaminhoNoCofreLeitura(vault, nome string) string {
+	novo := CaminhoNoCofre(vault, nome)
+	if info, err := os.Stat(novo); err == nil && info.Mode().IsRegular() {
+		return novo
+	}
 	return filepath.Join(vault, caminhos.DirLoops, nome+sufixoProcesso)
 }
 

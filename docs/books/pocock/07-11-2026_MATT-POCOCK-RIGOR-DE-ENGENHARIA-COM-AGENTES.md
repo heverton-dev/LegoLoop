@@ -24,7 +24,7 @@ toc-depth: 2
 abstract: |
   Este livro ensina a operar o método de Matt Pocock (upstream sob licença MIT) dentro do ecossistema LegoLoop. O método substitui a geração cega de código por um ciclo disciplinado: entrevistar a ideia até não restarem premissas ocultas, transformar o consenso em especificação, fatiar a especificação em tickets com dependências explícitas e implementar cada ticket com testes primeiro, em contexto limpo.
 
-  A Parte I apresenta os cinco pilares do método. A Parte II descreve o loop mestre e seus quatro gates. A Parte III detalha os seis sub-loops e as habilidades de cada um. A Parte IV desce ao nível de implementação: roteamento de modelos, higiene de contexto e o arquivo loops/matt-pocock.loop.json. A Parte V traz receitas e a Parte VI reúne glossário, relatório de conformidade e referência das habilidades.
+  A Parte I apresenta os cinco pilares do método. A Parte II descreve o loop mestre e seus quatro gates. A Parte III detalha os seis sub-loops e as habilidades de cada um. A Parte IV desce ao nível de implementação: roteamento de modelos, higiene de contexto e o arquivo processos/matt-pocock.loop.json. A Parte V traz receitas e a Parte VI reúne glossário, relatório de conformidade e referência das habilidades.
 
   Fonte primária: docs/manuals/2026-11-01_MANUAL_MATT_POCOCK_SKILLS_LOOP.md, complementada pelas habilidades upstream tdd, code-review e diagnosing-bugs.
 ---
@@ -50,7 +50,7 @@ abstract: |
 
 ## As convenções da obra
 
-Nomes de habilidades e caminhos de arquivo aparecem em fonte monoespaçada, como `grill-with-docs` ou `loops/matt-pocock.loop.json`. Exemplos ilustrativos são marcados como tal no texto. Toda afirmação sobre o LegoLoop é rastreável a um arquivo citado; quando manual e código discordam, o livro segue o código e registra a diferença no Apêndice B.
+Nomes de habilidades e caminhos de arquivo aparecem em fonte monoespaçada, como `grill-with-docs` ou `processos/matt-pocock.loop.json`. Exemplos ilustrativos são marcados como tal no texto. Toda afirmação sobre o LegoLoop é rastreável a um arquivo citado; quando manual e código discordam, o livro segue o código e registra a diferença no Apêndice B.
 
 
 # PARTE I — Macro: O Fim da Geração Cega
@@ -329,7 +329,7 @@ O raciocínio socrático do sub-loop 1 pede um modelo capaz de desafiar premissa
 
 ### O arquivo do loop
 
-O arquivo `loops/matt-pocock.loop.json` segue o esquema `dag.v1`, chama-se "Pipeline de Rigor Matt Pocock (6 Sub-Loops)", versão 1.0.0, e tem gatilho manual. Os seis nós apontam para a peça `skills/aidd-pocock` e formam uma cadeia linear. Cada nó declara o artefato que precisa existir para ser concluído.
+O arquivo `processos/matt-pocock.loop.json` segue o esquema `dag.v1`, chama-se "Pipeline de Rigor Matt Pocock (6 Sub-Loops)", versão 1.0.0, e tem gatilho manual. Os seis nós apontam para a peça `skills/aidd-pocock` e formam uma cadeia linear. Cada nó declara o artefato que precisa existir para ser concluído.
 
 | Nó                             | Artefato exigido pelo gate     | Modelo sugerido          |
 | :----------------------------- | :----------------------------- | :----------------------- |
@@ -349,8 +349,8 @@ Em `internal/studio/templates.go`, o template "Pipeline Matt Pocock (6 Sub-Loops
 ### Comandos de verificação
 
 ```bash
-legoloop validate loops/matt-pocock.loop.json   # contrato, gates e ciclos
-legoloop run loops/matt-pocock.loop.json        # execução pelo motor DAG
+legoloop validate processos/matt-pocock.loop.json   # contrato, gates e ciclos
+legoloop run processos/matt-pocock.loop.json        # execução pelo motor DAG
 legoloop studio                                 # Studio em 127.0.0.1:7878
 ```
 
@@ -444,7 +444,7 @@ Comparação entre o manual de 01/11/2026 e o repositório em 07/11/2026.
 
 | Ponto verificado        | Manual                    | Código ou upstream            | Situação       |
 | :---------------------- | :------------------------ | :---------------------------- | :------------- |
-| Arquivo do loop         | `matt-pocock.loop.json`     | Existe em `loops/`              | Conforme       |
+| Arquivo do loop         | `matt-pocock.loop.json`     | Existe em `processos/`              | Conforme       |
 | Validação do DAG        | Não citada                | 6 nós, sem ciclos             | Conforme       |
 | Sub-loop 2, Exploração  | Sub-loop próprio          | Sem nó no JSON                | Diverge        |
 | Sub-loop 5, Diagnóstico | Sub-loop próprio          | Sem nó no JSON                | Diverge        |

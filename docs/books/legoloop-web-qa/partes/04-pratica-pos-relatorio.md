@@ -5,7 +5,7 @@
 Antes de rodar qualquer auditoria, valide a integridade do grafo e do ambiente:
 
 ```bash
-legoloop validate loops/legoloop-web-qa/pipeline.dag.json
+legoloop validate processos/legoloop-web-qa/pipeline.dag.json
 node --test tools/webqa/webqa.test.mjs
 node tools/webqa/webqa.mjs preflight --json
 ```

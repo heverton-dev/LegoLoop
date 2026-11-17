@@ -81,9 +81,9 @@
 * **Testes Automatizados:** `docs/templates/templates_test.go` (`TestQuintetoTemplatesConformidade`).
 * **Governança:** Regra #6 do `AGENTS.md` atualizada para consolidar o Quinteto de Governança ISO.
 
-### Épico 05 — Saneamento do Acervo de Loops (`loops/`, `docs/dags/`)
-* **Saneamento Video-REA:** `loops/legoloop-video-rea/pipeline.dag.json` emitido com `${VIDEO_URL}` dinâmica, diretório `docs/videorea/${SLUG}` e espelho ISO em `docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json`.
-* **Normalização de Nomes:** Todos os loops operacionais padronizados sob `loops/legoloop-*/` (`legoloop-video-motion`, `legoloop-video-edition`, `legoloop-fechar`).
+### Épico 05 — Saneamento do Acervo de Loops (`processos/`, `docs/dags/`)
+* **Saneamento Video-REA:** `processos/legoloop-video-rea/pipeline.dag.json` emitido com `${VIDEO_URL}` dinâmica, diretório `docs/videorea/${SLUG}` e espelho ISO em `docs/dags/2026-11-09_DAG_LEGOLOOP_VIDEO_REA.json`.
+* **Normalização de Nomes:** Todos os loops operacionais padronizados sob `processos/legoloop-*/` (`legoloop-video-motion`, `legoloop-video-edition`, `legoloop-fechar`).
 
 ---
 

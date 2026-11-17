@@ -142,7 +142,7 @@ func TestRunFabricar(t *testing.T) {
 	t.Run("o dag gerado passa no validate", func(t *testing.T) {
 		r := newFabRig(t)
 		run(t, r.d, r.args("extrator de audio", "--yes", "--sem-entrevista")...)
-		dagPath := filepath.Join(r.vault, caminhos.DirLoops, "legoloop-extrator-de-audio", "pipeline.dag.json")
+		dagPath := filepath.Join(r.vault, caminhos.DirProcessos, "legoloop-extrator-de-audio", "pipeline.dag.json")
 		d2, _, errb := deps(t)
 		if code := run(t, d2, "validate", dagPath); code != 0 {
 			t.Fatalf("validate exit %d: %s", code, errb)

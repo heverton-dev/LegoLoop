@@ -12,7 +12,7 @@
 ---
 
 ## 1. Resumo Executivo
-* **Objetivo Alcançado:** Implementação completa da arquitetura de Target Workspace autocontido por vídeo em `docs/videorea/<slug>/`. Cada vídeo agora possui seu próprio isolamento estéril de mídia volátil (`scratch/`), forense (`dossier.json`), curadoria (`curation.json`), governança local (`governance/`), livro didático (`book/`), loop (`loop/`) e skill (`skill/`), com projeção canônica automática na raiz (`loops/<slug>/` e `skills/<slug>/`) e blindagem de Git.
+* **Objetivo Alcançado:** Implementação completa da arquitetura de Target Workspace autocontido por vídeo em `docs/videorea/<slug>/`. Cada vídeo agora possui seu próprio isolamento estéril de mídia volátil (`scratch/`), forense (`dossier.json`), curadoria (`curation.json`), governança local (`governance/`), livro didático (`book/`), loop (`loop/`) e skill (`skill/`), com projeção canônica automática na raiz (`processos/<slug>/` e `skills/<slug>/`) e blindagem de Git.
 * **Impacto Arquitetural:** Alterações restritas a `internal/videorea/` (`bundle.go`, `bundle_factory.go`), `internal/cli/video_rea.go`, `.gitignore`, `skills/legoloop-video-rea/SKILL.md` e manual operacional. O núcleo de motores globais do LegoLoop permanece 100% intacto e compatível.
 * **Veredito Geral:** APROVADO_SEM_RESSALVAS
 
@@ -57,7 +57,7 @@
 | Ticket | Título / Descrição | Critério de Aceitação | Status | Evidência de Validação |
 | :--- | :--- | :--- | :---: | :--- |
 | **TICK-01** | Modelagem de `TargetBundle` em Go | Struct e caminhos relativos/absolutos testados em Red-Green | CONCLUÍDO | `internal/videorea/bundle.go`, `bundle_test.go` |
-| **TICK-02** | Materialização & Projeção Canônica | Criação da árvore física e registro em `loops/` e `skills/` | CONCLUÍDO | `internal/videorea/bundle_factory.go`, `TestTargetBundleMaterializeAndProject` |
+| **TICK-02** | Materialização & Projeção Canônica | Criação da árvore física e registro em `processos/` e `skills/` | CONCLUÍDO | `internal/videorea/bundle_factory.go`, `TestTargetBundleMaterializeAndProject` |
 | **TICK-03** | Integração na CLI e Blindagem Git | Flags `--bundle`, atualização do usage e `.gitignore` | CONCLUÍDO | `internal/cli/video_rea.go`, `.gitignore` |
 | **TICK-04** | Portões Mecânicos & Rebuild | Testes unitários, vet, funclen e recompilação do binário | CONCLUÍDO | `go test ./...` PASS, `bin/legoloop.exe` atualizado |
 

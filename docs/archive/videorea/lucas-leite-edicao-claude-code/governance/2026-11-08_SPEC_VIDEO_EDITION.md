@@ -6,7 +6,7 @@
 > **Autor:** LegoLoop Video-REA Engine (Fidelidade Estrita aos 13 Guias Autorais de Lucas Leite)  
 > **Iniciativa:** Mega-Pipeline Audiovisual Soberano  
 > **Referência da Intenção:** [2026-11-08_INTENT_VIDEO_EDITION.md](2026-11-08_INTENT_VIDEO_EDITION.md)  
-> **Alvo Primário:** `loops/video-edition`, `skills/legoloop-video-edition`, `internal/videorea`  
+> **Alvo Primário:** `processos/video-edition`, `skills/legoloop-video-edition`, `internal/videorea`  
 > **Consome:** INTENT aprovada · **Produz:** PLAN e ROUTE  
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 
@@ -94,7 +94,7 @@ flowchart TD
 ```
 
 ### Costuras de Teste (Test Seams — Pocock)
-* **Costura Primária (Highest Seam):** `legoloop validate loops/video-edition/pipeline.dag.json` que valida a ausência de ciclos e integridade dos nós.
+* **Costura Primária (Highest Seam):** `legoloop validate processos/video-edition/pipeline.dag.json` que valida a ausência de ciclos e integridade dos nós.
 * **Costura de Transcrição e Notas:** Teste unitário de parsing que localiza `"nota de edição"` e remove o trecho entre timecodes.
 * **Costura de Sound Design (SFX):** Teste de atenuação que calcula a curva de ducking e comprova o nível em -18dB na presença de fala.
 * **Golden Fixture:** `loop/fixture_3s.mp4` sintetizado com track estéreo para verificação mecânica rápida.
@@ -201,7 +201,7 @@ func (c PipelineConfig) Validate() error {
 ## 6. Comandos Operacionais & Critério de Conclusão Global (Lucas Leite & Osmani)
 
 ### Comandos de Verificação Mecânica
-* **Validação do Grafo DAG:** `go run ./cmd/legoloop validate loops/video-edition/pipeline.dag.json`
+* **Validação do Grafo DAG:** `go run ./cmd/legoloop validate processos/video-edition/pipeline.dag.json`
 * **Testes da Suíte de Vídeo:** `go test -count=1 ./internal/videorea/...`
 * **Estática e Formatação:** `go vet ./internal/videorea/...` e `gofmt -l internal/videorea`
 * **Linter de Comprimento:** `go run ./tools/funclen internal/videorea`

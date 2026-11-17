@@ -154,8 +154,8 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, sext
 	vault := func(parts ...string) string { return filepath.Join(append([]string{roots.Vault}, parts...)...) }
 	files := []PlannedFile{
 		{Kind: "skill", Path: vault("skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Kind: "loop", Path: vault(paths.DirAntigo, p.Nome, p.Nome+paths.SufixoStudio), Data: pr.Studio},
-		{Kind: "dag", Path: vault(paths.DirAntigo, p.Nome, caminhos.ArquivoDAG), Data: pr.DAG},
+		{Kind: "loop", Path: vault(paths.DirProcessos, p.Nome, p.Nome+paths.SufixoStudio), Data: pr.Studio},
+		{Kind: "dag", Path: vault(paths.DirProcessos, p.Nome, caminhos.ArquivoDAG), Data: pr.DAG},
 		{Kind: "processo", Path: processo.CaminhoNoCofre(roots.Vault, p.Nome), Data: pj},
 		{Kind: "interview", Path: docs("interviews", sexteto[0].Name), Data: sexteto[0].Data},
 		{Kind: "intent", Path: docs("intents", sexteto[1].Name), Data: sexteto[1].Data},
@@ -164,9 +164,9 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, sext
 		{Kind: "route", Path: docs("routes", pr.RouteNome), Data: pr.Route},
 		{Kind: "dag_iso", Path: docs("dags", pr.DAGNome), Data: pr.DAG},
 		{Kind: "report", Path: docs("reports", sexteto[2].Name), Data: sexteto[2].Data},
-		{Kind: "triagem", Path: vault(paths.DirAntigo, p.Nome, "triagem.json"), Data: pr.Triagem},
-		{Kind: "memoria", Path: vault(paths.DirAntigo, p.Nome, triagem.ArquivoMemoria), Data: mem},
-		{Kind: "anticorpos", Path: vault(paths.DirAntigo, p.Nome, "anticorpos.json"), Data: ac},
+		{Kind: "triagem", Path: vault(paths.DirProcessos, p.Nome, "triagem.json"), Data: pr.Triagem},
+		{Kind: "memoria", Path: vault(paths.DirProcessos, p.Nome, triagem.ArquivoMemoria), Data: mem},
+		{Kind: "anticorpos", Path: vault(paths.DirProcessos, p.Nome, "anticorpos.json"), Data: ac},
 		{Kind: "manual", Path: docs("manuals", pr.ManualNome), Data: []byte(pr.Manual)},
 		{Kind: "livro", Path: docs("books", filepath.Join(p.Nome, "livro.json")), Data: pr.Livro},
 	}

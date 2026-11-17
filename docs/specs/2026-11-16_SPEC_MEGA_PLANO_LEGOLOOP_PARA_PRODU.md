@@ -15,7 +15,7 @@ covers: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10]
 > **Autor:** Antigravity AI + Usuário (Fusão Addy Osmani + Matt Pocock + AIDD-Spec)
 > **Iniciativa:** Mega Plano — LegoLoop Pronto para Produção (10 Iniciativas / 10 Épicos)
 > **Referência da Intenção:** [docs/intents/2026-11-16_INTENT_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md](../intents/2026-11-16_INTENT_MEGA_PLANO_LEGOLOOP_PARA_PRODU.md)
-> **Alvo Primário:** `docs/`, `loops/`, `internal/triagem`, `internal/brain`, `internal/fabricar`, `internal/cli`, `skills/`, `cmd/legoloop`
+> **Alvo Primário:** `docs/`, `processos/`, `internal/triagem`, `internal/brain`, `internal/fabricar`, `internal/cli`, `skills/`, `cmd/legoloop`
 > **Consome:** INTENT aprovada · **Produz:** PLAN e ROUTE
 > **Template:** TEMPLATE_SPEC.md v2.2.0
 
@@ -46,7 +46,7 @@ covers: [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10]
   * Nova dependência em `go.mod` (proibida por padrão).
   * Alterar schemas persistidos com retrocompatibilidade quebrada (`triagem.v1`, `loop.json`, `pipeline.dag.json`).
   * Alterar contratos públicos de CLI, API do Studio ou `ROUTE.json`.
-  * Modificar `AGENTS.md` (Leis) — mudança de lei deliberada (ex.: rename `loops/`).
+  * Modificar `AGENTS.md` (Leis) — mudança de lei deliberada (ex.: rename `processos/`).
   * Deletar qualquer arquivo de `docs/` (migração para `docs/archive/` antes; deleção só com aprovação).
 * **Nunca Fazer:**
   * Zero stubs (`TODO`, `pass`, mocks em produção) — Lei 1.
@@ -214,11 +214,11 @@ Schemas novos exigidos: `schemas/anticorpos.v1.json`, `schemas/memoria_execucao.
 * [ ] `AC-E05.3`: **Camada de abstração por SO** — Dado que peças usam `.ps1`/`.sh`; Quando o processo executar em SO diferente; Então o scaffold resolve a peça compatível com o SO automaticamente (sem vendor-locking).
 * [ ] `AC-E05.4`: **Caminho de falha** — Dado processo sem dono para um documento do Quinteto; Quando a migração fechar; Então o documento vai para `docs/archive/` com registro no inventário (nenhum órfão silencioso).
 
-### Épico 06 — I5 · Renomeação `loops/` → `processos/` (Conflito Lei 15)
+### Épico 06 — I5 · Renomeação `processos/` → `processos/` (Conflito Lei 15)
 
-* [ ] `AC-E06.1`: **Referências migradas** — Dado o rename do diretório; Quando a demanda fechar; Então `git grep -l "loops/"` em código Go, schemas, skills e docs retorna apenas menções históricas documentadas — zero referência viva quebrada.
-* [ ] `AC-E06.2`: **Binário e schemas** — Dado que `fechar` grava em `loops/<slug>/pipeline.dag.json`; Quando executado após o rename; Então grava em `processos/<slug>/` e `legoloop validate` passa com exit 0.
-* [ ] `AC-E06.3`: **Caminho de falha** — Dado comando antigo apontando para `loops/`; Quando executado; Então erro claro com guia de migração (exit 2, mensagem com novo caminho).
+* [ ] `AC-E06.1`: **Referências migradas** — Dado o rename do diretório; Quando a demanda fechar; Então `git grep -l "processos/"` em código Go, schemas, skills e docs retorna apenas menções históricas documentadas — zero referência viva quebrada.
+* [ ] `AC-E06.2`: **Binário e schemas** — Dado que `fechar` grava em `processos/<slug>/pipeline.dag.json`; Quando executado após o rename; Então grava em `processos/<slug>/` e `legoloop validate` passa com exit 0.
+* [ ] `AC-E06.3`: **Caminho de falha** — Dado comando antigo apontando para `processos/`; Quando executado; Então erro claro com guia de migração (exit 2, mensagem com novo caminho).
 
 ### Épico 07 — I6 · Tríplice Via de Invocação (CLI, Harness, Studio)
 
@@ -256,7 +256,7 @@ Schemas novos exigidos: `schemas/anticorpos.v1.json`, `schemas/memoria_execucao.
 | `R3` | Memória de execução concorrente (Session+PID+lock) | `AC-E03.1`, `AC-E03.2`, `AC-E03.3`, `AC-E03.4` |
 | `R4` | Motor de anticorpos persistente com vacinação | `AC-E04.1`, `AC-E04.2`, `AC-E04.3`, `AC-E04.4` |
 | `R5` | VSA por processo (fatia autocontida, SO-agnostic) | `AC-E05.1`, `AC-E05.2`, `AC-E05.3`, `AC-E05.4` |
-| `R6` | Renomeação `loops/` → `processos/` (Lei 15) | `AC-E06.1`, `AC-E06.2`, `AC-E06.3` |
+| `R6` | Renomeação `processos/` → `processos/` (Lei 15) | `AC-E06.1`, `AC-E06.2`, `AC-E06.3` |
 | `R7` | Tríplice via de invocação (CLI, harness, Studio) | `AC-E07.1`, `AC-E07.2`, `AC-E07.3`, `AC-E07.4` |
 | `R8` | Auditoria universal agnóstica + 6 verbos | `AC-E08.1`, `AC-E08.2`, `AC-E08.3`, `AC-E08.4` |
 | `R9` | MCP único via router | `AC-E09.1`, `AC-E09.2` |

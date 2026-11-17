@@ -57,7 +57,7 @@ A SPEC V2 deixou 4 decisões para o stop-gate dela. Este PLAN as assume assim; *
 | 1 | `canonize <nome>` por despacho de flags, ou nome novo (`fabricar`) | **`legoloop fabricar`**, comando próprio. `AC-E02.1`, `AC-E02.2` e `AC-E02.4` valem com `fabricar`; `AC-E02.3` vira "legado intacto" | `FAB-E02.1` a `FAB-E02.4`, `FAB-FIN.1` |
 | 2 | Executável da CLI é `.dag.json` (`legoloop run <caminho>`), separado do ROUTE | Mantido | `FAB-E01.5`, `FAB-E02.1` |
 | 3 | Skill no cofre; link nos harnesses só com confirmação | Mantido (`--link-harness`) | `FAB-E01.7`, `FAB-E02.1` |
-| 4 | `.dag.json` em `~/.aidd/canonical/loops/` | Mantido | `FAB-E01.4`, `FAB-E01.5` |
+| 4 | `.dag.json` em `~/.aidd/canonical/processos/` | Mantido | `FAB-E01.4`, `FAB-E01.5` |
 
 > [!WARNING]
 > A SPEC V2 ainda descreve `legoloop canonize <nome>` nos `AC-E02.1` a `AC-E02.3`, no diagrama e nos comandos de smoke. Antes do BUILD, a SPEC precisa de um patch V2.1 alinhado à decisão 1. A skill continua `legoloop-canonizer` (nome vindo da Intent e da SPEC); só o comando que ela invoca é `legoloop fabricar`.
@@ -430,7 +430,7 @@ Ao concluir os três épicos, cada comando é um argv, sem shell:
   * `go install ./cmd/legoloop`
   * `bin/legoloop.exe fabricar teste-smoke --yes --dry-run --vault scratch/smoke-fabricar/vault --docs scratch/smoke-fabricar/docs`
   * `bin/legoloop.exe fabricar teste-smoke --yes --vault scratch/smoke-fabricar/vault --docs scratch/smoke-fabricar/docs`
-  * `bin/legoloop.exe validate scratch/smoke-fabricar/vault/loops/legoloop-teste-smoke.dag.json`
+  * `bin/legoloop.exe validate scratch/smoke-fabricar/vault/processos/legoloop-teste-smoke.dag.json`
   * `powershell -NoProfile -Command "Remove-Item -Recurse -Force scratch/smoke-fabricar"`
 * **Gate (DSL):** `exit_code == 0 && file_exists('bin/legoloop.exe')`
 * **Spec Ref:** `AC-E03.2`

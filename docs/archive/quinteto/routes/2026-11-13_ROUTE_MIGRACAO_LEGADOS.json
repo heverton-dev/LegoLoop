@@ -94,7 +94,7 @@
       "inputs": {
         "source_files": [
           "docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json",
-          "loops/legoloop-fechar/pipeline.dag.json"
+          "processos/legoloop-fechar/pipeline.dag.json"
         ],
         "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-01.1",
         "context_artifacts": []
@@ -314,14 +314,14 @@
           "scratch/gates/SG-I6-E01.json"
         ],
         "verify": [],
-        "gate": "prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (loops/)?')"
+        "gate": "prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (processos/)?')"
       }
     },
     {
       "id": "TICK-I6-02.1",
       "initiative_id": "I6",
       "epic_id": "E02",
-      "label": "Migrar Lote Vídeo I em loops/ (4 arquivos)",
+      "label": "Migrar Lote Vídeo I em processos/ (4 arquivos)",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
@@ -363,10 +363,10 @@
       },
       "inputs": {
         "source_files": [
-          "loops/ai-motion-graphics/pipeline.dag.json",
-          "loops/legoloop-video-edition/pipeline.dag.json",
-          "loops/legoloop-video-master/pipeline.dag.json",
-          "loops/legoloop-video-motion/pipeline.dag.json"
+          "processos/ai-motion-graphics/pipeline.dag.json",
+          "processos/legoloop-video-edition/pipeline.dag.json",
+          "processos/legoloop-video-master/pipeline.dag.json",
+          "processos/legoloop-video-motion/pipeline.dag.json"
         ],
         "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.1",
         "context_artifacts": [
@@ -377,13 +377,13 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "loops/ai-motion-graphics/pipeline.dag.json",
-          "loops/legoloop-video-edition/pipeline.dag.json",
-          "loops/legoloop-video-master/pipeline.dag.json",
-          "loops/legoloop-video-motion/pipeline.dag.json"
+          "processos/ai-motion-graphics/pipeline.dag.json",
+          "processos/legoloop-video-edition/pipeline.dag.json",
+          "processos/legoloop-video-master/pipeline.dag.json",
+          "processos/legoloop-video-motion/pipeline.dag.json"
         ],
         "verify": [
-          ["go", "run", "./cmd/legoloop", "validate", "loops/ai-motion-graphics/pipeline.dag.json"]
+          ["go", "run", "./cmd/legoloop", "validate", "processos/ai-motion-graphics/pipeline.dag.json"]
         ],
         "gate": "exit_code == 0"
       }
@@ -392,7 +392,7 @@
       "id": "TICK-I6-02.2",
       "initiative_id": "I6",
       "epic_id": "E02",
-      "label": "Migrar Lote Vídeo II em loops/ (3 arquivos)",
+      "label": "Migrar Lote Vídeo II em processos/ (3 arquivos)",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
@@ -434,9 +434,9 @@
       },
       "inputs": {
         "source_files": [
-          "loops/legoloop-canal-redc/pipeline.dag.json",
-          "loops/legoloop-cartoon-shorts/pipeline.dag.json",
-          "loops/legoloop-video-rea/pipeline.dag.json"
+          "processos/legoloop-canal-redc/pipeline.dag.json",
+          "processos/legoloop-cartoon-shorts/pipeline.dag.json",
+          "processos/legoloop-video-rea/pipeline.dag.json"
         ],
         "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.2",
         "context_artifacts": [
@@ -447,12 +447,12 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "loops/legoloop-canal-redc/pipeline.dag.json",
-          "loops/legoloop-cartoon-shorts/pipeline.dag.json",
-          "loops/legoloop-video-rea/pipeline.dag.json"
+          "processos/legoloop-canal-redc/pipeline.dag.json",
+          "processos/legoloop-cartoon-shorts/pipeline.dag.json",
+          "processos/legoloop-video-rea/pipeline.dag.json"
         ],
         "verify": [
-          ["go", "run", "./cmd/legoloop", "validate", "loops/legoloop-canal-redc/pipeline.dag.json"]
+          ["go", "run", "./cmd/legoloop", "validate", "processos/legoloop-canal-redc/pipeline.dag.json"]
         ],
         "gate": "exit_code == 0"
       }
@@ -461,7 +461,7 @@
       "id": "TICK-I6-02.3",
       "initiative_id": "I6",
       "epic_id": "E02",
-      "label": "Migrar Lote Governança em loops/ (3 arquivos)",
+      "label": "Migrar Lote Governança em processos/ (3 arquivos)",
       "nature": "micro",
       "extreme": false,
       "class_rule": "nature=micro",
@@ -503,9 +503,9 @@
       },
       "inputs": {
         "source_files": [
-          "loops/legoloop-dissecar/pipeline.dag.json",
-          "loops/legoloop-fechar/pipeline.dag.json",
-          "loops/legoloop-n10-foundry/pipeline.dag.json"
+          "processos/legoloop-dissecar/pipeline.dag.json",
+          "processos/legoloop-fechar/pipeline.dag.json",
+          "processos/legoloop-n10-foundry/pipeline.dag.json"
         ],
         "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.3",
         "context_artifacts": [
@@ -516,12 +516,12 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "loops/legoloop-dissecar/pipeline.dag.json",
-          "loops/legoloop-fechar/pipeline.dag.json",
-          "loops/legoloop-n10-foundry/pipeline.dag.json"
+          "processos/legoloop-dissecar/pipeline.dag.json",
+          "processos/legoloop-fechar/pipeline.dag.json",
+          "processos/legoloop-n10-foundry/pipeline.dag.json"
         ],
         "verify": [
-          ["go", "run", "./cmd/legoloop", "validate", "loops/legoloop-fechar/pipeline.dag.json"]
+          ["go", "run", "./cmd/legoloop", "validate", "processos/legoloop-fechar/pipeline.dag.json"]
         ],
         "gate": "exit_code == 0"
       }
@@ -530,7 +530,7 @@
       "id": "SG-I6-E02",
       "initiative_id": "I6",
       "epic_id": "E02",
-      "label": "Stop-Gate Humano do Épico 02 (loops/)",
+      "label": "Stop-Gate Humano do Épico 02 (processos/)",
       "nature": "nano",
       "extreme": false,
       "class_rule": "nature=nano",
@@ -575,8 +575,8 @@
         "source_files": [],
         "spec_anchor": "docs/specs/2026-11-13_SPEC_MIGRACAO_LEGADOS.md#AC-I6-02.3",
         "context_artifacts": [
-          "loops/ai-motion-graphics/pipeline.dag.json",
-          "loops/legoloop-fechar/pipeline.dag.json"
+          "processos/ai-motion-graphics/pipeline.dag.json",
+          "processos/legoloop-fechar/pipeline.dag.json"
         ]
       },
       "spec_ref": "AC-I6-02.3",
@@ -586,7 +586,7 @@
           "scratch/gates/SG-I6-E02.json"
         ],
         "verify": [],
-        "gate": "prompt('Os 10 pipeline.dag.json de loops/ validam em v2? Autoriza validação final E03?')"
+        "gate": "prompt('Os 10 pipeline.dag.json de processos/ validam em v2? Autoriza validação final E03?')"
       }
     },
     {

@@ -22,7 +22,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 ---
 
 ## 1. Resumo Executivo
-* **Objetivo Alcançado:** Execução do fechamento técnico `TICK-I2-05.1` da Iniciativa I2, validando compilação fresca do binário, suíte global de testes Go, análise estática, formatação, limite de complexidade por função, auditoria taxonômica ASD-STE100 dos templates e validação de todos os DAGs em `docs/dags/` e `loops/`.
+* **Objetivo Alcançado:** Execução do fechamento técnico `TICK-I2-05.1` da Iniciativa I2, validando compilação fresca do binário, suíte global de testes Go, análise estática, formatação, limite de complexidade por função, auditoria taxonômica ASD-STE100 dos templates e validação de todos os DAGs em `docs/dags/` e `processos/`.
 * **Impacto Arquitetural:** Consolidação do contrato `schema_version: 2` com modo legado (`internal/dag`), front matter e rastreabilidade (`internal/artefato`), roteamento por classe/inventário (`internal/roteamento`), paridade ROUTE/DAG (`tools/route2dag`), gerador factual de relatório (`internal/orchestrix`), e sexteto/peças agnósticas em `docs/templates/`.
 * **Veredito Geral:** APROVADO_COM_DEBITO_TECNICO (33 violações taxonômicas legadas em `docs/templates/` dentro do teto `<= 35` de `AC-I2-05.1`, previstas para remoção na Iniciativa I6; Stop-Gate humano `SG-I2-FINAL` permanece **PENDENTE**).
 
@@ -85,7 +85,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 * **Peças & Templates:** Sexteto v2, `TEMPLATE_REPORT.md`, `TEMPLATE_HANDOFF.md` e peças agnósticas (`SKILL`, `MCP`, `HOOK`, `SCRIPT` `.ps1`/`.sh`, `GATE`, `LOOP`).
 
 ### Épico 05 — Fechamento (`TICK-I2-05.1` e `SG-I2-FINAL`)
-* **Evidências de Fechamento (`TICK-I2-05.1`):** Compilação fresca, `go test -count=1 ./...`, `ticketgate -tax docs/templates -tax-max 35`, `go vet ./...`, `gofmt -l .`, `funclen internal` e `legoloop validate` em todos os 19 DAGs (`10` em `docs/dags/` e `9` em `loops/`).
+* **Evidências de Fechamento (`TICK-I2-05.1`):** Compilação fresca, `go test -count=1 ./...`, `ticketgate -tax docs/templates -tax-max 35`, `go vet ./...`, `gofmt -l .`, `funclen internal` e `legoloop validate` em todos os 19 DAGs (`10` em `docs/dags/` e `9` em `processos/`).
 * **Stop-Gate Humano (`SG-I2-FINAL`):** **PENDENTE** de aprovação explícita do usuário.
 
 ---
@@ -102,7 +102,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 | **Taxonomia Templates (Bruto)** | `go run ./tools/taxlinter docs/templates` | Exit 1 com 33 violações legadas (<= teto 35 de `AC-I2-05.1`) | **PASS (baseline 33/35)** |
 | **Gate de Ticket (`AC-I2-05.1`)** | `go run ./tools/ticketgate -tax docs/templates -tax-max 35` | Exit 0 (`vet`, `funclen`, `gofmt`, `go.mod`/`go.sum`, `taxlinter <= 35`) | **PASS** |
 | **Validação DAGs (`docs/dags/`)** | `./bin/legoloop.exe validate docs/dags/*.json` | 10/10 DAGs válidos, sem ciclos (inclui `2026-11-12_DAG_SEXTETO_E_TEMPLATES.json`: 23 nós) | **PASS** |
-| **Validação DAGs (`loops/`)** | `./bin/legoloop.exe validate loops/*/pipeline.dag.json` | 9/9 DAGs válidos, sem ciclos | **PASS** |
+| **Validação DAGs (`processos/`)** | `./bin/legoloop.exe validate processos/*/pipeline.dag.json` | 9/9 DAGs válidos, sem ciclos | **PASS** |
 | **Stop-Gate Humano** | `SG-I2-FINAL` | Aprovação explícita do usuário | **PENDENTE** |
 
 ---

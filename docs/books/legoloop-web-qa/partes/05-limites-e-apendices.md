@@ -19,7 +19,7 @@
 ## Apêndice: Rastreabilidade dos Artefatos
 
 - **Skill Canônica:** `skills/legoloop-web-qa/SKILL.md`
-- **DAG Executivo (v2):** `loops/legoloop-web-qa/pipeline.dag.json` e `docs/dags/2026-11-15_DAG_WEB_QA.json`
+- **DAG Executivo (v2):** `processos/legoloop-web-qa/pipeline.dag.json` e `docs/dags/2026-11-15_DAG_WEB_QA.json`
 - **Rota v2:** `docs/routes/2026-11-15_ROUTE_WEB_QA.json`
 - **SPEC e PLAN:** `docs/specs/2026-11-15_SPEC_WEB_QA.md` e `docs/plans/2026-11-15_PLAN_WEB_QA.md`
 - **Fichas Técnicas:** `docs/fichas/legoloop-web-qa/n01.md` a `n12.md`

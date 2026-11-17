@@ -22,7 +22,7 @@ Os 7 originais estão em `docs/archive/2026-11-03/` (cópias idênticas, conferi
 1. **Nome:** `fabricar` (escolha do autor). Os quatro documentos usam o mesmo nome.
 2. **`legoloop run`:** permanece por caminho; a forma `legoloop run legoloop-<nome>` da INTENT original foi descartada (recomendação técnica: exigiria alterar o `run`).
 3. **Skill nos harnesses:** só no cofre; link apenas com `--link-harness`.
-4. **`.dag.json`:** em `~/.aidd/canonical/loops/`, sem diretório novo no cofre.
+4. **`.dag.json`:** em `~/.aidd/canonical/processos/`, sem diretório novo no cofre.
 5. **Confiança da entrevista:** 95%, informada pelo autor **com incerteza**. A INTENT registra isso em "Riscos e Perguntas em Aberto" e deve ser confirmada no Stop-Gate 01.
 
 ## 3. O que mudou em cada documento

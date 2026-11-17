@@ -6,7 +6,7 @@
 > **Autor:** LegoLoop (Fusão Addy Osmani + Matt Pocock + AIDD-Spec)  
 > **Iniciativa:** Soberania Audiovisual Local Tier Ouro  
 > **Referência da Intenção:** [docs/intents/2026-11-09_INTENT_LEGOLOOP_CARTOON_SHORTS.md](../intents/2026-11-09_INTENT_LEGOLOOP_CARTOON_SHORTS.md)  
-> **Alvo Primário:** `internal/videorea/`, `internal/cli/`, `loops/legoloop-cartoon-shorts/`, `skills/legoloop-cartoon-shorts/`, `web/studio/`  
+> **Alvo Primário:** `internal/videorea/`, `internal/cli/`, `processos/legoloop-cartoon-shorts/`, `skills/legoloop-cartoon-shorts/`, `web/studio/`  
 > **Consome:** INTENT aprovada · **Produz:** PLAN e ROUTE  
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 

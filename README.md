@@ -75,7 +75,7 @@ LegoLoop/
 │   ├── intents/ · specs/ · plans/ · routes/   # Cascata de governança (prefixo ISO de data)
 │   ├── reports/ · references/ · sessions/ · archive/
 │   └── reports/img/         # Evidências visuais de homologação
-├── loops/                   # Loops de exemplo (addy-osmani, impeccable-design, matt-pocock, mega-pipeline)
+├── processos/                   # Loops de exemplo (addy-osmani, impeccable-design, matt-pocock, mega-pipeline)
 ├── tools/funclen/           # Gate de qualidade: nenhuma função de produção com mais de 35 linhas
 └── AGENTS.md · MEMORY.md (diário de implementação) · README.md
 ```
@@ -171,7 +171,7 @@ O LegoLoop cobre todo o ciclo de vida de esteiras autônomas através de **7 ver
 * **Engenharia Reversa Audiovisual (`legoloop video-rea`):** Disseca URLs ou mídias locais criando Target Workspaces isolados em `docs/videorea/<slug>/`.
   * **Fase 1 (Forense & Matriz Original):** Extração de transcrição e OCR rápido em `dossier.json`, alimentando a nova camada `original_matrix.json` (stack real do autor, ferramentas pagas vs gratuitas explícitas e comandos implícitos de terminal/código).
   * **Fase 2 (Curadoria & Soberania):** Substituição de ferramentas comerciais por peças Tier Ouro do cofre e **Adoção Soberana Imediata** de utilitários gratuitos vazados no vídeo (custo R$ 0,00).
-  * **Fase 3 & 4 (Governança, Livro e Loop):** Fabricação da Tríade ISO local (`governance/`), Livro Didático LegoPress (`book/`), DAG com Golden Fixture de 3s (`loop/`), com projeção canônica na raiz (`loops/` e `skills/`) mediante aprovação do Stop-Gate humano.
+  * **Fase 3 & 4 (Governança, Livro e Loop):** Fabricação da Tríade ISO local (`governance/`), Livro Didático LegoPress (`book/`), DAG com Golden Fixture de 3s (`loop/`), com projeção canônica na raiz (`processos/` e `skills/`) mediante aprovação do Stop-Gate humano.
 
 ## 🏭 Fundição Autônoma N10 & Protocolos Industriais
 
