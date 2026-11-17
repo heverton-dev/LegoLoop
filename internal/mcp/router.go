@@ -3,14 +3,19 @@ package mcp
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
+
+	"legoloop/internal/caminhos"
 )
 
 var (
@@ -60,12 +65,13 @@ type JSONRPCResponse struct {
 
 // Router gerencia o ciclo de vida do Meta-MCP Router via STDIO.
 type Router struct {
-	vault     VaultRegistry
-	runner    ProcessRunner
-	skills    *SkillEngine
-	skillRoot string
-	swarm     bool
-	proxy     *Proxy
+	vault         VaultRegistry
+	runner        ProcessRunner
+	skills        *SkillEngine
+	skillRoot     string
+	swarm         bool
+	proxy         *Proxy
+	toolsProcesso map[string]toolRegistrada
 }
 
 // idleMcp e o tempo sem uso apos o qual um MCP externo e encerrado.
@@ -225,6 +231,9 @@ func (r *Router) handleToolCall(req JSONRPCRequest) JSONRPCResponse {
 	case "call_skill":
 		return r.callSkill(req.ID, params.Arguments)
 	default:
+		if _, ok := r.toolsProcesso[params.Name]; ok {
+			return r.chamarToolProcesso(req.ID, params.Name, params.Arguments)
+		}
 		if resp, ok := r.handleSwarmTool(req.ID, params.Name, params.Arguments); ok {
 			return resp
 		}
@@ -285,6 +294,25 @@ func (r *Router) toolCallError(id any, msg string) JSONRPCResponse {
 }
 
 func (r *Router) minimalTools() []map[string]any {
+	tools := r.toolsInternas()
+	nomes := make([]string, 0, len(r.toolsProcesso))
+	for nome := range r.toolsProcesso {
+		nomes = append(nomes, nome)
+	}
+	sort.Strings(nomes)
+	for _, nome := range nomes {
+		reg := r.toolsProcesso[nome]
+		def := map[string]any{"name": reg.def.Name, "description": reg.def.Description}
+		if reg.def.InputSchema != nil {
+			def["inputSchema"] = reg.def.InputSchema
+		}
+		tools = append(tools, def)
+	}
+	return tools
+}
+
+// toolsInternas reúne as tools embutidas do router (bootstrap, skills e swarm).
+func (r *Router) toolsInternas() []map[string]any {
 	tools := r.baseTools()
 	if r.skills != nil {
 		tools = append(tools, skillToolDefs()...)
@@ -322,4 +350,150 @@ func (r *Router) baseTools() []map[string]any {
 			},
 		},
 	}
+}
+
+// ToolProcesso é a tool que um Processo expõe pelo router único (AC-E09.1).
+type ToolProcesso struct {
+	Dono string
+	Def  ToolDef
+	Run  func(args map[string]any) (string, error)
+}
+
+type toolRegistrada struct {
+	dono string
+	def  ToolDef
+	run  func(args map[string]any) (string, error)
+}
+
+// toolTimeout limita a execução do comando declarado de uma tool de Processo.
+const toolTimeout = 60 * time.Second
+
+// RegistrarToolProcesso registra a tool de um Processo na interface única do
+// router. A interface é o próprio STDIO do router: zero servidor MCP por Processo.
+func (r *Router) RegistrarToolProcesso(t ToolProcesso) error {
+	nome := strings.TrimSpace(t.Def.Name)
+	if nome == "" {
+		return errors.New("mcp: tool de Processo sem nome")
+	}
+	if strings.TrimSpace(t.Dono) == "" {
+		return fmt.Errorf("mcp: tool %q sem dono", nome)
+	}
+	if t.Run == nil {
+		return fmt.Errorf("mcp: tool %q sem executor", nome)
+	}
+	if r.toolsProcesso == nil {
+		r.toolsProcesso = map[string]toolRegistrada{}
+	}
+	r.toolsProcesso[nome] = toolRegistrada{dono: t.Dono, def: t.Def, run: t.Run}
+	return nil
+}
+
+// CarregarToolsDeProcessos registra as tools declaradas pelos Processos sob a
+// base do projeto, cada um no manifesto da sua pasta (AC-E09.1).
+func (r *Router) CarregarToolsDeProcessos(base string) error {
+	for _, dir := range caminhos.DirsLeitura(base) {
+		entradas, err := os.ReadDir(dir)
+		if err != nil {
+			return err
+		}
+		for _, entrada := range entradas {
+			if !entrada.IsDir() {
+				continue
+			}
+			if err := r.carregarToolsDoProcesso(filepath.Join(dir, entrada.Name()), entrada.Name()); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+type itemToolManifesto struct {
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	InputSchema map[string]any    `json:"inputSchema,omitempty"`
+	Comando     []string          `json:"comando"`
+	Ambiente    map[string]string `json:"ambiente,omitempty"`
+}
+
+type manifestoTools struct {
+	Tools []itemToolManifesto `json:"tools"`
+}
+
+func (r *Router) carregarToolsDoProcesso(dir, nome string) error {
+	data, err := os.ReadFile(caminhos.CaminhoToolsDoProcesso(dir))
+	if errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	var manifesto manifestoTools
+	if err := json.Unmarshal(data, &manifesto); err != nil {
+		return fmt.Errorf("manifesto de tools inválido no Processo %q: %w", nome, err)
+	}
+	for _, item := range manifesto.Tools {
+		if err := r.registrarToolDoManifesto(nome, item); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *Router) registrarToolDoManifesto(dono string, item itemToolManifesto) error {
+	if len(item.Comando) == 0 {
+		return fmt.Errorf("tool %q do Processo %q sem comando declarado", item.Name, dono)
+	}
+	argv, ambiente := item.Comando, item.Ambiente
+	return r.RegistrarToolProcesso(ToolProcesso{
+		Dono: dono,
+		Def:  ToolDef{Name: item.Name, Description: item.Description, InputSchema: item.InputSchema},
+		Run: func(args map[string]any) (string, error) {
+			return executarComandoFerramenta(argv, ambiente, args)
+		},
+	})
+}
+
+// chamarToolProcesso despacha a execução da tool para o dono que a registrou.
+func (r *Router) chamarToolProcesso(id any, nome string, args map[string]any) JSONRPCResponse {
+	reg := r.toolsProcesso[nome]
+	saida, err := reg.run(args)
+	if err != nil {
+		return r.toolCallError(id, fmt.Sprintf("Falha ao executar tool %s: %v", nome, err))
+	}
+	return r.toolCallText(id, saida)
+}
+
+// executarComandoFerramenta roda o comando declarado da tool com os argumentos
+// em JSON via stdin e devolve a saída padrão como resultado da tool.
+func executarComandoFerramenta(argv []string, ambiente map[string]string, args map[string]any) (string, error) {
+	if len(argv) == 0 {
+		return "", errors.New("mcp: tool sem comando declarado")
+	}
+	if args == nil {
+		args = map[string]any{}
+	}
+	carga, err := json.Marshal(args)
+	if err != nil {
+		return "", err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), toolTimeout)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, argv[0], argv[1:]...)
+	cmd.Stdin = bytes.NewReader(carga)
+	cmd.Env = juntarAmbiente(ambiente)
+	var saida, erros bytes.Buffer
+	cmd.Stdout, cmd.Stderr = &saida, &erros
+	if err := cmd.Run(); err != nil {
+		return "", fmt.Errorf("comando da tool falhou: %w: %s", err, strings.TrimSpace(erros.String()))
+	}
+	return strings.TrimSpace(saida.String()), nil
+}
+
+func juntarAmbiente(ambiente map[string]string) []string {
+	env := os.Environ()
+	for chave, valor := range ambiente {
+		env = append(env, chave+"="+valor)
+	}
+	return env
 }

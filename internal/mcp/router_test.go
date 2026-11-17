@@ -3,9 +3,124 @@ package mcp
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
+
+	"legoloop/internal/caminhos"
 )
+
+// TestToolsViaRouter prova a AC-E09.1: as tools de dois Processos expõem pelo
+// router único via STDIO (tools/list + tools/call), com execução real do
+// comando declarado e zero servidor MCP por Processo.
+func TestToolsViaRouter(t *testing.T) {
+	base := t.TempDir()
+	home := t.TempDir()
+	vault := filepath.Join(home, ".aidd", "canonical")
+	prepararProcessoComTools(t, base, "alpha", manifestoEco("eco_alpha"))
+	prepararProcessoComTools(t, base, "beta", manifestoEco("eco_beta"))
+
+	r := NewConfiguredRouter(home, vault, base)
+	defer r.Close()
+	if err := r.CarregarToolsDeProcessos(base); err != nil {
+		t.Fatalf("CarregarToolsDeProcessos: %v", err)
+	}
+
+	reqs := strings.Join([]string{
+		`{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05"}}`,
+		`{"jsonrpc":"2.0","id":2,"method":"tools/list"}`,
+		`{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"eco_alpha","arguments":{"texto":"abc"}}}`,
+		`{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"eco_beta","arguments":{"texto":"xyz"}}}`,
+	}, "\n") + "\n"
+	var out bytes.Buffer
+	if err := r.Serve(strings.NewReader(reqs), &out); err != nil {
+		t.Fatalf("Serve: %v", err)
+	}
+	linhas := strings.Split(strings.TrimSpace(out.String()), "\n")
+	if len(linhas) != 4 {
+		t.Fatalf("esperava 4 respostas, obteve %d: %s", len(linhas), out.String())
+	}
+	verificarEcoNoRouter(t, linhas[1], linhas[2], linhas[3])
+
+	// AC-E09.1: zero servidor MCP por Processo — nenhum externo sobe nem entra no registro.
+	if ativos := r.proxy.ativos(); ativos != 0 {
+		t.Errorf("servidores MCP externos ativos após tools de Processo: %d", ativos)
+	}
+	servers, err := LoadRegistry(RegistryPath(home))
+	if err != nil {
+		t.Fatalf("LoadRegistry: %v", err)
+	}
+	if len(servers) != 0 {
+		t.Errorf("registro de MCPs ganhou servidores por Processo: %v", servers)
+	}
+}
+
+func verificarEcoNoRouter(t *testing.T, lista, ecoA, ecoB string) {
+	t.Helper()
+	var env rpcEnvelope
+	if err := json.Unmarshal([]byte(lista), &env); err != nil {
+		t.Fatalf("unmarshal tools/list: %v", err)
+	}
+	presentes := map[string]bool{}
+	for _, tl := range env.Result.Tools {
+		presentes[tl.Name] = true
+	}
+	for _, nome := range []string{"eco_alpha", "eco_beta"} {
+		if !presentes[nome] {
+			t.Errorf("tool de Processo %q ausente em tools/list: %v", nome, presentes)
+		}
+	}
+	for linha, esperado := range map[string]string{ecoA: "eco:abc", ecoB: "eco:xyz"} {
+		var call rpcEnvelope
+		if err := json.Unmarshal([]byte(linha), &call); err != nil {
+			t.Fatalf("unmarshal tools/call: %v", err)
+		}
+		if call.Result.IsError || len(call.Result.Content) == 0 || call.Result.Content[0].Text != esperado {
+			t.Errorf("tools/call devia devolver %q, obteve: %+v", esperado, call.Result)
+		}
+	}
+}
+
+func manifestoEco(nome string) string {
+	man := map[string]any{"tools": []any{map[string]any{
+		"name":        nome,
+		"description": "Devolve eco: seguido do texto recebido.",
+		"inputSchema": map[string]any{"type": "object", "properties": map[string]any{"texto": map[string]any{"type": "string"}}},
+		"comando":     []string{os.Args[0], "-test.run=TestHelperFerramentaEco"},
+		"ambiente":    map[string]string{"LEGOLOOP_HELPER_FERRAMENTA": "1"},
+	}}}
+	data, err := json.Marshal(man)
+	if err != nil {
+		panic(err)
+	}
+	return string(data)
+}
+
+func prepararProcessoComTools(t *testing.T, base, nome, manifesto string) {
+	t.Helper()
+	dir := filepath.Join(caminhos.DirProcessosEm(base), nome)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatalf("montar Processo %s: %v", nome, err)
+	}
+	if err := os.WriteFile(caminhos.CaminhoToolsDoProcesso(dir), []byte(manifesto), 0o600); err != nil {
+		t.Fatalf("gravar tools.json de %s: %v", nome, err)
+	}
+}
+
+// TestHelperFerramentaEco é o comando real das tools de teste: ecoa o texto dos
+// argumentos recebidos via stdin e encerra sem o resumo do framework.
+func TestHelperFerramentaEco(t *testing.T) {
+	if os.Getenv("LEGOLOOP_HELPER_FERRAMENTA") != "1" {
+		t.Skip("helper de execução de tool: só roda como comando do manifesto")
+	}
+	var args map[string]any
+	_ = json.NewDecoder(os.Stdin).Decode(&args)
+	texto, _ := args["texto"].(string)
+	fmt.Print("eco:" + texto)
+	os.Exit(0)
+}
 
 func TestRouterHandshakeAndListTools(t *testing.T) {
 	// Red-Green Cycle: Simula um cliente MCP enviando initialize e tools/list via stdio

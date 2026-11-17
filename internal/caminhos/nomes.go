@@ -23,6 +23,8 @@ const (
 	DirProcessos = "processos"
 	// ArquivoProcessoDAG é o arquivo do contrato DAG no dialeto novo.
 	ArquivoProcessoDAG = "processo.dag.json"
+	// ArquivoToolsDoProcesso é o manifesto de tools que um Processo expõe via router.
+	ArquivoToolsDoProcesso = "tools.json"
 	// SufixoStudio é a extensão do documento do Studio no dialeto novo.
 	SufixoStudio = ".studio.json"
 )
@@ -39,6 +41,11 @@ func DirProcessosEm(base string) string {
 // CaminhoDAG resolve o caminho do arquivo DAG dentro da pasta informada.
 func CaminhoDAG(dir string) string {
 	return filepath.Join(dir, ArquivoDAG)
+}
+
+// CaminhoToolsDoProcesso resolve o manifesto de tools dentro da pasta do Processo.
+func CaminhoToolsDoProcesso(dir string) string {
+	return filepath.Join(dir, ArquivoToolsDoProcesso)
 }
 
 // DirsLeitura lista as pastas de Processos que existem sob a base, na ordem de
