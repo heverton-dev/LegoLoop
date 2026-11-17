@@ -130,12 +130,23 @@ func memoriaDe(p processo.Processo) ([]byte, error) {
 	return json.MarshalIndent(triagem.MemoriaExecucao{Processo: p.Nome, AtualizadoEm: ts}, "", "  ")
 }
 
-func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, sexteto [3]namedFile, peca string) ([]PlannedFile, error) {
-	pj, err := p.Marshal()
-	if err != nil {
-		return nil, err
+// conteudosDoProcesso renderiza os três manifestos de identidade do nascimento 5/5:
+// o documento do cofre, a memória de execução e os anticorpos.
+func conteudosDoProcesso(p processo.Processo) (pj, mem, ac []byte, err error) {
+	if pj, err = p.Marshal(); err != nil {
+		return nil, nil, nil, err
 	}
-	mem, err := memoriaDe(p)
+	if mem, err = memoriaDe(p); err != nil {
+		return nil, nil, nil, err
+	}
+	if ac, err = anticorposDe(p); err != nil {
+		return nil, nil, nil, err
+	}
+	return pj, mem, ac, nil
+}
+
+func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, sexteto [3]namedFile, peca string) ([]PlannedFile, error) {
+	pj, mem, ac, err := conteudosDoProcesso(p)
 	if err != nil {
 		return nil, err
 	}
@@ -155,6 +166,7 @@ func plannedFiles(roots Roots, p processo.Processo, pr *processo.Projecoes, sext
 		{Kind: "report", Path: docs("reports", sexteto[2].Name), Data: sexteto[2].Data},
 		{Kind: "triagem", Path: vault(paths.DirAntigo, p.Nome, "triagem.json"), Data: pr.Triagem},
 		{Kind: "memoria", Path: vault(paths.DirAntigo, p.Nome, triagem.ArquivoMemoria), Data: mem},
+		{Kind: "anticorpos", Path: vault(paths.DirAntigo, p.Nome, "anticorpos.json"), Data: ac},
 		{Kind: "manual", Path: docs("manuals", pr.ManualNome), Data: []byte(pr.Manual)},
 		{Kind: "livro", Path: docs("books", filepath.Join(p.Nome, "livro.json")), Data: pr.Livro},
 	}
