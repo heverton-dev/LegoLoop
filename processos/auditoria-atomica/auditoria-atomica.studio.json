@@ -1,0 +1,224 @@
+{
+  "id": "legoloop-auditoria-atomica",
+  "name": "legoloop-auditoria-atomica",
+  "description": "Auditar qualquer alvo com critério binário e emitir veredito com evidências",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "e01_dissecao",
+      "name": "Dissecar o alvo da auditoria",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-auditoria-atomica",
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "output": {
+        "artifact": "out/01_dissecao.md",
+        "gate": "file_exists('out/01_dissecao.md') \u0026\u0026 word_count('out/01_dissecao.md') \u003e= 30 \u0026\u0026 !has_pattern('out/01_dissecao.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_out": [
+        "out/01_dissecao.md"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "id": "e02_lacunas",
+      "name": "Listar lacunas do alvo",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-auditoria-atomica",
+      "depends_on": [
+        "e01_dissecao"
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "e01_dissecao": "file('out/01_dissecao.md')"
+      },
+      "output": {
+        "artifact": "out/02_lacunas.md",
+        "gate": "file_exists('out/02_lacunas.md') \u0026\u0026 word_count('out/02_lacunas.md') \u003e= 30 \u0026\u0026 !has_pattern('out/02_lacunas.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "out/01_dissecao.md"
+      ],
+      "context_out": [
+        "out/02_lacunas.md"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "id": "e03_tickets",
+      "name": "Gerar tickets das lacunas",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-auditoria-atomica",
+      "depends_on": [
+        "e02_lacunas"
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "e02_lacunas": "file('out/02_lacunas.md')"
+      },
+      "output": {
+        "artifact": "out/03_tickets.md",
+        "gate": "file_exists('out/03_tickets.md') \u0026\u0026 word_count('out/03_tickets.md') \u003e= 30 \u0026\u0026 !has_pattern('out/03_tickets.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "out/02_lacunas.md"
+      ],
+      "context_out": [
+        "out/03_tickets.md"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "id": "e04_refatoracao",
+      "name": "Sugerir refatoração do alvo",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-auditoria-atomica",
+      "depends_on": [
+        "e03_tickets"
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "e03_tickets": "file('out/03_tickets.md')"
+      },
+      "output": {
+        "artifact": "out/04_refatoracao.md",
+        "gate": "file_exists('out/04_refatoracao.md') \u0026\u0026 word_count('out/04_refatoracao.md') \u003e= 30 \u0026\u0026 !has_pattern('out/04_refatoracao.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "out/03_tickets.md"
+      ],
+      "context_out": [
+        "out/04_refatoracao.md"
+      ],
+      "status": "PENDING"
+    },
+    {
+      "id": "e05_veredito",
+      "name": "Emitir veredito binário com evidências",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-auditoria-atomica",
+      "depends_on": [
+        "e04_refatoracao"
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "inputs": {
+        "e04_refatoracao": "file('out/04_refatoracao.md')"
+      },
+      "output": {
+        "artifact": "out/05_veredito.md",
+        "gate": "file_exists('out/05_veredito.md') \u0026\u0026 word_count('out/05_veredito.md') \u003e= 30 \u0026\u0026 !has_pattern('out/05_veredito.md', '\\{\\{')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local"
+      },
+      "token_budget": {
+        "max_completion_tokens": 3000,
+        "max_prompt_tokens": 10000
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "out/04_refatoracao.md"
+      ],
+      "context_out": [
+        "out/05_veredito.md"
+      ],
+      "status": "PENDING"
+    }
+  ],
+  "created_at": "2026-11-17T05:31:45.4548729Z",
+  "updated_at": "2026-11-17T05:31:45.4548729Z"
+}

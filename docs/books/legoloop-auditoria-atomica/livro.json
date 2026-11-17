@@ -1,0 +1,32 @@
+{
+  "capitulos": [
+    {
+      "id": "e01_dissecao",
+      "peca": "legoloop-auditoria-atomica",
+      "titulo": "Dissecar o alvo da auditoria"
+    },
+    {
+      "id": "e02_lacunas",
+      "peca": "legoloop-auditoria-atomica",
+      "titulo": "Listar lacunas do alvo"
+    },
+    {
+      "id": "e03_tickets",
+      "peca": "legoloop-auditoria-atomica",
+      "titulo": "Gerar tickets das lacunas"
+    },
+    {
+      "id": "e04_refatoracao",
+      "peca": "legoloop-auditoria-atomica",
+      "titulo": "Sugerir refatoração do alvo"
+    },
+    {
+      "id": "e05_veredito",
+      "peca": "legoloop-auditoria-atomica",
+      "titulo": "Emitir veredito binário com evidências"
+    }
+  ],
+  "descricao": "Auditar qualquer alvo com critério binário e emitir veredito com evidências",
+  "slug": "legoloop-auditoria-atomica",
+  "titulo": "Manual Didático: legoloop-auditoria-atomica"
+}

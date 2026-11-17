@@ -1,0 +1,72 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-auditoria-atomica",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-auditoria-atomica",
+      "comandos_cli": [
+        "legoloop legoloop-auditoria-atomica",
+        "/legoloop-legoloop-auditoria-atomica"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-auditoria-atomica",
+    "etapas": [
+      "e01_dissecao",
+      "e02_lacunas",
+      "e03_tickets",
+      "e04_refatoracao",
+      "e05_veredito"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "e01_dissecao",
+      "palavras_chave": [
+        "dissecao"
+      ],
+      "slash_command": "/legoloop-auditoria-atomica-dissecao",
+      "flag_cli": "--etapa e01_dissecao"
+    },
+    {
+      "id": "e02_lacunas",
+      "palavras_chave": [
+        "lacunas"
+      ],
+      "slash_command": "/legoloop-auditoria-atomica-lacunas",
+      "flag_cli": "--etapa e02_lacunas"
+    },
+    {
+      "id": "e03_tickets",
+      "palavras_chave": [
+        "tickets"
+      ],
+      "slash_command": "/legoloop-auditoria-atomica-tickets",
+      "flag_cli": "--etapa e03_tickets"
+    },
+    {
+      "id": "e04_refatoracao",
+      "palavras_chave": [
+        "refatoracao"
+      ],
+      "slash_command": "/legoloop-auditoria-atomica-refatoracao",
+      "flag_cli": "--etapa e04_refatoracao"
+    },
+    {
+      "id": "e05_veredito",
+      "palavras_chave": [
+        "veredito"
+      ],
+      "slash_command": "/legoloop-auditoria-atomica-veredito",
+      "flag_cli": "--etapa e05_veredito"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}
