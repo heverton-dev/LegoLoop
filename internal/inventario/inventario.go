@@ -248,7 +248,36 @@ func GerarRelatorio(entradas []Entrada, saida string) error {
 	for _, classe := range todasClasses {
 		escreverTabela(&b, classe, entradas)
 	}
+	escreverTickets(&b, entradas)
 	return os.WriteFile(saida, []byte(b.String()), 0o644)
+}
+
+// PendentesSemDono devolve as entradas pendentes ou em revisão sem dono.
+func PendentesSemDono(entradas []Entrada) []Entrada {
+	var pendentes []Entrada
+	for _, e := range entradas {
+		if e.Dono == "" && (e.Classe == ClassePendente || e.Classe == ClasseRever) {
+			pendentes = append(pendentes, e)
+		}
+	}
+	return pendentes
+}
+
+// escreverTickets gera um ticket por pendente sem dono (AC-E01.4).
+func escreverTickets(b *strings.Builder, entradas []Entrada) {
+	pendentes := PendentesSemDono(entradas)
+	b.WriteString("## TICKETS — pendentes sem dono (AC-E01.4)\n\n")
+	if len(pendentes) == 0 {
+		b.WriteString("Nenhum pendente sem dono.\n\n")
+		return
+	}
+	for i, e := range pendentes {
+		fmt.Fprintf(b, "### TICK-INV-%03d — `%s`\n\n", i+1, e.Caminho)
+		fmt.Fprintf(b, "- Classe: %s\n", e.Classe)
+		b.WriteString("- Dono: (sem dono)\n")
+		b.WriteString("- has_binary_criteria: true\n")
+		fmt.Fprintf(b, "- Critério binário: Dado o arquivo `%s` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.\n\n", e.Caminho)
+	}
 }
 
 // escreverResumo escreve as contagens por classe e por dono.

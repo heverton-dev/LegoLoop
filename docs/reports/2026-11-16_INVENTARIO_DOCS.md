@@ -1,6 +1,6 @@
 # Inventário do docs/ — 2026-11-16
 
-Total de arquivos classificados: 3634. Zero arquivo sem classificação.
+Total de arquivos classificados: 3636. Zero arquivo sem classificação.
 
 Classes do contrato AC-E01.1: IMPLEMENTADO, ULTRAPASSADO, SUPERADO, PENDENTE, REVER.
 
@@ -9,7 +9,7 @@ Classes do contrato AC-E01.1: IMPLEMENTADO, ULTRAPASSADO, SUPERADO, PENDENTE, RE
 | Classe | Quantidade |
 | :--- | ---: |
 | IMPLEMENTADO | 838 |
-| ULTRAPASSADO | 2501 |
+| ULTRAPASSADO | 2503 |
 | SUPERADO | 0 |
 | PENDENTE | 271 |
 | REVER | 24 |
@@ -44,6 +44,7 @@ Classes do contrato AC-E01.1: IMPLEMENTADO, ULTRAPASSADO, SUPERADO, PENDENTE, RE
 | DESIGN_UI | 5 |
 | DIDATICO_VERBOS_BDD | 1 |
 | DISSECAR | 5 |
+| DOCS | 1 |
 | EP14_CANVAS_N8N_INVENTARIO | 2 |
 | EP15_CANVAS_N8N_ENTERPRISE | 2 |
 | EP16_SIDEBAR_TREEVIEW | 3 |
@@ -67,6 +68,7 @@ Classes do contrato AC-E01.1: IMPLEMENTADO, ULTRAPASSADO, SUPERADO, PENDENTE, RE
 | FRONTEIRA_AI_DRIVEN | 5 |
 | GATEWAY_LLM_AGY_LEGOLOOP | 1 |
 | GOVERNANCA_LAZY_UNIVERSAL | 4 |
+| GUARD_LOG | 1 |
 | HARNESS_ENGINEERING_GO | 4 |
 | HIERARQUIA_INICIATIVA | 4 |
 | HOMOLOGACAO_ECOSISTEMA | 5 |
@@ -3544,6 +3546,8 @@ Classes do contrato AC-E01.1: IMPLEMENTADO, ULTRAPASSADO, SUPERADO, PENDENTE, RE
 | `archive/videorea/lucas-leite-edicao-claude-code/scratch/fluxo-de-edicao/modelos/skill-mestra.md` | arquivo-morto | já em arquivo morto |
 | `archive/videorea/lucas-leite-edicao-claude-code/scratch/raw_meta.json` | arquivo-morto | já em arquivo morto |
 | `archive/videorea/lucas-leite-edicao-claude-code/skill/SKILL.md` | arquivo-morto | já em arquivo morto |
+| `reports/2026-11-16_GUARD_LOG.md` | GUARD_LOG | documentação de construção |
+| `reports/2026-11-16_INVENTARIO_DOCS.md` | DOCS | documentação de construção |
 
 ## SUPERADO
 
@@ -3854,4 +3858,202 @@ Classes do contrato AC-E01.1: IMPLEMENTADO, ULTRAPASSADO, SUPERADO, PENDENTE, RE
 | `references/2026-11-13_CATALOGO_COMBOS_9ROUTER.md` |  | diretório fora do previsto |
 | `references/2026-11-13_MAPA_CONTAS_BROWSERS_CHAVES.md` |  | diretório fora do previsto |
 | `references/achados_9router.md` |  | diretório fora do previsto |
+
+## TICKETS — pendentes sem dono (AC-E01.4)
+
+### TICK-INV-001 — `2026-10-17_PADRAO-OURO-STACK-TECNOLOGICA.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `2026-10-17_PADRAO-OURO-STACK-TECNOLOGICA.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-002 — `2026-11-10_AUDITORIA_COMPROVACAO_RELATORIO_AGENTE.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `2026-11-10_AUDITORIA_COMPROVACAO_RELATORIO_AGENTE.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-003 — `2026-11-10_AUDITORIA_TAXONOMIA_ASD_STE100.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `2026-11-10_AUDITORIA_TAXONOMIA_ASD_STE100.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-004 — `dags/README.md`
+
+- Classe: PENDENTE
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `dags/README.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-005 — `examples/clinica-veterinaria/LEIAME.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/clinica-veterinaria/LEIAME.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-006 — `examples/clinica-veterinaria/pipeline.dag.json`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/clinica-veterinaria/pipeline.dag.json` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-007 — `examples/clinica-veterinaria/saida/BRIEFING.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/clinica-veterinaria/saida/BRIEFING.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-008 — `examples/clinica-veterinaria/saida/CHECKLIST.txt`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/clinica-veterinaria/saida/CHECKLIST.txt` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-009 — `examples/clinica-veterinaria/saida/RISCOS.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/clinica-veterinaria/saida/RISCOS.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-010 — `examples/clinica-veterinaria/saida/SPEC.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/clinica-veterinaria/saida/SPEC.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-011 — `examples/clinica-veterinaria/skills/aidd-spec/SKILL.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/clinica-veterinaria/skills/aidd-spec/SKILL.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-012 — `examples/clinica-veterinaria/skills/interview/SKILL.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/clinica-veterinaria/skills/interview/SKILL.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-013 — `examples/clinica-veterinaria/skills/riscos/SKILL.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/clinica-veterinaria/skills/riscos/SKILL.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-014 — `examples/meu-projeto/pipeline.dag.json`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `examples/meu-projeto/pipeline.dag.json` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-015 — `intents/ESPELHO_CANONICO.md`
+
+- Classe: PENDENTE
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `intents/ESPELHO_CANONICO.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-016 — `intents/INTENT.md`
+
+- Classe: PENDENTE
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `intents/INTENT.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-017 — `intents/INTENT_APROVADA.md`
+
+- Classe: PENDENTE
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `intents/INTENT_APROVADA.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-018 — `interviews/2026-11-10_INTERVIEW_DISSECAR.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `interviews/2026-11-10_INTERVIEW_DISSECAR.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-019 — `interviews/2026-11-12_INTERVIEW_ROTEAMENTO_HONESTO.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `interviews/2026-11-12_INTERVIEW_ROTEAMENTO_HONESTO.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-020 — `interviews/2026-11-12_INTERVIEW_SEXTETO_TEMPLATES.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `interviews/2026-11-12_INTERVIEW_SEXTETO_TEMPLATES.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-021 — `interviews/2026-11-15_INTERVIEW_CORRECAO_STUDIO_QA_WEB.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `interviews/2026-11-15_INTERVIEW_CORRECAO_STUDIO_QA_WEB.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-022 — `manuals/MANUAL_ENGENHARIA_REVERSA_VIDEO_PIPELINE.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `manuals/MANUAL_ENGENHARIA_REVERSA_VIDEO_PIPELINE.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-023 — `prompts/2026-10-30_PROMPT_IMPLEMENTATION.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `prompts/2026-10-30_PROMPT_IMPLEMENTATION.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-024 — `prompts/2026-11-10_TICKET_ROUTE_CONTEXT_OUT_DIRETORIO.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `prompts/2026-11-10_TICKET_ROUTE_CONTEXT_OUT_DIRETORIO.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-025 — `prompts/2026-11-10_TICKET_UNSLOP_ANTES_DO_GATE.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `prompts/2026-11-10_TICKET_UNSLOP_ANTES_DO_GATE.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-026 — `references/2026-11-13_CATALOGO_COMBOS_9ROUTER.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `references/2026-11-13_CATALOGO_COMBOS_9ROUTER.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-027 — `references/2026-11-13_MAPA_CONTAS_BROWSERS_CHAVES.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `references/2026-11-13_MAPA_CONTAS_BROWSERS_CHAVES.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
+
+### TICK-INV-028 — `references/achados_9router.md`
+
+- Classe: REVER
+- Dono: (sem dono)
+- has_binary_criteria: true
+- Critério binário: Dado o arquivo `references/achados_9router.md` sem dono no inventário; Quando o ticket fechar; Então o arquivo tem dono registrado ou foi movido para `docs/archive/` com decisão registrada.
 
