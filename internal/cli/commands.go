@@ -175,6 +175,7 @@ func cmdValidate(_ context.Context, args []string, d Deps) int {
 
 type runFlags struct {
 	workdir, skills string
+	processosDir    string
 	parallel        int
 	timeout         time.Duration
 	vars            listFlag
@@ -187,11 +188,12 @@ type runFlags struct {
 	relatorio string
 }
 
-func parseRunFlags(args []string, d Deps) (runFlags, error) {
+func parseRunFlags(nome string, args []string, d Deps) (runFlags, error) {
 	var f runFlags
-	fs := newFlags("run", d)
+	fs := newFlags(nome, d)
 	fs.StringVar(&f.workdir, "workdir", ".", "diretório do projeto (handoffs)")
 	fs.StringVar(&f.skills, "skills", "", "cofre de skills (padrão ~/.aidd/canonical)")
+	fs.StringVar(&f.processosDir, "processos-dir", "", "pasta que contém o slug do processo")
 	fs.IntVar(&f.parallel, "parallel", 0, "nós simultâneos por camada (0 = NumCPU, 1 = sequencial)")
 	fs.DurationVar(&f.timeout, "timeout", 30*time.Minute, "timeout padrão por nó")
 	fs.Var(&f.vars, "var", "variável chave=valor (repetível)")
@@ -237,7 +239,7 @@ func parseVars(kvs []string) (map[string]string, error) {
 
 func cmdRun(ctx context.Context, args []string, d Deps) int {
 	path, rest := splitPositional(args)
-	f, err := parseRunFlags(rest, d)
+	f, err := parseRunFlags("run", rest, d)
 	if err != nil {
 		return 2
 	}
@@ -245,6 +247,12 @@ func cmdRun(ctx context.Context, args []string, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
+	return rodarDAG(ctx, d, p, f)
+}
+
+// rodarDAG executa um DAG com as opções de run e reporta o resultado. É o
+// núcleo comum das vias de invocação (CLI exec e Studio).
+func rodarDAG(ctx context.Context, d Deps, p *dag.DAG, f runFlags) int {
 	vars, err := parseVars(f.vars)
 	if err != nil {
 		return fail(d, err)

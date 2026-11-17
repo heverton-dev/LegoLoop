@@ -38,7 +38,7 @@ func cmdSessoes(_ context.Context, args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro: informe o slug do processo.\n\n%s", sessoesUsage)
 		return 2
 	}
-	dir := resolverDirSessoes(slug, *dirBase)
+	dir := resolverDirProcesso(slug, *dirBase)
 	if dir == "" {
 		fmt.Fprintln(d.Stderr, "sessoes: processo não encontrado")
 		return 1
@@ -46,9 +46,9 @@ func cmdSessoes(_ context.Context, args []string, d Deps) int {
 	return imprimirSessoes(triagem.ListarSessoesAtivas(dir), *asJSON, d)
 }
 
-// resolverDirSessoes acha a pasta do processo na base informada ou nos dialetos
+// resolverDirProcesso acha a pasta do processo na base informada ou nos dialetos
 // padrão sob o diretório corrente (novo e legado).
-func resolverDirSessoes(slug, dirBase string) string {
+func resolverDirProcesso(slug, dirBase string) string {
 	bases := []string{dirBase}
 	if dirBase == "" {
 		bases = caminhos.DirsLeitura(".")

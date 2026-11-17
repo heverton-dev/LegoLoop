@@ -64,6 +64,7 @@ Comandos:
   validate   <` + caminhos.ArquivoProcessoDAG + `>             valida contrato, gates e ciclos
   run        <` + caminhos.ArquivoProcessoDAG + `> [--workdir DIR] [--parallel N] [--timeout DUR]
              [--skills DIR] [--var chave=valor]... [--json]
+  exec       <slug> [--processos-dir DIR] [--workdir DIR] [--json]  executa o processo pelo slug e grava os artefatos
   route      --from Artifact:X --to Artifact:Y  rota ótima no grafo semântico
   studio     [--addr 127.0.0.1:7878] [--project DIR]  abre o Looping Studio
   forge      [--addr 127.0.0.1:7878] [--project DIR]  abre o Studio e dispara primeira varredura
@@ -105,7 +106,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 	}
 	cmds := map[string]func(context.Context, []string, Deps) int{
 		"doctor": cmdDoctor, "canonize": cmdCanonizeJSONSafe, "validate": cmdValidate,
-		"run": cmdRun, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
+		"run": cmdRun, "exec": cmdExec, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
 		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
 		"dissecar": cmdDissecar,
 		"refinar":  cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills,
