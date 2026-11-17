@@ -151,6 +151,9 @@ func fecharDAG(d *Deps, slug, canon, sessaoID string, dry bool) (string, error) 
 	if err := auditDAGParity(d.RepoDir, slug, dagPath); err != nil {
 		return dagPath, err
 	}
+	if err := auditParidadeSkillDAG(d.RepoDir, slug, canon, dagPath); err != nil {
+		return dagPath, err
+	}
 	if dry {
 		return dagPath, nil
 	}

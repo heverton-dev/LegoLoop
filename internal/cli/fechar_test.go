@@ -19,7 +19,7 @@ func semearRepoFechar(t *testing.T, slug string) string {
 	repo := t.TempDir()
 	canon := "legoloop-" + slug
 	manual := "2026-11-15_MANUAL_" + strings.ToUpper(strings.ReplaceAll(slug, "-", "_")) + ".md"
-	skill := "---\nname: " + canon + "\n---\n" + strings.Repeat("Passo operacional.\n", 12)
+	skill := "---\nname: " + canon + "\n---\nNós do DAG citados: n01.\n" + strings.Repeat("Passo operacional.\n", 12)
 	dag := `{"name":"` + canon + `","version":"1.0.0","nodes":[{"id":"n01"}]}`
 	arquivos := map[string]string{
 		filepath.Join("docs", "manuals", manual):                                 "# Manual\n",
