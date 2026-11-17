@@ -254,3 +254,20 @@ func TestRunFabricar(t *testing.T) {
 		}
 	})
 }
+
+// TestNomeInvalidoExitDois prova que um slug inválido sai com exit 2 e não cria
+// nenhum diretório nas raízes do nascimento.
+func TestNomeInvalidoExitDois(t *testing.T) {
+	r := newFabRig(t)
+	if code := run(t, r.d, r.args("!!!", "--yes", "--sem-entrevista")...); code != 2 {
+		t.Fatalf("exit %d, esperado 2", code)
+	}
+	for _, root := range []string{r.vault, r.doc} {
+		_ = filepath.WalkDir(root, func(p string, e os.DirEntry, err error) error {
+			if err == nil && p != root && e.IsDir() {
+				t.Errorf("diretório criado com nome inválido: %s", p)
+			}
+			return nil
+		})
+	}
+}
