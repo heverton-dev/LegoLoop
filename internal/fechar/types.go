@@ -71,6 +71,7 @@ func (t *TelemetriaOrcamento) ensureTokensEDemais() {
 // Request representa os parâmetros de disparo do fechamento.
 type Request struct {
 	Slug       string               `json:"slug"`
+	SessaoID   string               `json:"sessao_id,omitempty"`
 	Titulo     string               `json:"titulo,omitempty"`
 	Autor      string               `json:"autor,omitempty"`
 	DryRun     bool                 `json:"dry_run"`

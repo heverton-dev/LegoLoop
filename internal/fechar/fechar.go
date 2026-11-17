@@ -61,7 +61,7 @@ func Executar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	if req.Telemetria != nil {
 		res.Telemetria = *req.Telemetria
 	}
-	executarEtapas(ctx, &deps, slug, canon, req.DryRun, res)
+	executarEtapas(ctx, &deps, slug, canon, req.SessaoID, req.DryRun, res)
 	dur := deps.Clock().Sub(start)
 	res.Duracao = dur.Milliseconds()
 	if res.Duracao <= 0 {
@@ -71,7 +71,7 @@ func Executar(ctx context.Context, req Request, deps Deps) (*Result, error) {
 	return res, nil
 }
 
-func executarEtapas(ctx context.Context, d *Deps, slug, canon string, dry bool, res *Result) {
+func executarEtapas(ctx context.Context, d *Deps, slug, canon, sessaoID string, dry bool, res *Result) {
 	runEtapa(d, res, 1, "Manual Operacional", func() (string, error) {
 		return fecharManual(d, slug)
 	})
@@ -82,7 +82,7 @@ func executarEtapas(ctx context.Context, d *Deps, slug, canon string, dry bool, 
 		return fecharSkill(d, canon)
 	})
 	runEtapa(d, res, 4, "Processo & Grafo DAG", func() (string, error) {
-		return fecharDAG(d, slug, canon, dry)
+		return fecharDAG(d, slug, canon, sessaoID, dry)
 	})
 	runEtapaRebuild(d, res, dry, naturezaDoProcesso(d.VaultDir, canon, slug))
 	runEtapa(d, res, 6, "Governança Viva (AGENTS e MEMORY)", func() (string, error) {
@@ -142,7 +142,7 @@ func fecharSkill(d *Deps, canon string) (string, error) {
 	return exigirSkill(d.RepoDir, filepath.Join(d.RepoDir, "skills", canon, "SKILL.md"))
 }
 
-func fecharDAG(d *Deps, slug, canon string, dry bool) (string, error) {
+func fecharDAG(d *Deps, slug, canon, sessaoID string, dry bool) (string, error) {
 	dir := resolverDirProcesso(d.RepoDir, slug, canon)
 	dagPath := caminhos.CaminhoDAGLeitura(dir)
 	if err := exigirNosDoDAG(d.RepoDir, dagPath); err != nil {
@@ -154,7 +154,7 @@ func fecharDAG(d *Deps, slug, canon string, dry bool) (string, error) {
 	if dry {
 		return dagPath, nil
 	}
-	return dagPath, garantirQuarteto(dir, dagPath)
+	return dagPath, garantirQuarteto(dir, dagPath, sessaoID)
 }
 
 // resolverDirProcesso devolve a pasta existente do Processo nos dois dialetos,

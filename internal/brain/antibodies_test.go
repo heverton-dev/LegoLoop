@@ -1,12 +1,20 @@
 package brain
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"legoloop/internal/dag"
+	"legoloop/internal/orchestrix"
+	"legoloop/internal/provider"
 )
 
 // TestAnticorposPersistencia prova AC-E02.1: persistência em anticorpos.json do Processo.
@@ -202,4 +210,92 @@ func TestInjecaoPreventiva(t *testing.T) {
 			t.Errorf("contexto do Nó 2 não deve ser alterado: %s", resultado[1])
 		}
 	})
+}
+
+// TestInjecaoPreventivaNo1CaminhoReal prova AC-E02.5/AC-E02.6 no caminho real de execução
+// (Orchestrix.Execute → prepareSkillPrompt → despacho HTTP): o contexto preventivo entra
+// antes do conteúdo do Nó 1; sem anticorpos o prompt do Nó 1 segue inalterado.
+func TestInjecaoPreventivaNo1CaminhoReal(t *testing.T) {
+	t.Run("ComAnticorpos_InjetaAntesDoConteudoDoNo1", func(t *testing.T) {
+		prompt := executarNo1Real(t, true)
+		idxAdv := strings.Index(prompt, "ANTICORPO PREVENTIVO")
+		idxNo1 := strings.Index(prompt, "Orchestrix isolada")
+		if idxAdv < 0 {
+			t.Fatalf("advertência preventiva ausente do prompt real do Nó 1: %s", prompt)
+		}
+		if idxNo1 < 0 {
+			t.Fatalf("conteúdo do Nó 1 ausente do prompt real: %s", prompt)
+		}
+		if idxAdv > idxNo1 {
+			t.Errorf("advertência deve vir antes do conteúdo do Nó 1: adv em %d, nó em %d", idxAdv, idxNo1)
+		}
+	})
+
+	t.Run("SemAnticorpos_PromptDoNo1Inalterado", func(t *testing.T) {
+		prompt := executarNo1Real(t, false)
+		if strings.Contains(prompt, "ANTICORPO PREVENTIVO") {
+			t.Errorf("sem anticorpos o prompt do Nó 1 não deve conter advertência: %s", prompt)
+		}
+		if !strings.Contains(prompt, "Orchestrix isolada") {
+			t.Fatalf("prompt do Nó 1 sem conteúdo: %s", prompt)
+		}
+	})
+}
+
+// executarNo1Real roda o Nó 1 pelo caminho real (Orchestrix.Execute) e devolve o prompt
+// capturado do despacho HTTP ao roteador.
+func executarNo1Real(t *testing.T, comAnticorpo bool) string {
+	t.Helper()
+	abDB := NewAntibodiesDB()
+	if comAnticorpo {
+		if err := abDB.Record("skills/interview", "E1", "causa raiz", "diff solução"); err != nil {
+			t.Fatalf("Record: %v", err)
+		}
+	}
+	var prompt string
+	srv := servidorCapturaPrompt(t, &prompt)
+	defer srv.Close()
+	ox := &orchestrix.Orchestrix{
+		Inventory:    provider.Inventory{RouterURL: srv.URL, RouterModels: []string{"code-pro"}},
+		HTTP:         srv.Client(),
+		RouterKey:    "k9",
+		RouterKeyURL: srv.URL,
+		SkillsDir:    skillsDirDeTeste(t),
+		Antibodies:   abDB,
+	}
+	n := dag.Node{ID: "n1", Type: dag.TypeSkill, Ref: "skills/interview",
+		Routing: dag.RoutingConfig{Mode: dag.ModeAuto, Combo: "code-pro"},
+		Output:  dag.HandoffContract{Artifact: "out/BRIEFING.md", Gate: "true"}}
+	if _, err := ox.Execute(context.Background(), n, t.TempDir()); err != nil {
+		t.Fatalf("Execute do Nó 1: %v", err)
+	}
+	return prompt
+}
+
+// servidorCapturaPrompt expõe um roteador falso que grava o prompt do despacho.
+func servidorCapturaPrompt(t *testing.T, prompt *string) *httptest.Server {
+	t.Helper()
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		corpo, err := io.ReadAll(r.Body)
+		if err != nil {
+			t.Errorf("ler body: %v", err)
+		}
+		*prompt = string(corpo)
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":"# SPEC"}}],"usage":{"prompt_tokens":10,"completion_tokens":5}}`))
+	}))
+}
+
+// skillsDirDeTeste cria uma Skill mínima para o Nó 1 do caminho real.
+func skillsDirDeTeste(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	p := filepath.Join(dir, "skills", "interview")
+	if err := os.MkdirAll(p, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(p, "SKILL.md"), []byte("Instrucao de teste."), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	return dir
 }

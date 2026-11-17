@@ -29,9 +29,9 @@ type dagNos struct {
 	} `json:"nodes"`
 }
 
-// garantirQuarteto cria os arquivos padrão ausentes do Processo:
-// espelho do DAG, triagem.json e memoria_execucao.json.
-func garantirQuarteto(dir, dagPath string) error {
+// garantirQuarteto cria os arquivos padrão ausentes do Processo e aplica o
+// zeramento seletivo da memória: zera só a sessão dona e limpa os órfãos.
+func garantirQuarteto(dir, dagPath, sessaoID string) error {
 	dados, err := os.ReadFile(dagPath)
 	if err != nil {
 		return err
@@ -47,9 +47,22 @@ func garantirQuarteto(dir, dagPath string) error {
 		return err
 	}
 	if _, err := os.Stat(filepath.Join(dir, triagem.ArquivoMemoria)); os.IsNotExist(err) {
-		return triagem.SalvarMemoria(dir, triagem.MemoriaExecucao{Processo: nome})
+		if err := triagem.SalvarMemoria(dir, triagem.MemoriaExecucao{Processo: nome}); err != nil {
+			return err
+		}
 	}
-	return nil
+	return zerarMemoriaSessao(dir, sessaoID)
+}
+
+// zerarMemoriaSessao zera a sessão dona do fechar e limpa sessão e lock órfãos.
+func zerarMemoriaSessao(dir, sessaoID string) error {
+	if sessaoID != "" {
+		if err := triagem.ZerarSessao(dir, sessaoID); err != nil {
+			return err
+		}
+	}
+	_, err := triagem.LimparOrfaos(dir)
+	return err
 }
 
 // garantirTriagem aplica a regra: um nó só não tem triagem; dois ou mais exigem uma triagem que cubra todos.

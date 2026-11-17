@@ -87,6 +87,7 @@ type Report struct {
 // Options configura o runner. Parallelism <= 0 usa NumCPU; 1 força modo sequencial.
 type Options struct {
 	Workdir        string
+	SessaoID       string // identidade da sessão na memória por sessão (vazio = gerar única)
 	Parallelism    int
 	DefaultTimeout time.Duration
 	Executor       Executor
@@ -112,6 +113,9 @@ func Run(ctx context.Context, d *dag.DAG, opts Options) (Report, error) {
 	}
 	if err := unsupported(d); err != nil {
 		return Report{}, err
+	}
+	if opts.SessaoID == "" {
+		opts.SessaoID = novaSessaoID()
 	}
 	if err := d.ValidateProvenance(opts.Workdir); err != nil {
 		return Report{}, err
@@ -331,7 +335,7 @@ func (r *run) preExecNode(ctx context.Context, n *dag.Node, workdir string) erro
 			return fmt.Errorf("slot hook pre falhou: %w", preErr)
 		}
 	}
-	return enforceTokenBudget(n, workdir, r.opts.Workdir)
+	return enforceTokenBudget(n, workdir, r.opts.Workdir, r.opts.SessaoID)
 }
 
 func checkRedBlueBoundary(n dag.Node) error {

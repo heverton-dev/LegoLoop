@@ -3,6 +3,8 @@ package runner
 import (
 	"context"
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -60,6 +62,7 @@ func TestTokenBudgetGate_AbortAndonCord(t *testing.T) {
 	rep, err := Run(context.Background(), d, Options{
 		Workdir:  dir,
 		Executor: exec,
+		SessaoID: "sessao-abort",
 	})
 	if err != nil {
 		t.Fatalf("Run retornou erro inesperado: %v", err)
@@ -77,7 +80,7 @@ func TestTokenBudgetGate_AbortAndonCord(t *testing.T) {
 		t.Fatalf("erro deveria mencionar max_prompt_tokens, obtido: %q", rep.Nodes[0].Error)
 	}
 
-	mem, memErr := triagem.LerMemoria(dir)
+	mem, memErr := triagem.LerMemoria(dir, "sessao-abort")
 	if memErr != nil {
 		t.Fatalf("esperava memoria_execucao.json gravada, erro: %v", memErr)
 	}
@@ -102,6 +105,7 @@ func TestTokenBudgetGate_TruncatePolicy(t *testing.T) {
 	rep, err := Run(context.Background(), d, Options{
 		Workdir:  dir,
 		Executor: exec,
+		SessaoID: "sessao-trunc",
 	})
 	if err != nil {
 		t.Fatalf("Run retornou erro inesperado: %v", err)
@@ -116,7 +120,7 @@ func TestTokenBudgetGate_TruncatePolicy(t *testing.T) {
 		t.Fatalf("prompt deveria ter sido truncado para <= 100 chars (25 tokens), obtido %d", len(exec.lastPrompt))
 	}
 
-	mem, memErr := triagem.LerMemoria(dir)
+	mem, memErr := triagem.LerMemoria(dir, "sessao-trunc")
 	if memErr != nil {
 		t.Fatalf("esperava memoria_execucao.json gravada, erro: %v", memErr)
 	}
@@ -144,5 +148,50 @@ func TestTokenBudgetGate_WithinLimit(t *testing.T) {
 	}
 	if !rep.OK || !exec.called {
 		t.Fatalf("esperava execução normal dentro do limite")
+	}
+}
+
+// TestRunnerGravaPorSessao prova M1.3: a execução grava memória por sessão
+// com PID do processo e as duas sessões coexistem no envelope.
+func TestRunnerGravaPorSessao(t *testing.T) {
+	dir := t.TempDir()
+	d := parseBudgetDAG(t, dag.Node{
+		ID:          "n1",
+		Name:        "no-sessao",
+		Inputs:      map[string]string{"prompt": "curto"},
+		TokenBudget: map[string]any{"max_prompt_tokens": 1000},
+	})
+	sessoes := []string{"sessao-r1", "sessao-r2"}
+	for _, sessao := range sessoes {
+		if _, err := Run(context.Background(), d, Options{
+			Workdir:  dir,
+			Executor: &spyExecutor{},
+			SessaoID: sessao,
+		}); err != nil {
+			t.Fatalf("Run(%s) falhou: %v", sessao, err)
+		}
+	}
+	for _, sessao := range sessoes {
+		mem, err := triagem.LerMemoria(dir, sessao)
+		if err != nil {
+			t.Fatalf("LerMemoria(%s) falhou: %v", sessao, err)
+		}
+		if mem.SessaoID != sessao || mem.PID != os.Getpid() {
+			t.Errorf("sessão %s gravada sem identidade: %+v", sessao, mem)
+		}
+		if mem.TokenBudget == nil || mem.TokenBudget.Action != "pass" {
+			t.Errorf("sessão %s sem telemetria: %+v", sessao, mem.TokenBudget)
+		}
+	}
+	dados, err := os.ReadFile(filepath.Join(dir, triagem.ArquivoMemoria))
+	if err != nil {
+		t.Fatalf("ReadFile falhou: %v", err)
+	}
+	var est triagem.EstadoMemoria
+	if err := json.Unmarshal(dados, &est); err != nil {
+		t.Fatalf("envelope inválido: %v", err)
+	}
+	if len(est.Sessoes) != 2 {
+		t.Fatalf("esperava 2 sessões no envelope, obtido %d", len(est.Sessoes))
 	}
 }

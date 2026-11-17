@@ -1,6 +1,8 @@
 package runner
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"os"
@@ -10,6 +12,15 @@ import (
 	"legoloop/internal/dag"
 	"legoloop/internal/triagem"
 )
+
+// novaSessaoID gera o identificador único da sessão (32 hex de crypto/rand).
+func novaSessaoID() string {
+	var b [16]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		return fmt.Sprintf("sess-%d", os.Getpid())
+	}
+	return hex.EncodeToString(b[:])
+}
 
 func estimatePromptTokens(n dag.Node, workdir string) int {
 	totalBytes := 0
@@ -77,24 +88,27 @@ func truncateNodeInputs(n *dag.Node, maxTokens int) {
 	n.Inputs = cloned
 }
 
-func recordBudgetTelemetry(memDir string, tel triagem.TokenBudgetTelemetry) {
+// recordBudgetTelemetry grava a telemetria na memória da sessão da execução.
+func recordBudgetTelemetry(memDir, sessaoID string, tel triagem.TokenBudgetTelemetry) {
 	if memDir == "" {
 		return
 	}
-	mem, err := triagem.LerMemoria(memDir)
+	mem, err := triagem.LerMemoria(memDir, sessaoID)
 	if err != nil {
 		mem = triagem.MemoriaExecucao{
 			EtapaAtual:   tel.NodeID,
 			ProximoPasso: tel.Action,
 		}
 	}
+	mem.SessaoID = sessaoID
+	mem.PID = os.Getpid()
 	mem.TokenBudget = &tel
 	if err := triagem.SalvarMemoria(memDir, mem); err != nil {
 		log.Printf("token_budget: falha ao salvar memoria em %s: %v", memDir, err)
 	}
 }
 
-func enforceTokenBudget(n *dag.Node, workdir, memDir string) error {
+func enforceTokenBudget(n *dag.Node, workdir, memDir, sessaoID string) error {
 	maxTokens := parseMaxPromptTokens(n.TokenBudget)
 	if maxTokens <= 0 {
 		return nil
@@ -107,17 +121,17 @@ func enforceTokenBudget(n *dag.Node, workdir, memDir string) error {
 		Action:          "pass",
 	}
 	if est <= maxTokens {
-		recordBudgetTelemetry(memDir, tel)
+		recordBudgetTelemetry(memDir, sessaoID, tel)
 		return nil
 	}
 	policy := budgetPolicy(n.TokenBudget)
 	if policy == "truncate" || policy == "compact" {
 		truncateNodeInputs(n, maxTokens)
 		tel.Action = "truncate"
-		recordBudgetTelemetry(memDir, tel)
+		recordBudgetTelemetry(memDir, sessaoID, tel)
 		return nil
 	}
 	tel.Action = "abort"
-	recordBudgetTelemetry(memDir, tel)
+	recordBudgetTelemetry(memDir, sessaoID, tel)
 	return fmt.Errorf("andon cord: token_budget excedido no nó %s (estimado=%d, max_prompt_tokens=%d)", n.ID, est, maxTokens)
 }

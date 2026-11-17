@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -165,5 +166,101 @@ func TestMemoriaLockOcupado(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(dir, ArquivoMemoria)); !os.IsNotExist(err) {
 		t.Errorf("lock retido gravou estado parcial: %v", err)
+	}
+}
+
+// TestAuxiliarSaiSemEfeito só existe para gerar um PID morto nos testes.
+func TestAuxiliarSaiSemEfeito(t *testing.T) {
+	if os.Getenv("LEGOLOOP_AUX") != "1" {
+		return
+	}
+	os.Exit(0)
+}
+
+// pidMortoParaTeste executa um auxiliar que termina e devolve o PID já morto.
+func pidMortoParaTeste(t *testing.T) int {
+	t.Helper()
+	cmd := exec.Command(os.Args[0], "-test.run=^TestAuxiliarSaiSemEfeito$")
+	cmd.Env = append(os.Environ(), "LEGOLOOP_AUX=1")
+	if err := cmd.Run(); err != nil {
+		t.Fatalf("auxiliar de teste falhou: %v", err)
+	}
+	return cmd.Process.Pid
+}
+
+// TestZerarSessaoRemoveSoADona prova AC-E01.5: a dona sai zerada e a ativa fica.
+func TestZerarSessaoRemoveSoADona(t *testing.T) {
+	dir := t.TempDir()
+	dona := MemoriaExecucao{Processo: "p", SessaoID: "sessao-dona", PID: os.Getpid(), EtapaAtual: "fim"}
+	ativa := MemoriaExecucao{Processo: "p", SessaoID: "sessao-ativa", PID: os.Getpid(), EtapaAtual: "meio"}
+	salvarSeValido(t, dir, dona)
+	salvarSeValido(t, dir, ativa)
+	if err := ZerarSessao(dir, "sessao-dona"); err != nil {
+		t.Fatalf("ZerarSessao falhou: %v", err)
+	}
+	est, err := lerEstadoDisco(dir)
+	if err != nil {
+		t.Fatalf("lerEstadoDisco falhou: %v", err)
+	}
+	if _, ok := est.Sessoes["sessao-dona"]; ok {
+		t.Errorf("sessão dona deveria sair do envelope: %v", est.Sessoes)
+	}
+	got, ok := est.Sessoes["sessao-ativa"]
+	if !ok || got.EtapaAtual != "meio" {
+		t.Errorf("sessão ativa corrompida: %+v", est.Sessoes)
+	}
+}
+
+// TestZerarSessaoInexistenteCitaID prova AC-E01.6: erro cita o ID e nada muda.
+func TestZerarSessaoInexistenteCitaID(t *testing.T) {
+	dir := t.TempDir()
+	salvarSeValido(t, dir, MemoriaExecucao{Processo: "p", SessaoID: "sessao-viva", PID: os.Getpid()})
+	caminho := filepath.Join(dir, ArquivoMemoria)
+	antes, err := os.ReadFile(caminho)
+	if err != nil {
+		t.Fatalf("ReadFile falhou: %v", err)
+	}
+	err = ZerarSessao(dir, "sessao-fantasma")
+	if err == nil || !strings.Contains(err.Error(), "sessao-fantasma") {
+		t.Fatalf("erro %v deveria citar o ID inexistente", err)
+	}
+	depois, err := os.ReadFile(caminho)
+	if err != nil {
+		t.Fatalf("ReadFile após falha: %v", err)
+	}
+	if string(antes) != string(depois) {
+		t.Errorf("memória alterada apesar do erro:\nantes=%s\ndepois=%s", antes, depois)
+	}
+}
+
+// TestLimparOrfaosLimpaSessaoELock prova AC-E01.5: PID morto limpa sessão e lock.
+func TestLimparOrfaosLimpaSessaoELock(t *testing.T) {
+	dir := t.TempDir()
+	morto := pidMortoParaTeste(t)
+	salvarSeValido(t, dir, MemoriaExecucao{Processo: "p", SessaoID: "sessao-orfa", PID: morto, EtapaAtual: "parada"})
+	salvarSeValido(t, dir, MemoriaExecucao{Processo: "p", SessaoID: "sessao-viva", PID: os.Getpid(), EtapaAtual: "meio"})
+	lockOrfao := filepath.Join(dir, ArquivoLockMemoria)
+	if err := os.WriteFile(lockOrfao, []byte(fmt.Sprintf("%d sessao-orfa", morto)), 0o644); err != nil {
+		t.Fatalf("escrita do lock órfão falhou: %v", err)
+	}
+	n, err := LimparOrfaos(dir)
+	if err != nil {
+		t.Fatalf("LimparOrfaos falhou: %v", err)
+	}
+	if n != 1 {
+		t.Fatalf("esperava 1 órfã removida, obtido %d", n)
+	}
+	est, err := lerEstadoDisco(dir)
+	if err != nil {
+		t.Fatalf("lerEstadoDisco falhou: %v", err)
+	}
+	if _, ok := est.Sessoes["sessao-orfa"]; ok {
+		t.Errorf("sessão órfã deveria sair do envelope: %v", est.Sessoes)
+	}
+	if got, ok := est.Sessoes["sessao-viva"]; !ok || got.EtapaAtual != "meio" {
+		t.Errorf("sessão viva corrompida: %+v", est.Sessoes)
+	}
+	if _, err := os.Stat(lockOrfao); !os.IsNotExist(err) {
+		t.Errorf("lock órfão deveria ser removido: %v", err)
 	}
 }

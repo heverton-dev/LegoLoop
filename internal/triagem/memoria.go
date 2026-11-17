@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -163,6 +165,15 @@ func escreverAtomico(caminho string, dados []byte) error {
 	return os.Rename(tmp, caminho)
 }
 
+// persistirEstado grava o envelope completo por sessão com escrita atômica.
+func persistirEstado(dir string, est EstadoMemoria) error {
+	dados, err := json.MarshalIndent(est, "", "  ")
+	if err != nil {
+		return err
+	}
+	return escreverAtomico(filepath.Join(dir, ArquivoMemoria), dados)
+}
+
 // gravarEstado atualiza a sessão no envelope e grava com escrita atômica.
 func gravarEstado(dir, chave string, mem MemoriaExecucao) error {
 	est, err := lerEstadoDisco(dir)
@@ -170,11 +181,7 @@ func gravarEstado(dir, chave string, mem MemoriaExecucao) error {
 		return err
 	}
 	est.Sessoes[chave] = mem
-	dados, err := json.MarshalIndent(est, "", "  ")
-	if err != nil {
-		return err
-	}
-	return escreverAtomico(filepath.Join(dir, ArquivoMemoria), dados)
+	return persistirEstado(dir, est)
 }
 
 // SalvarMemoria persiste a memória sob lock de arquivo com PID por sessão.
@@ -224,4 +231,91 @@ func LimparMemoria(dir string) error {
 		return nil
 	}
 	return err
+}
+
+// ZerarSessao zera e remove a sessão dona do envelope da memória do Processo.
+func ZerarSessao(dir, sessaoID string) error {
+	if sessaoID == "" {
+		return ErrSessaoInvalida
+	}
+	if err := limparLockOrfao(dir); err != nil {
+		return err
+	}
+	lk, err := adquirirLockMemoria(dir, os.Getpid(), sessaoID)
+	if err != nil {
+		return err
+	}
+	defer lk.liberar()
+	est, err := lerEstadoDisco(dir)
+	if err != nil {
+		return err
+	}
+	if _, ok := est.Sessoes[sessaoID]; !ok {
+		return fmt.Errorf("triagem: sessão %q inexistente em %s: %w",
+			sessaoID, ArquivoMemoria, os.ErrNotExist)
+	}
+	delete(est.Sessoes, sessaoID)
+	return persistirEstado(dir, est)
+}
+
+// LimparOrfaos remove sessões com PID morto e o lock órfão do Processo.
+func LimparOrfaos(dir string) (int, error) {
+	if err := limparLockOrfao(dir); err != nil {
+		return 0, err
+	}
+	lk, err := adquirirLockMemoria(dir, os.Getpid(), SessaoLegado)
+	if err != nil {
+		return 0, err
+	}
+	defer lk.liberar()
+	est, err := lerEstadoDisco(dir)
+	if err != nil {
+		return 0, err
+	}
+	removidas := limparSessoesMortas(est)
+	if removidas == 0 {
+		return 0, nil
+	}
+	return removidas, persistirEstado(dir, est)
+}
+
+// limparSessoesMortas remove do envelope as sessões sem PID vivo.
+func limparSessoesMortas(est EstadoMemoria) int {
+	removidas := 0
+	for chave, mem := range est.Sessoes {
+		if !pidVivo(mem.PID) {
+			delete(est.Sessoes, chave)
+			removidas++
+		}
+	}
+	return removidas
+}
+
+// limparLockOrfao remove o lock de arquivo retido por um PID morto.
+func limparLockOrfao(dir string) error {
+	caminho := filepath.Join(dir, ArquivoLockMemoria)
+	dados, err := os.ReadFile(caminho)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if pidVivo(pidDoLock(dados)) {
+		return nil
+	}
+	return os.Remove(caminho)
+}
+
+// pidDoLock extrai o PID gravado no lock de arquivo ("<pid> <sessão>").
+func pidDoLock(dados []byte) int {
+	campos := strings.Fields(string(dados))
+	if len(campos) == 0 {
+		return 0
+	}
+	pid, err := strconv.Atoi(campos[0])
+	if err != nil {
+		return 0
+	}
+	return pid
 }

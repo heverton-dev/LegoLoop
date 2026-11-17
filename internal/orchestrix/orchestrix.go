@@ -154,7 +154,7 @@ func (o *Orchestrix) prepareSkillPrompt(n dag.Node, root *os.Root) (string, erro
 	}
 	if o.Antibodies != nil {
 		if advice := o.Antibodies.InjectPreventiveContext(antibodyScope(n)); advice != "" {
-			prompt += advice
+			prompt = advice + prompt
 		}
 	}
 	return prompt, nil
