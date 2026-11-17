@@ -169,7 +169,7 @@ func swarmSpawnWorker(sb *board.SwarmBoard, args map[string]any) (any, error) {
 func swarmRunDAG(sb *board.SwarmBoard, args map[string]any) (any, error) {
 	path := strArg(args, "dag", "")
 	if path == "" {
-		return nil, errors.New("swarm_run exige dag (caminho do pipeline.dag.json)")
+		return nil, errors.New("swarm_run exige dag (caminho do arquivo DAG)")
 	}
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -260,7 +260,7 @@ func swarmToolDefs() []map[string]any {
 func swarmRunDef() map[string]any {
 	d := swarmDef("swarm_run", "Executa o DAG por nivel topologico: workers paralelos por nivel, worktree proprio, ordem garantida.", []string{"dag"})
 	props := d["inputSchema"].(map[string]any)["properties"].(map[string]any)
-	props["dag"] = map[string]any{"type": "string", "description": "Caminho do pipeline.dag.json"}
+	props["dag"] = map[string]any{"type": "string", "description": "Caminho do arquivo DAG"}
 	props["command"] = map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "Comando global dos workers (o command do no vale antes)"}
 	props["repo"] = map[string]any{"type": "string", "description": "Repositorio git dos worktrees"}
 	props["workspace"] = map[string]any{"type": "string", "description": "share, branch ou inherit"}

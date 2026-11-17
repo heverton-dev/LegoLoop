@@ -453,7 +453,7 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
     - Alvo 2 (`n50KkoucMpU`, ReachMora Motion Graphics): `effort medium` $\rightarrow$ bundle `reachmora-ai-motion-graphics` gerado com sucesso.
     - Alvo 3 (`Ll45R_Z8tQc`, Matt Loui Remotion & Claude): `effort high` $\rightarrow$ bundle `matt-loui-claude-remotion-motion` gerado com sucesso.
   - **Auditoria vs Projeto Piloto:** Todos os 3 bundles compilaram com sucesso os 4 pilares contratuais (`book`, `governance`, `loop`, `skill`) com PDFs LegoPress 100% aprovados pela auditoria mecânica. Identificadas oportunidades de evolução no tratamento de rate limit do YouTube e unificação do path de bundle no CLI.
-  - **Relatório Oficial Consolidado:** Emitido [`docs/reports/2026-11-08_REPORT_TRIPLO_VIDEO_REA.md`](docs/reports/2026-11-08_REPORT_TRIPLO_VIDEO_REA.md) com balanço estrito de telemetria, cronometria, tokens e custos orçado vs realizado.
+  - **Relatório Oficial Consolidado:** Emitido [`docs/reports/2026-11-08_REPORT_VIDEO_BUNDLE.md`](docs/reports/2026-11-08_REPORT_VIDEO_BUNDLE.md) com balanço estrito de telemetria, cronometria, tokens e custos orçado vs realizado.
 
 - **09/11/2026** — 🏛️ **Quinteto de Governança ISO (`docs/dags/`), Paridade Total Cognitiva ROUTE ↔ DAG e Saneamento do Acervo:**
   - **Demanda & Arquitetura:** Instituição formal do Quinteto de Governança ISO (`[INTENT -> SPEC -> PLAN -> ROUTE -> DAG]`) eliminando discrepâncias entre o planejamento e os grafos executáveis.

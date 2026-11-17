@@ -108,7 +108,7 @@ func yamlApplyItem(spec mcp.ServerSpec, section, l string) mcp.ServerSpec {
 	return spec
 }
 
-// injectYAML move MCPs stdio do bloco mcp_servers para o registro e garante o legoloop.
+// injectYAML move MCPs stdio do trecho mcp_servers para o registro e garante o legoloop.
 func injectYAML(raw []byte) ([]byte, map[string]mcp.ServerSpec) {
 	lines := strings.Split(string(raw), "\n")
 	start, end := yamlBlockBounds(lines)

@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"legoloop/internal/board"
+	"legoloop/internal/caminhos"
 )
 
 // TestHelperSwarmRunWorker e o corpo dos workers do E2E: um processo real, sem harness externo.
@@ -73,7 +74,7 @@ func writeRunDAG(t *testing.T, dir string) string {
 		},
 	}
 	b, _ := json.MarshalIndent(d, "", "  ")
-	p := filepath.Join(dir, "pipeline.dag.json")
+	p := caminhos.CaminhoDAG(dir)
 	if err := os.WriteFile(p, b, 0o644); err != nil {
 		t.Fatal(err)
 	}

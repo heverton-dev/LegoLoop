@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"legoloop/internal/board"
+	"legoloop/internal/caminhos"
 )
 
 func writeDAG(t *testing.T, withCommand bool) string {
@@ -25,7 +26,7 @@ func writeDAG(t *testing.T, withCommand bool) string {
 		"nodes":   []any{node("a", "engenheiro-backend"), node("b", "engenheiro-tdd"), node("c", "auditor-qualidade", "a", "b")},
 	}
 	b, _ := json.Marshal(d)
-	p := filepath.Join(t.TempDir(), "pipeline.dag.json")
+	p := caminhos.CaminhoDAG(t.TempDir())
 	if err := os.WriteFile(p, b, 0o644); err != nil {
 		t.Fatal(err)
 	}

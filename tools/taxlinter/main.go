@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/taxonomy"
 )
 
@@ -144,6 +145,12 @@ func runLinter(targets []string) ([]TaxonomyFileViolation, error) {
 	var total []TaxonomyFileViolation
 	for _, target := range targets {
 		info, err := os.Stat(target)
+		if err != nil && (target == caminhos.DirLoops || strings.TrimSuffix(target, "/") == caminhos.DirLoops) {
+			if pi, perr := os.Stat(caminhos.DirProcessos); perr == nil {
+				target = caminhos.DirProcessos
+				info, err = pi, perr
+			}
+		}
 		if err != nil {
 			return nil, fmt.Errorf("alvo invalido %q: %w", target, err)
 		}
