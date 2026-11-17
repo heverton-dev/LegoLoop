@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/processo"
 	"legoloop/internal/refinar"
 )
@@ -54,7 +55,7 @@ func docV2(cab string, nos []string) string {
 	return "{\n  \"schema_version\": 2,\n" + cab + "  \"nodes\": [\n" + strings.Join(nos, ",\n") + "\n  ]\n}\n"
 }
 
-func plantarV2(t *testing.T, c cofre, nTicks int) (rota, espelho, loops string) {
+func plantarV2(t *testing.T, c cofre, nTicks int) (rota, espelho, projecao string) {
 	t.Helper()
 	pr, err := processo.Projetar(processoDeTeste(), inicio)
 	if err != nil {
@@ -68,13 +69,13 @@ func plantarV2(t *testing.T, c cofre, nTicks int) (rota, espelho, loops string) 
 	nosR, nosD = append(nosR, stopGate), append(nosD, stopGate)
 	rota = filepath.Join(c.docs, "docs", "routes", pr.RouteNome)
 	espelho = filepath.Join(c.docs, "docs", "dags", pr.DAGNome)
-	loops = filepath.Join(c.docs, "processos", nome, "pipeline.dag.json")
+	projecao = filepath.Join(c.docs, "processos", nome, caminhos.ArquivoDAG)
 	cabDag := "  \"upstream_signatures\": {\n    \"route\": {\n      \"path\": \"docs/routes/" + pr.RouteNome +
 		"\",\n      \"sha256\": \"" + strings.Repeat("0", 64) + "\"\n    }\n  },\n"
 	for p, conteudo := range map[string]string{
-		rota:    docV2("  \"template_version\": \"2.2.0\",\n", nosR),
-		espelho: docV2(cabDag, nosD),
-		loops:   docV2(cabDag, nosD),
+		rota:     docV2("  \"template_version\": \"2.2.0\",\n", nosR),
+		espelho:  docV2(cabDag, nosD),
+		projecao: docV2(cabDag, nosD),
 	} {
 		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
 			t.Fatal(err)
@@ -83,7 +84,7 @@ func plantarV2(t *testing.T, c cofre, nTicks int) (rota, espelho, loops string) 
 			t.Fatal(err)
 		}
 	}
-	return rota, espelho, loops
+	return rota, espelho, projecao
 }
 
 func rodarRefinar(t *testing.T, c cofre) refinar.Plano {
@@ -102,12 +103,12 @@ func rodarRefinar(t *testing.T, c cofre) refinar.Plano {
 // O refinar não pode trocar ROUTE e DAGs v2 curados pelo formato v1 gerado: o roteamento e o stop-gate ficam.
 func TestRefinarPreservaV2Curado(t *testing.T) {
 	c := semear(t, processoDeTeste(), inicio, true)
-	rota, espelho, loops := plantarV2(t, c, 3)
+	rota, espelho, projecao := plantarV2(t, c, 3)
 	rodarRefinar(t, c)
 	p := lerProcesso(t, c)
 	soma := sha256.Sum256([]byte(ler(t, rota)))
 	shaRota := hex.EncodeToString(soma[:])
-	for _, caminho := range []string{rota, espelho, loops} {
+	for _, caminho := range []string{rota, espelho, projecao} {
 		txt := ler(t, caminho)
 		for _, quer := range []string{`"schema_version": 2`, `"harness": "9router"`, `"timeout_sec": 180`, `SG-FINAL`} {
 			if !strings.Contains(txt, quer) {
@@ -129,7 +130,7 @@ func TestRefinarPreservaV2Curado(t *testing.T) {
 	if !strings.Contains(ler(t, rota), "`e02` — Etapa e02 — peça `aidd-qa`") {
 		t.Errorf("o label do ROUTE não refletiu a peça nova:\n%s", ler(t, rota))
 	}
-	for _, caminho := range []string{espelho, loops} {
+	for _, caminho := range []string{espelho, projecao} {
 		txt := ler(t, caminho)
 		if !strings.Contains(txt, `"ref": "skills/aidd-qa"`) || !strings.Contains(txt, shaRota) {
 			t.Errorf("%s: ref ou sha do ROUTE desatualizados:\n%s", caminho, txt)

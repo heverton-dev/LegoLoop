@@ -235,7 +235,7 @@ func parseMirror(raw string) *Mirror {
 
 var rePremonicaoItem = regexp.MustCompile(`(?im)^\s*[1-3]\.\s*Pergunta:\s*[^\n|]+\|\s*Resposta prevista:\s*[^\n]+`)
 
-// hasThreePremonitions verifica se há bloco PREMONIÇÃO com exatamente 3 perguntas e respostas previstas.
+// hasThreePremonitions verifica se há seção PREMONIÇÃO com exatamente 3 perguntas e respostas previstas.
 func hasThreePremonitions(raw string) bool {
 	if !strings.Contains(strings.ToUpper(raw), "PREMONIÇÃO") {
 		return false
