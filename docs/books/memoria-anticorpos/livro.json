@@ -1,0 +1,18 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Memória de Execução e Anticorpos no LegoLoop: Controle de Progresso e Gate Anti-Reincidência",
+  "nome_base": "2026-11-16_MEMORIA-ANTICORPOS",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "fonte": "docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro.md",
+    "02-meso-componentes.md",
+    "03-micro-schemas-gates.md",
+    "04-pratica-operacao.md",
+    "05-limites-e-apendices.md"
+  ],
+  "revisoes": [],
+  "ultima_compilacao": "2026-11-16"
+}
