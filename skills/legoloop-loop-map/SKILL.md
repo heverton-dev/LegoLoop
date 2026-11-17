@@ -160,7 +160,7 @@ flowchart TD
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |
-| `TICK-01.1` | Validar o DAG e calcular os niveis topologicos — peça legoloop-loop-map | Análise e escalonamento dos níveis de execução paralela |
+| `TICK-01.1` | Validar o DAG e calcular os niveis topologicos | Análise e escalonamento dos níveis de execução paralela |
 | `TICK-01.2` | Registrar os workers do nivel com papel da Matriz e worktree isolado — peça legoloop-matriz | Alocação de papéis cognitivos e isolamento de worktree |
 | `TICK-01.3` | Subir o processo real de cada worker — peça legoloop-swarm-cli | Inicialização e despacho dos processos dos agentes |
 | `TICK-01.4` | Coordenar o nivel pelo quadro em disco — peça legoloop-swarm-cli | Comunicação e sincronização via swarm board compartilhado |

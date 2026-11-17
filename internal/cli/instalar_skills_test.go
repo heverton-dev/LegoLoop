@@ -14,9 +14,9 @@ import (
 )
 
 func TestInstalarSkills(t *testing.T) {
-	// 0. Quantidade canônica de funções nativas (30 skills embutidas, incluindo legoloop-web-qa, legoloop-fabricar-peca-unica, legoloop-video-rea-transcrever, legoloop-video-rea-relatorio, legoloop-concepcao — a peça legoloop-concepcao entrou no embed por decisão do usuário — e legoloop-auditoria-atomica do Épico 08)
-	if len(skills.FuncoesNativas) != 30 {
-		t.Fatalf("esperava 30 funções nativas em skills.FuncoesNativas, obteve %d (%v)", len(skills.FuncoesNativas), skills.FuncoesNativas)
+	// 0. Quantidade canônica de funções nativas (36 skills embutidas, incluindo as 6 novas skills canônicas do ecossistema)
+	if len(skills.FuncoesNativas) != 36 {
+		t.Fatalf("esperava 36 funções nativas em skills.FuncoesNativas, obteve %d (%v)", len(skills.FuncoesNativas), skills.FuncoesNativas)
 	}
 	for _, nome := range []string{"legoloop-video-rea-transcrever", "legoloop-video-rea-relatorio", "legoloop-auditoria-atomica"} {
 		if _, err := skills.ObterSkill(nome); err != nil {
