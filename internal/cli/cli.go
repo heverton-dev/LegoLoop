@@ -61,7 +61,7 @@ const usage = `Uso: legoloop <comando> [opções]
 Comandos:
   doctor     [--json]                        inventário de harnesses, modelos e chaves (Cofre de Segredos)
   canonize   --root DIR... (--dry-run|--apply) [--vault DIR] [--workers N] [--json]
-  validate   <` + caminhos.ArquivoProcessoDAG + `>             valida contrato, gates e ciclos
+  validate   <` + caminhos.ArquivoProcessoDAG + `> [--regenerar-studio]  valida contrato, gates, ciclos e a paridade do documento do Studio derivado
   run        <` + caminhos.ArquivoProcessoDAG + `> [--workdir DIR] [--parallel N] [--timeout DUR]
              [--skills DIR] [--var chave=valor]... [--json]
   exec       <slug> [--processos-dir DIR] [--workdir DIR] [--json]  executa o processo pelo slug e grava os artefatos

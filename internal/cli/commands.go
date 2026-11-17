@@ -166,6 +166,9 @@ func cmdValidate(_ context.Context, args []string, d Deps) int {
 	if err := exigirTriagem(path, p); err != nil {
 		return fail(d, err)
 	}
+	if err := conferirStudioDerivado(path, args, d); err != nil {
+		return fail(d, err)
+	}
 	fmt.Fprintf(d.Stdout, "✓ %s v%s — %d nós válidos, sem ciclos\n", p.Name, p.Version, len(p.Nodes))
 	for i, layer := range p.Layers() {
 		fmt.Fprintf(d.Stdout, "  camada %d: %s\n", i+1, strings.Join(layer, ", "))

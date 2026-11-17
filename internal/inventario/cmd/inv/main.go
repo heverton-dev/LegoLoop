@@ -48,7 +48,7 @@ func migrar() {
 	}
 }
 
-// quinteto migra o Quinteto para as fatias e arquiva os órfãos com registro.
+// quinteto mantém donos na raiz docs/ e arquiva os órfãos com registro.
 func quinteto() {
 	raiz, err := raizRepo()
 	if err != nil {
@@ -61,8 +61,8 @@ func quinteto() {
 		fmt.Fprintln(os.Stderr, "migração do Quinteto:", err)
 		os.Exit(2)
 	}
-	fmt.Printf("Quinteto migrado: %d para fatias, %d órfãos arquivados, %d protegidos\n",
-		len(res.Migrados), len(res.Orfaos), len(res.Protegidos))
+	fmt.Printf("Quinteto saneado: %d mantidos na raiz, %d órfãos arquivados\n",
+		len(res.Protegidos), len(res.Orfaos))
 	for _, orfao := range res.Orfaos {
 		fmt.Println("órfão:", orfao.Caminho, "->", orfao.Destino)
 	}

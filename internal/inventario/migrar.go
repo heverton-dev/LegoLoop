@@ -106,7 +106,7 @@ func registrarMovido(res *ResultadoMigracao, raizDocs, destino string) {
 	res.Movidos = append(res.Movidos, filepath.ToSlash(rel))
 }
 
-// tiposQuinteto são as pastas de documento do Quinteto que migram para as fatias.
+// tiposQuinteto são as pastas de documento do Quinteto saneadas por MigrarQuinteto.
 var tiposQuinteto = []string{"intents", "specs", "plans", "routes"}
 
 // reDataTipo separa o nome-base do documento do prefixo de data e tipo.
@@ -120,15 +120,8 @@ type EntradaOrfao struct {
 	Motivo  string `json:"motivo"`
 }
 
-// Movimento registra um documento migrado: par origem-destino relativo à raiz.
-type Movimento struct {
-	Caminho string `json:"caminho"`
-	Destino string `json:"destino"`
-}
-
-// ResultadoQuinteto resume a migração do Quinteto para as fatias.
+// ResultadoQuinteto resume o saneamento do Quinteto.
 type ResultadoQuinteto struct {
-	Migrados   []Movimento
 	Orfaos     []EntradaOrfao
 	Protegidos []string // caminhos relativos a docs/ mantidos na raiz
 }
@@ -139,9 +132,10 @@ type posse struct {
 	porToken map[string]string
 }
 
-// MigrarQuinteto move o Quinteto da raiz docs/ para as fatias (AC-E05.2).
-// Documento com dono vai para <fatia>/docs/<tipo>/. Sem dono, vai para
-// docs/archive/quinteto/ com registro. Protegidos ficam. Nunca deleta.
+// MigrarQuinteto saneia o Quinteto da raiz docs/ (AC-E05.2 revisado).
+// Documento com dono ou protegido permanece em docs/<tipo>/ (escrita canônica).
+// Sem dono, vai para docs/archive/quinteto/ com registro. Nada vai para
+// processos/<slug>/docs/. Nunca deleta.
 func MigrarQuinteto(raiz string, protegidos []string) (ResultadoQuinteto, error) {
 	var res ResultadoQuinteto
 	pos, err := donosDe(raiz)
@@ -261,8 +255,9 @@ func migrarTipo(docs, tipo, raiz string, pos posse, protegidos []string, res *Re
 			return nil
 		}
 		rel, _ := filepath.Rel(raiz, p)
-		if slug := resolverDono(pos, rel); slug != "" {
-			return moverParaFatia(raiz, slug, tipo, p, rel, res)
+		if resolverDono(pos, rel) != "" {
+			manterNaRaiz(docs, p, res)
+			return nil
 		}
 		return arquivarOrfao(docs, tipo, p, res)
 	})
@@ -278,15 +273,10 @@ func casarAlgum(globs []string, base string) bool {
 	return false
 }
 
-// moverParaFatia move o documento para <fatia>/docs/<tipo>/ e registra o par.
-func moverParaFatia(raiz, slug, tipo, origem, rel string, res *ResultadoQuinteto) error {
-	alvo := filepath.Join(raiz, paths.DirProcessos, slug, "docs", tipo, filepath.Base(origem))
-	if err := moverArquivo(origem, alvo); err != nil {
-		return err
-	}
-	relD, _ := filepath.Rel(raiz, alvo)
-	res.Migrados = append(res.Migrados, Movimento{Caminho: filepath.ToSlash(rel), Destino: filepath.ToSlash(relD)})
-	return nil
+// manterNaRaiz registra o documento com dono mantido em docs/<tipo>/ (canônico).
+func manterNaRaiz(docs, origem string, res *ResultadoQuinteto) {
+	rel, _ := filepath.Rel(docs, origem)
+	res.Protegidos = append(res.Protegidos, filepath.ToSlash(rel))
 }
 
 // arquivarOrfao move o documento sem dono para docs/archive/quinteto/ e registra.
