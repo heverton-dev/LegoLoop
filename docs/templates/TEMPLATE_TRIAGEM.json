@@ -1,0 +1,25 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "exemplo-processo",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "regra-exemplo",
+      "comandos_cli": ["legoloop listar"],
+      "artefatos_ativos": ["docs/templates/TEMPLATE_TRIAGEM.json"],
+      "prioridade": 1
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Escolha da regra por maior prioridade e maior correspondência do padrão do slug.",
+    "etapas": ["Comparar o slug do Processo com padrao_slug.", "Aplicar a regra de maior prioridade."]
+  },
+  "etapas": [
+    {
+      "id": "TRI-001",
+      "palavras_chave": ["triagem", "inicial"],
+      "slash_command": "/legoloop-fabricar",
+      "flag_cli": "--goal"
+    }
+  ],
+  "pontos_entrada": ["cli:legoloop fabricar", "chat:/legoloop-fabricar", "studio:+ Novo Processo"]
+}

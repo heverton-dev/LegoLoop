@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "id": "anticorpos.v1",
+  "description": "Vacinas por processo: globais (infra/LLM) compartilhadas; domínio locais. Gravado em processos/<slug>/anticorpos.json.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "const": "anticorpos.v1" },
+    "processo": { "type": "string" },
+    "globais": { "type": "array", "items": { "$ref": "#/$defs/vacina" } },
+    "dominio": { "type": "array", "items": { "$ref": "#/$defs/vacina" } }
+  },
+  "required": ["schema_version", "processo"],
+  "$defs": {
+    "vacina": {
+      "type": "object",
+      "properties": {
+        "assinatura": { "type": "string", "description": "SHA-256 do erro (detecção de reincidência)" },
+        "erro": { "type": "string" },
+        "antidoto": { "type": "string" },
+        "recorrencias": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["assinatura", "erro", "antidoto", "recorrencias"]
+    }
+  }
+}

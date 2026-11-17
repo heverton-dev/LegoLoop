@@ -1,0 +1,20 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "exemplo-processo",
+  "globais": [
+    {
+      "assinatura": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "erro": "erro de exemplo em qualquer Processo",
+      "antidoto": "ação corretiva de exemplo",
+      "recorrencias": 0
+    }
+  ],
+  "dominio": [
+    {
+      "assinatura": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "erro": "erro de exemplo do domínio deste Processo",
+      "antidoto": "ação corretiva do domínio",
+      "recorrencias": 0
+    }
+  ]
+}

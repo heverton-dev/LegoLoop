@@ -1,0 +1,14 @@
+{
+  "schema_version": "memoria_execucao.v1",
+  "processo": "exemplo-processo",
+  "sessao_id": "sessao-exemplo",
+  "pid": 0,
+  "etapa_atual": "TRI-001",
+  "proximo_passo": "Executar a próxima etapa do Processo.",
+  "atualizado_em": "2026-11-16T00:00:00Z",
+  "token_budget": {
+    "entrada_max": 8000,
+    "saida_max": 900,
+    "tempo_max_seg": 300
+  }
+}

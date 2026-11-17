@@ -41,7 +41,7 @@ func read(t *testing.T, name string) []byte {
 }
 
 func TestJSONTemplatesAreValid(t *testing.T) {
-	for _, n := range []string{"TEMPLATE_ROUTE.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_MCP.json", arquivoProcesso, "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG.json"} {
+	for _, n := range []string{"TEMPLATE_ROUTE.json", "TEMPLATE_PIECE_GATE.json", "TEMPLATE_PIECE_HOOK.json", "TEMPLATE_PIECE_MCP.json", arquivoProcesso, "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG.json", "TEMPLATE_TRIAGEM.json", "TEMPLATE_MEMORIA_EXECUCAO.json", "TEMPLATE_ANTICORPOS.json"} {
 		var v any
 		if err := json.Unmarshal(read(t, n), &v); err != nil {
 			t.Errorf("%s não é JSON válido: %v", n, err)
@@ -473,5 +473,40 @@ func TestGovernanceAC_E00_3(t *testing.T) {
 		if !strings.Contains(string(schema), want) {
 			t.Errorf("schemas/route.v2.json deve aceitar %s", want)
 		}
+	}
+}
+
+// TestTemplatesNascimento cobre o AC-E02.2: os templates do nascimento 5/5 existem, validam
+// contra os schemas oficiais de schemas/ e o documento do Processo (arquivoProcesso) valida
+// contra o schema do documento.
+func TestTemplatesNascimento(t *testing.T) {
+	casos := []struct{ template, schema string }{
+		{"TEMPLATE_TRIAGEM.json", "triagem.v1.json"},
+		{"TEMPLATE_MEMORIA_EXECUCAO.json", "memoria_execucao.v1.json"},
+		{"TEMPLATE_ANTICORPOS.json", "anticorpos.v1.json"},
+		{arquivoProcesso, "doc_processo.v1.json"},
+	}
+	for _, c := range casos {
+		schema := read(t, filepath.Join("..", "..", "schemas", c.schema))
+		if !gate.ValidateJSONSchema(schema, read(t, c.template)) {
+			t.Errorf("%s não valida contra %s", c.template, c.schema)
+		}
+		if strings.Contains(string(read(t, c.template)), "{{") {
+			t.Errorf("%s deve ser exemplo válido, sem placeholders", c.template)
+		}
+	}
+	versoes := map[string]string{
+		"TEMPLATE_TRIAGEM.json":          `"schema_version": "triagem.v1"`,
+		"TEMPLATE_MEMORIA_EXECUCAO.json": `"schema_version": "memoria_execucao.v1"`,
+		"TEMPLATE_ANTICORPOS.json":       `"schema_version": "anticorpos.v1"`,
+	}
+	for nome, want := range versoes {
+		if !strings.Contains(string(read(t, nome)), want) {
+			t.Errorf("%s deve declarar %s", nome, want)
+		}
+	}
+	vazio := read(t, "TEMPLATE_ANTICORPOS.json")
+	if !strings.Contains(string(vazio), `"globais"`) || !strings.Contains(string(vazio), `"dominio"`) {
+		t.Error("TEMPLATE_ANTICORPOS.json deve ter os escopos globais e dominio")
 	}
 }

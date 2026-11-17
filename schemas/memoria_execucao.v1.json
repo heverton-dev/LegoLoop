@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "id": "memoria_execucao.v1",
+  "description": "Memória de execução do processo: estado curto por sessão (chave = sessão + PID). Gravado em processos/<slug>/memoria_execucao.json.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "const": "memoria_execucao.v1" },
+    "processo": { "type": "string" },
+    "sessoes": { "type": "object" },
+    "sessao_id": { "type": "string" },
+    "pid": { "type": "integer" },
+    "etapa_atual": { "type": "string" },
+    "proximo_passo": { "type": "string" },
+    "atualizado_em": { "type": "string" },
+    "token_budget": { "type": ["object", "null"] }
+  },
+  "required": ["processo", "atualizado_em"],
+  "anyOf": [{ "required": ["etapa_atual"] }, { "required": ["sessoes"] }]
+}

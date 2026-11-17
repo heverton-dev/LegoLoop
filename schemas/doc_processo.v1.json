@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "id": "loop.v1",
+  "description": "Documento do Processo (dialeto .loop.json ou .studio.json): manifesta id, nome, versão, gatilho e nós. Aceita os dialetos gravados em processos/<slug>/.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "version": { "type": "string" },
+    "date": { "type": "string" },
+    "upstream_signatures": { "type": ["object", "null"] },
+    "execution_strategy": { "type": ["object", "null"] },
+    "trigger": { "type": ["object", "null"] },
+    "nodes": { "type": "array", "items": { "type": "object" } },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  },
+  "required": ["id", "name", "nodes"]
+}
