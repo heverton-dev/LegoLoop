@@ -138,6 +138,14 @@ func CiteVerdicts(root RootFS, artifact, base string) ([]CiteVerdict, error) {
 	base = path.Clean(filepath.ToSlash(base))
 	cache := map[string]citeFile{}
 	artLines := strings.Split(string(data), "\n")
+	verdicts, filesByLine, firstByLine := montarVerdicts(root, base, cites, cache)
+	marcarIdentsFaltantes(verdicts, artLines, filesByLine, firstByLine)
+	return verdicts, nil
+}
+
+// montarVerdicts carrega cada arquivo citado e monta o veredito inicial de cada citacao, agrupando os arquivos
+// vivos por linha do artefato e registrando a primeira citacao de cada linha.
+func montarVerdicts(root RootFS, base string, cites []citation, cache map[string]citeFile) ([]CiteVerdict, map[int][]citeFile, map[int]int) {
 	verdicts := make([]CiteVerdict, len(cites))
 	filesByLine := map[int][]citeFile{}
 	firstByLine := map[int]int{}
@@ -158,6 +166,12 @@ func CiteVerdicts(root RootFS, artifact, base string) ([]CiteVerdict, error) {
 			firstByLine[c.artifactLn] = i
 		}
 	}
+	return verdicts, filesByLine, firstByLine
+}
+
+// marcarIdentsFaltantes anota em MissingIdent da primeira citacao da linha cada identificador que nao aparece
+// em nenhum dos arquivos citados nessa linha.
+func marcarIdentsFaltantes(verdicts []CiteVerdict, artLines []string, filesByLine map[int][]citeFile, firstByLine map[int]int) {
 	for ln, first := range firstByLine {
 		for _, id := range lineIdents(artLines[ln-1]) {
 			re := regexp.MustCompile(`\b` + regexp.QuoteMeta(id) + `\b`)
@@ -173,7 +187,6 @@ func CiteVerdicts(root RootFS, artifact, base string) ([]CiteVerdict, error) {
 			}
 		}
 	}
-	return verdicts, nil
 }
 
 // citesExist e o builtin cites_exist(artefato, base): verdadeiro so se o artefato traz ao menos uma citacao

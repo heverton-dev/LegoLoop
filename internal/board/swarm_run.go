@@ -89,22 +89,12 @@ func (sb *SwarmBoard) RunLevels(ctx context.Context, levels [][]RunNode, opt Run
 
 func (sb *SwarmBoard) runLevel(ctx context.Context, li int, lvl []RunNode, opt RunOptions) (*RunLevelResult, []string, error) {
 	res := &RunLevelResult{Level: li, StartedAt: time.Now().UTC()}
-	var names []string
-	timeout := opt.DefaultTimeout
-	for _, n := range lvl {
-		w, err := sb.AddWorker(AddWorkerRequest{Name: n.Name, Role: n.Role, Model: n.Model, WorkspaceMode: opt.Mode, RepoDir: opt.RepoDir})
-		if err != nil {
-			return res, names, fmt.Errorf("nivel %d: add %s: %w", li, n.Name, err)
-		}
-		names = append(names, w.Name)
-		if n.Timeout > timeout {
-			timeout = n.Timeout
-		}
+	names, timeout, err := sb.addLevelWorkers(li, lvl, opt)
+	if err != nil {
+		return res, names, err
 	}
-	for _, n := range lvl {
-		if _, err := sb.SpawnWorker(context.WithoutCancel(ctx), n.Name, n.Command); err != nil {
-			return res, names, fmt.Errorf("nivel %d: spawn %s: %w", li, n.Name, err)
-		}
+	if err := sb.spawnLevelWorkers(ctx, li, lvl); err != nil {
+		return res, names, err
 	}
 	lctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
@@ -112,10 +102,6 @@ func (sb *SwarmBoard) runLevel(ctx context.Context, li int, lvl []RunNode, opt R
 	res.EndedAt = time.Now().UTC()
 	if err != nil {
 		return res, names, fmt.Errorf("nivel %d: %w", li, err)
-	}
-	gates := make(map[string]string, len(lvl))
-	for _, n := range lvl {
-		gates[n.Name] = n.Gate
 	}
 	for _, w := range final {
 		code := -1
@@ -128,11 +114,47 @@ func (sb *SwarmBoard) runLevel(ctx context.Context, li int, lvl []RunNode, opt R
 		}
 	}
 	if opt.CheckGates {
-		if err := sb.checkLevelGates(li, res, final, gates, opt.RepoDir); err != nil {
+		if err := sb.checkLevelGates(li, res, final, levelGates(lvl), opt.RepoDir); err != nil {
 			return res, names, err
 		}
 	}
 	return res, names, nil
+}
+
+// addLevelWorkers registra todos os workers do nivel e devolve os nomes e o timeout maior pedido pelo nivel.
+func (sb *SwarmBoard) addLevelWorkers(li int, lvl []RunNode, opt RunOptions) ([]string, time.Duration, error) {
+	var names []string
+	timeout := opt.DefaultTimeout
+	for _, n := range lvl {
+		w, err := sb.AddWorker(AddWorkerRequest{Name: n.Name, Role: n.Role, Model: n.Model, WorkspaceMode: opt.Mode, RepoDir: opt.RepoDir})
+		if err != nil {
+			return names, timeout, fmt.Errorf("nivel %d: add %s: %w", li, n.Name, err)
+		}
+		names = append(names, w.Name)
+		if n.Timeout > timeout {
+			timeout = n.Timeout
+		}
+	}
+	return names, timeout, nil
+}
+
+// spawnLevelWorkers sobe todos os workers do nivel, imunes ao cancelamento do contexto pai.
+func (sb *SwarmBoard) spawnLevelWorkers(ctx context.Context, li int, lvl []RunNode) error {
+	for _, n := range lvl {
+		if _, err := sb.SpawnWorker(context.WithoutCancel(ctx), n.Name, n.Command); err != nil {
+			return fmt.Errorf("nivel %d: spawn %s: %w", li, n.Name, err)
+		}
+	}
+	return nil
+}
+
+// levelGates mapeia o nome de cada worker do nivel ao gate declarado no no do DAG.
+func levelGates(lvl []RunNode) map[string]string {
+	gates := make(map[string]string, len(lvl))
+	for _, n := range lvl {
+		gates[n.Name] = n.Gate
+	}
+	return gates
 }
 
 // checkLevelGates avalia o gate de cada worker do nivel e registra gate_ok. Reprova o nivel inteiro com a lista

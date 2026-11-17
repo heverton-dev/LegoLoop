@@ -8,6 +8,13 @@ import (
 	"legoloop/internal/board"
 )
 
+// swarmRunOpts consolida as opcoes da linha de comando do swarm run.
+type swarmRunOpts struct {
+	dir, repo, ws string
+	timeout       time.Duration
+	keep, gates   bool
+}
+
 // cmdSwarmRun executa o DAG por nivel topologico: todos os nos de um nivel sobem em paralelo, cada um em
 // worktree proprio, e o nivel seguinte so comeca depois que todos pararam com codigo 0.
 func cmdSwarmRun(ctx context.Context, args []string, d Deps) int {
@@ -30,6 +37,13 @@ func cmdSwarmRun(ctx context.Context, args []string, d Deps) int {
 		fmt.Fprintln(d.Stderr, "uso: legoloop swarm run <dag.json> [-dir D] [-repo R] [-workspace M] [-timeout T] [-keep] [-gates] [-- comando args...]")
 		return 2
 	}
+	return execSwarmRun(ctx, d, path, global, swarmRunOpts{
+		dir: *dir, repo: *repo, ws: *ws, timeout: *timeout, keep: *keep, gates: *gates,
+	})
+}
+
+// execSwarmRun carrega o DAG, sobe os niveis e emite o JSON do resultado.
+func execSwarmRun(ctx context.Context, d Deps, path string, global []string, o swarmRunOpts) int {
 	p, err := loadDAG(path)
 	if err != nil {
 		return fail(d, err)
@@ -38,12 +52,12 @@ func cmdSwarmRun(ctx context.Context, args []string, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
-	sb, err := board.OpenSwarmBoard(*dir)
+	sb, err := board.OpenSwarmBoard(o.dir)
 	if err != nil {
 		return fail(d, err)
 	}
 	results, runErr := sb.RunLevels(ctx, levels, board.RunOptions{
-		Mode: board.WorkspaceMode(*ws), RepoDir: *repo, Keep: *keep, DefaultTimeout: *timeout, CheckGates: *gates,
+		Mode: board.WorkspaceMode(o.ws), RepoDir: o.repo, Keep: o.keep, DefaultTimeout: o.timeout, CheckGates: o.gates,
 	})
 	out := map[string]any{"dag": p.Name, "levels": results, "skipped": skipped}
 	if code := printJSON(d, out); code != 0 {
