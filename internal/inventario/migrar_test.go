@@ -1,6 +1,7 @@
 package inventario
 
 import (
+	"io/fs"
 	"os"
 	"path/filepath"
 	"testing"
@@ -103,11 +104,6 @@ func caminhoFatia(slug string) string {
 	return filepath.ToSlash(filepath.Join(paths.DirProcessos, slug, slug+paths.SufixoStudio))
 }
 
-// caminhoDocFatia monta o caminho de documento do Quinteto dentro da fatia.
-func caminhoDocFatia(slug, tipo, nome string) string {
-	return filepath.ToSlash(filepath.Join(paths.DirProcessos, slug, "docs", tipo, nome))
-}
-
 // arvoreQuinteto cria a árvore de teste: fatias, donos, órfãos e protegido.
 func arvoreQuinteto(t *testing.T, raiz string) {
 	t.Helper()
@@ -129,8 +125,9 @@ func arvoreQuinteto(t *testing.T, raiz string) {
 	})
 }
 
-// TestMigraQuinteto prova AC-E05.2: dono migra para a fatia, órfão para o
-// arquivo morto com registro, protegido fica e nada é deletado.
+// TestMigraQuinteto prova a regra canônica: dono e protegido permanecem em
+// docs/<tipo>/ da raiz, órfão vai ao arquivo morto com registro, nada é
+// deletado e nada é gravado em processos/<slug>/docs/.
 func TestMigraQuinteto(t *testing.T) {
 	raiz := t.TempDir()
 	arvoreQuinteto(t, raiz)
@@ -143,41 +140,43 @@ func TestMigraQuinteto(t *testing.T) {
 	if depois != antes+1 {
 		t.Errorf("registro ausente ou delecao: antes=%d depois=%d", antes, depois)
 	}
-	conferirDonos(t, raiz, res)
+	conferirMantidos(t, raiz)
 	conferirOrfaos(t, raiz, res)
 	conferirProtegidos(t, raiz, res)
 }
 
-// conferirDonos assegura donos na fatia certa, origens vazias e briga decidida.
-func conferirDonos(t *testing.T, raiz string, res ResultadoQuinteto) {
+// conferirMantidos assegura donos mantidos em docs/<tipo>/ e nada em processos/<slug>/docs/.
+func conferirMantidos(t *testing.T, raiz string) {
 	t.Helper()
-	esperados := map[string]string{
-		caminhoDocFatia("legoloop-alfa", "intents", "2026-11-01_INTENT_ALFA.md"): "docs/intents/2026-11-01_INTENT_ALFA.md",
-		caminhoDocFatia("legoloop-alfa", "routes", "2026-11-01_ROUTE_ALFA.json"): "docs/routes/2026-11-01_ROUTE_ALFA.json",
-		caminhoDocFatia("legoloop-beta", "specs", "2026-11-02_SPEC_BETA.md"):     "docs/specs/2026-11-02_SPEC_BETA.md",
-		caminhoDocFatia("legoloop-beta", "plans", "2026-11-02_PLAN_BETA.md"):     "docs/plans/2026-11-02_PLAN_BETA.md",
-		caminhoDocFatia("legoloop-beta", "routes", "2026-11-02_ROUTE_BETA.json"): "docs/routes/2026-11-02_ROUTE_BETA.json",
-		caminhoDocFatia("legoloop-delta", "routes", "2026-11-05_ROUTE_DUP.json"): "docs/routes/2026-11-05_ROUTE_DUP.json",
+	mantidos := []string{
+		"docs/intents/2026-11-01_INTENT_ALFA.md",
+		"docs/routes/2026-11-01_ROUTE_ALFA.json",
+		"docs/specs/2026-11-02_SPEC_BETA.md",
+		"docs/plans/2026-11-02_PLAN_BETA.md",
+		"docs/routes/2026-11-02_ROUTE_BETA.json",
+		"docs/routes/2026-11-05_ROUTE_DUP.json",
 	}
-	for destino, origem := range esperados {
-		if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(destino))); err != nil {
-			t.Errorf("dono sem documento na fatia: %s (%v)", destino, err)
-		}
-		if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(origem))); !os.IsNotExist(err) {
-			t.Errorf("origem de dono ainda presente: %s", origem)
+	for _, origem := range mantidos {
+		if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(origem))); err != nil {
+			t.Errorf("dono não mantido na raiz: %s (%v)", origem, err)
 		}
 	}
-	if _, err := os.Stat(filepath.Join(raiz, filepath.FromSlash(caminhoDocFatia("legoloop-gama", "routes", "2026-11-05_ROUTE_DUP.json")))); !os.IsNotExist(err) {
-		t.Error("reivindicacao multipla nao deterministica: gama levou o documento")
-	}
-	if len(res.Migrados) != len(esperados) {
-		t.Errorf("Migrados=%d; esperado %d", len(res.Migrados), len(esperados))
-	}
-	for _, mov := range res.Migrados {
-		if esperados[mov.Destino] != mov.Caminho {
-			t.Errorf("movimento inesperado: %+v", mov)
+	proibidoDocsDeFatia(t, raiz)
+}
+
+// proibidoDocsDeFatia falha se algum processos/<slug>/docs/ recebe escrita.
+func proibidoDocsDeFatia(t *testing.T, raiz string) {
+	t.Helper()
+	base := filepath.Join(raiz, paths.DirProcessos)
+	_ = filepath.WalkDir(base, func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return nil
 		}
-	}
+		if d.IsDir() && d.Name() == "docs" {
+			t.Errorf("escrita proibida em processos/<slug>/docs/: %s", filepath.ToSlash(p))
+		}
+		return nil
+	})
 }
 
 // conferirOrfaos assegura órfãos no arquivo morto e registro completo (AC-E05.4).
@@ -226,7 +225,21 @@ func conferirProtegidos(t *testing.T, raiz string, res ResultadoQuinteto) {
 			t.Errorf("arquivo intocado saiu do lugar: %s (%v)", caminho, err)
 		}
 	}
-	if len(res.Protegidos) != 1 || res.Protegidos[0] != "plans/2026-11-16_PLAN_MEGA_PLANO_PRODUCAO.md" {
-		t.Errorf("Protegidos=%v; esperado plans/2026-11-16_PLAN_MEGA_PLANO_PRODUCAO.md", res.Protegidos)
+	esperados := map[string]bool{
+		"plans/2026-11-16_PLAN_MEGA_PLANO_PRODUCAO.md": true,
+		"intents/2026-11-01_INTENT_ALFA.md":            true,
+		"routes/2026-11-01_ROUTE_ALFA.json":            true,
+		"specs/2026-11-02_SPEC_BETA.md":                true,
+		"plans/2026-11-02_PLAN_BETA.md":                true,
+		"routes/2026-11-02_ROUTE_BETA.json":            true,
+		"routes/2026-11-05_ROUTE_DUP.json":             true,
+	}
+	if len(res.Protegidos) != len(esperados) {
+		t.Errorf("Protegidos=%v; esperado %d mantidos na raiz", res.Protegidos, len(esperados))
+	}
+	for _, p := range res.Protegidos {
+		if !esperados[p] {
+			t.Errorf("Protegido inesperado: %s", p)
+		}
 	}
 }

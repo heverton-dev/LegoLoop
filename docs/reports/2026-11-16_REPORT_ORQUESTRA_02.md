@@ -13,7 +13,7 @@ Os 4 tickets do Épico 05 e os 4 tickets do Épico 04 fecharam com portões mec�
 - Mutações provadas: A (sem append do slice) e B (doc raso) morderam o teste e foram restauradas.
 
 ### TICK-05.2 — Migração do Quinteto (AC-E05.2) — commits `9c2c0b8`, `0e9bb5c`
-- `MigrarQuinteto` migra `docs/{intents,specs,plans,routes}` para `processos/<slug>/docs/` (internal/inventario/migrar.go).
+- `MigrarQuinteto` mantém documentos com dono em `docs/<tipo>/` (escrita canônica) e arquiva órfãos em `docs/archive/quinteto/` (internal/inventario/migrar.go).
 - Posse do doc = rota do manifesto (`upstream_signatures.route`, string ou objeto) + fallback de slug normalizado | prova: `go run ./internal/inventario/cmd/inv quinteto` exit 0 (idempotente).
 - Migração real: 293 docs processados = 53 migrados para fatias + 234 órfãos em `docs/archive/quinteto/` + 6 protegidos (MEGA_PLANO + SPEC/PLAN_MASTER) | prova: `docs/archive/quinteto/registro_orfaos.json` (234 entradas) e raiz `docs/` só com os protegidos.
 - Teste `TestMigraQuinteto` cobre migração, órfãos, protegidos e multi-reivindicação (primeiro em ordem alfabética) | prova: `go test ./internal/inventario/` exit 0.

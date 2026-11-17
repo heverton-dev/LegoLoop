@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"testing"
 
 	"legoloop/internal/caminhos"
@@ -13,13 +12,14 @@ import (
 	"legoloop/internal/fabricar"
 	"legoloop/internal/gate"
 	"legoloop/internal/paths"
+	"legoloop/internal/processo"
 	"legoloop/internal/triagem"
 )
 
-// TestSliceAutocontido cobre o AC-E05.1: o Processo nasce como fatia vertical autocontida —
-// manifestos + docs/ do processo (INTENT, SPEC, PLAN, ROUTE, REPORT, MANUAL) dentro da fatia,
-// pronta para executar como mini-projeto.
-func TestSliceAutocontido(t *testing.T) {
+// TestGovernancaDocsSoNaRaiz prova a regra de governança: a escrita canônica do Sexteto
+// é docs/ da raiz do projeto, com prefixo ISO. O espelho em processos/<slug>/docs/ é
+// proibido (Lei 15: zero documento redundante — a fatia não repete o Sexteto).
+func TestGovernancaDocsSoNaRaiz(t *testing.T) {
 	r := newRig(t, goodPieces())
 	res := r.run(t)
 	dir := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName)
@@ -28,22 +28,28 @@ func TestSliceAutocontido(t *testing.T) {
 			t.Errorf("manifesto ausente na fatia: %s (%v)", manifesto, err)
 		}
 	}
+	if _, err := os.Stat(filepath.Join(dir, "docs")); err == nil {
+		t.Error("espelho proibido: processos/<slug>/docs/ não pode existir; a escrita canônica é docs/ da raiz")
+	}
 	for _, sub := range []string{"intents", "specs", "plans", "routes", "reports", "manuals"} {
-		subDir := filepath.Join(dir, "docs", sub)
+		subDir := filepath.Join(r.deps.Roots.Docs, "docs", sub)
 		entradas, err := os.ReadDir(subDir)
-		if err != nil {
-			t.Fatalf("fatia sem docs/%s: %v", sub, err)
+		if err != nil || len(entradas) == 0 {
+			t.Errorf("Sexteto incompleto: docs/%s da raiz sem documento (%v)", sub, err)
 		}
-		if len(entradas) == 0 {
-			t.Errorf("docs/%s vazio na fatia", sub)
-			continue
-		}
-		for _, e := range entradas {
-			b := lerManifesto(t, filepath.Join(subDir, e.Name()))
-			if len(strings.TrimSpace(string(b))) < 20 {
-				t.Errorf("documento raso demais em docs/%s/%s", sub, e.Name())
-			}
-		}
+	}
+}
+
+// TestStudioDerivadoDoDAG prova que o <slug>.studio.json gravado pelo fabricar é a
+// projeção fiel dos nós do DAG canônico e passa no gate de paridade.
+func TestStudioDerivadoDoDAG(t *testing.T) {
+	r := newRig(t, goodPieces())
+	res := r.run(t)
+	dir := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName)
+	dagB := lerManifesto(t, filepath.Join(dir, caminhos.ArquivoDAG))
+	stB := lerManifesto(t, filepath.Join(dir, res.CanonicalName+paths.SufixoStudio))
+	if err := processo.ParidadeStudio(dagB, stB); err != nil {
+		t.Errorf("studio.json não é derivado do DAG: %v", err)
 	}
 }
 

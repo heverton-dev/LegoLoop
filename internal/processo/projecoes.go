@@ -12,7 +12,6 @@ import (
 
 	"legoloop/internal/dag"
 	"legoloop/internal/plangen"
-	"legoloop/internal/studiodoc"
 	"legoloop/internal/triagem"
 )
 
@@ -82,7 +81,7 @@ func montarProjecoes(p Processo, ord []Etapa, now time.Time) (*Projecoes, error)
 	if err != nil {
 		return nil, err
 	}
-	studioJSON, err := marshalStudio(p, d, now)
+	studioJSON, err := DerivarStudio(dagJSON, now)
 	if err != nil {
 		return nil, err
 	}
@@ -182,16 +181,6 @@ func marshalDAG(d dag.DAG) ([]byte, error) {
 	}
 	if _, err := dag.Parse(data); err != nil {
 		return nil, fmt.Errorf("%w: o DAG gerado é inválido: %v", ErrInvalido, err)
-	}
-	return append(data, '\n'), nil
-}
-
-func marshalStudio(p Processo, d dag.DAG, now time.Time) ([]byte, error) {
-	lp := studiodoc.Processo{ID: p.Nome, Name: p.Nome, Description: d.Description, Version: p.Versao,
-		Trigger: d.Trigger, Nodes: d.Nodes, CreatedAt: now.UTC(), UpdatedAt: now.UTC()}
-	data, err := json.MarshalIndent(lp, "", "  ")
-	if err != nil {
-		return nil, err
 	}
 	return append(data, '\n'), nil
 }
