@@ -75,7 +75,7 @@ LegoLoop/
 │   ├── intents/ · specs/ · plans/ · routes/   # Cascata de governança (prefixo ISO de data)
 │   ├── reports/ · references/ · sessions/ · archive/
 │   └── reports/img/         # Evidências visuais de homologação
-├── processos/                   # Loops de exemplo (addy-osmani, impeccable-design, matt-pocock, mega-pipeline)
+├── processos/                   # Processos de exemplo (addy-osmani, impeccable-design, matt-pocock, mega-pipeline)
 ├── tools/funclen/           # Gate de qualidade: nenhuma função de produção com mais de 35 linhas
 └── AGENTS.md · MEMORY.md (diário de implementação) · README.md
 ```
