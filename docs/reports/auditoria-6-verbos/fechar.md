@@ -27,5 +27,5 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/fechar/...` — exit 0
-  - Saída: ok legoloop/internal/fechar 2.313s
+  - Saída: ok legoloop/internal/fechar 2.107s
 

@@ -27,5 +27,5 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/remover/...` — exit 0
-  - Saída: ok legoloop/internal/remover 0.977s
+  - Saída: ok legoloop/internal/remover 1.060s
 

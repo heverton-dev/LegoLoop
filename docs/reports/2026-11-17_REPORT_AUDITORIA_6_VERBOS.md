@@ -41,7 +41,7 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/matriz/...` — exit 0
-  - Saída: ok legoloop/internal/matriz 3.237s
+  - Saída: ok legoloop/internal/matriz 3.245s
 
 
 ---
@@ -75,7 +75,7 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/listar/...` — exit 0
-  - Saída: ok legoloop/internal/listar 0.986s
+  - Saída: ok legoloop/internal/listar 0.931s
 
 
 ---
@@ -109,7 +109,7 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/refinar/...` — exit 0
-  - Saída: ok legoloop/internal/refinar 7.521s
+  - Saída: ok legoloop/internal/refinar 7.583s
 
 
 ---
@@ -143,7 +143,7 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/remover/...` — exit 0
-  - Saída: ok legoloop/internal/remover 0.977s
+  - Saída: ok legoloop/internal/remover 1.060s
 
 
 ---
@@ -177,7 +177,7 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/compor/...` — exit 0
-  - Saída: ok legoloop/internal/compor 7.926s
+  - Saída: ok legoloop/internal/compor 7.863s
 
 
 ---
@@ -211,7 +211,7 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/fechar/...` — exit 0
-  - Saída: ok legoloop/internal/fechar 2.313s
+  - Saída: ok legoloop/internal/fechar 2.107s
 
 
 ---

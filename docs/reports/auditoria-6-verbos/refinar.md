@@ -27,5 +27,5 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/refinar/...` — exit 0
-  - Saída: ok legoloop/internal/refinar 7.521s
+  - Saída: ok legoloop/internal/refinar 7.583s
 

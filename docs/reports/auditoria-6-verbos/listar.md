@@ -27,5 +27,5 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/listar/...` — exit 0
-  - Saída: ok legoloop/internal/listar 0.986s
+  - Saída: ok legoloop/internal/listar 0.931s
 

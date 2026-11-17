@@ -27,5 +27,5 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/matriz/...` — exit 0
-  - Saída: ok legoloop/internal/matriz 3.237s
+  - Saída: ok legoloop/internal/matriz 3.245s
 
