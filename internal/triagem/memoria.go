@@ -20,11 +20,20 @@ const ArquivoLockMemoria = "memoria.lock"
 // SessaoLegado identifica o estado gravado sem chave de sessão completa.
 const SessaoLegado = "legado"
 
+// SchemaMemoria é a versão de schema do envelope persistido (memoria_execucao.v1).
+const SchemaMemoria = "memoria_execucao.v1"
+
+// SufixoBackup marca a cópia de segurança criada ao detectar arquivo corrompido.
+const SufixoBackup = ".legoloop-bak"
+
 // ErrSessaoInvalida sinaliza sessão sem ID ou sem PID válido.
 var ErrSessaoInvalida = errors.New("triagem: sessão inválida")
 
 // ErrLockOcupado sinaliza lock retido por outra sessão além do tempo limite.
 var ErrLockOcupado = errors.New("triagem: lock ocupado")
+
+// ErrMemoriaCorrompida sinaliza memoria_execucao.json inválido; backup criado e escrita bloqueada.
+var ErrMemoriaCorrompida = errors.New("triagem: memoria_execucao.json corrompido")
 
 // timeoutLockMemoria limita a espera pelo lock de arquivo (padrão internal/board).
 var timeoutLockMemoria = 10 * time.Second
@@ -50,7 +59,9 @@ type MemoriaExecucao struct {
 
 // EstadoMemoria agrupa o estado por sessão persistido em ArquivoMemoria.
 type EstadoMemoria struct {
-	Sessoes map[string]MemoriaExecucao `json:"sessoes"`
+	SchemaVersion string                    `json:"schema_version"`
+	Processo      string                    `json:"processo"`
+	Sessoes       map[string]MemoriaExecucao `json:"sessoes"`
 }
 
 // Validate verifica a chave de sessão: exige ID não vazio e PID positivo.
@@ -105,6 +116,8 @@ func adquirirLockMemoria(dir string, pid int, sessao string) (*lockMemoria, erro
 		if !lockOcupado(err) {
 			return nil, err
 		}
+		// Lock órfão (PID morto) é tomado em vez de esperar o tempo limite (AC-E03.2).
+		_ = limparLockOrfao(dir)
 		if time.Now().After(prazo) {
 			return nil, fmt.Errorf("%w: %s", ErrLockOcupado, ArquivoLockMemoria)
 		}
@@ -125,16 +138,30 @@ func chaveSessao(mem MemoriaExecucao) (string, error) {
 }
 
 // lerEstadoDisco carrega o envelope por sessão; sem arquivo devolve vazio.
+// JSON inválido cria backup .legoloop-bak e devolve ErrMemoriaCorrompida.
 func lerEstadoDisco(dir string) (EstadoMemoria, error) {
 	vazio := EstadoMemoria{Sessoes: map[string]MemoriaExecucao{}}
-	dados, err := os.ReadFile(filepath.Join(dir, ArquivoMemoria))
+	caminho := filepath.Join(dir, ArquivoMemoria)
+	dados, err := os.ReadFile(caminho)
 	if errors.Is(err, os.ErrNotExist) {
 		return vazio, nil
 	}
 	if err != nil {
 		return vazio, err
 	}
-	return desserializarEstado(dados)
+	est, err := desserializarEstado(dados)
+	if err != nil {
+		return vazio, backupCorrompido(caminho, dados)
+	}
+	return est, nil
+}
+
+// backupCorrompido preserva o conteúdo inválido em .legoloop-bak e devolve a sentinela.
+func backupCorrompido(caminho string, dados []byte) error {
+	if err := os.WriteFile(caminho+SufixoBackup, dados, 0o644); err != nil {
+		return fmt.Errorf("%w: %v", ErrMemoriaCorrompida, err)
+	}
+	return ErrMemoriaCorrompida
 }
 
 // desserializarEstado interpreta o envelope por sessão ou o formato legado.
@@ -165,8 +192,13 @@ func escreverAtomico(caminho string, dados []byte) error {
 	return os.Rename(tmp, caminho)
 }
 
-// persistirEstado grava o envelope completo por sessão com escrita atômica.
+// persistirEstado grava o envelope completo por sessão com escrita atômica,
+// sempre no schema memoria_execucao.v1.
 func persistirEstado(dir string, est EstadoMemoria) error {
+	est.SchemaVersion = SchemaMemoria
+	if est.Processo == "" {
+		est.Processo = filepath.Base(dir)
+	}
 	dados, err := json.MarshalIndent(est, "", "  ")
 	if err != nil {
 		return err
@@ -179,6 +211,9 @@ func gravarEstado(dir, chave string, mem MemoriaExecucao) error {
 	est, err := lerEstadoDisco(dir)
 	if err != nil {
 		return err
+	}
+	if est.Processo == "" {
+		est.Processo = mem.Processo
 	}
 	est.Sessoes[chave] = mem
 	return persistirEstado(dir, est)

@@ -264,3 +264,94 @@ func TestLimparOrfaosLimpaSessaoELock(t *testing.T) {
 		t.Errorf("lock órfão deveria ser removido: %v", err)
 	}
 }
+
+// TestMemoriaSegueSchemaV1 prova a conformidade do envelope com o schema memoria_execucao.v1
+// (fonte da persistência, TICK-INT-02): schema_version, processo e sessoes sempre gravados.
+func TestMemoriaSegueSchemaV1(t *testing.T) {
+	dir := t.TempDir()
+	if err := SalvarMemoria(dir, MemoriaExecucao{Processo: "proc-x", SessaoID: "s1", PID: os.Getpid(), EtapaAtual: "TRI-001"}); err != nil {
+		t.Fatalf("SalvarMemoria falhou: %v", err)
+	}
+	dados, err := os.ReadFile(filepath.Join(dir, ArquivoMemoria))
+	if err != nil {
+		t.Fatalf("lendo envelope: %v", err)
+	}
+	var raw map[string]any
+	if err := json.Unmarshal(dados, &raw); err != nil {
+		t.Fatalf("envelope não é JSON: %v", err)
+	}
+	if raw["schema_version"] != SchemaMemoria {
+		t.Errorf("schema_version = %v, esperado %q", raw["schema_version"], SchemaMemoria)
+	}
+	if raw["processo"] != "proc-x" {
+		t.Errorf("processo = %v, esperado proc-x", raw["processo"])
+	}
+	sessoes, ok := raw["sessoes"].(map[string]any)
+	if !ok {
+		t.Fatalf("sessoes ausente ou não é objeto: %v", raw["sessoes"])
+	}
+	if _, ok := sessoes["s1"]; !ok {
+		t.Errorf("sessão s1 ausente do envelope: %v", sessoes)
+	}
+}
+
+// TestLockOrfaoTomadoNaGravacao prova AC-E03.2 do mega plano: lock retido por PID
+// morto é tomado pela segunda sessão e o atualizado avança (ISO 8601).
+func TestLockOrfaoTomadoNaGravacao(t *testing.T) {
+	dir := t.TempDir()
+	antigo := time.Now().UTC().Add(-2 * time.Hour)
+	if err := SalvarMemoria(dir, MemoriaExecucao{Processo: "p", SessaoID: "s2", PID: os.Getpid(), AtualizadoEm: antigo}); err != nil {
+		t.Fatalf("primeira gravação: %v", err)
+	}
+	morto := pidMortoParaTeste(t)
+	lockOrfao := filepath.Join(dir, ArquivoLockMemoria)
+	if err := os.WriteFile(lockOrfao, []byte(fmt.Sprintf("%d sessao-morto", morto)), 0o644); err != nil {
+		t.Fatalf("preparação do lock órfão: %v", err)
+	}
+	if err := SalvarMemoria(dir, MemoriaExecucao{Processo: "p", SessaoID: "s2", PID: os.Getpid(), EtapaAtual: "retomada"}); err != nil {
+		t.Fatalf("gravação com lock órfão devia tomar o lock: %v", err)
+	}
+	mem, err := LerMemoria(dir, "s2")
+	if err != nil {
+		t.Fatalf("LerMemoria: %v", err)
+	}
+	if !mem.AtualizadoEm.After(antigo) {
+		t.Errorf("atualizado não avançou: %s", mem.AtualizadoEm)
+	}
+	if mem.EtapaAtual != "retomada" {
+		t.Errorf("etapa = %q, esperado retomada", mem.EtapaAtual)
+	}
+}
+
+// TestMemoriaCorrompidaSentinelaBackup prova AC-E03.4 do mega plano: JSON inválido
+// devolve erro sentinela, cria backup .legoloop-bak e não permite escrita cega por cima.
+func TestMemoriaCorrompidaSentinelaBackup(t *testing.T) {
+	dir := t.TempDir()
+	caminho := filepath.Join(dir, ArquivoMemoria)
+	lixo := []byte("{nao é json !!")
+	if err := os.WriteFile(caminho, lixo, 0o644); err != nil {
+		t.Fatalf("preparação: %v", err)
+	}
+	_, err := LerMemoria(dir, "s1")
+	if !errors.Is(err, ErrMemoriaCorrompida) {
+		t.Fatalf("esperado ErrMemoriaCorrompida, obtido: %v", err)
+	}
+	backup, err := os.ReadFile(caminho + SufixoBackup)
+	if err != nil {
+		t.Fatalf("backup .legoloop-bak não criado: %v", err)
+	}
+	if string(backup) != string(lixo) {
+		t.Errorf("backup difere do original: %s", backup)
+	}
+	depois, err := os.ReadFile(caminho)
+	if err != nil {
+		t.Fatalf("original sumiu: %v", err)
+	}
+	if string(depois) != string(lixo) {
+		t.Errorf("original foi sobrescrito: %s", depois)
+	}
+	// Nenhuma escrita cega por cima: gravar sobre corrompido sinaliza e preserva.
+	if err := SalvarMemoria(dir, MemoriaExecucao{Processo: "p", SessaoID: "s9", PID: os.Getpid()}); !errors.Is(err, ErrMemoriaCorrompida) {
+		t.Errorf("esperado ErrMemoriaCorrompida na gravação, obtido: %v", err)
+	}
+}
