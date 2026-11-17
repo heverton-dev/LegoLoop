@@ -184,6 +184,8 @@ func (s *Server) registerProcessoRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/processos/compor", s.handleProcessosCompor)
 	mux.HandleFunc("GET /api/dag", s.handleDAGStatus)
 	mux.HandleFunc("GET /api/dag/{id}", s.handleDAGGet)
+	mux.HandleFunc("GET /api/pecas", s.handlePecasListar)
+	mux.HandleFunc("POST /api/pecas/{id}/exec", s.handlePecasExec)
 }
 
 func deprecada(h http.HandlerFunc) http.HandlerFunc {
