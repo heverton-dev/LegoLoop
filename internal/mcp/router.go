@@ -21,7 +21,17 @@ import (
 var (
 	ErrRequisicaoInvalida  = errors.New("mcp: requisicao json-rpc invalida")
 	ErrMetodoNaoEncontrado = errors.New("mcp: metodo nao encontrado")
+	// ErrConflitoTool sinaliza nome de tool repetido entre donos no router (AC-E09.2).
+	ErrConflitoTool = errors.New("mcp: conflito de nome de tool entre donos")
 )
+
+// CodigoDeSaida traduz o erro do router no exit code do CLI (0 = sem erro).
+func CodigoDeSaida(err error) int {
+	if err != nil {
+		return 1
+	}
+	return 0
+}
 
 // ToolDef define os metadados de uma ferramenta no cofre.
 type ToolDef struct {
@@ -381,10 +391,28 @@ func (r *Router) RegistrarToolProcesso(t ToolProcesso) error {
 	if t.Run == nil {
 		return fmt.Errorf("mcp: tool %q sem executor", nome)
 	}
+	if err := r.recusarConflito(nome, t.Dono); err != nil {
+		return err
+	}
 	if r.toolsProcesso == nil {
 		r.toolsProcesso = map[string]toolRegistrada{}
 	}
 	r.toolsProcesso[nome] = toolRegistrada{dono: t.Dono, def: t.Def, run: t.Run}
+	return nil
+}
+
+// recusarConflito barra registro com nome de tool já usado por outro dono (AC-E09.2).
+func (r *Router) recusarConflito(nome, dono string) error {
+	if reg, existe := r.toolsProcesso[nome]; existe {
+		return fmt.Errorf("%w: tool %q já registrada pelo dono %q; registro do dono %q recusado",
+			ErrConflitoTool, nome, reg.dono, dono)
+	}
+	for _, def := range r.toolsInternas() {
+		if def["name"] == nome {
+			return fmt.Errorf("%w: tool %q já registrada pelo dono %q; registro do dono %q recusado",
+				ErrConflitoTool, nome, "router", dono)
+		}
+	}
 	return nil
 }
 

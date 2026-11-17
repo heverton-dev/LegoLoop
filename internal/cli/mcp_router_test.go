@@ -12,7 +12,41 @@ import (
 	"legoloop/internal/caminhos"
 )
 
-// TestMcpRouterExpoeToolsDeProcessos prova a AC-E09.1 pelo CLI real: o comando
+// TestMcpRouterConflitoSaidaNaoZero prova a AC-E09.2 no CLI real: conflito de
+// nome de tool entre Processos recusa o registro e o mcp-router sai com exit ≠ 0.
+func TestMcpRouterConflitoSaidaNaoZero(t *testing.T) {
+	base := t.TempDir()
+	for _, nome := range []string{"alpha", "beta"} {
+		manifesto := map[string]any{"tools": []any{map[string]any{
+			"name":        "eco_dup",
+			"description": "Tool em conflito entre Processos.",
+			"comando":     []string{"legoloop", "listar", "--json"},
+		}}}
+		data, err := json.Marshal(manifesto)
+		if err != nil {
+			t.Fatalf("marshal manifesto: %v", err)
+		}
+		dir := filepath.Join(caminhos.DirProcessosEm(base), nome)
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			t.Fatalf("montar Processo: %v", err)
+		}
+		if err := os.WriteFile(caminhos.CaminhoToolsDoProcesso(dir), data, 0o600); err != nil {
+			t.Fatalf("gravar manifesto: %v", err)
+		}
+	}
+	var stdout, stderr bytes.Buffer
+	deps := Deps{Stdin: strings.NewReader(""), Stdout: &stdout, Stderr: &stderr, Home: t.TempDir()}
+	code := Run(context.Background(), []string{"mcp-router", "--project", base}, deps)
+	if code == 0 {
+		t.Fatalf("esperava exit ≠ 0 no conflito, obteve 0: %s", stderr.String())
+	}
+	for _, trecho := range []string{"eco_dup", "alpha", "beta"} {
+		if !strings.Contains(stderr.String(), trecho) {
+			t.Errorf("conflito devia nomear %q no stderr, obteve: %s", trecho, stderr.String())
+		}
+	}
+}
+
 // legoloop mcp-router expõe a tool do Processo em tools/list do STDIO único.
 func TestMcpRouterExpoeToolsDeProcessos(t *testing.T) {
 	base := t.TempDir()

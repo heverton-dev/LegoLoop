@@ -30,7 +30,7 @@ func cmdMcpRouter(_ context.Context, args []string, d Deps) int {
 	defer router.Close()
 	if err := router.CarregarToolsDeProcessos(*projectFlag); err != nil {
 		fmt.Fprintf(d.Stderr, "mcp-router: %v\n", err)
-		return 1
+		return mcp.CodigoDeSaida(err)
 	}
 	if err := router.Serve(d.Stdin, d.Stdout); err != nil {
 		fmt.Fprintf(d.Stderr, "mcp-router encerrou com erro: %v\n", err)

@@ -3,6 +3,7 @@ package mcp
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -106,6 +107,33 @@ func prepararProcessoComTools(t *testing.T, base, nome, manifesto string) {
 	}
 	if err := os.WriteFile(caminhos.CaminhoToolsDoProcesso(dir), []byte(manifesto), 0o600); err != nil {
 		t.Fatalf("gravar tools.json de %s: %v", nome, err)
+	}
+}
+
+// TestConflitoToolExit prova a AC-E09.2: conflito de nome de tool entre
+// Processos recusa o segundo registro e nomeia o conflito com os dois donos.
+func TestConflitoToolExit(t *testing.T) {
+	base := t.TempDir()
+	prepararProcessoComTools(t, base, "alpha", manifestoEco("eco_dup"))
+	prepararProcessoComTools(t, base, "beta", manifestoEco("eco_dup"))
+	r := NewRouter(nil, nil)
+	err := r.CarregarToolsDeProcessos(base)
+	if err == nil {
+		t.Fatal("segundo registro com conflito de nome devia ser recusado")
+	}
+	if !errors.Is(err, ErrConflitoTool) {
+		t.Fatalf("erro esperado ErrConflitoTool, obteve: %v", err)
+	}
+	if CodigoDeSaida(err) == 0 {
+		t.Error("exit code do conflito devia ser ≠ 0")
+	}
+	for _, trecho := range []string{"eco_dup", "alpha", "beta"} {
+		if !strings.Contains(err.Error(), trecho) {
+			t.Errorf("conflito devia nomear %q, obteve: %v", trecho, err)
+		}
+	}
+	if reg, ok := r.toolsProcesso["eco_dup"]; !ok || reg.dono != "alpha" {
+		t.Errorf("só o segundo registro devia ser recusado; dono atual: %+v", reg)
 	}
 }
 
