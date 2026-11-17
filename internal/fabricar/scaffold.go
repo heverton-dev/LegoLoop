@@ -4,10 +4,36 @@ import (
 	"bytes"
 	"encoding/json"
 	"path/filepath"
+	"runtime"
+	"slices"
+	"strings"
 
 	"legoloop/internal/paths"
 	"legoloop/internal/processo"
 )
+
+// extensoesPorSO dá as extensões de peça executável compatíveis com cada SO.
+var extensoesPorSO = map[string][]string{
+	"windows": {".ps1", ".bat", ".cmd"},
+	"linux":   {".sh", ".bash"},
+	"darwin":  {".sh", ".bash"},
+}
+
+// ResolveParaSO escolhe a variante da peça compatível com o SO alvo (AC-E05.3).
+// A ordem dos candidatos dá a preferência entre as compatíveis.
+// Sem variante compatível, devolve vazio: peça do SO errado nunca executa.
+func ResolveParaSO(candidatos []string, so string) string {
+	exts := extensoesPorSO[strings.ToLower(so)]
+	for _, c := range candidatos {
+		if slices.Contains(exts, strings.ToLower(filepath.Ext(c))) {
+			return c
+		}
+	}
+	return ""
+}
+
+// ResolvePorSO resolve a variante da peça pelo SO detectado do ambiente.
+func ResolvePorSO(candidatos []string) string { return ResolveParaSO(candidatos, runtime.GOOS) }
 
 // vacinaAnticorpo é uma entrada de anticorpo: assinatura do erro, o erro, o antídoto e as reincidências.
 type vacinaAnticorpo struct {

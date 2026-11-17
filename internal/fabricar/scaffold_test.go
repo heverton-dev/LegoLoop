@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
 	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
+	"legoloop/internal/fabricar"
 	"legoloop/internal/gate"
 	"legoloop/internal/paths"
 	"legoloop/internal/triagem"
@@ -104,4 +106,39 @@ func lerManifesto(t *testing.T, caminho string) []byte {
 		t.Fatalf("ler %s: %v", caminho, err)
 	}
 	return b
+}
+
+func TestResolvePorSO(t *testing.T) {
+	variantes := []string{"deploy.sh", "deploy.ps1"}
+	casos := []struct {
+		nome, so string
+		esperado string
+	}{
+		{"windows escolhe ps1 mesmo com sh primeiro", "windows", "deploy.ps1"},
+		{"linux escolhe sh", "linux", "deploy.sh"},
+		{"darwin escolhe sh", "darwin", "deploy.sh"},
+		{"sem variante compativel devolve vazio", "windows", ""},
+		{"so desconhecido devolve vazio", "plan9", ""},
+	}
+	for _, c := range casos {
+		candidatos := variantes
+		if c.esperado == "" {
+			candidatos = []string{"deploy.sh"}
+			if c.so == "plan9" {
+				candidatos = variantes
+			}
+		}
+		got := fabricar.ResolveParaSO(candidatos, c.so)
+		if got != c.esperado {
+			t.Errorf("%s: ResolveParaSO(%v, %q) = %q, esperado %q", c.nome, candidatos, c.so, got, c.esperado)
+		}
+	}
+	got := fabricar.ResolvePorSO(variantes)
+	esperado := "deploy.ps1"
+	if runtime.GOOS != "windows" {
+		esperado = "deploy.sh"
+	}
+	if got != esperado {
+		t.Errorf("SO detectado %s: ResolvePorSO devolveu %q, esperado %q", runtime.GOOS, got, esperado)
+	}
 }
