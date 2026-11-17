@@ -22,11 +22,15 @@
     {
       "id": "e01",
       "palavras_chave": [
-        "e01",
         "e01"
       ],
       "slash_command": "/legoloop-design-ui-e01",
       "flag_cli": "--etapa e01"
     }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
   ]
 }

@@ -1,0 +1,36 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-fabricar-peca-unica",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-fabricar-peca-unica",
+      "comandos_cli": [
+        "legoloop legoloop-fabricar-peca-unica",
+        "/legoloop-legoloop-fabricar-peca-unica"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-fabricar-peca-unica",
+    "etapas": [
+      "e01"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "e01",
+      "palavras_chave": [
+        "e01"
+      ],
+      "slash_command": "/legoloop-fabricar-peca-unica-e01",
+      "flag_cli": "--etapa e01"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

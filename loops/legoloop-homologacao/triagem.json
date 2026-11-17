@@ -1,0 +1,177 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-homologacao",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-homologacao",
+      "comandos_cli": [
+        "legoloop legoloop-homologacao",
+        "/legoloop-legoloop-homologacao"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-homologacao",
+    "etapas": [
+      "TICK-01.1",
+      "TICK-01.2",
+      "TICK-01.3",
+      "TICK-02.1",
+      "TICK-02.2",
+      "TICK-03.1",
+      "TICK-03.2",
+      "TICK-04.1",
+      "TICK-04.2",
+      "TICK-05.1",
+      "TICK-05.2",
+      "TICK-06.1",
+      "TICK-06.2",
+      "TICK-07.1",
+      "TICK-07.2"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "TICK-01.1",
+      "palavras_chave": [
+        "TICK 01.1",
+        "TICK-01.1"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-01.1",
+      "flag_cli": "--etapa TICK-01.1"
+    },
+    {
+      "id": "TICK-01.2",
+      "palavras_chave": [
+        "TICK 01.2",
+        "TICK-01.2"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-01.2",
+      "flag_cli": "--etapa TICK-01.2"
+    },
+    {
+      "id": "TICK-01.3",
+      "palavras_chave": [
+        "TICK 01.3",
+        "TICK-01.3"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-01.3",
+      "flag_cli": "--etapa TICK-01.3"
+    },
+    {
+      "id": "TICK-02.1",
+      "palavras_chave": [
+        "TICK 02.1",
+        "TICK-02.1"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-02.1",
+      "flag_cli": "--etapa TICK-02.1"
+    },
+    {
+      "id": "TICK-02.2",
+      "palavras_chave": [
+        "TICK 02.2",
+        "TICK-02.2"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-02.2",
+      "flag_cli": "--etapa TICK-02.2"
+    },
+    {
+      "id": "TICK-03.1",
+      "palavras_chave": [
+        "TICK 03.1",
+        "TICK-03.1"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-03.1",
+      "flag_cli": "--etapa TICK-03.1"
+    },
+    {
+      "id": "TICK-03.2",
+      "palavras_chave": [
+        "TICK 03.2",
+        "TICK-03.2"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-03.2",
+      "flag_cli": "--etapa TICK-03.2"
+    },
+    {
+      "id": "TICK-04.1",
+      "palavras_chave": [
+        "TICK 04.1",
+        "TICK-04.1"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-04.1",
+      "flag_cli": "--etapa TICK-04.1"
+    },
+    {
+      "id": "TICK-04.2",
+      "palavras_chave": [
+        "TICK 04.2",
+        "TICK-04.2"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-04.2",
+      "flag_cli": "--etapa TICK-04.2"
+    },
+    {
+      "id": "TICK-05.1",
+      "palavras_chave": [
+        "TICK 05.1",
+        "TICK-05.1"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-05.1",
+      "flag_cli": "--etapa TICK-05.1"
+    },
+    {
+      "id": "TICK-05.2",
+      "palavras_chave": [
+        "TICK 05.2",
+        "TICK-05.2"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-05.2",
+      "flag_cli": "--etapa TICK-05.2"
+    },
+    {
+      "id": "TICK-06.1",
+      "palavras_chave": [
+        "TICK 06.1",
+        "TICK-06.1"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-06.1",
+      "flag_cli": "--etapa TICK-06.1"
+    },
+    {
+      "id": "TICK-06.2",
+      "palavras_chave": [
+        "TICK 06.2",
+        "TICK-06.2"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-06.2",
+      "flag_cli": "--etapa TICK-06.2"
+    },
+    {
+      "id": "TICK-07.1",
+      "palavras_chave": [
+        "TICK 07.1",
+        "TICK-07.1"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-07.1",
+      "flag_cli": "--etapa TICK-07.1"
+    },
+    {
+      "id": "TICK-07.2",
+      "palavras_chave": [
+        "TICK 07.2",
+        "TICK-07.2"
+      ],
+      "slash_command": "/legoloop-homologacao-TICK-07.2",
+      "flag_cli": "--etapa TICK-07.2"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

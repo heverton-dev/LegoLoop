@@ -1,0 +1,1260 @@
+{
+  "id": "DAG-HOMOLOGACAO-ECOSISTEMA",
+  "name": "legoloop-homologacao",
+  "description": "Processo de correcao integral, verificacao cega e homologacao do ecossistema LegoLoop (Etapas 0 a 6).",
+  "version": "1.0.0",
+  "date": "2026-11-14",
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "name": "Desbloqueio de suite Go, DAGs e remocao de segredos trackeados",
+      "type": "unit_no",
+      "nature": "micro",
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "isolated_src": "internal/runner/isolated.go",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E01.1",
+        "target_dag": "docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json"
+      },
+      "output": {
+        "artifact": "internal/runner/isolated.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json') \u0026\u0026 file_exists('internal/runner/isolated.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 16000,
+        "max_output": 600
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json",
+        "internal/runner/isolated.go",
+        "RELATORIO_AUDITORIA_GEMINI4.md",
+        "AUDITORIA_FONTE.txt",
+        "legoloop.exe"
+      ],
+      "context_out": [
+        "docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json",
+        "internal/runner/isolated.go",
+        "internal/runner/isolated_test.go"
+      ],
+      "test_seam": {
+        "package": "internal/runner",
+        "test": "TestIsolatedExcludesCredenciaisAndSymlinks"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./tools/route2dag/...",
+          "./internal/runner/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/dags/2026-11-14_DAG_AUDITORIA_E2E_SWARM.json') \u0026\u0026 file_exists('internal/runner/isolated.go')"
+      },
+      "limits": {
+        "max_tokens_in": 16000,
+        "max_tokens_out": 600,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-01.2",
+      "name": "Paridade 1:1 Schema v2 com Parser Go, Peca Gatilho e pares ROUTE e DAG",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "dependencies": [
+        "TICK-01.1"
+      ],
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "dag_parser": "internal/dag/parse.go",
+        "schema_v2": "schemas/dag.v2.json",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E01.2"
+      },
+      "output": {
+        "artifact": "internal/dag/parity_v2_test.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/parity_v2_test.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "schemas/dag.v2.json",
+        "internal/dag/types.go",
+        "internal/dag/parse.go",
+        "internal/dag/schema_v2.go",
+        "internal/graph/ontology.go",
+        "internal/graph/index.go"
+      ],
+      "context_out": [
+        "schemas/dag.v2.json",
+        "internal/dag/types.go",
+        "internal/dag/parse.go",
+        "internal/dag/schema_v2.go",
+        "internal/dag/parity_v2_test.go",
+        "internal/graph/ontology.go",
+        "internal/graph/index.go",
+        "docs/dags/2026-11-10_DAG_DISSECAR.json",
+        "docs/dags/2026-11-13_DAG_STUDIO_PAPEIS_E_COMBOS.json",
+        "docs/dags/2026-11-14_DAG_DESIGN_UI.json",
+        "docs/dags/2026-11-14_DAG_SWARM.json"
+      ],
+      "test_seam": {
+        "package": "internal/dag",
+        "test": "TestSchemaV2AndTriggerParity"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/dag/...",
+          "./internal/graph/...",
+          "./tools/route2dag/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/parity_v2_test.go')"
+      },
+      "limits": {
+        "max_tokens_in": 24000,
+        "max_tokens_out": 800,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E01.2",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-01.3",
+      "name": "Taxonomia ASD-STE100 zerada e migracao para combos certificados",
+      "type": "unit_no",
+      "nature": "micro",
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "cli_main": "cmd/legoloop/main.go",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E01.3",
+        "templates_dir": "docs/templates/"
+      },
+      "output": {
+        "artifact": "docs/templates/templates_test.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/templates_test.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 20000,
+        "max_output": 600
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "cmd/legoloop/main.go",
+        "cmd/legoloop/migrar.go",
+        "cmd/legoloop/triagem.go",
+        "cmd/legoloop/triagem_test.go",
+        "docs/templates/",
+        "internal/studiodoc/store.go",
+        "internal/router/",
+        "skills/"
+      ],
+      "context_out": [
+        "cmd/legoloop/main.go",
+        "docs/templates/templates_test.go",
+        "internal/studiodoc/store.go",
+        "internal/router/router.go"
+      ],
+      "test_seam": {
+        "package": "docs/templates",
+        "test": "TestTaxonomiaTemplatesZeroViolacoes"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./docs/templates/...",
+          "./cmd/legoloop/...",
+          "./internal/router/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/templates/templates_test.go')"
+      },
+      "limits": {
+        "max_tokens_in": 20000,
+        "max_tokens_out": 600,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E01.3",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-02.1",
+      "name": "Blindagem Path Jail, CORS/CSRF, data race SSE e ordem do runner",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "dependencies": [
+        "TICK-01.1"
+      ],
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "runner_src": "internal/runner/runner.go",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E02.1",
+        "studio_security": "internal/studio/security.go"
+      },
+      "output": {
+        "artifact": "internal/studio/security_hardening_test.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/security_hardening_test.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/studio/reveal.go",
+        "internal/studio/piece_actions.go",
+        "internal/studio/security.go",
+        "internal/studio/run_api.go",
+        "internal/studio/server.go",
+        "internal/studio/processos_api.go",
+        "internal/runner/runner.go"
+      ],
+      "context_out": [
+        "internal/studio/reveal.go",
+        "internal/studio/piece_actions.go",
+        "internal/studio/security.go",
+        "internal/studio/run_api.go",
+        "internal/studio/server.go",
+        "internal/studio/security_hardening_test.go",
+        "internal/runner/runner.go",
+        "internal/runner/runner_test.go"
+      ],
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestPathJailDeleteOriginAndSSERace"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/...",
+          "./internal/runner/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/security_hardening_test.go')"
+      },
+      "limits": {
+        "max_tokens_in": 24000,
+        "max_tokens_out": 800,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-02.2",
+      "name": "Substituicao integral de stubs de midia em motion e videorea",
+      "type": "unit_no",
+      "nature": "micro",
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "cartoon_render": "internal/videorea/cartoon_render.go",
+        "motion_encode": "internal/motion/encode.go",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E02.2"
+      },
+      "output": {
+        "artifact": "internal/motion/motion_real_test.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/motion_real_test.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 16000,
+        "max_output": 600
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/motion/encode.go",
+        "internal/motion/render.go",
+        "internal/videorea/cartoon_render.go"
+      ],
+      "context_out": [
+        "internal/motion/encode.go",
+        "internal/motion/render.go",
+        "internal/motion/motion_real_test.go",
+        "internal/videorea/cartoon_render.go",
+        "internal/videorea/cartoon_render_test.go"
+      ],
+      "test_seam": {
+        "package": "internal/motion",
+        "test": "TestEncoderERendererSemStubPlaceholder"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/motion/...",
+          "./internal/videorea/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/motion/motion_real_test.go')"
+      },
+      "limits": {
+        "max_tokens_in": 16000,
+        "max_tokens_out": 600,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E02.2",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-03.1",
+      "name": "MCP Router operacional e executor real de no mcp STDIO",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-01.2",
+        "TICK-04.2"
+      ],
+      "dependencies": [
+        "TICK-01.2",
+        "TICK-04.2"
+      ],
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "cli_mcp_router": "internal/cli/mcp_router.go",
+        "mcp_router": "internal/mcp/router.go",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E03.1"
+      },
+      "output": {
+        "artifact": "internal/orchestrix/mcp_client.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/orchestrix/mcp_client.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/cli/mcp_router.go",
+        "internal/mcp/router.go",
+        "internal/mcp/swarm_tools.go",
+        "internal/orchestrix/orchestrix.go",
+        "internal/runner/runner.go"
+      ],
+      "context_out": [
+        "internal/cli/mcp_router.go",
+        "internal/mcp/router.go",
+        "internal/mcp/swarm_tools.go",
+        "internal/mcp/router_stdio_test.go",
+        "internal/orchestrix/mcp_client.go",
+        "internal/orchestrix/mcp_client_test.go"
+      ],
+      "test_seam": {
+        "package": "internal/mcp",
+        "test": "TestMCPRouterCofreSwarmEErro32700"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/mcp/...",
+          "./internal/orchestrix/...",
+          "./internal/cli/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/orchestrix/mcp_client.go')"
+      },
+      "limits": {
+        "max_tokens_in": 24000,
+        "max_tokens_out": 800,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-03.2",
+      "name": "Paridade CLI, harnesses, skills e fechar 100% real sem stubs",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-01.3",
+        "TICK-02.1"
+      ],
+      "dependencies": [
+        "TICK-01.3",
+        "TICK-02.1"
+      ],
+      "timeout_sec": 360,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "cli_dir": "internal/cli/",
+        "fechar_dir": "internal/fechar/",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E03.2"
+      },
+      "output": {
+        "artifact": "internal/fechar/fechar_real_test.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/fechar/fechar_real_test.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 28000,
+        "max_output": 900
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/cli/",
+        "internal/fechar/",
+        "skills/embed.go",
+        "internal/processo/vinculo.go",
+        "internal/assets/scanner.go"
+      ],
+      "context_out": [
+        "internal/cli/cli.go",
+        "internal/cli/remover.go",
+        "internal/cli/stept.go",
+        "internal/cli/sync_harnesses.go",
+        "internal/cli/fechar.go",
+        "internal/fechar/fechar.go",
+        "internal/fechar/types.go",
+        "internal/fechar/fechar_real_test.go",
+        "skills/embed.go",
+        "internal/processo/vinculo.go",
+        "internal/assets/scanner.go"
+      ],
+      "test_seam": {
+        "package": "internal/fechar",
+        "test": "TestFecharSemStubsETelemetriaReal"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/cli/...",
+          "./internal/fechar/...",
+          "./internal/processo/...",
+          "./internal/assets/...",
+          "./skills/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/fechar/fechar_real_test.go')"
+      },
+      "limits": {
+        "max_tokens_in": 28000,
+        "max_tokens_out": 900,
+        "retries": 1,
+        "timeout_sec": 360
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E03.2",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-04.1",
+      "name": "Integracao dos 9 motores N10 em producao e resiliencia Orchestrix",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-03.1"
+      ],
+      "dependencies": [
+        "TICK-02.1",
+        "TICK-03.1"
+      ],
+      "timeout_sec": 360,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "orchestrix_dir": "internal/orchestrix/",
+        "runner_dir": "internal/runner/",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E04.1"
+      },
+      "output": {
+        "artifact": "internal/runner/n10_integration_test.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/n10_integration_test.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 28000,
+        "max_output": 900
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/runner/",
+        "internal/orchestrix/",
+        "internal/brain/",
+        "internal/combo/",
+        "internal/cli/commands.go"
+      ],
+      "context_out": [
+        "internal/runner/runner.go",
+        "internal/runner/n10_integration_test.go",
+        "internal/orchestrix/orchestrix.go",
+        "internal/orchestrix/backends.go",
+        "internal/orchestrix/unit_harness.go",
+        "internal/cli/commands.go"
+      ],
+      "test_seam": {
+        "package": "internal/runner",
+        "test": "TestN10EnginesConnectedInProduction"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/runner/...",
+          "./internal/orchestrix/...",
+          "./internal/brain/...",
+          "./internal/combo/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/n10_integration_test.go')"
+      },
+      "limits": {
+        "max_tokens_in": 28000,
+        "max_tokens_out": 900,
+        "retries": 1,
+        "timeout_sec": 360
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-04.2",
+      "name": "Contrato unico de Swarm Board, file-lock e spawn/kill real",
+      "type": "unit_no",
+      "nature": "micro",
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "board_runtime": "internal/board/swarm_runtime.go",
+        "board_swarm": "internal/board/swarm.go",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E04.2"
+      },
+      "output": {
+        "artifact": "internal/board/swarm_unified_test.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/board/swarm_unified_test.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 20000,
+        "max_output": 700
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/board/swarm.go",
+        "internal/board/swarm_discovery.go",
+        "internal/board/swarm_runtime.go",
+        "internal/board/swarm_runtime_test.go"
+      ],
+      "context_out": [
+        "internal/board/swarm.go",
+        "internal/board/swarm_discovery.go",
+        "internal/board/swarm_runtime.go",
+        "internal/board/swarm_runtime_test.go",
+        "internal/board/swarm_unified_test.go"
+      ],
+      "test_seam": {
+        "package": "internal/board",
+        "test": "TestUnifiedPathFileLockExactMentionAndPIDKill"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/board/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/board/swarm_unified_test.go')"
+      },
+      "limits": {
+        "max_tokens_in": 20000,
+        "max_tokens_out": 700,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E04.2",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-05.1",
+      "name": "Swarm UI unificado, zero XSS, preservacao de estado e gestao de workers",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-04.2"
+      ],
+      "dependencies": [
+        "TICK-02.1",
+        "TICK-04.2"
+      ],
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "cli_swarm_ui": "internal/cli/swarm_ui.go",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E05.1",
+        "studio_swarm_api": "internal/studio/swarm_api.go"
+      },
+      "output": {
+        "artifact": "internal/studio/swarm_security_test.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/swarm_security_test.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/cli/swarm_ui.go",
+        "internal/studio/swarm_api.go",
+        "internal/studio/static/swarm.js",
+        "internal/studio/static/swarm.html"
+      ],
+      "context_out": [
+        "internal/cli/swarm_ui.go",
+        "internal/studio/swarm_api.go",
+        "internal/studio/static/swarm.js",
+        "internal/studio/static/swarm.html",
+        "internal/studio/swarm_security_test.go"
+      ],
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestSwarmUIUnifiedNoXSSAndRealKill"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/...",
+          "./internal/cli/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/swarm_security_test.go')"
+      },
+      "limits": {
+        "max_tokens_in": 24000,
+        "max_tokens_out": 800,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E05.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-05.2",
+      "name": "Desbloqueio E2E do Studio (#btn-run, ErrSemMatriz, Gatilho, SVG e Combos)",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-01.2",
+        "TICK-02.1"
+      ],
+      "dependencies": [
+        "TICK-01.2",
+        "TICK-02.1"
+      ],
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "high",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "fabricar_api": "internal/studio/fabricar_api.go",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E05.2",
+        "studio_app": "internal/studio/static/app.js"
+      },
+      "output": {
+        "artifact": "internal/studio/studio_e2e_flow_test.go",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/studio_e2e_flow_test.go')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 24000,
+        "max_output": 800
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/studio/static/app.js",
+        "internal/studio/static/inspector.js",
+        "internal/studio/static/lego-item-modal.js",
+        "internal/studio/fabricar_api.go",
+        "internal/studio/compose.go",
+        "internal/studio/templates.json"
+      ],
+      "context_out": [
+        "internal/studio/static/app.js",
+        "internal/studio/static/inspector.js",
+        "internal/studio/static/lego-item-modal.js",
+        "internal/studio/fabricar_api.go",
+        "internal/studio/compose.go",
+        "internal/studio/templates.json",
+        "internal/studio/studio_e2e_flow_test.go"
+      ],
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestFabricarErrSemMatrizAndComposeTrigger"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/studio_e2e_flow_test.go')"
+      },
+      "limits": {
+        "max_tokens_in": 24000,
+        "max_tokens_out": 800,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E05.2",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-06.1",
+      "name": "Layout responsivo, inspetor recuperavel, modais e seletor de tema",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-05.1",
+        "TICK-05.2"
+      ],
+      "dependencies": [
+        "TICK-05.1",
+        "TICK-05.2"
+      ],
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E06.1",
+        "studio_css": "internal/studio/static/style.css",
+        "studio_html": "internal/studio/static/index.html"
+      },
+      "output": {
+        "artifact": "internal/studio/static/style.css",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/static/style.css')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 20000,
+        "max_output": 700
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/studio/static/index.html",
+        "internal/studio/static/inventario.html",
+        "internal/studio/static/swarm.html",
+        "internal/studio/static/style.css",
+        "internal/studio/static/ui.js"
+      ],
+      "context_out": [
+        "internal/studio/static/index.html",
+        "internal/studio/static/inventario.html",
+        "internal/studio/static/swarm.html",
+        "internal/studio/static/style.css",
+        "internal/studio/static/ui.js",
+        "internal/studio/static_test.go"
+      ],
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestLayoutModaisNavegacaoETema"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/static/style.css')"
+      },
+      "limits": {
+        "max_tokens_in": 20000,
+        "max_tokens_out": 700,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E06.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-06.2",
+      "name": "Contraste WCAG AA, guildas legiveis e acessibilidade ARIA",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-06.1"
+      ],
+      "dependencies": [
+        "TICK-06.1"
+      ],
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-codigo-128k",
+        "effort": "medium",
+        "fallback": "t-agente-128k"
+      },
+      "inputs": {
+        "palette_js": "internal/studio/static/palette.js",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E06.2"
+      },
+      "output": {
+        "artifact": "internal/studio/static/palette.js",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/static/palette.js')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "share",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 20000,
+        "max_output": 700
+      },
+      "tooling": {
+        "mcp_allowlist": [],
+        "mcp_required": false,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "internal/studio/static/style.css",
+        "internal/studio/static/palette.js",
+        "internal/studio/static/swarm.js",
+        "internal/studio/static_test.go"
+      ],
+      "context_out": [
+        "internal/studio/static/style.css",
+        "internal/studio/static/palette.js",
+        "internal/studio/static/swarm.js",
+        "internal/studio/static_test.go"
+      ],
+      "test_seam": {
+        "package": "internal/studio",
+        "test": "TestWCAGTokensEGuildas"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./internal/studio/..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/static/palette.js')"
+      },
+      "limits": {
+        "max_tokens_in": 20000,
+        "max_tokens_out": 700,
+        "retries": 1,
+        "timeout_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E06.2",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-07.1",
+      "name": "Verificacao cega independente e auditoria E2E (Etapa 5)",
+      "type": "script",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-02.2",
+        "TICK-03.2",
+        "TICK-04.1",
+        "TICK-06.2"
+      ],
+      "dependencies": [
+        "TICK-02.2",
+        "TICK-03.2",
+        "TICK-04.1",
+        "TICK-06.2"
+      ],
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./..."
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-agente-128k",
+        "effort": "high",
+        "fallback": "t-codigo-128k"
+      },
+      "inputs": {
+        "binary": "bin/legoloop.exe",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E07.1"
+      },
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "inherit",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 32000,
+        "max_output": 1200
+      },
+      "tooling": {
+        "mcp_allowlist": [
+          "playwright:browser_navigate",
+          "chrome-devtools-mcp:list_pages",
+          "rea:inspect_web_page"
+        ],
+        "mcp_required": true,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "bin/legoloop.exe",
+        "cmd/",
+        "internal/",
+        "tools/",
+        "schemas/",
+        "skills/"
+      ],
+      "context_out": [
+        "bin/legoloop.exe",
+        "scratch/gates/TICK-07.1.json"
+      ],
+      "test_seam": {
+        "package": "internal/e2e",
+        "test": "TestE2EFullBinary"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "test",
+          "-count=1",
+          "./..."
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "limits": {
+        "max_tokens_in": 32000,
+        "max_tokens_out": 1200,
+        "retries": 1,
+        "timeout_sec": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E07.1",
+      "status": "PENDING"
+    },
+    {
+      "id": "TICK-07.2",
+      "name": "Fechamento canonico universal (Etapa 6 - Lei #11)",
+      "type": "unit_no",
+      "nature": "micro",
+      "depends_on": [
+        "TICK-07.1"
+      ],
+      "dependencies": [
+        "TICK-07.1"
+      ],
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "via": "9router",
+        "model": "t-agente-128k",
+        "effort": "medium",
+        "fallback": "t-codigo-128k"
+      },
+      "inputs": {
+        "dag_doc": "docs/dags/2026-11-14_DAG_HOMOLOGACAO_ECOSISTEMA.json",
+        "spec_anchor": "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md#AC-E07.2"
+      },
+      "output": {
+        "artifact": "docs/reports/2026-11-14_REPORT_HOMOLOGACAO_ECOSISTEMA.md",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/reports/2026-11-14_REPORT_HOMOLOGACAO_ECOSISTEMA.md') \u0026\u0026 file_exists('skills/legoloop-homologacao/SKILL.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "token_budget": {
+        "max_input": 32000,
+        "max_output": 1500
+      },
+      "tooling": {
+        "mcp_allowlist": [
+          "codebase-memory-mcp:index_repository"
+        ],
+        "mcp_required": true,
+        "runtime": "powershell"
+      },
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_HOMOLOGACAO_ECOSISTEMA.md",
+        "docs/dags/2026-11-14_DAG_HOMOLOGACAO_ECOSISTEMA.json"
+      ],
+      "context_out": [
+        "docs/manuals/2026-11-14_MANUAL_FUNCAO_HOMOLOGACAO_ECOSISTEMA_LEGOLOOP.md",
+        "docs/books/homologacao-ecosistema/livro.json",
+        "skills/legoloop-homologacao/SKILL.md",
+        "docs/reports/2026-11-14_REPORT_HOMOLOGACAO_ECOSISTEMA.md"
+      ],
+      "test_seam": {
+        "package": "internal/fechar",
+        "test": "TestFecharHomologacaoIntegral"
+      },
+      "verification": {
+        "command": [
+          "go",
+          "install",
+          "./cmd/legoloop"
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/reports/2026-11-14_REPORT_HOMOLOGACAO_ECOSISTEMA.md') \u0026\u0026 file_exists('skills/legoloop-homologacao/SKILL.md')"
+      },
+      "limits": {
+        "max_tokens_in": 32000,
+        "max_tokens_out": 1500,
+        "retries": 1,
+        "timeout_sec": 600
+      },
+      "rollback_strategy": "stash_changes",
+      "spec_ref": "AC-E07.2",
+      "status": "PENDING"
+    }
+  ],
+  "created_at": "0001-01-01T00:00:00Z",
+  "updated_at": "0001-01-01T00:00:00Z"
+}

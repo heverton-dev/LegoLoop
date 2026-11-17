@@ -14,8 +14,71 @@
   ],
   "criterio_ambiguidade": {
     "descricao": "Classificação para o processo impeccable-design",
-    "etapas": null
+    "etapas": [
+      "subprocesso-avaliar",
+      "subprocesso-construir",
+      "subprocesso-melhorar",
+      "subprocesso-refinar",
+      "subprocesso-corrigir",
+      "subprocesso-iterar-documentar"
+    ]
   },
+  "etapas": [
+    {
+      "id": "subprocesso-avaliar",
+      "palavras_chave": [
+        "subprocesso avaliar",
+        "subprocesso-avaliar"
+      ],
+      "slash_command": "/impeccable-design-subprocesso-avaliar",
+      "flag_cli": "--etapa subprocesso-avaliar"
+    },
+    {
+      "id": "subprocesso-construir",
+      "palavras_chave": [
+        "subprocesso construir",
+        "subprocesso-construir"
+      ],
+      "slash_command": "/impeccable-design-subprocesso-construir",
+      "flag_cli": "--etapa subprocesso-construir"
+    },
+    {
+      "id": "subprocesso-melhorar",
+      "palavras_chave": [
+        "subprocesso melhorar",
+        "subprocesso-melhorar"
+      ],
+      "slash_command": "/impeccable-design-subprocesso-melhorar",
+      "flag_cli": "--etapa subprocesso-melhorar"
+    },
+    {
+      "id": "subprocesso-refinar",
+      "palavras_chave": [
+        "subprocesso refinar",
+        "subprocesso-refinar"
+      ],
+      "slash_command": "/impeccable-design-subprocesso-refinar",
+      "flag_cli": "--etapa subprocesso-refinar"
+    },
+    {
+      "id": "subprocesso-corrigir",
+      "palavras_chave": [
+        "subprocesso corrigir",
+        "subprocesso-corrigir"
+      ],
+      "slash_command": "/impeccable-design-subprocesso-corrigir",
+      "flag_cli": "--etapa subprocesso-corrigir"
+    },
+    {
+      "id": "subprocesso-iterar-documentar",
+      "palavras_chave": [
+        "subprocesso iterar documentar",
+        "subprocesso-iterar-documentar"
+      ],
+      "slash_command": "/impeccable-design-subprocesso-iterar-documentar",
+      "flag_cli": "--etapa subprocesso-iterar-documentar"
+    }
+  ],
   "pontos_entrada": [
     "cli",
     "chat",

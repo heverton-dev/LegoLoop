@@ -1,0 +1,77 @@
+{
+  "id": "",
+  "name": "legoloop-swarm",
+  "description": "Orquestrar execucao paralela de processo em swarm por nivel topologico com roteamento de modelos pela Matriz de Papeis",
+  "version": "1.0.0",
+  "date": "2026-11-14",
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "type": "",
+      "routing": {
+        "mode": ""
+      },
+      "output": {
+        "artifact": "",
+        "gate": ""
+      }
+    },
+    {
+      "id": "TICK-01.2",
+      "type": "",
+      "routing": {
+        "mode": ""
+      },
+      "output": {
+        "artifact": "",
+        "gate": ""
+      }
+    },
+    {
+      "id": "TICK-01.3",
+      "type": "",
+      "routing": {
+        "mode": ""
+      },
+      "output": {
+        "artifact": "",
+        "gate": ""
+      }
+    },
+    {
+      "id": "TICK-01.4",
+      "type": "",
+      "routing": {
+        "mode": ""
+      },
+      "output": {
+        "artifact": "",
+        "gate": ""
+      }
+    },
+    {
+      "id": "TICK-01.5",
+      "type": "",
+      "routing": {
+        "mode": ""
+      },
+      "output": {
+        "artifact": "",
+        "gate": ""
+      }
+    },
+    {
+      "id": "SG-FINAL",
+      "type": "",
+      "routing": {
+        "mode": ""
+      },
+      "output": {
+        "artifact": "",
+        "gate": ""
+      }
+    }
+  ],
+  "created_at": "0001-01-01T00:00:00Z",
+  "updated_at": "0001-01-01T00:00:00Z"
+}
