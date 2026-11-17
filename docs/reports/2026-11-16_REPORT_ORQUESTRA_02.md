@@ -19,7 +19,7 @@ Os 4 tickets do Épico 05 e os 4 tickets do Épico 04 fecharam com portões mec�
 - Teste `TestMigraQuinteto` cobre migração, órfãos, protegidos e multi-reivindicação (primeiro em ordem alfabética) | prova: `go test ./internal/inventario/` exit 0.
 - Mutações provadas: M1 (`resolverDono`→vazio: 6 donos viram órfãos) e M2 (`registrarOrfaos`→no-op: registro com 0 entradas) morderam e foram restauradas.
 - Testes quebrados pela mudança de caminho corrigidos: paridade de rota (internal/dag/parity_v2_test.go) e rota Lei 15 (tools/route2dag/route2dag_test.go:13) | prova: `go test -count=1 ./...` exit 0.
-- Dívida herdada do Quinteto migrado: 629 violações novas de taxonomia em `processos/*/docs/**` viraram exceções por arquivo no mecanismo canônico do tool (tools/taxlinter/exceptions.go) | prova: taxlinter 29 violações (baseline 31), nenhuma em código novo.
+- Dívida herdada do Quinteto migrado: 629 violações novas de taxonomia em `processos/*/docs/**` (arquivos migrados para `docs/` raiz em 2026-11-17) viraram exceções por arquivo no mecanismo canônico do tool (tools/taxlinter/exceptions.go) | prova: taxlinter 29 violações (baseline 31), nenhuma em código novo.
 
 ### TICK-05.3 — Abstração por SO (AC-E05.3) — commit `2a2a8ef`
 - `ResolveParaSO` escolhe a variante `.ps1`/`.sh` compatível com o SO alvo; `ResolvePorSO` usa o SO detectado (internal/fabricar/scaffold.go:17-40).
@@ -64,7 +64,7 @@ Os 4 tickets do Épico 05 e os 4 tickets do Épico 04 fecharam com portões mec�
 - Links em `AGENTS.md`/`MEMORY.md`/`README.md` apontam para docs migrados (caminhos antigos). Reescrita mecânica não executada por risco de quebrar âncoras internas. Cada doc movido é rastreável no `registro_orfaos.json`.
 - DOC MOVIDO sem redirect: não existe mecanismo de redirect; posse rastreável pelo registro de órfãos.
 - `ResolvePorSO` sem chamador de produção: nenhuma peça `.ps1`/`.sh` existe hoje no Inventário. A camada está implementada, testada e pronta para o primeiro chamador.
-- Exceções em `tools/taxlinter/exceptions.go` contra a regra de não editar `tools/taxlinter/`: decisão registrada. A alternativa era gate vermelho herdado; o mecanismo de exceção é canônico do próprio tool. 48 arquivos documentais em `processos/*/docs/**` com dívida histórica de vocabulário.
+- Exceções em `tools/taxlinter/exceptions.go` contra a regra de não editar `tools/taxlinter/`: decisão registrada. A alternativa era gate vermelho herdado; o mecanismo de exceção é canônico do próprio tool. 48 arquivos documentais migrados para `docs/` raiz (origem `processos/*/docs/**`, 2026-11-17) com dívida histórica de vocabulário.
 - Fluxo com LLM real não foi re-executado neste épicos (testes herméticos com LLM falso).
 
 ## Commits

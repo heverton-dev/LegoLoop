@@ -33,7 +33,7 @@
 - **ID da sessão Antigravity:** `95d7dbd7-0074-4021-91ef-bcd376890df0`
 
 - **Painel visual do `swarm`:** adiado. Usar `/swarm board` (`Alt+S`) no dia a dia e priorizar o subprocesso oficial `legoloop-swarm` (que gera `swarm_run_report.json` para futura exibição no Studio sem acoplar a arquivos internos do Antigravity).
-- **Contrato `legoloop-swarm`:** consome `pipeline.dag.json` e mapa `guild_models` ligado à Matriz de Papéis (`docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md`), executa nós independentes em paralelo por nível topológico com barreira de `output.gate` e roteamento de modelos leves por guilda/papel.
+- **Contrato `legoloop-swarm`:** consome `pipeline.dag.json` e mapa `guild_models` ligado à Matriz de Papéis (`docs/archive/quinteto/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md`), executa nós independentes em paralelo por nível topológico com barreira de `output.gate` e roteamento de modelos leves por guilda/papel.
 - **Estado atual:** `--dry-run` de `legoloop fabricar "legoloop-swarm"` passou com `exit_code 0` e `coerente: true`. Falta apenas executar a gravação real (sem `--dry-run`) e compor no `mega-pipeline` via `legoloop compor` após a Tríade de Planejamento.
 
 ## Progresso por ticket
@@ -313,7 +313,7 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Épico 02 (`internal/plangen/`):** Modelagem e parsers de Iniciativas (`meta.go`, `route.go`, `plangen.go`). Reconhecimento de `InitiativeRef`, `Initiatives` e emissão precisa de nós JSON com `initiative_id` e `initiative_ref`. 20/20 testes verdes com suíte dedicada em `initiative_test.go`.
   - **Épico 03 (Governança & Recompilação):** Skill `aidd-legoloop-mega-pipeline/SKILL.md` atualizada com a matriz de 4 níveis e guia de classificação, sincronizada nos harnesses.
   - **Homologação Global:** 100% dos 32 pacotes internos passando verde (`go test -count=1 ./...`), `go vet` limpo, `gofmt` vazio, `funclen` <= 35 linhas, `go.mod` stdlib pura. Binário `bin/legoloop.exe` recompilado e instalado globalmente via `go install ./cmd/legoloop`.
-  - **Artefatos:** `docs/intents/2026-11-07_INTENT_HIERARQUIA_INICIATIVA.md`, `docs/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md`, `docs/plans/2026-11-07_PLAN_HIERARQUIA_INICIATIVA.md`, `docs/routes/2026-11-07_ROUTE_HIERARQUIA_INICIATIVA.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_HIERARQUIA_INICIATIVA.md`.
+  - **Artefatos:** `docs/archive/quinteto/intents/2026-11-07_INTENT_HIERARQUIA_INICIATIVA.md`, `docs/archive/quinteto/specs/2026-11-07_SPEC_HIERARQUIA_INICIATIVA.md`, `docs/archive/quinteto/plans/2026-11-07_PLAN_HIERARQUIA_INICIATIVA.md`, `docs/archive/quinteto/routes/2026-11-07_ROUTE_HIERARQUIA_INICIATIVA.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_HIERARQUIA_INICIATIVA.md`.
 
 - **07/11/2026** — 🔐 **Evolução da ROUTE v2.1: Integridade Criptográfica Merkle & Governança de Concorrência Concluída (`Mega Pipeline`):**
   - **Quarteto Criptográfico Merkle (`upstream_signatures`):** Assinatura encadeada dos 3 artefatos anteriores da Tríade (`INTENT` $\rightarrow$ `SPEC` $\rightarrow$ `PLAN` $\rightarrow$ `ROUTE`) via SHA-256 com normalização cross-platform (`CRLF` $\rightarrow$ `LF`). Testado e provado com `TestHashNormalized_EquivalenceCRLF`.
@@ -321,7 +321,7 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Governança Fina de Concorrência & Subagentes Limpos:** Tipagem e validação formal de `ConcurrencyStrategy` (`internal/plangen/concurrency.go`) com teto [1, 8] de `max_parallel_subagents`, rate-limiting de API e degradação graciosa para modo serial se o harness declarar `harness_capability: "none"` (`concurrency_test.go`).
   - **Harmonização do Ecossistema:** Pacote `internal/refinar` harmonizado para rastrear as mutações de upstream na ROUTE com precisão cirúrgica (27/27 testes verdes).
   - **Homologação & Qualidade:** 100% dos testes verdes nos pacotes afetados, `funclen` $\le 35$ linhas, `gofmt` limpo, `go.mod` stdlib intacto, e binário `bin/legoloop.exe` recompilado.
-  - **Artefatos:** `docs/intents/2026-11-07_INTENT_ROUTE_V2_GOVERNANCE.md`, `docs/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md`, `docs/plans/2026-11-07_PLAN_ROUTE_V2_GOVERNANCE.md`, `docs/routes/2026-11-07_ROUTE_ROUTE_V2_GOVERNANCE.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_ROUTE_V2_GOVERNANCE.md`.
+  - **Artefatos:** `docs/archive/quinteto/intents/2026-11-07_INTENT_ROUTE_V2_GOVERNANCE.md`, `docs/archive/quinteto/specs/2026-11-07_SPEC_ROUTE_V2_GOVERNANCE.md`, `docs/archive/quinteto/plans/2026-11-07_PLAN_ROUTE_V2_GOVERNANCE.md`, `docs/archive/quinteto/routes/2026-11-07_ROUTE_ROUTE_V2_GOVERNANCE.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_ROUTE_V2_GOVERNANCE.md`.
 
 - **07/11/2026** — 💎 **Harmonização Canônica e Expansão dos Nós da ROUTE e PLAN para v2.2.0:**
   - **Contrato Atômico dos Nós Enriquecido:** Adicionados `epic_id` (linhagem tripartite Iniciativa $\rightarrow$ Épico $\rightarrow$ Nó), `isolation.write_boundary: "strict"` (blindagem mecânica contra mutações fora do escopo), `retry_policy` (tolerância a falhas temporárias com retentativa e fallback de modelo), `token_budget` bidirecional (`max_input_tokens` e `max_output_tokens`), e `telemetry` (persistência factual para auditoria pós-execução).
@@ -335,7 +335,7 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **TDD Red-Green & Manuais ISO:** Testes em `internal/cli/instalar_skills_test.go` provados via Red-Green. Adicionados 3 novos manuais em `docs/manuals/` (`2026-11-07_MANUAL_FUNCAO_PIECE_UPGRADER_LEGOLOOP.md`, `2026-11-07_MANUAL_FUNCAO_LOOP_MAP_LEGOLOOP.md`, `2026-11-07_MANUAL_FUNCAO_MEGA_PIPELINE_LEGOLOOP.md`).
   - **Distribuição Universal:** `legoloop instalar-skills --json` executado com sucesso, populando o cofre `~/.aidd/canonical` e criando vínculos nos 6 harnesses detectados (`claude`, `gemini`, `cursor`, `codex`, `opencode`, `kiro`) e junctions em `antigravity-cli/skills/`.
   - **Qualidade & Recompilação:** `go test ./...` verde, `go vet` limpo, `gofmt` vazio, `bin/legoloop.exe` recompilado e atualizado no PATH via `go install`.
-  - **Artefatos:** `docs/intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/routes/2026-11-07_ROUTE_NORMALIZACAO_TAXONOMIA_SKILLS.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_NORMALIZACAO_TAXONOMIA_SKILLS.md`.
+  - **Artefatos:** `docs/archive/quinteto/intents/2026-11-07_INTENT_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/archive/quinteto/specs/2026-11-07_SPEC_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/archive/quinteto/plans/2026-11-07_PLAN_NORMALIZACAO_TAXONOMIA_SKILLS.md`, `docs/archive/quinteto/routes/2026-11-07_ROUTE_NORMALIZACAO_TAXONOMIA_SKILLS.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_NORMALIZACAO_TAXONOMIA_SKILLS.md`.
 
 - **07/11/2026** — 🏆 **Elevação dos Templates Satélites ao Padrão Ouro da Indústria Agêntica (v2.2.0):**
   - **Diagnóstico de Fronteira:** Confronto sistemático dos templates secundários com o estado da arte (Anthropic Model Context Protocol 2024-2025, Claude Code Lifecycle Hooks, `agentskills.io` Open Standard, OpenAI Assistants/Agents SDK e Google Antigravity).
@@ -365,7 +365,7 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Épico 03 (Grafo DAG, Sub-Loop & Mega Pipeline):** Criado o grafo DAG dedicado `processos/fechar/pipeline.dag.json` (6 camadas acíclicas) e o manifesto `processos/fechar.loop.json`. Acoplado como 6º sub-loop obrigatório `l6-fechar-canonico` no `processos/mega-pipeline.loop.json`, garantindo que todo épico gerado pelo Mega Pipeline encerre disparando o fechamento canônico formal.
   - **Homologação Global:** 100% dos 33 pacotes internos passando verde (`go test -count=1 ./...`), `go vet` limpo, `gofmt -l` 100% vazio, `tools/funclen` limpo ($\le 35$ linhas), `go.mod` stdlib pura.
   - **Instalação Fresca & Grafo Semântico:** Binário `bin/legoloop.exe` recompilado e instalado no PATH (`go install ./cmd/legoloop`). Grafo semântico reindexado via `codebase-memory-mcp cli index_repository` (13.963 nós e 40.419 arestas).
-  - **Artefatos:** `docs/intents/2026-11-07_INTENT_FECHAR_CANONICO.md`, `docs/specs/2026-11-07_SPEC_FECHAR_CANONICO.md`, `docs/plans/2026-11-07_PLAN_FECHAR_CANONICO.md`, `docs/routes/2026-11-07_ROUTE_FECHAR_CANONICO.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_FECHAR_CANONICO.md`.
+  - **Artefatos:** `docs/archive/quinteto/intents/2026-11-07_INTENT_FECHAR_CANONICO.md`, `docs/archive/quinteto/specs/2026-11-07_SPEC_FECHAR_CANONICO.md`, `docs/archive/quinteto/plans/2026-11-07_PLAN_FECHAR_CANONICO.md`, `docs/archive/quinteto/routes/2026-11-07_ROUTE_FECHAR_CANONICO.json` e Relatório Final em `docs/reports/2026-11-07_REPORT_FECHAR_CANONICO.md`.
 
 - **07/11/2026** — 📊 **Institucionalização da 9ª Etapa de Fechamento: Template Canônico de Reporte com Telemetria Estrita (Tempo, Recursos e Custo):**
   - **Template Canônico de Reporte (`docs/templates/TEMPLATE_REPORT.md`):** Criado o padrão SSOT v2.2.0 para relatórios de fechamento em `docs/reports/YYYY-MM-DD_REPORT_<NOME>.md`. Contém metadados ISO, 6 seções numeradas estáveis, tabelas de balanço orçado vs realizado de cronometria (duração total, LLM, build, IO), recursos computacionais (tokens in/out/total, turnos, calls, cache hits, modelos) e custo financeiro consolidado (USD e BRL com taxa cambial declarada), além de matriz de qualidade e inventário criptográfico.
@@ -544,10 +544,10 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
     - Contrato da Peça: `papel_primario` obrigatório + `papeis_secundarios` opcionais para desempate determinístico no comando `legoloop fabricar`.
     - Disjuntor Poka-Yoke: erro sentinela e código de saída 1 para papéis desconhecidos fora da SSOT.
   - **Quinteto de Governança ISO Materializado:**
-    - `INTENT`: [docs/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md](docs/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md) (100% alinhado na entrevista socrática).
-    - `SPEC`: [docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md](docs/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md) (Contratos formais Go em `taxonomy` e `matriz`, critérios BDD).
-    - `PLAN`: [docs/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md](docs/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md) (6 tickets verticais em 3 épicos).
-    - `ROUTE`: [docs/routes/2026-11-10_ROUTE_MATRIZ_PAPEIS.json](docs/routes/2026-11-10_ROUTE_MATRIZ_PAPEIS.json) (Espelho 1:1 com assinaturas SHA-256).
+    - `INTENT`: [docs/archive/quinteto/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md](docs/archive/quinteto/intents/2026-11-10_INTENT_MATRIZ_PAPEIS.md) (100% alinhado na entrevista socrática).
+    - `SPEC`: [docs/archive/quinteto/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md](docs/archive/quinteto/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md) (Contratos formais Go em `taxonomy` e `matriz`, critérios BDD).
+    - `PLAN`: [docs/archive/quinteto/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md](docs/archive/quinteto/plans/2026-11-10_PLAN_MATRIZ_PAPEIS.md) (6 tickets verticais em 3 épicos).
+    - `ROUTE`: [docs/archive/quinteto/routes/2026-11-10_ROUTE_MATRIZ_PAPEIS.json](docs/archive/quinteto/routes/2026-11-10_ROUTE_MATRIZ_PAPEIS.json) (Espelho 1:1 com assinaturas SHA-256).
     - `DAG`: [docs/dags/2026-11-10_DAG_MATRIZ_PAPEIS.json](docs/dags/2026-11-10_DAG_MATRIZ_PAPEIS.json) (Projetado mecanicamente via `route2dag`).
   - **Status:** Colocado em stand-by formal pelo usuário antes da execução do Épico 01, aguardando alinhamento com implementações concomitantes.
 

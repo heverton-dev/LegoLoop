@@ -148,8 +148,8 @@ Total: 94 entradas.
 - `internal/cli/legado.go` — loop
 - `internal/cli/legado_test.go` — loop, pipeline
 - `internal/fechar/quarteto_test.go` — loop
-- `processos/legoloop-video-rea-transcrever/docs/intents/2026-11-15_INTENT_VIDEO_REA_TRANSCREVER.md` — task
-- `processos/legoloop-video-rea-transcrever/docs/routes/2026-11-15_ROUTE_VIDEO_REA_TRANSCREVER.json` — loop, pipeline
+- `docs/intents/2026-11-15_INTENT_VIDEO_REA_TRANSCREVER.md` — task
+- `docs/routes/2026-11-15_ROUTE_VIDEO_REA_TRANSCREVER.json` — loop, pipeline
 
 ---
 
