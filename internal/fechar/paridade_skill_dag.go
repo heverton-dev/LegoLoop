@@ -118,7 +118,7 @@ func auditParidadeSkillDAG(repoDir, slug, canon, dagPath string) error {
 		if errors.Is(err, errParidadeDAGAusente) {
 			return erroAusente(repoDir, "DAG do processo", dagPath)
 		}
-		return erroStub(repoDir, "DAG do processo", dagPath, err.Error())
+		return fmt.Errorf("%w: %s", errParidadeDAGInvalido, relativo(repoDir, dagPath))
 	}
 	skillPath := resolverSkillParidade(repoDir, slug, canon, nos)
 	if skillPath == "" {
