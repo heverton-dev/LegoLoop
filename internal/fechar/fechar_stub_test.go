@@ -19,6 +19,7 @@ func semearDocs(t *testing.T, repo, slug string) {
 	livro := filepath.Join(repo, "docs", "books", canon, "livro.json")
 	skill := filepath.Join(repo, "skills", canon, "SKILL.md")
 	corpoSkill := "---\nname: " + canon + "\ndescription: Skill de teste\n---\n# " + canon + "\n" +
+		"Nós do DAG citados: 01-alfa, 02-beta, e01.\n" +
 		strings.Repeat("Passo operacional com resultado verificável.\n", 12)
 	arquivos := map[string]string{
 		manual: "# Manual\n" + strings.Repeat("Instrução operacional.\n", 12),
