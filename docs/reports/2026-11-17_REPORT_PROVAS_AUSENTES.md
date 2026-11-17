@@ -48,7 +48,7 @@ Contagem auditada por git:
 | Estado atual (após `886f783`, rename E06) | 94 | 143 (+4) |
 
 - **Condição (a) — listagem:** a relação completa das exceções vigentes está em [seção 4.1](#41-relação-completa-das-exceções-vigentes).
-- **Condição (b) — não crescimento:** `48` (pares migrados do Quinteto em `0e9bb5c`) `+ 91` (baseline anterior) `= 139` homologados. Os `+4` pares atuais (`886f783`, Épico 06) são os MESMOS termos sob os caminhos renomeados `loops/`→`processos/` — renome herdado homologado no SG-E06, sem vocabulário novo. **Nenhum termo novo entrou no mapa após o homologado.**
+- **Condição (b) — não crescimento:** `48` (pares migrados do Quinteto em `0e9bb5c`) `+ 91` (baseline anterior) `= 139` homologados. Os `+4` pares atuais (`886f783`, Épico 06) são os MESMOS termos sob os caminhos renomeados para `processos/` no Épico 06 — renome herdado homologado no SG-E06, sem vocabulário novo. **Nenhum termo novo entrou no mapa após o homologado.**
 
 ### 4.1 Relação completa das exceções vigentes
 
