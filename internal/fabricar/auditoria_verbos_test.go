@@ -1,6 +1,7 @@
 package fabricar_test
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -78,6 +79,37 @@ func TestAuditoriaSeisVerbosCriterioBinario(t *testing.T) {
 		}
 		if got := fabricar.CodigoDe(rels[i]); got != codigos[i] {
 			t.Errorf("CodigoDe(%s) = %d, coerência exigia %d", v, got, codigos[i])
+		}
+	}
+}
+
+// TestRelatorioUniversalTrazProvas exige que o relatório consolidado traga as
+// provas de mutação (M1–M6) e o registro honesto do que não foi provado (AC-E08.3).
+func TestRelatorioUniversalTrazProvas(t *testing.T) {
+	raiz := t.TempDir()
+	arvoreVerbos(t, raiz)
+	exits := map[string]int{}
+	for _, v := range fabricar.VerbosAuditados {
+		exits[v] = 0
+	}
+	rels, _, err := fabricar.AuditarVerbos(raiz, stubPorVerbo(exits))
+	if err != nil {
+		t.Fatal(err)
+	}
+	doc := fabricar.RelatorioUniversal(rels, dataFixa)
+	for _, secao := range []string{"## Mutações provadas", "## Não provado"} {
+		if !strings.Contains(doc, secao) {
+			t.Errorf("relatório consolidado sem a seção %q", secao)
+		}
+	}
+	for i := 1; i <= 6; i++ {
+		if !strings.Contains(doc, fmt.Sprintf("M%d:", i)) {
+			t.Errorf("relatório consolidado sem a mutação M%d registrada", i)
+		}
+	}
+	for _, v := range fabricar.VerbosAuditados {
+		if !strings.Contains(doc, "| "+v+" |") {
+			t.Errorf("tabela do consolidado sem a linha do verbo %s", v)
 		}
 	}
 }

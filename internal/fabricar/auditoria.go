@@ -466,8 +466,29 @@ func RelatorioUniversal(rels []Relatorio, agora time.Time) string {
 		b.WriteString(Renderizar(rel))
 		b.WriteString("\n---\n\n")
 	}
+	b.WriteString(apendiceProvas)
 	return b.String()
 }
+
+// apendiceProvas registra as mutações provadas do Green-Red-Green e o que não foi provado.
+const apendiceProvas = `## Mutações provadas
+
+Cada mutação forçada fez o teste alvo falhar e foi restaurada em seguida (Green-Red-Green).
+
+- M1: veredito invertido em fecharRelatorio — TestAlvoArbitrario e TestAuditoriaSeisVerbosCriterioBinario falharam — restaurada.
+- M2: etapa e05_veredito removida em etapasAuditoria — TestScaffoldAuditoriaAtomica falhou — restaurada.
+- M3: seção Refatoração omitida em Renderizar — TestAlvoArbitrario falhou — restaurada.
+- M4: exit do critério binário ignorado em Auditar — TestAuditoriaSeisVerbosCriterioBinario falhou — restaurada.
+- M5: erro de alvo inexistente ignorado em AuditarEGravar — TestAlvoInexistenteExitDois falhou — restaurada.
+- M6: gravação dos relatórios atômicos suprimida em AuditarVerbosEGravar — TestAuditoriaSeisVerbosCriterioBinario falhou — restaurada.
+
+## Não provado
+
+- "-race" não rodou: ambiente sem CGO.
+- Auditoria com LLM real não rodou: os testes usam o critério binário simulado.
+- Distribuição universal aos harnesses não foi executada nesta sessão.
+- A suíte do repositório tem flakes de concorrência pré-existentes (internal/runner, internal/studio): passam isolados e falham de forma intermitente sob a carga da suíte paralela.
+`
 
 // CodigoDe devolve o código de saída do relatório: 0 aprovado, 1 reprovado.
 func CodigoDe(rel Relatorio) int {

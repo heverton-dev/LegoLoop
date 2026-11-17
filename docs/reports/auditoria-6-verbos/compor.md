@@ -27,5 +27,5 @@ Nenhuma refatoração sugerida.
 ### Evidências
 
 - Comando: `go test -count=1 ./internal/compor/...` — exit 0
-  - Saída: ok legoloop/internal/compor 7.735s
+  - Saída: ok legoloop/internal/compor 7.926s
 
