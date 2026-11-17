@@ -94,3 +94,16 @@ legoloop legopress auditar docs/books/video-master/livro.json
 - [x] Golden Fixture de 3s presente em `testdata/fixtures/video_master_fixture_3s.mp4`.
 - [x] Livro didático estruturado e auditado pelo LegoPress.
 - [x] Suíte de testes do ecossistema 100% verde.
+
+---
+
+## 5. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `n01_forensics_intake` | Forense Audiovisual & Intake | Ingestão e dissecação forense dos vídeos e metadados de entrada |
+| `n02_motion_3d_engine` | Motor de Motion Graphics 3D | Geração e renderização de motion graphics com Three.js e WebGL |
+| `n03_whiteboard_svg_engine` | Motor Whiteboard SVG Autônomo | Síntese de desenhos procedurais SVG e animação estilo whiteboard |
+| `n04_auto_editor_reels` | Auto-Editor de Vídeos Verticais Reels/TikTok | Fatiamento inteligente, legendagem e enquadramento vertical |
+| `n05_channel_clone_book` | Livro Didático & Clonagem Canônica | Compilação do livro técnico no padrão LegoPress e materialização |
+

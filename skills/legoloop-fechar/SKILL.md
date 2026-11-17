@@ -59,3 +59,28 @@ suggested_model: t-chat-128k
 2. **Pelo Chat do Agente:**
    Acione via slash command passando o slug:
    > `/legoloop-fechar video-motion`
+
+---
+
+## 4. Grafo de Execução (DAG) & Nós Canônicos
+
+### Processo Canônico `legoloop-fechar`
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `n01_manual_check` | Auditoria e Geração do Manual Operacional | Verificação e emissão do manual em `docs/manuals/` |
+| `n02_book_legopress` | Auditoria Geométrica do Livro LegoPress | Compilação e auditoria geométrica do livro didático |
+| `n03_skill_harnesses` | Instalação e Vínculo Universal de Skills nos Harnesses | Registro da skill universal nos harnesses do ecossistema |
+| `n04_dag_validation` | Validação Estrutural e Topológica do Grafo DAG | Validação de aciclicidade e schema do DAG |
+| `n05_rebuild_binary` | Recompilação e Instalação Fresca do Binário | Build e instalação do binário `legoloop.exe` |
+| `n06_governance_sync` | Sincronização da Governança Viva (AGENTS, MEMORY, README) | Atualização dos documentos vivos de governança |
+| `n07_report_telemetry` | Emissão de Relatório de Conclusão com Telemetria e Custos | Relatório de conclusão e telemetria estrita em `docs/reports/` |
+
+### Processo Legado / Variável `fechar`
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `etapa-manual` | Manual Operacional da Função | Emissão do manual operacional |
+| `etapa-skill` | Skill Canônica nos Harnesses | Instalação da skill nos harnesses |
+| `etapa-dag` | Validação Mecânica do Grafo DAG | Verificação mecânica do DAG |
+| `etapa-rebuild` | Recompilação e Instalação do Binário | Recompilação do binário |
+| `etapa-governanca` | Atualização da Governança Viva | Sincronização da governança |
+

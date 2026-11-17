@@ -102,3 +102,28 @@ A execução desta Peça é considerada concluída com sucesso quando:
 - [ ] A expressão `gate` do frontmatter avalia como verdadeira pelo motor de validação.
 - [ ] Zero resíduos ou arquivos temporários órfãos deixados no sistema de arquivos.
 - [ ] Stop-Gate humano aprovado formalmente (SG-E01 a SG-FINAL).
+
+---
+
+## 5. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `t01_types` | Tipos, contrato e validação de Request | Estruturas Request e validação inicial |
+| `t02_suggest` | Motor de sugestão de repos por cenário | Sugestão e seleção de repositórios |
+| `t03_vet_e01` | Verificação estática do motor de seleção | Testes e validação estática do Épico 01 |
+| `sg_e01` | Stop-Gate Humano do Épico 01 | Ponto de aprovação humana do Épico 01 |
+| `t04_build` | Gerador HTML/WebGL com Three.js | Geração de templates HTML e scripts WebGL |
+| `t05_vet_e02` | Verificação estática do gerador HTML | Validação estática e testes do gerador HTML |
+| `sg_e02` | Stop-Gate Humano do Épico 02 | Ponto de aprovação humana do Épico 02 |
+| `t06_render` | Captura de frames via Playwright | Renderização headless e captura de frames PNG |
+| `t07_encode` | Conversão frames → MP4 via FFmpeg | Codificação de vídeo em formato MP4 h264 |
+| `t08_vet_e03` | Teste de integração com limite de tempo | Verificação e timeout de renderização |
+| `sg_e03` | Stop-Gate Humano do Épico 03 | Ponto de aprovação humana do Épico 03 |
+| `t09_sync` | Detecção de beats via Librosa | Análise de áudio e sincronização de batidas |
+| `t10_vet_e04` | Verificação estática do sync de áudio | Testes e validação estática do sync de áudio |
+| `sg_e04` | Stop-Gate Humano do Épico 04 | Ponto de aprovação humana do Épico 04 |
+| `t11_skill` | Skill canônica universal | Materialização da skill canônica |
+| `t12_book` | Livro Didático LegoPress | Compilação e auditoria do livro didático |
+| `sg_final` | Homologação Final (Regressão Global e Recompilação Fresca) | Portão final de homologação e compilação |
+

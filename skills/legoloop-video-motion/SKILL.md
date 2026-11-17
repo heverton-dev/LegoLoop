@@ -58,3 +58,17 @@ suggested_model: t-chat-128k
    ```bash
    legoloop run processos/video-motion/processo.dag.json --allow-scripts --yes
    ```
+
+---
+
+## 4. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `n01_silence_clock` | Detecção de Silêncios e Fatiamento de Pausas com Folga de 40ms | Análise de pausas e fatiamento com preservação pré-fala |
+| `n02_punch_detector` | Detecção de Palavras de Impacto e RMS de Punch Visual | Identificação de picos vocais e palavras-chave de ênfase |
+| `n03_asset_synthesis` | Síntese de Ilustrações Vetoriais SVG e Cartões 3D | Geração de assets vetoriais e elementos visuais procedurais |
+| `n04_kinetic_typography` | Tipografia Cinética Anton com Realce e Efeito Mola | Renderização dinâmica de legendas e tipografia cinética |
+| `n05_3d_glass_tickets` | Renderização dos Cartões de Vidro com Oclusão Tridimensional | Composição de cartões de vidro fosco com oclusão e profundidade |
+| `n06_multi_aspect_render` | Composição Multi-Aspecto (9:16 vertical e 16:9 widescreen) | Renderização final e enquadramento nos formatos suportados |
+

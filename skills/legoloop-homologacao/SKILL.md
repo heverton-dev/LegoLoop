@@ -44,3 +44,21 @@ git diff --exit-code -- go.mod go.sum
 ```
 
 Todos os comandos acima devem encerrar com código `0` e `gofmt -l .` deve retornar saída vazia antes da entrega.
+
+---
+
+## 4. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `TICK-01.2` | Paridade 1:1 Schema v2 com Parser Go, Peca Gatilho e pares ROUTE e DAG | Validação de schemas e estruturas topológicas |
+| `TICK-02.1` | Blindagem Path Jail, CORS/CSRF, data race SSE e ordem do runner | Reforço de segurança, contenção de paths e concorrência |
+| `TICK-02.2` | Substituicao integral de stubs de midia em motion e videorea | Implementação soberana de componentes de mídia |
+| `TICK-03.1` | MCP Router operacional e executor real de no mcp STDIO | Roteador e executor de ferramentas MCP |
+| `TICK-03.2` | Paridade CLI, harnesses, skills e fechar 100% real sem stubs | Paridade entre CLI, ambientes e rotinas de fechamento |
+| `TICK-04.1` | Integracao dos 9 motores N10 em producao e resiliencia Orchestrix | Operação dos motores industriais e orquestração estéril |
+| `TICK-04.2` | Contrato unico de Swarm Board, file-lock e spawn/kill real | Governança de concorrência e processos de workers |
+| `TICK-05.1` | Swarm UI unificado, zero XSS, preservacao de estado e gestao de workers | Frontend do Swarm e sanitização contra vulnerabilidades |
+| `TICK-05.2` | Desbloqueio E2E do Studio (#btn-run, ErrSemMatriz, Gatilho, SVG e Combos) | Resolução de bugs e fluxos completos de Studio |
+| `TICK-06.1` | Layout responsivo, inspetor recuperavel, modais e seletor de tema | Refinamento de interface, acessibilidade e temas |
+

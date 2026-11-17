@@ -71,3 +71,13 @@ legoloop validate <caminho_do_DAG_do_processo>
 - [ ] INTENT materializada e promovida a `docs/intents/INTENT.md` (Gate `file_exists`).
 - [ ] O grafo passou em `legoloop validate` com exit code 0.
 - [ ] Stop-Gate 01 humano aprovado formalmente e gravado em `docs/intents/INTENT_APROVADA.md`.
+
+---
+
+## 6. Grafo de Execução (DAG) & Nós Canônicos
+
+| ID do Nó | Nome do Nó | Descrição |
+| :--- | :--- | :--- |
+| `entrevista_socratica` | Entrevista Socrática com Espelho Canônico até confiança maior ou igual a 95% | Condução do diálogo investigativo socrático e consolidação do espelho |
+| `materializar_intent` | Materialização da INTENT em docs/intents/ a partir do Espelho Canônico | Síntese do documento INTENT e promoção para o alias canônico |
+
