@@ -9,7 +9,7 @@ description: Skill universal de fronteira-ai-driven
 - Proibido executar comandos fora do escopo autorizado da fronteira AI-driven.
 - Proibido ignorar falhas de gate ou suprimir erros em relatórios de execução.
 
-## Grafo de Execução (DAG) & Nós Canônicos
+## DAG & Nós Canônicos
 
 | ID do Nó | Descrição / Saída |
 | :--- | :--- |

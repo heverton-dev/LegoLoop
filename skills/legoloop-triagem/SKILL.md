@@ -23,7 +23,7 @@ legoloop triagem "<entrada>" --workspace "<DIR>" --json
 
 ---
 
-## Grafo de Execução (DAG) & Nós Canônicos
+## DAG & Nós Canônicos
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |

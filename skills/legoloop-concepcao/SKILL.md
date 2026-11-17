@@ -74,7 +74,7 @@ legoloop validate <caminho_do_DAG_do_processo>
 
 ---
 
-## 6. Grafo de Execução (DAG) & Nós Canônicos
+## 6. DAG & Nós Canônicos
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |

@@ -75,7 +75,7 @@ legoloop web-qa corrigir --relatorio docs/qa-web/YYYY-MM-DD_meu-app/RELATORIO_QA
 
 ---
 
-## 5. Grafo de Execução (DAG) & Nós Canônicos
+## 5. DAG & Nós Canônicos
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |

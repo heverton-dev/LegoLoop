@@ -12,7 +12,7 @@ suggested_model: sonnet
 
 > **Processo:** `matt-pocock`  
 > **Versão:** 1.0.0  
-> **Referência:** `processos/matt-pocock/pipeline.dag.json`  
+> **Referência:** `processos/matt-pocock/processo.dag.json`  
 
 ---
 

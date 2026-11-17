@@ -12,7 +12,7 @@ suggested_model: sonnet
 
 > **Processo:** `legoloop-design-ui`  
 > **Versão:** 1.0.0  
-> **Referência:** `processos/legoloop-design-ui/pipeline.dag.json`  
+> **Referência:** `processos/legoloop-design-ui/processo.dag.json`  
 
 ---
 
@@ -47,5 +47,5 @@ O processo possui a etapa fundamental de planejamento e direcionamento visual:
 ## 4. Invariantes & Regras Negativas
 
 - **Design System First:** Proibido styling ad-hoc sem fundamentação em tokens e direção visual.
-- **Acessibilidade:** Contrastes mínimos WCAG devem ser respeitados desde a fase de planejamento.
+- **Acessibilidade:** Contrastes mínimos WCAG devem ser respeitados desde a Etapa de planejamento.
 - **Portões Binários:** O artefato de saída deve atender integralmente às condições mecânicas do gate.

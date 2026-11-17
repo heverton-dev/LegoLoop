@@ -105,7 +105,7 @@ A execução desta Peça é considerada concluída com sucesso quando:
 
 ---
 
-## 5. Grafo de Execução (DAG) & Nós Canônicos
+## 5. DAG & Nós Canônicos
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |

@@ -12,7 +12,7 @@ suggested_model: sonnet
 
 > **Processo:** `addy-osmani`  
 > **Versão:** 1.0.0  
-> **Referência:** `processos/addy-osmani/pipeline.dag.json`  
+> **Referência:** `processos/addy-osmani/processo.dag.json`  
 
 ---
 

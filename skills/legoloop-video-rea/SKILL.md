@@ -89,7 +89,7 @@ suggested_model: sonnet
 
 ---
 
-## 4. Grafo de Execução (DAG) & Nós Canônicos
+## 4. DAG & Nós Canônicos
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |

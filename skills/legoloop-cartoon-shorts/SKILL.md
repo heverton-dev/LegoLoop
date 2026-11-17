@@ -63,7 +63,7 @@ suggested_model: t-codigo-128k
 
 ---
 
-## 5. Grafo de Execução (DAG) & Nós Canônicos
+## 5. DAG & Nós Canônicos
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |

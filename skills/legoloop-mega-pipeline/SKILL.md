@@ -346,7 +346,7 @@ O Mega Processo integra diretamente os comandos do CLI nativo:
 
 ---
 
-## 9. Grafo de Execução (DAG) & Nós Canônicos
+## 9. DAG & Nós Canônicos
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |

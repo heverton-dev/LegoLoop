@@ -48,7 +48,7 @@ legoloop studio --addr 127.0.0.1:7878
 
 ---
 
-## 4. Grafo de Execução (DAG) & Nós Canônicos
+## 4. DAG & Nós Canônicos
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |

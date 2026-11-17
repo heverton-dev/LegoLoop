@@ -62,7 +62,7 @@ suggested_model: t-chat-128k
 
 ---
 
-## 4. Grafo de Execução (DAG) & Nós Canônicos
+## 4. DAG & Nós Canônicos
 
 ### Processo Canônico `legoloop-fechar`
 | ID do Nó | Nome do Nó | Descrição |

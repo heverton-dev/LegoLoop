@@ -12,14 +12,14 @@ suggested_model: sonnet
 
 > **Processo:** `impeccable-design`  
 > **Versão:** 1.0.0  
-> **Referência:** `processos/impeccable-design/pipeline.dag.json`  
+> **Referência:** `processos/impeccable-design/processo.dag.json`  
 
 ---
 
 ## 1. Contexto & Contratos de I/O
 
 **Quando usar:** Quando for necessário auditar, construir, refinar e documentar interfaces de usuário (UI/UX), design tokens, sistemas de cor e acessibilidade no padrão Impeccable.  
-**Quando NÃO usar:** Para tarefas puramente de backend ou sem interface visual.
+**Quando NÃO usar:** Para Tickets puramente de backend ou sem interface visual.
 
 * **Consumes:** Especificações em `docs/specs/` ou telas existentes.
 * **Produces:** Relatórios de auditoria, direção visual, tokens CSS, validação responsiva e documentação do design system em `DESIGN.md`.
@@ -46,7 +46,7 @@ O processo engloba 6 subprocessos modulares e sequenciais:
 1. **Avaliação de UI/UX e Diagnóstico (`subprocesso-avaliar`):** Avaliar heurísticas de design, contraste e hierarquia visual, registrando o diagnóstico em `docs/reports/AUDITORIA_DESIGN.md`.
 2. **Construção da Direção Visual (`subprocesso-construir`):** Definir pilares estéticos, tipografia e espaçamentos em `docs/specs/DIRECAO_VISUAL.md`.
 3. **Design Tokens & Sistema de Cores (`subprocesso-melhorar`):** Estabelecer paleta OKLCH/Hex e variáveis CSS em `src/styles/theme.css`.
-4. **Refinamento & Hardening UI (`subprocesso-refinar`):** Refinar micro-interações, consistência de componentes e limites visuais em `docs/reports/HARDENING_UI.md`.
+4. **Refinamento & Hardening UI (`subprocesso-refinar`):** Refinar micro-interações, consistência de Peças e limites visuais em `docs/reports/HARDENING_UI.md`.
 5. **Correções de Acessibilidade & Responsividade (`subprocesso-corrigir`):** Validar WCAG 2.1 AA/AAA e layouts multi-viewport em `docs/reports/RESPONSIVE_VERIFICATION.md`.
 6. **Documentação do Design System (`subprocesso-iterar-documentar`):** Consolidar guidelines e especificações canônicas no manifesto final `DESIGN.md`.
 

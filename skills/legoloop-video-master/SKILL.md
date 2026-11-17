@@ -97,7 +97,7 @@ legoloop legopress auditar docs/books/video-master/livro.json
 
 ---
 
-## 5. Grafo de Execução (DAG) & Nós Canônicos
+## 5. DAG & Nós Canônicos
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |

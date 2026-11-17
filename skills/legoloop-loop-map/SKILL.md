@@ -156,7 +156,7 @@ flowchart TD
 
 ---
 
-## 7. Grafo de Execução (DAG) & Nós Canônicos (`legoloop-swarm`)
+## 7. DAG & Nós Canônicos (`legoloop-swarm`)
 
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |
