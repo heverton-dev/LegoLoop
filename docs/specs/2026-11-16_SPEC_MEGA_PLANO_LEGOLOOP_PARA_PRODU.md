@@ -126,8 +126,8 @@ import (
 	"strings"
 )
 
-// ErrLockAtivo sinaliza escrita bloqueada por outra sessão viva (PID válido).
-var ErrLockAtivo = errors.New("triagem: memória bloqueada por outra sessão")
+// ErrLockOcupado sinaliza lock retido por outra sessão além do tempo limite.
+var ErrLockOcupado = errors.New("triagem: lock ocupado")
 
 // Sessao identifica o dono da escrita na memória de execução.
 type Sessao struct {
@@ -195,7 +195,7 @@ Schemas novos exigidos: `schemas/anticorpos.v1.json`, `schemas/memoria_execucao.
 
 ### Épico 03 — I2 · Memória de Execução Concorrente (Session+PID+Lock)
 
-* [ ] `AC-E03.1`: **Lock por arquivo** — Dado que 2 sessões distintas gravam `memoria_execucao.json` do mesmo processo; Quando a segunda sessão grava com lock ativo da primeira (PID vivo); Então recebe `ErrLockAtivo` e o arquivo da primeira permanece íntegro (byte a byte).
+* [ ] `AC-E03.1`: **Lock por arquivo** — Dado que 2 sessões distintas gravam `memoria_execucao.json` do mesmo processo; Quando a segunda sessão grava com lock ativo da primeira (PID vivo); Então recebe `ErrLockOcupado` e o arquivo da primeira permanece íntegro (byte a byte).
 * [ ] `AC-E03.2`: **Lock órfão** — Dado que o PID do lock não existe mais no SO; Quando a segunda sessão grava; Então o lock é tomado e o `atualizado` avança (ISO 8601).
 * [ ] `AC-E03.3`: **Zerar no fechar** — Dado que o processo terminou (`legoloop fechar`); Quando o fechar conclui; Então `memoria_execucao.json` está zerado (schema válido, sem histórico inflado).
 * [ ] `AC-E03.4`: **Caminho de falha** — Dado `memoria_execucao.json` corrompido (JSON inválido); Quando a leitura executar; Então erro sentinela, backup `.legoloop-bak` criado, nenhuma escrita cega por cima.

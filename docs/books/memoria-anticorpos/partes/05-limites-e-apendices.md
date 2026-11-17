@@ -12,7 +12,7 @@
 | Tema | Registro |
 | :--- | :--- |
 | Contagem de tickets | O brief cita 37 tickets; o plano paralelo tem 11 tickets e a ROUTE tem 15 nós |
-| Nome de erro | O mega SPEC cita `ErrLockAtivo`; o código usa `ErrLockOcupado` |
+| Nome de erro | Termo único `ErrLockOcupado` (Lei 15); divergência `ErrLockAtivo` resolvida em 2026-11-17 |
 | Pasta de Processos | Os schemas citam `processos/<slug>`; o acervo real vive em `processos/<slug>` |
 
 ## 3. Apêndice B — Portões de qualidade

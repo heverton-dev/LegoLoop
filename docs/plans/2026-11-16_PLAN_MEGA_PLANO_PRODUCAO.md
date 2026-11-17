@@ -183,7 +183,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-E02.3, A
 * **Outputs:** `internal/triagem/lock.go` + testes
 * **Verificação:** `go test -race -v ./internal/triagem/...` (ou `-count=1` sem CGO)
 * **Gate (DSL):** `exit_code == 0`
-* **Spec Ref:** `AC-E03.1`, `AC-E03.2` · **Escopo:** 2 sessões gravam; segunda com PID vivo recebe `ErrLockAtivo`; PID morto → lock tomado; integridade byte a byte.
+* **Spec Ref:** `AC-E03.1`, `AC-E03.2` · **Escopo:** 2 sessões gravam; segunda com PID vivo recebe `ErrLockOcupado`; PID morto → lock tomado; integridade byte a byte.
 
 #### Ticket `TICK-03.2` — Zerar memória no `fechar`
 * **Nature:** `nano` | **Tipo:** `unit_no` | **Modo:** `tdd_red_green` | **Status:** `PENDING`
