@@ -11,7 +11,7 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "uso: inv gerar")
+		fmt.Fprintln(os.Stderr, "uso: inv gerar|migrar|guard <alvo>")
 		os.Exit(2)
 	}
 	switch os.Args[1] {
@@ -19,6 +19,8 @@ func main() {
 		gerar()
 	case "migrar":
 		migrar()
+	case "guard":
+		guardar()
 	default:
 		fmt.Fprintln(os.Stderr, "comando desconhecido:", os.Args[1])
 		os.Exit(2)
@@ -63,6 +65,29 @@ func gerar() {
 		os.Exit(2)
 	}
 	fmt.Printf("inventário gravado em %s (%d arquivos)\n", saida, len(entradas))
+}
+
+// guardar valida uma deleção sob lei e registra a tentativa.
+func guardar() {
+	if len(os.Args) < 3 {
+		fmt.Fprintln(os.Stderr, "uso: inv guard <alvo>")
+		os.Exit(2)
+	}
+	alvo := os.Args[2]
+	raiz, err := raizRepo()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "raiz do repositório:", err)
+		os.Exit(2)
+	}
+	recusa := inventario.RecusaDelecao(alvo)
+	if err := inventario.RegistrarTentativa(raiz, alvo, recusa); err != nil {
+		fmt.Fprintln(os.Stderr, "registro:", err)
+		os.Exit(2)
+	}
+	if recusa != nil {
+		fmt.Fprintln(os.Stderr, recusa)
+	}
+	os.Exit(inventario.ExitCode(recusa))
 }
 
 // raizRepo sobe do diretório atual até o go.mod do repositório.
