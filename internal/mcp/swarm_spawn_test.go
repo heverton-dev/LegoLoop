@@ -35,10 +35,11 @@ func TestSwarmSpawnToolRealProcess(t *testing.T) {
 	deadline := time.Now().Add(30 * time.Second)
 	for time.Now().Before(deadline) {
 		st, _ := sb.Status()
-		if len(st.Workers) == 1 && st.Workers[0].Status == board.WorkerStopped && st.Workers[0].PID == 0 {
+		if len(st.Workers) == 1 && st.Workers[0].Status == board.WorkerStopped && st.Workers[0].PID == 0 && st.Workers[0].ExitCode != nil {
 			return
 		}
 		time.Sleep(50 * time.Millisecond)
 	}
-	t.Fatal("worker nao transicionou para stopped apos saida natural")
+	st, _ := sb.Status()
+	t.Fatalf("worker nao transicionou para stopped apos saida natural: %+v", st.Workers)
 }
