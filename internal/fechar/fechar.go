@@ -231,19 +231,59 @@ func DefaultRebuilder(repoDir string) error {
 	return nil
 }
 
+// registroProcessosCanonizados guarda os Processos canonizados fora do AGENTS.md:
+// o agy trunca o AGENTS.md acima de 24000 bytes.
+const registroProcessosCanonizados = "docs/PROCESSOS_CANONIZADOS.md"
+
 func fecharGovernanca(d *Deps, slug, canon string, dry bool) (string, error) {
 	agents := filepath.Join(d.RepoDir, "AGENTS.md")
 	memory := filepath.Join(d.RepoDir, "MEMORY.md")
+	registro := filepath.Join(d.RepoDir, filepath.FromSlash(registroProcessosCanonizados))
 	if !dry {
 		dataStr := d.Clock().Format("2006-01-02")
-		if err := registrarGovernancaArquivo(agents, slug, canon, dataStr); err != nil {
+		if err := registrarProcessoCanonizado(registro, canon, dataStr); err != nil {
+			return "", err
+		}
+		if err := garantirReferenciaRegistro(agents); err != nil {
 			return "", err
 		}
 		if err := registrarGovernancaArquivo(memory, slug, canon, dataStr); err != nil {
 			return "", err
 		}
 	}
-	return fmt.Sprintf("%s, %s", filepath.Base(agents), filepath.Base(memory)), nil
+	return fmt.Sprintf("%s, %s, %s", filepath.Base(agents), filepath.Base(registro), filepath.Base(memory)), nil
+}
+
+func registrarProcessoCanonizado(caminho, canon, dataStr string) error {
+	atual, err := os.ReadFile(caminho)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	texto := string(atual)
+	if strings.Contains(texto, "`"+canon+"`") {
+		return nil
+	}
+	if texto == "" {
+		texto = "# Processos Canonizados\n\nRegistro gravado pelo `legoloop fechar` (etapa 6). Cada Processo tem `skills/<nome>/SKILL.md` e relatório em `docs/reports/`.\n"
+	}
+	linha := fmt.Sprintf("\n* **Processo Canonizado `%s` (%s):** `skills/%s/SKILL.md` · `docs/reports/`\n", canon, dataStr, canon)
+	if err := os.MkdirAll(filepath.Dir(caminho), 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(caminho, []byte(texto+linha), 0o644)
+}
+
+func garantirReferenciaRegistro(agents string) error {
+	atual, err := os.ReadFile(agents)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	texto := string(atual)
+	if strings.Contains(texto, registroProcessosCanonizados) {
+		return nil
+	}
+	linha := fmt.Sprintf("\n* **Processos Canonizados:** [%s](%s)\n", registroProcessosCanonizados, registroProcessosCanonizados)
+	return os.WriteFile(agents, []byte(texto+linha), 0o644)
 }
 
 func registrarGovernancaArquivo(caminho, slug, canon, dataStr string) error {

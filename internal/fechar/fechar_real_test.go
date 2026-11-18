@@ -128,9 +128,13 @@ func TestFecharSemStubsETelemetriaReal(t *testing.T) {
 		if !rebuildCalled || !indexCalled || !portoesCalled {
 			t.Errorf("seams nao foram acionados: rebuild=%v index=%v portoes=%v", rebuildCalled, indexCalled, portoesCalled)
 		}
+		registroData, err := os.ReadFile(filepath.Join(tmp, "docs", "PROCESSOS_CANONIZADOS.md"))
+		if err != nil || !strings.Contains(string(registroData), "legoloop-video-rea") {
+			t.Errorf("registro de Processos canonizados nao foi atualizado na etapa 6: err=%v data=%q", err, string(registroData))
+		}
 		agentsData, err := os.ReadFile(filepath.Join(tmp, "AGENTS.md"))
-		if err != nil || !strings.Contains(string(agentsData), "legoloop-video-rea") {
-			t.Errorf("AGENTS.md nao foi atualizado na etapa 6: err=%v data=%q", err, string(agentsData))
+		if err != nil || !strings.Contains(string(agentsData), "docs/PROCESSOS_CANONIZADOS.md") {
+			t.Errorf("AGENTS.md nao referencia o registro na etapa 6: err=%v data=%q", err, string(agentsData))
 		}
 		memData, err := os.ReadFile(filepath.Join(tmp, "MEMORY.md"))
 		if err != nil || !strings.Contains(string(memData), "legoloop-video-rea") {
