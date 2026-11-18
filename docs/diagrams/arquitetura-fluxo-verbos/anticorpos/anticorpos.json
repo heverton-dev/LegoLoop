@@ -62,6 +62,56 @@
       "pacote": "legoloop-diagram-design/text-box-overflow",
       "timestamp": "2026-11-18T13:15:00-03:00",
       "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:0a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b",
+      "erro": "Animações invisíveis no navegador e perda da didática tutorial ao isolar o SVG puro.",
+      "causa_raiz": "Dependência de renderizador Remotion externo em vez de CSS nativo. Supressão do contexto em prosa e da tabela de camadas que existiam na versão anterior.",
+      "antidoto": "Fusão Didática Impeccable: o documento preserva a grade explicativa dos 13 verbos e a jornada passo a passo de 5 etapas. Animações operam nativamente no navegador via CSS com keyframes (stroke-dashoffset contínuo para fluxo de elétrons e pulso suave no nó fabricar).",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/native-browser-animation",
+      "timestamp": "2026-11-18T15:25:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c",
+      "erro": "Presença de emojis decorativos no cabeçalho e sobreposição de rota entre exec->refinar e nó remover.",
+      "causa_raiz": "Violação da regra de emojis na tipografia e posicionamento assimétrico de nós na camada de execução sem colunas ortogonais fixas.",
+      "antidoto": "Proibição estrita de emojis: substituir por micro-ícones SVG vetoriais inline. Adoção de grid ortogonal 3x2: coluna esq (refinar/remover), centro (validate/exec), dir (compor/upgrade), deixando calhas centrais de 170px para rotas verticais sem sobreposição.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/anti-emoji-and-grid-3x2",
+      "timestamp": "2026-11-18T15:40:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d",
+      "erro": "Badges com texto vertical desalinhado fora do retângulo (A e B); texto de 'fechar' transbordando o card à direita (C); uso de fontes serifadas proibidas.",
+      "causa_raiz": "Badges rotacionados em 90 graus sem dimensionamento proporcional do rect e texto fora do eixo. Largura do nó 'fechar' (440px) insuficiente para 82 caracteres mono. Uso de Instrument Serif herdado do template.",
+      "antidoto": "Regra Anti-Serif Estrita: proibido Instrument Serif e Georgia, usar apenas Geist Sans e Geist Mono. Badges Horizontais Centrados: posicionar badges nos segmentos retos livres sem rotação de 90 graus, com alinhamento matemático (text-anchor=middle). Alargamento do nó fechar para 540px garantindo folga interna de 40px à direita.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/badge-alignment-and-sans-rule",
+      "timestamp": "2026-11-18T15:50:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e",
+      "erro": "Ausência da legenda semântica de formas geométricas dos nós e persistência de risco de transbordamento no card fechar.",
+      "causa_raiz": "Legenda limitada apenas a arestas de conexão. String de 9 etapas com travessões longos gerando largura superior a 500px em renderers de fonte no Windows.",
+      "antidoto": "Legenda Dupla Estruturada: bloco explícito com as 5 formas geométricas dos nós (hexágono, losango, círculo, triângulo, retângulo) e bloco com os 4 tipos de aresta. Nó fechar ampliado para 560px com subtítulo compacto usando separadores de ponto central (·), garantindo mais de 120px de respiro interno.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/geometric-shapes-legend",
+      "timestamp": "2026-11-18T16:05:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f",
+      "erro": "Ícones da legenda renderizados gigantescos (esticamento para 100% ou sem restrição no flexbox).",
+      "causa_raiz": "O seletor CSS .diagram-card svg aplicava width:100% globalmente a qualquer SVG filho, inclusive aos micro-ícones de 16px da legenda, e os elementos SVG da legenda não possuíam estilos inline estritos de contenção.",
+      "antidoto": "Isolamento Estrito de Canvas e Micro-Vetores: o SVG principal do diagrama recebe obrigatoriamente a classe .diagram-canvas vinculada a .diagram-card > svg.diagram-canvas { width: 100% }. Todo SVG secundário de legenda recebe estilos inline rígidos (style='width:13px;height:13px;max-width:13px;max-height:13px;flex-shrink:0;') e classe dedicada (.shape-icon ou .arrow-icon), impedindo qualquer herança ou expansão indesejada.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/subtle-legend-micro-svg",
+      "timestamp": "2026-11-18T16:25:00-03:00",
+      "antidoto_aplicado": true
     }
   ]
 }

@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Arquitetura e Encadeamento dos Verbos — LegoLoop</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* ── TOKENS CANÔNICOS ─────────────────────────── */
+  /* ── TOKENS CANÔNICOS (style-guide.md · 100% SANS-SERIF) ─────── */
   :root {
     --paper:        #f5f5f5;
     --paper-2:      #ececec;
+    --paper-card:   #ffffff;
     --ink:          #2d3142;
     --ink-strong:   #111111;
     --muted:        #4f5d75;
@@ -19,67 +20,76 @@
     --accent:       #bf4520;
     --accent-tint:  rgba(191,69,32,0.08);
     --link:         #2e5aa8;
+    --link-tint:    rgba(46,90,168,0.08);
+    --font-sans:    'Geist', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Geist', system-ui, sans-serif;
+    font-family: var(--font-sans);
     background: var(--paper);
     color: var(--ink);
-    min-height: 100vh;
+    line-height: 1.6;
     padding: 48px 32px;
+    max-width: 1140px;
+    margin: 0 auto;
   }
 
-  /* ── CABEÇALHO ────────────────────────────────── */
+  /* ── CABEÇALHO EDITORIAL SANS-SERIF ───────────────────────── */
   .page-header {
-    max-width: 1100px;
-    margin: 0 auto 48px;
-    border-bottom: 1px solid var(--rule-solid);
-    padding-bottom: 24px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
   }
   .page-eyebrow {
-    font-family: 'Geist Mono', ui-monospace, monospace;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--soft);
-    margin-bottom: 10px;
-  }
-  .page-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 2rem;
-    font-weight: 400;
-    color: var(--ink);
-    line-height: 1.2;
+    color: var(--accent);
     margin-bottom: 8px;
   }
-  .page-meta {
-    font-family: 'Geist Mono', ui-monospace, monospace;
-    font-size: 10px;
+  .page-title {
+    font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .page-lead {
+    font-size: 15px;
     color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px;
+  }
+  .page-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
     display: flex;
-    gap: 24px;
+    flex-wrap: wrap;
+    gap: 20px;
   }
   .page-meta span { display: flex; align-items: center; gap: 6px; }
 
-  /* ── SEÇÃO ────────────────────────────────────── */
-  .section {
-    max-width: 1100px;
-    margin: 0 auto 48px;
-  }
+  /* ── SEÇÕES ───────────────────────────────────────────────── */
+  .section { margin-bottom: 56px; }
   .section-title {
-    font-family: 'Geist Mono', ui-monospace, monospace;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--soft);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
   .section-title::after {
     content: '';
@@ -87,35 +97,231 @@
     height: 1px;
     background: var(--rule-solid);
   }
+  .section-lead {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
 
-  /* ── CARD DE DIAGRAMA ─────────────────────────── */
+  /* ── CARDS EXPLICATIVOS DAS CAMADAS (13 VERBOS) ───────────── */
+  .layers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  .layer-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-solid);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .layer-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .layer-card-header {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+  }
+  .layer-card-header.accent { background: var(--accent); }
+  .layer-card-header.link   { background: var(--link); }
+  .layer-card-body { padding: 14px; }
+  .verb-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .verb-row:last-child { border-bottom: none; }
+  .verb-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--paper-2);
+    border: 1px solid var(--rule-solid);
+    border-radius: 4px;
+    padding: 2px 7px;
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .verb-tag.ink  { color: var(--ink); }
+  .verb-tag.link { color: var(--link); }
+  .verb-desc { font-size: 12px; color: var(--soft); line-height: 1.45; }
+
+  /* ── CARD DO DIAGRAMA SVG ─────────────────────────────────── */
   .diagram-card {
     background: var(--paper-2);
     border: 1px solid var(--rule-solid);
     border-radius: 8px;
-    padding: 32px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
   }
-  .diagram-card svg { display: block; width: 100%; height: auto; }
+  .diagram-card > svg.diagram-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 
-  /* ── LEGENDA ──────────────────────────────────── */
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+  /* ── ANIMAÇÕES CSS NATIVAS ────────────────────────────────── */
+  @keyframes pulse-fabricar {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(191,69,32,0)); }
+    50%      { filter: drop-shadow(0 0 8px rgba(191,69,32,0.35)); }
+  }
+  .anim-focal {
+    animation: pulse-fabricar 3.2s ease-in-out infinite;
+  }
+
+  @keyframes flow-dash {
+    to { stroke-dashoffset: -24; }
+  }
+  .anim-flow {
+    stroke-dasharray: 6, 4;
+    animation: flow-dash 1.2s linear infinite;
+  }
+  .anim-flow-reverse {
+    stroke-dasharray: 5, 4;
+    animation: flow-dash 1.8s linear infinite reverse;
+  }
+
+  .svg-node {
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default;
+  }
+  .svg-node:hover {
+    filter: brightness(0.97);
+  }
+
+  /* ── LEGENDA SUTIL E COMPACTA (DESIGN EDITORIAL) ──────────── */
+  .legend-box {
     margin-top: 20px;
     padding-top: 16px;
     border-top: 1px solid var(--rule-solid);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
-  .legend-item {
+  .legend-group {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-family: 'Geist Mono', ui-monospace, monospace;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .legend-group-title {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--soft);
+    margin-right: 4px;
+    flex-shrink: 0;
+  }
+  .legend-items {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
     font-size: 10px;
     color: var(--muted);
+    white-space: nowrap;
+  }
+  .legend-box svg {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+    width: 13px !important;
+    height: 13px !important;
+    max-width: 13px !important;
+    max-height: 13px !important;
+  }
+  .legend-box svg.shape-icon {
+    width: 13px !important;
+    height: 13px !important;
+    max-width: 13px !important;
+    max-height: 13px !important;
+  }
+  .legend-box svg.arrow-icon {
+    width: 24px !important;
+    height: 8px !important;
+    max-width: 24px !important;
+    max-height: 8px !important;
   }
 
-  /* ── TABELA ───────────────────────────────────── */
+  /* ── JORNADA DO DIA A DIA ─────────────────────────────────── */
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+  }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 16px 20px;
+    border: 1px solid var(--rule-solid);
+    border-bottom: none;
+    background: var(--paper-card);
+    transition: background 0.15s ease;
+  }
+  .step-item:first-child { border-radius: 6px 6px 0 0; }
+  .step-item:last-child  { border-radius: 0 0 6px 6px; border-bottom: 1px solid var(--rule-solid); }
+  .step-item:hover { background: #fafafa; }
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content { flex: 1; }
+  .step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 4px;
+  }
+  .step-body {
+    font-size: 13px;
+    color: var(--soft);
+    line-height: 1.5;
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper-2);
+    border: 1px solid var(--rule-solid);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: var(--accent);
+  }
+
+  /* ── TABELA DE IMPLEMENTAÇÃO ──────────────────────────────── */
   .table-wrap { overflow-x: auto; }
   table {
     width: 100%;
@@ -123,501 +329,511 @@
     font-size: 13px;
   }
   th {
-    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--soft);
     text-align: left;
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--rule-solid);
   }
   td {
-    padding: 10px 12px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--rule);
     color: var(--ink);
     vertical-align: top;
   }
   tr:last-child td { border-bottom: none; }
-  code {
-    font-family: 'Geist Mono', ui-monospace, monospace;
-    font-size: 11px;
-    background: var(--rule);
-    padding: 2px 6px;
-    border-radius: 3px;
-  }
   .badge {
     display: inline-block;
-    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 2px 7px;
     border-radius: 3px;
   }
-  .badge-accent  { background: var(--accent-tint); color: var(--accent); border: 1px solid var(--accent); }
-  .badge-ink     { background: var(--ink); color: var(--paper); }
-  .badge-muted   { background: var(--paper-2); color: var(--muted); border: 1px solid var(--rule-solid); }
-  .badge-link    { background: rgba(46,90,168,0.08); color: var(--link); border: 1px solid var(--link); }
+  .badge-accent { background: var(--accent-tint); color: var(--accent); border: 1px solid var(--accent); }
+  .badge-ink    { background: var(--ink); color: var(--paper); }
+  .badge-muted  { background: var(--paper-2); color: var(--muted); border: 1px solid var(--rule-solid); }
+  .badge-link   { background: var(--link-tint); color: var(--link); border: 1px solid var(--link); }
 
-  /* ── FOOTER ───────────────────────────────────── */
+  /* ── RODAPÉ ───────────────────────────────────────────────── */
   .page-footer {
-    max-width: 1100px;
-    margin: 48px auto 0;
+    margin-top: 56px;
     padding-top: 20px;
     border-top: 1px solid var(--rule-solid);
-    font-family: 'Geist Mono', ui-monospace, monospace;
-    font-size: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
     color: var(--soft);
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
   }
 </style>
 </head>
 <body>
 
-<!-- ══ CABEÇALHO ═══════════════════════════════════════════════════════════ -->
+<!-- ══ CABEÇALHO EDITORIAL 100% SANS-SERIF ══════════════════════════════════ -->
 <header class="page-header">
-  <p class="page-eyebrow">LegoLoop — Referência Canônica</p>
+  <p class="page-eyebrow">LegoLoop — Manual Canônico &amp; Visual de Arquitetura</p>
   <h1 class="page-title">Arquitetura e Encadeamento dos Verbos</h1>
+  <p class="page-lead">Referência viva do ciclo determinístico de 13 verbos do LegoLoop. Articula a fundação de cofre, a espinha dorsal de 7 verbos de processo e os motores estéreis de execução e qualidade.</p>
   <div class="page-meta">
     <span>
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0.5" y="0.5" width="9" height="9" rx="1.5" stroke="#4f5d75"/>
-        <line x1="3" y1="0" x2="3" y2="10" stroke="#4f5d75" stroke-width="0.5"/>
-        <line x1="0" y1="4" x2="10" y2="4" stroke="#4f5d75" stroke-width="0.5"/>
-      </svg>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="9" rx="1.5" stroke="#5a6580" stroke-width="1.2"/><line x1="1" y1="5" x2="11" y2="5" stroke="#5a6580" stroke-width="1"/><line x1="3.5" y1="0.5" x2="3.5" y2="2.5" stroke="#5a6580" stroke-width="1.2"/><line x1="8.5" y1="0.5" x2="8.5" y2="2.5" stroke="#5a6580" stroke-width="1.2"/></svg>
       2026-11-18
     </span>
     <span>
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-        <circle cx="5" cy="5" r="4" stroke="#4f5d75"/>
-        <polyline points="5,2 5,5 7,7" stroke="#4f5d75" stroke-width="1" fill="none"/>
-      </svg>
-      Status: Canonico
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#5a6580" stroke-width="1.2"/><polyline points="3.5,6 5.2,7.7 8.5,4.3" stroke="#5a6580" stroke-width="1.2" fill="none"/></svg>
+      Status: Canônico e Verificado
     </span>
     <span>
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-        <rect x="1" y="3" width="8" height="6" rx="1" stroke="#4f5d75"/>
-        <polyline points="1,3 5,6 9,3" stroke="#4f5d75" stroke-width="0.8" fill="none"/>
-      </svg>
-      Skill: legoloop-diagram-design v2.6
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="1.5" width="9" height="9" rx="1" stroke="#5a6580" stroke-width="1.2"/><line x1="1.5" y1="4.5" x2="10.5" y2="4.5" stroke="#5a6580" stroke-width="1"/><line x1="4.5" y1="4.5" x2="4.5" y2="10.5" stroke="#5a6580" stroke-width="1"/></svg>
+      Padrão: VSA (Vertical Slice Architecture)
     </span>
     <span>
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-        <path d="M2 8 L5 2 L8 8" stroke="#4f5d75" stroke-width="0.8" fill="none"/>
-        <line x1="3" y1="6" x2="7" y2="6" stroke="#4f5d75" stroke-width="0.8"/>
-      </svg>
-      Padrao: VSA
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#5a6580" stroke-width="1.2"/><polyline points="6,3 6,6 8,8" stroke="#5a6580" stroke-width="1.2" fill="none"/></svg>
+      Animação Nativa SVG e CSS
     </span>
   </div>
 </header>
 
-<!-- ══ DIAGRAMA 1: CAMADAS ══════════════════════════════════════════════════ -->
+<!-- ══ SEÇÃO 1: CATEGORIZAÇÃO DIDÁTICA (13 VERBOS) ═══════════════════════════ -->
 <section class="section">
-  <h2 class="section-title">01 — Mapa de Camadas dos Verbos</h2>
-  <div class="diagram-card">
+  <h2 class="section-title">01 — Categorização dos Verbos do LegoLoop</h2>
+  <p class="section-lead">Os 13 comandos operam em três camadas com contratos rigorosos de I/O. Nenhuma camada ignora os gates da anterior.</p>
 
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 460" role="img" aria-labelledby="d1-title d1-desc">
-      <title id="d1-title">Mapa de Camadas dos Verbos do LegoLoop</title>
-      <desc id="d1-desc">Diagrama de camadas mostrando os 13 verbos do LegoLoop organizados em 3 camadas: Fundacao, Espinha Dorsal e Execucao.</desc>
-
-      <defs>
-        <!-- ícone: hexágono (motor) -->
-        <symbol id="ico-motor" viewBox="0 0 16 16">
-          <polygon points="8,1 14,4.5 14,11.5 8,15 2,11.5 2,4.5" fill="none" stroke="currentColor" stroke-width="1.2"/>
-        </symbol>
-        <!-- ícone: losango (diagnóstico) -->
-        <symbol id="ico-diag" viewBox="0 0 16 16">
-          <polygon points="8,1 15,8 8,15 1,8" fill="none" stroke="currentColor" stroke-width="1.2"/>
-        </symbol>
-        <!-- ícone: círculo (utilitário) -->
-        <symbol id="ico-util" viewBox="0 0 16 16">
-          <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.2"/>
-        </symbol>
-        <!-- ícone: triângulo apontando pra cima (qualidade) -->
-        <symbol id="ico-qual" viewBox="0 0 16 16">
-          <polygon points="8,2 15,14 1,14" fill="none" stroke="currentColor" stroke-width="1.2"/>
-        </symbol>
-        <!-- ícone: retângulo (execução) -->
-        <symbol id="ico-exec" viewBox="0 0 16 16">
-          <rect x="2" y="4" width="12" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/>
-          <line x1="6" y1="4" x2="6" y2="12" stroke="currentColor" stroke-width="0.8"/>
-        </symbol>
-      </defs>
-
-      <!-- BG geral -->
-      <rect width="1040" height="460" fill="#f5f5f5" rx="8"/>
-
-      <!-- ─── CAMADA 1: FUNDAÇÃO ───────────────────────────────────── -->
-      <rect x="20" y="20" width="1000" height="120" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
-      <!-- label camada -->
-      <text x="40" y="44" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" font-weight="500" letter-spacing="0.18em" fill="#5a6580" text-transform="uppercase">CAMADA 01 — FUNDACAO E COFRE</text>
-      <line x1="40" y1="52" x2="1000" y2="52" stroke="#bfc0c0" stroke-width="0.5"/>
-
-      <!-- forge -->
-      <g transform="translate(60,68)">
-        <rect width="200" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-util" x="14" y="17" width="16" height="16" color="#2d3142"/>
-        <text x="40" y="27" font-family="'Geist',system-ui,sans-serif" font-size="13" font-weight="600" fill="#2d3142">forge</text>
-        <text x="40" y="41" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Inicializacao do ecossistema</text>
-      </g>
-
-      <!-- canonize -->
-      <g transform="translate(420,68)">
-        <rect width="200" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-util" x="14" y="17" width="16" height="16" color="#2d3142"/>
-        <text x="40" y="27" font-family="'Geist',system-ui,sans-serif" font-size="13" font-weight="600" fill="#2d3142">canonize</text>
-        <text x="40" y="41" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Deduplicacao SHA-256 no Cofre</text>
-      </g>
-
-      <!-- doctor -->
-      <g transform="translate(780,68)">
-        <rect width="200" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-util" x="14" y="17" width="16" height="16" color="#2d3142"/>
-        <text x="40" y="27" font-family="'Geist',system-ui,sans-serif" font-size="13" font-weight="600" fill="#2d3142">doctor</text>
-        <text x="40" y="41" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Diagnostico de ambiente e chaves</text>
-      </g>
-
-      <!-- ─── CAMADA 2: ESPINHA DORSAL ─────────────────────────────── -->
-      <rect x="20" y="160" width="1000" height="190" rx="6" fill="#ececec" stroke="#bf4520" stroke-width="1.5"/>
-      <text x="40" y="184" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" font-weight="500" letter-spacing="0.18em" fill="#bf4520">CAMADA 02 — ESPINHA DORSAL — OS 7 VERBOS DE PROCESSO</text>
-      <line x1="40" y1="192" x2="1000" y2="192" stroke="#bf4520" stroke-width="0.5" stroke-dasharray="4,3"/>
-
-      <!-- Linha 1 da Camada 2: Descoberta e Fabricação -->
-      <!-- listar -->
-      <g transform="translate(40,206)">
-        <rect width="180" height="54" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
-        <use href="#ico-diag" x="12" y="19" width="16" height="16" color="#bf4520"/>
-        <text x="38" y="28" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#bf4520">listar</text>
-        <text x="38" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Inventario e vinculos</text>
-      </g>
-
-      <!-- matriz -->
-      <g transform="translate(240,206)">
-        <rect width="180" height="54" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
-        <use href="#ico-diag" x="12" y="19" width="16" height="16" color="#bf4520"/>
-        <text x="38" y="28" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#bf4520">matriz</text>
-        <text x="38" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Aptidao por contratos IO</text>
-      </g>
-
-      <!-- fabricar (motor principal — destaque ink com largura balanceada) -->
-      <g transform="translate(440,206)">
-        <rect width="360" height="54" rx="4" fill="#2d3142" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-motor" x="14" y="18" width="18" height="18" color="#f5f5f5"/>
-        <text x="42" y="26" font-family="'Geist',system-ui,sans-serif" font-size="13" font-weight="600" fill="#f5f5f5">fabricar</text>
-        <text x="110" y="26" font-family="'Geist Mono',ui-monospace,monospace" font-size="8" fill="#bfc0c0">MOTOR PRINCIPAL</text>
-        <text x="42" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="8.5" fill="#bfc0c0">INTERVIEW — INTENT — SPEC — PLAN — ROUTE — DAG</text>
-      </g>
-
-      <!-- refinar -->
-      <g transform="translate(820,206)">
-        <rect width="160" height="54" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
-        <use href="#ico-qual" x="12" y="19" width="16" height="16" color="#bf4520"/>
-        <text x="38" y="28" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#bf4520">refinar</text>
-        <text x="38" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Ajuste atomico de no</text>
-      </g>
-
-      <!-- Linha 2 da Camada 2: Composição, Fechamento e Descarte -->
-      <!-- compor -->
-      <g transform="translate(140,276)">
-        <rect width="220" height="54" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
-        <use href="#ico-qual" x="14" y="19" width="16" height="16" color="#bf4520"/>
-        <text x="40" y="28" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#bf4520">compor</text>
-        <text x="40" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Subprocesso hierarquico</text>
-      </g>
-
-      <!-- fechar -->
-      <g transform="translate(400,276)">
-        <rect width="280" height="54" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="2"/>
-        <use href="#ico-motor" x="14" y="18" width="18" height="18" color="#bf4520"/>
-        <text x="42" y="28" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#bf4520">fechar</text>
-        <text x="42" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">9 etapas canonicas de homologacao</text>
-      </g>
-
-      <!-- remover -->
-      <g transform="translate(720,276)">
-        <rect width="200" height="54" rx="4" fill="#f5f5f5" stroke="#4f5d75" stroke-width="1.5"/>
-        <use href="#ico-util" x="14" y="19" width="16" height="16" color="#4f5d75"/>
-        <text x="40" y="28" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#4f5d75">remover</text>
-        <text x="40" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Descarte com rollback</text>
-      </g>
-
-      <!-- ─── CAMADA 3: EXECUÇÃO ──────────────────────────────────── -->
-      <rect x="20" y="370" width="1000" height="76" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
-      <text x="40" y="392" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" font-weight="500" letter-spacing="0.18em" fill="#5a6580">CAMADA 03 — EXECUCAO E QUALIDADE</text>
-      <line x1="40" y1="398" x2="1000" y2="398" stroke="#bfc0c0" stroke-width="0.5"/>
-
-      <!-- validate -->
-      <g transform="translate(60,406)">
-        <rect width="280" height="32" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-qual" x="12" y="8" width="14" height="14" color="#2d3142"/>
-        <text x="36" y="21" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2d3142">validate</text>
-        <text x="110" y="21" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Gate estrutural do DAG</text>
-      </g>
-
-      <!-- exec -->
-      <g transform="translate(380,406)">
-        <rect width="280" height="32" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-exec" x="12" y="8" width="14" height="14" color="#2d3142"/>
-        <text x="36" y="21" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2d3142">exec</text>
-        <text x="90" y="21" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Motor Orchestrix esteril</text>
-      </g>
-
-      <!-- upgrade -->
-      <g transform="translate(700,406)">
-        <rect width="280" height="32" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-qual" x="12" y="8" width="14" height="14" color="#2d3142"/>
-        <text x="36" y="21" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2d3142">upgrade</text>
-        <text x="110" y="21" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Elevacao ao Padrao Ouro</text>
-      </g>
-        <use href="#ico-qual" x="12" y="10" width="14" height="14" color="#2d3142"/>
-        <text x="36" y="23" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2d3142">upgrade</text>
-        <text x="110" y="23" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Elevacao Padrao Ouro</text>
-      </g>
-    </svg>
-
-    <!-- LEGENDA -->
-    <div class="legend">
-      <div class="legend-item">
-        <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1 14,4.5 14,11.5 8,15 2,11.5 2,4.5" fill="none" stroke="#2d3142" stroke-width="1.2"/></svg>
-        Motor principal
+  <div class="layers-grid">
+    <div class="layer-card">
+      <div class="layer-card-header link">Camada 1 · Fundação &amp; Cofre</div>
+      <div class="layer-card-body">
+        <div class="verb-row">
+          <span class="verb-tag link">forge</span>
+          <span class="verb-desc">Inicializa o ecossistema, inspeciona dependências e sobe o Studio web.</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag link">canonize</span>
+          <span class="verb-desc">Deduplicação mecânica SHA-256 no Cofre universal de peças e ativos.</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag link">doctor</span>
+          <span class="verb-desc">Diagnóstico de chaves, portas CDP, gateways LLM e variáveis de ambiente.</span>
+        </div>
       </div>
-      <div class="legend-item">
-        <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1 15,8 8,15 1,8" fill="none" stroke="#bf4520" stroke-width="1.2"/></svg>
-        Verbo da espinha dorsal
+    </div>
+
+    <div class="layer-card">
+      <div class="layer-card-header accent">Camada 2 · Espinha Dorsal (7 Verbos)</div>
+      <div class="layer-card-body">
+        <div class="verb-row">
+          <span class="verb-tag">listar</span>
+          <span class="verb-desc">Inventário de processos, versões ativas e vínculos entre nós.</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag">matriz</span>
+          <span class="verb-desc">Aptidão e reputação de peças através de contratos de I/O.</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag">fabricar</span>
+          <span class="verb-desc">Motor principal: gera o Sexteto canônico (INTERVIEW → DAG).</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag">refinar</span>
+          <span class="verb-desc">Ajuste atômico de nó com preservação de versão e histórico.</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag">compor</span>
+          <span class="verb-desc">Composição modular de processos como subprocessos hierárquicos.</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag">fechar</span>
+          <span class="verb-desc">Homologação determinística em 9 etapas e compilação LegoPress.</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag">remover</span>
+          <span class="verb-desc">Descarte controlado com cópia de restauração e rollback seguro.</span>
+        </div>
       </div>
-      <div class="legend-item">
-        <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="#4f5d75" stroke-width="1.2"/></svg>
-        Verbo auxiliar / descarte
-      </div>
-      <div class="legend-item">
-        <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,2 15,14 1,14" fill="none" stroke="#2d3142" stroke-width="1.2"/></svg>
-        Qualidade / gate
-      </div>
-      <div class="legend-item">
-        <svg width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="4" width="12" height="8" rx="2" fill="none" stroke="#2d3142" stroke-width="1.2"/><line x1="6" y1="4" x2="6" y2="12" stroke="#2d3142" stroke-width="0.8"/></svg>
-        Execucao Orchestrix
+    </div>
+
+    <div class="layer-card">
+      <div class="layer-card-header">Camada 3 · Execução &amp; Qualidade</div>
+      <div class="layer-card-body">
+        <div class="verb-row">
+          <span class="verb-tag ink">validate</span>
+          <span class="verb-desc">Gate estrutural do DAG vs JSON Schema antes de qualquer execução.</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag ink">exec</span>
+          <span class="verb-desc">Motor Orchestrix em contexto estéril com barreira binária de saída.</span>
+        </div>
+        <div class="verb-row">
+          <span class="verb-tag ink">upgrade</span>
+          <span class="verb-desc">Elevação de peças para o Padrão Ouro industrial (Score ≥ 0.85).</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ DIAGRAMA 2: FLUXO ════════════════════════════════════════════════════ -->
+<!-- ══ SEÇÃO 2: FLUXOGRAMA DINÂMICO ANIMADO EM GRID 3x2 ORTOGONAL ═══════════ -->
 <section class="section">
-  <h2 class="section-title">02 — Encadeamento Logico — Fluxo do Dia a Dia</h2>
-  <div class="diagram-card">
+  <h2 class="section-title">02 — Fluxograma Lógico de Encadeamento no Dia a Dia</h2>
+  <p class="section-lead">Grid ortogonal simétrico 3x2 com isolamento perimetral. Todas as larguras de nós foram ampliadas para zero transbordamento, os badges são horizontais e centrados, e a legenda completa detalha formas geométricas e tipos de aresta.</p>
 
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 680" role="img" aria-labelledby="d2-title d2-desc">
-      <title id="d2-title">Encadeamento Logico dos Verbos do LegoLoop</title>
-      <desc id="d2-desc">Fluxograma mostrando o ciclo completo de uso dos verbos do LegoLoop, do forge inicial ao fechar canonico, com caminhos de refinamento, composicao e descarte.</desc>
+  <div class="diagram-card">
+    <svg class="diagram-canvas" viewBox="0 0 1040 680" role="img" aria-labelledby="flow-title flow-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="flow-title">Encadeamento Lógico Animado dos Verbos LegoLoop</title>
+      <desc id="flow-desc">Diagrama de fluxo com animação SVG e CSS mostrando o ciclo do forge inicial até o fechar canônico, com rotas perimetrais limpas em grid ortogonal.</desc>
 
       <defs>
-        <!-- seta principal (muted) -->
-        <marker id="arr-main" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto">
-          <path d="M0,0 L9,4 L0,8 L1.5,4 Z" fill="#4f5d75"/>
+        <!-- ÍCONES DAS FORMAS GEOMÉTRICAS DOS NÓS -->
+        <symbol id="ico-motor" viewBox="0 0 16 16">
+          <polygon points="8,1 14,4.5 14,11.5 8,15 2,11.5 2,4.5" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        </symbol>
+        <symbol id="ico-diag" viewBox="0 0 16 16">
+          <polygon points="8,1 15,8 8,15 1,8" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        </symbol>
+        <symbol id="ico-util" viewBox="0 0 16 16">
+          <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        </symbol>
+        <symbol id="ico-qual" viewBox="0 0 16 16">
+          <polygon points="8,2 15,14 1,14" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        </symbol>
+        <symbol id="ico-exec" viewBox="0 0 16 16">
+          <rect x="2" y="4" width="12" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/>
+          <line x1="6" y1="4" x2="6" y2="12" stroke="currentColor" stroke-width="0.9"/>
+        </symbol>
+
+        <!-- MARCADORES DE SETA -->
+        <marker id="arr-main" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
         </marker>
-        <!-- seta acento (falha/refinar) -->
-        <marker id="arr-accent" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto">
-          <path d="M0,0 L9,4 L0,8 L1.5,4 Z" fill="#bf4520"/>
+        <marker id="arr-accent" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#bf4520"/>
         </marker>
-        <!-- seta link (compor) -->
-        <marker id="arr-link" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto">
-          <path d="M0,0 L9,4 L0,8 L1.5,4 Z" fill="#2e5aa8"/>
+        <marker id="arr-link" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#2e5aa8"/>
         </marker>
-        <!-- seta retorno (canonize) -->
-        <marker id="arr-return" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto">
-          <path d="M0,0 L9,4 L0,8 L1.5,4 Z" fill="#5a6580"/>
+        <marker id="arr-return" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#5a6580"/>
         </marker>
       </defs>
 
       <rect width="1040" height="680" fill="#f5f5f5" rx="8"/>
 
-      <!-- ── ROW 1: forge ───────────────────────────────────────────── -->
-      <g transform="translate(420,24)">
-        <rect width="200" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-util" x="14" y="17" width="16" height="16" color="#2d3142"/>
-        <text x="40" y="28" font-family="'Geist',system-ui,sans-serif" font-size="13" font-weight="600" fill="#2d3142">forge</text>
-        <text x="40" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Inicializacao</text>
-      </g>
+      <!-- FAIXAS DE CAMADA -->
+      <rect x="20" y="16" width="1000" height="74" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="36" y="34" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#5a6580">CAMADA 01 · FUNDAÇÃO &amp; COFRE</text>
+
+      <rect x="20" y="102" width="1000" height="106" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="36" y="120" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#5a6580">CAMADA 02 · DIAGNÓSTICO &amp; INVENTÁRIO</text>
+
+      <rect x="20" y="218" width="1000" height="114" rx="6" fill="rgba(191,69,32,0.04)" stroke="#bf4520" stroke-width="1"/>
+      <text x="36" y="236" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#bf4520">CAMADA 03 · CONSTRUÇÃO VSA — MOTOR PRINCIPAL</text>
+
+      <rect x="20" y="342" width="1000" height="198" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="36" y="358" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#5a6580">CAMADA 04 · VALIDAÇÃO, EXECUÇÃO &amp; ITERAÇÃO</text>
+
+      <rect x="20" y="550" width="1000" height="114" rx="6" fill="rgba(46,90,168,0.04)" stroke="#2e5aa8" stroke-width="1"/>
+      <text x="36" y="568" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#2e5aa8">CAMADA 05 · HOMOLOGAÇÃO CANÔNICA &amp; FECHAMENTO</text>
+
+      <!-- ─── ARESTAS E CONECTORES ─── -->
 
       <!-- forge → listar (esq) -->
-      <polyline points="470,76 470,100 310,100 310,120" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
+      <path d="M470,68 L470,92 L300,92 L300,132" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
+
       <!-- forge → matriz (dir) -->
-      <polyline points="570,76 570,100 730,100 730,120" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
-
-      <!-- ── ROW 2: listar + matriz ─────────────────────────────────── -->
-      <g transform="translate(230,120)">
-        <rect width="160" height="52" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
-        <use href="#ico-diag" x="12" y="18" width="14" height="14" color="#bf4520"/>
-        <text x="36" y="30" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#bf4520">listar</text>
-        <text x="36" y="43" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Inventario</text>
-      </g>
-
-      <g transform="translate(650,120)">
-        <rect width="160" height="52" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
-        <use href="#ico-diag" x="12" y="18" width="14" height="14" color="#bf4520"/>
-        <text x="36" y="30" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#bf4520">matriz</text>
-        <text x="36" y="43" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Aptidao e reputacao</text>
-      </g>
+      <path d="M570,68 L570,92 L740,92 L740,132" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
 
       <!-- listar → matriz -->
-      <polyline points="390,146 650,146" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
+      <line x1="390" y1="158" x2="650" y2="158" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
 
       <!-- matriz → fabricar -->
-      <polyline points="730,172 730,220 580,220 580,248" fill="none" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
+      <path d="M740,184 L740,210 L520,210 L520,240" fill="none" stroke="#bf4520" stroke-width="1.5" marker-end="url(#arr-accent)"/>
 
-      <!-- listar → remover (obsoleto — calha externa esq sem cruzar refinar) -->
-      <polyline points="230,146 45,146 45,542 220,542" fill="none" stroke="#5a6580" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arr-return)"/>
-      <rect x="25" y="325" width="40" height="14" rx="2" fill="#f5f5f5"/>
-      <text x="35" y="348" font-family="'Geist Mono',ui-monospace,monospace" font-size="8" fill="#5a6580" transform="rotate(-90,35,348)">obsoleto</text>
-
-      <!-- ── ROW 3: fabricar ────────────────────────────────────────── -->
-      <g transform="translate(390,248)">
-        <rect width="260" height="72" rx="4" fill="#2d3142" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-motor" x="16" y="24" width="20" height="20" color="#f5f5f5"/>
-        <text x="46" y="34" font-family="'Geist',system-ui,sans-serif" font-size="14" font-weight="600" fill="#f5f5f5">fabricar</text>
-        <text x="46" y="48" font-family="'Geist Mono',ui-monospace,monospace" font-size="8" fill="#bfc0c0">MOTOR PRINCIPAL</text>
-        <text x="16" y="64" font-family="'Geist Mono',ui-monospace,monospace" font-size="8" fill="#bfc0c0">INTERVIEW — INTENT — SPEC — PLAN — ROUTE — DAG</text>
+      <!-- listar → remover (Obsoleto — ROTA PERIMETRAL EXTERNA X=35) -->
+      <path d="M210,158 L35,158 L35,486 L85,486" fill="none" stroke="#5a6580" stroke-width="1.2" class="anim-flow-reverse" marker-end="url(#arr-return)"/>
+      <!-- BADGE A: OBSOLETO (HORIZONTAL, PERFEITAMENTE FORMATADO E CENTRADO) -->
+      <g transform="translate(95, 149)">
+        <rect width="68" height="18" rx="3" fill="#f5f5f5" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="34" y="12" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="600" fill="#5a6580" text-anchor="middle">obsoleto</text>
       </g>
 
-      <!-- fabricar → validate -->
-      <line x1="520" y1="320" x2="520" y2="372" stroke="#bf4520" stroke-width="2" marker-end="url(#arr-accent)"/>
-
-      <!-- ── ROW 4: validate ────────────────────────────────────────── -->
-      <g transform="translate(390,376)">
-        <rect width="260" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-qual" x="16" y="17" width="16" height="16" color="#2d3142"/>
-        <text x="42" y="28" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2d3142">validate</text>
-        <text x="42" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Gate estrutural do DAG vs schema</text>
-      </g>
+      <!-- fabricar → validate (FLUXO PRINCIPAL) -->
+      <line x1="520" y1="304" x2="520" y2="368" stroke="#bf4520" stroke-width="2" class="anim-flow" marker-end="url(#arr-accent)"/>
 
       <!-- validate → exec -->
-      <line x1="520" y1="428" x2="520" y2="476" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
+      <line x1="520" y1="420" x2="520" y2="460" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
 
-      <!-- ── ROW 5: exec ────────────────────────────────────────────── -->
-      <g transform="translate(390,480)">
-        <rect width="260" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-exec" x="16" y="17" width="16" height="16" color="#2d3142"/>
-        <text x="42" y="28" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2d3142">exec</text>
-        <text x="42" y="42" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Motor Orchestrix — contexto esteril</text>
+      <!-- exec → refinar (Lacuna / Falha — ROTA LIVRE NA CALHA CENTRAL-ESQ) -->
+      <path d="M420,476 L335,476 L335,394 L260,394" fill="none" stroke="#bf4520" stroke-width="1.5" class="anim-flow" marker-end="url(#arr-accent)"/>
+      <!-- BADGE LACUNA / FALHA (HORIZONTAL E CENTRADO) -->
+      <g transform="translate(286, 422)">
+        <rect width="98" height="18" rx="3" fill="#f5f5f5" stroke="#bf4520" stroke-width="0.8"/>
+        <text x="49" y="12" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="600" fill="#bf4520" text-anchor="middle">lacuna / falha</text>
       </g>
 
-      <!-- exec → refinar (lacuna — esq, rota limpa) -->
-      <polyline points="390,496 280,496 280,402 250,402" fill="none" stroke="#bf4520" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arr-accent)"/>
-      <g transform="translate(90,376)">
-        <!-- máscara opaca anti-bleeding -->
-        <rect width="160" height="52" rx="4" fill="#f5f5f5"/>
-        <rect width="160" height="52" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
-        <use href="#ico-qual" x="12" y="18" width="14" height="14" color="#bf4520"/>
-        <text x="36" y="30" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#bf4520">refinar</text>
-        <text x="36" y="43" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Ajuste atomico de no</text>
-      </g>
-      <!-- label lacuna com máscara de proteção -->
-      <rect x="290" y="488" width="84" height="15" rx="2" fill="#f5f5f5" stroke="#bfc0c0" stroke-width="0.5"/>
-      <text x="332" y="499" font-family="'Geist Mono',ui-monospace,monospace" font-size="8" fill="#bf4520" text-anchor="middle">lacuna / falha</text>
+      <!-- refinar → validate (retorno) -->
+      <path d="M260,376 L335,376 L335,386 L420,386" fill="none" stroke="#bf4520" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr-accent)"/>
 
-      <!-- refinar → validate retorno -->
-      <polyline points="250,388 350,388 350,396 390,396" fill="none" stroke="#bf4520" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr-accent)"/>
-
-      <!-- exec → compor (composicao — dir, porta dedicada 496) -->
-      <polyline points="650,496 730,496 730,402 790,402" fill="none" stroke="#2e5aa8" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arr-link)"/>
-      <g transform="translate(790,376)">
-        <!-- máscara opaca anti-bleeding -->
-        <rect width="160" height="52" rx="4" fill="#f5f5f5"/>
-        <rect width="160" height="52" rx="4" fill="rgba(46,90,168,0.08)" stroke="#2e5aa8" stroke-width="1.5"/>
-        <use href="#ico-qual" x="12" y="18" width="14" height="14" color="#2e5aa8"/>
-        <text x="36" y="30" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2e5aa8">compor</text>
-        <text x="36" y="43" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Subprocesso hierarquico</text>
-      </g>
-      <!-- label composicao com máscara de proteção -->
-      <rect x="660" y="488" width="64" height="15" rx="2" fill="#f5f5f5" stroke="#bfc0c0" stroke-width="0.5"/>
-      <text x="692" y="499" font-family="'Geist Mono',ui-monospace,monospace" font-size="8" fill="#2e5aa8" text-anchor="middle">composicao</text>
-
-      <!-- compor → validate retorno -->
-      <polyline points="790,388 650,388" fill="none" stroke="#2e5aa8" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr-link)"/>
-
-      <!-- exec → fechar (sucesso) -->
-      <line x1="520" y1="532" x2="520" y2="580" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arr-main)"/>
-      <!-- label sucesso com máscara de proteção -->
-      <rect x="530" y="550" width="46" height="14" rx="2" fill="#f5f5f5" stroke="#bfc0c0" stroke-width="0.5"/>
-      <text x="553" y="560" font-family="'Geist Mono',ui-monospace,monospace" font-size="8" fill="#4f5d75" text-anchor="middle">sucesso</text>
-
-      <!-- upgrade (lateral dir, em 830) -->
-      <g transform="translate(830,480)">
-        <rect width="160" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
-        <use href="#ico-qual" x="12" y="18" width="14" height="14" color="#2d3142"/>
-        <text x="36" y="30" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2d3142">upgrade</text>
-        <text x="36" y="43" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Elevacao Padrao Ouro</text>
-      </g>
-      <!-- exec → upgrade (porta dedicada 516) -->
-      <polyline points="650,516 830,516" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr-main)"/>
-      <rect x="680" y="518" width="94" height="14" rx="2" fill="#f5f5f5" stroke="#bfc0c0" stroke-width="0.5"/>
-      <text x="727" y="528" font-family="'Geist Mono',ui-monospace,monospace" font-size="8" fill="#5a6580" text-anchor="middle">peca baixo score</text>
-
-      <!-- ── ROW 6: fechar (largura 520 centralizada no eixo 520) ───── -->
-      <g transform="translate(260,580)">
-        <!-- máscara opaca anti-bleeding -->
-        <rect width="520" height="60" rx="4" fill="#f5f5f5"/>
-        <rect width="520" height="60" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="2"/>
-        <use href="#ico-motor" x="16" y="20" width="18" height="18" color="#bf4520"/>
-        <text x="44" y="32" font-family="'Geist',system-ui,sans-serif" font-size="14" font-weight="600" fill="#bf4520">fechar</text>
-        <text x="44" y="47" font-family="'Geist Mono',ui-monospace,monospace" font-size="8.5" fill="#5a6580">9 etapas: Manual — Livro — Skill — DAG — Build — AGENTS.md — Grafo — Gates — Report</text>
+      <!-- exec → compor (Composição Modular — ROTA LIVRE NA CALHA CENTRAL-DIR) -->
+      <path d="M620,476 L705,476 L705,394 L780,394" fill="none" stroke="#2e5aa8" stroke-width="1.5" class="anim-flow" marker-end="url(#arr-link)"/>
+      <!-- BADGE COMPOSIÇÃO (HORIZONTAL E CENTRADO) -->
+      <g transform="translate(664, 422)">
+        <rect width="82" height="18" rx="3" fill="#f5f5f5" stroke="#2e5aa8" stroke-width="0.8"/>
+        <text x="41" y="12" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="600" fill="#2e5aa8" text-anchor="middle">composição</text>
       </g>
 
-      <!-- fechar → canonize (retorno ao cofre — calha perimetral direita x=1015, sem tocar compor ou upgrade) -->
-      <polyline points="780,610 1015,610 1015,50 620,50" fill="none" stroke="#5a6580" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr-return)"/>
-      <rect x="1005" y="300" width="16" height="96" rx="2" fill="#f5f5f5"/>
-      <text x="1016" y="348" font-family="'Geist Mono',ui-monospace,monospace" font-size="8" fill="#5a6580" transform="rotate(90,1016,348)" text-anchor="middle">retorno ao cofre</text>
+      <!-- compor → validate (retorno) -->
+      <path d="M780,376 L705,376 L705,386 L620,386" fill="none" stroke="#2e5aa8" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr-link)"/>
 
-      <!-- remover (conectado à calha esq vinda de listar) -->
-      <g transform="translate(220,516)">
-        <rect width="160" height="52" rx="4" fill="#f5f5f5" stroke="#4f5d75" stroke-width="1.5"/>
-        <use href="#ico-util" x="12" y="18" width="14" height="14" color="#4f5d75"/>
-        <text x="36" y="30" font-family="'Geist',system-ui,sans-serif" font-size="12" font-weight="600" fill="#4f5d75">remover</text>
-        <text x="36" y="43" font-family="'Geist Mono',ui-monospace,monospace" font-size="9" fill="#5a6580">Descarte com rollback</text>
+      <!-- exec → fechar (Sucesso) -->
+      <line x1="520" y1="512" x2="520" y2="572" stroke="#4f5d75" stroke-width="2" class="anim-flow" marker-end="url(#arr-main)"/>
+      <!-- BADGE SUCESSO -->
+      <g transform="translate(528, 532)">
+        <rect width="60" height="18" rx="3" fill="#f5f5f5" stroke="#4f5d75" stroke-width="0.8"/>
+        <text x="30" y="12" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="600" fill="#4f5d75" text-anchor="middle">sucesso</text>
+      </g>
+
+      <!-- exec → upgrade (Score Baixo) -->
+      <line x1="620" y1="496" x2="780" y2="496" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr-main)"/>
+      <!-- BADGE PEÇA BAIXO SCORE -->
+      <g transform="translate(642, 506)">
+        <rect width="116" height="18" rx="3" fill="#f5f5f5" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="58" y="12" font-family="'Geist Mono',monospace" font-size="8" fill="#5a6580" text-anchor="middle">peça baixo score</text>
+      </g>
+
+      <!-- fechar → canonize (RETORNO AO COFRE — ROTA PERIMETRAL EXTERNA X=1005) -->
+      <path d="M800,600 L1005,600 L1005,46 L630,46" fill="none" stroke="#5a6580" stroke-width="1.2" class="anim-flow-reverse" marker-end="url(#arr-return)"/>
+      <!-- BADGE B: RETORNO AO COFRE (HORIZONTAL NO TOPO, PERFEITAMENTE FORMATADO E CENTRADO) -->
+      <g transform="translate(775, 37)">
+        <rect width="120" height="18" rx="3" fill="#f5f5f5" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="60" y="12" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="600" fill="#5a6580" text-anchor="middle">retorno ao cofre</text>
+      </g>
+
+      <!-- ─── NÓS (ALINHAMENTO EM GRID 3x2 ORTOGONAL E RESPIRO INTERNO AMPLO) ─── -->
+
+      <!-- ROW 1: FORGE (LARGURA 220) -->
+      <g class="svg-node" transform="translate(410,24)">
+        <rect width="220" height="44" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
+        <use href="#ico-util" x="14" y="14" width="16" height="16" color="#2d3142"/>
+        <text x="40" y="23" font-family="'Geist',sans-serif" font-size="13" font-weight="700" fill="#2d3142">forge</text>
+        <text x="40" y="36" font-family="'Geist Mono',monospace" font-size="8.5" fill="#5a6580">Inicialização do ecossistema</text>
+      </g>
+
+      <!-- ROW 2: LISTAR & MATRIZ (LARGURA 180 — ZERO TRANSBORDAMENTO) -->
+      <g class="svg-node" transform="translate(210,132)">
+        <rect width="180" height="52" rx="4" fill="#f5f5f5"/>
+        <rect width="180" height="52" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
+        <use href="#ico-diag" x="12" y="18" width="16" height="16" color="#bf4520"/>
+        <text x="36" y="28" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#bf4520">listar</text>
+        <text x="36" y="42" font-family="'Geist Mono',monospace" font-size="8.5" fill="#5a6580">Inventário e vínculos</text>
+      </g>
+
+      <g class="svg-node" transform="translate(650,132)">
+        <rect width="180" height="52" rx="4" fill="#f5f5f5"/>
+        <rect width="180" height="52" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
+        <use href="#ico-diag" x="12" y="18" width="16" height="16" color="#bf4520"/>
+        <text x="36" y="28" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#bf4520">matriz</text>
+        <text x="36" y="42" font-family="'Geist Mono',monospace" font-size="8.5" fill="#5a6580">Aptidão por contratos I/O</text>
+      </g>
+
+      <!-- ROW 3: FABRICAR (MOTOR PRINCIPAL FOCAL) -->
+      <g class="svg-node anim-focal" transform="translate(390,240)">
+        <rect width="260" height="64" rx="5" fill="#2d3142" stroke="#bf4520" stroke-width="2"/>
+        <use href="#ico-motor" x="16" y="22" width="20" height="20" color="#f5f5f5"/>
+        <text x="46" y="30" font-family="'Geist',sans-serif" font-size="14" font-weight="800" fill="#f5f5f5">fabricar</text>
+        <text x="115" y="30" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#bf4520">MOTOR PRINCIPAL</text>
+        <text x="46" y="48" font-family="'Geist Mono',monospace" font-size="9" fill="#bfc0c0">Sexteto Canônico → DAG</text>
+      </g>
+
+      <!-- ── GRID 3x2: LINHA SUPERIOR (Y=368) ── -->
+      <!-- COLUNA ESQUERDA: REFINAR (LARGURA 175) -->
+      <g class="svg-node" transform="translate(85,368)">
+        <rect width="175" height="52" rx="4" fill="#f5f5f5"/>
+        <rect width="175" height="52" rx="4" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1.5"/>
+        <use href="#ico-qual" x="12" y="18" width="16" height="16" color="#bf4520"/>
+        <text x="36" y="28" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#bf4520">refinar</text>
+        <text x="36" y="42" font-family="'Geist Mono',monospace" font-size="8.5" fill="#5a6580">Ajuste atômico de nó</text>
+      </g>
+
+      <!-- COLUNA CENTRAL: VALIDATE (LARGURA 200) -->
+      <g class="svg-node" transform="translate(420,368)">
+        <rect width="200" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
+        <use href="#ico-qual" x="14" y="18" width="16" height="16" color="#2d3142"/>
+        <text x="38" y="28" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#2d3142">validate</text>
+        <text x="38" y="42" font-family="'Geist Mono',monospace" font-size="8.5" fill="#5a6580">Gate estrutural do DAG</text>
+      </g>
+
+      <!-- COLUNA DIREITA: COMPOR (LARGURA 175 — ZERO TRANSBORDAMENTO) -->
+      <g class="svg-node" transform="translate(780,368)">
+        <rect width="175" height="52" rx="4" fill="#f5f5f5"/>
+        <rect width="175" height="52" rx="4" fill="rgba(46,90,168,0.08)" stroke="#2e5aa8" stroke-width="1.5"/>
+        <use href="#ico-qual" x="12" y="18" width="16" height="16" color="#2e5aa8"/>
+        <text x="36" y="28" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#2e5aa8">compor</text>
+        <text x="36" y="42" font-family="'Geist Mono',monospace" font-size="8.5" fill="#5a6580">Subprocesso modular</text>
+      </g>
+
+      <!-- ── GRID 3x2: LINHA INFERIOR (Y=460) ── -->
+      <!-- COLUNA ESQUERDA: REMOVER (LARGURA 175) -->
+      <g class="svg-node" transform="translate(85,460)">
+        <rect width="175" height="52" rx="4" fill="#f5f5f5" stroke="#4f5d75" stroke-width="1.5"/>
+        <use href="#ico-util" x="12" y="18" width="16" height="16" color="#4f5d75"/>
+        <text x="36" y="28" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#4f5d75">remover</text>
+        <text x="36" y="42" font-family="'Geist Mono',monospace" font-size="8.5" fill="#5a6580">Descarte com rollback</text>
+      </g>
+
+      <!-- COLUNA CENTRAL: EXEC (LARGURA 200) -->
+      <g class="svg-node" transform="translate(420,460)">
+        <rect width="200" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
+        <use href="#ico-exec" x="14" y="18" width="16" height="16" color="#2d3142"/>
+        <text x="38" y="28" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#2d3142">exec</text>
+        <text x="38" y="42" font-family="'Geist Mono',monospace" font-size="8.5" fill="#5a6580">Motor Orchestrix estéril</text>
+      </g>
+
+      <!-- COLUNA DIREITA: UPGRADE (LARGURA 175) -->
+      <g class="svg-node" transform="translate(780,460)">
+        <rect width="175" height="52" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
+        <use href="#ico-qual" x="12" y="18" width="16" height="16" color="#2d3142"/>
+        <text x="36" y="28" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#2d3142">upgrade</text>
+        <text x="36" y="42" font-family="'Geist Mono',monospace" font-size="8.5" fill="#5a6580">Elevação Padrão Ouro</text>
+      </g>
+
+      <!-- ── LINHA FINAL: FECHAR (LARGURA 560 — FOLGA DE 120PX, ZERO TRANSBORDAMENTO C) ── -->
+      <g class="svg-node" transform="translate(240,572)">
+        <rect width="560" height="56" rx="5" fill="#f5f5f5"/>
+        <rect width="560" height="56" rx="5" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="2"/>
+        <use href="#ico-motor" x="16" y="18" width="20" height="20" color="#bf4520"/>
+        <text x="46" y="27" font-family="'Geist',sans-serif" font-size="13" font-weight="800" fill="#bf4520">fechar</text>
+        <text x="96" y="27" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="600" fill="#5a6580">HOMOLOGAÇÃO CANÔNICA EM 9 ETAPAS</text>
+        <text x="46" y="43" font-family="'Geist Mono',monospace" font-size="8" fill="#5a6580">Manual · Livro · Skill · DAG · Build · AGENTS · Grafo · Gates · Report</text>
       </g>
     </svg>
 
-    <!-- LEGENDA -->
-    <div class="legend">
-      <div class="legend-item">
-        <svg width="32" height="10" viewBox="0 0 32 10">
-          <line x1="0" y1="5" x2="24" y2="5" stroke="#4f5d75" stroke-width="1.5"/>
-          <path d="M22,1 L30,5 L22,9 L23.5,5 Z" fill="#4f5d75"/>
-        </svg>
-        Fluxo principal
+    <!-- LEGENDA EDITORIAL DUPLA: FORMAS GEOMÉTRICAS DOS NÓS + TIPOS DE CONEXÃO -->
+    <div class="legend-box">
+      <!-- GRUPO 1: FORMAS GEOMÉTRICAS DOS NÓS -->
+      <div class="legend-group">
+        <span class="legend-group-title">Formas Geométricas dos Nós (Semântica dos Símbolos)</span>
+        <div class="legend-items">
+          <div class="legend-item">
+            <svg class="shape-icon" width="13" height="13" viewBox="0 0 16 16" style="width:13px;height:13px;max-width:13px;max-height:13px;flex-shrink:0;"><polygon points="8,1 14,4.5 14,11.5 8,15 2,11.5 2,4.5" fill="none" stroke="#bf4520" stroke-width="1.3"/></svg>
+            Hexágono: Motor principal / canônico
+          </div>
+          <div class="legend-item">
+            <svg class="shape-icon" width="13" height="13" viewBox="0 0 16 16" style="width:13px;height:13px;max-width:13px;max-height:13px;flex-shrink:0;"><polygon points="8,1 15,8 8,15 1,8" fill="none" stroke="#bf4520" stroke-width="1.3"/></svg>
+            Losango: Diagnóstico e inventário
+          </div>
+          <div class="legend-item">
+            <svg class="shape-icon" width="13" height="13" viewBox="0 0 16 16" style="width:13px;height:13px;max-width:13px;max-height:13px;flex-shrink:0;"><circle cx="8" cy="8" r="6" fill="none" stroke="#4f5d75" stroke-width="1.3"/></svg>
+            Círculo: Fundação / utilitário / descarte
+          </div>
+          <div class="legend-item">
+            <svg class="shape-icon" width="13" height="13" viewBox="0 0 16 16" style="width:13px;height:13px;max-width:13px;max-height:13px;flex-shrink:0;"><polygon points="8,2 15,14 1,14" fill="none" stroke="#2d3142" stroke-width="1.3"/></svg>
+            Triângulo: Qualidade / gate de conformidade
+          </div>
+          <div class="legend-item">
+            <svg class="shape-icon" width="13" height="13" viewBox="0 0 16 16" style="width:13px;height:13px;max-width:13px;max-height:13px;flex-shrink:0;"><rect x="2" y="4" width="12" height="8" rx="2" fill="none" stroke="#2d3142" stroke-width="1.3"/><line x1="6" y1="4" x2="6" y2="12" stroke="#2d3142" stroke-width="0.9"/></svg>
+            Retângulo: Execução Orchestrix estéril
+          </div>
+        </div>
       </div>
-      <div class="legend-item">
-        <svg width="32" height="10" viewBox="0 0 32 10">
-          <line x1="0" y1="5" x2="24" y2="5" stroke="#bf4520" stroke-width="1.5" stroke-dasharray="5,3"/>
-          <path d="M22,1 L30,5 L22,9 L23.5,5 Z" fill="#bf4520"/>
-        </svg>
-        Lacuna / falha → refinar
-      </div>
-      <div class="legend-item">
-        <svg width="32" height="10" viewBox="0 0 32 10">
-          <line x1="0" y1="5" x2="24" y2="5" stroke="#2e5aa8" stroke-width="1.5" stroke-dasharray="5,3"/>
-          <path d="M22,1 L30,5 L22,9 L23.5,5 Z" fill="#2e5aa8"/>
-        </svg>
-        Composicao → compor
-      </div>
-      <div class="legend-item">
-        <svg width="32" height="10" viewBox="0 0 32 10">
-          <line x1="0" y1="5" x2="24" y2="5" stroke="#5a6580" stroke-width="1" stroke-dasharray="4,3"/>
-          <path d="M22,1 L30,5 L22,9 L23.5,5 Z" fill="#5a6580"/>
-        </svg>
-        Retorno ao cofre / descarte
+
+      <!-- GRUPO 2: TIPOS DE CONEXÃO -->
+      <div class="legend-group">
+        <span class="legend-group-title">Tipos de Aresta &amp; Fluxo de Execução</span>
+        <div class="legend-items">
+          <div class="legend-item">
+            <svg class="arrow-icon" width="24" height="8" viewBox="0 0 28 10" style="width:24px;height:8px;max-width:24px;max-height:8px;flex-shrink:0;">
+              <line x1="0" y1="5" x2="20" y2="5" stroke="#bf4520" stroke-width="2"/>
+              <path d="M18,1 L26,5 L18,9 Z" fill="#bf4520"/>
+            </svg>
+            Caminho principal de fabricação
+          </div>
+          <div class="legend-item">
+            <svg class="arrow-icon" width="24" height="8" viewBox="0 0 28 10" style="width:24px;height:8px;max-width:24px;max-height:8px;flex-shrink:0;">
+              <line x1="0" y1="5" x2="20" y2="5" stroke="#2e5aa8" stroke-width="1.5" stroke-dasharray="4,3"/>
+              <path d="M18,1 L26,5 L18,9 Z" fill="#2e5aa8"/>
+            </svg>
+            Composição modular / subprocesso
+          </div>
+          <div class="legend-item">
+            <svg class="arrow-icon" width="24" height="8" viewBox="0 0 28 10" style="width:24px;height:8px;max-width:24px;max-height:8px;flex-shrink:0;">
+              <line x1="0" y1="5" x2="20" y2="5" stroke="#bf4520" stroke-width="1.5" stroke-dasharray="4,3"/>
+              <path d="M18,1 L26,5 L18,9 Z" fill="#bf4520"/>
+            </svg>
+            Tratamento de lacuna / refinamento
+          </div>
+          <div class="legend-item">
+            <svg class="arrow-icon" width="24" height="8" viewBox="0 0 28 10" style="width:24px;height:8px;max-width:24px;max-height:8px;flex-shrink:0;">
+              <line x1="0" y1="5" x2="20" y2="5" stroke="#5a6580" stroke-width="1.2" stroke-dasharray="4,3"/>
+              <path d="M18,1 L26,5 L18,9 Z" fill="#5a6580"/>
+            </svg>
+            Retorno ao cofre / descarte
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ DIAGRAMA 3: TABELA DE REFERÊNCIA ════════════════════════════════════ -->
+<!-- ══ SEÇÃO 3: JORNADA PASSO A PASSO (DIDÁTICA DO ANTIGO) ═══════════════════ -->
 <section class="section">
-  <h2 class="section-title">03 — Tabela de Referencia dos Verbos</h2>
+  <h2 class="section-title">03 — Dinâmica no Dia a Dia do Operador</h2>
+  <p class="section-lead">O ciclo operacional segue cinco momentos bem definidos. Cada momento tem entrada obrigatória, saída auditada e portão de parada mecânico.</p>
+
+  <div class="steps-list">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Entrada — Diagnóstico do Inventário e Reputação</div>
+        <div class="step-body">O operador aciona <code>listar</code> para auditar as versões dos processos já catalogados no cofre e <code>matriz</code> para consultar a aptidão por contratos de I/O. As lacunas identificadas orientam a criação do novo processo.</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Criação — Síntese do Sexteto Canônico via Fabricar</div>
+        <div class="step-body">O verbo <code>fabricar</code> assume a orquestração autônoma e materializa a cadeia completa de governança: INTERVIEW → INTENT → SPEC → PLAN → ROUTE → DAG. Cada artefato é autocontido e validado formalmente contra seu JSON Schema.</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Validação Estrutural — Gate do DAG e Pré-Voo</div>
+        <div class="step-body">O portão mecânico <code>validate</code> confere o grafo de execução antes de consumir qualquer token de inferência. O motor <code>exec</code> só recebe o processo após a validação retornar <code>exit_code == 0</code> com ordenação topológica garantida.</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Iteração — Refinamento Cirúrgico ou Composição Modular</div>
+        <div class="step-body">Em caso de falha de nó ou regressão, aciona-se <code>refinar</code> para ajuste atômico com backup e rollback automático. Para reuso de processos existentes, aplica-se <code>compor</code>, aninhando subprocessos sem criar ciclos no DAG.</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">Canonização e Entrega — Fechamento em 9 Etapas</div>
+        <div class="step-body">O ciclo encerra de forma estrita com <code>fechar</code>: gera o manual operacional, compila o livro didático LegoPress, instala a skill em todos os harnesses, recompila o binário em Go e reindexa o grafo semântico. Os artefatos finais retornam ao cofre via <code>canonize</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SEÇÃO 4: TABELA DE REFERÊNCIA DOS VERBOS ══════════════════════════════ -->
+<section class="section">
+  <h2 class="section-title">04 — Tabela Canônica de Implementação dos Verbos</h2>
   <div class="diagram-card">
     <div class="table-wrap">
       <table>
@@ -625,101 +841,101 @@
           <tr>
             <th>Verbo</th>
             <th>Camada</th>
-            <th>Funcao</th>
-            <th>Tipo</th>
-            <th>Fonte</th>
+            <th>Responsabilidade Principal</th>
+            <th>Classificação</th>
+            <th>Ponto de Entrada em Go</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><code>forge</code></td>
             <td>01</td>
-            <td>Inicializa ecossistema e Studio</td>
-            <td><span class="badge badge-muted">Fundacao</span></td>
+            <td>Inicializa ambiente, inspeciona portas e inicializa o Studio</td>
+            <td><span class="badge badge-muted">Fundação</span></td>
             <td><code>internal/cli/cli.go:107</code></td>
           </tr>
           <tr>
             <td><code>canonize</code></td>
             <td>01</td>
-            <td>Deduplicacao SHA-256 no Cofre</td>
-            <td><span class="badge badge-muted">Fundacao</span></td>
+            <td>Deduplicação de ativos por SHA-256 no Cofre universal</td>
+            <td><span class="badge badge-muted">Fundação</span></td>
             <td><code>internal/cli/cli.go:108</code></td>
           </tr>
           <tr>
             <td><code>doctor</code></td>
             <td>01</td>
-            <td>Diagnostico de ambiente e chaves</td>
-            <td><span class="badge badge-muted">Fundacao</span></td>
+            <td>Diagnóstico de ambiente, chaves de API e conectividade</td>
+            <td><span class="badge badge-muted">Fundação</span></td>
             <td><code>internal/cli/cli.go:109</code></td>
           </tr>
           <tr>
             <td><code>listar</code></td>
             <td>02</td>
-            <td>Inventario com vinculos e versoes</td>
-            <td><span class="badge badge-accent">Diagnostico</span></td>
+            <td>Inventário de processos, versões e vínculos ativos</td>
+            <td><span class="badge badge-accent">Diagnóstico</span></td>
             <td><code>internal/cli/cli.go:110</code></td>
           </tr>
           <tr>
             <td><code>matriz</code></td>
             <td>02</td>
-            <td>Reputacao e aptidao de pecas por IO</td>
-            <td><span class="badge badge-accent">Diagnostico</span></td>
+            <td>Consulta de aptidão e reputação por contratos de I/O</td>
+            <td><span class="badge badge-accent">Diagnóstico</span></td>
             <td><code>internal/cli/cli.go:111</code></td>
           </tr>
           <tr>
             <td><code>fabricar</code></td>
             <td>02</td>
-            <td>Sexteto INTERVIEW → DAG completo</td>
-            <td><span class="badge badge-ink">Motor principal</span></td>
+            <td>Motor principal: síntese do Sexteto Canônico ao DAG</td>
+            <td><span class="badge badge-accent">Construção</span></td>
             <td><code>internal/cli/cli.go:112</code></td>
           </tr>
           <tr>
             <td><code>refinar</code></td>
             <td>02</td>
-            <td>Substituicao atomica de no</td>
-            <td><span class="badge badge-accent">Iteracao</span></td>
+            <td>Substituição cirúrgica de nós preservando histórico</td>
+            <td><span class="badge badge-accent">Qualidade</span></td>
             <td><code>internal/cli/cli.go:113</code></td>
           </tr>
           <tr>
             <td><code>compor</code></td>
             <td>02</td>
-            <td>Encaixe de subprocesso hierarquico</td>
-            <td><span class="badge badge-link">Iteracao</span></td>
+            <td>Composição modular de subprocessos em grafos DAG</td>
+            <td><span class="badge badge-link">Modularidade</span></td>
             <td><code>internal/cli/cli.go:114</code></td>
           </tr>
           <tr>
             <td><code>fechar</code></td>
             <td>02</td>
-            <td>Homologacao canonica em 9 etapas</td>
-            <td><span class="badge badge-accent">Encerramento</span></td>
+            <td>Homologação em 9 etapas, compilação de livro e entrega</td>
+            <td><span class="badge badge-accent">Canonização</span></td>
             <td><code>internal/cli/cli.go:115</code></td>
           </tr>
           <tr>
             <td><code>remover</code></td>
             <td>02</td>
-            <td>Desvinculacao segura com rollback</td>
-            <td><span class="badge badge-muted">Encerramento</span></td>
+            <td>Descarte de processo com backup e garantia de rollback</td>
+            <td><span class="badge badge-muted">Descarte</span></td>
             <td><code>internal/cli/cli.go:116</code></td>
           </tr>
           <tr>
             <td><code>validate</code></td>
             <td>03</td>
-            <td>Gate estrutural do DAG vs schema</td>
-            <td><span class="badge badge-muted">Qualidade</span></td>
+            <td>Validação estrutural do DAG contra o JSON Schema</td>
+            <td><span class="badge badge-ink">Portão</span></td>
             <td><code>internal/cli/cli.go:117</code></td>
           </tr>
           <tr>
             <td><code>exec</code></td>
             <td>03</td>
-            <td>Motor Orchestrix em contexto esteril</td>
-            <td><span class="badge badge-ink">Execucao</span></td>
+            <td>Motor Orchestrix em contexto estéril por nós</td>
+            <td><span class="badge badge-ink">Execução</span></td>
             <td><code>internal/cli/cli.go:118</code></td>
           </tr>
           <tr>
             <td><code>upgrade</code></td>
             <td>03</td>
-            <td>Elevacao de pecas ao Padrao Ouro</td>
-            <td><span class="badge badge-muted">Qualidade</span></td>
+            <td>Elevação de peças para o Padrão Ouro (Score ≥ 0.85)</td>
+            <td><span class="badge badge-ink">Qualidade</span></td>
             <td><code>internal/cli/cli.go:119</code></td>
           </tr>
         </tbody>
@@ -728,10 +944,10 @@
   </div>
 </section>
 
-<!-- ══ FOOTER ══════════════════════════════════════════════════════════════ -->
+<!-- ══ RODAPÉ ═══════════════════════════════════════════════════════════════ -->
 <footer class="page-footer">
-  <span>LegoLoop — Referencia Canonica dos Verbos — 2026-11-18</span>
-  <span>Skill: legoloop-diagram-design v2.6 — Tokens: style-guide.md — Sem emojis — SVG inline</span>
+  <span>LegoLoop · Arquitetura e Encadeamento dos Verbos · v2.0 Canônica</span>
+  <span>Gerado por <code>legoloop-diagram-design</code> · Padrão 100% Sans-Serif Impeccable</span>
 </footer>
 
 </body>

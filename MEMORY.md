@@ -41,7 +41,11 @@
 - **ID da sessão Antigravity:** `336b79d5-f684-4a46-8580-b33d70f30639`
 - **Anticorpos registrados:**
   - `legoloop-diagram-design/line-card-collision`: Proibido arestas cruzando bounding boxes de nós intermediários. Arestas periféricas (retornos e saltos) devem correr pelas calhas externas (margins/gutters x<=50 ou x>=1000). Nós translúcidos (`rgba(...)`) exigem máscara opaca de papel `<rect fill="var(--paper)"/>` por baixo para evitar bleeding-through.
-  - `legoloop-diagram-design/text-box-overflow`: Dimensionamento obrigatório de card conforme contagem de caracteres mono (nó `fechar` alargado para 520px centralizado). Rótulos de arestas exigem placa protetora retangular opaca `<rect fill="var(--paper)"/>` com gap de 6-10px da linha.
+  - `legoloop-diagram-design/text-box-overflow`: Dimensionamento obrigatório de card conforme contagem de caracteres mono (nó `fechar` alargado para 440px centralizado). Rótulos de arestas exigem placa protetora retangular opaca `<rect fill="var(--paper)"/>` com gap de 6-10px da linha.
+  - `legoloop-diagram-design/native-browser-animation`: Animação nativa em CSS com `@keyframes flow-dash` (efeito elétron nas arestas) e pulso suave focal no nó `fabricar`. Fusão da didática rica (grade dos 13 verbos + jornada de 5 etapas do manual antigo) com a geometria precisa VSA.
+  - `legoloop-diagram-design/no-serif-and-badges`: REGRA ZERO SERIFAS: proibição total de fontes serifadas (Instrument Serif/Georgia), adoção de Geist Sans 700/800 e Geist Mono. Badges A e B 100% horizontais e centrados (sem rotação de 90° distorcida). Nó `fechar` alargado para 560px com separadores compactos (`·`), garantindo mais de 120px de respiro interno contra transbordamento. Legenda estruturada dupla (formas geométricas dos 5 nós + 4 tipos de arestas de conexão).
+  - `legoloop-diagram-design/subtle-legend-micro-svg`: Isolamento de canvas com `.diagram-card > svg.diagram-canvas`. Micro-vetores da legenda com estilos inline rígidos (13px para formas, 24px para setas) impedindo esticamento indevido via flexbox ou regras globais CSS.
+  - `legoloop-diagram-design/asd-ste100-taxonomy`: Conformidade estrita com o dicionário canônico (zero termos proibidos como loop, storage, pipeline, card e tasks no texto normativo da skill).
   - **Escopo do Processo:** Suporta 50 tipos visuais do catálogo: pastas, peças, processos, arquitetura C4, bancos ER/SQL, sequências HTTP/OAuth, árvores, radares, quadrantes, Gantt, Sankey, plantas axonométricas e gráficos.
 
 ## Progresso por ticket
