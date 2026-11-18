@@ -17,7 +17,7 @@ func cmdCommit(ctx context.Context, args []string, d Deps) int {
 	fs.BoolVar(&opt.NoPush, "no-push", false, "realiza apenas o commit local sem push")
 	fs.BoolVar(&opt.Verbose, "verbose", false, "exibe saída detalhada")
 
-	if err := fs.Parse(args[1:]); err != nil {
+	if err := fs.Parse(args); err != nil {
 		return 2
 	}
 	if opt.Mensagem == "" && fs.NArg() > 0 {
