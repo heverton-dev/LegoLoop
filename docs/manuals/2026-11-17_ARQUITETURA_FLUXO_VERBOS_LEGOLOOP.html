@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Arquitetura e Encadeamento Lógico dos Verbos no LegoLoop</title>
+<style>
+  /* ── Tokens (style-guide.md · light skin) ─────────────────────── */
+  :root {
+    --paper:        #f5f5f5;
+    --paper-2:      #ececec;
+    --ink:          #2d3142;
+    --ink-strong:   #111111;
+    --muted:        #4f5d75;
+    --soft:         #5a6580;
+    --rule:         rgba(45,49,66,.12);
+    --rule-solid:   #bfc0c0;
+    --accent:       #bf4520;
+    --accent-tint:  rgba(191,69,32,.08);
+    --link:         #2e5aa8;
+    --title-font:   "Georgia","Times New Roman",serif;
+    --body-font:    system-ui,-apple-system,"Segoe UI",sans-serif;
+    --mono-font:    "SF Mono","Fira Code","Consolas",monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body-font);
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 48px 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-family: var(--title-font);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 10px;
+    margin-bottom: 8px;
+  }
+  .meta { color: var(--soft); font-size: 13px; margin-bottom: 32px; display: flex; gap: 24px; }
+  h2 {
+    font-family: var(--title-font);
+    font-size: 18px;
+    color: var(--ink);
+    margin: 36px 0 14px;
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+  }
+  h3 { font-size: 14px; font-weight: 600; color: var(--muted); margin: 24px 0 8px; text-transform: uppercase; letter-spacing: .06em; }
+  p { margin-bottom: 12px; color: var(--ink); }
+  code {
+    font-family: var(--mono-font);
+    font-size: 12px;
+    background: var(--paper-2);
+    border: 1px solid var(--rule-solid);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: var(--accent);
+  }
+  ol { padding-left: 20px; color: var(--ink); }
+  ol li { margin-bottom: 6px; }
+  .layers-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 16px;
+    margin: 20px 0 32px;
+  }
+  .layer-card {
+    border: 1px solid var(--rule-solid);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .layer-card-header {
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 7px 12px;
+  }
+  .layer-card-header.accent { background: var(--accent); }
+  .layer-card-header.link   { background: var(--link); }
+  .layer-card-body { padding: 12px; background: var(--paper); }
+  .verb-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .verb-row:last-child { border-bottom: none; }
+  .verb-tag {
+    font-family: var(--mono-font);
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--paper-2);
+    border: 1px solid var(--rule-solid);
+    border-radius: 3px;
+    padding: 2px 6px;
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .verb-desc { font-size: 12px; color: var(--soft); line-height: 1.4; }
+
+  /* ── SVG diagrams ─────────────────────── */
+  .diagram-wrap {
+    margin: 20px 0 32px;
+    border: 1px solid var(--rule-solid);
+    border-radius: 8px;
+    background: var(--paper);
+    padding: 24px;
+    overflow-x: auto;
+  }
+  svg { display: block; overflow: visible; }
+
+  /* ── Day-to-day table ─────────────────── */
+  .steps-list { display: flex; flex-direction: column; gap: 0; margin: 16px 0; }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--rule);
+    border-bottom: none;
+    background: var(--paper);
+  }
+  .step-item:first-child { border-radius: 6px 6px 0 0; }
+  .step-item:last-child  { border-radius: 0 0 6px 6px; border-bottom: 1px solid var(--rule); }
+  .step-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-content { flex: 1; }
+  .step-title { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 2px; }
+  .step-body  { font-size: 13px; color: var(--soft); }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule-solid);
+    font-size: 12px;
+    color: var(--soft);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<h1>Arquitetura e Encadeamento Lógico dos Verbos no LegoLoop</h1>
+<div class="meta">
+  <span>📅 2026-11-17</span>
+  <span>✅ Canônico</span>
+  <span>🏗 Vertical Slice Architecture (VSA)</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SEÇÃO 1 · Categorização
+     ══════════════════════════════════════════════════ -->
+<h2>1. Categorização dos Verbos do LegoLoop</h2>
+<p>Os comandos do LegoLoop operam em três camadas estruturadas. Cada camada tem responsabilidade exclusiva e contratos de entrada e saída bem definidos.</p>
+
+<div class="layers-grid">
+
+  <!-- Camada 1 -->
+  <div class="layer-card">
+    <div class="layer-card-header link">Camada 1 · Fundação &amp; Cofre</div>
+    <div class="layer-card-body">
+      <div class="verb-row">
+        <span class="verb-tag">forge</span>
+        <span class="verb-desc">Inicializa o ecossistema, inspeciona o ambiente e sobe o Studio</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">canonize</span>
+        <span class="verb-desc">Deduplicação mecânica por SHA-256 de arquivos e ativos brutos para o Cofre</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">doctor</span>
+        <span class="verb-desc">Diagnóstico de chaves, harnesses e variáveis de ambiente</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Camada 2 -->
+  <div class="layer-card">
+    <div class="layer-card-header accent">Camada 2 · Espinha Dorsal (7 Verbos)</div>
+    <div class="layer-card-body">
+      <div class="verb-row">
+        <span class="verb-tag">listar</span>
+        <span class="verb-desc">Inventário de versões e vínculos entre processos</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">matriz</span>
+        <span class="verb-desc">Aptidão e reputação de peças via contrato de I/O</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">fabricar</span>
+        <span class="verb-desc">Cria processo gerando o Sexteto (INTERVIEW → DAG)</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">refinar</span>
+        <span class="verb-desc">Substituição atômica de nós com preservação de versão</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">compor</span>
+        <span class="verb-desc">Encaixe hierárquico de processos como sub-loops</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">fechar</span>
+        <span class="verb-desc">Homologação canônica em 9 etapas e compilação LegoPress</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">remover</span>
+        <span class="verb-desc">Desvinculação segura com cópia de restauração</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Camada 3 -->
+  <div class="layer-card">
+    <div class="layer-card-header">Camada 3 · Execução &amp; Qualidade</div>
+    <div class="layer-card-body">
+      <div class="verb-row">
+        <span class="verb-tag">validate</span>
+        <span class="verb-desc">Verificação mecânica do DAG contra o JSON Schema</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">exec</span>
+        <span class="verb-desc">Motor de execução Orchestrix em contexto estéril</span>
+      </div>
+      <div class="verb-row">
+        <span class="verb-tag">upgrade</span>
+        <span class="verb-desc">Elevação de peças ao Padrão Ouro (score ≥ 0.85)</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SEÇÃO 2 · Diagrama de Fluxo Principal
+     ══════════════════════════════════════════════════ -->
+<h2>2. Fluxograma Lógico de Encadeamento</h2>
+<p>O encadeamento dos verbos segue um ciclo determinístico de 5 camadas. As setas em <span style="color:var(--accent);font-weight:600">laranja</span> indicam o caminho principal; as setas em <span style="color:var(--link);font-weight:600">azul</span> indicam rotas alternativas condicionais.</p>
+
+<div class="diagram-wrap">
+<svg id="verb-flow" viewBox="0 0 920 640" width="920" height="640"
+     role="img" aria-labelledby="flow-title flow-desc"
+     xmlns="http://www.w3.org/2000/svg">
+  <title id="flow-title">Fluxograma de Encadeamento dos Verbos do LegoLoop</title>
+  <desc id="flow-desc">Diagrama de fluxo em 5 camadas mostrando como os verbos forge, canonize, listar, matriz, fabricar, validate, exec, refinar, compor, fechar e remover se encadeiam no ciclo de vida de um processo no LegoLoop.</desc>
+
+  <defs>
+    <!-- seta padrão muted -->
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#4f5d75"/>
+    </marker>
+    <!-- seta accent -->
+    <marker id="arr-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#bf4520"/>
+    </marker>
+    <!-- seta link blue -->
+    <marker id="arr-l" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#2e5aa8"/>
+    </marker>
+  </defs>
+
+  <!-- fundo -->
+  <rect width="920" height="640" fill="#f5f5f5"/>
+
+  <!-- ── Faixas de camada ──────────────────────────── -->
+  <!-- C1: Fundação -->
+  <rect x="20" y="20" width="880" height="90" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+  <text x="34" y="40" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#5a6580" text-anchor="start" letter-spacing=".07em">CAMADA 1 · FUNDAÇÃO &amp; COFRE</text>
+
+  <!-- C2: Diagnóstico -->
+  <rect x="20" y="130" width="880" height="90" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+  <text x="34" y="150" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#5a6580" letter-spacing=".07em">CAMADA 2 · DIAGNÓSTICO</text>
+
+  <!-- C3: Construção -->
+  <rect x="20" y="240" width="880" height="90" rx="6" fill="rgba(191,69,32,.06)" stroke="#bf4520" stroke-width="1"/>
+  <text x="34" y="260" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#bf4520" letter-spacing=".07em">CAMADA 3 · CONSTRUÇÃO VSA · ESPINHA DORSAL</text>
+
+  <!-- C4: Validação -->
+  <rect x="20" y="350" width="880" height="90" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+  <text x="34" y="370" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#5a6580" letter-spacing=".07em">CAMADA 4 · VALIDAÇÃO &amp; EXECUÇÃO</text>
+
+  <!-- C5: Fechamento -->
+  <rect x="20" y="460" width="880" height="90" rx="6" fill="rgba(46,90,168,.06)" stroke="#2e5aa8" stroke-width="1"/>
+  <text x="34" y="480" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#2e5aa8" letter-spacing=".07em">CAMADA 5 · HOMOLOGAÇÃO &amp; ENTREGA</text>
+
+  <!-- ── Nós ───────────────────────────────────────── -->
+  <!-- FORGE -->
+  <rect x="60" y="46" width="110" height="44" rx="5" fill="#2e5aa8" stroke="none"/>
+  <text x="115" y="65" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#f5f5f5" text-anchor="middle">forge</text>
+  <text x="115" y="80" font-family="system-ui,sans-serif" font-size="9" fill="rgba(245,245,245,.75)" text-anchor="middle">Inicialização</text>
+
+  <!-- CANONIZE -->
+  <rect x="220" y="46" width="130" height="44" rx="5" fill="#2e5aa8" stroke="none"/>
+  <text x="285" y="65" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#f5f5f5" text-anchor="middle">canonize</text>
+  <text x="285" y="80" font-family="system-ui,sans-serif" font-size="9" fill="rgba(245,245,245,.75)" text-anchor="middle">Deduplicação SHA-256</text>
+
+  <!-- DOCTOR -->
+  <rect x="400" y="46" width="110" height="44" rx="5" fill="#4f5d75" stroke="none"/>
+  <text x="455" y="65" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#f5f5f5" text-anchor="middle">doctor</text>
+  <text x="455" y="80" font-family="system-ui,sans-serif" font-size="9" fill="rgba(245,245,245,.75)" text-anchor="middle">Diagnóstico ambiente</text>
+
+  <!-- LISTAR -->
+  <rect x="60" y="156" width="110" height="44" rx="5" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
+  <text x="115" y="175" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#2d3142" text-anchor="middle">listar</text>
+  <text x="115" y="190" font-family="system-ui,sans-serif" font-size="9" fill="#5a6580" text-anchor="middle">Inventário</text>
+
+  <!-- MATRIZ -->
+  <rect x="230" y="156" width="110" height="44" rx="5" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
+  <text x="285" y="175" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#2d3142" text-anchor="middle">matriz</text>
+  <text x="285" y="190" font-family="system-ui,sans-serif" font-size="9" fill="#5a6580" text-anchor="middle">Aptidão por I/O</text>
+
+  <!-- FABRICAR -->
+  <rect x="175" y="266" width="150" height="44" rx="5" fill="#bf4520" stroke="none"/>
+  <text x="250" y="285" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#f5f5f5" text-anchor="middle">fabricar</text>
+  <text x="250" y="300" font-family="system-ui,sans-serif" font-size="9" fill="rgba(245,245,245,.80)" text-anchor="middle">Sexteto → DAG</text>
+
+  <!-- REFINAR -->
+  <rect x="440" y="266" width="110" height="44" rx="5" fill="#f5f5f5" stroke="#bf4520" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="495" y="285" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#bf4520" text-anchor="middle">refinar</text>
+  <text x="495" y="300" font-family="system-ui,sans-serif" font-size="9" fill="#5a6580" text-anchor="middle">Ajuste Atômico</text>
+
+  <!-- COMPOR -->
+  <rect x="620" y="266" width="110" height="44" rx="5" fill="#f5f5f5" stroke="#bf4520" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="675" y="285" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#bf4520" text-anchor="middle">compor</text>
+  <text x="675" y="300" font-family="system-ui,sans-serif" font-size="9" fill="#5a6580" text-anchor="middle">Sub-loop</text>
+
+  <!-- REMOVER -->
+  <rect x="780" y="156" width="110" height="44" rx="5" fill="#f5f5f5" stroke="#bfc0c0" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="835" y="175" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#4f5d75" text-anchor="middle">remover</text>
+  <text x="835" y="190" font-family="system-ui,sans-serif" font-size="9" fill="#5a6580" text-anchor="middle">Descarte + Rollback</text>
+
+  <!-- VALIDATE -->
+  <rect x="175" y="376" width="150" height="44" rx="5" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.5"/>
+  <text x="250" y="395" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#2d3142" text-anchor="middle">validate</text>
+  <text x="250" y="410" font-family="system-ui,sans-serif" font-size="9" fill="#5a6580" text-anchor="middle">Portão Estrutural</text>
+
+  <!-- EXEC -->
+  <rect x="410" y="376" width="130" height="44" rx="5" fill="#2d3142" stroke="none"/>
+  <text x="475" y="395" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#f5f5f5" text-anchor="middle">exec</text>
+  <text x="475" y="410" font-family="system-ui,sans-serif" font-size="9" fill="rgba(245,245,245,.75)" text-anchor="middle">Motor Orchestrix</text>
+
+  <!-- FECHAR -->
+  <rect x="175" y="486" width="150" height="44" rx="5" fill="#2e5aa8" stroke="none"/>
+  <text x="250" y="505" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#f5f5f5" text-anchor="middle">fechar</text>
+  <text x="250" y="520" font-family="system-ui,sans-serif" font-size="9" fill="rgba(245,245,245,.75)" text-anchor="middle">9 Etapas Canônicas</text>
+
+  <!-- UPGRADE -->
+  <rect x="620" y="376" width="110" height="44" rx="5" fill="#f5f5f5" stroke="#bfc0c0" stroke-width="1.5"/>
+  <text x="675" y="395" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#4f5d75" text-anchor="middle">upgrade</text>
+  <text x="675" y="410" font-family="system-ui,sans-serif" font-size="9" fill="#5a6580" text-anchor="middle">Padrão Ouro</text>
+
+  <!-- ── Conectores (linhas antes de boxes na z-order, mas aqui inline por clareza) ── -->
+
+  <!-- forge → listar -->
+  <path d="M115,90 L115,120 L115,156" stroke="#2e5aa8" stroke-width="1.5" fill="none" marker-end="url(#arr-l)"/>
+
+  <!-- canonize → matriz -->
+  <path d="M285,90 L285,120 L285,156" stroke="#2e5aa8" stroke-width="1.5" fill="none" marker-end="url(#arr-l)"/>
+
+  <!-- listar → matriz -->
+  <path d="M170,178 L230,178" stroke="#4f5d75" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+  <!-- listar → remover (Obsoleto) -->
+  <path d="M115,156 L115,142 L835,142 L835,156" stroke="#bfc0c0" stroke-width="1.5" stroke-dasharray="5,4" fill="none" marker-end="url(#arr)"/>
+  <rect x="420" y="130" width="58" height="14" rx="3" fill="#f5f5f5"/>
+  <text x="449" y="140" font-family="system-ui,sans-serif" font-size="9" fill="#5a6580" text-anchor="middle">Obsoleto</text>
+
+  <!-- matriz → fabricar -->
+  <path d="M285,200 L285,228 L250,228 L250,266" stroke="#bf4520" stroke-width="1.5" fill="none" marker-end="url(#arr-a)"/>
+
+  <!-- fabricar → validate -->
+  <path d="M250,310 L250,376" stroke="#bf4520" stroke-width="1.5" fill="none" marker-end="url(#arr-a)"/>
+
+  <!-- validate → exec -->
+  <path d="M325,398 L410,398" stroke="#2d3142" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+
+  <!-- exec → refinar (Lacuna) -->
+  <path d="M475,376 L475,316 L550,316" stroke="#bf4520" stroke-width="1.5" stroke-dasharray="5,4" fill="none" marker-end="url(#arr-a)"/>
+  <rect x="468" y="332" width="68" height="14" rx="3" fill="#f5f5f5"/>
+  <text x="502" y="342" font-family="system-ui,sans-serif" font-size="9" fill="#bf4520" text-anchor="middle">Lacuna/Falha</text>
+
+  <!-- refinar → validate -->
+  <path d="M495,310 L495,428 L370,428 L370,420 L325,420" stroke="#bf4520" stroke-width="1.5" stroke-dasharray="5,4" fill="none" marker-end="url(#arr-a)"/>
+
+  <!-- exec → compor (Composição Modular) -->
+  <path d="M540,398 L620,398 L620,316 L620,310" stroke="#2e5aa8" stroke-width="1.5" stroke-dasharray="5,4" fill="none" marker-end="url(#arr-l)"/>
+  <rect x="548" y="345" width="78" height="14" rx="3" fill="#f5f5f5"/>
+  <text x="587" y="355" font-family="system-ui,sans-serif" font-size="9" fill="#2e5aa8" text-anchor="middle">Composição Modular</text>
+
+  <!-- compor → validate -->
+  <path d="M675,310 L675,440 L340,440 L340,420" stroke="#2e5aa8" stroke-width="1.5" stroke-dasharray="5,4" fill="none" marker-end="url(#arr-l)"/>
+
+  <!-- exec → fechar (Sucesso) -->
+  <path d="M475,420 L475,450 L310,450 L310,486" stroke="#2e5aa8" stroke-width="1.5" fill="none" marker-end="url(#arr-l)"/>
+  <rect x="352" y="444" width="58" height="14" rx="3" fill="#f5f5f5"/>
+  <text x="381" y="454" font-family="system-ui,sans-serif" font-size="9" fill="#2e5aa8" text-anchor="middle">Sucesso ✓</text>
+
+  <!-- fechar → canonize (loop de retorno) -->
+  <path d="M175,508 L50,508 L50,68 L60,68" stroke="#bfc0c0" stroke-width="1.5" stroke-dasharray="5,4" fill="none" marker-end="url(#arr)"/>
+  <rect x="20" y="275" width="40" height="40" rx="3" fill="#f5f5f5"/>
+  <text x="40" y="291" font-family="system-ui,sans-serif" font-size="8" fill="#5a6580" text-anchor="middle" transform="rotate(-90,40,295)">Cofre</text>
+
+  <!-- ── Legenda ─────────────────────── -->
+  <g transform="translate(610,490)">
+    <rect x="0" y="0" width="300" height="100" rx="4" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+    <text x="10" y="16" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#2d3142" letter-spacing=".06em">LEGENDA</text>
+    <!-- linha accent sólida -->
+    <line x1="10" y1="30" x2="50" y2="30" stroke="#bf4520" stroke-width="1.5" marker-end="url(#arr-a)"/>
+    <text x="58" y="34" font-family="system-ui,sans-serif" font-size="10" fill="#2d3142">Caminho principal</text>
+    <!-- linha link sólida -->
+    <line x1="10" y1="50" x2="50" y2="50" stroke="#2e5aa8" stroke-width="1.5" marker-end="url(#arr-l)"/>
+    <text x="58" y="54" font-family="system-ui,sans-serif" font-size="10" fill="#2d3142">Rota de infraestrutura</text>
+    <!-- linha dashed -->
+    <line x1="10" y1="70" x2="50" y2="70" stroke="#bf4520" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr-a)"/>
+    <text x="58" y="74" font-family="system-ui,sans-serif" font-size="10" fill="#2d3142">Rota condicional</text>
+    <!-- linha muted dashed -->
+    <line x1="10" y1="90" x2="50" y2="90" stroke="#bfc0c0" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr)"/>
+    <text x="58" y="94" font-family="system-ui,sans-serif" font-size="10" fill="#2d3142">Retorno ao cofre</text>
+  </g>
+</svg>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SEÇÃO 3 · Dinâmica no Dia a Dia
+     ══════════════════════════════════════════════════ -->
+<h2>3. Dinâmica no Dia a Dia</h2>
+<p>O ciclo operacional típico segue cinco momentos determinísticos. Cada um tem entrada, saída e critério de parada mecânico.</p>
+
+<div class="steps-list">
+
+  <div class="step-item">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">Entrada — Diagnóstico do Inventário</div>
+      <div class="step-body">O usuário aciona <code>listar</code> para ver os processos do cofre e <code>matriz</code> para medir a aptidão e as lacunas de I/O. O resultado orienta o que será criado ou refinado.</div>
+    </div>
+  </div>
+
+  <div class="step-item">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">Criação — Sexteto pelo Fabricar</div>
+      <div class="step-body">O verbo <code>fabricar</code> sintetiza o novo processo gerando a cadeia completa: INTERVIEW → INTENT → SPEC → PLAN → ROUTE → DAG. Cada artefato é auto-contido e validado por contrato de I/O.</div>
+    </div>
+  </div>
+
+  <div class="step-item">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">Validação — Portão Estrutural</div>
+      <div class="step-body">O comando <code>validate</code> verifica o DAG contra o JSON Schema antes de qualquer execução. O motor <code>exec</code> só recebe o processo após o portão mecânico aprovado com <code>exit_code == 0</code>.</div>
+    </div>
+  </div>
+
+  <div class="step-item">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">Iteração — Refinar ou Compor</div>
+      <div class="step-body">Falhas no <code>exec</code> disparam <code>refinar</code> (troca cirúrgica de nó com rollback automático). Necessidades de modularização disparam <code>compor</code> (encaixe de subprocesso sem ciclos no grafo).</div>
+    </div>
+  </div>
+
+  <div class="step-item">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <div class="step-title">Canonização — Fechar e Publicar</div>
+      <div class="step-body">O ciclo sempre encerra no verbo <code>fechar</code>: gera o manual operacional, o livro didático LegoPress, distribui as skills canônicas nos harnesses, recompila o binário e reindexo o grafo semântico. O resultado retorna ao cofre via <code>canonize</code> para início do próximo ciclo.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>LegoLoop · Arquitetura de Verbos · v1.0 · 2026-11-17</span>
+  <span>Gerado pela skill <code>legoloop-diagram-design</code> · MIT</span>
+</footer>
+
+</body>
+</html>

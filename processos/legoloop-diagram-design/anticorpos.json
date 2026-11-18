@@ -1,0 +1,47 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-diagram-design",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+      "erro": "Layout SVG da Camada 2 empilha nos em duas linhas sem alinhamento ortogonal. Verbos 'fechar' e 'remover' ficam deslocados, cortando labels como 'ROUTE — DAG' no nó 'fabricar'.",
+      "causa_raiz": "viewBox e translate() com coordenadas absolutas fixas sem calcular altura real de cada nó. 'fabricar' (height=68) maior que os outros (height=52) causa desalinhamento vertical.",
+      "antidoto": "Grid CSS externo ao SVG para distribuir nós da Camada 2 em duas linhas explícitas. Dentro do SVG, viewBox calculado dinamicamente com base no número de nós + padding.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/svg-layout",
+      "timestamp": "2026-11-18T11:15:00-03:00",
+      "antidoto_aplicado": false
+    },
+    {
+      "assinatura": "sha256:b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+      "erro": "Sublabel truncado no nó 'fabricar': 'INTERVIEW — INTENT — SPEC — PLAN — ROUTE — DAG' ultrapassa borda direita.",
+      "causa_raiz": "width do nó (260px) insuficiente para string de 50 chars em font-size 8px. verify_geometry.py nao executado antes da entrega.",
+      "antidoto": "Quebrar sublabel em duas linhas SVG com dy offset, ou ampliar width para >= 340px. Executar scripts/verify_geometry.py obrigatoriamente antes de salvar.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/text-overflow",
+      "timestamp": "2026-11-18T11:15:00-03:00",
+      "antidoto_aplicado": false
+    },
+    {
+      "assinatura": "sha256:c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
+      "erro": "Ausencia de micro-animacoes. Diagramas entregues sem transicoes CSS/Remotion mesmo com inspecao impeccable-design obrigatoria.",
+      "causa_raiz": "Pipeline de geracao sem nó de animacao obrigatorio. Skill sem dependencia declarada de legoloop-impeccable-design nem Remotion.",
+      "antidoto": "Adicionar nó 'animacao' ao DAG com gate: animation/composition.tsx deve existir. Verificar Remotion via 'npx remotion --version' antes de gerar.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/animation",
+      "timestamp": "2026-11-18T11:15:00-03:00",
+      "antidoto_aplicado": false
+    },
+    {
+      "assinatura": "sha256:d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5",
+      "erro": "Artefato salvo em docs/manuals/ e docs/diagrams/ raiz sem estrutura de slug /docs/diagrams/<slug>/.",
+      "causa_raiz": "Regra de diretorio canonico (guardrail 8) adicionada pos-geracao. Sem slug tree definida no processo.",
+      "antidoto": "Criar /docs/diagrams/<slug>/{src,assets,export,animation,anticorpos}/ antes de qualquer geracao. Slug em kebab-case do titulo.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/output-path",
+      "timestamp": "2026-11-18T11:15:00-03:00",
+      "antidoto_aplicado": true
+    }
+  ]
+}

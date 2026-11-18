@@ -1,0 +1,24 @@
+{
+  "nome": "legoloop-diagram-design",
+  "tipo": "skill",
+  "naturezas": ["midia", "documentacao", "software"],
+  "entra": [
+    {
+      "tipo": "texto",
+      "opcional": false
+    },
+    {
+      "tipo": "codigo",
+      "opcional": true
+    }
+  ],
+  "sai": [
+    {
+      "tipo": "codigo",
+      "caminho_padrao": "out/diagrama.html",
+      "promete": true,
+      "gate_sugerido": "file_exists('out/diagrama.html') && word_count('out/diagrama.html') >= 30"
+    }
+  ],
+  "efeitos": ["arquivo"]
+}

@@ -624,3 +624,5 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
 - NAO_PROVADO: `-race` (sem CGO/CI Linux), LLM real ponta a ponta, grafo semântico `codebase-memory-mcp` (MCP ausente), `templates_test.go` DirAntigo, distribuição real a harnesses de produção, UI Studio só via httptest.
 - `faz-session`: 55 turnos gravados (Markdown + JSON em `~/Desktop/sessoes-agentes/LegoLoop/`).
 - Relatório final: `docs/reports/2026-11-17_REPORT_MEGA_PLANO_PRODUCAO.md` (veredito APROVADO_COM_DEBITO_TECNICO; 9 SGs de épico aprovados).
+
+* **Processo Canonizado `legoloop-concepcao` (2026-11-17):** `skills/legoloop-concepcao/SKILL.md` · `docs/reports/`

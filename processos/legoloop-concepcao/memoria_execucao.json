@@ -1,6 +1,5 @@
 {
+  "schema_version": "memoria_execucao.v1",
   "processo": "legoloop-concepcao",
-  "etapa_atual": "",
-  "proximo_passo": "",
-  "atualizado_em": "2026-11-16T22:40:00Z"
+  "sessoes": {}
 }
