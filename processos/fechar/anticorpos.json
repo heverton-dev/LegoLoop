@@ -2,6 +2,16 @@
   "schema_version": "anticorpos.v1",
   "processo": "fechar",
   "globais": [],
-  "dominio": []
+  "dominio": [
+    {
+      "assinatura": "sha256:b3459a432352fce2a9649e8ef3c926d64e059386f9a82b2bee00fe16c2079207",
+      "erro": "Afirmar causa, ausência de causa ou 'não há prova mas...' sem executar comando na resposta (ex.: agy off persistir no 9Router).",
+      "causa_raiz": "Inferência por leitura de código e configuração substituiu execução real. Hipótese enunciada como possibilidade ('vestígios que podem confundir') sem teste.",
+      "antidoto": "Todo fato que decide leva comando e resultado. Sem comando, escrever 'Não verificado' e rodar o teste antes de concluir. Proibido 'acho', 'parece', 'não há prova mas'.",
+      "recorrencias": 1,
+      "pacote": "fechar/prova-de-afirmacao",
+      "timestamp": "2026-11-18T12:00:00-03:00",
+      "antidoto_aplicado": false
+    }
+  ]
 }
-
