@@ -42,6 +42,26 @@
       "pacote": "legoloop-diagram-design/output-path",
       "timestamp": "2026-11-18T11:15:00-03:00",
       "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6",
+      "erro": "Linhas e arestas atravessando cards intermediarios (ex: aresta vertical listar->remover cortando refinar; aresta fechar->canonize cortando compor e upgrade).",
+      "causa_raiz": "Roteamento de arestas de longo curso usando coordenadas absolutas que intersectam bounding boxes de nós intermediários em vez de usar as calhas perimetrais desobstruídas.",
+      "antidoto": "Roteamento Perimetral Obrigatório: arestas de longo curso e retornos devem correr exclusivamente pelas calhas externas (margins/gutters x<=50 ou x>=1000). Proibido cruzar bounding boxes de nós intermediários. Adicionar mascara de papel opaco <rect fill='var(--paper)'/> em nós translúcidos para prevenir bleeding-through.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/line-card-collision",
+      "timestamp": "2026-11-18T13:15:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1",
+      "erro": "Texto transbordando borda do card fechar (9 etapas: Manual - Livro - Skill...) e rótulos sobrepondo linhas.",
+      "causa_raiz": "Card com largura de 320px insuficiente para texto de 85 caracteres mono (~430px) sem quebra de linha. Rótulos de arestas sem placa de máscara retangular opaca de proteção.",
+      "antidoto": "Dimensionamento Responsivo de Cards: W_min >= X_pad + (N_chars * Char_W) + R_pad. Card fechar alargado para 520px com centralização. Todo rótulo de aresta deve ter elemento <rect class='mask'> opaco com padding de 6-10px afastado do traço.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/text-box-overflow",
+      "timestamp": "2026-11-18T13:15:00-03:00",
+      "antidoto_aplicado": true
     }
   ]
 }

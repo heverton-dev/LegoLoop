@@ -468,7 +468,10 @@ $base = "C:\Users\trcnologia\Desktop\LegoLoop\docs\diagrams\$slug"
 
 - Ler `references/style-guide.md` e aplicar tokens `--paper`, `--ink`, `--accent`, `--muted`, `--soft`, `--link`.
 - Usar `<symbol>` para icones SVG reutilizaveis. Nunca usar emojis ou Unicode decorativo.
-- Quebrar sublabels longos em dois `<text>` com `dy` offset.
+- Quebrar sublabels longos em dois `<text>` com `dy` offset ou alargar a largura do card para comportar a linha inteira com padding simétrico.
+- Roteamento Perimetral Obrigatório: linhas de retorno e arestas de longo curso devem contornar pelas calhas externas (margins/gutters) e NUNCA cruzar cards intermediários.
+- Máscara Opaca Obrigatória: todo card translúcido (fill com alpha/rgba) DEVE ter um `<rect fill="var(--paper)"/>` por baixo para evitar bleeding-through de traçados.
+- Máscaras em Rótulos de Linha: todo texto de aresta deve ter placa retangular `<rect fill="var(--paper)"/>` protetora e manter gap de 6–10px da linha.
 - Salvar em `src/YYYY-MM-DD_<NOME>.html`.
 
 **Gate:** `Select-String -Path "$base\src\*.html" -Pattern '<svg'` encontra match.

@@ -36,6 +36,14 @@
 - **Contrato `legoloop-swarm`:** consome `pipeline.dag.json` e mapa `guild_models` ligado à Matriz de Papéis (`docs/archive/quinteto/specs/2026-11-10_SPEC_MATRIZ_PAPEIS.md`), executa nós independentes em paralelo por nível topológico com barreira de `output.gate` e roteamento de modelos leves por guilda/papel.
 - **Estado atual:** `--dry-run` de `legoloop fabricar "legoloop-swarm"` passou com `exit_code 0` e `coerente: true`. Falta apenas executar a gravação real (sem `--dry-run`) e compor no `mega-pipeline` via `legoloop compor` após a Tríade de Planejamento.
 
+### Decisões Diagram Design & Anticorpos de Colisão Geométrica (18/11/2026)
+
+- **ID da sessão Antigravity:** `336b79d5-f684-4a46-8580-b33d70f30639`
+- **Anticorpos registrados:**
+  - `legoloop-diagram-design/line-card-collision`: Proibido arestas cruzando bounding boxes de nós intermediários. Arestas periféricas (retornos e saltos) devem correr pelas calhas externas (margins/gutters x<=50 ou x>=1000). Nós translúcidos (`rgba(...)`) exigem máscara opaca de papel `<rect fill="var(--paper)"/>` por baixo para evitar bleeding-through.
+  - `legoloop-diagram-design/text-box-overflow`: Dimensionamento obrigatório de card conforme contagem de caracteres mono (nó `fechar` alargado para 520px centralizado). Rótulos de arestas exigem placa protetora retangular opaca `<rect fill="var(--paper)"/>` com gap de 6-10px da linha.
+  - **Escopo do Processo:** Suporta 50 tipos visuais do catálogo: pastas, peças, processos, arquitetura C4, bancos ER/SQL, sequências HTTP/OAuth, árvores, radares, quadrantes, Gantt, Sankey, plantas axonométricas e gráficos.
+
 ## Progresso por ticket
 
 | Ticket | Status | Arquivos | Evidência |
