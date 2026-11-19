@@ -1,0 +1,47 @@
+{
+  "slug": "legoloop-dissecar",
+  "nodes": [
+    {
+      "id": "n01_resolver_alvo",
+      "name": "n01_resolver_alvo",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n02_extrair_ast_metricas",
+      "name": "n02_extrair_ast_metricas",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n03_auditar_governanca",
+      "name": "n03_auditar_governanca",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n04_sintetizar_dag_reverso",
+      "name": "n04_sintetizar_dag_reverso",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n05_sintetizar_triade_motion",
+      "name": "n05_sintetizar_triade_motion",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n06_compilar_relatorio_final",
+      "name": "n06_compilar_relatorio_final",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    }
+  ]
+}

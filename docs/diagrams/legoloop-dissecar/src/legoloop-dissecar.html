@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetura e Fluxo do Processo legoloop-dissecar — LegoLoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #f5f5f5;   /* white-smoke descansado (nunca branco puro) */
+    --paper-2:      #ececec;   /* container e faixas secundárias */
+    --paper-card:   #ffffff;   /* superfície de cards em alto contraste */
+    --ink:          #2d3142;   /* grafite escuro nobre */
+    --ink-strong:   #111111;   /* contraste máximo para títulos */
+    --muted:        #4f5d75;   /* ardósia suave para textos de apoio */
+    --soft:         #5a6580;   /* subrótulos e metadados */
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   /* bordas estruturais sólidas */
+    --cor-accent:   #bf4520;   /* Tangerina Queimada Editorial */
+    --font-sans:    'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 48px 32px;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    border-bottom: 2px solid var(--cor-accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .page-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-accent);
+    margin-bottom: 8px;
+  }
+  .page-title {
+    font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .page-lead {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px;
+  }
+  .page-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .page-meta span { display: flex; align-items: center; gap: 6px; }
+
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .node-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .node-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .node-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
+  }
+  .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }
+  .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.45; word-break: break-word; min-height: 38px; }
+  .node-gate {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border: 1px solid var(--rule);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+  }
+
+  .diagram-wrapper {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px;
+  }
+  .diagram-canvas { display: block; width: 100%; min-width: 980px; height: auto; }
+
+  /* Scrollbar Minimalista do Design System (máx 3px, 70% transparência) */
+  .diagram-wrapper,
+  .table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(79, 93, 117, 0.3) transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar,
+  .table-wrapper::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-track,
+  .table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb,
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(79, 93, 117, 0.3);
+    border-radius: 2px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb:hover,
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(191, 69, 32, 0.5);
+  }
+
+  @keyframes flow-pulse {
+    from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; }
+  }
+  .flow-edge {
+    stroke-dasharray: 6 6;
+    animation: flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset;
+  }
+
+  .table-wrapper {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+  th {
+    background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid);
+  }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--ink); }
+  tr:last-child td { border-bottom: none; }
+  td code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted);
+  }
+  .table-type-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 1.2;
+  }
+
+  .lineage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .lineage-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .lineage-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 8px;
+  }
+  .lineage-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .lineage-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lineage-item {
+    font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .lineage-item code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-strong);
+    background: var(--paper);
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid var(--rule);
+  }
+  .lineage-item span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .invariants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .invariant-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .invariant-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 6px;
+  }
+  .invariant-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <p class="page-eyebrow">LegoLoop · Processo Canônico</p>
+  <h1 class="page-title">Arquitetura e Fluxo do Processo legoloop-dissecar</h1>
+  <p class="page-lead">Processo industrial de inspeção anatômica profunda, engenharia reversa estática e geração da tríade de motion graphics.</p>
+  <div class="page-meta">
+    <span><strong>Processo:</strong> legoloop-dissecar</span>
+    <span><strong>Versão:</strong> 2.2.0</span>
+    <span><strong>Nós:</strong> 6 nós sequenciais</span>
+    <span><strong>Gerado em:</strong> 2026-11-19T13:48:12</span>
+  </div>
+</header>
+
+<section class="section">
+  <h2 class="section-title">01 — Anatomia dos Nós do Processo</h2>
+  <p class="section-sub">Estrutura isolada em contexto estéril com barreiras mecânicas de qualidade.</p>
+  <div class="nodes-grid">
+    
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">n01_resolver_alvo · UNIT-NÓ</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">unit_no</small>
+      </div>
+      <h3 class="node-name">n01_resolver_alvo</h3>
+      <p class="node-desc">Localizar e validar a integridade física do alvo a ser dissecado, gerando `target_resolved.json`.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>var.alvo</code></div>
+        <div><strong>Out:</strong> <code>target_resolved.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;target_resolved.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">n02_extrair_ast_metricas · UNIT-NÓ</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">unit_no</small>
+      </div>
+      <h3 class="node-name">n02_extrair_ast_metricas</h3>
+      <p class="node-desc">Varrer a árvore sintática, calcular complexidade ciclomática, contagem de linhas e dependências em `ast_metrics.json`.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>target_resolved.json</code></div>
+        <div><strong>Out:</strong> <code>ast_metrics.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;ast_metrics.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">n03_auditar_governanca · UNIT-NÓ</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">unit_no</small>
+      </div>
+      <h3 class="node-name">n03_auditar_governanca</h3>
+      <p class="node-desc">Avaliar aderência às leis invioláveis, padrões de código e convenções de nomenclatura em `governance_audit.json`.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>ast_metrics.json</code></div>
+        <div><strong>Out:</strong> <code>governance_audit.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;governance_audit.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">n04_sintetizar_dag_reverso · UNIT-NÓ</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">unit_no</small>
+      </div>
+      <h3 class="node-name">n04_sintetizar_dag_reverso</h3>
+      <p class="node-desc">Mapear as dependências e o Processo de dados em um grafo acíclico dirigido formal `dag.json`.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>ast_metrics.json, governance_audit.json</code></div>
+        <div><strong>Out:</strong> <code>dag.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;dag.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">n05_sintetizar_triade_motion · UNIT-NÓ</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">unit_no</small>
+      </div>
+      <h3 class="node-name">n05_sintetizar_triade_motion</h3>
+      <p class="node-desc">Gerar visualizações gráficas e diagramas da arquitetura (`motion_graph.json`, `anatomia.html` e `anatomia.svg`).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>dag.json, governance_audit.json</code></div>
+        <div><strong>Out:</strong> <code>motion_graph.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;motion_graph.json&#x27;) &amp;&amp; file_exists(&#x27;anatomia.html&#x27;) &amp;&amp; file_exists(&#x27;anatomia.svg&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">n06_compilar_relatorio_final · UNIT-NÓ</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">unit_no</small>
+      </div>
+      <h3 class="node-name">n06_compilar_relatorio_final</h3>
+      <p class="node-desc">Consolidar a ficha anatômica estruturada em `ficha_anatomica.json` e a documentação completa em `ANATOMIA.md`.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>motion_graph.json, governance_audit.json</code></div>
+        <div><strong>Out:</strong> <code>ficha_anatomica.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;ficha_anatomica.json&#x27;) &amp;&amp; file_exists(&#x27;ANATOMIA.md&#x27;)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">02 — Fluxograma Lógico de Encadeamento com Animação Contínua</h2>
+  <p class="section-sub">Grafo ortogonal com partículas contínuas mostrando a transferência assíncrona de estado.</p>
+  <div class="diagram-wrapper">
+    <svg class="diagram-canvas" viewBox="0 0 1040 612" role="img" aria-labelledby="legoloop-dissecar-title legoloop-dissecar-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="legoloop-dissecar-title">Fluxograma do Processo legoloop-dissecar</title>
+      <desc id="legoloop-dissecar-desc">Fluxo sequencial animado dos nós do processo legoloop-dissecar no padrão editorial LegoPress.</desc>
+      <defs>
+        <marker id="arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+      </defs>
+      <rect width="1040" height="612" fill="#f5f5f5" rx="8"/>
+      
+      <path d="M328,156 L372,156" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-dissecar-arr-flow)"/>
+      <path d="M668,156 L712,156" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-dissecar-arr-flow)"/>
+      <path d="M1008,156 L1024,156 L1024,306 L18,306 L18,456 L32,456" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#legoloop-dissecar-arr-flow)"/>
+      <path d="M328,456 L372,456" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-dissecar-arr-flow)"/>
+      <path d="M668,456 L712,456" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-dissecar-arr-flow)"/>
+      
+      <g class="node" id="node-n01_resolver_alvo" transform="translate(32, 36)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n01_resolver_alvo</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Localizar e validar a</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">integridade física do alvo</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: var.alvo</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: target_resolved.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;target_resolved.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-n02_extrair_ast_metricas" transform="translate(372, 36)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n02_extrair_ast_metricas</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Varrer a árvore sintática,</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">calcular complexidade</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: target_resolved.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: ast_metrics.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;ast_metrics.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-n03_auditar_governanca" transform="translate(712, 36)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n03_auditar_governanca</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Avaliar aderência às leis</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">invioláveis, padrões de</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: ast_metrics.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: governance_audit.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;governance_audit.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-n04_sintetizar_dag_reverso" transform="translate(32, 336)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n04_sintetizar_dag_reverso</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Mapear as dependências e o</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Processo de dados em um</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: ast_metrics.json, governance_audit.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: dag.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;dag.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-n05_sintetizar_triade_motion" transform="translate(372, 336)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n05_sintetizar_triade_motion</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Gerar visualizações</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">gráficas e diagramas da</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: dag.json, governance_audit.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: motion_graph.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;motion_graph.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-n06_compilar_relatorio_final" transform="translate(712, 336)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n06_compilar_relatorio_final</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Consolidar a ficha</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">anatômica estruturada em</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: motion_graph.json, governance_audit.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: ficha_anatomica.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;ficha_anatomica.json&#x27;)</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">03 — Matriz de Entradas, Saídas e Barreiras Mecânicas</h2>
+  <p class="section-sub">Contratos formais de arquivos consumidos e emitidos por cada vértice.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Tipo</th>
+          <th>Insumos</th>
+          <th>Artefatos Emitidos</th>
+          <th>Gate Mecânico</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>n01_resolver_alvo</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">UNIT-NÓ</span></td>
+          <td><code>var.alvo</code></td>
+          <td><code>target_resolved.json</code></td>
+          <td><code>file_exists(&#x27;target_resolved.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n02_extrair_ast_metricas</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">UNIT-NÓ</span></td>
+          <td><code>target_resolved.json</code></td>
+          <td><code>ast_metrics.json</code></td>
+          <td><code>file_exists(&#x27;ast_metrics.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n03_auditar_governanca</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">UNIT-NÓ</span></td>
+          <td><code>ast_metrics.json</code></td>
+          <td><code>governance_audit.json</code></td>
+          <td><code>file_exists(&#x27;governance_audit.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n04_sintetizar_dag_reverso</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">UNIT-NÓ</span></td>
+          <td><code>ast_metrics.json, governance_audit.json</code></td>
+          <td><code>dag.json</code></td>
+          <td><code>file_exists(&#x27;dag.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n05_sintetizar_triade_motion</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">UNIT-NÓ</span></td>
+          <td><code>dag.json, governance_audit.json</code></td>
+          <td><code>motion_graph.json</code></td>
+          <td><code>file_exists(&#x27;motion_graph.json&#x27;) &amp;&amp; file_exists(&#x27;anatomia.html&#x27;) &amp;&amp; file_exists(&#x27;anatomia.svg&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n06_compilar_relatorio_final</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">UNIT-NÓ</span></td>
+          <td><code>motion_graph.json, governance_audit.json</code></td>
+          <td><code>ficha_anatomica.json</code></td>
+          <td><code>file_exists(&#x27;ficha_anatomica.json&#x27;) &amp;&amp; file_exists(&#x27;ANATOMIA.md&#x27;)</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">04 — Roteamento Cognitivo & Topologia de Agentes</h2>
+  <p class="section-sub">Alocação determinística de modelos LLM, nível de esforço e estratégias de isolamento por nó.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Harness</th>
+          <th>Modelo Primário</th>
+          <th>Esforço</th>
+          <th>Fallback</th>
+          <th>Executor & Fronteira</th>
+          <th>Rollback</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>n01_resolver_alvo</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n02_extrair_ast_metricas</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#d9770622;color:#d97706;font-weight:600;font-size:11px;">MEDIUM</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n03_auditar_governanca</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n04_sintetizar_dag_reverso</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#d9770622;color:#d97706;font-weight:600;font-size:11px;">MEDIUM</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n05_sintetizar_triade_motion</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#d9770622;color:#d97706;font-weight:600;font-size:11px;">MEDIUM</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n06_compilar_relatorio_final</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">05 — Linhagem de Dados & Ciclo de Vida dos Artefatos</h2>
+  <p class="section-sub">Rastreabilidade formal de insumos, arquivos intermediários de análise e produtos finais.</p>
+  <div class="lineage-grid">
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb33;">ENTRADA</span>
+        <span>Insumos Primários</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item">
+          <code>var.alvo</code>
+          <span>Alvo inicial fornecido para análise e inspeção</span>
+        </li>
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#d9770618;color:#d97706;border:1px solid #d9770633;">PIPELINE</span>
+        <span>Artefatos Intermediários</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item"><code>target_resolved.json</code></li><li class="lineage-item"><code>ast_metrics.json</code></li><li class="lineage-item"><code>governance_audit.json</code></li><li class="lineage-item"><code>dag.json</code></li><li class="lineage-item"><code>motion_graph.json</code></li>
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#16a34a18;color:#16a34a;border:1px solid #16a34a33;">ENTREGA</span>
+        <span>Produtos Finais</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item"><code>ficha_anatomica.json</code></li><li class="lineage-item"><code>ANATOMIA.md</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">06 — Invariantes Operacionais & Regras Negativas</h2>
+  <p class="section-sub">Políticas restritivas de segurança e critérios inegociáveis de execução do processo.</p>
+  <div class="invariants-grid">
+    
+    <div class="invariant-card">
+      <h3 class="invariant-title">Não Modificar o Alvo</h3>
+      <p class="invariant-desc">A dissecação é estritamente de leitura analítica; o alvo nunca deve ser alterado em disco.</p>
+    </div>
+    <div class="invariant-card">
+      <h3 class="invariant-title">Evidências Reais</h3>
+      <p class="invariant-desc">Todas as métricas de AST e auditoria devem ser extraídas por análise real de arquivos.</p>
+    </div>
+    <div class="invariant-card">
+      <h3 class="invariant-title">Portões Mecânicos</h3>
+      <p class="invariant-desc">Cada nó só avança após o gate do arquivo esperado ter sido gerado com sucesso.</p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

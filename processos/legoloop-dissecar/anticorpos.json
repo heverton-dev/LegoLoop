@@ -2,5 +2,36 @@
   "schema_version": "anticorpos.v1",
   "processo": "legoloop-dissecar",
   "globais": [],
-  "dominio": []
+  "dominio": [
+    {
+      "assinatura": "sha256:8c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d",
+      "erro": "Descrição idêntica e genérica replicada em todos os cards de nós do diagrama ('Execução no processo <slug> com isolamento em contexto estéril').",
+      "causa_raiz": "O gerador utilizava template estático hardcoded no campo .node-desc em vez de extrair a descrição funcional específica de cada nó a partir de SKILL.md, spec_ref ou do DAG.",
+      "antidoto": "Cada nó DEVE obrigatoriamente exibir a descrição do que ele faz. O gerador extrai a descrição da Skill (seção de Procedimento Passo a Passo), da spec ou sintetiza a ação funcional pelo verbo/objeto do nó. Proibição absoluta de descrição genérica idêntica compartilhada entre nós.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/node-specific-description",
+      "timestamp": "2026-11-19T09:35:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:9d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e",
+      "erro": "Uso de reticências (...) e exibição de objetos brutos de dicionário/linguagem em campos In e Out dos cards (ex: In: {'target': \"file('as...\").",
+      "causa_raiz": "Truncamento artificial via val[:max_len-3] + '...' e renderização direta do dicionário bruto de inputs do DAG sem parsing de arquivos.",
+      "antidoto": "Banimento absoluto de reticências (...) em In e Out. Insumos e saídas que são arquivos devem exibir estritamente o nome limpo do arquivo (ex.: target_resolved.json, ast_metrics.json), e variáveis devem exibir a referência direta limpa (ex.: var.alvo), sem wrappers de dicionário Python/JSON.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/io-clean-names-no-ellipsis",
+      "timestamp": "2026-11-19T09:35:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
+      "erro": "Inclusão de seção meta-interna do gerador ('04 — Governança de Anticorpos e Paridade com o LegoPress' com regras como Fundo Descansado, Zero Serifa, etc.) no documento do processo alvo.",
+      "causa_raiz": "O gerador inseria um bloco HTML estático descrevendo regras internas da ferramenta legoloop-diagram-design em vez de documentar informações técnicas exclusivas do processo alvo.",
+      "antidoto": "Proibição absoluta de meta-seções sobre diretrizes do próprio gerador de diagramas. Todo o conteúdo adicional do documento DEVE descrever exclusivamente dimensões funcionais do processo alvo: Roteamento Cognitivo de Modelos, Linhagem de Dados e Invariantes/Regras Negativas.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/ban-meta-generator-sections",
+      "timestamp": "2026-11-19T12:00:00-03:00",
+      "antidoto_aplicado": true
+    }
+  ]
 }

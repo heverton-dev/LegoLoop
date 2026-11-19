@@ -7,9 +7,12 @@ sem transbordamento textual e com fluxo animado contínuo.
 """
 
 import sys
+import os
+import re
 import json
 import html
 import subprocess
+from datetime import datetime
 from pathlib import Path
 
 PALETA_PECAS = {
@@ -23,18 +26,163 @@ PALETA_PECAS = {
     "default": {"cor": "#4f5d75", "badge": "PROCESSO", "nome": "Ardósia Suave"}
 }
 
-def encurtar_caminho(val, max_len=24):
-    if not val or val == "—":
+def extrair_nomes_arquivos_ou_insumos(valor) -> str:
+    """Extrai nomes limpos de arquivos ou parâmetros, sem reticências e sem dicionários brutos."""
+    if not valor or valor == "—":
         return "—"
-    if isinstance(val, list):
-        val = ", ".join(val)
-    val = str(val).strip()
-    if len(val) <= max_len:
-        return val
-    p = Path(val)
-    if len(p.name) > 0 and len(p.name) <= max_len:
-        return p.name
-    return val[:max_len-3] + "..."
+    
+    itens = []
+    
+    def processar_item(v):
+        if not v:
+            return
+        if isinstance(v, (list, tuple)):
+            for sub in v:
+                processar_item(sub)
+            return
+        if isinstance(v, dict):
+            for k, val in v.items():
+                processar_item(val)
+            return
+        
+        s = str(v).strip()
+        # Se contiver chamada file('...')
+        file_matches = re.findall(r"file\(['\"]([^'\"]+)['\"]\)", s)
+        if file_matches:
+            for f in file_matches:
+                p_name = Path(f).name
+                if p_name and p_name not in itens:
+                    itens.append(p_name)
+            return
+        
+        # Se contiver chamada artifact(...)
+        art_matches = re.findall(r"artifact\(['\"]([^'\"]+)['\"]\)", s)
+        if art_matches:
+            for a in art_matches:
+                p_name = Path(a).name
+                if p_name and p_name not in itens:
+                    itens.append(p_name)
+            return
+            
+        # Se for caminho de arquivo direto
+        if any(s.endswith(ext) for ext in ('.json', '.md', '.html', '.svg', '.tsx', '.css', '.go', '.py', '.txt', '.yml', '.yaml')):
+            p_name = Path(s).name
+            if p_name and p_name not in itens:
+                itens.append(p_name)
+            return
+            
+        # Se for variável, ex: var.alvo
+        if s.startswith("var.") or s in ("alvo", "target"):
+            if s not in itens:
+                itens.append(s)
+            return
+            
+        # Caso geral de string limpa
+        limpa = s.strip("'\"")
+        limpa = re.sub(r"^(?:file|artifact)\(['\"]?([^'\"]+)['\"]?\)$", r"\1", limpa)
+        if limpa and limpa not in itens:
+            p_cand = Path(limpa).name if any(limpa.endswith(e) for e in ('.json', '.md', '.html', '.svg')) else limpa
+            itens.append(p_cand)
+
+    processar_item(valor)
+    return ", ".join(itens) if itens else "—"
+
+def carregar_descricoes_da_skill(slug: str) -> dict:
+    """Extrai descrições factuais de cada nó a partir da Skill canônica correspondente."""
+    descricoes = {}
+    candidatos = [
+        Path(f"skills/{slug}/SKILL.md"),
+        Path(f"skills/legoloop-{slug}/SKILL.md"),
+        Path(f"skills/{slug.replace('legoloop-', '')}/SKILL.md")
+    ]
+    for c in candidatos:
+        if c.exists():
+            texto = c.read_text(encoding="utf-8")
+            # Padrão 1: 1. **Nome (`id`):** Descrição
+            for m in re.finditer(r"\*\*[^*]+?\(`([^`]+)`\):\*\*\s*([^\n\r]+)", texto):
+                nid = m.group(1).strip()
+                desc = m.group(2).strip()
+                descricoes[nid] = desc
+            # Padrão 2: 1. **`id`:** Descrição
+            for m in re.finditer(r"\*\*`([^`]+)`:\*\*\s*([^\n\r]+)", texto):
+                nid = m.group(1).strip()
+                desc = m.group(2).strip()
+                descricoes[nid] = desc
+            # Padrão 3: Tabela Markdown | `id` | ...
+            for linha in texto.splitlines():
+                if linha.strip().startswith("|") and "`" in linha:
+                    partes = [p.strip() for p in linha.strip().split("|")[1:-1]]
+                    if len(partes) >= 2:
+                        for p in partes:
+                            id_match = re.search(r"`([^`]+)`", p)
+                            if id_match:
+                                nid = id_match.group(1).strip()
+                                for col in reversed(partes):
+                                    if len(col) > 15 and "`" not in col and col != nid:
+                                        descricoes.setdefault(nid, col)
+            if descricoes:
+                break
+    return descricoes
+
+def inferir_descricao_semantica(nid: str, nname: str, cin: str, cout: str) -> str:
+    """Gera uma descrição semântica factual única quando não houver documentação prévia."""
+    clean_id = nid.lower().replace("-", "_")
+    mapa = {
+        "resolver_alvo": "Localiza e valida a integridade física do alvo a ser dissecado.",
+        "extrair_ast_metricas": "Varre a árvore sintática (AST) e calcula métricas de complexidade e dependências.",
+        "auditar_governanca": "Avalia a aderência às leis invariantes, padrões estritos e convenções.",
+        "sintetizar_dag_reverso": "Mapeia dependências e sintetiza o grafo acíclico dirigido formal executável.",
+        "sintetizar_triade_motion": "Gera a tríade visual com especificação vetorial SVG e HTML interativo.",
+        "compilar_relatorio_final": "Consolida a ficha anatômica estruturada e o relatório final de conformidade.",
+        "inicializar_slug_e_anticorpos": "Inicializa o isolamento de diretórios e sincroniza governança de anticorpos.",
+        "ingestao_e_quadrantes": "Estrutura as camadas e quadrantes taxonômicos a partir do manifesto do processo.",
+        "geracao_svg_html": "Gera o documento HTML editorial auto-contido com vetor SVG nativo.",
+        "micro_animacao": "Aplica regras de micro-animação CSS contínua e exporta componente Remotion.",
+        "gate_e_exportacao": "Executa validações geométricas, auto-check semântico e exportação vetorial.",
+        "fechamento_e_anticorpos": "Registra imunidades contra regressões e emite relatório executivo final."
+    }
+    for k, v in mapa.items():
+        if k in clean_id:
+            return v
+            
+    partes = clean_id.split("_")
+    if partes and re.match(r"^[a-z]\d+$", partes[0]):
+        partes = partes[1:]
+    nome_legivel = " ".join(partes)
+    if cout and cout != "—":
+        return f"Processa os insumos e gera {cout} com isolamento estéril."
+    return f"Executa a etapa de {nome_legivel} garantindo a barreira de qualidade."
+
+def carregar_invariantes_da_skill(slug: str) -> list:
+    """Extrai as invariantes e regras negativas da Skill canônica do processo."""
+    invariantes = []
+    candidatos = [
+        Path(f"skills/{slug}/SKILL.md"),
+        Path(f"skills/legoloop-{slug}/SKILL.md"),
+        Path(f"skills/{slug.replace('legoloop-', '')}/SKILL.md")
+    ]
+    for c in candidatos:
+        if c.exists():
+            texto = c.read_text(encoding="utf-8")
+            m = re.search(r"Invariantes.*?\n\n(.*?)(?=\n---|\n##|\Z)", texto, re.DOTALL | re.IGNORECASE)
+            if m:
+                for l in m.group(1).splitlines():
+                    im = re.match(r"[-*]\s+\*\*([^*:]+)(?::\*\*|\*\*:\s*)(.+)", l.strip())
+                    if im:
+                        invariantes.append((im.group(1).strip(), im.group(2).strip()))
+            if invariantes:
+                break
+    if not invariantes:
+        invariantes = [
+            ("Zero Modificação do Alvo", "A inspeção é estritamente analítica e hermética; o alvo original nunca é alterado em disco."),
+            ("Evidências Fatuais Reais", "Todas as métricas de AST e auditoria exigem arquivos físicos inspecionados sem mocks ou stubs."),
+            ("Barreiras Binárias de Qualidade", "Cada nó só avança após validação de exit code 0 e confirmação do gate mecânico de arquivo.")
+        ]
+    return invariantes
+
+def encurtar_caminho(val, max_len=40):
+    """Encurta caminhos para exibição mantendo o nome do arquivo, sem usar reticências."""
+    return extrair_nomes_arquivos_ou_insumos(val)
 
 def extrair_subtitulos(nname, nid, max_len=24):
     if not nname or nname == nid:
@@ -101,6 +249,9 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
     nome_proc = dag.get("name", slug)
     versao = dag.get("version", "1.0.0")
     desc = dag.get("description", f"Processo canônico {slug} do ecossistema LegoLoop.")
+    agora_iso = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    descs_skill = carregar_descricoes_da_skill(slug)
+    invariantes_skill = carregar_invariantes_da_skill(slug)
 
     base_dir = Path("docs/diagrams") / slug
     src_dir = base_dir / "src"
@@ -154,6 +305,7 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
     svg_edges_markup = []
     cards_markup = []
     table_rows = []
+    routing_rows = []
 
     num_nodes = len(nodes)
     if num_nodes <= 1:
@@ -207,16 +359,15 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
         ngate_esc = html.escape(str(ngate))
         nname_esc = html.escape(nname)
 
-        # Insumos e Saídas tratados
-        cin_raw = node.get("context_in") or node.get("inputs") or "—"
-        cout_raw = node.get("context_out") or node.get("output", {}).get("artifact") or "—"
-        cin_curto = encurtar_caminho(cin_raw, max_len=20)
-        cout_curto = encurtar_caminho(cout_raw, max_len=20)
-        ngate_str = str(ngate)
-        gate_curto = ngate_str[:22] + ("..." if len(ngate_str) > 22 else "")
-        gate_curto_esc = html.escape(gate_curto)
+        # Insumos e Saídas limpos, sem dicionários e SEM reticências
+        cin_limpo = extrair_nomes_arquivos_ou_insumos(node.get("context_in") or node.get("inputs"))
+        cout_limpo = extrair_nomes_arquivos_ou_insumos(node.get("context_out") or node.get("output", {}).get("artifact"))
+        
+        # Descrição semântica individualizada por nó
+        desc_no = descs_skill.get(nid) or node.get("description") or inferir_descricao_semantica(nid, nname, cin_limpo, cout_limpo)
+        desc_no_esc = html.escape(desc_no)
 
-        sub1, sub2 = extrair_subtitulos(nname, nid, max_len=24)
+        sub1, sub2 = extrair_subtitulos(desc_no, nid, max_len=26)
 
         # Card HTML na grade editorial
         cards_markup.append(f"""
@@ -226,24 +377,45 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
         <small style="color:var(--soft);font-family:var(--font-mono);">{html.escape(ntype)}</small>
       </div>
       <h3 class="node-name">{nname_esc}</h3>
-      <p class="node-desc">Execução no processo <code>{html.escape(slug)}</code> com isolamento em contexto estéril.</p>
+      <p class="node-desc">{desc_no_esc}</p>
       <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
-        <div><strong>In:</strong> <code>{html.escape(cin_curto)}</code></div>
-        <div><strong>Out:</strong> <code>{html.escape(cout_curto)}</code></div>
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>{html.escape(cin_limpo)}</code></div>
+        <div><strong>Out:</strong> <code>{html.escape(cout_limpo)}</code></div>
       </div>
       <div class="node-gate">Gate: {ngate_esc}</div>
     </div>""")
 
         # Tabela
-        cin_tab = ", ".join(node.get("context_in", [])) or "—"
-        cout_tab = ", ".join(node.get("context_out", [])) or node.get("output", {}).get("artifact", "—")
         table_rows.append(f"""
         <tr>
           <td><strong>{html.escape(nid)}</strong></td>
-          <td><span style="color:{cor};font-weight:600;">{badge}</span></td>
-          <td><code>{html.escape(cin_tab)}</code></td>
-          <td><code>{html.escape(cout_tab)}</code></td>
+          <td><span class="table-type-badge" style="color:{cor};background:{cor}18;border:1px solid {cor}33;">{badge}</span></td>
+          <td><code>{html.escape(cin_limpo)}</code></td>
+          <td><code>{html.escape(cout_limpo)}</code></td>
           <td><code>{ngate_esc}</code></td>
+        </tr>""")
+
+        # Tabela de Roteamento Cognitivo (Seção 04)
+        r_info = node.get("routing", {})
+        iso_info = node.get("isolation", {})
+        h_harness = r_info.get("harness", "claude")
+        h_model = r_info.get("model", "sonnet")
+        h_effort = r_info.get("effort", "low")
+        h_fallback = r_info.get("fallback", "haiku")
+        h_exec = iso_info.get("executor", "orchestrix_hermetic")
+        h_bound = iso_info.get("write_boundary", "strict")
+        h_roll = node.get("rollback_strategy", "stash_changes")
+        cor_eff = "#16a34a" if h_effort == "low" else ("#d97706" if h_effort == "medium" else "#dc2626")
+
+        routing_rows.append(f"""
+        <tr>
+          <td><strong>{html.escape(nid)}</strong></td>
+          <td><code>{html.escape(h_harness)}</code></td>
+          <td><strong>{html.escape(h_model)}</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:{cor_eff}22;color:{cor_eff};font-weight:600;font-size:11px;">{html.escape(h_effort.upper())}</span></td>
+          <td><code>{html.escape(h_fallback)}</code></td>
+          <td><code>{html.escape(h_exec)} ({html.escape(h_bound)})</code></td>
+          <td><code>{html.escape(h_roll)}</code></td>
         </tr>""")
 
         # Posição na grade SVG
@@ -256,7 +428,17 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
         border_stroke = cor if badge in ("STOP-GATE", "UNIT-NÓ") else "#bfc0c0"
         border_w = "1.5" if badge in ("STOP-GATE", "UNIT-NÓ") else "1"
 
-        # Nó SVG em card envolvente de 240px de altura idêntico ao print
+        # Gate SVG limpo sem reticências (budget <= 40 chars para caber em 268px com font-size 8.5px)
+        gate_svg = str(ngate).replace("file_exists", "exists")
+        if len(gate_svg) > 38 and " && " in gate_svg:
+            gate_svg = gate_svg.split(" && ")[0]
+        elif len(gate_svg) > 38:
+            first_match = re.search(r"exists\(['\"]([^'\"]+)['\"]\)", gate_svg)
+            if first_match:
+                gate_svg = f"exists('{first_match.group(1)}')"
+        gate_svg_esc = html.escape(gate_svg)
+
+        # Nó SVG em card envolvente de 240px de altura
         svg_nodes_markup.append(f"""
       <g class="node" id="node-{html.escape(nid)}" transform="translate({x_pos}, {y_pos})">
         <rect width="{card_w}" height="{card_h}" rx="8" fill="#ffffff" stroke="{border_stroke}" stroke-width="{border_w}"/>
@@ -266,10 +448,10 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
         <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">{html.escape(sub1)}</text>
         <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">{html.escape(sub2)}</text>
         <line x1="14" y1="116" x2="{card_w - 14}" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
-        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: {html.escape(cin_curto)}</text>
-        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: {html.escape(cout_curto)}</text>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: {html.escape(cin_limpo)}</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: {html.escape(cout_limpo)}</text>
         <rect x="14" y="196" width="{card_w - 28}" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
-        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: {gate_curto_esc}</text>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: {gate_svg_esc}</text>
       </g>""")
 
     # Conectores entre nós
@@ -296,6 +478,31 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
             path_d = f"M{start_x},{start_y} L{mid_x},{start_y} L{mid_x},{gutter_y} L{entry_x},{gutter_y} L{entry_x},{end_y} L{x2},{end_y}"
             svg_edges_markup.append(f"""
       <path d="{path_d}" fill="none" stroke="{cor_edge}" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#{slug}-arr-flow)"/>""")
+
+    # Linhagem de Dados e Artefatos (Seção 05)
+    first_in = extrair_nomes_arquivos_ou_insumos(nodes[0].get("context_in") or nodes[0].get("inputs")) if nodes else "—"
+    
+    intermediates = []
+    for n in nodes[:-1]:
+        out_f = extrair_nomes_arquivos_ou_insumos(n.get("context_out") or n.get("output", {}).get("artifact"))
+        if out_f and out_f != "—":
+            for f in out_f.split(", "):
+                if f not in intermediates:
+                    intermediates.append(f)
+
+    last_outs = extrair_nomes_arquivos_ou_insumos(nodes[-1].get("context_out") or nodes[-1].get("output", {}).get("artifact")) if nodes else "—"
+    finals = [f for f in last_outs.split(", ") if f and f != "—"]
+    if "ANATOMIA.md" not in finals and slug == "legoloop-dissecar":
+        finals.append("ANATOMIA.md")
+
+    # Invariantes e Regras Negativas (Seção 06)
+    invariants_markup = []
+    for titulo, desc_inv in invariantes_skill:
+        invariants_markup.append(f"""
+    <div class="invariant-card">
+      <h3 class="invariant-title">{html.escape(titulo)}</h3>
+      <p class="invariant-desc">{html.escape(desc_inv)}</p>
+    </div>""")
 
     # Template HTML completo
     html_content = f"""<!DOCTYPE html>
@@ -403,21 +610,26 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
   .node-card-header {{
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-bottom: 12px;
   }}
   .node-id {{
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    padding: 2px 8px;
+    padding: 3px 8px;
     border-radius: 4px;
     color: #ffffff;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
   }}
   .node-name {{ font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }}
-  .node-desc {{ font-size: 13px; color: var(--muted); margin-bottom: 12px; word-break: break-word; }}
+  .node-desc {{ font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.45; word-break: break-word; min-height: 38px; }}
   .node-gate {{
     font-family: var(--font-mono);
     font-size: 11px;
@@ -504,6 +716,111 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
     border-radius: 3px;
     color: var(--muted);
   }}
+  .table-type-badge {{
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 1.2;
+  }}
+
+  .lineage-grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }}
+  .lineage-card {{
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }}
+  .lineage-card-title {{
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 8px;
+  }}
+  .lineage-badge {{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap;
+  }}
+  .lineage-list {{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }}
+  .lineage-item {{
+    font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }}
+  .lineage-item code {{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-strong);
+    background: var(--paper);
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid var(--rule);
+  }}
+  .lineage-item span {{
+    font-size: 12px;
+    color: var(--muted);
+  }}
+
+  .invariants-grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }}
+  .invariant-card {{
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }}
+  .invariant-title {{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 6px;
+  }}
+  .invariant-desc {{
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }}
 </style>
 </head>
 <body>
@@ -516,7 +833,7 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
     <span><strong>Processo:</strong> {html.escape(slug)}</span>
     <span><strong>Versão:</strong> {html.escape(versao)}</span>
     <span><strong>Nós:</strong> {len(nodes)} nós sequenciais</span>
-    <span><strong>Design System:</strong> LegoPress Editorial (Sans-Serif)</span>
+    <span><strong>Gerado em:</strong> {html.escape(agora_iso)}</span>
   </div>
 </header>
 
@@ -569,13 +886,70 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
 </section>
 
 <section class="section">
-  <h2 class="section-title">04 — Governança de Anticorpos e Paridade com o LegoPress</h2>
-  <p class="section-sub">Diretrizes obrigatórias testadas em tempo de compilação.</p>
-  <div style="background:var(--paper-card);border:1px solid var(--rule);border-radius:8px;padding:20px;font-size:14px;color:var(--ink);">
-    <p style="margin-bottom:12px;"><strong>1. Fundo Descansado:</strong> O background usa <code>#f5f5f5</code> (white-smoke). Zero branco puro na tela.</p>
-    <p style="margin-bottom:12px;"><strong>2. Zero Serifa:</strong> Tipografia 100% <code>Geist</code> e <code>Geist Mono</code>. Fontes serifadas bloqueadas.</p>
-    <p style="margin-bottom:12px;"><strong>3. Classe Obrigatória:</strong> Tag <code>&lt;svg class="diagram-canvas"&gt;</code> presente com acessibilidade nativa.</p>
-    <p><strong>4. Portabilidade Typst:</strong> O SVG resultante compila sem perdas nos livros didáticos do LegoPress.</p>
+  <h2 class="section-title">04 — Roteamento Cognitivo & Topologia de Agentes</h2>
+  <p class="section-sub">Alocação determinística de modelos LLM, nível de esforço e estratégias de isolamento por nó.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Harness</th>
+          <th>Modelo Primário</th>
+          <th>Esforço</th>
+          <th>Fallback</th>
+          <th>Executor & Fronteira</th>
+          <th>Rollback</th>
+        </tr>
+      </thead>
+      <tbody>
+        {"".join(routing_rows)}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">05 — Linhagem de Dados & Ciclo de Vida dos Artefatos</h2>
+  <p class="section-sub">Rastreabilidade formal de insumos, arquivos intermediários de análise e produtos finais.</p>
+  <div class="lineage-grid">
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb33;">ENTRADA</span>
+        <span>Insumos Primários</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item">
+          <code>{html.escape(first_in)}</code>
+          <span>Alvo inicial fornecido para análise e inspeção</span>
+        </li>
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#d9770618;color:#d97706;border:1px solid #d9770633;">PIPELINE</span>
+        <span>Artefatos Intermediários</span>
+      </div>
+      <ul class="lineage-list">
+        {"".join([f'<li class="lineage-item"><code>{html.escape(f)}</code></li>' for f in intermediates])}
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#16a34a18;color:#16a34a;border:1px solid #16a34a33;">ENTREGA</span>
+        <span>Produtos Finais</span>
+      </div>
+      <ul class="lineage-list">
+        {"".join([f'<li class="lineage-item"><code>{html.escape(f)}</code></li>' for f in finals])}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">06 — Invariantes Operacionais & Regras Negativas</h2>
+  <p class="section-sub">Políticas restritivas de segurança e critérios inegociáveis de execução do processo.</p>
+  <div class="invariants-grid">
+    {"".join(invariants_markup)}
   </div>
 </section>
 

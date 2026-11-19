@@ -6,8 +6,74 @@ docs/diagrams/<slug>/quadrantes.json com categorização taxonômica e geométri
 """
 
 import sys
+import re
 import json
 from pathlib import Path
+
+def extrair_nomes_arquivos_ou_insumos(valor) -> str:
+    if not valor or valor == "—":
+        return "—"
+    itens = []
+    def processar_item(v):
+        if not v:
+            return
+        if isinstance(v, (list, tuple)):
+            for sub in v:
+                processar_item(sub)
+            return
+        if isinstance(v, dict):
+            for k, val in v.items():
+                processar_item(val)
+            return
+        s = str(v).strip()
+        file_matches = re.findall(r"file\(['\"]([^'\"]+)['\"]\)", s)
+        if file_matches:
+            for f in file_matches:
+                p_name = Path(f).name
+                if p_name and p_name not in itens:
+                    itens.append(p_name)
+            return
+        art_matches = re.findall(r"artifact\(['\"]([^'\"]+)['\"]\)", s)
+        if art_matches:
+            for a in art_matches:
+                p_name = Path(a).name
+                if p_name and p_name not in itens:
+                    itens.append(p_name)
+            return
+        if any(s.endswith(ext) for ext in ('.json', '.md', '.html', '.svg', '.tsx', '.css', '.go', '.py', '.txt', '.yml', '.yaml')):
+            p_name = Path(s).name
+            if p_name and p_name not in itens:
+                itens.append(p_name)
+            return
+        if s.startswith("var.") or s in ("alvo", "target"):
+            if s not in itens:
+                itens.append(s)
+            return
+        limpa = s.strip("'\"")
+        limpa = re.sub(r"^(?:file|artifact)\(['\"]?([^'\"]+)['\"]?\)$", r"\1", limpa)
+        if limpa and limpa not in itens:
+            p_cand = Path(limpa).name if any(limpa.endswith(e) for e in ('.json', '.md', '.html', '.svg')) else limpa
+            itens.append(p_cand)
+    processar_item(valor)
+    return ", ".join(itens) if itens else "—"
+
+def carregar_descricoes_da_skill(slug: str) -> dict:
+    descricoes = {}
+    candidatos = [
+        Path(f"skills/{slug}/SKILL.md"),
+        Path(f"skills/legoloop-{slug}/SKILL.md"),
+        Path(f"skills/{slug.replace('legoloop-', '')}/SKILL.md")
+    ]
+    for c in candidatos:
+        if c.exists():
+            texto = c.read_text(encoding="utf-8")
+            for m in re.finditer(r"\*\*[^*]+?\(`([^`]+)`\):\*\*\s*([^\n\r]+)", texto):
+                descricoes[m.group(1).strip()] = m.group(2).strip()
+            for m in re.finditer(r"\*\*`([^`]+)`:\*\*\s*([^\n\r]+)", texto):
+                descricoes[m.group(1).strip()] = m.group(2).strip()
+            if descricoes:
+                break
+    return descricoes
 
 PALETA_PECAS = {
     "skill": {"cor": "#2563eb", "badge": "SKILL", "nome": "Azul Cobalto Google"},
@@ -52,6 +118,7 @@ def main():
 
     slug, dag_path = resolver_dag(alvo)
     slug = Path(slug).name
+    descs_skill = carregar_descricoes_da_skill(slug)
 
     nodes = []
     if dag_path.exists():
@@ -68,13 +135,19 @@ def main():
         ntype = n.get("type", "skill")
         nname = n.get("name", nid)
         estilo = obter_estilo_peca(ntype)
+        cin_limpo = extrair_nomes_arquivos_ou_insumos(n.get("context_in") or n.get("inputs"))
+        cout_limpo = extrair_nomes_arquivos_ou_insumos(n.get("context_out") or n.get("output", {}).get("artifact"))
+        desc_no = descs_skill.get(nid) or n.get("description") or f"Executa a etapa {nname} com isolamento estéril."
         quadrantes_nodes.append({
             "id": nid,
             "name": nname,
+            "description": desc_no,
             "type": ntype,
             "badge": estilo["badge"],
             "color": estilo["cor"],
             "layer": i + 1,
+            "inputs_clean": cin_limpo,
+            "output_clean": cout_limpo,
             "gate": n.get("output", {}).get("gate", "exit_code == 0"),
             "depends_on": n.get("depends_on", [])
         })
