@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparativo das 3 Variações de Design — LegoLoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --paper:        #f5f5f5;
+    --paper-card:   #ffffff;
+    --paper-subtle: #ececec;
+    --ink:          #2d3142;
+    --ink-strong:   #0f172a;
+    --muted:        #4f5d75;
+    --soft:         #5a6580;
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;
+    --accent:       #bf4520;
+    --font-sans:    'Geist', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 32px;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+  .page-header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .page-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .page-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    margin-bottom: 8px;
+  }
+  .page-desc {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .diagram-container {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-solid);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    margin-bottom: 32px;
+    overflow-x: auto;
+  }
+  .diagram-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+  .flow-edge {
+    stroke-dasharray: 6 3;
+    animation: flow-dash 1.2s linear infinite;
+  }
+  @keyframes flow-dash {
+    to { stroke-dashoffset: -18; }
+  }
+
+  .tabs-nav {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--rule-solid);
+    padding-bottom: 12px;
+  }
+  .tab-btn {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border: 1px solid var(--rule-solid);
+    border-radius: 6px;
+    background: var(--paper-card);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .tab-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+  .tab-pane {
+    display: none;
+  }
+  .tab-pane.active {
+    display: block;
+  }
+  .choice-box {
+    background: #ffffff;
+    border: 1px solid var(--rule-solid);
+    border-left: 4px solid var(--accent);
+    padding: 18px 24px;
+    border-radius: 6px;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <div class="page-eyebrow">REFINAMENTO VISUAL DO DIAGRAM-DESIGN · 3 SUGESTÕES EM DISPUTA</div>
+    <h1 class="page-title">Comparativo Interativo: Escolha o Melhor Padrão</h1>
+    <p class="page-desc">Alvo de teste: <code>legoloop-concepcao</code>. Todas as opções usam o Design System LegoPress, sem serifas e com fundo descansado #f5f5f5.</p>
+  </header>
+
+  <nav class="tabs-nav">
+    <button class="tab-btn active" onclick="mostrarAba(1)">Opção 1 · Faixas em Camadas</button>
+    <button class="tab-btn" onclick="mostrarAba(2)">Opção 2 · Pipeline Horizontal</button>
+    <button class="tab-btn" onclick="mostrarAba(3)">Opção 3 · Grid Modular 2x2</button>
+    <button class="tab-btn" onclick="mostrarAba(4)">Opção Híbrida · 10 Nós em Linhas</button>
+  </nav>
+
+  <div id="tab1" class="tab-pane active">
+    <div style="margin-bottom:12px; font-weight:600; font-size:14px; color:var(--ink-strong);">
+      Opção 1: Faixas de Camada Horizontais (Idêntica ao modelo elogiado em <code>arquitetura-fluxo-verbos</code>)
+    </div>
+    <div class="diagram-container">
+      <svg class="diagram-canvas" viewBox="0 0 1040 680" role="img" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr-v1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#0f172a"/>
+    </marker>
+    <filter id="shadow-v1" x="-4%" y="-6%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.04"/>
+    </filter>
+  </defs>
+
+  <rect width="1040" height="680" fill="#f5f5f5" rx="8"/>
+
+  <!-- FAIXA 1 -->
+  <rect x="24" y="24" width="992" height="136" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+  <text x="44" y="48" font-family="'Geist Mono',monospace" font-size="10" font-weight="700" letter-spacing="0.14em" fill="#4f5d75">CAMADA 01 · ALINHAMENTO SOCRÁTICO</text>
+  <g transform="translate(240, 56)" filter="url(#shadow-v1)">
+    <rect width="560" height="88" rx="6" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+    <rect x="12" y="12" width="60" height="20" rx="3" fill="#0f172a"/>
+    <text x="42" y="26" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+    <text x="82" y="26" font-family="'Geist',sans-serif" font-size="13" font-weight="700" fill="#0f172a">entrevista_socratica</text>
+    <text x="12" y="50" font-family="'Geist',sans-serif" font-size="11" fill="#4f5d75">Condução socrática até confiança ≥ 95% e síntese factual</text>
+    <rect x="12" y="60" width="536" height="18" rx="3" fill="#f5f5f5"/>
+    <text x="20" y="73" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Gate: exit_code == 0</text>
+  </g>
+
+  <!-- CONECTOR 1 -> 2 -->
+  <path d="M520,144 L520,192" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#arr-v1)"/>
+
+  <!-- FAIXA 2 -->
+  <rect x="24" y="184" width="992" height="136" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+  <text x="44" y="208" font-family="'Geist Mono',monospace" font-size="10" font-weight="700" letter-spacing="0.14em" fill="#2563eb">CAMADA 02 · PERSISTÊNCIA &amp; COFRE</text>
+  <g transform="translate(240, 216)" filter="url(#shadow-v1)">
+    <rect width="560" height="88" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1.2"/>
+    <rect x="12" y="12" width="70" height="20" rx="3" fill="#2563eb"/>
+    <text x="47" y="26" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+    <text x="92" y="26" font-family="'Geist',sans-serif" font-size="13" font-weight="700" fill="#0f172a">interview_gravada</text>
+    <text x="12" y="50" font-family="'Geist',sans-serif" font-size="11" fill="#4f5d75">Gravação determinística de INTERVIEW.md e Espelho no cofre</text>
+    <rect x="12" y="60" width="536" height="18" rx="3" fill="#f5f5f5"/>
+    <text x="20" y="73" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Gate: file_exists('docs/intents/ESPELHO_CANONICO.md')</text>
+  </g>
+
+  <!-- CONECTOR 2 -> 3 -->
+  <path d="M520,304 L520,352" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#arr-v1)"/>
+
+  <!-- FAIXA 3 -->
+  <rect x="24" y="344" width="992" height="136" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+  <text x="44" y="368" font-family="'Geist Mono',monospace" font-size="10" font-weight="700" letter-spacing="0.14em" fill="#4f5d75">CAMADA 03 · MATERIALIZAÇÃO DE INTENT</text>
+  <g transform="translate(240, 376)" filter="url(#shadow-v1)">
+    <rect width="560" height="88" rx="6" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+    <rect x="12" y="12" width="60" height="20" rx="3" fill="#0f172a"/>
+    <text x="42" y="26" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+    <text x="82" y="26" font-family="'Geist',sans-serif" font-size="13" font-weight="700" fill="#0f172a">materializar_intent</text>
+    <text x="12" y="50" font-family="'Geist',sans-serif" font-size="11" fill="#4f5d75">Emissão de docs/intents/INTENT.md conforme template v2</text>
+    <rect x="12" y="60" width="536" height="18" rx="3" fill="#f5f5f5"/>
+    <text x="20" y="73" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Gate: file_exists('docs/intents/INTENT.md')</text>
+  </g>
+
+  <!-- CONECTOR 3 -> 4 -->
+  <path d="M520,464 L520,512" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#arr-v1)"/>
+
+  <!-- FAIXA 4 -->
+  <rect x="24" y="504" width="992" height="136" rx="6" fill="rgba(217,119,6,0.06)" stroke="#d97706" stroke-width="1.2"/>
+  <text x="44" y="528" font-family="'Geist Mono',monospace" font-size="10" font-weight="700" letter-spacing="0.14em" fill="#d97706">CAMADA 04 · HOMOLOGAÇÃO HUMANA</text>
+  <g transform="translate(240, 536)" filter="url(#shadow-v1)">
+    <rect width="560" height="88" rx="6" fill="#ffffff" stroke="#d97706" stroke-width="1.4"/>
+    <rect x="12" y="12" width="80" height="20" rx="3" fill="#d97706"/>
+    <text x="52" y="26" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">STOP-GATE</text>
+    <text x="102" y="26" font-family="'Geist',sans-serif" font-size="13" font-weight="700" fill="#0f172a">stop_gate_01</text>
+    <text x="12" y="50" font-family="'Geist',sans-serif" font-size="11" fill="#4f5d75">Ponto de decisão e pausa obrigatória de validação do usuário</text>
+    <rect x="12" y="60" width="536" height="18" rx="3" fill="#f5f5f5"/>
+    <text x="20" y="73" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Gate: prompt('Aprovar a INTENT materializada?')</text>
+  </g>
+</svg>
+    </div>
+  </div>
+
+  <div id="tab2" class="tab-pane">
+    <div style="margin-bottom:12px; font-weight:600; font-size:14px; color:var(--ink-strong);">
+      Opção 2: Pipeline Horizontal (Left-to-Right Flow compacto em 1 linha contínua)
+    </div>
+    <div class="diagram-container">
+      <svg class="diagram-canvas" viewBox="0 0 1040 320" role="img" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr-v2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+    </marker>
+    <filter id="shadow-v2" x="-5%" y="-8%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.05"/>
+    </filter>
+  </defs>
+
+  <rect width="1040" height="320" fill="#f5f5f5" rx="8"/>
+
+  <!-- CARD 1 -->
+  <g transform="translate(24, 40)" filter="url(#shadow-v2)">
+    <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+    <rect x="14" y="14" width="60" height="20" rx="3" fill="#0f172a"/>
+    <text x="44" y="28" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+    <text x="14" y="56" font-family="'Geist',sans-serif" font-size="13" font-weight="700" fill="#0f172a">entrevista_socratica</text>
+    <text x="14" y="78" font-family="'Geist',sans-serif" font-size="11" fill="#4f5d75">Alinhamento Socrático</text>
+    <text x="14" y="96" font-family="'Geist',sans-serif" font-size="10" fill="#5a6580">Confiança ≥ 95%</text>
+    <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+    <text x="14" y="136" font-family="'Geist Mono',monospace" font-size="9" fill="#5a6580">In: docs/intents/</text>
+    <text x="14" y="154" font-family="'Geist Mono',monospace" font-size="9" fill="#5a6580">Out: INTERVIEW.md</text>
+    <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+    <text x="22" y="215" font-family="'Geist Mono',monospace" font-size="9" fill="#2d3142">Gate: exit_code == 0</text>
+  </g>
+
+  <!-- SETA 1 -> 2 -->
+  <path d="M240,160 L280,160" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-v2)"/>
+
+  <!-- CARD 2 -->
+  <g transform="translate(288, 40)" filter="url(#shadow-v2)">
+    <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.2"/>
+    <rect x="14" y="14" width="70" height="20" rx="3" fill="#2563eb"/>
+    <text x="49" y="28" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+    <text x="14" y="56" font-family="'Geist',sans-serif" font-size="13" font-weight="700" fill="#0f172a">interview_gravada</text>
+    <text x="14" y="78" font-family="'Geist',sans-serif" font-size="11" fill="#4f5d75">Cofre e Espelho Canônico</text>
+    <text x="14" y="96" font-family="'Geist',sans-serif" font-size="10" fill="#5a6580">Persistência em registro</text>
+    <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+    <text x="14" y="136" font-family="'Geist Mono',monospace" font-size="9" fill="#5a6580">In: INTERVIEW.md</text>
+    <text x="14" y="154" font-family="'Geist Mono',monospace" font-size="9" fill="#5a6580">Out: ESPELHO.md</text>
+    <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+    <text x="22" y="215" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(ESPELHO)</text>
+  </g>
+
+  <!-- SETA 2 -> 3 -->
+  <path d="M504,160 L544,160" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#arr-v2)"/>
+
+  <!-- CARD 3 -->
+  <g transform="translate(552, 40)" filter="url(#shadow-v2)">
+    <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+    <rect x="14" y="14" width="60" height="20" rx="3" fill="#0f172a"/>
+    <text x="44" y="28" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+    <text x="14" y="56" font-family="'Geist',sans-serif" font-size="13" font-weight="700" fill="#0f172a">materializar_intent</text>
+    <text x="14" y="78" font-family="'Geist',sans-serif" font-size="11" fill="#4f5d75">Materialização de INTENT</text>
+    <text x="14" y="96" font-family="'Geist',sans-serif" font-size="10" fill="#5a6580">Template v2 canônico</text>
+    <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+    <text x="14" y="136" font-family="'Geist Mono',monospace" font-size="9" fill="#5a6580">In: ESPELHO.md</text>
+    <text x="14" y="154" font-family="'Geist Mono',monospace" font-size="9" fill="#5a6580">Out: docs/intents/INTENT.md</text>
+    <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+    <text x="22" y="215" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(INTENT)</text>
+  </g>
+
+  <!-- SETA 3 -> 4 -->
+  <path d="M768,160 L808,160" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-v2)"/>
+
+  <!-- CARD 4 -->
+  <g transform="translate(816, 40)" filter="url(#shadow-v2)">
+    <rect width="200" height="240" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.4"/>
+    <rect x="14" y="14" width="80" height="20" rx="3" fill="#d97706"/>
+    <text x="54" y="28" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">STOP-GATE</text>
+    <text x="14" y="56" font-family="'Geist',sans-serif" font-size="13" font-weight="700" fill="#0f172a">stop_gate_01</text>
+    <text x="14" y="78" font-family="'Geist',sans-serif" font-size="11" fill="#4f5d75">Aprovação Humana</text>
+    <text x="14" y="96" font-family="'Geist',sans-serif" font-size="10" fill="#5a6580">Pausa explícita</text>
+    <line x1="14" y1="116" x2="186" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+    <text x="14" y="136" font-family="'Geist Mono',monospace" font-size="9" fill="#5a6580">In: INTENT.md</text>
+    <text x="14" y="154" font-family="'Geist Mono',monospace" font-size="9" fill="#5a6580">Out: INTENT_APROVADA</text>
+    <rect x="14" y="196" width="172" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+    <text x="20" y="215" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: prompt(Aprovar?)</text>
+  </g>
+</svg>
+    </div>
+  </div>
+
+  <div id="tab3" class="tab-pane">
+    <div style="margin-bottom:12px; font-weight:600; font-size:14px; color:var(--ink-strong);">
+      Opção 3: Grid Modular 2x2 (Cards espaçosos com cabeçalho e fluxo ortogonal serpenteante)
+    </div>
+    <div class="diagram-container">
+      <svg class="diagram-canvas" viewBox="0 0 1040 480" role="img" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr-v3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+    </marker>
+    <filter id="shadow-v3" x="-4%" y="-6%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.04"/>
+    </filter>
+  </defs>
+
+  <rect width="1040" height="480" fill="#f5f5f5" rx="8"/>
+
+  <!-- CARD 1 (Linha 1, Col 1) -->
+  <g transform="translate(48, 48)" filter="url(#shadow-v3)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+    <rect x="16" y="16" width="60" height="20" rx="3" fill="#0f172a"/>
+    <text x="46" y="30" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+    <text x="86" y="30" font-family="'Geist',sans-serif" font-size="14" font-weight="700" fill="#0f172a">entrevista_socratica</text>
+    <text x="16" y="58" font-family="'Geist',sans-serif" font-size="12" fill="#4f5d75">Condução socrática até confiança ≥ 95% e síntese factual</text>
+    <text x="16" y="80" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Insumos: docs/intents/ · Emite: docs/intents/INTERVIEW.md</text>
+    <rect x="16" y="102" width="388" height="26" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+    <text x="26" y="119" font-family="'Geist Mono',monospace" font-size="10" fill="#2d3142">Gate: exit_code == 0</text>
+  </g>
+
+  <!-- SETA 1 -> 2 (Horizontal na Linha 1) -->
+  <path d="M468,123 L562,123" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-v3)"/>
+
+  <!-- CARD 2 (Linha 1, Col 2) -->
+  <g transform="translate(572, 48)" filter="url(#shadow-v3)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.2"/>
+    <rect x="16" y="16" width="70" height="20" rx="3" fill="#2563eb"/>
+    <text x="51" y="30" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+    <text x="96" y="30" font-family="'Geist',sans-serif" font-size="14" font-weight="700" fill="#0f172a">interview_gravada</text>
+    <text x="16" y="58" font-family="'Geist',sans-serif" font-size="12" fill="#4f5d75">Gravação determinística de INTERVIEW.md e Espelho no cofre</text>
+    <text x="16" y="80" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Insumos: INTERVIEW.md · Emite: ESPELHO_CANONICO.md</text>
+    <rect x="16" y="102" width="388" height="26" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+    <text x="26" y="119" font-family="'Geist Mono',monospace" font-size="10" fill="#2d3142">Gate: file_exists('ESPELHO_CANONICO.md')</text>
+  </g>
+
+  <!-- SETA PERIMETRAL 2 -> 3 (Descida e retorno para Col 1 da Linha 2) -->
+  <path d="M782,198 L782,238 L258,238 L258,272" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#arr-v3)"/>
+
+  <!-- CARD 3 (Linha 2, Col 1) -->
+  <g transform="translate(48, 282)" filter="url(#shadow-v3)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+    <rect x="16" y="16" width="60" height="20" rx="3" fill="#0f172a"/>
+    <text x="46" y="30" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+    <text x="86" y="30" font-family="'Geist',sans-serif" font-size="14" font-weight="700" fill="#0f172a">materializar_intent</text>
+    <text x="16" y="58" font-family="'Geist',sans-serif" font-size="12" fill="#4f5d75">Emissão de docs/intents/INTENT.md conforme template v2</text>
+    <text x="16" y="80" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Insumos: ESPELHO_CANONICO.md · Emite: docs/intents/INTENT.md</text>
+    <rect x="16" y="102" width="388" height="26" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+    <text x="26" y="119" font-family="'Geist Mono',monospace" font-size="10" fill="#2d3142">Gate: file_exists('docs/intents/INTENT.md')</text>
+  </g>
+
+  <!-- SETA 3 -> 4 (Horizontal na Linha 2) -->
+  <path d="M468,357 L562,357" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-v3)"/>
+
+  <!-- CARD 4 (Linha 2, Col 2) -->
+  <g transform="translate(572, 282)" filter="url(#shadow-v3)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.4"/>
+    <rect x="16" y="16" width="80" height="20" rx="3" fill="#d97706"/>
+    <text x="56" y="30" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">STOP-GATE</text>
+    <text x="106" y="30" font-family="'Geist',sans-serif" font-size="14" font-weight="700" fill="#0f172a">stop_gate_01</text>
+    <text x="16" y="58" font-family="'Geist',sans-serif" font-size="12" fill="#4f5d75">Ponto de decisão e pausa obrigatória de validação do usuário</text>
+    <text x="16" y="80" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Insumos: INTENT.md · Emite: docs/intents/INTENT_APROVADA.md</text>
+    <rect x="16" y="102" width="388" height="26" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+    <text x="26" y="119" font-family="'Geist Mono',monospace" font-size="10" fill="#2d3142">Gate: prompt('Aprovar a INTENT materializada?')</text>
+  </g>
+</svg>
+    </div>
+  </div>
+
+  <div id="tab4" class="tab-pane">
+    <div style="margin-bottom:12px; font-weight:600; font-size:14px; color:var(--ink-strong);">
+      Opção Híbrida: Processo Extenso com 10 Nós (Linhas de 4 cards com conexões perimetrais)
+    </div>
+    <div class="diagram-container">
+      <svg class="diagram-canvas" viewBox="0 0 1040 580" role="img" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr-10" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+    </marker>
+    <filter id="shadow-10" x="-5%" y="-8%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.05"/>
+    </filter>
+  </defs>
+
+  <rect width="1040" height="580" fill="#f5f5f5" rx="8"/>
+
+  <!-- CONECTORES ENTRE NÓS -->
+  <path d="M240,100 L280,100" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-10)"/>  <path d="M496,100 L536,100" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-10)"/>  <path d="M752,100 L792,100" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-10)"/>  <!-- Conexão entre linhas: Nó 4 -> Nó 5 -->
+  <path d="M1008,100 L1024,100 L1024,196 L10,196 L10,292 L24,292" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#arr-10)"/>  <path d="M240,292 L280,292" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-10)"/>  <path d="M496,292 L536,292" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-10)"/>  <path d="M752,292 L792,292" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-10)"/>  <!-- Conexão entre linhas: Nó 8 -> Nó 9 -->
+  <path d="M1008,292 L1024,292 L1024,388 L10,388 L10,484 L24,484" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#arr-10)"/>  <path d="M240,484 L280,484" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-10)"/>
+
+  <!-- CARDS DOS NÓS -->
+
+    <!-- CARD 1: e01_concepcao -->
+    <g transform="translate(24, 32)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#2563eb"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">SKILL</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 1</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">Concepção &amp; Intenção</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e01_concepcao</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: confianca &gt;= 95%</text>
+    </g>
+    <!-- CARD 2: e02_especificacao -->
+    <g transform="translate(280, 32)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#2563eb"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">SKILL</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 1</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">Especificação EARS</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e02_especificacao</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: spec.v1.json</text>
+    </g>
+    <!-- CARD 3: e03_planejamento -->
+    <g transform="translate(536, 32)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#2563eb"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">SKILL</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 1</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">Decomposição Tickets</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e03_planejamento</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: plan.v1.json</text>
+    </g>
+    <!-- CARD 4: e04_roteamento -->
+    <g transform="translate(792, 32)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#0f172a"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">SCRIPT</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 2</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">Mapeamento DAG &amp; Nós</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e04_roteamento</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: pipeline.dag.json</text>
+    </g>
+    <!-- CARD 5: e05_tdd_mutacao -->
+    <g transform="translate(24, 224)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#0f172a"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">SCRIPT</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 2</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">TDD e Mutação</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e05_tdd_mutacao</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: mutation_fails == true</text>
+    </g>
+    <!-- CARD 6: e06_orchestrix -->
+    <g transform="translate(280, 224)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#0f172a"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">SCRIPT</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 2</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">Execução Estéril</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e06_orchestrix</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+    </g>
+    <!-- CARD 7: e07_qa_inspecao -->
+    <g transform="translate(536, 224)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#0f172a"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">SCRIPT</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 3</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">Inspeção &amp; Linter</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e07_qa_inspecao</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: zero_desvios == true</text>
+    </g>
+    <!-- CARD 8: e08_stop_gate -->
+    <g transform="translate(792, 224)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.4"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#d97706"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">STOP-GATE</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 3</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">Stop-Gate Humano</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e08_stop_gate</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: prompt(Aprovar?)</text>
+    </g>
+    <!-- CARD 9: e09_canonizacao -->
+    <g transform="translate(24, 416)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#0f172a"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">SCRIPT</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 4</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">Deduplicação Cofre</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e09_canonizacao</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: sha256_match == true</text>
+    </g>
+    <!-- CARD 10: e10_fechamento -->
+    <g transform="translate(280, 416)" filter="url(#shadow-10)">
+      <rect width="216" height="136" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+      <rect x="12" y="12" width="64" height="18" rx="3" fill="#0f172a"/>
+      <text x="44" y="24" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8.5" font-weight="700" fill="#ffffff">SCRIPT</text>
+      <text x="82" y="24" font-family="'Geist Mono',monospace" font-size="9" font-weight="600" fill="#5a6580">FASE 4</text>
+      <text x="12" y="50" font-family="'Geist',sans-serif" font-size="12" font-weight="700" fill="#0f172a">Fechamento 9/9</text>
+      <text x="12" y="68" font-family="'Geist Mono',monospace" font-size="10" fill="#4f5d75">e10_fechamento</text>
+      <line x1="12" y1="84" x2="204" y2="84" stroke="#bfc0c0" stroke-width="0.8"/>
+      <rect x="12" y="96" width="192" height="24" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+      <text x="18" y="112" font-family="'Geist Mono',monospace" font-size="8.5" fill="#2d3142">Gate: report_audit_9_de_9</text>
+    </g>
+</svg>
+    </div>
+  </div>
+
+  <div class="choice-box">
+    <strong>Como aprovar:</strong> Responda no chat com <strong>[1]</strong> para a Opção 1 (Faixas em Camadas), <strong>[2]</strong> para a Opção 2 (Pipeline Horizontal), ou <strong>[3]</strong> para a Opção 3 (Grid Modular 2x2).
+  </div>
+
+  <script>
+    function mostrarAba(num) {
+      document.querySelectorAll('.tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === (num - 1));
+      });
+      document.querySelectorAll('.tab-pane').forEach((p, i) => {
+        p.classList.toggle('active', i === (num - 1));
+      });
+    }
+  </script>
+</body>
+</html>

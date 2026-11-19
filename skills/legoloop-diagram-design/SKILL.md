@@ -27,13 +27,13 @@ metadata:
 > - Qualquer diagrama gerado DEVE residir em `docs/diagrams/<slug>/src/<slug>.html`.
 > - Toda a estrutura de 5 subdiretórios `{src,assets,export,animation,anticorpos}` e o arquivo de governança `anticorpos.json` DEVEM ser mantidos intactos dentro de `docs/diagrams/<slug>/`.
 >
-> ### O DAG Determinístico dos 6 Nós Obrigatórios:
-> 1. **e01 (inicializar-slug-e-anticorpos):** Inicializa a árvore `docs/diagrams/<slug>/{src,assets,export,animation,anticorpos}/` e sincroniza `anticorpos/anticorpos.json`.
-> 2. **e02 (ingestao-e-quadrantes):** Seleciona 1 dos 50 tipos visuais do catálogo e valida tokens editoriais da marca (sem fontes serifadas, sem emojis).
-> 3. **e03 (geracao-svg-html):** Gera `src/<slug>.html` auto-contido com grid ortogonal, zero transbordamento, máscaras opacas e sem serifas.
-> 4. **e04 (micro-animacao):** Aplica animação CSS nativa contínua (@keyframes flow-dash com stroke-dashoffset) ou Remotion condicional.
-> 5. **e05 (gate-e-exportacao):** Executa scripts de exportação e valida conformidade mecânica com exit code 0.
-> 6. **e06 (fechamento-e-anticorpos):** Consolida achados em `anticorpos/anticorpos.json` e emite relatório em `docs/reports/`.
+> ### O DAG 100% Determinístico dos 6 Nós Nativos (Zero Custo / Zero Tokens):
+> 1. **e01 (inicializar-slug-e-anticorpos):** Script `init_diagrama.py`. Inicializa a árvore `docs/diagrams/<slug>/{src,assets,export,animation,anticorpos}/`, sincroniza `anticorpos/anticorpos.json` e emite `manifest.json`.
+> 2. **e02 (ingestao-e-quadrantes):** Script `gerar_quadrantes.py`. Ingestão estática do DAG, mapeamento de nós e emissão de `quadrantes.json`.
+> 3. **e03 (geracao-svg-html):** Script `gerar_diagrama.py`. Gera `src/<slug>.html` auto-contido com grid ortogonal, zero transbordamento, máscaras opacas, scrollbar de 3px com 70% de transparência e sem serifas.
+> 4. **e04 (micro-animacao):** Script `gerar_animacao.py`. Gera `composition.tsx` e `composition.css` Remotion procedurais com Geist Sans/Mono e fundo descansado `#f5f5f5`.
+> 5. **e05 (gate-e-exportacao):** Script `export_svg.py`. Executa exportação pura para SVG standalone com exit code 0.
+> 6. **e06 (fechamento-e-anticorpos):** Script `gerar_relatorio.py`. Valida geometricamente o SVG/HTML e emite relatório em `docs/reports/` com 0 tokens.
 
 Create diagrams as self-contained HTML files with inline SVG and an editorial design system.
 

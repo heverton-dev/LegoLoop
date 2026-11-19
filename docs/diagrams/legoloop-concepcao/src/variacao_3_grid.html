@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variação 3 — Grid Modular 2x2 em Cards com Rotação — LegoLoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --paper:        #f5f5f5;
+    --paper-card:   #ffffff;
+    --paper-subtle: #ececec;
+    --ink:          #2d3142;
+    --ink-strong:   #0f172a;
+    --muted:        #4f5d75;
+    --soft:         #5a6580;
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;
+    --accent:       #bf4520;
+    --font-sans:    'Geist', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 32px;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+  .page-header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .page-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .page-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    margin-bottom: 8px;
+  }
+  .page-desc {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .diagram-container {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-solid);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    margin-bottom: 32px;
+    overflow-x: auto;
+  }
+  .diagram-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+  .flow-edge {
+    stroke-dasharray: 6 3;
+    animation: flow-dash 1.2s linear infinite;
+  }
+  @keyframes flow-dash {
+    to { stroke-dashoffset: -18; }
+  }
+
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <div class="page-eyebrow">REFINAMENTO DE DESIGN SYSTEM · PROPOSTA EXPERIMENTAL</div>
+    <h1 class="page-title">Variação 3 — Grid Modular 2x2 em Cards com Rotação</h1>
+    <p class="page-desc">Apresentação compacta em 2 colunas e 2 linhas, com cards espaçosos contendo metadados completos de insumos, saídas e gates mecânicos.</p>
+  </header>
+
+  <div class="diagram-container">
+    <svg class="diagram-canvas" viewBox="0 0 1040 480" role="img" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr-v3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+    </marker>
+    <filter id="shadow-v3" x="-4%" y="-6%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.04"/>
+    </filter>
+  </defs>
+
+  <rect width="1040" height="480" fill="#f5f5f5" rx="8"/>
+
+  <!-- CARD 1 (Linha 1, Col 1) -->
+  <g transform="translate(48, 48)" filter="url(#shadow-v3)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+    <rect x="16" y="16" width="60" height="20" rx="3" fill="#0f172a"/>
+    <text x="46" y="30" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+    <text x="86" y="30" font-family="'Geist',sans-serif" font-size="14" font-weight="700" fill="#0f172a">entrevista_socratica</text>
+    <text x="16" y="58" font-family="'Geist',sans-serif" font-size="12" fill="#4f5d75">Condução socrática até confiança ≥ 95% e síntese factual</text>
+    <text x="16" y="80" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Insumos: docs/intents/ · Emite: docs/intents/INTERVIEW.md</text>
+    <rect x="16" y="102" width="388" height="26" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+    <text x="26" y="119" font-family="'Geist Mono',monospace" font-size="10" fill="#2d3142">Gate: exit_code == 0</text>
+  </g>
+
+  <!-- SETA 1 -> 2 (Horizontal na Linha 1) -->
+  <path d="M468,123 L562,123" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-v3)"/>
+
+  <!-- CARD 2 (Linha 1, Col 2) -->
+  <g transform="translate(572, 48)" filter="url(#shadow-v3)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.2"/>
+    <rect x="16" y="16" width="70" height="20" rx="3" fill="#2563eb"/>
+    <text x="51" y="30" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+    <text x="96" y="30" font-family="'Geist',sans-serif" font-size="14" font-weight="700" fill="#0f172a">interview_gravada</text>
+    <text x="16" y="58" font-family="'Geist',sans-serif" font-size="12" fill="#4f5d75">Gravação determinística de INTERVIEW.md e Espelho no cofre</text>
+    <text x="16" y="80" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Insumos: INTERVIEW.md · Emite: ESPELHO_CANONICO.md</text>
+    <rect x="16" y="102" width="388" height="26" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+    <text x="26" y="119" font-family="'Geist Mono',monospace" font-size="10" fill="#2d3142">Gate: file_exists('ESPELHO_CANONICO.md')</text>
+  </g>
+
+  <!-- SETA PERIMETRAL 2 -> 3 (Descida e retorno para Col 1 da Linha 2) -->
+  <path d="M782,198 L782,238 L258,238 L258,272" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#arr-v3)"/>
+
+  <!-- CARD 3 (Linha 2, Col 1) -->
+  <g transform="translate(48, 282)" filter="url(#shadow-v3)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+    <rect x="16" y="16" width="60" height="20" rx="3" fill="#0f172a"/>
+    <text x="46" y="30" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+    <text x="86" y="30" font-family="'Geist',sans-serif" font-size="14" font-weight="700" fill="#0f172a">materializar_intent</text>
+    <text x="16" y="58" font-family="'Geist',sans-serif" font-size="12" fill="#4f5d75">Emissão de docs/intents/INTENT.md conforme template v2</text>
+    <text x="16" y="80" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Insumos: ESPELHO_CANONICO.md · Emite: docs/intents/INTENT.md</text>
+    <rect x="16" y="102" width="388" height="26" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+    <text x="26" y="119" font-family="'Geist Mono',monospace" font-size="10" fill="#2d3142">Gate: file_exists('docs/intents/INTENT.md')</text>
+  </g>
+
+  <!-- SETA 3 -> 4 (Horizontal na Linha 2) -->
+  <path d="M468,357 L562,357" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-v3)"/>
+
+  <!-- CARD 4 (Linha 2, Col 2) -->
+  <g transform="translate(572, 282)" filter="url(#shadow-v3)">
+    <rect width="420" height="150" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.4"/>
+    <rect x="16" y="16" width="80" height="20" rx="3" fill="#d97706"/>
+    <text x="56" y="30" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" font-weight="700" fill="#ffffff">STOP-GATE</text>
+    <text x="106" y="30" font-family="'Geist',sans-serif" font-size="14" font-weight="700" fill="#0f172a">stop_gate_01</text>
+    <text x="16" y="58" font-family="'Geist',sans-serif" font-size="12" fill="#4f5d75">Ponto de decisão e pausa obrigatória de validação do usuário</text>
+    <text x="16" y="80" font-family="'Geist Mono',monospace" font-size="10" fill="#5a6580">Insumos: INTENT.md · Emite: docs/intents/INTENT_APROVADA.md</text>
+    <rect x="16" y="102" width="388" height="26" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.08)"/>
+    <text x="26" y="119" font-family="'Geist Mono',monospace" font-size="10" fill="#2d3142">Gate: prompt('Aprovar a INTENT materializada?')</text>
+  </g>
+</svg>
+  </div>
+
+  <div style="font-family:var(--font-mono); font-size:11px; color:var(--soft); text-align:center;">
+    Processo alvo: <code>legoloop-concepcao</code> · 100% Sans-Serif (Geist) · Fundo Descansado #f5f5f5
+  </div>
+</body>
+</html>

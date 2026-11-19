@@ -1,0 +1,9 @@
+{
+  "slug": "legoloop-fechar",
+  "name": "legoloop-fechar",
+  "version": "1.0.0",
+  "nodes_count": 7,
+  "visual_type": "process",
+  "semantic_pattern": "stage-framework",
+  "generated_at": "2026-11-19T07:00:00Z"
+}

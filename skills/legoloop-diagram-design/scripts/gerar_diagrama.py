@@ -23,6 +23,36 @@ PALETA_PECAS = {
     "default": {"cor": "#4f5d75", "badge": "PROCESSO", "nome": "Ardósia Suave"}
 }
 
+def encurtar_caminho(val, max_len=24):
+    if not val or val == "—":
+        return "—"
+    if isinstance(val, list):
+        val = ", ".join(val)
+    val = str(val).strip()
+    if len(val) <= max_len:
+        return val
+    p = Path(val)
+    if len(p.name) > 0 and len(p.name) <= max_len:
+        return p.name
+    return val[:max_len-3] + "..."
+
+def extrair_subtitulos(nname, nid, max_len=24):
+    if not nname or nname == nid:
+        return nid.replace("_", " ").title(), ""
+    palavras = nname.split()
+    l1 = []
+    l2 = []
+    for w in palavras:
+        if not l2 and len(" ".join(l1 + [w])) <= max_len:
+            l1.append(w)
+        elif len(" ".join(l2 + [w])) <= max_len:
+            l2.append(w)
+        else:
+            break
+    sub1 = " ".join(l1) if l1 else nname[:max_len]
+    sub2 = " ".join(l2) if l2 else ""
+    return sub1, sub2
+
 def obter_estilo_peca(tipo: str):
     t = tipo.lower() if tipo else "default"
     for k, v in PALETA_PECAS.items():
@@ -34,18 +64,32 @@ def carregar_dados_processo(alvo: str):
     p = Path(alvo)
     # Se for caminho de arquivo
     if p.is_file() and p.suffix == ".json":
-        dag_path = p
-        slug = p.parent.name
+        if p.name == "pipeline.dag.json":
+            dag_path = p
+            slug = p.parent.name
+        elif p.name in ("quadrantes.json", "manifest.json"):
+            slug = p.parent.name
+            dag_candidate = Path("processos") / slug / "pipeline.dag.json"
+            dag_path = dag_candidate if dag_candidate.exists() else p
+        else:
+            dag_path = p
+            slug = p.stem
+    elif p.is_dir() and (p / "pipeline.dag.json").exists():
+        dag_path = p / "pipeline.dag.json"
+        slug = p.name
     elif (Path("processos") / alvo / "pipeline.dag.json").exists():
         dag_path = Path("processos") / alvo / "pipeline.dag.json"
-        slug = alvo
+        slug = Path(alvo).name
     elif (Path("processos") / f"legoloop-{alvo}" / "pipeline.dag.json").exists():
-        slug = f"legoloop-{alvo}"
+        slug = f"legoloop-{Path(alvo).name}"
         dag_path = Path("processos") / slug / "pipeline.dag.json"
     else:
         # Fallback genérico para legoloop-diagram-design
         slug = "legoloop-diagram-design"
         dag_path = Path("processos/legoloop-diagram-design/pipeline.dag.json")
+
+    # Higienização estrita de slug para isolamento de diretório
+    slug = Path(slug).name
 
     with open(dag_path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -60,29 +104,94 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
 
     base_dir = Path("docs/diagrams") / slug
     src_dir = base_dir / "src"
+    assets_dir = base_dir / "assets"
     export_dir = base_dir / "export"
     anim_dir = base_dir / "animation"
     anticorpos_dir = base_dir / "anticorpos"
     
-    for d in (src_dir, export_dir, anim_dir, anticorpos_dir):
+    for d in (src_dir, assets_dir, export_dir, anim_dir, anticorpos_dir):
         d.mkdir(parents=True, exist_ok=True)
 
-    # Copiar anticorpos se existir no processo
+    # Copiar anticorpos se existir no processo, ou inicializar vazio
     proc_anticorpos = dag_path.parent / "anticorpos.json"
+    anticorpos_file = anticorpos_dir / "anticorpos.json"
     if proc_anticorpos.exists():
-        (anticorpos_dir / "anticorpos.json").write_text(proc_anticorpos.read_text(encoding="utf-8"), encoding="utf-8")
+        anticorpos_file.write_text(proc_anticorpos.read_text(encoding="utf-8"), encoding="utf-8")
+    elif not anticorpos_file.exists():
+        anticorpos_file.write_text(json.dumps({"anticorpos": []}, indent=2), encoding="utf-8")
 
-    # Layout ortogonal dos nós
+    # Gravar manifest.json e quadrantes.json de governança
+    manifest_file = base_dir / "manifest.json"
+    manifest_data = {
+        "slug": slug,
+        "name": nome_proc,
+        "version": versao,
+        "nodes_count": len(nodes),
+        "visual_type": "process",
+        "semantic_pattern": "stage-framework",
+        "generated_at": "2026-11-19T07:00:00Z"
+    }
+    manifest_file.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
+
+    quadrantes_file = base_dir / "quadrantes.json"
+    quadrantes_data = {
+        "slug": slug,
+        "nodes": [
+            {
+                "id": n.get("id"),
+                "name": n.get("name"),
+                "type": n.get("type", "skill"),
+                "badge": obter_estilo_peca(n.get("type", "skill"))["badge"],
+                "color": obter_estilo_peca(n.get("type", "skill"))["cor"]
+            }
+            for n in nodes
+        ]
+    }
+    quadrantes_file.write_text(json.dumps(quadrantes_data, indent=2), encoding="utf-8")
+
+    # Layout Híbrido Horizontal e Multilinhas dos nós
     svg_nodes_markup = []
     svg_edges_markup = []
     cards_markup = []
     table_rows = []
 
-    y_start = 50
-    y_step = 110
-    total_h = max(620, len(nodes) * y_step + 100)
-    viewbox = f"0 0 1040 {total_h}"
+    num_nodes = len(nodes)
+    if num_nodes <= 1:
+        cols = 1
+    elif num_nodes <= 4:
+        cols = num_nodes
+    elif num_nodes in (5, 6, 9):
+        cols = 3
+    else:
+        cols = 4
 
+    rows = (num_nodes + cols - 1) // cols if cols > 0 else 1
+
+    if cols == 4:
+        card_w = 216
+        gap_x = 40
+        margin_x = 24
+    elif cols == 3:
+        card_w = 296
+        gap_x = 44
+        margin_x = 32
+    elif cols == 2:
+        card_w = 440
+        gap_x = 64
+        margin_x = 48
+    else:
+        card_w = 560
+        gap_x = 40
+        margin_x = 240
+
+    card_h = 240
+    gap_y = 60
+    margin_y = 36
+    total_w = 1040
+    total_h = max(320, margin_y * 2 + rows * card_h + (rows - 1) * gap_y)
+    viewbox = f"0 0 {total_w} {total_h}"
+
+    posicoes = []
     for i, node in enumerate(nodes):
         nid = node.get("id", f"e0{i+1}")
         ntype = node.get("type", "skill")
@@ -98,7 +207,18 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
         ngate_esc = html.escape(str(ngate))
         nname_esc = html.escape(nname)
 
-        # Card HTML
+        # Insumos e Saídas tratados
+        cin_raw = node.get("context_in") or node.get("inputs") or "—"
+        cout_raw = node.get("context_out") or node.get("output", {}).get("artifact") or "—"
+        cin_curto = encurtar_caminho(cin_raw, max_len=20)
+        cout_curto = encurtar_caminho(cout_raw, max_len=20)
+        ngate_str = str(ngate)
+        gate_curto = ngate_str[:22] + ("..." if len(ngate_str) > 22 else "")
+        gate_curto_esc = html.escape(gate_curto)
+
+        sub1, sub2 = extrair_subtitulos(nname, nid, max_len=24)
+
+        # Card HTML na grade editorial
         cards_markup.append(f"""
     <div class="node-card">
       <div class="node-card-header">
@@ -107,55 +227,75 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
       </div>
       <h3 class="node-name">{nname_esc}</h3>
       <p class="node-desc">Execução no processo <code>{html.escape(slug)}</code> com isolamento em contexto estéril.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div><strong>In:</strong> <code>{html.escape(cin_curto)}</code></div>
+        <div><strong>Out:</strong> <code>{html.escape(cout_curto)}</code></div>
+      </div>
       <div class="node-gate">Gate: {ngate_esc}</div>
     </div>""")
 
         # Tabela
-        cin = ", ".join(node.get("context_in", [])) or "—"
-        cout = ", ".join(node.get("context_out", [])) or node.get("output", {}).get("artifact", "—")
+        cin_tab = ", ".join(node.get("context_in", [])) or "—"
+        cout_tab = ", ".join(node.get("context_out", [])) or node.get("output", {}).get("artifact", "—")
         table_rows.append(f"""
         <tr>
           <td><strong>{html.escape(nid)}</strong></td>
           <td><span style="color:{cor};font-weight:600;">{badge}</span></td>
-          <td><code>{html.escape(cin)}</code></td>
-          <td><code>{html.escape(cout)}</code></td>
+          <td><code>{html.escape(cin_tab)}</code></td>
+          <td><code>{html.escape(cout_tab)}</code></td>
           <td><code>{ngate_esc}</code></td>
         </tr>""")
 
-        # Posição SVG
-        y_pos = y_start + i * y_step
-        largura_caixa = min(480, max(300, len(nname) * 7 + 80))
-        x_pos = 520 - (largura_caixa // 2)
+        # Posição na grade SVG
+        r = i // cols
+        c = i % cols
+        x_pos = margin_x + c * (card_w + gap_x)
+        y_pos = margin_y + r * (card_h + gap_y)
+        posicoes.append((x_pos, y_pos, r, c))
 
-        # Quebra de texto inteligente sem corte
-        altura_caixa = 52
-        if len(nname_esc) > 38:
-            palavras = nname_esc.split(" ")
-            meio = len(palavras) // 2
-            linha1 = html.escape(" ".join(palavras[:meio]))
-            linha2 = html.escape(" ".join(palavras[meio:]))
-            texto_nome = f'<text x="76" y="22" font-family="\'Geist\', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">{linha1}</tspan><tspan x="76" dy="14">{linha2}</tspan></text>'
-            texto_id = f'<text x="76" y="47" font-family="\'Geist Mono\', monospace" font-size="9" fill="#5a6580">ID: {html.escape(nid)}</text>'
-            altura_caixa = 56
-        else:
-            texto_nome = f'<text x="76" y="24" font-family="\'Geist\', sans-serif" font-size="12" font-weight="700" fill="#111111">{nname_esc}</text>'
-            texto_id = f'<text x="76" y="40" font-family="\'Geist Mono\', monospace" font-size="9" fill="#5a6580">ID: {html.escape(nid)}</text>'
+        border_stroke = cor if badge in ("STOP-GATE", "UNIT-NÓ") else "#bfc0c0"
+        border_w = "1.5" if badge in ("STOP-GATE", "UNIT-NÓ") else "1"
 
-        # Conector para o próximo nó
-        if i < len(nodes) - 1:
-            y_next = y_start + (i + 1) * y_step
-            svg_edges_markup.append(f"""
-      <path d="M520,{y_pos + altura_caixa} L520,{y_next}" fill="none" stroke="{cor}" stroke-width="2" class="flow-edge" marker-end="url(#arr-flow)"/>""")
-
-        # Nó SVG com máscara opaca
+        # Nó SVG em card envolvente de 240px de altura idêntico ao print
         svg_nodes_markup.append(f"""
-      <g transform="translate({x_pos}, {y_pos})">
-        <rect x="0" y="0" width="{largura_caixa}" height="{altura_caixa}" rx="6" fill="#ffffff" stroke="{cor}" stroke-width="1.8"/>
-        <rect x="8" y="8" width="60" height="24" rx="3" fill="{cor}"/>
-        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">{badge}</text>
-        {texto_nome}
-        {texto_id}
+      <g class="node" id="node-{html.escape(nid)}" transform="translate({x_pos}, {y_pos})">
+        <rect width="{card_w}" height="{card_h}" rx="8" fill="#ffffff" stroke="{border_stroke}" stroke-width="{border_w}"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="{cor}"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">{badge}</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">{html.escape(nid)}</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">{html.escape(sub1)}</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">{html.escape(sub2)}</text>
+        <line x1="14" y1="116" x2="{card_w - 14}" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: {html.escape(cin_curto)}</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: {html.escape(cout_curto)}</text>
+        <rect x="14" y="196" width="{card_w - 28}" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: {gate_curto_esc}</text>
       </g>""")
+
+    # Conectores entre nós
+    for i in range(len(nodes) - 1):
+        x1, y1, r1, c1 = posicoes[i]
+        x2, y2, r2, c2 = posicoes[i+1]
+        ntype1 = nodes[i].get("type", "skill")
+        cor_edge = obter_estilo_peca(ntype1)["cor"]
+
+        if r1 == r2:
+            start_x = x1 + card_w
+            start_y = y1 + card_h // 2
+            end_x = x2
+            end_y = y2 + card_h // 2
+            svg_edges_markup.append(f"""
+      <path d="M{start_x},{start_y} L{end_x},{end_y}" fill="none" stroke="{cor_edge}" stroke-width="2" class="flow-edge" marker-end="url(#{slug}-arr-flow)"/>""")
+        else:
+            start_x = x1 + card_w
+            start_y = y1 + card_h // 2
+            mid_x = start_x + 16
+            gutter_y = y1 + card_h + gap_y // 2
+            entry_x = x2 - 14
+            end_y = y2 + card_h // 2
+            path_d = f"M{start_x},{start_y} L{mid_x},{start_y} L{mid_x},{gutter_y} L{entry_x},{gutter_y} L{entry_x},{end_y} L{x2},{end_y}"
+            svg_edges_markup.append(f"""
+      <path d="{path_d}" fill="none" stroke="{cor_edge}" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#{slug}-arr-flow)"/>""")
 
     # Template HTML completo
     html_content = f"""<!DOCTYPE html>
@@ -257,6 +397,8 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-width: 0;
+    overflow: hidden;
   }}
   .node-card-header {{
     display: flex;
@@ -274,8 +416,8 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
     border-radius: 4px;
     color: #ffffff;
   }}
-  .node-name {{ font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; }}
-  .node-desc {{ font-size: 13px; color: var(--muted); margin-bottom: 12px; }}
+  .node-name {{ font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }}
+  .node-desc {{ font-size: 13px; color: var(--muted); margin-bottom: 12px; word-break: break-word; }}
   .node-gate {{
     font-family: var(--font-mono);
     font-size: 11px;

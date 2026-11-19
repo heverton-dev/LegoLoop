@@ -1,0 +1,54 @@
+{
+  "slug": "legoloop-fechar",
+  "nodes": [
+    {
+      "id": "n01_manual_check",
+      "name": "Auditoria e Gera\u00e7\u00e3o do Manual Operacional",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n02_book_legopress",
+      "name": "Auditoria Geom\u00e9trica do Livro LegoPress",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n03_skill_harnesses",
+      "name": "Instala\u00e7\u00e3o e V\u00ednculo Universal de Skills nos Harnesses",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n04_dag_validation",
+      "name": "Valida\u00e7\u00e3o Estrutural e Topol\u00f3gica do Grafo DAG",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n05_rebuild_binary",
+      "name": "Recompila\u00e7\u00e3o e Instala\u00e7\u00e3o Fresca do Bin\u00e1rio",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n06_governance_sync",
+      "name": "Sincroniza\u00e7\u00e3o da Governan\u00e7a Viva (AGENTS, MEMORY, README)",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n07_report_telemetry",
+      "name": "Emiss\u00e3o de Relat\u00f3rio de Conclus\u00e3o com Telemetria e Custos",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    }
+  ]
+}

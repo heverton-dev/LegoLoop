@@ -1,60 +1,47 @@
 {
-  "schema_version": "quadrantes.v1",
-  "processo": "legoloop-diagram-design",
-  "no": "e02",
   "slug": "legoloop-diagram-design",
-  "tipo_visual": {
-    "id": "quadrant",
-    "nome": "Quadrant",
-    "referencia": "references/type-quadrant.md",
-    "justificativa": "O diagrama posiciona os 6 nós do processo em dois eixos. O eixo dominante é prioridade, então o tipo Quadrant é o mais adequado."
-  },
-  "eixos": {
-    "x": { "rotulo": "ESFORÇO DE EXECUÇÃO", "baixo": "Baixo", "alto": "Alto" },
-    "y": { "rotulo": "IMPACTO NA CONFORMIDADE", "baixo": "Baixo", "alto": "Alto" }
-  },
-  "quadrantes": [
+  "nodes": [
     {
-      "id": "q1",
-      "posicao": "superior-esquerdo",
-      "nome": "Fazer primeiro",
-      "itens": ["e01 inicializar-slug-e-anticorpos", "e02 ingestao-e-quadrantes", "e05 gate-e-exportacao"]
+      "id": "e01",
+      "name": "inicializar-slug-e-anticorpos",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
     },
     {
-      "id": "q2",
-      "posicao": "superior-direito",
-      "nome": "Planejar com cuidado",
-      "itens": ["e03 geracao-svg-html"]
+      "id": "e02",
+      "name": "ingestao-e-quadrantes",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
     },
     {
-      "id": "q3",
-      "posicao": "inferior-esquerdo",
-      "nome": "Executar quando couber",
-      "itens": ["e06 fechamento-e-anticorpos"]
+      "id": "e03",
+      "name": "geracao-svg-html",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
     },
     {
-      "id": "q4",
-      "posicao": "inferior-direito",
-      "nome": "Condicionar à disponibilidade",
-      "itens": ["e04 micro-animacao"]
+      "id": "e04",
+      "name": "micro-animacao",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "e05",
+      "name": "gate-e-exportacao",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "e06",
+      "name": "fechamento-e-anticorpos",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
     }
-  ],
-  "foco_accent": ["e03 geracao-svg-html", "e05 gate-e-exportacao"],
-  "tokens_editoriais": {
-    "fonte_de_verdade": "references/style-guide.md",
-    "paper": "#f5f5f5",
-    "ink": "#2d3142",
-    "accent": "#bf4520",
-    "estado": "padrão do guia, sem customização confirmada",
-    "acao_pendente": "Confirmar o guia de estilo com o usuário antes do nó e03."
-  },
-  "validacao": {
-    "fontes_serifadas": "proibidas neste processo; usar apenas Geist e Geist Mono",
-    "emojis": "proibidos; usar formas SVG geométricas na legenda",
-    "limite_de_nos": 6,
-    "limite_de_nos_permitido": 9,
-    "elementos_accent": 2,
-    "elementos_accent_permitidos": 2
-  },
-  "saida_esperada": "docs/diagrams/legoloop-diagram-design/src/legoloop-diagram-design.html"
+  ]
 }

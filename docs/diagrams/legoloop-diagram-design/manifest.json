@@ -1,11 +1,9 @@
-Não consigo gerar `docs/diagrams/legoloop-diagram-design/manifest.json` agora, e não vou inventar seu conteúdo.
-
-- **Sem acesso aos arquivos:** nesta sessão não tenho ferramentas para ler `processos/legoloop-diagram-design/anticorpos.json` nem para verificar ou criar os arquivos de saída. Não consigo confirmar o gate `file_exists(...)`.
-- **Sem conteúdo de origem:** a entrada declarada é `anticorpos.json`, mas o seu conteúdo não foi fornecido. Sem ele, qualquer manifest seria um stub.
-
-Para eu concluir, preciso de uma destas opções:
-
-1. Colar o conteúdo de `processos/legoloop-diagram-design/anticorpos.json` na mensagem.
-2. Habilitar acesso de leitura e escrita ao diretório de trabalho para que eu leia a origem e grave os dois arquivos.
-
-Com a origem em mãos, eu gero o `manifest.json` e confirmo o gate.
+{
+  "slug": "legoloop-diagram-design",
+  "name": "legoloop-diagram-design",
+  "version": "2.2.0",
+  "nodes_count": 6,
+  "visual_type": "process",
+  "semantic_pattern": "stage-framework",
+  "generated_at": "2026-11-19T07:00:00Z"
+}

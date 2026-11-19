@@ -1,7 +1,7 @@
 {
   "id": "",
   "name": "legoloop-diagram-design",
-  "description": "Criação determinística de diagramas visuais, arquiteturas, fluxogramas e infográficos editoriais auto-contidos em HTML/SVG/PNG com zero serifas, zero emojis e isolamento de micro-vetores",
+  "description": "Cria\u00e7\u00e3o determin\u00edstica de diagramas visuais, arquiteturas, fluxogramas e infogr\u00e1ficos editoriais auto-contidos em HTML/SVG/PNG com zero serifas, zero emojis e isolamento de micro-vetores",
   "version": "2.2.0",
   "trigger": {
     "type": "manual"
@@ -10,7 +10,7 @@
     {
       "id": "e01",
       "name": "inicializar-slug-e-anticorpos",
-      "type": "skill",
+      "type": "script",
       "nature": "micro",
       "cognitive_complexity": "simples",
       "ref": "skills/legoloop-diagram-design",
@@ -28,7 +28,7 @@
       },
       "output": {
         "artifact": "docs/diagrams/legoloop-diagram-design/manifest.json",
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/manifest.json') \u0026\u0026 file_exists('docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json')"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/manifest.json') && file_exists('docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json')"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
@@ -44,7 +44,7 @@
         "docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json"
       ],
       "verification": {
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/manifest.json') \u0026\u0026 file_exists('docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json')"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/manifest.json') && file_exists('docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json')"
       },
       "limits": {
         "max_completion_tokens": 3000,
@@ -53,14 +53,19 @@
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-E01.1",
-      "status": "PENDING"
+      "status": "PENDING",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/init_diagrama.py",
+        "legoloop-diagram-design"
+      ]
     },
     {
       "id": "e02",
       "name": "ingestao-e-quadrantes",
-      "type": "skill",
+      "type": "script",
       "nature": "micro",
-      "cognitive_complexity": "medio",
+      "cognitive_complexity": "simples",
       "ref": "skills/legoloop-diagram-design",
       "depends_on": [
         "e01"
@@ -79,7 +84,7 @@
       },
       "output": {
         "artifact": "docs/diagrams/legoloop-diagram-design/quadrantes.json",
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/quadrantes.json') \u0026\u0026 word_count('docs/diagrams/legoloop-diagram-design/quadrantes.json') \u003e= 30"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/quadrantes.json') && word_count('docs/diagrams/legoloop-diagram-design/quadrantes.json') >= 30"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
@@ -97,7 +102,7 @@
         "docs/diagrams/legoloop-diagram-design/quadrantes.json"
       ],
       "verification": {
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/quadrantes.json') \u0026\u0026 word_count('docs/diagrams/legoloop-diagram-design/quadrantes.json') \u003e= 30"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/quadrantes.json') && word_count('docs/diagrams/legoloop-diagram-design/quadrantes.json') >= 30"
       },
       "limits": {
         "max_completion_tokens": 3000,
@@ -106,7 +111,12 @@
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-E02.1",
-      "status": "PENDING"
+      "status": "PENDING",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/gerar_quadrantes.py",
+        "docs/diagrams/legoloop-diagram-design/manifest.json"
+      ]
     },
     {
       "id": "e03",
@@ -137,7 +147,7 @@
       },
       "output": {
         "artifact": "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html",
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') \u0026\u0026 word_count('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') \u003e= 50 \u0026\u0026 has_pattern('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html', '\u003csvg')"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') && word_count('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') >= 50 && has_pattern('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html', '<svg')"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
@@ -155,7 +165,7 @@
         "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html"
       ],
       "verification": {
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') \u0026\u0026 word_count('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') \u003e= 50 \u0026\u0026 has_pattern('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html', '\u003csvg')"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') && word_count('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') >= 50 && has_pattern('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html', '<svg')"
       },
       "limits": {
         "max_completion_tokens": 1000,
@@ -169,9 +179,9 @@
     {
       "id": "e04",
       "name": "micro-animacao",
-      "type": "skill",
+      "type": "script",
       "nature": "micro",
-      "cognitive_complexity": "medio",
+      "cognitive_complexity": "simples",
       "ref": "skills/legoloop-diagram-design",
       "depends_on": [
         "e03"
@@ -190,7 +200,7 @@
       },
       "output": {
         "artifact": "docs/diagrams/legoloop-diagram-design/animation/composition.tsx",
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') \u0026\u0026 word_count('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') \u003e= 10"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') && word_count('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') >= 10"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
@@ -208,7 +218,7 @@
         "docs/diagrams/legoloop-diagram-design/animation/composition.tsx"
       ],
       "verification": {
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') \u0026\u0026 word_count('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') \u003e= 10"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') && word_count('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') >= 10"
       },
       "limits": {
         "max_completion_tokens": 2500,
@@ -217,7 +227,12 @@
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-E04.1",
-      "status": "PENDING"
+      "status": "PENDING",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/gerar_animacao.py",
+        "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html"
+      ]
     },
     {
       "id": "e05",
@@ -248,7 +263,7 @@
       },
       "output": {
         "artifact": "docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg",
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') \u0026\u0026 word_count('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') \u003e= 20"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') && word_count('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') >= 20"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
@@ -267,7 +282,7 @@
         "docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg"
       ],
       "verification": {
-        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') \u0026\u0026 word_count('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') \u003e= 20"
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') && word_count('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') >= 20"
       },
       "limits": {
         "max_completion_tokens": 1000,
@@ -281,7 +296,7 @@
     {
       "id": "e06",
       "name": "fechamento-e-anticorpos",
-      "type": "skill",
+      "type": "script",
       "nature": "micro",
       "cognitive_complexity": "simples",
       "ref": "skills/legoloop-diagram-design",
@@ -303,7 +318,7 @@
       },
       "output": {
         "artifact": "docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md",
-        "gate": "file_exists('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') \u0026\u0026 word_count('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') \u003e= 30"
+        "gate": "file_exists('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') && word_count('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') >= 30"
       },
       "isolation": {
         "executor": "orchestrix_hermetic",
@@ -322,7 +337,7 @@
         "docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md"
       ],
       "verification": {
-        "gate": "file_exists('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') \u0026\u0026 word_count('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') \u003e= 30"
+        "gate": "file_exists('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') && word_count('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') >= 30"
       },
       "limits": {
         "max_completion_tokens": 2000,
@@ -331,7 +346,13 @@
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-E06.1",
-      "status": "PENDING"
+      "status": "PENDING",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/gerar_relatorio.py",
+        "legoloop-diagram-design",
+        "docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md"
+      ]
     }
   ],
   "created_at": "2026-11-18T21:32:09.9695105Z",

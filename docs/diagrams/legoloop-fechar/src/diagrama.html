@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetura e Fluxo do Processo legoloop-fechar — LegoLoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #f5f5f5;   /* white-smoke descansado (nunca branco puro) */
+    --paper-2:      #ececec;   /* container e faixas secundárias */
+    --paper-card:   #ffffff;   /* superfície de cards em alto contraste */
+    --ink:          #2d3142;   /* grafite escuro nobre */
+    --ink-strong:   #111111;   /* contraste máximo para títulos */
+    --muted:        #4f5d75;   /* ardósia suave para textos de apoio */
+    --soft:         #5a6580;   /* subrótulos e metadados */
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   /* bordas estruturais sólidas */
+    --cor-accent:   #bf4520;   /* Tangerina Queimada Editorial */
+    --font-sans:    'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 48px 32px;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    border-bottom: 2px solid var(--cor-accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .page-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-accent);
+    margin-bottom: 8px;
+  }
+  .page-title {
+    font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .page-lead {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px;
+  }
+  .page-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .page-meta span { display: flex; align-items: center; gap: 6px; }
+
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .node-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .node-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .node-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+  }
+  .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }
+  .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; word-break: break-word; }
+  .node-gate {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border: 1px solid var(--rule);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+  }
+
+  .diagram-wrapper {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px;
+  }
+  .diagram-canvas { display: block; width: 100%; min-width: 980px; height: auto; }
+
+  /* Scrollbar Minimalista do Design System (máx 3px, 70% transparência) */
+  .diagram-wrapper,
+  .table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(79, 93, 117, 0.3) transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar,
+  .table-wrapper::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-track,
+  .table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb,
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(79, 93, 117, 0.3);
+    border-radius: 2px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb:hover,
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(191, 69, 32, 0.5);
+  }
+
+  @keyframes flow-pulse {
+    from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; }
+  }
+  .flow-edge {
+    stroke-dasharray: 6 6;
+    animation: flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset;
+  }
+
+  .table-wrapper {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+  th {
+    background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid);
+  }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--ink); }
+  tr:last-child td { border-bottom: none; }
+  td code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <p class="page-eyebrow">LegoLoop · Processo Canônico</p>
+  <h1 class="page-title">Arquitetura e Fluxo do Processo legoloop-fechar</h1>
+  <p class="page-lead">Processo canônico de canonização determinística em 9 etapas com telemetria estrita de tempo, recursos e custos</p>
+  <div class="page-meta">
+    <span><strong>Processo:</strong> legoloop-fechar</span>
+    <span><strong>Versão:</strong> 1.0.0</span>
+    <span><strong>Nós:</strong> 7 nós sequenciais</span>
+    <span><strong>Design System:</strong> LegoPress Editorial (Sans-Serif)</span>
+  </div>
+</header>
+
+<section class="section">
+  <h2 class="section-title">01 — Anatomia dos Nós do Processo</h2>
+  <p class="section-sub">Estrutura isolada em contexto estéril com barreiras mecânicas de qualidade.</p>
+  <div class="nodes-grid">
+    
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n01_manual_check · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Auditoria e Geração do Manual Operacional</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-fechar</code> com isolamento em contexto estéril.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div><strong>In:</strong> <code>TEMPLATE_MANUAL.md</code></div>
+        <div><strong>Out:</strong> <code>docs/manuals/2026...</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n02_book_legopress · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Auditoria Geométrica do Livro LegoPress</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-fechar</code> com isolamento em contexto estéril.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div><strong>In:</strong> <code>docs/manuals/2026...</code></div>
+        <div><strong>Out:</strong> <code>livro.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;docs/books/video-rea/livro.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n03_skill_harnesses · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Instalação e Vínculo Universal de Skills nos Harnesses</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-fechar</code> com isolamento em contexto estéril.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div><strong>In:</strong> <code>livro.json</code></div>
+        <div><strong>Out:</strong> <code>SKILL.md</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;skills/legoloop-fechar/SKILL.md&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n04_dag_validation · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Validação Estrutural e Topológica do Grafo DAG</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-fechar</code> com isolamento em contexto estéril.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div><strong>In:</strong> <code>dag.json</code></div>
+        <div><strong>Out:</strong> <code>dag.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;processos/legoloop-video-motion/dag.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n05_rebuild_binary · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Recompilação e Instalação Fresca do Binário</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-fechar</code> com isolamento em contexto estéril.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div><strong>In:</strong> <code>dag.json</code></div>
+        <div><strong>Out:</strong> <code>bin/legoloop.exe</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;bin/legoloop.exe&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n06_governance_sync · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Sincronização da Governança Viva (AGENTS, MEMORY, README)</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-fechar</code> com isolamento em contexto estéril.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div><strong>In:</strong> <code>bin/legoloop.exe</code></div>
+        <div><strong>Out:</strong> <code>AGENTS.md</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;AGENTS.md&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n07_report_telemetry · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Emissão de Relatório de Conclusão com Telemetria e Custos</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-fechar</code> com isolamento em contexto estéril.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div><strong>In:</strong> <code>AGENTS.md</code></div>
+        <div><strong>Out:</strong> <code>TEMPLATE_REPORT.md</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;docs/templates/TEMPLATE_REPORT.md&#x27;)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">02 — Fluxograma Lógico de Encadeamento com Animação Contínua</h2>
+  <p class="section-sub">Grafo ortogonal com partículas contínuas mostrando a transferência assíncrona de estado.</p>
+  <div class="diagram-wrapper">
+    <svg class="diagram-canvas" viewBox="0 0 1040 612" role="img" aria-labelledby="legoloop-fechar-title legoloop-fechar-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="legoloop-fechar-title">Fluxograma do Processo legoloop-fechar</title>
+      <desc id="legoloop-fechar-desc">Fluxo sequencial animado dos nós do processo legoloop-fechar no padrão editorial LegoPress.</desc>
+      <defs>
+        <marker id="arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+      </defs>
+      <rect width="1040" height="612" fill="#f5f5f5" rx="8"/>
+      
+      <path d="M240,156 L280,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fechar-arr-flow)"/>
+      <path d="M496,156 L536,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fechar-arr-flow)"/>
+      <path d="M752,156 L792,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fechar-arr-flow)"/>
+      <path d="M1008,156 L1024,156 L1024,306 L10,306 L10,456 L24,456" fill="none" stroke="#0f172a" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#legoloop-fechar-arr-flow)"/>
+      <path d="M240,456 L280,456" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fechar-arr-flow)"/>
+      <path d="M496,456 L536,456" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fechar-arr-flow)"/>
+      
+      <g class="node" id="node-n01_manual_check" transform="translate(24, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n01_manual_check</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Auditoria e Geração do</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Manual Operacional</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: TEMPLATE_MANUAL.md</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: docs/manuals/2026...</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/manu...</text>
+      </g>
+      <g class="node" id="node-n02_book_legopress" transform="translate(280, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n02_book_legopress</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Auditoria Geométrica do</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Livro LegoPress</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: docs/manuals/2026...</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: livro.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/book...</text>
+      </g>
+      <g class="node" id="node-n03_skill_harnesses" transform="translate(536, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n03_skill_harnesses</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Instalação e Vínculo</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Universal de Skills nos</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: livro.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: SKILL.md</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;skills/le...</text>
+      </g>
+      <g class="node" id="node-n04_dag_validation" transform="translate(792, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n04_dag_validation</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Validação Estrutural e</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Topológica do Grafo DAG</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: dag.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: dag.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;processos...</text>
+      </g>
+      <g class="node" id="node-n05_rebuild_binary" transform="translate(24, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n05_rebuild_binary</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Recompilação e</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Instalação Fresca do</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: dag.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: bin/legoloop.exe</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;bin/legol...</text>
+      </g>
+      <g class="node" id="node-n06_governance_sync" transform="translate(280, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n06_governance_sync</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Sincronização da</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Governança Viva (AGENTS,</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: bin/legoloop.exe</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: AGENTS.md</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;AGENTS.md...</text>
+      </g>
+      <g class="node" id="node-n07_report_telemetry" transform="translate(536, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n07_report_telemetry</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Emissão de Relatório de</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Conclusão com Telemetria</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: AGENTS.md</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: TEMPLATE_REPORT.md</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/temp...</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">03 — Matriz de Entradas, Saídas e Barreiras Mecânicas</h2>
+  <p class="section-sub">Contratos formais de arquivos consumidos e emitidos por cada vértice.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Tipo</th>
+          <th>Insumos</th>
+          <th>Artefatos Emitidos</th>
+          <th>Gate Mecânico</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>n01_manual_check</strong></td>
+          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
+          <td><code>docs/templates/TEMPLATE_MANUAL.md</code></td>
+          <td><code>docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md</code></td>
+          <td><code>file_exists(&#x27;docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n02_book_legopress</strong></td>
+          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
+          <td><code>docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md</code></td>
+          <td><code>docs/books/video-rea/livro.json</code></td>
+          <td><code>file_exists(&#x27;docs/books/video-rea/livro.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n03_skill_harnesses</strong></td>
+          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
+          <td><code>docs/books/video-rea/livro.json</code></td>
+          <td><code>skills/legoloop-fechar/SKILL.md</code></td>
+          <td><code>file_exists(&#x27;skills/legoloop-fechar/SKILL.md&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n04_dag_validation</strong></td>
+          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
+          <td><code>processos/legoloop-video-motion/dag.json</code></td>
+          <td><code>processos/legoloop-video-motion/dag.json</code></td>
+          <td><code>file_exists(&#x27;processos/legoloop-video-motion/dag.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n05_rebuild_binary</strong></td>
+          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
+          <td><code>processos/legoloop-video-motion/dag.json</code></td>
+          <td><code>bin/legoloop.exe</code></td>
+          <td><code>file_exists(&#x27;bin/legoloop.exe&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n06_governance_sync</strong></td>
+          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
+          <td><code>bin/legoloop.exe</code></td>
+          <td><code>AGENTS.md</code></td>
+          <td><code>file_exists(&#x27;AGENTS.md&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n07_report_telemetry</strong></td>
+          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
+          <td><code>AGENTS.md</code></td>
+          <td><code>docs/templates/TEMPLATE_REPORT.md</code></td>
+          <td><code>file_exists(&#x27;docs/templates/TEMPLATE_REPORT.md&#x27;)</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">04 — Governança de Anticorpos e Paridade com o LegoPress</h2>
+  <p class="section-sub">Diretrizes obrigatórias testadas em tempo de compilação.</p>
+  <div style="background:var(--paper-card);border:1px solid var(--rule);border-radius:8px;padding:20px;font-size:14px;color:var(--ink);">
+    <p style="margin-bottom:12px;"><strong>1. Fundo Descansado:</strong> O background usa <code>#f5f5f5</code> (white-smoke). Zero branco puro na tela.</p>
+    <p style="margin-bottom:12px;"><strong>2. Zero Serifa:</strong> Tipografia 100% <code>Geist</code> e <code>Geist Mono</code>. Fontes serifadas bloqueadas.</p>
+    <p style="margin-bottom:12px;"><strong>3. Classe Obrigatória:</strong> Tag <code>&lt;svg class="diagram-canvas"&gt;</code> presente com acessibilidade nativa.</p>
+    <p><strong>4. Portabilidade Typst:</strong> O SVG resultante compila sem perdas nos livros didáticos do LegoPress.</p>
+  </div>
+</section>
+
+</body>
+</html>

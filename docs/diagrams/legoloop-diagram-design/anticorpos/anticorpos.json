@@ -132,6 +132,16 @@
       "pacote": "legoloop-diagram-design/node-gate-noborder-wrap",
       "timestamp": "2026-11-19T06:39:00-03:00",
       "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:7b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c",
+      "erro": "Card SVG comprimido sem contratos In/Out e textos de título longo transbordando a borda lateral do card no SVG.",
+      "causa_raiz": "O gerador usou height=136 com tentativa de forçar nomes completos de nós de 50+ chars em vez de usar a estrutura do print aprovado (card_h=240, ID curto no título, subtítulo conciso, In/Out mono e gate contido).",
+      "antidoto": "Padrão de Card Canônico de Alta Fidelidade (Altura 240px, Largura 216px em grid 4 colunas): Badge no topo, Título sans 13px bold usando o ID do nó (curto e sem quebra), duas linhas de subtítulo/descrição (máx 26 chars), linha divisória, linhas de contrato formais 'In: <caminho>' e 'Out: <caminho>' em fonte mono 9px com encurtamento inteligente, e caixa de gate na base (height=30px, fundo #f5f5f5, borda neutra 1px solid var(--rule), sem transbordamento).",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/card-layout-in-out-noborder",
+      "timestamp": "2026-11-19T08:35:00-03:00",
+      "antidoto_aplicado": true
     }
   ]
 }

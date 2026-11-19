@@ -35,9 +35,14 @@
     {
       "id": "e01",
       "name": "inicializar-slug-e-anticorpos",
-      "type": "skill",
+      "type": "script",
       "nature": "micro",
       "cognitive_complexity": "simples",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/init_diagrama.py",
+        "legoloop-diagram-design"
+      ],
       "ref": "skills/legoloop-diagram-design",
       "spec_ref": "AC-E01.1",
       "status": "PENDING",
@@ -84,9 +89,14 @@
     {
       "id": "e02",
       "name": "ingestao-e-quadrantes",
-      "type": "skill",
+      "type": "script",
       "nature": "micro",
-      "cognitive_complexity": "medio",
+      "cognitive_complexity": "simples",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/gerar_quadrantes.py",
+        "docs/diagrams/legoloop-diagram-design/manifest.json"
+      ],
       "ref": "skills/legoloop-diagram-design",
       "depends_on": [
         "e01"
@@ -195,9 +205,14 @@
     {
       "id": "e04",
       "name": "micro-animacao",
-      "type": "skill",
+      "type": "script",
       "nature": "micro",
-      "cognitive_complexity": "medio",
+      "cognitive_complexity": "simples",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/gerar_animacao.py",
+        "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html"
+      ],
       "ref": "skills/legoloop-diagram-design",
       "depends_on": [
         "e03"
@@ -307,9 +322,15 @@
     {
       "id": "e06",
       "name": "fechamento-e-anticorpos",
-      "type": "skill",
+      "type": "script",
       "nature": "micro",
       "cognitive_complexity": "simples",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/gerar_relatorio.py",
+        "legoloop-diagram-design",
+        "docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md"
+      ],
       "ref": "skills/legoloop-diagram-design",
       "depends_on": [
         "e05"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg class="diagram-canvas" viewBox="0 0 1040 620" role="img" aria-labelledby="legoloop-concepcao-title legoloop-concepcao-desc" xmlns="http://www.w3.org/2000/svg" id="legoloop-concepcao-root">
+<svg class="diagram-canvas" viewBox="0 0 1040 320" role="img" aria-labelledby="legoloop-concepcao-title legoloop-concepcao-desc" xmlns="http://www.w3.org/2000/svg" id="legoloop-concepcao-root">
       <title id="legoloop-concepcao-title">Fluxograma do Processo legoloop-concepcao</title>
       <desc id="legoloop-concepcao-desc">Fluxo sequencial animado dos nós do processo legoloop-concepcao no padrão editorial LegoPress.</desc>
       <defs>
@@ -63,7 +63,9 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; }
+    justify-content: space-between;
+    min-width: 0;
+    overflow: hidden; }
       #legoloop-concepcao-root .node-card-header { display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -76,8 +78,8 @@
     padding: 2px 8px;
     border-radius: 4px;
     color: #ffffff; }
-      #legoloop-concepcao-root .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; }
-      #legoloop-concepcao-root .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+      #legoloop-concepcao-root .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }
+      #legoloop-concepcao-root .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; word-break: break-word; }
       #legoloop-concepcao-root .node-gate { font-family: var(--font-mono);
     font-size: 11px;
     background: var(--paper);
@@ -134,38 +136,62 @@
           <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
         </marker>
       </defs>
-      <rect width="1040" height="620" fill="#f5f5f5" rx="8"/>
+      <rect width="1040" height="320" fill="#f5f5f5" rx="8"/>
       
-      <path d="M520,106 L520,160" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-concepcao-arr-flow)"/>
-      <path d="M520,216 L520,270" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-concepcao-arr-flow)"/>
-      <path d="M520,326 L520,380" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-concepcao-arr-flow)"/>
+      <path d="M240,156 L280,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-concepcao-arr-flow)"/>
+      <path d="M496,156 L536,156" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-concepcao-arr-flow)"/>
+      <path d="M752,156 L792,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-concepcao-arr-flow)"/>
       
-      <g transform="translate(280, 50)">
-        <rect x="0" y="0" width="480" height="56" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
-        <rect x="8" y="8" width="60" height="24" rx="3" fill="#0f172a"/>
-        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">SCRIPT</text>
-        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">Entrevista Socrática com Espelho Canônico até</tspan><tspan x="76" dy="14">confiança maior ou igual a 95%</tspan></text>
-        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: entrevista_socratica</text>
+      <g class="node" id="node-entrevista_socratica" transform="translate(24, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">entrevista_socratica</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Entrevista Socrática com</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Espelho Canônico até</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: docs/intents/</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: INTERVIEW.md</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
       </g>
-      <g transform="translate(280, 160)">
-        <rect x="0" y="0" width="480" height="56" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
-        <rect x="8" y="8" width="60" height="24" rx="3" fill="#2563eb"/>
-        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">UNIT-NÓ</text>
-        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">INTERVIEW gravada no cofre e</tspan><tspan x="76" dy="14">Espelho Canônico consolidado em registro</tspan></text>
-        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: interview_gravada</text>
+      <g class="node" id="node-interview_gravada" transform="translate(280, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">interview_gravada</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">INTERVIEW gravada no</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">cofre e Espelho Canônico</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: INTERVIEW.md</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: ESPELHO_CANONICO.md</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/inte...</text>
       </g>
-      <g transform="translate(280, 270)">
-        <rect x="0" y="0" width="480" height="56" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
-        <rect x="8" y="8" width="60" height="24" rx="3" fill="#0f172a"/>
-        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">SCRIPT</text>
-        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">Materialização da INTENT em docs/intents/</tspan><tspan x="76" dy="14">a partir do Espelho Canônico</tspan></text>
-        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: materializar_intent</text>
+      <g class="node" id="node-materializar_intent" transform="translate(536, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">materializar_intent</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Materialização da INTENT</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">em docs/intents/ a</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: ESPELHO_CANONICO.md</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: INTENT.md</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/inte...</text>
       </g>
-      <g transform="translate(333, 380)">
-        <rect x="0" y="0" width="374" height="56" rx="6" fill="#ffffff" stroke="#d97706" stroke-width="1.8"/>
-        <rect x="8" y="8" width="60" height="24" rx="3" fill="#d97706"/>
-        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">STOP-GATE</text>
-        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">Stop-Gate 01 humano</tspan><tspan x="76" dy="14">de aprovação da INTENT</tspan></text>
-        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: stop_gate_01</text>
+      <g class="node" id="node-stop_gate_01" transform="translate(792, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#d97706"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">STOP-GATE</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">stop_gate_01</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Stop-Gate 01 humano de</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">aprovação da INTENT</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: INTENT.md</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: INTENT_APROVADA.md</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: prompt(&#x27;Aprovar a INTE...</text>
       </g>
     </svg>
