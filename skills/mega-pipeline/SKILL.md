@@ -1,10 +1,10 @@
 ---
 name: mega-pipeline
-description: Executa o Processo mega-pipeline pelo comando legoloop exec.
+description: Executa o Processo mega-processo pelo comando legoloop exec.
 ---
 
-# mega-pipeline
+# mega-processo
 
-Execute o Processo mega-pipeline com o comando:
+Execute o Processo mega-processo com o comando:
 
-    legoloop exec mega-pipeline
+    legoloop exec mega-processo

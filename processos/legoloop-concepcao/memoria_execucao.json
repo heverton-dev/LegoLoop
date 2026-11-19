@@ -1,5 +1,6 @@
 {
   "schema_version": "memoria_execucao.v1",
   "processo": "legoloop-concepcao",
-  "sessoes": {}
+  "sessoes": {},
+  "atualizado_em": "2026-11-18T20:00:00Z"
 }

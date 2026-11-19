@@ -1,0 +1,54 @@
+{
+  "schema_version": "memoria_execucao.v1",
+  "processo": ".",
+  "sessoes": {
+    "0a4fa42cda9072a2d6f04e0fa682337b": {
+      "processo": "",
+      "sessao_id": "0a4fa42cda9072a2d6f04e0fa682337b",
+      "pid": 23216,
+      "etapa_atual": "e06",
+      "proximo_passo": "fim",
+      "atualizado_em": "2026-11-19T00:08:07.0540064Z"
+    },
+    "2e4be6a7682961e224cbe9e287622a74": {
+      "processo": "",
+      "sessao_id": "2e4be6a7682961e224cbe9e287622a74",
+      "pid": 1916,
+      "etapa_atual": "e06",
+      "proximo_passo": "fim",
+      "atualizado_em": "2026-11-18T23:52:26.8988657Z"
+    },
+    "87294f0719c0bfe6dab217c02796358a": {
+      "processo": "",
+      "sessao_id": "87294f0719c0bfe6dab217c02796358a",
+      "pid": 18488,
+      "etapa_atual": "e06",
+      "proximo_passo": "fim",
+      "atualizado_em": "2026-11-18T23:11:46.4049762Z"
+    },
+    "8f9d59e4acc567490d6604fc0a81a0f9": {
+      "processo": "",
+      "sessao_id": "8f9d59e4acc567490d6604fc0a81a0f9",
+      "pid": 15864,
+      "etapa_atual": "e05",
+      "proximo_passo": "e06",
+      "atualizado_em": "2026-11-18T23:06:21.7954458Z"
+    },
+    "a93ef23fa28d93bb42374f3a62215c12": {
+      "processo": "",
+      "sessao_id": "a93ef23fa28d93bb42374f3a62215c12",
+      "pid": 30552,
+      "etapa_atual": "e06",
+      "proximo_passo": "fim",
+      "atualizado_em": "2026-11-18T23:35:47.0447418Z"
+    },
+    "e4b19e6b09cd6693d1be8f1c7cd7b79b": {
+      "processo": "",
+      "sessao_id": "e4b19e6b09cd6693d1be8f1c7cd7b79b",
+      "pid": 20256,
+      "etapa_atual": "e05",
+      "proximo_passo": "e06",
+      "atualizado_em": "2026-11-18T23:07:41.0407452Z"
+    }
+  }
+}

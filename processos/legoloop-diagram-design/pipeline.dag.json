@@ -1,0 +1,358 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "name": "legoloop-diagram-design",
+  "version": "2.2.0",
+  "schema_version": 2,
+  "date": "2026-11-18",
+  "description": "Criação determinística de diagramas visuais, arquiteturas, fluxogramas e infográficos editoriais auto-contidos em HTML/SVG/PNG com zero serifas, zero emojis e isolamento de micro-vetores",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-18_ROUTE_DIAGRAM_DESIGN.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_processo"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "e01",
+      "name": "inicializar-slug-e-anticorpos",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-diagram-design",
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 300
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [],
+      "context_out": [
+        "docs/diagrams/legoloop-diagram-design/manifest.json",
+        "docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json"
+      ],
+      "inputs": {
+        "origem": "processos/legoloop-diagram-design/anticorpos.json"
+      },
+      "output": {
+        "artifact": "docs/diagrams/legoloop-diagram-design/manifest.json",
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/manifest.json') && file_exists('docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json')"
+      },
+      "verification": {
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/manifest.json') && file_exists('docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json')"
+      }
+    },
+    {
+      "id": "e02",
+      "name": "ingestao-e-quadrantes",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "ref": "skills/legoloop-diagram-design",
+      "depends_on": [
+        "e01"
+      ],
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 12000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 600
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "docs/diagrams/legoloop-diagram-design/manifest.json"
+      ],
+      "context_out": [
+        "docs/diagrams/legoloop-diagram-design/quadrantes.json"
+      ],
+      "inputs": {
+        "manifest": "file('docs/diagrams/legoloop-diagram-design/manifest.json')"
+      },
+      "output": {
+        "artifact": "docs/diagrams/legoloop-diagram-design/quadrantes.json",
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/quadrantes.json') && word_count('docs/diagrams/legoloop-diagram-design/quadrantes.json') >= 30"
+      },
+      "verification": {
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/quadrantes.json') && word_count('docs/diagrams/legoloop-diagram-design/quadrantes.json') >= 30"
+      }
+    },
+    {
+      "id": "e03",
+      "name": "geracao-svg-html",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "complexo",
+      "ref": "skills/legoloop-diagram-design",
+      "depends_on": [
+        "e02"
+      ],
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING",
+      "timeout_sec": 900,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "code-pro"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 4000,
+        "max_duration_sec": 900
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "docs/diagrams/legoloop-diagram-design/quadrantes.json"
+      ],
+      "context_out": [
+        "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html"
+      ],
+      "inputs": {
+        "quadrantes": "file('docs/diagrams/legoloop-diagram-design/quadrantes.json')"
+      },
+      "output": {
+        "artifact": "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html",
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') && word_count('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') >= 50 && has_pattern('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html', '<svg')"
+      },
+      "verification": {
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') && word_count('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html') >= 50 && has_pattern('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html', '<svg')"
+      }
+    },
+    {
+      "id": "e04",
+      "name": "micro-animacao",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "ref": "skills/legoloop-diagram-design",
+      "depends_on": [
+        "e03"
+      ],
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 2500,
+        "max_duration_sec": 600
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html"
+      ],
+      "context_out": [
+        "docs/diagrams/legoloop-diagram-design/animation/composition.tsx"
+      ],
+      "inputs": {
+        "diagrama": "file('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html')"
+      },
+      "output": {
+        "artifact": "docs/diagrams/legoloop-diagram-design/animation/composition.tsx",
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') && word_count('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') >= 10"
+      },
+      "verification": {
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') && word_count('docs/diagrams/legoloop-diagram-design/animation/composition.tsx') >= 10"
+      }
+    },
+    {
+      "id": "e05",
+      "name": "gate-e-exportacao",
+      "type": "script",
+      "nature": "nano",
+      "cognitive_complexity": "simples",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/export_svg.py",
+        "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html",
+        "docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg"
+      ],
+      "depends_on": [
+        "e04"
+      ],
+      "spec_ref": "AC-E05.1",
+      "status": "PENDING",
+      "timeout_sec": 300,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 4000,
+        "max_completion_tokens": 1000,
+        "max_duration_sec": 300
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html",
+        "docs/diagrams/legoloop-diagram-design/animation/composition.tsx"
+      ],
+      "context_out": [
+        "docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg"
+      ],
+      "inputs": {
+        "html": "file('docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html')"
+      },
+      "output": {
+        "artifact": "docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg",
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') && word_count('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') >= 20"
+      },
+      "verification": {
+        "gate": "file_exists('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') && word_count('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg') >= 20"
+      }
+    },
+    {
+      "id": "e06",
+      "name": "fechamento-e-anticorpos",
+      "type": "skill",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "ref": "skills/legoloop-diagram-design",
+      "depends_on": [
+        "e05"
+      ],
+      "spec_ref": "AC-E06.1",
+      "status": "PENDING",
+      "timeout_sec": 600,
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 600
+      },
+      "tooling": {
+        "runtime": "powershell"
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg",
+        "processos/legoloop-diagram-design/anticorpos.json"
+      ],
+      "context_out": [
+        "docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md"
+      ],
+      "inputs": {
+        "svg": "file('docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg')",
+        "anticorpos": "file('processos/legoloop-diagram-design/anticorpos.json')"
+      },
+      "output": {
+        "artifact": "docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md",
+        "gate": "file_exists('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') && word_count('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') >= 30"
+      },
+      "verification": {
+        "gate": "file_exists('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') && word_count('docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md') >= 30"
+      }
+    }
+  ]
+}

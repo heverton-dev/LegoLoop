@@ -1,0 +1,36 @@
+#diagrama-svg rect[stroke-dasharray="5,4"] {
+  animation: flow-dash 1.2s linear infinite;
+  will-change: stroke-dashoffset;
+}
+
+#diagrama-svg line[stroke-dasharray],
+#diagrama-svg path[stroke-dasharray] {
+  animation: flow-dash 1.2s linear infinite;
+}
+
+@keyframes flow-dash {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #diagrama-svg rect[stroke-dasharray="5,4"],
+  #diagrama-svg line[stroke-dasharray],
+  #diagrama-svg path[stroke-dasharray] {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+@media print {
+  #diagrama-svg rect[stroke-dasharray="5,4"],
+  #diagrama-svg line[stroke-dasharray],
+  #diagrama-svg path[stroke-dasharray] {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

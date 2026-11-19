@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LegoLoop Diagram Design: fluxo de seis nós</title>
+<style>
+  :root {
+    --paper: #f5f5f5;
+    --ink: #2d3142;
+    --accent: #bf4520;
+    --font-name: "Geist", system-ui, "Segoe UI", Arial, sans-serif;
+    --font-tech: "Geist Mono", ui-monospace, Consolas, "Courier New", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-name);
+    line-height: 1.5;
+    padding: 40px 24px 48px;
+  }
+  main { max-width: 960px; margin: 0 auto; }
+  .eyebrow {
+    font-family: var(--font-tech);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.72;
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-family: var(--font-name);
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 1.2;
+    margin: 0 0 12px;
+  }
+  .lead { font-size: 16px; max-width: 640px; margin: 0 0 32px; }
+  .diagram-wrap {
+    overflow-x: auto;
+    border: 1px solid rgba(45, 49, 66, 0.24);
+    background: var(--paper);
+    border-radius: 6px;
+  }
+  .diagram-wrap svg { display: block; width: 100%; min-width: 880px; height: auto; }
+  .summary {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 0.9fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .summary section {
+    border: 1px solid rgba(45, 49, 66, 0.24);
+    border-radius: 6px;
+    padding: 16px;
+    background: var(--paper);
+  }
+  .summary h2 {
+    font-family: var(--font-tech);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    font-weight: 500;
+  }
+  .summary p { margin: 0; font-size: 14px; }
+  footer {
+    margin-top: 32px;
+    font-family: var(--font-tech);
+    font-size: 11px;
+    opacity: 0.72;
+  }
+  @media (max-width: 720px) {
+    .summary { grid-template-columns: 1fr; }
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Processo legoloop-diagram-design</p>
+  <h1>Do slug ao relatório em seis nós</h1>
+  <p class="lead">Cada nó entrega uma saída verificável. O próximo nó só começa depois que o gate do anterior passa.</p>
+
+  <div class="diagram-wrap">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" role="img" aria-labelledby="legoloop-diagram-design-title legoloop-diagram-design-desc">
+      <title id="legoloop-diagram-design-title">Fluxo de seis nós do LegoLoop Diagram Design</title>
+      <desc id="legoloop-diagram-design-desc">Fluxograma com seis etapas em sequência, de inicializar o slug até fechar o relatório de anticorpos, agrupadas em quatro quadrantes.</desc>
+      <defs>
+        <marker id="legoloop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d3142" fill-opacity="0.72"/>
+        </marker>
+      </defs>
+
+      <rect x="0" y="0" width="880" height="420" fill="#f5f5f5"/>
+
+      <!-- Conectores (desenhados antes dos nós) -->
+      <line x1="240" y1="108" x2="340" y2="108" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#legoloop-arrow)"/>
+      <line x1="540" y1="108" x2="640" y2="108" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#legoloop-arrow)"/>
+      <line x1="740" y1="156" x2="740" y2="240" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#legoloop-arrow)"/>
+      <line x1="640" y1="288" x2="540" y2="288" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#legoloop-arrow)"/>
+      <line x1="340" y1="288" x2="240" y2="288" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#legoloop-arrow)"/>
+
+      <!-- Rótulos sobre máscara opaca, com 8px de folga do traço -->
+      <rect x="246" y="84" width="88" height="16" fill="#f5f5f5"/>
+      <text x="290" y="96" text-anchor="middle" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">MANIFESTO</text>
+
+      <rect x="546" y="84" width="88" height="16" fill="#f5f5f5"/>
+      <text x="590" y="96" text-anchor="middle" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">TIPO VISUAL</text>
+
+      <rect x="748" y="190" width="80" height="16" fill="#f5f5f5"/>
+      <text x="754" y="202" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">HTML SRC</text>
+
+      <rect x="546" y="264" width="88" height="16" fill="#f5f5f5"/>
+      <text x="590" y="276" text-anchor="middle" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">ANIMADO</text>
+
+      <rect x="246" y="264" width="88" height="16" fill="#f5f5f5"/>
+      <text x="290" y="276" text-anchor="middle" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">GATE EXIT 0</text>
+
+      <!-- e01 -->
+      <rect x="40" y="60" width="200" height="96" rx="6" fill="#f5f5f5"/>
+      <rect x="40" y="60" width="200" height="96" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
+      <rect x="56" y="74" width="112" height="16" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.72"/>
+      <text x="64" y="86" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">Q1 ENTRADA</text>
+      <text x="56" y="112" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Inicializar slug</text>
+      <text x="56" y="130" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e01 / 5 subdiretórios</text>
+      <text x="56" y="144" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">anticorpos.json</text>
+
+      <!-- e02 -->
+      <rect x="340" y="60" width="200" height="96" rx="6" fill="#f5f5f5"/>
+      <rect x="340" y="60" width="200" height="96" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
+      <rect x="356" y="74" width="112" height="16" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.72"/>
+      <text x="364" y="86" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">Q2 SELEÇÃO</text>
+      <text x="356" y="112" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Selecionar tipo</text>
+      <text x="356" y="130" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e02 / 1 de 50 tipos</text>
+      <text x="356" y="144" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">máx. 9 nós, 12 setas</text>
+
+      <!-- e03 (foco 1) -->
+      <rect x="640" y="60" width="200" height="96" rx="6" fill="#f5f5f5"/>
+      <rect x="640" y="60" width="200" height="96" rx="6" fill="#bf4520" fill-opacity="0.08" stroke="#bf4520" stroke-width="1.5"/>
+      <rect x="656" y="74" width="112" height="16" rx="2" fill="none" stroke="#bf4520"/>
+      <text x="664" y="86" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#bf4520">Q3 GERAÇÃO</text>
+      <text x="656" y="112" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Gerar SVG e HTML</text>
+      <text x="656" y="130" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e03 / grid ortogonal</text>
+      <text x="656" y="144" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">máscaras opacas</text>
+
+      <!-- e04 -->
+      <rect x="640" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
+      <rect x="640" y="240" width="200" height="96" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
+      <rect x="656" y="254" width="112" height="16" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.72"/>
+      <text x="664" y="266" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">Q3 GERAÇÃO</text>
+      <text x="656" y="292" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Animar em CSS</text>
+      <text x="656" y="310" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e04 / flow-dash</text>
+      <text x="656" y="324" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">stroke-dashoffset</text>
+
+      <!-- e05 (foco 2) -->
+      <rect x="340" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
+      <rect x="340" y="240" width="200" height="96" rx="6" fill="#bf4520" fill-opacity="0.08" stroke="#bf4520" stroke-width="1.5"/>
+      <rect x="356" y="254" width="112" height="16" rx="2" fill="none" stroke="#bf4520"/>
+      <text x="364" y="266" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.4" fill="#bf4520">Q4 FECHAMENTO</text>
+      <text x="356" y="292" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Exportar e validar</text>
+      <text x="356" y="310" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e05 / SVG e PNG</text>
+      <text x="356" y="324" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">gate com exit code 0</text>
+
+      <!-- e06 -->
+      <rect x="40" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
+      <rect x="40" y="240" width="200" height="96" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
+      <rect x="56" y="254" width="112" height="16" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.72"/>
+      <text x="64" y="266" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.4" fill="#2d3142">Q4 FECHAMENTO</text>
+      <text x="56" y="292" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Fechar e relatar</text>
+      <text x="56" y="310" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e06 / anticorpos.json</text>
+      <text x="56" y="324" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">relatório em docs/reports</text>
+
+      <!-- Legenda: faixa horizontal inferior -->
+      <line x1="40" y1="360" x2="840" y2="360" stroke="#2d3142" stroke-opacity="0.24" stroke-width="1"/>
+
+      <rect x="40" y="380" width="24" height="16" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
+      <text x="76" y="392" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142">Etapa do processo</text>
+
+      <rect x="272" y="380" width="24" height="16" rx="6" fill="#bf4520" fill-opacity="0.08" stroke="#bf4520" stroke-width="1.5"/>
+      <text x="308" y="392" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142">Foco editorial</text>
+
+      <line x1="480" y1="388" x2="512" y2="388" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#legoloop-arrow)"/>
+      <text x="528" y="392" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142">Saída verificada pelo gate</text>
+    </svg>
+  </div>
+
+  <div class="summary">
+    <section>
+      <h2>Q1 Entrada</h2>
+      <p>O nó e01 cria o manifesto do slug, os cinco subdiretórios e o arquivo anticorpos.json.</p>
+    </section>
+    <section>
+      <h2>Q2 Seleção</h2>
+      <p>O nó e02 escolhe um dos cinquenta tipos visuais. O limite é de nove nós e doze setas.</p>
+    </section>
+    <section>
+      <h2>Q3 Geração</h2>
+      <p>Os nós e03 e e04 produzem o HTML com SVG inline e a animação CSS nativa.</p>
+    </section>
+    <section>
+      <h2>Q4 Fechamento</h2>
+      <p>Os nós e05 e e06 exportam SVG e PNG, validam o gate e consolidam os anticorpos.</p>
+    </section>
+  </div>
+
+  <footer>2026-11-18 / docs/diagrams/legoloop-diagram-design/src</footer>
+</main>
+</body>
+</html>

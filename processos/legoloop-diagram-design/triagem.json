@@ -1,0 +1,87 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-diagram-design",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-diagram-design",
+      "comandos_cli": [
+        "legoloop legoloop-diagram-design",
+        "/legoloop-legoloop-diagram-design"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-diagram-design",
+    "etapas": [
+      "e01",
+      "e02",
+      "e03",
+      "e04",
+      "e05",
+      "e06"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "e01",
+      "palavras_chave": [
+        "e01",
+        "inicializar-slug-e-anticorpos"
+      ],
+      "slash_command": "/legoloop-diagram-design-e01",
+      "flag_cli": "--etapa e01"
+    },
+    {
+      "id": "e02",
+      "palavras_chave": [
+        "e02",
+        "ingestao-e-quadrantes"
+      ],
+      "slash_command": "/legoloop-diagram-design-e02",
+      "flag_cli": "--etapa e02"
+    },
+    {
+      "id": "e03",
+      "palavras_chave": [
+        "e03",
+        "geracao-svg-html"
+      ],
+      "slash_command": "/legoloop-diagram-design-e03",
+      "flag_cli": "--etapa e03"
+    },
+    {
+      "id": "e04",
+      "palavras_chave": [
+        "e04",
+        "micro-animacao"
+      ],
+      "slash_command": "/legoloop-diagram-design-e04",
+      "flag_cli": "--etapa e04"
+    },
+    {
+      "id": "e05",
+      "palavras_chave": [
+        "e05",
+        "gate-e-exportacao"
+      ],
+      "slash_command": "/legoloop-diagram-design-e05",
+      "flag_cli": "--etapa e05"
+    },
+    {
+      "id": "e06",
+      "palavras_chave": [
+        "e06",
+        "fechamento-e-anticorpos"
+      ],
+      "slash_command": "/legoloop-diagram-design-e06",
+      "flag_cli": "--etapa e06"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

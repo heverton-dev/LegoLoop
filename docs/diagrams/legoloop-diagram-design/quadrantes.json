@@ -1,0 +1,52 @@
+{
+  "slug": "legoloop-diagram-design",
+  "no": "e02",
+  "etapa": "ingestao-e-quadrantes",
+  "tipo_visual": {
+    "escolhido": "Flowchart",
+    "referencia": "references/type-flowchart.md",
+    "padrao_semantico": "nenhum",
+    "justificativa": "O processo tem seis nós em sequência fixa. Cada nó tem uma saída verificável por gate."
+  },
+  "quadrantes": [
+    {
+      "id": "q1",
+      "nome": "Entrada",
+      "conteudo": "Manifesto do slug, estrutura de cinco subdiretórios e arquivo anticorpos.json.",
+      "nos": ["e01"]
+    },
+    {
+      "id": "q2",
+      "nome": "Seleção",
+      "conteudo": "Escolha de um tipo visual entre os cinquenta do catálogo. Máximo de nove nós e doze setas.",
+      "nos": ["e02"]
+    },
+    {
+      "id": "q3",
+      "nome": "Geração",
+      "conteudo": "HTML auto-contido com SVG inline, grid ortogonal, máscaras opacas e animação CSS nativa.",
+      "nos": ["e03", "e04"]
+    },
+    {
+      "id": "q4",
+      "nome": "Fechamento",
+      "conteudo": "Exportação SVG e PNG, gate mecânico e consolidação dos anticorpos em relatório.",
+      "nos": ["e05", "e06"]
+    }
+  ],
+  "tokens_editoriais": {
+    "paper": "#f5f5f5",
+    "ink": "#2d3142",
+    "accent": "#bf4520",
+    "fonte_nomes": "Geist sans 600",
+    "fonte_tecnica": "Geist Mono",
+    "fontes_serifadas": "proibidas neste artefato",
+    "emojis": "proibidos"
+  },
+  "restricoes": [
+    "Acento em no máximo dois elementos focais.",
+    "Arquivos somente dentro de docs/diagrams/legoloop-diagram-design/.",
+    "Conectores ortogonais com rótulos sobre máscara opaca."
+  ],
+  "gate": "file_exists('docs/diagrams/legoloop-diagram-design/quadrantes.json') && word_count >= 30"
+}

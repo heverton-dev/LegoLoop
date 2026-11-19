@@ -1,18 +1,39 @@
 ---
 name: legoloop-diagram-design
-description: Create branded architecture, flowchart, sequence, state machine, ER/data model, timeline, loop/flywheel, tree, layer stack, quadrant, radar, Gantt, Sankey, deployment diagrams as self-contained HTML/SVG/PNG. Use when creating visual diagrams, flowcharts, architectures and editorial graphics in LegoLoop.
+description: Criação determinística de diagramas visuais, arquiteturas, fluxogramas e infográficos editoriais auto-contidos em HTML/SVG/PNG no LegoLoop.
 consumes: Artifact:Text, Artifact:Code
 produces: Artifact:Code
-artifact: C:\Users\trcnologia\Desktop\LegoLoop\docs\diagrams\diagrama.html
-gate: file_exists('C:\Users\trcnologia\Desktop\LegoLoop\docs\diagrams\diagrama.html') && word_count('C:\Users\trcnologia\Desktop\LegoLoop\docs\diagrams\diagrama.html') >= 30
+artifact: docs/diagrams/<slug>/src/<slug>.html
+gate: file_exists('docs/diagrams/<slug>/src/<slug>.html')
 suggested_model: sonnet
-author: cathryn lavery (padrao dan north e addy osmani)
+author: LegoLoop
 license: MIT
 metadata:
   version: "2.6"
 ---
 
 # Diagram Design
+
+> **EXECUÇÃO DETERMINÍSTICA DO PROCESSO & BLINDAGEM MECÂNICA:**
+> Esta skill é parte integrante do Processo `legoloop-diagram-design`.
+> A execução deve ocorrer estritamente através do comando canônico do LegoLoop:
+>
+> ```bash
+> legoloop exec legoloop-diagram-design
+> ```
+>
+> ### Proibição Absoluta de Arquivos Soltos
+> - É ESTRITAMENTE PROIBIDO criar ou gerar qualquer arquivo solto diretamente na raiz de `docs/diagrams/` ou fora da pasta do slug (`docs/diagrams/<slug>/`).
+> - Qualquer diagrama gerado DEVE residir em `docs/diagrams/<slug>/src/<slug>.html`.
+> - Toda a estrutura de 5 subdiretórios `{src,assets,export,animation,anticorpos}` e o arquivo de governança `anticorpos.json` DEVEM ser mantidos intactos dentro de `docs/diagrams/<slug>/`.
+>
+> ### O DAG Determinístico dos 6 Nós Obrigatórios:
+> 1. **e01 (inicializar-slug-e-anticorpos):** Inicializa a árvore `docs/diagrams/<slug>/{src,assets,export,animation,anticorpos}/` e sincroniza `anticorpos/anticorpos.json`.
+> 2. **e02 (ingestao-e-quadrantes):** Seleciona 1 dos 50 tipos visuais do catálogo e valida tokens editoriais da marca (sem fontes serifadas, sem emojis).
+> 3. **e03 (geracao-svg-html):** Gera `src/<slug>.html` auto-contido com grid ortogonal, zero transbordamento, máscaras opacas e sem serifas.
+> 4. **e04 (micro-animacao):** Aplica animação CSS nativa contínua (@keyframes flow-dash com stroke-dashoffset) ou Remotion condicional.
+> 5. **e05 (gate-e-exportacao):** Executa scripts de exportação e valida conformidade mecânica com exit code 0.
+> 6. **e06 (fechamento-e-anticorpos):** Consolida achados em `anticorpos/anticorpos.json` e emite relatório em `docs/reports/`.
 
 Create diagrams as self-contained HTML files with inline SVG and an editorial design system.
 
@@ -103,7 +124,7 @@ The pattern owns semantic primitives and its tighter budget; the type owns layou
 | Two-axis positioning / prioritization | **Quadrant** | [type-quadrant.md](references/type-quadrant.md) |
 | Multiple entities scored across 3–5 quantitative criteria | **Radar / Spider** | [type-radar.md](references/type-radar.md) |
 | One quantitative series across cyclic categories; angle=category, radius=magnitude | **Polar chart** | [type-polar.md](references/type-polar.md) |
-| Reinforcing cycle; the last step feeds the first and a hub accumulates state | **Loop** | [type-loop.md](references/type-loop.md) |
+| Reinforcing cycle; the last step feeds the first and a hub accumulates state | **Ciclo** | [type-ciclo.md](references/type-ciclo.md) |
 | Hierarchy through containment / scope | **Nested** | [type-nested.md](references/type-nested.md) |
 | Parent → children relationships | **Tree** | [type-tree.md](references/type-tree.md) |
 | Human/agent/team ownership, reporting, routing, escalation | **Org chart** | [type-org-chart.md](references/type-org-chart.md) |
@@ -117,12 +138,12 @@ The pattern owns semantic primitives and its tighter budget; the type owns layou
 | Part-of-whole where the relative sizes are the story | **Treemap** | [type-treemap.md](references/type-treemap.md) |
 | Cross-tabulated data; fill encodes value per cell | **Heatmap** | [type-heatmap.md](references/type-heatmap.md) |
 | Continuous trends over time, change between exactly two states (slopegraph), one distribution per series (ridgeline), or rank movement across several snapshots (bump) | **Line chart** | [type-line.md](references/type-line.md) |
-| Tasks and phases on a timeline | **Gantt** | [type-gantt.md](references/type-gantt.md) |
+| Etapas e marcos em uma linha do tempo | **Gantt** | [type-gantt.md](references/type-gantt.md) |
 | Correlation or distribution of two variables; bubble (three variables), beeswarm (one variable, dot per item), and box plot (five-number summary per group) variants | **Scatter plot** | [type-scatter.md](references/type-scatter.md) |
 | End-to-end data stack on a container cluster | **High-Level** | [type-high-level.md](references/type-high-level.md) |
 | Multi-actor sequential process with data handoffs | **Process** | [type-process.md](references/type-process.md) |
-| Multi-tier data storage with quality levels and access policies | **Medallion** | [type-medallion.md](references/type-medallion.md) |
-| Role-scoped data flow: who does what at each pipeline step | **Data flow** | [type-data-flow.md](references/type-data-flow.md) |
+| Multi-tier data com níveis de qualidade e políticas de acesso | **Medallion** | [type-medallion.md](references/type-medallion.md) |
+| Role-scoped data flow: quem faz o que em cada etapa de processamento | **Data flow** | [type-data-flow.md](references/type-data-flow.md) |
 | Integration topology of a data platform — sources → core → consumers | **DP integration** | [type-dp-integration.md](references/type-dp-integration.md) |
 | Per-role / per-component access permissions matrix | **DP security matrix** | [type-dp-security-matrix.md](references/type-dp-security-matrix.md) |
 | A quantity splitting and merging across stages, band width = amount | **Sankey** | [type-sankey.md](references/type-sankey.md) |
@@ -167,7 +188,7 @@ These mark "AI slop" schematics of any type:
 | Legend floating inside the diagram area | Collides with nodes |
 | Arrow labels with no masking rect | Bleeds through the line |
 | Vertical `writing-mode` text on arrows | Unreadable |
-| 3 equal-width summary cards as default | Generic grid — vary widths |
+| 3 quadros resumo de largura igual como padrão | Generic grid — vary widths |
 | Shadow on any element | Shadows are out. Borders are in. |
 | `rounded-2xl` on boxes | Max radius 6–10px or none |
 | Coral on every "important" node | Coral is 1–2 editorial accents, not a signaling system |
@@ -257,9 +278,9 @@ If you exceed, split into two diagrams (overview + detail).
 
 ---
 
-## 8. Summary Card Pattern
+## 8. Padrão de Quadro Resumo
 
-Don't use 3 identical generic cards. Vary the treatment: column widths such as `1.1fr 1fr 0.9fr`, a white background with a 1px hairline border and 6px radius, no `box-shadow`. Markup and the card-dot variants: [layout-budget.md § Summary Card Pattern](references/layout-budget.md#summary-card-pattern).
+Não use 3 quadros idênticos genéricos. Varie o tratamento: larguras de coluna como 1.1fr 1fr 0.9fr, fundo neutro com borda de 1px e sem sombra.
 
 ---
 
@@ -337,11 +358,11 @@ Every diagram ships in three variants (see `assets/`):
 
 **Terminal variant** (optional, replaces any of the above): CLI-window chrome for dev-tool posts. Start from `assets/template-terminal.html` and follow [primitive-terminal.md](references/primitive-terminal.md); examples are named `example-<type>-terminal.html`. Not brand-tokenized, so skip it for onboarded output.
 
-**Animation** (optional presentation layer) — see [animation.md](references/animation.md). Modes are `none` (default), `reveal`, `step`, and `loop`; motion never changes the static meaning or raises the complexity budget.
+**Animation** (optional presentation layer) — see [animation.md](references/animation.md). Modes are `none` (default), `reveal`, `step`, and `ciclo`; motion never changes the static meaning or raises the complexity budget.
 
 ### To create a new diagram
 
-1. Copy the variant closest to what you want (`assets/template.html` for minimal, `assets/template-full.html` for cards, `assets/template-motion.html` only when motion is requested).
+1. Copy the variant closest to what you want (`assets/template.html` for minimal, `assets/template-full.html` para quadros resumo, `assets/template-motion.html` only when motion is requested).
 2. If behavior is load-bearing, choose a semantic pattern; then load the matching type reference linked in the visual-type guide.
 3. Replace the eyebrow, h1, and SVG body. Replace `[diagram-slug]` with the file slug and fill `<title>` / `<desc>`.
 4. If motion is requested, load `animation.md`; otherwise keep mode `none` and no script.
@@ -393,16 +414,16 @@ Every diagram is an accessible figure by default (long form: [primitives-core.md
 
 1. `<svg>` carries `role="img"` and `aria-labelledby` naming its `<title>` and `<desc>`.
 2. `<title>` is the first child of `<svg>`, before `<defs>`.
-3. IDs are `<slug>-title` / `<slug>-desc`, the slug matching the file (`loop`, `loop-dark`, `loop-full`); never bare `title` / `desc`.
+3. IDs are `<slug>-title` / `<slug>-desc`, the slug matching the file (`ciclo`, `ciclo-dark`, `ciclo-full`); never bare `title` / `desc`.
 4. `<title>` is the subject's short name, roughly the page `<h1>`, 60 characters or fewer.
 5. `<desc>` is one sentence about the content, not the geometry.
 6. Decorative-only SVG, such as the glyphs in `assets/icons.html`, carries `aria-hidden="true"` instead.
 
 ### Exporting to PNG / SVG
 
-When the user asks to export, save, rasterize, or convert a generated diagram to `.png` or `.svg`, load [`references/export.md`](references/export.md) and follow the procedure there. Run the packaged helpers `scripts/export_svg.py` and `scripts/export_png.py`; the reference owns their arguments and availability checks. Both formats deliver the diagram only (the `<svg>` node) — editorial wrappers like cards and headers are dropped by design. Export is **manual** — never produce export files unprompted.
+When the user asks to export, save, rasterize, or convert a generated diagram to `.png` or `.svg`, load [`references/export.md`](references/export.md) and follow the procedure there. Run the packaged helpers `scripts/export_svg.py` and `scripts/export_png.py`; the reference owns their arguments and availability checks. Both formats deliver the diagram only (the `<svg>` node) — editorial wrappers como quadros e cabeçalhos são descartados. Export is **manual** — never produce export files unprompted.
 
-For an imported diagram, pixel dimensions come from the `viewBox` × scale factor, so its size decision belongs to §11, not to export. For any diagram that needs an exact frame (an OG card or a slide image), see [`export.md` § Sizing the export](references/export.md).
+For an imported diagram, pixel dimensions come from the `viewBox` × scale factor, so its size decision belongs to §11, not to export. For any diagram that needs an exact frame (uma imagem OG ou slide), see [`export.md` § Sizing the export](references/export.md).
 
 ---
 
@@ -439,20 +460,20 @@ interface DiagramContract {
 5. **PROIBIDO EMOJIS em qualquer output:** Nenhum emoji, símbolo Unicode decorativo (✅ ❌ 🔴 ⚠️ etc.) pode aparecer em nós SVG, labels, legendas, títulos ou qualquer texto gerado pela skill. Use ícones SVG geométricos ou texto puro.
 6. **SEMPRE usar SVG ou ícones SVG geométricos:** Representações visuais de conceito (status, tipo, direção, hierarquia) devem usar formas SVG nativas (círculo, losango, seta, retângulo) ou ícones inline SVG. Nunca substituir por caracteres Unicode ou emoji.
 7. **SEMPRE aplicar o Design System da marca (tokens canônicos):** Toda geração de diagrama deve ler `references/style-guide.md` e aplicar os tokens `paper`, `ink`, `accent`, `muted`, `soft`, `rule`, `link` sem substituição ad-hoc de hex avulso. O design system da marca é inviolável — cores fora do token set são proibidas mesmo se o usuário não mencionar explicitamente.
-8. **DIRETÓRIO DE SAÍDA CANÔNICO (inviolável):** Todo artefato gerado pela skill (`.html`, `.svg`, `.png`) deve ser salvo em `C:\Users\trcnologia\Desktop\LegoLoop\docs\diagrams\`. Nunca salvar em `out/`, na raiz do projeto ou em qualquer outro caminho sem autorização explícita do usuário. Criar o diretório automaticamente se não existir.
+8. **DIRETÓRIO DE SAÍDA CANÔNICO (inviolável):** Todo artefato gerado pela skill (.html, .svg, .png) deve ser salvo obrigatoriamente em `docs/diagrams/<slug>/src/<slug>.html`. É expressamente proibido gerar arquivos soltos diretamente na raiz de `docs/diagrams/` ou fora da pasta do slug.
 
 ---
 
-## 15. Pipeline Obrigatorio de Geracao — 6 Nos em Sequencia
+## 15. Processo Obrigatorio de Geracao — 6 Nos em Sequencia
 
-> Este pipeline e inviolavel. Nenhum diagrama e entregue sem passar pelos 6 nos.
+> Este processo e inviolavel. Nenhum diagrama e entregue sem passar pelos 6 nos.
 > Anticorpos sao criados antes do primeiro arquivo. Impeccable-design e executado antes do export.
 
 ### No 1 — Inicializar slug e anticorpos (SEMPRE PRIMEIRO)
 
 ```powershell
 # Derivar slug do titulo em kebab-case
-$slug = "meu-diagrama"   # ex: arquitetura-fluxo-verbos
+$slug = "meu-diagrama"   # ex: arquitetura-verbos
 $base = "C:\Users\trcnologia\Desktop\LegoLoop\docs\diagrams\$slug"
 @("src","assets","export","animation","anticorpos") | ForEach-Object {
   New-Item -ItemType Directory -Force -Path "$base\$_" | Out-Null
@@ -514,7 +535,7 @@ npx remotion --version
 Quando disponivel, criar `animation/composition.tsx` com:
 - `fadeIn` para entrada de camadas (200ms, ease-out)
 - `slideIn` para nos individuais com delay escalonado (50ms por no)
-- Sem animacoes em loop infinito (distrai); apenas entrada uma vez
+- Sem animacoes em ciclo contínuo sem fim (distrai); apenas entrada uma vez
 
 **Gate (condicional):** Se Remotion disponivel: `Test-Path "$base\animation\composition.tsx"`.
 

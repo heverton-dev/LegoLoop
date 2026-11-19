@@ -1,0 +1,8 @@
+Não consigo gerar o `manifest.json` nem verificar o gate nesta sessão. Não tenho acesso a ferramentas de arquivo, então não consigo ler `processos/legoloop-diagram-design/anticorpos.json`, criar `docs/diagrams/legoloop-diagram-design/manifest.json` nem checar se `anticorpos/anticorpos.json` existe.
+
+Um manifest escrito de memória não seria baseado no conteúdo real do anticorpos.json, então não vou emitir um.
+
+Para destravar, preciso de uma destas opções:
+
+1. Habilitar leitura e escrita de arquivos no diretório de trabalho `C:\Users\trcnologia\AppData\Local\Temp\legoloop-orchestrix-1394942012`. Com isso, leio a entrada, crio a estrutura `docs/diagrams/legoloop-diagram-design/` e gravo os dois arquivos.
+2. Colar aqui o conteúdo de `processos/legoloop-diagram-design/anticorpos.json` e o schema esperado para o manifest. Com isso, gero o manifest a partir dessas fontes, e você grava o arquivo.
