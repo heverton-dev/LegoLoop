@@ -47,6 +47,11 @@ def main():
     elif not anticorpos_out.exists():
         anticorpos_out.write_text(json.dumps({"anticorpos": []}, indent=2), encoding="utf-8")
 
+    proc_anticorpos_md = dag_path.parent / "ANTICORPOS.md" if dag_path.exists() else Path("ANTICORPOS.md")
+    anticorpos_md_out = base_dir / "anticorpos" / "ANTICORPOS.md"
+    if proc_anticorpos_md.exists():
+        anticorpos_md_out.write_text(proc_anticorpos_md.read_text(encoding="utf-8"), encoding="utf-8")
+
     # Ler dados do DAG se existir
     nodes_count = 0
     nome_proc = slug

@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg class="diagram-canvas" viewBox="0 0 1040 912" role="img" aria-labelledby="legoloop-web-qa-title legoloop-web-qa-desc" xmlns="http://www.w3.org/2000/svg" id="legoloop-web-qa-root">
+      <title id="legoloop-web-qa-title">Fluxograma do Processo legoloop-web-qa</title>
+      <desc id="legoloop-web-qa-desc">Fluxo sequencial animado dos nós do processo legoloop-web-qa no padrão editorial LegoPress.</desc>
+      <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Sans+TC:wght@400;500;600&amp;display=swap');
+      #legoloop-web-qa-root { --paper:        #f5f5f5;   
+    --paper-2:      #ececec;   
+    --paper-card:   #ffffff;   
+    --ink:          #2d3142;   
+    --ink-strong:   #111111;   
+    --muted:        #4f5d75;   
+    --soft:         #5a6580;   
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   
+    --cor-accent:   #bf4520;   
+    --font-sans:    'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, monospace; }
+      #legoloop-web-qa-root { font-family: var(--font-sans); color: var(--ink); }
+      #legoloop-web-qa-root .page-header { border-bottom: 2px solid var(--cor-accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px; }
+      #legoloop-web-qa-root .page-eyebrow { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-accent);
+    margin-bottom: 8px; }
+      #legoloop-web-qa-root .page-title { font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px; }
+      #legoloop-web-qa-root .page-lead { font-size: 15px;
+    color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px; }
+      #legoloop-web-qa-root .page-meta { font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; }
+      #legoloop-web-qa-root .page-meta span { display: flex; align-items: center; gap: 6px; }
+      #legoloop-web-qa-root .section { margin-bottom: 48px; }
+      #legoloop-web-qa-root .section-title { font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px; }
+      #legoloop-web-qa-root .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+      #legoloop-web-qa-root .nodes-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px; }
+      #legoloop-web-qa-root .node-card { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    overflow: hidden; }
+      #legoloop-web-qa-root .node-card-header { display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px; }
+      #legoloop-web-qa-root .node-id { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word; }
+      #legoloop-web-qa-root .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }
+      #legoloop-web-qa-root .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.45; word-break: break-word; min-height: 38px; }
+      #legoloop-web-qa-root .node-gate { font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border: 1px solid var(--rule);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4; }
+      #legoloop-web-qa-root .diagram-wrapper { background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px; }
+      #legoloop-web-qa-root .diagram-canvas { display: block; width: 100%; min-width: 980px; height: auto; }
+      #legoloop-web-qa-root .diagram-wrapper, #legoloop-web-qa-root .table-wrapper { scrollbar-width: thin;
+    scrollbar-color: rgba(79, 93, 117, 0.3) transparent; }
+      #legoloop-web-qa-root .diagram-wrapper::-webkit-scrollbar, #legoloop-web-qa-root .table-wrapper::-webkit-scrollbar { height: 3px;
+    width: 3px; }
+      #legoloop-web-qa-root .diagram-wrapper::-webkit-scrollbar-track, #legoloop-web-qa-root .table-wrapper::-webkit-scrollbar-track { background: transparent; }
+      #legoloop-web-qa-root .diagram-wrapper::-webkit-scrollbar-thumb, #legoloop-web-qa-root .table-wrapper::-webkit-scrollbar-thumb { background: rgba(79, 93, 117, 0.3);
+    border-radius: 2px; }
+      #legoloop-web-qa-root .diagram-wrapper::-webkit-scrollbar-thumb:hover, #legoloop-web-qa-root .table-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(191, 69, 32, 0.5); }
+      @keyframes legoloop-web-qa-root-flow-pulse { from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; } }
+      #legoloop-web-qa-root .flow-edge { stroke-dasharray: 6 6;
+    animation: legoloop-web-qa-root-flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset; }
+      #legoloop-web-qa-root .table-wrapper { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto; }
+      #legoloop-web-qa-root table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+      #legoloop-web-qa-root th { background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid); }
+      #legoloop-web-qa-root td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--ink); }
+      #legoloop-web-qa-root tr:last-child td { border-bottom: none; }
+      #legoloop-web-qa-root td code { font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted); }
+      #legoloop-web-qa-root .table-type-badge { font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 1.2; }
+      #legoloop-web-qa-root .lineage-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px; }
+      #legoloop-web-qa-root .lineage-card { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; }
+      #legoloop-web-qa-root .lineage-card-title { font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 8px; }
+      #legoloop-web-qa-root .lineage-badge { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap; }
+      #legoloop-web-qa-root .lineage-list { list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; }
+      #legoloop-web-qa-root .lineage-item { font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 3px; }
+      #legoloop-web-qa-root .lineage-item code { font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-strong);
+    background: var(--paper);
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid var(--rule); }
+      #legoloop-web-qa-root .lineage-item span { font-size: 12px;
+    color: var(--muted); }
+      #legoloop-web-qa-root .invariants-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px; }
+      #legoloop-web-qa-root .invariant-card { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px 20px; }
+      #legoloop-web-qa-root .invariant-title { font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 6px; }
+      #legoloop-web-qa-root .invariant-desc { font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5; }</style>
+        <marker id="legoloop-web-qa-arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+      </defs>
+      <rect width="1040" height="912" fill="#f5f5f5" rx="8"/>
+      
+      <path d="M240,156 L280,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M496,156 L536,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M752,156 L792,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M1008,156 L1024,156 L1024,306 L10,306 L10,456 L24,456" fill="none" stroke="#0f172a" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M240,456 L280,456" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M496,456 L536,456" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M752,456 L792,456" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M1008,456 L1024,456 L1024,606 L10,606 L10,756 L24,756" fill="none" stroke="#0f172a" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M240,756 L280,756" fill="none" stroke="#d97706" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M496,756 L536,756" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M752,756 L792,756" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      
+      <g class="node" id="node-n01_preflight" transform="translate(24, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n01_preflight</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Validação e verificação</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">binária de todo o</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: —</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: preflight.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n02_boot_e_descoberta" transform="translate(280, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n02_boot_e_descoberta</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Inicialização do servidor</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">local e mapeamento de</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: preflight.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: routes_manifest.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n03_links_lychee" transform="translate(536, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n03_links_lychee</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Verificação de integridade</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">de links internos,</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: lychee.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n04_obscura_e_playwright" transform="translate(792, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n04_obscura_e_playwright</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Checagem de status HTTP e</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">captura de erros de</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: playwright_obscura.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n05_renderlint_e_design" transform="translate(24, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SKILL</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n05_renderlint_e_design</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Análise de layout,</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">controles mortos e</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: renderlint_design.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n06_axe_acessibilidade" transform="translate(280, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n06_axe_acessibilidade</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Testes automatizados de</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">conformidade com padrões</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: axe.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n07_unlighthouse_rotas" transform="translate(536, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n07_unlighthouse_rotas</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Auditoria de performance,</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">SEO e melhores práticas</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: unlighthouse.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n08_lost_pixel_visual" transform="translate(792, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n08_lost_pixel_visual</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Captura de snapshots e</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">comparação de regressão</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: playwright_obscura.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: lost_pixel.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: lost_pixel.json</text>
+      </g>
+      <g class="node" id="node-n09_sg_baseline_visual" transform="translate(24, 636)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#d97706"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">STOP-GATE</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n09_sg_baseline_visual</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Processa os insumos e gera</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">baseline_aprovada.json com</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: lost_pixel.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: baseline_aprovada.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: aprovação humana</text>
+      </g>
+      <g class="node" id="node-n10_relatorio_consolidado" transform="translate(280, 636)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n10_relatorio_consolidado</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Unificação dos</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">diagnósticos em relatório</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: lychee.json +4</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: RELATORIO_QA_WEB.json +1</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: RELATORIO_QA_WEB.md</text>
+      </g>
+      <g class="node" id="node-n11_entrevista_correcao" transform="translate(536, 636)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SKILL</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n11_entrevista_correcao</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Afunilamento investigativo</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">das falhas encontradas</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: RELATORIO_QA_WEB.md +1</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: INTERVIEW_CORRECAO.md</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: INTERVIEW_CORRECAO.md</text>
+      </g>
+      <g class="node" id="node-n12_governanca_build" transform="translate(792, 636)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SKILL</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n12_governanca_build</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Materialização do ciclo</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">formal para remediação e</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: INTERVIEW_CORRECAO.md +1</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: PACOTE_BUILD_SWARM.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: PACOTE_BUILD_SWARM.json</text>
+      </g>
+    </svg>

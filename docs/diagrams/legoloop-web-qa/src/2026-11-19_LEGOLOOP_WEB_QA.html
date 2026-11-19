@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetura e Fluxo do Processo legoloop-web-qa — LegoLoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #f5f5f5;   /* white-smoke descansado (nunca branco puro) */
+    --paper-2:      #ececec;   /* container e faixas secundárias */
+    --paper-card:   #ffffff;   /* superfície de cards em alto contraste */
+    --ink:          #2d3142;   /* grafite escuro nobre */
+    --ink-strong:   #111111;   /* contraste máximo para títulos */
+    --muted:        #4f5d75;   /* ardósia suave para textos de apoio */
+    --soft:         #5a6580;   /* subrótulos e metadados */
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   /* bordas estruturais sólidas */
+    --cor-accent:   #bf4520;   /* Tangerina Queimada Editorial */
+    --font-sans:    'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 48px 32px;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    border-bottom: 2px solid var(--cor-accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .page-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-accent);
+    margin-bottom: 8px;
+  }
+  .page-title {
+    font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .page-lead {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px;
+  }
+  .page-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .page-meta span { display: flex; align-items: center; gap: 6px; }
+
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .node-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .node-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .node-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
+  }
+  .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }
+  .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.45; word-break: break-word; min-height: 38px; }
+  .node-gate {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border: 1px solid var(--rule);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+  }
+
+  .diagram-wrapper {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px;
+  }
+  .diagram-canvas { display: block; width: 100%; min-width: 980px; height: auto; }
+
+  /* Scrollbar Minimalista do Design System (máx 3px, 70% transparência) */
+  .diagram-wrapper,
+  .table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(79, 93, 117, 0.3) transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar,
+  .table-wrapper::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-track,
+  .table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb,
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(79, 93, 117, 0.3);
+    border-radius: 2px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb:hover,
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(191, 69, 32, 0.5);
+  }
+
+  @keyframes flow-pulse {
+    from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; }
+  }
+  .flow-edge {
+    stroke-dasharray: 6 6;
+    animation: flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset;
+  }
+
+  .table-wrapper {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+  th {
+    background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid);
+  }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--ink); }
+  tr:last-child td { border-bottom: none; }
+  td code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted);
+  }
+  .table-type-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 1.2;
+  }
+
+  .lineage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .lineage-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .lineage-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 8px;
+  }
+  .lineage-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .lineage-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lineage-item {
+    font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .lineage-item code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-strong);
+    background: var(--paper);
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid var(--rule);
+  }
+  .lineage-item span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .invariants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .invariant-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .invariant-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 6px;
+  }
+  .invariant-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <p class="page-eyebrow">LegoLoop · Processo Canônico</p>
+  <h1 class="page-title">Arquitetura e Fluxo do Processo legoloop-web-qa</h1>
+  <p class="page-lead">Processo canônico web-qa para auditoria determinística de web apps (playwright, obscura, aidd-linter-design, renderlint, axe-core, unlighthouse, lychee e lost-pixel), com relatório consolidado em docs/qa-web/ e encadeamento obrigatório para entrevista socrática até BUILD.</p>
+  <div class="page-meta">
+    <span><strong>Processo:</strong> legoloop-web-qa</span>
+    <span><strong>Versão:</strong> 1.1.0</span>
+    <span><strong>Nós:</strong> 12 nós sequenciais</span>
+    <span><strong>Gerado em:</strong> 2026-11-19T14:58:09</span>
+  </div>
+</header>
+
+<section class="section">
+  <h2 class="section-title">01 — Anatomia dos Nós do Processo</h2>
+  <p class="section-sub">Estrutura isolada em contexto estéril com barreiras mecânicas de qualidade.</p>
+  <div class="nodes-grid">
+    
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n01_preflight · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Preflight estrito das 8 ferramentas obrigatórias</h3>
+      <p class="node-desc">Validação e verificação binária de todo o ferramental de QA</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>—</code></div>
+        <div><strong>Out:</strong> <code>preflight.json</code></div>
+      </div>
+      <div class="node-gate">Gate: exit_code == 0</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n02_boot_e_descoberta · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Boot opcional de app local e descoberta de rotas e viewports</h3>
+      <p class="node-desc">Inicialização do servidor local e mapeamento de rotas</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>preflight.json</code></div>
+        <div><strong>Out:</strong> <code>routes_manifest.json</code></div>
+      </div>
+      <div class="node-gate">Gate: exit_code == 0 &amp;&amp; file_exists(&#x27;scratch/webqa/routes_manifest.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n03_links_lychee · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Auditoria determinística de links e assets com lychee</h3>
+      <p class="node-desc">Verificação de integridade de links internos, externos e assets</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>routes_manifest.json</code></div>
+        <div><strong>Out:</strong> <code>lychee.json</code></div>
+      </div>
+      <div class="node-gate">Gate: exit_code == 0</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n04_obscura_e_playwright · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Inspeção de rotas, console e navegação com obscura e playwright</h3>
+      <p class="node-desc">Checagem de status HTTP e captura de erros de runtime/console</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>routes_manifest.json</code></div>
+        <div><strong>Out:</strong> <code>playwright_obscura.json</code></div>
+      </div>
+      <div class="node-gate">Gate: exit_code == 0</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">n05_renderlint_e_design · SKILL</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">skill</small>
+      </div>
+      <h3 class="node-name">Auditoria de botões mortos, layout e tokens com renderlint e aidd-linter-design</h3>
+      <p class="node-desc">Análise de layout, controles mortos e conformidade de design</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>routes_manifest.json</code></div>
+        <div><strong>Out:</strong> <code>renderlint_design.json</code></div>
+      </div>
+      <div class="node-gate">Gate: exit_code == 0 &amp;&amp; file_exists(&#x27;scratch/webqa/renderlint_design.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n06_axe_acessibilidade · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Auditoria de acessibilidade WCAG (critical e serious) com axe-core</h3>
+      <p class="node-desc">Testes automatizados de conformidade com padrões de acessibilidade</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>routes_manifest.json</code></div>
+        <div><strong>Out:</strong> <code>axe.json</code></div>
+      </div>
+      <div class="node-gate">Gate: exit_code == 0</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n07_unlighthouse_rotas · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Varredura Lighthouse multi-rota (nota mínima 90) com unlighthouse</h3>
+      <p class="node-desc">Auditoria de performance, SEO e melhores práticas web</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>routes_manifest.json</code></div>
+        <div><strong>Out:</strong> <code>unlighthouse.json</code></div>
+      </div>
+      <div class="node-gate">Gate: exit_code == 0</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n08_lost_pixel_visual · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Regressão visual open-source e snapshot inicial com lost-pixel</h3>
+      <p class="node-desc">Captura de snapshots e comparação de regressão visual</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>playwright_obscura.json</code></div>
+        <div><strong>Out:</strong> <code>lost_pixel.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;scratch/webqa/lost_pixel.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#d97706;">n09_sg_baseline_visual · STOP-GATE</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">stop_gate</small>
+      </div>
+      <h3 class="node-name">Stop-Gate humano de promoção da baseline visual (lost-pixel)</h3>
+      <p class="node-desc">Processa os insumos e gera baseline_aprovada.json com isolamento estéril.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>lost_pixel.json</code></div>
+        <div><strong>Out:</strong> <code>baseline_aprovada.json</code></div>
+      </div>
+      <div class="node-gate">Gate: prompt(&#x27;Aprovar baseline visual ou confirmar diff do lost-pixel?&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">n10_relatorio_consolidado · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Consolidação de relatório JSON + Markdown em docs/qa-web/</h3>
+      <p class="node-desc">Unificação dos diagnósticos em relatório JSON e Markdown</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>lychee.json, renderlint_design.json, axe.json, unlighthouse.json, baseline_aprovada.json</code></div>
+        <div><strong>Out:</strong> <code>RELATORIO_QA_WEB.json, RELATORIO_QA_WEB.md</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;docs/qa-web/RELATORIO_QA_WEB.md&#x27;) &amp;&amp; file_exists(&#x27;docs/qa-web/RELATORIO_QA_WEB.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">n11_entrevista_correcao · SKILL</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">skill</small>
+      </div>
+      <h3 class="node-name">Entrevista socrática de afunilamento sobre correções do relatório</h3>
+      <p class="node-desc">Afunilamento investigativo das falhas encontradas</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>RELATORIO_QA_WEB.md, RELATORIO_QA_WEB.json</code></div>
+        <div><strong>Out:</strong> <code>INTERVIEW_CORRECAO.md</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;scratch/webqa/INTERVIEW_CORRECAO.md&#x27;) &amp;&amp; word_count(&#x27;scratch/webqa/INTERVIEW_CORRECAO.md&#x27;) &gt;= 50</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">n12_governanca_build · SKILL</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">skill</small>
+      </div>
+      <h3 class="node-name">Geração da cadeia INTERVIEW -&gt; INTENT -&gt; SPEC -&gt; PLAN -&gt; ROUTE -&gt; DAG -&gt; SWARM para BUILD</h3>
+      <p class="node-desc">Materialização do ciclo formal para remediação e build</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>INTERVIEW_CORRECAO.md, RELATORIO_QA_WEB.json</code></div>
+        <div><strong>Out:</strong> <code>PACOTE_BUILD_SWARM.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;docs/qa-web/PACOTE_BUILD_SWARM.json&#x27;)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">02 — Fluxograma Lógico de Encadeamento com Animação Contínua</h2>
+  <p class="section-sub">Grafo ortogonal com partículas contínuas mostrando a transferência assíncrona de estado.</p>
+  <div class="diagram-wrapper">
+    <svg class="diagram-canvas" viewBox="0 0 1040 912" role="img" aria-labelledby="legoloop-web-qa-title legoloop-web-qa-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="legoloop-web-qa-title">Fluxograma do Processo legoloop-web-qa</title>
+      <desc id="legoloop-web-qa-desc">Fluxo sequencial animado dos nós do processo legoloop-web-qa no padrão editorial LegoPress.</desc>
+      <defs>
+        <marker id="arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+      </defs>
+      <rect width="1040" height="912" fill="#f5f5f5" rx="8"/>
+      
+      <path d="M240,156 L280,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M496,156 L536,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M752,156 L792,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M1008,156 L1024,156 L1024,306 L10,306 L10,456 L24,456" fill="none" stroke="#0f172a" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M240,456 L280,456" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M496,456 L536,456" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M752,456 L792,456" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M1008,456 L1024,456 L1024,606 L10,606 L10,756 L24,756" fill="none" stroke="#0f172a" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M240,756 L280,756" fill="none" stroke="#d97706" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M496,756 L536,756" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      <path d="M752,756 L792,756" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-web-qa-arr-flow)"/>
+      
+      <g class="node" id="node-n01_preflight" transform="translate(24, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n01_preflight</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Validação e verificação</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">binária de todo o</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: —</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: preflight.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n02_boot_e_descoberta" transform="translate(280, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n02_boot_e_descoberta</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Inicialização do servidor</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">local e mapeamento de</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: preflight.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: routes_manifest.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n03_links_lychee" transform="translate(536, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n03_links_lychee</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Verificação de integridade</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">de links internos,</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: lychee.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n04_obscura_e_playwright" transform="translate(792, 36)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n04_obscura_e_playwright</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Checagem de status HTTP e</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">captura de erros de</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: playwright_obscura.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n05_renderlint_e_design" transform="translate(24, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SKILL</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n05_renderlint_e_design</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Análise de layout,</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">controles mortos e</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: renderlint_design.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n06_axe_acessibilidade" transform="translate(280, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n06_axe_acessibilidade</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Testes automatizados de</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">conformidade com padrões</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: axe.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n07_unlighthouse_rotas" transform="translate(536, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n07_unlighthouse_rotas</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Auditoria de performance,</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">SEO e melhores práticas</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: routes_manifest.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: unlighthouse.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-n08_lost_pixel_visual" transform="translate(792, 336)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n08_lost_pixel_visual</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Captura de snapshots e</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">comparação de regressão</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: playwright_obscura.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: lost_pixel.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: lost_pixel.json</text>
+      </g>
+      <g class="node" id="node-n09_sg_baseline_visual" transform="translate(24, 636)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#d97706"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">STOP-GATE</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n09_sg_baseline_visual</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Processa os insumos e gera</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">baseline_aprovada.json com</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: lost_pixel.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: baseline_aprovada.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: aprovação humana</text>
+      </g>
+      <g class="node" id="node-n10_relatorio_consolidado" transform="translate(280, 636)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n10_relatorio_consolidado</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Unificação dos</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">diagnósticos em relatório</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: lychee.json +4</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: RELATORIO_QA_WEB.json +1</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: RELATORIO_QA_WEB.md</text>
+      </g>
+      <g class="node" id="node-n11_entrevista_correcao" transform="translate(536, 636)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SKILL</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n11_entrevista_correcao</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Afunilamento investigativo</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">das falhas encontradas</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: RELATORIO_QA_WEB.md +1</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: INTERVIEW_CORRECAO.md</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: INTERVIEW_CORRECAO.md</text>
+      </g>
+      <g class="node" id="node-n12_governanca_build" transform="translate(792, 636)">
+        <rect width="216" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SKILL</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">n12_governanca_build</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Materialização do ciclo</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">formal para remediação e</text>
+        <line x1="14" y1="116" x2="202" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: INTERVIEW_CORRECAO.md +1</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: PACOTE_BUILD_SWARM.json</text>
+        <rect x="14" y="196" width="188" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: PACOTE_BUILD_SWARM.json</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">03 — Matriz de Entradas, Saídas e Barreiras Mecânicas</h2>
+  <p class="section-sub">Contratos formais de arquivos consumidos e emitidos por cada vértice.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Tipo</th>
+          <th>Insumos</th>
+          <th>Artefatos Emitidos</th>
+          <th>Gate Mecânico</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>n01_preflight</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>—</code></td>
+          <td><code>preflight.json</code></td>
+          <td><code>exit_code == 0</code></td>
+        </tr>
+        <tr>
+          <td><strong>n02_boot_e_descoberta</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>preflight.json</code></td>
+          <td><code>routes_manifest.json</code></td>
+          <td><code>exit_code == 0 &amp;&amp; file_exists(&#x27;scratch/webqa/routes_manifest.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n03_links_lychee</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>routes_manifest.json</code></td>
+          <td><code>lychee.json</code></td>
+          <td><code>exit_code == 0</code></td>
+        </tr>
+        <tr>
+          <td><strong>n04_obscura_e_playwright</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>routes_manifest.json</code></td>
+          <td><code>playwright_obscura.json</code></td>
+          <td><code>exit_code == 0</code></td>
+        </tr>
+        <tr>
+          <td><strong>n05_renderlint_e_design</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">SKILL</span></td>
+          <td><code>routes_manifest.json</code></td>
+          <td><code>renderlint_design.json</code></td>
+          <td><code>exit_code == 0 &amp;&amp; file_exists(&#x27;scratch/webqa/renderlint_design.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n06_axe_acessibilidade</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>routes_manifest.json</code></td>
+          <td><code>axe.json</code></td>
+          <td><code>exit_code == 0</code></td>
+        </tr>
+        <tr>
+          <td><strong>n07_unlighthouse_rotas</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>routes_manifest.json</code></td>
+          <td><code>unlighthouse.json</code></td>
+          <td><code>exit_code == 0</code></td>
+        </tr>
+        <tr>
+          <td><strong>n08_lost_pixel_visual</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>playwright_obscura.json</code></td>
+          <td><code>lost_pixel.json</code></td>
+          <td><code>file_exists(&#x27;scratch/webqa/lost_pixel.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n09_sg_baseline_visual</strong></td>
+          <td><span class="table-type-badge" style="color:#d97706;background:#d9770618;border:1px solid #d9770633;">STOP-GATE</span></td>
+          <td><code>lost_pixel.json</code></td>
+          <td><code>baseline_aprovada.json</code></td>
+          <td><code>prompt(&#x27;Aprovar baseline visual ou confirmar diff do lost-pixel?&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n10_relatorio_consolidado</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>lychee.json, renderlint_design.json, axe.json, unlighthouse.json, baseline_aprovada.json</code></td>
+          <td><code>RELATORIO_QA_WEB.json, RELATORIO_QA_WEB.md</code></td>
+          <td><code>file_exists(&#x27;docs/qa-web/RELATORIO_QA_WEB.md&#x27;) &amp;&amp; file_exists(&#x27;docs/qa-web/RELATORIO_QA_WEB.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>n11_entrevista_correcao</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">SKILL</span></td>
+          <td><code>RELATORIO_QA_WEB.md, RELATORIO_QA_WEB.json</code></td>
+          <td><code>INTERVIEW_CORRECAO.md</code></td>
+          <td><code>file_exists(&#x27;scratch/webqa/INTERVIEW_CORRECAO.md&#x27;) &amp;&amp; word_count(&#x27;scratch/webqa/INTERVIEW_CORRECAO.md&#x27;) &gt;= 50</code></td>
+        </tr>
+        <tr>
+          <td><strong>n12_governanca_build</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">SKILL</span></td>
+          <td><code>INTERVIEW_CORRECAO.md, RELATORIO_QA_WEB.json</code></td>
+          <td><code>PACOTE_BUILD_SWARM.json</code></td>
+          <td><code>file_exists(&#x27;docs/qa-web/PACOTE_BUILD_SWARM.json&#x27;)</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">04 — Roteamento Cognitivo & Topologia de Agentes</h2>
+  <p class="section-sub">Alocação determinística de modelos LLM, nível de esforço e estratégias de isolamento por nó.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Harness</th>
+          <th>Modelo Primário</th>
+          <th>Esforço</th>
+          <th>Fallback</th>
+          <th>Executor & Fronteira</th>
+          <th>Rollback</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>n01_preflight</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>sonnet</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n02_boot_e_descoberta</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>sonnet</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n03_links_lychee</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>sonnet</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n04_obscura_e_playwright</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#d9770622;color:#d97706;font-weight:600;font-size:11px;">MEDIUM</span></td>
+          <td><code>opus</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n05_renderlint_e_design</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#d9770622;color:#d97706;font-weight:600;font-size:11px;">MEDIUM</span></td>
+          <td><code>opus</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n06_axe_acessibilidade</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>sonnet</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n07_unlighthouse_rotas</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>sonnet</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n08_lost_pixel_visual</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#d9770622;color:#d97706;font-weight:600;font-size:11px;">MEDIUM</span></td>
+          <td><code>opus</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n09_sg_baseline_visual</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>sonnet</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n10_relatorio_consolidado</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#d9770622;color:#d97706;font-weight:600;font-size:11px;">MEDIUM</span></td>
+          <td><code>opus</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n11_entrevista_correcao</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#dc262622;color:#dc2626;font-weight:600;font-size:11px;">HIGH</span></td>
+          <td><code>opus</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>n12_governanca_build</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>opus</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#dc262622;color:#dc2626;font-weight:600;font-size:11px;">HIGH</span></td>
+          <td><code>sonnet</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">05 — Linhagem de Dados & Ciclo de Vida dos Artefatos</h2>
+  <p class="section-sub">Rastreabilidade formal de insumos, arquivos intermediários de análise e produtos finais.</p>
+  <div class="lineage-grid">
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb33;">ENTRADA</span>
+        <span>Insumos Primários</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item">
+          <code>—</code>
+          <span>Alvo inicial fornecido para análise e inspeção</span>
+        </li>
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#d9770618;color:#d97706;border:1px solid #d9770633;">PIPELINE</span>
+        <span>Artefatos Intermediários</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item"><code>preflight.json</code></li><li class="lineage-item"><code>routes_manifest.json</code></li><li class="lineage-item"><code>lychee.json</code></li><li class="lineage-item"><code>playwright_obscura.json</code></li><li class="lineage-item"><code>renderlint_design.json</code></li><li class="lineage-item"><code>axe.json</code></li><li class="lineage-item"><code>unlighthouse.json</code></li><li class="lineage-item"><code>lost_pixel.json</code></li><li class="lineage-item"><code>baseline_aprovada.json</code></li><li class="lineage-item"><code>RELATORIO_QA_WEB.json</code></li><li class="lineage-item"><code>RELATORIO_QA_WEB.md</code></li><li class="lineage-item"><code>INTERVIEW_CORRECAO.md</code></li>
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#16a34a18;color:#16a34a;border:1px solid #16a34a33;">ENTREGA</span>
+        <span>Produtos Finais</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item"><code>PACOTE_BUILD_SWARM.json</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">06 — Invariantes Operacionais & Regras Negativas</h2>
+  <p class="section-sub">Políticas restritivas de segurança e critérios inegociáveis de execução do processo.</p>
+  <div class="invariants-grid">
+    
+    <div class="invariant-card">
+      <h3 class="invariant-title">Zero Modificação do Alvo</h3>
+      <p class="invariant-desc">A inspeção é estritamente analítica e hermética; o alvo original nunca é alterado em disco.</p>
+    </div>
+    <div class="invariant-card">
+      <h3 class="invariant-title">Evidências Fatuais Reais</h3>
+      <p class="invariant-desc">Todas as métricas de AST e auditoria exigem arquivos físicos inspecionados sem mocks ou stubs.</p>
+    </div>
+    <div class="invariant-card">
+      <h3 class="invariant-title">Barreiras Binárias de Qualidade</h3>
+      <p class="invariant-desc">Cada nó só avança após validação de exit code 0 e confirmação do gate mecânico de arquivo.</p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

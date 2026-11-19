@@ -103,21 +103,26 @@
   .node-card-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-bottom: 12px;
   }
   .node-id {
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    padding: 2px 8px;
+    padding: 3px 8px;
     border-radius: 4px;
     color: #ffffff;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
   }
   .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }
-  .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; word-break: break-word; }
+  .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.45; word-break: break-word; min-height: 38px; }
   .node-gate {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -204,6 +209,111 @@
     border-radius: 3px;
     color: var(--muted);
   }
+  .table-type-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 1.2;
+  }
+
+  .lineage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .lineage-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .lineage-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 8px;
+  }
+  .lineage-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .lineage-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lineage-item {
+    font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .lineage-item code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-strong);
+    background: var(--paper);
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid var(--rule);
+  }
+  .lineage-item span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .invariants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .invariant-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .invariant-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 6px;
+  }
+  .invariant-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
@@ -216,7 +326,7 @@
     <span><strong>Processo:</strong> legoloop-diagram-design</span>
     <span><strong>Versão:</strong> 2.2.0</span>
     <span><strong>Nós:</strong> 6 nós sequenciais</span>
-    <span><strong>Design System:</strong> LegoPress Editorial (Sans-Serif)</span>
+    <span><strong>Gerado em:</strong> 2026-11-19T15:12:57</span>
   </div>
 </header>
 
@@ -231,10 +341,10 @@
         <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
       </div>
       <h3 class="node-name">inicializar-slug-e-anticorpos</h3>
-      <p class="node-desc">Execução no processo <code>legoloop-diagram-design</code> com isolamento em contexto estéril.</p>
+      <p class="node-desc">Processa os insumos e gera manifest.json, anticorpos.json com isolamento estéril.</p>
       <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
-        <div><strong>In:</strong> <code>anticorpos.json&#x27;}</code></div>
-        <div><strong>Out:</strong> <code>anticorpos.json</code></div>
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>anticorpos.json</code></div>
+        <div><strong>Out:</strong> <code>manifest.json, anticorpos.json</code></div>
       </div>
       <div class="node-gate">Gate: file_exists(&#x27;docs/diagrams/legoloop-diagram-design/manifest.json&#x27;) &amp;&amp; file_exists(&#x27;docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json&#x27;)</div>
     </div>
@@ -244,9 +354,9 @@
         <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
       </div>
       <h3 class="node-name">ingestao-e-quadrantes</h3>
-      <p class="node-desc">Execução no processo <code>legoloop-diagram-design</code> com isolamento em contexto estéril.</p>
+      <p class="node-desc">Processa os insumos e gera quadrantes.json com isolamento estéril.</p>
       <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
-        <div><strong>In:</strong> <code>manifest.json</code></div>
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>manifest.json</code></div>
         <div><strong>Out:</strong> <code>quadrantes.json</code></div>
       </div>
       <div class="node-gate">Gate: file_exists(&#x27;docs/diagrams/legoloop-diagram-design/quadrantes.json&#x27;) &amp;&amp; word_count(&#x27;docs/diagrams/legoloop-diagram-design/quadrantes.json&#x27;) &gt;= 30</div>
@@ -257,10 +367,10 @@
         <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
       </div>
       <h3 class="node-name">geracao-svg-html</h3>
-      <p class="node-desc">Execução no processo <code>legoloop-diagram-design</code> com isolamento em contexto estéril.</p>
+      <p class="node-desc">Processa os insumos e gera 2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html com isolamento estéril.</p>
       <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
-        <div><strong>In:</strong> <code>quadrantes.json</code></div>
-        <div><strong>Out:</strong> <code>docs/diagrams/leg...</code></div>
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>quadrantes.json</code></div>
+        <div><strong>Out:</strong> <code>2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</code></div>
       </div>
       <div class="node-gate">Gate: file_exists(&#x27;docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html&#x27;) &amp;&amp; word_count(&#x27;docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html&#x27;) &gt;= 50 &amp;&amp; has_pattern(&#x27;docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html&#x27;, &#x27;&lt;svg&#x27;)</div>
     </div>
@@ -270,9 +380,9 @@
         <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
       </div>
       <h3 class="node-name">micro-animacao</h3>
-      <p class="node-desc">Execução no processo <code>legoloop-diagram-design</code> com isolamento em contexto estéril.</p>
+      <p class="node-desc">Processa os insumos e gera composition.tsx com isolamento estéril.</p>
       <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
-        <div><strong>In:</strong> <code>docs/diagrams/leg...</code></div>
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</code></div>
         <div><strong>Out:</strong> <code>composition.tsx</code></div>
       </div>
       <div class="node-gate">Gate: file_exists(&#x27;docs/diagrams/legoloop-diagram-design/animation/composition.tsx&#x27;) &amp;&amp; word_count(&#x27;docs/diagrams/legoloop-diagram-design/animation/composition.tsx&#x27;) &gt;= 10</div>
@@ -283,10 +393,10 @@
         <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
       </div>
       <h3 class="node-name">gate-e-exportacao</h3>
-      <p class="node-desc">Execução no processo <code>legoloop-diagram-design</code> com isolamento em contexto estéril.</p>
+      <p class="node-desc">Processa os insumos e gera legoloop-diagram-design.svg com isolamento estéril.</p>
       <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
-        <div><strong>In:</strong> <code>composition.tsx</code></div>
-        <div><strong>Out:</strong> <code>docs/diagrams/leg...</code></div>
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html, composition.tsx</code></div>
+        <div><strong>Out:</strong> <code>legoloop-diagram-design.svg</code></div>
       </div>
       <div class="node-gate">Gate: file_exists(&#x27;docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg&#x27;) &amp;&amp; word_count(&#x27;docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg&#x27;) &gt;= 20</div>
     </div>
@@ -296,10 +406,10 @@
         <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
       </div>
       <h3 class="node-name">fechamento-e-anticorpos</h3>
-      <p class="node-desc">Execução no processo <code>legoloop-diagram-design</code> com isolamento em contexto estéril.</p>
+      <p class="node-desc">Processa os insumos e gera 2026-11-18_REPORT_DIAGRAM_DESIGN.md com isolamento estéril.</p>
       <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
-        <div><strong>In:</strong> <code>anticorpos.json</code></div>
-        <div><strong>Out:</strong> <code>docs/reports/2026...</code></div>
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>legoloop-diagram-design.svg, anticorpos.json</code></div>
+        <div><strong>Out:</strong> <code>2026-11-18_REPORT_DIAGRAM_DESIGN.md</code></div>
       </div>
       <div class="node-gate">Gate: file_exists(&#x27;docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md&#x27;) &amp;&amp; word_count(&#x27;docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md&#x27;) &gt;= 30</div>
     </div>
@@ -331,78 +441,78 @@
         <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
         <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
         <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">e01</text>
-        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">inicializar-slug-e-antic</text>
-        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580"></text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Processa os insumos e gera</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">manifest.json,</text>
         <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
-        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: anticorpos.json&#x27;}</text>
-        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: anticorpos.json</text>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: anticorpos.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: manifest.json, anticorpos.json</text>
         <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
-        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/diag...</text>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;manifest.json&#x27;)</text>
       </g>
       <g class="node" id="node-e02" transform="translate(372, 36)">
         <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
         <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
         <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
         <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">e02</text>
-        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">ingestao-e-quadrantes</text>
-        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580"></text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Processa os insumos e gera</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">quadrantes.json com</text>
         <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
         <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: manifest.json</text>
         <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: quadrantes.json</text>
         <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
-        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/diag...</text>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;quadrantes.json&#x27;)</text>
       </g>
       <g class="node" id="node-e03" transform="translate(712, 36)">
         <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
         <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
         <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
         <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">e03</text>
-        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">geracao-svg-html</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Processa os insumos e gera</text>
         <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580"></text>
         <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
         <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: quadrantes.json</text>
-        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: docs/diagrams/leg...</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: 2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</text>
         <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
-        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/diag...</text>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: 2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</text>
       </g>
       <g class="node" id="node-e04" transform="translate(32, 336)">
         <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
         <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
         <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
         <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">e04</text>
-        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">micro-animacao</text>
-        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580"></text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Processa os insumos e gera</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">composition.tsx com</text>
         <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
-        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: docs/diagrams/leg...</text>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: 2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</text>
         <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: composition.tsx</text>
         <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
-        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/diag...</text>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;composition.tsx&#x27;)</text>
       </g>
       <g class="node" id="node-e05" transform="translate(372, 336)">
         <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
         <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
         <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
         <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">e05</text>
-        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">gate-e-exportacao</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Processa os insumos e gera</text>
         <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580"></text>
         <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
-        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: composition.tsx</text>
-        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: docs/diagrams/leg...</text>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: 2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html +1</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: legoloop-diagram-design.svg</text>
         <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
-        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/diag...</text>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;legoloop-diagram-design.svg&#x27;)</text>
       </g>
       <g class="node" id="node-e06" transform="translate(712, 336)">
         <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
         <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
         <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
         <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">e06</text>
-        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">fechamento-e-anticorpos</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Processa os insumos e gera</text>
         <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580"></text>
         <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
-        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: anticorpos.json</text>
-        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: docs/reports/2026...</text>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: legoloop-diagram-design.svg, anticorpos.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: 2026-11-18_REPORT_DIAGRAM_DESIGN.md</text>
         <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
-        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: file_exists(&#x27;docs/repo...</text>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: 2026-11-18_REPORT_DIAGRAM_DESIGN.md</text>
       </g>
     </svg>
   </div>
@@ -426,44 +536,44 @@
         
         <tr>
           <td><strong>e01</strong></td>
-          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
-          <td><code>—</code></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/manifest.json, docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json</code></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>anticorpos.json</code></td>
+          <td><code>manifest.json, anticorpos.json</code></td>
           <td><code>file_exists(&#x27;docs/diagrams/legoloop-diagram-design/manifest.json&#x27;) &amp;&amp; file_exists(&#x27;docs/diagrams/legoloop-diagram-design/anticorpos/anticorpos.json&#x27;)</code></td>
         </tr>
         <tr>
           <td><strong>e02</strong></td>
-          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/manifest.json</code></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/quadrantes.json</code></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>manifest.json</code></td>
+          <td><code>quadrantes.json</code></td>
           <td><code>file_exists(&#x27;docs/diagrams/legoloop-diagram-design/quadrantes.json&#x27;) &amp;&amp; word_count(&#x27;docs/diagrams/legoloop-diagram-design/quadrantes.json&#x27;) &gt;= 30</code></td>
         </tr>
         <tr>
           <td><strong>e03</strong></td>
-          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/quadrantes.json</code></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</code></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>quadrantes.json</code></td>
+          <td><code>2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</code></td>
           <td><code>file_exists(&#x27;docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html&#x27;) &amp;&amp; word_count(&#x27;docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html&#x27;) &gt;= 50 &amp;&amp; has_pattern(&#x27;docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html&#x27;, &#x27;&lt;svg&#x27;)</code></td>
         </tr>
         <tr>
           <td><strong>e04</strong></td>
-          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</code></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/animation/composition.tsx</code></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</code></td>
+          <td><code>composition.tsx</code></td>
           <td><code>file_exists(&#x27;docs/diagrams/legoloop-diagram-design/animation/composition.tsx&#x27;) &amp;&amp; word_count(&#x27;docs/diagrams/legoloop-diagram-design/animation/composition.tsx&#x27;) &gt;= 10</code></td>
         </tr>
         <tr>
           <td><strong>e05</strong></td>
-          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html, docs/diagrams/legoloop-diagram-design/animation/composition.tsx</code></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg</code></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html, composition.tsx</code></td>
+          <td><code>legoloop-diagram-design.svg</code></td>
           <td><code>file_exists(&#x27;docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg&#x27;) &amp;&amp; word_count(&#x27;docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg&#x27;) &gt;= 20</code></td>
         </tr>
         <tr>
           <td><strong>e06</strong></td>
-          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
-          <td><code>docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg, processos/legoloop-diagram-design/anticorpos.json</code></td>
-          <td><code>docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md</code></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>legoloop-diagram-design.svg, anticorpos.json</code></td>
+          <td><code>2026-11-18_REPORT_DIAGRAM_DESIGN.md</code></td>
           <td><code>file_exists(&#x27;docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md&#x27;) &amp;&amp; word_count(&#x27;docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md&#x27;) &gt;= 30</code></td>
         </tr>
       </tbody>
@@ -472,13 +582,136 @@
 </section>
 
 <section class="section">
-  <h2 class="section-title">04 — Governança de Anticorpos e Paridade com o LegoPress</h2>
-  <p class="section-sub">Diretrizes obrigatórias testadas em tempo de compilação.</p>
-  <div style="background:var(--paper-card);border:1px solid var(--rule);border-radius:8px;padding:20px;font-size:14px;color:var(--ink);">
-    <p style="margin-bottom:12px;"><strong>1. Fundo Descansado:</strong> O background usa <code>#f5f5f5</code> (white-smoke). Zero branco puro na tela.</p>
-    <p style="margin-bottom:12px;"><strong>2. Zero Serifa:</strong> Tipografia 100% <code>Geist</code> e <code>Geist Mono</code>. Fontes serifadas bloqueadas.</p>
-    <p style="margin-bottom:12px;"><strong>3. Classe Obrigatória:</strong> Tag <code>&lt;svg class="diagram-canvas"&gt;</code> presente com acessibilidade nativa.</p>
-    <p><strong>4. Portabilidade Typst:</strong> O SVG resultante compila sem perdas nos livros didáticos do LegoPress.</p>
+  <h2 class="section-title">04 — Roteamento Cognitivo & Topologia de Agentes</h2>
+  <p class="section-sub">Alocação determinística de modelos LLM, nível de esforço e estratégias de isolamento por nó.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Harness</th>
+          <th>Modelo Primário</th>
+          <th>Esforço</th>
+          <th>Fallback</th>
+          <th>Executor & Fronteira</th>
+          <th>Rollback</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>e01</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>code-fast</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>e02</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#d9770622;color:#d97706;font-weight:600;font-size:11px;">MEDIUM</span></td>
+          <td><code>code-fast</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>e03</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>code-fast</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>e04</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#d9770622;color:#d97706;font-weight:600;font-size:11px;">MEDIUM</span></td>
+          <td><code>code-fast</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>e05</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>code-fast</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>e06</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>haiku</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>code-fast</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">05 — Linhagem de Dados & Ciclo de Vida dos Artefatos</h2>
+  <p class="section-sub">Rastreabilidade formal de insumos, arquivos intermediários de análise e produtos finais.</p>
+  <div class="lineage-grid">
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb33;">ENTRADA</span>
+        <span>Insumos Primários</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item">
+          <code>anticorpos.json</code>
+          <span>Alvo inicial fornecido para análise e inspeção</span>
+        </li>
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#d9770618;color:#d97706;border:1px solid #d9770633;">PIPELINE</span>
+        <span>Artefatos Intermediários</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item"><code>manifest.json</code></li><li class="lineage-item"><code>anticorpos.json</code></li><li class="lineage-item"><code>quadrantes.json</code></li><li class="lineage-item"><code>2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html</code></li><li class="lineage-item"><code>composition.tsx</code></li><li class="lineage-item"><code>legoloop-diagram-design.svg</code></li>
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#16a34a18;color:#16a34a;border:1px solid #16a34a33;">ENTREGA</span>
+        <span>Produtos Finais</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item"><code>2026-11-18_REPORT_DIAGRAM_DESIGN.md</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">06 — Invariantes Operacionais & Regras Negativas</h2>
+  <p class="section-sub">Políticas restritivas de segurança e critérios inegociáveis de execução do processo.</p>
+  <div class="invariants-grid">
+    
+    <div class="invariant-card">
+      <h3 class="invariant-title">Zero Modificação do Alvo</h3>
+      <p class="invariant-desc">A inspeção é estritamente analítica e hermética; o alvo original nunca é alterado em disco.</p>
+    </div>
+    <div class="invariant-card">
+      <h3 class="invariant-title">Evidências Fatuais Reais</h3>
+      <p class="invariant-desc">Todas as métricas de AST e auditoria exigem arquivos físicos inspecionados sem mocks ou stubs.</p>
+    </div>
+    <div class="invariant-card">
+      <h3 class="invariant-title">Barreiras Binárias de Qualidade</h3>
+      <p class="invariant-desc">Cada nó só avança após validação de exit code 0 e confirmação do gate mecânico de arquivo.</p>
+    </div>
   </div>
 </section>
 

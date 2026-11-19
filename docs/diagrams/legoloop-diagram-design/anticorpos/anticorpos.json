@@ -142,6 +142,76 @@
       "pacote": "legoloop-diagram-design/card-layout-in-out-noborder",
       "timestamp": "2026-11-19T08:35:00-03:00",
       "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:8c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d",
+      "erro": "Descrição idêntica e genérica replicada em todos os cards de nós do diagrama ('Execução no processo <slug> com isolamento em contexto estéril').",
+      "causa_raiz": "O gerador utilizava template estático hardcoded no campo .node-desc em vez de extrair a descrição funcional específica de cada nó a partir de SKILL.md, spec_ref ou do DAG.",
+      "antidoto": "Cada nó DEVE obrigatoriamente exibir a descrição do que ele faz. O gerador extrai a descrição da Skill (seção de Procedimento Passo a Passo), da spec ou sintetiza a ação funcional pelo verbo/objeto do nó. Proibição absoluta de descrição genérica idêntica compartilhada entre nós.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/node-specific-description",
+      "timestamp": "2026-11-19T09:35:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:9d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e",
+      "erro": "Uso de reticências (...) e exibição de objetos brutos de dicionário/linguagem em campos In e Out dos cards (ex: In: {'target': \"file('as...\").",
+      "causa_raiz": "Truncamento artificial via val[:max_len-3] + '...' e renderização direta do dicionário bruto de inputs do DAG sem parsing de arquivos.",
+      "antidoto": "Banimento absoluto de reticências (...) em In e Out. Insumos e saídas que são arquivos devem exibir estritamente o nome limpo do arquivo (ex.: target_resolved.json, ast_metrics.json), e variáveis devem exibir a referência direta limpa (ex.: var.alvo), sem wrappers de dicionário Python/JSON.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/io-clean-names-no-ellipsis",
+      "timestamp": "2026-11-19T09:35:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
+      "erro": "Inclusão de seção meta-interna do gerador ('04 — Governança de Anticorpos e Paridade com o LegoPress' com regras como Fundo Descansado, Zero Serifa, etc.) no documento do processo alvo.",
+      "causa_raiz": "O gerador inseria um bloco HTML estático descrevendo regras internas da ferramenta legoloop-diagram-design em vez de documentar informações técnicas exclusivas do processo alvo.",
+      "antidoto": "Proibição absoluta de meta-seções sobre diretrizes do próprio gerador de diagramas. Todo o conteúdo adicional do documento DEVE descrever exclusivamente dimensões funcionais do processo alvo: Roteamento Cognitivo de Modelos, Linhagem de Dados e Invariantes/Regras Negativas.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/ban-meta-generator-sections",
+      "timestamp": "2026-11-19T12:00:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c",
+      "erro": "Badge de tipo de nó (UNIT-NÓ) na tabela (Seção 03) renderizado com fonte grande e quebrando em duas linhas.",
+      "causa_raiz": "Ausência de classe tipográfica dedicada compacta e white-space: nowrap para a célula de tipo na tabela.",
+      "antidoto": "Criar classe .table-type-badge com font-size: 10px, font-family mono, font-weight 700, padding 3px 8px e white-space: nowrap, garantindo exibição em linha única compacta.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/table-type-badge-compact",
+      "timestamp": "2026-11-19T13:40:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d",
+      "erro": "Badges de linhagem (ENTRADA, PIPELINE, ENTREGA) na Seção 05 renderizados sem padding, parecendo texto solto e espremido.",
+      "causa_raiz": "Spans de badge inline sem padding explícito, border-radius e display inline-flex.",
+      "antidoto": "Aplicar classe .lineage-badge com padding 4px 10px, border-radius 4px, font-size 11px, display inline-flex, borda sutil 1px solid {cor}33 e fundo translúcido {cor}18.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/lineage-badge-padding",
+      "timestamp": "2026-11-19T13:40:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e",
+      "erro": "Cards de invariantes (Seção 06) com bordas laterais coloridas (border-left), poluindo a linguagem visual neutra.",
+      "causa_raiz": "Uso residual de border-left: 3px solid var(--cor-accent) na classe .invariant-card.",
+      "antidoto": "Eliminar qualquer borda lateral colorida em .invariant-card, mantendo contorno perimetral único e neutro 1px solid var(--rule).",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/invariant-card-neutral-border",
+      "timestamp": "2026-11-19T13:40:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f",
+      "erro": "Cabeçalho exibindo metadado genérico de design system ('LegoPress Editorial') em vez da data e hora real de geração.",
+      "causa_raiz": "String fixa inserida no template HTML em vez de timestamp dinâmico de build.",
+      "antidoto": "Substituir o campo 'Design System' por 'Gerado em: <DATA_HORA_ISO>' com precisão até segundos (YYYY-MM-DDTHH:MM:SS) formatado dinamicamente em tempo de compilação.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/header-iso-timestamp",
+      "timestamp": "2026-11-19T13:40:00-03:00",
+      "antidoto_aplicado": true
     }
   ]
 }

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg class="diagram-canvas" viewBox="0 0 1040 612" role="img" aria-labelledby="legoloop-triagem-title legoloop-triagem-desc" xmlns="http://www.w3.org/2000/svg" id="d-2026-11-18_LEGOLOOP_TRIAGEM-root">
+      <title id="legoloop-triagem-title">Fluxograma do Processo legoloop-triagem</title>
+      <desc id="legoloop-triagem-desc">Fluxo sequencial animado dos nós do processo legoloop-triagem no padrão editorial LegoPress.</desc>
+      <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Sans+TC:wght@400;500;600&amp;display=swap');
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root { --paper:        #f5f5f5;   
+    --paper-2:      #ececec;   
+    --paper-card:   #ffffff;   
+    --ink:          #2d3142;   
+    --ink-strong:   #111111;   
+    --muted:        #4f5d75;   
+    --soft:         #5a6580;   
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   
+    --cor-accent:   #bf4520;   
+    --font-sans:    'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, monospace; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root { font-family: var(--font-sans); color: var(--ink); }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .page-header { border-bottom: 2px solid var(--cor-accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .page-eyebrow { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-accent);
+    margin-bottom: 8px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .page-title { font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .page-lead { font-size: 15px;
+    color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .page-meta { font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .page-meta span { display: flex; align-items: center; gap: 6px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .section { margin-bottom: 48px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .section-title { font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .nodes-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .node-card { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    overflow: hidden; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .node-card-header { display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .node-id { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.45; word-break: break-word; min-height: 38px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .node-gate { font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border: 1px solid var(--rule);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .diagram-wrapper { background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .diagram-canvas { display: block; width: 100%; min-width: 980px; height: auto; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .diagram-wrapper, #d-2026-11-18_LEGOLOOP_TRIAGEM-root .table-wrapper { scrollbar-width: thin;
+    scrollbar-color: rgba(79, 93, 117, 0.3) transparent; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .diagram-wrapper::-webkit-scrollbar, #d-2026-11-18_LEGOLOOP_TRIAGEM-root .table-wrapper::-webkit-scrollbar { height: 3px;
+    width: 3px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .diagram-wrapper::-webkit-scrollbar-track, #d-2026-11-18_LEGOLOOP_TRIAGEM-root .table-wrapper::-webkit-scrollbar-track { background: transparent; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .diagram-wrapper::-webkit-scrollbar-thumb, #d-2026-11-18_LEGOLOOP_TRIAGEM-root .table-wrapper::-webkit-scrollbar-thumb { background: rgba(79, 93, 117, 0.3);
+    border-radius: 2px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .diagram-wrapper::-webkit-scrollbar-thumb:hover, #d-2026-11-18_LEGOLOOP_TRIAGEM-root .table-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(191, 69, 32, 0.5); }
+      @keyframes d-2026-11-18_LEGOLOOP_TRIAGEM-root-flow-pulse { from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; } }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .flow-edge { stroke-dasharray: 6 6;
+    animation: d-2026-11-18_LEGOLOOP_TRIAGEM-root-flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .table-wrapper { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root th { background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid); }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--ink); }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root tr:last-child td { border-bottom: none; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root td code { font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted); }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .table-type-badge { font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 1.2; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .lineage-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .lineage-card { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .lineage-card-title { font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 8px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .lineage-badge { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .lineage-list { list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .lineage-item { font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 3px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .lineage-item code { font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-strong);
+    background: var(--paper);
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid var(--rule); }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .lineage-item span { font-size: 12px;
+    color: var(--muted); }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .invariants-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .invariant-card { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px 20px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .invariant-title { font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 6px; }
+      #d-2026-11-18_LEGOLOOP_TRIAGEM-root .invariant-desc { font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5; }</style>
+        <marker id="d-2026-11-18_LEGOLOOP_TRIAGEM-arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+      </defs>
+      <rect width="1040" height="612" fill="#f5f5f5" rx="8"/>
+      
+      <path d="M328,156 L372,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-triagem-arr-flow)"/>
+      <path d="M668,156 L712,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-triagem-arr-flow)"/>
+      <path d="M1008,156 L1024,156 L1024,306 L18,306 L18,456 L32,456" fill="none" stroke="#0f172a" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#legoloop-triagem-arr-flow)"/>
+      <path d="M328,456 L372,456" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-triagem-arr-flow)"/>
+      
+      <g class="node" id="node-t1-motor-triagem" transform="translate(32, 36)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">t1-motor-triagem</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Classificação</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">determinística em 4</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: docs/specs/</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: internal/triagem</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-t2-fabricar-13-artefatos" transform="translate(372, 36)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">t2-fabricar-13-artefatos</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Geração dos manifestos</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">canônicos de triagem</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: docs/specs/</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: internal/fabricar</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-t3-pontos-entrada" transform="translate(712, 36)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">t3-pontos-entrada</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Integração da triagem com</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">CLI e comandos de chat</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: docs/specs/</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: cmd/legoloop</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-t4-saneamento-processos" transform="translate(32, 336)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">t4-saneamento-processos</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Limpeza e alinhamento de</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">processos legados</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: docs/specs/</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: processos/</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-t5-portoes-fechamento" transform="translate(372, 336)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">t5-portoes-fechamento</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Validação mecânica e</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">fechamento do ciclo de</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: docs/specs/</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: bin/legoloop.exe</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="#2d3142" stroke-opacity="0.1"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+    </svg>

@@ -180,6 +180,29 @@ def carregar_invariantes_da_skill(slug: str) -> list:
         ]
     return invariantes
 
+def caber_na_largura(prefixo: str, texto: str, largura_px: float, font_size: float) -> str:
+    """Ajusta o texto ao orçamento do self_check (0.62em por caractere mono), sem reticências.
+
+    Listas separadas por vírgula mantêm os itens que cabem e indicam o restante com "+N".
+    Caminhos dentro de exists('...') ficam só com o nome do arquivo.
+    """
+    max_chars = int(largura_px / (0.62 * font_size))
+    disponivel = max_chars - len(prefixo)
+    texto = re.sub(r"(['\"])[^'\"]*/([^/'\"]+)\1", r"\1\2\1", str(texto))
+    if len(texto) <= disponivel:
+        return texto
+    itens = [t.strip() for t in texto.split(",") if t.strip()]
+    if len(itens) > 1:
+        for k in range(len(itens) - 1, 0, -1):
+            candidato = ", ".join(itens[:k]) + f" +{len(itens) - k}"
+            if len(candidato) <= disponivel:
+                return candidato
+        candidato = f"{itens[0]} +{len(itens) - 1}"
+        if len(candidato) <= disponivel:
+            return candidato
+    return texto[:disponivel]
+
+
 def encurtar_caminho(val, max_len=40):
     """Encurta caminhos para exibição mantendo o nome do arquivo, sem usar reticências."""
     return extrair_nomes_arquivos_ou_insumos(val)
@@ -270,6 +293,11 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
         anticorpos_file.write_text(proc_anticorpos.read_text(encoding="utf-8"), encoding="utf-8")
     elif not anticorpos_file.exists():
         anticorpos_file.write_text(json.dumps({"anticorpos": []}, indent=2), encoding="utf-8")
+
+    proc_anticorpos_md = dag_path.parent / "ANTICORPOS.md"
+    anticorpos_md_file = anticorpos_dir / "ANTICORPOS.md"
+    if proc_anticorpos_md.exists():
+        anticorpos_md_file.write_text(proc_anticorpos_md.read_text(encoding="utf-8"), encoding="utf-8")
 
     # Gravar manifest.json e quadrantes.json de governança
     manifest_file = base_dir / "manifest.json"
@@ -436,7 +464,17 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
             first_match = re.search(r"exists\(['\"]([^'\"]+)['\"]\)", gate_svg)
             if first_match:
                 gate_svg = f"exists('{first_match.group(1)}')"
+        gate_curto = caber_na_largura("Gate: ", gate_svg, card_w - 56, 8.5)
+        if gate_curto != re.sub(r"(['\"])[^'\"]*/([^/'\"]+)\1", r"\1\2\1", gate_svg):
+            m_exists = re.search(r"exists\(['\"](?:[^'\"]*/)?([^/'\"]+)['\"]\)", gate_svg)
+            if m_exists:
+                gate_curto = caber_na_largura("Gate: ", m_exists.group(1), card_w - 56, 8.5)
+            elif gate_svg.startswith("prompt("):
+                gate_curto = "aprovação humana"
+        gate_svg = gate_curto
         gate_svg_esc = html.escape(gate_svg)
+        cin_limpo = caber_na_largura("In: ", cin_limpo, card_w - 28, 9)
+        cout_limpo = caber_na_largura("Out: ", cout_limpo, card_w - 28, 9)
 
         # Nó SVG em card envolvente de 240px de altura
         svg_nodes_markup.append(f"""

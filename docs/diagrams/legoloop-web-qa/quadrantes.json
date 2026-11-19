@@ -1,0 +1,89 @@
+{
+  "slug": "legoloop-web-qa",
+  "nodes": [
+    {
+      "id": "n01_preflight",
+      "name": "Preflight estrito das 8 ferramentas obrigat\u00f3rias",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n02_boot_e_descoberta",
+      "name": "Boot opcional de app local e descoberta de rotas e viewports",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n03_links_lychee",
+      "name": "Auditoria determin\u00edstica de links e assets com lychee",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n04_obscura_e_playwright",
+      "name": "Inspe\u00e7\u00e3o de rotas, console e navega\u00e7\u00e3o com obscura e playwright",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n05_renderlint_e_design",
+      "name": "Auditoria de bot\u00f5es mortos, layout e tokens com renderlint e aidd-linter-design",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n06_axe_acessibilidade",
+      "name": "Auditoria de acessibilidade WCAG (critical e serious) com axe-core",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n07_unlighthouse_rotas",
+      "name": "Varredura Lighthouse multi-rota (nota m\u00ednima 90) com unlighthouse",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n08_lost_pixel_visual",
+      "name": "Regress\u00e3o visual open-source e snapshot inicial com lost-pixel",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n09_sg_baseline_visual",
+      "name": "Stop-Gate humano de promo\u00e7\u00e3o da baseline visual (lost-pixel)",
+      "type": "stop_gate",
+      "badge": "STOP-GATE",
+      "color": "#d97706"
+    },
+    {
+      "id": "n10_relatorio_consolidado",
+      "name": "Consolida\u00e7\u00e3o de relat\u00f3rio JSON + Markdown em docs/qa-web/",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "n11_entrevista_correcao",
+      "name": "Entrevista socr\u00e1tica de afunilamento sobre corre\u00e7\u00f5es do relat\u00f3rio",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n12_governanca_build",
+      "name": "Gera\u00e7\u00e3o da cadeia INTERVIEW -> INTENT -> SPEC -> PLAN -> ROUTE -> DAG -> SWARM para BUILD",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    }
+  ]
+}

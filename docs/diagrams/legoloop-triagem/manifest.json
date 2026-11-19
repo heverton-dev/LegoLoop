@@ -1,0 +1,9 @@
+{
+  "slug": "legoloop-triagem",
+  "name": "legoloop-triagem",
+  "version": "1.0.0",
+  "nodes_count": 5,
+  "visual_type": "process",
+  "semantic_pattern": "stage-framework",
+  "generated_at": "2026-11-19T07:00:00Z"
+}

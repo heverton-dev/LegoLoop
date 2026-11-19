@@ -1,0 +1,40 @@
+{
+  "slug": "legoloop-triagem",
+  "nodes": [
+    {
+      "id": "t1-motor-triagem",
+      "name": "Motor de Triagem",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "t2-fabricar-13-artefatos",
+      "name": "Fabricar 13 Artefatos",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "t3-pontos-entrada",
+      "name": "Pontos de Entrada",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "t4-saneamento-processos",
+      "name": "Saneamento de Processos",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "t5-portoes-fechamento",
+      "name": "Port\u00f5es e Fechamento",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    }
+  ]
+}

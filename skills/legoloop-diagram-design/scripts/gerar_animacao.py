@@ -12,7 +12,11 @@ from pathlib import Path
 def resolver_slug(alvo: str):
     p = Path(alvo)
     if p.is_file():
-        return p.parent.name if p.name in ("pipeline.dag.json", "manifest.json", "quadrantes.json") else p.stem
+        if p.name in ("pipeline.dag.json", "manifest.json", "quadrantes.json"):
+            return p.parent.name
+        if p.parent.name == "src" and p.parent.parent.parent.name == "diagrams":
+            return p.parent.parent.name
+        return p.stem
     return p.name
 
 def main():

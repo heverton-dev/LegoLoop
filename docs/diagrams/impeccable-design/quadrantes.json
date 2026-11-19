@@ -1,0 +1,47 @@
+{
+  "slug": "impeccable-design",
+  "nodes": [
+    {
+      "id": "subprocesso-avaliar",
+      "name": "Avalia\u00e7\u00e3o de UI/UX e Diagn\u00f3stico",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    },
+    {
+      "id": "subprocesso-construir",
+      "name": "Constru\u00e7\u00e3o da Dire\u00e7\u00e3o Visual",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    },
+    {
+      "id": "subprocesso-melhorar",
+      "name": "Design Tokens & Sistema de Cores",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    },
+    {
+      "id": "subprocesso-refinar",
+      "name": "Refinamento & Hardening UI",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    },
+    {
+      "id": "subprocesso-corrigir",
+      "name": "Corre\u00e7\u00f5es de Acessibilidade & Responsividade",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    },
+    {
+      "id": "subprocesso-iterar-documentar",
+      "name": "Documenta\u00e7\u00e3o do Design System",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    }
+  ]
+}
