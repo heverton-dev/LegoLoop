@@ -1,0 +1,52 @@
+{
+  "anticorpos": [
+    {
+      "id": "AC-E01.1",
+      "no": "e01",
+      "descricao": "Validar existência e acessibilidade do cofre canônico antes de listar processos",
+      "tipo": "precondicao",
+      "severidade": "critica",
+      "verificacao": "os.path.isdir(vault) && os.access(vault, os.R_OK)"
+    },
+    {
+      "id": "AC-E02.1",
+      "no": "e02",
+      "descricao": "Garantir que a leitura de processos retorna estrutura JSON válida com campos obrigatórios",
+      "tipo": "validacao",
+      "severidade": "alta",
+      "verificacao": "json.loads(output).get('Processos') is not None"
+    },
+    {
+      "id": "AC-E03.1",
+      "no": "e03",
+      "descricao": "Verificar que o diagrama HTML gerado contém todos os nós do processo listar",
+      "tipo": "validacao",
+      "severidade": "alta",
+      "verificacao": "len(re.findall(r'class=\"node\"', html)) >= 6"
+    },
+    {
+      "id": "AC-E04.1",
+      "no": "e04",
+      "descricao": "Confirmar que a animação CSS @keyframes flow-dash está presente e funcional",
+      "tipo": "validacao",
+      "severidade": "media",
+      "verificacao": "'@keyframes flow-dash' in html"
+    },
+    {
+      "id": "AC-E05.1",
+      "no": "e05",
+      "descricao": "Validar geometria: zero overflow, grid ortogonal, máscaras opacas",
+      "tipo": "gate",
+      "severidade": "critica",
+      "verificacao": "verify_geometry(html) == True"
+    },
+    {
+      "id": "AC-E06.1",
+      "no": "e06",
+      "descricao": "Consolidar achados em anticorpos.json e emitir relatório em docs/reports/",
+      "tipo": "poscondicao",
+      "severidade": "media",
+      "verificacao": "os.path.exists('docs/reports/2026-11-19_REPORT_LISTAR.md')"
+    }
+  ]
+}

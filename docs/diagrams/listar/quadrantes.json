@@ -1,0 +1,47 @@
+{
+  "slug": "listar",
+  "nodes": [
+    {
+      "id": "e01",
+      "name": "validar-cofre",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    },
+    {
+      "id": "e02",
+      "name": "ler-processos",
+      "type": "skill",
+      "badge": "SKILL",
+      "color": "#2563eb"
+    },
+    {
+      "id": "e03",
+      "name": "gerar-diagrama",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "e04",
+      "name": "micro-animacao",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "e05",
+      "name": "gate-e-exportacao",
+      "type": "gate",
+      "badge": "GATE",
+      "color": "#dc2626"
+    },
+    {
+      "id": "e06",
+      "name": "fechamento-e-anticorpos",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    }
+  ]
+}
