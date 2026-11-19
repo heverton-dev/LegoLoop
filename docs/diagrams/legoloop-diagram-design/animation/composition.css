@@ -1,35 +1,29 @@
-#diagrama-svg rect[stroke-dasharray="5,4"] {
-  animation: flow-dash 1.2s linear infinite;
+/* Micro-animação contínua do processo legoloop-diagram-design */
+.diagram-canvas path.flow-edge,
+.diagram-canvas line.flow-edge {
+  stroke-dasharray: 6 6;
+  animation: flow-pulse 1.2s linear infinite;
   will-change: stroke-dashoffset;
 }
 
-#diagrama-svg line[stroke-dasharray],
-#diagrama-svg path[stroke-dasharray] {
-  animation: flow-dash 1.2s linear infinite;
+.diagram-canvas path.flow-edge-accent {
+  stroke-dasharray: 6 6;
+  animation: flow-pulse 0.9s linear infinite;
+  will-change: stroke-dashoffset;
 }
 
-@keyframes flow-dash {
+@keyframes flow-pulse {
   from {
-    stroke-dashoffset: 0;
+    stroke-dashoffset: 24;
   }
   to {
-    stroke-dashoffset: -9;
+    stroke-dashoffset: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #diagrama-svg rect[stroke-dasharray="5,4"],
-  #diagrama-svg line[stroke-dasharray],
-  #diagrama-svg path[stroke-dasharray] {
-    animation: none;
-    stroke-dashoffset: 0;
-  }
-}
-
-@media print {
-  #diagrama-svg rect[stroke-dasharray="5,4"],
-  #diagrama-svg line[stroke-dasharray],
-  #diagrama-svg path[stroke-dasharray] {
+  .diagram-canvas path.flow-edge,
+  .diagram-canvas path.flow-edge-accent {
     animation: none;
     stroke-dashoffset: 0;
   }

@@ -18,6 +18,14 @@
       "proximo_passo": "fim",
       "atualizado_em": "2026-11-18T23:52:26.8988657Z"
     },
+    "4f58a6a22724310060c767ee1274a054": {
+      "processo": "",
+      "sessao_id": "4f58a6a22724310060c767ee1274a054",
+      "pid": 3276,
+      "etapa_atual": "e03",
+      "proximo_passo": "e04",
+      "atualizado_em": "2026-11-19T01:10:19.497866Z"
+    },
     "87294f0719c0bfe6dab217c02796358a": {
       "processo": "",
       "sessao_id": "87294f0719c0bfe6dab217c02796358a",
@@ -41,6 +49,14 @@
       "etapa_atual": "e06",
       "proximo_passo": "fim",
       "atualizado_em": "2026-11-18T23:35:47.0447418Z"
+    },
+    "e3d4f943190e5cb66208ba927a69eda1": {
+      "processo": "",
+      "sessao_id": "e3d4f943190e5cb66208ba927a69eda1",
+      "pid": 15136,
+      "etapa_atual": "e06",
+      "proximo_passo": "fim",
+      "atualizado_em": "2026-11-19T01:24:53.7574509Z"
     },
     "e4b19e6b09cd6693d1be8f1c7cd7b79b": {
       "processo": "",

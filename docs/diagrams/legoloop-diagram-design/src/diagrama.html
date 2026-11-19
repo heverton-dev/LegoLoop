@@ -1,41 +1,54 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Matriz de Priorização dos Nós — legoloop-diagram-design</title>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetura e Fluxo do Processo legoloop-diagram-design — LegoLoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* ── TOKENS CANÔNICOS LEGOLOOP & LEGOPRESS (100% SANS-SERIF) ─────── */
   :root {
-    --paper: #f5f5f5;
-    --paper-2: #ebebeb;
-    --paper-card: #ffffff;
-    --ink: #2d3142;
-    --ink-strong: #111111;
-    --muted: #565b6e;
-    --soft: #8a8fa0;
-    --rule: rgba(45,49,66,0.12);
-    --rule-solid: #b8b9c2;
-    --accent: #bf4520;
-    --accent-tint: #f6e3dc;
-    --link: #1f5fa8;
-    --font-sans: 'Geist', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --font-mono: 'Geist Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
+    --paper:        #f5f5f5;   /* white-smoke descansado (nunca branco puro) */
+    --paper-2:      #ececec;   /* container e faixas secundárias */
+    --paper-card:   #ffffff;   /* superfície de cards em alto contraste */
+    --ink:          #2d3142;   /* grafite escuro nobre */
+    --ink-strong:   #111111;   /* contraste máximo para títulos */
+    --muted:        #4f5d75;   /* ardósia suave para textos de apoio */
+    --soft:         #5a6580;   /* subrótulos e metadados */
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   /* bordas estruturais sólidas */
+    
+    /* Paleta Semântica LegoPress (Google Suavizada) */
+    --cor-skill:     #2563eb;  /* Azul Cobalto Google */
+    --cor-script:    #0f172a;  /* Ardósia Escuro */
+    --cor-gate:      #dc2626;  /* Carmesim Google */
+    --cor-stopgate:  #d97706;  /* Âmbar Google Dourado */
+    --cor-mcp:       #7c3aed;  /* Violeta DeepMind */
+    --cor-swarm:     #16a34a;  /* Verde Esmeralda Google */
+    --cor-accent:    #bf4520;  /* Tangerina Queimada Editorial */
+    --cor-accent-bg: rgba(191,69,32,0.06);
+
+    --font-sans:    'Geist', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
+    font-family: var(--font-sans);
     background: var(--paper);
     color: var(--ink);
-    font-family: var(--font-sans);
     line-height: 1.6;
-    padding: 40px 24px;
-    max-width: 1040px;
+    padding: 48px 32px;
+    max-width: 1140px;
     margin: 0 auto;
   }
+
+  /* ── CABEÇALHO EDITORIAL SANS-SERIF ───────────────────────── */
   .page-header {
-    border-bottom: 2px solid var(--accent);
+    border-bottom: 2px solid var(--cor-accent);
     padding-bottom: 20px;
-    margin-bottom: 32px;
+    margin-bottom: 40px;
   }
   .page-eyebrow {
     font-family: var(--font-mono);
@@ -43,21 +56,22 @@
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--cor-accent);
     margin-bottom: 8px;
   }
   .page-title {
-    font-size: 2rem;
+    font-family: var(--font-sans);
+    font-size: 2.2rem;
     font-weight: 800;
     letter-spacing: -0.03em;
     color: var(--ink-strong);
     line-height: 1.2;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
   .page-lead {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--muted);
-    max-width: 800px;
+    max-width: 860px;
     margin-bottom: 16px;
   }
   .page-meta {
@@ -68,273 +82,436 @@
     flex-wrap: wrap;
     gap: 20px;
   }
-  .scroll { max-width: 100%; overflow-x: auto; margin-bottom: 32px; }
-  .diagram-card {
-    background: #ffffff;
-    border: 1px solid var(--rule-solid);
-    border-radius: 8px;
-    padding: 16px;
-  }
-  .diagram-card > svg.diagram-canvas {
-    display: block;
-    width: 100%;
-    min-width: 960px;
-    height: auto;
-  }
+  .page-meta span { display: flex; align-items: center; gap: 6px; }
 
-  /* Micro-animações nativas via keyframes */
-  @keyframes focal-pulse {
-    0%, 100% { opacity: 0.95; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.02); }
+  /* ── SEÇÕES ───────────────────────────────────────────────── */
+  .section {
+    margin-bottom: 48px;
   }
-  @keyframes line-flow {
-    from { stroke-dashoffset: 18; }
-    to { stroke-dashoffset: 0; }
-  }
-  .pulse-node {
-    transform-origin: center;
-    animation: focal-pulse 3s ease-in-out infinite;
-  }
-  .dash-flow {
-    stroke-dasharray: 6, 4;
-    animation: line-flow 1.5s linear infinite;
-  }
-
-  /* Legenda Estruturada com Isolamento Estrito de Micro-Vetores */
-  .legend-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 24px;
-    background: var(--paper-2);
-    border: 1px solid var(--rule-solid);
-    border-radius: 8px;
-    padding: 20px;
-  }
-  .legend-section h4 {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-  .legend-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .legend-item {
+  .section-title {
+    font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 12px;
-    color: var(--ink);
   }
-  .summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-top: 24px;
-  }
-  .summary-card {
-    background: #ffffff;
-    border: 1px solid var(--rule-solid);
-    border-radius: 6px;
-    padding: 16px;
-    font-size: 13px;
-  }
-  .summary-card strong {
-    display: block;
+  .section-sub {
     font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* ── GRID DE CARDS DOS NÓS ────────────────────────────────── */
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .node-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+  .node-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .node-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+  }
+  .node-id.skill { background: var(--cor-skill); }
+  .node-id.script { background: var(--cor-script); }
+  .node-id.gate { background: var(--cor-gate); }
+  
+  .node-name {
+    font-size: 16px;
+    font-weight: 700;
     color: var(--ink-strong);
     margin-bottom: 6px;
+  }
+  .node-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .node-gate {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 6px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border-left: 3px solid var(--cor-accent);
+  }
+
+  /* ── CANVAS DO DIAGRAMA SVG ───────────────────────────────── */
+  .diagram-wrapper {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px;
+  }
+  .diagram-canvas {
+    display: block;
+    width: 100%;
+    min-width: 1000px;
+    height: auto;
+  }
+
+  /* ── ANIMAÇÃO CSS NATIVA DO SVG ────────────────────────────── */
+  @keyframes flow-pulse {
+    from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; }
+  }
+  .flow-edge {
+    stroke-dasharray: 6 6;
+    animation: flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset;
+  }
+  .flow-edge-accent {
+    stroke-dasharray: 6 6;
+    animation: flow-pulse 0.9s linear infinite;
+    will-change: stroke-dashoffset;
+  }
+
+  /* ── TABELA DE MATRIZ DE GATES ────────────────────────────── */
+  .table-wrapper {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+  }
+  th {
+    background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid);
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+  }
+  tr:last-child td { border-bottom: none; }
+  td code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted);
   }
 </style>
 </head>
 <body>
 
+<!-- CABEÇALHO EDITORIAL -->
 <header class="page-header">
-  <p class="page-eyebrow">Processo legoloop-diagram-design · Paridade Canônica</p>
-  <h1 class="page-title">Matriz de Priorização dos Nós</h1>
-  <p class="page-lead">Quadrante bidimensional que posiciona os nós do processo por esforço de execução e impacto no gate de qualidade. Totalmente sans-serif e auto-contido.</p>
+  <p class="page-eyebrow">LegoLoop · Processo Canônico</p>
+  <h1 class="page-title">Arquitetura e Fluxo do Processo legoloop-diagram-design</h1>
+  <p class="page-lead">Diagrama de engenharia de alta fidelidade demonstrando a esteira determinística de seis nós que transforma intenções arquiteturais em diagramas vetoriais auto-contidos em HTML/SVG, com blindagem anti-transbordamento, conformidade Typst para o LegoPress e animações contínuas.</p>
   <div class="page-meta">
-    <span>Data: 2026-11-18</span>
-    <span>Status: Canônico e Verificado</span>
-    <span>Animação: Remotion + CSS Nativo</span>
-    <span>Tipografia: Geist &amp; Geist Mono (Zero Serifas)</span>
+    <span><strong>Processo:</strong> legoloop-diagram-design</span>
+    <span><strong>Versão:</strong> 2.2.0</span>
+    <span><strong>Camadas:</strong> 6 nós sequenciais</span>
+    <span><strong>Design System:</strong> LegoPress Editorial (Sans-Serif)</span>
   </div>
 </header>
 
-<div class="scroll">
-<div class="diagram-card">
-<svg id="diagrama-root" class="diagram-canvas" viewBox="0 0 960 620" role="img" aria-labelledby="diagrama-title diagrama-desc" xmlns="http://www.w3.org/2000/svg">
-  <title id="diagrama-title">Matriz de priorização dos nós do processo legoloop-diagram-design</title>
-  <desc id="diagrama-desc">Quadrante bidimensional posicionando nós por esforço de execução e impacto no gate de qualidade.</desc>
-  <defs>
-    <marker id="diagrama-seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M1 1 L9 5 L1 9" fill="none" stroke="#565b6e" stroke-width="1.5"/>
-    </marker>
-  </defs>
+<!-- SEÇÃO 01: ANATOMIA DOS NÓS -->
+<section class="section">
+  <h2 class="section-title">01 — Anatomia dos 6 Nós do Processo</h2>
+  <p class="section-sub">Cada nó possui isolamento em contexto estéril, limite orçamentário estrito e barreira mecânica (gate) de saída.</p>
 
-  <!-- Fundo do Canvas -->
-  <rect x="0" y="0" width="960" height="620" fill="#f5f5f5"/>
-
-  <!-- Grade dos Quadrantes -->
-  <rect x="120" y="80" width="360" height="200" fill="#ebebeb" stroke="#b8b9c2" stroke-width="1"/>
-  <rect x="480" y="80" width="360" height="200" fill="#f5f5f5" stroke="#b8b9c2" stroke-width="1"/>
-  <rect x="120" y="280" width="360" height="200" fill="#f5f5f5" stroke="#b8b9c2" stroke-width="1"/>
-  <rect x="480" y="280" width="360" height="200" fill="#ebebeb" stroke="#b8b9c2" stroke-width="1"/>
-
-  <!-- Títulos dos quadrantes -->
-  <g font-family="Geist Mono, Consolas, monospace" font-size="10" letter-spacing="1.2" fill="#565b6e">
-    <text x="136" y="104">Q1 · FAZER PRIMEIRO (ALTO IMPACTO / BAIXO ESFORÇO)</text>
-    <text x="496" y="104">Q2 · PLANEJAR COM CUIDADO (ALTO IMPACTO / ALTO ESFORÇO)</text>
-    <text x="136" y="304">Q3 · FAZER EM SEGUIDA (BAIXO IMPACTO / BAIXO ESFORÇO)</text>
-    <text x="496" y="304">Q4 · CONDICIONAL (BAIXO IMPACTO / ALTO ESFORÇO)</text>
-  </g>
-
-  <!-- Eixos Cartesianos com Setas -->
-  <line x1="120" y1="480" x2="120" y2="76" stroke="#565b6e" stroke-width="1.5" marker-end="url(#diagrama-seta)"/>
-  <line x1="120" y1="480" x2="844" y2="480" stroke="#565b6e" stroke-width="1.5" marker-end="url(#diagrama-seta)"/>
-
-  <g font-family="Geist Mono, Consolas, monospace" font-size="11" fill="#565b6e">
-    <text x="112" y="104" text-anchor="end">Alto</text>
-    <text x="112" y="474" text-anchor="end">Baixo</text>
-    <text x="120" y="62" font-family="Geist, Segoe UI, Arial, sans-serif" font-weight="600" font-size="13" fill="#2d3142">Impacto no gate</text>
-    <text x="120" y="502">Baixo</text>
-    <text x="840" y="502" text-anchor="end">Alto</text>
-    <text x="480" y="502" text-anchor="middle" font-family="Geist, Segoe UI, Arial, sans-serif" font-weight="600" font-size="13" fill="#2d3142">Esforço de execução</text>
-  </g>
-
-  <!-- Nó e01 (Focal - Q1) -->
-  <g class="node-pulse">
-    <rect x="190" y="136" width="220" height="56" rx="6" fill="#f5f5f5"/>
-    <rect x="190" y="136" width="220" height="56" rx="6" fill="#f6e3dc" stroke="#bf4520" stroke-width="1.5"/>
-    <rect x="198" y="144" width="28" height="14" rx="2" fill="none" stroke="#bf4520" stroke-width="1"/>
-    <text x="212" y="154.5" text-anchor="middle" font-family="Geist Mono, Consolas, monospace" font-size="8" fill="#bf4520">e01</text>
-    <text x="206" y="176" font-family="Geist, Segoe UI, Arial, sans-serif" font-weight="600" font-size="13" fill="#2d3142">Inicializar slug</text>
-    <text x="206" y="188" font-family="Geist Mono, Consolas, monospace" font-size="9" fill="#565b6e">árvore e anticorpos</text>
-  </g>
-
-  <!-- Nó e03 (Q2) -->
-  <g>
-    <rect x="550" y="120" width="220" height="56" rx="6" fill="#f5f5f5"/>
-    <rect x="550" y="120" width="220" height="56" rx="6" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.25"/>
-    <rect x="558" y="128" width="28" height="14" rx="2" fill="none" stroke="#565b6e" stroke-width="1"/>
-    <text x="572" y="138.5" text-anchor="middle" font-family="Geist Mono, Consolas, monospace" font-size="8" fill="#565b6e">e03</text>
-    <text x="566" y="160" font-family="Geist, Segoe UI, Arial, sans-serif" font-weight="600" font-size="13" fill="#2d3142">Gerar SVG e HTML</text>
-    <text x="566" y="172" font-family="Geist Mono, Consolas, monospace" font-size="9" fill="#565b6e">src/2026-11-18_...html</text>
-  </g>
-
-  <!-- Nó e05 (Focal - Q2) -->
-  <g class="node-pulse">
-    <rect x="550" y="196" width="220" height="56" rx="6" fill="#f5f5f5"/>
-    <rect x="550" y="196" width="220" height="56" rx="6" fill="#f6e3dc" stroke="#bf4520" stroke-width="1.5"/>
-    <rect x="558" y="204" width="28" height="14" rx="2" fill="none" stroke="#bf4520" stroke-width="1"/>
-    <text x="572" y="214.5" text-anchor="middle" font-family="Geist Mono, Consolas, monospace" font-size="8" fill="#bf4520">e05</text>
-    <text x="566" y="236" font-family="Geist, Segoe UI, Arial, sans-serif" font-weight="600" font-size="13" fill="#2d3142">Gate e exportação</text>
-    <text x="566" y="248" font-family="Geist Mono, Consolas, monospace" font-size="9" fill="#565b6e">validação com exit code 0</text>
-  </g>
-
-  <!-- Nó e06 (Q3) -->
-  <g>
-    <rect x="190" y="336" width="220" height="56" rx="6" fill="#f5f5f5"/>
-    <rect x="190" y="336" width="220" height="56" rx="6" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.25"/>
-    <rect x="198" y="344" width="28" height="14" rx="2" fill="none" stroke="#565b6e" stroke-width="1"/>
-    <text x="212" y="354.5" text-anchor="middle" font-family="Geist Mono, Consolas, monospace" font-size="8" fill="#565b6e">e06</text>
-    <text x="206" y="376" font-family="Geist, Segoe UI, Arial, sans-serif" font-weight="600" font-size="13" fill="#2d3142">Fechamento</text>
-    <text x="206" y="388" font-family="Geist Mono, Consolas, monospace" font-size="9" fill="#565b6e">anticorpos.json &amp; report</text>
-  </g>
-
-  <!-- Nó e04 (Q4 - Condicional Tracejado) -->
-  <g>
-    <rect x="550" y="336" width="220" height="56" rx="6" fill="#f5f5f5"/>
-    <rect x="550" y="336" width="220" height="56" rx="6" fill="#f5f5f5" stroke="#565b6e" stroke-width="1.25" stroke-dasharray="5,4" class="line-anim"/>
-    <rect x="558" y="344" width="28" height="14" rx="2" fill="none" stroke="#565b6e" stroke-width="1"/>
-    <text x="572" y="354.5" text-anchor="middle" font-family="Geist Mono, Consolas, monospace" font-size="8" fill="#565b6e">e04</text>
-    <text x="566" y="376" font-family="Geist, Segoe UI, Arial, sans-serif" font-weight="600" font-size="13" fill="#2d3142">Micro-animação</text>
-    <text x="566" y="388" font-family="Geist Mono, Consolas, monospace" font-size="9" fill="#565b6e">Remotion + CSS Keyframes</text>
-  </g>
-
-  <!-- Linha divisória da legenda -->
-  <line x1="120" y1="532" x2="840" y2="532" stroke="#d4d4d8" stroke-width="1"/>
-
-  <!-- Legenda compacta inline no SVG -->
-  <g font-family="Geist Mono, Consolas, monospace" font-size="10" fill="#565b6e">
-    <rect x="120" y="552" width="28" height="16" rx="3" fill="#f6e3dc" stroke="#bf4520" stroke-width="1.5"/>
-    <text x="158" y="564">Nó focal (destaque)</text>
-    <rect x="290" y="552" width="28" height="16" rx="3" fill="#f5f5f5" stroke="#2d3142" stroke-width="1.25"/>
-    <text x="328" y="564">Nó obrigatório</text>
-    <rect x="460" y="552" width="28" height="16" rx="3" fill="#f5f5f5" stroke="#565b6e" stroke-width="1.25" stroke-dasharray="5,4"/>
-    <text x="498" y="564">Nó condicional</text>
-    <text x="840" y="564" text-anchor="end">Posição indica prioridade estrita</text>
-  </g>
-</svg>
-</div>
-</div>
-
-<!-- Seção de Legenda Externa com Micro-Vetores Isolados (Conforme Antídoto 4e5f) -->
-<div class="legend-container">
-  <div class="legend-section">
-    <h4>Formas Geométricas Semânticas</h4>
-    <div class="legend-grid">
-      <div class="legend-item">
-        <svg class="shape-icon" width="13" height="13" viewBox="0 0 16 16" style="width:13px;height:13px;max-width:13px;max-height:13px;flex-shrink:0;">
-          <polygon points="8,1 14,4.5 14,11.5 8,15 2,11.5 2,4.5" fill="none" stroke="#bf4520" stroke-width="1.3"/>
-        </svg>
-        <span>Hexágono: Motor principal / nó focal do processo</span>
+  <div class="nodes-grid">
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id skill">e01 · SKILL</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">haiku / low</small>
       </div>
-      <div class="legend-item">
-        <svg class="shape-icon" width="13" height="13" viewBox="0 0 16 16" style="width:13px;height:13px;max-width:13px;max-height:13px;flex-shrink:0;">
-          <rect x="2" y="2" width="12" height="12" rx="3" fill="none" stroke="#2d3142" stroke-width="1.3"/>
-        </svg>
-        <span>Retângulo: Etapa de execução estéril em disco</span>
+      <h3 class="node-name">inicializar-slug-e-anticorpos</h3>
+      <p class="node-desc">Inicializa a árvore isolada em <code>docs/diagrams/&lt;slug&gt;/</code> com 5 subdiretórios canônicos e sincroniza os anticorpos.</p>
+      <div class="node-gate">Gate: Pastas criadas + manifest.json presente</div>
+    </div>
+
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id skill">e02 · SKILL</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">sonnet / medium</small>
       </div>
-      <div class="legend-item">
-        <svg class="shape-icon" width="13" height="13" viewBox="0 0 16 16" style="width:13px;height:13px;max-width:13px;max-height:13px;flex-shrink:0;">
-          <polygon points="8,2 15,14 1,14" fill="none" stroke="#2d3142" stroke-width="1.3"/>
-        </svg>
-        <span>Triângulo: Barreira mecânica / Gate binário</span>
+      <h3 class="node-name">ingestao-e-topologia</h3>
+      <p class="node-desc">Analisa as peças de entrada do LegoLoop, computa dimensões anti-transbordamento e mapeia badges da paleta LegoPress.</p>
+      <div class="node-gate">Gate: topologia.json gerado &gt;= 30 palavras</div>
+    </div>
+
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id skill">e03 · SKILL</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">sonnet / high</small>
       </div>
+      <h3 class="node-name">geracao-svg-html</h3>
+      <p class="node-desc">Gera o documento HTML editorial auto-contido com SVG ortogonal, máscaras opacas, zero serifa e classe diagram-canvas.</p>
+      <div class="node-gate">Gate: src/&lt;slug&gt;.html &gt;= 50 palavras + tag &lt;svg&gt;</div>
+    </div>
+
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id skill">e04 · SKILL</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">sonnet / medium</small>
+      </div>
+      <h3 class="node-name">micro-animacao</h3>
+      <p class="node-desc">Injeta animações CSS nativas de pulso (@keyframes flow-pulse) e provê a composição Remotion opcional para renderização de vídeo.</p>
+      <div class="node-gate">Gate: animation/composition.css &gt;= 10 palavras</div>
+    </div>
+
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id script">e05 · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">python / local</small>
+      </div>
+      <h3 class="node-name">gate-e-exportacao</h3>
+      <p class="node-desc">Executa o exportador Python que sanitiza o SVG para exportação standalone compatível com o Typst dos livros do LegoPress.</p>
+      <div class="node-gate">Gate: export/&lt;slug&gt;.svg &gt;= 20 palavras + exit 0</div>
+    </div>
+
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id skill">e06 · SKILL</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">haiku / low</small>
+      </div>
+      <h3 class="node-name">fechamento-e-anticorpos</h3>
+      <p class="node-desc">Consolida novos achados imunológicos em anticorpos.json e emite o relatório técnico comprobatório em docs/reports/.</p>
+      <div class="node-gate">Gate: docs/reports/REPORT.md &gt;= 30 palavras</div>
     </div>
   </div>
+</section>
 
-  <div class="legend-section">
-    <h4>Tipos de Arestas e Conexões</h4>
-    <div class="legend-grid">
-      <div class="legend-item">
-        <svg class="arrow-icon" width="24" height="8" viewBox="0 0 28 10" style="width:24px;height:8px;max-width:24px;max-height:8px;flex-shrink:0;">
-          <line x1="0" y1="5" x2="20" y2="5" stroke="#bf4520" stroke-width="2"/>
-          <path d="M18,1 L26,5 L18,9 Z" fill="#bf4520"/>
-        </svg>
-        <span>Aresta contínua vermelha: Rota primária obrigatória</span>
-      </div>
-      <div class="legend-item">
-        <svg class="arrow-icon" width="24" height="8" viewBox="0 0 28 10" style="width:24px;height:8px;max-width:24px;max-height:8px;flex-shrink:0;">
-          <line x1="0" y1="5" x2="20" y2="5" stroke="#565b6e" stroke-width="1.5" stroke-dasharray="4,3"/>
-          <path d="M18,1 L26,5 L18,9 Z" fill="#565b6e"/>
-        </svg>
-        <span>Aresta tracejada cinza: Fluxo condicional / assíncrono</span>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- SEÇÃO 02: FLUXOGRAMA VETORIAL DINÂMICO -->
+<section class="section">
+  <h2 class="section-title">02 — Fluxograma Lógico de Encadeamento com Animação Contínua</h2>
+  <p class="section-sub">Visualização ortogonal anti-transbordamento do pipeline. As partículas pontilhadas em movimento representam o fluxo de dados assíncrono entre os nós.</p>
 
-<div class="summary">
-  <div class="summary-card">
-    <strong>Q1 · Inicialização (e01)</strong>
-    Garante criação isolada em <code>docs/diagrams/&lt;slug&gt;/</code> com anticorpos carregados previamente.
+  <div class="diagram-wrapper">
+    <svg class="diagram-canvas" viewBox="0 0 1040 640" role="img" aria-labelledby="flow-title flow-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="flow-title">Fluxo de Execução do Processo legoloop-diagram-design</title>
+      <desc id="flow-desc">Diagrama de fluxo ortogonal de seis nós sequenciais demonstrando o encadeamento do processo de design de diagramas do LegoLoop.</desc>
+
+      <defs>
+        <!-- Marcadores de Seta -->
+        <marker id="arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+        <marker id="arr-accent" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#bf4520"/>
+        </marker>
+        <marker id="arr-typst" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#2563eb"/>
+        </marker>
+      </defs>
+
+      <!-- Fundo Principal com Tom Descansado -->
+      <rect width="1040" height="640" fill="#f5f5f5" rx="8"/>
+
+      <!-- Faixas de Camadas -->
+      <rect x="24" y="24" width="992" height="84" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="40" y="44" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#5a6580">CAMADA 01 · SETUP &amp; GOVERNANÇA DE ARQUIVOS</text>
+
+      <rect x="24" y="124" width="992" height="108" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="40" y="144" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#5a6580">CAMADA 02 · INGESTÃO TOPOLÓGICA &amp; DESIGN SYSTEM</text>
+
+      <rect x="24" y="248" width="992" height="114" rx="6" fill="rgba(191,69,32,0.04)" stroke="#bf4520" stroke-width="1"/>
+      <text x="40" y="268" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#bf4520">CAMADA 03 · COMPILAÇÃO EDITORIAL VETORIAL (MOTOR SVG)</text>
+
+      <rect x="24" y="378" width="992" height="114" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="40" y="398" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#5a6580">CAMADA 04 · CAMADA DE MOVIMENTO &amp; EXPORTAÇÃO</text>
+
+      <rect x="24" y="508" width="992" height="108" rx="6" fill="rgba(37,99,235,0.04)" stroke="#2563eb" stroke-width="1"/>
+      <text x="40" y="528" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#2563eb">CAMADA 05 · FECHAMENTO CANÔNICO &amp; LIVRO TYPST</text>
+
+      <!-- ─── CONECTORES ORTOGONAIS COM ANIMAÇÃO CONTÍNUA ─── -->
+      <!-- e01 -> e02 -->
+      <path d="M520,88 L520,154" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-flow)"/>
+      
+      <!-- e02 -> e03 -->
+      <path d="M520,208 L520,278" fill="none" stroke="#bf4520" stroke-width="2" class="flow-edge-accent" marker-end="url(#arr-accent)"/>
+
+      <!-- e03 -> e04 (ramo esquerdo) -->
+      <path d="M420,332 L420,358 L320,358 L320,408" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-flow)"/>
+
+      <!-- e03 -> e05 (ramo direito / script) -->
+      <path d="M620,332 L620,358 L720,358 L720,408" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#arr-flow)"/>
+
+      <!-- e04 & e05 -> e06 -->
+      <path d="M320,462 L320,488 L470,488 L470,538" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#arr-flow)"/>
+      <path d="M720,462 L720,488 L570,488 L570,538" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#arr-typst)"/>
+
+      <!-- ─── CAIXAS DOS NÓS COM MÁSCARAS OPACAS ─── -->
+
+      <!-- NÓ e01 -->
+      <g transform="translate(380, 52)">
+        <rect x="0" y="0" width="280" height="38" rx="6" fill="#ffffff" stroke="#bfc0c0" stroke-width="1.2"/>
+        <rect x="8" y="8" width="56" height="22" rx="3" fill="#2563eb"/>
+        <text x="36" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e01 SKILL</text>
+        <text x="74" y="23" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#111111">inicializar-slug-e-anticorpos</text>
+      </g>
+
+      <!-- NÓ e02 -->
+      <g transform="translate(370, 160)">
+        <rect x="0" y="0" width="300" height="48" rx="6" fill="#ffffff" stroke="#bfc0c0" stroke-width="1.2"/>
+        <rect x="8" y="8" width="56" height="22" rx="3" fill="#2563eb"/>
+        <text x="36" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e02 SKILL</text>
+        <text x="74" y="22" font-family="'Geist', sans-serif" font-size="12" font-weight="700" fill="#111111">ingestao-e-topologia</text>
+        <text x="74" y="38" font-family="'Geist Mono', monospace" font-size="10" fill="#5a6580">Mapeamento de Peças &amp; Larguras</text>
+      </g>
+
+      <!-- NÓ e03 (FOCAL / ACCENT) -->
+      <g transform="translate(340, 280)">
+        <rect x="0" y="0" width="360" height="52" rx="6" fill="#ffffff" stroke="#bf4520" stroke-width="2"/>
+        <rect x="10" y="10" width="56" height="22" rx="3" fill="#bf4520"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e03 FOCAL</text>
+        <text x="76" y="23" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#111111">geracao-svg-html</text>
+        <text x="76" y="41" font-family="'Geist Mono', monospace" font-size="10" fill="#5a6580">Grid Ortogonal · Zero Transbordamento</text>
+      </g>
+
+      <!-- NÓ e04 (ANIMAÇÃO) -->
+      <g transform="translate(180, 410)">
+        <rect x="0" y="0" width="280" height="50" rx="6" fill="#ffffff" stroke="#bfc0c0" stroke-width="1.2"/>
+        <rect x="8" y="8" width="56" height="22" rx="3" fill="#2563eb"/>
+        <text x="36" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e04 SKILL</text>
+        <text x="74" y="22" font-family="'Geist', sans-serif" font-size="12" font-weight="700" fill="#111111">micro-animacao</text>
+        <text x="74" y="38" font-family="'Geist Mono', monospace" font-size="10" fill="#5a6580">CSS Keyframes &amp; Remotion Tsx</text>
+      </g>
+
+      <!-- NÓ e05 (SCRIPT PYTHON) -->
+      <g transform="translate(580, 410)">
+        <rect x="0" y="0" width="280" height="50" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1.5"/>
+        <rect x="8" y="8" width="62" height="22" rx="3" fill="#0f172a"/>
+        <text x="39" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e05 SCRIPT</text>
+        <text x="80" y="22" font-family="'Geist', sans-serif" font-size="12" font-weight="700" fill="#111111">gate-e-exportacao</text>
+        <text x="80" y="38" font-family="'Geist Mono', monospace" font-size="10" fill="#5a6580">export_svg.py &gt; Typst Standalone</text>
+      </g>
+
+      <!-- NÓ e06 (FECHAMENTO) -->
+      <g transform="translate(370, 540)">
+        <rect x="0" y="0" width="300" height="50" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+        <rect x="8" y="8" width="56" height="22" rx="3" fill="#2563eb"/>
+        <text x="36" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e06 SKILL</text>
+        <text x="74" y="22" font-family="'Geist', sans-serif" font-size="12" font-weight="700" fill="#111111">fechamento-e-anticorpos</text>
+        <text x="74" y="38" font-family="'Geist Mono', monospace" font-size="10" fill="#2563eb">Relatório Factual &amp; Imunologia</text>
+      </g>
+    </svg>
   </div>
-  <div class="summary-card">
-    <strong>Q2 · Geração e Gate (e03 / e05)</strong>
-    Construção do artefato visual em SVG/HTML com validação matemática e exportação automatizada.
+</section>
+
+<!-- SEÇÃO 03: MATRIZ TÉCNICA DE ENTRADAS, SAÍDAS E GATES -->
+<section class="section">
+  <h2 class="section-title">03 — Matriz de Entradas, Saídas e Barreiras Mecânicas</h2>
+  <p class="section-sub">Tabela com contratos formais de arquivos, validadores e saídas de cada camada.</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Tipo</th>
+          <th>Insumo Principal (context_in)</th>
+          <th>Artefato Emitido (context_out)</th>
+          <th>Barreira Mecânica (Gate)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>e01</strong></td>
+          <td>Skill</td>
+          <td><code>anticorpos.json</code> do cofre</td>
+          <td><code>manifest.json</code> + 5 subpastas</td>
+          <td><code>file_exists('manifest.json')</code></td>
+        </tr>
+        <tr>
+          <td><strong>e02</strong></td>
+          <td>Skill</td>
+          <td><code>manifest.json</code></td>
+          <td><code>quadrantes.json</code> / <code>topologia.json</code></td>
+          <td><code>word_count &gt;= 30</code></td>
+        </tr>
+        <tr>
+          <td><strong>e03</strong></td>
+          <td>Skill</td>
+          <td><code>topologia.json</code></td>
+          <td><code>src/&lt;slug&gt;.html</code></td>
+          <td><code>word_count &gt;= 50 &amp;&amp; has_tag('&lt;svg')</code></td>
+        </tr>
+        <tr>
+          <td><strong>e04</strong></td>
+          <td>Skill</td>
+          <td><code>src/&lt;slug&gt;.html</code></td>
+          <td><code>animation/composition.css</code></td>
+          <td><code>word_count &gt;= 10</code></td>
+        </tr>
+        <tr>
+          <td><strong>e05</strong></td>
+          <td>Script</td>
+          <td><code>src/&lt;slug&gt;.html</code></td>
+          <td><code>export/&lt;slug&gt;.svg</code></td>
+          <td><code>exit_code == 0 &amp;&amp; word_count &gt;= 20</code></td>
+        </tr>
+        <tr>
+          <td><strong>e06</strong></td>
+          <td>Skill</td>
+          <td><code>export/&lt;slug&gt;.svg</code></td>
+          <td><code>docs/reports/REPORT.md</code></td>
+          <td><code>word_count &gt;= 30</code></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <div class="summary-card">
-    <strong>Q3/Q4 · Micro-animações e Fechamento (e04 / e06)</strong>
-    Composição Remotion, animação CSS nativa e registro de telemetria em relatório de conclusão.
+</section>
+
+<!-- SEÇÃO 04: GOVERNANÇA DE ANTICORPOS E REGRAS INVIOLÁVEIS -->
+<section class="section">
+  <h2 class="section-title">04 — Governança de Anticorpos e Paridade com o LegoPress</h2>
+  <p class="section-sub">Diretrizes obrigatórias testadas em tempo de build para prevenir recorrência de falhas.</p>
+
+  <div style="background:var(--paper-card);border:1px solid var(--rule);border-radius:8px;padding:20px;font-size:14px;color:var(--ink);">
+    <p style="margin-bottom:12px;"><strong>1. Fundo Descansado:</strong> O background de página do diagrama usa obrigatoriamente <code>#f5f5f5</code> (white-smoke). É proibido o uso de <code>#ffffff</code> puro na página para evitar fadiga ocular.</p>
+    <p style="margin-bottom:12px;"><strong>2. Zero Serifa:</strong> O arquivo utiliza exclusivamente a família <code>Geist</code> para textos corridos e <code>Geist Mono</code> para metadados e termos de máquina. Fontes serifadas (como Instrument Serif ou Georgia) são expressamente bloqueadas pelo validador.</p>
+    <p style="margin-bottom:12px;"><strong>3. Classe Obrigatória:</strong> A tag <code>&lt;svg&gt;</code> principal carrega <code>class="diagram-canvas"</code> com atributos de acessibilidade (<code>role="img"</code> e <code>aria-labelledby</code>).</p>
+    <p><strong>4. Exportação Dual:</strong> O SVG gerado funciona de forma animada na Web e no Studio, e compila estaticamente com pureza vetorial no Typst dos livros do LegoPress sem necessidade de engines 3D externas.</p>
   </div>
-</div>
+</section>
 
 </body>
 </html>

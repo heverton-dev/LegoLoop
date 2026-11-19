@@ -1,3 +1,4 @@
+```tsx
 import React from "react";
 import {
   AbsoluteFill,
@@ -8,194 +9,202 @@ import {
   useVideoConfig,
 } from "remotion";
 
-const TOKENS = {
+const FPS = 30;
+const WIDTH = 1040;
+const HEIGHT = 640;
+const FADE_MS = 200;
+const STAGGER_MS = 50;
+const SLIDE_PX = 24;
+
+const COLORS = {
   paper: "#f5f5f5",
-  ink: "#2d3142",
+  paper2: "#ececec",
+  card: "#ffffff",
+  ink: "#111111",
+  muted: "#4f5d75",
+  soft: "#5a6580",
+  ruleSolid: "#bfc0c0",
+  skill: "#2563eb",
+  script: "#0f172a",
   accent: "#bf4520",
 };
 
-const FONT_NAME = "'Geist', system-ui, 'Segoe UI', Arial, sans-serif";
-const FONT_TECH = "'Geist Mono', ui-monospace, Consolas, monospace";
+const FONT_SANS = "'Geist', system-ui, sans-serif";
+const FONT_MONO = "'Geist Mono', ui-monospace, monospace";
 
-const FADE_MS = 200;
-const STAGGER_MS = 50;
-const SLIDE_PX = 12;
+const msToFrames = (ms: number): number => Math.round((ms / 1000) * FPS);
+
+type LayerSpec = {
+  y: number;
+  height: number;
+  label: string;
+  fill: string;
+  stroke: string;
+  text: string;
+};
 
 type NodeSpec = {
   id: string;
+  badge: string;
+  badgeWidth: number;
+  name: string;
+  sub?: string;
   x: number;
   y: number;
-  tag: string;
-  tagWidth: number;
-  tagSpacing: number;
-  name: string;
-  line1: string;
-  line2: string;
-  focus: boolean;
+  width: number;
+  height: number;
+  stroke: string;
+  strokeWidth: number;
+  badgeFill: string;
+  subFill: string;
 };
 
 type EdgeSpec = {
-  id: string;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  label: string;
-  maskX: number;
-  maskY: number;
-  maskWidth: number;
-  textX: number;
-  textY: number;
-  anchor: "start" | "middle";
+  d: string;
+  stroke: string;
+  from: number;
+  marker: string;
 };
 
+const LAYERS: LayerSpec[] = [
+  { y: 24, height: 84, label: "CAMADA 01 · SETUP & GOVERNANÇA DE ARQUIVOS", fill: COLORS.paper2, stroke: COLORS.ruleSolid, text: COLORS.soft },
+  { y: 124, height: 108, label: "CAMADA 02 · INGESTÃO TOPOLÓGICA & DESIGN SYSTEM", fill: COLORS.paper2, stroke: COLORS.ruleSolid, text: COLORS.soft },
+  { y: 248, height: 114, label: "CAMADA 03 · COMPILAÇÃO EDITORIAL VETORIAL (MOTOR SVG)", fill: "rgba(191,69,32,0.04)", stroke: COLORS.accent, text: COLORS.accent },
+  { y: 378, height: 114, label: "CAMADA 04 · CAMADA DE MOVIMENTO & EXPORTAÇÃO", fill: COLORS.paper2, stroke: COLORS.ruleSolid, text: COLORS.soft },
+  { y: 508, height: 108, label: "CAMADA 05 · FECHAMENTO CANÔNICO & LIVRO TYPST", fill: "rgba(37,99,235,0.04)", stroke: COLORS.skill, text: COLORS.skill },
+];
+
 const NODES: NodeSpec[] = [
-  { id: "e01", x: 40, y: 60, tag: "Q1 ENTRADA", tagWidth: 112, tagSpacing: 0.8, name: "Inicializar slug", line1: "e01 / 5 subdiretórios", line2: "anticorpos.json", focus: false },
-  { id: "e02", x: 340, y: 60, tag: "Q2 SELEÇÃO", tagWidth: 112, tagSpacing: 0.8, name: "Selecionar tipo", line1: "e02 / 1 de 50 tipos", line2: "máx. 9 nós, 12 setas", focus: false },
-  { id: "e03", x: 640, y: 60, tag: "Q3 GERAÇÃO", tagWidth: 112, tagSpacing: 0.8, name: "Gerar SVG e HTML", line1: "e03 / grid ortogonal", line2: "máscaras opacas", focus: true },
-  { id: "e04", x: 640, y: 240, tag: "Q3 GERAÇÃO", tagWidth: 112, tagSpacing: 0.8, name: "Animar em CSS", line1: "e04 / flow-dash", line2: "stroke-dashoffset", focus: false },
-  { id: "e05", x: 340, y: 240, tag: "Q4 FECHAMENTO", tagWidth: 112, tagSpacing: 0.4, name: "Exportar e validar", line1: "e05 / SVG e PNG", line2: "gate com exit code 0", focus: true },
-  { id: "e06", x: 40, y: 240, tag: "Q4 FECHAMENTO", tagWidth: 112, tagSpacing: 0.4, name: "Fechar e relatar", line1: "e06 / anticorpos.json", line2: "relatório em docs/reports", focus: false },
+  { id: "e01", badge: "e01 SKILL", badgeWidth: 56, name: "inicializar-slug-e-anticorpos", x: 380, y: 52, width: 280, height: 38, stroke: COLORS.ruleSolid, strokeWidth: 1.2, badgeFill: COLORS.skill, subFill: COLORS.soft },
+  { id: "e02", badge: "e02 SKILL", badgeWidth: 56, name: "ingestao-e-topologia", sub: "Mapeamento de Peças & Larguras", x: 370, y: 160, width: 300, height: 48, stroke: COLORS.ruleSolid, strokeWidth: 1.2, badgeFill: COLORS.skill, subFill: COLORS.soft },
+  { id: "e03", badge: "e03 FOCAL", badgeWidth: 56, name: "geracao-svg-html", sub: "Grid Ortogonal · Zero Transbordamento", x: 340, y: 280, width: 360, height: 52, stroke: COLORS.accent, strokeWidth: 2, badgeFill: COLORS.accent, subFill: COLORS.soft },
+  { id: "e04", badge: "e04 SKILL", badgeWidth: 56, name: "micro-animacao", sub: "CSS Keyframes & Remotion Tsx", x: 180, y: 410, width: 280, height: 50, stroke: COLORS.ruleSolid, strokeWidth: 1.2, badgeFill: COLORS.skill, subFill: COLORS.soft },
+  { id: "e05", badge: "e05 SCRIPT", badgeWidth: 62, name: "gate-e-exportacao", sub: "export_svg.py > Typst Standalone", x: 580, y: 410, width: 280, height: 50, stroke: COLORS.script, strokeWidth: 1.5, badgeFill: COLORS.script, subFill: COLORS.soft },
+  { id: "e06", badge: "e06 SKILL", badgeWidth: 56, name: "fechamento-e-anticorpos", sub: "Relatório Factual & Imunologia", x: 370, y: 540, width: 300, height: 50, stroke: COLORS.skill, strokeWidth: 1.8, badgeFill: COLORS.skill, subFill: COLORS.skill },
 ];
 
 const EDGES: EdgeSpec[] = [
-  { id: "a12", x1: 240, y1: 108, x2: 340, y2: 108, label: "MANIFESTO", maskX: 246, maskY: 84, maskWidth: 88, textX: 290, textY: 96, anchor: "middle" },
-  { id: "a23", x1: 540, y1: 108, x2: 640, y2: 108, label: "TIPO VISUAL", maskX: 546, maskY: 84, maskWidth: 88, textX: 590, textY: 96, anchor: "middle" },
-  { id: "a34", x1: 740, y1: 156, x2: 740, y2: 240, label: "HTML SRC", maskX: 748, maskY: 190, maskWidth: 80, textX: 754, textY: 202, anchor: "start" },
-  { id: "a45", x1: 640, y1: 288, x2: 540, y2: 288, label: "ANIMADO", maskX: 546, maskY: 264, maskWidth: 88, textX: 590, textY: 276, anchor: "middle" },
-  { id: "a56", x1: 340, y1: 288, x2: 240, y2: 288, label: "GATE EXIT 0", maskX: 246, maskY: 264, maskWidth: 88, textX: 290, textY: 276, anchor: "middle" },
+  { d: "M520,88 L520,154", stroke: COLORS.muted, from: 1, marker: "arr-flow" },
+  { d: "M520,208 L520,278", stroke: COLORS.accent, from: 2, marker: "arr-accent" },
+  { d: "M420,332 L420,358 L320,358 L320,408", stroke: COLORS.muted, from: 3, marker: "arr-flow" },
+  { d: "M620,332 L620,358 L720,358 L720,408", stroke: COLORS.script, from: 4, marker: "arr-flow" },
+  { d: "M320,462 L320,488 L470,488 L470,538", stroke: COLORS.muted, from: 5, marker: "arr-flow" },
+  { d: "M720,462 L720,488 L570,488 L570,538", stroke: COLORS.skill, from: 5, marker: "arr-typst" },
 ];
 
-const useFadeSlide = (delayFrames: number) => {
+const fadeProgress = (frame: number, startFrame: number): number =>
+  interpolate(frame, [startFrame, startFrame + msToFrames(FADE_MS)], [0, 1], {
+    easing: Easing.out(Easing.cubic),
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+const nodeStart = (index: number): number =>
+  msToFrames(FADE_MS) + msToFrames(STAGGER_MS) * index * 2;
+
+const DiagramLayer: React.FC<{ spec: LayerSpec; index: number }> = ({ spec, index }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const durationFrames = Math.max(1, Math.round((FADE_MS / 1000) * fps));
-  const local = frame - delayFrames;
-  const opacity = interpolate(local, [0, durationFrames], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.out(Easing.cubic),
-  });
-  const offset = interpolate(local, [0, durationFrames], [SLIDE_PX, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.out(Easing.cubic),
-  });
-  return { opacity, offset };
-};
-
-const Node: React.FC<{ spec: NodeSpec; index: number }> = ({ spec, index }) => {
-  const { fps } = useVideoConfig();
-  const staggerFrames = Math.max(1, Math.round((STAGGER_MS / 1000) * fps));
-  const { opacity, offset } = useFadeSlide(index * staggerFrames);
-  const stroke = spec.focus ? TOKENS.accent : TOKENS.ink;
-  const fill = spec.focus ? TOKENS.accent : TOKENS.ink;
-  const fillOpacity = spec.focus ? 0.08 : 0.04;
-  const tagStrokeOpacity = spec.focus ? 1 : 0.72;
-  const tagY = spec.y + 14;
-  const textBase = spec.y;
-
-  return (
-    <g opacity={opacity} transform={`translate(0 ${offset})`}>
-      <rect x={spec.x} y={spec.y} width={200} height={96} rx={6} fill={TOKENS.paper} />
-      <rect x={spec.x} y={spec.y} width={200} height={96} rx={6} fill={fill} fillOpacity={fillOpacity} stroke={stroke} strokeWidth={1.5} />
-      <rect x={spec.x + 16} y={tagY} width={spec.tagWidth} height={16} rx={2} fill="none" stroke={stroke} strokeOpacity={tagStrokeOpacity} />
-      <text x={spec.x + 24} y={tagY + 12} fontFamily={FONT_TECH} fontSize={10} letterSpacing={spec.tagSpacing} fill={spec.focus ? TOKENS.accent : TOKENS.ink}>
-        {spec.tag}
-      </text>
-      <text x={spec.x + 16} y={textBase + 52} fontFamily={FONT_NAME} fontSize={14} fontWeight={600} fill={TOKENS.ink}>
-        {spec.name}
-      </text>
-      <text x={spec.x + 16} y={textBase + 70} fontFamily={FONT_TECH} fontSize={10} fill={TOKENS.ink} fillOpacity={0.78}>
-        {spec.line1}
-      </text>
-      <text x={spec.x + 16} y={textBase + 84} fontFamily={FONT_TECH} fontSize={10} fill={TOKENS.ink} fillOpacity={0.78}>
-        {spec.line2}
-      </text>
-    </g>
-  );
-};
-
-const Edge: React.FC<{ spec: EdgeSpec; index: number }> = ({ spec, index }) => {
-  const { fps } = useVideoConfig();
-  const staggerFrames = Math.max(1, Math.round((STAGGER_MS / 1000) * fps));
-  const base = NODES.length * staggerFrames + Math.round((FADE_MS / 1000) * fps);
-  const { opacity } = useFadeSlide(base + index * staggerFrames);
-
+  const opacity = fadeProgress(frame, index * msToFrames(STAGGER_MS));
   return (
     <g opacity={opacity}>
-      <line x1={spec.x1} y1={spec.y1} x2={spec.x2} y2={spec.y2} stroke={TOKENS.ink} strokeOpacity={0.72} strokeWidth={1.5} markerEnd="url(#legoloop-arrow)" />
-      <rect x={spec.maskX} y={spec.maskY} width={spec.maskWidth} height={16} fill={TOKENS.paper} />
-      <text x={spec.textX} y={spec.textY} textAnchor={spec.anchor} fontFamily={FONT_TECH} fontSize={10} letterSpacing={0.8} fill={TOKENS.ink}>
+      <rect x={24} y={spec.y} width={992} height={spec.height} rx={6} fill={spec.fill} stroke={spec.stroke} strokeWidth={1} />
+      <text x={40} y={spec.y + 20} fontFamily={FONT_MONO} fontSize={9} fontWeight={600} letterSpacing="0.14em" fill={spec.text}>
         {spec.label}
       </text>
     </g>
   );
 };
 
-const Legend: React.FC = () => {
-  const { fps } = useVideoConfig();
-  const staggerFrames = Math.max(1, Math.round((STAGGER_MS / 1000) * fps));
-  const base =
-    (NODES.length + EDGES.length) * staggerFrames +
-    Math.round((FADE_MS / 1000) * fps);
-  const { opacity } = useFadeSlide(base);
-
+const DiagramNode: React.FC<{ spec: NodeSpec; index: number }> = ({ spec, index }) => {
+  const frame = useCurrentFrame();
+  const start = nodeStart(index);
+  const progress = fadeProgress(frame, start);
+  const offset = (1 - progress) * SLIDE_PX;
+  const hasSub = Boolean(spec.sub);
+  const badgeY = spec.id === "e03" ? 10 : 8;
+  const badgeX = spec.id === "e03" ? 10 : 8;
+  const textX = spec.id === "e03" ? 76 : spec.id === "e05" ? 80 : 74;
+  const nameY = hasSub ? (spec.id === "e03" ? 23 : 22) : 23;
+  const nameSize = spec.id === "e03" ? 13 : 12;
+  const nameWeight = spec.id === "e01" ? 600 : 700;
   return (
-    <g opacity={opacity}>
-      <line x1={40} y1={360} x2={840} y2={360} stroke={TOKENS.ink} strokeOpacity={0.24} strokeWidth={1} />
-      <rect x={40} y={380} width={24} height={16} rx={6} fill={TOKENS.ink} fillOpacity={0.04} stroke={TOKENS.ink} strokeWidth={1.5} />
-      <text x={76} y={392} fontFamily={FONT_TECH} fontSize={10} fill={TOKENS.ink}>Etapa do processo</text>
-      <rect x={272} y={380} width={24} height={16} rx={6} fill={TOKENS.accent} fillOpacity={0.08} stroke={TOKENS.accent} strokeWidth={1.5} />
-      <text x={308} y={392} fontFamily={FONT_TECH} fontSize={10} fill={TOKENS.ink}>Foco editorial</text>
-      <line x1={480} y1={388} x2={512} y2={388} stroke={TOKENS.ink} strokeOpacity={0.72} strokeWidth={1.5} markerEnd="url(#legoloop-arrow)" />
-      <text x={528} y={392} fontFamily={FONT_TECH} fontSize={10} fill={TOKENS.ink}>Saída verificada pelo gate</text>
+    <g transform={`translate(${spec.x}, ${spec.y + offset})`} opacity={progress}>
+      <rect x={0} y={0} width={spec.width} height={spec.height} rx={6} fill={COLORS.card} stroke={spec.stroke} strokeWidth={spec.strokeWidth} />
+      <rect x={badgeX} y={badgeY} width={spec.badgeWidth} height={22} rx={3} fill={spec.badgeFill} />
+      <text x={badgeX + spec.badgeWidth / 2} y={badgeY + 14} fontFamily={FONT_MONO} fontSize={9} fontWeight={700} fill="#ffffff" textAnchor="middle">
+        {spec.badge}
+      </text>
+      <text x={textX} y={nameY} fontFamily={FONT_SANS} fontSize={nameSize} fontWeight={nameWeight} fill={COLORS.ink}>
+        {spec.name}
+      </text>
+      {hasSub ? (
+        <text x={textX} y={spec.id === "e03" ? 41 : 38} fontFamily={FONT_MONO} fontSize={10} fill={spec.subFill}>
+          {spec.sub}
+        </text>
+      ) : null}
     </g>
   );
 };
 
-export const LegoLoopComposition: React.FC = () => {
+const DiagramEdge: React.FC<{ spec: EdgeSpec }> = ({ spec }) => {
+  const frame = useCurrentFrame();
+  const start = nodeStart(spec.from) - msToFrames(FADE_MS) / 2;
+  const opacity = fadeProgress(frame, Math.max(start, 0));
   return (
-    <AbsoluteFill style={{ backgroundColor: TOKENS.paper }}>
+    <path d={spec.d} fill="none" stroke={spec.stroke} strokeWidth={2} opacity={opacity} markerEnd={`url(#${spec.marker})`} />
+  );
+};
+
+const Marker: React.FC<{ id: string; fill: string }> = ({ id, fill }) => (
+  <marker id={id} markerWidth={8} markerHeight={8} refX={7} refY={4} orient="auto">
+    <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill={fill} />
+  </marker>
+);
+
+export const LegoloopDiagramComposition: React.FC = () => {
+  const { width, height } = useVideoConfig();
+  return (
+    <AbsoluteFill style={{ backgroundColor: COLORS.paper }}>
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 880 420"
-        width="100%"
-        height="100%"
+        width={width}
+        height={height}
+        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         role="img"
-        aria-labelledby="legoloop-diagram-design-anim-title legoloop-diagram-design-anim-desc"
+        aria-labelledby="comp-title comp-desc"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <title id="legoloop-diagram-design-anim-title">Fluxo de seis nós do LegoLoop Diagram Design</title>
-        <desc id="legoloop-diagram-design-anim-desc">
-          Animação de entrada única dos seis nós, das cinco conexões e da legenda do processo.
+        <title id="comp-title">Animação de entrada do fluxo legoloop-diagram-design</title>
+        <desc id="comp-desc">
+          Seis nós sequenciais entram uma única vez com fade e deslocamento escalonado, seguidos pelos conectores ortogonais.
         </desc>
         <defs>
-          <marker id="legoloop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill={TOKENS.ink} fillOpacity={0.72} />
-          </marker>
+          <Marker id="arr-flow" fill={COLORS.muted} />
+          <Marker id="arr-accent" fill={COLORS.accent} />
+          <Marker id="arr-typst" fill={COLORS.skill} />
         </defs>
-        <rect x={0} y={0} width={880} height={420} fill={TOKENS.paper} />
-        {EDGES.map((edge, index) => (
-          <Edge key={edge.id} spec={edge} index={index} />
+        <rect width={WIDTH} height={HEIGHT} fill={COLORS.paper} rx={8} />
+        {LAYERS.map((layer, i) => (
+          <DiagramLayer key={layer.label} spec={layer} index={i} />
         ))}
-        {NODES.map((node, index) => (
-          <Node key={node.id} spec={node} index={index} />
+        {EDGES.map((edge) => (
+          <DiagramEdge key={edge.d} spec={edge} />
         ))}
-        <Legend />
+        {NODES.map((node, i) => (
+          <DiagramNode key={node.id} spec={node} index={i} />
+        ))}
       </svg>
     </AbsoluteFill>
   );
 };
 
-export const RemotionRoot: React.FC = () => {
-  return (
-    <Composition
-      id="LegoLoopDiagramDesign"
-      component={LegoLoopComposition}
-      durationInFrames={90}
-      fps={30}
-      width={1760}
-      height={840}
-    />
-  );
-};
+export const RemotionRoot: React.FC = () => (
+  <Composition
+    id="LegoloopDiagramDesign"
+    component={LegoloopDiagramComposition}
+    durationInFrames={90}
+    fps={FPS}
+    width={WIDTH}
+    height={HEIGHT}
+  />
+);
+```

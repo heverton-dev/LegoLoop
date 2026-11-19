@@ -1,114 +1,261 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" role="img" aria-labelledby="legoloop-diagram-design-title legoloop-diagram-design-desc" id="d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root">
-      <title id="legoloop-diagram-design-title">Fluxo de seis nós do LegoLoop Diagram Design</title>
-      <desc id="legoloop-diagram-design-desc">Fluxograma com seis etapas em sequência, de inicializar o slug até fechar o relatório de anticorpos, agrupadas em quatro quadrantes.</desc>
+<svg class="diagram-canvas" viewBox="0 0 1040 640" role="img" aria-labelledby="flow-title flow-desc" xmlns="http://www.w3.org/2000/svg" id="d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root">
+      <title id="flow-title">Fluxo de Execução do Processo legoloop-diagram-design</title>
+      <desc id="flow-desc">Diagrama de fluxo ortogonal de seis nós sequenciais demonstrando o encadeamento do processo de design de diagramas do LegoLoop.</desc>
+
       <defs>
       <style>@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Sans+TC:wght@400;500;600&amp;display=swap');
-      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root { --paper: #f5f5f5;
-    --ink: #2d3142;
-    --accent: #bf4520;
-    --font-name: "Geist", system-ui, "Segoe UI", Arial, sans-serif;
-    --font-tech: "Geist Mono", ui-monospace, Consolas, "Courier New", monospace; }
-      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root { color: var(--ink); font-family: var(--font-name); }
-      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .lead { font-size: 16px; max-width: 640px; margin: 0 0 32px; }
-      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .diagram-wrap { overflow-x: auto;
-    border: 1px solid rgba(45, 49, 66, 0.24);
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root { --paper:        #f5f5f5;   
+    --paper-2:      #ececec;   
+    --paper-card:   #ffffff;   
+    --ink:          #2d3142;   
+    --ink-strong:   #111111;   
+    --muted:        #4f5d75;   
+    --soft:         #5a6580;   
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   
+    
+    
+    --cor-skill:     #2563eb;  
+    --cor-script:    #0f172a;  
+    --cor-gate:      #dc2626;  
+    --cor-stopgate:  #d97706;  
+    --cor-mcp:       #7c3aed;  
+    --cor-swarm:     #16a34a;  
+    --cor-accent:    #bf4520;  
+    --cor-accent-bg: rgba(191,69,32,0.06);
+
+    --font-sans:    'Geist', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root { font-family: var(--font-sans); color: var(--ink); }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .page-header { border-bottom: 2px solid var(--cor-accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .page-eyebrow { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-accent);
+    margin-bottom: 8px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .page-title { font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .page-lead { font-size: 15px;
+    color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .page-meta { font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .page-meta span { display: flex; align-items: center; gap: 6px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .section { margin-bottom: 48px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .section-title { font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .section-sub { font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .nodes-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .node-card { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .node-card-header { display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .node-id { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #ffffff; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .node-id.skill { background: var(--cor-skill); }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .node-id.script { background: var(--cor-script); }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .node-id.gate { background: var(--cor-gate); }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .node-name { font-size: 16px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 6px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .node-desc { font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 12px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .node-gate { font-family: var(--font-mono);
+    font-size: 11px;
     background: var(--paper);
-    border-radius: 6px; }
-      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .diagram-wrap svg { display: block; width: 100%; min-width: 880px; height: auto; }</style>
-        <marker id="d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-legoloop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d3142" fill-opacity="0.72"/>
+    padding: 6px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border-left: 3px solid var(--cor-accent); }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .diagram-wrapper { background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .diagram-canvas { display: block;
+    width: 100%;
+    min-width: 1000px;
+    height: auto; }
+      @keyframes d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root-flow-pulse { from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; } }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .flow-edge { stroke-dasharray: 6 6;
+    animation: d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root-flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .flow-edge-accent { stroke-dasharray: 6 6;
+    animation: d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root-flow-pulse 0.9s linear infinite;
+    will-change: stroke-dashoffset; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root .table-wrapper { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root table { width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root th { background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid); }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root td { padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink); }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root tr:last-child td { border-bottom: none; }
+      #d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-root td code { font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted); }</style>
+        <!-- Marcadores de Seta -->
+        <marker id="d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+        <marker id="d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-arr-accent" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#bf4520"/>
+        </marker>
+        <marker id="d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-arr-typst" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#2563eb"/>
         </marker>
       </defs>
 
-      <rect x="0" y="0" width="880" height="420" fill="#f5f5f5"/>
+      <!-- Fundo Principal com Tom Descansado -->
+      <rect width="1040" height="640" fill="#f5f5f5" rx="8"/>
 
-      <!-- Conectores (desenhados antes dos nós) -->
-      <line x1="240" y1="108" x2="340" y2="108" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-legoloop-arrow)"/>
-      <line x1="540" y1="108" x2="640" y2="108" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-legoloop-arrow)"/>
-      <line x1="740" y1="156" x2="740" y2="240" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-legoloop-arrow)"/>
-      <line x1="640" y1="288" x2="540" y2="288" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-legoloop-arrow)"/>
-      <line x1="340" y1="288" x2="240" y2="288" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-legoloop-arrow)"/>
+      <!-- Faixas de Camadas -->
+      <rect x="24" y="24" width="992" height="84" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="40" y="44" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#5a6580">CAMADA 01 · SETUP &amp; GOVERNANÇA DE ARQUIVOS</text>
 
-      <!-- Rótulos sobre máscara opaca, com 8px de folga do traço -->
-      <rect x="246" y="84" width="88" height="16" fill="#f5f5f5"/>
-      <text x="290" y="96" text-anchor="middle" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">MANIFESTO</text>
+      <rect x="24" y="124" width="992" height="108" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="40" y="144" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#5a6580">CAMADA 02 · INGESTÃO TOPOLÓGICA &amp; DESIGN SYSTEM</text>
 
-      <rect x="546" y="84" width="88" height="16" fill="#f5f5f5"/>
-      <text x="590" y="96" text-anchor="middle" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">TIPO VISUAL</text>
+      <rect x="24" y="248" width="992" height="114" rx="6" fill="#bf4520" stroke="#bf4520" stroke-width="1" fill-opacity="0.04"/>
+      <text x="40" y="268" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#bf4520">CAMADA 03 · COMPILAÇÃO EDITORIAL VETORIAL (MOTOR SVG)</text>
 
-      <rect x="748" y="190" width="80" height="16" fill="#f5f5f5"/>
-      <text x="754" y="202" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">HTML SRC</text>
+      <rect x="24" y="378" width="992" height="114" rx="6" fill="#ececec" stroke="#bfc0c0" stroke-width="1"/>
+      <text x="40" y="398" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#5a6580">CAMADA 04 · CAMADA DE MOVIMENTO &amp; EXPORTAÇÃO</text>
 
-      <rect x="546" y="264" width="88" height="16" fill="#f5f5f5"/>
-      <text x="590" y="276" text-anchor="middle" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">ANIMADO</text>
+      <rect x="24" y="508" width="992" height="108" rx="6" fill="#2563eb" stroke="#2563eb" stroke-width="1" fill-opacity="0.04"/>
+      <text x="40" y="528" font-family="'Geist Mono', monospace" font-size="9" font-weight="600" letter-spacing="0.14em" fill="#2563eb">CAMADA 05 · FECHAMENTO CANÔNICO &amp; LIVRO TYPST</text>
 
-      <rect x="246" y="264" width="88" height="16" fill="#f5f5f5"/>
-      <text x="290" y="276" text-anchor="middle" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">GATE EXIT 0</text>
+      <!-- ─── CONECTORES ORTOGONAIS COM ANIMAÇÃO CONTÍNUA ─── -->
+      <!-- e01 -> e02 -->
+      <path d="M520,88 L520,154" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-arr-flow)"/>
+      
+      <!-- e02 -> e03 -->
+      <path d="M520,208 L520,278" fill="none" stroke="#bf4520" stroke-width="2" class="flow-edge-accent" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-arr-accent)"/>
 
-      <!-- e01 -->
-      <rect x="40" y="60" width="200" height="96" rx="6" fill="#f5f5f5"/>
-      <rect x="40" y="60" width="200" height="96" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
-      <rect x="56" y="74" width="112" height="16" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.72"/>
-      <text x="64" y="86" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">Q1 ENTRADA</text>
-      <text x="56" y="112" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Inicializar slug</text>
-      <text x="56" y="130" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e01 / 5 subdiretórios</text>
-      <text x="56" y="144" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">anticorpos.json</text>
+      <!-- e03 -> e04 (ramo esquerdo) -->
+      <path d="M420,332 L420,358 L320,358 L320,408" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-arr-flow)"/>
 
-      <!-- e02 -->
-      <rect x="340" y="60" width="200" height="96" rx="6" fill="#f5f5f5"/>
-      <rect x="340" y="60" width="200" height="96" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
-      <rect x="356" y="74" width="112" height="16" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.72"/>
-      <text x="364" y="86" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">Q2 SELEÇÃO</text>
-      <text x="356" y="112" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Selecionar tipo</text>
-      <text x="356" y="130" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e02 / 1 de 50 tipos</text>
-      <text x="356" y="144" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">máx. 9 nós, 12 setas</text>
+      <!-- e03 -> e05 (ramo direito / script) -->
+      <path d="M620,332 L620,358 L720,358 L720,408" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-arr-flow)"/>
 
-      <!-- e03 (foco 1) -->
-      <rect x="640" y="60" width="200" height="96" rx="6" fill="#f5f5f5"/>
-      <rect x="640" y="60" width="200" height="96" rx="6" fill="#bf4520" fill-opacity="0.08" stroke="#bf4520" stroke-width="1.5"/>
-      <rect x="656" y="74" width="112" height="16" rx="2" fill="none" stroke="#bf4520"/>
-      <text x="664" y="86" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#bf4520">Q3 GERAÇÃO</text>
-      <text x="656" y="112" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Gerar SVG e HTML</text>
-      <text x="656" y="130" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e03 / grid ortogonal</text>
-      <text x="656" y="144" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">máscaras opacas</text>
+      <!-- e04 & e05 -> e06 -->
+      <path d="M320,462 L320,488 L470,488 L470,538" fill="none" stroke="#4f5d75" stroke-width="2" class="flow-edge" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-arr-flow)"/>
+      <path d="M720,462 L720,488 L570,488 L570,538" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-arr-typst)"/>
 
-      <!-- e04 -->
-      <rect x="640" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
-      <rect x="640" y="240" width="200" height="96" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
-      <rect x="656" y="254" width="112" height="16" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.72"/>
-      <text x="664" y="266" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.8" fill="#2d3142">Q3 GERAÇÃO</text>
-      <text x="656" y="292" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Animar em CSS</text>
-      <text x="656" y="310" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e04 / flow-dash</text>
-      <text x="656" y="324" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">stroke-dashoffset</text>
+      <!-- ─── CAIXAS DOS NÓS COM MÁSCARAS OPACAS ─── -->
 
-      <!-- e05 (foco 2) -->
-      <rect x="340" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
-      <rect x="340" y="240" width="200" height="96" rx="6" fill="#bf4520" fill-opacity="0.08" stroke="#bf4520" stroke-width="1.5"/>
-      <rect x="356" y="254" width="112" height="16" rx="2" fill="none" stroke="#bf4520"/>
-      <text x="364" y="266" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.4" fill="#bf4520">Q4 FECHAMENTO</text>
-      <text x="356" y="292" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Exportar e validar</text>
-      <text x="356" y="310" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e05 / SVG e PNG</text>
-      <text x="356" y="324" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">gate com exit code 0</text>
+      <!-- NÓ e01 -->
+      <g transform="translate(380, 52)">
+        <rect x="0" y="0" width="280" height="38" rx="6" fill="#ffffff" stroke="#bfc0c0" stroke-width="1.2"/>
+        <rect x="8" y="8" width="56" height="22" rx="3" fill="#2563eb"/>
+        <text x="36" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e01 SKILL</text>
+        <text x="74" y="23" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#111111">inicializar-slug-e-anticorpos</text>
+      </g>
 
-      <!-- e06 -->
-      <rect x="40" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
-      <rect x="40" y="240" width="200" height="96" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
-      <rect x="56" y="254" width="112" height="16" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.72"/>
-      <text x="64" y="266" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" letter-spacing="0.4" fill="#2d3142">Q4 FECHAMENTO</text>
-      <text x="56" y="292" font-family="'Geist', system-ui, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#2d3142">Fechar e relatar</text>
-      <text x="56" y="310" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">e06 / anticorpos.json</text>
-      <text x="56" y="324" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142" fill-opacity="0.78">relatório em docs/reports</text>
+      <!-- NÓ e02 -->
+      <g transform="translate(370, 160)">
+        <rect x="0" y="0" width="300" height="48" rx="6" fill="#ffffff" stroke="#bfc0c0" stroke-width="1.2"/>
+        <rect x="8" y="8" width="56" height="22" rx="3" fill="#2563eb"/>
+        <text x="36" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e02 SKILL</text>
+        <text x="74" y="22" font-family="'Geist', sans-serif" font-size="12" font-weight="700" fill="#111111">ingestao-e-topologia</text>
+        <text x="74" y="38" font-family="'Geist Mono', monospace" font-size="10" fill="#5a6580">Mapeamento de Peças &amp; Larguras</text>
+      </g>
 
-      <!-- Legenda: faixa horizontal inferior -->
-      <line x1="40" y1="360" x2="840" y2="360" stroke="#2d3142" stroke-opacity="0.24" stroke-width="1"/>
+      <!-- NÓ e03 (FOCAL / ACCENT) -->
+      <g transform="translate(340, 280)">
+        <rect x="0" y="0" width="360" height="52" rx="6" fill="#ffffff" stroke="#bf4520" stroke-width="2"/>
+        <rect x="10" y="10" width="56" height="22" rx="3" fill="#bf4520"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e03 FOCAL</text>
+        <text x="76" y="23" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#111111">geracao-svg-html</text>
+        <text x="76" y="41" font-family="'Geist Mono', monospace" font-size="10" fill="#5a6580">Grid Ortogonal · Zero Transbordamento</text>
+      </g>
 
-      <rect x="40" y="380" width="24" height="16" rx="6" fill="#2d3142" fill-opacity="0.04" stroke="#2d3142" stroke-width="1.5"/>
-      <text x="76" y="392" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142">Etapa do processo</text>
+      <!-- NÓ e04 (ANIMAÇÃO) -->
+      <g transform="translate(180, 410)">
+        <rect x="0" y="0" width="280" height="50" rx="6" fill="#ffffff" stroke="#bfc0c0" stroke-width="1.2"/>
+        <rect x="8" y="8" width="56" height="22" rx="3" fill="#2563eb"/>
+        <text x="36" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e04 SKILL</text>
+        <text x="74" y="22" font-family="'Geist', sans-serif" font-size="12" font-weight="700" fill="#111111">micro-animacao</text>
+        <text x="74" y="38" font-family="'Geist Mono', monospace" font-size="10" fill="#5a6580">CSS Keyframes &amp; Remotion Tsx</text>
+      </g>
 
-      <rect x="272" y="380" width="24" height="16" rx="6" fill="#bf4520" fill-opacity="0.08" stroke="#bf4520" stroke-width="1.5"/>
-      <text x="308" y="392" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142">Foco editorial</text>
+      <!-- NÓ e05 (SCRIPT PYTHON) -->
+      <g transform="translate(580, 410)">
+        <rect x="0" y="0" width="280" height="50" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1.5"/>
+        <rect x="8" y="8" width="62" height="22" rx="3" fill="#0f172a"/>
+        <text x="39" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e05 SCRIPT</text>
+        <text x="80" y="22" font-family="'Geist', sans-serif" font-size="12" font-weight="700" fill="#111111">gate-e-exportacao</text>
+        <text x="80" y="38" font-family="'Geist Mono', monospace" font-size="10" fill="#5a6580">export_svg.py &gt; Typst Standalone</text>
+      </g>
 
-      <line x1="480" y1="388" x2="512" y2="388" stroke="#2d3142" stroke-opacity="0.72" stroke-width="1.5" marker-end="url(#d-2026-11-18_LEGOLOOP_DIAGRAM_DESIGN-legoloop-arrow)"/>
-      <text x="528" y="392" font-family="'Geist Mono', ui-monospace, Consolas, monospace" font-size="10" fill="#2d3142">Saída verificada pelo gate</text>
+      <!-- NÓ e06 (FECHAMENTO) -->
+      <g transform="translate(370, 540)">
+        <rect x="0" y="0" width="300" height="50" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+        <rect x="8" y="8" width="56" height="22" rx="3" fill="#2563eb"/>
+        <text x="36" y="22" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">e06 SKILL</text>
+        <text x="74" y="22" font-family="'Geist', sans-serif" font-size="12" font-weight="700" fill="#111111">fechamento-e-anticorpos</text>
+        <text x="74" y="38" font-family="'Geist Mono', monospace" font-size="10" fill="#2563eb">Relatório Factual &amp; Imunologia</text>
+      </g>
     </svg>

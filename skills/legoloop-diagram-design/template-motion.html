@@ -4,18 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Motion diagram template</title>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@400&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     :root {
-      --color-paper: #f5f5f5;
+      --color-paper: #f5f5f5; /* white-smoke descansado (nunca branco puro) */
       --color-ink: #2d3142;
       --color-muted: #4f5d75;
       --color-soft: #5a6580;
       --color-accent: #bf4520;
       --color-rule: rgba(45,49,66,0.12);
       --font-sans: 'Geist', system-ui, sans-serif;
-      --font-serif: 'Instrument Serif', 'Noto Serif', 'Noto Serif KR', serif;
       --font-mono: 'Geist Mono', ui-monospace, monospace;
       --motion-fast: 160ms;
       --motion-step: 480ms;
@@ -41,7 +40,7 @@
       letter-spacing: .18em;
       text-transform: uppercase;
     }
-    h1 { margin: 0 0 24px; font: 400 32px/1.15 var(--font-serif); }
+    h1 { margin: 0 0 24px; font: 700 32px/1.15 var(--font-sans); letter-spacing: -0.02em; }
     svg { display: block; width: 100%; min-width: 960px; }
     /* The SVG holds its readable width (min-width == the viewBox width, so the
        type ramp is never silently scaled down). This wrapper lets a narrow

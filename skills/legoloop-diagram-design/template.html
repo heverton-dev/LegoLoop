@@ -4,16 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Diagram</title>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@400&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --color-paper:   #f5f5f5;   /* white-smoke */
+      --color-paper:   #f5f5f5;   /* white-smoke descansado (nunca branco puro) */
       --color-ink:     #2d3142;   /* jet-black */
       --color-muted:   #4f5d75;   /* blue-slate */
       --color-accent:  #bf4520;   /* burnt-tangerine */
       --font-sans:     'Geist', system-ui, sans-serif;
-      --font-serif:    'Instrument Serif', 'Noto Serif', 'Noto Serif KR', serif;
       --font-mono:     'Geist Mono', ui-monospace, monospace;
     }
 
@@ -45,9 +44,10 @@
     }
 
     h1 {
-      font-family: var(--font-serif);
+      font-family: var(--font-sans);
       font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
-      font-weight: 400;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       letter-spacing: -0.02em;
       line-height: 1.15;
       color: var(--color-ink);

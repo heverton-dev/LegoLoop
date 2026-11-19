@@ -16,8 +16,9 @@ Every token is referred to by **semantic role**, not by its hex value. Type refe
 
 | Role | Purpose | Default (light) | Default (dark) |
 |---|---|---|---|
-| `paper` | Page background, default node fill | `#f5f5f5` (white-smoke) | `#2d3142` (jet-black) |
+| `paper` | Page background, default node fill (nunca branco puro) | `#f5f5f5` (white-smoke descansado) | `#2d3142` (jet-black) |
 | `paper-2` | Diagram container bg, secondary fill | `#ececec` | `#393e53` |
+| `paper-card` | Card interno em contraste suave | `#ffffff` | `#353a4e` |
 | `ink` | Primary text, primary stroke | `#2d3142` (jet-black) | `#f5f5f5` (white-smoke) |
 | `ink-strong` | High-contrast text on warm accent fills | `#111111` | `#111111` |
 | `muted` | Secondary text, default arrow stroke | `#4f5d75` (blue-slate) | `#bfc0c0` (silver) |
@@ -27,6 +28,17 @@ Every token is referred to by **semantic role**, not by its hex value. Type refe
 | `accent` | Focal / 1–2 max per diagram | `#bf4520` (burnt-tangerine) | `#f08a59` |
 | `accent-tint` | Fill for accent-bordered boxes | `rgba(191,69,32,0.08)` | `rgba(240,138,89,0.10)` |
 | `link` | HTTP/API calls, external arrows | `#2e5aa8` | `#739fdf` |
+
+### Peças Canônicas LegoLoop & LegoPress (Paleta Semântica)
+
+| Tipo de Peça / Nó | Cor Semântica | Hex Canônico | Função no Grafo |
+|---|---|---|---|
+| `Skill` | Cobalto Google | `#2563eb` | Execução cognitiva autônoma via LLM ou harness |
+| `Script` | Ardósia Escuro | `#0f172a` / `#475569` | Automação local nativa (Python, Go, Bash, PowerShell) |
+| `Gate` | Carmesim Google | `#dc2626` | Trava mecânica binária incondicional (exit code 0) |
+| `Stop-Gate` | Âmbar Google Dourado | `#d97706` | Ponto de aprovação humana explícita (Jidoka) |
+| `MCP` | Violeta DeepMind | `#7c3aed` | Integração externa, ferramentas do ecossistema e dados |
+| `Swarm` | Verde Esmeralda Google | `#16a34a` | Enxame de agentes colaborativos e coordenação |
 
 > **Brand palette source:** this skin maps to a five-color brand palette: `jet-black #2d3142`, `silver #bfc0c0`, `white-smoke #f5f5f5`, `atomic-tangerine`, `blue-slate #4f5d75`. The light `accent` is not the raw brand tangerine. Raw atomic-tangerine reads 2.86:1 on `paper`, too faint for an arrow or a label, so the skin uses `#bf4520`, the same hue darkened until it clears 4.5:1 as text. The `soft`, `rule`, and `link` tokens are derived (a darker slate, ink at opacity, and a saturated variant in the blue-slate hue family) to cover roles the brand palette doesn't name directly. Every derived value is held to the contrast contract below.
 
@@ -84,21 +96,21 @@ A self-contained palette for the terminal-window primitive (see [primitive-termi
 
 ---
 
-## Typography
+## Typography (100% Sans-Serif e Mono — Zero Serifa)
 
 | Role | Family | Size | Weight | Usage |
 |---|---|---|---|---|
-| `title` | Instrument Serif | 1.75rem | 400 | Page H1 |
+| `title` | Geist (sans) | 1.85rem | 700 / 800 | Page H1 editorial |
 | `node-name` | Geist (sans) | 12px | 600 | Human-readable labels |
 | `sublabel` | Geist Mono | 9px | 400 | Port, protocol, URL, field type |
-| `eyebrow` | Geist Mono | 7–8px | 500, tracked 0.18em, uppercase | Type tags, axis labels |
-| `arrow-label` | Geist Mono | 8px | 400, tracked 0.06em | Arrow annotations |
-| `callout` | Instrument Serif *italic* | 14px | 400 | Editorial asides only |
+| `eyebrow` | Geist Mono | 8px | 500, tracked 0.16em, uppercase | Type tags, axis labels |
+| `arrow-label` | Geist Mono | 8px | 500, tracked 0.08em | Arrow annotations com máscara |
+| `callout` | Geist (sans) | 13px | 500 | Editorial asides only |
 
 ### Font stack
 
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@400&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 ```
 
 ### Font source
