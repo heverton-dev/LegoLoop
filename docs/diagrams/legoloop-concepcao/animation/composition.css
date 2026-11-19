@@ -1,0 +1,18 @@
+/* Animação Contínua LegoLoop */
+.diagram-canvas path.flow-edge {
+  stroke-dasharray: 6 6;
+  animation: flow-pulse 1.2s linear infinite;
+  will-change: stroke-dashoffset;
+}
+
+@keyframes flow-pulse {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diagram-canvas path.flow-edge {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

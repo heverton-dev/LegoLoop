@@ -11,3 +11,5 @@ Registro gravado pelo `legoloop fechar` (etapa 6). Cada Processo tem `skills/<no
 * **Processo Canonizado `legoloop-video-rea-relatorio` (2026-11-15):** `skills/legoloop-video-rea-relatorio/SKILL.md` · `docs/reports/`
 
 * **Processo Canonizado `legoloop-concepcao` (2026-11-17):** `skills/legoloop-concepcao/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-diagram-design` (2026-11-19):** `skills/legoloop-diagram-design/SKILL.md` · `docs/reports/`

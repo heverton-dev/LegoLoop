@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg class="diagram-canvas" viewBox="0 0 1040 620" role="img" aria-labelledby="legoloop-concepcao-title legoloop-concepcao-desc" xmlns="http://www.w3.org/2000/svg" id="legoloop-concepcao-root">
+      <title id="legoloop-concepcao-title">Fluxograma do Processo legoloop-concepcao</title>
+      <desc id="legoloop-concepcao-desc">Fluxo sequencial animado dos nós do processo legoloop-concepcao no padrão editorial LegoPress.</desc>
+      <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Sans+TC:wght@400;500;600&amp;display=swap');
+      #legoloop-concepcao-root { --paper:        #f5f5f5;   
+    --paper-2:      #ececec;   
+    --paper-card:   #ffffff;   
+    --ink:          #2d3142;   
+    --ink-strong:   #111111;   
+    --muted:        #4f5d75;   
+    --soft:         #5a6580;   
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   
+    --cor-accent:   #bf4520;   
+    --font-sans:    'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, monospace; }
+      #legoloop-concepcao-root { font-family: var(--font-sans); color: var(--ink); }
+      #legoloop-concepcao-root .page-header { border-bottom: 2px solid var(--cor-accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px; }
+      #legoloop-concepcao-root .page-eyebrow { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-accent);
+    margin-bottom: 8px; }
+      #legoloop-concepcao-root .page-title { font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px; }
+      #legoloop-concepcao-root .page-lead { font-size: 15px;
+    color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px; }
+      #legoloop-concepcao-root .page-meta { font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; }
+      #legoloop-concepcao-root .page-meta span { display: flex; align-items: center; gap: 6px; }
+      #legoloop-concepcao-root .section { margin-bottom: 48px; }
+      #legoloop-concepcao-root .section-title { font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px; }
+      #legoloop-concepcao-root .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+      #legoloop-concepcao-root .nodes-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px; }
+      #legoloop-concepcao-root .node-card { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; }
+      #legoloop-concepcao-root .node-card-header { display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px; }
+      #legoloop-concepcao-root .node-id { font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #ffffff; }
+      #legoloop-concepcao-root .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; }
+      #legoloop-concepcao-root .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+      #legoloop-concepcao-root .node-gate { font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border: 1px solid var(--rule);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4; }
+      #legoloop-concepcao-root .diagram-wrapper { background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px; }
+      #legoloop-concepcao-root .diagram-canvas { display: block; width: 100%; min-width: 980px; height: auto; }
+      #legoloop-concepcao-root .diagram-wrapper, #legoloop-concepcao-root .table-wrapper { scrollbar-width: thin;
+    scrollbar-color: rgba(79, 93, 117, 0.3) transparent; }
+      #legoloop-concepcao-root .diagram-wrapper::-webkit-scrollbar, #legoloop-concepcao-root .table-wrapper::-webkit-scrollbar { height: 3px;
+    width: 3px; }
+      #legoloop-concepcao-root .diagram-wrapper::-webkit-scrollbar-track, #legoloop-concepcao-root .table-wrapper::-webkit-scrollbar-track { background: transparent; }
+      #legoloop-concepcao-root .diagram-wrapper::-webkit-scrollbar-thumb, #legoloop-concepcao-root .table-wrapper::-webkit-scrollbar-thumb { background: rgba(79, 93, 117, 0.3);
+    border-radius: 2px; }
+      #legoloop-concepcao-root .diagram-wrapper::-webkit-scrollbar-thumb:hover, #legoloop-concepcao-root .table-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(191, 69, 32, 0.5); }
+      @keyframes legoloop-concepcao-root-flow-pulse { from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; } }
+      #legoloop-concepcao-root .flow-edge { stroke-dasharray: 6 6;
+    animation: legoloop-concepcao-root-flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset; }
+      #legoloop-concepcao-root .table-wrapper { background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto; }
+      #legoloop-concepcao-root table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+      #legoloop-concepcao-root th { background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid); }
+      #legoloop-concepcao-root td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--ink); }
+      #legoloop-concepcao-root tr:last-child td { border-bottom: none; }
+      #legoloop-concepcao-root td code { font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted); }</style>
+        <marker id="legoloop-concepcao-arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+      </defs>
+      <rect width="1040" height="620" fill="#f5f5f5" rx="8"/>
+      
+      <path d="M520,106 L520,160" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-concepcao-arr-flow)"/>
+      <path d="M520,216 L520,270" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-concepcao-arr-flow)"/>
+      <path d="M520,326 L520,380" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-concepcao-arr-flow)"/>
+      
+      <g transform="translate(280, 50)">
+        <rect x="0" y="0" width="480" height="56" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
+        <rect x="8" y="8" width="60" height="24" rx="3" fill="#0f172a"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">SCRIPT</text>
+        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">Entrevista Socrática com Espelho Canônico até</tspan><tspan x="76" dy="14">confiança maior ou igual a 95%</tspan></text>
+        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: entrevista_socratica</text>
+      </g>
+      <g transform="translate(280, 160)">
+        <rect x="0" y="0" width="480" height="56" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+        <rect x="8" y="8" width="60" height="24" rx="3" fill="#2563eb"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">UNIT-NÓ</text>
+        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">INTERVIEW gravada no cofre e</tspan><tspan x="76" dy="14">Espelho Canônico consolidado em registro</tspan></text>
+        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: interview_gravada</text>
+      </g>
+      <g transform="translate(280, 270)">
+        <rect x="0" y="0" width="480" height="56" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
+        <rect x="8" y="8" width="60" height="24" rx="3" fill="#0f172a"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">SCRIPT</text>
+        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">Materialização da INTENT em docs/intents/</tspan><tspan x="76" dy="14">a partir do Espelho Canônico</tspan></text>
+        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: materializar_intent</text>
+      </g>
+      <g transform="translate(333, 380)">
+        <rect x="0" y="0" width="374" height="56" rx="6" fill="#ffffff" stroke="#d97706" stroke-width="1.8"/>
+        <rect x="8" y="8" width="60" height="24" rx="3" fill="#d97706"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">STOP-GATE</text>
+        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">Stop-Gate 01 humano</tspan><tspan x="76" dy="14">de aprovação da INTENT</tspan></text>
+        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: stop_gate_01</text>
+      </g>
+    </svg>

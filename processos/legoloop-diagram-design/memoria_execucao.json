@@ -1,8 +1,5 @@
 {
+  "schema_version": "memoria_execucao.v1",
   "processo": "legoloop-diagram-design",
-  "sessao_id": "",
-  "pid": 0,
-  "etapa_atual": "",
-  "proximo_passo": "",
-  "atualizado_em": "2026-11-18T21:32:09.9695105Z"
+  "sessoes": {}
 }

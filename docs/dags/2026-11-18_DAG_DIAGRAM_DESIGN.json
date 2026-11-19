@@ -137,23 +137,28 @@
     {
       "id": "e03",
       "name": "geracao-svg-html",
-      "type": "skill",
+      "type": "script",
       "nature": "micro",
-      "cognitive_complexity": "complexo",
-      "ref": "skills/legoloop-diagram-design",
+      "cognitive_complexity": "simples",
+      "command": [
+        "python",
+        "skills/legoloop-diagram-design/scripts/gerar_diagrama.py",
+        "docs/diagrams/legoloop-diagram-design/quadrantes.json",
+        "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html"
+      ],
       "depends_on": [
         "e02"
       ],
       "spec_ref": "AC-E03.1",
       "status": "PENDING",
-      "timeout_sec": 900,
+      "timeout_sec": 300,
       "routing": {
         "mode": "suggested",
         "harness": "claude",
         "via": "oficial",
-        "model": "sonnet",
-        "effort": "high",
-        "fallback": "code-pro"
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "code-fast"
       },
       "isolation": {
         "write_boundary": "strict",
@@ -162,9 +167,9 @@
         "subagents_allowed": false
       },
       "limits": {
-        "max_prompt_tokens": 16000,
-        "max_completion_tokens": 4000,
-        "max_duration_sec": 900
+        "max_prompt_tokens": 4000,
+        "max_completion_tokens": 1000,
+        "max_duration_sec": 300
       },
       "tooling": {
         "runtime": "powershell"

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetura e Fluxo do Processo legoloop-concepcao — LegoLoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #f5f5f5;   /* white-smoke descansado (nunca branco puro) */
+    --paper-2:      #ececec;   /* container e faixas secundárias */
+    --paper-card:   #ffffff;   /* superfície de cards em alto contraste */
+    --ink:          #2d3142;   /* grafite escuro nobre */
+    --ink-strong:   #111111;   /* contraste máximo para títulos */
+    --muted:        #4f5d75;   /* ardósia suave para textos de apoio */
+    --soft:         #5a6580;   /* subrótulos e metadados */
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   /* bordas estruturais sólidas */
+    --cor-accent:   #bf4520;   /* Tangerina Queimada Editorial */
+    --font-sans:    'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 48px 32px;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    border-bottom: 2px solid var(--cor-accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .page-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-accent);
+    margin-bottom: 8px;
+  }
+  .page-title {
+    font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .page-lead {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px;
+  }
+  .page-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .page-meta span { display: flex; align-items: center; gap: 6px; }
+
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .node-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .node-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .node-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+  }
+  .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; }
+  .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+  .node-gate {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border: 1px solid var(--rule);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+  }
+
+  .diagram-wrapper {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px;
+  }
+  .diagram-canvas { display: block; width: 100%; min-width: 980px; height: auto; }
+
+  /* Scrollbar Minimalista do Design System (máx 3px, 70% transparência) */
+  .diagram-wrapper,
+  .table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(79, 93, 117, 0.3) transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar,
+  .table-wrapper::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-track,
+  .table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb,
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(79, 93, 117, 0.3);
+    border-radius: 2px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb:hover,
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(191, 69, 32, 0.5);
+  }
+
+  @keyframes flow-pulse {
+    from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; }
+  }
+  .flow-edge {
+    stroke-dasharray: 6 6;
+    animation: flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset;
+  }
+
+  .table-wrapper {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+  th {
+    background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid);
+  }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--ink); }
+  tr:last-child td { border-bottom: none; }
+  td code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <p class="page-eyebrow">LegoLoop · Processo Canônico</p>
+  <h1 class="page-title">Arquitetura e Fluxo do Processo legoloop-concepcao</h1>
+  <p class="page-lead">Subprocesso único de Concepção e Alinhamento de Intenção: entrevista socrática pelo motor oficial legoloop fabricar entrevista até confiança maior ou igual a 95% com Espelho Canônico, INTERVIEW gravada, INTENT materializada em docs/intents/ e Stop-Gate 01 humano de aprovação.</p>
+  <div class="page-meta">
+    <span><strong>Processo:</strong> legoloop-concepcao</span>
+    <span><strong>Versão:</strong> 1.0.0</span>
+    <span><strong>Nós:</strong> 4 nós sequenciais</span>
+    <span><strong>Design System:</strong> LegoPress Editorial (Sans-Serif)</span>
+  </div>
+</header>
+
+<section class="section">
+  <h2 class="section-title">01 — Anatomia dos Nós do Processo</h2>
+  <p class="section-sub">Estrutura isolada em contexto estéril com barreiras mecânicas de qualidade.</p>
+  <div class="nodes-grid">
+    
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">entrevista_socratica · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Entrevista Socrática com Espelho Canônico até confiança maior ou igual a 95%</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-concepcao</code> com isolamento em contexto estéril.</p>
+      <div class="node-gate">Gate: exit_code == 0</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">interview_gravada · UNIT-NÓ</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">unit_no</small>
+      </div>
+      <h3 class="node-name">INTERVIEW gravada no cofre e Espelho Canônico consolidado em registro</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-concepcao</code> com isolamento em contexto estéril.</p>
+      <div class="node-gate">Gate: file_exists(&#x27;docs/intents/ESPELHO_CANONICO.md&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">materializar_intent · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">Materialização da INTENT em docs/intents/ a partir do Espelho Canônico</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-concepcao</code> com isolamento em contexto estéril.</p>
+      <div class="node-gate">Gate: file_exists(&#x27;docs/intents/INTENT.md&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#d97706;">stop_gate_01 · STOP-GATE</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">stop_gate</small>
+      </div>
+      <h3 class="node-name">Stop-Gate 01 humano de aprovação da INTENT</h3>
+      <p class="node-desc">Execução no processo <code>legoloop-concepcao</code> com isolamento em contexto estéril.</p>
+      <div class="node-gate">Gate: prompt(&#x27;Aprovar a INTENT materializada em docs/intents/INTENT.md?&#x27;)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">02 — Fluxograma Lógico de Encadeamento com Animação Contínua</h2>
+  <p class="section-sub">Grafo ortogonal com partículas contínuas mostrando a transferência assíncrona de estado.</p>
+  <div class="diagram-wrapper">
+    <svg class="diagram-canvas" viewBox="0 0 1040 620" role="img" aria-labelledby="legoloop-concepcao-title legoloop-concepcao-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="legoloop-concepcao-title">Fluxograma do Processo legoloop-concepcao</title>
+      <desc id="legoloop-concepcao-desc">Fluxo sequencial animado dos nós do processo legoloop-concepcao no padrão editorial LegoPress.</desc>
+      <defs>
+        <marker id="arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+      </defs>
+      <rect width="1040" height="620" fill="#f5f5f5" rx="8"/>
+      
+      <path d="M520,106 L520,160" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#arr-flow)"/>
+      <path d="M520,216 L520,270" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#arr-flow)"/>
+      <path d="M520,326 L520,380" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#arr-flow)"/>
+      
+      <g transform="translate(280, 50)">
+        <rect x="0" y="0" width="480" height="56" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
+        <rect x="8" y="8" width="60" height="24" rx="3" fill="#0f172a"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">SCRIPT</text>
+        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">Entrevista Socrática com Espelho Canônico até</tspan><tspan x="76" dy="14">confiança maior ou igual a 95%</tspan></text>
+        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: entrevista_socratica</text>
+      </g>
+      <g transform="translate(280, 160)">
+        <rect x="0" y="0" width="480" height="56" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+        <rect x="8" y="8" width="60" height="24" rx="3" fill="#2563eb"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">UNIT-NÓ</text>
+        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">INTERVIEW gravada no cofre e</tspan><tspan x="76" dy="14">Espelho Canônico consolidado em registro</tspan></text>
+        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: interview_gravada</text>
+      </g>
+      <g transform="translate(280, 270)">
+        <rect x="0" y="0" width="480" height="56" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
+        <rect x="8" y="8" width="60" height="24" rx="3" fill="#0f172a"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">SCRIPT</text>
+        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">Materialização da INTENT em docs/intents/</tspan><tspan x="76" dy="14">a partir do Espelho Canônico</tspan></text>
+        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: materializar_intent</text>
+      </g>
+      <g transform="translate(333, 380)">
+        <rect x="0" y="0" width="374" height="56" rx="6" fill="#ffffff" stroke="#d97706" stroke-width="1.8"/>
+        <rect x="8" y="8" width="60" height="24" rx="3" fill="#d97706"/>
+        <text x="38" y="24" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">STOP-GATE</text>
+        <text x="76" y="22" font-family="'Geist', sans-serif" font-size="11" font-weight="700" fill="#111111"><tspan x="76" dy="0">Stop-Gate 01 humano</tspan><tspan x="76" dy="14">de aprovação da INTENT</tspan></text>
+        <text x="76" y="47" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">ID: stop_gate_01</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">03 — Matriz de Entradas, Saídas e Barreiras Mecânicas</h2>
+  <p class="section-sub">Contratos formais de arquivos consumidos e emitidos por cada vértice.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Tipo</th>
+          <th>Insumos</th>
+          <th>Artefatos Emitidos</th>
+          <th>Gate Mecânico</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>entrevista_socratica</strong></td>
+          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
+          <td><code>docs/intents/</code></td>
+          <td><code>docs/intents/INTERVIEW.md</code></td>
+          <td><code>exit_code == 0</code></td>
+        </tr>
+        <tr>
+          <td><strong>interview_gravada</strong></td>
+          <td><span style="color:#2563eb;font-weight:600;">UNIT-NÓ</span></td>
+          <td><code>docs/intents/INTERVIEW.md</code></td>
+          <td><code>docs/intents/ESPELHO_CANONICO.md</code></td>
+          <td><code>file_exists(&#x27;docs/intents/ESPELHO_CANONICO.md&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>materializar_intent</strong></td>
+          <td><span style="color:#0f172a;font-weight:600;">SCRIPT</span></td>
+          <td><code>docs/intents/ESPELHO_CANONICO.md</code></td>
+          <td><code>docs/intents/INTENT.md</code></td>
+          <td><code>file_exists(&#x27;docs/intents/INTENT.md&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>stop_gate_01</strong></td>
+          <td><span style="color:#d97706;font-weight:600;">STOP-GATE</span></td>
+          <td><code>docs/intents/INTENT.md</code></td>
+          <td><code>docs/intents/INTENT_APROVADA.md</code></td>
+          <td><code>prompt(&#x27;Aprovar a INTENT materializada em docs/intents/INTENT.md?&#x27;)</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">04 — Governança de Anticorpos e Paridade com o LegoPress</h2>
+  <p class="section-sub">Diretrizes obrigatórias testadas em tempo de compilação.</p>
+  <div style="background:var(--paper-card);border:1px solid var(--rule);border-radius:8px;padding:20px;font-size:14px;color:var(--ink);">
+    <p style="margin-bottom:12px;"><strong>1. Fundo Descansado:</strong> O background usa <code>#f5f5f5</code> (white-smoke). Zero branco puro na tela.</p>
+    <p style="margin-bottom:12px;"><strong>2. Zero Serifa:</strong> Tipografia 100% <code>Geist</code> e <code>Geist Mono</code>. Fontes serifadas bloqueadas.</p>
+    <p style="margin-bottom:12px;"><strong>3. Classe Obrigatória:</strong> Tag <code>&lt;svg class="diagram-canvas"&gt;</code> presente com acessibilidade nativa.</p>
+    <p><strong>4. Portabilidade Typst:</strong> O SVG resultante compila sem perdas nos livros didáticos do LegoPress.</p>
+  </div>
+</section>
+
+</body>
+</html>

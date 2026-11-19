@@ -112,6 +112,26 @@
       "pacote": "legoloop-diagram-design/subtle-legend-micro-svg",
       "timestamp": "2026-11-18T16:25:00-03:00",
       "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a",
+      "erro": "Scrollbar de tabelas e contêineres com barra padrão cinza grossa do sistema operacional, poluindo o design editorial.",
+      "causa_raiz": "Ausência de estilização explícita de scrollbar nas classes .table-wrapper e .diagram-wrapper no CSS.",
+      "antidoto": "Scrollbar Minimalista do Design System: definir height/width máximo de 3px, transparência de 70% (thumb com background: rgba(79, 93, 117, 0.3)), track quase invisível (rgba(45, 49, 66, 0.05)), hover na cor de destaque (--cor-accent em 50%) e scrollbar-width: thin com scrollbar-color no padrão W3C.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/minimalist-table-scrollbar",
+      "timestamp": "2026-11-19T06:30:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b",
+      "erro": "Bordas laterais coloridas nos cards de gate poluem visualmente e caminhos de arquivo longos no gate transbordam a caixa cinza.",
+      "causa_raiz": "Uso de border-left com cor de destaque em .node-gate e ausência de word-break/overflow-wrap para strings contínuas sem espaço.",
+      "antidoto": "Remover border-left colorido de .node-gate adotando borda sutil neutra (1px solid var(--rule)). Injetar word-break: break-all e overflow-wrap: anywhere com line-height: 1.4 para impedir qualquer transbordamento textual.",
+      "recorrencias": 1,
+      "pacote": "legoloop-diagram-design/node-gate-noborder-wrap",
+      "timestamp": "2026-11-19T06:39:00-03:00",
+      "antidoto_aplicado": true
     }
   ]
 }
