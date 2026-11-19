@@ -638,3 +638,12 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
 - Relatório final: `docs/reports/2026-11-17_REPORT_MEGA_PLANO_PRODUCAO.md` (veredito APROVADO_COM_DEBITO_TECNICO; 9 SGs de épico aprovados).
 
 * **Processo Canonizado `legoloop-concepcao` (2026-11-17):** `skills/legoloop-concepcao/SKILL.md` · `docs/reports/`
+
+## 2026-11-19 — Demanda ESPELHO_EXECUTIVO_ANTICORPOS_MD & DIAGRAM_DESIGN (otimização de tokens)
+- Implementada a arquitetura canônica de Dupla Projeção de Imunidade: `anticorpos.json` (banco de máquina) + `ANTICORPOS.md` (espelho executivo com frontmatter YAML telegráfico para agentes).
+- TDD estrito com testes `TestAnticorposMarkdownPersistencia` e `TestSincronizarProcesso` em `internal/brain/markdown_test.go` e `TestCmdAnticorposSync` em `internal/cli/anticorpos_test.go`.
+- CLI `legoloop anticorpos sync [--raiz DIR]` e `legoloop anticorpos status <slug>` implementados e integrados.
+- Sincronização em lote executada em todo o repositório: 33 processos atualizados com `ANTICORPOS.md`.
+- Truncamento seguro de strings UTF-8 via runas (`[]rune`) para evitar bytes órfãos `0xc3` em textos multilíngues.
+- Gates aprovados: `go test` 100% verde, `go vet` limpo, `funclen` 0 violações, `taxlinter` zero violações em `internal` e `cmd`, binário `bin/legoloop.exe` reconstruído com sucesso.
+

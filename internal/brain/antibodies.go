@@ -295,6 +295,11 @@ func gravarBanco(caminho, processo string, globais, dominio []vacinaJSON) error 
 	if err := os.WriteFile(caminho, raw, 0o644); err != nil {
 		return fmt.Errorf("brain: gravando anticorpos: %w", err)
 	}
+	caminhoMD := filepath.Join(filepath.Dir(caminho), AntibodiesMarkdownFile)
+	md := RenderizarMarkdown(processo, globais, dominio)
+	if err := os.WriteFile(caminhoMD, md, 0o644); err != nil {
+		return fmt.Errorf("brain: gravando %s: %w", AntibodiesMarkdownFile, err)
+	}
 	return nil
 }
 

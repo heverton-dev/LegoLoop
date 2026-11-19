@@ -95,6 +95,7 @@ Comandos:
   fechar     <slug> [--dry-run] [--skip-build] [--json]  cadeia determinística de 9 etapas de canonização e fechamento
   web-qa     <preflight|run|corrigir> [opções]  QA web determinístico (Playwright, axe-core, lychee, Obscura, renderlint, unlighthouse, lost-pixel)
   sessoes    <slug> [--json] [--processos-dir DIR]  lista as sessões ativas do processo (memória de execução)
+  anticorpos <sync|status> [slug] [--raiz DIR]   sincroniza ou inspeciona o espelho executivo ANTICORPOS.md
   version
 `
 
@@ -113,7 +114,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
-		"swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes,
+		"swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":
