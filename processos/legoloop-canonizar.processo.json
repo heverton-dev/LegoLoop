@@ -1,0 +1,37 @@
+{
+  "nome": "legoloop-canonizar",
+  "versao": "1.0.0",
+  "natureza": "build",
+  "objetivo": "Industrialização e canonização universal de peças do LegoLoop: elevação ao Padrão Ouro e fechamento determinístico em 9 etapas.",
+  "etapas": [
+    {
+      "id": "n01_upgrade",
+      "titulo": "Elevação da Peça para o Padrão Ouro",
+      "tipo": "subprocesso",
+      "peca": "legoloop-piece-upgrader",
+      "consome": ["docs/templates/TEMPLATE_PIECE_UNIT.json"],
+      "produz": {
+        "caminho": "out/upgrade_result.json",
+        "tipo": "json",
+        "promete": true
+      },
+      "gate": "file_exists('out/upgrade_result.json')",
+      "depende": []
+    },
+    {
+      "id": "n02_fechar",
+      "titulo": "Fechamento Canônico Universal em 9 Etapas",
+      "tipo": "subprocesso",
+      "peca": "legoloop-fechar",
+      "consome": ["out/upgrade_result.json"],
+      "produz": {
+        "caminho": "out/fechamento_result.json",
+        "tipo": "json",
+        "promete": true
+      },
+      "gate": "file_exists('out/fechamento_result.json')",
+      "depende": ["n01_upgrade"]
+    }
+  ],
+  "criado_em": "2026-11-20T12:26:00.0000000Z"
+}

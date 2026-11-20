@@ -1,0 +1,122 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "name": "legoloop-canonizar",
+  "version": "1.0.0",
+  "date": "2026-11-20",
+  "description": "Processo canônico de industrialização de peças: elevação ao Padrão Ouro e fechamento universal",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-20_ROUTE_CANONIZAR.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 1,
+    "default_timeout_sec": 600,
+    "rollback_on_failure": "abort_processo"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_upgrade",
+      "name": "Elevação da Peça para o Padrão Ouro",
+      "type": "subprocesso",
+      "nature": "micro",
+      "ref": "legoloop-piece-upgrader",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "opus"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "file_exists('out/upgrade_result.json')"
+      },
+      "spec_ref": "AC-CAN-01",
+      "status": "PENDING",
+      "context_in": [
+        "docs/templates/TEMPLATE_PIECE_UNIT.json"
+      ],
+      "context_out": [
+        "out/upgrade_result.json"
+      ],
+      "inputs": {
+        "template": "file('docs/templates/TEMPLATE_PIECE_UNIT.json')"
+      },
+      "output": {
+        "artifact": "out/upgrade_result.json",
+        "gate": "file_exists('out/upgrade_result.json')"
+      }
+    },
+    {
+      "id": "n02_fechar",
+      "name": "Fechamento Canônico Universal em 9 Etapas",
+      "type": "subprocesso",
+      "nature": "micro",
+      "ref": "legoloop-fechar",
+      "depends_on": [
+        "n01_upgrade"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 600,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 2000
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "file_exists('out/fechamento_result.json')"
+      },
+      "spec_ref": "AC-CAN-02",
+      "status": "PENDING",
+      "context_in": [
+        "out/upgrade_result.json"
+      ],
+      "context_out": [
+        "out/fechamento_result.json"
+      ],
+      "inputs": {
+        "resultado_upgrade": "file('out/upgrade_result.json')"
+      },
+      "output": {
+        "artifact": "out/fechamento_result.json",
+        "gate": "file_exists('out/fechamento_result.json')"
+      }
+    }
+  ]
+}

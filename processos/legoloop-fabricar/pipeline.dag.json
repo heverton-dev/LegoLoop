@@ -182,7 +182,7 @@
       "name": "Fusão por Aptidão e Especificação Canônica",
       "type": "skill",
       "nature": "micro",
-      "ref": "skills/matt-pocock",
+      "ref": "skills/legoloop-matt-pocock",
       "depends_on": [
         "n03_curadoria_fronteira"
       ],

@@ -50,7 +50,7 @@
       "id": "n04_fusao_aptidao",
       "titulo": "Fusão por Aptidão e Especificação Canônica",
       "tipo": "skill",
-      "peca": "matt-pocock",
+      "peca": "legoloop-matt-pocock",
       "consome": [
         "docs/intents/INTENT.md",
         "docs/intents/matriz_pecas.json",

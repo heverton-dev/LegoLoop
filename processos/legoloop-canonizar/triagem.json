@@ -1,0 +1,51 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-canonizar",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-canonizar",
+      "comandos_cli": [
+        "legoloop canonizar",
+        "/legoloop-canonizar"
+      ],
+      "artefatos_ativos": [],
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-canonizar",
+    "etapas": [
+      "n01_upgrade",
+      "n02_fechar"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_upgrade",
+      "palavras_chave": [
+        "upgrade",
+        "elevar",
+        "padrao ouro",
+        "upgrader"
+      ],
+      "slash_command": "/legoloop-canonizar-upgrade",
+      "flag_cli": "--etapa n01_upgrade"
+    },
+    {
+      "id": "n02_fechar",
+      "palavras_chave": [
+        "fechar",
+        "canonizacao",
+        "conclusao",
+        "telemetria"
+      ],
+      "slash_command": "/legoloop-canonizar-fechar",
+      "flag_cli": "--etapa n02_fechar"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}
