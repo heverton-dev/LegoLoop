@@ -184,7 +184,7 @@ type runFlags struct {
 	vars            listFlag
 	asJSON          bool
 	allowScripts    bool
-	allowUnitTicket bool
+	allowUnitNo     bool
 	autoApprove     bool
 	nonInteractive  bool
 	// relatorio é o arquivo da tabela factual (harness, via, modelo e Substituicao por nó); vazio = não grava.
@@ -203,7 +203,8 @@ func parseRunFlags(nome string, args []string, d Deps) (runFlags, error) {
 	fs.BoolVar(&f.asJSON, "json", false, "saída JSON")
 	fs.StringVar(&f.relatorio, "report", "", "grava a tabela factual do REPORT (harness, via e modelo reais) neste arquivo")
 	fs.BoolVar(&f.allowScripts, "allow-scripts", false, "permite nós script (executam comandos locais)")
-	fs.BoolVar(&f.allowUnitTicket, "allow-unit-tasks", false, "permite nós unit_task (claude com ferramentas em worktree git)")
+	fs.BoolVar(&f.allowUnitNo, "allow-unit-no", false, "permite nós unit_no (modelo com ferramentas de arquivo em worktree git)")
+	fs.BoolVar(&f.allowUnitNo, "allow-unit-tasks", false, "alias legado de --allow-unit-no (compatibilidade com scripts existentes)")
 	fs.BoolVar(&f.autoApprove, "yes", false, "aprova automaticamente Stop-Gates interativos")
 	fs.BoolVar(&f.autoApprove, "y", false, "alias de --yes")
 	fs.BoolVar(&f.nonInteractive, "non-interactive", false, "rejeita Stop-Gates interativos se requerer interação")
@@ -265,7 +266,7 @@ func rodarDAG(ctx context.Context, d Deps, p *dag.DAG, f runFlags) int {
 		return fail(d, err)
 	}
 	ox.AllowScripts = f.allowScripts
-	ox.AllowUnitTasks = f.allowUnitTicket
+	ox.AllowUnitNos = f.allowUnitNo
 	ox.DefaultTimeout = f.timeout
 	ox.AutoApprove = f.autoApprove
 	ox.NonInteractive = f.nonInteractive

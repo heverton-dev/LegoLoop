@@ -1,0 +1,75 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "id": "exemplo-peca-unit-no",
+  "name": "exemplo-peca-unit-no",
+  "description": "Peça de nó unit_no agnóstica: um modelo edita o código permitido numa worktree descartável, e o command de verificação decide o gate antes de qualquer cópia para o repositório.",
+  "version": "2.4.0",
+  "date": "2026-11-20",
+  "upstream_signatures": {},
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 1,
+    "default_timeout_sec": 600,
+    "rollback_on_failure": "abort_processo",
+    "execution_modes": ["cli", "agente", "estudio"],
+    "os_support": ["windows", "linux", "macos"],
+    "harness_support": ["any"],
+    "load": "lazy",
+    "requires": {
+      "class": "micro"
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_unidade",
+      "name": "Implementação da unidade com TDD Red-Green",
+      "type": "unit_no",
+      "nature": "micro",
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "command": ["go", "test", "./internal/exemplo/..."],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 600,
+      "retry_policy": {
+        "max_retries": 2
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_output_tokens": 4000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "rollback_strategy": "stash_changes",
+      "verification": {
+        "gate": "exit_code == 0 && file_exists('out/exemplo-unit-no.json')"
+      },
+      "context_in": ["docs/specs/exemplo_SPEC.md", "internal/exemplo/"],
+      "context_out": ["internal/exemplo/exemplo.go"],
+      "test_seam": {
+        "file": "internal/exemplo/exemplo_test.go",
+        "signature": "TestExemplo"
+      },
+      "output": {
+        "artifact": "out/exemplo-unit-no.json",
+        "gate": "exit_code == 0 && file_exists('out/exemplo-unit-no.json')"
+      }
+    }
+  ]
+}

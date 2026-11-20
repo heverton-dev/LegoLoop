@@ -80,8 +80,8 @@ func (o *Orchestrix) runUnitTask(ctx context.Context, n dag.Node, workdir string
 	fail := func(err error) (runner.Result, error) {
 		return runner.Result{}, fmt.Errorf("orchestrix: nó %q: %w", n.ID, err)
 	}
-	if !o.AllowUnitTasks {
-		return runner.Result{}, fmt.Errorf("orchestrix: nó %q é unit_task; rode com --allow-unit-tasks se confia neste Processo", n.ID)
+	if !o.AllowUnitNos {
+		return runner.Result{}, fmt.Errorf("orchestrix: nó %q é unit_no; rode com --allow-unit-no se confia neste Processo", n.ID)
 	}
 	main, err := os.OpenRoot(workdir)
 	if err != nil {

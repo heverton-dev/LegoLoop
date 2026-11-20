@@ -16,8 +16,8 @@
       "forbidden_term": "task",
       "approved_term": "Nó",
       "context_domain": "graph_node",
-      "reason": "Tipo de nó unit_task no DAG JSON e flag de segurança AllowUnitTasks.",
-      "proof": "dag.TypeUnitTask = \"unit_task\" em internal/dag/types.go:32; schemas/dag.v1.json; schemas/dag.v2.json; CLI flag --allow-unit-tasks em internal/cli/commands.go:176"
+      "reason": "Contrato legado do CLI: a flag --allow-unit-tasks continua como alias de --allow-unit-no (nome canônico desde 2026-11-20) para não quebrar scripts existentes. O tipo de nó e o campo do motor já usam unit_no e AllowUnitNos.",
+      "proof": "internal/cli/commands.go registra allow-unit-no e o alias legado allow-unit-tasks sobre o mesmo campo; TestRunFlagConsentimentoUnitNoENomeLegado em internal/cli/run_flags_unit_test.go prova os dois nomes"
     },
     {
       "file": "internal/orchestrix/orchestrix.go",

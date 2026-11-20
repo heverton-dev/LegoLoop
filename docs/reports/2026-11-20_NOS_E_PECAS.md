@@ -192,3 +192,26 @@ Decisão humana ([1]): `tooling.runtime` passa a declarar o motor, `"legoloop"` 
 Achado extra, corrigido: na rodada completa, `TestUnifiedPathFileLockExactMentionAndPIDKill` (internal/board) falhou uma vez com `TempDir RemoveAll cleanup ... being used by another process`. A pasta `004` é a do quadro `sbNat`, usada pelo worker que sai sozinho. O Windows libera os handles de um processo recém-terminado com atraso, e a remoção única do `t.TempDir` falha sob carga. O pacote passava isolado, então a falha é de corrida de limpeza e não de lógica. Troquei a pasta por `tempDirRobusto` (swarm_test.go), que remove com retentativa por até 10 s. Prova: a suíte inteira passou (55 pacotes, código 0) e o pacote passou 3 vezes seguidas com `-count=3`. A falha original não reproduzia isolada, então a prova é por ausência de nova falha, não por reprodução.
 
 Verificação final: `go test -count=1 ./...` passou em 55 pacotes, com código de saída 0.
+
+## Ação 2 concluída: template da peça unit_no (2026-11-20)
+
+Criei `docs/templates/TEMPLATE_PIECE_UNIT.json` (DAG v2 de um nó `unit_no`) e `docs/templates/TEMPLATE_PIECE_UNIT.md` (mecânica, campos que o executor lê, roteamento universal e checklist). O README ganhou a seção "Nó unit_no", que deixa a Sextilha intacta: o unit_no é um tipo de nó, não uma sétima natureza de peça. Os testes vieram antes (Red) e passam agora: `go test -count=1 ./...` dá 55 pacotes ok, código 0, e `legoloop validate docs/templates/TEMPLATE_PIECE_UNIT.json` aprova (1 nó, sem ciclos).
+
+Decisões aplicadas, todas do seu aval:
+- `routing`: `suggested` com `claude` e `sonnet` como preferência editável e fallback `haiku`; `nature: micro`, que degrada para o próximo candidato homologado quando o declarado não existe. `TestUnitTemplateRoteamentoUniversal` impõe isso e falha se a natureza escolhida não degradar.
+- Declaração agnóstica dentro de `execution_strategy` (opção [C]).
+- `retry_policy.max_retries: 2`, `write_boundary: strict`, `subagents_allowed: false`, `command` sem shell fixo.
+
+Testes novos (docs/templates/unit_template_test.go): DAG válido com um nó unit_no; contrato do executor (retry, isolamento, gate compila e avalia `exit_code`, command válido, test_seam); escritas permitidas relativas e sem o artefato do relatório; roteamento universal; declaração agnóstica; carga no Studio; documento de apoio e registro no README. O arquivo também entrou nas listas de forma (`dag.Parse`) e de ausência de shell fixo.
+
+Achado novo, pendente de decisão humana: a flag de consentimento do unit_no se chama `allow-unit-tasks` (internal/cli/commands.go:206) e o texto de ajuda diz `unit_task`. A taxonomia (Lei 15) proíbe "task" (termo canônico: Ticket). O teste de taxonomia dos templates barra o nome da flag em qualquer `.md` e `.go` de docs/templates, então o documento de apoio descreve a flag sem citá-la. Renomear a flag quebra scripts e documentação existentes, e exige decidir entre renomear com alias de compatibilidade ou manter o nome como contrato legado.
+
+## Resolução da flag de consentimento do unit_no (2026-11-20)
+
+Decisão humana ([1]): renomear com alias de compatibilidade. Aplicado:
+- A flag canônica agora é `--allow-unit-no`. O nome antigo continua aceito como alias legado, sobre o mesmo campo, e a ajuda o marca assim (internal/cli/commands.go).
+- O campo do motor virou `AllowUnitNos`, a mensagem de recusa cita `--allow-unit-no` e `unit_no` (internal/orchestrix/orchestrix.go e unit_run.go), e a ajuda diz "permite nós unit_no".
+- Provas: `TestRunFlagConsentimentoUnitNoENomeLegado` (os dois nomes ligam o consentimento; sem flag fica desligado), `TestRunFlagAjudaCitaUnitNoEMarcaOAliasLegado` e `TestUnitTaskRefusedWithoutFlag`, que agora exige a nova flag na mensagem.
+- Registro de exceções: o alias é contrato legado e já tinha exceção em docs/vocab/2026-11-10_ASD_STE100_EXCEPTIONS.json e em tools/taxlinter/exceptions.go. Atualizei o texto do registro (que descrevia o tipo `unit_task` e a flag antiga) e adicionei a exceção do arquivo de teste do alias. Correção da minha análise anterior: eu havia dito que a taxonomia barrava a flag sem registro; na verdade ela estava registrada como exceção de contrato externo, e o alias preserva exatamente essa garantia de não quebrar scripts.
+- O documento de apoio do template agora cita `--allow-unit-no`, e o teste exige o nome.
+- O taxlinter não ganhou violação nova; a do campo antigo em unit_universal_test.go sumiu.

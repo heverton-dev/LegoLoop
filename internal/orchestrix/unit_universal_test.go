@@ -14,9 +14,9 @@ import (
 // semClaude monta um motor sem o claude CLI no inventário e com o omp homologado como candidato da classe.
 func semClaude(avisos *[]string) *Orchestrix {
 	o := &Orchestrix{
-		Inventory:      provider.Inventory{CLIs: []provider.CLI{{Name: "omp", Path: os.Args[0]}}},
-		ExtraEnv:       []string{"LEGOLOOP_HELPER=omp"},
-		AllowUnitTasks: true,
+		Inventory:    provider.Inventory{CLIs: []provider.CLI{{Name: "omp", Path: os.Args[0]}}},
+		ExtraEnv:     []string{"LEGOLOOP_HELPER=omp"},
+		AllowUnitNos: true,
 		EstadoHarness: func(harness, via string) string {
 			if harness == "omp" && via == "oficial" {
 				return "homologado"

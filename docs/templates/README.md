@@ -59,6 +59,10 @@ Cada Peça usa o formato que o repositório (ou o harness) realmente lê, agora 
 | **5. Gate** | [`TEMPLATE_PIECE_GATE.json`](TEMPLATE_PIECE_GATE.json) | Receitas de gate binário v2.2.0 com thresholds e retry policy tipada | `gate.Compile` (DSL determinístico de `internal/gate`) |
 | **6. Processo** | [Template de Processo](TEMPLATE_PIECE_PROCESSO.json) | DAG v2 / documento do Studio (`nodes` com `depends_on`, `routing`, `execution`, `output.{artifact,gate}`) | `dag.Parse`, `legoloop validate` e `legoloop run` |
 
+### Nó unit_no
+
+O `unit_no` é um tipo de nó, não uma sétima natureza de peça. O seu template é [`TEMPLATE_PIECE_UNIT.json`](TEMPLATE_PIECE_UNIT.json), um DAG v2 de um nó que passa em `legoloop validate`, acompanhado de [`TEMPLATE_PIECE_UNIT.md`](TEMPLATE_PIECE_UNIT.md) com a mecânica, os campos que o executor lê e a regra de roteamento universal.
+
 ### Regra Taxonômica de Nomenclatura (Namespace Canônico)
 * **Funções Nativas da Plataforma:** Exclusivamente as 10 ferramentas do LegoLoop utilizam o prefixo `legoloop-*` (`legoloop-fabricar`, `legoloop-matriz`, `legoloop-listar`, `legoloop-refinar`, `legoloop-remover`, `legoloop-compor`, `legoloop-legopress`, `legoloop-piece-upgrader` e as duas ferramentas de mapa e de orquestração em massa).
 * **Peças de Terceiros e de Domínio:** Peças elevadas ou criadas para Tickets de projeto mantêm seu nome semântico próprio (ex: `react-form-validator`, `python-cleaner`) com incremento de versão (`v2.0.0`) e badge Ouro, preservando a identidade e autoria original sem poluir o namespace da plataforma.

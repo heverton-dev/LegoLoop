@@ -26,7 +26,7 @@ func concretos(data []byte) []byte {
 
 // Todo template em forma de DAG passa no parser real (dag.Parse), o mesmo de legoloop validate.
 func TestTemplatesEmFormaDeDAGPassamNoParser(t *testing.T) {
-	for _, nome := range []string{"TEMPLATE_PIECE_PROCESSO.json", arquivoProcesso, "TEMPLATE_DAG.json", "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG_LEGOPRESS.json"} {
+	for _, nome := range []string{"TEMPLATE_PIECE_PROCESSO.json", arquivoProcesso, "TEMPLATE_DAG.json", "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG_LEGOPRESS.json", "TEMPLATE_PIECE_UNIT.json"} {
 		t.Run(nome, func(t *testing.T) {
 			if _, err := dag.Parse(concretos(read(t, nome))); err != nil {
 				t.Fatalf("%s não passa em dag.Parse: %v", nome, err)
@@ -37,7 +37,7 @@ func TestTemplatesEmFormaDeDAGPassamNoParser(t *testing.T) {
 
 // Nenhum template em forma de DAG fixa um shell de um só sistema operacional.
 func TestTemplatesEmFormaDeDAGSemShellDeUmSO(t *testing.T) {
-	for _, nome := range []string{"TEMPLATE_PIECE_PROCESSO.json", arquivoProcesso, "TEMPLATE_DAG.json", "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG_LEGOPRESS.json"} {
+	for _, nome := range []string{"TEMPLATE_PIECE_PROCESSO.json", arquivoProcesso, "TEMPLATE_DAG.json", "TEMPLATE_DAG_VIDEOREA.json", "TEMPLATE_DAG_LEGOPRESS.json", "TEMPLATE_PIECE_UNIT.json"} {
 		texto := strings.ToLower(string(read(t, nome)))
 		for _, shell := range []string{`"powershell"`, `"pwsh"`, `"cmd"`, `"bash"`, `"sh"`} {
 			if strings.Contains(texto, shell) {

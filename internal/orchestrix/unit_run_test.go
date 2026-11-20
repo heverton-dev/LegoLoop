@@ -43,9 +43,9 @@ func helperClaudeUnit() {
 
 func unitOrchestrix(write string) *Orchestrix {
 	return &Orchestrix{
-		Inventory:      provider.Inventory{CLIs: []provider.CLI{{Name: "claude", Path: os.Args[0]}}},
-		ExtraEnv:       []string{"LEGOLOOP_HELPER=claude-unit", "LEGOLOOP_UNIT_WRITE=" + write},
-		AllowUnitTasks: true,
+		Inventory:    provider.Inventory{CLIs: []provider.CLI{{Name: "claude", Path: os.Args[0]}}},
+		ExtraEnv:     []string{"LEGOLOOP_HELPER=claude-unit", "LEGOLOOP_UNIT_WRITE=" + write},
+		AllowUnitNos: true,
 	}
 }
 
@@ -63,9 +63,9 @@ func pathExists(p string) bool { _, err := os.Lstat(p); return err == nil }
 func TestUnitTaskRefusedWithoutFlag(t *testing.T) {
 	repo := newRepoT(t)
 	o := unitOrchestrix("n1.txt=x")
-	o.AllowUnitTasks = false
+	o.AllowUnitNos = false
 	_, err := o.Execute(context.Background(), unitNode("n1", "out/n1.json", "exit_code == 0", nil), repo)
-	if err == nil || !strings.Contains(err.Error(), "--allow-unit-tasks") {
+	if err == nil || !strings.Contains(err.Error(), "--allow-unit-no") {
 		t.Fatalf("err = %v", err)
 	}
 	if pathExists(filepath.Join(repo, "n1.txt")) {

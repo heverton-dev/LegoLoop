@@ -80,6 +80,9 @@ var allowedExceptions = map[string]map[string]bool{
 		"task": true,
 		"loop": true,
 	},
+	"internal/cli/run_flags_unit_test.go": {
+		"task": true,
+	},
 	"internal/studio/swarm_api.go": {
 		"card": true,
 	},

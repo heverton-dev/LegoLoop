@@ -56,8 +56,8 @@ type Orchestrix struct {
 	ExtraEnv []string
 	// AllowScripts é o consentimento explícito (--allow-scripts) para nós script.
 	AllowScripts bool
-	// AllowUnitTasks é o consentimento explícito (--allow-unit-tasks) para nós unit_task.
-	AllowUnitTasks bool
+	// AllowUnitNos é o consentimento explícito (--allow-unit-no) para nós unit_no.
+	AllowUnitNos bool
 	// LoopStore é o acervo de sub-loops (pode ser nil caso o acervo não esteja carregado).
 	LoopStore *studiodoc.Store
 	// EstadoHarness devolve o estado de homologação do par harness e via (nil = nenhum harness homologado).
@@ -97,7 +97,7 @@ func (o *Orchestrix) SetAcervo(s *studiodoc.Store) {
 
 // PermitirUnitNos ativa consentimento explícito para nós unit_no.
 func (o *Orchestrix) PermitirUnitNos() {
-	o.AllowUnitTasks = true
+	o.AllowUnitNos = true
 }
 
 // Execute despacha o nó conforme seu tipo.
