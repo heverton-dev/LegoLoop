@@ -8,7 +8,7 @@
   "upstream_signatures": {
     "route": {
       "path": "docs/routes/2026-11-14_ROUTE_DESIGN_UI.json",
-      "sha256": "148d51514c44a2f47647e28013922252481221a7079bfd3395d0ef5a4a7ad52e"
+      "sha256": "9d11c4e65f400209f4e68da81aa63ad1ae282bf9768fb1ade54972e60b1acc8b"
     }
   },
   "execution_strategy": {
@@ -59,7 +59,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('out/01_planejar.md') && word_count('out/01_planejar.md') >= 30 && !has_pattern('out/01_planejar.md', '\\{\\{')"
@@ -107,7 +107,7 @@
       },
       "rollback_strategy": "abort_pipeline",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"

@@ -160,7 +160,7 @@
         "write_boundary": "strict"
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "scratch/webqa/routes_manifest.json"
@@ -495,7 +495,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Aprovar baseline visual ou confirmar diff do lost-pixel?')"
@@ -593,7 +593,7 @@
         "write_boundary": "strict"
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "docs/qa-web/RELATORIO_QA_WEB.md",
@@ -644,7 +644,7 @@
         "write_boundary": "strict"
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "scratch/webqa/INTERVIEW_CORRECAO.md",

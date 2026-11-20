@@ -53,7 +53,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('scratch/i6_inventario_legados.json')"
@@ -100,7 +100,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('docs/dags/2026-11-07_DAG_LEGOLOOP_FECHAR.json')"
@@ -152,7 +152,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('docs/dags/2026-11-12_DAG_ROTEAMENTO_HONESTO.json')"
@@ -205,7 +205,7 @@
       },
       "rollback_strategy": "abort_pipeline",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Os 9 DAGs de docs/dags/ validam em v2? Autoriza iniciar E02 (processos/)?')"
@@ -256,7 +256,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('processos/ai-motion-graphics/pipeline.dag.json')"
@@ -308,7 +308,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('processos/legoloop-canal-redc/pipeline.dag.json')"
@@ -359,7 +359,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('processos/legoloop-fechar/pipeline.dag.json')"
@@ -411,7 +411,7 @@
       },
       "rollback_strategy": "abort_pipeline",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Os 10 pipeline.dag.json de processos/ validam em v2? Autoriza validação final E03?')"
@@ -468,7 +468,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('scratch/i6_validacao_final.json')"
@@ -516,7 +516,7 @@
       },
       "rollback_strategy": "abort_pipeline",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Homologa a conclusão da Iniciativa I6 (19 DAGs em schema_version 2)?')"

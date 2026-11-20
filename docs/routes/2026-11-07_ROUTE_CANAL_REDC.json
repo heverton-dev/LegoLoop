@@ -83,7 +83,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -151,7 +151,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -219,7 +219,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -274,7 +274,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -342,7 +342,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -410,7 +410,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -465,7 +465,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -533,7 +533,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -601,7 +601,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -656,7 +656,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -724,7 +724,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -790,7 +790,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },
@@ -855,7 +855,7 @@
         "fallback_model": "flash"
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowlist": []
       },

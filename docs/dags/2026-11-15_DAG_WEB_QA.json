@@ -9,7 +9,7 @@
   "upstream_signatures": {
     "route": {
       "path": "docs/routes/2026-11-15_ROUTE_WEB_QA.json",
-      "sha256": "f9b99436dcedfeeb770d1f2e310d9efd42aa3be6e13e5be46c7cef209a010c46"
+      "sha256": "67bbac8d1f6e257f6980b4137b555da775d80efabdb996ce924d74cdb6810b1b"
     }
   },
   "execution_strategy": {
@@ -160,7 +160,7 @@
         "write_boundary": "strict"
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "scratch/webqa/routes_manifest.json"
@@ -495,7 +495,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Aprovar baseline visual ou confirmar diff do lost-pixel?')"
@@ -593,7 +593,7 @@
         "write_boundary": "strict"
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "docs/qa-web/RELATORIO_QA_WEB.md",
@@ -644,7 +644,7 @@
         "write_boundary": "strict"
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "scratch/webqa/INTERVIEW_CORRECAO.md",

@@ -86,7 +86,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -144,7 +144,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -202,7 +202,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -257,7 +257,7 @@
         "fallback": null
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -315,7 +315,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -373,7 +373,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -428,7 +428,7 @@
         "fallback": null
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -486,7 +486,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -544,7 +544,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -602,7 +602,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -657,7 +657,7 @@
         "fallback": null
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -715,7 +715,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -773,7 +773,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -828,7 +828,7 @@
         "fallback": null
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -886,7 +886,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -944,7 +944,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },
@@ -999,7 +999,7 @@
         "fallback": null
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcps_required": false,
         "mcps_allowed": []
       },

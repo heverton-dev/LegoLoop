@@ -63,7 +63,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json')"
@@ -124,7 +124,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json')"
@@ -190,7 +190,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('scratch/videomaster/whiteboard_preview.svg')"
@@ -256,7 +256,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('testdata/fixtures/video_master_fixture_3s.mp4')"
@@ -324,7 +324,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('docs/books/video-master/livro.json')"

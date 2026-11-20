@@ -60,7 +60,7 @@
         "max_duration_sec": 60
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "context_in": [],
@@ -121,7 +121,7 @@
         "max_duration_sec": 60
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "context_in": [
@@ -179,7 +179,7 @@
         "max_duration_sec": 120
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "context_in": [
@@ -237,7 +237,7 @@
         "max_duration_sec": 60
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "context_in": [
@@ -295,7 +295,7 @@
         "max_duration_sec": 60
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "context_in": [
@@ -355,7 +355,7 @@
         "max_duration_sec": 60
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "context_in": [

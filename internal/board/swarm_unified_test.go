@@ -385,7 +385,7 @@ func testUnifiedSpawnSetModelAndPIDKill(t *testing.T) {
 	}
 
 	// Subprocesso com saida natural deve transicionar para stopped com PID=0.
-	sbNat, err := OpenSwarmBoard(t.TempDir())
+	sbNat, err := OpenSwarmBoard(tempDirRobusto(t))
 	if err != nil {
 		t.Fatal(err)
 	}

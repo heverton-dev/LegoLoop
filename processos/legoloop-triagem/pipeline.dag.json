@@ -43,7 +43,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "nature": "micro",
       "cognitive_complexity": "medium",
@@ -95,7 +95,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "nature": "micro",
       "cognitive_complexity": "medium",
@@ -148,7 +148,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "nature": "micro",
       "cognitive_complexity": "medium",
@@ -200,7 +200,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "nature": "micro",
       "cognitive_complexity": "medium",
@@ -252,7 +252,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "nature": "micro",
       "cognitive_complexity": "medium",

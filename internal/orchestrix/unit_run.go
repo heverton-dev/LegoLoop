@@ -12,6 +12,7 @@ import (
 	"legoloop/internal/dag"
 	"legoloop/internal/gate"
 	"legoloop/internal/provider"
+	"legoloop/internal/roteamento"
 	"legoloop/internal/runner"
 )
 
@@ -45,14 +46,23 @@ type unitPlan struct {
 	model  string
 	expr   *gate.Expr
 	prompt string
+	// indisponivel guarda a causa quando o candidato declarado não existe nesta máquina e a classe degrada:
+	// o despacho vai direto ao próximo candidato elegível.
+	indisponivel error
 }
 
 // prepareUnit valida modelo, gate, raiz do repositório e monta o prompt.
 func (o *Orchestrix) prepareUnit(ctx context.Context, n dag.Node, workdir string, main *os.Root) (unitPlan, error) {
 	var p unitPlan
 	model, err := o.unitModelFor(n)
+	var indisponivel error
 	if err != nil {
-		return p, err
+		// Candidato declarado ausente nesta máquina: nano e micro seguem para o próximo elegível (política do
+		// despacho); as demais classes não trocam de harness e a mensagem cita o harness declarado.
+		if roteamento.PoliticaDeFalha(n.Nature) != roteamento.PoliticaDegrada {
+			return p, fmt.Errorf("harness %s/%s indisponível: a classe %q não troca de harness: %w", harnessDe(n), n.Routing.Via, n.Nature, err)
+		}
+		model, indisponivel = n.Routing.Model, err
 	}
 	expr, err := gate.Compile(n.Output.Gate)
 	if err != nil {
@@ -62,7 +72,7 @@ func (o *Orchestrix) prepareUnit(ctx context.Context, n dag.Node, workdir string
 		return p, err
 	}
 	prompt, err := buildUnitPrompt(n, main)
-	return unitPlan{model: model, expr: expr, prompt: prompt}, err
+	return unitPlan{model: model, expr: expr, prompt: prompt, indisponivel: indisponivel}, err
 }
 
 // write_boundary, command, gate do nó e, só se o gate passar, aplicação no workdir principal.

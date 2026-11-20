@@ -293,7 +293,7 @@ func makeProcessoV2Fixture() *studiodoc.Processo {
 			Routing:          dag.RoutingConfig{Mode: dag.ModeSuggested, Harness: "9router", Via: "9router", Model: "t-codigo-128k", Effort: "high"},
 			Isolation:        map[string]any{"write_boundary": "strict"},
 			Limits:           map[string]any{"max_output_tokens": 300},
-			RollbackStrategy: "abort_processo", Tooling: map[string]any{"runtime": "powershell"},
+			RollbackStrategy: "abort_processo", Tooling: map[string]any{"runtime": "legoloop"},
 			Verification: map[string]any{"gate": "exit_code == 0"}, SpecRef: "AC-1", Status: "PENDING",
 			ContextIn: []string{"in.txt"}, ContextOut: []string{"out.txt"},
 			Output: dag.HandoffContract{Artifact: "out.txt", Gate: "file_exists('out.txt')"},

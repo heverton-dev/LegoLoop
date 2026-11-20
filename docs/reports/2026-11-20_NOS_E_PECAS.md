@@ -111,3 +111,84 @@ Verificação: `go build ./...` passou. Os pacotes orchestrix, runner, gate, dag
 2. O nó `e05` do mesmo DAG tinha `type: "gate"`, que não é tipo de nó. Ele roda `verify_geometry.py` por `command`, então o tipo certo é `script`, e o gate fica em `output.gate`.
 3. `processos/listar/anticorpos.json` usava um formato próprio (chave `anticorpos`). Converti para `anticorpos.v1`: `schema_version`, `processo`, `globais` e `dominio`, com `assinatura` (SHA-256 da descrição), `erro`, `antidoto` e `recorrencias`. Mantive os campos originais (`id`, `no`, `tipo`, `severidade`, `verificacao`) como extras.
 4. Faltavam `triagem.json` e `memoria_execucao.json` em `listar`, e `memoria_execucao.json` em `legoloop-agent-desktop`. Gerei a triagem pelo gerador oficial `triagem.GerarTriagemPadrao` e criei as memórias vazias no formato `memoria_execucao.v1`.
+
+## Ação 2: proposta do template da peça unit_no (para aprovação, nada criado ainda)
+
+### Diretrizes lidas
+
+As diretrizes vêm de docs/templates/README.md e dos testes de docs/templates (templates_test.go e sexteto_test.go). Elas impõem o seguinte:
+
+1. Toda peça declara `os_support`, `execution_modes` e `harness_support`, usa `load: lazy` e `requires.class` (README seção 1; `TestPecasAgnosticas`).
+2. Skill não fixa modelo e MCP não fixa `autoApprove`. Para o unit_no, vale o mesmo espírito: o template declara classe e natureza, e o modelo é exemplo editável.
+3. Os JSON não têm comentários. A orientação vive no README (seção 2) e num documento de apoio.
+4. Os JSON de exemplo de Processo e de nascimento não têm placeholders `{{...}}` e são válidos como estão (`TestTemplatesNascimento`, `TestNativeFragmentsHaveNoPlaceholdersAndScriptHasBOM`).
+5. O texto não pode ter sinônimo proibido da taxonomia: limite zero em `*.md`, `*.json`, `*.typ` e `*.go` do diretório (`TestTaxonomiaTemplatesZeroViolacoes`).
+6. Toda expressão de gate precisa compilar (`TestEveryGateExpressionCompiles`).
+7. O nó com `subagents_allowed` só aceita `false` ou `"ephemeral"` com `write_boundary: strict` (`TestContratoSubagenteEfemeroNosTemplates`).
+
+### Achados novos nos templates existentes (comando rodado: `go run ./cmd/legoloop validate <arquivo>`)
+
+`TEMPLATE_PIECE_PROCESSO.json` não passa em `legoloop validate`: `dag: json inválido: json: unknown field "execution_modes"`. O parser é estrito, e os campos de peça agnóstica (`execution_modes`, `os_support`, `harness_support`, `load`, `requires`) não existem no contrato do DAG. O README (seção 2) afirma que o Processo "passa em `legoloop validate`", e isso é falso para este arquivo. O arquivo que passa é `TEMPLATE_PIECE_LOOP.json`, e é ele que o teste `TestProcessoTemplateIsValidDAGAndDocument` valida.
+
+`TEMPLATE_DAG.json` também não passa: `campo obrigatório do schema_version 2 ausente: nó "n01_ingestao": routing.via`.
+
+Os testes atuais não detectam nenhum dos dois. Não corrigi, para não ampliar o escopo sem sua decisão.
+
+### Como o unit_no funciona (resumo da verificação interna)
+
+O unit_no é o nó que edita código com um modelo. Ele trabalha numa git worktree descartável criada de HEAD, roda o `command` antes (Red) e depois (gate) da edição, e só copia os arquivos para o repositório se o gate passar. Exige `--allow-unit-tasks`, workdir na raiz do repositório git e modelo do claude CLI (aliases `code-fast` e `code-pro` viram `sonnet`, `flash` vira `haiku`). Usa só as ferramentas Read, Edit, Write, Glob e Grep. Limita a escrita a `context_out` mais `test_seam.file`. Repete até `retry_policy.max_retries` vezes (0 a 2) e, se esgotar, falha de forma definitiva sem repetir o nó, ou retém resultado `parcial` quando as violações diminuíram e o build passa.
+
+### Forma proposta do template
+
+Arquivo: `docs/templates/TEMPLATE_PIECE_UNIT.json`, um DAG v2 de um único nó `unit_no`, válido no parser real (`dag.Parse` e `legoloop validate`).
+
+Topo: `$schema`, `schema_version: 2`, `id` e `name` concretos (`exemplo-peca-unit-no`), `description`, `version`, `date`, `upstream_signatures`, `execution_strategy` e `trigger: manual`.
+
+O nó (todos os campos que o schema v2 exige para unit_no, mais os que o executor lê):
+- `type: unit_no`, `nature: micro`, `name`, `spec_ref`, `status`.
+- `routing`: modo `suggested`, harness `claude` e modelo `sonnet` como preferência editável, `fallback` para um modelo de outra origem, esforço `medium` e `nature: micro`. Com a correção de universalidade abaixo, o nó não quebra sem o `claude`: ele cai no próximo candidato homologado da classe.
+- `command`: argv de verificação sem shell (por exemplo `go test ./...`), que define o `exit_code` do gate.
+- `context_in` (arquivos que o modelo lê), `context_out` (os únicos que ele pode escrever) e `test_seam` com `file` e `signature` (o teste-alvo do TDD).
+- `isolation`: `write_boundary: strict`, `subagents_allowed: false`, `workspace: local`, `executor: orchestrix_hermetic`.
+- `retry_policy: {max_retries: 2}` (campo corrigido na Ação 1).
+- `limits`, `tooling`, `rollback_strategy`, `verification` (com `diagnostic_command` opcional), `timeout_sec`.
+- `output`: `artifact` (relatório JSON do nó) e `gate` como `exit_code == 0 && file_exists('...')`.
+
+Para cumprir a diretriz 1 sem quebrar o parser, a decisão final é uma terceira opção, [C], que substitui as opções [A] e [B] da primeira versão: os campos agnósticos (`execution_modes`, `os_support`, `harness_support`, `load`, `requires.class`) ficam dentro de `execution_strategy`, o mapa livre do contrato. Opinião técnica: [C] é a melhor porque mantém a declaração no próprio arquivo da peça (a diretriz e o teste `TestPecasAgnosticas` continuam valendo), passa no parser real sem alterar o contrato, e preserva os campos no Studio, cujo `Processo` já copia `execution_strategy`. A opção de ampliar o contrato com campos novos repetiria o defeito do Achado 2 (campos que nenhum código lê). O template do unit_no segue o mesmo padrão, e o documento de apoio `TEMPLATE_PIECE_UNIT.md` traz só a mecânica.
+
+### Testes que acompanham (TDD, escritos antes do arquivo)
+
+1. O template passa em `dag.Parse`, e o único nó é `unit_no`.
+2. O template não tem `{{`.
+3. O gate compila, e `retry_policy.max_retries` está entre 0 e 2.
+4. `isolation.write_boundary` é `strict` e `subagents_allowed` é `false`.
+5. Todo caminho de `context_out` e o `test_seam.file` aparecem como escrita permitida (espelha `allowedWrites`).
+6. O README cita o template na tabela de peças, e o documento de apoio existe.
+7. A taxonomia dá zero violações nos dois arquivos novos.
+
+
+## Resolução dos achados novos nos templates e da universalidade (2026-11-20)
+
+Regra do usuário: todo achado se corrige no ato, e decisão técnica sem consenso sobe ao humano antes da correção.
+
+Corrigido, com TDD (testes Red antes, Green depois):
+
+1. `TEMPLATE_PIECE_PROCESSO.json` agora passa em `legoloop validate` e em `dag.Parse`. Reescrevi como DAG v2 completo, com os campos agnósticos em `execution_strategy`, sem o campo `routing.class` (que não existe no contrato), com o stop_gate no roteamento canônico de `legoloop rota` (`manual`, `local`, `oficial`, `human/operator`) e com artefato próprio para o stop_gate (o validador exige artefato único por nó).
+2. `TEMPLATE_DAG.json` agora passa no parser: faltava `routing.via` em todos os nós. Os dois scripts dependiam de PowerShell (`Test-Path`, `Copy-Item`), o que quebra em Linux e macOS; troquei por `legoloop version` e `git rev-parse HEAD`, que rodam em qualquer sistema.
+3. A afirmação do README de que o Processo "passa em `legoloop validate`" agora é verdadeira e imposta por teste: `TestTemplatesEmFormaDeDAGPassamNoParser` (cinco templates em forma de DAG) e `TestTemplatesEmFormaDeDAGSemShellDeUmSO` (nenhum `command` fixa `powershell`, `pwsh`, `cmd`, `bash` ou `sh`). O README também documenta onde fica a declaração agnóstica do Processo e a regra de roteamento como preferência.
+4. Universalidade do executor: um nó `unit_no` com `claude` declarado quebrava numa máquina sem o `claude`, porque `prepareUnit` falhava antes do despacho (erro `nenhum modelo de [sonnet ] está no inventário`) e a degradação de `nano` e `micro` nunca rodava. Agora, nas classes que degradam, o plano marca o candidato como indisponível e o despacho vai direto ao próximo candidato homologado da classe, registrando a substituição nas notas e no aviso (internal/orchestrix/unit_run.go e despacho.go). Nas demais classes, o nó falha sem trocar de harness, com mensagem que cita o harness declarado. Provas: `TestNoDeCodigoSemClaudeDegradaNanoMicro` e `TestNoDeCodigoSemClaudeFalhaForaDeNanoMicro`.
+
+Verificação: `go test -count=1 ./...` passa em 55 pacotes, com código de saída 0.
+
+Decisão humana ([1]): `tooling.runtime` passa a declarar o motor, `"legoloop"` (o Orchestrix executa sem shell), no lugar de `"powershell"`. Aplicado e provado:
+
+- Geradores: internal/plangen/route.go (2 pontos) e internal/processo/projecoes.go.
+- Templates: TEMPLATE_ROUTE.json, TEMPLATE_ROUTE_LEGOPRESS.json e TEMPLATE_PLAN.md.
+- Processos vivos: 33 arquivos `.json` em `processos/`.
+- Fixtures de teste: dag_test.go, subloop_parse_test.go e store_test.go.
+- Provas (Red antes, Green depois): `TestRouteGeradoDeclaraRuntimeDoMotor` (plangen), `TestProjecoesDeclaramRuntimeDoMotor` (processo) e `TestTemplatesSemRuntimeDeUmSO` (templates).
+- Não alterei os registros datados `docs/dags/` (28 arquivos) e `docs/routes/` (13 arquivos), que são histórico imutável por convenção de data, nem o texto da auditoria de 2026-11-10 que já descrevia o defeito.
+
+Achado extra, corrigido: na rodada completa, `TestUnifiedPathFileLockExactMentionAndPIDKill` (internal/board) falhou uma vez com `TempDir RemoveAll cleanup ... being used by another process`. A pasta `004` é a do quadro `sbNat`, usada pelo worker que sai sozinho. O Windows libera os handles de um processo recém-terminado com atraso, e a remoção única do `t.TempDir` falha sob carga. O pacote passava isolado, então a falha é de corrida de limpeza e não de lógica. Troquei a pasta por `tempDirRobusto` (swarm_test.go), que remove com retentativa por até 10 s. Prova: a suíte inteira passou (55 pacotes, código 0) e o pacote passou 3 vezes seguidas com `-count=3`. A falha original não reproduzia isolada, então a prova é por ausência de nova falha, não por reprodução.
+
+Verificação final: `go test -count=1 ./...` passou em 55 pacotes, com código de saída 0.

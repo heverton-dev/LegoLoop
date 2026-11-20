@@ -198,7 +198,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "scratch/webqa/routes_manifest.json"
@@ -546,7 +546,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "scratch/webqa/lost_pixel.json"
@@ -671,7 +671,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "docs/qa-web/RELATORIO_QA_WEB.md",
@@ -730,7 +730,7 @@
         }
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "scratch/webqa/INTERVIEW_CORRECAO.md",

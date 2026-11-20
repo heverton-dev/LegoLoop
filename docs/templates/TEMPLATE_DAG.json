@@ -23,18 +23,17 @@
   "nodes": [
     {
       "id": "n01_ingestao",
-      "name": "Ingestão do artefato de entrada",
+      "name": "Manifesto de ingestão (versão do motor)",
       "type": "script",
       "nature": "nano",
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Test-Path var.input_artifact"
+        "legoloop",
+        "version"
       ],
       "routing": {
         "mode": "suggested",
         "harness": "claude",
+        "via": "oficial",
         "model": "haiku",
         "effort": "low",
         "fallback": "sonnet"
@@ -51,7 +50,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('output/ingestion_manifest.json')"
@@ -82,6 +81,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "claude",
+        "via": "oficial",
         "model": "sonnet",
         "effort": "medium",
         "fallback": "opus"
@@ -98,7 +98,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('output/spec_processed.json')"
@@ -131,6 +131,7 @@
       "routing": {
         "mode": "auto",
         "harness": "claude",
+        "via": "oficial",
         "model": "sonnet",
         "effort": "medium",
         "combo": "t-chat-128k"
@@ -147,7 +148,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('output/processo_filho_resultado.json')"
@@ -180,6 +181,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "claude",
+        "via": "oficial",
         "model": "haiku",
         "effort": "low",
         "fallback": "sonnet"
@@ -196,7 +198,7 @@
       },
       "rollback_strategy": "abort_processo",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('output/processo_filho_resultado.json') && prompt('Aprovar resultado para entrega final?')"
@@ -219,14 +221,13 @@
     },
     {
       "id": "n05_entrega_final",
-      "name": "Entrega final",
+      "name": "Registro da entrega final (revisão git)",
       "type": "script",
       "nature": "nano",
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Copy-Item output/processo_filho_resultado.json dist/final_delivery.json"
+        "git",
+        "rev-parse",
+        "HEAD"
       ],
       "depends_on": [
         "n04_sg_aprovacao"
@@ -234,6 +235,7 @@
       "routing": {
         "mode": "suggested",
         "harness": "claude",
+        "via": "oficial",
         "model": "haiku",
         "effort": "low",
         "fallback": "sonnet"
@@ -250,7 +252,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('dist/final_delivery.json')"

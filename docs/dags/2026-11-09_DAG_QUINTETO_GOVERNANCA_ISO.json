@@ -99,7 +99,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       }
     },
     {
@@ -167,7 +167,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       }
     },
     {
@@ -236,7 +236,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       }
     },
     {
@@ -303,7 +303,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       }
     },
     {
@@ -370,7 +370,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       }
     },
     {
@@ -439,7 +439,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       }
     },
     {
@@ -507,7 +507,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       }
     },
     {
@@ -574,7 +574,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       }
     }
   ],

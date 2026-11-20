@@ -27,6 +27,9 @@ type chamada struct {
 // despachar roda o nó no candidato declarado. Se ele falhar, a política da classe decide:
 // nano e micro seguem para o próximo candidato elegível; as demais classes falham sem trocar de harness.
 func (o *Orchestrix) despachar(ctx context.Context, n dag.Node, plan unitPlan, prompt, dir string) (chamada, error) {
+	if plan.indisponivel != nil {
+		return o.degradar(ctx, n, prompt, dir, runner.TokenUsage{}, plan.indisponivel)
+	}
 	text, usage, err := o.chamarNo(ctx, n, plan.model, prompt, dir)
 	if err == nil {
 		return chamada{text: text, usage: usage}, nil

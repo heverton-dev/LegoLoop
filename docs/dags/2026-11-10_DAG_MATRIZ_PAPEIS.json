@@ -75,7 +75,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-I5-01.1",
@@ -144,7 +144,7 @@
         "harness": "mimo",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-I5-01.1",
@@ -261,7 +261,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-I5-02.1",
@@ -328,7 +328,7 @@
         "harness": "opencode",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-I5-02.2",
@@ -394,7 +394,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-I5-03.1",
@@ -517,7 +517,7 @@
         "harness": "claude",
         "mcps_allowed": [],
         "mcps_required": false,
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-I5-03.2",

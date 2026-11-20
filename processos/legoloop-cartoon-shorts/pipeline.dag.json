@@ -62,7 +62,7 @@
         "max_completion_tokens": 600
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-E01.2",
@@ -127,7 +127,7 @@
         "max_completion_tokens": 500
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-E02.1",
@@ -192,7 +192,7 @@
         "max_completion_tokens": 800
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-E03.1",

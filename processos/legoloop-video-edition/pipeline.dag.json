@@ -83,7 +83,7 @@
         "max_prompt_tokens": 8000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "script",
       "verification": {
@@ -150,7 +150,7 @@
         "max_prompt_tokens": 12000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "script",
       "verification": {
@@ -219,7 +219,7 @@
         "max_prompt_tokens": 12000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "script",
       "verification": {
@@ -278,7 +278,7 @@
         "max_prompt_tokens": 6000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "stop_gate",
       "verification": {
@@ -338,7 +338,7 @@
         "max_prompt_tokens": 16000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "skill",
       "verification": {
@@ -397,7 +397,7 @@
         "max_prompt_tokens": 6000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "stop_gate",
       "verification": {
@@ -468,7 +468,7 @@
         "max_prompt_tokens": 10000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "script",
       "verification": {
@@ -535,7 +535,7 @@
         "max_prompt_tokens": 8000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "script",
       "verification": {
@@ -604,7 +604,7 @@
         "max_prompt_tokens": 12000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "script",
       "verification": {
@@ -678,7 +678,7 @@
         "max_prompt_tokens": 10000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "script",
       "verification": {
@@ -747,7 +747,7 @@
         "max_prompt_tokens": 12000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "script",
       "verification": {
@@ -806,7 +806,7 @@
         "max_prompt_tokens": 6000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "type": "stop_gate",
       "verification": {

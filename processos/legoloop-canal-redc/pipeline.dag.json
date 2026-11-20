@@ -72,7 +72,7 @@
       "status": "COMPLETED",
       "timeout_sec": 300,
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [],
       "context_out": [
@@ -133,7 +133,7 @@
       "status": "COMPLETED",
       "timeout_sec": 300,
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "internal/redc/catalog.go"
@@ -196,7 +196,7 @@
       "status": "COMPLETED",
       "timeout_sec": 300,
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "internal/redc/dna.go"
@@ -259,7 +259,7 @@
       "status": "COMPLETED",
       "timeout_sec": 300,
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "internal/redc/dna.go"

@@ -35,7 +35,7 @@
         "max_prompt_tokens": 10000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_out": [
         "out/01_script.md"

@@ -47,7 +47,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Quinteto aprovado? Autoriza executar M1.1 e M2.1?')"
@@ -88,7 +88,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/triagem/memoria.go') && file_exists('internal/triagem/memoria_test.go')"
@@ -131,7 +131,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0"
@@ -174,7 +174,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0"
@@ -217,7 +217,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0"
@@ -260,7 +260,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0"
@@ -303,7 +303,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0"
@@ -346,7 +346,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0"
@@ -389,7 +389,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0"
@@ -432,7 +432,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Evidências de M1 aprovadas? Autoriza iniciar o Fechamento M3?')"
@@ -473,7 +473,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Evidências de M2 aprovadas? Autoriza iniciar M3.1?')"
@@ -514,7 +514,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "file_exists('docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md') && !has_pattern('docs/manuals/2026-11-16_MANUAL_FUNCAO_MEMORIA_ANTICORPOS_LEGOLOOP.md', '\\{\\{')"
@@ -558,7 +558,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('docs/books/memoria-anticorpos/livro.json') && file_exists('skills/legoloop-memoria-anticorpos/SKILL.md')"
@@ -602,7 +602,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('docs/reports/2026-11-16_REPORT_MEMORIA_CONCORRENTE_ANTICORPOS.md')"
@@ -645,7 +645,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('bin/legoloop.exe')"

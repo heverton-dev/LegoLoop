@@ -76,7 +76,7 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
   * **Primário:** Harness `9router` · Modelo `t-codigo-128k` · Effort `high`
   * **Fallback:** Harness `antigravity` · Modelo `flash`
 * **Tooling:**
-  * **Runtime:** `powershell` (ou `node`, `obscura`, etc.)
+  * **Runtime:** `legoloop` (ou `node`, `obscura`, etc.)
   * **MCPs Requeridos:** `false` · **Allowlist:** `[]` (formato `servidor:ferramenta`)
 * **Limites & Resiliência:**
   * **Timeout:** `180s` · **Retries:** `1` (backoff `1000ms`, fallback model `true`)
@@ -99,7 +99,7 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 * **Dependências:** `["TICK-01.1"]`
 * **Isolamento:** Workspace `local` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `t-chat-128k` · Effort `low` · Fallback Harness `antigravity` · Modelo `flash`
-* **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
+* **Tooling:** Runtime `legoloop` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `8000` tokens · Teto de saída `300` tokens · Rollback `stash_changes`
 * **Inputs:** `internal/pkg/service.go` · Spec Anchor `docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E01.2`
 * **Outputs:** `internal/pkg/service.go`
@@ -125,7 +125,7 @@ GUIA DE PREENCHIMENTO (apague este trecho ao concluir)
 * **Ref do Processo filho:** `exemplo-processo-filho` (id de um Processo do acervo; nunca um caminho)
 * **Isolamento:** Workspace `tempdir` · Executor `orchestrix_hermetic` · Subagentes `false` · Write Boundary `strict`
 * **Roteamento:** Harness `9router` · Modelo `t-chat-128k` · Effort `medium` · Fallback Harness `ollama` · Modelo `deepseek-coder:6.7b`
-* **Tooling:** Runtime `powershell` · MCPs Requeridos `true` · Allowlist `["codebase-memory-mcp:search_code"]`
+* **Tooling:** Runtime `legoloop` · MCPs Requeridos `true` · Allowlist `["codebase-memory-mcp:search_code"]`
 * **Limites & Resiliência:** Timeout `300s` · Retries `1` · Entrada `32000` tokens · Teto de saída `1200` tokens · Rollback `stash_changes`
 * **Inputs:** Context Artifacts `["scratch/target_analysis.json"]` · Spec Anchor `docs/specs/{{DATA}}_SPEC_{{NOME}}.md#AC-E02.1`
 * **Outputs:** `scratch/processo_filho_saida.json`

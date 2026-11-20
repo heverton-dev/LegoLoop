@@ -71,7 +71,7 @@
         "max_output": 600
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -152,7 +152,7 @@
         "max_output": 800
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -239,7 +239,7 @@
         "max_output": 600
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -325,7 +325,7 @@
         "max_output": 800
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -409,7 +409,7 @@
         "max_output": 600
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -492,7 +492,7 @@
         "max_output": 800
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -579,7 +579,7 @@
         "max_output": 900
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -673,7 +673,7 @@
         "max_output": 900
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -755,7 +755,7 @@
         "max_output": 700
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -838,7 +838,7 @@
         "max_output": 800
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -922,7 +922,7 @@
         "max_output": 800
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -1009,7 +1009,7 @@
         "max_output": 700
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -1091,7 +1091,7 @@
         "max_output": 700
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": false,
         "mcp_allowlist": []
       },
@@ -1182,7 +1182,7 @@
         "max_output": 1200
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": true,
         "mcp_allowlist": [
           "playwright:browser_navigate",
@@ -1265,7 +1265,7 @@
         "max_output": 1500
       },
       "tooling": {
-        "runtime": "powershell",
+        "runtime": "legoloop",
         "mcp_required": true,
         "mcp_allowlist": [
           "codebase-memory-mcp:index_repository"

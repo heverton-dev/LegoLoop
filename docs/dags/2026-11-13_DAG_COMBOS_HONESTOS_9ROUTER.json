@@ -47,7 +47,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/combo/combo.go') && file_exists('internal/combo/combo_test.go')"
@@ -98,7 +98,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/combo/validar.go')"
@@ -148,7 +148,7 @@
       },
       "rollback_strategy": "abort_pipeline",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Catálogo dos 6 combos e barreira mecânica de tokens validados com sucesso? Autoriza iniciar o Épico 02?')"
@@ -198,7 +198,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('scratch/combos_9router_manifest.json')"
@@ -249,7 +249,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('internal/combo/legado.go')"
@@ -300,7 +300,7 @@
       },
       "rollback_strategy": "abort_pipeline",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Manifesto exportado e compatibilidade de legados testada? Autoriza iniciar o Fechamento?')"
@@ -356,7 +356,7 @@
       },
       "rollback_strategy": "stash_changes",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "exit_code == 0 && file_exists('scratch/i7_validacao_final.json')"
@@ -405,7 +405,7 @@
       },
       "rollback_strategy": "abort_pipeline",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "gate": "prompt('Homologa a conclusão da Iniciativa I7 (Combos Honestos do 9Router)?')"

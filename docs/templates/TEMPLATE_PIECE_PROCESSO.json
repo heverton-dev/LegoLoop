@@ -4,13 +4,21 @@
   "id": "exemplo-peca-processo",
   "name": "exemplo-peca-processo",
   "description": "Peça de Processo agnóstica: transforma uma SPEC aprovada em PLAN, com roteamento por classe de esforço e sem modelo fixo.",
-  "version": "2.3.0",
-  "execution_modes": ["cli", "agente", "estudio"],
-  "os_support": ["windows", "linux", "macos"],
-  "harness_support": ["any"],
-  "load": "lazy",
-  "requires": {
-    "class": "micro"
+  "version": "2.4.0",
+  "date": "2026-11-20",
+  "upstream_signatures": {},
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 1,
+    "default_timeout_sec": 600,
+    "rollback_on_failure": "abort_processo",
+    "execution_modes": ["cli", "agente", "estudio"],
+    "os_support": ["windows", "linux", "macos"],
+    "harness_support": ["any"],
+    "load": "lazy",
+    "requires": {
+      "class": "micro"
+    }
   },
   "trigger": {
     "type": "manual"
@@ -18,14 +26,36 @@
   "nodes": [
     {
       "id": "n01_plano",
+      "name": "Plano a partir da SPEC",
       "type": "skill",
+      "nature": "micro",
       "ref": "skills/aidd-tickets",
-      "class_rule": "micro: de 2 a 4 arquivos em context_out",
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
       "routing": {
         "mode": "suggested",
-        "class": "micro"
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "t-chat-128k"
       },
       "timeout_sec": 600,
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 4000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "rollback_strategy": "stash_changes",
+      "verification": {
+        "gate": "file_exists('PLAN.md') && has_binary_criteria('PLAN.md')"
+      },
+      "context_in": ["SPEC.md"],
+      "context_out": ["PLAN.md"],
       "inputs": {
         "spec": "file('SPEC.md')"
       },
@@ -36,15 +66,37 @@
     },
     {
       "id": "n02_aprovacao",
+      "name": "Aprovação humana do PLAN",
       "type": "stop_gate",
+      "nature": "nano",
       "depends_on": ["n01_plano"],
+      "spec_ref": "AC-E01.2",
+      "status": "PENDING",
       "routing": {
-        "mode": "suggested",
-        "class": "extreme"
+        "mode": "manual",
+        "harness": "local",
+        "via": "oficial",
+        "model": "human/operator",
+        "effort": "low"
       },
       "timeout_sec": 0,
+      "isolation": {
+        "write_boundary": "none"
+      },
+      "limits": {
+        "max_output_tokens": 0
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "rollback_strategy": "abort_processo",
+      "verification": {
+        "gate": "prompt('Aprova o PLAN.md para iniciar o BUILD?')"
+      },
+      "context_in": ["PLAN.md"],
+      "context_out": ["APROVACAO_PLAN.md"],
       "output": {
-        "artifact": "PLAN.md",
+        "artifact": "APROVACAO_PLAN.md",
         "gate": "prompt('Aprova o PLAN.md para iniciar o BUILD?')"
       }
     }

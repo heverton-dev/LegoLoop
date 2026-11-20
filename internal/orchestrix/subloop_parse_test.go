@@ -41,7 +41,7 @@ func fixtureNodeV2() dag.Node {
 		Isolation:        map[string]any{"write_boundary": "strict"},
 		Limits:           map[string]any{"max_output_tokens": 300},
 		RollbackStrategy: "abort_processo",
-		Tooling:          map[string]any{"runtime": "powershell"},
+		Tooling:          map[string]any{"runtime": "legoloop"},
 		Verification:     map[string]any{"gate": "exit_code == 0"},
 		SpecRef:          "AC-1",
 		Status:           "PENDING",

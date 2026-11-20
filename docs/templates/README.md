@@ -41,6 +41,8 @@ Toda Peça declara `os_support`, `execution_modes` e `harness_support`, e usa lo
 * **Skill:** sem `suggested_model`; declara classe, não modelo.
 * **MCP:** sem `autoApprove` fixo.
 * **Script:** em par `.ps1` e `.sh`, com o mesmo contrato de argumentos.
+* **Processo:** o parser do DAG recusa campo desconhecido no topo do documento. Por isso a declaração agnóstica (`execution_modes`, `os_support`, `harness_support`, `load` e `requires.class`) fica dentro de `execution_strategy`, o mapa livre do contrato. Nenhum código lê essas chaves: elas documentam a compatibilidade da peça.
+* **Roteamento:** o `routing` de um nó declara a preferência da máquina de origem, não uma exigência. O harness e o modelo ficam editáveis, e `legoloop rota` os resolve de novo por máquina. Nós `nano` e `micro` degradam para o próximo candidato homologado da classe quando o declarado não existe; as demais classes falham com mensagem clara.
 
 ---
 
@@ -83,7 +85,7 @@ Cada Peça usa o formato que o repositório (ou o harness) realmente lê, agora 
 }
 ```
 * **Gate:** só as funções que existem (`file_exists`, `word_count`, `line_count`, `has_pattern`, `has_binary_criteria`, `has_acceptance_criteria`, `schema_valid`, `interactive`, `prompt`) e o identificador `exit_code`. Comandos de terminal **não** entram na expressão: ficam em `verify` (argv, sem shell) e a expressão avalia o `exit_code`. Gate humano usa `prompt('pergunta')`. Caminhos literais, relativos ao projeto.
-* **Processo:** passa em `legoloop validate`; `trigger` único; cada nó com `output.artifact` único e `output.gate` compilável; skills por `ref`, subprocessos por id do Processo, nunca por caminho.
+* **Processo:** passa em `legoloop validate` (o teste `TestTemplatesEmFormaDeDAGPassamNoParser` roda `dag.Parse` em todo template em forma de DAG); `trigger` único; cada nó com `output.artifact` único e `output.gate` compilável; skills por `ref`, subprocessos por id do Processo, nunca por caminho; nenhum `command` fixa um shell de um só sistema operacional (`powershell`, `cmd`, `bash`).
 
 ---
 

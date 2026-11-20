@@ -35,7 +35,7 @@
         "max_prompt_tokens": 10000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_out": [
         "out/01_dissecao.md"
@@ -76,7 +76,7 @@
         "max_prompt_tokens": 10000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "out/01_dissecao.md"
@@ -120,7 +120,7 @@
         "max_prompt_tokens": 10000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "out/02_lacunas.md"
@@ -164,7 +164,7 @@
         "max_prompt_tokens": 10000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "out/03_tickets.md"
@@ -208,7 +208,7 @@
         "max_prompt_tokens": 10000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "context_in": [
         "out/04_refatoracao.md"

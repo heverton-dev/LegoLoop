@@ -62,7 +62,7 @@
         "max_completion_tokens": 2000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-n01_crawler_ingest",
@@ -132,7 +132,7 @@
         "max_completion_tokens": 3000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-n02_forensics_dissection",
@@ -202,7 +202,7 @@
         "max_completion_tokens": 3000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-n03_matrix_curation",
@@ -271,7 +271,7 @@
         "max_completion_tokens": 1000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-n04_stopgate_approval",
@@ -341,7 +341,7 @@
         "max_completion_tokens": 3000
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-n05_governance_factory",
@@ -412,7 +412,7 @@
         "max_completion_tokens": 2500
       },
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "rollback_strategy": "stash_changes",
       "spec_ref": "AC-n06_legopress_book",

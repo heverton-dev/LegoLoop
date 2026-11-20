@@ -9,6 +9,32 @@ import (
 	"time"
 )
 
+// tempDirRobusto cria uma pasta temporária e a remove no fim com novas tentativas por até 10 s.
+// No Windows, o SO libera os handles de um processo recém-morto com atraso, e a remoção única do
+// t.TempDir falha com "being used by another process" sob carga.
+func tempDirRobusto(t *testing.T) string {
+	t.Helper()
+	dir, err := os.MkdirTemp("", "legoloop-board-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		prazo := time.Now().Add(10 * time.Second)
+		for {
+			err := os.RemoveAll(dir)
+			if err == nil {
+				return
+			}
+			if time.Now().After(prazo) {
+				t.Errorf("remover %s: %v", dir, err)
+				return
+			}
+			time.Sleep(100 * time.Millisecond)
+		}
+	})
+	return dir
+}
+
 func initTestGitRepo(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()

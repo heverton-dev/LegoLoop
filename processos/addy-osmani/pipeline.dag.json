@@ -83,7 +83,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "command": "go test -count=1 ./..."
@@ -142,7 +142,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "command": "go test -count=1 ./..."
@@ -201,7 +201,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "command": "go test -count=1 ./..."
@@ -260,7 +260,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "command": "go test -count=1 ./..."
@@ -319,7 +319,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "command": "go test -count=1 ./..."
@@ -378,7 +378,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "command": "go test -count=1 ./..."
@@ -437,7 +437,7 @@
       },
       "rollback_strategy": "git_reset",
       "tooling": {
-        "runtime": "powershell"
+        "runtime": "legoloop"
       },
       "verification": {
         "command": "go test -count=1 ./..."

@@ -162,7 +162,7 @@ func adicionarMetadadosCognitivos(n *dag.Node, e Etapa, porID map[string]Etapa) 
 	n.CognitiveComplexity = "simples"
 	n.Isolation = map[string]any{"workspace": "local", "executor": "orchestrix_hermetic", "subagents_allowed": false}
 	n.TokenBudget = map[string]any{"max_prompt_tokens": 10000, "max_completion_tokens": 3000}
-	n.Tooling = map[string]any{"runtime": "powershell"}
+	n.Tooling = map[string]any{"runtime": "legoloop"}
 	n.Status = "PENDING"
 	if e.Produz.Caminho != "" {
 		n.ContextOut = []string{e.Produz.Caminho}

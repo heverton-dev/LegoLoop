@@ -314,7 +314,7 @@ func TestParse_PreservaMetadadosCognitivos(t *testing.T) {
 				"test_seam": {"signature": "TestService"},
 				"verification": {"test_command": "go test ./..."},
 				"token_budget": {"max_prompt_tokens": 8000},
-				"tooling": {"runtime": "powershell"},
+				"tooling": {"runtime": "legoloop"},
 				"command": ["go", "test", "./..."],
 				"output": {"artifact": "res.txt", "gate": "exit_code == 0"}
 			}
