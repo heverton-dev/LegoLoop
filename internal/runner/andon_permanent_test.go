@@ -20,7 +20,7 @@ func (e *permanentExecutor) Execute(_ context.Context, _ dag.Node, _ string) (ru
 
 func TestAndonDoesNotRetryPermanentFailure(t *testing.T) {
 	exec := &permanentExecutor{}
-	node := dag.Node{ID: "n", Type: dag.TypeUnitTask, Output: dag.HandoffContract{Artifact: "o.txt", Gate: "exit_code == 0"}}
+	node := dag.Node{ID: "n", Type: dag.NodeType("unit_no"), Output: dag.HandoffContract{Artifact: "o.txt", Gate: "exit_code == 0"}}
 	_, _, err := runner.ExecuteWithAndon(context.Background(), exec, node, t.TempDir())
 	if err == nil {
 		t.Fatal("esperava erro")

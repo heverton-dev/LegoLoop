@@ -20,7 +20,7 @@ func (c *countingExecutor) Execute(ctx context.Context, n dag.Node, workdir stri
 }
 
 // A reprovação do gate depois das retentativas é definitiva: o runner não repete o nó.
-func TestUnitTaskGateExhaustionIsNotRetriedByRunner(t *testing.T) {
+func TestUnitNoGateEsgotadoNaoEhRepetidoPeloRunner(t *testing.T) {
 	repo := newRepoT(t)
 	n := unitNode("n1", "out/n1.json", "file_exists('nunca.txt')", nil)
 	exec := &countingExecutor{inner: unitOrchestrix("n1.txt=x")}
@@ -36,7 +36,7 @@ func TestUnitTaskGateExhaustionIsNotRetriedByRunner(t *testing.T) {
 	}
 }
 
-func TestUnitTaskHonorsRetryPolicyMaxRetries(t *testing.T) {
+func TestUnitNoRespeitaRetryPolicyMaxRetries(t *testing.T) {
 	cases := []struct{ max, want int }{{0, 1}, {1, 2}, {2, 3}}
 	for _, c := range cases {
 		repo := newRepoT(t)

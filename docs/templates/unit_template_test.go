@@ -26,7 +26,7 @@ func carregarUnit(t *testing.T) (*dag.DAG, dag.Node) {
 	if err != nil {
 		t.Fatalf("%s não passa em dag.Parse: %v", arquivoUnit, err)
 	}
-	if len(d.Nodes) != 1 || d.Nodes[0].Type != dag.TypeUnitTask {
+	if len(d.Nodes) != 1 || d.Nodes[0].Type != dag.NodeType("unit_no") {
 		t.Fatalf("o template deve ter um único nó unit_no: %+v", d.Nodes)
 	}
 	return d, d.Nodes[0]

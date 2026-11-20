@@ -16,7 +16,7 @@ O **LegoLoop** resolve isso tratando tudo como **peças Lego** sob governança i
 * **Orchestrix Cirúrgica por Bloco:** Cada nó roda isolado com contexto estéril (2k a 5k tokens), lê apenas o artefato contratado do disco e morre ao concluir.
 * **As 3 Superfícies de Criação de Pipelines:**
   1. **Terminal CLI:** Comandos industriais diretos (`legoloop fabricar`, `legoloop matriz`, `legoloop listar`, etc.).
-  2. **Agente em Linguagem Natural:** 14 skills canônicas universais nos 5 harnesses (`/legoloop-fabricar`, `/legoloop-fechar`, etc.).
+  2. **Agente em Linguagem Natural:** 39 skills nativas universais nos 5 harnesses (`/legoloop-fabricar`, `/legoloop-fechar`, etc.).
   3. **Studio LegoLoop (Dupla Superfície):** Modo Cockpit com telemetria profunda para engenharia e Modo Autopilot com cartões executivos simples para operadores leigos.
 * **Ciclo de Vida Canônico:** Esteiras completas governadas pelos verbos **Fabricar** (`fabricar`), **Matriz de Peças** (`matriz`), **Listar** (`listar`), **Refinar** (`refinar`), **Remover** (`remover`), **Compor** (`compor`) e **Fechar** (`fechar`).
 * **Protocolos Industriais & 5 Prisões Mecânicas:** STANAG 2014, ASD-STE100, EARS, FMEA, Readback ICAO, Andon Cord/Jidoka e SBAR com isolamento de contexto e validação rígida de schemas.
@@ -32,13 +32,13 @@ LegoLoop/
 ├── cmd/legoloop/            # Binário (main curto; lógica em internal/cli)
 ├── internal/
 │   ├── canon/               # Canonização: hash SHA-256, eleitor, links com rollback (desduplicação)
-│   ├── dag/                 # Contrato pipeline.dag.json v2: tipos de nó, triggers, slots, ciclos
+│   ├── dag/                 # Contrato pipeline.dag.json v2: tipos de nó, triggers, slots, retry_policy do unit_no, ciclos
 │   ├── gate/                # Motor de gates (file_exists, has_pattern, exit_code, gates da Tríade)
 │   ├── runner/              # Runner por camadas, paralelo, timeout, telemetria
 │   ├── provider/            # Inventário passivo: Ollama, 9Router, CLIs, chaves (TrustedRouterKey)
 │   ├── brain/               # Cérebros plugáveis (9Router, Antigravity/Gemini, Ollama) com auto-seleção
 │   ├── ste/                 # Catálogo formal de mensagens e avisos de risco no padrão STE-PT
-│   ├── orchestrix/          # Orchestrix isolada por bloco (claude -p, Ollama, 9Router, harnesses, script, sub-loop)
+│   ├── orchestrix/          # Orchestrix isolada por bloco (claude -p, Ollama, 9Router, harnesses, script, sub-loop, unit_no em worktree com degradação por classe)
 │   ├── graph/               # Ontologia, compatibilidade de portas, rota ótima (Dijkstra)
 │   ├── assets/              # Inventário do SO: skills, MCPs, hooks, scripts, gates, loops, harnesses
 │   ├── suggest/             # Sugestões determinísticas (gates, scripts, hooks, vizinhos), sem LLM
@@ -101,7 +101,7 @@ legoloop refinar "extrator-audio" --etapa e1 --peca aidd-rea
 legoloop remover "extrator-audio" --dry-run
 legoloop compor "esteira-master" "extrator-audio"
 legoloop fechar "extrator-audio" --dry-run        # canonização determinística em 9 etapas
-legoloop instalar-skills                          # distribui as 14 skills canônicas nos harnesses
+legoloop instalar-skills                          # distribui as 39 skills nativas nos harnesses
 
 # Mega-Pipelines Audiovisuais & Engenharia Reversa de Canais
 legoloop canal redc <dir> --canal meu-canal --json   # analisa 100 vídeos e extrai Dossiê DNA
@@ -114,6 +114,7 @@ legoloop cartoon-shorts --theme "Origem da Pizza"    # pipeline determinístico 
 legoloop route --from Artifact:URL --to Artifact:Spec
 legoloop validate pipeline.dag.json
 legoloop run pipeline.dag.json --var idea="..."   # executa os nós com gates
+legoloop run pipeline.dag.json --allow-unit-no    # consente nós unit_no (alias legado: --allow-unit-tasks)
 legoloop studio                                   # http://127.0.0.1:7878
 legoloop forge                                    # abre o Studio e dispara a primeira varredura
 legoloop import <github-url>                      # importa e canoniza uma skill do GitHub
@@ -266,10 +267,18 @@ setx NINEROUTER_KEY <sua-chave>
 
 **Riscos aceitos:** com fallback por hardlink (Windows sem Developer Mode), um editor que grave *no próprio arquivo* altera todas as cópias linkadas — é a natureza do hardlink; o runner do LegoLoop sempre grava por temporário + rename. No Windows, processos netos de um nó podem ficar órfãos após timeout (sem Job Object); o runner não trava. Um HD externo USB que se anuncia como disco fixo é tratado como confiável pelo scanner do `fabricar`.
 
+## 🧩 Nós e Peças: unit_no, roteamento universal e templates
+
+* **Nó não é peça.** Nó é o vértice do DAG; peça é a unidade reutilizável que o nó materializa (campo `peca`). Os tipos de nó são `skill`, `script`, `subprocesso`, `stop_gate`, `unit_no` e `mcp`. Hook e Gate são encaixes (slots) da peça, não tipos de nó.
+* **`unit_no`:** o modelo edita código numa git worktree descartável, o `command` roda antes (Red) e depois (gate), e só a escrita permitida (`context_out` mais `test_seam.file`) volta ao repositório. Exige consentimento (`--allow-unit-no`), usa só Read, Edit, Write, Glob e Grep e repete até `retry_policy.max_retries` (0 a 2). A reprovação do gate após as retentativas é definitiva: o runner não repete o nó.
+* **Roteamento universal:** o `routing` de um nó declara preferência, nunca exigência. Sem o harness declarado na máquina, nós `nano` e `micro` degradam para o próximo candidato homologado da classe; as demais classes falham citando o harness. `legoloop rota` regenera o roteamento por máquina.
+* **Sem shell de um só SO:** `tooling.runtime` declara `legoloop` e nenhum `command` de template fixa `powershell`, `cmd` ou `bash`.
+* **Templates:** todo template em forma de DAG passa em `dag.Parse` (teste `TestTemplatesEmFormaDeDAGPassamNoParser`). O template do nó é `docs/templates/TEMPLATE_PIECE_UNIT.json`, com apoio em `TEMPLATE_PIECE_UNIT.md`. Detalhes e provas: `docs/reports/2026-11-20_NOS_E_PECAS.md`.
+
 ## ✅ Qualidade e verificação
 
 ```bash
-go test -count=1 ./...                         # 29 pacotes internos; lógica JS pura do Studio roda em node
+go test -count=1 ./...                         # 55 pacotes; lógica JS pura do Studio roda em node
 go test -count=1 -tags e2e ./internal/e2e/...  # suíte hermética E2E (3 cenários de referência e 2 cérebros)
 go vet ./...                                   # verificação estática (Windows, Linux e Darwin)
 go run ./tools/funclen internal                # nenhuma função > 35 linhas
@@ -277,8 +286,8 @@ gofmt -l .                                     # deve sair vazio (o exit code é
 git diff --exit-code -- go.mod                 # só biblioteca padrão (sem go.sum)
 ```
 
-`go test -race` exige CGO (indisponível no Windows sem `gcc`): roda no CI Linux. Estado em 06/11/2026: 29 pacotes internos + pacote E2E 100% verdes, 0 falhas, 1 pulado preexistente (symlink sem admin no Windows).
+`go test -race` exige CGO (indisponível no Windows sem `gcc`): roda no CI Linux. Estado em 20/11/2026: 55 pacotes 100% verdes em `go test -count=1 ./...` (código de saída 0) e a suíte E2E (`-tags e2e`) verde.
 
 ## 📚 Governança
 
-Cada demanda segue a cascata **INTENT → SPEC → PLAN → ROUTE → BUILD (TDD) → relatório**, com stop-gates humanos e artefatos em `docs/` com prefixo `YYYY-MM-DD_`. Os formatos estão em `docs/templates/` (templates v2.2.0, testados por `go test ./docs/templates`). Demandas recentes: N10 Foundry Harness & Protocolos Industriais (`docs/reports/2026-11-09_REPORT_N10_FOUNDRY_GLOBAL.md`), Governança de Rota e Nós v2.2.0 (`docs/*/2026-11-07_*_ROUTE_V2_GOVERNANCE.*`), Hierarquia Canônica de 4 Níveis (`docs/*/2026-11-07_*_HIERARQUIA_INICIATIVA.*`), Governança Lazy de MCPs (`docs/*/2026-11-06_*_GOVERNANCA_LAZY_UNIVERSAL.*`) e Alternador STE-PT (`docs/*/2026-11-05_*_STEPT_SWITCH.*`). Manuais operacionais em `docs/manuals/`. Regras para agentes em [`AGENTS.md`](AGENTS.md); diário de evolução em [`MEMORY.md`](MEMORY.md).
+Cada demanda segue a cascata **INTENT → SPEC → PLAN → ROUTE → BUILD (TDD) → relatório**, com stop-gates humanos e artefatos em `docs/` com prefixo `YYYY-MM-DD_`. Os formatos estão em `docs/templates/` (templates v2.2.0, testados por `go test ./docs/templates`). Demandas recentes: Nós e Peças, unit_no, universalidade e templates (`docs/reports/2026-11-20_NOS_E_PECAS.md`), N10 Foundry Harness & Protocolos Industriais (`docs/reports/2026-11-09_REPORT_N10_FOUNDRY_GLOBAL.md`), Governança de Rota e Nós v2.2.0 (`docs/*/2026-11-07_*_ROUTE_V2_GOVERNANCE.*`), Hierarquia Canônica de 4 Níveis (`docs/*/2026-11-07_*_HIERARQUIA_INICIATIVA.*`), Governança Lazy de MCPs (`docs/*/2026-11-06_*_GOVERNANCA_LAZY_UNIVERSAL.*`) e Alternador STE-PT (`docs/*/2026-11-05_*_STEPT_SWITCH.*`). Manuais operacionais em `docs/manuals/`. Regras para agentes em [`AGENTS.md`](AGENTS.md); diário de evolução em [`MEMORY.md`](MEMORY.md).

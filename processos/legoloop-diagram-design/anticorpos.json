@@ -26,7 +26,7 @@
     {
       "assinatura": "sha256:c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
       "erro": "Ausencia de micro-animacoes. Diagramas entregues sem transicoes CSS/Remotion mesmo quando o processo exige inspecao impeccable-design completa.",
-      "causa_raiz": "O pipeline de geracao nao incluia a etapa de animacao como nó obrigatorio. A skill nao declarava dependencia de legoloop-impeccable-design nem de Remotion.",
+      "causa_raiz": "O Processo de geracao nao incluia a etapa de animacao como nó obrigatorio. A skill nao declarava dependencia de legoloop-impeccable-design nem de Remotion.",
       "antidoto": "Adicionar nó obrigatorio 'animacao' ao DAG da skill com gate: arquivo animation/composition.tsx deve existir. Verificar disponibilidade de Remotion via 'npx remotion --version' antes de gerar.",
       "recorrencias": 1,
       "pacote": "legoloop-diagram-design/animation",
