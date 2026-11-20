@@ -2,6 +2,14 @@
   "schema_version": "memoria_execucao.v1",
   "processo": ".",
   "sessoes": {
+    "017bbfc8d441e32a279e34376dc38041": {
+      "processo": "",
+      "sessao_id": "017bbfc8d441e32a279e34376dc38041",
+      "pid": 11440,
+      "etapa_atual": "e06",
+      "proximo_passo": "fim",
+      "atualizado_em": "2026-11-20T09:52:29.7634017Z"
+    },
     "03e9d08a8dcacf5c32a8c98fa6647de4": {
       "processo": "",
       "sessao_id": "03e9d08a8dcacf5c32a8c98fa6647de4",
@@ -25,6 +33,14 @@
       "etapa_atual": "e06",
       "proximo_passo": "fim",
       "atualizado_em": "2026-11-19T10:22:54.9181589Z"
+    },
+    "2a5a00dfb02b77a843b123175c49705e": {
+      "processo": "",
+      "sessao_id": "2a5a00dfb02b77a843b123175c49705e",
+      "pid": 4972,
+      "etapa_atual": "e01",
+      "proximo_passo": "e02",
+      "atualizado_em": "2026-11-20T09:52:20.0948649Z"
     },
     "2e4be6a7682961e224cbe9e287622a74": {
       "processo": "",

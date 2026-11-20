@@ -1,0 +1,168 @@
+{
+  "name": "legoloop-fabricar",
+  "version": "1.1.0",
+  "description": "Verbo FABRICAR: transforma uma ideia em processo (skill, Studio e DAG) em 5 camadas com 2 stop-gates humanos.",
+  "nodes": [
+    {
+      "id": "f01_preflight_conflito",
+      "name": "preflight conflito",
+      "type": "script",
+      "description": "Recusa o pedido se SKILL.md, studio.json ou dag.json do nome já existem (engine.go:155).",
+      "context_in": [
+        "nome_canonico"
+      ],
+      "context_out": [
+        "sem_conflito.flag"
+      ],
+      "output": {
+        "artifact": "sem_conflito.flag",
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "f02_ler_matriz",
+      "name": "ler matriz de peças",
+      "type": "script",
+      "description": "Lê a matriz do pedido; sem matriz não há entrevista (engine.go:124).",
+      "context_in": [
+        "matriz.json"
+      ],
+      "context_out": [
+        "fonte_matriz.json"
+      ],
+      "output": {
+        "artifact": "fonte_matriz.json",
+        "gate": "file_exists('fonte_matriz.json')"
+      }
+    },
+    {
+      "id": "f03_clarificar_entrevista",
+      "name": "clarificar entrevista",
+      "type": "unit_no",
+      "description": "Camada 1: entrevista socrática, uma pergunta por vez, até a confiança atingir a meta (engine.go:144).",
+      "context_in": [
+        "fonte_matriz.json"
+      ],
+      "context_out": [
+        "clarificacao.json"
+      ],
+      "output": {
+        "artifact": "clarificacao.json",
+        "gate": "file_exists('clarificacao.json')"
+      }
+    },
+    {
+      "id": "f04_confirmar_rascunho",
+      "name": "confirmar rascunho",
+      "type": "stop_gate",
+      "description": "Stop-gate: confiança abaixo da meta só avança com aceite explícito do usuário (engine.go:133).",
+      "context_in": [
+        "clarificacao.json"
+      ],
+      "context_out": [
+        "rascunho_aceito.flag"
+      ],
+      "output": {
+        "artifact": "rascunho_aceito.flag",
+        "gate": "confirm('rascunho')"
+      }
+    },
+    {
+      "id": "f05_consultar_e_fundir",
+      "name": "consultar e fundir",
+      "type": "unit_no",
+      "description": "Camadas 2 e 3: necessidades do cérebro, fusão por aptidão sobre a matriz, sem varrer discos (engine.go:185).",
+      "context_in": [
+        "clarificacao.json",
+        "fonte_matriz.json"
+      ],
+      "context_out": [
+        "merged.json"
+      ],
+      "output": {
+        "artifact": "merged.json",
+        "gate": "file_exists('merged.json')"
+      }
+    },
+    {
+      "id": "f06_projetar_triade",
+      "name": "projetar tríade",
+      "type": "script",
+      "description": "Camada 4: projeta o Processo e as seis projeções, com INTENT, SPEC, PLAN e ROUTE (engine.go:233).",
+      "context_in": [
+        "merged.json"
+      ],
+      "context_out": [
+        "processo.json"
+      ],
+      "output": {
+        "artifact": "processo.json",
+        "gate": "file_exists('processo.json')"
+      }
+    },
+    {
+      "id": "f07_montar_arquivos",
+      "name": "montar arquivos",
+      "type": "script",
+      "description": "Camada 5: aplica o template e planeja cada arquivo de gravação (engine.go:242).",
+      "context_in": [
+        "processo.json"
+      ],
+      "context_out": [
+        "planned_files.json"
+      ],
+      "output": {
+        "artifact": "planned_files.json",
+        "gate": "file_exists('planned_files.json')"
+      }
+    },
+    {
+      "id": "f08_aprovar_gravacao",
+      "name": "aprovar gravação",
+      "type": "stop_gate",
+      "description": "Stop-gate humano: mostra caminhos e vínculos; sem sim explícito nada é gravado (engine.go:250).",
+      "context_in": [
+        "planned_files.json"
+      ],
+      "context_out": [
+        "gravacao_aprovada.flag"
+      ],
+      "output": {
+        "artifact": "gravacao_aprovada.flag",
+        "gate": "confirm('gravacao')"
+      }
+    },
+    {
+      "id": "f09_materializar",
+      "name": "materializar",
+      "type": "gate",
+      "description": "Grava SKILL.md, studio.json e dag.json de forma atômica; --dry-run não grava (engine.go:256).",
+      "context_in": [
+        "planned_files.json"
+      ],
+      "context_out": [
+        "SKILL.md",
+        "studio.json",
+        "dag.json"
+      ],
+      "output": {
+        "artifact": "SKILL.md",
+        "gate": "exit_code == 0"
+      }
+    }
+  ],
+  "invariantes": [
+    [
+      "Só o comando grava",
+      "SKILL.md, studio.json e dag.json nunca são escritos à mão; quem grava é legoloop fabricar."
+    ],
+    [
+      "Sim explícito antes de gravar",
+      "Nenhuma gravação ocorre antes do stop-gate humano; --dry-run mostra a prévia sem escrever."
+    ],
+    [
+      "Matriz é só leitura",
+      "O fabricar lê a matriz de peças; nunca varre drives nem a regenera."
+    ]
+  ]
+}

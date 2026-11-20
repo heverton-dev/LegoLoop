@@ -1,0 +1,68 @@
+{
+  "slug": "legoloop-fabricar",
+  "nodes": [
+    {
+      "id": "f01_preflight_conflito",
+      "name": "preflight conflito",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "f02_ler_matriz",
+      "name": "ler matriz de pe\u00e7as",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "f03_clarificar_entrevista",
+      "name": "clarificar entrevista",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "f04_confirmar_rascunho",
+      "name": "confirmar rascunho",
+      "type": "stop_gate",
+      "badge": "STOP-GATE",
+      "color": "#d97706"
+    },
+    {
+      "id": "f05_consultar_e_fundir",
+      "name": "consultar e fundir",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "f06_projetar_triade",
+      "name": "projetar tr\u00edade",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "f07_montar_arquivos",
+      "name": "montar arquivos",
+      "type": "script",
+      "badge": "SCRIPT",
+      "color": "#0f172a"
+    },
+    {
+      "id": "f08_aprovar_gravacao",
+      "name": "aprovar grava\u00e7\u00e3o",
+      "type": "stop_gate",
+      "badge": "STOP-GATE",
+      "color": "#d97706"
+    },
+    {
+      "id": "f09_materializar",
+      "name": "materializar",
+      "type": "gate",
+      "badge": "GATE",
+      "color": "#dc2626"
+    }
+  ]
+}

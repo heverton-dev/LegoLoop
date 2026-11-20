@@ -193,10 +193,10 @@
       },
       "output": {
         "artifact": "docs/diagrams/listar/src/listar.html",
-        "gate": "file_exists('docs/diagrams/listar/src/listar.html') && file_size('docs/diagrams/listar/src/listar.html') > 1000"
+        "gate": "file_exists('docs/diagrams/listar/src/listar.html') && word_count('docs/diagrams/listar/src/listar.html') > 200"
       },
       "verification": {
-        "gate": "file_exists('docs/diagrams/listar/src/listar.html') && file_size('docs/diagrams/listar/src/listar.html') > 1000"
+        "gate": "file_exists('docs/diagrams/listar/src/listar.html') && word_count('docs/diagrams/listar/src/listar.html') > 200"
       }
     },
     {
@@ -260,7 +260,7 @@
     {
       "id": "e05",
       "name": "gate-e-exportacao",
-      "type": "gate",
+      "type": "script",
       "nature": "micro",
       "cognitive_complexity": "simples",
       "command": [

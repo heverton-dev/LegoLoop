@@ -130,7 +130,7 @@ func (o *Orchestrix) unitInWorktree(ctx context.Context, n dag.Node, w *Worktree
 		if att.failure == "" {
 			return res, att.report, nil
 		}
-		if attempt >= maxUnitRetries {
+		if attempt >= unitRetries(n) {
 			return o.handleExhaustedRetries(ctx, n, w, res, last, initialScore)
 		}
 		dropProvisionalArtifact(w, n)
@@ -154,7 +154,7 @@ func (o *Orchestrix) handleExhaustedRetries(ctx context.Context, n dag.Node, w *
 		}
 	}
 	saveFailedPatch(w, n)
-	return res, unitReport{}, fmt.Errorf("%s (após %d tentativa(s))", last.failure, 1+maxUnitRetries)
+	return res, unitReport{}, runner.Permanent(fmt.Errorf("%s (após %d tentativa(s))", last.failure, 1+unitRetries(n)))
 }
 
 // dropProvisionalArtifact remove da worktree o artefato provisório que o gate gravou.
@@ -170,7 +170,15 @@ func dropProvisionalArtifact(w *Worktree, n dag.Node) {
 }
 
 // maxUnitRetries é o número de novas tentativas do claude, na mesma worktree, após falha do gate.
-const maxUnitRetries = 2
+const maxUnitRetries = dag.MaxUnitRetries
+
+// unitRetries devolve as retentativas do nó: retry_policy.max_retries, limitado ao teto, ou o teto.
+func unitRetries(n dag.Node) int {
+	if n.RetryPolicy == nil {
+		return maxUnitRetries
+	}
+	return min(max(n.RetryPolicy.MaxRetries, 0), maxUnitRetries)
+}
 
 // addUsage soma o consumo de tokens de duas chamadas.
 func addUsage(a, b runner.TokenUsage) runner.TokenUsage {

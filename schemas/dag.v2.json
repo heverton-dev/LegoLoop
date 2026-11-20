@@ -96,6 +96,13 @@
           "slots": { "type": "object" },
           "isolation": { "type": "object" },
           "limits": { "type": "object" },
+          "retry_policy": {
+            "type": "object",
+            "description": "Só vale em nó unit_no: retentativas do modelo após reprovação do gate.",
+            "required": ["max_retries"],
+            "additionalProperties": false,
+            "properties": { "max_retries": { "type": "integer", "minimum": 0, "maximum": 2 } }
+          },
           "tooling": { "type": "object" },
           "verification": { "type": "object" },
           "rollback_strategy": { "type": "string" },

@@ -161,6 +161,9 @@ func validateNode(n Node) error {
 				return err
 			}
 		}
+		if err := validateUnitPolicy(n); err != nil {
+			return err
+		}
 	case tipoComposto:
 		if !idRe.MatchString(n.Ref) {
 			return fmt.Errorf("subprocesso exige ref com o nome de um Processo válido, recebeu %q", n.Ref)
@@ -175,6 +178,18 @@ func validateNode(n Node) error {
 		return fmt.Errorf("tipo desconhecido %q", n.Type)
 	}
 	return validateNodeCommon(n)
+}
+
+// validateUnitPolicy aplica as duas regras que o executor do unit_no cumpre: write_boundary
+// só aceita "strict" e max_retries fica entre 0 e MaxUnitRetries.
+func validateUnitPolicy(n Node) error {
+	if wb, ok := n.Isolation["write_boundary"]; ok && wb != "strict" {
+		return fmt.Errorf("unit_no exige isolation.write_boundary \"strict\", recebeu %v", wb)
+	}
+	if rp := n.RetryPolicy; rp != nil && (rp.MaxRetries < 0 || rp.MaxRetries > MaxUnitRetries) {
+		return fmt.Errorf("retry_policy.max_retries deve estar entre 0 e %d, recebeu %d", MaxUnitRetries, rp.MaxRetries)
+	}
+	return nil
 }
 
 func validateMCPNode(n Node) error {
@@ -194,6 +209,9 @@ func validateNodeCommon(n Node) error {
 	}
 	if err := validateRolePapel(n); err != nil {
 		return err
+	}
+	if n.RetryPolicy != nil && n.Type != TypeUnitTask {
+		return fmt.Errorf("retry_policy só vale em nó unit_no, o nó é %q", n.Type)
 	}
 	if n.Peca != "" && !pecaRe.MatchString(n.Peca) {
 		return fmt.Errorf("peca %q inválida (use legoloop-<kebab-case>)", n.Peca)

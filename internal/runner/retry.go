@@ -24,6 +24,10 @@ func ExecuteWithAndon(ctx context.Context, exec Executor, n dag.Node, workdir st
 		if err == nil && res.ExitCode == 0 {
 			return res, SBAR{}, nil
 		}
+		if IsPermanent(err) {
+			sbar := generateAndonSBAR(n.ID, lastRes.ExitCode, lastErr)
+			return lastRes, sbar, fmt.Errorf("andon_cord: falha definitiva no nó %q, sem nova tentativa: %w", n.ID, lastErr)
+		}
 	}
 
 	sbar := generateAndonSBAR(n.ID, lastRes.ExitCode, lastErr)

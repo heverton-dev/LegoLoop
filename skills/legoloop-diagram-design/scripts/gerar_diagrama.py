@@ -274,7 +274,7 @@ def gerar_diagrama_completo(alvo: str, out_html_path: str = None):
     desc = dag.get("description", f"Processo canônico {slug} do ecossistema LegoLoop.")
     agora_iso = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     descs_skill = carregar_descricoes_da_skill(slug)
-    invariantes_skill = carregar_invariantes_da_skill(slug)
+    invariantes_skill = [tuple(i) for i in dag.get("invariantes", [])] or carregar_invariantes_da_skill(slug)
 
     base_dir = Path("docs/diagrams") / slug
     src_dir = base_dir / "src"

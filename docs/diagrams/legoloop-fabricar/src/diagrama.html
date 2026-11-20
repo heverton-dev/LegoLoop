@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetura e Fluxo do Processo legoloop-fabricar — LegoLoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #f5f5f5;   /* white-smoke descansado (nunca branco puro) */
+    --paper-2:      #ececec;   /* container e faixas secundárias */
+    --paper-card:   #ffffff;   /* superfície de cards em alto contraste */
+    --ink:          #2d3142;   /* grafite escuro nobre */
+    --ink-strong:   #111111;   /* contraste máximo para títulos */
+    --muted:        #4f5d75;   /* ardósia suave para textos de apoio */
+    --soft:         #5a6580;   /* subrótulos e metadados */
+    --rule:         rgba(45,49,66,0.12);
+    --rule-solid:   #bfc0c0;   /* bordas estruturais sólidas */
+    --cor-accent:   #bf4520;   /* Tangerina Queimada Editorial */
+    --font-sans:    'Geist', system-ui, -apple-system, sans-serif;
+    --font-mono:    'Geist Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 48px 32px;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    border-bottom: 2px solid var(--cor-accent);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .page-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-accent);
+    margin-bottom: 8px;
+  }
+  .page-title {
+    font-family: var(--font-sans);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink-strong);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .page-lead {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 860px;
+    margin-bottom: 16px;
+  }
+  .page-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .page-meta span { display: flex; align-items: center; gap: 6px; }
+
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-family: var(--font-sans);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .node-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .node-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .node-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
+  }
+  .node-name { font-size: 15px; font-weight: 700; color: var(--ink-strong); margin-bottom: 6px; word-break: break-word; overflow-wrap: anywhere; }
+  .node-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.45; word-break: break-word; min-height: 38px; }
+  .node-gate {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: var(--soft);
+    border: 1px solid var(--rule);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+  }
+
+  .diagram-wrapper {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 12px;
+  }
+  .diagram-canvas { display: block; width: 100%; min-width: 980px; height: auto; }
+
+  /* Scrollbar Minimalista do Design System (máx 3px, 70% transparência) */
+  .diagram-wrapper,
+  .table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(79, 93, 117, 0.3) transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar,
+  .table-wrapper::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-track,
+  .table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb,
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(79, 93, 117, 0.3);
+    border-radius: 2px;
+  }
+  .diagram-wrapper::-webkit-scrollbar-thumb:hover,
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(191, 69, 32, 0.5);
+  }
+
+  @keyframes flow-pulse {
+    from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; }
+  }
+  .flow-edge {
+    stroke-dasharray: 6 6;
+    animation: flow-pulse 1.2s linear infinite;
+    will-change: stroke-dashoffset;
+  }
+
+  .table-wrapper {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+  th {
+    background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-solid);
+  }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--ink); }
+  tr:last-child td { border-bottom: none; }
+  td code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--muted);
+  }
+  .table-type-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 1.2;
+  }
+
+  .lineage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .lineage-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .lineage-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 8px;
+  }
+  .lineage-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .lineage-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lineage-item {
+    font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .lineage-item code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-strong);
+    background: var(--paper);
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid var(--rule);
+  }
+  .lineage-item span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .invariants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .invariant-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .invariant-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 6px;
+  }
+  .invariant-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <p class="page-eyebrow">LegoLoop · Processo Canônico</p>
+  <h1 class="page-title">Arquitetura e Fluxo do Processo legoloop-fabricar</h1>
+  <p class="page-lead">Verbo FABRICAR: transforma uma ideia em processo (skill, Studio e DAG) em 5 camadas com 2 stop-gates humanos.</p>
+  <div class="page-meta">
+    <span><strong>Processo:</strong> legoloop-fabricar</span>
+    <span><strong>Versão:</strong> 1.1.0</span>
+    <span><strong>Nós:</strong> 9 nós sequenciais</span>
+    <span><strong>Gerado em:</strong> 2026-11-20T07:09:44</span>
+  </div>
+</header>
+
+<section class="section">
+  <h2 class="section-title">01 — Anatomia dos Nós do Processo</h2>
+  <p class="section-sub">Estrutura isolada em contexto estéril com barreiras mecânicas de qualidade.</p>
+  <div class="nodes-grid">
+    
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">f01_preflight_conflito · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">preflight conflito</h3>
+      <p class="node-desc">Recusa o pedido se SKILL.md, studio.json ou dag.json do nome já existem (engine.go:155).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>nome_canonico</code></div>
+        <div><strong>Out:</strong> <code>sem_conflito.flag</code></div>
+      </div>
+      <div class="node-gate">Gate: exit_code == 0</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">f02_ler_matriz · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">ler matriz de peças</h3>
+      <p class="node-desc">Lê a matriz do pedido; sem matriz não há entrevista (engine.go:124).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>matriz.json</code></div>
+        <div><strong>Out:</strong> <code>fonte_matriz.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;fonte_matriz.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">f03_clarificar_entrevista · UNIT-NÓ</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">unit_no</small>
+      </div>
+      <h3 class="node-name">clarificar entrevista</h3>
+      <p class="node-desc">Camada 1: entrevista socrática, uma pergunta por vez, até a confiança atingir a meta (engine.go:144).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>fonte_matriz.json</code></div>
+        <div><strong>Out:</strong> <code>clarificacao.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;clarificacao.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#d97706;">f04_confirmar_rascunho · STOP-GATE</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">stop_gate</small>
+      </div>
+      <h3 class="node-name">confirmar rascunho</h3>
+      <p class="node-desc">Stop-gate: confiança abaixo da meta só avança com aceite explícito do usuário (engine.go:133).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>clarificacao.json</code></div>
+        <div><strong>Out:</strong> <code>rascunho_aceito.flag</code></div>
+      </div>
+      <div class="node-gate">Gate: confirm(&#x27;rascunho&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#2563eb;">f05_consultar_e_fundir · UNIT-NÓ</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">unit_no</small>
+      </div>
+      <h3 class="node-name">consultar e fundir</h3>
+      <p class="node-desc">Camadas 2 e 3: necessidades do cérebro, fusão por aptidão sobre a matriz, sem varrer discos (engine.go:185).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>clarificacao.json, fonte_matriz.json</code></div>
+        <div><strong>Out:</strong> <code>merged.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;merged.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">f06_projetar_triade · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">projetar tríade</h3>
+      <p class="node-desc">Camada 4: projeta o Processo e as seis projeções, com INTENT, SPEC, PLAN e ROUTE (engine.go:233).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>merged.json</code></div>
+        <div><strong>Out:</strong> <code>processo.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;processo.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#0f172a;">f07_montar_arquivos · SCRIPT</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">script</small>
+      </div>
+      <h3 class="node-name">montar arquivos</h3>
+      <p class="node-desc">Camada 5: aplica o template e planeja cada arquivo de gravação (engine.go:242).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>processo.json</code></div>
+        <div><strong>Out:</strong> <code>planned_files.json</code></div>
+      </div>
+      <div class="node-gate">Gate: file_exists(&#x27;planned_files.json&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#d97706;">f08_aprovar_gravacao · STOP-GATE</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">stop_gate</small>
+      </div>
+      <h3 class="node-name">aprovar gravação</h3>
+      <p class="node-desc">Stop-gate humano: mostra caminhos e vínculos; sem sim explícito nada é gravado (engine.go:250).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>planned_files.json</code></div>
+        <div><strong>Out:</strong> <code>gravacao_aprovada.flag</code></div>
+      </div>
+      <div class="node-gate">Gate: confirm(&#x27;gravacao&#x27;)</div>
+    </div>
+    <div class="node-card">
+      <div class="node-card-header">
+        <span class="node-id" style="background:#dc2626;">f09_materializar · GATE</span>
+        <small style="color:var(--soft);font-family:var(--font-mono);">gate</small>
+      </div>
+      <h3 class="node-name">materializar</h3>
+      <p class="node-desc">Grava SKILL.md, studio.json e dag.json de forma atômica; --dry-run não grava (engine.go:256).</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--soft);margin-bottom:10px;">
+        <div style="margin-bottom:4px;"><strong>In:</strong> <code>planned_files.json</code></div>
+        <div><strong>Out:</strong> <code>SKILL.md, studio.json, dag.json</code></div>
+      </div>
+      <div class="node-gate">Gate: exit_code == 0</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">02 — Fluxograma Lógico de Encadeamento com Animação Contínua</h2>
+  <p class="section-sub">Grafo ortogonal com partículas contínuas mostrando a transferência assíncrona de estado.</p>
+  <div class="diagram-wrapper">
+    <svg class="diagram-canvas" viewBox="0 0 1040 912" role="img" aria-labelledby="legoloop-fabricar-title legoloop-fabricar-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="legoloop-fabricar-title">Fluxograma do Processo legoloop-fabricar</title>
+      <desc id="legoloop-fabricar-desc">Fluxo sequencial animado dos nós do processo legoloop-fabricar no padrão editorial LegoPress.</desc>
+      <defs>
+        <marker id="arr-flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L8,4 L0,7 L1.5,4 Z" fill="#4f5d75"/>
+        </marker>
+      </defs>
+      <rect width="1040" height="912" fill="#f5f5f5" rx="8"/>
+      
+      <path d="M328,156 L372,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fabricar-arr-flow)"/>
+      <path d="M668,156 L712,156" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fabricar-arr-flow)"/>
+      <path d="M1008,156 L1024,156 L1024,306 L18,306 L18,456 L32,456" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#legoloop-fabricar-arr-flow)"/>
+      <path d="M328,456 L372,456" fill="none" stroke="#d97706" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fabricar-arr-flow)"/>
+      <path d="M668,456 L712,456" fill="none" stroke="#2563eb" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fabricar-arr-flow)"/>
+      <path d="M1008,456 L1024,456 L1024,606 L18,606 L18,756 L32,756" fill="none" stroke="#0f172a" stroke-width="2" stroke-linejoin="round" class="flow-edge" marker-end="url(#legoloop-fabricar-arr-flow)"/>
+      <path d="M328,756 L372,756" fill="none" stroke="#0f172a" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fabricar-arr-flow)"/>
+      <path d="M668,756 L712,756" fill="none" stroke="#d97706" stroke-width="2" class="flow-edge" marker-end="url(#legoloop-fabricar-arr-flow)"/>
+      
+      <g class="node" id="node-f01_preflight_conflito" transform="translate(32, 36)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">f01_preflight_conflito</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Recusa o pedido se</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">SKILL.md, studio.json ou</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: nome_canonico</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: sem_conflito.flag</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+      <g class="node" id="node-f02_ler_matriz" transform="translate(372, 36)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">f02_ler_matriz</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Lê a matriz do pedido; sem</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">matriz não há entrevista</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: matriz.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: fonte_matriz.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;fonte_matriz.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-f03_clarificar_entrevista" transform="translate(712, 36)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">f03_clarificar_entrevista</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Camada 1: entrevista</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">socrática, uma pergunta</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: fonte_matriz.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: clarificacao.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;clarificacao.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-f04_confirmar_rascunho" transform="translate(32, 336)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#d97706"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">STOP-GATE</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">f04_confirmar_rascunho</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Stop-gate: confiança</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">abaixo da meta só avança</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: clarificacao.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: rascunho_aceito.flag</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: confirm(&#x27;rascunho&#x27;)</text>
+      </g>
+      <g class="node" id="node-f05_consultar_e_fundir" transform="translate(372, 336)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#2563eb"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">UNIT-NÓ</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">f05_consultar_e_fundir</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Camadas 2 e 3:</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">necessidades do cérebro,</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: clarificacao.json, fonte_matriz.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: merged.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;merged.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-f06_projetar_triade" transform="translate(712, 336)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">f06_projetar_triade</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Camada 4: projeta o</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">Processo e as seis</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: merged.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: processo.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;processo.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-f07_montar_arquivos" transform="translate(32, 636)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#0f172a"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">SCRIPT</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">f07_montar_arquivos</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Camada 5: aplica o</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">template e planeja cada</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: processo.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: planned_files.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exists(&#x27;planned_files.json&#x27;)</text>
+      </g>
+      <g class="node" id="node-f08_aprovar_gravacao" transform="translate(372, 636)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#d97706"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">STOP-GATE</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">f08_aprovar_gravacao</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Stop-gate humano: mostra</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">caminhos e vínculos; sem</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: planned_files.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: gravacao_aprovada.flag</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: confirm(&#x27;gravacao&#x27;)</text>
+      </g>
+      <g class="node" id="node-f09_materializar" transform="translate(712, 636)">
+        <rect width="296" height="240" rx="8" fill="#ffffff" stroke="#bfc0c0" stroke-width="1"/>
+        <rect x="14" y="14" width="68" height="20" rx="3" fill="#dc2626"/>
+        <text x="48" y="28" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" fill="#ffffff">GATE</text>
+        <text x="14" y="56" font-family="'Geist', sans-serif" font-size="13" font-weight="700" fill="#0f172a">f09_materializar</text>
+        <text x="14" y="78" font-family="'Geist', sans-serif" font-size="11" fill="#4f5d75">Grava SKILL.md,</text>
+        <text x="14" y="96" font-family="'Geist', sans-serif" font-size="10" fill="#5a6580">studio.json e dag.json de</text>
+        <line x1="14" y1="116" x2="282" y2="116" stroke="#bfc0c0" stroke-width="0.8"/>
+        <text x="14" y="138" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">In: planned_files.json</text>
+        <text x="14" y="156" font-family="'Geist Mono', monospace" font-size="9" fill="#5a6580">Out: SKILL.md, studio.json, dag.json</text>
+        <rect x="14" y="196" width="268" height="30" rx="4" fill="#f5f5f5" stroke="rgba(45,49,66,0.1)"/>
+        <text x="22" y="215" font-family="'Geist Mono', monospace" font-size="8.5" fill="#2d3142">Gate: exit_code == 0</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">03 — Matriz de Entradas, Saídas e Barreiras Mecânicas</h2>
+  <p class="section-sub">Contratos formais de arquivos consumidos e emitidos por cada vértice.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Tipo</th>
+          <th>Insumos</th>
+          <th>Artefatos Emitidos</th>
+          <th>Gate Mecânico</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>f01_preflight_conflito</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>nome_canonico</code></td>
+          <td><code>sem_conflito.flag</code></td>
+          <td><code>exit_code == 0</code></td>
+        </tr>
+        <tr>
+          <td><strong>f02_ler_matriz</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>matriz.json</code></td>
+          <td><code>fonte_matriz.json</code></td>
+          <td><code>file_exists(&#x27;fonte_matriz.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>f03_clarificar_entrevista</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">UNIT-NÓ</span></td>
+          <td><code>fonte_matriz.json</code></td>
+          <td><code>clarificacao.json</code></td>
+          <td><code>file_exists(&#x27;clarificacao.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>f04_confirmar_rascunho</strong></td>
+          <td><span class="table-type-badge" style="color:#d97706;background:#d9770618;border:1px solid #d9770633;">STOP-GATE</span></td>
+          <td><code>clarificacao.json</code></td>
+          <td><code>rascunho_aceito.flag</code></td>
+          <td><code>confirm(&#x27;rascunho&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>f05_consultar_e_fundir</strong></td>
+          <td><span class="table-type-badge" style="color:#2563eb;background:#2563eb18;border:1px solid #2563eb33;">UNIT-NÓ</span></td>
+          <td><code>clarificacao.json, fonte_matriz.json</code></td>
+          <td><code>merged.json</code></td>
+          <td><code>file_exists(&#x27;merged.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>f06_projetar_triade</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>merged.json</code></td>
+          <td><code>processo.json</code></td>
+          <td><code>file_exists(&#x27;processo.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>f07_montar_arquivos</strong></td>
+          <td><span class="table-type-badge" style="color:#0f172a;background:#0f172a18;border:1px solid #0f172a33;">SCRIPT</span></td>
+          <td><code>processo.json</code></td>
+          <td><code>planned_files.json</code></td>
+          <td><code>file_exists(&#x27;planned_files.json&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>f08_aprovar_gravacao</strong></td>
+          <td><span class="table-type-badge" style="color:#d97706;background:#d9770618;border:1px solid #d9770633;">STOP-GATE</span></td>
+          <td><code>planned_files.json</code></td>
+          <td><code>gravacao_aprovada.flag</code></td>
+          <td><code>confirm(&#x27;gravacao&#x27;)</code></td>
+        </tr>
+        <tr>
+          <td><strong>f09_materializar</strong></td>
+          <td><span class="table-type-badge" style="color:#dc2626;background:#dc262618;border:1px solid #dc262633;">GATE</span></td>
+          <td><code>planned_files.json</code></td>
+          <td><code>SKILL.md, studio.json, dag.json</code></td>
+          <td><code>exit_code == 0</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">04 — Roteamento Cognitivo & Topologia de Agentes</h2>
+  <p class="section-sub">Alocação determinística de modelos LLM, nível de esforço e estratégias de isolamento por nó.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th>
+          <th>Harness</th>
+          <th>Modelo Primário</th>
+          <th>Esforço</th>
+          <th>Fallback</th>
+          <th>Executor & Fronteira</th>
+          <th>Rollback</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>f01_preflight_conflito</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>f02_ler_matriz</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>f03_clarificar_entrevista</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>f04_confirmar_rascunho</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>f05_consultar_e_fundir</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>f06_projetar_triade</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>f07_montar_arquivos</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>f08_aprovar_gravacao</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+        <tr>
+          <td><strong>f09_materializar</strong></td>
+          <td><code>claude</code></td>
+          <td><strong>sonnet</strong></td>
+          <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#16a34a22;color:#16a34a;font-weight:600;font-size:11px;">LOW</span></td>
+          <td><code>haiku</code></td>
+          <td><code>orchestrix_hermetic (strict)</code></td>
+          <td><code>stash_changes</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">05 — Linhagem de Dados & Ciclo de Vida dos Artefatos</h2>
+  <p class="section-sub">Rastreabilidade formal de insumos, arquivos intermediários de análise e produtos finais.</p>
+  <div class="lineage-grid">
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#2563eb18;color:#2563eb;border:1px solid #2563eb33;">ENTRADA</span>
+        <span>Insumos Primários</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item">
+          <code>nome_canonico</code>
+          <span>Alvo inicial fornecido para análise e inspeção</span>
+        </li>
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#d9770618;color:#d97706;border:1px solid #d9770633;">PIPELINE</span>
+        <span>Artefatos Intermediários</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item"><code>sem_conflito.flag</code></li><li class="lineage-item"><code>fonte_matriz.json</code></li><li class="lineage-item"><code>clarificacao.json</code></li><li class="lineage-item"><code>rascunho_aceito.flag</code></li><li class="lineage-item"><code>merged.json</code></li><li class="lineage-item"><code>processo.json</code></li><li class="lineage-item"><code>planned_files.json</code></li><li class="lineage-item"><code>gravacao_aprovada.flag</code></li>
+      </ul>
+    </div>
+    <div class="lineage-card">
+      <div class="lineage-card-title">
+        <span class="lineage-badge" style="background:#16a34a18;color:#16a34a;border:1px solid #16a34a33;">ENTREGA</span>
+        <span>Produtos Finais</span>
+      </div>
+      <ul class="lineage-list">
+        <li class="lineage-item"><code>SKILL.md</code></li><li class="lineage-item"><code>studio.json</code></li><li class="lineage-item"><code>dag.json</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">06 — Invariantes Operacionais & Regras Negativas</h2>
+  <p class="section-sub">Políticas restritivas de segurança e critérios inegociáveis de execução do processo.</p>
+  <div class="invariants-grid">
+    
+    <div class="invariant-card">
+      <h3 class="invariant-title">Só o comando grava</h3>
+      <p class="invariant-desc">SKILL.md, studio.json e dag.json nunca são escritos à mão; quem grava é legoloop fabricar.</p>
+    </div>
+    <div class="invariant-card">
+      <h3 class="invariant-title">Sim explícito antes de gravar</h3>
+      <p class="invariant-desc">Nenhuma gravação ocorre antes do stop-gate humano; --dry-run mostra a prévia sem escrever.</p>
+    </div>
+    <div class="invariant-card">
+      <h3 class="invariant-title">Matriz é só leitura</h3>
+      <p class="invariant-desc">O fabricar lê a matriz de peças; nunca varre drives nem a regenera.</p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

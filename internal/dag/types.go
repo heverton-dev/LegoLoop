@@ -134,6 +134,14 @@ type HandoffContract struct {
 	Gate        string `json:"gate"`
 }
 
+// MaxUnitRetries é o teto de retentativas do modelo dentro de um nó unit_no.
+const MaxUnitRetries = 2
+
+// RetryPolicy limita as retentativas do modelo num nó unit_no após reprovação do gate.
+type RetryPolicy struct {
+	MaxRetries int `json:"max_retries"`
+}
+
 // Node é uma peça Lego do Processo.
 type Node struct {
 	ID                  string            `json:"id"`
@@ -160,6 +168,7 @@ type Node struct {
 	TestSeam            map[string]string `json:"test_seam,omitempty"`
 	Verification        map[string]any    `json:"verification,omitempty"`
 	Limits              map[string]any    `json:"limits,omitempty"`
+	RetryPolicy         *RetryPolicy      `json:"retry_policy,omitempty"`
 	RollbackStrategy    string            `json:"rollback_strategy,omitempty"`
 	SpecRef             string            `json:"spec_ref,omitempty"`
 	Peca                string            `json:"peca,omitempty"` // Processo que a peça do nó materializa; só vínculo, o nó mantém o próprio comando
