@@ -1,0 +1,388 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "schema_version": 2,
+  "name": "legoloop-fabricar",
+  "version": "1.0.0",
+  "date": "2026-11-20",
+  "description": "Processo canônico de fabricação de processos do LegoLoop decomposto em peças reutilizáveis",
+  "upstream_signatures": {
+    "route": {
+      "path": "docs/routes/2026-11-20_ROUTE_FABRICAR_CANONICO.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 1,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_processo"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_entrevista_escopo",
+      "name": "Entrevista e Alinhamento de Escopo",
+      "type": "skill",
+      "nature": "micro",
+      "ref": "skills/legoloop-concepcao",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      },
+      "spec_ref": "AC-FAB-01",
+      "status": "PENDING",
+      "context_in": [
+        "docs/templates/TEMPLATE_INTENT.md"
+      ],
+      "context_out": [
+        "docs/intents/INTENT.md"
+      ],
+      "inputs": {
+        "template": "file('docs/templates/TEMPLATE_INTENT.md')"
+      },
+      "output": {
+        "artifact": "docs/intents/INTENT.md",
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      }
+    },
+    {
+      "id": "n02_inventario_local",
+      "name": "Inventário Local e Varredura da Matriz",
+      "type": "script",
+      "nature": "nano",
+      "command": [
+        "legoloop",
+        "matriz",
+        "ver",
+        "--json"
+      ],
+      "depends_on": [
+        "n01_entrevista_escopo"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 800
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "file_exists('docs/intents/matriz_pecas.json')"
+      },
+      "spec_ref": "AC-FAB-02",
+      "status": "PENDING",
+      "context_in": [
+        "docs/intents/INTENT.md"
+      ],
+      "context_out": [
+        "docs/intents/matriz_pecas.json"
+      ],
+      "inputs": {
+        "intent": "file('docs/intents/INTENT.md')"
+      },
+      "output": {
+        "artifact": "docs/intents/matriz_pecas.json",
+        "gate": "file_exists('docs/intents/matriz_pecas.json')"
+      }
+    },
+    {
+      "id": "n03_curadoria_fronteira",
+      "name": "Curadoria Externa e Diagnóstico de Lacunas",
+      "type": "script",
+      "nature": "nano",
+      "command": [
+        "legoloop",
+        "upgrade",
+        "--diagnose"
+      ],
+      "depends_on": [
+        "n02_inventario_local"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 800
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "file_exists('docs/reports/curadoria_fronteira.md')"
+      },
+      "spec_ref": "AC-FAB-03",
+      "status": "PENDING",
+      "context_in": [
+        "docs/intents/matriz_pecas.json"
+      ],
+      "context_out": [
+        "docs/reports/curadoria_fronteira.md"
+      ],
+      "inputs": {
+        "matriz": "file('docs/intents/matriz_pecas.json')"
+      },
+      "output": {
+        "artifact": "docs/reports/curadoria_fronteira.md",
+        "gate": "file_exists('docs/reports/curadoria_fronteira.md')"
+      }
+    },
+    {
+      "id": "n04_fusao_aptidao",
+      "name": "Fusão por Aptidão e Especificação Canônica",
+      "type": "skill",
+      "nature": "micro",
+      "ref": "skills/matt-pocock",
+      "depends_on": [
+        "n03_curadoria_fronteira"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "opus"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      },
+      "spec_ref": "AC-FAB-04",
+      "status": "PENDING",
+      "context_in": [
+        "docs/intents/INTENT.md",
+        "docs/intents/matriz_pecas.json",
+        "docs/reports/curadoria_fronteira.md"
+      ],
+      "context_out": [
+        "docs/specs/SPEC.md"
+      ],
+      "inputs": {
+        "intent": "file('docs/intents/INTENT.md')",
+        "matriz": "file('docs/intents/matriz_pecas.json')",
+        "curadoria": "file('docs/reports/curadoria_fronteira.md')"
+      },
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      }
+    },
+    {
+      "id": "n05_composicao_dag",
+      "name": "Composição do Grafo DAG e Tríade",
+      "type": "skill",
+      "nature": "micro",
+      "ref": "skills/legoloop-compor",
+      "depends_on": [
+        "n04_fusao_aptidao"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 300,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "file_exists('docs/dags/DAG.json')"
+      },
+      "spec_ref": "AC-FAB-05",
+      "status": "PENDING",
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/dags/DAG.json"
+      ],
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "output": {
+        "artifact": "docs/dags/DAG.json",
+        "gate": "file_exists('docs/dags/DAG.json')"
+      }
+    },
+    {
+      "id": "n06_sg_aprovacao",
+      "name": "Stop-Gate de Aprovação Humana",
+      "type": "stop_gate",
+      "nature": "nano",
+      "depends_on": [
+        "n05_composicao_dag"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
+      },
+      "timeout_sec": 86400,
+      "execution": {
+        "mode": "inline"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 300
+      },
+      "rollback_strategy": "abort_processo",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "file_exists('docs/dags/DAG.json') && prompt('Aprovar a gravação do processo canônico no cofre?')"
+      },
+      "spec_ref": "AC-FAB-06",
+      "status": "PENDING",
+      "context_in": [
+        "docs/dags/DAG.json"
+      ],
+      "context_out": [
+        "docs/dags/DAG.approved.json"
+      ],
+      "inputs": {
+        "dag": "file('docs/dags/DAG.json')"
+      },
+      "output": {
+        "artifact": "docs/dags/DAG.approved.json",
+        "gate": "file_exists('docs/dags/DAG.json') && prompt('Aprovar a gravação do processo canônico no cofre?')"
+      }
+    },
+    {
+      "id": "n07_projecao_cofre",
+      "name": "Projeção e Validação Determinística no Cofre",
+      "type": "script",
+      "nature": "nano",
+      "command": [
+        "legoloop",
+        "validate",
+        "processos/legoloop-fabricar/dag.json"
+      ],
+      "depends_on": [
+        "n06_sg_aprovacao"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet"
+      },
+      "timeout_sec": 180,
+      "execution": {
+        "mode": "isolated"
+      },
+      "isolation": {
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "file_exists('processos/legoloop-fabricar/dag.json')"
+      },
+      "spec_ref": "AC-FAB-07",
+      "status": "PENDING",
+      "context_in": [
+        "docs/dags/DAG.approved.json"
+      ],
+      "context_out": [
+        "processos/legoloop-fabricar/dag.json"
+      ],
+      "inputs": {
+        "approved": "file('docs/dags/DAG.approved.json')"
+      },
+      "output": {
+        "artifact": "processos/legoloop-fabricar/dag.json",
+        "gate": "file_exists('processos/legoloop-fabricar/dag.json')"
+      }
+    }
+  ]
+}

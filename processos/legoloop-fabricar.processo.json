@@ -1,0 +1,111 @@
+{
+  "nome": "legoloop-fabricar",
+  "versao": "1.0.0",
+  "natureza": "build",
+  "objetivo": "Processo canônico de fabricação de processos do LegoLoop decomposto em peças reutilizáveis com stop-gate humano.",
+  "etapas": [
+    {
+      "id": "n01_entrevista_escopo",
+      "titulo": "Entrevista e Escopo",
+      "tipo": "skill",
+      "peca": "legoloop-concepcao",
+      "consome": ["docs/templates/TEMPLATE_INTENT.md"],
+      "produz": {
+        "caminho": "docs/intents/INTENT.md",
+        "tipo": "markdown",
+        "promete": true
+      },
+      "gate": "file_exists('docs/intents/INTENT.md')",
+      "depende": []
+    },
+    {
+      "id": "n02_inventario_local",
+      "titulo": "Inventário Local e Varredura da Matriz",
+      "tipo": "script",
+      "peca": "matriz",
+      "consome": ["docs/intents/INTENT.md"],
+      "produz": {
+        "caminho": "docs/intents/matriz_pecas.json",
+        "tipo": "json",
+        "promete": true
+      },
+      "gate": "file_exists('docs/intents/matriz_pecas.json')",
+      "depende": ["n01_entrevista_escopo"]
+    },
+    {
+      "id": "n03_curadoria_fronteira",
+      "titulo": "Curadoria Externa e Diagnóstico de Lacunas",
+      "tipo": "script",
+      "peca": "upgrade",
+      "consome": ["docs/intents/matriz_pecas.json"],
+      "produz": {
+        "caminho": "docs/reports/curadoria_fronteira.md",
+        "tipo": "markdown",
+        "promete": true
+      },
+      "gate": "file_exists('docs/reports/curadoria_fronteira.md')",
+      "depende": ["n02_inventario_local"]
+    },
+    {
+      "id": "n04_fusao_aptidao",
+      "titulo": "Fusão por Aptidão e Especificação Canônica",
+      "tipo": "skill",
+      "peca": "matt-pocock",
+      "consome": [
+        "docs/intents/INTENT.md",
+        "docs/intents/matriz_pecas.json",
+        "docs/reports/curadoria_fronteira.md"
+      ],
+      "produz": {
+        "caminho": "docs/specs/SPEC.md",
+        "tipo": "markdown",
+        "promete": true
+      },
+      "gate": "file_exists('docs/specs/SPEC.md')",
+      "depende": ["n03_curadoria_fronteira"]
+    },
+    {
+      "id": "n05_composicao_dag",
+      "titulo": "Composição do Grafo DAG e Tríade",
+      "tipo": "skill",
+      "peca": "legoloop-compor",
+      "consome": ["docs/specs/SPEC.md"],
+      "produz": {
+        "caminho": "docs/dags/DAG.json",
+        "tipo": "json",
+        "promete": true
+      },
+      "gate": "file_exists('docs/dags/DAG.json')",
+      "depende": ["n04_fusao_aptidao"]
+    },
+    {
+      "id": "n06_sg_aprovacao",
+      "titulo": "Stop-Gate de Aprovação Humana",
+      "tipo": "stop_gate",
+      "peca": "gate",
+      "consome": ["docs/dags/DAG.json"],
+      "produz": {
+        "caminho": "docs/dags/DAG.approved.json",
+        "tipo": "json",
+        "promete": true
+      },
+      "gate": "file_exists('docs/dags/DAG.json') && prompt('Aprovar a gravação do processo canônico no cofre?')",
+      "depende": ["n05_composicao_dag"]
+    },
+    {
+      "id": "n07_projecao_cofre",
+      "titulo": "Projeção e Validação Determinística no Cofre",
+      "tipo": "script",
+      "peca": "validate",
+      "consome": ["docs/dags/DAG.approved.json"],
+      "produz": {
+        "caminho": "processos/legoloop-fabricar/dag.json",
+        "tipo": "json",
+        "promete": true
+      },
+      "gate": "file_exists('processos/legoloop-fabricar/dag.json')",
+      "depende": ["n06_sg_aprovacao"]
+    }
+  ],
+  "criado_em": "2026-11-20T12:04:00.0000000Z"
+}

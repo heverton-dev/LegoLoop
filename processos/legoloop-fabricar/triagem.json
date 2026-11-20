@@ -1,0 +1,110 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-fabricar",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-fabricar",
+      "comandos_cli": [
+        "legoloop fabricar",
+        "/legoloop-fabricar"
+      ],
+      "artefatos_ativos": [],
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-fabricar",
+    "etapas": [
+      "n01_entrevista_escopo",
+      "n02_inventario_local",
+      "n03_curadoria_fronteira",
+      "n04_fusao_aptidao",
+      "n05_composicao_dag",
+      "n06_sg_aprovacao",
+      "n07_projecao_cofre"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_entrevista_escopo",
+      "palavras_chave": [
+        "entrevista",
+        "escopo",
+        "intent",
+        "concepcao"
+      ],
+      "slash_command": "/legoloop-fabricar-entrevista",
+      "flag_cli": "--etapa n01_entrevista_escopo"
+    },
+    {
+      "id": "n02_inventario_local",
+      "palavras_chave": [
+        "inventario",
+        "matriz",
+        "varredura"
+      ],
+      "slash_command": "/legoloop-fabricar-inventario",
+      "flag_cli": "--etapa n02_inventario_local"
+    },
+    {
+      "id": "n03_curadoria_fronteira",
+      "palavras_chave": [
+        "curadoria",
+        "fronteira",
+        "lacuna",
+        "diagnose"
+      ],
+      "slash_command": "/legoloop-fabricar-curadoria",
+      "flag_cli": "--etapa n03_curadoria_fronteira"
+    },
+    {
+      "id": "n04_fusao_aptidao",
+      "palavras_chave": [
+        "fusao",
+        "aptidao",
+        "spec",
+        "ranking"
+      ],
+      "slash_command": "/legoloop-fabricar-fusao",
+      "flag_cli": "--etapa n04_fusao_aptidao"
+    },
+    {
+      "id": "n05_composicao_dag",
+      "palavras_chave": [
+        "composicao",
+        "dag",
+        "compor",
+        "grafo"
+      ],
+      "slash_command": "/legoloop-fabricar-compor",
+      "flag_cli": "--etapa n05_composicao_dag"
+    },
+    {
+      "id": "n06_sg_aprovacao",
+      "palavras_chave": [
+        "aprovacao",
+        "stop-gate",
+        "humano",
+        "revisao"
+      ],
+      "slash_command": "/legoloop-fabricar-aprovacao",
+      "flag_cli": "--etapa n06_sg_aprovacao"
+    },
+    {
+      "id": "n07_projecao_cofre",
+      "palavras_chave": [
+        "projecao",
+        "cofre",
+        "validate",
+        "gravar"
+      ],
+      "slash_command": "/legoloop-fabricar-projecao",
+      "flag_cli": "--etapa n07_projecao_cofre"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}
