@@ -1,0 +1,47 @@
+{
+  "slug": "legoloop-agent-desktop",
+  "nodes": [
+    {
+      "id": "n01_diagnostico_adaptador",
+      "name": "Diagn\u00f3stico do Adaptador e Permiss\u00f5es",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n02_descoberta_superficies",
+      "name": "Descoberta de Superf\u00edcies e Janelas Ativas",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n03_posicionamento_foco",
+      "name": "Foco e Posicionamento de Janela",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n04_inspecao_acessibilidade",
+      "name": "Captura da \u00c1rvore de Acessibilidade",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n05_execucao_semantica",
+      "name": "Execu\u00e7\u00e3o Sem\u00e2ntica sobre Refer\u00eancias Est\u00e1veis",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    },
+    {
+      "id": "n06_verificacao_fechamento",
+      "name": "Reinspe\u00e7\u00e3o e Confirma\u00e7\u00e3o de Estado Final",
+      "type": "unit_no",
+      "badge": "UNIT-N\u00d3",
+      "color": "#2563eb"
+    }
+  ]
+}

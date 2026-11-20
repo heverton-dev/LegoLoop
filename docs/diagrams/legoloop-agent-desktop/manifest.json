@@ -1,0 +1,9 @@
+{
+  "slug": "legoloop-agent-desktop",
+  "name": "legoloop-agent-desktop",
+  "version": "2.2.0",
+  "nodes_count": 6,
+  "visual_type": "process",
+  "semantic_pattern": "stage-framework",
+  "generated_at": "2026-11-19T07:00:00Z"
+}

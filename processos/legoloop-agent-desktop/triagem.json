@@ -1,0 +1,93 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-agent-desktop",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-agent-desktop",
+      "comandos_cli": [
+        "legoloop legoloop-agent-desktop",
+        "/legoloop-agent-desktop"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-agent-desktop",
+    "etapas": [
+      "n01_diagnostico_adaptador",
+      "n02_descoberta_superficies",
+      "n03_posicionamento_foco",
+      "n04_inspecao_acessibilidade",
+      "n05_execucao_semantica",
+      "n06_verificacao_fechamento"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_diagnostico_adaptador",
+      "palavras_chave": [
+        "diagnostico adaptador",
+        "diagnostico-adaptador",
+        "status adaptador"
+      ],
+      "slash_command": "/legoloop-agent-desktop-diagnostico-adaptador",
+      "flag_cli": "--etapa n01_diagnostico_adaptador"
+    },
+    {
+      "id": "n02_descoberta_superficies",
+      "palavras_chave": [
+        "descoberta superficies",
+        "descoberta-superficies",
+        "janelas ativas"
+      ],
+      "slash_command": "/legoloop-agent-desktop-descoberta-superficies",
+      "flag_cli": "--etapa n02_descoberta_superficies"
+    },
+    {
+      "id": "n03_posicionamento_foco",
+      "palavras_chave": [
+        "posicionamento foco",
+        "posicionamento-foco",
+        "foco janela"
+      ],
+      "slash_command": "/legoloop-agent-desktop-posicionamento-foco",
+      "flag_cli": "--etapa n03_posicionamento_foco"
+    },
+    {
+      "id": "n04_inspecao_acessibilidade",
+      "palavras_chave": [
+        "inspecao acessibilidade",
+        "inspecao-acessibilidade",
+        "snapshot acessibilidade"
+      ],
+      "slash_command": "/legoloop-agent-desktop-inspecao-acessibilidade",
+      "flag_cli": "--etapa n04_inspecao_acessibilidade"
+    },
+    {
+      "id": "n05_execucao_semantica",
+      "palavras_chave": [
+        "execucao semantica",
+        "execucao-semantica",
+        "acao semantica"
+      ],
+      "slash_command": "/legoloop-agent-desktop-execucao-semantica",
+      "flag_cli": "--etapa n05_execucao_semantica"
+    },
+    {
+      "id": "n06_verificacao_fechamento",
+      "palavras_chave": [
+        "verificacao fechamento",
+        "verificacao-fechamento",
+        "confirmacao estado"
+      ],
+      "slash_command": "/legoloop-agent-desktop-verificacao-fechamento",
+      "flag_cli": "--etapa n06_verificacao_fechamento"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

@@ -1,0 +1,301 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "name": "legoloop-agent-desktop",
+  "version": "2.2.0",
+  "description": "Processo determinístico de automação de aplicações desktop por árvore de acessibilidade nativa sem visão computacional.",
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_processo"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_diagnostico_adaptador",
+      "name": "Diagnóstico do Adaptador e Permissões",
+      "type": "unit_no",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 8000,
+        "max_completion_tokens": 1500,
+        "max_duration_sec": 120
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [],
+      "context_out": [
+        "status_adaptador.json"
+      ],
+      "inputs": {
+        "estado": "var.sistema"
+      },
+      "output": {
+        "artifact": "status_adaptador.json",
+        "gate": "file_exists('status_adaptador.json')"
+      },
+      "verification": {
+        "gate": "file_exists('status_adaptador.json')"
+      }
+    },
+    {
+      "id": "n02_descoberta_superficies",
+      "name": "Descoberta de Superfícies e Janelas Ativas",
+      "type": "unit_no",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "depends_on": [
+        "n01_diagnostico_adaptador"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 180
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "status_adaptador.json"
+      ],
+      "context_out": [
+        "janelas_ativas.json"
+      ],
+      "inputs": {
+        "alvo": "var.aplicacao",
+        "status": "status_adaptador.json"
+      },
+      "output": {
+        "artifact": "janelas_ativas.json",
+        "gate": "file_exists('janelas_ativas.json')"
+      },
+      "verification": {
+        "gate": "file_exists('janelas_ativas.json')"
+      }
+    },
+    {
+      "id": "n03_posicionamento_foco",
+      "name": "Foco e Posicionamento de Janela",
+      "type": "unit_no",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "depends_on": [
+        "n02_descoberta_superficies"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 1500,
+        "max_duration_sec": 180
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "janelas_ativas.json"
+      ],
+      "context_out": [
+        "foco_confirmado.json"
+      ],
+      "inputs": {
+        "janelas": "janelas_ativas.json"
+      },
+      "output": {
+        "artifact": "foco_confirmado.json",
+        "gate": "file_exists('foco_confirmado.json')"
+      },
+      "verification": {
+        "gate": "file_exists('foco_confirmado.json')"
+      }
+    },
+    {
+      "id": "n04_inspecao_acessibilidade",
+      "name": "Captura da Árvore de Acessibilidade",
+      "type": "unit_no",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "depends_on": [
+        "n03_posicionamento_foco"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "foco_confirmado.json"
+      ],
+      "context_out": [
+        "arvore_acessibilidade.json"
+      ],
+      "inputs": {
+        "foco": "foco_confirmado.json"
+      },
+      "output": {
+        "artifact": "arvore_acessibilidade.json",
+        "gate": "file_exists('arvore_acessibilidade.json')"
+      },
+      "verification": {
+        "gate": "file_exists('arvore_acessibilidade.json')"
+      }
+    },
+    {
+      "id": "n05_execucao_semantica",
+      "name": "Execução Semântica sobre Referências Estáveis",
+      "type": "unit_no",
+      "nature": "micro",
+      "cognitive_complexity": "medio",
+      "depends_on": [
+        "n04_inspecao_acessibilidade"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 16000,
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 300
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "arvore_acessibilidade.json"
+      ],
+      "context_out": [
+        "resultado_acao.json"
+      ],
+      "inputs": {
+        "arvore": "arvore_acessibilidade.json",
+        "acao": "var.comando"
+      },
+      "output": {
+        "artifact": "resultado_acao.json",
+        "gate": "file_exists('resultado_acao.json')"
+      },
+      "verification": {
+        "gate": "file_exists('resultado_acao.json')"
+      }
+    },
+    {
+      "id": "n06_verificacao_fechamento",
+      "name": "Reinspeção e Confirmação de Estado Final",
+      "type": "unit_no",
+      "nature": "micro",
+      "cognitive_complexity": "simples",
+      "depends_on": [
+        "n05_execucao_semantica"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "oficial",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "code-fast"
+      },
+      "isolation": {
+        "write_boundary": "strict",
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false
+      },
+      "limits": {
+        "max_prompt_tokens": 10000,
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 180
+      },
+      "rollback_strategy": "stash_changes",
+      "context_in": [
+        "resultado_acao.json"
+      ],
+      "context_out": [
+        "relatorio_desktop.json"
+      ],
+      "inputs": {
+        "resultado": "resultado_acao.json"
+      },
+      "output": {
+        "artifact": "relatorio_desktop.json",
+        "gate": "file_exists('relatorio_desktop.json')"
+      },
+      "verification": {
+        "gate": "file_exists('relatorio_desktop.json')"
+      }
+    }
+  ]
+}

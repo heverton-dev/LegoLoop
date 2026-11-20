@@ -1,0 +1,27 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-agent-desktop",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:d1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2",
+      "erro": "Tentativa de automação desktop através de reconhecimento visual por pixels ou screenshot em vez da árvore de acessibilidade nativa.",
+      "causa_raiz": "Suposição incorreta de que o agente desktop precisa de visão computacional (CV) para interagir com a interface.",
+      "antidoto": "Utilizar estritamente os comandos de snapshot e referências semânticas (@ref) via UIA no Windows e AXUI no macOS/Linux, garantindo determinismo sem depender de OCR ou coordenadas de pixels.",
+      "recorrencias": 1,
+      "pacote": "legoloop-agent-desktop/accessibility-tree",
+      "timestamp": "2026-11-19T18:00:00-03:00",
+      "antidoto_aplicado": true
+    },
+    {
+      "assinatura": "sha256:d2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3",
+      "erro": "Execução de comandos com referências cruas (@ref) no PowerShell sem aspas, provocando erro de splatting do shell.",
+      "causa_raiz": "O caractere @ no PowerShell é o operador de splatting de variáveis quando colocado no início de um argumento não citado.",
+      "antidoto": "Sempre envolver referências em aspas simples (ex.: '@s8f3k2p9:e1') em comandos Windows PowerShell.",
+      "recorrencias": 1,
+      "pacote": "legoloop-agent-desktop/powershell-quoting",
+      "timestamp": "2026-11-19T18:00:00-03:00",
+      "antidoto_aplicado": true
+    }
+  ]
+}
