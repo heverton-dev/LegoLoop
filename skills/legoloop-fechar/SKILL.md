@@ -68,12 +68,13 @@ suggested_model: t-chat-128k
 | ID do Nó | Nome do Nó | Descrição |
 | :--- | :--- | :--- |
 | `n01_manual_check` | Auditoria e Geração do Manual Operacional | Verificação e emissão do manual em `docs/manuals/` |
-| `n02_book_legopress` | Auditoria Geométrica do Livro LegoPress | Compilação e auditoria geométrica do livro didático |
-| `n03_skill_harnesses` | Instalação e Vínculo Universal de Skills nos Harnesses | Registro da skill universal nos harnesses do ecossistema |
-| `n04_dag_validation` | Validação Estrutural e Topológica do Grafo DAG | Validação de aciclicidade e schema do DAG |
-| `n05_rebuild_binary` | Recompilação e Instalação Fresca do Binário | Build e instalação do binário `legoloop.exe` |
-| `n06_governance_sync` | Sincronização da Governança Viva (AGENTS, MEMORY, README) | Atualização dos documentos vivos de governança |
-| `n07_report_telemetry` | Emissão de Relatório de Conclusão com Telemetria e Custos | Relatório de conclusão e telemetria estrita em `docs/reports/` |
+| `n02_diagram_design` | Geração do Diagrama Arquitetural em HTML e SVG | Diagrama visual determinístico com legoloop-diagram-design |
+| `n03_book_legopress` | Auditoria Geométrica do Livro LegoPress | Compilação e auditoria geométrica do livro didático |
+| `n04_skill_harnesses` | Instalação e Vínculo Universal de Skills nos Harnesses | Registro da skill universal nos harnesses do ecossistema |
+| `n05_dag_validation` | Validação Estrutural e Topológica do Grafo DAG | Validação de aciclicidade e schema do DAG |
+| `n06_rebuild_binary` | Recompilação e Instalação Fresca do Binário | Build e instalação do binário `legoloop.exe` |
+| `n07_governance_sync` | Sincronização da Governança Viva (AGENTS, MEMORY, README) | Atualização dos documentos vivos de governança |
+| `n08_report_telemetry` | Emissão de Relatório de Conclusão com Telemetria e Custos | Relatório de conclusão e telemetria estrita em `docs/reports/` |
 
 ### Processo Legado / Variável `fechar`
 | ID do Nó | Nome do Nó | Descrição |

@@ -1,7 +1,7 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v2.json",
-  "date": "2026-11-07",
-  "description": "Processo canônico de canonização determinística em 9 etapas com telemetria estrita de tempo, recursos e custos",
+  "date": "2026-11-20",
+  "description": "Processo canônico de canonização determinística com diagramação visual e telemetria estrita",
   "execution_strategy": {
     "concurrency": {
       "harness_capability": "subagent_cli_isolated",
@@ -83,6 +83,63 @@
     },
     {
       "cognitive_complexity": "simples",
+      "context_in": [
+        "docs/manuals/2026-11-07_MANUAL_FUNCAO_FECHAR_LEGOLOOP.md"
+      ],
+      "context_out": [
+        "docs/diagrams/fechar/src/fechar.html"
+      ],
+      "depends_on": [
+        "n01_manual_check"
+      ],
+      "execution": {
+        "mode": "isolated"
+      },
+      "id": "n02_diagram_design",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1500,
+        "max_duration_sec": 300,
+        "max_prompt_tokens": 6000
+      },
+      "name": "Geração do Diagrama Arquitetural em HTML e SVG",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/diagrams/fechar/src/fechar.html",
+        "gate": "file_exists('docs/diagrams/fechar/src/fechar.html')"
+      },
+      "ref": "legoloop-diagram-design",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-n02_diagram_design",
+      "status": "COMPLETED",
+      "timeout_sec": 300,
+      "token_budget": {
+        "max_completion_tokens": 1500,
+        "max_prompt_tokens": 6000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "subprocesso",
+      "verification": {
+        "gate": "file_exists('docs/diagrams/fechar/src/fechar.html')"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
       "command": [
         "legoloop",
         "legopress",
@@ -96,12 +153,12 @@
         "docs/books/video-rea/livro.json"
       ],
       "depends_on": [
-        "n01_manual_check"
+        "n02_diagram_design"
       ],
       "execution": {
         "mode": "isolated"
       },
-      "id": "n02_book_legopress",
+      "id": "n03_book_legopress",
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -128,7 +185,7 @@
         "model": "sonnet",
         "via": "oficial"
       },
-      "spec_ref": "AC-n02_book_legopress",
+      "spec_ref": "AC-n03_book_legopress",
       "status": "COMPLETED",
       "timeout_sec": 180,
       "token_budget": {
@@ -157,12 +214,12 @@
         "skills/legoloop-fechar/SKILL.md"
       ],
       "depends_on": [
-        "n02_book_legopress"
+        "n03_book_legopress"
       ],
       "execution": {
         "mode": "isolated"
       },
-      "id": "n03_skill_harnesses",
+      "id": "n04_skill_harnesses",
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -174,7 +231,7 @@
         "max_duration_sec": 180,
         "max_prompt_tokens": 8000
       },
-      "name": "Instalação e Vínculo Universal de Skills nos Harnesses",
+      "name": "Instalação e Vínculo da Skill Universal nos Harnesses",
       "nature": "micro",
       "output": {
         "artifact": "skills/legoloop-fechar/SKILL.md",
@@ -189,7 +246,7 @@
         "model": "sonnet",
         "via": "oficial"
       },
-      "spec_ref": "AC-n03_skill_harnesses",
+      "spec_ref": "AC-n04_skill_harnesses",
       "status": "COMPLETED",
       "timeout_sec": 180,
       "token_budget": {
@@ -218,12 +275,12 @@
         "processos/legoloop-video-motion/dag.json"
       ],
       "depends_on": [
-        "n03_skill_harnesses"
+        "n04_skill_harnesses"
       ],
       "execution": {
         "mode": "isolated"
       },
-      "id": "n04_dag_validation",
+      "id": "n05_dag_validation",
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -235,7 +292,7 @@
         "max_duration_sec": 180,
         "max_prompt_tokens": 8000
       },
-      "name": "Validação Estrutural e Topológica do Grafo DAG",
+      "name": "Validação Topológica e Anti-Ciclo do Grafo DAG",
       "nature": "micro",
       "output": {
         "artifact": "processos/legoloop-video-motion/dag.json",
@@ -250,7 +307,7 @@
         "model": "sonnet",
         "via": "oficial"
       },
-      "spec_ref": "AC-n04_dag_validation",
+      "spec_ref": "AC-n05_dag_validation",
       "status": "COMPLETED",
       "timeout_sec": 180,
       "token_budget": {
@@ -268,22 +325,25 @@
     {
       "cognitive_complexity": "simples",
       "command": [
-        "legoloop",
-        "version"
+        "go",
+        "build",
+        "-o",
+        "bin/legoloop.exe",
+        "./cmd/legoloop"
       ],
       "context_in": [
-        "processos/legoloop-video-motion/dag.json"
+        "cmd/legoloop/main.go"
       ],
       "context_out": [
         "bin/legoloop.exe"
       ],
       "depends_on": [
-        "n04_dag_validation"
+        "n05_dag_validation"
       ],
       "execution": {
         "mode": "isolated"
       },
-      "id": "n05_rebuild_binary",
+      "id": "n06_rebuild_binary",
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -310,7 +370,7 @@
         "model": "sonnet",
         "via": "oficial"
       },
-      "spec_ref": "AC-n05_rebuild_binary",
+      "spec_ref": "AC-n06_rebuild_binary",
       "status": "COMPLETED",
       "timeout_sec": 180,
       "token_budget": {
@@ -339,12 +399,12 @@
         "AGENTS.md"
       ],
       "depends_on": [
-        "n05_rebuild_binary"
+        "n06_rebuild_binary"
       ],
       "execution": {
         "mode": "isolated"
       },
-      "id": "n06_governance_sync",
+      "id": "n07_governance_sync",
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -371,7 +431,7 @@
         "model": "sonnet",
         "via": "oficial"
       },
-      "spec_ref": "AC-n06_governance_sync",
+      "spec_ref": "AC-n07_governance_sync",
       "status": "COMPLETED",
       "timeout_sec": 180,
       "token_budget": {
@@ -401,12 +461,12 @@
         "docs/templates/TEMPLATE_REPORT.md"
       ],
       "depends_on": [
-        "n06_governance_sync"
+        "n07_governance_sync"
       ],
       "execution": {
         "mode": "isolated"
       },
-      "id": "n07_report_telemetry",
+      "id": "n08_report_telemetry",
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -433,7 +493,7 @@
         "model": "sonnet",
         "via": "oficial"
       },
-      "spec_ref": "AC-n07_report_telemetry",
+      "spec_ref": "AC-n08_report_telemetry",
       "status": "COMPLETED",
       "timeout_sec": 180,
       "token_budget": {
@@ -459,5 +519,5 @@
     "route": "docs/routes/2026-11-07_ROUTE_FECHAR_CANONICO.json",
     "spec": "01b2a758e5f2fe4e8be320a4ca22495fc9f6ee40498dbfb9df881db22b31128c"
   },
-  "version": "1.0.0"
+  "version": "1.1.0"
 }

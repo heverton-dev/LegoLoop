@@ -8,7 +8,7 @@
         "legoloop legoloop-fechar",
         "/legoloop-legoloop-fechar"
       ],
-      "artefatos_ativos": null,
+      "artefatos_ativos": [],
       "prioridade": 100
     }
   ],
@@ -16,12 +16,13 @@
     "descricao": "Classificação para o processo legoloop-fechar",
     "etapas": [
       "n01_manual_check",
-      "n02_book_legopress",
-      "n03_skill_harnesses",
-      "n04_dag_validation",
-      "n05_rebuild_binary",
-      "n06_governance_sync",
-      "n07_report_telemetry"
+      "n02_diagram_design",
+      "n03_book_legopress",
+      "n04_skill_harnesses",
+      "n05_dag_validation",
+      "n06_rebuild_binary",
+      "n07_governance_sync",
+      "n08_report_telemetry"
     ]
   },
   "etapas": [
@@ -35,58 +36,68 @@
       "flag_cli": "--etapa n01_manual_check"
     },
     {
-      "id": "n02_book_legopress",
+      "id": "n02_diagram_design",
+      "palavras_chave": [
+        "diagram design",
+        "diagrama",
+        "arquitetura visual"
+      ],
+      "slash_command": "/legoloop-fechar-diagram",
+      "flag_cli": "--etapa n02_diagram_design"
+    },
+    {
+      "id": "n03_book_legopress",
       "palavras_chave": [
         "book legopress",
         "book-legopress"
       ],
       "slash_command": "/legoloop-fechar-book-legopress",
-      "flag_cli": "--etapa n02_book_legopress"
+      "flag_cli": "--etapa n03_book_legopress"
     },
     {
-      "id": "n03_skill_harnesses",
+      "id": "n04_skill_harnesses",
       "palavras_chave": [
         "skill harnesses",
         "skill-harnesses"
       ],
       "slash_command": "/legoloop-fechar-skill-harnesses",
-      "flag_cli": "--etapa n03_skill_harnesses"
+      "flag_cli": "--etapa n04_skill_harnesses"
     },
     {
-      "id": "n04_dag_validation",
+      "id": "n05_dag_validation",
       "palavras_chave": [
         "dag validation",
         "dag-validation"
       ],
       "slash_command": "/legoloop-fechar-dag-validation",
-      "flag_cli": "--etapa n04_dag_validation"
+      "flag_cli": "--etapa n05_dag_validation"
     },
     {
-      "id": "n05_rebuild_binary",
+      "id": "n06_rebuild_binary",
       "palavras_chave": [
         "rebuild binary",
         "rebuild-binary"
       ],
       "slash_command": "/legoloop-fechar-rebuild-binary",
-      "flag_cli": "--etapa n05_rebuild_binary"
+      "flag_cli": "--etapa n06_rebuild_binary"
     },
     {
-      "id": "n06_governance_sync",
+      "id": "n07_governance_sync",
       "palavras_chave": [
         "governance sync",
         "governance-sync"
       ],
       "slash_command": "/legoloop-fechar-governance-sync",
-      "flag_cli": "--etapa n06_governance_sync"
+      "flag_cli": "--etapa n07_governance_sync"
     },
     {
-      "id": "n07_report_telemetry",
+      "id": "n08_report_telemetry",
       "palavras_chave": [
         "report telemetry",
         "report-telemetry"
       ],
       "slash_command": "/legoloop-fechar-report-telemetry",
-      "flag_cli": "--etapa n07_report_telemetry"
+      "flag_cli": "--etapa n08_report_telemetry"
     }
   ],
   "pontos_entrada": [
