@@ -8,7 +8,7 @@ Você vai executar o plano **Distribuição e Forja do LegoLoop** neste reposit�
 
 **Leia, nesta ordem, antes de agir:**
 1. `AGENTS.md` (versão enxuta das leis; o texto integral está em `docs/governanca/AGENTS_COMPLETO.md`).
-2. `docs/intents/INTENT.md` e `docs/intents/ESPELHO_CANONICO.md` (INTENT aprovada no Stop-Gate 01).
+2. `docs/intents/2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md` e `docs/intents/2026-11-21_ESPELHO_CANONICO_FORJA.md` (INTENT aprovada no Stop-Gate 01).
 3. `docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP.md` (39 critérios de aceite; aprovada no Stop-Gate 02).
 4. `docs/plans/2026-11-21_PLAN_DISTRIBUICAO_FORJA_LEGOLOOP.md` (40 Tickets: 12 nano e 28 micro, 11 Épicos). Espelhos executáveis: `docs/routes/2026-11-21_ROUTE_DISTRIBUICAO_FORJA_LEGOLOOP.json` e `docs/dags/2026-11-21_DAG_DISTRIBUICAO_FORJA_LEGOLOOP.json`. A lista de Tickets de origem está em `docs/plans/2026-11-21_TICKETS_DISTRIBUICAO_FORJA_LEGOLOOP.json`.
 

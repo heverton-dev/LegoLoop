@@ -1,0 +1,2098 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "2026-11-21_ROUTE_INICIATIVA_2_DO_MACROPROJETO_D",
+  "version": "1.0.0",
+  "date": "2026-11-21",
+  "session_id": null,
+  "intent_ref": "docs/intents/2026-11-21_INTENT_INICIATIVA_2_DO_MACROPROJETO_D.md",
+  "spec_ref": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md",
+  "plan_ref": "docs/plans/2026-11-21_PLAN_INICIATIVA_2_DO_MACROPROJETO_D.md",
+  "initiative_ref": "I02 — Processos de especificação e de planejamento",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-21_INTENT_INICIATIVA_2_DO_MACROPROJETO_D.md",
+      "sha256": "52bead0c7eeeabe064f7ea83829bb62d762468a7b6d9c1d863a6848fcc478bf5"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md",
+      "sha256": "34662b45405ab45c7cf06f0aa5d4656d0c03171be75ec69e1b29c90bef5a6804"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-21_PLAN_INICIATIVA_2_DO_MACROPROJETO_D.md",
+      "sha256": "b566f5660d345393d57b4337a1d152e4237c2f53524399676fd133eb0c5b3d4a"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "write_boundary": "strict"
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "I02",
+      "epic_id": "E01",
+      "label": "Criar internal/routedag com Projetar, Converter e VerificarCadeia e migrar os testes do route2dag",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/routedag/routedag.go",
+          "internal/routedag/cadeia.go",
+          "internal/routedag/convert.go",
+          "internal/routedag/node.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/routedag/routedag_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/routedag/routedag.go",
+          "internal/routedag/cadeia.go",
+          "internal/routedag/convert.go",
+          "internal/routedag/node.go",
+          "internal/routedag/routedag_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/routedag/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/routedag/routedag.go') \u0026\u0026 file_exists('internal/routedag/cadeia.go') \u0026\u0026 file_exists('internal/routedag/convert.go') \u0026\u0026 file_exists('internal/routedag/node.go') \u0026\u0026 file_exists('internal/routedag/routedag_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "I02",
+      "epic_id": "E01",
+      "label": "Criar routedag.Executar e reduzir tools/route2dag/main.go a uma chamada",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/routedag/executar.go",
+          "tools/route2dag/main.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": "internal/routedag/executar_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/routedag/executar.go",
+          "internal/routedag/executar_test.go",
+          "tools/route2dag/main.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/routedag/",
+            "./tools/route2dag/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/routedag/executar.go') \u0026\u0026 file_exists('internal/routedag/executar_test.go') \u0026\u0026 file_exists('tools/route2dag/main.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.3",
+      "initiative_id": "I02",
+      "epic_id": "E01",
+      "label": "Provar que o DAG da Forja sai idêntico depois da mudança",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/routedag/forja_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/routedag/forja_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/routedag/forja_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/routedag/",
+            "-run",
+            "TestDagDaForjaIdentico"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/routedag/forja_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano: SG-E01",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "I02",
+      "epic_id": "E02",
+      "label": "Criar fabricar plano que grava PLAN, ROUTE e DAG em um comando",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.3",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fabricar_plano.go",
+          "internal/cli/fabricar_entrevista.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1, AC-NF.1",
+      "test_target": "internal/cli/fabricar_plano_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/fabricar_plano.go",
+          "internal/cli/fabricar_plano_test.go",
+          "internal/cli/fabricar_entrevista.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestFabricarPlano"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/fabricar_plano.go') \u0026\u0026 file_exists('internal/cli/fabricar_plano_test.go') \u0026\u0026 file_exists('internal/cli/fabricar_entrevista.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "I02",
+      "epic_id": "E02",
+      "label": "Recusar sem INTENT aprovada com exit 2 e sem gravar nada",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fabricar_plano.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": "internal/cli/fabricar_plano_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/fabricar_plano.go",
+          "internal/cli/fabricar_plano_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestFabricarPlanoRecusa"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/fabricar_plano.go') \u0026\u0026 file_exists('internal/cli/fabricar_plano_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.3",
+      "initiative_id": "I02",
+      "epic_id": "E02",
+      "label": "Tornar o modo estrito o padrão e criar o flag --permissivo",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.2",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fabricar_plano.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E02.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.3",
+      "test_target": "internal/cli/fabricar_plano_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/fabricar_plano.go",
+          "internal/cli/fabricar_plano_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestFabricarPlanoEstrito"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/fabricar_plano.go') \u0026\u0026 file_exists('internal/cli/fabricar_plano_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.4",
+      "initiative_id": "I02",
+      "epic_id": "E02",
+      "label": "Gravar PLAN, ROUTE e DAG de forma atômica: falha em qualquer etapa não deixa arquivo",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.3",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fabricar_plano.go",
+          "internal/cli/fabricar_plano_atomico.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E02.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.4",
+      "test_target": "internal/cli/fabricar_plano_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/fabricar_plano.go",
+          "internal/cli/fabricar_plano_atomico.go",
+          "internal/cli/fabricar_plano_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestFabricarPlanoAtomico"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/fabricar_plano.go') \u0026\u0026 file_exists('internal/cli/fabricar_plano_atomico.go') \u0026\u0026 file_exists('internal/cli/fabricar_plano_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.5",
+      "initiative_id": "I02",
+      "epic_id": "E02",
+      "label": "Remover legoloop plano e trocar toda referência por fabricar plano",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.4",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/plano.go",
+          "internal/cli/cli.go",
+          "AGENTS.md",
+          "README.md",
+          "docs/prompts/2026-11-21_PROMPT_EXECUCAO_FORJA.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E02.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.5",
+      "test_target": "internal/cli/plano_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/plano.go",
+          "internal/cli/plano_test.go",
+          "internal/cli/cli.go",
+          "AGENTS.md",
+          "README.md",
+          "docs/prompts/2026-11-21_PROMPT_EXECUCAO_FORJA.md"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/plano.go') \u0026\u0026 file_exists('internal/cli/plano_test.go') \u0026\u0026 file_exists('internal/cli/cli.go') \u0026\u0026 file_exists('AGENTS.md') \u0026\u0026 file_exists('README.md') \u0026\u0026 file_exists('docs/prompts/2026-11-21_PROMPT_EXECUCAO_FORJA.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano: SG-E02",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-02.2",
+        "TICK-02.3",
+        "TICK-02.4",
+        "TICK-02.5"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "I02",
+      "epic_id": "E03",
+      "label": "Criar fabricar spec que grava a SPEC a partir de uma INTENT aprovada",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.5",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fabricar_spec.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/cli/fabricar_spec_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/fabricar_spec.go",
+          "internal/cli/fabricar_spec_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestFabricarSpec"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/fabricar_spec.go') \u0026\u0026 file_exists('internal/cli/fabricar_spec_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "I02",
+      "epic_id": "E03",
+      "label": "Recusar INTENT não aprovada com exit 2 sem chamar o LLM",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/fabricar_spec.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": "internal/cli/fabricar_spec_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/fabricar_spec.go",
+          "internal/cli/fabricar_spec_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestFabricarSpecRecusa"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/fabricar_spec.go') \u0026\u0026 file_exists('internal/cli/fabricar_spec_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.3",
+      "initiative_id": "I02",
+      "epic_id": "E03",
+      "label": "Criar o Processo legoloop-especificacao com contrato e nascimento 5 de 5",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.2",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "processos/legoloop-especificacao/pipeline.dag.json",
+          "processos/legoloop-especificacao/triagem.json",
+          "processos/legoloop-especificacao/memoria_execucao.json",
+          "processos/legoloop-especificacao/anticorpos.json",
+          "processos/legoloop-especificacao/ANTICORPOS.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E03.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.3, AC-E03.4",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "processos/legoloop-especificacao/pipeline.dag.json",
+          "processos/legoloop-especificacao/triagem.json",
+          "processos/legoloop-especificacao/memoria_execucao.json",
+          "processos/legoloop-especificacao/anticorpos.json",
+          "processos/legoloop-especificacao/ANTICORPOS.md"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "validate",
+            "processos/legoloop-especificacao/pipeline.dag.json"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('processos/legoloop-especificacao/pipeline.dag.json') \u0026\u0026 file_exists('processos/legoloop-especificacao/triagem.json') \u0026\u0026 file_exists('processos/legoloop-especificacao/memoria_execucao.json') \u0026\u0026 file_exists('processos/legoloop-especificacao/anticorpos.json') \u0026\u0026 file_exists('processos/legoloop-especificacao/ANTICORPOS.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano: SG-E03",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2",
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": "I02",
+      "epic_id": "E04",
+      "label": "Criar o Processo legoloop-planejamento com contrato e nascimento 5 de 5",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.3",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "processos/legoloop-planejamento/pipeline.dag.json",
+          "processos/legoloop-planejamento/triagem.json",
+          "processos/legoloop-planejamento/memoria_execucao.json",
+          "processos/legoloop-planejamento/anticorpos.json",
+          "processos/legoloop-planejamento/ANTICORPOS.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.1, AC-E04.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "processos/legoloop-planejamento/pipeline.dag.json",
+          "processos/legoloop-planejamento/triagem.json",
+          "processos/legoloop-planejamento/memoria_execucao.json",
+          "processos/legoloop-planejamento/anticorpos.json",
+          "processos/legoloop-planejamento/ANTICORPOS.md"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "validate",
+            "processos/legoloop-planejamento/pipeline.dag.json"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('processos/legoloop-planejamento/pipeline.dag.json') \u0026\u0026 file_exists('processos/legoloop-planejamento/triagem.json') \u0026\u0026 file_exists('processos/legoloop-planejamento/memoria_execucao.json') \u0026\u0026 file_exists('processos/legoloop-planejamento/anticorpos.json') \u0026\u0026 file_exists('processos/legoloop-planejamento/ANTICORPOS.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.2",
+      "initiative_id": "I02",
+      "epic_id": "E04",
+      "label": "Fazer o DAG do planejamento chamar fabricar plano em vez de duplicar a lógica",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.1",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "processos/legoloop-planejamento/pipeline.dag.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E04.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.3",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "processos/legoloop-planejamento/pipeline.dag.json"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: grep -c \"legoloop fabricar plano\" processos/legoloop-planejamento/pipeline.dag.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E04",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Stop-Gate Humano: SG-E04",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-04.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 04 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.1",
+      "initiative_id": "I02",
+      "epic_id": "E05",
+      "label": "Rotear gerar a SPEC para legoloop-especificacao sem LLM",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.2",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "processos/legoloop-especificacao/triagem.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E05.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.1",
+      "test_target": "internal/triagem/especificacao_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/triagem/especificacao_test.go",
+          "processos/legoloop-especificacao/triagem.json"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/triagem/",
+            "-run",
+            "TestTriagemRoteiaEspecificacao"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/triagem/especificacao_test.go') \u0026\u0026 file_exists('processos/legoloop-especificacao/triagem.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.2",
+      "initiative_id": "I02",
+      "epic_id": "E05",
+      "label": "Rotear gerar o PLAN, a ROUTE e o DAG para legoloop-planejamento sem LLM",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-05.1",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "processos/legoloop-planejamento/triagem.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E05.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.2",
+      "test_target": "internal/triagem/planejamento_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/triagem/planejamento_test.go",
+          "processos/legoloop-planejamento/triagem.json"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/triagem/",
+            "-run",
+            "TestTriagemRoteiaPlanejamento"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/triagem/planejamento_test.go') \u0026\u0026 file_exists('processos/legoloop-planejamento/triagem.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.3",
+      "initiative_id": "I02",
+      "epic_id": "E05",
+      "label": "Provar que a triagem não roubou entradas dos Processos existentes",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-05.2",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/triagem/triagem_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E05.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.3",
+      "test_target": "internal/triagem/triagem_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/triagem/triagem_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/triagem/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/triagem/triagem_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E05",
+      "initiative_id": null,
+      "epic_id": "E05",
+      "label": "Stop-Gate Humano: SG-E05",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-05.1",
+        "TICK-05.2",
+        "TICK-05.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 05 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-06.1",
+      "initiative_id": "I02",
+      "epic_id": "E06",
+      "label": "Criar legoloop-ciclo e compor concepção, especificação e planejamento por subprocesso",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-05.3",
+        "SG-E05"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "processos/legoloop-ciclo/pipeline.dag.json",
+          "processos/legoloop-ciclo/triagem.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E06.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E06.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "processos/legoloop-ciclo/pipeline.dag.json",
+          "processos/legoloop-ciclo/triagem.json"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "validate",
+            "processos/legoloop-ciclo/pipeline.dag.json"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('processos/legoloop-ciclo/pipeline.dag.json') \u0026\u0026 file_exists('processos/legoloop-ciclo/triagem.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-06.2",
+      "initiative_id": "I02",
+      "epic_id": "E06",
+      "label": "Provar que o produces de cada subprocesso casa com o consumes do seguinte",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-06.1",
+        "SG-E05"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/ciclo_contrato_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E06.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E06.2",
+      "test_target": "internal/cli/ciclo_contrato_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/ciclo_contrato_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestCicloContratoEncadeia"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/ciclo_contrato_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E06",
+      "initiative_id": null,
+      "epic_id": "E06",
+      "label": "Stop-Gate Humano: SG-E06",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-06.1",
+        "TICK-06.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 06 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-07.1",
+      "initiative_id": "I02",
+      "epic_id": "E07",
+      "label": "Atualizar AGENTS, README e MEMORY com os Processos novos",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-06.2",
+        "SG-E06"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "AGENTS.md",
+          "docs/governanca/AGENTS_COMPLETO.md",
+          "README.md",
+          "MEMORY.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E07.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E07.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "AGENTS.md",
+          "docs/governanca/AGENTS_COMPLETO.md",
+          "README.md",
+          "MEMORY.md"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: grep -c \"fabricar plano\" AGENTS.md README.md MEMORY.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-07.2",
+      "initiative_id": "I02",
+      "epic_id": "E07",
+      "label": "Registrar os anticorpos da I02 nos Processos novos",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-07.1",
+        "SG-E06"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "processos/legoloop-especificacao/anticorpos.json",
+          "processos/legoloop-especificacao/ANTICORPOS.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E07.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E07.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "processos/legoloop-especificacao/anticorpos.json",
+          "processos/legoloop-especificacao/ANTICORPOS.md"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "anticorpos",
+            "status",
+            "legoloop-especificacao"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('processos/legoloop-especificacao/anticorpos.json') \u0026\u0026 file_exists('processos/legoloop-especificacao/ANTICORPOS.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-07.3",
+      "initiative_id": "I02",
+      "epic_id": "E07",
+      "label": "Fechar a Emenda 1, gerar o prompt de execução da I02 e rodar o portão completo",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-07.2",
+        "SG-E06"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md",
+          "docs/prompts"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md#AC-E07.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E07.3, AC-NF.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md",
+          "docs/prompts"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md') \u0026\u0026 file_exists('docs/prompts')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": null,
+      "epic_id": null,
+      "label": "Homologação Final (Regressão Global \u0026 Recompilação Fresca)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-07.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./..."
+          ],
+          [
+            "go",
+            "vet",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    }
+  ]
+}

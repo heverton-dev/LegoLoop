@@ -5,8 +5,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 )
+
+var reDataRoute = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}_ROUTE_`)
+
+// nomeLimpo tira o prefixo "<data>_ROUTE_" que o plangen grava no name da ROUTE.
+func nomeLimpo(name string) string {
+	return reDataRoute.ReplaceAllString(name, "")
+}
 
 type route struct {
 	Name               string               `json:"name"`
@@ -84,7 +92,7 @@ func Converter(raw []byte) ([]byte, string, error) {
 	}
 	d := map[string]any{
 		"$schema":             "https://legoloop.dev/schemas/dag.v1.json",
-		"name":                "legoloop-" + strings.ToLower(strings.ReplaceAll(r.Name, "_", "-")),
+		"name":                "legoloop-" + strings.ToLower(strings.ReplaceAll(nomeLimpo(r.Name), "_", "-")),
 		"version":             r.Version,
 		"date":                r.Date,
 		"description":         "Espelho executável da ROUTE " + r.Name,
@@ -97,7 +105,7 @@ func Converter(raw []byte) ([]byte, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	return append(out, '\n'), fmt.Sprintf("%s_DAG_%s.json", r.Date, r.Name), nil
+	return append(out, '\n'), fmt.Sprintf("%s_DAG_%s.json", r.Date, nomeLimpo(r.Name)), nil
 }
 
 func assinaturas(r route) map[string]any {

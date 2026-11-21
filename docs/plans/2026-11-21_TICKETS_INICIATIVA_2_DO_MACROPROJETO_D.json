@@ -1,0 +1,438 @@
+[
+ {
+  "id": "TICK-I2-01.1",
+  "title": "Criar internal/routedag com Projetar, Converter e VerificarCadeia e migrar os testes do route2dag",
+  "epic_id": "E01",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [],
+  "target_files": [
+   "internal/routedag/routedag.go",
+   "internal/routedag/cadeia.go",
+   "internal/routedag/convert.go",
+   "internal/routedag/node.go",
+   "internal/routedag/routedag_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E01.1"
+  ],
+  "validation_cmd": "go test ./internal/routedag/...",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-01.2",
+  "title": "Criar routedag.Executar e reduzir tools/route2dag/main.go a uma chamada",
+  "epic_id": "E01",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-01.1"
+  ],
+  "target_files": [
+   "internal/routedag/executar.go",
+   "internal/routedag/executar_test.go",
+   "tools/route2dag/main.go"
+  ],
+  "spec_criteria": [
+   "AC-E01.2"
+  ],
+  "validation_cmd": "go test ./internal/routedag/ ./tools/route2dag/...",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-01.3",
+  "title": "Provar que o DAG da Forja sai idêntico depois da mudança",
+  "epic_id": "E01",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-01.2"
+  ],
+  "target_files": [
+   "internal/routedag/forja_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E01.3"
+  ],
+  "validation_cmd": "go test ./internal/routedag/ -run TestDagDaForjaIdentico",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I2-02.1",
+  "title": "Criar fabricar plano que grava PLAN, ROUTE e DAG em um comando",
+  "epic_id": "E02",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-01.3"
+  ],
+  "target_files": [
+   "internal/cli/fabricar_plano.go",
+   "internal/cli/fabricar_plano_test.go",
+   "internal/cli/fabricar_entrevista.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.1",
+   "AC-NF.1"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestFabricarPlano",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-02.2",
+  "title": "Recusar sem INTENT aprovada com exit 2 e sem gravar nada",
+  "epic_id": "E02",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-02.1"
+  ],
+  "target_files": [
+   "internal/cli/fabricar_plano.go",
+   "internal/cli/fabricar_plano_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.2"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestFabricarPlanoRecusa",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-02.3",
+  "title": "Tornar o modo estrito o padrão e criar o flag --permissivo",
+  "epic_id": "E02",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-02.2"
+  ],
+  "target_files": [
+   "internal/cli/fabricar_plano.go",
+   "internal/cli/fabricar_plano_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.3"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestFabricarPlanoEstrito",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-02.4",
+  "title": "Gravar PLAN, ROUTE e DAG de forma atômica: falha em qualquer etapa não deixa arquivo",
+  "epic_id": "E02",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-02.3"
+  ],
+  "target_files": [
+   "internal/cli/fabricar_plano.go",
+   "internal/cli/fabricar_plano_atomico.go",
+   "internal/cli/fabricar_plano_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.4"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestFabricarPlanoAtomico",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-02.5",
+  "title": "Remover legoloop plano e trocar toda referência por fabricar plano",
+  "epic_id": "E02",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I2-02.4"
+  ],
+  "target_files": [
+   "internal/cli/plano.go",
+   "internal/cli/plano_test.go",
+   "internal/cli/cli.go",
+   "AGENTS.md",
+   "README.md",
+   "docs/prompts/2026-11-21_PROMPT_EXECUCAO_FORJA.md"
+  ],
+  "spec_criteria": [
+   "AC-E02.5"
+  ],
+  "validation_cmd": "go test ./internal/cli/...",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I2-03.1",
+  "title": "Criar fabricar spec que grava a SPEC a partir de uma INTENT aprovada",
+  "epic_id": "E03",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-02.5"
+  ],
+  "target_files": [
+   "internal/cli/fabricar_spec.go",
+   "internal/cli/fabricar_spec_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.1"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestFabricarSpec",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-03.2",
+  "title": "Recusar INTENT não aprovada com exit 2 sem chamar o LLM",
+  "epic_id": "E03",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-03.1"
+  ],
+  "target_files": [
+   "internal/cli/fabricar_spec.go",
+   "internal/cli/fabricar_spec_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.2"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestFabricarSpecRecusa",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-03.3",
+  "title": "Criar o Processo legoloop-especificacao com contrato e nascimento 5 de 5",
+  "epic_id": "E03",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I2-03.2"
+  ],
+  "target_files": [
+   "processos/legoloop-especificacao/pipeline.dag.json",
+   "processos/legoloop-especificacao/triagem.json",
+   "processos/legoloop-especificacao/memoria_execucao.json",
+   "processos/legoloop-especificacao/anticorpos.json",
+   "processos/legoloop-especificacao/ANTICORPOS.md"
+  ],
+  "spec_criteria": [
+   "AC-E03.3",
+   "AC-E03.4"
+  ],
+  "validation_cmd": "legoloop validate processos/legoloop-especificacao/pipeline.dag.json",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I2-04.1",
+  "title": "Criar o Processo legoloop-planejamento com contrato e nascimento 5 de 5",
+  "epic_id": "E04",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I2-03.3"
+  ],
+  "target_files": [
+   "processos/legoloop-planejamento/pipeline.dag.json",
+   "processos/legoloop-planejamento/triagem.json",
+   "processos/legoloop-planejamento/memoria_execucao.json",
+   "processos/legoloop-planejamento/anticorpos.json",
+   "processos/legoloop-planejamento/ANTICORPOS.md"
+  ],
+  "spec_criteria": [
+   "AC-E04.1",
+   "AC-E04.2"
+  ],
+  "validation_cmd": "legoloop validate processos/legoloop-planejamento/pipeline.dag.json",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-04.2",
+  "title": "Fazer o DAG do planejamento chamar fabricar plano em vez de duplicar a lógica",
+  "epic_id": "E04",
+  "initiative_id": "I02",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I2-04.1"
+  ],
+  "target_files": [
+   "processos/legoloop-planejamento/pipeline.dag.json"
+  ],
+  "spec_criteria": [
+   "AC-E04.3"
+  ],
+  "validation_cmd": "grep -c \"legoloop fabricar plano\" processos/legoloop-planejamento/pipeline.dag.json",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I2-05.1",
+  "title": "Rotear gerar a SPEC para legoloop-especificacao sem LLM",
+  "epic_id": "E05",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-04.2"
+  ],
+  "target_files": [
+   "internal/triagem/especificacao_test.go",
+   "processos/legoloop-especificacao/triagem.json"
+  ],
+  "spec_criteria": [
+   "AC-E05.1"
+  ],
+  "validation_cmd": "go test ./internal/triagem/ -run TestTriagemRoteiaEspecificacao",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-05.2",
+  "title": "Rotear gerar o PLAN, a ROUTE e o DAG para legoloop-planejamento sem LLM",
+  "epic_id": "E05",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-05.1"
+  ],
+  "target_files": [
+   "internal/triagem/planejamento_test.go",
+   "processos/legoloop-planejamento/triagem.json"
+  ],
+  "spec_criteria": [
+   "AC-E05.2"
+  ],
+  "validation_cmd": "go test ./internal/triagem/ -run TestTriagemRoteiaPlanejamento",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-05.3",
+  "title": "Provar que a triagem não roubou entradas dos Processos existentes",
+  "epic_id": "E05",
+  "initiative_id": "I02",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I2-05.2"
+  ],
+  "target_files": [
+   "internal/triagem/triagem_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E05.3"
+  ],
+  "validation_cmd": "go test ./internal/triagem/...",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I2-06.1",
+  "title": "Criar legoloop-ciclo e compor concepção, especificação e planejamento por subprocesso",
+  "epic_id": "E06",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I2-05.3"
+  ],
+  "target_files": [
+   "processos/legoloop-ciclo/pipeline.dag.json",
+   "processos/legoloop-ciclo/triagem.json"
+  ],
+  "spec_criteria": [
+   "AC-E06.1"
+  ],
+  "validation_cmd": "legoloop validate processos/legoloop-ciclo/pipeline.dag.json",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-06.2",
+  "title": "Provar que o produces de cada subprocesso casa com o consumes do seguinte",
+  "epic_id": "E06",
+  "initiative_id": "I02",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I2-06.1"
+  ],
+  "target_files": [
+   "internal/cli/ciclo_contrato_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E06.2"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestCicloContratoEncadeia",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I2-07.1",
+  "title": "Atualizar AGENTS, README e MEMORY com os Processos novos",
+  "epic_id": "E07",
+  "initiative_id": "I02",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I2-06.2"
+  ],
+  "target_files": [
+   "AGENTS.md",
+   "docs/governanca/AGENTS_COMPLETO.md",
+   "README.md",
+   "MEMORY.md"
+  ],
+  "spec_criteria": [
+   "AC-E07.1"
+  ],
+  "validation_cmd": "grep -c \"fabricar plano\" AGENTS.md README.md MEMORY.md",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-07.2",
+  "title": "Registrar os anticorpos da I02 nos Processos novos",
+  "epic_id": "E07",
+  "initiative_id": "I02",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I2-07.1"
+  ],
+  "target_files": [
+   "processos/legoloop-especificacao/anticorpos.json",
+   "processos/legoloop-especificacao/ANTICORPOS.md"
+  ],
+  "spec_criteria": [
+   "AC-E07.2"
+  ],
+  "validation_cmd": "legoloop anticorpos status legoloop-especificacao",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I2-07.3",
+  "title": "Fechar a Emenda 1, gerar o prompt de execução da I02 e rodar o portão completo",
+  "epic_id": "E07",
+  "initiative_id": "I02",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I2-07.2"
+  ],
+  "target_files": [
+   "docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md",
+   "docs/prompts"
+  ],
+  "spec_criteria": [
+   "AC-E07.3",
+   "AC-NF.2"
+  ],
+  "validation_cmd": "go test -count=1 ./...",
+  "human_gate_after": true
+ }
+]

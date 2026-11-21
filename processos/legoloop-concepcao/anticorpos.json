@@ -182,6 +182,15 @@
       "pacote": "internal/interview",
       "causa_raiz": "limpaRealce so tirava asteriscos das pontas e itensDoCampo separava por virgula mesmo quando havia uma linha por item",
       "timestamp": "2026-11-21T15:07:22Z"
+    },
+    {
+      "assinatura": "sha256:e3a541d48d5508fef8fcf5bc58426b66550bee0727fcdecf0b7a0856dafeedca",
+      "erro": "DAG gerado com nome 2026-11-21_DAG_2026-11-21_ROUTE_TEMA e Processo legoloop-2026-11-21-route-tema",
+      "antidoto": "nomeLimpo em convert.go tira o prefixo data_ROUTE_; testes nome_test.go; DAG da Forja regenerado",
+      "recorrencias": 1,
+      "pacote": "tools/route2dag",
+      "causa_raiz": "A ROUTE do plangen traz name com data e a palavra ROUTE, e o route2dag as repetia no nome do arquivo e do Processo",
+      "timestamp": "2026-11-21T15:16:27Z"
     }
   ]
 }

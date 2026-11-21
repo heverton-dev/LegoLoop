@@ -26,7 +26,7 @@
     "supervision_level": "epic",
     "tdd_enforced": true
   },
-  "name": "legoloop-2026-11-21-route-distribuicao-forja-legoloop",
+  "name": "legoloop-distribuicao-forja-legoloop",
   "nodes": [
     {
       "command": [

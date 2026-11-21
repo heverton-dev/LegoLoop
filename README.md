@@ -108,7 +108,8 @@ legoloop skills-migrar (--dry-run|--apply)          # tira as skills eager de to
 # Cadeia amarrada: plano, specgen, route2dag e Studio recusam sem INTENT aprovada (internal/upstream)
 legoloop plano --spec S --tickets T.json [--estrito]        # renderiza PLAN e ROUTE a partir dos Tickets, sem LLM (a ROUTE assina o PLAN gravado)
 legoloop anticorpos registrar <slug> --pacote P --erro E --causa C --antidoto A   # registra um achado como anticorpo e regenera o ANTICORPOS.md
-# Demanda em curso: Distribuição e Forja do LegoLoop (SPEC aprovada, PLAN de 40 Tickets, ROUTE e DAG em docs/specs, docs/plans, docs/routes e docs/dags) (INTENT aprovada em docs/intents/INTENT.md)
+# Demanda em curso: Distribuição e Forja do LegoLoop (SPEC aprovada, PLAN de 40 Tickets, ROUTE e DAG em docs/specs, docs/plans, docs/routes e docs/dags) (INTENT aprovada em docs/intents/2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md)
+# Demanda seguinte: I02, Processos de especificação e de planejamento (INTENT e SPEC aprovadas, PLAN de 21 Tickets, ROUTE e DAG em docs/plans, docs/routes e docs/dags); o código só começa depois do TICK-01.2 da I01
 claude-conectores                                  # abre o Claude Code com os conectores claude.ai ligados (padrão: desligados, -3,5k tokens por turno)
 claude-completo                                    # abre o Claude Code com todas as ferramentas e conectores (padrão enxuto: ferramentas pesadas negadas, -12k tokens por turno)
 claude-gateway [--sem-memoria]                     # perfil gateway: 1 ferramenta (call_mcp_tool) com shell, arquivos, skills e swarm sob demanda; ~1,5k tokens por turno
