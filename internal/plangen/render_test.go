@@ -29,6 +29,7 @@ func writeSpec(t *testing.T) (base, spec string) {
 	if err := os.WriteFile(spec, []byte(specBody), 0o644); err != nil {
 		t.Fatal(err)
 	}
+	gravarIntencaoAprovada(t, base)
 	return base, spec
 }
 

@@ -65,7 +65,7 @@ Structs Go.
 	}
 
 	intentFile := filepath.Join(intentsDir, "2026-11-02_INTENT_TESTES.md")
-	if err := os.WriteFile(intentFile, []byte("# INTENT de Testes"), 0644); err != nil {
+	if err := os.WriteFile(intentFile, []byte("---\nid: INTENT-T\nstatus: APPROVED\n---\n# INTENT de Testes"), 0644); err != nil {
 		t.Fatal(err)
 	}
 
@@ -108,7 +108,7 @@ Sem as seções obrigatórias.
 `
 	tempDir := t.TempDir()
 	intentFile := filepath.Join(tempDir, "INTENT.md")
-	os.WriteFile(intentFile, []byte("teste"), 0644)
+	os.WriteFile(intentFile, []byte("---\nstatus: APPROVED\n---\nteste"), 0644)
 
 	idx, _ := graph.NewIndex(graph.DefaultCatalog())
 	llm := &mockSpecLLM{output: invalidSpecMD}

@@ -73,6 +73,7 @@ func run(t *testing.T, level plangen.SupervisionLevel) (*plangen.PlanResult, map
 	if err := os.WriteFile(spec, []byte(specBody), 0o644); err != nil {
 		t.Fatal(err)
 	}
+	gravarIntencaoAprovada(t, base)
 	res, err := plangen.NewGenerator(fixedLLM{threeTickets}).Generate(context.Background(), base, spec, level)
 	if err != nil {
 		t.Fatalf("Generate: %v", err)

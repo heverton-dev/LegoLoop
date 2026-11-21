@@ -39,7 +39,10 @@ func TestStudioPlanAPI_Endpoint(t *testing.T) {
 	h := s.Handler()
 
 	specFile := filepath.Join(s.ProjectDir, "2026-11-02_SPEC_WS.md")
-	os.WriteFile(specFile, []byte("# SPEC WS"), 0644)
+	os.WriteFile(specFile, []byte("# SPEC WS\n\n> **Referência da Intenção:** [docs/intents/2026-11-02_INTENT_WS.md](../intents/2026-11-02_INTENT_WS.md)\n"), 0644)
+	intentWS := filepath.Join(s.ProjectDir, "docs", "intents", "2026-11-02_INTENT_WS.md")
+	os.MkdirAll(filepath.Dir(intentWS), 0755)
+	os.WriteFile(intentWS, []byte("---\nid: INTENT-WS\nstatus: APPROVED\n---\n# INTENT WS\n"), 0644)
 
 	reqBody := `{"spec_path":"` + filepath.ToSlash(specFile) + `","supervision_level":"micro"}`
 	rec := do(t, h, http.MethodPost, "/api/plan/generate", reqBody)
@@ -57,5 +60,19 @@ func TestStudioPlanAPI_Endpoint(t *testing.T) {
 	}
 	if res.SupervisionLevel != plangen.SupervisionMicro {
 		t.Errorf("supervision_level inesperado: %s", res.SupervisionLevel)
+	}
+}
+
+// TestStudioPlanAPI_SpecSemIntencaoDevolve422: sem INTENT aprovada, o PLAN não nasce e o erro é do processo (422).
+func TestStudioPlanAPI_SpecSemIntencaoDevolve422(t *testing.T) {
+	s, _ := newServer(t)
+	s.PlanGen = plangen.NewGenerator(&mockStudioPlanLLM{output: "nunca chamado"})
+	specFile := filepath.Join(s.ProjectDir, "2026-11-02_SPEC_SEM_INTENT.md")
+	if err := os.WriteFile(specFile, []byte("# SPEC sem referência à INTENT\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	rec := do(t, s.Handler(), http.MethodPost, "/api/plan/generate", `{"spec_path":"`+filepath.ToSlash(specFile)+`","supervision_level":"micro"}`)
+	if rec.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("SPEC sem INTENT deveria devolver 422, devolveu %d: %s", rec.Code, rec.Body.String())
 	}
 }

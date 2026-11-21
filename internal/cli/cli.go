@@ -72,6 +72,7 @@ Comandos:
   upgrade    <arquivo> [--diagnose|--apply] [--json]  diagnóstica ou valida elevação para Padrão Ouro
   matrix     [--kind K] [--tier T] [--min N] [--json] DESCONTINUADO: use "matriz ver"
   fabricar   "<nome>" [--yes] [--goal T] [--model M] [--dry-run] [--json]  cria um processo novo (skill, DAG e documentos)
+  plano      --spec S --tickets T.json [--raiz D] [--nivel epic] [--data AAAA-MM-DD] [--estrito] [--json]  renderiza PLAN e ROUTE a partir dos Tickets, sem LLM
   rota       --plan P --out ROUTE [--perfil F] [--json]  gera a ROUTE com harness, via, modelo e esforço resolvidos
   homologar  [--pares H|V,...] [--yes] [--non-interactive] [--teto DUR] [--provider] [--corrigir-provider] [--json]  mede a conformidade de cada harness e via
   matriz     gerar|status|vocab|perfil|ver  gera e consulta a matriz de peças (qualidade e perfil de uso)
@@ -86,7 +87,7 @@ Comandos:
   bootstrap       [--vault DIR] [--dry-run] [--json]  orquestra skills, mcp-router e ambiente sem config manual
   stept      [status|set|on|off|scan] [--harness H] [--modo M] [--pausa P] [--json]  alternador de governança STE-PT
   sync-harnesses (--dry-run|--apply) [--json]         conecta harnesses ao legoloop mcp-router
-  mcp-router [--gateway]                     inicia servidor MCP STDIO com Lazy discovery (--gateway: só 4 ferramentas)
+  mcp-router [--gateway]                     inicia servidor MCP STDIO com Lazy discovery (--gateway: só call_mcp_tool)
   mcp-registry (list|refresh)                lista ou indexa os MCPs externos que o router sobe sob demanda
   legopress  [doctor|auditar|criar|editar|atualizar|adequar|preview]  processo industrial de livros técnicos
   video-motion <subcomando> [opções]          processo determinístico de edição e motion vídeo
@@ -116,7 +117,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
-		"swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos,
+		"plano": cmdPlano, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos,
 	}
 	switch name := args[0]; name {
 	case "help", "-h", "--help":

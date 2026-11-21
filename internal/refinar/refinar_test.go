@@ -335,7 +335,9 @@ func testSeguir(t *testing.T) {
 // conferirDiff confere a contagem de linhas de cada arquivo, a amostra limitada e as linhas cortadas.
 func conferirDiff(t *testing.T, diff string, res *refinar.Resultado) {
 	t.Helper()
-	quer := map[string][2]int{"INTENT": {7, 0}, "SPEC": {3, 3}, "PLAN": {1, 1}, "ROUTE": {2, 2}, "DAG": {2, 2}, "skill": {3, 2}}
+	// ROUTE {3, 3}: além das duas linhas da troca, a ROUTE registra o hash do PLAN reescrito. Antes da
+	// correção do plangen esse hash saía zerado e nunca mudava, o que desligava a verificação de integridade.
+	quer := map[string][2]int{"INTENT": {7, 0}, "SPEC": {3, 3}, "PLAN": {1, 1}, "ROUTE": {3, 3}, "DAG": {2, 2}, "skill": {3, 2}}
 	for _, a := range res.Arquivos {
 		if q, ok := quer[a.Tipo]; ok && (a.Mais != q[0] || a.Menos != q[1]) {
 			t.Errorf("%s: +%d -%d; esperava +%d -%d", a.Tipo, a.Mais, a.Menos, q[0], q[1])

@@ -110,6 +110,13 @@ func run(args []string) error {
 	if err != nil {
 		return err
 	}
+	base, err := raizDaRoute(args[0])
+	if err != nil {
+		return err
+	}
+	if err := VerificarCadeia(raw, base); err != nil {
+		return err
+	}
 	out, nome, err := Projetar(raw)
 	if err != nil {
 		return err

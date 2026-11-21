@@ -43,7 +43,8 @@ func TestPlanGenerator_Success(t *testing.T) {
 
 	tempDir := t.TempDir()
 	specFile := filepath.Join(tempDir, "2026-11-02_SPEC_SERVICO.md")
-	os.WriteFile(specFile, []byte("# SPEC Servico"), 0644)
+	os.WriteFile(specFile, []byte(specMinima), 0644)
+	gravarIntencaoAprovada(t, tempDir)
 
 	llm := &mockPlanLLM{output: mockPlanOutput}
 	gen := plangen.NewGenerator(llm)
@@ -107,7 +108,8 @@ func TestPlanGenerator_AutonomousMode(t *testing.T) {
 `
 	tempDir := t.TempDir()
 	specFile := filepath.Join(tempDir, "SPEC.md")
-	os.WriteFile(specFile, []byte("teste"), 0644)
+	os.WriteFile(specFile, []byte(specMinima), 0644)
+	gravarIntencaoAprovada(t, tempDir)
 
 	llm := &mockPlanLLM{output: mockPlanOutput}
 	gen := plangen.NewGenerator(llm)

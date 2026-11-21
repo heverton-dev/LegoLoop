@@ -2,5 +2,168 @@
   "schema_version": "anticorpos.v1",
   "processo": "legoloop-concepcao",
   "globais": [],
-  "dominio": []
+  "dominio": [
+    {
+      "assinatura": "sha256:6ba5c27c050b3b8cb32a5501efdc0c174183ff2a6e745688717c00be084a0f48",
+      "erro": "Espelho Canônico truncado em ** e confiança presa em 10% com o claude",
+      "antidoto": "internal/interview/espelho_campos.go lê o realce antes ou depois dos dois-pontos e as linhas seguintes; testes espelho_formato_test.go com Red provado.",
+      "recorrencias": 1,
+      "pacote": "internal/interview",
+      "causa_raiz": "Os regex aceitavam **Campo**: mas não **Campo:** texto, e liam só a primeira linha de cada campo.",
+      "timestamp": "2026-11-21T13:39:17Z"
+    },
+    {
+      "assinatura": "sha256:75d8205c203343f86b8c62c3eb045dba74e8302c4c4d4dca542dbd7e75351321",
+      "erro": "mcp_search não acha ferramenta com várias palavras e devolve ordem aleatória",
+      "antidoto": "internal/mcp/busca_tokens.go: pontua palavras, exige metade, ordena; testes busca_tokens_test.go com mutação provada.",
+      "recorrencias": 1,
+      "pacote": "internal/mcp",
+      "causa_raiz": "matchQuery exigia a frase inteira colada no texto, e searchExternal percorria um map.",
+      "timestamp": "2026-11-21T13:39:17Z"
+    },
+    {
+      "assinatura": "sha256:2ce32da32c24a211b6fabf6b53659c1a7532f95cc9de0a55f90995018b6cc764",
+      "erro": "has_acceptance_criteria reprova o título canônico Critérios Binários de Aceite",
+      "antidoto": "Regex ampliada em internal/gate/builtins.go; teste aceite_titulo_test.go lê o template e a SPEC da Forja.",
+      "recorrencias": 1,
+      "pacote": "internal/gate",
+      "causa_raiz": "acceptanceRe exigia 'critérios de aceita' e não aceitava a palavra Binários nem 'Aceite'.",
+      "timestamp": "2026-11-21T13:39:17Z"
+    },
+    {
+      "assinatura": "sha256:3686f2efd420a8d8e99f916eaec99eb9db7dc52487904c00a2a3d16ca9c43b45",
+      "erro": "opencode deixa de ser detectado quando só existe ~/.opencode",
+      "antidoto": "layoutsLegados em internal/processo/vinculo.go; TestInventarioPorHarness protege.",
+      "recorrencias": 1,
+      "pacote": "internal/processo",
+      "causa_raiz": "O layout novo (.config/opencode) substituiu o antigo na detecção.",
+      "timestamp": "2026-11-21T13:39:17Z"
+    },
+    {
+      "assinatura": "sha256:afa010fdf38ffa196dae4fff4ef7e418df0f174f7bb648c5562f7a9e25634d96",
+      "erro": "Texto de uso do mcp-router --gateway dizia 4 ferramentas",
+      "antidoto": "internal/cli/cli.go corrigido; usage_gateway_test.go protege.",
+      "recorrencias": 1,
+      "pacote": "internal/cli",
+      "causa_raiz": "O texto não acompanhou o gateway, que expõe só call_mcp_tool.",
+      "timestamp": "2026-11-21T13:39:17Z"
+    },
+    {
+      "assinatura": "sha256:b632096d0466ce69ff06a3db42ec45ebf1272dda2aedeed11faa628f2d601489",
+      "erro": "anticorpos sync \u003cslug\u003e --raiz DIR ignorava --raiz",
+      "antidoto": "parseIntercalado em internal/cli/anticorpos_registrar.go; o subcomando registrar passou a existir.",
+      "recorrencias": 1,
+      "pacote": "internal/cli",
+      "causa_raiz": "O pacote flag para de ler opções na primeira palavra solta.",
+      "timestamp": "2026-11-21T13:39:17Z"
+    },
+    {
+      "assinatura": "sha256:3a31a0623781a421b0ae41c098e09ef3e6ffdf2a1a0c01f57fefbb52d3507d56",
+      "erro": "Roteador MCP ou harness aberto continua com o binário antigo depois do go install",
+      "antidoto": "Reiniciar o roteador e os harnesses depois de go install (AGENTS.md, regra 5); conferir a busca pelo comando e não pelo processo aberto.",
+      "recorrencias": 1,
+      "pacote": "operação",
+      "causa_raiz": "O processo em execução não recarrega o binário; o skill_search mostrou o ranking velho.",
+      "timestamp": "2026-11-21T13:39:17Z"
+    },
+    {
+      "assinatura": "sha256:d10e5cf09fc0d68d61cba3b7da4adc6f2404ffef076c9416ee7362deeb4a9867",
+      "erro": "SPEC que cita o padrão de lacuna no próprio texto reprova o Gate de lacunas",
+      "antidoto": "Escrever o padrão como classe de caracteres: grep -c com colchetes em volta de cada chave.",
+      "recorrencias": 1,
+      "pacote": "docs/specs",
+      "causa_raiz": "O Gate reprova qualquer ocorrência literal do padrão, inclusive dentro de um comando de exemplo.",
+      "timestamp": "2026-11-21T13:39:18Z"
+    },
+    {
+      "assinatura": "sha256:8e11d6fec8ae2351948bc94cfea1a68d8d3bcc6a7de126b1c392d0a8adfc5b63",
+      "erro": "codebase-memory-mcp não resolvia pelo nome no bash",
+      "antidoto": "Atalhos codebase-memory-mcp e .cmd em ~/.local/bin; a Forja da E05 repete a criação do atalho.",
+      "recorrencias": 1,
+      "pacote": "operação",
+      "causa_raiz": "O binário fica em ~/tools/codebase-memory-mcp, fora do PATH.",
+      "timestamp": "2026-11-21T13:39:18Z"
+    },
+    {
+      "assinatura": "sha256:3ec523f0b6eda237aa0d7a0b4a79b1b4600f6f786f0db8a78f9df9704eb0b33c",
+      "erro": "Python no Windows grava CRLF e o gofmt -l lista o arquivo",
+      "antidoto": "Gravar com newline LF ou rodar gofmt -w no arquivo; conferir gofmt -l antes de fechar o ticket.",
+      "recorrencias": 1,
+      "pacote": "operação",
+      "causa_raiz": "open() em modo texto converte quebra de linha no Windows.",
+      "timestamp": "2026-11-21T13:39:18Z"
+    },
+    {
+      "assinatura": "sha256:b389171a3ac019cf765d216605533b7fce34d7113df69a2a938f1989e8a258b9",
+      "erro": "Barras invertidas e quebras de linha de literais Go corrompidas no transporte de heredoc",
+      "antidoto": "Gravar arquivos Go com a ferramenta de escrita, ou montar a barra com chr(92) em Python.",
+      "recorrencias": 1,
+      "pacote": "operação",
+      "causa_raiz": "O transporte consome um nível de barra invertida em strings de comandos.",
+      "timestamp": "2026-11-21T13:39:18Z"
+    },
+    {
+      "assinatura": "sha256:940e2ca880627e51effecd16a5fabbaff5ce2065142f2c9e1fde129dd4ddafda",
+      "erro": "ROUTE nasce com a assinatura do PLAN zerada na primeira geração",
+      "antidoto": "materialize grava o PLAN antes de montar a ROUTE; testes assinatura_plano_test.go provam a assinatura real e a detecção de adulteração",
+      "recorrencias": 1,
+      "pacote": "internal/plangen",
+      "causa_raiz": "materialize montava a ROUTE antes de gravar o PLAN, e a assinatura zerada é ignorada na verificação, o que deixava um PLAN adulterado passar",
+      "timestamp": "2026-11-21T13:55:46Z"
+    },
+    {
+      "assinatura": "sha256:9ff0a90cbd8a422e7b2cc0f48019fa6e0c8f3e7ccccc999f5a27389ca656081f",
+      "erro": "Não havia comando para renderizar PLAN e ROUTE a partir de uma lista de Tickets",
+      "antidoto": "legoloop plano --spec S --tickets T.json [--estrito]; testes plano_test.go; a lista de Tickets fica versionada em docs/plans",
+      "recorrencias": 1,
+      "pacote": "internal/cli",
+      "causa_raiz": "Render existia só como API Go e o caminho da CLI exigia LLM, então a geração dependia de um programa descartável",
+      "timestamp": "2026-11-21T13:55:46Z"
+    },
+    {
+      "assinatura": "sha256:37386c76fe5134b86a5e9b58813efd1aa5cc3cf35a6e6fcf232578dbd9dfb5d5",
+      "erro": "Teste do legoloop plano falhava por geração não determinística",
+      "antidoto": "Mesma correção do materialize; plano_test.go confere que duas execuções geram os mesmos bytes",
+      "recorrencias": 1,
+      "pacote": "internal/cli",
+      "causa_raiz": "A ROUTE era gerada com o PLAN ausente do disco, então a segunda execução produzia bytes diferentes",
+      "timestamp": "2026-11-21T13:55:46Z"
+    },
+    {
+      "assinatura": "sha256:3ae8f038b07d91ab8a49ba6e1f22f61e4f489eeacda70107956f60a0146fb305",
+      "erro": "TestRefinar esperava ROUTE +2 -2 e passou a dar +3 -3 depois da correção da assinatura",
+      "antidoto": "Expectativa ROUTE {3, 3} com comentário no teste; a mudança é consequência correta e não regressão",
+      "recorrencias": 1,
+      "pacote": "internal/refinar",
+      "causa_raiz": "O teste codificava o hash do PLAN zerado, que nunca mudava; com a assinatura real, reescrever o PLAN muda o hash na ROUTE",
+      "timestamp": "2026-11-21T13:59:52Z"
+    },
+    {
+      "assinatura": "sha256:2ec34291e87fa1b8a1e2eff3a004e37b8803dc894c7a5d23bd1b199ff2e1db62",
+      "erro": "SPEC, PLAN e DAG eram gerados sem INTENT aprovada, então a cadeia da concepção era só convenção",
+      "antidoto": "Pacote internal/upstream (VerificarSpec, IntencaoAprovada, Recusa) ligado a plano, specgen, plangen.Generate, route2dag e Studio; exit 2 na CLI e HTTP 422 no Studio; testes com Red provado",
+      "recorrencias": 1,
+      "pacote": "internal/upstream",
+      "causa_raiz": "plangen.Render, specgen e route2dag não conferiam o upstream; legoloop plano gerou ROUTE sem INTENT e saiu com 0",
+      "timestamp": "2026-11-21T14:35:07Z"
+    },
+    {
+      "assinatura": "sha256:9be662b9afc67a2dc4bb61d298502d42a90863872ba4e88b6406e39b6b98e077",
+      "erro": "Studio devolvia 500 para recusa de regra do processo",
+      "antidoto": "upstream.Recusa(err) mapeia a recusa da trava para 422; testes Devolve422 em spec_test.go e plan_test.go",
+      "recorrencias": 1,
+      "pacote": "internal/studio",
+      "causa_raiz": "Os handlers tratavam todo erro do gerador como falha do servidor",
+      "timestamp": "2026-11-21T14:35:07Z"
+    },
+    {
+      "assinatura": "sha256:743a5df489742305a0dd74a292f3a1a37284243456c917e8fd41f3241dc5a4ce",
+      "erro": "Fixtures de teste geravam PLAN a partir de SPEC sem INTENT",
+      "antidoto": "Helper gravarIntencaoAprovada e constante specMinima; toda fixture que gera PLAN, SPEC ou DAG traz a INTENT aprovada",
+      "recorrencias": 1,
+      "pacote": "internal/plangen",
+      "causa_raiz": "Os testes antigos escreviam SPEC mínima, sem Referência da Intenção nem INTENT aprovada",
+      "timestamp": "2026-11-21T14:35:07Z"
+    }
+  ]
 }

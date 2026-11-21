@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"legoloop/internal/interview"
+	"legoloop/internal/upstream"
 )
 
 // SupervisionLevel define o nível de intervenção humana.
@@ -97,6 +98,9 @@ FORMATO ESTRUTURADO DE CADA TICKET:
 func (g *Generator) Generate(ctx context.Context, baseDir, specPath string, level SupervisionLevel) (*PlanResult, error) {
 	if level == "" {
 		level = SupervisionEpic
+	}
+	if err := upstream.VerificarSpec(baseDir, specPath); err != nil {
+		return nil, err
 	}
 	specBytes, err := os.ReadFile(specPath)
 	if err != nil {
@@ -201,12 +205,13 @@ func materialize(baseDir, specPath, specText string, level SupervisionLevel, tic
 	if err != nil {
 		return nil, fmt.Errorf("falha ao construir route.json: %w", err)
 	}
+	// O PLAN é gravado antes da ROUTE: a ROUTE assina o PLAN e, sem o arquivo no disco, a assinatura sairia zerada.
+	if err := os.WriteFile(ps.planPath, []byte(renderPlan(meta, nodes)), 0644); err != nil {
+		return nil, fmt.Errorf("falha ao gravar plan.md: %w", err)
+	}
 	routeJSON, err := newRouteDoc(meta, nodes).marshal()
 	if err != nil {
 		return nil, fmt.Errorf("falha ao construir route.json: %w", err)
-	}
-	if err := os.WriteFile(ps.planPath, []byte(renderPlan(meta, nodes)), 0644); err != nil {
-		return nil, fmt.Errorf("falha ao gravar plan.md: %w", err)
 	}
 	if err := os.WriteFile(ps.routePath, routeJSON, 0644); err != nil {
 		return nil, fmt.Errorf("falha ao gravar route.json: %w", err)

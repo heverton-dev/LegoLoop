@@ -105,7 +105,10 @@ legoloop instalar-skills                          # skills nativas no cofre; nos
 legoloop skills-custo                              # tokens de frontmatter que cada harness carrega por turno
 legoloop skills-migrar (--dry-run|--apply)          # tira as skills eager de todos os harnesses (com backup) e deixa só o índice lazy
 # AGENTS.md é a versão enxuta (lazy, ~5,6 KB); o texto integral das leis está em docs/governanca/AGENTS_COMPLETO.md
-# Demanda em curso: Distribuição e Forja do LegoLoop (INTENT aprovada em docs/intents/INTENT.md)
+# Cadeia amarrada: plano, specgen, route2dag e Studio recusam sem INTENT aprovada (internal/upstream)
+legoloop plano --spec S --tickets T.json [--estrito]        # renderiza PLAN e ROUTE a partir dos Tickets, sem LLM (a ROUTE assina o PLAN gravado)
+legoloop anticorpos registrar <slug> --pacote P --erro E --causa C --antidoto A   # registra um achado como anticorpo e regenera o ANTICORPOS.md
+# Demanda em curso: Distribuição e Forja do LegoLoop (SPEC aprovada, PLAN de 40 Tickets, ROUTE e DAG em docs/specs, docs/plans, docs/routes e docs/dags) (INTENT aprovada em docs/intents/INTENT.md)
 claude-conectores                                  # abre o Claude Code com os conectores claude.ai ligados (padrão: desligados, -3,5k tokens por turno)
 claude-completo                                    # abre o Claude Code com todas as ferramentas e conectores (padrão enxuto: ferramentas pesadas negadas, -12k tokens por turno)
 claude-gateway [--sem-memoria]                     # perfil gateway: 1 ferramenta (call_mcp_tool) com shell, arquivos, skills e swarm sob demanda; ~1,5k tokens por turno

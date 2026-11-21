@@ -56,7 +56,7 @@ go test ./...
 	h := s.Handler()
 
 	intentFile := filepath.Join(s.ProjectDir, "2026-11-02_INTENT_TESTE.md")
-	os.WriteFile(intentFile, []byte("# INTENT Teste"), 0644)
+	os.WriteFile(intentFile, []byte("---\nid: INTENT-TESTE\nstatus: APPROVED\n---\n# INTENT Teste"), 0644)
 
 	reqBody := `{"intent_path":"` + filepath.ToSlash(intentFile) + `"}`
 	rec := do(t, h, http.MethodPost, "/api/spec/generate", reqBody)
@@ -71,5 +71,19 @@ go test ./...
 
 	if len(res.Criteria) != 1 || res.Criteria[0] != "AC-E01.1" {
 		t.Errorf("critérios inesperados: %v", res.Criteria)
+	}
+}
+
+// TestStudioSpecAPI_IntencaoNaoAprovadaDevolve422: a trava da cadeia é uma regra do processo, não uma falha do servidor.
+func TestStudioSpecAPI_IntencaoNaoAprovadaDevolve422(t *testing.T) {
+	s, _ := newServer(t)
+	s.SpecGen = specgen.NewGenerator(&mockStudioSpecLLM{output: "# nunca chamado"}, s.Index)
+	intentFile := filepath.Join(s.ProjectDir, "2026-11-02_INTENT_REVISAO.md")
+	if err := os.WriteFile(intentFile, []byte("---\nid: INTENT-R\nstatus: UNDER_REVIEW\n---\n# INTENT\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	rec := do(t, s.Handler(), http.MethodPost, "/api/spec/generate", `{"intent_path":"`+filepath.ToSlash(intentFile)+`"}`)
+	if rec.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("INTENT em revisão deveria devolver 422, devolveu %d: %s", rec.Code, rec.Body.String())
 	}
 }

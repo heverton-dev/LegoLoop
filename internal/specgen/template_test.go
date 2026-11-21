@@ -60,7 +60,9 @@ func setup(t *testing.T, intentBody string) (string, string) {
 		t.Fatal(err)
 	}
 	intent := filepath.Join(dir, "2026-11-02_INTENT_TESTES.md")
-	if err := os.WriteFile(intent, []byte(intentBody), 0o644); err != nil {
+	// A SPEC só nasce de INTENT aprovada: a fixture traz o cabeçalho do Stop-Gate 01.
+	aprovada := "---\nid: INTENT-TESTES\nstatus: APPROVED\n---\n" + intentBody
+	if err := os.WriteFile(intent, []byte(aprovada), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	return base, intent

@@ -11,11 +11,12 @@ import (
 	"legoloop/internal/caminhos"
 )
 
-const anticorposUso = `uso: legoloop anticorpos <sync|status> [slug] [--raiz DIR] [--json]
+const anticorposUso = `uso: legoloop anticorpos <sync|status|registrar> [slug] [--raiz DIR] [--json]
 
 Comandos:
-  sync    Sincroniza e projeta o arquivo ANTICORPOS.md a partir de anticorpos.json.
-  status  Exibe o resumo executivo de imunidade e anticorpos cadastrados.
+  sync       Sincroniza e projeta o arquivo ANTICORPOS.md a partir de anticorpos.json.
+  status     Exibe o resumo executivo de imunidade e anticorpos cadastrados.
+  registrar  Grava um anticorpo: registrar <slug> --pacote P --erro E [--causa C] [--antidoto A] [--escopo dominio|global]
 `
 
 func cmdAnticorpos(_ context.Context, args []string, d Deps) int {
@@ -31,14 +32,23 @@ func cmdAnticorpos(_ context.Context, args []string, d Deps) int {
 	var asJSON bool
 	fs.StringVar(&raiz, "raiz", ".", "diretório raiz para busca ou sincronização")
 	fs.BoolVar(&asJSON, "json", false, "emite a resposta em formato JSON")
-	if err := fs.Parse(resto); err != nil {
+	var reg dadosAnticorpo
+	fs.StringVar(&reg.pacote, "pacote", "", "pacote ou área afetada (registrar)")
+	fs.StringVar(&reg.erro, "erro", "", "assinatura do erro (registrar)")
+	fs.StringVar(&reg.causa, "causa", "", "causa raiz (registrar)")
+	fs.StringVar(&reg.antidoto, "antidoto", "", "correção aplicada (registrar)")
+	fs.StringVar(&reg.escopo, "escopo", "dominio", "dominio ou global (registrar)")
+	posicionais, err := parseIntercalado(fs, resto)
+	if err != nil {
 		return 2
 	}
 	switch subcomando {
 	case "sync":
-		return executarSync(fs.Args(), raiz, d)
+		return executarSync(posicionais, raiz, d)
 	case "status":
-		return executarStatus(fs.Args(), raiz, d)
+		return executarStatus(posicionais, raiz, d)
+	case "registrar":
+		return executarRegistrar(posicionais, raiz, reg, d)
 	default:
 		fmt.Fprintf(d.Stderr, "subcomando desconhecido: %s\n\n%s", subcomando, anticorposUso)
 		return 2

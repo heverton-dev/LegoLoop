@@ -7,6 +7,7 @@ import (
 	"legoloop/internal/interview"
 	"legoloop/internal/provider"
 	"legoloop/internal/specgen"
+	"legoloop/internal/upstream"
 )
 
 type specGenerateReq struct {
@@ -41,7 +42,11 @@ func (s *Server) handleSpecGenerate(w http.ResponseWriter, r *http.Request) {
 	gen := s.getSpecGenerator()
 	res, err := gen.Generate(r.Context(), s.ProjectDir, req.IntentPath)
 	if err != nil {
-		http.Error(w, "falha ao gerar especificação: "+err.Error(), http.StatusInternalServerError)
+		status := http.StatusInternalServerError
+		if upstream.Recusa(err) {
+			status = http.StatusUnprocessableEntity
+		}
+		http.Error(w, "falha ao gerar especificação: "+err.Error(), status)
 		return
 	}
 

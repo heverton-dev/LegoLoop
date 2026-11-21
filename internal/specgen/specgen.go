@@ -13,6 +13,7 @@ import (
 	"legoloop/docs/templates"
 	"legoloop/internal/graph"
 	"legoloop/internal/interview"
+	"legoloop/internal/upstream"
 )
 
 // Generator orquestra a criação determinística de especificações técnicas formais.
@@ -76,6 +77,9 @@ func SystemPrompt(today, intentRef string) string {
 var ErrContract = errors.New("especificação gerada violou o contrato")
 
 func (g *Generator) Generate(ctx context.Context, baseDir, intentPath string) (*SpecResult, error) {
+	if err := upstream.IntencaoAprovada(intentPath); err != nil {
+		return nil, err
+	}
 	intentContent, err := os.ReadFile(intentPath)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao ler artefato de intenção: %w", err)

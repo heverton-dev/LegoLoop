@@ -23,7 +23,7 @@ const maxGateFileBytes = 16 << 20
 
 var (
 	checklistRe  = regexp.MustCompile(`(?m)^\s*[-*]\s+\[[ xX]\]\s+\S`)
-	acceptanceRe = regexp.MustCompile(`(?im)^#{1,6}\s+.*(crit[ée]rios?\s+de\s+aceita|acceptance\s+criteria)`)
+	acceptanceRe = regexp.MustCompile(`(?im)^#{1,6}\s+.*(crit[ée]rios?\s+(bin[áa]rios\s+)?de\s+aceit|acceptance\s+criteria)`)
 )
 
 type builtin struct {

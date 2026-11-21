@@ -7,6 +7,7 @@ import (
 	"legoloop/internal/interview"
 	"legoloop/internal/plangen"
 	"legoloop/internal/provider"
+	"legoloop/internal/upstream"
 )
 
 type planGenerateReq struct {
@@ -42,7 +43,11 @@ func (s *Server) handlePlanGenerate(w http.ResponseWriter, r *http.Request) {
 	gen := s.getPlanGenerator()
 	res, err := gen.Generate(r.Context(), s.ProjectDir, req.SpecPath, req.SupervisionLevel)
 	if err != nil {
-		http.Error(w, "falha ao gerar plano e rota: "+err.Error(), http.StatusInternalServerError)
+		status := http.StatusInternalServerError
+		if upstream.Recusa(err) {
+			status = http.StatusUnprocessableEntity
+		}
+		http.Error(w, "falha ao gerar plano e rota: "+err.Error(), status)
 		return
 	}
 
