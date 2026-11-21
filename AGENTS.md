@@ -5,7 +5,7 @@
 ## 1. Leis Invioláveis
 
 1. **Zero Stubs:** nunca crie função vazia, `TODO` ou mock simulado. O código entregue é real, testado e funcional.
-2. **Graph-First (Lei #14):** consulte o grafo (`codebase-memory-mcp`: `search_code`, `get_code_snippet`, `trace_path`) antes de ler arquivos longos. O grafo mora em `.codebase-memory/` e nunca se edita à mão. Reindexe ao fim de cada demanda: `codebase-memory-mcp cli index_repository '{"repo_path":"<raiz>"}'`.
+2. **Graph-First (Lei #14):** consulte o grafo (`codebase-memory-mcp`: `search_code`, `get_code_snippet`, `trace_path`) antes de ler arquivos longos. O grafo mora em `.codebase-memory/` e nunca se edita à mão. Via agente lazy: `mcp_search` ("trace path", "search graph") e `call_mcp_tool` com `server: "codebase-memory-mcp"`; o binário fica em `~/tools/codebase-memory-mcp/`. Reindexe ao fim de cada demanda: `codebase-memory-mcp cli index_repository '{"repo_path":"<raiz>"}'`.
 3. **Economia de tokens:** thinking telegráfico; saída normal ≤ 300 tokens; sem polling de tarefas em background; não repita artefato já salvo em disco.
 4. **Orchestrix Cirúrgica por Bloco & Banimento de Subagentes:**
    * Nunca carregue ferramentas ou MCPs desnecessários para a tarefa atual.

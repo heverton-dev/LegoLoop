@@ -310,7 +310,7 @@ func (v *localVault) searchExternal(q string) []ToolMatch {
 				out = append(out, ToolMatch{Server: srv, Name: t.Name, Description: t.Description})
 			}
 		}
-		if len(tools) == 0 && q != "" && strings.Contains(strings.ToLower(srv), q) {
+		if len(tools) == 0 && q != "" && matchQuery(q, srv, "", "") {
 			out = append(out, ToolMatch{Server: srv, Name: "*", Description: "servidor registrado, ferramentas nao indexadas: rode 'legoloop mcp-registry refresh'"})
 		}
 	}
@@ -334,15 +334,12 @@ func (v *localVault) Search(query string) []ToolMatch {
 			}
 		}
 	}
+	ordenarMatches(q, out)
 	return out
 }
 
 func matchQuery(q, srv, name, desc string) bool {
-	if q == "" {
-		return true
-	}
-	hay := strings.ToLower(srv + " " + name + " " + desc)
-	return strings.Contains(hay, q)
+	return pontuarBusca(q, srv+" "+name+" "+desc) >= minimoDePontos(q)
 }
 
 type localRunner struct {

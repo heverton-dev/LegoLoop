@@ -116,3 +116,18 @@ Regra do usuário: todo harness do SO usa as técnicas desenvolvidas.
 - Busca com 440 skills continua precisa (legoloop-fechar, tech-lead, caveman, aidd-tdd no topo).
 - Resíduos fora do controle: skills nativas do agy (15-16), plugins do grok (`installed-plugins/vercel-plugin` 30, marketplace-cache, bundled 22) e comandos do opencode (46); não verificado o custo real de cada harness no prompt.
 - Falhas pré-existentes e alheias: `TestLegoPressCLI_Auditar`, `TestProcessosCincoPorCinco`.
+
+
+## Rodada 9: o grafo semântico (`codebase-memory-mcp`) e a economia de tokens
+
+Método: três perguntas de código no próprio repositório. Para cada uma, comparei o texto que o agente leria com `git grep` e leitura de arquivo contra a resposta do grafo (`codebase-memory-mcp cli ...`). Os tokens são reais: soma de `input_tokens`, `cache_creation_input_tokens` e `cache_read_input_tokens` de uma chamada `claude -p --model haiku`, menos a linha de base (12.688 tokens do prompt vazio).
+
+| Pergunta | Sem o grafo | Com o grafo | Diferença |
+| :--- | :--- | :--- | :--- |
+| Quem chama `garantirIndice` | `git grep`: 181; `git grep` e ler os arquivos achados: 8.587 | `trace_path`: 148 | −18% contra o `grep`; −98% contra ler os arquivos |
+| Ler a função `aplicarMigracao` | arquivo inteiro: 3.382 | `get_code_snippet`: 586 | −83% |
+| Estrutura de `internal/mcp/router.go` | arquivo inteiro: 7.595 | `get_file_outline`: 4.215 | −44% |
+
+Leitura honesta: o ganho é grande contra a leitura de arquivos inteiros e pequeno contra um `git grep` simples. O grafo não substitui o `Grep` para texto exato, e o ganho de uma pergunta só vale se o agente leria o arquivo todo. Amostra de 3 perguntas, 1 execução cada: o número mostra a ordem de grandeza e não uma média.
+
+Correções da rodada: o `mcp_search` exigia a frase inteira colada no texto e devolvia ordem aleatória (`internal/mcp/busca_tokens.go`); o binário agora responde pelo PATH (`~/.local/bin/codebase-memory-mcp` e `.cmd`, que apontam para `~/tools/codebase-memory-mcp/`); o grafo foi reindexado (48.234 nós e 106.059 arestas).
