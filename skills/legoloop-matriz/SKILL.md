@@ -62,6 +62,29 @@ Esta skill conduz a interação no chat e o gate humano. **Toda a lógica reside
 
 ## 3. Comandos de Verificação & Testes de Terminal
 
+- `go test -count=1 ./internal/matriz/...` (garante exit_code == 0)
 - `legoloop matriz status`
 - `legoloop matriz ver --tier ouro`
 - `legoloop matriz vocab listar`
+
+---
+
+## 4. Contratos de Dados & Schema Formal
+
+```json
+{
+  "$schema": "https://legoloop.dev/schemas/matrix.v1.json",
+  "peca": "legoloop-matriz",
+  "gate": "exit_code == 0",
+  "consumes": "Artifact:Vault",
+  "produces": "Artifact:Matrix",
+  "rating_target": 0.85
+}
+```
+
+---
+
+## 5. Padrão de Qualidade & Proveniência Canônica
+
+- **Padrão de Qualidade:** Referência canônica Addy Osmani e Matt Pocock (ECC).
+- **Rigor de Engenharia:** Contratos formais tipados, zero stubs e conformidade determinística.

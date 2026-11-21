@@ -1,0 +1,90 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-matriz",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-matriz",
+      "comandos_cli": [
+        "legoloop matriz",
+        "/legoloop-matriz"
+      ],
+      "artefatos_ativos": [],
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-matriz",
+    "etapas": [
+      "status",
+      "gerar",
+      "vocab",
+      "perfil",
+      "ver"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "status",
+      "palavras_chave": [
+        "status",
+        "defasagem",
+        "verificar status",
+        "analisar pecas"
+      ],
+      "slash_command": "/legoloop-matriz-status",
+      "flag_cli": "--etapa status"
+    },
+    {
+      "id": "gerar",
+      "palavras_chave": [
+        "gerar",
+        "geracao",
+        "criar matriz",
+        "recalcular matriz"
+      ],
+      "slash_command": "/legoloop-matriz-gerar",
+      "flag_cli": "--etapa gerar"
+    },
+    {
+      "id": "vocab",
+      "palavras_chave": [
+        "vocab",
+        "vocabulario",
+        "termos",
+        "dicionario",
+        "aprovar termo"
+      ],
+      "slash_command": "/legoloop-matriz-vocab",
+      "flag_cli": "--etapa vocab"
+    },
+    {
+      "id": "perfil",
+      "palavras_chave": [
+        "perfil",
+        "definir perfil",
+        "confirmar perfil",
+        "natureza",
+        "caso de uso"
+      ],
+      "slash_command": "/legoloop-matriz-perfil",
+      "flag_cli": "--etapa perfil"
+    },
+    {
+      "id": "ver",
+      "palavras_chave": [
+        "ver",
+        "consultar",
+        "listar matriz",
+        "tier ouro",
+        "filtro"
+      ],
+      "slash_command": "/legoloop-matriz-ver",
+      "flag_cli": "--etapa ver"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

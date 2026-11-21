@@ -1,8 +1,9 @@
 // =============================================================================
-// TEMPLATE TYPST CORPORATIVO — ESTILO EDITORIAL MINIMALISTA COM COLUNA DE ANOTAÇÕES
-// Direção de arte: Capa branca padronizada, tipografia clássica,
-// coluna lateral direita com linhas pautadas de caderno para anotações do leitor,
-// cabeçalho discreto em linha única e paleta Google Suavizada.
+// TEMPLATE_BOOK.typst — PADRÃO EDITORIAL STRIPE PRESS / LEGOPRESS (170x240mm)
+// Direção de arte: Capa branca padronizada com detalhe arquitetural Google,
+// ilustração vetorial modular em SVG transparente, miolo arejado sem margem de
+// pauta espremida, tipografia Georgia no texto, JetBrains Mono no código e
+// cards semânticos com borda colorida na paleta Google Suavizada.
 // =============================================================================
 
 #let cor-fundo    = rgb("#ffffff")                                    // Branco puro limpo
@@ -11,11 +12,46 @@
 #let cor-texto    = rgb("#292524")                                    // Grafite quente stone
 #let cor-suave    = rgb("#64748b")                                    // Cinza pedra suave
 #let cor-linha    = rgb("#e2e8f0")                                    // Linha divisória sutil
-#let cor-accent   = rgb("#2563eb") // Azul Cobalto Google Suave
+#let cor-accent   = rgb("#2563eb") // Cor da obra (Google Cobalto default)
 #let cor-accent2  = cor-accent.darken(25%)                            // Tom profundo da cor da obra
+
+// Paleta Semântica Oficial Google Suavizada
+#let cor-info     = rgb("#2563eb")                                    // Azul Cobalto Google
 #let cor-alerta   = rgb("#d97706")                                    // Âmbar Google Dourado
-#let cor-ok       = rgb("#16a34a")                                    // Verde Esmeralda Google
-#let cor-erro     = rgb("#dc2626")                                    // Carmesim Google
+#let cor-perigo   = rgb("#dc2626")                                    // Carmesim Google
+#let cor-erro     = cor-perigo                                        // Alias canônico para cor de erro
+#let cor-sucesso  = rgb("#16a34a")                                    // Verde Esmeralda Google
+#let cor-teoria   = rgb("#7c3aed")                                    // Violeta DeepMind
+
+// Helpers de Nós de Diagramas
+#let no(titulo, sub: "") = box(stroke: 0.5pt + cor-linha, inset: 5pt, radius: 3pt, fill: white)[#text(weight: "bold", size: 8pt, fill: cor-tinta)[#titulo]#if sub != "" [ \ #text(size: 7pt, fill: cor-suave)[#sub] ]]
+
+// Componente Canônico Esteira de Processo / Pipeline
+#let esteira(estagios, gates: ()) = {
+  v(1em)
+  block(width: 100%, stroke: 0.5pt + cor-linha, inset: 10pt, radius: 4pt, fill: rgb("#F8FAFC"))[
+    #text(weight: "bold", size: 8.5pt, fill: cor-tinta, font: ("Segoe UI", "Arial"))[ESTEIRA CANÔNICA DE PROCESSO]
+    #v(0.5em)
+    #grid(
+      columns: (1fr,) * calc.min(estagios.len(), 4),
+      gutter: 8pt,
+      ..estagios.map(item => {
+        let tit = if type(item) == array and item.len() > 0 { item.at(0) } else { str(item) }
+        let sub = if type(item) == array and item.len() > 1 { item.at(1) } else { "" }
+        box(width: 100%, stroke: 0.5pt + rgb("#CBD5E1"), inset: 6pt, radius: 3pt, fill: white)[
+          #text(weight: "bold", size: 8pt, fill: cor-tinta, font: ("Segoe UI", "Arial"))[#tit]
+          #if sub != "" [ \ #text(size: 7pt, fill: cor-suave, font: ("Segoe UI", "Arial"))[#sub] ]
+        ]
+      })
+    )
+    #if gates.len() > 0 [
+      #v(0.4em)
+      #text(size: 7.2pt, fill: cor-accent, font: ("Segoe UI", "Arial"), weight: "bold")[Gates Binários: ]
+      #text(size: 7.2pt, fill: cor-suave, font: ("Segoe UI", "Arial"))[#gates.join(" · ")]
+    ]
+  ]
+  v(1em)
+}
 
 #set document(
   title: [LegoLoop: A Revolução da IA Modular em Peças Simples],
@@ -29,7 +65,7 @@
   margin: (top: 2.0cm, bottom: 2.0cm, left: 1.8cm, right: 1.8cm),
 )
 
-// Tipografia: Georgia clássica no miolo com entrelinha arejada 1.5
+// Tipografia: Georgia clássica no miolo com entrelinha arejada
 #set text(
   font: ("Georgia", "Segoe UI", "Calibri"),
   size: 10.3pt,
@@ -39,18 +75,16 @@
   hyphenate: true,
 )
 
-// Entrelinha arejada 1.45 a 1.5
 #set par(justify: true, leading: 1.05em, spacing: 1.35em)
 #set smartquote(enabled: false)
 
 // ---------------------------------------------------------------------------
-// Blocos Utilitários de Destaque (Design Clean e Discreto)
+// Painéis Semânticos Oficiais (Borda Lateral Google e Fundo Confortável)
 // ---------------------------------------------------------------------------
 
-// Painel com cantos arredondados, fundo sutil e barra lateral limpa
-#let painel(titulo, corpo, cor: cor-accent) = block(
+#let painel(titulo, corpo, cor: cor-accent, bg: rgb("#f8fafc")) = block(
   width: 100%, breakable: false, above: 16pt, below: 16pt,
-  fill: rgb("#f8fafc"), radius: 6pt,
+  fill: bg, radius: 6pt,
   stroke: (left: 3.5pt + cor, rest: 0.6pt + cor-linha),
   inset: (x: 14pt, y: 12pt),
 )[
@@ -60,6 +94,12 @@
   #set par(leading: 0.9em, spacing: 1em)
   #corpo
 ]
+
+#let painel-info(titulo, corpo)    = painel(titulo, corpo, cor: cor-info, bg: rgb("#f8fafc"))
+#let painel-alerta(titulo, corpo)  = painel(titulo, corpo, cor: cor-alerta, bg: rgb("#fffbeb"))
+#let painel-perigo(titulo, corpo)  = painel(titulo, corpo, cor: cor-perigo, bg: rgb("#fef2f2"))
+#let painel-sucesso(titulo, corpo) = painel(titulo, corpo, cor: cor-sucesso, bg: rgb("#f0fdf4"))
+#let painel-teoria(titulo, corpo)  = painel(titulo, corpo, cor: cor-teoria, bg: rgb("#faf5ff"))
 
 // Frase de Impacto com barra lateral limpa
 #let frase-destaque(corpo, cor: cor-accent) = block(
@@ -77,27 +117,6 @@
   inset: (x: 5pt, y: 2.5pt), radius: 3pt, outset: (y: 1.5pt),
 )[#text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: cor.darken(15%))[#txt]]
 
-#let no(titulo, sub: none, cor: cor-tinta) = block(
-  width: 100%, fill: cor, radius: 4pt, inset: (x: 4pt, y: 7pt),
-)[
-  #align(center)[
-    #text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: white, hyphenate: false)[#titulo]
-    #if sub != none [ #linebreak() #text(font: ("Segoe UI", "Arial"), size: 6.6pt, fill: rgb("#cbd5e1"), hyphenate: false)[#sub] ]
-  ]
-]
-
-#let no-claro(titulo, sub: none, cor: cor-accent) = block(
-  width: 100%, fill: cor.lighten(92%), radius: 4pt,
-  stroke: 0.6pt + cor.lighten(40%), inset: (x: 4pt, y: 7pt),
-)[
-  #align(center)[
-    #text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: cor.darken(25%), hyphenate: false)[#titulo]
-    #if sub != none [ #linebreak() #text(font: ("Segoe UI", "Arial"), size: 6.6pt, fill: cor-suave, hyphenate: false)[#sub] ]
-  ]
-]
-
-#let seta = align(horizon + center)[#text(size: 11pt, fill: cor-accent)[#sym.arrow.r]]
-
 #let ficha(..pares) = block(width: 100%, above: 12pt, below: 14pt)[
   #table(
     columns: (auto, 1fr),
@@ -112,23 +131,61 @@
 ]
 
 // ---------------------------------------------------------------------------
-// Títulos de Seção — APENAS TEXTO LIMPO (Sem estilo botão, sem blocos escuros)
+// Títulos de Seção — APENAS TEXTO LIMPO
 // ---------------------------------------------------------------------------
 
 #set heading(numbering: none)
 #show heading: set text(font: ("Segoe UI", "Arial"))
 
-// Títulos de Seção — Quebra de página APENAS em Nível 1 (Partes)
+// Contador de Partes para Rotação Harmônica dos Blocos LEGO
+#let parte-counter = counter("contador-partes")
+
+// Títulos Nível 1 (Partes) — PÁGINA EXCLUSIVA DEDICADA COM TIJOLO LEGO 3D AUTÊNTICO
 #show heading.where(level: 1): it => {
-  pagebreak(weak: true)
-  block(width: 100%, above: 0pt, below: 22pt)[
-    #text(size: 19pt, weight: "black", fill: cor-tinta)[#it.body]
-    #v(6pt)
-    #line(length: 100%, stroke: 1.5pt + cor-linha)
-  ]
+  let is-part = repr(it.body).contains("Parte") or repr(it.body).contains("PARTE") or repr(it.body).contains("Part")
+  if is-part {
+    parte-counter.step()
+    context {
+      let p-num = parte-counter.get().first()
+      let svg-path = if p-num == 1 { "ativos/lego_brick_part1.svg" }
+        else if p-num == 2 { "ativos/lego_brick_part2.svg" }
+        else if p-num == 3 { "ativos/lego_brick_part3.svg" }
+        else { "ativos/lego_brick_part4.svg" }
+
+      let accent-color = if p-num == 1 { cor-sucesso }
+        else if p-num == 2 { cor-info }
+        else if p-num == 3 { cor-alerta }
+        else { cor-teoria }
+
+      pagebreak(weak: true)
+      align(center + horizon)[
+        #block(width: 7.2cm)[
+          #image(svg-path, width: 100%)
+        ]
+        #v(22pt)
+        #text(
+          font: ("Segoe UI", "Georgia", "Arial"),
+          size: 20pt,
+          weight: "bold",
+          fill: cor-tinta,
+          tracking: 0.2pt,
+        )[#it.body]
+        #v(14pt)
+        #line(length: 3.5cm, stroke: 1.5pt + accent-color)
+      ]
+      pagebreak(weak: true)
+    }
+  } else {
+    pagebreak(weak: true)
+    block(width: 100%, above: 0pt, below: 22pt)[
+      #text(size: 19pt, weight: "black", fill: cor-tinta)[#it.body]
+      #v(6pt)
+      #line(length: 100%, stroke: 1.5pt + cor-linha)
+    ]
+  }
 }
 
-// Nível 2 (Capítulos e Receitas) é TUDO CORRIDO, sem quebra de página
+// Nível 2 (Capítulos e Receitas) — Corrido com linha discreta
 #show heading.where(level: 2): it => block(above: 20pt, below: 8pt, width: 100%)[
   #text(size: 12.5pt, weight: "bold", fill: cor-tinta)[#it.body]
   #v(2.5pt)
@@ -144,7 +201,7 @@
 ]
 
 // ---------------------------------------------------------------------------
-// Código, Tabelas, Citações e Imagens
+// Código: JetBrains Mono com Formatação Suave e Quebra Suave
 // ---------------------------------------------------------------------------
 
 #let _quebravel(t) = {
@@ -158,13 +215,13 @@
 #show raw.where(block: false): it => highlight(
   fill: rgb("#f1f5f9"), extent: 1.5pt, radius: 2.5pt,
   top-edge: "ascender", bottom-edge: "descender",
-)[#text(font: ("Consolas", "Courier New"), size: 8.0pt, fill: cor-accent2, hyphenate: false)[#_quebravel(it.text)]]
+)[#text(font: ("JetBrains Mono", "Consolas", "Courier New"), size: 8.0pt, fill: cor-accent2, hyphenate: false)[#_quebravel(it.text)]]
 
 #show raw.where(block: true): it => block(
   width: 100%, fill: rgb("#f8fafc"),
   stroke: (left: 3pt + cor-accent, rest: 0.6pt + cor-linha),
   radius: 4pt, inset: (x: 11pt, y: 10pt), above: 13pt, below: 13pt, breakable: true,
-)[#text(font: ("Consolas", "Courier New"), size: 8.0pt, fill: cor-tinta)[#it]]
+)[#text(font: ("JetBrains Mono", "Consolas", "Courier New"), size: 8.0pt, fill: cor-tinta)[#it]]
 
 #show quote.where(block: true): it => block(
   width: 100%, fill: rgb("#f8fafc"), stroke: (left: 3pt + cor-accent),
@@ -174,16 +231,20 @@
 #set list(indent: 8pt, body-indent: 7pt, spacing: 0.88em)
 #set enum(indent: 8pt, body-indent: 7pt, spacing: 0.88em)
 
+// ---------------------------------------------------------------------------
+// Tabelas: Largura Controlada, Proteção Anti-Overflow e Tipografia Otimizada
+// ---------------------------------------------------------------------------
+
 #set table(
   stroke: 0.35pt + cor-linha,
-  inset: (x: 4pt, y: 3pt),
+  inset: (x: 5pt, y: 3.2pt),
   fill: (_, y) => if y == 0 { rgb("#f1f5f9") } else if calc.odd(y) { rgb("#f8fafc") } else { white },
 )
-#show table.cell.where(y: 0): set text(font: ("Segoe UI", "Arial"), fill: cor-tinta, weight: "bold", size: 6.2pt, hyphenate: false)
-#show table: set text(size: 5.9pt, hyphenate: false)
-#show table: set par(justify: false, leading: 0.45em)
+#show table.cell.where(y: 0): set text(font: ("Segoe UI", "Arial"), fill: cor-tinta, weight: "bold", size: 6.8pt, hyphenate: false)
+#show table: set text(size: 6.5pt, hyphenate: false)
+#show table: set par(justify: false, leading: 0.50em)
 #show table: it => {
-  show raw.where(block: false): r => text(font: ("Consolas", "Courier New"), size: 5.6pt, fill: cor-accent2, hyphenate: false)[#r.text]
+  show raw.where(block: false): r => text(font: ("JetBrains Mono", "Consolas"), size: 6.0pt, fill: cor-accent2, hyphenate: false)[#r.text]
   it
 }
 #show figure.where(kind: table): set block(breakable: true)
@@ -205,123 +266,106 @@
   ]
 )
 
-#let esteira(..itens, gates: ()) = {
-  let pos = itens.pos()
-  if pos.len() == 1 and type(pos.first()) == array {
-    let etapas = pos.first()
-    block(width: 100%, above: 14pt, below: 14pt, breakable: false)[
-      #for (i, e) in etapas.enumerate() {
-        block(width: 100%, radius: 4pt, fill: rgb("#f8fafc"), stroke: (left: 3pt + cor-accent, rest: 0.5pt + cor-linha), inset: (x: 10pt, y: 6pt), below: 0pt)[
-          #text(font: ("Segoe UI", "Arial"), size: 8.6pt, weight: "bold", fill: cor-tinta)[#e.at(0)]
-          #h(6pt)
-          #text(font: ("Segoe UI", "Arial"), size: 7.6pt, fill: cor-suave)[#e.at(1)]
-        ]
-        if i < etapas.len() - 1 {
-          align(center)[#block(above: 3pt, below: 3pt)[#text(font: ("Segoe UI", "Arial"), size: 7.2pt, fill: cor-accent2, weight: "bold")[↓ #if i < gates.len() { gates.at(i) }]]]
-        }
-      }
-    ]
-  } else {
-    let n = pos.len()
-    block(width: 100%, above: 14pt, below: 14pt)[
-      #grid(
-        columns: range(n * 2 - 1).map(i => if calc.even(i) { 1fr } else { auto }),
-        align: horizon, column-gutter: 4pt,
-        ..pos.enumerate().map(((i, it)) => if i == n - 1 { (it,) } else { (it, seta) }).flatten()
-      )
-    ]
-  }
-}
-
 
 // ---------------------------------------------------------------------------
-// CAPA — DESIGN STRIPE PRESS / EDITORIAL MINIMALISTA CONTEMPORÂNEO (17x24cm)
+// CAPA — DESIGN STRIPE PRESS PADRONIZADO COM ILUSTRAÇÃO SVG TRANSPARENTE
 // ---------------------------------------------------------------------------
-#page(margin: (x: 1.8cm, top: 2.0cm, bottom: 1.8cm), numbering: none, header: none, footer: none, fill: white)[
+#page(margin: (x: 1.8cm, top: 1.6cm, bottom: 1.5cm), numbering: none, header: none, footer: none, fill: white)[
 
-  // Detalhe arquitetural no topo: 4 traços finos elegantes na paleta Google Suavizada
+  // Topo: 4 traços finos na paleta Google Suavizada
   #grid(
     columns: (1fr, 1fr, 1fr, 1fr),
     gutter: 5pt,
-    line(length: 100%, stroke: 2pt + cor-accent),
-    line(length: 100%, stroke: 2pt + cor-erro),
+    line(length: 100%, stroke: 2pt + cor-info),
+    line(length: 100%, stroke: 2pt + cor-perigo),
     line(length: 100%, stroke: 2pt + cor-alerta),
-    line(length: 100%, stroke: 2pt + cor-ok),
+    line(length: 100%, stroke: 2pt + cor-sucesso),
   )
 
-  #v(16pt)
+  #v(8pt)
 
   // Categoria editorial
   #text(
     font: ("Segoe UI", "Arial"),
-    size: 8pt,
+    size: 7.5pt,
     fill: cor-suave,
     weight: "bold",
-    tracking: 2.2pt,
+    tracking: 2.0pt,
   )[ARQUITETURA DE SISTEMAS AGÊNTICOS]
 
-  #v(12pt)
+  #v(6pt)
 
-  // Título Principal e Destaque
+  // Título Principal
       #text(
       font: ("Segoe UI", "Arial"),
-      size: 28pt,
+      size: 21pt,
       weight: "black",
       fill: cor-tinta,
-      tracking: -0.5pt,
+      tracking: -0.4pt,
     )[LegoLoop]
-    #v(4pt)
+    #v(2pt)
     #text(
       font: ("Segoe UI", "Arial"),
-      size: 15.5pt,
+      size: 13pt,
       weight: "bold",
       fill: cor-accent,
     )[A Revolução da IA Modular em Peças Simples]
   
-  #v(8pt)
+  #v(4pt)
 
   // Subtítulo
   #block(width: 95%)[
     #text(
       font: ("Segoe UI", "Arial"),
-      size: 9.6pt,
+      size: 8.8pt,
       fill: cor-suave,
       weight: "medium",
     )[O Guia Completo para Construir Esteiras Autônomas sem Mistérios e sem Queimar Tokens]
   ]
 
-  #v(16pt)
+  #v(6pt)
 
-  // Arte: esteira de sub-loops desenhada em Typst
-    #block(width: 100%, radius: 6pt, clip: true, fill: rgb("#f8fafc"), stroke: 0.5pt + rgb("#cbd5e1"), inset: 16pt)[
+  // Ilustração Vetorial da Capa: Peças de Lego 3D modulares autênticas conectadas
+  #align(center)[
+    #block(width: 80%, inset: (y: 2pt))[
+      #image("ativos/lego_cover_blocks.svg", width: 75%)
+    ]
+  ]
+
+  #v(6pt)
+
+  // Esteira de Estágios na Capa (cover-stages)
+    #block(width: 100%, radius: 5pt, clip: true, fill: rgb("#f8fafc"), stroke: 0.5pt + rgb("#cbd5e1"), inset: 8pt)[
     #let etapas = ("Mega Pipeline", "Processos Canônicos", "Sub-Loops Modulares", "Micro-Tickets", "Nano-Etapas", "Contratos BDD", )
-    #text(font: ("Segoe UI", "Arial"), size: 7pt, weight: "bold", fill: cor-suave, tracking: 1.6pt)[OS CINCO NÍVEIS DE GRANULARIDADE DO LEGOLOOP]
-    #v(8pt)
+    #text(font: ("Segoe UI", "Arial"), size: 6.8pt, weight: "bold", fill: cor-suave, tracking: 1.4pt)[OS CINCO NÍVEIS DE GRANULARIDADE DO LEGOLOOP]
+    #v(4pt)
     #grid(
-      columns: (1fr,) * 2, gutter: 8pt,
+      columns: (1fr,) * 2, gutter: 5pt,
       ..etapas.enumerate().map(((i, e)) => block(
-        width: 100%, height: 1.7cm, radius: 4pt,
-        fill: if calc.even(i) { cor-accent.lighten(88%) } else { white },
-        stroke: (left: 3pt + cor-accent, rest: 0.5pt + cor-linha),
-        inset: (x: 8pt, y: 6pt),
-      )[
-        #text(font: ("Consolas", "Courier New"), size: 6.5pt, fill: cor-accent2)[#str(i + 1).]
-        #h(3pt)
-        #text(font: ("Segoe UI", "Arial"), size: 8pt, weight: "bold", fill: cor-tinta)[#e]
-      ])
+        width: 100%, height: 0.95cm, radius: 3.5pt,
+        fill: if calc.even(i) { cor-accent.lighten(92%) } else { white },
+        stroke: (left: 2.8pt + cor-accent, rest: 0.4pt + cor-linha),
+        inset: (x: 7pt, y: 3pt),
+        align(left + horizon)[
+          #text(font: ("Segoe UI", "Arial"), size: 6.5pt, weight: "bold", fill: cor-accent)[#if i < 9 [0#str(i + 1)] else [#str(i + 1)]]
+          #h(3pt)
+          #text(font: ("Segoe UI", "Arial"), size: 7.0pt, weight: "bold", fill: cor-tinta)[#e]
+        ]
+      ))
     )
   ]
   
   #v(1fr)
 
-  // Rodapé da Capa
+  // Rodapé da Capa com Proteção Anti-Quebra
   #line(length: 100%, stroke: 0.6pt + cor-linha)
-  #v(6pt)
+  #v(4pt)
   #grid(
     columns: (1fr, auto),
     align: (left + horizon, right + horizon),
-    text(font: ("Segoe UI", "Arial"), size: 8.8pt, weight: "bold", fill: cor-tinta)[Heverton & Ecossistema LegoLoop],
-    text(font: ("Segoe UI", "Arial"), size: 8.2pt, fill: cor-suave)[06/11/2026 · LegoLoop Foundation]
+    gutter: 10pt,
+    text(font: ("Segoe UI", "Arial"), size: 7.8pt, weight: "bold", fill: cor-tinta, hyphenate: false)[Heverton & Ecossistema LegoLoop],
+    text(font: ("Segoe UI", "Arial"), size: 7.2pt, fill: cor-suave, hyphenate: false)[06/11/2026 · LegoLoop Foundation]
   )
 ]
 
@@ -358,50 +402,42 @@
 ]
 
 // ---------------------------------------------------------------------------
-// CORPO: CABEÇALHO, COLUNA DE ANOTAÇÕES (MARGINALIA PONTILHADA) E RODAPÉ
+// CORPO: CABEÇALHO LIMPO E RODAPÉ AREJADO (SEM COLUNA DE ANOTAÇÕES ESTREITA)
 // ---------------------------------------------------------------------------
 #set page(
   fill: cor-miolo,
   numbering: "1",
-  margin: (top: 2.0cm, bottom: 2.0cm, left: 1.6cm, right: 3.8cm),
-  background: context {
-    if here().page() > 2 {
-      // Linha vertical divisória da coluna de anotações
-      place(top + left, dx: 13.2cm, dy: 2.0cm, line(angle: 90deg, length: 20cm, stroke: 0.4pt + rgb("#e2e8f0")))
-      // Rótulo discreto de anotações
-      place(top + left, dx: 13.5cm, dy: 2.1cm, text(font: ("Segoe UI", "Arial"), size: 6.2pt, fill: rgb("#94a3b8"), weight: "bold", tracking: 1.6pt)[ANOTAÇÕES])
-      // Pauta de caderno pontilhada sutil para anotações do leitor
-      for i in range(21) {
-        place(top + left, dx: 13.5cm, dy: 2.6cm + i * 8.5mm, line(length: 2.7cm, stroke: (paint: rgb("#e2e8f0"), dash: "dotted", thickness: 0.45pt)))
-      }
-    }
-  },
+  margin: (top: 2.0cm, bottom: 2.0cm, left: 1.8cm, right: 1.8cm),
   header: context {
     if here().page() > 2 {
       let pagina = here().page()
-      let nesta = query(heading.where(level: 1)).filter(h => h.location().page() == pagina)
-      let anteriores = query(selector(heading.where(level: 1)).before(here()))
-      let titulo-cap = if nesta.len() > 0 { nesta.first().body }
-        else if anteriores.len() > 0 { anteriores.last().body }
-        else { [Sumário] }
-      stack(
-        spacing: 2.5pt,
-        grid(
-          columns: (auto, 1fr),
-          gutter: 10pt,
-          align: (left + horizon, right + horizon),
-          text(font: ("Segoe UI", "Arial"), size: 5.8pt, fill: cor-tinta, weight: "bold", tracking: 1.2pt)[LEGOLOOP],
-          text(font: ("Segoe UI", "Arial"), size: 5.8pt, fill: cor-suave, hyphenate: false)[#titulo-cap],
-        ),
-        line(length: 100%, stroke: 0.5pt + cor-linha),
-      )
+      let partes-nesta = query(heading.where(level: 1)).filter(h => h.location().page() == pagina and (repr(h.body).contains("Parte") or repr(h.body).contains("PARTE")))
+      if partes-nesta.len() == 0 {
+        let anteriores = query(selector(heading.where(level: 1)).before(here()))
+        let titulo-cap = if anteriores.len() > 0 { anteriores.last().body } else { [Sumário] }
+        stack(
+          spacing: 2.5pt,
+          grid(
+            columns: (auto, 1fr),
+            gutter: 10pt,
+            align: (left + horizon, right + horizon),
+            text(font: ("Segoe UI", "Arial"), size: 6.2pt, fill: cor-tinta, weight: "bold", tracking: 1.2pt)[LEGOLOOP],
+            text(font: ("Segoe UI", "Arial"), size: 6.2pt, fill: cor-suave, hyphenate: false)[#titulo-cap],
+          ),
+          line(length: 100%, stroke: 0.5pt + cor-linha),
+        )
+      }
     }
   },
   footer: context {
     if here().page() > 2 {
-      align(center)[
-        #text(font: ("Segoe UI", "Arial"), size: 8.2pt, fill: cor-suave)[#counter(page).display("1")]
-      ]
+      let pagina = here().page()
+      let partes-nesta = query(heading.where(level: 1)).filter(h => h.location().page() == pagina and (repr(h.body).contains("Parte") or repr(h.body).contains("PARTE")))
+      if partes-nesta.len() == 0 {
+        align(center)[
+          #text(font: ("Segoe UI", "Arial"), size: 8.2pt, fill: cor-suave)[#counter(page).display("1")]
+        ]
+      }
     }
   },
 )
@@ -665,6 +701,7 @@ Para compreender a precisão cirúrgica exigida pela fábrica do LegoLoop, veja 
 # ESPECIFICAÇÃO TÉCNICA: validador-cartao-corporativo
 
 ## 1. Critérios Binários de Aceitação (Pass/Fail)
+
 - [ ] O algoritmo de Luhn DEVE validar o número do cartão com código de saída 0.
 - [ ] Cartões expirados DEVEM ser rejeitados com erro `ERR_CARTAO_EXPIRADO`.
 - [ ] NENHUM número de cartão pode ser gravado em texto puro nos arquivos de log.
@@ -686,10 +723,12 @@ A partir dessa especificação cristalina, o gerador de planos (`plangen`) deriv
 # PLANO DE EXECUÇÃO: tickets-validador-cartao
 
 ### Ticket 01: Teste do Algoritmo de Luhn (Fase Vermelha)
+
 - Ação: Criar `internal/cartao/luhn_test.go` com 10 números de cartão válidos e 5 inválidos.
 - Condição de Sucesso: O comando `go test ./...` DEVE FALHAR (código diferente de 0).
 
 ### Ticket 02: Implementação Mínima (Fase Verde)
+
 - Ação: Criar `internal/cartao/luhn.go` contendo apenas a lógica necessária para o teste passar.
 - Condição de Sucesso: O comando `go test ./...` DEVE PASSAR (código igual a 0).
 - Stop-Gate Humano: Revisão de segurança criptográfica antes de liberar o merge.
@@ -862,7 +901,11 @@ O operador clica no botão `+ Novo Processo` no canto superior direito. Um assis
 
 === Passo 2: O Desdobramento da Tríade
 <passo-2-o-desdobramento-da-tríade>
-Em segundo plano, o motor do LegoLoop gera os arquivos `INTENT.md` e `SPEC.md`, convertendo as regras em critérios puramente binários. Três nós surgem automaticamente dispostos no canvas: \* #strong[Nó 1 (Extrator OCR):] Responsável por ler o PDF e emitir um JSON estruturado. \* #strong[Nó 2 (Validador Fiscal):] Responsável por checar se a soma dos itens bate com o valor total da nota. \* #strong[Nó 3 (Auditor de Cadastro):] Responsável por consultar a base local de fornecedores autorizados.
+Em segundo plano, o motor do LegoLoop gera os arquivos `INTENT.md` e `SPEC.md`, convertendo as regras em critérios puramente binários. Três nós surgem automaticamente dispostos no canvas:
+
+- #strong[Nó 1 (Extrator OCR):] Responsável por ler o PDF e emitir um JSON estruturado.
+- #strong[Nó 2 (Validador Fiscal):] Responsável por checar se a soma dos itens bate com o valor total da nota.
+- #strong[Nó 3 (Auditor de Cadastro):] Responsável por consultar a base local de fornecedores autorizados.
 
 === Passo 3: Inserindo um Portão Humano (Stop-Gate)
 <passo-3-inserindo-um-portão-humano-stop-gate>
@@ -920,11 +963,19 @@ Para estabelecer um padrão de cooperação transparente de alta fidelidade entr
 <a-tríade-canônica-de-comunicação>
 ==== 1. Pré-Ação (O Que Será Feito Antes de Tocar no Sistema)
 <pré-ação-o-que-será-feito-antes-de-tocar-no-sistema>
-Antes de modificar um único arquivo ou disparar uma esteira, a IA deve apresentar formalmente suas intenções: \* #strong[`**[S] Situação:**`] Diagnóstico factual do estado atual, sem introduções ou saudações. \* #strong[`**[T] Teoria:**`] A explicação lógica e de engenharia pela qual aquela mudança específica resolverá o problema. \* #strong[`**[E] Execução:**`] O plano de ação com a lista de arquivos afetados, a porta de rollback e as opções de decisão humana explícitas (`[1] seguir`, `[2] personalizar`, `[0] cancelar`).
+Antes de modificar um único arquivo ou disparar uma esteira, a IA deve apresentar formalmente suas intenções:
+
+- #strong[`**[S] Situação:**`] Diagnóstico factual do estado atual, sem introduções ou saudações.
+- #strong[`**[T] Teoria:**`] A explicação lógica e de engenharia pela qual aquela mudança específica resolverá o problema.
+- #strong[`**[E] Execução:**`] O plano de ação com a lista de arquivos afetados, a porta de rollback e as opções de decisão humana explícitas (`[1] seguir`, `[2] personalizar`, `[0] cancelar`).
 
 ==== 2. Pós-Ação (O Que Foi Feito e Quais as Provas)
 <pós-ação-o-que-foi-feito-e-quais-as-provas>
-Após concluir a operação, a IA apresenta o balanço de fechamento com evidências reais: \* #strong[`**[S] Situação:**`] O novo estado do sistema após as intervenções. \* #strong[`**[T] Tese:**`] A confirmação de que a hipótese inicial foi comprovada na prática. \* #strong[`**[E] Evidência:**`] Provas computáveis e inquestionáveis: logs de testes que passaram, código de saída zero e verificação de conformidade de esquemas.
+Após concluir a operação, a IA apresenta o balanço de fechamento com evidências reais:
+
+- #strong[`**[S] Situação:**`] O novo estado do sistema após as intervenções.
+- #strong[`**[T] Tese:**`] A confirmação de que a hipótese inicial foi comprovada na prática.
+- #strong[`**[E] Evidência:**`] Provas computáveis e inquestionáveis: logs de testes que passaram, código de saída zero e verificação de conformidade de esquemas.
 
 === O Protocolo em Ação: Diálogo Real no Terminal
 <o-protocolo-em-ação-diálogo-real-no-terminal>
@@ -1448,7 +1499,11 @@ Como integrar todas as operações de uma empresa em uma esteira contínua sem q
 
 === A Composição Modular
 <a-composição-modular-9>
-Através do operador `compor`, o Mega-Loop conecta esteiras inteiras como se fossem engrenagens de um relógio suíço: \* A esteira de #strong[Especificação] gera a partitura para a esteira de #strong[Desenvolvimento TDD]. \* A esteira de #strong[Desenvolvimento] dispara automaticamente a esteira de #strong[Auditoria de Código]. \* A esteira de #strong[Auditoria] alimenta a esteira de #strong[Geração de Manuais], que atualiza a documentação corporativa em tempo real.
+Através do operador `compor`, o Mega-Loop conecta esteiras inteiras como se fossem engrenagens de um relógio suíço:
+
+- A esteira de #strong[Especificação] gera a partitura para a esteira de #strong[Desenvolvimento TDD].
+- A esteira de #strong[Desenvolvimento] dispara automaticamente a esteira de #strong[Auditoria de Código].
+- A esteira de #strong[Auditoria] alimenta a esteira de #strong[Geração de Manuais], que atualiza a documentação corporativa em tempo real.
 
 O resultado é uma fábrica digital autônoma, modular, previsível e com custos rigorosamente sob controle.
 

@@ -9,12 +9,12 @@
 
 ## Matriz de Riscos (FMEA Simplificada)
 
-| Nó | Modo de Falha | Efeito | Contenção Mecânica |
-| :--- | :--- | :--- | :--- |
-| `n01_preflight` | Ferramenta ausente no PATH | Auditoria incompleta | Abort imediato com comando exato de instalação |
-| `n02_boot_e_descoberta` | Porta ocupada ou servidor não responde | Travamento de pipeline | Timeout de 30s no healthcheck e `kill()` no `finally` |
-| `n08_lost_pixel_visual` | Mudança legítima de layout confundida com bug | Falso positivo contínuo | Stop-Gate humano `n09_sg_baseline_visual` |
-| `n10_relatorio_consolidado` | Slug malicioso no `--alvo` | Escrita fora do repositório | `sanitizeTargetSlug` + verificação `startsWith(qaRoot)` |
+| Nó                          | Modo de Falha                         | Efeito                      | Contenção Mecânica                      |
+| :-------------------------- | :------------------------------------ | :-------------------------- | :-------------------------------------- |
+| `n01_preflight`                | Ferramenta ausente no PATH            | Auditoria incompleta        | Abort imediato com comando exato de instalação |
+| `n02_boot_e_descoberta`          | Porta ocupada ou servidor não responde | Travamento de pipeline      | Timeout de 30s no healthcheck e `kill()` no `finally` |
+| `n08_lost_pixel_visual`          | Mudança legítima de layout confundida com bug | Falso positivo contínuo     | Stop-Gate humano `n09_sg_baseline_visual`    |
+| `n10_relatorio_consolidado`     | Slug malicioso no `--alvo`              | Escrita fora do repositório | `sanitizeTargetSlug` + verificação `startsWith(qaRoot)` |
 
 ## Apêndice: Rastreabilidade dos Artefatos
 

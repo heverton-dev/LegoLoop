@@ -13,6 +13,7 @@ O formato de animação curta vertical (*Shorts*, *Reels*, *TikTok*) com estéti
 No entanto, a cadeia de produção tradicional é cara e refém de assinaturas proprietárias: Claude Pro ($20/mês), ElevenLabs ($5 a $22/mês), somados a gargalos severos de quota de tokens e montagem manual em editores de vídeo.
 
 O **LegoLoop Cartoon Shorts** é a materialização canônica e 100% soberana desse processo:
+
 * **Custo Zero Fixo:** R$ 0,00/mês.
 * **Autonomia Total:** Roteiros otimizados no ritmo de 3.7 palavras/segundo com checagem factual (*Verdade ou Lenda*), síntese neural brasileira de alta expressividade com Edge-TTS local (`pt-BR-AntonioNeural`), renderização 3D/2D procedural via Three.js r160 em resolução 1080x1920 a 30fps e mixagem determinística de áudio com trava *Gated RMS* a -6 dB via FFmpeg.
 * **Tríade de Interfaces:** Executável via Linha de Comando (CLI), painel visual do Studio com player de preview integrado e invocação nativa no chat dos agentes via `/legoloop-cartoon-shorts`.
@@ -24,27 +25,12 @@ O processo nasceu a partir da engenharia reversa do método apresentado pelo can
 
 A investigação forense conduzida pelo motor `legoloop video-rea` extraiu a verdade factual dos materiais disponibilizados:
 
-```mermaid
-flowchart TD
-    subgraph Origem ["Pilha Original do Autor (R$ 180 a 250/mês)"]
-        A1["Skill cartoon-audio-short no Claude Desktop"] --> A2["ElevenLabs (TTS Comercial)"]
-        A2 --> A3["Artefato Web Claude (vu35wcnizwxo5qpemtsckr)"]
-        A3 --> A4["cartoon-short-kit.zip (Three.js r160 + Playwright)"]
-    end
 
-    subgraph Soberana ["Adoção Soberana LegoLoop (R$ 0,00/mês)"]
-        B1["9Router Local / Modelos Abertos"] --> B2["Edge-TTS Neural Local (pt-BR-AntonioNeural)"]
-        B2 --> B3["LegoLoop Studio Web (Preview Player)"]
-        B3 --> B4["Motor Nativo Three.js + FFmpeg Gated RMS"]
-    end
+![Diagrama de Arquitetura](/img/diagrama_9a10b745.png){width=85%}
 
-    A1 -.->|"Substituição Tier Ouro"| B1
-    A2 -.->|"Substituição Tier Ouro"| B2
-    A3 -.->|"Substituição Tier Ouro"| B3
-    A4 -.->|"Adoção Canônica MIT"| B4
-```
 
 ## Os 4 Estágios do Método
+
 1. **Intake & Ideação:** Oferta de 10 ideias numeradas estruturadas em: Título (5-8 palavras de alta curiosidade), Linha de Gancho (paradoxo afirmado como fato sem introdução), Twist irônico na última linha e checagem factual (*Verdade ou Lenda*).
 2. **Roteiro em Ritmo Musical:** 3.7 palavras por segundo. Para vídeos de 20s = 75 palavras; para 30s = 110 palavras. Fórmula rígida: Hook $\rightarrow$ Setting $\rightarrow$ Escalada $\rightarrow$ Pivot de Mistério $\rightarrow$ Twist Final.
 3. **Diretiva de Emoção:** O roteiro recebe anotações expressivas entre colchetes (`[reflexivo]`, `[respira fundo]`, `[pausa curta]`, `[animado]`, `[dá uma risadinha]`) para orientar a entonação da voz neural.
@@ -57,6 +43,7 @@ A estética distintiva do Cartoon Shorts baseia-se em uma fusão inovadora entre
 
 ## 1. O Shader de Tinta (Ink Contract) e Normal/Depth Pass
 Ao contrário de animações 3D convencionais com iluminação realista, o motor utiliza um shader customizado em Three.js r160:
+
 * **Normal/Depth Pass:** Em cada quadro, a cena é renderizada primeiro em um buffer que captura apenas as normais das superfícies e a profundidade relativa da câmera.
 * **Detecção de Bordas (Sobel/Edge Detection):** Um shader pós-processamento traça linhas de contorno pretas com raio de 2.5px onde quer que haja um salto brusco de profundidade ou uma quina angular.
 * **Texturas Pintadas (`paint.js`):** Pranchas de madeira, pedras, grama e azulejos são gerados proceduralmente em Canvas com costuras escuras e baixo contraste interno, garantindo que o traço externo se destaque.
@@ -65,6 +52,7 @@ Ao contrário de animações 3D convencionais com iluminação realista, o motor
 Em vídeos curtos, o maior erro amador é colocar a trilha musical brigando com a voz do narrador.
 
 O pipeline LegoLoop Cartoon Shorts impõe uma **Lei Física de Mixagem**:
+
 * O nível de áudio da voz neural é medido em RMS fechado (*Gated RMS*).
 * A trilha musical sintetizada é atenuada de forma precisa para ficar exatamente a **50% do volume da voz (-6.0 dB)**.
 * Os efeitos sonoros (SFX) são limitados a picos de no máximo 0.7x o pico da fala.
@@ -78,14 +66,17 @@ A alma do short está no gancho dos primeiros 3 segundos. Se a frase de abertura
 ## A Fórmula do Gancho Imediato (No-Setup Hook)
 
 O motor `BuildCartoonScript` do LegoLoop implementa a diretiva de **Impacto Imediato**:
+
 * A primeira frase é um paradoxo afirmado com naturalidade histórica:
   > *"Uma cidade de Minas ficou famosa por um visitante que ninguém conseguiu provar que existiu."*
   > *"Cientistas deram a um remédio o nome do computador mais perigoso do cinema."*
+
 * Não há saudações (*"Olá pessoal, bem-vindos ao meu canal"*). O vídeo começa com o acontecimento no primeiro frame (Frame 0).
 
 ## Síntese de Voz com Edge-TTS
 
 Substituímos o ElevenLabs comercial pelo motor local **Edge-TTS 7.3.1**, utilizando a voz neural `pt-BR-AntonioNeural`:
+
 * **Zero Custo:** Nenhuma cobrança de créditos ou limite de caracteres.
 * **Expressividade:** As indicações de interpretação entre colchetes (`[reflexivo]`, `[animado]`) são filtradas para o arquivo de áudio enquanto preservam o timing de respiração e pausas naturais do narrador.
 * **Hermetismo:** Em caso de interrupção ou falha de rede, o método remove qualquer arquivo corrompido, evitando áudios quebrados na montagem.

@@ -8,5 +8,17 @@
   ],
   "descricao": "Fabricar uma peça única (nó solto) de qualquer tipo, refinar com --adicionar e compor com --depende; triagem só com mais de um nó, exigida por validate e fechar.",
   "slug": "legoloop-fabricar-peca-unica",
-  "titulo": "Manual Didático: legoloop-fabricar-peca-unica"
+  "titulo": "Manual Didático: legoloop-fabricar-peca-unica",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-20_PROCESSO_FABRICAR_PECA_UNICA",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-fabricar-peca-unica-v1",
+  "ultima_compilacao": "2026-11-20"
 }

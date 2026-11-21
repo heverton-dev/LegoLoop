@@ -1,0 +1,275 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "id": "legoloop-matriz",
+  "name": "legoloop-matriz",
+  "version": "1.0.0",
+  "schema_version": 2,
+  "date": "2026-11-20",
+  "description": "Processo de gestão da matriz de peças, qualidade, perfis de uso e vocabulário canônico do LegoLoop",
+  "upstream_signatures": {
+    "vault": "cofre de peças canônicas em ~/.aidd/canonical/"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "max_parallel_workers": 1,
+    "default_timeout_sec": 600,
+    "rollback_on_failure": "abort_processo"
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "status",
+      "name": "Status e Defasagem",
+      "type": "script",
+      "nature": "micro",
+      "ref": "legoloop-matriz",
+      "command": [
+        "legoloop",
+        "matriz",
+        "status"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku",
+        "harness": "claude",
+        "via": "oficial"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-MAT-01",
+      "status": "PENDING",
+      "context_in": [
+        "skills/legoloop-matriz/SKILL.md"
+      ],
+      "context_out": [
+        "out/matriz_status.json"
+      ],
+      "output": {
+        "artifact": "out/matriz_status.json",
+        "gate": "file_exists('out/matriz_status.json')"
+      }
+    },
+    {
+      "id": "gerar",
+      "name": "Geração da Matriz",
+      "type": "script",
+      "nature": "micro",
+      "ref": "legoloop-matriz",
+      "depends_on": [
+        "status"
+      ],
+      "command": [
+        "legoloop",
+        "matriz",
+        "gerar",
+        "--sem-cerebro"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "via": "oficial"
+      },
+      "timeout_sec": 600,
+      "isolation": {
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-MAT-02",
+      "status": "PENDING",
+      "context_in": [
+        "out/matriz_status.json"
+      ],
+      "context_out": [
+        "out/matriz_gerada.json"
+      ],
+      "output": {
+        "artifact": "out/matriz_gerada.json",
+        "gate": "file_exists('out/matriz_gerada.json')"
+      }
+    },
+    {
+      "id": "vocab",
+      "name": "Vocabulário",
+      "type": "script",
+      "nature": "micro",
+      "ref": "legoloop-matriz",
+      "depends_on": [
+        "gerar"
+      ],
+      "command": [
+        "legoloop",
+        "matriz",
+        "vocab",
+        "listar"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku",
+        "harness": "claude",
+        "via": "oficial"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-MAT-03",
+      "status": "PENDING",
+      "context_in": [
+        "out/matriz_gerada.json"
+      ],
+      "context_out": [
+        "out/matriz_vocab.json"
+      ],
+      "output": {
+        "artifact": "out/matriz_vocab.json",
+        "gate": "file_exists('out/matriz_vocab.json')"
+      }
+    },
+    {
+      "id": "perfil",
+      "name": "Perfil de Peça",
+      "type": "script",
+      "nature": "micro",
+      "ref": "legoloop-matriz",
+      "depends_on": [
+        "vocab"
+      ],
+      "command": [
+        "legoloop",
+        "matriz",
+        "perfil",
+        "confirmar"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku",
+        "harness": "claude",
+        "via": "oficial"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-MAT-04",
+      "status": "PENDING",
+      "context_in": [
+        "out/matriz_vocab.json"
+      ],
+      "context_out": [
+        "out/matriz_perfil.json"
+      ],
+      "output": {
+        "artifact": "out/matriz_perfil.json",
+        "gate": "file_exists('out/matriz_perfil.json')"
+      }
+    },
+    {
+      "id": "ver",
+      "name": "Consulta e Visão",
+      "type": "script",
+      "nature": "micro",
+      "ref": "legoloop-matriz",
+      "depends_on": [
+        "perfil"
+      ],
+      "command": [
+        "legoloop",
+        "matriz",
+        "ver",
+        "--tier",
+        "ouro"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku",
+        "harness": "claude",
+        "via": "oficial"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_output_tokens": 1500
+      },
+      "rollback_strategy": "stash_changes",
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "verification": {
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-MAT-05",
+      "status": "PENDING",
+      "context_in": [
+        "out/matriz_perfil.json"
+      ],
+      "context_out": [
+        "out/matriz_ver.json"
+      ],
+      "output": {
+        "artifact": "out/matriz_ver.json",
+        "gate": "file_exists('out/matriz_ver.json')"
+      }
+    }
+  ]
+}

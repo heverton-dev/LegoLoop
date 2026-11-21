@@ -14,11 +14,11 @@ import (
 )
 
 func TestInstalarSkills(t *testing.T) {
-	// 0. Quantidade canônica de funções nativas (39 skills embutidas no ecossistema)
-	if len(skills.FuncoesNativas) != 39 {
-		t.Fatalf("esperava 39 funções nativas em skills.FuncoesNativas, obteve %d (%v)", len(skills.FuncoesNativas), skills.FuncoesNativas)
+	// 0. Quantidade canônica de funções nativas (40 skills embutidas no ecossistema)
+	if len(skills.FuncoesNativas) != 40 {
+		t.Fatalf("esperava 40 funções nativas em skills.FuncoesNativas, obteve %d (%v)", len(skills.FuncoesNativas), skills.FuncoesNativas)
 	}
-	for _, nome := range []string{"legoloop-video-rea-transcrever", "legoloop-video-rea-relatorio", "legoloop-auditoria-atomica", "legoloop-diagram-design"} {
+	for _, nome := range []string{"legoloop-video-rea-transcrever", "legoloop-video-rea-relatorio", "legoloop-auditoria-atomica", "legoloop-diagram-design", "legoloop-matriz"} {
 		if _, err := skills.ObterSkill(nome); err != nil {
 			t.Fatalf("esperava %s embutida em skills.FS: %v", nome, err)
 		}

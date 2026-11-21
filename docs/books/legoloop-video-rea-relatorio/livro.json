@@ -6,7 +6,19 @@
       "titulo": "Skill"
     }
   ],
-  "descricao": "Gravar docs/reports/AAAA-MM-DD_REPORT_\u003cslug\u003e.md com frontmatter YAML e as três classes DEVE, PODE e NÃO PODE. Cada item traz o porquê e o como.",
+  "descricao": "Gravar docs/reports/AAAA-MM-DD_REPORT_<slug>.md com frontmatter YAML e as três classes DEVE, PODE e NÃO PODE. Cada item traz o porquê e o como.",
   "slug": "legoloop-video-rea-relatorio",
-  "titulo": "Manual Didático: legoloop-video-rea-relatorio"
+  "titulo": "Manual Didático: legoloop-video-rea-relatorio",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-20_PROCESSO_VIDEO_REA_RELATORIO",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-video-rea-relatorio-v1",
+  "ultima_compilacao": "2026-11-20"
 }

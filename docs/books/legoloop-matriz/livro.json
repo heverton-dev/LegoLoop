@@ -1,0 +1,16 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Processo Canônico de Gestão da Matriz de Peças",
+  "nome_base": "2026-11-20_PROCESSO-MATRIZ",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "matriz-v1",
+  "ultima_compilacao": "2026-11-20"
+}

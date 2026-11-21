@@ -237,3 +237,55 @@ func TestGravaEmProcessos(t *testing.T) {
 		t.Fatalf("runtime recriou o diretório legado: %v", err)
 	}
 }
+
+func TestResolverDirLivro(t *testing.T) {
+	repo := t.TempDir()
+	books := filepath.Join(repo, "docs", "books")
+
+	res := resolverDirLivro(repo, "matriz", "legoloop-matriz")
+	if res != filepath.Join(books, "legoloop-matriz") {
+		t.Fatalf("esperava canon como fallback padrão, obteve %s", res)
+	}
+
+	if err := os.MkdirAll(filepath.Join(books, "matriz"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	res = resolverDirLivro(repo, "matriz", "legoloop-matriz")
+	if res != filepath.Join(books, "matriz") {
+		t.Fatalf("esperava slug quando apenas ele existe, obteve %s", res)
+	}
+
+	if err := os.MkdirAll(filepath.Join(books, "legoloop-matriz"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	res = resolverDirLivro(repo, "matriz", "legoloop-matriz")
+	if res != filepath.Join(books, "legoloop-matriz") {
+		t.Fatalf("esperava canon quando ele existe, obteve %s", res)
+	}
+}
+
+func TestResolverPDFLivro(t *testing.T) {
+	dir := t.TempDir()
+	padrao := filepath.Join(dir, filepath.Base(dir)+".pdf")
+	if got := resolverPDFLivro(dir); got != padrao {
+		t.Fatalf("esperava %s, obteve %s", padrao, got)
+	}
+
+	m1 := []byte(`{"nome_base": "2026-11-20_PROCESSO-MATRIZ"}`)
+	if err := os.WriteFile(filepath.Join(dir, "livro.json"), m1, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	esp := filepath.Join(dir, "2026-11-20_PROCESSO-MATRIZ.pdf")
+	if got := resolverPDFLivro(dir); got != esp {
+		t.Fatalf("esperava %s, obteve %s", esp, got)
+	}
+
+	m2 := []byte(`{"nome_base": "2026-11-20_PROCESSO-MATRIZ", "output_pdf": "custom.pdf"}`)
+	if err := os.WriteFile(filepath.Join(dir, "livro.json"), m2, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	esp2 := filepath.Join(dir, "custom.pdf")
+	if got := resolverPDFLivro(dir); got != esp2 {
+		t.Fatalf("esperava %s, obteve %s", esp2, got)
+	}
+}

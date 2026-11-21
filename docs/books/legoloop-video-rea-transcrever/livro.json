@@ -8,5 +8,17 @@
   ],
   "descricao": "Converter o áudio aac em wav 16 kHz mono com ffmpeg e transcrever com C:\\Users\\trcnologia\\tools\\whisper-cpp\\Release\\whisper-cli.exe e o modelo C:\\Users\\trcnologia\\.cache\\whisper-models\\ggml-small.bin. Verificar que os dois caminhos existem antes de usar. Plano B: read_file multimodal do áudio. Saída: transcricao.txt.",
   "slug": "legoloop-video-rea-transcrever",
-  "titulo": "Manual Didático: legoloop-video-rea-transcrever"
+  "titulo": "Manual Didático: legoloop-video-rea-transcrever",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-20_PROCESSO_VIDEO_REA_TRANSCREVER",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-video-rea-transcrever-v1",
+  "ultima_compilacao": "2026-11-20"
 }

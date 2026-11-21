@@ -28,5 +28,17 @@
   ],
   "descricao": "Criação determinística de diagramas visuais, arquiteturas, fluxogramas e infográficos editoriais auto-contidos em HTML/SVG/PNG com zero serifas, zero emojis e isolamento de micro-vetores",
   "slug": "legoloop-diagram-design",
-  "titulo": "Manual Didático: legoloop-diagram-design"
+  "titulo": "Manual Didático: legoloop-diagram-design",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-20_PROCESSO_DIAGRAM_DESIGN",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-diagram-design-v1",
+  "ultima_compilacao": "2026-11-20"
 }

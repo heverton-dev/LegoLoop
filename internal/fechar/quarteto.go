@@ -14,10 +14,17 @@ func ehDiretorio(caminho string) bool {
 }
 
 // resolverDirLivro prefere docs/books/<canon> quando a pasta já existe;
-// caso contrário mantém docs/books/<slug>.
+// caso contrário verifica docs/books/<slug>; se nenhuma existir, o fallback
+// padrão canônico é docs/books/<canon>.
 func resolverDirLivro(repoDir, slug, canon string) string {
 	base := filepath.Join(repoDir, "docs", "books")
 	if canon != "" && ehDiretorio(filepath.Join(base, canon)) {
+		return filepath.Join(base, canon)
+	}
+	if slug != "" && ehDiretorio(filepath.Join(base, slug)) {
+		return filepath.Join(base, slug)
+	}
+	if canon != "" {
 		return filepath.Join(base, canon)
 	}
 	return filepath.Join(base, slug)

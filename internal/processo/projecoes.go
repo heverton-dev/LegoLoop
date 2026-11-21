@@ -296,11 +296,61 @@ func projetarManual(p Processo, ord []Etapa, now time.Time) (string, string) {
 	slug := strings.ToUpper(strings.ReplaceAll(strings.TrimPrefix(p.Nome, "legoloop-"), "-", "_"))
 	nome := fmt.Sprintf("%s_MANUAL_%s.md", now.Format("2006-01-02"), slug)
 	var b strings.Builder
-	fmt.Fprintf(&b, "# Manual Operacional: %s\n\n%s\n\n## Etapas\n\n", p.Nome, limpo(p.Objetivo))
-	for _, e := range ord {
-		fmt.Fprintf(&b, "- `%s`: %s\n", e.ID, limpo(e.Titulo))
-	}
+	manualCabecalho(&b, p, now)
+	manualExecucao(&b, p)
+	manualTabelaEtapas(&b, ord)
+	manualRegrasOperacionais(&b, p)
 	return nome, b.String()
+}
+
+func manualCabecalho(b *strings.Builder, p Processo, now time.Time) {
+	fmt.Fprintf(b, "# 📘 Manual Operacional: %s\n\n", p.Nome)
+	fmt.Fprintf(b, "> **Data de Emissão:** %s  \n", now.Format("2006-01-02"))
+	fmt.Fprintf(b, "> **Processo:** `%s` (versão `%s`)  \n", p.Nome, p.Versao)
+	fmt.Fprintf(b, "> **Objetivo:** %s  \n\n---\n\n", limpo(p.Objetivo))
+}
+
+func manualExecucao(b *strings.Builder, p Processo) {
+	slug := strings.TrimPrefix(p.Nome, "legoloop-")
+	b.WriteString("## 1. Execução Canônica\n\n")
+	b.WriteString("Para disparar o processo via terminal pelo motor nativo do LegoLoop:\n\n")
+	fmt.Fprintf(b, "```bash\nlegoloop exec %s\n```\n\n", p.Nome)
+	b.WriteString("Ou execute diretamente o DAG validado:\n\n")
+	fmt.Fprintf(b, "```bash\nlegoloop run processos/%s/pipeline.dag.json\n```\n\n---\n\n", slug)
+}
+
+func manualTabelaEtapas(b *strings.Builder, ord []Etapa) {
+	b.WriteString("## 2. Anatomia do Grafo e Contratos das Etapas\n\n")
+	b.WriteString("| Etapa | Título | Peça | Depende | Saída | Gate |\n| :--- | :--- | :--- | :--- | :--- | :--- |\n")
+	for _, e := range ord {
+		peca := e.Peca
+		if peca == "" && e.Compoe != "" {
+			peca = e.Compoe
+		}
+		dep := "-"
+		if len(e.Depende) > 0 {
+			dep = strings.Join(e.Depende, ", ")
+		}
+		saida := "-"
+		if e.Produz.Caminho != "" {
+			saida = "`" + e.Produz.Caminho + "`"
+		}
+		gate := "exit_code == 0"
+		if e.Gate != "" {
+			gate = "`" + limpo(e.Gate) + "`"
+		}
+		fmt.Fprintf(b, "| `%s` | %s | `%s` | %s | %s | %s |\n",
+			e.ID, limpo(e.Titulo), peca, dep, saida, gate)
+	}
+	b.WriteString("\n---\n\n")
+}
+
+func manualRegrasOperacionais(b *strings.Builder, p Processo) {
+	b.WriteString("## 3. Invariantes e Regras Operacionais\n\n")
+	b.WriteString("1. **Zero Stubs:** Cada nó executa sua respectiva peça real sem simulações ou mocks.\n")
+	b.WriteString("2. **Isolamento de Contexto:** Cada nó consome estritamente suas entradas e emite os artefatos declarados.\n")
+	b.WriteString("3. **Portões Mecânicos:** O avanço de cada etapa exige confirmação mecânica de seu gate.\n")
+	b.WriteString("4. **Paridade Criptográfica:** O DAG de execução deve manter paridade de hash com a especificação formal.\n")
 }
 
 func projetarFichas(p Processo, ord []Etapa) []FichaTecnica {

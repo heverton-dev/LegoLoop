@@ -1,0 +1,18 @@
+{
+  "target": "skills/legoloop-matriz/SKILL.md",
+  "peca": "legoloop-matriz",
+  "status": "APPROVED",
+  "is_gold": true,
+  "score": 0.92,
+  "tier": "ouro",
+  "badge_color": "#F59E0B",
+  "author": "Ecc",
+  "timestamp": "2026-11-20T18:08:34-03:00",
+  "dimensions": {
+    "rigor": 1.0,
+    "contracts": 1.0,
+    "provenance": 0.9,
+    "history": 0.5
+  },
+  "gate": "Score >= 0.85"
+}

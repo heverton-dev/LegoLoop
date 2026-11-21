@@ -524,3 +524,39 @@ func TestCheckParity(t *testing.T) {
 		t.Errorf("CheckParity deve retornar false para arquivos distintos, obteve %v, err=%v", diferente, err)
 	}
 }
+
+func TestProjetarManualEstruturado(t *testing.T) {
+	p := quatro()
+	pr := projetar(t, p)
+
+	if pr.ManualNome == "" {
+		t.Fatal("ManualNome não pode ser vazio")
+	}
+	if !strings.HasSuffix(pr.ManualNome, ".md") || !strings.Contains(pr.ManualNome, "_MANUAL_") {
+		t.Errorf("ManualNome fora do padrão ISO: %q", pr.ManualNome)
+	}
+
+	m := pr.Manual
+	secoesObrigatorias := []string{
+		"# 📘 Manual Operacional: legoloop-build-engine",
+		"## 1. Execução Canônica",
+		"legoloop exec legoloop-build-engine",
+		"## 2. Anatomia do Grafo e Contratos das Etapas",
+		"| Etapa | Título | Peça | Depende | Saída | Gate |",
+		"## 3. Invariantes e Regras Operacionais",
+	}
+	for _, sec := range secoesObrigatorias {
+		if !strings.Contains(m, sec) {
+			t.Errorf("Manual deve conter a seção %q, obtido:\n%s", sec, m)
+		}
+	}
+
+	for _, e := range p.Etapas {
+		if !strings.Contains(m, "`"+e.ID+"`") {
+			t.Errorf("Manual deve conter o ID da etapa %q", e.ID)
+		}
+		if !strings.Contains(m, e.Peca) {
+			t.Errorf("Manual deve conter a peça %q da etapa %q", e.Peca, e.ID)
+		}
+	}
+}

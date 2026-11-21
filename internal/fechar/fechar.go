@@ -2,6 +2,7 @@ package fechar
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"legoloop/internal/caminhos"
@@ -123,6 +124,27 @@ func fecharManual(d *Deps, slug string) (string, error) {
 	return exigirManual(d.RepoDir, slug)
 }
 
+func resolverPDFLivro(dir string) string {
+	manifesto := filepath.Join(dir, "livro.json")
+	dados, err := os.ReadFile(manifesto)
+	if err != nil {
+		return filepath.Join(dir, fmt.Sprintf("%s.pdf", filepath.Base(dir)))
+	}
+	var m struct {
+		NomeBase  string `json:"nome_base"`
+		OutputPDF string `json:"output_pdf"`
+	}
+	if err := json.Unmarshal(dados, &m); err == nil {
+		if m.OutputPDF != "" {
+			return filepath.Join(dir, m.OutputPDF)
+		}
+		if m.NomeBase != "" {
+			return filepath.Join(dir, m.NomeBase+".pdf")
+		}
+	}
+	return filepath.Join(dir, fmt.Sprintf("%s.pdf", filepath.Base(dir)))
+}
+
 func fecharLivro(d *Deps, slug, canon string) (string, error) {
 	dir := resolverDirLivro(d.RepoDir, slug, canon)
 	if _, err := exigirLivro(d.RepoDir, dir); err != nil {
@@ -131,7 +153,7 @@ func fecharLivro(d *Deps, slug, canon string) (string, error) {
 	if d.Auditor == nil {
 		return dir, nil
 	}
-	pdf := filepath.Join(dir, fmt.Sprintf("%s.pdf", filepath.Base(dir)))
+	pdf := resolverPDFLivro(dir)
 	if ok, err := d.Auditor(pdf); err != nil || !ok {
 		return dir, fmt.Errorf("%w: auditoria do livro %s (ok=%v, err=%v)", ErrPortaoFalhou, relativo(d.RepoDir, pdf), ok, err)
 	}

@@ -14,6 +14,7 @@ Esta parte do livro foi concebida como um **Caderno de Receitas de Engenharia**.
 Equipes de desenvolvimento perdem semanas implementando sistemas com base em requisitos vagos recebidos por mensagens de chat ou conversas informais. O desenvolvedor acha que entendeu uma coisa, mas o cliente desejava outra completamente diferente.
 
 ### A Composição Modular
+
 * **Nó 1 (Entrevista Socrática):** Formula perguntas de fechamento sobre cenários de exceção.
 * **Nó 2 (Extrator de Regras):** Identifica entidades, relacionamentos e restrições.
 * **Nó 3 (Gerador de Cenários BDD):** Converte as regras na sintaxe clássica *Dado que / Quando / Então*.
@@ -40,6 +41,7 @@ Equipes de desenvolvimento perdem semanas implementando sistemas com base em req
 Assistentes de IA tradicionais geram códigos aparentemente funcionais, mas que falham miseravelmente em casos de borda ou quebram funcionalidades existentes do sistema.
 
 ### A Composição Modular
+
 * **Nó 1 (Criador de Testes):** Lê o arquivo `SPEC.md` e escreve testes unitários rigorosos. **A esteira exige que o teste falhe (Fase Vermelha do TDD).**
 * **Nó 2 (Implementador Estéril):** Recebe exclusivamente o teste falho e a assinatura da função. Implementa o código mínimo necessário até que o teste passe com sucesso (Fase Verde).
 * **Nó 3 (Auditor de Limites):** Verifica se alguma função possui mais de 35 linhas ou se houve criação de dependências não autorizadas.
@@ -64,6 +66,7 @@ Assistentes de IA tradicionais geram códigos aparentemente funcionais, mas que 
 Empresas mantêm sistemas legados com milhares de linhas de código antigo contendo funções duplicadas, comentários obsoletos e potenciais falhas de segurança. Quando um desenvolvedor tenta limpar o código manualmente, frequentemente introduz regressões que quebram sistemas em produção.
 
 ### A Composição Modular
+
 * **Nó 1 (Mapeador de Árvore Sintática):** Analisa o código através de análise estática (AST) sem executar o binário, localizando variáveis não utilizadas e código morto (*dead code*).
 * **Nó 2 (Auditor de Vulnerabilidades):** Verifica se chaves de API, senhas ou chamadas de sistema inseguras estão presentes no repositório.
 * **Nó 3 (Formatador Determinístico):** Aplica as regras canônicas de formatação da linguagem (`gofmt` ou similar) com tolerância zero para desvios de estilo.
@@ -90,6 +93,7 @@ Empresas mantêm sistemas legados com milhares de linhas de código antigo conte
 Uma equipe precisa integrar seu sistema a um serviço externo antigo cuja documentação oficial está desatualizada ou simplesmente desapareceu dos servidores da empresa parceira.
 
 ### A Composição Modular
+
 * **Nó 1 (Captura de Tráfego de Rede):** Registra requisições e respostas HTTP legítimas em ambiente de homologação.
 * **Nó 2 (Extrator de Esquema JSON):** Identifica tipos de dados, parâmetros obrigatórios e cabeçalhos de autenticação de cada endpoint.
 * **Nó 3 (Gerador de Contrato OpenAPI):** Cria automaticamente a especificação Swagger/OpenAPI 3.0 documentando toda a interface.
@@ -116,6 +120,7 @@ Uma equipe precisa integrar seu sistema a um serviço externo antigo cuja docume
 O setor de contas a pagar de uma empresa gasta dezenas de horas por semana digitando manualmente dados de faturas em PDF recebidas por e-mail, gerando frequentes erros de cálculo e atrasos de pagamento.
 
 ### A Composição Modular
+
 * **Nó 1 (Extrator OCR Estruturado):** Converte o PDF da fatura em dados tabulares com reconhecimento de campos chave.
 * **Nó 2 (Validador Matemático):** Confere se a soma de produtos, frete e tributos é matematicamente idêntica ao valor total faturado.
 * **Nó 3 (Auditor de CNPJ):** Checa a situação cadastral do fornecedor na base pública da Receita Federal.
@@ -144,6 +149,7 @@ O setor de contas a pagar de uma empresa gasta dezenas de horas por semana digit
 Produzir manuais técnicos ou livros corporativos no Microsoft Word gera problemas crônicos de diagramação: imagens que saltam de página, tabelas cortadas e fontes desconfiguradas a cada nova edição.
 
 ### A Composição Modular
+
 * **Nó 1 (Compilador de Capítulos):** Consolida os arquivos Markdown das partes no documento mestre.
 * **Nó 2 (Fábrica de Diagramas SVG):** Valida dimensões, acessibilidade visual e paleta de cores dos diagramas visuais.
 * **Nó 3 (Linter Editorial):** Verifica largura de tabelas, pontuação e conformidade tipográfica contra o manual de estilo.
@@ -170,6 +176,7 @@ Produzir manuais técnicos ou livros corporativos no Microsoft Word gera problem
 Departamentos de Recursos Humanos recebem centenas de currículos para cada vaga aberta e precisam realizar a triagem inicial sem incorrer em vieses inconscientes ou discriminações indevidas.
 
 ### A Composição Modular
+
 * **Nó 1 (Anonimizador de Dados):** Oculta temporariamente nome, gênero, idade, foto e endereço do candidato.
 * **Nó 2 (Avaliador de Competências Técnicas):** Compara a experiência comprovada contra os requisitos exigidos pela vaga.
 * **Nó 3 (Gerador de Ranking Justo):** Emite nota fria de compatibilidade baseada exclusivamente em habilidades técnicas comprovadas.
@@ -196,6 +203,7 @@ Departamentos de Recursos Humanos recebem centenas de currículos para cada vaga
 Centrais de atendimento ao cliente acumulam milhares de chamados de suporte por dia sem conseguir identificar rapidamente clientes de alto valor com risco iminente de cancelamento (*churn*).
 
 ### A Composição Modular
+
 * **Nó 1 (Classificador de Urgência):** Identifica mensagens contendo ameaças de cancelamento, processos judiciais ou falhas operacionais graves.
 * **Nó 2 (Extrator de Motivo Raiz):** Isola a causa principal da insatisfação (lentidão do sistema, cobrança indevida ou falha no suporte).
 * **Nó 3 (Notificador Instantâneo):** Alerta a gerência de contas no canal dedicado do Slack ou Teams em menos de 30 segundos.
@@ -220,6 +228,7 @@ Centrais de atendimento ao cliente acumulam milhares de chamados de suporte por 
 Migrar informações de um banco de dados relacional legado para um banco em nuvem moderno envolve incompatibilidade de tipos de dados, chaves estrangeiras quebradas e risco severo de corrupção.
 
 ### A Composição Modular
+
 * **Nó 1 (Inspetor de Tipos):** Mapeia colunas, tamanhos e tipos de campos de origem e destino, identificando incompatibilidades.
 * **Nó 2 (Conversor de Esquema):** Gera scripts de migração com garantia de integridade referencial.
 * **Nó 3 (Testador de Carga em Sandbox):** Executa a migração em uma base de testes temporária e valida a contagem de registros linha a linha.
@@ -247,6 +256,7 @@ Como integrar todas as operações de uma empresa em uma esteira contínua sem q
 
 ### A Composição Modular
 Através do operador `compor`, o Mega-Loop conecta esteiras inteiras como se fossem engrenagens de um relógio suíço:
+
 * A esteira de **Especificação** gera a partitura para a esteira de **Desenvolvimento TDD**.
 * A esteira de **Desenvolvimento** dispara automaticamente a esteira de **Auditoria de Código**.
 * A esteira de **Auditoria** alimenta a esteira de **Geração de Manuais**, que atualiza a documentação corporativa em tempo real.

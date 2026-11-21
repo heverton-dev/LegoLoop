@@ -39,6 +39,7 @@ Para compreender a precisão cirúrgica exigida pela fábrica do LegoLoop, veja 
 # ESPECIFICAÇÃO TÉCNICA: validador-cartao-corporativo
 
 ## 1. Critérios Binários de Aceitação (Pass/Fail)
+
 - [ ] O algoritmo de Luhn DEVE validar o número do cartão com código de saída 0.
 - [ ] Cartões expirados DEVEM ser rejeitados com erro `ERR_CARTAO_EXPIRADO`.
 - [ ] NENHUM número de cartão pode ser gravado em texto puro nos arquivos de log.
@@ -60,10 +61,12 @@ A partir dessa especificação cristalina, o gerador de planos (`plangen`) deriv
 # PLANO DE EXECUÇÃO: tickets-validador-cartao
 
 ### Ticket 01: Teste do Algoritmo de Luhn (Fase Vermelha)
+
 - Ação: Criar `internal/cartao/luhn_test.go` com 10 números de cartão válidos e 5 inválidos.
 - Condição de Sucesso: O comando `go test ./...` DEVE FALHAR (código diferente de 0).
 
 ### Ticket 02: Implementação Mínima (Fase Verde)
+
 - Ação: Criar `internal/cartao/luhn.go` contendo apenas a lógica necessária para o teste passar.
 - Condição de Sucesso: O comando `go test ./...` DEVE PASSAR (código igual a 0).
 - Stop-Gate Humano: Revisão de segurança criptográfica antes de liberar o merge.

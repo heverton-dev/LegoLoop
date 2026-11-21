@@ -1,0 +1,33 @@
+{
+  "title": "LegoLoop N10 Foundry: A Fundição Autônoma de Software",
+  "subtitle": "Padrões Industriais de Missão Crítica e Motores de Fronteira",
+  "author": "Ecossistema LegoLoop",
+  "format": "double_surface",
+  "template": "ativos/livro.typst",
+  "output_pdf": "docs/books/n10-foundry/n10_foundry.pdf",
+  "parts": [
+    {
+      "id": "cap01",
+      "title": "A Arquitetura de Fundição Autônoma",
+      "file": "livro_engenharia.md",
+      "level": 1
+    },
+    {
+      "id": "cap02",
+      "title": "Guia Executivo e Retorno sobre Investimento",
+      "file": "livro_executivo.md",
+      "level": 1
+    }
+  ],
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-20_PROCESSO_N10_FOUNDRY",
+  "pasta_partes": "partes",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-n10-foundry-v1",
+  "ultima_compilacao": "2026-11-20"
+}

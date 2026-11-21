@@ -28,5 +28,17 @@
   ],
   "descricao": "Auditar qualquer alvo com critério binário e emitir veredito com evidências",
   "slug": "legoloop-auditoria-atomica",
-  "titulo": "Manual Didático: legoloop-auditoria-atomica"
+  "titulo": "Manual Didático: legoloop-auditoria-atomica",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-20_PROCESSO_AUDITORIA_ATOMICA",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-auditoria-atomica-v1",
+  "ultima_compilacao": "2026-11-20"
 }

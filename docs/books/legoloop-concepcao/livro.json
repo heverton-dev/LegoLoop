@@ -1,0 +1,29 @@
+{
+  "titulo": "Manual Didático: legoloop-concepcao",
+  "slug": "concepcao",
+  "descricao": "Concepção e Alinhamento de Intenção por entrevista socrática até confiança igual ou acima de 95% com Espelho Canônico, gravando a INTERVIEW, materializando a INTENT em docs/intents/ e parando no Stop-Gate 01 humano.",
+  "capitulos": [
+    {
+      "id": "e01",
+      "titulo": "Entrevista Socrática com Espelho Canônico",
+      "peca": "legoloop-fabricar"
+    },
+    {
+      "id": "e02",
+      "titulo": "Materialização da INTENT e Stop-Gate 01",
+      "peca": "legoloop-fabricar"
+    }
+  ],
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-20_PROCESSO_CONCEPCAO",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-concepcao-v1",
+  "ultima_compilacao": "2026-11-20"
+}

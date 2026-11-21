@@ -67,16 +67,16 @@ O processo `legoloop-web-qa` resolve esse ciclo separando rigorosamente **diagn�
 
 Cada ferramenta do processo `legoloop-web-qa` cobre uma classe distinta de defeito sem duplicar esforço nem depender de serviços pagos fechados:
 
-| Camada | Ferramenta | O que detecta | Modo de Execução |
-| :--- | :--- | :--- | :--- |
-| Integridade de Rede | `lychee` | Links, âncoras e assets com HTTP >= 400 ou timeout | Binário Rust CLI (`--format json`) |
-| Render Rápido Local | `obscura` | Falhas de carregamento, bloqueio de rede local e DOM inicial | Binário Rust (`--allow-private-network`) |
-| Runtime e Sessão | `playwright` | Erros de console, `pageerror`, falhas de rota e sessões com `storageState` | Chromium headless (`1440x900` e `390x844`) |
-| UI Comportamental | `renderlint` | Botões mortos (`dead-control`), conteúdo encoberto (`obscured-content`) e `text-overflow` | CLI Node sobre navegador real |
-| Consistência Visual | `aidd-linter-design` | Desvios de design tokens, espaçamento e contraste estrutural | Skill canônica de design tokens |
-| Acessibilidade | `axe-core` | Violações WCAG (`critical` e `serious`), ARIA e foco por teclado | `@axe-core/cli` (`--exit`) |
-| Saúde Multi-Rota | `unlighthouse` | Queda de performance, SEO e boas práticas abaixo de 90 em todas as rotas | `@unlighthouse/cli` (`--no-open`) |
-| Regressão Visual | `lost-pixel` | Diferença pixel a pixel contra baseline aprovada | CLI open-source em `.lostpixel/baseline` |
+| Camada              | Ferramenta             | O que detecta                                  | Modo de Execução                       |
+| :------------------ | :--------------------- | :--------------------------------------------- | :------------------------------------- |
+| Integridade de Rede | `lychee`                 | Links, âncoras e assets com HTTP >= 400 ou timeout | Binário Rust CLI (`--format json`)       |
+| Render Rápido Local | `obscura`                | Falhas de carregamento, bloqueio de rede local e DOM inicial | Binário Rust (`--allow-private-network`) |
+| Runtime e Sessão    | `playwright`             | Erros de console, `pageerror`, falhas de rota e sessões com `storageState` | Chromium headless (`1440x900` e `390x844`) |
+| UI Comportamental   | `renderlint`             | Botões mortos (`dead-control`), conteúdo encoberto (`obscured-content`) e `text-overflow` | CLI Node sobre navegador real          |
+| Consistência Visual | `aidd-linter-design`     | Desvios de design tokens, espaçamento e contraste estrutural | Skill canônica de design tokens        |
+| Acessibilidade      | `axe-core`               | Violações WCAG (`critical` e `serious`), ARIA e foco por teclado | `@axe-core/cli` (`--exit`)                 |
+| Saúde Multi-Rota    | `unlighthouse`           | Queda de performance, SEO e boas práticas abaixo de 90 em todas as rotas | `@unlighthouse/cli` (`--no-open`)          |
+| Regressão Visual    | `lost-pixel`             | Diferença pixel a pixel contra baseline aprovada | CLI open-source em `.lostpixel/baseline` |
 
 ## Separação entre `obscura` e `playwright`
 
@@ -160,12 +160,12 @@ Concluída a entrevista, a Camada 8 (`n12_governanca_build`) emite a cadeia comp
 
 ## Matriz de Riscos (FMEA Simplificada)
 
-| Nó | Modo de Falha | Efeito | Contenção Mecânica |
-| :--- | :--- | :--- | :--- |
-| `n01_preflight` | Ferramenta ausente no PATH | Auditoria incompleta | Abort imediato com comando exato de instalação |
-| `n02_boot_e_descoberta` | Porta ocupada ou servidor não responde | Travamento de pipeline | Timeout de 30s no healthcheck e `kill()` no `finally` |
-| `n08_lost_pixel_visual` | Mudança legítima de layout confundida com bug | Falso positivo contínuo | Stop-Gate humano `n09_sg_baseline_visual` |
-| `n10_relatorio_consolidado` | Slug malicioso no `--alvo` | Escrita fora do repositório | `sanitizeTargetSlug` + verificação `startsWith(qaRoot)` |
+| Nó                          | Modo de Falha                         | Efeito                      | Contenção Mecânica                      |
+| :-------------------------- | :------------------------------------ | :-------------------------- | :-------------------------------------- |
+| `n01_preflight`                | Ferramenta ausente no PATH            | Auditoria incompleta        | Abort imediato com comando exato de instalação |
+| `n02_boot_e_descoberta`          | Porta ocupada ou servidor não responde | Travamento de pipeline      | Timeout de 30s no healthcheck e `kill()` no `finally` |
+| `n08_lost_pixel_visual`          | Mudança legítima de layout confundida com bug | Falso positivo contínuo     | Stop-Gate humano `n09_sg_baseline_visual`    |
+| `n10_relatorio_consolidado`     | Slug malicioso no `--alvo`              | Escrita fora do repositório | `sanitizeTargetSlug` + verificação `startsWith(qaRoot)` |
 
 ## Apêndice: Rastreabilidade dos Artefatos
 
@@ -175,3 +175,5 @@ Concluída a entrevista, a Camada 8 (`n12_governanca_build`) emite a cadeia comp
 - **SPEC e PLAN:** `docs/specs/2026-11-15_SPEC_WEB_QA.md` e `docs/plans/2026-11-15_PLAN_WEB_QA.md`
 - **Fichas Técnicas:** `docs/fichas/legoloop-web-qa/n01.md` a `n12.md`
 - **Runner e Suíte TDD:** `tools/webqa/webqa.mjs` e `tools/webqa/webqa.test.mjs`
+
+

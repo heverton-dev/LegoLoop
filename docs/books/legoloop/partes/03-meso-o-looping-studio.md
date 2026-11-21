@@ -26,6 +26,7 @@ Ao abrir o Looping Studio através do comando `legoloop studio`, o usuário é r
    * **Aprovado (Verde):** A etapa foi concluída com sucesso e todos os testes passaram com código de saída zero.
    * **Parado em Gate (Âmbar):** A esteira pausou voluntariamente aguardando auditoria humana.
    * **Falha (Vermelho):** Um contrato ou teste unitário foi violado; a esteira congelou de forma segura.
+
 2. **As Arestas Direcionadas (Cabos de Dados):** As linhas que interligam os nós estabelecem a precedência temporal e o fluxo de artefatos. Uma aresta só conduz sinal quando o nó de origem emitir seu artefato final devidamente validado.
 3. **A Gaveta Lateral de Inspeção (Inspector Drawer):** Ao clicar sobre qualquer nó do fluxo, um painel lateral se abre revelando a radiografia completa daquela peça: o arquivo de especificação (`SPEC.md`), os critérios binários de aceitação, a pontuação de qualidade na Matriz de Reputação (Tier Ouro, Prata ou Bronze) e o consumo exato de tokens medido nas últimas execuções.
 4. **O Catálogo de Peças (Toolbar Superior):** Permite arrastar novas peças do cofre diretamente para o canvas ou disparar a fábrica autônoma através do botão `+ Novo Processo`.
@@ -41,6 +42,7 @@ O operador clica no botão `+ Novo Processo` no canto superior direito. Um assis
 
 ### Passo 2: O Desdobramento da Tríade
 Em segundo plano, o motor do LegoLoop gera os arquivos `INTENT.md` e `SPEC.md`, convertendo as regras em critérios puramente binários. Três nós surgem automaticamente dispostos no canvas:
+
 * **Nó 1 (Extrator OCR):** Responsável por ler o PDF e emitir um JSON estruturado.
 * **Nó 2 (Validador Fiscal):** Responsável por checar se a soma dos itens bate com o valor total da nota.
 * **Nó 3 (Auditor de Cadastro):** Responsável por consultar a base local de fornecedores autorizados.
@@ -95,12 +97,14 @@ Para estabelecer um padrão de cooperação transparente de alta fidelidade entr
 
 #### 1. Pré-Ação (O Que Será Feito Antes de Tocar no Sistema)
 Antes de modificar um único arquivo ou disparar uma esteira, a IA deve apresentar formalmente suas intenções:
+
 * **`**[S] Situação:**`** Diagnóstico factual do estado atual, sem introduções ou saudações.
 * **`**[T] Teoria:**`** A explicação lógica e de engenharia pela qual aquela mudança específica resolverá o problema.
 * **`**[E] Execução:**`** O plano de ação com a lista de arquivos afetados, a porta de rollback e as opções de decisão humana explícitas (`[1] seguir`, `[2] personalizar`, `[0] cancelar`).
 
 #### 2. Pós-Ação (O Que Foi Feito e Quais as Provas)
 Após concluir a operação, a IA apresenta o balanço de fechamento com evidências reais:
+
 * **`**[S] Situação:**`** O novo estado do sistema após as intervenções.
 * **`**[T] Tese:**`** A confirmação de que a hipótese inicial foi comprovada na prática.
 * **`**[E] Evidência:**`** Provas computáveis e inquestionáveis: logs de testes que passaram, código de saída zero e verificação de conformidade de esquemas.

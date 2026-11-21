@@ -1,0 +1,11 @@
+{
+  "slug": "matriz",
+  "canonical_name": "legoloop-matriz",
+  "sucesso": true,
+  "etapas_concluidas": 9,
+  "report_path": "docs/reports/2026-11-20_REPORT_MATRIZ.md",
+  "timestamp": "2026-11-20T18:28:31-03:00",
+  "duracao_total_ms": 22934,
+  "status": "APPROVED",
+  "gate": "exit_code == 0"
+}

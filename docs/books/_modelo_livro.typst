@@ -19,8 +19,62 @@
 #let cor-info     = rgb("#2563eb")                                    // Azul Cobalto Google
 #let cor-alerta   = rgb("#d97706")                                    // Âmbar Google Dourado
 #let cor-perigo   = rgb("#dc2626")                                    // Carmesim Google
+#let cor-erro     = cor-perigo                                        // Alias canônico para cor de erro
 #let cor-sucesso  = rgb("#16a34a")                                    // Verde Esmeralda Google
 #let cor-teoria   = rgb("#7c3aed")                                    // Violeta DeepMind
+
+// Helpers de Nós de Diagramas
+#let no(titulo, ..args) = box(stroke: 0.5pt + cor-linha, inset: 5pt, radius: 3pt, fill: white)[
+  #text(weight: "bold", size: 8pt, fill: cor-tinta)[#titulo]
+  #if "sub" in args.named() [ \ #text(size: 7pt, fill: cor-suave)[#args.named().at("sub")] ]
+]
+#let no-claro = no
+#let no-escuro = no
+#let no-ativo = no
+#let no-inativo = no
+
+// Componente Canônico Esteira de Processo / Pipeline
+#let esteira(..args) = {
+  let estagios = ()
+  let gates = ()
+  if "gates" in args.named() {
+    gates = args.named().at("gates")
+  }
+  for pos in args.pos() {
+    if type(pos) == array {
+      for p in pos { estagios.push(p) }
+    } else {
+      estagios.push(pos)
+    }
+  }
+  v(1em)
+  block(width: 100%, stroke: 0.5pt + cor-linha, inset: 10pt, radius: 4pt, fill: rgb("#F8FAFC"))[
+    #text(weight: "bold", size: 8.5pt, fill: cor-tinta, font: ("Segoe UI", "Arial"))[ESTEIRA CANÔNICA DE PROCESSO]
+    #v(0.5em)
+    #grid(
+      columns: (1fr,) * calc.min(calc.max(estagios.len(), 1), 4),
+      gutter: 8pt,
+      ..estagios.map(item => {
+        if type(item) == content {
+          item
+        } else {
+          let tit = if type(item) == array and item.len() > 0 { item.at(0) } else { str(item) }
+          let sub = if type(item) == array and item.len() > 1 { item.at(1) } else { "" }
+          box(width: 100%, stroke: 0.5pt + rgb("#CBD5E1"), inset: 6pt, radius: 3pt, fill: white)[
+            #text(weight: "bold", size: 8pt, fill: cor-tinta, font: ("Segoe UI", "Arial"))[#tit]
+            #if sub != "" [ \ #text(size: 7pt, fill: cor-suave, font: ("Segoe UI", "Arial"))[#sub] ]
+          ]
+        }
+      })
+    )
+    #if gates.len() > 0 [
+      #v(0.4em)
+      #text(size: 7.2pt, fill: cor-accent, font: ("Segoe UI", "Arial"), weight: "bold")[Gates Binários: ]
+      #text(size: 7.2pt, fill: cor-suave, font: ("Segoe UI", "Arial"))[#gates.join(" · ")]
+    ]
+  ]
+  v(1em)
+}
 
 #set document(
   title: [$title$],
