@@ -43,7 +43,7 @@ func TestLegoPressCLI_Doctor(t *testing.T) {
 }
 
 func TestLegoPressCLI_Auditar(t *testing.T) {
-	pdfs, err := filepath.Glob(filepath.Join("..", "..", "docs", "books", "video-rea", "*.pdf"))
+	pdfs, err := filepath.Glob(filepath.Join("..", "..", "docs", "books", "legoloop-video-rea", "*.pdf"))
 	if err != nil || len(pdfs) != 1 {
 		t.Fatalf("esperava exatamente um PDF homologado, obteve %v (erro: %v)", pdfs, err)
 	}
@@ -58,7 +58,7 @@ func TestLegoPressCLI_Auditar(t *testing.T) {
 	}
 
 	out := stdout.String()
-	if !strings.Contains(out, "9 páginas") && !strings.Contains(out, "9 paginas") {
-		t.Errorf("esperava mencao a 9 paginas na auditoria, obteve: %s", out)
+	if !strings.Contains(out, "14 páginas") && !strings.Contains(out, "14 paginas") {
+		t.Errorf("esperava mencao a 14 paginas na auditoria, obteve: %s", out)
 	}
 }

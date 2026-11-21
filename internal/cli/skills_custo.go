@@ -7,23 +7,30 @@ import (
 	"os"
 	"path/filepath"
 
+	"legoloop/internal/processo"
 	"legoloop/internal/skills"
 )
 
 // gruposSkillsCusto devolve, por harness, as pastas que ele escaneia.
 // agy-cli: as 3 pastas citadas no ~/.gemini/antigravity-cli/cli.log (linhas de "Failed to parse skill file").
-func gruposSkillsCusto(home string) map[string][]string {
+// Os demais harnesses vêm de processo.NomesHarnesses, para nenhum ficar fora da medição.
+func gruposSkillsCusto(home string) (map[string][]string, []string) {
 	g := filepath.Join(home, ".gemini")
-	return map[string][]string{
+	grupos := map[string][]string{
 		"agy-cli": {filepath.Join(g, "antigravity-cli", "skills"), filepath.Join(g, "config", "skills"), filepath.Join(g, "skills")},
 		"agy-ide": {filepath.Join(g, "antigravity-ide", "skills")},
-		"claude":  {filepath.Join(home, ".claude", "skills")},
-		"codex":   {filepath.Join(home, ".codex", "skills")},
 		"agents":  {filepath.Join(home, ".agents", "skills")},
 	}
+	ordem := []string{"agy-cli", "agy-ide", "agents"}
+	for _, nome := range processo.NomesHarnesses() {
+		if nome == "gemini" || nome == "antigravity" {
+			continue // já somados em agy-cli
+		}
+		grupos[nome] = []string{processo.PastaSkills(home, nome)}
+		ordem = append(ordem, nome)
+	}
+	return grupos, ordem
 }
-
-var ordemSkillsCusto = []string{"agy-cli", "agy-ide", "claude", "codex", "agents"}
 
 type skillsCustoRel struct {
 	Harnesses []skills.CustoHarness `json:"harnesses"`
@@ -39,9 +46,9 @@ func cmdSkillsCusto(_ context.Context, args []string, d Deps) int {
 	if home == "" {
 		home, _ = os.UserHomeDir()
 	}
-	grupos := gruposSkillsCusto(home)
+	grupos, ordem := gruposSkillsCusto(home)
 	rel := skillsCustoRel{}
-	for _, nome := range ordemSkillsCusto {
+	for _, nome := range ordem {
 		rel.Harnesses = append(rel.Harnesses, skills.CustoGrupo(nome, grupos[nome]))
 	}
 	if *asJSON {

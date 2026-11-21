@@ -188,3 +188,38 @@ func TestSyncHarnesses_JSONFlag(t *testing.T) {
 		t.Fatalf("applyOut inesperado: %+v", applyOut)
 	}
 }
+
+// TestSyncHarnessesCobrePiEOmp prova que pi e OMP entram no sync: o MCP `rea` direto (207 tools
+// carregadas) é trocado pelo roteador lazy legoloop, com backup.
+func TestSyncHarnessesCobrePiEOmp(t *testing.T) {
+	tmpHome := t.TempDir()
+	alvos := map[string]string{
+		".pi/agent/mcp.json":  filepath.Join(tmpHome, ".pi", "agent", "mcp.json"),
+		".omp/agent/mcp.json": filepath.Join(tmpHome, ".omp", "agent", "mcp.json"),
+	}
+	for rel, p := range alvos {
+		if err := os.MkdirAll(filepath.Dir(p), 0755); err != nil {
+			t.Fatalf("mkdir %s: %v", rel, err)
+		}
+		if err := os.WriteFile(p, []byte(`{"mcpServers":{"rea":{"command":"cmd.exe"}}}`), 0644); err != nil {
+			t.Fatalf("fixture %s: %v", rel, err)
+		}
+	}
+	var stdout, stderr bytes.Buffer
+	deps := Deps{Stdin: strings.NewReader(""), Stdout: &stdout, Stderr: &stderr, Home: tmpHome}
+	if code := Run(context.Background(), []string{"sync-harnesses", "--apply"}, deps); code != 0 {
+		t.Fatalf("apply saiu com %d: %s", code, stderr.String())
+	}
+	for rel, p := range alvos {
+		b, err := os.ReadFile(p)
+		if err != nil {
+			t.Fatalf("ler %s: %v", rel, err)
+		}
+		if !strings.Contains(string(b), "mcp-router") || strings.Contains(string(b), `"rea"`) {
+			t.Errorf("%s deve usar só o roteador lazy, conteúdo: %s", rel, b)
+		}
+		if _, err := os.Stat(p + ".bak_legoloop"); err != nil {
+			t.Errorf("%s sem backup .bak_legoloop", rel)
+		}
+	}
+}

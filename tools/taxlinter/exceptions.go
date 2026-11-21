@@ -244,7 +244,8 @@ var allowedExceptions = map[string]map[string]bool{
 		"loop": true,
 	},
 	"internal/processo/projecoes.go": {
-		"loop": true,
+		"loop":     true,
+		"pipeline": true,
 	},
 	"internal/processo/projecoes_test.go": {
 		"loop": true,

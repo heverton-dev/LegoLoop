@@ -63,3 +63,33 @@ func TestSkillsCustoTexto(t *testing.T) {
 		t.Fatalf("saída em texto sem agy-cli/tokens: %q", out.String())
 	}
 }
+
+// TestSkillsCustoCobreTodosOsHarnesses prova que nenhum harness com pasta de skills própria
+// fica fora da medição: um harness eager (cline, 2 skills) e um de layout especial (opencode) aparecem.
+func TestSkillsCustoCobreTodosOsHarnesses(t *testing.T) {
+	d, out, errb := deps(t)
+	skillCusto(t, filepath.Join(d.Home, ".cline", "skills"), "alfa")
+	skillCusto(t, filepath.Join(d.Home, ".cline", "skills"), "beta")
+	skillCusto(t, filepath.Join(d.Home, ".config", "opencode", "skills"), "gama")
+	if code := run(t, d, "skills-custo", "--json"); code != 0 {
+		t.Fatalf("exit %d stderr=%q", code, errb.String())
+	}
+	var rel struct {
+		Harnesses []skills.CustoHarness `json:"harnesses"`
+	}
+	if err := json.Unmarshal(out.Bytes(), &rel); err != nil {
+		t.Fatalf("saída não é JSON: %v", err)
+	}
+	got := map[string]int{}
+	for _, h := range rel.Harnesses {
+		got[h.Harness] = h.Skills
+	}
+	if got["cline"] != 2 || got["opencode"] != 1 {
+		t.Fatalf("cobertura = %v, quer cline=2 e opencode=1", got)
+	}
+	for _, nome := range []string{"mimocode", "hermes", "windsurf", "pi", "grok", "crush", "goose", "junie"} {
+		if _, ok := got[nome]; !ok {
+			t.Errorf("harness %q fora do skills-custo", nome)
+		}
+	}
+}

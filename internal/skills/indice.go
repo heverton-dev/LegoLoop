@@ -15,14 +15,14 @@ description: Índice das skills do LegoLoop. Use quando precisar de uma skill qu
 
 # Skills sob demanda (lazy)
 
-As skills ficam no Cofre, fora do contexto. Carregue só a que a tarefa pedir.
+As skills ficam no Cofre, fora do contexto. Carregue só a que a demanda pedir.
 
-1. Busque: ferramenta ` + "`skill_search`" + ` do MCP ` + "`legoloop`" + ` com ` + "`query`" + ` (palavras da tarefa) e ` + "`top_k`" + ` 5.
+1. Busque: ferramenta ` + "`skill_search`" + ` do MCP ` + "`legoloop`" + ` com ` + "`query`" + ` (palavras da demanda) e ` + "`top_k`" + ` 5.
 2. Escolha o ` + "`skill_id`" + ` mais relevante do resultado.
 3. Leia: ferramenta ` + "`call_skill`" + ` com ` + "`skill_id`" + `. O retorno é o SKILL.md completo; siga-o.
 
 Regras:
-- Não liste o Cofre inteiro. Busque pela tarefa.
+- Não liste o Cofre inteiro. Busque pela demanda.
 - Se skill_search voltar vazio, reformule a query com outros termos antes de desistir.
 - Os comandos legoloop (fabricar, fechar, listar, matriz) continuam disponíveis na CLI.
 `

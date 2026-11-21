@@ -19,6 +19,7 @@ func cmdMcpRouter(_ context.Context, args []string, d Deps) int {
 	fs := newFlags("mcp-router", d)
 	vaultFlag := fs.String("vault", "", "cofre canônico (padrão ~/.aidd/canonical)")
 	projectFlag := fs.String("project", ".", "diretório do projeto")
+	gatewayFlag := fs.Bool("gateway", false, "expõe só as 4 ferramentas de gateway (piso de contexto); ws e swarm_* seguem por call_mcp_tool")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return 0
@@ -28,6 +29,9 @@ func cmdMcpRouter(_ context.Context, args []string, d Deps) int {
 	home, vault := resolveMcpRouterPaths(d.Home, *vaultFlag)
 	router := mcp.NewConfiguredRouter(home, vault, *projectFlag)
 	defer router.Close()
+	if *gatewayFlag {
+		router.EnableGateway()
+	}
 	if err := router.CarregarToolsDeProcessos(*projectFlag); err != nil {
 		fmt.Fprintf(d.Stderr, "mcp-router: %v\n", err)
 		return mcp.CodigoDeSaida(err)

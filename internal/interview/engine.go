@@ -152,17 +152,10 @@ func intentTarget(baseDir, fileName, theme, date string) (path, name string) {
 
 var (
 	// \*{0,2} tolera o realce em Markdown (**CONFIANÇA**:) que os cérebros emitem.
-	reHypothesis = regexp.MustCompile(`(?i)\*{0,2}HIPÓTESE\*{0,2}:\s*([^\n]+)`)
-	reConfidence = regexp.MustCompile(`(?i)\*{0,2}CONFIANÇA\*{0,2}:\s*(\d+)%?`)
-	reQuestion   = regexp.MustCompile(`(?i)\*{0,2}PERGUNTA\*{0,2}:\s*([^\n]+)`)
-	reGuess      = regexp.MustCompile(`(?i)\*{0,2}PALPITE\*{0,2}:\s*([^\n]+)`)
-
-	reOutcome     = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Resultado Esperado\*{0,2}:\s*([^\n]+)`)
-	reUser        = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Quem se Beneficia\*{0,2}:\s*([^\n]+)`)
-	reWhyNow      = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Por que Agora\*{0,2}:\s*([^\n]+)`)
-	reSuccess     = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Critério de Sucesso\*{0,2}:\s*([^\n]+)`)
-	reConstraints = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Restrições Inegociáveis\*{0,2}:\s*([^\n]+)`)
-	reOutOfScope  = regexp.MustCompile(`(?i)[*-]\s*\*{0,2}Fora de Escopo\*{0,2}:\s*([^\n]+)`)
+	reHypothesis = regexp.MustCompile(`(?i)\*{0,2}HIPÓTESE\*{0,2}:\*{0,2}\s*([^\n]+)`)
+	reConfidence = regexp.MustCompile(`(?i)\*{0,2}CONFIANÇA\*{0,2}:\*{0,2}\s*(\d+)%?`)
+	reQuestion   = regexp.MustCompile(`(?i)\*{0,2}PERGUNTA\*{0,2}:\*{0,2}\s*([^\n]+)`)
+	reGuess      = regexp.MustCompile(`(?i)\*{0,2}PALPITE\*{0,2}:\*{0,2}\s*([^\n]+)`)
 )
 
 // capture devolve o primeiro grupo de re em raw, sem espaços nas pontas, e se houve casamento.
@@ -219,18 +212,15 @@ func ParseTurnResult(raw string) *TurnResult {
 
 // parseMirror lê os seis campos do espelho canônico.
 func parseMirror(raw string) *Mirror {
-	m := &Mirror{}
-	m.Outcome, _ = capture(reOutcome, raw)
-	m.User, _ = capture(reUser, raw)
-	m.WhyNow, _ = capture(reWhyNow, raw)
-	m.Success, _ = capture(reSuccess, raw)
-	if s, ok := capture(reConstraints, raw); ok {
-		m.Constraints = splitItems(s)
+	c := camposEspelho(raw)
+	return &Mirror{
+		Outcome:     strings.Join(c["resultado esperado"], " "),
+		User:        strings.Join(c["quem se beneficia"], " "),
+		WhyNow:      strings.Join(c["por que agora"], " "),
+		Success:     strings.Join(c["critério de sucesso"], "; "),
+		Constraints: itensDoCampo(c["restrições inegociáveis"]),
+		OutOfScope:  itensDoCampo(c["fora de escopo"]),
 	}
-	if s, ok := capture(reOutOfScope, raw); ok {
-		m.OutOfScope = splitItems(s)
-	}
-	return m
 }
 
 var rePremonicaoItem = regexp.MustCompile(`(?im)^\s*[1-3]\.\s*Pergunta:\s*[^\n|]+\|\s*Resposta prevista:\s*[^\n]+`)

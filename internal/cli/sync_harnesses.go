@@ -56,6 +56,8 @@ func targetConfigs(home string) []string {
 		filepath.Join(home, "AppData", "Roaming", "Code", "User", "mcp.json"),
 		filepath.Join(home, "AppData", "Roaming", "Trae", "User", "mcp.json"),
 		filepath.Join(home, ".codex", "config.toml"),
+		filepath.Join(home, ".pi", "agent", "mcp.json"),
+		filepath.Join(home, ".omp", "agent", "mcp.json"),
 		filepath.Join(home, "AppData", "Local", "hermes", "config.yaml"),
 	}
 }

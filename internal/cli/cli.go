@@ -82,10 +82,11 @@ Comandos:
   compor     <nome> <legoloop-x@versão> [--depende ID]... [--yes]  liga um processo como etapa de outro (recusa ciclo)
   instalar-skills [--vault DIR] [--dry-run] [--json]  instala e vincula as skills nativas universais
   skills-custo    [--json]  mede os tokens de frontmatter que cada harness carrega por turno
+  skills-migrar (--dry-run|--apply) [--vault DIR]  tira as skills eager de todos os harnesses (backup) e deixa só o índice lazy
   bootstrap       [--vault DIR] [--dry-run] [--json]  orquestra skills, mcp-router e ambiente sem config manual
   stept      [status|set|on|off|scan] [--harness H] [--modo M] [--pausa P] [--json]  alternador de governança STE-PT
   sync-harnesses (--dry-run|--apply) [--json]         conecta harnesses ao legoloop mcp-router
-  mcp-router                                 inicia servidor MCP STDIO com Lazy discovery
+  mcp-router [--gateway]                     inicia servidor MCP STDIO com Lazy discovery (--gateway: só 4 ferramentas)
   mcp-registry (list|refresh)                lista ou indexa os MCPs externos que o router sobe sob demanda
   legopress  [doctor|auditar|criar|editar|atualizar|adequar|preview]  processo industrial de livros técnicos
   video-motion <subcomando> [opções]          processo determinístico de edição e motion vídeo
@@ -111,7 +112,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		"run": cmdRun, "exec": cmdExec, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
 		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
 		"dissecar": cmdDissecar,
-		"refinar":  cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills, "skills-custo": cmdSkillsCusto,
+		"refinar":  cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills, "skills-custo": cmdSkillsCusto, "skills-migrar": cmdSkillsMigrar,
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,

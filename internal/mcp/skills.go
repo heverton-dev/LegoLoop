@@ -127,18 +127,18 @@ func parseSkillFile(path string) (SkillItem, error) {
 	return item, scanner.Err()
 }
 
-// leitorFrontmatter lê o frontmatter linha a linha e junta valores em bloco YAML (|, >).
+// leitorFrontmatter lê o frontmatter linha a linha e junta valores em texto YAML multilinha (|, >).
 type leitorFrontmatter struct {
-	item  *SkillItem
-	chave string
-	bloco []string
+	item   *SkillItem
+	chave  string
+	linhas []string
 }
 
 func (l *leitorFrontmatter) fechar() {
 	if l.chave != "" {
-		aplicarMeta(l.chave, strings.Join(l.bloco, " "), l.item)
+		aplicarMeta(l.chave, strings.Join(l.linhas, " "), l.item)
 	}
-	l.chave, l.bloco = "", nil
+	l.chave, l.linhas = "", nil
 }
 
 func (l *leitorFrontmatter) linha(bruta string) {
@@ -146,7 +146,7 @@ func (l *leitorFrontmatter) linha(bruta string) {
 	indentada := bruta == "" || bruta[0] == ' ' || bruta[0] == '	'
 	if l.chave != "" && indentada {
 		if limpa != "" {
-			l.bloco = append(l.bloco, limpa)
+			l.linhas = append(l.linhas, limpa)
 		}
 		return
 	}
@@ -154,7 +154,7 @@ func (l *leitorFrontmatter) linha(bruta string) {
 	l.chave = extractMetaLine(limpa, l.item)
 }
 
-// extractMetaLine lê uma linha "chave: valor" do frontmatter. Se o valor abre um bloco YAML
+// extractMetaLine lê uma linha "chave: valor" do frontmatter. Se o valor abre um texto YAML multilinha
 // (|, >, |-, >-), devolve a chave para o chamador juntar as linhas indentadas seguintes.
 func extractMetaLine(line string, item *SkillItem) string {
 	parts := strings.SplitN(line, ":", 2)

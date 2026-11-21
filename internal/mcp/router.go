@@ -80,6 +80,7 @@ type Router struct {
 	skills        *SkillEngine
 	skillRoot     string
 	swarm         bool
+	gateway       bool
 	proxy         *Proxy
 	toolsProcesso map[string]toolRegistrada
 }
@@ -102,6 +103,12 @@ func NewRouter(vault VaultRegistry, runner ProcessRunner) *Router {
 // EnableSwarm habilita a exposicao de ferramentas swarm_* em tools/list.
 func (r *Router) EnableSwarm() {
 	r.swarm = true
+}
+
+// EnableGateway ativa o modo gateway: tools/list expõe só call_mcp_tool. Buscas de skills e MCPs,
+// swarm_* e shell/arquivos seguem acessíveis por ele (servidores embutidos legoloop e ws).
+func (r *Router) EnableGateway() {
+	r.gateway = true
 }
 
 // NewConfiguredRouter instancia um Router conectado ao cofre, skills reais e ferramentas Swarm.
@@ -275,6 +282,9 @@ func (r *Router) callMcpTool(id any, args map[string]any) JSONRPCResponse {
 	srv, _ := args["server"].(string)
 	tool, _ := args["tool"].(string)
 	toolArgs, _ := args["arguments"].(map[string]any)
+	if resp, ok := r.runEmbutido(id, srv, tool, toolArgs); ok {
+		return resp
+	}
 	out, err := r.runner.Run(srv, tool, toolArgs)
 	if err != nil {
 		return r.toolCallError(id, fmt.Sprintf("Falha ao executar %s:%s: %v", srv, tool, err))
@@ -305,6 +315,9 @@ func (r *Router) toolCallError(id any, msg string) JSONRPCResponse {
 
 func (r *Router) minimalTools() []map[string]any {
 	tools := r.toolsInternas()
+	if r.gateway {
+		return tools
+	}
 	nomes := make([]string, 0, len(r.toolsProcesso))
 	for nome := range r.toolsProcesso {
 		nomes = append(nomes, nome)
@@ -323,11 +336,14 @@ func (r *Router) minimalTools() []map[string]any {
 
 // toolsInternas reúne as tools embutidas do router (bootstrap, skills e swarm).
 func (r *Router) toolsInternas() []map[string]any {
+	if r.gateway {
+		return gatewayToolDefs()
+	}
 	tools := r.baseTools()
 	if r.skills != nil {
 		tools = append(tools, skillToolDefs()...)
 	}
-	if r.swarm || r.vault != nil || r.runner != nil {
+	if !r.gateway && (r.swarm || r.vault != nil || r.runner != nil) {
 		tools = append(tools, swarmToolDefs()...)
 	}
 	return tools

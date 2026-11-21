@@ -7,8 +7,35 @@ import (
 	"strings"
 )
 
-// harnessesConhecidos são os harnesses que têm pasta de skills própria em ~/.<nome>/skills ou ~/.gemini/config/skills.
-var harnessesConhecidos = []string{"claude", "codex", "gemini", "antigravity", "opencode", "cursor", "kiro"}
+// harnessesConhecidos são os harnesses com pasta de skills própria. O padrão é ~/.<nome>/skills;
+// os que fogem dele estão em layoutsEspeciais.
+var harnessesConhecidos = []string{
+	"claude", "codex", "gemini", "antigravity", "opencode", "cursor", "kiro",
+	"windsurf", "copilot", "trae", "roo", "continue", "qwen", "cline", "hermes",
+	"mimocode", "augment", "junie", "grok", "crush", "devin", "goose", "pi",
+}
+
+// layoutEspecial guarda a raiz do harness e a pasta de skills, relativas ao HOME.
+type layoutEspecial struct{ raiz, skills []string }
+
+var layoutsEspeciais = map[string]layoutEspecial{
+	"antigravity": {[]string{".gemini", "config"}, []string{".gemini", "config", "skills"}},
+	"opencode":    {[]string{".config", "opencode"}, []string{".config", "opencode", "skills"}},
+	"windsurf":    {[]string{".codeium", "windsurf"}, []string{".codeium", "windsurf", "skills"}},
+	"crush":       {[]string{".config", "crush"}, []string{".config", "crush", "skills"}},
+	"devin":       {[]string{".config", "devin"}, []string{".config", "devin", "skills"}},
+	"goose":       {[]string{".config", "goose"}, []string{".config", "goose", "skills"}},
+	"pi":          {[]string{".pi", "agent"}, []string{".pi", "agent", "skills"}},
+}
+
+// NomesHarnesses devolve os harnesses conhecidos, na ordem de detecção.
+func NomesHarnesses() []string { return append([]string(nil), harnessesConhecidos...) }
+
+// PastaSkills devolve a pasta onde o harness lê skills, sob o HOME dado.
+func PastaSkills(home, nome string) string {
+	_, skills := caminhosHarness(home, nome)
+	return skills
+}
 
 // Harness é um harness detectado no HOME: o nome e a pasta onde ele lê skills.
 type Harness struct {
@@ -23,18 +50,38 @@ func DetectarHarnesses(fsys FS, home string) []Harness {
 	}
 	var out []Harness
 	for _, n := range harnessesConhecidos {
-		rootDir, skillsDir := caminhosHarness(home, n)
-		if info, err := fsys.Stat(rootDir); err == nil && info.IsDir() {
+		if skillsDir, ok := pastaDetectada(fsys, home, n); ok {
 			out = append(out, Harness{Nome: n, Skills: skillsDir})
 		}
 	}
 	return out
 }
 
+// layoutsLegados guardam o layout antigo de harnesses que mudaram de pasta: quem só tem a pasta
+// antiga continua detectado, e a pasta nova vence quando existe.
+var layoutsLegados = map[string]layoutEspecial{
+	"opencode": {[]string{".opencode"}, []string{".opencode", "skills"}},
+}
+
+// pastaDetectada devolve a pasta de skills do harness se a raiz dele existe no HOME.
+func pastaDetectada(fsys FS, home, nome string) (string, bool) {
+	existe := func(dir string) bool {
+		info, err := fsys.Stat(dir)
+		return err == nil && info.IsDir()
+	}
+	raiz, skills := caminhosHarness(home, nome)
+	if existe(raiz) {
+		return skills, true
+	}
+	if l, ok := layoutsLegados[nome]; ok && existe(filepath.Join(append([]string{home}, l.raiz...)...)) {
+		return filepath.Join(append([]string{home}, l.skills...)...), true
+	}
+	return "", false
+}
+
 func caminhosHarness(home, nome string) (string, string) {
-	if nome == "antigravity" {
-		cfgDir := filepath.Join(home, ".gemini", "config")
-		return cfgDir, filepath.Join(cfgDir, "skills")
+	if l, ok := layoutsEspeciais[nome]; ok {
+		return filepath.Join(append([]string{home}, l.raiz...)...), filepath.Join(append([]string{home}, l.skills...)...)
 	}
 	base := filepath.Join(home, "."+nome)
 	return base, filepath.Join(base, "skills")

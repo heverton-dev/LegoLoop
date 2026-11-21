@@ -94,16 +94,16 @@ func TestRankingDeterministicoEOrdenado(t *testing.T) {
 	}
 }
 
-// TestDescricaoEmBlocoYAML prova que `description: |` não vira o texto "|".
-func TestDescricaoEmBlocoYAML(t *testing.T) {
-	conteudo := "---\nname: gcp-bloco\ndescription: |\n  Provisiona recursos de pipeline\n  com verificação de segurança.\n---\ncorpo\n"
-	e := indexarRank(t, map[string]string{"gcp-bloco": conteudo})
-	got := e.Search("provisiona pipeline", 3)
-	if len(got) == 0 || got[0].ID != "gcp-bloco" {
-		t.Fatalf("busca pela descrição em bloco = %+v, quer gcp-bloco", got)
+// TestDescricaoMultilinhaYAML prova que `description: |` não vira o texto "|".
+func TestDescricaoMultilinhaYAML(t *testing.T) {
+	conteudo := "---\nname: gcp-multilinha\ndescription: |\n  Provisiona recursos de infraestrutura\n  com verificação de segurança.\n---\ncorpo\n"
+	e := indexarRank(t, map[string]string{"gcp-multilinha": conteudo})
+	got := e.Search("provisiona infraestrutura", 3)
+	if len(got) == 0 || got[0].ID != "gcp-multilinha" {
+		t.Fatalf("busca pela descrição multilinha = %+v, quer gcp-multilinha", got)
 	}
 	if got[0].Resumo == "|" || got[0].Resumo == "" {
-		t.Fatalf("resumo = %q, quer o texto do bloco", got[0].Resumo)
+		t.Fatalf("resumo = %q, quer o texto multilinha", got[0].Resumo)
 	}
 }
 
@@ -120,7 +120,7 @@ func TestRuidoDeMetadadosNaoPontua(t *testing.T) {
 func TestPalavraVaziaNaoCasaDentroDeOutraPalavra(t *testing.T) {
 	e := indexarRank(t, map[string]string{
 		"aidd-tdd":        fmSkill("aidd-tdd", "Ciclo Red-Green-Refactor estrito."),
-		"aidd-components": fmSkill("aidd-components", "Biblioteca de componentes visuais."),
+		"aidd-components": fmSkill("aidd-components", "Biblioteca de telas visuais."),
 		"gcp-composer":    fmSkill("gcp-composer", "Orquestra DAGs no Composer."),
 	})
 	got := e.Search("revisar código com TDD", 3)

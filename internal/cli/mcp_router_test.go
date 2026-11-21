@@ -83,3 +83,31 @@ func TestMcpRouterExpoeToolsDeProcessos(t *testing.T) {
 		t.Errorf("bootstrap do router ausente em tools/list: %s", stdout.String())
 	}
 }
+
+// TestMcpRouterGatewayExpoeSoQuatroFerramentas prova a flag --gateway no CLI real:
+// tools/list devolve apenas call_mcp_tool; sem a flag, o swarm_* aparece.
+func TestMcpRouterGatewayExpoeUmaFerramenta(t *testing.T) {
+	contar := func(args ...string) int {
+		var stdout, stderr bytes.Buffer
+		entrada := `{"jsonrpc":"2.0","id":1,"method":"tools/list"}` + "\n"
+		deps := Deps{Stdin: strings.NewReader(entrada), Stdout: &stdout, Stderr: &stderr, Home: t.TempDir()}
+		if code := Run(context.Background(), append([]string{"mcp-router", "--project", t.TempDir()}, args...), deps); code != 0 {
+			t.Fatalf("mcp-router %v saiu com %d: %s", args, code, stderr.String())
+		}
+		var resp struct {
+			Result struct {
+				Tools []struct{ Name string } `json:"tools"`
+			} `json:"result"`
+		}
+		if err := json.Unmarshal([]byte(strings.TrimSpace(stdout.String())), &resp); err != nil {
+			t.Fatalf("resposta inválida %q: %v", stdout.String(), err)
+		}
+		return len(resp.Result.Tools)
+	}
+	if n := contar("--gateway"); n != 1 {
+		t.Errorf("--gateway expõe %d ferramentas, quer 1", n)
+	}
+	if n := contar(); n <= 1 {
+		t.Errorf("sem --gateway o router deve expor mais de 1 ferramenta, expôs %d", n)
+	}
+}

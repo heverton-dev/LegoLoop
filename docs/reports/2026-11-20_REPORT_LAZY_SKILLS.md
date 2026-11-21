@@ -212,3 +212,23 @@ O custo só cai quando o TOTAL de candidatas ficar abaixo do teto.
 - `skills-custo` ainda soma pastas; falta ler o bloco real do WAL do agy e modelar teto/plugins.
 - agy-ide e Claude (`~/.agents/skills`, ~11k tokens) seguem eager até uma migração própria.
 - Backups em `~/.gemini/_skills_backup_20261120_*` aguardam decisão: restaurar ou descartar.
+
+## 14. Migração do Claude e instalação do binário (21/11)
+- `go install ./cmd/legoloop`: binário novo ativo (`legoloop instalar-skills --dry-run` = 7 vínculos). Antigo preservado em `~/go/bin/legoloop.exe.old-2011` e `.bak-2011`. O mcp-router já em execução só troca ao reiniciar.
+- Commit: o sync automático do repositório (`8795552`, "sincronizar 20 arquivos") já levou todo o código, os testes e a documentação deste trabalho ao histórico. Nenhum commit duplicado criado.
+- `~/.agents/skills` (= `~/.claude/skills` = `~/.codex/skills`): 99 itens movidos para `~/.agents/_skills_backup_20261121_lazy/` (MANIFESTO.tsv, RESTAURAR.sh); 2 skills ausentes copiadas ao Cofre (`hypit`, `site-galeria-minimalista`; Cofre 248 -> 250); `aidd-project-generator` (frontmatter inválido) só foi ao backup.
+- Ficou na pasta: o índice `legoloop-skills`, 6 symlinks `fluxo*` sem SKILL.md e `synced/`.
+- `skills-custo`: claude 97 -> 1 skill; ~11,2k -> ~57 tokens de frontmatter (estimativa).
+- Os 77 slash commands do Claude moram em `~/.claude/commands` e não foram tocados.
+- Pendente de medição: o /context de uma sessão NOVA do Claude Code. Esta sessão ainda carrega a lista antiga.
+- Pendentes: agy-ide (59 skills, ~6,9k), opencode (`~/.opencode/skills`, 87 skills), `skills-custo` ler o bloco real do WAL, destino dos backups.
+
+## 15. Claude: medição final (21/11)
+
+- Skills no /context do Claude: 20,7k (início) -> 9,9k (após migrar ~/.agents/skills) -> 9,2k (comandos + vercel/postman) -> 5,6k (agent-skills desabilitado). Medido em sessão nova, `/context all`.
+- A categoria "User" ficou só com `legoloop-skills` (~50 tokens).
+- Comandos: 77 arquivos de ~/.claude/commands movidos para ~/.claude/_commands_backup_20261121 (RESTAURAR.sh); 39 que não estavam no Cofre foram copiados como skills (Cofre: 289).
+- Plugins desabilitados (reversível): vercel-plugin, postman, agent-skills. Backups: settings.json.bak-20261121 e .bak-agentskills-20261121.
+- ARMADILHA: o Orca usa um settings.json próprio no perfil (APPDATA/orca/claude-profiles/.../home); editar os dois.
+- Resíduo de 5,6k: built-ins (~2,7k, fixo), claude.ai sync (~2,1k, ajuste da conta), fable (~0,7k, mantido por regra global).
+- Erro meu retratado: estimei ~3,5k de ganho com vercel/postman/comandos; o real foi ~0,7k, pois pesavam pouco. O maior item era o agent-skills (~3,6k).
