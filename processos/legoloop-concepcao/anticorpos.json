@@ -164,6 +164,24 @@
       "pacote": "internal/plangen",
       "causa_raiz": "Os testes antigos escreviam SPEC mínima, sem Referência da Intenção nem INTENT aprovada",
       "timestamp": "2026-11-21T14:35:07Z"
+    },
+    {
+      "assinatura": "sha256:550cf15376305aecb6e72b752abc2d3d9646137d24fdd18660df564b77c39def",
+      "erro": "Motor da entrevista parava em 92 por cento com pergunta vazia e nao materializava a INTENT",
+      "antidoto": "emImpasse e pedirPremonicao (internal/interview/impasse.go): uma correcao ao cerebro e, se persistir, pergunta de confirmacao do Espelho; testes impasse_test.go",
+      "recorrencias": 1,
+      "pacote": "internal/interview",
+      "causa_raiz": "O cerebro emitia o Espelho sem a PREMONICAO e sem pergunta; o motor so concluia com confianca 95 ou com premonicao de 3 itens, e ninguem corrigia o impasse",
+      "timestamp": "2026-11-21T15:07:22Z"
+    },
+    {
+      "assinatura": "sha256:cabcd2e486f18c66692d254a59899b4c0c59f2cc7676d207baf709f95fe43666",
+      "erro": "INTENT trazia realce Markdown no meio do texto e itens de lista cortados nas virgulas",
+      "antidoto": "limpaRealce remove todo realce e itensDoCampo usa uma linha por item quando ha varias linhas; testes espelho_itens_test.go",
+      "recorrencias": 1,
+      "pacote": "internal/interview",
+      "causa_raiz": "limpaRealce so tirava asteriscos das pontas e itensDoCampo separava por virgula mesmo quando havia uma linha por item",
+      "timestamp": "2026-11-21T15:07:22Z"
     }
   ]
 }

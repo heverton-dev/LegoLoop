@@ -14,9 +14,9 @@ var (
 	reMarcador   = regexp.MustCompile(`^\s*[*-]\s+`)
 )
 
-// limpaRealce tira o realce Markdown e os espaços das pontas.
+// limpaRealce tira o realce Markdown (no meio e nas pontas) e os espaços das pontas.
 func limpaRealce(s string) string {
-	return strings.TrimSpace(strings.Trim(strings.TrimSpace(s), "*"))
+	return strings.TrimSpace(strings.Trim(strings.ReplaceAll(s, "**", ""), "* \t"))
 }
 
 // camposEspelho agrupa as linhas de cada campo do espelho: a linha do rótulo e as seguintes,
@@ -47,8 +47,12 @@ func camposEspelho(raw string) map[string][]string {
 	return campos
 }
 
-// itensDoCampo separa os itens de uma lista, escrita em linhas ou em uma linha com vírgulas.
+// itensDoCampo separa os itens de uma lista. Várias linhas valem um item por linha (a vírgula faz parte do texto);
+// uma linha só vale uma lista separada por vírgulas.
 func itensDoCampo(linhas []string) []string {
+	if len(linhas) > 1 {
+		return linhas
+	}
 	var out []string
 	for _, l := range linhas {
 		for _, item := range splitItems(l) {

@@ -1,6 +1,7 @@
-# INTERVIEW — Distribuição e Forja do LegoLoop
+# INTERVIEW — Iniciativa 2 (I02)
 
-Sessão: `intv_1795263519855957000` (cofre de sessões). 11 turnos; confiança final 96% (meta 95%).
-Cérebros: `9router/code-fast` (turnos 1 a 3), `claude/sonnet` e `claude/opus` (turnos 4 a 11).
-O motor travou em 10% por defeito de leitura do formato `**Campo:** texto`. Corrigido no ticket do motor (testes em `internal/interview/espelho_formato_test.go`).
-Espelho Canônico: `docs/intents/ESPELHO_CANONICO.md`.
+Sessão `intv_1795272250377131200` no cofre de sessões. Data: 2026-11-21. Sete turnos, condução em prosa.
+Confiança: 85, 92, 92, 92, 92, 92 e 100. O motor parou de gerar perguntas no turno 4, com confiança 92. O usuário reconheceu o Espelho consolidado e o motor concluiu no turno 7 (confiança 100 reportada pelo motor após esse reconhecimento).
+Espelho: `docs/intents/ESPELHO_CANONICO.md`. INTENT: `docs/intents/2026-11-21_INTENT_INICIATIVA_2_DO_MACROPROJETO_D.md`.
+
+Achado corrigido na execução: o impasse do motor (Espelho sem PREMONIÇÃO e sem pergunta) foi resolvido em internal/interview/impasse.go, com testes e 2 anticorpos em legoloop-concepcao (20 no total).

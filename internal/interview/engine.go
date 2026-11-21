@@ -86,6 +86,11 @@ func (e *Engine) exchange(ctx context.Context, sess *Session) (*TurnResult, erro
 	}
 	sess.Messages = append(sess.Messages, Message{Role: "assistant", Content: rawResp})
 	turn := ParseTurnResult(rawResp)
+	if emImpasse(turn) {
+		if turn, err = e.pedirPremonicao(ctx, sess); err != nil {
+			return nil, err
+		}
+	}
 	turn.SessionID = sess.ID
 	if !turn.ConfidenceReported {
 		turn.Confidence = sess.Confidence // sem medida nova, vale a última; nunca um número inventado

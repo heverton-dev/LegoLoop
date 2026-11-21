@@ -1,9 +1,9 @@
 ---
 schema: anticorpos.v1
 processo: legoloop-concepcao
-total_anticorpos: 18
+total_anticorpos: 20
 globais: 0
-dominio: 18
+dominio: 20
 regras_inviolaveis:
   - pacote: "internal/interview"
     antidoto: "internal/interview/espelho_campos.go lê o realce antes ou depois dos dois-pontos e as linhas seguintes; testes espelh..."
@@ -41,13 +41,17 @@ regras_inviolaveis:
     antidoto: "upstream.Recusa(err) mapeia a recusa da trava para 422; testes Devolve422 em spec_test.go e plan_test.go"
   - pacote: "internal/plangen"
     antidoto: "Helper gravarIntencaoAprovada e constante specMinima; toda fixture que gera PLAN, SPEC ou DAG traz a INTENT aprovada"
+  - pacote: "internal/interview"
+    antidoto: "emImpasse e pedirPremonicao (internal/interview/impasse.go): uma correcao ao cerebro e, se persistir, pergunta de con..."
+  - pacote: "internal/interview"
+    antidoto: "limpaRealce remove todo realce e itensDoCampo usa uma linha por item quando ha varias linhas; testes espelho_itens_te..."
 ---
 
 # 🛡️ Banco de Anticorpos — legoloop-concepcao
 
 > Espelho executivo para leitura de agentes. O banco estruturado vive em `anticorpos.json`.
 
-## Regras de Domínio (18)
+## Regras de Domínio (20)
 
 ### `internal/interview`
 - **Antídoto:** internal/interview/espelho_campos.go lê o realce antes ou depois dos dois-pontos e as linhas seguintes; testes espelho_formato_test.go com Red provado.
@@ -156,6 +160,18 @@ regras_inviolaveis:
 - **Erro Evitado:** Fixtures de teste geravam PLAN a partir de SPEC sem INTENT
 - **Causa Raiz:** Os testes antigos escreviam SPEC mínima, sem Referência da Intenção nem INTENT aprovada
 - **Assinatura:** `sha256:743a5df489742305a0dd74a292f3a1a37284243456c917e8fd41f3241dc5a4ce`
+
+### `internal/interview`
+- **Antídoto:** emImpasse e pedirPremonicao (internal/interview/impasse.go): uma correcao ao cerebro e, se persistir, pergunta de confirmacao do Espelho; testes impasse_test.go
+- **Erro Evitado:** Motor da entrevista parava em 92 por cento com pergunta vazia e nao materializava a INTENT
+- **Causa Raiz:** O cerebro emitia o Espelho sem a PREMONICAO e sem pergunta; o motor so concluia com confianca 95 ou com premonicao de 3 itens, e ninguem corrigia o impasse
+- **Assinatura:** `sha256:550cf15376305aecb6e72b752abc2d3d9646137d24fdd18660df564b77c39def`
+
+### `internal/interview`
+- **Antídoto:** limpaRealce remove todo realce e itensDoCampo usa uma linha por item quando ha varias linhas; testes espelho_itens_test.go
+- **Erro Evitado:** INTENT trazia realce Markdown no meio do texto e itens de lista cortados nas virgulas
+- **Causa Raiz:** limpaRealce so tirava asteriscos das pontas e itensDoCampo separava por virgula mesmo quando havia uma linha por item
+- **Assinatura:** `sha256:cabcd2e486f18c66692d254a59899b4c0c59f2cc7676d207baf709f95fe43666`
 
 ## Regras Globais (0)
 
