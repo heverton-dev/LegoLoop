@@ -15,6 +15,8 @@ Revisões que as SPEC e os PLAN congelados devem receber depois da I04:
 - **I02:** o vocabulário de tipo de nó usa a tabela única `unit_task` e `unit_no` da I04. Os Processos novos nascem 5 de 5 e registrados no Registro da Espinha.
 - **I03:** a validação de executor passa de "valor conhecido" para "coerente com o tipo do nó", e o `dag.Parse` deriva o valor ausente pelo tipo. O valor do Swarm continua `native_swarm`. A cobertura do `board` (65,3%) sobe antes da I03.
 
+Fatos novos desde a aprovação da INTENT da I04 (relatório, seção 4A): o `go test ./...` falha em Linux em 9 testes de 5 pacotes; 14 nós de Processo só rodam no Windows; os 10 Processos sem prefixo recebem `legoloop-` pelo verbo `renomear` (`fechar` é aposentado, pois colide com `legoloop-fechar`). A I01 só pode começar depois que essas correções fecharem.
+
 Regras:
 - A execução da I01, da I02 e da I03 continua congelada até o Stop-Gate final da I04.
 - Cada revisão acima vira uma SPEC e um PLAN novos (nova versão do arquivo), passando pela trava `upstream_ok`. Nenhuma INTENT aprovada é editada.

@@ -1,0 +1,1139 @@
+[
+ {
+  "id": "TICK-I4-01.1",
+  "title": "Registrar a correção de G05 e as verificações novas no relatório de auditoria",
+  "epic_id": "E01",
+  "initiative_id": "I04",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [],
+  "target_files": [
+   "docs/reports/2026-11-21_REPORT_AUDITORIA_ESPINHA_DORSAL.md"
+  ],
+  "spec_criteria": [
+   "AC-E01.1"
+  ],
+  "validation_cmd": "grep -c \"Correção\" docs/reports/2026-11-21_REPORT_AUDITORIA_ESPINHA_DORSAL.md",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-01.2",
+  "title": "Provar que legoloop run duas vezes gera relatório idêntico",
+  "epic_id": "E01",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-01.1"
+  ],
+  "target_files": [
+   "internal/cli/run_determinismo_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E01.2"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestRunScriptsDuasVezesRelatorioIdentico",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-01.3",
+  "title": "Provar que legoloop exec duas vezes grava artefatos com o mesmo hash",
+  "epic_id": "E01",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-01.2"
+  ],
+  "target_files": [
+   "internal/cli/exec_determinismo_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E01.3"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestExecDuasVezesRelatorioIdentico",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I4-02.1",
+  "title": "Criar a tabela única unit_task e unit_no e usá-la na route2dag e no runner",
+  "epic_id": "E02",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-01.3"
+  ],
+  "target_files": [
+   "internal/dag/tipos.go",
+   "internal/dag/tipos_test.go",
+   "tools/route2dag/convert.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.1"
+  ],
+  "validation_cmd": "go test ./internal/dag/ -run TestTabelaDeTipos",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-02.2",
+  "title": "Remover o alias TypeSubloop e o literal unit_no do runner",
+  "epic_id": "E02",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-02.1"
+  ],
+  "target_files": [
+   "internal/dag/types.go",
+   "internal/runner/runner.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.2"
+  ],
+  "validation_cmd": "go build ./...",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-02.3",
+  "title": "Derivar o executor ausente pelo tipo no dag.Parse",
+  "epic_id": "E02",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-02.2"
+  ],
+  "target_files": [
+   "internal/dag/executor.go",
+   "internal/dag/executor_test.go",
+   "internal/dag/parse.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.3"
+  ],
+  "validation_cmd": "go test ./internal/dag/ -run TestParseDerivaOExecutor",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-02.4",
+  "title": "Recusar executor incoerente com todos os nós listados",
+  "epic_id": "E02",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-02.3"
+  ],
+  "target_files": [
+   "internal/dag/executor.go",
+   "internal/dag/executor_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.4"
+  ],
+  "validation_cmd": "go test ./internal/dag/ -run TestExecutorIncoerenteListaTodos",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-02.5",
+  "title": "Corrigir os rótulos de executor dos DAGs do repositório",
+  "epic_id": "E02",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-02.4"
+  ],
+  "target_files": [
+   "processos",
+   "docs/dags",
+   "internal/dag/executor_repo_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.5"
+  ],
+  "validation_cmd": "go test ./internal/dag/ -run TestDAGsDoRepositorioValidam",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-02.6",
+  "title": "Fazer validate e run recusarem DAG incoerente com exit 2",
+  "epic_id": "E02",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-02.5"
+  ],
+  "target_files": [
+   "internal/cli/validate_executor_test.go",
+   "internal/cli/commands.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.6"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestValidateERunRecusamIncoerenteComExit2",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I4-03.1",
+  "title": "Mover as constantes de paths para caminhos e renomear o jail para internal/jail",
+  "epic_id": "E03",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-02.6"
+  ],
+  "target_files": [
+   "internal/caminhos/nomes.go",
+   "internal/caminhos/constantes_test.go",
+   "internal/paths"
+  ],
+  "spec_criteria": [
+   "AC-E03.1"
+  ],
+  "validation_cmd": "go test ./internal/caminhos/ -run TestConstantesEFuncoesNoMesmoPacote",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-03.2",
+  "title": "Migrar os chamadores e apagar as funções delegadas de paths",
+  "epic_id": "E03",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-03.1"
+  ],
+  "target_files": [
+   "internal/migrar/migrar.go",
+   "internal/refinar/refinar.go",
+   "internal/fabricar",
+   "internal/processo",
+   "internal/cli"
+  ],
+  "spec_criteria": [
+   "AC-E03.2"
+  ],
+  "validation_cmd": "go build ./...",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-03.3",
+  "title": "Ligar o jail aos verbos que recebem nome de Processo",
+  "epic_id": "E03",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-03.2"
+  ],
+  "target_files": [
+   "internal/jail",
+   "internal/cli/nome_hostil_test.go",
+   "internal/cli/commands.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.3"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestNomeHostilEhRecusado",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-03.4",
+  "title": "Remover o pacote vault sem importador em produção",
+  "epic_id": "E03",
+  "initiative_id": "I04",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-03.3"
+  ],
+  "target_files": [
+   "internal/vault"
+  ],
+  "spec_criteria": [
+   "AC-E03.4"
+  ],
+  "validation_cmd": "go build ./...",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-03.5",
+  "title": "Criar o verbo legoloop renomear com dry-run, backup, colisão e registro",
+  "epic_id": "E03",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-03.4"
+  ],
+  "target_files": [
+   "internal/renomear",
+   "internal/cli/renomear.go",
+   "internal/renomear/renomear_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.5"
+  ],
+  "validation_cmd": "go test ./internal/renomear/ -run TestRenomear",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-03.6",
+  "title": "Renomear os 9 Processos sem colisão com o verbo renomear",
+  "epic_id": "E03",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-03.5"
+  ],
+  "target_files": [
+   "processos",
+   "espinha/renomeados.json"
+  ],
+  "spec_criteria": [
+   "AC-E03.6"
+  ],
+  "validation_cmd": "legoloop validate processos/legoloop-listar/pipeline.dag.json",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-03.7",
+  "title": "Aposentar o Processo fechar e passar os anticorpos para legoloop-fechar",
+  "epic_id": "E03",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-03.6"
+  ],
+  "target_files": [
+   "processos/fechar",
+   "processos/legoloop-fechar",
+   "espinha/renomeados.json"
+  ],
+  "spec_criteria": [
+   "AC-E03.7"
+  ],
+  "validation_cmd": "legoloop anticorpos status legoloop-fechar",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-03.8",
+  "title": "Provar que nenhum arquivo cita os nomes antigos dos Processos",
+  "epic_id": "E03",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-03.7"
+  ],
+  "target_files": [
+   "internal/espinha/nomes_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.8"
+  ],
+  "validation_cmd": "go test ./internal/espinha/ -run TestSemReferenciaAoNomeAntigo",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I4-04.1",
+  "title": "Criar a descoberta de unidades fixas por SO com provedor injetável",
+  "epic_id": "E04",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-03.8"
+  ],
+  "target_files": [
+   "internal/descoberta/unidades.go",
+   "internal/descoberta/unidades_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E04.1"
+  ],
+  "validation_cmd": "go test ./internal/descoberta/ -run TestUnidadesFixasPorSO",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-04.2",
+  "title": "Fazer o TargetDrives restringir a busca e remover o aviso drives_ignorados",
+  "epic_id": "E04",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-04.1"
+  ],
+  "target_files": [
+   "internal/fabricar/engine.go",
+   "internal/fabricar/drives_test.go",
+   "internal/assets/discover.go"
+  ],
+  "spec_criteria": [
+   "AC-E04.2"
+  ],
+  "validation_cmd": "go test ./internal/fabricar/ -run TestTargetDrivesRestringeABusca",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-04.3",
+  "title": "Fazer o fabricar atualizar a Matriz defasada em modo sem cérebro",
+  "epic_id": "E04",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-04.2"
+  ],
+  "target_files": [
+   "internal/fabricar/engine.go",
+   "internal/fabricar/atualiza_matriz_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E04.3"
+  ],
+  "validation_cmd": "go test ./internal/fabricar/ -run TestFabricarAtualizaMatrizDefasada",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-04.4",
+  "title": "Provar que Matriz em dia não dispara atualização",
+  "epic_id": "E04",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-04.3"
+  ],
+  "target_files": [
+   "internal/fabricar/atualiza_matriz_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E04.4"
+  ],
+  "validation_cmd": "go test ./internal/fabricar/ -run TestFabricarNaoAtualizaMatrizEmDia",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-04.5",
+  "title": "Provar que a descoberta é determinística e somente leitura, com relatório",
+  "epic_id": "E04",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-04.4"
+  ],
+  "target_files": [
+   "internal/descoberta/leitura_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E04.5"
+  ],
+  "validation_cmd": "go test ./internal/descoberta/ -run TestDescobertaSomenteLeitura",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-04.6",
+  "title": "Provar que matriz status fica sem diferença depois do fabricar",
+  "epic_id": "E04",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-04.5"
+  ],
+  "target_files": [
+   "internal/fabricar/atualiza_matriz_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E04.6"
+  ],
+  "validation_cmd": "go test ./internal/fabricar/ -run TestMatrizStatusZeroDepoisDoFabricar",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I4-05.1",
+  "title": "Criar o Registro da Espinha e o schema espinha.v1",
+  "epic_id": "E05",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-04.6"
+  ],
+  "target_files": [
+   "internal/espinha/registro.go",
+   "internal/espinha/registro_test.go",
+   "espinha/registro.json"
+  ],
+  "spec_criteria": [
+   "AC-E05.1"
+  ],
+  "validation_cmd": "go test ./internal/espinha/ -run TestRegistroValida",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-05.2",
+  "title": "Exportar cli.Verbos e provar que todo verbo está no Registro",
+  "epic_id": "E05",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-05.1"
+  ],
+  "target_files": [
+   "internal/cli/cli.go",
+   "internal/espinha/verbos_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E05.2"
+  ],
+  "validation_cmd": "go test ./internal/espinha/ -run TestTodoVerboEstaNoRegistro",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-05.3",
+  "title": "Ligar cada lei do AGENTS.md a um verificador ou justificativa",
+  "epic_id": "E05",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-05.2"
+  ],
+  "target_files": [
+   "internal/espinha/leis_test.go",
+   "espinha/registro.json"
+  ],
+  "spec_criteria": [
+   "AC-E05.3"
+  ],
+  "validation_cmd": "go test ./internal/espinha/ -run TestTodaLeiTemVerificador",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-05.4",
+  "title": "Criar legoloop espinha verificar com a conferência de motores e Processos",
+  "epic_id": "E05",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-05.3"
+  ],
+  "target_files": [
+   "internal/espinha/verificar.go",
+   "internal/cli/espinha.go"
+  ],
+  "spec_criteria": [
+   "AC-E05.4"
+  ],
+  "validation_cmd": "legoloop espinha verificar",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-05.5",
+  "title": "Detectar função duplicada entre pacotes",
+  "epic_id": "E05",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-05.4"
+  ],
+  "target_files": [
+   "internal/espinha/duplicadas.go",
+   "internal/espinha/duplicadas_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E05.5"
+  ],
+  "validation_cmd": "go test ./internal/espinha/ -run TestFuncaoDuplicadaEntrePacotes",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-05.6",
+  "title": "Provar as doze regras com fixture com defeito e exit 2",
+  "epic_id": "E05",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-05.5"
+  ],
+  "target_files": [
+   "internal/espinha/regras_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E05.6"
+  ],
+  "validation_cmd": "go test ./internal/espinha/ -run TestCadaRegraSaiComExitDois",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-05.7",
+  "title": "Rodar o gate no fechar e provar que a espinha não usa LLM nem relógio",
+  "epic_id": "E05",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-05.6"
+  ],
+  "target_files": [
+   "internal/fechar/fechar.go",
+   "internal/espinha"
+  ],
+  "spec_criteria": [
+   "AC-E05.7",
+   "AC-NF.1"
+  ],
+  "validation_cmd": "go test ./internal/fechar/ -run TestFecharRodaEspinhaVerificar",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I4-06.1",
+  "title": "Completar o nascimento 5 de 5 dos três Processos sem ANTICORPOS.md",
+  "epic_id": "E06",
+  "initiative_id": "I04",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-05.7"
+  ],
+  "target_files": [
+   "processos/legoloop-agent-desktop/ANTICORPOS.md",
+   "processos/legoloop-matriz/ANTICORPOS.md",
+   "processos/legoloop-listar/ANTICORPOS.md"
+  ],
+  "spec_criteria": [
+   "AC-E06.1"
+  ],
+  "validation_cmd": "legoloop espinha verificar",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-06.2",
+  "title": "Remover o verbo matrix descontinuado",
+  "epic_id": "E06",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-06.1"
+  ],
+  "target_files": [
+   "internal/cli/cli.go",
+   "internal/cli/matrix.go",
+   "README.md"
+  ],
+  "spec_criteria": [
+   "AC-E06.2"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestVerboMatrixRemovido",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-06.3",
+  "title": "Criar tools/cobertura e subir board, triagem e cli a 80 por cento",
+  "epic_id": "E06",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-06.2"
+  ],
+  "target_files": [
+   "tools/cobertura",
+   "espinha/cobertura.json",
+   "internal/board",
+   "internal/triagem",
+   "internal/cli"
+  ],
+  "spec_criteria": [
+   "AC-E06.3"
+  ],
+  "validation_cmd": "go run ./tools/cobertura",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-06.4",
+  "title": "Criar escrita.GravarAtomico e usá-la nas gravações de estado crítico",
+  "epic_id": "E06",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-06.3"
+  ],
+  "target_files": [
+   "internal/escrita",
+   "internal/fechar",
+   "internal/brain",
+   "internal/cli"
+  ],
+  "spec_criteria": [
+   "AC-E06.4"
+  ],
+  "validation_cmd": "go test ./internal/escrita/... ./internal/fechar/... ./internal/brain/...",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-06.5",
+  "title": "Relatar a falha de telemetria e fixar o limite de erros ignorados",
+  "epic_id": "E06",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-06.4"
+  ],
+  "target_files": [
+   "internal/runner/telemetria.go",
+   "internal/runner/telemetria_test.go",
+   "espinha/registro.json"
+  ],
+  "spec_criteria": [
+   "AC-E06.5"
+  ],
+  "validation_cmd": "go test ./internal/runner/ -run TestFalhaDeTelemetriaEhRelatada",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-06.6",
+  "title": "Provar que os globais e init da espinha estão justificados",
+  "epic_id": "E06",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-06.5"
+  ],
+  "target_files": [
+   "internal/espinha/globais_test.go",
+   "espinha/registro.json"
+  ],
+  "spec_criteria": [
+   "AC-E06.6"
+  ],
+  "validation_cmd": "go test ./internal/espinha/ -run TestGlobaisDaEspinhaEstaoJustificados",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-06.7",
+  "title": "Corrigir o relato do Andon quando o nó é recusado antes de executar",
+  "epic_id": "E06",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-06.6"
+  ],
+  "target_files": [
+   "internal/runner/sbar.go",
+   "internal/runner/sbar_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E06.7"
+  ],
+  "validation_cmd": "go test ./internal/runner/ -run TestSBARDeRecusaPreExecucao",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-06.8",
+  "title": "Remover o arquivo temporário rastreado em scratch",
+  "epic_id": "E06",
+  "initiative_id": "I04",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-06.7"
+  ],
+  "target_files": [
+   "scratch/i6_inventario_legados.json"
+  ],
+  "spec_criteria": [
+   "AC-E06.8"
+  ],
+  "validation_cmd": "git ls-files scratch",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I4-07.1",
+  "title": "Fazer o jail recusar caminho hostil em qualquer SO",
+  "epic_id": "E07",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-06.8"
+  ],
+  "target_files": [
+   "internal/jail/jail.go",
+   "internal/jail/jail_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E07.6"
+  ],
+  "validation_cmd": "go test ./internal/jail/ -run TestEntradaHostil",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-07.2",
+  "title": "Tornar o lock da memória da triagem exclusivo em Linux",
+  "epic_id": "E07",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-07.1"
+  ],
+  "target_files": [
+   "internal/triagem/memoria.go",
+   "internal/triagem/memoria_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E07.7"
+  ],
+  "validation_cmd": "go test ./internal/triagem/ -run TestMemoriaLockOcupado",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-07.3",
+  "title": "Normalizar os separadores na guarda de deleção",
+  "epic_id": "E07",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-07.2"
+  ],
+  "target_files": [
+   "internal/inventario/guard.go",
+   "internal/inventario/guard_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E07.8"
+  ],
+  "validation_cmd": "go test ./internal/inventario/ -run TestRecusaDelecaoTemplate",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-07.4",
+  "title": "Tornar herméticos os seis testes que dependem de ferramenta instalada",
+  "epic_id": "E07",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-07.3"
+  ],
+  "target_files": [
+   "internal/cli",
+   "internal/legopress"
+  ],
+  "spec_criteria": [
+   "AC-E07.9"
+  ],
+  "validation_cmd": "go test ./internal/cli/ ./internal/legopress/ -count=1",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-07.5",
+  "title": "Trocar powershell e python direto por iniciador portável nos Processos",
+  "epic_id": "E07",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-07.4"
+  ],
+  "target_files": [
+   "processos",
+   "internal/espinha/so_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E07.10"
+  ],
+  "validation_cmd": "go test ./internal/espinha/ -run TestProcessosSemComandoExclusivoDoSO",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-07.6",
+  "title": "Resolver fonte, python e shell por SO",
+  "epic_id": "E07",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-07.5"
+  ],
+  "target_files": [
+   "internal/assets/argv.go",
+   "internal/videorea/cartoon_render.go",
+   "internal/assets/argv_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E07.4"
+  ],
+  "validation_cmd": "go test ./internal/assets/ ./internal/videorea/ -run TestPorSO",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-07.7",
+  "title": "Criar o workflow de CI nos três SOs com os gates e go test -race",
+  "epic_id": "E07",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-07.6"
+  ],
+  "target_files": [
+   ".github/workflows/ci.yml"
+  ],
+  "spec_criteria": [
+   "AC-E07.1",
+   "AC-E07.2",
+   "AC-E07.3"
+  ],
+  "validation_cmd": "grep -cE \"windows-latest|ubuntu-latest|macos-latest\" .github/workflows/ci.yml",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-07.8",
+  "title": "Conferir o CI verde nos três SOs",
+  "epic_id": "E07",
+  "initiative_id": "I04",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-07.7"
+  ],
+  "target_files": [
+   ".github/workflows/ci.yml"
+  ],
+  "spec_criteria": [
+   "AC-E07.5"
+  ],
+  "validation_cmd": "gh run list --workflow ci.yml --limit 1 --json conclusion",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I4-08.1",
+  "title": "Criar o tools/mutar só com biblioteca padrão",
+  "epic_id": "E08",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-07.8"
+  ],
+  "target_files": [
+   "tools/mutar/main.go",
+   "tools/mutar/main_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E08.1"
+  ],
+  "validation_cmd": "git diff --exit-code go.mod",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-08.2",
+  "title": "Implementar os sete operadores de mutação",
+  "epic_id": "E08",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-08.1"
+  ],
+  "target_files": [
+   "tools/mutar/operadores.go",
+   "tools/mutar/operadores_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E08.2"
+  ],
+  "validation_cmd": "go test ./tools/mutar/ -run TestOperadores",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-08.3",
+  "title": "Reprovar com exit 2 quando um mutante sobrevive",
+  "epic_id": "E08",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-08.2"
+  ],
+  "target_files": [
+   "tools/mutar/rodar.go",
+   "tools/mutar/rodar_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E08.3"
+  ],
+  "validation_cmd": "go test ./tools/mutar/ -run TestSobreviventeReprova",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-08.4",
+  "title": "Matar ou justificar todo mutante dos sete pacotes da espinha",
+  "epic_id": "E08",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-08.3"
+  ],
+  "target_files": [
+   "espinha/mutantes_justificados.json",
+   "internal/dag",
+   "internal/runner",
+   "internal/gate",
+   "internal/plangen",
+   "internal/triagem",
+   "internal/upstream",
+   "internal/interview"
+  ],
+  "spec_criteria": [
+   "AC-E08.4"
+  ],
+  "validation_cmd": "go run ./tools/mutar ./internal/dag ./internal/runner ./internal/gate ./internal/plangen ./internal/triagem ./internal/upstream ./internal/interview",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-08.5",
+  "title": "Provar que os mutantes das regras da espinha morrem em 100 por cento",
+  "epic_id": "E08",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I4-08.4"
+  ],
+  "target_files": [
+   "internal/espinha/mutantes_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E08.5"
+  ],
+  "validation_cmd": "go test ./internal/espinha/ -run TestMutantesDasRegras",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I4-09.1",
+  "title": "Revisar a SPEC e o PLAN da I01, da I02 e da I03 pela Emenda 2",
+  "epic_id": "E09",
+  "initiative_id": "I04",
+  "nature": "micro",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-08.5"
+  ],
+  "target_files": [
+   "docs/specs",
+   "docs/plans",
+   "docs/routes",
+   "docs/dags"
+  ],
+  "spec_criteria": [
+   "AC-E09.1"
+  ],
+  "validation_cmd": "ls docs/specs docs/plans",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-09.2",
+  "title": "Tirar o Épico de CI do plano revisado da I01 e listar G01, G02 e G05 como pré-requisito",
+  "epic_id": "E09",
+  "initiative_id": "I04",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-09.1"
+  ],
+  "target_files": [
+   "docs/plans"
+  ],
+  "spec_criteria": [
+   "AC-E09.2"
+  ],
+  "validation_cmd": "grep -c \"AC-E02\" docs/plans/2026-11-21_PLAN_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-09.3",
+  "title": "Manter o congelamento até o Stop-Gate final e removê-lo só com a aprovação do usuário",
+  "epic_id": "E09",
+  "initiative_id": "I04",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-09.2"
+  ],
+  "target_files": [
+   "docs/prompts"
+  ],
+  "spec_criteria": [
+   "AC-E09.3"
+  ],
+  "validation_cmd": "grep -c \"EXECUÇÃO CONGELADA\" docs/prompts/2026-11-21_PROMPT_EXECUCAO_FORJA.md",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-09.4",
+  "title": "Gravar o relatório de fechamento da I04 com o desfecho das lacunas",
+  "epic_id": "E09",
+  "initiative_id": "I04",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-09.3"
+  ],
+  "target_files": [
+   "docs/reports"
+  ],
+  "spec_criteria": [
+   "AC-E09.4"
+  ],
+  "validation_cmd": "ls docs/reports",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I4-09.5",
+  "title": "Atualizar os documentos vivos e rodar o portão completo",
+  "epic_id": "E09",
+  "initiative_id": "I04",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I4-09.4"
+  ],
+  "target_files": [
+   "AGENTS.md",
+   "docs/governanca/AGENTS_COMPLETO.md",
+   "README.md",
+   "MEMORY.md"
+  ],
+  "spec_criteria": [
+   "AC-E09.5",
+   "AC-NF.2"
+  ],
+  "validation_cmd": "go test -count=1 ./...",
+  "human_gate_after": true
+ }
+]

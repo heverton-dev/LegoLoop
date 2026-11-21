@@ -111,6 +111,7 @@ legoloop anticorpos registrar <slug> --pacote P --erro E --causa C --antidoto A 
 # Demanda em curso: Distribuição e Forja do LegoLoop (SPEC aprovada, PLAN de 40 Tickets, ROUTE e DAG em docs/specs, docs/plans, docs/routes e docs/dags) (INTENT aprovada em docs/intents/2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md)
 # Demanda seguinte: I02, Processos de especificação e de planejamento (INTENT e SPEC aprovadas, PLAN de 21 Tickets, ROUTE e DAG em docs/plans, docs/routes e docs/dags); o código só começa depois do TICK-01.2 da I01
 # Demanda depois da I02: I03, despachante de executores no runner (INTENT e SPEC aprovadas, PLAN de 20 Tickets, ROUTE e DAG em docs/plans, docs/routes e docs/dags; valor do Swarm: native_swarm)
+# Demanda anterior às três: I04, espinha dorsal previsível, universal e determinística (SPEC aprovada, PLAN de 56 Tickets, ROUTE e DAG gerados); executa ANTES de I01, I02 e I03, que estão congeladas (Emenda 2)
 claude-conectores                                  # abre o Claude Code com os conectores claude.ai ligados (padrão: desligados, -3,5k tokens por turno)
 claude-completo                                    # abre o Claude Code com todas as ferramentas e conectores (padrão enxuto: ferramentas pesadas negadas, -12k tokens por turno)
 claude-gateway [--sem-memoria]                     # perfil gateway: 1 ferramenta (call_mcp_tool) com shell, arquivos, skills e swarm sob demanda; ~1,5k tokens por turno
