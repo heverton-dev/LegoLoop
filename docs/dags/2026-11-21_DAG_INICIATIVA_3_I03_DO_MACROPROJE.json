@@ -1,0 +1,1449 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-21",
+  "description": "Espelho executável da ROUTE 2026-11-21_ROUTE_INICIATIVA_3_I03_DO_MACROPROJE",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local",
+      "write_boundary": "strict"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-iniciativa-3-i03-do-macroproje",
+  "nodes": [
+    {
+      "context_in": [
+        "internal/dag/executor.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/dag/executor.go",
+        "internal/dag/executor_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-01.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.1.json",
+        "gate": "prompt('Execute manualmente e confirme exit code 0: go test ./internal/dag/ -run \"TestExecutorAceito|TestValidarExecutoresListaTodos\"')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.1, AC-E01.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/dag/executor_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/dag/",
+        "-run",
+        "TestSubagentesEfemerosSoNoSwarm"
+      ],
+      "context_in": [
+        "internal/dag/executor.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/dag/executor.go",
+        "internal/dag/executor_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "id": "TICK-01.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/executor.go') \u0026\u0026 file_exists('internal/dag/executor_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/dag/executor_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/dag/ -run TestSubagentesEfemerosSoNoSwarm"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/dag/",
+        "-run",
+        "TestNativeSwarmExigePapelECommand"
+      ],
+      "context_in": [
+        "internal/dag/executor.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/dag/executor.go",
+        "internal/dag/executor_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "id": "TICK-01.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/executor.go') \u0026\u0026 file_exists('internal/dag/executor_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/dag/executor_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/dag/ -run TestNativeSwarmExigePapelECommand"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/dag/...",
+        "./internal/cli/",
+        "-run",
+        "TestValidateRecusaExecutor"
+      ],
+      "context_in": [
+        "internal/dag/parse.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/dag/parse.go",
+        "internal/dag/executor_test.go",
+        "internal/cli/validate_executor_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.3"
+      ],
+      "id": "TICK-01.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/parse.go') \u0026\u0026 file_exists('internal/dag/executor_test.go') \u0026\u0026 file_exists('internal/cli/validate_executor_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.5",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/dag/executor_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/dag/... ./internal/cli/ -run TestValidateRecusaExecutor"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3",
+        "TICK-01.4"
+      ],
+      "id": "SG-E01",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e01",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E01.json",
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/plangen/",
+        "-run",
+        "TestTicketExecutor"
+      ],
+      "context_in": [
+        "internal/plangen/plangen.go",
+        "internal/plangen/route.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/plangen/plangen.go",
+        "internal/plangen/route.go",
+        "internal/plangen/ticket_executor_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.4",
+        "SG-E01"
+      ],
+      "id": "TICK-02.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/plangen/plangen.go') \u0026\u0026 file_exists('internal/plangen/route.go') \u0026\u0026 file_exists('internal/plangen/ticket_executor_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/plangen/ticket_executor_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/plangen/ -run TestTicketExecutor"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/plangen/",
+        "-run",
+        "TestTicketExecutorDesconhecido"
+      ],
+      "context_in": [
+        "internal/plangen/plangen.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/plangen/plangen.go",
+        "internal/plangen/ticket_executor_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.1",
+        "SG-E01"
+      ],
+      "id": "TICK-02.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/plangen/plangen.go') \u0026\u0026 file_exists('internal/plangen/ticket_executor_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/plangen/ticket_executor_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/plangen/ -run TestTicketExecutorDesconhecido"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/routedag/..."
+      ],
+      "context_in": [
+        "internal/routedag/routedag.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/routedag/routedag.go",
+        "internal/routedag/executor_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.2",
+        "SG-E01"
+      ],
+      "id": "TICK-02.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/routedag/routedag.go') \u0026\u0026 file_exists('internal/routedag/executor_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/routedag/executor_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/routedag/..."
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-02.2",
+        "TICK-02.3"
+      ],
+      "id": "SG-E02",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e02",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E02.json",
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/runner/",
+        "-run",
+        "TestRunRecusaAntesDoNivelZero"
+      ],
+      "context_in": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.3",
+        "SG-E02"
+      ],
+      "id": "TICK-03.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/runner/swarm_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/runner/ -run TestRunRecusaAntesDoNivelZero"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/runner/",
+        "-run",
+        "TestDespachoPorNivel"
+      ],
+      "context_in": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "depends_on": [
+        "TICK-03.1",
+        "SG-E02"
+      ],
+      "id": "TICK-03.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.2, AC-NF.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/runner/swarm_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/runner/ -run TestDespachoPorNivel"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/runner/",
+        "-run",
+        "TestNivelMistoEsperaOsDoisLados"
+      ],
+      "context_in": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "depends_on": [
+        "TICK-03.2",
+        "SG-E02"
+      ],
+      "id": "TICK-03.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/runner/swarm_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/runner/ -run TestNivelMistoEsperaOsDoisLados"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/runner/",
+        "-run",
+        "TestFalhaNoSwarmMarcaSkipped"
+      ],
+      "context_in": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "depends_on": [
+        "TICK-03.3",
+        "SG-E02"
+      ],
+      "id": "TICK-03.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/runner/swarm_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/runner/ -run TestFalhaNoSwarmMarcaSkipped"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/runner/",
+        "-run",
+        "TestSemNativeSwarmNaoUsaSwarm"
+      ],
+      "context_in": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "depends_on": [
+        "TICK-03.4",
+        "SG-E02"
+      ],
+      "id": "TICK-03.5",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_5",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.5.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.5",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/runner/swarm_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/runner/ -run TestSemNativeSwarmNaoUsaSwarm"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/cli/",
+        "-run",
+        "TestRunRecusaExecutorSemWorktree"
+      ],
+      "context_in": [
+        "internal/cli/commands.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/cli/commands.go",
+        "internal/cli/run_executor_test.go"
+      ],
+      "depends_on": [
+        "TICK-03.5",
+        "SG-E02"
+      ],
+      "id": "TICK-03.6",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_6",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.6.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/commands.go') \u0026\u0026 file_exists('internal/cli/run_executor_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.6",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/cli/run_executor_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/cli/ -run TestRunRecusaExecutorSemWorktree"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2",
+        "TICK-03.3",
+        "TICK-03.4",
+        "TICK-03.5",
+        "TICK-03.6"
+      ],
+      "id": "SG-E03",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e03",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E03.json",
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/board/..."
+      ],
+      "context_in": [
+        "internal/board/swarm_dag.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/board/swarm_dag.go",
+        "internal/board/swarm_dag_test.go"
+      ],
+      "depends_on": [
+        "TICK-03.6",
+        "SG-E03"
+      ],
+      "id": "TICK-04.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/board/swarm_dag.go') \u0026\u0026 file_exists('internal/board/swarm_dag_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/board/swarm_dag_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/board/..."
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/cli/",
+        "-run",
+        "TestRunNativeSwarmBinario"
+      ],
+      "context_in": [
+        "internal/cli/commands.go",
+        "internal/runner/swarm.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/cli/commands.go",
+        "internal/runner/swarm.go",
+        "internal/cli/run_swarm_test.go"
+      ],
+      "depends_on": [
+        "TICK-04.1",
+        "SG-E03"
+      ],
+      "id": "TICK-04.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/commands.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/cli/run_swarm_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E04.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/cli/run_swarm_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/cli/ -run TestRunNativeSwarmBinario"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/cli/",
+        "-run",
+        "TestRunSemNativeSwarmNaoCriaDiretorio"
+      ],
+      "context_in": [
+        "internal/cli/run_swarm_test.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/cli/run_swarm_test.go"
+      ],
+      "depends_on": [
+        "TICK-04.2",
+        "SG-E03"
+      ],
+      "id": "TICK-04.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_04_3",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/run_swarm_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E04.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/cli/run_swarm_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/cli/ -run TestRunSemNativeSwarmNaoCriaDiretorio"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-04.2",
+        "TICK-04.3"
+      ],
+      "id": "SG-E04",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e04",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E04.json",
+        "gate": "prompt('Evidências do Épico 04 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/dag/",
+        "-run",
+        "TestDAGsDoRepositorioValidam"
+      ],
+      "context_in": [
+        "internal/dag/executor_repo_test.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/dag/executor_repo_test.go"
+      ],
+      "depends_on": [
+        "TICK-04.3",
+        "SG-E04"
+      ],
+      "id": "TICK-05.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_05_1",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/executor_repo_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E05.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/dag/executor_repo_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/dag/ -run TestDAGsDoRepositorioValidam"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/runner/",
+        "-run",
+        "TestParidadeDoRelatorio"
+      ],
+      "context_in": [
+        "internal/runner/paridade_test.go",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "internal/runner/paridade_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.1",
+        "SG-E04"
+      ],
+      "id": "TICK-05.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_05_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/paridade_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E05.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/runner/paridade_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test ./internal/runner/ -run TestParidadeDoRelatorio"
+      }
+    },
+    {
+      "context_in": [
+        "AGENTS.md",
+        "docs/governanca/AGENTS_COMPLETO.md",
+        "README.md",
+        "MEMORY.md",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "AGENTS.md",
+        "docs/governanca/AGENTS_COMPLETO.md",
+        "README.md",
+        "MEMORY.md"
+      ],
+      "depends_on": [
+        "TICK-05.2",
+        "SG-E04"
+      ],
+      "id": "TICK-05.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_05_3",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.3.json",
+        "gate": "prompt('Execute manualmente e confirme exit code 0: grep -c \"native_swarm\" AGENTS.md README.md MEMORY.md')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E05.3",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./..."
+      ],
+      "context_in": [
+        "docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md",
+        "docs/prompts",
+        "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md"
+      ],
+      "context_out": [
+        "docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md",
+        "docs/prompts"
+      ],
+      "depends_on": [
+        "TICK-05.3",
+        "SG-E04"
+      ],
+      "id": "TICK-05.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 300,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 8000
+      },
+      "name": "tick_05_4",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md') \u0026\u0026 file_exists('docs/prompts')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "flash",
+        "harness": "9router",
+        "mode": "suggested",
+        "model": "code-fast"
+      },
+      "spec_ref": "AC-E05.4, AC-NF.2",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-05.4"
+      ],
+      "id": "SG-FINAL",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "name": "sg_final",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-FINAL.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    }
+  ],
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "dbccba0e731776734217ca5d83c54e11aceddb302f7e72aaf5bb81f10c3c2778",
+    "plan": "0b932fe33cb102e02304d34facc17d9adea40400da6f42c09866f3fe64685e46",
+    "spec": "c93a6cfa389a17f70d66330c414d35ea21a0d55c58edac304147f6d7da91464a"
+  },
+  "version": "1.0.0"
+}

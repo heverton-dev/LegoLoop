@@ -12,4 +12,5 @@ O macroplano da I01 mora no Anexo A da INTENT da Forja (`docs/intents/2026-11-21
 Regras desta Emenda:
 - A trava `upstream_ok` já está implementada e vale para I02 e I03 (primeiro Épico entregue).
 - Papel e planejamento da I02 podem avançar antes do TICK-01.2; código não.
+- A I03 tem SPEC aprovada, PLAN de 20 Tickets, ROUTE e DAG; o valor do Swarm é `native_swarm`, que já existia (a INTENT dizia `swarm_worker`, corrigido na SPEC).
 - Cada iniciativa nova passa pela concepção antes de ter SPEC, PLAN, ROUTE ou DAG.

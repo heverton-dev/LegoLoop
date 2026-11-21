@@ -1,0 +1,410 @@
+[
+ {
+  "id": "TICK-I3-01.1",
+  "title": "Criar o vocabulário de executores, ErrExecutorDesconhecido e dag.ValidarExecutores que lista todos os nós inválidos",
+  "epic_id": "E01",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [],
+  "target_files": [
+   "internal/dag/executor.go",
+   "internal/dag/executor_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E01.1",
+   "AC-E01.2"
+  ],
+  "validation_cmd": "go test ./internal/dag/ -run \"TestExecutorAceito|TestValidarExecutoresListaTodos\"",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-01.2",
+  "title": "Recusar subagents_allowed ephemeral fora do native_swarm",
+  "epic_id": "E01",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-01.1"
+  ],
+  "target_files": [
+   "internal/dag/executor.go",
+   "internal/dag/executor_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E01.3"
+  ],
+  "validation_cmd": "go test ./internal/dag/ -run TestSubagentesEfemerosSoNoSwarm",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-01.3",
+  "title": "Exigir papel e command e recusar stop_gate no native_swarm",
+  "epic_id": "E01",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-01.2"
+  ],
+  "target_files": [
+   "internal/dag/executor.go",
+   "internal/dag/executor_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E01.4"
+  ],
+  "validation_cmd": "go test ./internal/dag/ -run TestNativeSwarmExigePapelECommand",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-01.4",
+  "title": "Fazer dag.Parse e legoloop validate recusarem executor desconhecido",
+  "epic_id": "E01",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-01.3"
+  ],
+  "target_files": [
+   "internal/dag/parse.go",
+   "internal/dag/executor_test.go",
+   "internal/cli/validate_executor_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E01.5"
+  ],
+  "validation_cmd": "go test ./internal/dag/... ./internal/cli/ -run TestValidateRecusaExecutor",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I3-02.1",
+  "title": "Criar o campo executor do Ticket e gravá-lo na ROUTE",
+  "epic_id": "E02",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-01.4"
+  ],
+  "target_files": [
+   "internal/plangen/plangen.go",
+   "internal/plangen/route.go",
+   "internal/plangen/ticket_executor_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.1"
+  ],
+  "validation_cmd": "go test ./internal/plangen/ -run TestTicketExecutor",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-02.2",
+  "title": "Recusar Ticket com executor desconhecido sem gravar PLAN nem ROUTE",
+  "epic_id": "E02",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-02.1"
+  ],
+  "target_files": [
+   "internal/plangen/plangen.go",
+   "internal/plangen/ticket_executor_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.2"
+  ],
+  "validation_cmd": "go test ./internal/plangen/ -run TestTicketExecutorDesconhecido",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-02.3",
+  "title": "Provar que a projeção do DAG preserva native_swarm e recusa valor desconhecido",
+  "epic_id": "E02",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-02.2"
+  ],
+  "target_files": [
+   "internal/routedag/routedag.go",
+   "internal/routedag/executor_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E02.3"
+  ],
+  "validation_cmd": "go test ./internal/routedag/...",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I3-03.1",
+  "title": "Criar Options.Swarm e a validação de executores antes do nível 0 em runner.Run",
+  "epic_id": "E03",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-02.3"
+  ],
+  "target_files": [
+   "internal/runner/runner.go",
+   "internal/runner/swarm.go",
+   "internal/runner/swarm_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.1"
+  ],
+  "validation_cmd": "go test ./internal/runner/ -run TestRunRecusaAntesDoNivelZero",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-03.2",
+  "title": "Despachar por nível: native_swarm ao SwarmRunner e os demais ao Executor",
+  "epic_id": "E03",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-03.1"
+  ],
+  "target_files": [
+   "internal/runner/runner.go",
+   "internal/runner/swarm.go",
+   "internal/runner/swarm_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.2",
+   "AC-NF.1"
+  ],
+  "validation_cmd": "go test ./internal/runner/ -run TestDespachoPorNivel",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-03.3",
+  "title": "Rodar o nível misto em paralelo e terminar só quando os dois lados terminam",
+  "epic_id": "E03",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-03.2"
+  ],
+  "target_files": [
+   "internal/runner/runner.go",
+   "internal/runner/swarm.go",
+   "internal/runner/swarm_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.3"
+  ],
+  "validation_cmd": "go test ./internal/runner/ -run TestNivelMistoEsperaOsDoisLados",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-03.4",
+  "title": "Converter o resultado do Swarm em NodeReport e marcar os níveis seguintes como skipped",
+  "epic_id": "E03",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-03.3"
+  ],
+  "target_files": [
+   "internal/runner/runner.go",
+   "internal/runner/swarm.go",
+   "internal/runner/swarm_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.4"
+  ],
+  "validation_cmd": "go test ./internal/runner/ -run TestFalhaNoSwarmMarcaSkipped",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-03.5",
+  "title": "Garantir que DAG sem native_swarm não toca no Swarm",
+  "epic_id": "E03",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-03.4"
+  ],
+  "target_files": [
+   "internal/runner/runner.go",
+   "internal/runner/swarm.go",
+   "internal/runner/swarm_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.5"
+  ],
+  "validation_cmd": "go test ./internal/runner/ -run TestSemNativeSwarmNaoUsaSwarm",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-03.6",
+  "title": "Provar que legoloop run recusa executor inválido com exit 1 e sem criar worktree",
+  "epic_id": "E03",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-03.5"
+  ],
+  "target_files": [
+   "internal/cli/commands.go",
+   "internal/cli/run_executor_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E03.6"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestRunRecusaExecutorSemWorktree",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I3-04.1",
+  "title": "Extrair board.RunNodeOf de LevelsFromDAG sem mudar o comportamento",
+  "epic_id": "E04",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-03.6"
+  ],
+  "target_files": [
+   "internal/board/swarm_dag.go",
+   "internal/board/swarm_dag_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E04.1"
+  ],
+  "validation_cmd": "go test ./internal/board/...",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-04.2",
+  "title": "Ligar legoloop run ao SwarmBoard real quando houver nó native_swarm",
+  "epic_id": "E04",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-04.1"
+  ],
+  "target_files": [
+   "internal/cli/commands.go",
+   "internal/runner/swarm.go",
+   "internal/cli/run_swarm_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E04.2"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestRunNativeSwarmBinario",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-04.3",
+  "title": "Provar que sem native_swarm o diretório do Swarm não é criado",
+  "epic_id": "E04",
+  "initiative_id": "I03",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I3-04.2"
+  ],
+  "target_files": [
+   "internal/cli/run_swarm_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E04.3"
+  ],
+  "validation_cmd": "go test ./internal/cli/ -run TestRunSemNativeSwarmNaoCriaDiretorio",
+  "human_gate_after": true
+ },
+ {
+  "id": "TICK-I3-05.1",
+  "title": "Provar que todos os DAGs do repositório continuam válidos",
+  "epic_id": "E05",
+  "initiative_id": "I03",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I3-04.3"
+  ],
+  "target_files": [
+   "internal/dag/executor_repo_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E05.1"
+  ],
+  "validation_cmd": "go test ./internal/dag/ -run TestDAGsDoRepositorioValidam",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-05.2",
+  "title": "Provar com golden que o relatório de DAG sem native_swarm não mudou",
+  "epic_id": "E05",
+  "initiative_id": "I03",
+  "nature": "micro",
+  "execution_mode": "tdd_red_green",
+  "depends_on": [
+   "TICK-I3-05.1"
+  ],
+  "target_files": [
+   "internal/runner/paridade_test.go"
+  ],
+  "spec_criteria": [
+   "AC-E05.2"
+  ],
+  "validation_cmd": "go test ./internal/runner/ -run TestParidadeDoRelatorio",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-05.3",
+  "title": "Atualizar AGENTS, README e MEMORY com o despachante e o native_swarm",
+  "epic_id": "E05",
+  "initiative_id": "I03",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I3-05.2"
+  ],
+  "target_files": [
+   "AGENTS.md",
+   "docs/governanca/AGENTS_COMPLETO.md",
+   "README.md",
+   "MEMORY.md"
+  ],
+  "spec_criteria": [
+   "AC-E05.3"
+  ],
+  "validation_cmd": "grep -c \"native_swarm\" AGENTS.md README.md MEMORY.md",
+  "human_gate_after": false
+ },
+ {
+  "id": "TICK-I3-05.4",
+  "title": "Registrar os anticorpos, fechar a Emenda 1, gerar o prompt da I03 e rodar o portão completo",
+  "epic_id": "E05",
+  "initiative_id": "I03",
+  "nature": "nano",
+  "execution_mode": "sequential",
+  "depends_on": [
+   "TICK-I3-05.3"
+  ],
+  "target_files": [
+   "docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md",
+   "docs/prompts"
+  ],
+  "spec_criteria": [
+   "AC-E05.4",
+   "AC-NF.2"
+  ],
+  "validation_cmd": "go test -count=1 ./...",
+  "human_gate_after": true
+ }
+]
