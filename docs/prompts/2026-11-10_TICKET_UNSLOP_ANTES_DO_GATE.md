@@ -9,7 +9,7 @@ Data: 2026-11-10. Origem: sessão orquestradora da trilha Lei #15. Destino: sess
 - A violação restante é um comentário narrativo: `internal/studiodoc/types.go:41`
   (`// Summary é o resumo do loop retornado na listagem do acervo.`).
 - Ao falhar o gate, o nó reverte as 149 edições. O trabalho se perde.
-- O sub-loop `lauren-unslop-ship` (processos/lauren-tan.loop.json) remove comentários
+- O sub-loop `lauren-unslop-ship` (processos/legoloop-lauren-tan.loop.json) remove comentários
   narrativos (`unslop`, `no-comments`). A regra remove o comentário; não renomeia o termo.
 
 ## Tarefa

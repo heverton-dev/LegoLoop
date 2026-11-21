@@ -21,15 +21,15 @@ const (
 	TypeSkill NodeType = "skill"
 	// TypeScript executa um comando local sem shell.
 	TypeScript NodeType = "script"
-	// Nó subprocesso no dialeto antigo: referencia outro Processo do acervo (Ref = nome do
-	// Processo) e roda isolado e estéril. É a representação interna depois do Parse.
-	TypeSubloop NodeType = "subprocesso"
-	// TypeSubprocesso é o nome novo do tipo acima; o leitor converte no Parse.
+	// TypeSubprocesso referencia outro Processo do acervo (Ref = nome do Processo)
+	// e roda isolado e estéril.
 	TypeSubprocesso NodeType = "subprocesso"
 	// TypeStopGate representa uma barreira de auditoria humana no Processo.
 	TypeStopGate NodeType = "stop_gate"
 	// TypeUnitTask representa unidade cognitiva de engenharia.
 	TypeUnitTask NodeType = "unit_no"
+	// TypeUnitNo é a constante canônica ASD-STE100 do nó unitário.
+	TypeUnitNo NodeType = "unit_no"
 	// TypeMCP representa um nó que aciona servidor ou ferramenta MCP.
 	TypeMCP NodeType = "mcp"
 )
@@ -79,7 +79,7 @@ const (
 // Representação interna depois do Parse: o leitor converte o dialeto novo nestes valores, que
 // os pacotes consumidores comparam com as constantes exportadas do dialeto antigo.
 const (
-	tipoComposto      = TypeSubloop
+	tipoComposto      = TypeSubprocesso
 	gatilhoFimInterno = TriggerLoopEnd
 	// TriggerFimLegado referencia o identificador legado de fim de Processo sem expor o sinônimo proibido.
 	TriggerFimLegado = TriggerLoopEnd

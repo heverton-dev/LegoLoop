@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"legoloop/internal/escrita"
 	"legoloop/internal/processo"
 	"legoloop/internal/roteamento"
 	"legoloop/internal/roteamento/homologacao"
@@ -248,7 +249,7 @@ func rotaGravar(d Deps, doc map[string]any, subs []roteamento.SubstituicaoVia, s
 	if err != nil {
 		return fail(d, err)
 	}
-	if err := os.WriteFile(saida, append(bytes, '\n'), 0o644); err != nil {
+	if err := escrita.GravarAtomico(saida, append(bytes, '\n')); err != nil {
 		return fail(d, err)
 	}
 	for _, s := range subs {

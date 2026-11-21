@@ -290,7 +290,7 @@ flowchart LR
 
 * [ ] `AC-E06.1`: **Nascimento 5 de 5 completo**
   * **Dado que:** `legoloop-agent-desktop`, `legoloop-matriz` e `listar`.
-  * **Quando:** rodar `ls processos/legoloop-agent-desktop/ANTICORPOS.md processos/legoloop-matriz/ANTICORPOS.md processos/listar/ANTICORPOS.md`.
+  * **Quando:** rodar `ls processos/legoloop-agent-desktop/ANTICORPOS.md processos/legoloop-matriz/ANTICORPOS.md processos/legoloop-listar/ANTICORPOS.md`.
   * **Então:** os três arquivos existem e `legoloop espinha verificar` não acusa `processo-incompleto`.
 * [ ] `AC-E06.2`: **Verbo `matrix` removido**
   * **Dado que:** o binário recompilado.

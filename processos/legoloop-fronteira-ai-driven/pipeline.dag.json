@@ -1,0 +1,159 @@
+{
+  "id": "fronteira-ai-driven-2026-11-14",
+  "name": "legoloop-fronteira-ai-driven",
+  "nodes": [
+    {
+      "cognitive_complexity": "medium",
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"
+      ],
+      "context_out": [
+        "internal/orchestrix/prompt.go"
+      ],
+      "id": "T-01",
+      "nature": "micro",
+      "output": {
+        "artifact": "internal/orchestrix/prompt.go",
+        "gate": "exit_code == 0"
+      },
+      "routing": {
+        "combo": "t-codigo-128k",
+        "mode": "auto"
+      },
+      "type": "unit_no",
+      "verification": {
+        "command": "go test ./internal/orchestrix/..."
+      }
+    },
+    {
+      "cognitive_complexity": "medium",
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"
+      ],
+      "context_out": [
+        "internal/router/"
+      ],
+      "id": "T-02",
+      "nature": "micro",
+      "output": {
+        "artifact": "internal/router/",
+        "gate": "exit_code == 0"
+      },
+      "routing": {
+        "combo": "t-codigo-128k",
+        "mode": "auto"
+      },
+      "type": "unit_no",
+      "verification": {
+        "command": "go test ./internal/router/..."
+      }
+    },
+    {
+      "cognitive_complexity": "high",
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"
+      ],
+      "context_out": [
+        "internal/runner/isolated.go"
+      ],
+      "depends_on": [
+        "T-01"
+      ],
+      "id": "T-03",
+      "nature": "micro",
+      "output": {
+        "artifact": "internal/runner/isolated.go",
+        "gate": "exit_code == 0"
+      },
+      "routing": {
+        "combo": "t-codigo-128k",
+        "mode": "auto"
+      },
+      "type": "unit_no",
+      "verification": {
+        "command": "go test ./internal/runner/..."
+      }
+    },
+    {
+      "cognitive_complexity": "high",
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"
+      ],
+      "context_out": [
+        "internal/fechar/"
+      ],
+      "depends_on": [
+        "T-03"
+      ],
+      "id": "T-04",
+      "nature": "micro",
+      "output": {
+        "artifact": "internal/fechar/",
+        "gate": "exit_code == 0"
+      },
+      "routing": {
+        "combo": "t-codigo-128k",
+        "mode": "auto"
+      },
+      "type": "unit_no",
+      "verification": {
+        "command": "go test ./internal/fechar/..."
+      }
+    },
+    {
+      "cognitive_complexity": "high",
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"
+      ],
+      "context_out": [
+        "docs/reports/2026-11-14_FRONTEIRA_AI_DRIVEN.md"
+      ],
+      "depends_on": [
+        "T-01"
+      ],
+      "id": "T-05",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/2026-11-14_FRONTEIRA_AI_DRIVEN.md",
+        "gate": "exit_code == 0"
+      },
+      "routing": {
+        "combo": "t-codigo-128k",
+        "mode": "auto"
+      },
+      "type": "unit_no",
+      "verification": {
+        "command": "go test ./internal/orchestrix/... ./internal/runner/..."
+      }
+    },
+    {
+      "cognitive_complexity": "low",
+      "context_in": [
+        "docs/specs/2026-11-14_SPEC_FRONTEIRA_AI_DRIVEN.md"
+      ],
+      "context_out": [
+        "internal/cli/cli.go"
+      ],
+      "depends_on": [
+        "T-02",
+        "T-04",
+        "T-05"
+      ],
+      "id": "T-06",
+      "nature": "micro",
+      "output": {
+        "artifact": "internal/cli/cli.go",
+        "gate": "exit_code == 0"
+      },
+      "routing": {
+        "combo": "t-codigo-128k",
+        "mode": "auto"
+      },
+      "type": "unit_no",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    }
+  ],
+  "version": "1.0.0"
+}

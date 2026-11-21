@@ -13,6 +13,8 @@ import (
 	"time"
 
 	"legoloop/internal/brain"
+	"legoloop/internal/escrita"
+	"legoloop/internal/espinha"
 	"legoloop/internal/processo"
 )
 
@@ -292,7 +294,7 @@ func registrarProcessoCanonizado(caminho, canon, dataStr string) error {
 	if err := os.MkdirAll(filepath.Dir(caminho), 0o755); err != nil {
 		return err
 	}
-	return os.WriteFile(caminho, []byte(texto+linha), 0o644)
+	return escrita.GravarAtomico(caminho, []byte(texto+linha))
 }
 
 func garantirReferenciaRegistro(agents string) error {
@@ -305,7 +307,7 @@ func garantirReferenciaRegistro(agents string) error {
 		return nil
 	}
 	linha := fmt.Sprintf("\n* **Processos Canonizados:** [%s](%s)\n", registroProcessosCanonizados, registroProcessosCanonizados)
-	return os.WriteFile(agents, []byte(texto+linha), 0o644)
+	return escrita.GravarAtomico(agents, []byte(texto+linha))
 }
 
 func registrarGovernancaArquivo(caminho, slug, canon, dataStr string) error {
@@ -318,7 +320,7 @@ func registrarGovernancaArquivo(caminho, slug, canon, dataStr string) error {
 		return nil
 	}
 	linha := fmt.Sprintf("\n* **Processo Canonizado `%s` (%s):** `skills/%s/SKILL.md` · `docs/reports/`\n", canon, dataStr, canon)
-	return os.WriteFile(caminho, []byte(texto+linha), 0o644)
+	return escrita.GravarAtomico(caminho, []byte(texto+linha))
 }
 
 func fecharGrafo(d *Deps, dry bool) (string, error) {
@@ -396,17 +398,28 @@ func fecharPortoes(d *Deps, dry bool) (string, error) {
 	return alvo, DefaultPortoes(d.RepoDir)
 }
 
-// DefaultPortoes executa go vet sobre o repositório via exec sem shell.
+// DefaultPortoes executa go vet e a verificação da espinha dorsal sobre o repositório.
 func DefaultPortoes(repoDir string) error {
-	if _, err := os.Stat(filepath.Join(repoDir, "go.mod")); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(repoDir, "go.mod")); err == nil {
+		cmd := exec.Command("go", "vet", "./...")
+		cmd.Dir = repoDir
+		if out, err := cmd.CombinedOutput(); err != nil {
+			return fmt.Errorf("%w: go vet: %v (%s)", ErrPortaoFalhou, err, strings.TrimSpace(string(out)))
+		}
+	}
+	return verificarEspinha(repoDir)
+}
+
+func verificarEspinha(repoDir string) error {
+	vs := espinha.Verificar(repoDir)
+	if len(vs) == 0 {
 		return nil
 	}
-	cmd := exec.Command("go", "vet", "./...")
-	cmd.Dir = repoDir
-	if out, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("%w: go vet: %v (%s)", ErrPortaoFalhou, err, strings.TrimSpace(string(out)))
+	linhas := make([]string, 0, len(vs))
+	for _, v := range vs {
+		linhas = append(linhas, v.String())
 	}
-	return nil
+	return fmt.Errorf("%w: espinha: %d violacoes (%s)", ErrPortaoFalhou, len(vs), strings.Join(linhas, " | "))
 }
 
 func fecharReporte(d *Deps, slug, canon string, res *Result, dry bool) (string, error) {
@@ -420,7 +433,7 @@ func fecharReporte(d *Deps, slug, canon string, res *Result, dry bool) (string, 
 	if !dry {
 		res.Telemetria.EnsureDefaults(time.Duration(res.Duracao) * time.Millisecond)
 		md := GerarReportMD(slug, canon, res, d.Clock())
-		if err := os.WriteFile(target, []byte(md), 0o644); err != nil {
+		if err := escrita.GravarAtomico(target, []byte(md)); err != nil {
 			return target, err
 		}
 	}

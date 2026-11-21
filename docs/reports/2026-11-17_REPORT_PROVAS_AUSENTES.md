@@ -71,7 +71,7 @@ Total: 94 entradas.
 - `internal/orchestrix/unit_test.go` — task
 - `internal/legopress/auditor_test.go` — pipeline
 - `internal/golden/testdata/processos/legoloop-video-motion.dag.json` — pipeline
-- `internal/golden/testdata/processos/mega-pipeline.loop.json` — pipeline
+- `internal/golden/testdata/processos/legoloop-mega-pipeline.loop.json` — pipeline
 - `internal/interview/intent_render.go` — task
 - `docs/templates/TEMPLATE_DAG.json` — pipeline
 - `skills/legoloop-loop-map/SKILL.md` — loop

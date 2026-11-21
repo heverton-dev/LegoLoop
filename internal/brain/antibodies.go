@@ -11,6 +11,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"legoloop/internal/escrita"
 )
 
 // AntibodiesDBFile é o nome do arquivo persistido por processo (schema anticorpos.v1).
@@ -184,7 +186,7 @@ func parseBancoV1(caminho string, raw []byte) ([]Antibody, []Antibody, error) {
 
 // backupAnticorposCorrompidos preserva o conteúdo inválido e devolve a sentinela.
 func backupAnticorposCorrompidos(caminho string, raw []byte) error {
-	_ = os.WriteFile(caminho+sufixoBackup, raw, 0o644)
+	_ = escrita.GravarAtomico(caminho+sufixoBackup, raw)
 	return ErrAnticorposCorrompidos
 }
 
@@ -292,12 +294,12 @@ func gravarBanco(caminho, processo string, globais, dominio []vacinaJSON) error 
 	if err != nil {
 		return fmt.Errorf("brain: serializando anticorpos: %w", err)
 	}
-	if err := os.WriteFile(caminho, raw, 0o644); err != nil {
+	if err := escrita.GravarAtomico(caminho, raw); err != nil {
 		return fmt.Errorf("brain: gravando anticorpos: %w", err)
 	}
 	caminhoMD := filepath.Join(filepath.Dir(caminho), AntibodiesMarkdownFile)
 	md := RenderizarMarkdown(processo, globais, dominio)
-	if err := os.WriteFile(caminhoMD, md, 0o644); err != nil {
+	if err := escrita.GravarAtomico(caminhoMD, md); err != nil {
 		return fmt.Errorf("brain: gravando %s: %w", AntibodiesMarkdownFile, err)
 	}
 	return nil

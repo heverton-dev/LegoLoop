@@ -1,0 +1,370 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-09",
+  "description": "Processo de rigor de engenharia baseado no método Lauren Tan (pstack / poteto-mode): Intenção \u0026 Modelagem de Domínio -\u003e Arquitetura \u0026 Exploração -\u003e Decomposição em Unidades Verificáveis -\u003e Construção Rigorosa TDD -\u003e Verificação Formal no Artefato Real -\u003e Higiene de Código (Unslop) \u0026 Ship.",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 1,
+      "mode": "sequential"
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 300,
+    "max_parallel_workers": 1,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "commit_on_node_pass": true,
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "micro",
+    "tdd_enforced": true
+  },
+  "id": "lauren-tan",
+  "name": "Processo Lauren Tan pstack (6 Sub-Processos)",
+  "nodes": [
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/intents/"
+      ],
+      "context_out": [
+        "docs/intents/INTENT.md"
+      ],
+      "id": "subprocesso-1-intencao-dominio",
+      "inputs": {
+        "intent_dir": "file('docs/intents/')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Intenção \u0026 Modelagem de Domínio",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/intents/INTENT.md",
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      },
+      "ref": "skills/aidd-lauren",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-1-intencao-dominio",
+      "status": "pending",
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "alto",
+      "context_in": [
+        "docs/intents/INTENT.md"
+      ],
+      "context_out": [
+        "docs/specs/SPEC.md"
+      ],
+      "depends_on": [
+        "subprocesso-1-intencao-dominio"
+      ],
+      "id": "subprocesso-2-arquitetura-exploracao",
+      "inputs": {
+        "intent": "file('docs/intents/INTENT.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Arquitetura \u0026 Exploração Competitiva",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      },
+      "ref": "skills/aidd-lauren",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "high",
+        "fallback": "t-codigo-128k",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-2-arquitetura-exploracao",
+      "status": "pending",
+      "token_budget": {
+        "input_tokens": 6000,
+        "output_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/plans/PLAN.md"
+      ],
+      "depends_on": [
+        "subprocesso-2-arquitetura-exploracao"
+      ],
+      "id": "subprocesso-3-decomposicao-verificavel",
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Decomposição em Unidades Verificáveis",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/plans/PLAN.md",
+        "gate": "file_exists('docs/plans/PLAN.md')"
+      },
+      "ref": "skills/aidd-lauren",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "low",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "t-chat-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-3-decomposicao-verificavel",
+      "status": "pending",
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "alto",
+      "context_in": [
+        "docs/plans/PLAN.md"
+      ],
+      "context_out": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "depends_on": [
+        "subprocesso-3-decomposicao-verificavel"
+      ],
+      "id": "subprocesso-4-construcao-tdd",
+      "inputs": {
+        "plan": "file('docs/plans/PLAN.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Construção Rigorosa TDD",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/TDD_REPORT.md",
+        "gate": "file_exists('docs/reports/TDD_REPORT.md')"
+      },
+      "ref": "skills/aidd-lauren",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "high",
+        "fallback": "t-codigo-128k",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-4-construcao-tdd",
+      "status": "pending",
+      "token_budget": {
+        "input_tokens": 8000,
+        "output_tokens": 3000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "alto",
+      "context_in": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "context_out": [
+        "docs/reports/REPORT.md"
+      ],
+      "depends_on": [
+        "subprocesso-4-construcao-tdd"
+      ],
+      "id": "subprocesso-5-verificacao-artefato-real",
+      "inputs": {
+        "tdd_report": "file('docs/reports/TDD_REPORT.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Verificação Formal no Artefato Real",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/REPORT.md",
+        "gate": "file_exists('docs/reports/REPORT.md')"
+      },
+      "ref": "skills/aidd-lauren",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "high",
+        "fallback": "qwen2.5-coder:7b",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-5-verificacao-artefato-real",
+      "status": "pending",
+      "token_budget": {
+        "input_tokens": 7000,
+        "output_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "baixo",
+      "context_in": [
+        "docs/reports/REPORT.md"
+      ],
+      "context_out": [
+        "docs/reports/RETRO.md"
+      ],
+      "depends_on": [
+        "subprocesso-5-verificacao-artefato-real"
+      ],
+      "id": "subprocesso-6-unslop-ship",
+      "inputs": {
+        "report": "file('docs/reports/REPORT.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Higiene de Código (Unslop) \u0026 Ship",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/RETRO.md",
+        "gate": "file_exists('docs/reports/RETRO.md')"
+      },
+      "ref": "skills/aidd-lauren",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "low",
+        "fallback": "gemini-flash",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-6-unslop-ship",
+      "status": "pending",
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    }
+  ],
+  "schema_version": 2,
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "plan": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
+    "route": "docs/routes/2026-11-09_ROUTE_LAUREN_TAN.json",
+    "spec": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+  },
+  "version": "1.0.0"
+}

@@ -402,13 +402,13 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-E02.3, A
 
 ### Épico 08 — I7 · Auditoria Universal Agnóstica + 6 Verbos
 
-#### Ticket `TICK-08.1` — Processo `auditoria-atomica` (agnóstico de alvo)
+#### Ticket `TICK-08.1` — Processo `legoloop-auditoria-atomica` (agnóstico de alvo)
 * **Nature:** `micro` | **Tipo:** `unit_no` | **Modo:** `tdd_red_green` | **Status:** `PENDING`
 * **Dependências:** `["SG-E07"]` · **Limites:** Timeout `600s` · Retries `1` · Entrada `32000` · Saída `1200`
 * **Alvo de Teste TDD:** `internal/fabricar/auditoria_test.go:TestAlvoArbitrario`
-* **Outputs:** `processos/auditoria-atomica/` (5/5) + `skills/auditoria-atomica/SKILL.md`
+* **Outputs:** `processos/legoloop-auditoria-atomica/` (5/5) + `skills/legoloop-auditoria-atomica/SKILL.md`
 * **Verificação:** `legoloop validate` + `go test -v ./internal/fabricar/...`
-* **Gate (DSL):** `exit_code == 0 && file_exists('processos/auditoria-atomica/pipeline.dag.json')`
+* **Gate (DSL):** `exit_code == 0 && file_exists('processos/legoloop-auditoria-atomica/pipeline.dag.json')`
 * **Spec Ref:** `AC-E08.1` · **Escopo:** alvo = verbo|processo|peça|função|documento|binário|repo externo. Saída: disseção+lacunas+tickets+refatoração+veredito.
 
 #### Ticket `TICK-08.2` — Auditoria profunda dos 6 verbos (matriz, listar, refinar, remover, compor, fechar)

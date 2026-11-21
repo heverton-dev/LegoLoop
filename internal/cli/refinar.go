@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strings"
 
+	"legoloop/internal/jail"
 	"legoloop/internal/processo"
 	"legoloop/internal/refinar"
 	"legoloop/internal/ste"
@@ -59,6 +60,10 @@ func cmdRefinar(ctx context.Context, args []string, d Deps) int {
 	}
 	if nome == "" || o.etapa == "" {
 		fmt.Fprintln(d.Stderr, ste.Msg("refinar.uso"))
+		return 2
+	}
+	if err := jail.ValidarNomeProcesso(nome); err != nil {
+		fmt.Fprintln(d.Stderr, "erro:", err)
 		return 2
 	}
 	return runRefinar(ctx, nome, o, d)

@@ -1,0 +1,91 @@
+{
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo mega-processo",
+    "etapas": [
+      "l1-concepcao",
+      "l2-design",
+      "l3-triade",
+      "l3b-swarm",
+      "l4-tdd",
+      "l5-homologue",
+      "l6-fechar-canonico"
+    ]
+  },
+  "etapas": [
+    {
+      "flag_cli": "--etapa l1-concepcao",
+      "id": "l1-concepcao",
+      "palavras_chave": [
+        "concepcao"
+      ],
+      "slash_command": "/mega-processo-concepcao"
+    },
+    {
+      "flag_cli": "--etapa l2-design",
+      "id": "l2-design",
+      "palavras_chave": [
+        "design"
+      ],
+      "slash_command": "/mega-processo-design"
+    },
+    {
+      "flag_cli": "--etapa l3-triade",
+      "id": "l3-triade",
+      "palavras_chave": [
+        "triade"
+      ],
+      "slash_command": "/mega-processo-triade"
+    },
+    {
+      "flag_cli": "--etapa l3b-swarm",
+      "id": "l3b-swarm",
+      "palavras_chave": [
+        "swarm"
+      ],
+      "slash_command": "/mega-processo-swarm"
+    },
+    {
+      "flag_cli": "--etapa l4-tdd",
+      "id": "l4-tdd",
+      "palavras_chave": [
+        "tdd"
+      ],
+      "slash_command": "/mega-processo-tdd"
+    },
+    {
+      "flag_cli": "--etapa l5-homologue",
+      "id": "l5-homologue",
+      "palavras_chave": [
+        "homologue"
+      ],
+      "slash_command": "/mega-processo-homologue"
+    },
+    {
+      "flag_cli": "--etapa l6-fechar-canonico",
+      "id": "l6-fechar-canonico",
+      "palavras_chave": [
+        "fechar canonico",
+        "fechar-canonico"
+      ],
+      "slash_command": "/mega-processo-fechar-canonico"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ],
+  "processo": "mega-processo",
+  "regras_deterministicas": [
+    {
+      "artefatos_ativos": null,
+      "comandos_cli": [
+        "legoloop mega-processo",
+        "/legoloop-mega-processo"
+      ],
+      "padrao_slug": "mega-processo",
+      "prioridade": 100
+    }
+  ],
+  "schema_version": "triagem.v1"
+}

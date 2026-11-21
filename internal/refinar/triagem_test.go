@@ -8,7 +8,7 @@ import (
 	"slices"
 	"testing"
 
-	"legoloop/internal/paths"
+	"legoloop/internal/caminhos"
 	"legoloop/internal/processo"
 	"legoloop/internal/refinar"
 	"legoloop/internal/triagem"
@@ -23,7 +23,7 @@ func umaEtapa() processo.Processo {
 func lerTriagem(t *testing.T, c cofre) (triagem.TriagemSpec, error) {
 	t.Helper()
 	var s triagem.TriagemSpec
-	b, err := os.ReadFile(filepath.Join(c.vault, paths.DirProcessos, nome, "triagem.json"))
+	b, err := os.ReadFile(filepath.Join(c.vault, caminhos.DirProcessos, nome, "triagem.json"))
 	if err != nil {
 		return s, err
 	}
@@ -66,7 +66,7 @@ func TestRefinar_TriagemExistenteGanhaSoAEtapaNovaEMantemAEdicao(t *testing.T) {
 	ant := triagem.GerarTriagemPadrao(nome, []string{"e01"})
 	ant.Etapas[0].PalavrasChave = append(ant.Etapas[0].PalavrasChave, "palavra-do-operador")
 	b, _ := json.Marshal(ant)
-	if err := os.WriteFile(filepath.Join(c.vault, paths.DirProcessos, nome, "triagem.json"), b, 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(c.vault, caminhos.DirProcessos, nome, "triagem.json"), b, 0o644); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := refinar.Run(context.Background(), refinar.Request{Nome: nome, Mudanca: novaEtapa()}, depsDe(c, nil, seguir, inicio)); err != nil {

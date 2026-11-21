@@ -42,5 +42,6 @@ Desktop.ini
 .unlighthouse/
 .lostpixel/
 
-# Backups locais do refinar/canon (o git guarda o histórico)
+# Backups locais do refinar/canon/renomear (o git guarda o histórico)
 *.legoloop-bak
+.backups/

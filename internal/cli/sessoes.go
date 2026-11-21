@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"legoloop/internal/caminhos"
+	"legoloop/internal/jail"
 	"legoloop/internal/triagem"
 )
 
@@ -36,6 +37,10 @@ func cmdSessoes(_ context.Context, args []string, d Deps) int {
 	}
 	if slug == "" || fs.NArg() != 0 {
 		fmt.Fprintf(d.Stderr, "erro: informe o slug do processo.\n\n%s", sessoesUsage)
+		return 2
+	}
+	if err := jail.ValidarNomeProcesso(slug); err != nil {
+		fmt.Fprintln(d.Stderr, "erro:", err)
 		return 2
 	}
 	dir := resolverDirProcesso(slug, *dirBase)

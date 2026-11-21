@@ -3,8 +3,11 @@ package cli
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 
 	"legoloop/internal/caminhos"
+	"legoloop/internal/jail"
+	"legoloop/internal/renomear"
 )
 
 const execUsage = `uso: legoloop exec <slug> [--processos-dir DIR] [--workdir DIR] [--json]
@@ -25,6 +28,14 @@ func cmdExec(ctx context.Context, args []string, d Deps) int {
 		fmt.Fprintf(d.Stderr, "erro: informe o slug do processo.\n\n%s", execUsage)
 		return 2
 	}
+	if err := jail.ValidarNomeProcesso(slug); err != nil {
+		fmt.Fprintln(d.Stderr, "erro:", err)
+		return 2
+	}
+	if reg, ok := buscarProcessoRenomeado(slug, f.processosDir); ok {
+		fmt.Fprintf(d.Stderr, "exec: processo %q foi renomeado para %s\n", slug, reg.Novo)
+		return 2
+	}
 	dir := resolverDirProcesso(slug, f.processosDir)
 	if dir == "" {
 		fmt.Fprintf(d.Stderr, "exec: processo %q não encontrado\n", slug)
@@ -35,4 +46,13 @@ func cmdExec(ctx context.Context, args []string, d Deps) int {
 		return fail(d, err)
 	}
 	return rodarDAG(ctx, d, p, f)
+}
+
+func buscarProcessoRenomeado(slug, processosDir string) (renomear.RegistroRenomeado, bool) {
+	if processosDir != "" {
+		if reg, ok := renomear.BuscarRenomeado(filepath.Dir(processosDir), slug); ok {
+			return reg, true
+		}
+	}
+	return renomear.BuscarRenomeado(".", slug)
 }

@@ -1402,7 +1402,7 @@
       ],
       "id": "TICK-I3-05.1",
       "isolation": {
-        "executor": "local_process",
+        "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
         "workspace": "local",
         "write_boundary": "none"

@@ -14,6 +14,7 @@ import (
 	"legoloop/internal/canon"
 	"legoloop/internal/fabricar"
 	"legoloop/internal/interview"
+	"legoloop/internal/jail"
 	"legoloop/internal/processo"
 	"legoloop/internal/ste"
 )
@@ -102,6 +103,10 @@ func cmdFabricar(ctx context.Context, args []string, d Deps) int {
 	}
 	if name == "" {
 		fmt.Fprint(d.Stderr, fabricarUsage)
+		return 2
+	}
+	if err := jail.ValidarNomeProcesso(name); err != nil {
+		fmt.Fprintln(d.Stderr, "erro:", err)
 		return 2
 	}
 	return runFabricar(ctx, name, o, d)

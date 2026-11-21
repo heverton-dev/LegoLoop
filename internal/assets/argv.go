@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"unicode"
 )
@@ -94,9 +95,14 @@ func (sp *splitter) feedQuoted(r rune) error {
 // ArgvFor devolve o argv que executa um script ou hook do inventário. Roda no servidor: o
 // navegador nunca vê nem envia caminhos absolutos nem o comando bruto de um hook.
 func ArgvFor(it Item) ([]string, error) {
+	return ArgvForOS(it, runtime.GOOS)
+}
+
+// ArgvForOS devolve o argv que executa um script ou hook resolvendo binários para o SO informado.
+func ArgvForOS(it Item, goos string) ([]string, error) {
 	switch it.Kind {
 	case KindScript:
-		return scriptArgv(it)
+		return scriptArgvForOS(it, goos)
 	case KindHook:
 		if it.Command == "" {
 			return nil, errors.New("hook sem comando utilizável")
@@ -106,21 +112,48 @@ func ArgvFor(it Item) ([]string, error) {
 	return nil, fmt.Errorf("só scripts e hooks viram comando, recebeu %q", it.Kind)
 }
 
-func scriptArgv(it Item) ([]string, error) {
+// PythonForOS devolve o executável Python padrão do SO.
+func PythonForOS(goos string) string {
+	if goos == "windows" {
+		return "python"
+	}
+	return "python3"
+}
+
+// PowerShellForOS devolve o executável PowerShell padrão do SO.
+func PowerShellForOS(goos string) string {
+	if goos == "windows" {
+		return "powershell"
+	}
+	return "pwsh"
+}
+
+// ShellForOS devolve o shell e flag de comando padrão do SO.
+func ShellForOS(goos string) []string {
+	if goos == "windows" {
+		return []string{"cmd", "/c"}
+	}
+	return []string{"sh", "-c"}
+}
+
+func scriptArgvForOS(it Item, goos string) ([]string, error) {
 	if it.Path == "" {
 		return nil, errors.New("script sem caminho")
 	}
 	switch strings.ToLower(filepath.Ext(it.Path)) {
 	case ".ps1":
-		return []string{"powershell", "-NoProfile", "-File", it.Path}, nil
+		return []string{PowerShellForOS(goos), "-NoProfile", "-File", it.Path}, nil
 	case ".sh", ".bash":
 		return []string{"bash", it.Path}, nil
 	case ".py":
-		return []string{"python", it.Path}, nil
+		return []string{PythonForOS(goos), it.Path}, nil
 	case ".js", ".mjs", ".cjs":
 		return []string{"node", it.Path}, nil
 	case ".bat", ".cmd":
-		return []string{"cmd", "/c", it.Path}, nil
+		if goos == "windows" {
+			return []string{"cmd", "/c", it.Path}, nil
+		}
+		return []string{"sh", it.Path}, nil
 	}
 	return nil, fmt.Errorf("extensão %q sem interpretador conhecido", filepath.Ext(it.Path))
 }

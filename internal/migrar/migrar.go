@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/paths"
+	"legoloop/internal/caminhos"
 	"legoloop/internal/triagem"
 )
 
@@ -51,7 +51,7 @@ func MigrarLoops(processosDir string, apply bool) (Relatorio, error) {
 
 func processarProcesso(processosDir, slug string, apply bool, rel *Relatorio) error {
 	dir := filepath.Join(processosDir, slug)
-	etapas, ok := lerEtapasDAG(paths.CaminhoDAG(dir))
+	etapas, ok := lerEtapasDAG(caminhos.CaminhoDAG(dir))
 	if !ok {
 		rel.Removidos = append(rel.Removidos, slug)
 		if apply {

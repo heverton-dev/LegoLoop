@@ -27,10 +27,27 @@ const (
 	ArquivoToolsDoProcesso = "tools.json"
 	// SufixoStudio é a extensão do documento do Studio no dialeto novo.
 	SufixoStudio = ".studio.json"
+	// DirAntigo é o apelido canônico da pasta dos Processos no dialeto antigo.
+	DirAntigo = DirLoops
+	// SufixoAntigo é o apelido canônico da extensão do Studio no dialeto antigo.
+	SufixoAntigo = SufixoLoop
+	// PacoteCentral é o caminho, relativo a internal/, do único pacote autorizado
+	// a declarar os literais de nome.
+	PacoteCentral = "caminhos"
 )
+
+// Literais devolve os valores que só o pacote central pode declarar.
+func Literais() []string {
+	return []string{DirAntigo, ArquivoDAG}
+}
 
 func DirLoopsEm(base string) string {
 	return filepath.Join(base, DirLoops)
+}
+
+// DirAntigoEm resolve a pasta dos Processos no dialeto antigo sob a base informada.
+func DirAntigoEm(base string) string {
+	return DirLoopsEm(base)
 }
 
 // DirProcessosEm resolve a pasta dos Processos no dialeto de gravação sob a base.

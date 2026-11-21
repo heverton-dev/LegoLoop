@@ -11,6 +11,7 @@ import (
 	"io"
 	"legoloop/internal/caminhos"
 	"os"
+	"slices"
 	"strings"
 	"text/tabwriter"
 
@@ -45,6 +46,8 @@ type Deps struct {
 	Provider *ProviderDeps
 	// Fechar injeta seams do comando fechar (nil = ambiente real; usado em testes).
 	Fechar *FecharDeps
+	// LegoPress injeta compilador e auditor do comando legopress (nil = ambiente real; usado em testes).
+	LegoPress *LegoPressDeps
 	// WebQARunner injeta o executor do script Node do comando web-qa (nil = node real; usado em testes).
 	WebQARunner func(ctx context.Context, args []string, stdout, stderr io.Writer) int
 }
@@ -70,7 +73,6 @@ Comandos:
   forge      [--addr 127.0.0.1:7878] [--project DIR]  abre o Studio e dispara primeira varredura
   import     <github-url> [--name N] [--json]         importa e canoniza skill do GitHub
   upgrade    <arquivo> [--diagnose|--apply] [--json]  diagnóstica ou valida elevação para Padrão Ouro
-  matrix     [--kind K] [--tier T] [--min N] [--json] DESCONTINUADO: use "matriz ver"
   fabricar   "<nome>" [--yes] [--goal T] [--model M] [--dry-run] [--json]  cria um processo novo (skill, DAG e documentos)
   plano      --spec S --tickets T.json [--raiz D] [--nivel epic] [--data AAAA-MM-DD] [--estrito] [--json]  renderiza PLAN e ROUTE a partir dos Tickets, sem LLM
   rota       --plan P --out ROUTE [--perfil F] [--json]  gera a ROUTE com harness, via, modelo e esforço resolvidos
@@ -80,6 +82,7 @@ Comandos:
   dissecar   <alvo> [opções]                 dissecação técnica e extração estrutural de alvo
   refinar    <nome> --etapa ID [--peca P] [--caso C]... [--yes]  muda uma etapa, sobe a versão e guarda a anterior
   remover    <nome> [--vault DIR] [--dry-run] [--force] [--yes] [--json]  apaga um processo do cofre e os vínculos dele
+  renomear   <antigo> <novo> [--dry-run] [--vault DIR] [--docs DIR] [--yes] [--json]  renomeia um processo com backup e registro
   compor     <nome> <legoloop-x@versão> [--depende ID]... [--yes]  liga um processo como etapa de outro (recusa ciclo)
   instalar-skills [--vault DIR] [--dry-run] [--json]  instala e vincula as skills nativas universais
   skills-custo    [--json]  mede os tokens de frontmatter que cada harness carrega por turno
@@ -99,8 +102,35 @@ Comandos:
   web-qa     <preflight|run|corrigir> [opções]  QA web determinístico (Playwright, axe-core, lychee, Obscura, renderlint, unlighthouse, lost-pixel)
   sessoes    <slug> [--json] [--processos-dir DIR]  lista as sessões ativas do processo (memória de execução)
   anticorpos <sync|status> [slug] [--raiz DIR]   sincroniza ou inspeciona o espelho executivo ANTICORPOS.md
+  espinha    verificar [--raiz DIR] [--json]     verifica a integridade deterministica da espinha dorsal
   version
 `
+
+func mapaComandos() map[string]func(context.Context, []string, Deps) int {
+	return map[string]func(context.Context, []string, Deps) int{
+		"doctor": cmdDoctor, "canonize": cmdCanonizeJSONSafe, "validate": cmdValidate,
+		"run": cmdRun, "exec": cmdExec, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
+		"import": cmdImport, "upgrade": cmdUpgrade, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
+		"dissecar": cmdDissecar,
+		"refinar":  cmdRefinar, "remover": cmdRemover, "renomear": cmdRenomear, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills, "skills-custo": cmdSkillsCusto, "skills-migrar": cmdSkillsMigrar,
+		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
+		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
+		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
+		"plano": cmdPlano, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos, "espinha": cmdEspinha,
+	}
+}
+
+// Verbos devolve, em ordem alfabetica deterministica, todos os nomes de verbos
+// registrados no mapa real de comandos da CLI.
+func Verbos() []string {
+	cmds := mapaComandos()
+	nomes := make([]string, 0, len(cmds))
+	for nome := range cmds {
+		nomes = append(nomes, nome)
+	}
+	slices.Sort(nomes)
+	return nomes
+}
 
 // Run despacha o subcomando e devolve o exit code (0 ok, 1 falha, 2 uso incorreto).
 func Run(ctx context.Context, args []string, d Deps) int {
@@ -108,17 +138,7 @@ func Run(ctx context.Context, args []string, d Deps) int {
 		fmt.Fprint(d.Stderr, usage)
 		return 2
 	}
-	cmds := map[string]func(context.Context, []string, Deps) int{
-		"doctor": cmdDoctor, "canonize": cmdCanonizeJSONSafe, "validate": cmdValidate,
-		"run": cmdRun, "exec": cmdExec, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
-		"import": cmdImport, "upgrade": cmdUpgrade, "matrix": cmdMatrix, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
-		"dissecar": cmdDissecar,
-		"refinar":  cmdRefinar, "remover": cmdRemover, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills, "skills-custo": cmdSkillsCusto, "skills-migrar": cmdSkillsMigrar,
-		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
-		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
-		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
-		"plano": cmdPlano, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos,
-	}
+	cmds := mapaComandos()
 	switch name := args[0]; name {
 	case "help", "-h", "--help":
 		fmt.Fprint(d.Stdout, usage)
@@ -166,10 +186,6 @@ func runSubcommandHelp(ctx context.Context, cmd func(context.Context, []string, 
 
 func cmdUpgrade(_ context.Context, args []string, d Deps) int {
 	return RunUpgrade(d.Stdout, d.Stderr, args)
-}
-
-func cmdMatrix(_ context.Context, args []string, d Deps) int {
-	return RunMatrix(d.Stdout, d.Stderr, args)
 }
 
 func cmdDissecar(_ context.Context, args []string, d Deps) int {

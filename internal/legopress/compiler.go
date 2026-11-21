@@ -15,6 +15,7 @@ type DoctorReport struct {
 type Compiler struct {
 	pandocBin string
 	typstBin  string
+	run       func(name string, args ...string) ([]byte, error)
 }
 
 func NewCompiler() *Compiler {
@@ -23,6 +24,14 @@ func NewCompiler() *Compiler {
 	return &Compiler{
 		pandocBin: pandoc,
 		typstBin:  typst,
+	}
+}
+
+func NewCompilerWithRunner(pandocBin, typstBin string, run func(string, ...string) ([]byte, error)) *Compiler {
+	return &Compiler{
+		pandocBin: pandocBin,
+		typstBin:  typstBin,
+		run:       run,
 	}
 }
 
@@ -45,16 +54,22 @@ func (c *Compiler) BuildArgs(markdownPath string, m Manifest) []string {
 }
 
 func (c *Compiler) Doctor() *DoctorReport {
+	run := c.run
+	if run == nil {
+		run = func(name string, args ...string) ([]byte, error) {
+			return exec.Command(name, args...).Output()
+		}
+	}
 	report := &DoctorReport{}
 	if c.pandocBin != "" {
 		report.PandocAvailable = true
-		if out, err := exec.Command(c.pandocBin, "--version").Output(); err == nil {
+		if out, err := run(c.pandocBin, "--version"); err == nil {
 			report.PandocVersion = extractFirstLine(string(out))
 		}
 	}
 	if c.typstBin != "" {
 		report.TypstAvailable = true
-		if out, err := exec.Command(c.typstBin, "--version").Output(); err == nil {
+		if out, err := run(c.typstBin, "--version"); err == nil {
 			report.TypstVersion = extractFirstLine(string(out))
 		}
 	}

@@ -9,6 +9,8 @@ import (
 	"os"
 	"os/exec"
 	"time"
+
+	"legoloop/internal/descoberta"
 )
 
 // Kind é a categoria de um ativo.
@@ -66,13 +68,16 @@ func (s Snapshot) Of(k Kind) []Item {
 
 // Config injeta as dependências do scanner (testável, sem estado global).
 type Config struct {
-	Home           string
-	Projects       []string
-	AutoDiscover   bool
-	DiscoveryRoots []string
-	ProcessosDir   string
-	LookPath       func(string) (string, error)
-	Getenv         func(string) string
+	Home             string
+	Projects         []string
+	AutoDiscover     bool
+	DiscoveryRoots   []string
+	TargetDrives     []string
+	TrustRemovable   bool
+	ProvedorUnidades descoberta.Provedor
+	ProcessosDir     string
+	LookPath         func(string) (string, error)
+	Getenv           func(string) string
 }
 
 func (c Config) withDefaults() Config {

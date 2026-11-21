@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"legoloop/internal/escrita"
 	"legoloop/internal/mcp"
 )
 
@@ -99,7 +100,7 @@ func backupFile(path string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(bak, data, 0644)
+	return escrita.GravarAtomico(bak, data)
 }
 
 func injectMimoConfig(obj map[string]any) {
@@ -305,7 +306,7 @@ func syncFileResult(home, path string, dryRun bool) (syncTargetResult, error) {
 	if err := persistSpecs(home, specs); err != nil {
 		return syncTargetResult{}, err
 	}
-	if err := os.WriteFile(path, updated, 0644); err != nil {
+	if err := escrita.GravarAtomico(path, updated); err != nil {
 		return syncTargetResult{}, err
 	}
 	return syncTargetResult{Path: path, Status: "synced", Backup: path + ".bak_legoloop", Moved: specNames(specs)}, nil

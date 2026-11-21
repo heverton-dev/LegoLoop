@@ -12,7 +12,7 @@ suggested_model: sonnet
 
 > **Processo:** `impeccable-design`  
 > **Versão:** 1.0.0  
-> **Referência:** `processos/impeccable-design/processo.dag.json`  
+> **Referência:** `processos/legoloop-impeccable-design/processo.dag.json`  
 
 ---
 

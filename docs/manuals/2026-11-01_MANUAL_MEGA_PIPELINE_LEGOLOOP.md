@@ -126,7 +126,7 @@ flowchart TD
 
 ## 5. Implementação no LegoLoop
 
-1. **Loop Canônico no Acervo (`processos/mega-pipeline.loop.json`):**
+1. **Loop Canônico no Acervo (`processos/legoloop-mega-pipeline.loop.json`):**
    * Registrado com ID `mega-pipeline-loop`.
    * Encadeia os 5 sub-loops canônicos com verificação mecânica via gates de arquivos (`file_exists`).
 2. **Template Integrado no Studio Canvas (`internal/studio/templates.go`):**

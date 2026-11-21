@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
+	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
 	"legoloop/internal/gate"
-	"legoloop/internal/paths"
 	"legoloop/internal/roteamento"
 	studio "legoloop/internal/studiodoc"
 )
@@ -121,7 +121,7 @@ func TestUnitTemplateDeclaraPecaAgnostica(t *testing.T) {
 
 func TestUnitTemplateCarregaNoStudio(t *testing.T) {
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, idUnit+paths.SufixoAntigo), read(t, arquivoUnit), 0o600); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, idUnit+caminhos.SufixoAntigo), read(t, arquivoUnit), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	st, err := studio.NewStore(dir)

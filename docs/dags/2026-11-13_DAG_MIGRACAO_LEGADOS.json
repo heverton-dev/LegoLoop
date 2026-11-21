@@ -259,7 +259,7 @@
         "runtime": "legoloop"
       },
       "verification": {
-        "gate": "exit_code == 0 && file_exists('processos/ai-motion-graphics/pipeline.dag.json')"
+        "gate": "exit_code == 0 && file_exists('processos/legoloop-ai-motion-graphics/pipeline.dag.json')"
       },
       "spec_ref": "AC-I6-02.1",
       "status": "PENDING",
@@ -267,7 +267,7 @@
         "scratch/gates/SG-I6-E01.json"
       ],
       "context_out": [
-        "processos/ai-motion-graphics/pipeline.dag.json",
+        "processos/legoloop-ai-motion-graphics/pipeline.dag.json",
         "processos/legoloop-video-edition/pipeline.dag.json",
         "processos/legoloop-video-master/pipeline.dag.json",
         "processos/legoloop-video-motion/pipeline.dag.json"
@@ -276,7 +276,7 @@
         "checkpoint": "file('scratch/gates/SG-I6-E01.json')"
       },
       "output": {
-        "artifact": "processos/ai-motion-graphics/pipeline.dag.json",
+        "artifact": "processos/legoloop-ai-motion-graphics/pipeline.dag.json",
         "gate": "exit_code == 0"
       }
     },
@@ -419,14 +419,14 @@
       "spec_ref": "AC-I6-02.3",
       "status": "PENDING",
       "context_in": [
-        "processos/ai-motion-graphics/pipeline.dag.json",
+        "processos/legoloop-ai-motion-graphics/pipeline.dag.json",
         "processos/legoloop-fechar/pipeline.dag.json"
       ],
       "context_out": [
         "scratch/gates/SG-I6-E02.json"
       ],
       "inputs": {
-        "lote_1": "file('processos/ai-motion-graphics/pipeline.dag.json')",
+        "lote_1": "file('processos/legoloop-ai-motion-graphics/pipeline.dag.json')",
         "lote_3": "file('processos/legoloop-fechar/pipeline.dag.json')"
       },
       "output": {

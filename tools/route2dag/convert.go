@@ -7,7 +7,20 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"legoloop/internal/dag"
 )
+
+// tipoNoDAG resolve o tipo de nó da ROUTE para o NodeType do DAG usando a tabela única.
+func tipoNoDAG(tipo string) (dag.NodeType, error) {
+	if nt, err := dag.DoRoute(tipo); err == nil {
+		return nt, nil
+	}
+	if _, err := dag.DoDAG(tipo); err == nil {
+		return dag.NodeType(tipo), nil
+	}
+	return "", fmt.Errorf("tipo %q não suportado", tipo)
+}
 
 var reDataRoute = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}_ROUTE_`)
 

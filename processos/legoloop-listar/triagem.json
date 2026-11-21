@@ -1,0 +1,81 @@
+{
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-listar",
+    "etapas": [
+      "e01",
+      "e02",
+      "e03",
+      "e04",
+      "e05",
+      "e06"
+    ]
+  },
+  "etapas": [
+    {
+      "flag_cli": "--etapa e01",
+      "id": "e01",
+      "palavras_chave": [
+        "e01"
+      ],
+      "slash_command": "/listar-e01"
+    },
+    {
+      "flag_cli": "--etapa e02",
+      "id": "e02",
+      "palavras_chave": [
+        "e02"
+      ],
+      "slash_command": "/listar-e02"
+    },
+    {
+      "flag_cli": "--etapa e03",
+      "id": "e03",
+      "palavras_chave": [
+        "e03"
+      ],
+      "slash_command": "/listar-e03"
+    },
+    {
+      "flag_cli": "--etapa e04",
+      "id": "e04",
+      "palavras_chave": [
+        "e04"
+      ],
+      "slash_command": "/listar-e04"
+    },
+    {
+      "flag_cli": "--etapa e05",
+      "id": "e05",
+      "palavras_chave": [
+        "e05"
+      ],
+      "slash_command": "/listar-e05"
+    },
+    {
+      "flag_cli": "--etapa e06",
+      "id": "e06",
+      "palavras_chave": [
+        "e06"
+      ],
+      "slash_command": "/listar-e06"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ],
+  "processo": "legoloop-listar",
+  "regras_deterministicas": [
+    {
+      "artefatos_ativos": null,
+      "comandos_cli": [
+        "legoloop legoloop-listar",
+        "/legoloop-listar"
+      ],
+      "padrao_slug": "legoloop-listar",
+      "prioridade": 100
+    }
+  ],
+  "schema_version": "triagem.v1"
+}

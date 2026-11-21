@@ -26,7 +26,7 @@ func TestOrigemViraSubArtifactDoNo(t *testing.T) {
 		t.Fatal(err)
 	}
 	n := d.Nodes[2]
-	if n.Type != dag.TypeSubloop || n.Output.Artifact != "out/legoloop-outro/e03.md" || n.Output.SubArtifact != "out/e03.md" {
+	if n.Type != dag.TypeSubprocesso || n.Output.Artifact != "out/legoloop-outro/e03.md" || n.Output.SubArtifact != "out/e03.md" {
 		t.Errorf("nó composto: %+v", n.Output)
 	}
 	if got := d.Nodes[3].Inputs["e03"]; got != "file('out/legoloop-outro/e03.md')" {

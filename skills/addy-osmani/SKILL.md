@@ -7,4 +7,4 @@ description: Executa o Processo addy-osmani pelo comando legoloop exec.
 
 Execute o Processo addy-osmani com o comando:
 
-    legoloop exec addy-osmani
+    legoloop exec legoloop-addy-osmani

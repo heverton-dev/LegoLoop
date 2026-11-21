@@ -229,7 +229,7 @@ Schemas novos exigidos: `schemas/anticorpos.v1.json`, `schemas/memoria_execucao.
 
 ### Épico 08 — I7 · Auditoria Universal Agnóstica + 6 Verbos
 
-* [ ] `AC-E08.1`: **Processo `auditoria-atomica`** — Dado alvo arbitrário (verbo, processo, peça, função, documento, binário, repositório externo); Quando o processo executar; Então produz disseção + lacunas + tickets + refatoração (quando aplicável) + veredito — sem conhecer linguagem ou SO do alvo.
+* [ ] `AC-E08.1`: **Processo `legoloop-auditoria-atomica`** — Dado alvo arbitrário (verbo, processo, peça, função, documento, binário, repositório externo); Quando o processo executar; Então produz disseção + lacunas + tickets + refatoração (quando aplicável) + veredito — sem conhecer linguagem ou SO do alvo.
 * [ ] `AC-E08.2`: **6 verbos auditados** — Dado `matriz`, `listar`, `refinar`, `remover`, `compor`, `fechar`; Quando a auditoria profunda concluir (mesma do `fabricar`); Então cada verbo tem relatório atômico com lacunas, tickets e veredito — `compor` e `fechar` intocados hoje são cobertos.
 * [ ] `AC-E08.3`: **Mutações provadas** — Dado todo teste novo da auditoria; Então mutação do código sob teste o faz falhar (Green-Red-Green), restaurada após cada — provado no relatório.
 * [ ] `AC-E08.4`: **Caminho de falha** — Dado alvo inexistente ou inacessível; Quando a auditoria executar; Então exit 2 com erro claro, nenhum artefato órfão gerado.

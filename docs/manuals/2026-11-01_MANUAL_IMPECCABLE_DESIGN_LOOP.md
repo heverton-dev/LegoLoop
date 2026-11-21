@@ -155,7 +155,7 @@ Para garantir independência e evitar contaminação de contexto, o ecossistema 
 
 No LegoLoop, o pipeline Impeccable está integrado sob duas formas canônicas:
 
-1. **Peça de Loop no Acervo (`processos/impeccable-design.loop.json`):**
+1. **Peça de Loop no Acervo (`processos/legoloop-impeccable-design.loop.json`):**
    * Registrado como ativo de primeira classe do tipo `KindLoop`.
    * Encadeia os 6 sub-loops de forma determinística com contratos de entrada e saída.
 2. **Template Canônico do Studio Canvas (`internal/studio/templates.go`):**

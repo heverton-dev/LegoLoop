@@ -71,6 +71,10 @@ func Parse(data []byte) (*DAG, error) {
 	if err := d.validate(); err != nil {
 		return nil, err
 	}
+	d.derivarExecutores()
+	if err := d.ValidarExecutores(); err != nil {
+		return nil, err
+	}
 	return &d, nil
 }
 

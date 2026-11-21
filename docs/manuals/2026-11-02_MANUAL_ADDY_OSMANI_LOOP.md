@@ -142,10 +142,10 @@ O pipeline completo pode ser executado pelo motor declarativo do LegoLoop:
 
 ```powershell
 # Execução completa do loop Addy Osmani
-legoloop run processos/addy-osmani.loop.json --verbose
+legoloop run processos/legoloop-addy-osmani.loop.json --verbose
 
 # Execução pontual com injeção de parâmetros
-legoloop run processos/addy-osmani.loop.json --param target_route="/checkout" --param perf_budget_lcp="2000ms"
+legoloop run processos/legoloop-addy-osmani.loop.json --param target_route="/checkout" --param perf_budget_lcp="2000ms"
 ```
 
 ### Execução no LegoLoop Studio (Canvas Visual)

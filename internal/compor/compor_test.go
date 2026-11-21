@@ -344,14 +344,14 @@ func conferirDAG(t *testing.T, c cofre) {
 		t.Fatalf("o DAG gravado não é válido: %v", err)
 	}
 	n := d.Nodes[len(d.Nodes)-1]
-	if n.ID != "e04" || n.Type != dag.TypeSubloop || n.Ref != nomeB || d.Version != "1.1.0" {
+	if n.ID != "e04" || n.Type != dag.TypeSubprocesso || n.Ref != nomeB || d.Version != "1.1.0" {
 		t.Errorf("nó composto: id %s tipo %s ref %s versão %s", n.ID, n.Type, n.Ref, d.Version)
 	}
 	var lp struct {
 		Nodes []dag.Node `json:"nodes"`
 	}
 	lb, err := os.ReadFile(filepath.Join(pastaDoCofre(c.vault), nomeA+caminhos.SufixoStudio))
-	if err != nil || json.Unmarshal(lb, &lp) != nil || len(lp.Nodes) != 4 || lp.Nodes[3].Type != dag.TypeSubloop {
+	if err != nil || json.Unmarshal(lb, &lp) != nil || len(lp.Nodes) != 4 || lp.Nodes[3].Type != dag.TypeSubprocesso {
 		t.Errorf("o documento de a não tem a etapa composta: %v", err)
 	}
 }

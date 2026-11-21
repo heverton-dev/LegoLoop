@@ -1,0 +1,450 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-09",
+  "description": "Processo canônico de engenharia e performance web baseado nas 25 skills e playbooks de Addy Osmani: Alinhamento \u0026 Contexto -\u003e Especificação \u0026 Restrições (CONSTRAINTS.md) -\u003e Decomposição Tracer-Bullet -\u003e Construção TDD -\u003e Runtime Real \u0026 Web Vitals -\u003e Auditoria 5 Eixos \u0026 Hardening OWASP -\u003e Observabilidade \u0026 Ship.",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 1,
+      "mode": "sequential"
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 300,
+    "max_parallel_workers": 1,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "commit_on_node_pass": true,
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "micro",
+    "tdd_enforced": true
+  },
+  "id": "addy-osmani",
+  "name": "Processo de Web Performance \u0026 Engenharia Addy Osmani (8 Sub-Processos)",
+  "nodes": [
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/specs/"
+      ],
+      "context_out": [
+        "docs/intents/INTENT.md"
+      ],
+      "id": "subprocesso-1-alinhar-contexto",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Alinhamento \u0026 Contexto",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/intents/INTENT.md",
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      },
+      "ref": "skills/aidd-osmani",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-1-alinhar-contexto",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/intents/INTENT.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "alto",
+      "context_in": [
+        "docs/intents/INTENT.md"
+      ],
+      "context_out": [
+        "docs/specs/SPEC.md"
+      ],
+      "depends_on": [
+        "subprocesso-1-alinhar-contexto"
+      ],
+      "id": "subprocesso-2-especificar-restricoes",
+      "inputs": {
+        "intencao": "file('docs/intents/INTENT.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Especificação \u0026 Restrições",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      },
+      "ref": "skills/aidd-osmani",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-codigo-128k",
+        "effort": "high",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-2-especificar-restricoes",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/specs/SPEC.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 6000,
+        "output_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/plans/PLAN.md"
+      ],
+      "depends_on": [
+        "subprocesso-2-especificar-restricoes"
+      ],
+      "id": "subprocesso-3-planejar-tickets",
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Decomposição Tracer-Bullet",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/plans/PLAN.md",
+        "gate": "file_exists('docs/plans/PLAN.md')"
+      },
+      "ref": "skills/aidd-osmani",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "medium",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-3-planejar-tickets",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/plans/PLAN.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "alto",
+      "context_in": [
+        "docs/plans/PLAN.md"
+      ],
+      "context_out": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "depends_on": [
+        "subprocesso-3-planejar-tickets"
+      ],
+      "id": "subprocesso-4-construir-tdd",
+      "inputs": {
+        "plano": "file('docs/plans/PLAN.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Construção TDD Cirúrgica",
+      "nature": "skill",
+      "output": {
+        "artifact": "docs/reports/TDD_REPORT.md",
+        "gate": "file_exists('docs/reports/TDD_REPORT.md')"
+      },
+      "ref": "skills/aidd-osmani",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "high",
+        "fallback": "qwen2.5-coder:7b",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-4-construir-tdd",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/TDD_REPORT.md')",
+        "type": "unit_test_gate"
+      },
+      "token_budget": {
+        "input_tokens": 8000,
+        "output_tokens": 3000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "context_out": [
+        "docs/reports/PERF_REPORT.md"
+      ],
+      "depends_on": [
+        "subprocesso-4-construir-tdd"
+      ],
+      "id": "subprocesso-5-runtime-webperf",
+      "inputs": {
+        "tdd": "file('docs/reports/TDD_REPORT.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Runtime Real \u0026 Web Vitals",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/PERF_REPORT.md",
+        "gate": "file_exists('docs/reports/PERF_REPORT.md')"
+      },
+      "ref": "skills/aidd-osmani",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-codigo-128k",
+        "effort": "medium",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-5-runtime-webperf",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/PERF_REPORT.md')",
+        "type": "metric_gate"
+      },
+      "token_budget": {
+        "input_tokens": 6000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/reports/PERF_REPORT.md"
+      ],
+      "context_out": [
+        "docs/reports/CODE_REVIEW.md"
+      ],
+      "depends_on": [
+        "subprocesso-5-runtime-webperf"
+      ],
+      "id": "subprocesso-6-review-hardening",
+      "inputs": {
+        "perf": "file('docs/reports/PERF_REPORT.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Auditoria 5 Eixos \u0026 Hardening",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/CODE_REVIEW.md",
+        "gate": "file_exists('docs/reports/CODE_REVIEW.md')"
+      },
+      "ref": "skills/aidd-osmani",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-6-review-hardening",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/CODE_REVIEW.md')",
+        "type": "security_gate"
+      },
+      "token_budget": {
+        "input_tokens": 6000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "context_in": [
+        "docs/reports/CODE_REVIEW.md"
+      ],
+      "context_out": [
+        "docs/reports/SHIP_REPORT.md"
+      ],
+      "depends_on": [
+        "subprocesso-6-review-hardening"
+      ],
+      "id": "subprocesso-7-observabilidade-ship",
+      "inputs": {
+        "review": "file('docs/reports/CODE_REVIEW.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Observabilidade \u0026 Ship",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/SHIP_REPORT.md",
+        "gate": "file_exists('docs/reports/SHIP_REPORT.md')"
+      },
+      "ref": "skills/aidd-osmani",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-codigo-128k",
+        "effort": "low",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-7-observabilidade-ship",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/SHIP_REPORT.md')",
+        "type": "release_gate"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    }
+  ],
+  "schema_version": 2,
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "plan": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
+    "route": "docs/routes/2026-11-07_ROUTE_OSMANI_PERF.json",
+    "spec": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+  },
+  "version": "1.0.0"
+}

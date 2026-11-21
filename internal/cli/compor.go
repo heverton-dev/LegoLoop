@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"legoloop/internal/compor"
+	"legoloop/internal/jail"
 	"legoloop/internal/processo"
 	"legoloop/internal/ste"
 )
@@ -49,6 +50,10 @@ func cmdCompor(ctx context.Context, args []string, d Deps) int {
 		return 2
 	}
 	o.nome, o.composto = pos[0], pos[1]
+	if err := jail.ValidarNomeProcesso(o.nome); err != nil {
+		fmt.Fprintln(d.Stderr, "erro:", err)
+		return 2
+	}
 	return runCompor(ctx, o, d)
 }
 

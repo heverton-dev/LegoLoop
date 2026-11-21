@@ -241,9 +241,9 @@
 * **Tooling:** Runtime `powershell` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `300s` · Retries `1` · Entrada `32000` tokens · Teto de saída `1200` tokens · Rollback `stash_changes`
 * **Inputs:** Context Artifacts `["docs/videorea/ai-motion-graphics-10-repos/dossier.json"]` · Spec Anchor `docs/specs/2026-11-09_SPEC_AI_MOTION_GRAPHICS.md#AC-E05.1`
-* **Outputs:** `skills/ai-motion-graphics/SKILL.md`
+* **Outputs:** `skills/legoloop-ai-motion-graphics/SKILL.md`
 * **Verificação (argv, sem shell):** `legoloop instalar-skills --dry-run --json`
-* **Gate (DSL):** `exit_code == 0 && file_exists('skills/ai-motion-graphics/SKILL.md')`
+* **Gate (DSL):** `exit_code == 0 && file_exists('skills/legoloop-ai-motion-graphics/SKILL.md')`
 * **Spec Ref:** `AC-E05.1`
 
 #### Ticket `TICK-05.2` — Livro Didático LegoPress

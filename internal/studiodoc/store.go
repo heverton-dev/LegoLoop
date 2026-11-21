@@ -11,7 +11,6 @@ import (
 
 	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
-	"legoloop/internal/paths"
 )
 
 type Store struct {
@@ -37,7 +36,7 @@ func (s *Store) filePath(id string) (string, error) {
 	if info, err := os.Stat(aninhado); err == nil && info.Mode().IsRegular() {
 		return aninhado, nil
 	}
-	return filepath.Join(s.dir, id+paths.SufixoAntigo), nil
+	return filepath.Join(s.dir, id+caminhos.SufixoAntigo), nil
 }
 
 func validateProcessoDAG(l *Processo) error {
@@ -114,7 +113,7 @@ func (s *Store) readCandidate(id, primary string) ([]byte, error) {
 	cands := []string{
 		primary,
 		filepath.Join(s.dir, id, filepath.Base(primary)),
-		filepath.Join(s.dir, id, id+paths.SufixoAntigo),
+		filepath.Join(s.dir, id, id+caminhos.SufixoAntigo),
 		filepath.Join(s.dir, id, caminhos.ArquivoDAG),
 	}
 	for _, c := range cands {
@@ -186,8 +185,8 @@ func idDeArquivo(e os.DirEntry) string {
 	if strings.HasSuffix(e.Name(), caminhos.SufixoStudio) {
 		return strings.TrimSuffix(e.Name(), caminhos.SufixoStudio)
 	}
-	if strings.HasSuffix(e.Name(), paths.SufixoAntigo) {
-		return strings.TrimSuffix(e.Name(), paths.SufixoAntigo)
+	if strings.HasSuffix(e.Name(), caminhos.SufixoAntigo) {
+		return strings.TrimSuffix(e.Name(), caminhos.SufixoAntigo)
 	}
 	return ""
 }

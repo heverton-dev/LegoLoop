@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/paths"
+	"legoloop/internal/caminhos"
 )
 
 // montarArvore cria arquivos a partir de um mapa caminho-conteúdo sob uma raiz.
@@ -101,7 +101,7 @@ func TestMigraParaArchive(t *testing.T) {
 
 // caminhoFatia monta o caminho do manifesto de fatia sem citar termo proibido.
 func caminhoFatia(slug string) string {
-	return filepath.ToSlash(filepath.Join(paths.DirProcessos, slug, slug+paths.SufixoStudio))
+	return filepath.ToSlash(filepath.Join(caminhos.DirProcessos, slug, slug+caminhos.SufixoStudio))
 }
 
 // arvoreQuinteto cria a árvore de teste: fatias, donos, órfãos e protegido.
@@ -167,7 +167,7 @@ func conferirMantidos(t *testing.T, raiz string) {
 // proibidoDocsDeFatia falha se algum processos/<slug>/docs/ recebe escrita.
 func proibidoDocsDeFatia(t *testing.T, raiz string) {
 	t.Helper()
-	base := filepath.Join(raiz, paths.DirProcessos)
+	base := filepath.Join(raiz, caminhos.DirProcessos)
 	_ = filepath.WalkDir(base, func(p string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return nil

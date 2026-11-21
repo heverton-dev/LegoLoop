@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verificar:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Executar go test
+        run: go test -count=1 ./...
+      - name: Executar go vet
+        run: go vet ./...
+      - name: Verificar tamanho das funcoes (funclen)
+        run: go run ./tools/funclen internal
+      - name: Verificar formatacao (gofmt)
+        shell: bash
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "$unformatted"
+            exit 1
+          fi
+      - name: Verificar taxonomia (taxlinter)
+        run: go run ./tools/taxlinter internal cmd loops skills docs/templates
+      - name: Verificar espinha dorsal
+        run: go run ./cmd/legoloop espinha verificar
+      - name: Verificar cobertura
+        run: go run ./tools/cobertura
+      - name: Verificar go.mod e go.sum limpos
+        run: git diff --exit-code -- go.mod go.sum
+      - name: Executar go test -race (Linux e macOS)
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+        env:
+          CGO_ENABLED: "1"
+        run: go test -race -count=1 ./...

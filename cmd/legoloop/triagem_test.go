@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/paths"
+	"legoloop/internal/caminhos"
 	"legoloop/internal/triagem"
 )
 
@@ -27,7 +27,7 @@ func TestRunTriagemDeterministicoJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for _, flagDir := range []string{"--processos-dir", "--" + paths.DirAntigo + "-dir"} {
+	for _, flagDir := range []string{"--processos-dir", "--" + caminhos.DirAntigo + "-dir"} {
 		var stdout, stderr bytes.Buffer
 		code := runTriagem(context.Background(), []string{flagDir, dir, "--json", "/legoloop-meu-processo"}, &stdout, &stderr)
 		if code != 0 {
@@ -59,7 +59,7 @@ func TestRunTriagemAmbiguidadeSemLLM(t *testing.T) {
 
 func TestRunMigrarProcessosCompatibilidade(t *testing.T) {
 	dir := t.TempDir()
-	for _, sub := range []string{"migrar-processos", "migrar-" + paths.DirAntigo} {
+	for _, sub := range []string{"migrar-processos", "migrar-" + caminhos.DirAntigo} {
 		var stdout, stderr bytes.Buffer
 		code := runMigrarProcessos(sub, []string{"--dir", dir, "--dry-run"}, &stdout, &stderr)
 		if code != 0 {

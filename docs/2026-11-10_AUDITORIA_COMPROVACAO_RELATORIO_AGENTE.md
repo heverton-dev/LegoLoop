@@ -198,9 +198,9 @@ func NewTargetBundle(baseDir, slug string) *TargetBundle {
 * **Caso Apresentado:**
   1. Gates fracos no DAG: manual promete 4 gates rigorosos de julgamento, mas `impeccable-design.loop.json` usa apenas `file_exists(...)`.
   2. Roteamento incompleto: últimos 4 nós não declaram modelo.
-  3. Duplicação JSON vs Go: esteira declarada em `processos/impeccable-design.loop.json` e hardcoded em `internal/studio/templates.go`.
+  3. Duplicação JSON vs Go: esteira declarada em `processos/legoloop-impeccable-design.loop.json` e hardcoded em `internal/studio/templates.go`.
   4. Typo no manual: `impeccabe-finish-reviewer`.
-* **Código Real:** [processos/impeccable-design.loop.json](file:///C:/Users/trcnologia/Desktop/LegoLoop/processos/impeccable-design.loop.json), [internal/studio/templates.go](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/templates.go#L188-L245) e [docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md#L66).
+* **Código Real:** [processos/legoloop-impeccable-design.loop.json](file:///C:/Users/trcnologia/Desktop/LegoLoop/processos/legoloop-impeccable-design.loop.json), [internal/studio/templates.go](file:///C:/Users/trcnologia/Desktop/LegoLoop/internal/studio/templates.go#L188-L245) e [docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md](file:///C:/Users/trcnologia/Desktop/LegoLoop/docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md#L66).
 * **Veredito:** **PROCEDE TOTALMENTE.**
 * **Prova Comprobatória:**
   1. Todos os nós de `impeccable-design.loop.json` possuem como único gate `file_exists(...)` (ex.: `file_exists('src/styles/theme.css')`).
@@ -212,7 +212,7 @@ func NewTargetBundle(baseDir, slug string) *TargetBundle {
   * **Alvo:** `docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md:66`
   * **Ação:** Corrigir typo para `impeccable-finish-reviewer`.
   * **Ticket ID:** `TICK-FIX-IMP-02`
-  * **Alvo:** `internal/studio/templates.go` e `processos/impeccable-design.loop.json`
+  * **Alvo:** `internal/studio/templates.go` e `processos/legoloop-impeccable-design.loop.json`
   * **Ação:** Unificar a SSOT fazendo `internal/studio` deserializar `impeccable-design.loop.json` via `embed.FS` em vez de manter uma struct duplicada em Go. Evoluir os gates para validar conformidade CSS (`has_pattern('src/styles/theme.css', ':root')`).
 
 ---

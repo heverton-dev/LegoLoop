@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"legoloop/internal/caminhos"
+	"legoloop/internal/escrita"
 	"legoloop/internal/processo"
 	"legoloop/internal/studiodoc"
 )
@@ -54,7 +55,7 @@ func regenerarStudio(studio string, dagB []byte, criadoEm time.Time, d Deps) err
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(studio, novo, 0o644); err != nil {
+	if err := escrita.GravarAtomico(studio, novo); err != nil {
 		return err
 	}
 	fmt.Fprintf(d.Stdout, "✓ %s regenerado a partir do DAG\n", filepath.Base(studio))

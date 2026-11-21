@@ -41,7 +41,7 @@ O raciocínio socrático do sub-loop 1 pede um modelo capaz de desafiar premissa
 
 ### O arquivo do loop
 
-O arquivo `processos/matt-pocock.loop.json` segue o esquema `dag.v1`, chama-se "Pipeline de Rigor Matt Pocock (6 Sub-Loops)", versão 1.0.0, e tem gatilho manual. Os seis nós apontam para a peça `skills/aidd-pocock` e formam uma cadeia linear. Cada nó declara o artefato que precisa existir para ser concluído.
+O arquivo `processos/legoloop-matt-pocock.loop.json` segue o esquema `dag.v1`, chama-se "Pipeline de Rigor Matt Pocock (6 Sub-Loops)", versão 1.0.0, e tem gatilho manual. Os seis nós apontam para a peça `skills/aidd-pocock` e formam uma cadeia linear. Cada nó declara o artefato que precisa existir para ser concluído.
 
 | Nó                             | Artefato exigido pelo gate     | Modelo sugerido          |
 | :----------------------------- | :----------------------------- | :----------------------- |
@@ -61,8 +61,8 @@ Em `internal/studio/templates.go`, o template "Pipeline Matt Pocock (6 Sub-Loops
 ### Comandos de verificação
 
 ```bash
-legoloop validate processos/matt-pocock.loop.json   # contrato, gates e ciclos
-legoloop run processos/matt-pocock.loop.json        # execução pelo motor DAG
+legoloop validate processos/legoloop-matt-pocock.loop.json   # contrato, gates e ciclos
+legoloop run processos/legoloop-matt-pocock.loop.json        # execução pelo motor DAG
 legoloop studio                                 # Studio em 127.0.0.1:7878
 ```
 

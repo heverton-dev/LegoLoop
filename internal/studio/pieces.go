@@ -130,7 +130,7 @@ func subprocessoPeca(res Resolver, ref string) (nodeInfo, string) {
 	if it.Path != "" {
 		refName = refDeProcesso(it)
 	}
-	return nodeInfo{Label: it.Name, Type: dag.TypeSubloop, Ref: refName}, ""
+	return nodeInfo{Label: it.Name, Type: dag.TypeSubprocesso, Ref: refName}, ""
 }
 
 // refDeProcesso devolve o slug do Processo: a meta canônica quando existe e,

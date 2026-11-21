@@ -121,7 +121,8 @@ func TestRemoverUso(t *testing.T) {
 	}{
 		{"sem nome", []string{"remover"}, 2, "Uso: legoloop remover"},
 		{"argumento a mais", []string{"remover", "legoloop-b", "extra"}, 2, "Uso: legoloop remover"},
-		{"nome fora do padrão", []string{"remover", "../x", "--yes"}, 2, "não é de um processo"},
+		{"nome hostil no jail", []string{"remover", "../x", "--yes"}, 2, "escape da raiz sanitizada"},
+		{"nome fora do padrão", []string{"remover", "sem-prefixo", "--yes"}, 2, "não é de um processo"},
 		{"não existe", []string{"remover", "legoloop-zzz", "--yes"}, 1, "não tem o processo legoloop-zzz"},
 		{"sem terminal e sem --yes", []string{"remover", "legoloop-b"}, 1, "Use --yes"},
 	}

@@ -25,7 +25,7 @@ toc-depth: 2
 abstract: |
   Este livro ensina a operar o método de Addy Osmani (upstream sob licença MIT) dentro do ecossistema LegoLoop. O método reúne 25 habilidades de engenharia que combatem dois problemas: o achismo de desempenho, em que se otimiza sem medir, e a proliferação de código assistido por IA sem controle de qualidade.
 
-  A Parte I apresenta os seis pilares do método. A Parte II descreve o loop mestre de sete estágios e seus seis gates. A Parte III detalha os sub-loops e as habilidades de cada um. A Parte IV desce ao nível de implementação: limiares de Core Web Vitals, os cinco eixos de revisão, os playbooks da skill e o arquivo processos/addy-osmani.loop.json. A Parte V traz receitas e a Parte VI reúne glossário, relatório de conformidade e referência das habilidades.
+  A Parte I apresenta os seis pilares do método. A Parte II descreve o loop mestre de sete estágios e seus seis gates. A Parte III detalha os sub-loops e as habilidades de cada um. A Parte IV desce ao nível de implementação: limiares de Core Web Vitals, os cinco eixos de revisão, os playbooks da skill e o arquivo processos/legoloop-addy-osmani.loop.json. A Parte V traz receitas e a Parte VI reúne glossário, relatório de conformidade e referência das habilidades.
 
   Fonte primária: docs/manuals/2026-11-02_MANUAL_ADDY_OSMANI_LOOP.md, complementada pelos arquivos upstream da skill aidd-osmani.
 ---
@@ -51,7 +51,7 @@ abstract: |
 
 ## As convenções da obra
 
-Nomes de habilidades e caminhos de arquivo aparecem em fonte monoespaçada, como `performance-optimization` ou `processos/addy-osmani.loop.json`. Exemplos ilustrativos são marcados como tal no texto. Toda afirmação sobre o LegoLoop é rastreável a um arquivo citado; quando manual e código discordam, o livro segue o código e registra a diferença no Apêndice B.
+Nomes de habilidades e caminhos de arquivo aparecem em fonte monoespaçada, como `performance-optimization` ou `processos/legoloop-addy-osmani.loop.json`. Exemplos ilustrativos são marcados como tal no texto. Toda afirmação sobre o LegoLoop é rastreável a um arquivo citado; quando manual e código discordam, o livro segue o código e registra a diferença no Apêndice B.
 
 
 # PARTE I — Macro: Medir, Restringir, Provar
@@ -346,7 +346,7 @@ O Playbook L é comparado ao loop mestre no capítulo 6.
 
 ## 20. Integração no LegoLoop
 
-O arquivo `processos/addy-osmani.loop.json` segue o esquema `dag.v1`, tem gatilho manual e declara sete nós em cadeia linear, todos apontando para `skills/aidd-osmani`.
+O arquivo `processos/legoloop-addy-osmani.loop.json` segue o esquema `dag.v1`, tem gatilho manual e declara sete nós em cadeia linear, todos apontando para `skills/aidd-osmani`.
 
 | Nó                                   | Artefato exigido pelo gate     | Modelo sugerido  |
 | :----------------------------------- | :----------------------------- | :--------------- |
@@ -363,8 +363,8 @@ Cada gate é do tipo `file_exists(...)`: confirma que o artefato existe, não qu
 Os comandos reais do CLI para operar a esteira são:
 
 ```bash
-legoloop validate processos/addy-osmani.loop.json
-legoloop run processos/addy-osmani.loop.json --var target_route=/checkout
+legoloop validate processos/legoloop-addy-osmani.loop.json
+legoloop run processos/legoloop-addy-osmani.loop.json --var target_route=/checkout
 legoloop studio        # padrão: 127.0.0.1:7878
 ```
 

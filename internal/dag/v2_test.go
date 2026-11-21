@@ -243,7 +243,7 @@ func TestSubprocessoNode(t *testing.T) {
 			`"routing":{"mode":"manual","model":"m"},"output":{"artifact":"A.md","gate":"true"}}`)
 	}
 	d, err := Parse([]byte(mk("clinica-vet")))
-	if err != nil || d.Node("a").Type != TypeSubloop {
+	if err != nil || d.Node("a").Type != TypeSubprocesso {
 		t.Fatalf("subprocesso válido: %v", err)
 	}
 	parseErr(t, "subprocesso sem ref", mk(""), "subprocesso")

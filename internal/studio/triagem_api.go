@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"legoloop/internal/caminhos"
-	"legoloop/internal/paths"
 	"legoloop/internal/triagem"
 )
 
@@ -27,7 +26,7 @@ func (s *Server) handleTriagem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "entrada ou workspace obrigatório", http.StatusBadRequest)
 		return
 	}
-	processosDir := paths.DirProcessos
+	processosDir := caminhos.DirProcessos
 	if s.ProjectDir != "" {
 		processosDir = caminhos.DirAcervoLeitura(s.ProjectDir)
 	}

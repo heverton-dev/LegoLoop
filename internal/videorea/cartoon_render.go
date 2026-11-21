@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -189,19 +190,55 @@ func escapeFFmpegPath(p string) string {
 }
 
 func findSystemFontPath() string {
-	candidates := []string{
-		`C:\Windows\Fonts\arial.ttf`,
-		`C:\Windows\Fonts\segoeui.ttf`,
-		"/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-		"/usr/share/fonts/TTF/DejaVuSans.ttf",
-		"/System/Library/Fonts/Helvetica.ttc",
-	}
-	for _, c := range candidates {
-		if info, err := os.Stat(c); err == nil && !info.IsDir() {
+	return findSystemFontPathForOS(runtime.GOOS, isRegularFile)
+}
+
+func isRegularFile(path string) bool {
+	info, err := os.Stat(path)
+	return err == nil && !info.IsDir()
+}
+
+func findSystemFontPathForOS(goos string, existsFn func(string) bool) string {
+	for _, c := range fontCandidatesForOS(goos) {
+		if existsFn != nil && existsFn(c) {
 			return c
 		}
 	}
 	return ""
+}
+
+func fontCandidatesForOS(goos string) []string {
+	switch goos {
+	case "windows":
+		return []string{
+			`C:\Windows\Fonts\arial.ttf`,
+			`C:\Windows\Fonts\segoeui.ttf`,
+		}
+	case "darwin":
+		return []string{
+			"/System/Library/Fonts/Helvetica.ttc",
+			"/Library/Fonts/Arial.ttf",
+		}
+	default:
+		return []string{
+			"/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+			"/usr/share/fonts/TTF/DejaVuSans.ttf",
+		}
+	}
+}
+
+func pythonForOS(goos string) string {
+	if goos == "windows" {
+		return "python"
+	}
+	return "python3"
+}
+
+func shellForOS(goos string) []string {
+	if goos == "windows" {
+		return []string{"powershell", "-NoProfile"}
+	}
+	return []string{"sh", "-c"}
 }
 
 // GenerateCartoonFixture3s produz um arquivo MP4 de 3 segundos real via FFmpeg sem fallback placeholder.

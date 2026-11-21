@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"legoloop/internal/escrita"
 )
 
 // AntibodiesMarkdownFile é o nome do espelho executivo para leitura rápida de agentes.
@@ -24,7 +26,7 @@ func SincronizarProcesso(dir string) error {
 	}
 	caminhoMD := filepath.Join(dir, AntibodiesMarkdownFile)
 	md := RenderizarMarkdown(banco.Processo, banco.Globais, banco.Dominio)
-	if err := os.WriteFile(caminhoMD, md, 0o644); err != nil {
+	if err := escrita.GravarAtomico(caminhoMD, md); err != nil {
 		return fmt.Errorf("brain: gravando %s: %w", AntibodiesMarkdownFile, err)
 	}
 	return nil

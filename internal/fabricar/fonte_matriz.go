@@ -1,14 +1,17 @@
 package fabricar
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
 
+	"legoloop/internal/assets"
 	"legoloop/internal/matriz"
 	"legoloop/internal/processo"
 	"legoloop/internal/ste"
@@ -16,7 +19,6 @@ import (
 
 func init() {
 	ste.Default.Register("fabricar.sem_matriz", "A matriz de peças não existe em %s. Rode legoloop matriz gerar e tente de novo.")
-	ste.Default.Register("fabricar.drives_ignorados", "O fabricar não varre drives. As peças vêm da matriz. Os drives pedidos foram ignorados.")
 	ste.Default.Register("fabricar.peca_removivel", "A peça %s está em mídia removível ou de rede. Ela ficou fora. Use --trust-removable para aceitá-la.")
 	ste.Default.Register("fabricar.peca_nome_inseguro", "Uma peça tem um nome que não é seguro para o grafo: %s. Ela ficou fora.")
 }
@@ -33,6 +35,97 @@ type FonteMatriz struct {
 
 // MatrizFunc entrega a matriz já lida; os testes a trocam por uma matriz em memória.
 type MatrizFunc func() (FonteMatriz, error)
+
+// AtualizarMatrizFunc atualiza a Matriz gravada no cofre (em modo -sem-cerebro por padrão).
+type AtualizarMatrizFunc func(ctx context.Context) error
+
+func deveVerificarDefasagem(d Deps) bool {
+	return len(d.DiscoveryRoots) > 0 || d.Scan != nil || d.Atualizar != nil
+}
+
+func homeDe(d Deps) string {
+	if d.Home != "" {
+		return d.Home
+	}
+	h, _ := os.UserHomeDir()
+	return h
+}
+
+func varrerPecas(ctx context.Context, req Request, d Deps) ([]assets.Item, error) {
+	if d.Scan != nil {
+		return d.Scan(ctx)
+	}
+	cfg := assets.Config{
+		Home:             homeDe(d),
+		AutoDiscover:     len(d.DiscoveryRoots) > 0 || len(req.TargetDrives) > 0,
+		DiscoveryRoots:   d.DiscoveryRoots,
+		TargetDrives:     req.TargetDrives,
+		TrustRemovable:   req.TrustRemovable,
+		ProvedorUnidades: d.ProvedorUnidades,
+		LookPath:         func(string) (string, error) { return "", os.ErrNotExist },
+		Getenv:           func(string) string { return "" },
+	}
+	return assets.NewScanner(cfg).Scan(ctx).Items, nil
+}
+
+func atualizarMatrizSemCerebro(ctx context.Context, d Deps, items []assets.Item) error {
+	voc, err := matriz.LoadVocab(d.Roots.Vault)
+	if err != nil {
+		return err
+	}
+	md := matriz.Deps{
+		Home:      homeDe(d),
+		Catalogar: matriz.Catalogador{Vocab: voc, Brain: nil},
+		Scan:      func(context.Context) ([]assets.Item, error) { return items, nil },
+		Now:       d.Clock,
+	}
+	_, err = matriz.Generate(ctx, matriz.Options{Vault: d.Roots.Vault}, md)
+	return err
+}
+
+// atualizarSeDefasada consulta matriz.Staleness antes da Fusão; se Defasada() == true, chama Atualizar uma vez
+// e recarrega a Matriz para a Fusão usar as peças atualizadas.
+func atualizarSeDefasada(ctx context.Context, req Request, d Deps, fonte FonteMatriz) (FonteMatriz, matriz.Stale, error) {
+	if !deveVerificarDefasagem(d) {
+		return fonte, matriz.Stale{}, nil
+	}
+	reg, err := matriz.LerRegistro(filepath.Join(d.Roots.Vault, "registry_matrix.json"))
+	if errors.Is(err, os.ErrNotExist) {
+		reg, err = nil, nil
+	}
+	if err != nil {
+		return fonte, matriz.Stale{}, err
+	}
+	items, err := varrerPecas(ctx, req, d)
+	if err != nil {
+		return fonte, matriz.Stale{}, err
+	}
+	stale, err := matriz.Staleness(ctx, reg, items, matriz.Deps{Home: homeDe(d)})
+	if err != nil || !stale.Defasada() {
+		return fonte, stale, err
+	}
+	if d.Atualizar != nil {
+		err = d.Atualizar(ctx)
+	} else {
+		err = atualizarMatrizSemCerebro(ctx, d, items)
+	}
+	if err != nil {
+		return fonte, stale, err
+	}
+	recarregada, err := d.Matriz()
+	return recarregada, stale, err
+}
+
+func pecasPendentes(entradas []matriz.Entrada) []string {
+	var out []string
+	for _, e := range entradas {
+		if e.Retentar {
+			out = append(out, e.Nome)
+		}
+	}
+	slices.Sort(out)
+	return out
+}
 
 // LerMatriz lê registry_matrix.json e vocab.json do cofre. A data é a de generated_at; sem ela, a do arquivo.
 func LerMatriz(vault string) (FonteMatriz, error) {

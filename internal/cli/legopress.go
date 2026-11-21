@@ -47,8 +47,17 @@ func cmdLegoPress(_ context.Context, args []string, d Deps) int {
 	}
 }
 
+// LegoPressDeps permite injetar compilador e auditor falsos em testes da CLI.
+type LegoPressDeps struct {
+	Compiler *legopress.Compiler
+	Auditor  *legopress.Auditor
+}
+
 func runLegoPressDoctor(d Deps) int {
 	compiler := legopress.NewCompiler()
+	if d.LegoPress != nil && d.LegoPress.Compiler != nil {
+		compiler = d.LegoPress.Compiler
+	}
 	report := compiler.Doctor()
 
 	fmt.Fprintln(d.Stdout, "=== LegoPress Doctor: Auditoria de Dependências Mecânicas ===")
@@ -68,6 +77,9 @@ func runLegoPressDoctor(d Deps) int {
 
 func runLegoPressAuditar(pdfPath string, d Deps) int {
 	auditor := legopress.NewAuditor()
+	if d.LegoPress != nil && d.LegoPress.Auditor != nil {
+		auditor = d.LegoPress.Auditor
+	}
 	report, err := auditor.AuditPDF(pdfPath)
 	if err != nil {
 		fmt.Fprintf(d.Stderr, "[ERRO] falha ao auditar PDF: %v\n", err)

@@ -8,20 +8,19 @@ import (
 	"testing"
 
 	"legoloop/internal/caminhos"
-	"legoloop/internal/paths"
 	"legoloop/internal/refinar"
 )
 
 // canonizar move o DAG e o documento do Studio para o layout que o fabricar grava: pastaCofre/<nome>/.
 func canonizar(t *testing.T, c cofre) (dag, studio string) {
 	t.Helper()
-	pastaCofre := filepath.Join(c.vault, paths.DirProcessos)
+	pastaCofre := filepath.Join(c.vault, caminhos.DirProcessos)
 	pasta := filepath.Join(pastaCofre, nome)
 	if err := os.MkdirAll(pasta, 0o755); err != nil {
 		t.Fatal(err)
 	}
 	dag, studio = filepath.Join(pasta, caminhos.ArquivoDAG), filepath.Join(pasta, nome+caminhos.SufixoStudio)
-	for de, para := range map[string]string{filepath.Join(pastaCofre, nome+".dag.json"): dag, filepath.Join(pastaCofre, nome+paths.SufixoAntigo): studio} {
+	for de, para := range map[string]string{filepath.Join(pastaCofre, nome+".dag.json"): dag, filepath.Join(pastaCofre, nome+caminhos.SufixoAntigo): studio} {
 		if err := os.Rename(de, para); err != nil {
 			t.Fatal(err)
 		}
@@ -39,8 +38,8 @@ func TestRefinar_ComLayoutCanonicoAtualizaOMesmoDAG(t *testing.T) {
 	if !strings.Contains(ler(t, dag), "e04") || !strings.Contains(ler(t, studio), "e04") {
 		t.Error("o DAG e o Studio da pasta do processo devem ganhar a etapa e04")
 	}
-	pastaCofre := filepath.Join(c.vault, paths.DirProcessos)
-	for _, solto := range []string{nome + ".dag.json", nome + paths.SufixoAntigo} {
+	pastaCofre := filepath.Join(c.vault, caminhos.DirProcessos)
+	for _, solto := range []string{nome + ".dag.json", nome + caminhos.SufixoAntigo} {
 		if _, err := os.Stat(filepath.Join(pastaCofre, solto)); err == nil {
 			t.Errorf("não deve criar %s solto ao lado da pasta do processo", solto)
 		}

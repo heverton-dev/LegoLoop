@@ -176,18 +176,13 @@ func TestRunFabricar(t *testing.T) {
 		}
 	})
 
-	t.Run("nome com traversal e sanitizado e fica dentro das raizes", func(t *testing.T) {
+	t.Run("nome com traversal e recusado com exit 2 e nao grava", func(t *testing.T) {
 		r := newFabRig(t)
-		if code := run(t, r.d, r.args("../../etc/passwd", "--yes", "--sem-entrevista")...); code != 0 {
-			t.Fatalf("exit %d: %s", code, r.errb)
+		if code := run(t, r.d, r.args("../../etc/passwd", "--yes", "--sem-entrevista")...); code != 2 {
+			t.Fatalf("exit %d, esperado 2: %s", code, r.errb)
 		}
-		if !strings.Contains(r.out.String(), "legoloop-etc-passwd") {
-			t.Errorf("o nome devia ser sanitizado:\n%s", r.out)
-		}
-		for _, f := range r.files(t) {
-			if !strings.HasPrefix(f, r.vault) && !strings.HasPrefix(f, r.doc) {
-				t.Errorf("arquivo fora das raízes: %s", f)
-			}
+		if f := r.files(t); len(f) != 0 {
+			t.Errorf("gravou com nome hostil: %v", f)
 		}
 	})
 

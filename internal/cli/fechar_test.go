@@ -11,6 +11,7 @@ import (
 
 	"legoloop/internal/caminhos"
 	"legoloop/internal/cli"
+	"legoloop/internal/provider"
 )
 
 // semearRepoFechar monta um repositório de teste com o manual, o livro, a Skill e o DAG reais mínimos.
@@ -54,7 +55,7 @@ func TestCmdFechar(t *testing.T) {
 
 	t.Run("execucao dry-run com json", func(t *testing.T) {
 		var stdout, stderr bytes.Buffer
-		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, Fechar: &cli.FecharDeps{RepoDir: semearRepoFechar(t, "video-motion")}}
+		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, Discover: noModels, Fechar: &cli.FecharDeps{RepoDir: semearRepoFechar(t, "video-motion")}}
 		code := cli.Run(context.Background(), []string{"fechar", "video-motion", "--dry-run", "--json"}, deps)
 		if code != 0 {
 			t.Fatalf("esperava exit 0 para dry-run json, obteve %d. Stderr: %s", code, stderr.String())
@@ -87,7 +88,7 @@ func TestCmdFechar(t *testing.T) {
 
 	t.Run("execucao com telemetria personalizada", func(t *testing.T) {
 		var stdout, stderr bytes.Buffer
-		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, Fechar: &cli.FecharDeps{RepoDir: semearRepoFechar(t, "video-motion")}}
+		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, Discover: noModels, Fechar: &cli.FecharDeps{RepoDir: semearRepoFechar(t, "video-motion")}}
 		code := cli.Run(context.Background(), []string{
 			"fechar", "video-motion", "--dry-run", "--json",
 			"--tempo-min", "30", "--tokens-in", "90000", "--custo-usd", "0.55",
@@ -121,7 +122,16 @@ func TestCmdFechar(t *testing.T) {
 
 	t.Run("suporte a model e effort", func(t *testing.T) {
 		var stdout, stderr bytes.Buffer
-		deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+		deps := cli.Deps{
+			Stdout: &stdout,
+			Stderr: &stderr,
+			Discover: func(context.Context) provider.Inventory {
+				return provider.Inventory{
+					RouterURL:    "http://127.0.0.1:20128",
+					RouterModels: []string{"fast-brain"},
+				}
+			},
+		}
 		code := cli.Run(context.Background(), []string{"fechar", "video-motion", "--dry-run", "--model", "modelo-inexistente-abc"}, deps)
 		if code == 0 {
 			t.Fatalf("esperava erro ao chamar fechar com modelo inexistente")
@@ -136,7 +146,7 @@ func TestCmdFecharFalhaNaoImprimeSucessoESaiComCodigo1(t *testing.T) {
 	repo := t.TempDir()
 	ok := func(string) error { return nil }
 	deps := func(out, errb *bytes.Buffer) cli.Deps {
-		return cli.Deps{Stdout: out, Stderr: errb, Fechar: &cli.FecharDeps{RepoDir: repo, Indexer: ok, Portoes: ok, Rebuilder: ok}}
+		return cli.Deps{Stdout: out, Stderr: errb, Discover: noModels, Fechar: &cli.FecharDeps{RepoDir: repo, Indexer: ok, Portoes: ok, Rebuilder: ok}}
 	}
 	t.Run("texto", func(t *testing.T) {
 		var stdout, stderr bytes.Buffer

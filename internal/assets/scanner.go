@@ -164,15 +164,32 @@ func flagDuplicateSkills(items []Item) {
 // joinRoots monta raízes relativas ao HOME (global) ou a cada projeto (project).
 func (s *Scanner) joinRoots(home, project []root) []root {
 	var out []root
-	for _, r := range home {
-		out = append(out, root{filepath.Join(s.cfg.Home, filepath.FromSlash(r.dir)), "global", r.origin})
+	if s.homePermitido() {
+		for _, r := range home {
+			out = append(out, root{filepath.Join(s.cfg.Home, filepath.FromSlash(r.dir)), "global", r.origin})
+		}
 	}
-	for _, p := range s.cfg.Projects {
+	for _, p := range s.allProjects(context.Background()) {
 		for _, r := range project {
 			out = append(out, root{filepath.Join(p, filepath.FromSlash(r.dir)), "project", r.origin})
 		}
 	}
 	return out
+}
+
+func (s *Scanner) homePermitido() bool {
+	if len(s.cfg.TargetDrives) == 0 {
+		return true
+	}
+	raizes := RaizesDescoberta(s.cfg.Home, s.cfg.TargetDrives, s.cfg.ProvedorUnidades, s.cfg.TrustRemovable)
+	h := strings.ToLower(strings.TrimRight(filepath.ToSlash(filepath.Clean(s.cfg.Home)), "/"))
+	for _, r := range raizes {
+		rn := strings.ToLower(strings.TrimRight(filepath.ToSlash(filepath.Clean(r)), "/"))
+		if h == rn || strings.HasPrefix(h, rn+"/") {
+			return true
+		}
+	}
+	return false
 }
 
 // skipDirName: diretórios que nunca contêm ativos do usuário.

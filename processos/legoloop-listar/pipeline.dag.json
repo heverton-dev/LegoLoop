@@ -1,0 +1,396 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "date": "2026-11-19",
+  "description": "Processo canônico do verbo LISTAR: mostra os processos que existem no cofre com nome, versão, natureza, harnesses vinculados e quem os usa",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 1,
+      "mode": "sequential"
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 1,
+    "rollback_on_failure": "abort_processo",
+    "supervision_level": "micro",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-listar",
+  "nodes": [
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "go",
+        "run",
+        "./cmd/legoloop",
+        "listar",
+        "--vault",
+        "~/.aidd/canonical",
+        "--json"
+      ],
+      "context_in": [],
+      "context_out": [
+        "docs/diagrams/listar/manifest.json",
+        "docs/diagrams/listar/anticorpos/anticorpos.json"
+      ],
+      "id": "e01",
+      "inputs": {
+        "origem": "processos/legoloop-listar/anticorpos.json"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 60,
+        "max_prompt_tokens": 10000
+      },
+      "name": "validar-cofre",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/diagrams/listar/manifest.json",
+        "gate": "file_exists('docs/diagrams/listar/manifest.json') \u0026\u0026 file_exists('docs/diagrams/listar/anticorpos/anticorpos.json')"
+      },
+      "ref": "skills/legoloop-listar",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "timeout_sec": 60,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "gate": "file_exists('docs/diagrams/listar/manifest.json') \u0026\u0026 file_exists('docs/diagrams/listar/anticorpos/anticorpos.json')"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "go",
+        "run",
+        "./cmd/legoloop",
+        "listar",
+        "--vault",
+        "~/.aidd/canonical",
+        "--json"
+      ],
+      "context_in": [
+        "docs/diagrams/listar/manifest.json"
+      ],
+      "context_out": [
+        "docs/diagrams/listar/quadrantes.json"
+      ],
+      "depends_on": [
+        "e01"
+      ],
+      "id": "e02",
+      "inputs": {
+        "manifest": "file('docs/diagrams/listar/manifest.json')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 60,
+        "max_prompt_tokens": 12000
+      },
+      "name": "ler-processos",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/diagrams/listar/quadrantes.json",
+        "gate": "file_exists('docs/diagrams/listar/quadrantes.json') \u0026\u0026 word_count('docs/diagrams/listar/quadrantes.json') \u003e= 30"
+      },
+      "ref": "skills/legoloop-listar",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "timeout_sec": 60,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "gate": "file_exists('docs/diagrams/listar/quadrantes.json') \u0026\u0026 word_count('docs/diagrams/listar/quadrantes.json') \u003e= 30"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "legoloop",
+        "exec",
+        "skills/legoloop-diagram-design/scripts/gerar_diagrama.py",
+        "listar"
+      ],
+      "context_in": [
+        "docs/diagrams/listar/quadrantes.json"
+      ],
+      "context_out": [
+        "docs/diagrams/listar/src/listar.html"
+      ],
+      "depends_on": [
+        "e02"
+      ],
+      "id": "e03",
+      "inputs": {
+        "quadrantes": "file('docs/diagrams/listar/quadrantes.json')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 5000,
+        "max_duration_sec": 120,
+        "max_prompt_tokens": 15000
+      },
+      "name": "gerar-diagrama",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/diagrams/listar/src/listar.html",
+        "gate": "file_exists('docs/diagrams/listar/src/listar.html') \u0026\u0026 word_count('docs/diagrams/listar/src/listar.html') \u003e 200"
+      },
+      "ref": "skills/legoloop-diagram-design",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING",
+      "timeout_sec": 120,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/diagrams/listar/src/listar.html') \u0026\u0026 word_count('docs/diagrams/listar/src/listar.html') \u003e 200"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "legoloop",
+        "exec",
+        "skills/legoloop-diagram-design/scripts/gerar_animacao.py",
+        "docs/diagrams/listar/src/listar.html"
+      ],
+      "context_in": [
+        "docs/diagrams/listar/src/listar.html"
+      ],
+      "context_out": [
+        "docs/diagrams/listar/animation/listar-anim.html"
+      ],
+      "depends_on": [
+        "e03"
+      ],
+      "id": "e04",
+      "inputs": {
+        "html": "file('docs/diagrams/listar/src/listar.html')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 60,
+        "max_prompt_tokens": 8000
+      },
+      "name": "micro-animacao",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/diagrams/listar/animation/listar-anim.html",
+        "gate": "file_exists('docs/diagrams/listar/animation/listar-anim.html')"
+      },
+      "ref": "skills/legoloop-diagram-design",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "timeout_sec": 60,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/diagrams/listar/animation/listar-anim.html')"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "legoloop",
+        "exec",
+        "skills/legoloop-diagram-design/scripts/verify_geometry.py",
+        "docs/diagrams/listar/src/listar.html"
+      ],
+      "context_in": [
+        "docs/diagrams/listar/src/listar.html",
+        "docs/diagrams/listar/animation/listar-anim.html"
+      ],
+      "context_out": [
+        "docs/diagrams/listar/export/listar-final.html"
+      ],
+      "depends_on": [
+        "e04"
+      ],
+      "id": "e05",
+      "inputs": {
+        "anim": "file('docs/diagrams/listar/animation/listar-anim.html')",
+        "html": "file('docs/diagrams/listar/src/listar.html')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 1000,
+        "max_duration_sec": 60,
+        "max_prompt_tokens": 5000
+      },
+      "name": "gate-e-exportacao",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/diagrams/listar/export/listar-final.html",
+        "gate": "file_exists('docs/diagrams/listar/export/listar-final.html') \u0026\u0026 exit_code == 0"
+      },
+      "ref": "skills/legoloop-diagram-design",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E05.1",
+      "status": "PENDING",
+      "timeout_sec": 60,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/diagrams/listar/export/listar-final.html') \u0026\u0026 exit_code == 0"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "legoloop",
+        "exec",
+        "skills/legoloop-diagram-design/scripts/gerar_relatorio.py",
+        "listar"
+      ],
+      "context_in": [
+        "docs/diagrams/listar/export/listar-final.html",
+        "docs/diagrams/listar/anticorpos/anticorpos.json"
+      ],
+      "context_out": [
+        "docs/reports/2026-11-19_REPORT_LISTAR.md"
+      ],
+      "depends_on": [
+        "e05"
+      ],
+      "id": "e06",
+      "inputs": {
+        "anticorpos": "file('docs/diagrams/listar/anticorpos/anticorpos.json')",
+        "export": "file('docs/diagrams/listar/export/listar-final.html')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 60,
+        "max_prompt_tokens": 8000
+      },
+      "name": "fechamento-e-anticorpos",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/2026-11-19_REPORT_LISTAR.md",
+        "gate": "file_exists('docs/reports/2026-11-19_REPORT_LISTAR.md')"
+      },
+      "ref": "skills/legoloop-diagram-design",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E06.1",
+      "status": "PENDING",
+      "timeout_sec": 60,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "script",
+      "verification": {
+        "gate": "file_exists('docs/reports/2026-11-19_REPORT_LISTAR.md')"
+      }
+    }
+  ],
+  "schema_version": 2,
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "0000000000000000000000000000000000000000000000000000000000000000",
+    "plan": "0000000000000000000000000000000000000000000000000000000000000000",
+    "route": "docs/routes/2026-11-19_ROUTE_LISTAR.json",
+    "spec": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "version": "1.0.0"
+}

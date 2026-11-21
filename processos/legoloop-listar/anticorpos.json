@@ -1,0 +1,73 @@
+{
+  "dominio": [
+    {
+      "antidoto": "Verificação: os.path.isdir(vault) \u0026\u0026 os.access(vault, os.R_OK)",
+      "assinatura": "sha256:8f1ac3f6cc0c8538bfaddb2c3802197f8f301369acb268d1ff1d7cc4fe3d791c",
+      "erro": "Validar existência e acessibilidade do cofre canônico antes de listar processos",
+      "id": "AC-E01.1",
+      "no": "e01",
+      "recorrencias": 0,
+      "severidade": "critica",
+      "tipo": "precondicao",
+      "verificacao": "os.path.isdir(vault) \u0026\u0026 os.access(vault, os.R_OK)"
+    },
+    {
+      "antidoto": "Verificação: json.loads(output).get('Processos') is not None",
+      "assinatura": "sha256:2817ca42f8be55ff3f1b359f18b59f6bc18e771bc6d1e30c3810df074b8a2a5f",
+      "erro": "Garantir que a leitura de processos retorna estrutura JSON válida com campos obrigatórios",
+      "id": "AC-E02.1",
+      "no": "e02",
+      "recorrencias": 0,
+      "severidade": "alta",
+      "tipo": "validacao",
+      "verificacao": "json.loads(output).get('Processos') is not None"
+    },
+    {
+      "antidoto": "Verificação: len(re.findall(r'class=\"node\"', html)) \u003e= 6",
+      "assinatura": "sha256:78431e6f6f47f5961e5578c610390f38e368cb1e733a83becafd92f838f60de4",
+      "erro": "Verificar que o diagrama HTML gerado contém todos os nós do processo listar",
+      "id": "AC-E03.1",
+      "no": "e03",
+      "recorrencias": 0,
+      "severidade": "alta",
+      "tipo": "validacao",
+      "verificacao": "len(re.findall(r'class=\"node\"', html)) \u003e= 6"
+    },
+    {
+      "antidoto": "Verificação: '@keyframes flow-dash' in html",
+      "assinatura": "sha256:270d6d67933e458c857eed2e9d615031949452a1eeae62ca0c6d291baefe2f0f",
+      "erro": "Confirmar que a animação CSS @keyframes flow-dash está presente e funcional",
+      "id": "AC-E04.1",
+      "no": "e04",
+      "recorrencias": 0,
+      "severidade": "media",
+      "tipo": "validacao",
+      "verificacao": "'@keyframes flow-dash' in html"
+    },
+    {
+      "antidoto": "Verificação: verify_geometry(html) == True",
+      "assinatura": "sha256:dba2ce7a4f09f2f6a1729c8ac541f511fc5c080865becf581374b5ffb0485bbe",
+      "erro": "Validar geometria: zero overflow, grid ortogonal, máscaras opacas",
+      "id": "AC-E05.1",
+      "no": "e05",
+      "recorrencias": 0,
+      "severidade": "critica",
+      "tipo": "gate",
+      "verificacao": "verify_geometry(html) == True"
+    },
+    {
+      "antidoto": "Verificação: os.path.exists('docs/reports/2026-11-19_REPORT_LISTAR.md')",
+      "assinatura": "sha256:87288f9d5d4935b284326fc62fa22f1d965ec81265ade5e7460dc4f1e3d4bb26",
+      "erro": "Consolidar achados em anticorpos.json e emitir relatório em docs/reports/",
+      "id": "AC-E06.1",
+      "no": "e06",
+      "recorrencias": 0,
+      "severidade": "media",
+      "tipo": "poscondicao",
+      "verificacao": "os.path.exists('docs/reports/2026-11-19_REPORT_LISTAR.md')"
+    }
+  ],
+  "globais": [],
+  "processo": "legoloop-listar",
+  "schema_version": "anticorpos.v1"
+}

@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"legoloop/internal/paths"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -245,8 +244,8 @@ func lerProcesso(vault, nome string) (processo.Processo, error) {
 			return processo.Processo{}, err
 		}
 		msg := ste.Msg("refinar.nao_existe", nome, vault)
-		for _, dir := range paths.DirsLeitura(vault) {
-			if _, err := os.Stat(filepath.Join(dir, nome+paths.SufixoAntigo)); err == nil {
+		for _, dir := range caminhos.DirsLeitura(vault) {
+			if _, err := os.Stat(filepath.Join(dir, nome+caminhos.SufixoAntigo)); err == nil {
 				msg = ste.Msg("refinar.so_v1", nome)
 				break
 			}
@@ -398,7 +397,7 @@ func montar(anterior, p processo.Processo, m Mudanca, now time.Time, roots proce
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	dagPath, studioPath := caminhos.DestinosDoProcesso(roots.Vault, p.Nome, paths.SufixoAntigo)
+	dagPath, studioPath := caminhos.DestinosDoProcesso(roots.Vault, p.Nome, caminhos.SufixoAntigo)
 	todos := projecoesDe(p, pr, pj, intentPath, intent, roots, dagPath, studioPath)
 	if todos, err = comDerivados(todos, docs, dagPath, p, pr); err != nil {
 		return nil, nil, nil, err

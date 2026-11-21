@@ -1,6 +1,6 @@
 {
   "$schema": "https://legoloop.dev/schemas/dag.v1.json",
-  "name": "ai-motion-graphics",
+  "name": "legoloop-ai-motion-graphics",
   "version": "1.0.0",
   "date": "2026-11-09",
   "description": "Processo soberano de motion graphics com 10 GitHub repos open-source",

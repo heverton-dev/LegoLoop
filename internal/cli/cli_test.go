@@ -508,7 +508,7 @@ func TestUsageParidadeComHandlersEHelpExit0(t *testing.T) {
 	}
 	for _, sub := range []string{
 		"doctor", "canonize", "validate", "run", "route", "studio", "forge",
-		"import", "upgrade", "matrix", "fabricar", "matriz", "listar", "dissecar",
+		"import", "upgrade", "fabricar", "matriz", "listar", "dissecar",
 		"refinar", "remover", "compor", "instalar-skills", "stept", "sync-harnesses",
 		"bootstrap", "legopress", "video-motion", "video-rea", "fechar",
 		"rota", "homologar", "canal", "cartoon-shorts", "swarm",

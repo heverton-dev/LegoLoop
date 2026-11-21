@@ -2632,7 +2632,7 @@
                       "id":  "TICK-08.1",
                       "initiative_id":  "I7",
                       "epic_id":  "E08",
-                      "label":  "Processo auditoria-atomica agnostico de alvo",
+                      "label":  "Processo legoloop-auditoria-atomica agnostico de alvo",
                       "nature":  "micro",
                       "extreme":  false,
                       "class_rule":  "nature=micro",
@@ -2693,8 +2693,8 @@
                       "rollback_strategy":  "stash_changes",
                       "output":  {
                                      "artifacts":  [
-                                                       "processos/auditoria-atomica/pipeline.dag.json",
-                                                       "skills/auditoria-atomica/SKILL.md"
+                                                       "processos/legoloop-auditoria-atomica/pipeline.dag.json",
+                                                       "skills/legoloop-auditoria-atomica/SKILL.md"
                                                    ],
                                      "verify":  [
                                                     [
@@ -2704,7 +2704,7 @@
                                                         "./internal/fabricar/..."
                                                     ]
                                                 ],
-                                     "gate":  "exit_code == 0 \u0026\u0026 file_exists(\u0027processos/auditoria-atomica/pipeline.dag.json\u0027)"
+                                     "gate":  "exit_code == 0 \u0026\u0026 file_exists(\u0027processos/legoloop-auditoria-atomica/pipeline.dag.json\u0027)"
                                  },
                       "telemetry":  null
                   },

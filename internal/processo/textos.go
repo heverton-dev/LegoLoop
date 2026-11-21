@@ -2,7 +2,7 @@ package processo
 
 import (
 	"fmt"
-	"legoloop/internal/paths"
+	"legoloop/internal/caminhos"
 	"strings"
 
 	"legoloop/docs/templates"
@@ -29,7 +29,7 @@ func projetarSpec(p Processo, ord []Etapa) string {
 
 // dagNoCofre é o DAG do processo no cofre, no layout que o fabricar grava: uma pasta por processo.
 func dagNoCofre(nome string) string {
-	return "~/.aidd/canonical/" + paths.DirProcessos + "/" + nome + "/" + paths.ArquivoDAG
+	return "~/.aidd/canonical/" + caminhos.DirProcessos + "/" + nome + "/" + caminhos.ArquivoDAG
 }
 
 func writeSpecContratos(b *strings.Builder, ord []Etapa) {

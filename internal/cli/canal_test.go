@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"legoloop/internal/cli"
+	"legoloop/internal/provider"
 )
 
 func TestCanalCLI_RedcAndGerar(t *testing.T) {
@@ -42,6 +43,12 @@ func TestCanalCLI_RedcAndGerar(t *testing.T) {
 	deps := cli.Deps{
 		Stdout: &stdout,
 		Stderr: &stderr,
+		Discover: func(context.Context) provider.Inventory {
+			return provider.Inventory{
+				RouterURL:    "http://127.0.0.1:20128",
+				RouterModels: []string{"fast-brain"},
+			}
+		},
 	}
 
 	// 1. Testar legoloop canal redc

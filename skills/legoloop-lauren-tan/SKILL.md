@@ -12,7 +12,7 @@ suggested_model: sonnet
 
 > **Processo:** `lauren-tan`  
 > **Versão:** 1.0.0  
-> **Referência:** `processos/lauren-tan/processo.dag.json`  
+> **Referência:** `processos/legoloop-lauren-tan/processo.dag.json`  
 
 ---
 

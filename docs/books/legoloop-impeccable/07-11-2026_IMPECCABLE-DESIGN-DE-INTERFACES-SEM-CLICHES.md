@@ -24,7 +24,7 @@ toc-depth: 2
 abstract: |
   Este livro ensina a operar o método Impeccable, criado por Paul Bakaus (upstream v4.7.0), dentro do ecossistema LegoLoop. O Impeccable é um conjunto de cerca de 25 comandos de design de interface organizados em seis sub-loops: Avaliar, Construir, Melhorar, Refinar, Corrigir e Iterar.
 
-  A obra segue a progressão Macro, Meso e Micro. A Parte I explica por que interfaces geradas por IA convergem para o mesmo visual genérico e quais pilares o método usa para evitar isso. As Partes II e III descrevem o loop mestre de cinco estágios, seus quatro gates de parada e cada comando dos sub-loops. A Parte IV desce ao nível de implementação: o arquivo processos/impeccable-design.loop.json, o template do Studio Canvas e os agentes especializados. A Parte V traz receitas de uso e a Parte VI reúne glossário, referência rápida e um relatório de conformidade entre o manual e o código.
+  A obra segue a progressão Macro, Meso e Micro. A Parte I explica por que interfaces geradas por IA convergem para o mesmo visual genérico e quais pilares o método usa para evitar isso. As Partes II e III descrevem o loop mestre de cinco estágios, seus quatro gates de parada e cada comando dos sub-loops. A Parte IV desce ao nível de implementação: o arquivo processos/legoloop-impeccable-design.loop.json, o template do Studio Canvas e os agentes especializados. A Parte V traz receitas de uso e a Parte VI reúne glossário, referência rápida e um relatório de conformidade entre o manual e o código.
 
   Fonte primária: docs/manuals/2026-11-01_MANUAL_IMPECCABLE_DESIGN_LOOP.md, complementada pelo arquivo de referência upstream craft-floor.md.
 ---
@@ -52,7 +52,7 @@ O livro atende três leitores diferentes, e cada um pode começar por um ponto d
 
 ## As convenções da obra
 
-Comandos e caminhos de arquivo aparecem em fonte monoespaçada, como `polish` ou `processos/impeccable-design.loop.json`. Exemplos ilustrativos são marcados como tal no texto. Toda afirmação sobre o LegoLoop é rastreável a um arquivo citado; quando manual e código discordam, o livro segue o código e registra a diferença no Apêndice B.
+Comandos e caminhos de arquivo aparecem em fonte monoespaçada, como `polish` ou `processos/legoloop-impeccable-design.loop.json`. Exemplos ilustrativos são marcados como tal no texto. Toda afirmação sobre o LegoLoop é rastreável a um arquivo citado; quando manual e código discordam, o livro segue o código e registra a diferença no Apêndice B.
 
 
 # PARTE I — Macro: Por que Interfaces de IA Parecem Iguais
@@ -390,7 +390,7 @@ No LegoLoop, o pipeline existe em duas formas canônicas, ambas verificáveis no
 
 ### A peça de loop no acervo
 
-O arquivo `processos/impeccable-design.loop.json` segue o esquema `dag.v1` e se chama "Pipeline de Design Impeccable (6 Sub-Loops)", versão 1.0.0. Ele declara seis nós em cadeia linear, cada um dependente do anterior, com o artefato exigido e o modelo sugerido em `routing`:
+O arquivo `processos/legoloop-impeccable-design.loop.json` segue o esquema `dag.v1` e se chama "Pipeline de Design Impeccable (6 Sub-Loops)", versão 1.0.0. Ele declara seis nós em cadeia linear, cada um dependente do anterior, com o artefato exigido e o modelo sugerido em `routing`:
 
 | Nó                            | Artefato que o gate exige                  | Modelo sugerido  |
 | :---------------------------- | :----------------------------------------- | :--------------- |
@@ -425,10 +425,10 @@ Três comandos do CLI `legoloop` bastam para confirmar que a esteira está ínte
 
 ```bash
 # 1. Valida contrato, gates e ciclos do DAG
-legoloop validate processos/impeccable-design.loop.json
+legoloop validate processos/legoloop-impeccable-design.loop.json
 
 # 2. Executa a esteira pelo motor DAG
-legoloop run processos/impeccable-design.loop.json
+legoloop run processos/legoloop-impeccable-design.loop.json
 
 # 3. Abre o Looping Studio (padrão: 127.0.0.1:7878)
 legoloop studio

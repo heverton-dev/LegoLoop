@@ -174,12 +174,12 @@ O pipeline está disponível diretamente no LegoLoop Studio:
 * **Ícone:** `git`.
 * **Composição Automática:** Carrega o grafo completo com nós de alinhamento, especificação, tickets, TDD, review e retroalimentação.
 
-### 2. Declaração Declarativa de Loop (`processos/matt-pocock.loop.json`)
+### 2. Declaração Declarativa de Loop (`processos/legoloop-matt-pocock.loop.json`)
 O arquivo declarativo DAG do LegoLoop pode ser executado via CLI:
 
 ```bash
 # Execução direta via CLI do LegoLoop
-legoloop run processos/matt-pocock.loop.json
+legoloop run processos/legoloop-matt-pocock.loop.json
 
 # Visualização no Studio
 legoloop studio

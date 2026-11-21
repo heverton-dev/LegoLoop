@@ -85,10 +85,10 @@
         "docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"
       ],
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Test-Path docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"
+        "legoloop",
+        "video",
+        "rea",
+        "docs/videorea/2026-11-07_DOSSIER_VIDEO_MASTER.json"
       ],
       "test_seam": {
         "type": "contract_gate",
@@ -151,10 +151,10 @@
         "docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json"
       ],
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Test-Path docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json"
+        "legoloop",
+        "video",
+        "motion",
+        "docs/videorea/2026-11-07_CURATION_VIDEO_MASTER.json"
       ],
       "test_seam": {
         "type": "contract_gate",
@@ -217,10 +217,10 @@
         "scratch/videomaster/whiteboard_preview.svg"
       ],
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "New-Item -ItemType Directory -Force -Path scratch/videomaster; Set-Content -Path scratch/videomaster/whiteboard_preview.svg -Value '<svg></svg>'"
+        "legoloop",
+        "video",
+        "whiteboard",
+        "scratch/videomaster/whiteboard_preview.svg"
       ],
       "test_seam": {
         "type": "script_exit_gate",
@@ -285,10 +285,10 @@
         "testdata/fixtures/video_master_fixture_3s.mp4"
       ],
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Test-Path testdata/fixtures/video_master_fixture_3s.mp4"
+        "legoloop",
+        "video",
+        "reels",
+        "testdata/fixtures/video_master_fixture_3s.mp4"
       ],
       "test_seam": {
         "type": "artifact_gate",
@@ -351,10 +351,10 @@
         "docs/books/video-master/livro.json"
       ],
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Test-Path docs/books/video-master/livro.json"
+        "legoloop",
+        "video",
+        "book",
+        "docs/books/video-master/livro.json"
       ],
       "test_seam": {
         "type": "script_exit_gate",

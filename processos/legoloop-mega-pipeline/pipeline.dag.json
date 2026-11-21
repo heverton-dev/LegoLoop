@@ -1,0 +1,454 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "date": "2026-11-09",
+  "description": "Processo mestre determinística com os 6 sub-processos canônicos: Concepção \u0026 Alinhamento -\u003e Engenharia Reversa \u0026 Design Pass -\u003e Tríade de Planejamento -\u003e Construção TDD por Épico -\u003e Homologação E2E -\u003e Fechamento Canônico Universal.",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 1,
+      "mode": "sequential"
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 600,
+    "max_parallel_workers": 1,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "commit_on_node_pass": true,
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "micro",
+    "tdd_enforced": true
+  },
+  "name": "mega-processo",
+  "nodes": [
+    {
+      "cognitive_complexity": "medio",
+      "command": [
+        "legoloop",
+        "fabricar",
+        "entrevista"
+      ],
+      "context_in": [
+        "docs/specs/"
+      ],
+      "context_out": [
+        "docs/intents/INTENT.md"
+      ],
+      "id": "l1-concepcao",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Concepção \u0026 Alinhamento Socrático",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/intents/INTENT.md",
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      },
+      "ref": "legoloop fabricar entrevista",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-l1-concepcao",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/intents/INTENT.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "script",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/intents/INTENT.md"
+      ],
+      "context_out": [
+        "DESIGN.md"
+      ],
+      "depends_on": [
+        "l1-concepcao"
+      ],
+      "id": "l2-design",
+      "inputs": {
+        "intencao": "file('docs/intents/INTENT.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Design Pass \u0026 Direção Visual",
+      "nature": "micro",
+      "output": {
+        "artifact": "DESIGN.md",
+        "gate": "file_exists('DESIGN.md')"
+      },
+      "ref": "skills/impeccable",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "medium",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-l2-design",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('DESIGN.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "alto",
+      "context_in": [
+        "DESIGN.md"
+      ],
+      "context_out": [
+        "docs/specs/SPEC.md"
+      ],
+      "depends_on": [
+        "l2-design"
+      ],
+      "id": "l3-triade",
+      "inputs": {
+        "design": "file('DESIGN.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Tríade de Especificação \u0026 Rota",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      },
+      "ref": "skills/aidd-spec",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-codigo-128k",
+        "effort": "high",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-l3-triade",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/specs/SPEC.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 6000,
+        "output_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/reports/SWARM_RUN_REPORT.json"
+      ],
+      "depends_on": [
+        "l3-triade"
+      ],
+      "id": "l3b-swarm",
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Orquestração Swarm por Nível Topológico",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/SWARM_RUN_REPORT.json",
+        "gate": "file_exists('docs/reports/SWARM_RUN_REPORT.json')"
+      },
+      "ref": "skills/legoloop-swarm",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "low",
+        "fallback": "llama3.1:8b",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "gemini-4-hydrogen-low",
+        "via": "9router"
+      },
+      "spec_ref": "AC-l3b-swarm",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/SWARM_RUN_REPORT.json')",
+        "type": "unit_test_gate"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "alto",
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "depends_on": [
+        "l3b-swarm"
+      ],
+      "id": "l4-tdd",
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Construção TDD por Épico",
+      "nature": "skill",
+      "output": {
+        "artifact": "docs/reports/TDD_REPORT.md",
+        "gate": "file_exists('docs/reports/TDD_REPORT.md')"
+      },
+      "ref": "skills/aidd-tdd",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "high",
+        "fallback": "llama3.1:8b",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-l4-tdd",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/TDD_REPORT.md')",
+        "type": "unit_test_gate"
+      },
+      "token_budget": {
+        "input_tokens": 8000,
+        "output_tokens": 3000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "context_out": [
+        "docs/reports/REPORT_FINAL.md"
+      ],
+      "depends_on": [
+        "l4-tdd"
+      ],
+      "id": "l5-homologue",
+      "inputs": {
+        "tdd": "file('docs/reports/TDD_REPORT.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Homologação E2E \u0026 Auditoria Full-Stack",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/REPORT_FINAL.md",
+        "gate": "file_exists('docs/reports/REPORT_FINAL.md')"
+      },
+      "ref": "skills/aidd-homologue",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "medium",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-l5-homologue",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/REPORT_FINAL.md')",
+        "type": "e2e_gate"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "context_in": [
+        "docs/reports/REPORT_FINAL.md"
+      ],
+      "context_out": [
+        "bin/legoloop.exe"
+      ],
+      "depends_on": [
+        "l5-homologue"
+      ],
+      "id": "l6-fechar-canonico",
+      "inputs": {
+        "report": "file('docs/reports/REPORT_FINAL.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Fechamento Canônico Universal",
+      "nature": "micro",
+      "output": {
+        "artifact": "bin/legoloop.exe",
+        "gate": "file_exists('bin/legoloop.exe')"
+      },
+      "ref": "fechar",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "low",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-l6-fechar-canonico",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('bin/legoloop.exe')",
+        "type": "binary_build_gate"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "subprocesso",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    }
+  ],
+  "schema_version": 2,
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "9812a677fbca05619985ea15858022b7c02bda6396919db45873919e86bf79e8",
+    "plan": "2b6b66e138a0c20beceb43f9ba6be91e528dbe4cbf5e59b9a695d7eb8f1eeae3",
+    "route": "docs/routes/2026-11-07_ROUTE_MEGA_PROCESSO.json",
+    "spec": "ec6576b22ba8fe6cb30d24bf51a37c9a419eb9338f977c0500e2ea024f9e1189"
+  },
+  "version": "1.0.0"
+}

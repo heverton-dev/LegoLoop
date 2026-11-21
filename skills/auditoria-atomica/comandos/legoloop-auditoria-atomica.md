@@ -5,4 +5,4 @@ description: Executa o Processo auditoria-atomica pelo comando legoloop exec.
 
 Execute o Processo auditoria-atomica com o comando:
 
-    legoloop exec auditoria-atomica
+    legoloop exec legoloop-auditoria-atomica

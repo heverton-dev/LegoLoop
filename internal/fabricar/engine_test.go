@@ -21,7 +21,6 @@ import (
 	"legoloop/internal/gate"
 	"legoloop/internal/interview"
 	"legoloop/internal/matriz"
-	"legoloop/internal/paths"
 	"legoloop/internal/reputation"
 	"legoloop/internal/studiodoc"
 )
@@ -398,7 +397,7 @@ func TestGravaNomesCanonicos(t *testing.T) {
 	if _, err := os.Stat(res.Artifacts.ProcessoPath); err != nil {
 		t.Errorf("arquivo .processo.json ausente: %v", err)
 	}
-	antigo := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName+paths.SufixoAntigo)
+	antigo := filepath.Join(r.deps.Roots.Vault, caminhos.DirProcessos, res.CanonicalName+caminhos.SufixoAntigo)
 	if _, err := os.Stat(antigo); err == nil {
 		t.Errorf("arquivo do dialeto antigo não deve ser gravado: %s", antigo)
 	}
@@ -417,9 +416,9 @@ func TestGravaNomesCanonicos(t *testing.T) {
 func TestGravaArquivosPadraoNaPastaDoProcesso(t *testing.T) {
 	r := newRig(t, goodPieces())
 	res := r.run(t)
-	dirProc := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName)
+	dirProc := filepath.Join(r.deps.Roots.Vault, caminhos.DirProcessos, res.CanonicalName)
 	esperados := []string{
-		res.CanonicalName + paths.SufixoStudio,
+		res.CanonicalName + caminhos.SufixoStudio,
 		caminhos.ArquivoDAG,
 		"triagem.json",
 		"memoria_execucao.json",
@@ -430,7 +429,7 @@ func TestGravaArquivosPadraoNaPastaDoProcesso(t *testing.T) {
 			t.Errorf("arquivo padrão ausente no diretório do Processo: %s (%v)", p, err)
 		}
 	}
-	raizProc := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName+paths.SufixoStudio)
+	raizProc := filepath.Join(r.deps.Roots.Vault, caminhos.DirProcessos, res.CanonicalName+caminhos.SufixoStudio)
 	if _, err := os.Stat(raizProc); err == nil {
 		t.Errorf("arquivo de Processo não deve ficar na raiz: %s", raizProc)
 	}

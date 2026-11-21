@@ -14,9 +14,14 @@ var ErrDelecaoRecusada = errors.New("deleção recusada em diretório de lei (Le
 // diretoriosDeLei lista os diretórios protegidos pela Lei 6/15.
 var diretoriosDeLei = []string{"templates", "vocab"}
 
+// normalizarSeparadores converte barras invertidas e separadores nativos para '/'.
+func normalizarSeparadores(alvo string) string {
+	return strings.ReplaceAll(filepath.ToSlash(alvo), `\`, `/`)
+}
+
 // Protegido informa se o caminho está sob um diretório de lei.
 func Protegido(alvo string) bool {
-	normalizado := filepath.ToSlash(alvo)
+	normalizado := normalizarSeparadores(alvo)
 	for _, dir := range diretoriosDeLei {
 		if normalizado == dir || normalizado == "docs/"+dir ||
 			strings.HasPrefix(normalizado, dir+"/") || strings.HasPrefix(normalizado, "docs/"+dir+"/") {

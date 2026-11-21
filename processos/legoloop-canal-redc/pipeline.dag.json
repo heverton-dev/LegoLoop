@@ -79,10 +79,10 @@
         "internal/redc/catalog.go"
       ],
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Test-Path internal/redc/catalog.go"
+        "legoloop",
+        "canal",
+        "redc",
+        "internal/redc/catalog.go"
       ],
       "test_seam": {
         "type": "unit_test_gate",
@@ -142,10 +142,10 @@
         "internal/redc/dna.go"
       ],
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Test-Path internal/redc/dna.go"
+        "legoloop",
+        "canal",
+        "redc",
+        "internal/redc/dna.go"
       ],
       "test_seam": {
         "type": "unit_test_gate",
@@ -205,10 +205,10 @@
         "internal/redc/processo_gen.go"
       ],
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Test-Path internal/redc/processo_gen.go"
+        "legoloop",
+        "canal",
+        "gerar",
+        "internal/redc/processo_gen.go"
       ],
       "test_seam": {
         "type": "unit_test_gate",
@@ -268,10 +268,10 @@
         "internal/redc/brand_swap.go"
       ],
       "command": [
-        "powershell",
-        "-NoProfile",
-        "-Command",
-        "Test-Path internal/redc/brand_swap.go"
+        "legoloop",
+        "canal",
+        "gerar",
+        "internal/redc/brand_swap.go"
       ],
       "test_seam": {
         "type": "unit_test_gate",

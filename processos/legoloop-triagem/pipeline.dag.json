@@ -50,9 +50,10 @@
       "spec_ref": "AC-t1-motor-triagem",
       "status": "pending",
       "command": [
-        "powershell",
-        "-Command",
-        "go test -count=1 ./internal/triagem/..."
+        "go",
+        "test",
+        "-count=1",
+        "./internal/triagem/..."
       ]
     },
     {
@@ -102,9 +103,11 @@
       "spec_ref": "AC-t2-fabricar-13-artefatos",
       "status": "pending",
       "command": [
-        "powershell",
-        "-Command",
-        "go test -count=1 ./internal/fabricar/... ./internal/processo/..."
+        "go",
+        "test",
+        "-count=1",
+        "./internal/fabricar/...",
+        "./internal/processo/..."
       ]
     },
     {
@@ -155,9 +158,11 @@
       "spec_ref": "AC-t3-pontos-entrada",
       "status": "pending",
       "command": [
-        "powershell",
-        "-Command",
-        "go test -count=1 ./cmd/legoloop/... ./internal/studio/..."
+        "go",
+        "test",
+        "-count=1",
+        "./cmd/legoloop/...",
+        "./internal/studio/..."
       ]
     },
     {
@@ -207,9 +212,11 @@
       "spec_ref": "AC-t4-saneamento-processos",
       "status": "pending",
       "command": [
-        "powershell",
-        "-Command",
-        "go run ./cmd/legoloop migrar-processos --apply"
+        "go",
+        "run",
+        "./cmd/legoloop",
+        "migrar-processos",
+        "--apply"
       ]
     },
     {
@@ -259,9 +266,11 @@
       "spec_ref": "AC-t5-portoes-fechamento",
       "status": "pending",
       "command": [
-        "powershell",
-        "-Command",
-        "go test -count=1 ./... && go vet ./... && go build -o bin/legoloop.exe ./cmd/legoloop"
+        "go",
+        "build",
+        "-o",
+        "bin/legoloop.exe",
+        "./cmd/legoloop"
       ]
     }
   ],

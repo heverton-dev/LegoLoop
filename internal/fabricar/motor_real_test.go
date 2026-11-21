@@ -93,13 +93,13 @@ func TestMotorRealEscolhePelaAptidaoEExplica(t *testing.T) {
 	}
 }
 
-// TestMotorRealIgnoraDrivesComAviso: o pedido antigo com target_drives continua aceito, mas não varre nada.
-func TestMotorRealIgnoraDrivesComAviso(t *testing.T) {
+// TestMotorRealAceitaTargetDrivesSemAviso: target_drives restringe a busca sem emitir aviso de drives ignorados.
+func TestMotorRealAceitaTargetDrivesSemAviso(t *testing.T) {
 	r := newRig(t, goodPieces())
 	r.req.TargetDrives = []string{`C:\`}
 	res := r.run(t)
-	if !slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "não varre drives") }) {
-		t.Errorf("os drives pedidos devem virar aviso: %v", res.Warnings)
+	if slices.ContainsFunc(res.Warnings, func(w string) bool { return strings.Contains(w, "não varre drives") }) {
+		t.Errorf("não deve emitir aviso de drives ignorados: %v", res.Warnings)
 	}
 }
 

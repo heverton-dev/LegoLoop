@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"maps"
 	"strings"
+
+	"legoloop/internal/dag"
 )
 
 // projetarNo converte um nó da ROUTE em nó de DAG.
@@ -11,13 +13,14 @@ func projetarNo(n routeNode) (map[string]any, error) {
 	if n.ID == "" {
 		return nil, fmt.Errorf("nó sem id")
 	}
-	tipo := n.Type
-	if tipo == "unit_task" {
-		tipo = "unit_no"
+	nt, err := tipoNoDAG(n.Type)
+	if err != nil {
+		return nil, fmt.Errorf("nó %q: %w", n.ID, err)
 	}
-	if tipo != "unit_no" && tipo != "script" && tipo != "stop_gate" {
+	if nt != dag.TypeUnitTask && nt != dag.TypeScript && nt != dag.TypeStopGate {
 		return nil, fmt.Errorf("nó %q: tipo %q não suportado", n.ID, n.Type)
 	}
+	tipo := string(nt)
 	nd := map[string]any{
 		"id":         n.ID,
 		"name":       strings.ToLower(strings.NewReplacer("-", "_", ".", "_").Replace(n.ID)),

@@ -1,0 +1,755 @@
+{
+  "schema": "espinha.v1",
+  "verbos": [
+    {
+      "nome": "doctor",
+      "camada": "espinha",
+      "motor": "internal/provider",
+      "contrato": "Inventario de harnesses, modelos e chaves do Cofre"
+    },
+    {
+      "nome": "canonize",
+      "camada": "espinha",
+      "motor": "internal/canon",
+      "contrato": "Canonizacao de Pecas e Skills para o Cofre"
+    },
+    {
+      "nome": "validate",
+      "camada": "espinha",
+      "motor": "internal/dag",
+      "contrato": "Validacao de contrato, Gates, ciclos e documento do Studio"
+    },
+    {
+      "nome": "run",
+      "camada": "espinha",
+      "motor": "internal/runner",
+      "contrato": "Execucao deterministica de um arquivo de DAG"
+    },
+    {
+      "nome": "exec",
+      "camada": "espinha",
+      "motor": "internal/runner",
+      "contrato": "Execucao de Processo pelo slug com gravacao de artefatos"
+    },
+    {
+      "nome": "route",
+      "camada": "espinha",
+      "motor": "internal/graph",
+      "contrato": "Calculo de rota otima no grafo semantico de artefatos"
+    },
+    {
+      "nome": "studio",
+      "camada": "espinha",
+      "motor": "internal/studio",
+      "contrato": "Abertura do servidor HTTP do Looping Studio"
+    },
+    {
+      "nome": "forge",
+      "camada": "espinha",
+      "motor": "internal/studio",
+      "contrato": "Abertura do Studio com disparo inicial de varredura"
+    },
+    {
+      "nome": "import",
+      "camada": "espinha",
+      "motor": "internal/canon",
+      "contrato": "Importacao e canonizacao de Skill a partir de repositorio externo"
+    },
+    {
+      "nome": "upgrade",
+      "camada": "espinha",
+      "motor": "internal/canon",
+      "contrato": "Diagnostico e elevacao de arquivo para o Padrao Ouro"
+    },
+    {
+      "nome": "fabricar",
+      "camada": "espinha",
+      "motor": "internal/fabricar",
+      "contrato": "Criacao de Processo novo com Skill, DAG e documentos"
+    },
+    {
+      "nome": "matriz",
+      "camada": "espinha",
+      "motor": "internal/matriz",
+      "contrato": "Geracao e consulta da Matriz de Pecas"
+    },
+    {
+      "nome": "listar",
+      "camada": "espinha",
+      "motor": "internal/listar",
+      "contrato": "Listagem dos Processos canonizados no Cofre"
+    },
+    {
+      "nome": "dissecar",
+      "camada": "dominio",
+      "motor": "internal/dissecar",
+      "contrato": "Dissecacao tecnica e extracao estrutural de alvo"
+    },
+    {
+      "nome": "refinar",
+      "camada": "espinha",
+      "motor": "internal/refinar",
+      "contrato": "Alteracao versionada de Etapa de um Processo"
+    },
+    {
+      "nome": "remover",
+      "camada": "espinha",
+      "motor": "internal/remover",
+      "contrato": "Remocao controlada de Processo do Cofre e vinculos"
+    },
+    {
+      "nome": "renomear",
+      "camada": "espinha",
+      "motor": "internal/renomear",
+      "contrato": "Renomeacao de Processo com copia de seguranca e registro"
+    },
+    {
+      "nome": "compor",
+      "camada": "espinha",
+      "motor": "internal/compor",
+      "contrato": "Composicao de um Processo como Etapa de outro sem ciclos"
+    },
+    {
+      "nome": "instalar-skills",
+      "camada": "espinha",
+      "motor": "internal/skills",
+      "contrato": "Instalacao do indice lazy de Skills nativas nos harnesses"
+    },
+    {
+      "nome": "skills-custo",
+      "camada": "espinha",
+      "motor": "internal/skills",
+      "contrato": "Medicao do custo de frontmatter por harness"
+    },
+    {
+      "nome": "skills-migrar",
+      "camada": "espinha",
+      "motor": "internal/skills",
+      "contrato": "Migracao de Skills eager para indice lazy nos harnesses"
+    },
+    {
+      "nome": "stept",
+      "camada": "espinha",
+      "motor": "internal/ste",
+      "contrato": "Alternador e verificador de governanca STE-PT"
+    },
+    {
+      "nome": "sync-harnesses",
+      "camada": "espinha",
+      "motor": "internal/mcp",
+      "contrato": "Sincronizacao dos harnesses ao legoloop mcp-router"
+    },
+    {
+      "nome": "mcp-router",
+      "camada": "espinha",
+      "motor": "internal/mcp",
+      "contrato": "Servidor MCP STDIO com descoberta lazy sob demanda"
+    },
+    {
+      "nome": "mcp-registry",
+      "camada": "espinha",
+      "motor": "internal/mcp",
+      "contrato": "Listagem e indexacao de servidores MCP externos"
+    },
+    {
+      "nome": "bootstrap",
+      "camada": "espinha",
+      "motor": "internal/skills",
+      "contrato": "Orquestracao inicial de Skills, mcp-router e ambiente"
+    },
+    {
+      "nome": "legopress",
+      "camada": "dominio",
+      "motor": "internal/legopress",
+      "contrato": "Processo industrial de livros tecnicos"
+    },
+    {
+      "nome": "video-motion",
+      "camada": "dominio",
+      "motor": "internal/videomotion",
+      "contrato": "Processo deterministico de edicao e motion video"
+    },
+    {
+      "nome": "video-rea",
+      "camada": "dominio",
+      "motor": "internal/videorea",
+      "contrato": "Processo de engenharia reversa audiovisual"
+    },
+    {
+      "nome": "fechar",
+      "camada": "espinha",
+      "motor": "internal/fechar",
+      "contrato": "Cadeia deterministica de 9 Etapas de fechamento e canonizacao"
+    },
+    {
+      "nome": "commit",
+      "camada": "espinha",
+      "motor": "internal/commit",
+      "contrato": "Gravacao deterministica de commit apos verificacao de Gates"
+    },
+    {
+      "nome": "rota",
+      "camada": "espinha",
+      "motor": "internal/roteamento",
+      "contrato": "Geracao de ROUTE com harness, via, modelo e esforco resolvidos"
+    },
+    {
+      "nome": "homologar",
+      "camada": "espinha",
+      "motor": "internal/orchestrix",
+      "contrato": "Medicao de conformidade de cada harness e via"
+    },
+    {
+      "nome": "canal",
+      "camada": "dominio",
+      "motor": "internal/redc",
+      "contrato": "Processo REDC de canais e clonagem estrutural"
+    },
+    {
+      "nome": "cartoon-shorts",
+      "camada": "dominio",
+      "motor": "internal/motion",
+      "contrato": "Processo de geracao de Cartoon Shorts 1080x1920"
+    },
+    {
+      "nome": "legoloop-cartoon-shorts",
+      "camada": "dominio",
+      "motor": "internal/motion",
+      "contrato": "Alias canonico do Processo de Cartoon Shorts 1080x1920"
+    },
+    {
+      "nome": "plano",
+      "camada": "espinha",
+      "motor": "internal/plangen",
+      "contrato": "Renderizacao deterministica de PLAN e ROUTE a partir de Tickets"
+    },
+    {
+      "nome": "swarm",
+      "camada": "espinha",
+      "motor": "internal/board",
+      "contrato": "Coordenacao de agentes em enxame no quadro compartilhado"
+    },
+    {
+      "nome": "web-qa",
+      "camada": "dominio",
+      "motor": "internal/cli",
+      "contrato": "QA web deterministico com Playwright, axe-core e auditores"
+    },
+    {
+      "nome": "sessoes",
+      "camada": "espinha",
+      "motor": "internal/processo",
+      "contrato": "Listagem de sessoes ativas de memoria de execucao"
+    },
+    {
+      "nome": "anticorpos",
+      "camada": "espinha",
+      "motor": "internal/brain",
+      "contrato": "Sincronizacao e inspecao do espelho de anticorpos"
+    },
+    {
+      "nome": "espinha",
+      "camada": "espinha",
+      "motor": "internal/espinha",
+      "contrato": "Verificacao e auditoria da espinha dorsal do LegoLoop"
+    }
+  ],
+  "motores": [
+    {
+      "pacote": "internal/artefato",
+      "interface": "Classificar",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/assets",
+      "interface": "ArgvFor",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/board",
+      "interface": "BoardClient",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/brain",
+      "interface": "Brain",
+      "deterministico": false
+    },
+    {
+      "pacote": "internal/caminhos",
+      "interface": "Literais",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/canon",
+      "interface": "Elect",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/cli",
+      "interface": "Run",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/combo",
+      "interface": "CatalogoHonesto",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/commit",
+      "interface": "Executar",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/compor",
+      "interface": "Run",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/dag",
+      "interface": "Validate",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/descoberta",
+      "interface": "Provedor",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/dissecar",
+      "interface": "ExtractAST",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/escrita",
+      "interface": "GravarAtomico",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/espinha",
+      "interface": "CarregarRegistro",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/fabricar",
+      "interface": "Auditar",
+      "deterministico": false
+    },
+    {
+      "pacote": "internal/fechar",
+      "interface": "Executar",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/gate",
+      "interface": "RootFS",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/graph",
+      "interface": "NewIndex",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/interview",
+      "interface": "LLMClient",
+      "deterministico": false
+    },
+    {
+      "pacote": "internal/inventario",
+      "interface": "Protegido",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/jail",
+      "interface": "DentroDaRaiz",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/legopress",
+      "interface": "NewCompiler",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/listar",
+      "interface": "Run",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/matriz",
+      "interface": "Run",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/mcp",
+      "interface": "VaultRegistry",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/migrar",
+      "interface": "MigrarProcessos",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/motion",
+      "interface": "BuildHTML",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/orchestrix",
+      "interface": "AntibodyStore",
+      "deterministico": false
+    },
+    {
+      "pacote": "internal/plangen",
+      "interface": "Generate",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/processo",
+      "interface": "FS",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/provider",
+      "interface": "Discover",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/redc",
+      "interface": "GenerateStructuralVideo",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/refinar",
+      "interface": "Run",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/remover",
+      "interface": "Run",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/renomear",
+      "interface": "Executar",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/reputation",
+      "interface": "ScorePiece",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/roteamento",
+      "interface": "Classificar",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/router",
+      "interface": "New",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/runner",
+      "interface": "Executor",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/skills",
+      "interface": "CustoGrupo",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/specgen",
+      "interface": "NewGenerator",
+      "deterministico": false
+    },
+    {
+      "pacote": "internal/ste",
+      "interface": "LintCartao",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/studio",
+      "interface": "Resolver",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/studiodoc",
+      "interface": "DerivePorts",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/suggest",
+      "interface": "Suggest",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/taxonomy",
+      "interface": "ValidarPapel",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/triagem",
+      "interface": "ResolvedorLLM",
+      "deterministico": false
+    },
+    {
+      "pacote": "internal/upstream",
+      "interface": "IntencaoAprovada",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/videomotion",
+      "interface": "GenerateDidacticBook",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/videorea",
+      "interface": "Runner",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/wave",
+      "interface": "ExtractAffectedFiles",
+      "deterministico": true
+    }
+  ],
+  "processos": [
+    { "slug": "legoloop-addy-osmani" },
+    { "slug": "legoloop-agent-desktop" },
+    { "slug": "legoloop-ai-motion-graphics" },
+    { "slug": "legoloop-auditoria-atomica" },
+    { "slug": "legoloop-canal-redc" },
+    { "slug": "legoloop-canonizar" },
+    { "slug": "legoloop-cartoon-shorts" },
+    { "slug": "legoloop-concepcao" },
+    { "slug": "legoloop-design-ui" },
+    { "slug": "legoloop-diagram-design" },
+    { "slug": "legoloop-dissecar" },
+    { "slug": "legoloop-fabricar" },
+    { "slug": "legoloop-fabricar-peca-unica" },
+    { "slug": "legoloop-fechar" },
+    { "slug": "legoloop-fronteira-ai-driven" },
+    { "slug": "legoloop-homologacao" },
+    { "slug": "legoloop-impeccable-design" },
+    { "slug": "legoloop-lauren-tan" },
+    { "slug": "legoloop-listar" },
+    { "slug": "legoloop-matriz" },
+    { "slug": "legoloop-matt-pocock" },
+    { "slug": "legoloop-mega-pipeline" },
+    { "slug": "legoloop-n10-foundry" },
+    { "slug": "legoloop-swarm" },
+    { "slug": "legoloop-triagem" },
+    { "slug": "legoloop-video-edition" },
+    { "slug": "legoloop-video-master" },
+    { "slug": "legoloop-video-motion" },
+    { "slug": "legoloop-video-rea" },
+    { "slug": "legoloop-video-rea-relatorio" },
+    { "slug": "legoloop-video-rea-transcrever" },
+    { "slug": "legoloop-web-qa" }
+  ],
+  "requisitos": [
+    {
+      "lei": "Lei 1",
+      "verificador": "internal/fechar",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 2",
+      "mecanico": false,
+      "justificativa": "Conduta operacional de consulta ao grafo codebase-memory-mcp antes de leitura ampla; nao possui Gate estatico em Go."
+    },
+    {
+      "lei": "Lei 3",
+      "mecanico": false,
+      "justificativa": "Politica de economia de tokens e concisao de resposta; avaliada por revisao de sessao."
+    },
+    {
+      "lei": "Lei 4",
+      "verificador": "internal/runner",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 5",
+      "verificador": "go test -count=1 ./... && go build -o bin/legoloop.exe ./cmd/legoloop",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 6",
+      "verificador": "internal/fechar",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 7",
+      "mecanico": false,
+      "justificativa": "Exigencia de idioma PT-BR em documentacao, planos e respostas; verificada em revisao."
+    },
+    {
+      "lei": "Lei 8",
+      "verificador": "go test -count=1 ./... && go vet ./... && go run ./tools/funclen internal && gofmt -l .",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 9",
+      "mecanico": false,
+      "justificativa": "Convencao de sintaxe de diagramas Mermaid em Markdown; nao ha validador estatico ativo na espinha."
+    },
+    {
+      "lei": "Lei 10",
+      "verificador": "internal/ste",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 11",
+      "verificador": "internal/fechar",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 12",
+      "verificador": "go run ./tools/taxlinter internal cmd loops skills docs/templates",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 13",
+      "verificador": "internal/migrar",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 16",
+      "verificador": "internal/brain",
+      "mecanico": true
+    },
+    {
+      "lei": "Lei 17",
+      "mecanico": false,
+      "justificativa": "Regra de comunicacao com o usuario exigindo sugestao tecnica; verificada por revisao humana."
+    },
+    {
+      "lei": "Lei 18",
+      "verificador": "internal/upstream",
+      "mecanico": true
+    }
+  ],
+  "limites_erro_ignorado": {
+    "internal/board": 30,
+    "internal/brain": 1,
+    "internal/canon": 1,
+    "internal/cli": 24,
+    "internal/combo": 2,
+    "internal/fechar": 2,
+    "internal/interview": 2,
+    "internal/mcp": 6,
+    "internal/motion": 3,
+    "internal/orchestrix": 15,
+    "internal/processo": 6,
+    "internal/refinar": 1,
+    "internal/roteamento/homologacao": 4,
+    "internal/runner": 16,
+    "internal/skills": 2,
+    "internal/studio": 30,
+    "internal/studiodoc": 1,
+    "internal/triagem": 4,
+    "internal/videomotion": 1,
+    "internal/videorea": 6
+  },
+  "globais_justificadas": [
+    "internal/artefato.camposObrigatorios",
+    "internal/artefato.resultadosValidos",
+    "internal/assets.ignoredDirNames",
+    "internal/assets.ontologyRules",
+    "internal/assets.projectMarkers",
+    "internal/assets.scriptExts",
+    "internal/cli.legoloopYAML",
+    "internal/cli.origensVer",
+    "internal/cli.tiersVer",
+    "internal/cli.tiposVer",
+    "internal/combo.CatalogoCombos",
+    "internal/combo.mapaLegado",
+    "internal/dag.TabelaTipos",
+    "internal/espinha.tiposPredeclarados",
+    "internal/fabricar.TiposPeca",
+    "internal/fabricar.VerbosAuditados",
+    "internal/fabricar.etapasDeDados",
+    "internal/fabricar.extensoesPorSO",
+    "internal/fabricar.ferramentasDoWorker",
+    "internal/fabricar.tiposDeIO",
+    "internal/gate.contentCalls",
+    "internal/gate.docs",
+    "internal/gate.hedgingTerms",
+    "internal/gate.twoCharOps",
+    "internal/interview.projectDocs",
+    "internal/inventario.arquivosGovernanca",
+    "internal/inventario.diretoriosDeLei",
+    "internal/inventario.tiposDocumento",
+    "internal/inventario.tiposQuinteto",
+    "internal/inventario.todasClasses",
+    "internal/legopress.slopPatterns",
+    "internal/matriz.camposPorTipo",
+    "internal/matriz.tiposCatalogados",
+    "internal/matriz.vocabDefaultJSON",
+    "internal/mcp.palavrasVazias",
+    "internal/motion.repoCatalog",
+    "internal/orchestrix.domainRulesByTag",
+    "internal/orchestrix.injectionRules",
+    "internal/orchestrix.unitDeniedTools",
+    "internal/orchestrix.unitModelAliases",
+    "internal/orchestrix.unitTools",
+    "internal/plangen.allowedCapabilities",
+    "internal/plangen.allowedModes",
+    "internal/processo.harnessesConhecidos",
+    "internal/processo.layoutsEspeciais",
+    "internal/processo.layoutsLegados",
+    "internal/processo.tiposDeSaida",
+    "internal/reputation.knownAuthors",
+    "internal/roteamento/homologacao.ordem",
+    "internal/roteamento/homologacao.sinaisBanimento",
+    "internal/skills.marcadoresDeFerramenta",
+    "internal/ste.glossarioJSON",
+    "internal/ste.imperativos",
+    "internal/studio.builtinMCPCatalog",
+    "internal/studio.builtinTemplatesJSON",
+    "internal/studio.suggestKinds",
+    "internal/studiodoc.accentMap",
+    "internal/taxonomy.CatalogoCanonico",
+    "internal/taxonomy.cachedDict",
+    "internal/taxonomy.dictionaryData",
+    "internal/taxonomy.guildasOrdem",
+    "internal/taxonomy.synonymMap",
+    "internal/videorea.defaultCommercialCosts",
+    "internal/videorea.defaultFreeTools",
+    "internal/videorea.knownReplacements",
+    "internal/videorea.sovereignDetails",
+    "internal/videorea.toolAliases",
+    "internal/videorea.toolKeywords"
+  ],
+  "inits_justificados": {
+    "internal/brain/pick.go": "Registra mensagens estaticas STE-PT do seletor de cerebro em ste.Default.",
+    "internal/cli/compor.go": "Registra mensagens estaticas STE-PT do subcomando compor em ste.Default.",
+    "internal/cli/fabricar.go": "Registra mensagens estaticas STE-PT do subcomando fabricar em ste.Default.",
+    "internal/cli/fabricar_entrevista.go": "Registra mensagens estaticas STE-PT da entrevista de fabricar em ste.Default.",
+    "internal/cli/fabricar_interactive.go": "Registra mensagens estaticas STE-PT do modo interativo de fabricar em ste.Default.",
+    "internal/cli/matriz.go": "Registra mensagens estaticas STE-PT do subcomando matriz em ste.Default.",
+    "internal/cli/matriz_perfil.go": "Registra mensagens estaticas STE-PT do subcomando matriz perfil em ste.Default.",
+    "internal/cli/refinar.go": "Registra mensagens estaticas STE-PT do subcomando refinar em ste.Default.",
+    "internal/cli/remover.go": "Registra mensagens estaticas STE-PT do subcomando remover em ste.Default.",
+    "internal/compor/compor.go": "Registra mensagens estaticas STE-PT do motor compor em ste.Default.",
+    "internal/fabricar/camada4.go": "Registra mensagens estaticas STE-PT da camada 4 de fabricar em ste.Default.",
+    "internal/fabricar/confianca.go": "Registra mensagens estaticas STE-PT de confianca de fabricar em ste.Default.",
+    "internal/fabricar/explain.go": "Registra mensagens estaticas STE-PT de explicacao de fabricar em ste.Default.",
+    "internal/fabricar/fonte_matriz.go": "Registra mensagens estaticas STE-PT de leitura da matriz em fabricar em ste.Default.",
+    "internal/fabricar/lacunas.go": "Registra mensagens estaticas STE-PT de lacunas de fabricar em ste.Default.",
+    "internal/fabricar/natureza.go": "Registra mensagens estaticas STE-PT de natureza de fabricar em ste.Default.",
+    "internal/listar/listar.go": "Registra mensagens estaticas STE-PT do motor listar em ste.Default.",
+    "internal/listar/sugestao.go": "Registra mensagens estaticas STE-PT de sugestoes de listar em ste.Default.",
+    "internal/matriz/catalogador.go": "Registra mensagens estaticas STE-PT do catalogador da matriz em ste.Default.",
+    "internal/matriz/stale.go": "Registra mensagens estaticas STE-PT de staleness da matriz em ste.Default.",
+    "internal/processo/gates.go": "Registra mensagens estaticas STE-PT de gates de processo em ste.Default.",
+    "internal/refinar/adicionar.go": "Registra mensagens estaticas STE-PT de adicao de etapa em refinar em ste.Default.",
+    "internal/refinar/curado_v2.go": "Registra mensagens estaticas STE-PT de preservacao v2 curado em refinar em ste.Default.",
+    "internal/refinar/refinar.go": "Registra mensagens estaticas STE-PT do motor refinar em ste.Default.",
+    "internal/remover/cartao.go": "Registra mensagens estaticas STE-PT do cartao de remover em ste.Default.",
+    "internal/remover/remover.go": "Registra mensagens estaticas STE-PT do motor remover em ste.Default."
+  }
+}

@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+
+	"legoloop/internal/descoberta"
 )
 
 var ignoredDirNames = map[string]bool{
@@ -117,6 +119,50 @@ func DefaultDiscoveryRoots(home string) []string {
 	return out
 }
 
+// RaizesDescoberta devolve as raízes de busca usando descoberta.Raizes e respeitando alvos.
+func RaizesDescoberta(home string, alvos []string, prov descoberta.Provedor, confiarRemovivel bool) []string {
+	raizes, _ := descoberta.Raizes(home, alvos, prov, confiarRemovivel)
+	if len(alvos) > 0 {
+		out := make([]string, 0, len(raizes))
+		for _, r := range raizes {
+			out = append(out, normalizarRaizFS(r))
+		}
+		return out
+	}
+	seen := make(map[string]bool)
+	var out []string
+	add := func(p string) {
+		p = normalizarRaizFS(p)
+		if p != "" && !seen[p] {
+			seen[p] = true
+			out = append(out, p)
+		}
+	}
+	for _, r := range DefaultDiscoveryRoots(home) {
+		add(r)
+	}
+	for _, r := range raizes {
+		if home != "" && strings.EqualFold(filepath.Clean(r), filepath.Clean(home)) {
+			continue
+		}
+		if prov != nil {
+			add(r)
+			continue
+		}
+		for _, sub := range DefaultDiscoveryRoots(normalizarRaizFS(r)) {
+			add(sub)
+		}
+	}
+	return out
+}
+
+func normalizarRaizFS(p string) string {
+	if len(p) == 2 && p[1] == ':' {
+		return p + string(filepath.Separator)
+	}
+	return p
+}
+
 // allProjects reúne projetos declarados e descobertos sem duplicação.
 func (s *Scanner) allProjects(ctx context.Context) []string {
 	seen := make(map[string]bool)
@@ -134,7 +180,7 @@ func (s *Scanner) allProjects(ctx context.Context) []string {
 	if s.cfg.AutoDiscover {
 		roots := s.cfg.DiscoveryRoots
 		if len(roots) == 0 {
-			roots = DefaultDiscoveryRoots(s.cfg.Home)
+			roots = RaizesDescoberta(s.cfg.Home, s.cfg.TargetDrives, s.cfg.ProvedorUnidades, s.cfg.TrustRemovable)
 		}
 		for _, p := range DiscoverProjects(ctx, roots, 4) {
 			add(p)

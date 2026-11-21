@@ -17,7 +17,9 @@ func TestCompilerBuildArgsAndDoctor(t *testing.T) {
 		},
 	}
 
-	compiler := legopress.NewCompiler()
+	compiler := legopress.NewCompilerWithRunner("pandoc", "typst", func(bin string, _ ...string) ([]byte, error) {
+		return []byte(bin + " 3.1.9\n"), nil
+	})
 
 	// 1. Validar montagem dos argumentos de compilação (AC-E02.1)
 	args := compiler.BuildArgs("concatenado.md", manifest)
@@ -48,7 +50,9 @@ func TestCompilerBuildArgsAndDoctor(t *testing.T) {
 }
 
 func TestCompilerCompile_InvalidManifest(t *testing.T) {
-	compiler := legopress.NewCompiler()
+	compiler := legopress.NewCompilerWithRunner("pandoc", "typst", func(bin string, _ ...string) ([]byte, error) {
+		return []byte(bin + " 3.1.9\n"), nil
+	})
 	invalidManifest := legopress.Manifest{Title: ""} // sem partes
 	err := compiler.Compile(invalidManifest)
 	if err != legopress.ErrManifestoInvalido {

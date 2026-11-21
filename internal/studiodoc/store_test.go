@@ -9,7 +9,6 @@ import (
 
 	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
-	"legoloop/internal/paths"
 	"legoloop/internal/studiodoc"
 )
 
@@ -265,7 +264,7 @@ func TestStoreLegacySuffixCompatibility(t *testing.T) {
 		t.Fatal(err)
 	}
 	raw := []byte(`{"id":"legado","name":"Legado","version":"2.0.0","trigger":{"type":"manual"},"nodes":[{"id":"n1","type":"skill","name":"N1"}]}`)
-	if err := os.WriteFile(filepath.Join(dir, "legado"+paths.SufixoAntigo), raw, 0o600); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "legado"+caminhos.SufixoAntigo), raw, 0o600); err != nil {
 		t.Fatal(err)
 	}
 	got, err := store.Get("legado")

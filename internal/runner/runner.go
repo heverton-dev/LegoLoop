@@ -79,9 +79,10 @@ type NodeReport struct {
 
 // Report consolida a execução do Processo.
 type Report struct {
-	OK     bool         `json:"ok"`
-	Nodes  []NodeReport `json:"nodes"`
-	Tokens TokenUsage   `json:"tokens"`
+	OK       bool         `json:"ok"`
+	Nodes    []NodeReport `json:"nodes"`
+	Tokens   TokenUsage   `json:"tokens"`
+	Warnings []string     `json:"warnings,omitempty"`
 }
 
 // Options configura o runner. Parallelism <= 0 usa NumCPU; 1 força modo sequencial.
@@ -127,7 +128,7 @@ func Run(ctx context.Context, d *dag.DAG, opts Options) (Report, error) {
 	defer root.Close()
 	r := &run{d: d, opts: opts, root: root, agenda: novaAgenda(parallelism(opts.Parallelism), opts.Workers)}
 	rep := r.executeLayers(ctx)
-	saveRunTelemetry(d, opts, rep)
+	saveRunTelemetry(d, opts, &rep)
 	return rep, nil
 }
 
@@ -147,7 +148,7 @@ func (r *run) executeLayers(ctx context.Context) Report {
 	return rep
 }
 
-func saveRunTelemetry(d *dag.DAG, opts Options, rep Report) {
+func saveRunTelemetry(d *dag.DAG, opts Options, rep *Report) {
 	passed, failed := 0, 0
 	for _, nr := range rep.Nodes {
 		if nr.Status == StatusPassed {
@@ -175,9 +176,20 @@ func saveRunTelemetry(d *dag.DAG, opts Options, rep Report) {
 		path = filepath.Join(opts.Workdir, ".gemini", "flight_record.json")
 	}
 	if path != "" {
-		_ = os.MkdirAll(filepath.Dir(path), 0o755)
-		_ = rec.SaveFlightRecord(path)
+		if err := gravarFlightRecord(path, rec); err != nil {
+			rep.Warnings = append(rep.Warnings, err.Error())
+		}
 	}
+}
+
+func gravarFlightRecord(path string, rec FlightRecord) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return fmt.Errorf("telemetria: erro ao criar diretório %q: %w", filepath.Dir(path), err)
+	}
+	if err := rec.SaveFlightRecord(path); err != nil {
+		return fmt.Errorf("telemetria: %w", err)
+	}
+	return nil
 }
 
 // unsupported recusa, antes de executar qualquer nó, recursos do contrato que o runner ainda não implementa.
@@ -191,8 +203,11 @@ func unsupported(d *dag.DAG) error {
 }
 
 func unsupportedNode(n dag.Node) error {
+	if _, err := dag.DoDAG(string(n.Type)); err != nil {
+		return fmt.Errorf("runner: nó %q usa tipo %q não suportado", n.ID, n.Type)
+	}
 	switch n.Type {
-	case dag.TypeSkill, dag.TypeScript, dag.TypeSubprocesso, dag.NodeType("unit_no"), dag.TypeStopGate:
+	case dag.TypeSkill, dag.TypeScript, dag.TypeSubprocesso, dag.TypeUnitNo, dag.TypeStopGate:
 	case dag.TypeMCP:
 		if strings.TrimSpace(n.Ref) == "" {
 			return fmt.Errorf("runner: nó %q usa tipo \"mcp\" sem ref configurado no executor atual", n.ID)

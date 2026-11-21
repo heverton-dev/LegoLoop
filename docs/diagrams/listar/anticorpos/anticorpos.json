@@ -19,7 +19,7 @@
     {
       "id": "AC-E03.1",
       "no": "e03",
-      "descricao": "Verificar que o diagrama HTML gerado contém todos os nós do processo listar",
+      "descricao": "Verificar que o diagrama HTML gerado contém todos os nós do processo legoloop-listar",
       "tipo": "validacao",
       "severidade": "alta",
       "verificacao": "len(re.findall(r'class=\"node\"', html)) >= 6"

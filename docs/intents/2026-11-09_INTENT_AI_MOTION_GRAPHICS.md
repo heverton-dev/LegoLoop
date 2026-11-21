@@ -4,7 +4,7 @@
 > **Data:** 2026-11-09  
 > **Autor:** MiMoCode (via legoloop-video-rea)  
 > **Iniciativa:** I-AIMG — AI Motion Graphics  
-> **Alvo:** `processos/ai-motion-graphics/`, `skills/ai-motion-graphics/`, `docs/books/ai-motion-graphics/`  
+> **Alvo:** `processos/legoloop-ai-motion-graphics/`, `skills/legoloop-ai-motion-graphics/`, `docs/books/ai-motion-graphics/`  
 > **Sessão:** ses_ffe5e3d81734fffeURpuQcduSB  
 > **Confiança da Entrevista:** 96%  
 > **Template:** TEMPLATE_INTENT.md v2.0.0  
@@ -45,7 +45,7 @@
 
 | Identificador | Tipo da Peça | Especialidade / Skill / Subloop | Papel na Esteira |
 | :--- | :--- | :--- | :--- |
-| `BLOCO-01` | `skill` | `skills/ai-motion-graphics` | Skill canônica universal com contratos de I/O e guardrails. |
+| `BLOCO-01` | `skill` | `skills/legoloop-ai-motion-graphics` | Skill canônica universal com contratos de I/O e guardrails. |
 | `BLOCO-02` | `unit_task` | Motor de seleção de repos | Analisa o pedido e sugere repos Tier 1/Tier 2 (híbrido: sugere + confirma). |
 | `BLOCO-03` | `unit_task` | Motor de renderização Playwright | Carrega HTML/WebGL, captura frames via headless browser. |
 | `BLOCO-04` | `unit_task` | Motor de conversão FFmpeg | Converte frames para MP4 com resolução/duração variáveis. |
@@ -79,7 +79,7 @@
 | 1 | Pipeline renderiza MP4 end-to-end para os 3 cenários. | 3 MP4s gerados e verificados | `ffprobe` confirma codec/duração/resolução |
 | 2 | Seleção híbrida funciona: pipeline sugere repos, operador confirma. | Fluxo interativo documentado | Log do Studio/CLI com sugestão + confirmação |
 | 3 | Sync de áudio Librosa sincroniza animações ao beat. | Comparação visual com/sem sync | Fixture de 3s com e sem beat sync |
-| 4 | Skill universal instalada em todos os harnesses. | `legoloop instalar-skills` exit 0 | `skills/ai-motion-graphics/SKILL.md` presente |
+| 4 | Skill universal instalada em todos os harnesses. | `legoloop instalar-skills` exit 0 | `skills/legoloop-ai-motion-graphics/SKILL.md` presente |
 | 5 | Livro Didático compilado e auditado. | `legoloop legopress auditar` exit 0 | `docs/books/ai-motion-graphics/` completo |
 | 6 | Custo mensal total = R$ 0,00 em ferramentas. | Nenhuma dependência paga | `curation.json` confirma todos open-source |
 

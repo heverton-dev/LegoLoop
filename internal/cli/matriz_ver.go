@@ -12,13 +12,8 @@ import (
 
 	"legoloop/internal/matriz"
 	"legoloop/internal/reputation"
-	"legoloop/internal/ste"
 	"legoloop/internal/taxonomy"
 )
-
-func init() {
-	ste.Default.Register("matriz.matrix_descontinuado", "O comando matrix foi descontinuado. Use legoloop matriz ver.")
-}
 
 var (
 	tiposVer   = []string{"skill", "mcp", "script", "hook", "gate", "processo"}

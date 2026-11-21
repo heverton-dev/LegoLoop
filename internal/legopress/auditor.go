@@ -37,6 +37,7 @@ print(json.dumps({"total_pages": len(doc), "orphan_pages": orphan, "broken_heade
 
 type Auditor struct {
 	pythonBin string
+	run       func(pdfPath string) ([]byte, error)
 }
 
 func NewAuditor() *Auditor {
@@ -44,11 +45,21 @@ func NewAuditor() *Auditor {
 	return &Auditor{pythonBin: py}
 }
 
+func NewAuditorWithRunner(run func(pdfPath string) ([]byte, error)) *Auditor {
+	return &Auditor{run: run}
+}
+
 func (a *Auditor) AuditPDF(pdfPath string) (*GeometryReport, error) {
 	if _, err := os.Stat(pdfPath); err != nil {
 		return nil, fmt.Errorf("legopress: arquivo nao encontrado: %w", err)
 	}
-	out, err := exec.Command(a.pythonBin, "-c", pyAuditScript, pdfPath).Output()
+	run := a.run
+	if run == nil {
+		run = func(p string) ([]byte, error) {
+			return exec.Command(a.pythonBin, "-c", pyAuditScript, p).Output()
+		}
+	}
+	out, err := run(pdfPath)
 	if err != nil {
 		return nil, fmt.Errorf("legopress: falha ao executar pymupdf: %w", err)
 	}

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"legoloop/internal/caminhos"
-	"legoloop/internal/paths"
 	"os"
 	"path/filepath"
 	"slices"
@@ -15,7 +14,7 @@ import (
 const NaturezaDesconhecida = "desconhecida"
 
 const (
-	sufixoV1        = paths.SufixoAntigo
+	sufixoV1        = caminhos.SufixoAntigo
 	prefixoProcesso = "legoloop-"
 )
 

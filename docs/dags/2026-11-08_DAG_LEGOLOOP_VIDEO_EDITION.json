@@ -245,7 +245,7 @@
         "cuts": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json')"
       },
       "isolation": {
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false,
         "workspace": "local",
         "write_boundary": "strict"
@@ -364,7 +364,7 @@
         "storyboard": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json')"
       },
       "isolation": {
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false,
         "workspace": "local",
         "write_boundary": "strict"
@@ -773,7 +773,7 @@
         "fcpxml": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml')"
       },
       "isolation": {
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false,
         "workspace": "local",
         "write_boundary": "strict"

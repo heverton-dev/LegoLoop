@@ -140,7 +140,7 @@ func noDe(e Etapa, porID map[string]Etapa) dag.Node {
 		Output:  dag.HandoffContract{Artifact: e.Produz.Caminho, Gate: e.Gate},
 	}
 	if e.Compoe != "" {
-		n.Type, n.Ref = dag.TypeSubloop, nomeComposto(e.Compoe)
+		n.Type, n.Ref = dag.TypeSubprocesso, nomeComposto(e.Compoe)
 		n.Output.SubArtifact = e.Origem
 	} else {
 		n.Type, n.Ref = dag.TypeSkill, "skills/"+e.Peca

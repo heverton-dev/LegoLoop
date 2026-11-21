@@ -12,9 +12,9 @@ import (
 
 	"legoloop/docs/templates"
 	"legoloop/internal/assets"
+	"legoloop/internal/caminhos"
 	"legoloop/internal/dag"
 	"legoloop/internal/gate"
-	"legoloop/internal/paths"
 	studio "legoloop/internal/studiodoc"
 	"legoloop/internal/taxonomy"
 )
@@ -26,9 +26,9 @@ const (
 )
 
 var (
-	arquivoProcesso = paths.TemplatePecaAntigo
-	sufixoStudio    = paths.SufixoAntigo
-	dirDocumentos   = paths.DirAntigo
+	arquivoProcesso = caminhos.TemplatePecaAntigo
+	sufixoStudio    = caminhos.SufixoAntigo
+	dirDocumentos   = caminhos.DirAntigo
 )
 
 func read(t *testing.T, name string) []byte {
@@ -182,7 +182,7 @@ func TestPiecesAreRecognizedByInventory(t *testing.T) {
 	put(t, home, ".aidd/scripts/TEMPLATE_PIECE_SCRIPT.ps1", read(t, "TEMPLATE_PIECE_SCRIPT.ps1"))
 	put(t, home, dirDocumentos+"/"+idExemplo+sufixoStudio, read(t, arquivoProcesso))
 
-	sc := assets.NewScanner(assets.Config{Home: home, ProcessosDir: paths.DirAntigoEm(home),
+	sc := assets.NewScanner(assets.Config{Home: home, ProcessosDir: caminhos.DirAntigoEm(home),
 		LookPath: func(string) (string, error) { return "", os.ErrNotExist }, Getenv: func(string) string { return "" }})
 	snap := sc.Scan(context.Background())
 	for _, k := range []assets.Kind{assets.KindSkill, assets.KindHook, assets.KindMCP, assets.KindScript, assets.KindProcesso} {

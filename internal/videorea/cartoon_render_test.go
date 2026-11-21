@@ -215,3 +215,42 @@ func TestRenderCartoonScenes_RealFFmpegComCenas(t *testing.T) {
 		t.Fatalf("video MP4 multi-cena invalido: len=%d", len(data))
 	}
 }
+
+func TestPorSO(t *testing.T) {
+	allExist := func(string) bool { return true }
+	winOnly := func(p string) bool {
+		return strings.Contains(strings.ToLower(filepath.ToSlash(p)), "c:/windows/fonts")
+	}
+	cases := []struct {
+		goos     string
+		wantFont string
+		wantPy   string
+		wantSh   string
+	}{
+		{goos: "windows", wantFont: `C:\Windows\Fonts\arial.ttf`, wantPy: "python", wantSh: "powershell"},
+		{goos: "linux", wantFont: "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", wantPy: "python3", wantSh: "sh"},
+		{goos: "darwin", wantFont: "/System/Library/Fonts/Helvetica.ttc", wantPy: "python3", wantSh: "sh"},
+	}
+	for _, tc := range cases {
+		gotFont := findSystemFontPathForOS(tc.goos, allExist)
+		if gotFont != tc.wantFont {
+			t.Errorf("findSystemFontPathForOS(%q) = %q, quer %q", tc.goos, gotFont, tc.wantFont)
+		}
+		if tc.goos != "windows" {
+			if leak := findSystemFontPathForOS(tc.goos, winOnly); leak != "" {
+				t.Errorf("SO %q vazou fonte do Windows: %q", tc.goos, leak)
+			}
+			for _, c := range fontCandidatesForOS(tc.goos) {
+				if strings.Contains(strings.ToLower(filepath.ToSlash(c)), "windows/fonts") {
+					t.Errorf("candidato de fonte Windows em %q: %q", tc.goos, c)
+				}
+			}
+		}
+		if gotPy := pythonForOS(tc.goos); gotPy != tc.wantPy {
+			t.Errorf("pythonForOS(%q) = %q, quer %q", tc.goos, gotPy, tc.wantPy)
+		}
+		if gotSh := shellForOS(tc.goos); len(gotSh) == 0 || gotSh[0] != tc.wantSh {
+			t.Errorf("shellForOS(%q) = %q, quer prefixo %q", tc.goos, gotSh, tc.wantSh)
+		}
+	}
+}

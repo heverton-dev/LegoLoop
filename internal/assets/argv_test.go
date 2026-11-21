@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -38,16 +39,22 @@ func TestSplitCommand(t *testing.T) {
 }
 
 func TestArgvForScriptsByExtension(t *testing.T) {
+	batWant := func(p string) []string {
+		if runtime.GOOS == "windows" {
+			return []string{"cmd", "/c", p}
+		}
+		return []string{"sh", p}
+	}
 	cases := map[string][]string{
-		"/x/a.ps1":  {"powershell", "-NoProfile", "-File", "/x/a.ps1"},
+		"/x/a.ps1":  {PowerShellForOS(runtime.GOOS), "-NoProfile", "-File", "/x/a.ps1"},
 		"/x/a.sh":   {"bash", "/x/a.sh"},
 		"/x/a.bash": {"bash", "/x/a.bash"},
-		"/x/a.py":   {"python", "/x/a.py"},
+		"/x/a.py":   {PythonForOS(runtime.GOOS), "/x/a.py"},
 		"/x/a.js":   {"node", "/x/a.js"},
 		"/x/a.mjs":  {"node", "/x/a.mjs"},
 		"/x/a.cjs":  {"node", "/x/a.cjs"},
-		"/x/A.BAT":  {"cmd", "/c", "/x/A.BAT"},
-		"/x/a.cmd":  {"cmd", "/c", "/x/a.cmd"},
+		"/x/A.BAT":  batWant("/x/A.BAT"),
+		"/x/a.cmd":  batWant("/x/a.cmd"),
 	}
 	for path, want := range cases {
 		got, err := ArgvFor(Item{Kind: KindScript, Name: filepath.Base(path), Path: path})
@@ -113,5 +120,60 @@ func TestItemIDsAreStableUniqueAndPublic(t *testing.T) {
 	}
 	if _, ok := first.ByID("nao-existe"); ok {
 		t.Error("ByID de id inexistente deve falhar")
+	}
+}
+
+func TestPorSO(t *testing.T) {
+	cases := []struct {
+		goos    string
+		wantPy  string
+		wantPS  string
+		wantSh  []string
+		wantCmd []string
+	}{
+		{
+			goos:    "windows",
+			wantPy:  "python",
+			wantPS:  "powershell",
+			wantSh:  []string{"cmd", "/c"},
+			wantCmd: []string{"cmd", "/c", "/x/a.cmd"},
+		},
+		{
+			goos:    "linux",
+			wantPy:  "python3",
+			wantPS:  "pwsh",
+			wantSh:  []string{"sh", "-c"},
+			wantCmd: []string{"sh", "/x/a.cmd"},
+		},
+		{
+			goos:    "darwin",
+			wantPy:  "python3",
+			wantPS:  "pwsh",
+			wantSh:  []string{"sh", "-c"},
+			wantCmd: []string{"sh", "/x/a.cmd"},
+		},
+	}
+	for _, tc := range cases {
+		if got := PythonForOS(tc.goos); got != tc.wantPy {
+			t.Errorf("PythonForOS(%q) = %q, quer %q", tc.goos, got, tc.wantPy)
+		}
+		if got := PowerShellForOS(tc.goos); got != tc.wantPS {
+			t.Errorf("PowerShellForOS(%q) = %q, quer %q", tc.goos, got, tc.wantPS)
+		}
+		if got := ShellForOS(tc.goos); !reflect.DeepEqual(got, tc.wantSh) {
+			t.Errorf("ShellForOS(%q) = %q, quer %q", tc.goos, got, tc.wantSh)
+		}
+		pyArgv, err := ArgvForOS(Item{Kind: KindScript, Path: "/x/a.py"}, tc.goos)
+		if err != nil || !reflect.DeepEqual(pyArgv, []string{tc.wantPy, "/x/a.py"}) {
+			t.Errorf("ArgvForOS(.py, %q) = %q, %v", tc.goos, pyArgv, err)
+		}
+		psArgv, err := ArgvForOS(Item{Kind: KindScript, Path: "/x/a.ps1"}, tc.goos)
+		if err != nil || !reflect.DeepEqual(psArgv, []string{tc.wantPS, "-NoProfile", "-File", "/x/a.ps1"}) {
+			t.Errorf("ArgvForOS(.ps1, %q) = %q, %v", tc.goos, psArgv, err)
+		}
+		cmdArgv, err := ArgvForOS(Item{Kind: KindScript, Path: "/x/a.cmd"}, tc.goos)
+		if err != nil || !reflect.DeepEqual(cmdArgv, tc.wantCmd) {
+			t.Errorf("ArgvForOS(.cmd, %q) = %q, %v; quer %q", tc.goos, cmdArgv, err, tc.wantCmd)
+		}
 	}
 }

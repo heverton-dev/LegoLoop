@@ -56,7 +56,7 @@ func cmdVideoRea(ctx context.Context, args []string, d Deps) int {
 
 func resolveBrain(ctx context.Context, modelFlag, effortFlag string, d Deps) (brain.Brain, error) {
 	inv := d.discover(ctx)
-	if len(inv.Models()) == 0 {
+	if len(inv.Models()) == 0 && modelFlag == "" {
 		return nil, nil
 	}
 	opts := d.brainOpts()

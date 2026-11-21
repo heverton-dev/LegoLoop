@@ -900,9 +900,9 @@
       "defects": [],
       "rollback_strategy": "stash_changes",
       "output": {
-        "artifacts": ["skills/ai-motion-graphics/SKILL.md"],
+        "artifacts": ["skills/legoloop-ai-motion-graphics/SKILL.md"],
         "verify": [["legoloop", "instalar-skills", "--dry-run", "--json"]],
-        "gate": "exit_code == 0 && file_exists('skills/ai-motion-graphics/SKILL.md')"
+        "gate": "exit_code == 0 && file_exists('skills/legoloop-ai-motion-graphics/SKILL.md')"
       },
       "telemetry": null
     },

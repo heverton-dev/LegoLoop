@@ -226,7 +226,7 @@
       },
       "isolation": {
         "workspace": "local",
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false
       },
       "token_budget": {
@@ -327,7 +327,7 @@
       },
       "isolation": {
         "workspace": "local",
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false
       },
       "token_budget": {
@@ -682,7 +682,7 @@
       },
       "isolation": {
         "workspace": "local",
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false
       },
       "token_budget": {

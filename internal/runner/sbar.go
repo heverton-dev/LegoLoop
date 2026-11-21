@@ -35,6 +35,9 @@ func (s SBAR) Format() string {
 func FormatNodeError(nodeID string, exitCode int, errStr string) SBAR {
 	sit := fmt.Sprintf("Falha mecânica de execução no nó %s", nodeID)
 	bg := fmt.Sprintf("Nó executado com exit code %d sob o kernel Orchestrix", exitCode)
+	if exitCode <= 0 {
+		bg = "Nó não foi executado (recusado antes da execução sob o kernel Orchestrix)"
+	}
 	ass := fmt.Sprintf("Erro capturado: %s", errStr)
 	rec := "Puxar Andon Cord e aguardar auditoria de engenharia (Zero Mutação Cega)"
 	return NewSBAR(sit, bg, ass, rec)

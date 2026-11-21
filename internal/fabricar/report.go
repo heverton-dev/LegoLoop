@@ -22,6 +22,7 @@ type Report struct {
 		Cortes      []string       `json:"cortes"`
 		MatrizIdade time.Duration  `json:"matriz_idade"`
 		Defasagem   matriz.Stale   `json:"defasagem"`
+		Pendentes   []string       `json:"pendentes,omitempty"`
 	} `json:"varredura"`
 	Fusao struct {
 		Necessidades matriz.Needs `json:"necessidades"`
@@ -72,6 +73,8 @@ func populateVarredura(d Deps, c consulta, rep *Report) {
 	if !c.fonte.GeradaEm.IsZero() {
 		rep.Varredura.MatrizIdade = d.Clock().Sub(c.fonte.GeradaEm)
 	}
+	rep.Varredura.Defasagem = c.defasagem
+	rep.Varredura.Pendentes = pecasPendentes(c.fonte.Entradas)
 }
 
 // populateFusao é a Camada 3, como a Fusão decidiu: nada é acrescentado aqui.

@@ -14,7 +14,7 @@ Para garantir a auditabilidade total desta obra, a tabela abaixo mapeia cada con
 | **Composição de Loops**       | `internal/compor/compor.go`                                | Injeção de nós sub-loop e elevação de versão |
 | **Sub-Artefatos sem Colisão** | `internal/dag/subartifact_test.go`                          | Isolamento de saídas entre loops pai e filho |
 | **Templates Canônicos**       | `docs/templates/README.md`                                 | Modelos oficiais da sextilha de peças   |
-| **Mega Pipeline Master**      | `processos/mega-pipeline.loop.json`                        | Manifesto canônico da esteira dos 5 sub-loops |
+| **Mega Pipeline Master**      | `processos/legoloop-mega-pipeline.loop.json`                        | Manifesto canônico da esteira dos 5 sub-loops |
 | **Manual dos Sub-Loops**      | `docs/manuals/2026-11-01_MANUAL_MEGA_PIPELINE_LEGOLOOP.md`     | Especificação operacional e stop-gates  |
 
 ---

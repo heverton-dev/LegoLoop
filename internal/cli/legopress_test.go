@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"legoloop/internal/cli"
+	"legoloop/internal/legopress"
 )
 
 func TestLegoPressCLI_Help(t *testing.T) {
@@ -29,7 +30,14 @@ func TestLegoPressCLI_Help(t *testing.T) {
 
 func TestLegoPressCLI_Doctor(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+	fakeCompiler := legopress.NewCompilerWithRunner("pandoc", "typst", func(bin string, _ ...string) ([]byte, error) {
+		return []byte(bin + " 3.1.9\n"), nil
+	})
+	deps := cli.Deps{
+		Stdout:    &stdout,
+		Stderr:    &stderr,
+		LegoPress: &cli.LegoPressDeps{Compiler: fakeCompiler},
+	}
 
 	code := cli.Run(context.Background(), []string{"legopress", "doctor"}, deps)
 	if code != 0 {
@@ -50,7 +58,14 @@ func TestLegoPressCLI_Auditar(t *testing.T) {
 	pdfPath := pdfs[0]
 
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+	fakeAuditor := legopress.NewAuditorWithRunner(func(string) ([]byte, error) {
+		return []byte(`{"total_pages":14,"orphan_pages":[],"broken_headers":[],"valid":true}`), nil
+	})
+	deps := cli.Deps{
+		Stdout:    &stdout,
+		Stderr:    &stderr,
+		LegoPress: &cli.LegoPressDeps{Auditor: fakeAuditor},
+	}
 
 	code := cli.Run(context.Background(), []string{"legopress", "auditar", pdfPath}, deps)
 	if code != 0 {

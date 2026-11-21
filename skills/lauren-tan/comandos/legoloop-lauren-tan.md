@@ -5,4 +5,4 @@ description: Executa o Processo lauren-tan pelo comando legoloop exec.
 
 Execute o Processo lauren-tan com o comando:
 
-    legoloop exec lauren-tan
+    legoloop exec legoloop-lauren-tan

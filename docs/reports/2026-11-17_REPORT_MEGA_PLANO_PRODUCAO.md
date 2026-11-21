@@ -93,7 +93,7 @@ interpretative: [1. Resumo Executivo, 6. Conclusão, Recomendações & Rollback]
 * **CLI & Ferramentas:** `legoloop exec <slug>`; SKILL + slash distribuído por `instalar-skills`; peça do Studio invocável por `POST /api/pecas/{id}/exec`. Paridade SHA-256 do contrato DAG entre as três vias (teste de paridade com mutação provada).
 
 ### E08 — Auditoria dos 6 Verbos (`69e21c2` `6b71d78` `19b86a7`)
-* **Skills & Governança:** processo `auditoria-atomica` (scaffold 5/5); motor `Auditar/AuditarVerbos/RelatorioUniversal` em `internal/fabricar`; 6/6 verbos APROVADO; [Relatório universal](2026-11-17_REPORT_AUDITORIA_6_VERBOS.md) + relatórios atômicos em `docs/reports/auditoria-6-verbos/`.
+* **Skills & Governança:** processo `legoloop-auditoria-atomica` (scaffold 5/5); motor `Auditar/AuditarVerbos/RelatorioUniversal` em `internal/fabricar`; 6/6 verbos APROVADO; [Relatório universal](2026-11-17_REPORT_AUDITORIA_6_VERBOS.md) + relatórios atômicos em `docs/reports/auditoria-6-verbos/`.
 
 ### E09 — MCP Router (`0fe4593` `55e55a5`)
 * **Integrações & Grafos:** tools de Processos expostas via router único; conflito de nome recusa registro; `sync-harnesses` cobre 4 harnesses.

@@ -20,9 +20,9 @@ import (
 
 // casos lista os Processos pendentes e o nome taxonômico seguro de cada um.
 var casos = []struct{ dir, nome string }{
-	{"processos/fronteira-ai-driven", "fronteira-ai-driven"},
+	{"processos/legoloop-fronteira-ai-driven", "legoloop-fronteira-ai-driven"},
 	{"processos/legoloop-design-ui", "legoloop-design-ui"},
-	{"processos/mega-pipeline", "mega-processo"},
+	{"processos/legoloop-mega-pipeline", "mega-processo"},
 	{"processos/legoloop-swarm", "legoloop-swarm"},
 }
 

@@ -1,0 +1,391 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-09",
+  "description": "Processo mestre de UI/UX composto pelos 6 sub-processos modulares do Impeccable: Avaliar, Construir, Melhorar, Refinar, Corrigir e Iterar/Documentar.",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 1,
+      "mode": "sequential"
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 300,
+    "max_parallel_workers": 1,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "commit_on_node_pass": true,
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "micro",
+    "tdd_enforced": true
+  },
+  "id": "impeccable-design",
+  "name": "Processo de Design Impeccable (6 Sub-Processos)",
+  "nodes": [
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/specs/"
+      ],
+      "context_out": [
+        "docs/reports/AUDITORIA_DESIGN.md"
+      ],
+      "id": "subprocesso-avaliar",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Avaliação de UI/UX e Diagnóstico",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/AUDITORIA_DESIGN.md",
+        "gate": "file_exists('docs/reports/AUDITORIA_DESIGN.md')"
+      },
+      "ref": "skills/impeccable",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-avaliar",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/AUDITORIA_DESIGN.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/reports/AUDITORIA_DESIGN.md"
+      ],
+      "context_out": [
+        "docs/specs/DIRECAO_VISUAL.md"
+      ],
+      "depends_on": [
+        "subprocesso-avaliar"
+      ],
+      "id": "subprocesso-construir",
+      "inputs": {
+        "auditoria": "file('docs/reports/AUDITORIA_DESIGN.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Construção da Direção Visual",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/specs/DIRECAO_VISUAL.md",
+        "gate": "file_exists('docs/specs/DIRECAO_VISUAL.md')"
+      },
+      "ref": "skills/impeccable",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-construir",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/specs/DIRECAO_VISUAL.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/specs/DIRECAO_VISUAL.md"
+      ],
+      "context_out": [
+        "src/styles/theme.css"
+      ],
+      "depends_on": [
+        "subprocesso-construir"
+      ],
+      "id": "subprocesso-melhorar",
+      "inputs": {
+        "direcao": "file('docs/specs/DIRECAO_VISUAL.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Design Tokens \u0026 Sistema de Cores",
+      "nature": "micro",
+      "output": {
+        "artifact": "src/styles/theme.css",
+        "gate": "file_exists('src/styles/theme.css')"
+      },
+      "ref": "skills/impeccable",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "medium",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-melhorar",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('src/styles/theme.css')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "src/styles/theme.css"
+      ],
+      "context_out": [
+        "docs/reports/HARDENING_UI.md"
+      ],
+      "depends_on": [
+        "subprocesso-melhorar"
+      ],
+      "id": "subprocesso-refinar",
+      "inputs": {
+        "tema": "file('src/styles/theme.css')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Refinamento \u0026 Hardening UI",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/HARDENING_UI.md",
+        "gate": "file_exists('docs/reports/HARDENING_UI.md')"
+      },
+      "ref": "skills/impeccable",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "medium",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-refinar",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/HARDENING_UI.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/reports/HARDENING_UI.md"
+      ],
+      "context_out": [
+        "docs/reports/RESPONSIVE_VERIFICATION.md"
+      ],
+      "depends_on": [
+        "subprocesso-refinar"
+      ],
+      "id": "subprocesso-corrigir",
+      "inputs": {
+        "hardening": "file('docs/reports/HARDENING_UI.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Correções de Acessibilidade \u0026 Responsividade",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/RESPONSIVE_VERIFICATION.md",
+        "gate": "file_exists('docs/reports/RESPONSIVE_VERIFICATION.md')"
+      },
+      "ref": "skills/impeccable",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "medium",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-corrigir",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/RESPONSIVE_VERIFICATION.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "context_in": [
+        "docs/reports/RESPONSIVE_VERIFICATION.md"
+      ],
+      "context_out": [
+        "DESIGN.md"
+      ],
+      "depends_on": [
+        "subprocesso-corrigir"
+      ],
+      "id": "subprocesso-iterar-documentar",
+      "inputs": {
+        "verificacao": "file('docs/reports/RESPONSIVE_VERIFICATION.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Documentação do Design System",
+      "nature": "micro",
+      "output": {
+        "artifact": "DESIGN.md",
+        "gate": "file_exists('DESIGN.md')"
+      },
+      "ref": "skills/impeccable",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "low",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-iterar-documentar",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('DESIGN.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    }
+  ],
+  "schema_version": 2,
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "9812a677fbca05619985ea15858022b7c02bda6396919db45873919e86bf79e8",
+    "plan": "2b6b66e138a0c20beceb43f9ba6be91e528dbe4cbf5e59b9a695d7eb8f1eeae3",
+    "route": "docs/routes/2026-11-07_ROUTE_IMPECCABLE_DESIGN.json",
+    "spec": "ec6576b22ba8fe6cb30d24bf51a37c9a419eb9338f977c0500e2ea024f9e1189"
+  },
+  "version": "1.0.0"
+}

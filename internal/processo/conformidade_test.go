@@ -11,7 +11,6 @@ import (
 	"legoloop/internal/caminhos"
 	"legoloop/internal/cli"
 	"legoloop/internal/gate"
-	"legoloop/internal/paths"
 	"legoloop/internal/triagem"
 )
 
@@ -28,7 +27,7 @@ var manifestosComSchema = map[string]string{
 // antigos tem os 5 manifestos do nascimento válidos contra os schemas oficiais e passa
 // em legoloop validate, ou é exceção documentada com dono.
 func TestProcessosCincoPorCinco(t *testing.T) {
-	raiz := filepath.Join("..", "..", paths.DirProcessos)
+	raiz := filepath.Join("..", "..", caminhos.DirProcessos)
 	entradas, err := os.ReadDir(raiz)
 	if err != nil {
 		t.Fatalf("ler %s: %v", raiz, err)
@@ -70,7 +69,7 @@ func manifestosValidos(t *testing.T, dir, nome string) {
 		}
 	}
 	if !temDocumentoDoProcesso(dir) {
-		t.Errorf("%s: sem documento do Processo (dialeto %s, %s ou %s)", nome, paths.SufixoAntigo, paths.SufixoStudio, caminhos.ArquivoDAG)
+		t.Errorf("%s: sem documento do Processo (dialeto %s, %s ou %s)", nome, caminhos.SufixoAntigo, caminhos.SufixoStudio, caminhos.ArquivoDAG)
 	}
 }
 
@@ -79,7 +78,7 @@ func manifestosValidos(t *testing.T, dir, nome string) {
 func temDocumentoDoProcesso(dir string) bool {
 	achou := false
 	_ = filepath.WalkDir(dir, func(p string, e os.DirEntry, err error) error {
-		if err == nil && !e.IsDir() && (strings.HasSuffix(p, paths.SufixoAntigo) || strings.HasSuffix(p, paths.SufixoStudio) || filepath.Base(p) == caminhos.ArquivoDAG) {
+		if err == nil && !e.IsDir() && (strings.HasSuffix(p, caminhos.SufixoAntigo) || strings.HasSuffix(p, caminhos.SufixoStudio) || filepath.Base(p) == caminhos.ArquivoDAG) {
 			achou = true
 		}
 		return nil

@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"sort"
 	"time"
+
+	"legoloop/internal/escrita"
 )
 
 // ErrStopGateNaoAprovado indica tentativa de limpeza antes do Stop-Gate final.
@@ -110,7 +112,7 @@ func persistirELimpar(repoDir, slug, epPath string, res *DestilacaoResult) (*Des
 		if err != nil {
 			return nil, err
 		}
-		if err := os.WriteFile(gatePath, raw, 0o644); err != nil {
+		if err := escrita.GravarAtomico(gatePath, raw); err != nil {
 			return nil, err
 		}
 		res.ArquivoGates = gatePath

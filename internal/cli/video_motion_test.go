@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"legoloop/internal/cli"
+	"legoloop/internal/provider"
 )
 
 func TestVideoMotionCLI_Help(t *testing.T) {
@@ -53,7 +54,16 @@ func TestVideoMotionCLI_RejeitaStubsSemFlagsObrigatorias(t *testing.T) {
 
 func TestVideoMotionCLI_SuporteAModelEEffort(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+	deps := cli.Deps{
+		Stdout: &stdout,
+		Stderr: &stderr,
+		Discover: func(context.Context) provider.Inventory {
+			return provider.Inventory{
+				RouterURL:    "http://127.0.0.1:20128",
+				RouterModels: []string{"fast-brain"},
+			}
+		},
+	}
 	code := cli.Run(context.Background(), []string{"video-motion", "run", "video.mp4", "--model", "modelo-inexistente-xyz"}, deps)
 	if code == 0 {
 		t.Fatalf("esperava falha ao requisitar modelo inexistente com --model")
@@ -65,7 +75,7 @@ func TestVideoMotionCLI_SuporteAModelEEffort(t *testing.T) {
 
 func TestVideoMotionCLI_RespeitaAspect(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr}
+	deps := cli.Deps{Stdout: &stdout, Stderr: &stderr, Discover: noModels}
 	code := cli.Run(context.Background(), []string{"video-motion", "run", "video.mp4", "--aspect", "16:9"}, deps)
 	if code != 0 {
 		t.Fatalf("esperava exit 0 com --aspect 16:9, obteve %d (%s)", code, stderr.String())

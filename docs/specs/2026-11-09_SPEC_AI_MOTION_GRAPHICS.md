@@ -6,7 +6,7 @@
 > **Autor:** MiMoCode (Fusão Addy Osmani + Matt Pocock + AIDD-Spec)  
 > **Iniciativa:** I-AIMG — AI Motion Graphics  
 > **Referência da Intenção:** [docs/intents/2026-11-09_INTENT_AI_MOTION_GRAPHICS.md](../intents/2026-11-09_INTENT_AI_MOTION_GRAPHICS.md)  
-> **Alvo Primário:** `internal/motion/`, `processos/ai-motion-graphics/`, `skills/ai-motion-graphics/`  
+> **Alvo Primário:** `internal/motion/`, `processos/legoloop-ai-motion-graphics/`, `skills/legoloop-ai-motion-graphics/`  
 > **Consome:** INTENT aprovada · **Produz:** PLAN e ROUTE  
 > **Template:** TEMPLATE_SPEC.md v2.0.0  
 
@@ -17,7 +17,7 @@
 > [!IMPORTANT]
 > A IA lista abaixo todas as premissas técnicas adotadas para evitar decisões silenciosas. Alerte no Stop-Gate 02 caso alguma premissa esteja incorreta:
 1. **Runtime Go conforme `go.mod`:** tipos nativos, zero dependências externas novas em `go.mod`. Playwright e FFmpeg são invocados como processos externos via `os/exec`.
-2. **Armazenamento local:** artefatos em `docs/videorea/<slug>/` e `processos/ai-motion-graphics/`. Sem banco externo. Scratch files em `scratch/` dentro do workspace.
+2. **Armazenamento local:** artefatos em `docs/videorea/<slug>/` e `processos/legoloop-ai-motion-graphics/`. Sem banco externo. Scratch files em `scratch/` dentro do workspace.
 3. **Comunicação/segurança:** Playwright headless em `localhost` (porta efêmera). Nenhuma requisição externa durante renderização. Repos GitHub são clonados uma vez e cacheados localmente.
 4. **Reuso:** `internal/pipeline` (validação DAG), `internal/provider` (LLM), `internal/fechar` (telemetria) serão reaproveitados. `internal/motion/` é pacote novo. Python/Librosa invocado via script externo (`scripts/beat_detect.py`).
 
@@ -232,7 +232,7 @@ type Result struct {
 ### Épico 05 — Skill Canônica & Livro Didático
 
 * [ ] `AC-E05.1`: **Skill instalável**
-  * **Dado que:** `skills/ai-motion-graphics/SKILL.md` existe e `legoloop instalar-skills` é executado
+  * **Dado que:** `skills/legoloop-ai-motion-graphics/SKILL.md` existe e `legoloop instalar-skills` é executado
   * **Quando:** instalação concluída
   * **Então:** exit code 0, skill presente em todos os harnesses configurados
 * [ ] `AC-E05.2`: **Livro Didático compilado**

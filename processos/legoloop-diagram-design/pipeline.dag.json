@@ -39,7 +39,8 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "skills/legoloop-diagram-design/scripts/init_diagrama.py",
         "legoloop-diagram-design"
       ],
@@ -93,7 +94,8 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "skills/legoloop-diagram-design/scripts/gerar_quadrantes.py",
         "docs/diagrams/legoloop-diagram-design/manifest.json"
       ],
@@ -151,7 +153,8 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "skills/legoloop-diagram-design/scripts/gerar_diagrama.py",
         "docs/diagrams/legoloop-diagram-design/quadrantes.json",
         "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html"
@@ -209,7 +212,8 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "skills/legoloop-diagram-design/scripts/gerar_animacao.py",
         "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html"
       ],
@@ -267,7 +271,8 @@
       "nature": "nano",
       "cognitive_complexity": "simples",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "skills/legoloop-diagram-design/scripts/export_svg.py",
         "docs/diagrams/legoloop-diagram-design/src/2026-11-18_LEGOLOOP_DIAGRAM_DESIGN.html",
         "docs/diagrams/legoloop-diagram-design/export/legoloop-diagram-design.svg"
@@ -326,7 +331,8 @@
       "nature": "micro",
       "cognitive_complexity": "simples",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "skills/legoloop-diagram-design/scripts/gerar_relatorio.py",
         "legoloop-diagram-design",
         "docs/reports/2026-11-18_REPORT_DIAGRAM_DESIGN.md"

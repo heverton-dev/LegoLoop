@@ -1,0 +1,390 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "date": "2026-11-09",
+  "description": "Processo determinístico de engenharia baseado no método Matt Pocock: Grilling \u0026 Alinhamento de Domínio -\u003e Desvio Empírico/Protótipo -\u003e Especificação \u0026 Tickets em Grafo -\u003e Construção TDD Cirúrgica -\u003e Code Review de 2 Eixos -\u003e Retroalimentação do Ambiente.",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 1,
+      "mode": "sequential"
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 300,
+    "max_parallel_workers": 1,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "commit_on_node_pass": true,
+      "git_strategy": "checkpoint_commit",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "micro",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-matt-pocock",
+  "nodes": [
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/specs/"
+      ],
+      "context_out": [
+        "GLOSSARY.md"
+      ],
+      "id": "subprocesso-1-alinhar-dominio",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Grilling \u0026 Alinhamento de Domínio",
+      "nature": "micro",
+      "output": {
+        "artifact": "GLOSSARY.md",
+        "gate": "file_exists('GLOSSARY.md')"
+      },
+      "ref": "skills/aidd-pocock",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "medium",
+        "fallback": "haiku",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-1-alinhar-dominio",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('GLOSSARY.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "alto",
+      "context_in": [
+        "GLOSSARY.md"
+      ],
+      "context_out": [
+        "docs/specs/SPEC.md"
+      ],
+      "depends_on": [
+        "subprocesso-1-alinhar-dominio"
+      ],
+      "id": "subprocesso-2-especificar",
+      "inputs": {
+        "glossario": "file('GLOSSARY.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Especificação \u0026 Restrições Invariantes",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      },
+      "ref": "skills/aidd-pocock",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-codigo-128k",
+        "effort": "high",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-2-especificar",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/specs/SPEC.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 6000,
+        "output_tokens": 2500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/plans/PLAN.md"
+      ],
+      "depends_on": [
+        "subprocesso-2-especificar"
+      ],
+      "id": "subprocesso-3-planejar-tickets",
+      "inputs": {
+        "spec": "file('docs/specs/SPEC.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Tickets em Grafo Acíclico (DAG)",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/plans/PLAN.md",
+        "gate": "file_exists('docs/plans/PLAN.md')"
+      },
+      "ref": "skills/aidd-pocock",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "medium",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-3-planejar-tickets",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/plans/PLAN.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "alto",
+      "context_in": [
+        "docs/plans/PLAN.md"
+      ],
+      "context_out": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "depends_on": [
+        "subprocesso-3-planejar-tickets"
+      ],
+      "id": "subprocesso-4-construir-tdd",
+      "inputs": {
+        "plano": "file('docs/plans/PLAN.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Construção TDD Cirúrgica (Zero Stubs)",
+      "nature": "skill",
+      "output": {
+        "artifact": "docs/reports/TDD_REPORT.md",
+        "gate": "file_exists('docs/reports/TDD_REPORT.md')"
+      },
+      "ref": "skills/aidd-pocock",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "effort": "high",
+        "fallback": "qwen2.5-coder:7b",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-4-construir-tdd",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/TDD_REPORT.md')",
+        "type": "unit_test_gate"
+      },
+      "token_budget": {
+        "input_tokens": 8000,
+        "output_tokens": 3000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "medio",
+      "context_in": [
+        "docs/reports/TDD_REPORT.md"
+      ],
+      "context_out": [
+        "docs/reports/CODE_REVIEW.md"
+      ],
+      "depends_on": [
+        "subprocesso-4-construir-tdd"
+      ],
+      "id": "subprocesso-5-review-auditar",
+      "inputs": {
+        "tdd": "file('docs/reports/TDD_REPORT.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Code Review de 2 Eixos \u0026 Hardening",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/CODE_REVIEW.md",
+        "gate": "file_exists('docs/reports/CODE_REVIEW.md')"
+      },
+      "ref": "skills/aidd-pocock",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "medium",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-5-review-auditar",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/CODE_REVIEW.md')",
+        "type": "review_gate"
+      },
+      "token_budget": {
+        "input_tokens": 5000,
+        "output_tokens": 2000
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "context_in": [
+        "docs/reports/CODE_REVIEW.md"
+      ],
+      "context_out": [
+        "docs/reports/RETRO.md"
+      ],
+      "depends_on": [
+        "subprocesso-5-review-auditar"
+      ],
+      "id": "subprocesso-6-retro-ambiente",
+      "inputs": {
+        "review": "file('docs/reports/CODE_REVIEW.md')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "name": "Retroalimentação do Ambiente \u0026 Governança",
+      "nature": "micro",
+      "output": {
+        "artifact": "docs/reports/RETRO.md",
+        "gate": "file_exists('docs/reports/RETRO.md')"
+      },
+      "ref": "skills/aidd-pocock",
+      "rollback_strategy": "git_reset",
+      "routing": {
+        "combo": "t-chat-128k",
+        "effort": "low",
+        "harness": "claude",
+        "mode": "auto",
+        "model": "t-codigo-128k",
+        "via": "9router"
+      },
+      "spec_ref": "AC-subprocesso-6-retro-ambiente",
+      "status": "pending",
+      "test_seam": {
+        "target": "file_exists('docs/reports/RETRO.md')",
+        "type": "contract_gate"
+      },
+      "token_budget": {
+        "input_tokens": 4000,
+        "output_tokens": 1500
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "command": "go test -count=1 ./..."
+      }
+    }
+  ],
+  "schema_version": 2,
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "9812a677fbca05619985ea15858022b7c02bda6396919db45873919e86bf79e8",
+    "plan": "2b6b66e138a0c20beceb43f9ba6be91e528dbe4cbf5e59b9a695d7eb8f1eeae3",
+    "route": "docs/routes/2026-11-07_ROUTE_MATT_POCOCK.json",
+    "spec": "ec6576b22ba8fe6cb30d24bf51a37c9a419eb9338f977c0500e2ea024f9e1189"
+  },
+  "version": "1.0.0"
+}

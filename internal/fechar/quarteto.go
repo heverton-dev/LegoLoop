@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"legoloop/internal/escrita"
 	"legoloop/internal/triagem"
 )
 
@@ -92,7 +93,7 @@ func garantirTriagem(dir, nome string, dagJSON []byte) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(path, append(saida, '\n'), 0o644); err != nil {
+	if err := escrita.GravarAtomico(path, append(saida, '\n')); err != nil {
 		return err
 	}
 	return triagem.Conferir(dir, etapas)

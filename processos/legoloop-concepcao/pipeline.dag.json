@@ -218,7 +218,7 @@
       },
       "timeout_sec": 3600,
       "isolation": {
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false,
         "workspace": "local",
         "write_boundary": "strict"

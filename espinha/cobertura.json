@@ -1,0 +1,5 @@
+{
+  "./internal/board": 80,
+  "./internal/triagem": 80,
+  "./internal/cli": 80
+}

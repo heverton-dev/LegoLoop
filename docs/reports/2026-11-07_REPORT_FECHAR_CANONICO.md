@@ -29,7 +29,7 @@ Criou-se o 6º verbo de ciclo de vida do LegoLoop: o **`fechar`**, que funciona 
 
 ### Épico 03 — Grafo DAG e Acoplamento nos Motores
 - **Grafo DAG Acíclico (`processos/fechar/pipeline.dag.json`):** 6 nós ordenados por camadas topológicas, validados com sucesso por `legoloop validate` (`AC-E03.1`).
-- **Acoplamento no Mega Pipeline (`processos/mega-pipeline.loop.json`):** Adicionado o 6º nó compulsório `l6-fechar-canonico` que compõe o sub-loop `fechar` como fechamento obrigatório (`AC-E03.2`).
+- **Acoplamento no Mega Pipeline (`processos/legoloop-mega-pipeline.loop.json`):** Adicionado o 6º nó compulsório `l6-fechar-canonico` que compõe o sub-loop `fechar` como fechamento obrigatório (`AC-E03.2`).
 - **Manifesto de Loop (`processos/fechar.loop.json`):** Sincronizado para o cofre `~/.aidd/canonical/processos/`.
 
 ---

@@ -66,7 +66,7 @@ func TestRunSubloopSuccess(t *testing.T) {
 
 	subNode := dag.Node{
 		ID:      "sub_node",
-		Type:    dag.TypeSubloop,
+		Type:    dag.TypeSubprocesso,
 		Ref:     "pesquisa-mercado",
 		Routing: dag.RoutingConfig{Mode: dag.ModeManual, Model: "subloop"},
 		Output: dag.HandoffContract{
@@ -140,7 +140,7 @@ func TestRunSubloopNotFound(t *testing.T) {
 
 	subNode := dag.Node{
 		ID:      "sub_node",
-		Type:    dag.TypeSubloop,
+		Type:    dag.TypeSubprocesso,
 		Ref:     "loop-fantasma",
 		Routing: dag.RoutingConfig{Mode: dag.ModeManual, Model: "subloop"},
 		Output:  dag.HandoffContract{Artifact: "out.txt", Gate: "true"},
@@ -195,7 +195,7 @@ func TestRunSubloopInputTransfer(t *testing.T) {
 
 	subNode := dag.Node{
 		ID:      "sub_node",
-		Type:    dag.TypeSubloop,
+		Type:    dag.TypeSubprocesso,
 		Ref:     "echo-input",
 		Inputs:  map[string]string{"in": "INPUT.txt"},
 		Routing: dag.RoutingConfig{Mode: dag.ModeManual, Model: "subloop"},

@@ -107,7 +107,7 @@ func (o *Orchestrix) Execute(ctx context.Context, n dag.Node, workdir string) (r
 		return o.runScript(ctx, n, workdir)
 	case dag.TypeSkill:
 		return o.runSkill(ctx, n, workdir)
-	case dag.TypeSubloop:
+	case dag.TypeSubprocesso:
 		return o.runSubloop(ctx, n, workdir)
 	case dag.TypeUnitTask:
 		return o.runUnitTask(ctx, n, workdir)

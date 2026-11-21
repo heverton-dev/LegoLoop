@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/paths"
+	"legoloop/internal/caminhos"
 	"legoloop/internal/processo"
 )
 
@@ -65,7 +65,7 @@ func ajustarPeca(files []PlannedFile, roots Roots, p processo.Processo, peca str
 		return nil, err
 	}
 	out := slices.DeleteFunc(files, func(f PlannedFile) bool { return f.Kind == "triagem" })
-	path := filepath.Join(roots.Vault, paths.DirProcessos, p.Nome, "swarm.plan.json")
+	path := filepath.Join(roots.Vault, caminhos.DirProcessos, p.Nome, "swarm.plan.json")
 	return append(out, PlannedFile{Kind: "swarm_plan", Path: path, Data: sp}), nil
 }
 

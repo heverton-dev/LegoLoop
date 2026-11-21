@@ -10,6 +10,7 @@ import (
 	"slices"
 	"strings"
 
+	"legoloop/internal/jail"
 	"legoloop/internal/processo"
 	"legoloop/internal/remover"
 	"legoloop/internal/ste"
@@ -45,6 +46,10 @@ func cmdRemover(ctx context.Context, args []string, d Deps) int {
 	nome, op, code := parseRemoverFlags(args, d)
 	if code != 0 {
 		return code
+	}
+	if err := jail.ValidarNomeProcesso(nome); err != nil {
+		fmt.Fprintln(d.Stderr, "erro:", err)
+		return 2
 	}
 	rd, err := montarRemoverDeps(op, d)
 	if err != nil {

@@ -22,8 +22,8 @@ func TestCLICommandsConsolidated(t *testing.T) {
 		if !strings.Contains(out, "matriz") {
 			t.Errorf("ajuda deve conter 'matriz', obteve:\n%s", out)
 		}
-		if !strings.Contains(out, "DESCONTINUADO: use \"matriz ver\"") {
-			t.Errorf("ajuda deve sinalizar que matrix está descontinuado em prol de matriz ver")
+		if strings.Contains(out, "matrix") {
+			t.Errorf("ajuda não deve conter o verbo removido 'matrix', obteve:\n%s", out)
 		}
 	})
 

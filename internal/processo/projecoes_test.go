@@ -317,7 +317,7 @@ func TestProjecoesCoerentesEtapaComposta(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if d.Nodes[2].Type != dag.TypeSubloop || d.Nodes[2].Ref != "legoloop-outro" {
+	if d.Nodes[2].Type != dag.TypeSubprocesso || d.Nodes[2].Ref != "legoloop-outro" {
 		t.Errorf("etapa composta vira subprocesso: %+v", d.Nodes[2])
 	}
 	if !strings.Contains(pr.Plan, "processo `legoloop-outro@1.2.0`") {

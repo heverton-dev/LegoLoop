@@ -107,9 +107,9 @@ Verificação: `go build ./...` passou. Os pacotes orchestrix, runner, gate, dag
 `TestInstalarSkills` (internal/cli): o teste fixava 38 funções nativas, e a skill `legoloop-diagram-design` entrou em 2026-11-18 (commit 624bc9f) sem atualizar a contagem. A lista vem das pastas embutidas (skills/embed.go), então o teste ficou desatualizado. Atualizei para 39 e incluí `legoloop-diagram-design` na checagem de skills embutidas.
 
 `TestProcessosCincoPorCinco` (internal/processo) tinha quatro causas, todas em processos gerados pelo diagram-design:
-1. `processos/listar/pipeline.dag.json` usava a função de gate `file_size`, que não existe no catálogo (internal/gate/catalog.go). Troquei por `word_count(...) > 200`, que existe.
+1. `processos/legoloop-listar/pipeline.dag.json` usava a função de gate `file_size`, que não existe no catálogo (internal/gate/catalog.go). Troquei por `word_count(...) > 200`, que existe.
 2. O nó `e05` do mesmo DAG tinha `type: "gate"`, que não é tipo de nó. Ele roda `verify_geometry.py` por `command`, então o tipo certo é `script`, e o gate fica em `output.gate`.
-3. `processos/listar/anticorpos.json` usava um formato próprio (chave `anticorpos`). Converti para `anticorpos.v1`: `schema_version`, `processo`, `globais` e `dominio`, com `assinatura` (SHA-256 da descrição), `erro`, `antidoto` e `recorrencias`. Mantive os campos originais (`id`, `no`, `tipo`, `severidade`, `verificacao`) como extras.
+3. `processos/legoloop-listar/anticorpos.json` usava um formato próprio (chave `anticorpos`). Converti para `anticorpos.v1`: `schema_version`, `processo`, `globais` e `dominio`, com `assinatura` (SHA-256 da descrição), `erro`, `antidoto` e `recorrencias`. Mantive os campos originais (`id`, `no`, `tipo`, `severidade`, `verificacao`) como extras.
 4. Faltavam `triagem.json` e `memoria_execucao.json` em `listar`, e `memoria_execucao.json` em `legoloop-agent-desktop`. Gerei a triagem pelo gerador oficial `triagem.GerarTriagemPadrao` e criei as memórias vazias no formato `memoria_execucao.v1`.
 
 ## Ação 2: proposta do template da peça unit_no (para aprovação, nada criado ainda)
@@ -229,7 +229,7 @@ Regra do usuário: toda implementação nova ou concluída atualiza os arquivos 
 
 ### Achado do portão de taxonomia (anterior a esta demanda, aguarda decisão humana)
 
-Ao rodar o portão documentado no `AGENTS.md` (`go run ./tools/taxlinter internal cmd loops skills docs/templates`), ele sai com código 1 e 349 violações, todas em arquivos que não toquei: 338 na skill e no processo `legoloop-diagram-design` e 11 em `skills/mega-pipeline` e `processos/legoloop-dissecar` (commits de 2026-11-19 e anteriores). Por termo: `card` 189, `loop` 73, `pipeline` 24, `task` 19, `storage` 17, `bloco` 9, `secrets` 8, `grade` 5. As duas violações que eu mesmo havia introduzido (nomes de teste e o identificador do tipo de nó em testes) foram corrigidas: o portão não tem mais nenhuma violação em `internal`, `cmd`, `tools` ou `docs`.
+Ao rodar o portão documentado no `AGENTS.md` (`go run ./tools/taxlinter internal cmd loops skills docs/templates`), ele sai com código 1 e 349 violações, todas em arquivos que não toquei: 338 na skill e no processo `legoloop-diagram-design` e 11 em `skills/legoloop-mega-pipeline` e `processos/legoloop-dissecar` (commits de 2026-11-19 e anteriores). Por termo: `card` 189, `loop` 73, `pipeline` 24, `task` 19, `storage` 17, `bloco` 9, `secrets` 8, `grade` 5. As duas violações que eu mesmo havia introduzido (nomes de teste e o identificador do tipo de nó em testes) foram corrigidas: o portão não tem mais nenhuma violação em `internal`, `cmd`, `tools` ou `docs`.
 
 Opinião técnica: opção mista. `card` e `loop` (262 ocorrências) são vocabulário do domínio de diagramas (cartão de interface e tipo de diagrama de laço), não unidade de planejamento nem Processo; o certo é registrar exceção por arquivo em `tools/taxlinter/exceptions.go` e em `docs/vocab/2026-11-10_ASD_STE100_EXCEPTIONS.json`. Os demais termos (`pipeline`, `task`, `storage`, `bloco`, `secrets`, `grade`, 87 ocorrências) são prosa nossa e devem ser normalizados para Processo, Nó, Cofre, Peça, Cofre de Segredos e Matriz. Não apliquei porque envolve 15 arquivos de referência de uma skill e decide o que conta como vocabulário de domínio.
 
@@ -239,7 +239,7 @@ Aplicada a opção mista. Ao ler cada ocorrência no contexto, a minha estimativ
 
 - Normalizado (1 ocorrência em dois arquivos espelho): "O pipeline de geracao" virou "O Processo de geracao" em `processos/legoloop-diagram-design/anticorpos.json` e `ANTICORPOS.md`.
 - Exceção de vocabulário de domínio de diagramas: 44 arquivos de referência em `skills/legoloop-diagram-design/references/` (`card`, `loop`, `task`, `storage`, `secrets`, `pipeline`, `issue`, `macro`).
-- Exceção de nome próprio: `skills/mega-pipeline/SKILL.md` e `comandos/legoloop-mega-pipeline.md`, porque o slug e o comando `legoloop exec mega-pipeline` são contrato.
+- Exceção de nome próprio: `skills/legoloop-mega-pipeline/SKILL.md` e `comandos/legoloop-mega-pipeline.md`, porque o slug e o comando `legoloop exec legoloop-mega-pipeline` são contrato.
 - Exceção de dívida herdada: texto histórico dos anticorpos de `legoloop-diagram-design` e `legoloop-dissecar` (bloco HTML, grade visual, rótulos de badge), na mesma seção "Divida herdada" que o registro já usava.
 - Onde: `tools/taxlinter/exceptions.go`, com um comentário por grupo.
 - Prova: `go run ./tools/taxlinter internal cmd loops skills docs/templates` agora imprime "zero violacoes" e sai com código 0.

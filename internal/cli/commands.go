@@ -157,11 +157,19 @@ func exigirTriagem(path string, p *dag.DAG) error {
 	return triagem.Conferir(filepath.Dir(path), ids)
 }
 
+func failDAG(d Deps, err error) int {
+	if errors.Is(err, dag.ErrExecutorIncoerente) {
+		fmt.Fprintln(d.Stderr, "erro:", err)
+		return 2
+	}
+	return fail(d, err)
+}
+
 func cmdValidate(_ context.Context, args []string, d Deps) int {
 	path, _ := splitPositional(args)
 	p, err := loadDAG(path)
 	if err != nil {
-		return fail(d, err)
+		return failDAG(d, err)
 	}
 	if err := exigirTriagem(path, p); err != nil {
 		return fail(d, err)
@@ -249,7 +257,7 @@ func cmdRun(ctx context.Context, args []string, d Deps) int {
 	}
 	p, err := loadDAG(path)
 	if err != nil {
-		return fail(d, err)
+		return failDAG(d, err)
 	}
 	return rodarDAG(ctx, d, p, f)
 }

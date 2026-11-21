@@ -16,7 +16,6 @@ import (
 
 	"legoloop/internal/caminhos"
 	"legoloop/internal/interview"
-	"legoloop/internal/paths"
 	"legoloop/internal/processo"
 	"legoloop/internal/triagem"
 )
@@ -584,10 +583,10 @@ func arquivosAuditoriaAtomica(roots Roots, p processo.Processo, pr *processo.Pro
 	}
 	intent := intentAuditoriaAtomica(p.Nome, now)
 	docs := func(sub, file string) string { return filepath.Join(roots.Docs, "docs", sub, file) }
-	dir := filepath.Join(roots.Vault, paths.DirProcessos, SlugAuditoriaAtomica)
+	dir := filepath.Join(roots.Vault, caminhos.DirProcessos, SlugAuditoriaAtomica)
 	files := []PlannedFile{
 		{Kind: "skill", Path: filepath.Join(roots.Vault, "skills", p.Nome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Kind: "studio", Path: filepath.Join(dir, SlugAuditoriaAtomica+paths.SufixoStudio), Data: pr.Studio},
+		{Kind: "studio", Path: filepath.Join(dir, SlugAuditoriaAtomica+caminhos.SufixoStudio), Data: pr.Studio},
 		{Kind: "dag", Path: filepath.Join(dir, caminhos.ArquivoDAG), Data: pr.DAG},
 		{Kind: "intent", Path: docs("intents", intent.Name), Data: intent.Data},
 		{Kind: "spec", Path: docs("specs", pr.SpecNome), Data: []byte(pr.Spec)},

@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"legoloop/internal/paths"
+	"legoloop/internal/caminhos"
 )
 
 // ResultadoMigracao resume a movimentação para o arquivo morto.
@@ -154,7 +154,7 @@ func MigrarQuinteto(raiz string, protegidos []string) (ResultadoQuinteto, error)
 // donosDe lê os manifestos de fatia e devolve a posse por rota e por token.
 func donosDe(raiz string) (posse, error) {
 	pos := posse{porRota: map[string]string{}, porToken: map[string]string{}}
-	base := filepath.Join(raiz, paths.DirProcessos)
+	base := filepath.Join(raiz, caminhos.DirProcessos)
 	entradas, err := os.ReadDir(base)
 	if os.IsNotExist(err) {
 		return pos, nil
@@ -167,7 +167,7 @@ func donosDe(raiz string) (posse, error) {
 			continue
 		}
 		slug := e.Name()
-		manifesto := filepath.Join(base, slug, slug+paths.SufixoStudio)
+		manifesto := filepath.Join(base, slug, slug+caminhos.SufixoStudio)
 		rota, errR := rotaDoManifesto(manifesto)
 		if errR != nil {
 			return pos, errR

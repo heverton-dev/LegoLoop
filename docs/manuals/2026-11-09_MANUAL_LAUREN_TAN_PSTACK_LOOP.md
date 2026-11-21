@@ -81,7 +81,7 @@ flowchart TD
 
 ### 6.1 Via Chat / CLI
 * Disparar esteira completa:  
-  `legoloop run lauren-tan`
+  `legoloop run legoloop-lauren-tan`
 * Inspecionar processo:  
   `legoloop listar`
 

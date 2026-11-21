@@ -76,6 +76,10 @@ var allowedExceptions = map[string]map[string]bool{
 	"internal/caminhos/nomes_test.go": {
 		"loop": true,
 	},
+	"internal/caminhos/constantes_test.go": {
+		"loop":     true,
+		"pipeline": true,
+	},
 	"internal/cli/commands.go": {
 		"task": true,
 		"loop": true,
@@ -229,9 +233,6 @@ var allowedExceptions = map[string]map[string]bool{
 		"pipeline": true,
 	},
 	"internal/orchestrix/hygiene_test.go": {
-		"loop": true,
-	},
-	"internal/paths/paths.go": {
 		"loop": true,
 	},
 	"internal/processo/cofre_test.go": {
@@ -406,7 +407,7 @@ var allowedExceptions = map[string]map[string]bool{
 	"skills/legoloop-diagram-design/references/type-treemap.md":            {"pipeline": true},
 	"skills/legoloop-diagram-design/references/type-unit-grid.md":          {"card": true},
 	"skills/legoloop-diagram-design/references/type-wardley.md":            {"card": true},
-	// Nome proprio do Processo mega-pipeline: o slug e o comando `legoloop exec mega-pipeline` sao contrato e nao se renomeiam sem quebra.
+	// Nome proprio do Processo legoloop-mega-pipeline: o slug e o comando `legoloop exec legoloop-mega-pipeline` sao contrato e nao se renomeiam sem quebra.
 	"skills/mega-pipeline/SKILL.md":                           {"pipeline": true},
 	"skills/mega-pipeline/comandos/legoloop-mega-pipeline.md": {"pipeline": true},
 	// Divida herdada: texto historico dos anticorpos (erros ja ocorridos, com bloco HTML, grade visual e rotulos de badge); o espelho ANTICORPOS.md e gerado do anticorpos.json.

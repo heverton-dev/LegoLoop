@@ -160,7 +160,8 @@
     {
       "cognitive_complexity": "media",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "scripts/corte_silencio.py",
         "--input",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/audio_extracted.json",
@@ -245,7 +246,7 @@
         "cuts": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/cut_decision_list.json')"
       },
       "isolation": {
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false,
         "workspace": "local",
         "write_boundary": "strict"
@@ -364,7 +365,7 @@
         "storyboard": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/motion_storyboard.json')"
       },
       "isolation": {
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false,
         "workspace": "local",
         "write_boundary": "strict"
@@ -407,7 +408,8 @@
     {
       "cognitive_complexity": "media",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "scripts/yunet_tracking.py",
         "--video",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/raw_video.mp4",
@@ -614,7 +616,8 @@
     {
       "cognitive_complexity": "media",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "scripts/mix_sfx.py",
         "--camera",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/camera_framing.json",
@@ -688,7 +691,8 @@
     {
       "cognitive_complexity": "media",
       "command": [
-        "python",
+        "legoloop",
+        "exec",
         "scripts/export_fcpxml.py",
         "--timeline",
         "docs/videorea/lucas-leite-edicao-claude-code/scratch/timeline_state.json",
@@ -773,7 +777,7 @@
         "fcpxml": "file('docs/videorea/lucas-leite-edicao-claude-code/scratch/final_edit.fcpxml')"
       },
       "isolation": {
-        "executor": "orchestrix_hermetic",
+        "executor": "local_process",
         "subagents_allowed": false,
         "workspace": "local",
         "write_boundary": "strict"

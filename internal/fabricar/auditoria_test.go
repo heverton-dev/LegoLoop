@@ -15,7 +15,6 @@ import (
 	"legoloop/internal/cli"
 	"legoloop/internal/fabricar"
 	"legoloop/internal/gate"
-	"legoloop/internal/paths"
 	"legoloop/internal/triagem"
 )
 
@@ -136,10 +135,10 @@ func TestScaffoldAuditoriaAtomica(t *testing.T) {
 	if len(gravados) == 0 {
 		t.Fatal("nenhum artefato gravado")
 	}
-	dir := filepath.Join(raiz, paths.DirProcessos, "auditoria-atomica")
+	dir := filepath.Join(raiz, caminhos.DirProcessos, "auditoria-atomica")
 	for _, manifesto := range []string{
 		caminhos.ArquivoDAG,
-		"auditoria-atomica" + paths.SufixoStudio,
+		"auditoria-atomica" + caminhos.SufixoStudio,
 		triagem.ArquivoTriagem,
 		triagem.ArquivoMemoria,
 		"anticorpos.json",

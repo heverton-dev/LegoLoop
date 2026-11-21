@@ -36,7 +36,7 @@ func subloopFinal(t *testing.T) *orchestrix.Orchestrix {
 
 func noSub(artefato, sub string) dag.Node {
 	return dag.Node{
-		ID: "sub_node", Type: dag.TypeSubloop, Ref: "sub-final",
+		ID: "sub_node", Type: dag.TypeSubprocesso, Ref: "sub-final",
 		Routing: dag.RoutingConfig{Mode: dag.ModeManual, Model: "subloop"},
 		Output:  dag.HandoffContract{Artifact: artefato, SubArtifact: sub, Gate: "file_exists('" + artefato + "')"},
 	}

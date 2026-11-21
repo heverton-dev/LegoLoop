@@ -11,7 +11,6 @@ import (
 	"legoloop/internal/dag"
 	"legoloop/internal/fabricar"
 	"legoloop/internal/gate"
-	"legoloop/internal/paths"
 	"legoloop/internal/processo"
 	"legoloop/internal/triagem"
 )
@@ -22,7 +21,7 @@ import (
 func TestGovernancaDocsSoNaRaiz(t *testing.T) {
 	r := newRig(t, goodPieces())
 	res := r.run(t)
-	dir := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName)
+	dir := filepath.Join(r.deps.Roots.Vault, caminhos.DirProcessos, res.CanonicalName)
 	for _, manifesto := range []string{"triagem.json", triagem.ArquivoMemoria, "anticorpos.json", caminhos.ArquivoDAG} {
 		if _, err := os.Stat(filepath.Join(dir, manifesto)); err != nil {
 			t.Errorf("manifesto ausente na fatia: %s (%v)", manifesto, err)
@@ -45,9 +44,9 @@ func TestGovernancaDocsSoNaRaiz(t *testing.T) {
 func TestStudioDerivadoDoDAG(t *testing.T) {
 	r := newRig(t, goodPieces())
 	res := r.run(t)
-	dir := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName)
+	dir := filepath.Join(r.deps.Roots.Vault, caminhos.DirProcessos, res.CanonicalName)
 	dagB := lerManifesto(t, filepath.Join(dir, caminhos.ArquivoDAG))
-	stB := lerManifesto(t, filepath.Join(dir, res.CanonicalName+paths.SufixoStudio))
+	stB := lerManifesto(t, filepath.Join(dir, res.CanonicalName+caminhos.SufixoStudio))
 	if err := processo.ParidadeStudio(dagB, stB); err != nil {
 		t.Errorf("studio.json não é derivado do DAG: %v", err)
 	}
@@ -59,7 +58,7 @@ func TestStudioDerivadoDoDAG(t *testing.T) {
 func TestNasceCincoPorCinco(t *testing.T) {
 	r := newRig(t, goodPieces())
 	res := r.run(t)
-	dir := filepath.Join(r.deps.Roots.Vault, paths.DirProcessos, res.CanonicalName)
+	dir := filepath.Join(r.deps.Roots.Vault, caminhos.DirProcessos, res.CanonicalName)
 
 	comSchema := map[string]string{
 		"triagem.json":         "triagem.v1.json",
@@ -96,7 +95,7 @@ func TestNasceCincoPorCinco(t *testing.T) {
 // documentoDoProcesso devolve o documento do Studio no dialeto gravado (novo ou antigo).
 func documentoDoProcesso(t *testing.T, dir, nome string) []byte {
 	t.Helper()
-	for _, candidato := range []string{nome + paths.SufixoStudio, nome + paths.SufixoAntigo} {
+	for _, candidato := range []string{nome + caminhos.SufixoStudio, nome + caminhos.SufixoAntigo} {
 		if b, err := os.ReadFile(filepath.Join(dir, candidato)); err == nil {
 			return b
 		}

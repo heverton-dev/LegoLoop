@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/paths"
+	"legoloop/internal/caminhos"
 	"legoloop/internal/processo"
 )
 
@@ -54,8 +54,8 @@ func refinSemear(t *testing.T) (root, vault, proj string) {
 	doc := func(sub, file string) string { return filepath.Join(proj, "docs", sub, file) }
 	files := []processo.File{
 		{Path: filepath.Join(vault, "skills", refinNome, "SKILL.md"), Data: []byte(pr.Skill)},
-		{Path: filepath.Join(vault, paths.DirProcessos, refinNome+paths.SufixoAntigo), Data: pr.Studio},
-		{Path: filepath.Join(vault, paths.DirProcessos, refinNome+".dag.json"), Data: pr.DAG},
+		{Path: filepath.Join(vault, caminhos.DirProcessos, refinNome+caminhos.SufixoAntigo), Data: pr.Studio},
+		{Path: filepath.Join(vault, caminhos.DirProcessos, refinNome+".dag.json"), Data: pr.DAG},
 		{Path: processo.CaminhoNoCofre(vault, refinNome), Data: pj},
 		{Path: doc("intents", "2026-11-05_INTENT_X.md"), Data: []byte("# INTENT: x\n\nTexto original da entrevista.\n")},
 		{Path: doc("specs", pr.SpecNome), Data: []byte(pr.Spec)},
@@ -136,7 +136,7 @@ func TestRefinarBinario(t *testing.T) {
 		if p.Versao != "1.1.0" || !slices.Equal(p.Historico, []string{"1.0.0"}) || p.Etapas[1].Peca != "aidd-tdd" || !slices.Equal(p.Etapas[1].Casos, []string{"tdd"}) {
 			t.Errorf("processo depois do refinar: %+v", p)
 		}
-		bak := filepath.Join(vault, paths.DirProcessos, refinNome+".processo.json.legoloop-bak")
+		bak := filepath.Join(vault, caminhos.DirProcessos, refinNome+".processo.json.legoloop-bak")
 		if b, err := os.ReadFile(bak); err != nil || !strings.Contains(string(b), `"versao": "1.0.0"`) {
 			t.Errorf("o backup não guarda a versão 1.0.0: %v\n%s", err, b)
 		}

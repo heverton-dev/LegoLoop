@@ -240,25 +240,6 @@ func TestMatrizVer_UsoIncorretoComArgumentoSobrando(t *testing.T) {
 	}
 }
 
-// matrix é alias descontinuado de matriz ver: mesmo resultado, aviso no stderr.
-func TestMatrizVer_MatrixEAliasDescontinuado(t *testing.T) {
-	a, md := matrizDeCincoCaminhos(t)
-	reg := filepath.Join(a.vault, "registry_matrix.json")
-	_, quer, _ := a.rodar(Deps{Matriz: md}, "matriz", "ver", "--registro", reg, "--tipo", "skill")
-	code, out, errb := a.rodar(Deps{Matriz: md}, "matrix", "--path", reg, "--kind", "skill")
-	if code != 0 || out != quer {
-		t.Fatalf("exit %d; o alias deve imprimir o mesmo que matriz ver.\nalias:\n%s\nver:\n%s", code, out, quer)
-	}
-	if !strings.Contains(errb, "descontinuado") || !strings.Contains(errb, "legoloop matriz ver") {
-		t.Errorf("o alias avisa no stderr: %q", errb)
-	}
-	_, out, _ = a.rodar(Deps{Matriz: md}, "matrix", "--path="+reg, "--kind=script", "--json")
-	var v verJSON
-	if err := json.Unmarshal([]byte(out), &v); err != nil || nomesDe(v) != "limpa" {
-		t.Errorf("a forma --flag=valor também é traduzida: %v %q", err, out)
-	}
-}
-
 // Uma matriz da v1 (só `ratings`) continua legível: o tipo vem do caminho, como antes.
 func TestMatrizVer_LeMatrizV1SemEntradas(t *testing.T) {
 	a := novoAmbiente(t)

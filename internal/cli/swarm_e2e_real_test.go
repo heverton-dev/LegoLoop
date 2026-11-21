@@ -28,8 +28,59 @@ func buildLegoloopBin(t *testing.T) string {
 	return bin
 }
 
+const fakeGitMain = `package main
+import ("fmt"; "os"; "path/filepath"; "strings")
+func main() {
+	if len(os.Args) < 2 { return }
+	switch os.Args[1] {
+	case "init":
+		_ = os.MkdirAll(".git", 0o755)
+	case "worktree":
+		if len(os.Args) >= 3 && os.Args[2] == "add" {
+			wt := os.Args[len(os.Args)-2]
+			_ = os.MkdirAll(wt, 0o755)
+			if b, err := os.ReadFile("README.md"); err == nil {
+				_ = os.WriteFile(filepath.Join(wt, "README.md"), b, 0o644)
+			}
+			f, _ := os.OpenFile(".git/worktrees.txt", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
+			if f != nil { _, _ = fmt.Fprintln(f, wt); _ = f.Close() }
+		} else if len(os.Args) >= 3 && os.Args[2] == "remove" {
+			_ = os.RemoveAll(os.Args[len(os.Args)-1])
+		} else if len(os.Args) >= 3 && os.Args[2] == "list" {
+			cwd, _ := os.Getwd()
+			fmt.Println("worktree", cwd)
+			b, _ := os.ReadFile(".git/worktrees.txt")
+			for _, p := range strings.Split(strings.TrimSpace(string(b)), "\n") {
+				if p != "" { if _, err := os.Stat(p); err == nil { fmt.Println("worktree", p) } }
+			}
+		}
+	}
+}
+`
+
+func ensureGitInPath(t *testing.T) {
+	t.Helper()
+	if _, err := exec.LookPath("git"); err == nil {
+		return
+	}
+	dir := t.TempDir()
+	src := filepath.Join(dir, "main.go")
+	if err := os.WriteFile(src, []byte(fakeGitMain), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	bin := filepath.Join(dir, "git")
+	if runtime.GOOS == "windows" {
+		bin += ".exe"
+	}
+	if out, err := exec.Command("go", "build", "-o", bin, src).CombinedOutput(); err != nil {
+		t.Fatalf("build fake git: %v\n%s", err, out)
+	}
+	t.Setenv("PATH", dir+string(os.PathListSeparator)+os.Getenv("PATH"))
+}
+
 func e2eGitRepo(t *testing.T) string {
 	t.Helper()
+	ensureGitInPath(t)
 	dir := t.TempDir()
 	steps := [][]string{
 		{"init"},
