@@ -1,6 +1,5 @@
 {
+  "schema_version": "memoria_execucao.v1",
   "processo": "legoloop-canonizar",
-  "etapa_atual": "",
-  "proximo_passo": "",
-  "atualizado_em": "2026-11-20T12:26:00.0000000Z"
+  "sessoes": {}
 }

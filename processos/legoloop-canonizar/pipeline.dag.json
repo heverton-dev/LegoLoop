@@ -50,7 +50,7 @@
         "runtime": "legoloop"
       },
       "verification": {
-        "gate": "file_exists('out/upgrade_result.json')"
+        "gate": "file_exists('out/upgrade_result.json') && has_pattern('out/upgrade_result.json', '^\\s*[\\{\\[]')"
       },
       "spec_ref": "AC-CAN-01",
       "status": "PENDING",
@@ -65,7 +65,7 @@
       },
       "output": {
         "artifact": "out/upgrade_result.json",
-        "gate": "file_exists('out/upgrade_result.json')"
+        "gate": "file_exists('out/upgrade_result.json') && has_pattern('out/upgrade_result.json', '^\\s*[\\{\\[]')"
       }
     },
     {
@@ -100,7 +100,7 @@
         "runtime": "legoloop"
       },
       "verification": {
-        "gate": "file_exists('out/fechamento_result.json')"
+        "gate": "file_exists('out/fechamento_result.json') && has_pattern('out/fechamento_result.json', '^\\s*[\\{\\[]')"
       },
       "spec_ref": "AC-CAN-02",
       "status": "PENDING",
@@ -115,7 +115,7 @@
       },
       "output": {
         "artifact": "out/fechamento_result.json",
-        "gate": "file_exists('out/fechamento_result.json')"
+        "gate": "file_exists('out/fechamento_result.json') && has_pattern('out/fechamento_result.json', '^\\s*[\\{\\[]')"
       }
     }
   ]

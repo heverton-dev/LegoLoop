@@ -15,7 +15,7 @@
         "tipo": "json",
         "promete": true
       },
-      "gate": "file_exists('out/upgrade_result.json')",
+      "gate": "file_exists('out/upgrade_result.json') && has_pattern('out/upgrade_result.json', '^\\s*[\\{\\[]')",
       "depende": []
     },
     {
@@ -29,7 +29,7 @@
         "tipo": "json",
         "promete": true
       },
-      "gate": "file_exists('out/fechamento_result.json')",
+      "gate": "file_exists('out/fechamento_result.json') && has_pattern('out/fechamento_result.json', '^\\s*[\\{\\[]')",
       "depende": ["n01_upgrade"]
     }
   ],

@@ -660,3 +660,5 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
 - Regras permanentes do usuário: achado se corrige no ato; decisão técnica sem consenso sobe ao humano com recomendação; `routing` é preferência (universalidade); toda implementação atualiza `AGENTS.md`, `README.md`, `MEMORY.md` e o grafo (Lei 16 do `AGENTS.md`).
 - Gates: `go test -count=1 ./...` 55 pacotes ok (código 0), E2E (`-tags e2e`) ok, taxlinter sem violação nova, gofmt limpo.
 - Portão de taxonomia (`go run ./tools/taxlinter internal cmd loops skills docs/templates`) estava com 349 violações anteriores; resolvido em 20/11: exceções por arquivo para vocabulário de diagramas, nome próprio `mega-pipeline` e texto histórico de anticorpos (`tools/taxlinter/exceptions.go`); 1 caso normalizado. Agora imprime zero violações.
+
+* **Processo Canonizado `legoloop-canonizar` (2026-11-20):** `skills/legoloop-canonizar/SKILL.md` · `docs/reports/`

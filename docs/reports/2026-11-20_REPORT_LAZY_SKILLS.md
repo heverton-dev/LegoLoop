@@ -134,3 +134,52 @@ Outros harnesses: Claude Code (~/.claude/skills -> ~/.agents/skills), codex, ope
   - ~17,3k: agy lê também ~/.agents/skills (41 aidd restantes).
   - ~20,5k (sem queda): a origem das skills não é nenhuma dessas pastas.
 - Efeito colateral: o Antigravity IDE perde as aidd-* até a restauração.
+
+### Resultado do experimento 3 (aidd-* em antigravity e ide)
+- Observado em agy novo (cli.log 21:01:54 prova sessão nova): Skills 20,5k. Sem queda. Previsões de 12,4k e 17,3k refutadas.
+- A tela /context declara: "System files auto-loaded: ~/.gemini/GEMINI.md, ~/.gemini/skills/, ~/.gemini/antigravity/skills/".
+- A união dessas duas pastas hoje: 118 skills, 11,7k tokens. O agy marca 20,5k. Faltam ~8,8k sem origem em pasta de skills.
+- Conclusão: o custo de Skills NÃO é função só das pastas de skills. Há outra fonte, estável diante de qualquer movimento de skills.
+- Suspeita ativa: slash commands (~/.gemini/commands: 167 .toml + 61 outros; 98 `aidd-*`). O log recarrega "slash commands and skills" juntos.
+
+### Experimento 4 (20/11)
+- Movidos 98 itens `aidd-*` de `~/.gemini/commands` para `~/.gemini/_skills_backup_20261120_commands_aidd/` (MANIFESTO.tsv, RESTAURAR.sh).
+- Previsões: queda grande (>= 3k) = comandos entram em "Skills"; sem queda = comandos irrelevantes e a fonte é outra (cache/índice).
+- Atenção: se comandos contam, o plano "usar slash no lugar de skill" cai.
+
+## 10. CAUSA RAIZ REAL (provada no prompt do agy, 20/11)
+
+### Prova direta: o bloco `<skills>` que o agy envia
+- O WAL de cada conversa (`~/.gemini/antigravity-cli/conversations/<id>.db-wal`) guarda o prompt. Extraído o bloco `<skills>...</skills>` de 7 conversas.
+- Sessão 20:58 (antes do exp. 3): 202 entradas, 73 `aidd-*`, 60.899 bytes.
+- Sessão 21:05 (depois): 161 entradas, 0 `aidd-*`, 60.191 bytes.
+- Diff exato: saíram 73 skills (20.129 bytes, quase todas `aidd-*`); entraram 32 skills (20.329 bytes) que antes estavam FORA do prompt: accidental-data-loss-prevention, gcp-*, alphagenome-*, android-cli, antigravity-guide, fluxo-de-edicao etc.
+- Bytes de entrada: 20.129 saem, 20.329 entram. O total fica constante em ~60 KB (~20,5k tokens).
+- A última entrada (`wrangler`) é cortada: 1.169 bytes na sessão A, 247 na B. Sinal de truncamento por orçamento.
+
+### Mecanismo
+O agy tem um orçamento fixo para a lista de skills (~60 KB, ~20,5k tokens). Ele enche a lista até o teto com as skills candidatas.
+Tirar uma skill não reduz o custo: o espaço liberado é preenchido pela próxima candidata. Por isso 3 experimentos seguidos deram 20,5k.
+O custo só cai quando o TOTAL de candidatas ficar abaixo do teto.
+
+### Fontes reais de candidatas (sessão 21:05, 161 entradas, 60.190 bytes)
+- 59 skills `~/.gemini/antigravity-cli/skills` (22,5 KB)
+- 42 skills `~/.gemini/config/plugins/science.disabled/skills` (18,7 KB, 31% do bloco). O agy carrega o plugin apesar do `.disabled`.
+- 46 skills `~/.gemini/skills` (13,5 KB)
+- 7 `~/.gemini/config/skills`; 4 builtin do agy; 3 do plugin android-cli.
+- `~/.gemini/antigravity/skills` aparece como "auto-loaded" na tela, mas nenhuma das 161 entradas vem dele (nomes já tomados por pastas anteriores).
+
+### Retratações adicionais
+- Seção 2.1: "a união das 3 pastas reproduz 20,7k" era coincidência com o teto. A prova correta é o bloco do prompt.
+- Seção 2.3/exp. `.disabled`: `.disabled` em skills não pesa; `.disabled` em PLUGIN pesa (science.disabled foi carregado).
+- Hipótese dos slash commands: sem indício. O bloco `<skills>` não contém comandos. Experimento 4 não mudou nada.
+- `skills-custo` mede a soma das pastas. Ele não modela o teto nem os plugins. Precisa ser refeito para ler o bloco real do WAL.
+
+## 11. Migração lazy aplicada no agy (20/11)
+- Script: copia as skills válidas das 5 fontes do agy e dos backups anteriores para o Cofre (`~/.aidd/canonical/skills`, sem sobrescrever): 194 copiadas, Cofre 54 -> 248. Só `impeccable`, `motion-lib` e `aidd-ecc` (>3 MB) entraram apenas com SKILL.md; os originais estão no backup.
+- Movidos 433 itens das 5 fontes para `~/.gemini/_skills_backup_20261120_lazy/` (MANIFESTO.tsv, RESTAURAR.sh): `antigravity-cli/skills`, `config/skills`, `skills`, `antigravity/skills`, `config/plugins/science.disabled/skills`.
+- Criada a skill-índice `~/.gemini/skills/legoloop-skills/SKILL.md` (manda usar `skill_search` e `call_skill`).
+- Prova pós-migração (binário novo, `mcp-router` em stdio): `skill_search "gcp pipeline provisioning"` acha `gcp-dataflow`; `call_skill aidd-bigbrain` devolve 6.113 bytes.
+- ACHADO: o ranking do `skill_search` é fraco. A query "aidd bigbrain orquestra tudo" não pôs `aidd-bigbrain` entre os 3 primeiros (voltou `aidd-retro` com score 0,25). Antes de declarar o lazy pronto, o ranking precisa pesar o nome da skill.
+- Visível ao agy agora: 18 SKILL.md válidos (índice, 15 builtin do agy, 1 plugin android). Previsão do /context: Skills entre 0,5k e 2,6k.
+- Risco: `instalar-skills`, `bootstrap` e `fabricar` ainda vinculam skills em `~/.gemini/skills` e `config/skills`. Um deles rodando desfaz a migração até `PlanejarVinculos` ser corrigido.

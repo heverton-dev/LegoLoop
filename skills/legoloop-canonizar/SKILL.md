@@ -4,7 +4,7 @@ description: "Industrialização e canonização universal de peças do LegoLoop
 consumes: Artifact:Piece
 produces: Artifact:CanonicalArtifacts
 artifact: out/fechamento_result.json
-gate: file_exists('out/fechamento_result.json')
+gate: file_exists('out/fechamento_result.json') && has_pattern('out/fechamento_result.json', '^\s*[\{\[]')
 suggested_model: sonnet
 ---
 
