@@ -10,7 +10,7 @@ Você vai executar o plano **I02, Processos de especificação e de planejamento
 
 **Leia, nesta ordem, antes de agir:**
 1. `AGENTS.md` (versão enxuta das leis; o texto integral está em `docs/governanca/AGENTS_COMPLETO.md`).
-2. `docs/intents/2026-11-21_INTENT_INICIATIVA_2_DO_MACROPROJETO_D.md` e `docs/intents/ESPELHO_CANONICO.md` (INTENT aprovada no Stop-Gate 01) e `docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md`.
+2. `docs/intents/2026-11-21_INTENT_INICIATIVA_2_DO_MACROPROJETO_D.md` e `docs/intents/2026-11-21_ESPELHO_CANONICO_I02.md` (INTENT aprovada no Stop-Gate 01) e `docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md`.
 3. `docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md` (25 critérios; aprovada no Stop-Gate 02) e `docs/specs/2026-11-21_APROVACAO_SPEC_I02.md`.
 4. `docs/plans/2026-11-21_PLAN_INICIATIVA_2_DO_MACROPROJETO_D.md` (21 Tickets, 7 Épicos). Espelhos executáveis: `docs/routes/2026-11-21_ROUTE_INICIATIVA_2_DO_MACROPROJETO_D.json` e `docs/dags/2026-11-21_DAG_INICIATIVA_2_DO_MACROPROJETO_D.json`. Lista de origem: `docs/plans/2026-11-21_TICKETS_INICIATIVA_2_DO_MACROPROJETO_D.json`.
 

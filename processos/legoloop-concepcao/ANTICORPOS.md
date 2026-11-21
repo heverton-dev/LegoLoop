@@ -1,9 +1,9 @@
 ---
 schema: anticorpos.v1
 processo: legoloop-concepcao
-total_anticorpos: 21
+total_anticorpos: 22
 globais: 0
-dominio: 21
+dominio: 22
 regras_inviolaveis:
   - pacote: "internal/interview"
     antidoto: "internal/interview/espelho_campos.go lê o realce antes ou depois dos dois-pontos e as linhas seguintes; testes espelh..."
@@ -47,13 +47,15 @@ regras_inviolaveis:
     antidoto: "limpaRealce remove todo realce e itensDoCampo usa uma linha por item quando ha varias linhas; testes espelho_itens_te..."
   - pacote: "tools/route2dag"
     antidoto: "nomeLimpo em convert.go tira o prefixo data_ROUTE_; testes nome_test.go; DAG da Forja regenerado"
+  - pacote: "internal/interview"
+    antidoto: "completeTurn exige Espelho para concluir; semEspelho pede o Espelho uma vez e, se insistir, mantem a sessao aberta co..."
 ---
 
 # 🛡️ Banco de Anticorpos — legoloop-concepcao
 
 > Espelho executivo para leitura de agentes. O banco estruturado vive em `anticorpos.json`.
 
-## Regras de Domínio (21)
+## Regras de Domínio (22)
 
 ### `internal/interview`
 - **Antídoto:** internal/interview/espelho_campos.go lê o realce antes ou depois dos dois-pontos e as linhas seguintes; testes espelho_formato_test.go com Red provado.
@@ -180,6 +182,12 @@ regras_inviolaveis:
 - **Erro Evitado:** DAG gerado com nome 2026-11-21_DAG_2026-11-21_ROUTE_TEMA e Processo legoloop-2026-11-21-route-tema
 - **Causa Raiz:** A ROUTE do plangen traz name com data e a palavra ROUTE, e o route2dag as repetia no nome do arquivo e do Processo
 - **Assinatura:** `sha256:e3a541d48d5508fef8fcf5bc58426b66550bee0727fcdecf0b7a0856dafeedca`
+
+### `internal/interview`
+- **Antídoto:** completeTurn exige Espelho para concluir; semEspelho pede o Espelho uma vez e, se insistir, mantem a sessao aberta com pergunta; testes sem_espelho_test.go
+- **Erro Evitado:** Sessao concluida sem Espelho: INTENT nao materializava e a entrevista recusava novas respostas
+- **Causa Raiz:** completeTurn concluia a sessao com confianca 95 ou mais mesmo sem Espelho; o cerebro foi de 85 para 98 apos uma resposta
+- **Assinatura:** `sha256:dbe5498d621c29b282b4c9bddea11970b7e24f608ae3a2e1eace78baaaa5ae2b`
 
 ## Regras Globais (0)
 

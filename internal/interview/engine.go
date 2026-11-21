@@ -87,7 +87,7 @@ func (e *Engine) exchange(ctx context.Context, sess *Session) (*TurnResult, erro
 	sess.Messages = append(sess.Messages, Message{Role: "assistant", Content: rawResp})
 	turn := ParseTurnResult(rawResp)
 	if emImpasse(turn) {
-		if turn, err = e.pedirPremonicao(ctx, sess); err != nil {
+		if turn, err = e.pedirPremonicao(ctx, sess, turn); err != nil {
 			return nil, err
 		}
 	}
@@ -239,11 +239,13 @@ func hasThreePremonitions(raw string) bool {
 }
 
 // completeTurn dá o turno por concluído quando a confiança chegou a 95% ou quando há espelho + premonição das 3 perguntas.
+// Sem Espelho a sessão nunca conclui: a INTENT só materializa a partir dele.
 func completeTurn(turn *TurnResult, mirror *Mirror, premonicaoOK bool) {
-	if mirror.Outcome != "" {
-		turn.Mirror = mirror
+	if mirror.Outcome == "" {
+		return
 	}
-	if turn.Confidence < 95 && (mirror.Outcome == "" || !premonicaoOK) {
+	turn.Mirror = mirror
+	if turn.Confidence < 95 && !premonicaoOK {
 		return
 	}
 	turn.Status = StatusCompleted

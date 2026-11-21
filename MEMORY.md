@@ -677,3 +677,4 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
 
 - Motor da entrevista: impasse (Espelho sem PREMONIÇÃO e sem pergunta) corrigido em internal/interview/impasse.go; parser do Espelho sem realce no meio e sem corte de itens nas vírgulas; 2 anticorpos novos em legoloop-concepcao (20 no total).
 - I02 (Processos de especificação e de planejamento): INTENT e SPEC aprovadas, PLAN de 21 Tickets, ROUTE e DAG gerados; prompt em docs/prompts/2026-11-21_PROMPT_EXECUCAO_I02.md; código só depois do TICK-01.2 da I01. Achado corrigido: nome do DAG repetia data e ROUTE (route2dag nomeLimpo, 3 anticorpos hoje).
+- I03 (despachante de executores no runner): INTENT aprovada (Stop-Gate 01); decisão chave: valor novo swarm_worker, orchestrix_hermetic não é Swarm. Achado corrigido: o motor da entrevista concluía sem Espelho (completeTurn exige Espelho; 21 anticorpos em legoloop-concepcao).

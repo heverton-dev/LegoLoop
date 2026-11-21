@@ -7,7 +7,7 @@ O macroplano da I01 mora no Anexo A da INTENT da Forja (`docs/intents/2026-11-21
 | :--- | :--- | :--- | :--- |
 | I01 | Distribuição e Forja (instalação universal, Processo Forja) | `2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md` (APPROVED) | nenhuma |
 | I02 | Processos de especificação e de planejamento (`fabricar plano`, `internal/routedag`, triagem, subprocesso) | `2026-11-21_INTENT_INICIATIVA_2_DO_MACROPROJETO_D.md` | execução de código só depois do TICK-01.2 da I01 |
-| I03 | Despachante no `runner` (escolhe runner local ou worker do Swarm pela ROUTE, sem LLM) | a abrir pela concepção | I02 |
+| I03 | Despachante no `runner` (escolhe runner local ou worker do Swarm pela ROUTE, sem LLM) | `2026-11-21_INTENT_INICIATIVA_3_I03_DO_MACROPROJE.md` (APPROVED) | I02 |
 
 Regras desta Emenda:
 - A trava `upstream_ok` já está implementada e vale para I02 e I03 (primeiro Épico entregue).

@@ -1,52 +1,52 @@
 ---
-id: INTENT-intv_1795272250377131200
+id: INTENT-intv_1795274711307895500
 status: APPROVED
 date: 2026-11-21
 schema_version: 2
-upstream: [INTERVIEW-intv_1795272250377131200]
+upstream: [INTERVIEW-intv_1795274711307895500]
 covers: [Q1]
 ---
 
-# 🎯 INTENT: Iniciativa 2 (I02) — Processos de especificação e de planejamento
+# 🎯 INTENT: Iniciativa 3 (I03) — Despachante de executores no runner
 
 > **Status:** APPROVED  
 > **Data:** 2026-11-21  
 > **Autor:** Antigravity AI + Usuário (via Entrevista Socrática Addy Osmani)  
-> **Alvo:** `internal/routedag`, `internal/cli` (fabricar plano), `internal/triagem`, skills `aidd-spec`, `aidd-planner`, `aidd-tickets`, processos `legoloop-especificacao` e `legoloop-planejamento`  
-> **Sessão:** intv_1795272250377131200  
-> **Confiança da Entrevista:** 92% medida pelo motor durante os turnos; 100% reportada pelo motor após o usuário reconhecer o Espelho consolidado (turno 7). O Espelho abaixo foi corrigido à mão a partir das respostas do usuário e reconhecido por ele.  
-> **Macroprojeto:** Distribuição e Forja do LegoLoop. A I01 (Forja) tem INTENT própria e não é alterada. A ordem das iniciativas fica na Emenda 1 (arquivo novo): `docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md`.  
+> **Alvo:** `internal/runner`, `internal/plangen`, `internal/routedag`, `internal/board`  
+> **Sessão:** intv_1795274711307895500  
+> **Confiança da Entrevista:** o motor reportou 99% no turno 1 e 90% em outra sessão aberta com as decisões; nenhuma das duas concluiu de forma confiável. O Espelho abaixo foi consolidado à mão a partir das seis respostas do usuário e reconhecido por ele ("ACEITO" em cada uma).  
+> **Macroprojeto:** Distribuição e Forja do LegoLoop. A INTENT da I01 e a da I02 não são alteradas. A ordem fica na Emenda 1: `docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md`.  
 > **Template:** TEMPLATE_INTENT.md v2.2.0  
 
 ---
 
 ## 1. Contexto e Motivação
-* **O Problema Real:** os passos INTENT para SPEC e SPEC para PLAN, ROUTE e DAG existem só como código solto (`specgen`, `plangen`, `legoloop plano`, `tools/route2dag`). Não são Processos canônicos, os contratos `consumes`/`produces` das skills `aidd-spec`, `aidd-planner` e `aidd-tickets` estão incorretos, o `route2dag` roda por `go run` fora do binário e a triagem não conhece esses passos.
-* **Quem Sofre:** o operador que roda o ciclo completo (INTERVIEW, INTENT, SPEC, PLAN, ROUTE, DAG) e a outra sessão que executa os planos gerados.
-* **O Porquê (por que agora):** a trava `upstream_ok` (`internal/upstream`) já existe e barra SPEC, PLAN e DAG sem INTENT aprovada. A cadeia agora precisa de Processos canônicos para a triagem rotear cada passo sem LLM.
+* **O Problema Real:** a ROUTE grava `isolation.executor` em todo nó (hoje `orchestrix_hermetic` em 22 de 29 nós da ROUTE da I02 e `local_process` em 7), mas nenhum código de produção lê esse campo. A triagem é só o roteador de entrada e o Swarm recebe o DAG inteiro por `swarm_run dag=`. Não existe como um mesmo DAG misturar nós locais, nós pelo Orchestrix e nós entregues ao Swarm, nem como recusar um executor desconhecido antes de gastar trabalho.
+* **Quem Sofre:** o operador que executa DAGs e a outra sessão que executa os planos.
+* **O Porquê (por que agora):** a I02 entrega `fabricar plano` e `internal/routedag`, que passam a gerar a ROUTE e o DAG. O despachante é a primeira camada que lê o campo gerado, e precisa existir antes de o planejamento escolher o Swarm de propósito.
+* **Fato conferido no código:** `orchestrix_hermetic` não é o Swarm. Ele roda o nó em `git worktree` hermético (`internal/runner/isolated.go`) e o `internal/orchestrix` escolhe harness e modelo. O Swarm (`swarm_run`) executa o DAG inteiro por nível topológico, com um worker por nó em `worktree` próprio, e a lógica mora em `internal/board`.
 * **Estado Atual vs. Estado Desejado:**
-  * **Hoje:** `legoloop plano` gera PLAN e ROUTE; o DAG sai de `go run ./tools/route2dag`; SPEC nasce de `specgen`; a triagem não roteia nenhum desses passos; não há Processo composto por `subprocesso` cobrindo a cadeia.
-  * **Amanhã:** dois Processos canônicos. Especificação: INTENT aprovada entra, SPEC em Markdown sai. Planejamento: `fabricar plano` gera PLAN (Markdown), ROUTE (JSON) e DAG (JSON) em um comando, com a trava e as assinaturas conferidas antes de gravar e sem gravar nada pela metade. O `route2dag` vira o pacote `internal/routedag`. A triagem roteia os dois sem LLM. Um Processo composto por `subprocesso` encadeia concepção, especificação e planejamento.
+  * **Hoje:** o `runner` executa todo nó pelo mesmo caminho; o campo `executor` é gravado e ignorado.
+  * **Amanhã:** o `runner` valida todos os nós antes do nível 0 e despacha por nível: `local_process` roda no `runner`, `orchestrix_hermetic` segue pelo Orchestrix como hoje, e `swarm_worker` (valor novo) vai ao Swarm.
 
 ---
 
 ## 2. Escopo Inegociável
 
 ### O que ESTÁ no Escopo (Objetivos Primários):
-* [ ] Objetivo 1: Processo de especificação. `consumes: Artifact:Intent` (com a trava `upstream_ok` como pré-condição) e `produces: Artifact:Spec` em Markdown, validado pelo Gate de aceite existente.
-* [ ] Objetivo 2: Processo de planejamento e comando `fabricar plano` no lugar de `legoloop plano`. Confere a Referência da Intenção, a trava e o Gate de aceite existente, exige ao menos um Ticket por critério, gera PLAN, ROUTE e DAG juntos e para no primeiro erro sem gravar nada.
-* [ ] Objetivo 3: mover `tools/route2dag` para `internal/routedag` (`tools/route2dag` vira `main` mínimo).
-* [ ] Objetivo 4: corrigir `consumes`/`produces` das skills `aidd-spec`, `aidd-planner` e `aidd-tickets`.
-* [ ] Objetivo 5: a triagem conhece os dois Processos novos e os roteia pela decisão determinística.
-* [ ] Objetivo 6: Processo composto por `subprocesso` (concepção, especificação, planejamento).
-* [ ] Objetivo 7: Emenda 1 do macroplano, em arquivo novo, com a ordem I01, I02, I03 e as dependências.
+* [ ] Objetivo 1: despachante no `runner` que lê `isolation.executor` da ROUTE e do DAG, sem LLM e sem heurística de tamanho ou carga.
+* [ ] Objetivo 2: valor novo `swarm_worker`. `local_process` roda no `runner` local, `orchestrix_hermetic` segue pelo Orchestrix como hoje, `swarm_worker` entrega o nó a um worker do Swarm sob as seis condições da lei 4.
+* [ ] Objetivo 3: granularidade por nível topológico. O `runner` roda localmente os nós `local_process` e `orchestrix_hermetic` do nível e entrega os `swarm_worker` do mesmo nível ao Swarm como DAG de um nível, por `internal/board` (sem MCP). O nível só termina com todos os Gates aprovados.
+* [ ] Objetivo 4: validação prévia antes do nível 0, sobre todos os nós. Erro Go tipado `ErrExecutorDesconhecido` que lista de uma vez todos os nós inválidos (nó, valor recebido, valores aceitos). `legoloop run` sai com 1 e não cria `worktree`. `subagents_allowed: "ephemeral"` com destino fora do Swarm segue o mesmo formato.
+* [ ] Objetivo 5: `plangen` e `internal/routedag` aceitam `swarm_worker` e recusam qualquer outro valor desconhecido.
 
 ### O que NÃO ESTÁ no Escopo (Não-Objetivos / Out-of-Scope):
-* ⛔ Alterar a INTENT da I01 (Forja). Os hashes da SPEC, do PLAN e da ROUTE dependem dela.
+* ⛔ Heurística de tamanho ou carga na escolha do executor.
+* ⛔ Mudar a triagem.
+* ⛔ Alterar a INTENT da I01 ou a da I02.
 * ⛔ Mudar o formato do DAG (continua JSON).
-* ⛔ Criar um schema novo de SPEC. O Gate de aceite existente é o único validador.
+* ⛔ LLM na decisão de despacho.
 * ⛔ Refatorações oportunistas fora das Peças declaradas em `Alvo`.
-* ⛔ Dependências externas novas além das já autorizadas no projeto.
 
 ---
 
@@ -54,29 +54,29 @@ covers: [Q1]
 
 | Identificador | Tipo da Peça | Especialidade / Skill | Papel no Processo |
 | :--- | :--- | :--- | :--- |
-| `PECA-01` | `skill` | `skills/aidd-spec` | Elaborar a especificação formal com critérios BDD. |
-| `PECA-02` | `skill` | `skills/aidd-planner` e `skills/aidd-tickets` | Decompor a SPEC em Tickets, PLAN e ROUTE. |
-| `PECA-03` | `unit_task` | Código de produção (`internal/routedag`, `fabricar plano`, triagem) | Implementação via TDD Red-Green. |
-| `PECA-04` | `script` | `go test ./...` | Regressão mecânica e integridade. |
+| `PECA-01` | `unit_task` | `internal/runner` (despachante e validação prévia) | Implementação via TDD Red-Green. |
+| `PECA-02` | `unit_task` | `internal/plangen` e `internal/routedag` | Aceitar `swarm_worker` e recusar outros valores. |
+| `PECA-03` | `unit_task` | `internal/board` (entrega de DAG de um nível) | Ligar o `runner` ao Swarm sem MCP. |
+| `PECA-04` | `script` | `go test ./...` | Regressão mecânica e paridade dos 22 nós. |
 | `PECA-05` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5). |
 
 ---
 
 ## 4. Governança Operacional e Restrições Inegociáveis
 * **Gatilho Operacional de Disparo (Trigger):** `manual`
-* **Nível de Risco & Blast Radius:** médio. Move um pacote e muda um comando público (`legoloop plano` para `fabricar plano`). A definir no Stop-Gate 01 se o comando antigo fica como alias temporário.
-* **Política de Privacidade & Orçamento Cognitivo:** nenhuma chamada de LLM na decisão de roteamento nem na geração do PLAN, da ROUTE e do DAG.
-* **Ordem de execução:** a I02 só executa código depois que o TICK-01.2 (renomear o módulo Go) da I01 estiver fechado e enviado. Até lá a I02 avança só no papel (INTENT, SPEC, PLAN, ROUTE, DAG).
-* **Contrato de Evidência Factual (Definition of Done):** as quatro provas mecânicas da seção 5 e o portão completo (`go test ./...`, `go vet ./...`, `gofmt -l` vazio, `funclen`, `taxlinter`, `go.mod` e `go.sum` intactos).
+* **Nível de Risco & Blast Radius:** médio a alto. Mexe no `runner`, que executa todo DAG, e acrescenta um valor ao contrato da ROUTE (contrato público: pergunta antes, e esta INTENT registra a decisão).
+* **Política de Privacidade & Orçamento Cognitivo:** nenhuma chamada de LLM no despacho nem na validação.
+* **Ordem de execução:** a I03 começa depois que a I02 fechar, porque mexe em `internal/routedag` e na ROUTE.
+* **Contrato de Evidência Factual (Definition of Done):** as quatro provas da seção 5 e o portão completo (`go test ./...`, `go vet ./...`, `gofmt -l` vazio, `funclen`, `taxlinter`, `go.mod` intacto).
 * **Restrições Inegociáveis:**
   * TDD com Red primeiro.
-  * Sem LLM na decisão de roteamento.
-  * Nenhum validador novo de SPEC.
-  * Nenhum código antes do TICK-01.2 fechar.
-  * INTENT da I01 intacta.
+  * Sem LLM e sem heurística na decisão.
+  * Os 22 nós `orchestrix_hermetic` se comportam exatamente como hoje.
+  * Validação prévia obrigatória, sem fallback para um executor padrão.
+  * INTENTs da I01 e da I02 intactas.
   * Execução pelo Swarm só sob as seis condições da lei 4 do `AGENTS.md`.
-* **Premissas Assumidas (a confirmar no Stop-Gate 01):** o comando `fabricar plano` mantém os mesmos flags do `legoloop plano`; o `--estrito` passa a ser o padrão do `fabricar plano` (sai com 1 se faltar Ticket para um critério).
-* **Riscos e Perguntas em Aberto:** o alias temporário de `legoloop plano`; a ordem exata dos Épicos (definida na SPEC).
+* **Premissas Assumidas (a confirmar no Stop-Gate 01):** `internal/board` pode ser chamado direto pelo `runner` sem criar ciclo de importação (a SPEC confere); o Gate de um nó entregue ao Swarm é avaliado no `worktree` do worker (flag `gates` do `swarm_run`).
+* **Riscos e Perguntas em Aberto:** como o `runner` herda o `worktree` e o `workdir` quando mistura executores no mesmo nível; ciclo de importação entre `runner` e `board`.
 
 ---
 
@@ -84,16 +84,16 @@ covers: [Q1]
 
 | # | Critério | Como se prova | Comando / Evidência |
 | :--- | :--- | :--- | :--- |
-| 1 | Ponta a ponta: de uma INTENT aprovada saem SPEC, PLAN, ROUTE e DAG em diretório temporário, com exit 0 e cadeia de assinaturas válida. | Teste de integração sem LLM | `go test ./internal/cli/... ./internal/routedag/...` |
-| 2 | Sem INTENT aprovada, o comando sai com exit 2 e não grava nada. | Teste que confere o exit e a pasta vazia | `go test ./internal/cli/...` |
-| 3 | A triagem roteia "gerar SPEC" e "gerar PLAN" para os dois Processos novos pela decisão determinística, sem chamar o LLM. | Teste com LLM que falha se for chamado | `go test ./internal/triagem/...` |
-| 4 | O Processo composto por `subprocesso` (concepção, especificação, planejamento) passa no `legoloop validate`. | Validação do DAG do Processo | `legoloop validate processos/<processo>/pipeline.dag.json` |
-| 5 | Portão completo verde. | Os seis comandos do portão | `go test ./...`, `go vet ./...`, `gofmt -l .`, `funclen`, `taxlinter`, `git diff go.mod go.sum` |
+| 1 | Um DAG com executor desconhecido é recusado antes do nível 0, com todos os nós inválidos listados, `legoloop run` sai com 1 e nenhum `worktree` é criado. | Teste com DAG inválido e conferência do `git worktree list` | `go test ./internal/runner/...` |
+| 2 | Um DAG misto com os três executores roda por nível: os locais no `runner`, os `swarm_worker` no Swarm via `internal/board`, e o nível só termina com todos os Gates aprovados. | Teste de integração sem LLM | `go test ./internal/runner/...` |
+| 3 | Paridade: os 22 nós `orchestrix_hermetic` se comportam como hoje, e o DAG da I02 valida e executa sem mudança. | Testes atuais do runner e do Orchestrix, mais `legoloop validate` no DAG da I02 | `go test ./internal/runner/... ./internal/orchestrix/...` |
+| 4 | `plangen` e `internal/routedag` aceitam `swarm_worker` e recusam outros valores desconhecidos. | Testes de contrato | `go test ./internal/plangen/... ./internal/routedag/...` |
+| 5 | Portão completo verde. | Os seis comandos do portão | `go test ./...`, `go vet ./...`, `gofmt -l .`, `funclen`, `taxlinter`, `git diff go.mod` |
 
 ---
 
 ## 6. Handoff de Governança
-* **Próximo Documento Mandatório:** [`docs/specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md`](../specs/2026-11-21_SPEC_INICIATIVA_2_DO_MACROPROJETO_D.md)
+* **Próximo Documento Mandatório:** [`docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md`](../specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md)
 * **Gate de Transição:** Este Intent só é considerado aprovado após a validação humana explícita (*Gate Humano*) no chat, antes de qualquer linha de especificação ser redigida. A trava `upstream_ok` exige `status: APPROVED` no cabeçalho.
 
 ---

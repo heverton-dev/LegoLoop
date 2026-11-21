@@ -191,6 +191,15 @@
       "pacote": "tools/route2dag",
       "causa_raiz": "A ROUTE do plangen traz name com data e a palavra ROUTE, e o route2dag as repetia no nome do arquivo e do Processo",
       "timestamp": "2026-11-21T15:16:27Z"
+    },
+    {
+      "assinatura": "sha256:dbe5498d621c29b282b4c9bddea11970b7e24f608ae3a2e1eace78baaaa5ae2b",
+      "erro": "Sessao concluida sem Espelho: INTENT nao materializava e a entrevista recusava novas respostas",
+      "antidoto": "completeTurn exige Espelho para concluir; semEspelho pede o Espelho uma vez e, se insistir, mantem a sessao aberta com pergunta; testes sem_espelho_test.go",
+      "recorrencias": 1,
+      "pacote": "internal/interview",
+      "causa_raiz": "completeTurn concluia a sessao com confianca 95 ou mais mesmo sem Espelho; o cerebro foi de 85 para 98 apos uma resposta",
+      "timestamp": "2026-11-21T15:25:03Z"
     }
   ]
 }
