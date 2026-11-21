@@ -8,10 +8,15 @@ import (
 	"legoloop/internal/processo"
 )
 
-// planLinks monta a prévia dos vínculos: todos os harnesses detectados, salvo --no-link. Com --link-harness a
+// planLinks monta a prévia dos vínculos: com --eager, todos os harnesses detectados; sem ele, nenhum (a skill fica no Cofre). --no-link zera. Com --link-harness a
 // lista é restrita aos pedidos; pedido sem harness detectado vira aviso. Não toca o disco.
 func planLinks(req Request, hs []processo.Harness, skillPath, name string) ([]processo.Vinculo, []string) {
 	if req.NoLink || skillPath == "" {
+		return nil, nil
+	}
+	// lazy por padrão (prova de 20/11: cada skill vinculada custa contexto a todo turno do harness).
+	// Pedir --eager ou --link-harness é pedir o vínculo.
+	if !(processo.Politica{Eager: req.Eager || len(req.LinkHarnesses) > 0}).Vincula(name) {
 		return nil, nil
 	}
 	var warns []string

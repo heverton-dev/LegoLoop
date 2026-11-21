@@ -24,7 +24,7 @@ func TestCartaoPlanoUnicoCLI(t *testing.T) {
 	t.Run("o cartão lista as ações e as três decisões", func(t *testing.T) {
 		r := newInterRig(t, "\n1\n0\n", lowReply, doneReply)
 		comHarnesses(t, r, "claude", "gemini")
-		r.fabricar(t)
+		r.fabricar(t, "--eager") // o cartão só lista links no modo eager; o padrão lazy grava só no Cofre
 		for _, want := range []string{"AÇÃO:", "grava ", "cria o link", "claude, gemini", "SE DER ERRADO:", "[1] seguir  [2] personalizar  [0] cancelar"} {
 			if !strings.Contains(r.out.String(), want) {
 				t.Errorf("o cartão não tem %q:\n%s", want, r.out)
@@ -43,7 +43,7 @@ func TestCartaoPlanoUnicoCLI(t *testing.T) {
 	t.Run("Enter vazio no cartão cancela", func(t *testing.T) {
 		r := newInterRig(t, "\n1\n\n", lowReply, doneReply)
 		if code := r.fabricar(t); code != 1 || r.wrote(t) != 0 {
-			t.Fatalf("exit %d, gravou %d", code, r.wrote(t))
+			t.Fatalf("exit %d, gravou %d\n%s", code, r.wrote(t), r.out)
 		}
 	})
 
@@ -64,8 +64,8 @@ func TestCartaoPlanoUnicoCLI(t *testing.T) {
 	t.Run("recusar a pausa extra dos harnesses não grava nada", func(t *testing.T) {
 		r := newInterRig(t, "\n1\n1\nn\n", lowReply, doneReply)
 		comHarnesses(t, r, "claude")
-		if code := r.fabricar(t); code != 1 || r.wrote(t) != 0 || existe(filepath.Join(r.d.Home, ".claude", "skills")) {
-			t.Fatalf("exit %d, gravou %d", code, r.wrote(t))
+		if code := r.fabricar(t, "--eager"); code != 1 || r.wrote(t) != 0 || existe(filepath.Join(r.d.Home, ".claude", "skills")) {
+			t.Fatalf("exit %d, gravou %d\n%s", code, r.wrote(t), r.out)
 		}
 		if !strings.Contains(r.out.String(), "Ligar a skill a 1 harnesses?") {
 			t.Errorf("faltou a pausa extra:\n%s", r.out)
@@ -84,7 +84,7 @@ func TestCartaoPlanoUnicoCLI(t *testing.T) {
 		if err := os.MkdirAll(filepath.Join(r.d.Home, ".claude"), 0o755); err != nil {
 			t.Fatal(err)
 		}
-		code := run(t, r.d, r.args("novo processo", "--yes", "--sem-entrevista")...)
+		code := run(t, r.d, r.args("novo processo", "--yes", "--sem-entrevista", "--eager")...)
 		out := r.out.String()
 		if code != 0 || !strings.Contains(out, "AÇÃO:") || !strings.Contains(out, "Segue sem perguntar") || strings.Contains(out, "Escolha:") {
 			t.Fatalf("exit %d:\n%s\n%s", code, out, r.errb)

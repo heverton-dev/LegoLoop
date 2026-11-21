@@ -16,6 +16,7 @@ func cmdInstalarSkills(_ context.Context, args []string, d Deps) int {
 	vault := fs.String("vault", "", "cofre canônico (padrão ~/.aidd/canonical)")
 	procDir := fs.String("processos-dir", "", "pasta dos Processos (padrão processos)")
 	dry := fs.Bool("dry-run", false, "apenas planeja sem gravar")
+	eager := fs.Bool("eager", false, "vincula toda skill em toda pasta de harness (padrão: só o índice legoloop-skills; gasta contexto)")
 	asJSON := fs.Bool("json", false, "saída em JSON")
 	if err := fs.Parse(args); err != nil {
 		return 2
@@ -24,25 +25,25 @@ func cmdInstalarSkills(_ context.Context, args []string, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
-	res, err := runInstalarSkills(d, v, *procDir, *dry)
+	res, err := runInstalarSkills(d, v, *procDir, *dry, *eager)
 	if err != nil {
 		return fail(d, err)
 	}
 	return reportInstalarSkills(d, res, *asJSON)
 }
 
-func runInstalarSkills(d Deps, vault, dirProcessos string, dry bool) (*instalarSkillsResult, error) {
+func runInstalarSkills(d Deps, vault, dirProcessos string, dry, eager bool) (*instalarSkillsResult, error) {
 	home := d.Home
 	if home == "" {
 		home, _ = os.UserHomeDir()
 	}
 	return skills.Instalar(skills.Opcao{
-		Vault: vault, Home: home, DirProcessos: dirProcessos, DryRun: dry,
+		Vault: vault, Home: home, DirProcessos: dirProcessos, DryRun: dry, Eager: eager,
 	})
 }
 
 func instalarSkillsSilencioso(d Deps, vault string) {
-	_, _ = runInstalarSkills(d, vault, "", false)
+	_, _ = runInstalarSkills(d, vault, "", false, false)
 }
 
 func reportInstalarSkills(d Deps, res *instalarSkillsResult, asJSON bool) int {

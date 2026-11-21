@@ -31,6 +31,7 @@ type Request struct {
 	TrustRemovable bool     `json:"trust_removable"` // true = aceita peças Untrusted na fusão
 	LinkHarnesses  []string `json:"link_harnesses"`  // Ex: ["claude"]; vazio = todos os harnesses detectados
 	NoLink         bool     `json:"no_link"`         // true = só o cofre, nenhum vínculo a harness
+	Eager          bool     `json:"eager"`           // true = liga a skill em toda pasta de harness (padrão lazy: só no Cofre; o skill_search a acha)
 	DryRun         bool     `json:"dry_run"`         // true = calcula tudo e não grava nada
 	Peca           string   `json:"peca,omitempty"`  // tipo da peça única (script, skill, gate, hook, mcp, processo); vazio = processo completo
 }

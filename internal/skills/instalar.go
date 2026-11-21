@@ -21,6 +21,12 @@ type Opcao struct {
 	DirProcessos string
 	DirSkills    string
 	DryRun       bool
+	Eager        bool // true = vincula toda skill em toda pasta de harness (comportamento anterior a 20/11)
+}
+
+// politica devolve a regra de vínculo: lazy por padrão, com as exceções de ~/.legoloop/skills-eager.txt.
+func (o Opcao) politica() processo.Politica {
+	return processo.Politica{Eager: o.Eager, Excecoes: processo.LerExcecoes(o.Home)}
 }
 
 // Relatorio resume a instalação executada.
@@ -194,6 +200,11 @@ func distribuir(op Opcao, hs []processo.Harness, nat, skProc, cmds map[string][]
 	if err := distribuirComandos(op, hs, cmds, res); err != nil {
 		return nil, err
 	}
+	idx, err := garantirIndice(op, hs)
+	if err != nil {
+		return nil, err
+	}
+	res.Vinculos = append(res.Vinculos, idx...)
 	return res, nil
 }
 
@@ -205,7 +216,10 @@ func publicar(op Opcao, hs []processo.Harness, nome string, dados []byte) ([]str
 			return nil, err
 		}
 	}
-	vs := processo.PlanejarVinculos(hs, nome, dirCofre)
+	var vs []processo.Vinculo
+	if op.politica().Vincula(nome) {
+		vs = processo.PlanejarVinculos(hs, nome, dirCofre)
+	}
 	out := make([]string, 0, len(vs))
 	for _, v := range vs {
 		out = append(out, v.Destino)

@@ -101,7 +101,8 @@ legoloop refinar "extrator-audio" --etapa e1 --peca aidd-rea
 legoloop remover "extrator-audio" --dry-run
 legoloop compor "esteira-master" "extrator-audio"
 legoloop fechar "extrator-audio" --dry-run        # canonização determinística em 9 etapas
-legoloop instalar-skills                          # distribui as 39 skills nativas nos harnesses
+legoloop instalar-skills                          # skills nativas no cofre; nos harnesses só o índice (lazy). --eager = vínculo total
+legoloop skills-custo                              # tokens de frontmatter que cada harness carrega por turno
 
 # Mega-Pipelines Audiovisuais & Engenharia Reversa de Canais
 legoloop canal redc <dir> --canal meu-canal --json   # analisa 100 vídeos e extrai Dossiê DNA

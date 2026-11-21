@@ -41,6 +41,7 @@ func arquivosSob(t *testing.T, dirs ...string) []string {
 func TestVinculoTodosOsHarnessesDetectados(t *testing.T) {
 	r := newRig(t, goodPieces())
 	comHarnesses(t, r, "claude", "gemini", "codex")
+	r.req.Eager = true // contrato do modo eager; o padrão lazy tem teste próprio
 	var previa []string
 	r.deps.Aprovar = func(p fabricar.Plano, _ func([]string) fabricar.Plano) (bool, error) {
 		previa = p.Vinculos
@@ -85,6 +86,7 @@ func TestVinculoNoLinkNaoCriaNenhum(t *testing.T) {
 func TestVinculoFalhaNoSegundoDesfazOsLinksEOCofre(t *testing.T) {
 	r := newRig(t, goodPieces())
 	comHarnesses(t, r, "claude", "gemini", "codex")
+	r.req.Eager = true // contrato do modo eager; o padrão lazy tem teste próprio
 	chamadas, quebra := 0, errors.New("disco cheio")
 	r.deps.Link = func(o, d string) error {
 		chamadas++
@@ -110,6 +112,7 @@ func TestVinculoFalhaNoSegundoDesfazOsLinksEOCofre(t *testing.T) {
 func TestVinculoDryRunListaMasNaoCria(t *testing.T) {
 	r := newRig(t, goodPieces())
 	comHarnesses(t, r, "claude", "gemini")
+	r.req.Eager = true // contrato do modo eager; o padrão lazy tem teste próprio
 	r.req.DryRun = true
 	res := r.run(t)
 	if len(res.Artifacts.SkillLinks) != 2 {
@@ -146,5 +149,33 @@ func TestVinculoSemHarnessDetectadoNaoLigaNada(t *testing.T) {
 	r := newRig(t, goodPieces())
 	if res := r.run(t); len(res.Artifacts.SkillLinks) != 0 {
 		t.Fatalf("sem harness detectado não há vínculo: %v", res.Artifacts.SkillLinks)
+	}
+}
+
+// TestVinculoLazyPorPadrao prova o conserto de 20/11: sem --eager a skill fica só no Cofre
+// (onde o skill_search a acha) e nenhuma pasta de harness é tocada.
+func TestVinculoLazyPorPadrao(t *testing.T) {
+	r := newRig(t, goodPieces())
+	comHarnesses(t, r, "claude", "gemini", "codex")
+	res := r.run(t)
+	if len(res.Artifacts.SkillLinks) != 0 {
+		t.Fatalf("padrão lazy não cria vínculo: %v", res.Artifacts.SkillLinks)
+	}
+	if _, err := os.Stat(filepath.Join(res.Artifacts.SkillPath)); err != nil {
+		t.Fatalf("a skill deve existir no Cofre: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(r.home, ".claude", "skills")); err == nil {
+		t.Error("em modo lazy a pasta de skills do harness não pode ser criada")
+	}
+}
+
+// TestVinculoLinkHarnessExplicitoVinculaMesmoSemEager prova que pedir o harness é pedir o vínculo.
+func TestVinculoLinkHarnessExplicitoVinculaMesmoSemEager(t *testing.T) {
+	r := newRig(t, goodPieces())
+	comHarnesses(t, r, "claude", "gemini")
+	r.req.LinkHarnesses = []string{"claude"}
+	res := r.run(t)
+	if len(res.Artifacts.SkillLinks) != 1 {
+		t.Fatalf("--link-harness claude deve criar 1 vínculo: %v", res.Artifacts.SkillLinks)
 	}
 }

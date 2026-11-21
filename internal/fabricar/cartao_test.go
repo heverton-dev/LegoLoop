@@ -29,6 +29,7 @@ func TestCartaoPlanoUnico(t *testing.T) {
 	t.Run("o plano lista arquivos e links e nada está gravado", func(t *testing.T) {
 		r := newRig(t, goodPieces())
 		comHarnesses(t, r, "claude", "gemini")
+		r.req.Eager = true // o plano só lista vínculos no modo eager (padrão lazy: só o Cofre)
 		c := &captura{ok: true}
 		r.deps.Aprovar = c.aprovar(r, t)
 		r.run(t)

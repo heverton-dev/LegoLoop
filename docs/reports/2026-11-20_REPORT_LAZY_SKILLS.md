@@ -183,3 +183,32 @@ O custo só cai quando o TOTAL de candidatas ficar abaixo do teto.
 - ACHADO: o ranking do `skill_search` é fraco. A query "aidd bigbrain orquestra tudo" não pôs `aidd-bigbrain` entre os 3 primeiros (voltou `aidd-retro` com score 0,25). Antes de declarar o lazy pronto, o ranking precisa pesar o nome da skill.
 - Visível ao agy agora: 18 SKILL.md válidos (índice, 15 builtin do agy, 1 plugin android). Previsão do /context: Skills entre 0,5k e 2,6k.
 - Risco: `instalar-skills`, `bootstrap` e `fabricar` ainda vinculam skills em `~/.gemini/skills` e `config/skills`. Um deles rodando desfaz a migração até `PlanejarVinculos` ser corrigido.
+
+## 12. RESULTADO: lazy de skills no agy provado (20/11)
+- /context em agy novo: Skills 1,6k (antes 20,7k). Queda de 92%. Total de contexto 41,4k -> 22,5k.
+- Previsão era 0,5k a 2,6k. Confirmada.
+- Causa raiz confirmada pelo caminho inverso: o teto do agy deixou de ser atingido porque o total de candidatas ficou abaixo dele.
+- Experimento 4 (comandos aidd) desfeito: `~/.gemini/commands` restaurado (228 itens).
+- Pendências para fechar o ticket: (1) ranking do skill_search; (2) PlanejarVinculos e instalar-skills/fabricar/bootstrap; (3) skills-custo ler o bloco real; (4) outros harnesses (agy-ide, Claude via ~/.agents/skills); (5) restaurar ou descartar os backups; (6) commit.
+
+## 13. Código entregue (20/11, TDD, sem commit)
+### Ranking do skill_search (internal/mcp/skills.go)
+- Defeitos achados lendo o código: `topMatches` não ordenava (pegava os topK de uma iteração de map); placar contava "Processo Canônico" e "general"; nome valia o mesmo que descrição; `description: |` virava "|".
+- Conserto: ordena por score e id; nome pesa mais que descrição; palavras vazias PT/EN fora; raiz comum de 6 letras (homologar ~ homologue); bloco YAML lido por `leitorFrontmatter`.
+- Testes novos: skills_rank_test.go (7 testes, Red provado antes).
+- Prova real (Cofre de 248 skills, 8 consultas): 7 de 8 em 1º lugar; a 8ª ficou em 2º. Antes: `aidd-bigbrain` nem aparecia no topo.
+### Política de vínculo (internal/processo/politica.go, internal/skills/indice.go)
+- `processo.Politica{Eager, Excecoes}`, `IndiceSkills = "legoloop-skills"`, `LerExcecoes(home)` lê `~/.legoloop/skills-eager.txt`.
+- `instalar-skills`: lazy por padrão; grava o índice como cópia em cada harness; `--eager` restaura o modo antigo.
+- `fabricar`: lazy por padrão (a skill já nasce em `vault/skills/`, onde o skill_search a acha); `--eager` ou `--link-harness` pedem o vínculo.
+- `bootstrap` herda o lazy.
+- Prova real em dry-run: 7 vínculos (lazy) contra 518 (eager; antes 511).
+- Testes: 3 novos em internal/skills, 2 em processo, 2 em fabricar; 8 testes antigos passaram a pedir `--eager`/`Eager: true` porque documentavam o contrato eager.
+### Portões
+- `go vet ./internal/...` limpo. `funclen internal` sem violação (parseSkillFile foi refatorado: 49 -> 3 funções pequenas).
+- `go test ./internal/...`: só 2 falhas, ambas anteriores a este trabalho: `TestLegoPressCLI_Auditar` (falha igual com as mudanças em stash) e `TestProcessosCincoPorCinco` (memoria_execucao.json de legoloop-canonizar; internal/processo e processos/legoloop-canonizar sem mudança minha).
+### Pendências
+- O binário instalado (`~/go/bin/legoloop.exe`) ainda é o antigo. `go install ./cmd/legoloop` ativa o lazy no CLI e no `mcp-router`.
+- `skills-custo` ainda soma pastas; falta ler o bloco real do WAL do agy e modelar teto/plugins.
+- agy-ide e Claude (`~/.agents/skills`, ~11k tokens) seguem eager até uma migração própria.
+- Backups em `~/.gemini/_skills_backup_20261120_*` aguardam decisão: restaurar ou descartar.

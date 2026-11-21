@@ -88,7 +88,8 @@ func TestInstalarSkills(t *testing.T) {
 	// 4. Executa Instalação Real
 	var stdout, stderr bytes.Buffer
 	d := Deps{Stdout: &stdout, Stderr: &stderr, Home: home}
-	code := Run(context.Background(), []string{"instalar-skills", "--vault", vault}, d)
+	// --eager: este teste cobre o contrato de distribuição total; o padrão lazy tem testes próprios em internal/skills.
+	code := Run(context.Background(), []string{"instalar-skills", "--vault", vault, "--eager"}, d)
 	if code != 0 {
 		t.Fatalf("esperava exit 0 na instalação, obteve %d. Stderr: %s", code, stderr.String())
 	}

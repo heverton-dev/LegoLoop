@@ -33,6 +33,7 @@ type FabricarDeps struct {
 type fabricarOpts struct {
 	yes, asJSON, force, dry, trust bool
 	noLink                         bool
+	eager                          bool
 	semEntrevista, aceitar         bool
 	entrevista                     string
 	goal, model, category, effort  string
@@ -61,6 +62,7 @@ func newFabricarFlags(o *fabricarOpts) *flag.FlagSet {
 	fs.BoolVar(&o.asJSON, "json", false, "imprime o Result como JSON")
 	fs.Var(&o.link, "link-harness", "liga só aos harnesses citados, ex.: claude (repetível); padrão: todos os detectados")
 	fs.BoolVar(&o.noLink, "no-link", false, "grava só no cofre, sem ligar a nenhum harness")
+	fs.BoolVar(&o.eager, "eager", false, "liga a skill em toda pasta de harness (padrão: só no cofre; o skill_search a acha; gasta contexto)")
 	return fs
 }
 
@@ -111,7 +113,7 @@ func runFabricar(ctx context.Context, name string, o fabricarOpts, d Deps) int {
 		return code
 	}
 	req := fabricar.Request{RawName: name, Goal: o.goal, Category: fabricar.Category(o.category), ModelChoice: o.model,
-		Interactive: !o.yes, Force: o.force, DryRun: o.dry, TrustRemovable: o.trust, LinkHarnesses: o.link, NoLink: o.noLink, Peca: o.peca}
+		Interactive: !o.yes, Force: o.force, DryRun: o.dry, TrustRemovable: o.trust, LinkHarnesses: o.link, NoLink: o.noLink, Eager: o.eager, Peca: o.peca}
 	probe := req
 	if probe.ModelChoice == "" {
 		probe.ModelChoice = "auto" // só para validar nome e categoria antes de consultar o inventário

@@ -40,13 +40,12 @@ func montarCenario(t *testing.T, harnesses []string) (base, dirProcessos, home, 
 	return base, dirProcessos, home, filepath.Join(base, "vault")
 }
 
-func rodarInstalar(t *testing.T, home, vault, dirProcessos string) (int, string, string) {
+func rodarInstalar(t *testing.T, home, vault, dirProcessos string, extra ...string) (int, string, string) {
 	t.Helper()
 	var out, errb bytes.Buffer
 	d := cli.Deps{Stdout: &out, Stderr: &errb, Home: home}
-	code := cli.Run(context.Background(), []string{
-		"instalar-skills", "--vault", vault, "--processos-dir", dirProcessos,
-	}, d)
+	args := append([]string{"instalar-skills", "--vault", vault, "--processos-dir", dirProcessos}, extra...)
+	code := cli.Run(context.Background(), args, d)
 	return code, out.String(), errb.String()
 }
 
@@ -55,7 +54,8 @@ func rodarInstalar(t *testing.T, home, vault, dirProcessos string) (int, string,
 // legoloop instalar-skills os distribui para todos os harnesses, sem passo manual.
 func TestDistribuiTodosHarness(t *testing.T) {
 	base, dirProcessos, home, vault := montarCenario(t, []string{"claude", "codex", "gemini"})
-	code, out, errb := rodarInstalar(t, home, vault, dirProcessos)
+	// --eager: a distribuição para toda pasta de harness é o modo antigo, mantido como saída de emergência.
+	code, out, errb := rodarInstalar(t, home, vault, dirProcessos, "--eager")
 	if code != 0 {
 		t.Fatalf("instalar-skills code=%d out=%s err=%s", code, out, errb)
 	}
