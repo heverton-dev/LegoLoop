@@ -16,7 +16,7 @@ import (
 
 func init() {
 	for id, msg := range map[string]string{
-		"entrevista.uso":           "Uso: legoloop fabricar entrevista iniciar \"<ideia>\", responder <sessao> \"<texto>\" ou intent <sessao>.",
+		"entrevista.uso":           "Uso: legoloop fabricar entrevista iniciar \"<ideia>\", responder <sessao> \"<texto>\", concluir <sessao> ou intent <sessao>.",
 		"entrevista.opcao_palpite": "Aceitar o palpite: %s",
 		"entrevista.opcao_livre":   "Responder com as suas palavras",
 	} {
@@ -86,6 +86,8 @@ func cmdEntrevista(ctx context.Context, args []string, d Deps) int {
 		return runIniciar(ctx, rest[0], o, d)
 	case verb == "responder" && len(rest) == 2:
 		return runResponder(ctx, rest[0], rest[1], o, d)
+	case verb == "concluir" && len(rest) == 1:
+		return runResponder(ctx, rest[0], interview.MsgConcluir, o, d)
 	case verb == "intent" && len(rest) == 1:
 		return runIntent(rest[0], o, d)
 	}

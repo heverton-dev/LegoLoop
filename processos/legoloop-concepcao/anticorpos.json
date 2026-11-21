@@ -200,6 +200,24 @@
       "pacote": "internal/interview",
       "causa_raiz": "completeTurn concluia a sessao com confianca 95 ou mais mesmo sem Espelho; o cerebro foi de 85 para 98 apos uma resposta",
       "timestamp": "2026-11-21T15:25:03Z"
+    },
+    {
+      "assinatura": "sha256:1670958eb8c60a8b6e4f6d9f9d2b356aeee0717b6351c80a4a817588b23dc022",
+      "erro": "Entrevista estacionava em 85 por cento com pergunta vazia ou repetida e so saia com mensagem escrita a mao pedindo o Espelho",
+      "antidoto": "Verbo legoloop fabricar entrevista concluir envia MsgConcluir; passo documentado no SKILL.md; testes entrevista_concluir_test.go",
+      "recorrencias": 1,
+      "pacote": "internal/interview",
+      "causa_raiz": "O motor nao tinha verbo para fechar uma sessao que o usuario ja respondeu por inteiro; o modelo code-fast estaciona abaixo da meta",
+      "timestamp": "2026-11-21T16:26:04Z"
+    },
+    {
+      "assinatura": "sha256:a66544f142d8cd2e14c7a8eedd6c1f0118957bd2fd4896412f126b7ce82eb8e8",
+      "erro": "INTENT materializada com o titulo igual a mensagem inteira da ideia, a ideia repetida tres vezes e criterios colados por ponto e virgula",
+      "antidoto": "tituloDoTema corta na primeira frase (100 caracteres), Hoje referencia O Problema Real, criteriosDe gera um subitem por criterio; testes intent_limpa_test.go",
+      "recorrencias": 1,
+      "pacote": "internal/interview",
+      "causa_raiz": "RenderIntent usava o Theme inteiro no titulo e em Hoje, e escrevia Success como uma unica linha",
+      "timestamp": "2026-11-21T16:26:04Z"
     }
   ]
 }

@@ -1,52 +1,54 @@
 ---
-id: INTENT-intv_1795274711307895500
+id: INTENT-intv_1795277863681062100
 status: APPROVED
 date: 2026-11-21
 schema_version: 2
-upstream: [INTERVIEW-intv_1795274711307895500]
+upstream: [INTERVIEW-intv_1795277863681062100]
 covers: [Q1]
 ---
 
-# 🎯 INTENT: Iniciativa 3 (I03) — Despachante de executores no runner
+# 🎯 INTENT: Iniciativa 4 (I04) — Espinha dorsal previsível, universal e determinística
 
 > **Status:** APPROVED  
 > **Data:** 2026-11-21  
 > **Autor:** Antigravity AI + Usuário (via Entrevista Socrática Addy Osmani)  
-> **Alvo:** `internal/runner`, `internal/plangen`, `internal/routedag`, `internal/board`  
-> **Sessão:** intv_1795274711307895500  
-> **Confiança da Entrevista:** o motor reportou 99% no turno 1 e 90% em outra sessão aberta com as decisões; nenhuma das duas concluiu de forma confiável. O Espelho abaixo foi consolidado à mão a partir das seis respostas do usuário e reconhecido por ele ("ACEITO" em cada uma).  
-> **Macroprojeto:** Distribuição e Forja do LegoLoop. A INTENT da I01 e a da I02 não são alteradas. A ordem fica na Emenda 1: `docs/intents/2026-11-21_EMENDA_1_MACROPLANO.md`.  
+> **Alvo:** `internal/espinha` (novo), `internal/descoberta` (novo), `internal/dag`, `internal/runner`, `internal/fabricar`, `internal/matriz`, `internal/caminhos`, `internal/paths`, `tools/mutar` (novo), `.github/workflows`  
+> **Sessão:** intv_1795277863681062100  
+> **Confiança da Entrevista:** 96% reportada pelo motor com o modelo `sonnet`, depois de o motor com `code-fast` parar em 85%. As decisões foram tomadas pelo usuário uma a uma ("ACEITO", "[1]"); o Espelho abaixo foi conferido contra elas.  
+> **Insumo:** `docs/reports/2026-11-21_REPORT_AUDITORIA_ESPINHA_DORSAL.md` (14 lacunas).  
+> **Macroprojeto:** Distribuição e Forja do LegoLoop. As INTENTs da I01, da I02 e da I03 não são alteradas; as mudanças entram por Emenda (`docs/intents/2026-11-21_EMENDA_2_MACROPLANO.md`).  
 > **Template:** TEMPLATE_INTENT.md v2.2.0  
 
 ---
 
 ## 1. Contexto e Motivação
-* **O Problema Real:** a ROUTE grava `isolation.executor` em todo nó (hoje `orchestrix_hermetic` em 22 de 29 nós da ROUTE da I02 e `local_process` em 7), mas nenhum código de produção lê esse campo. A triagem é só o roteador de entrada e o Swarm recebe o DAG inteiro por `swarm_run dag=`. Não existe como um mesmo DAG misturar nós locais, nós pelo Orchestrix e nós entregues ao Swarm, nem como recusar um executor desconhecido antes de gastar trabalho.
-* **Quem Sofre:** o operador que executa DAGs e a outra sessão que executa os planos.
-* **O Porquê (por que agora):** a I02 entrega `fabricar plano` e `internal/routedag`, que passam a gerar a ROUTE e o DAG. O despachante é a primeira camada que lê o campo gerado, e precisa existir antes de o planejamento escolher o Swarm de propósito.
-* **Fato conferido no código:** `orchestrix_hermetic` não é o Swarm. Ele roda o nó em `git worktree` hermético (`internal/runner/isolated.go`) e o `internal/orchestrix` escolhe harness e modelo. O Swarm (`swarm_run`) executa o DAG inteiro por nível topológico, com um worker por nó em `worktree` próprio, e a lógica mora em `internal/board`.
+* **O Problema Real:** a espinha dorsal do LegoLoop (verbos, Processos, motores e requisitos) nasceu sem arquitetura prévia e acumulou dívida. A auditoria de 2026-11-21 achou 14 lacunas. As duas críticas: a Matriz de peças está defasada e nada a atualiza (505 novas, 2 alteradas, 6.146 removidas), e o `fabricar` não varre drives, embora a premissa do produto seja usar as peças do SO e dos discos do usuário. As altas: `isolation.executor` é decorativo, o vocabulário de tipo de nó está duplicado (`unit_no` e `unit_task`) e existem duas fachadas de caminhos (`caminhos` e `paths`).
+* **Quem Sofre:** quem mantém e evolui o LegoLoop, o usuário nos três SOs e as iniciativas I01, I02 e I03, que se apoiam na espinha.
+* **O Porquê (por que agora):** a I01, a I02 e a I03 constroem sobre vocabulário, fachadas e descoberta que a auditoria mostrou falhos. Corrigir depois obrigaria a refazer o que a outra sessão acabou de construir. Por isso a I04 executa primeiro e as três ficam congeladas.
 * **Estado Atual vs. Estado Desejado:**
-  * **Hoje:** o `runner` executa todo nó pelo mesmo caminho; o campo `executor` é gravado e ignorado.
-  * **Amanhã:** o `runner` valida todos os nós antes do nível 0 e despacha por nível: `local_process` roda no `runner`, `orchestrix_hermetic` segue pelo Orchestrix como hoje, e `swarm_worker` (valor novo) vai ao Swarm.
+  * **Hoje:** a leitura e a geração são determinísticas e medidas (6 verbos de leitura com hashes idênticos em duas execuções; 33 de 33 Processos validam), mas a descoberta de peças é manual e defasada, o vocabulário não é amarrado, e a universalidade só foi compilada para Linux e macOS, nunca executada.
+  * **Amanhã:** um Registro da Espinha conferido por gate mecânico, descoberta automática por hash de conteúdo, vocabulário amarrado por uma tabela única, CI verde nos três SOs e mutação cobrindo as regras e o código da espinha.
 
 ---
 
 ## 2. Escopo Inegociável
 
 ### O que ESTÁ no Escopo (Objetivos Primários):
-* [ ] Objetivo 1: despachante no `runner` que lê `isolation.executor` da ROUTE e do DAG, sem LLM e sem heurística de tamanho ou carga.
-* [ ] Objetivo 2: valor novo `swarm_worker`. `local_process` roda no `runner` local, `orchestrix_hermetic` segue pelo Orchestrix como hoje, `swarm_worker` entrega o nó a um worker do Swarm sob as seis condições da lei 4.
-* [ ] Objetivo 3: granularidade por nível topológico. O `runner` roda localmente os nós `local_process` e `orchestrix_hermetic` do nível e entrega os `swarm_worker` do mesmo nível ao Swarm como DAG de um nível, por `internal/board` (sem MCP). O nível só termina com todos os Gates aprovados.
-* [ ] Objetivo 4: validação prévia antes do nível 0, sobre todos os nós. Erro Go tipado `ErrExecutorDesconhecido` que lista de uma vez todos os nós inválidos (nó, valor recebido, valores aceitos). `legoloop run` sai com 1 e não cria `worktree`. `subagents_allowed: "ephemeral"` com destino fora do Swarm segue o mesmo formato.
-* [ ] Objetivo 5: `plangen` e `internal/routedag` aceitam `swarm_worker` e recusam qualquer outro valor desconhecido.
+* [ ] Objetivo 1: **Registro da Espinha.** Arquivo único e versionado com quatro listas: verbos (camada espinha ou domínio, motor e contrato), motores (pacote, interface e se é determinístico), Processos (nascimento 5 de 5) e requisitos (cada lei do `AGENTS.md` ligada ao verificador mecânico). Comando `legoloop espinha verificar`, que roda no CI e no `legoloop fechar`.
+* [ ] Objetivo 2: **Descoberta de peças.** Motor determinístico e somente leitura que procura no Cofre, no HOME e nas unidades fixas do SO (Windows pelo tipo de unidade, Linux em `/mnt`, macOS em `/Volumes`). Unidade removível só com `TrustRemovable`. O `TargetDrives` passa a valer. A Matriz se atualiza por hash de conteúdo, não por relógio, antes de o `fabricar` montar o Processo.
+* [ ] Objetivo 3: **Vocabulário amarrado.** O executor é derivado do tipo do nó e validado (`stop_gate` é `local_process`; `script`, `skill`, `unit_no`, `mcp` e `subprocesso` são `orchestrix_hermetic`; `native_swarm` só explícito). Uma tabela única liga `unit_task` da ROUTE a `unit_no` do DAG. Saem o alias `TypeSubloop` e o literal `dag.NodeType("unit_no")` do `runner`. Os DAGs com rótulo errado ou ausente são corrigidos.
+* [ ] Objetivo 4: **Fachada única de caminhos.** `paths` é absorvido por `caminhos` (35 importadores contra 15), e o pacote duplicado sai.
+* [ ] Objetivo 5: **Universalidade provada.** CI em Windows, Linux e macOS, trazido da I01 (Épico 02), rodando `go test ./...`, `go vet`, `funclen` e `legoloop espinha verificar`. Correções que o CI exigir: caminho de fontes por SO, `python3` onde o SO só o tem, escolha entre `powershell` e `cmd` por SO.
+* [ ] Objetivo 6: **Mutação em duas camadas.** (a) Cada regra do Registro tem um mutante que cria o defeito numa cópia temporária, e o gate exige 100% de mutantes mortos, cada um com exit 2. (b) Mutador de código `tools/mutar`, só com `go/ast`, que troca operadores, inverte condições e remove `return err` nos pacotes da espinha (`dag`, `runner`, `gate`, `plangen`, `triagem`, `upstream`, `interview`); mutante sobrevivente reprova o gate, salvo justificativa registrada como anticorpo.
+* [ ] Objetivo 7: **As 14 lacunas e a medição que faltou.** Cada lacuna tem teste Red e anticorpo. A rodada de medição inclui `go test -race` e a execução de ponta a ponta (`run` e `exec` com DAG só de scripts) duas vezes, com relatório idêntico.
+* [ ] Objetivo 8: **Revisão das iniciativas congeladas.** A Emenda 2 revisa a I01 (sai o Épico 02, que o CI da I04 entrega; entram G01, G02 e G05 como pré-requisito), a I02 (vocabulário) e a I03 (a validação passa a ser coerência com o tipo).
 
 ### O que NÃO ESTÁ no Escopo (Não-Objetivos / Out-of-Scope):
-* ⛔ Heurística de tamanho ou carga na escolha do executor.
-* ⛔ Mudar a triagem.
-* ⛔ Alterar a INTENT da I01 ou a da I02.
-* ⛔ Mudar o formato do DAG (continua JSON).
-* ⛔ LLM na decisão de despacho.
-* ⛔ Refatorações oportunistas fora das Peças declaradas em `Alvo`.
+* ⛔ Refatorar os verbos de domínio (`video-motion`, `video-rea`, `canal`, `cartoon-shorts`, `web-qa`, `legopress`) além de classificá-los no Registro.
+* ⛔ Mudar o formato do DAG.
+* ⛔ Alterar as INTENTs da I01, da I02 e da I03.
+* ⛔ Tornar determinístico o texto que o modelo de linguagem devolve. O determinismo vale para as decisões da espinha (validar, rotear, planejar, despachar), não para a saída do modelo.
+* ⛔ Dependências externas novas além das já autorizadas.
 
 ---
 
@@ -54,29 +56,33 @@ covers: [Q1]
 
 | Identificador | Tipo da Peça | Especialidade / Skill | Papel no Processo |
 | :--- | :--- | :--- | :--- |
-| `PECA-01` | `unit_task` | `internal/runner` (despachante e validação prévia) | Implementação via TDD Red-Green. |
-| `PECA-02` | `unit_task` | `internal/plangen` e `internal/routedag` | Aceitar `swarm_worker` e recusar outros valores. |
-| `PECA-03` | `unit_task` | `internal/board` (entrega de DAG de um nível) | Ligar o `runner` ao Swarm sem MCP. |
-| `PECA-04` | `script` | `go test ./...` | Regressão mecânica e paridade dos 22 nós. |
-| `PECA-05` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5). |
+| `PECA-01` | `unit_task` | `internal/espinha` e `legoloop espinha verificar` | Registro e gate da espinha. |
+| `PECA-02` | `unit_task` | `internal/descoberta`, `internal/fabricar`, `internal/matriz` | Descoberta e Matriz por hash. |
+| `PECA-03` | `unit_task` | `internal/dag`, `internal/runner`, `tools/route2dag` | Vocabulário e executor derivado do tipo. |
+| `PECA-04` | `unit_task` | `internal/caminhos`, `internal/paths` | Fachada única de caminhos. |
+| `PECA-05` | `unit_task` | `tools/mutar` | Mutador de código com `go/ast`. |
+| `PECA-06` | `script` | `.github/workflows` | CI nos três SOs. |
+| `PECA-07` | `script` | `go test ./...` | Regressão mecânica e medição. |
+| `PECA-08` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5). |
 
 ---
 
 ## 4. Governança Operacional e Restrições Inegociáveis
 * **Gatilho Operacional de Disparo (Trigger):** `manual`
-* **Nível de Risco & Blast Radius:** médio a alto. Mexe no `runner`, que executa todo DAG, e acrescenta um valor ao contrato da ROUTE (contrato público: pergunta antes, e esta INTENT registra a decisão).
-* **Política de Privacidade & Orçamento Cognitivo:** nenhuma chamada de LLM no despacho nem na validação.
-* **Ordem de execução:** a I03 começa depois que a I02 fechar, porque mexe em `internal/routedag` e na ROUTE.
-* **Contrato de Evidência Factual (Definition of Done):** as quatro provas da seção 5 e o portão completo (`go test ./...`, `go vet ./...`, `gofmt -l` vazio, `funclen`, `taxlinter`, `go.mod` intacto).
+* **Nível de Risco & Blast Radius:** alto. Mexe no `dag`, no `runner`, em dois pacotes de caminhos usados por 50 arquivos e na descoberta que lê discos. A I04 executa antes da I01, da I02 e da I03.
+* **Política de Privacidade & Orçamento Cognitivo:** a descoberta é somente leitura, não executa o que encontra e relata o que leu e o que recusou. Nenhum LLM na decisão da espinha. Nenhum segredo é lido nem gravado.
+* **Contrato de Evidência Factual (Definition of Done):** as cinco provas da seção 5 e o portão completo (`go test ./...`, `go vet ./...`, `gofmt -l` vazio, `funclen`, `taxlinter`, `go.mod` intacto).
 * **Restrições Inegociáveis:**
-  * TDD com Red primeiro.
-  * Sem LLM e sem heurística na decisão.
-  * Os 22 nós `orchestrix_hermetic` se comportam exatamente como hoje.
-  * Validação prévia obrigatória, sem fallback para um executor padrão.
-  * INTENTs da I01 e da I02 intactas.
-  * Execução pelo Swarm só sob as seis condições da lei 4 do `AGENTS.md`.
-* **Premissas Assumidas (a confirmar no Stop-Gate 01):** `internal/board` pode ser chamado direto pelo `runner` sem criar ciclo de importação (a SPEC confere); o Gate de um nó entregue ao Swarm é avaliado no `worktree` do worker (flag `gates` do `swarm_run`).
-* **Riscos e Perguntas em Aberto:** como o `runner` herda o `worktree` e o `workdir` quando mistura executores no mesmo nível; ciclo de importação entre `runner` e `board`.
+  * TDD com Red primeiro, e fixture com defeito sai com exit 2 (a mesma convenção da trava `upstream_ok`).
+  * A descoberta é determinística e somente leitura.
+  * A Matriz se atualiza por hash de conteúdo, nunca por relógio.
+  * O executor é derivado do tipo do nó, e `native_swarm` só entra de forma explícita.
+  * Existe uma única tabela de ligação `unit_task` e `unit_no`, e uma única fachada de caminhos.
+  * A verificação da espinha roda no CI e no `fechar`.
+  * INTENTs aprovadas da I01, da I02 e da I03 intactas.
+  * Zero débito: todo achado se corrige na execução e vira anticorpo.
+* **Premissas Assumidas (a confirmar no Stop-Gate 01):** o GitHub Actions está disponível para o repositório (a I01 já o assumia); o mutador sobre os sete pacotes termina em tempo aceitável no CI quando roda só nos pacotes alterados.
+* **Riscos e Perguntas em Aberto:** como tratar os Processos fora do prefixo `legoloop-` (10 de 33) no Registro; custo de tempo do mutador completo; como a descoberta se comporta em unidades de rede (a SPEC define).
 
 ---
 
@@ -84,16 +90,16 @@ covers: [Q1]
 
 | # | Critério | Como se prova | Comando / Evidência |
 | :--- | :--- | :--- | :--- |
-| 1 | Um DAG com executor desconhecido é recusado antes do nível 0, com todos os nós inválidos listados, `legoloop run` sai com 1 e nenhum `worktree` é criado. | Teste com DAG inválido e conferência do `git worktree list` | `go test ./internal/runner/...` |
-| 2 | Um DAG misto com os três executores roda por nível: os locais no `runner`, os `swarm_worker` no Swarm via `internal/board`, e o nível só termina com todos os Gates aprovados. | Teste de integração sem LLM | `go test ./internal/runner/...` |
-| 3 | Paridade: os 22 nós `orchestrix_hermetic` se comportam como hoje, e o DAG da I02 valida e executa sem mudança. | Testes atuais do runner e do Orchestrix, mais `legoloop validate` no DAG da I02 | `go test ./internal/runner/... ./internal/orchestrix/...` |
-| 4 | `plangen` e `internal/routedag` aceitam `swarm_worker` e recusam outros valores desconhecidos. | Testes de contrato | `go test ./internal/plangen/... ./internal/routedag/...` |
-| 5 | Portão completo verde. | Os seis comandos do portão | `go test ./...`, `go vet ./...`, `gofmt -l .`, `funclen`, `taxlinter`, `git diff go.mod` |
+| 1 | A espinha se confere sozinha: sai com 0 no repositório e com exit 2 em fixtures com defeito (verbo sem registro, lei sem verificador, dois pacotes para a mesma função, Processo incompleto, executor incoerente, tipo de nó fora da tabela). | Testes de mutação das regras, 100% dos mutantes mortos | `legoloop espinha verificar` e `go test ./internal/espinha/...` |
+| 2 | A descoberta acha uma peça nova sem `matriz gerar`; `matriz status` mostra zero diferença depois do `fabricar`; `TargetDrives` restringe a busca. | Teste com raiz de teste e peça colocada nela | `go test ./internal/descoberta/... ./internal/fabricar/...` |
+| 3 | O executor é derivado do tipo; os 33 Processos e os DAGs de `docs/dags` validam; nenhum `stop_gate` com rótulo errado. | Testes do `dag` e `legoloop validate` em todos os DAGs | `go test ./internal/dag/...` |
+| 4 | O CI fica verde em Windows, Linux e macOS. | Execução do workflow | `gh run list --workflow ci.yml --limit 1 --json conclusion` |
+| 5 | As 14 lacunas têm teste Red e anticorpo; `go test -race` passa; a execução de ponta a ponta duas vezes gera relatório idêntico; nenhum mutante de código sobrevive sem justificativa. | Relatório de fechamento da I04 | `go test -race ./...`, `tools/mutar`, `legoloop anticorpos status` |
 
 ---
 
 ## 6. Handoff de Governança
-* **Próximo Documento Mandatório:** [`docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md`](../specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE.md)
+* **Próximo Documento Mandatório:** [`docs/specs/2026-11-21_SPEC_INICIATIVA_4_I04_DO_MACROPROJE.md`](../specs/2026-11-21_SPEC_INICIATIVA_4_I04_DO_MACROPROJE.md)
 * **Gate de Transição:** Este Intent só é considerado aprovado após a validação humana explícita (*Gate Humano*) no chat, antes de qualquer linha de especificação ser redigida. A trava `upstream_ok` exige `status: APPROVED` no cabeçalho.
 
 ---

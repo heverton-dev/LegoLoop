@@ -69,7 +69,7 @@ func cell(s string) string { return strings.ReplaceAll(s, "|", `\|`) }
 func writeIntentHeader(b *strings.Builder, v IntentView) {
 	fmt.Fprintf(b, "---\nid: INTENT-%s\nstatus: %s\ndate: %s\nschema_version: 2\n", v.SessionID, intentStatus(v.Confidence), v.Date)
 	fmt.Fprintf(b, "upstream: [INTERVIEW-%s]\ncovers: [Q1]\n---\n\n", v.SessionID)
-	fmt.Fprintf(b, "# 🎯 INTENT: %s\n\n", v.Theme)
+	fmt.Fprintf(b, "# 🎯 INTENT: %s\n\n", tituloDoTema(v.Theme))
 	fmt.Fprintf(b, "> **Status:** %s  \n", intentStatus(v.Confidence))
 	fmt.Fprintf(b, "> **Data:** %s  \n", v.Date)
 	b.WriteString("> **Autor:** Antigravity AI + Usuário (via Entrevista Socrática Addy Osmani)  \n")
@@ -86,7 +86,7 @@ func writeIntentContext(b *strings.Builder, v IntentView) {
 	fmt.Fprintf(b, "* **Quem Sofre:** %s\n", orDefault(m.User, notInformed))
 	fmt.Fprintf(b, "* **O Porquê:** %s\n", orDefault(m.WhyNow, notInformed))
 	b.WriteString("* **Estado Atual vs. Estado Desejado:**\n")
-	fmt.Fprintf(b, "  * **Hoje:** Conforme a ideia inicial da entrevista: %s\n", v.Theme)
+	b.WriteString("  * **Hoje:** Conforme a ideia inicial da entrevista (ver O Problema Real).\n")
 	fmt.Fprintf(b, "  * **Amanhã:** %s\n\n---\n\n", orDefault(m.Outcome, notInformed))
 }
 
@@ -94,7 +94,9 @@ func writeIntentScope(b *strings.Builder, v IntentView) {
 	m := v.Mirror
 	b.WriteString("## 2. Escopo Inegociável\n\n### O que ESTÁ no Escopo (Objetivos Primários):\n")
 	fmt.Fprintf(b, "* [ ] Objetivo 1: %s\n", orDefault(m.Outcome, notInformed))
-	fmt.Fprintf(b, "* [ ] Objetivo 2: %s\n\n", orDefault(m.Success, notInformed))
+	b.WriteString("* [ ] Objetivo 2: critérios de sucesso:\n")
+	b.WriteString(bullets(criteriosDe(m.Success), "  ", notInformed))
+	b.WriteString("\n")
 	b.WriteString("### O que NÃO ESTÁ no Escopo (Não-Objetivos / Out-of-Scope):\n")
 	b.WriteString("* ⛔ Não faremos refatorações oportunistas fora das Peças declaradas em `Alvo`.\n")
 	b.WriteString("* ⛔ Não alteraremos contratos públicos de API/JSON sem spec formal prévia.\n")
@@ -137,7 +139,8 @@ func writeIntentGovernance(b *strings.Builder, v IntentView) {
 	b.WriteString("* **Gatilho Operacional de Disparo (Trigger):** `manual`  \n  *(Define como este Processo acordará no dia a dia quando estiver construído.)*\n")
 	b.WriteString("* **Nível de Risco & Blast Radius:** A definir no Stop-Gate 01\n")
 	b.WriteString("* **Política de Privacidade & Orçamento Cognitivo:** A definir no Stop-Gate 01\n")
-	fmt.Fprintf(b, "* **Contrato de Evidência Factual (Definition of Done Visual/Real):** %s\n", orDefault(m.Success, notInformed))
+	b.WriteString("* **Contrato de Evidência Factual (Definition of Done Visual/Real):**\n")
+	b.WriteString(bullets(criteriosDe(m.Success), "  ", notInformed))
 	b.WriteString("* **Restrições Inegociáveis:**\n")
 	b.WriteString(bullets(m.Constraints, "  ", "Nenhuma restrição registrada na entrevista"))
 	b.WriteString("* **Premissas Assumidas (a confirmar no Stop-Gate 01):** Nenhuma premissa registrada na entrevista.\n")
@@ -163,7 +166,7 @@ func writeIntentCriteria(b *strings.Builder, v IntentView) {
 		b.WriteString("| 2 | O grafo do processo é válido antes de executar. | Validação mecânica do grafo | `legoloop validate` com exit code 0 |\n")
 	}
 	fmt.Fprintf(b, "| 3 | %s | Critério de sucesso acordado na entrevista | A definir na SPEC como `AC-XX` binário |\n\n---\n\n",
-		cell(orDefault(v.Mirror.Success, notInformed)))
+		cell(orDefault(criteriosNumerados(v.Mirror.Success), notInformed)))
 }
 
 func writeIntentHandoff(b *strings.Builder, v IntentView) {

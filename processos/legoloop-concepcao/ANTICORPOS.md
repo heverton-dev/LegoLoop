@@ -1,9 +1,9 @@
 ---
 schema: anticorpos.v1
 processo: legoloop-concepcao
-total_anticorpos: 22
+total_anticorpos: 24
 globais: 0
-dominio: 22
+dominio: 24
 regras_inviolaveis:
   - pacote: "internal/interview"
     antidoto: "internal/interview/espelho_campos.go lê o realce antes ou depois dos dois-pontos e as linhas seguintes; testes espelh..."
@@ -49,13 +49,17 @@ regras_inviolaveis:
     antidoto: "nomeLimpo em convert.go tira o prefixo data_ROUTE_; testes nome_test.go; DAG da Forja regenerado"
   - pacote: "internal/interview"
     antidoto: "completeTurn exige Espelho para concluir; semEspelho pede o Espelho uma vez e, se insistir, mantem a sessao aberta co..."
+  - pacote: "internal/interview"
+    antidoto: "Verbo legoloop fabricar entrevista concluir envia MsgConcluir; passo documentado no SKILL.md; testes entrevista_concl..."
+  - pacote: "internal/interview"
+    antidoto: "tituloDoTema corta na primeira frase (100 caracteres), Hoje referencia O Problema Real, criteriosDe gera um subitem p..."
 ---
 
 # 🛡️ Banco de Anticorpos — legoloop-concepcao
 
 > Espelho executivo para leitura de agentes. O banco estruturado vive em `anticorpos.json`.
 
-## Regras de Domínio (22)
+## Regras de Domínio (24)
 
 ### `internal/interview`
 - **Antídoto:** internal/interview/espelho_campos.go lê o realce antes ou depois dos dois-pontos e as linhas seguintes; testes espelho_formato_test.go com Red provado.
@@ -188,6 +192,18 @@ regras_inviolaveis:
 - **Erro Evitado:** Sessao concluida sem Espelho: INTENT nao materializava e a entrevista recusava novas respostas
 - **Causa Raiz:** completeTurn concluia a sessao com confianca 95 ou mais mesmo sem Espelho; o cerebro foi de 85 para 98 apos uma resposta
 - **Assinatura:** `sha256:dbe5498d621c29b282b4c9bddea11970b7e24f608ae3a2e1eace78baaaa5ae2b`
+
+### `internal/interview`
+- **Antídoto:** Verbo legoloop fabricar entrevista concluir envia MsgConcluir; passo documentado no SKILL.md; testes entrevista_concluir_test.go
+- **Erro Evitado:** Entrevista estacionava em 85 por cento com pergunta vazia ou repetida e so saia com mensagem escrita a mao pedindo o Espelho
+- **Causa Raiz:** O motor nao tinha verbo para fechar uma sessao que o usuario ja respondeu por inteiro; o modelo code-fast estaciona abaixo da meta
+- **Assinatura:** `sha256:1670958eb8c60a8b6e4f6d9f9d2b356aeee0717b6351c80a4a817588b23dc022`
+
+### `internal/interview`
+- **Antídoto:** tituloDoTema corta na primeira frase (100 caracteres), Hoje referencia O Problema Real, criteriosDe gera um subitem por criterio; testes intent_limpa_test.go
+- **Erro Evitado:** INTENT materializada com o titulo igual a mensagem inteira da ideia, a ideia repetida tres vezes e criterios colados por ponto e virgula
+- **Causa Raiz:** RenderIntent usava o Theme inteiro no titulo e em Hoje, e escrevia Success como uma unica linha
+- **Assinatura:** `sha256:a66544f142d8cd2e14c7a8eedd6c1f0118957bd2fd4896412f126b7ce82eb8e8`
 
 ## Regras Globais (0)
 
