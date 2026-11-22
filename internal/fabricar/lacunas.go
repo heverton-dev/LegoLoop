@@ -4,8 +4,8 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/matriz"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // maxDesconhecidasCitadas é quantas peças sem perfil os avisos citam pelo nome; o resto vira um resumo.

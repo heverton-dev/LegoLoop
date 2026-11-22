@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // TriagemDoProcesso devolve a triagem que o processo exige, ou nil se não exige. Com mais de um nó a triagem

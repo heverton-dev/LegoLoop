@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/roteamento/homologacao"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento/homologacao"
 )
 
 func TestLigarRoteamentoLeEstadoDaHomologacao(t *testing.T) {

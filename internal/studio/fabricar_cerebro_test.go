@@ -12,8 +12,8 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // O 9Router deixa de ser requisito no Studio: só com Ollama a fábrica real roda de ponta a ponta.

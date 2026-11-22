@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 func TestScanScripts(t *testing.T) {

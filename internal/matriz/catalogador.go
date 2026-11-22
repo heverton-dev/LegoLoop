@@ -9,8 +9,8 @@ import (
 	"strings"
 	"sync"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 const maxConteudoPadrao = 2000

@@ -5,17 +5,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/escrita"
-	"legoloop/internal/espinha"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/escrita"
+	"github.com/heverton-dev/LegoLoop/internal/espinha"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 var ErrDAGDivergente = errors.New("fechar: hash SHA-256 divergente entre docs/dags e a pasta de Processos")

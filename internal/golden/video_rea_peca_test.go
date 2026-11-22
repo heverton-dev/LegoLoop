@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // vinculosVideoREA é o contrato da ligação: o nó do Processo video-rea e a peça que ele materializa.

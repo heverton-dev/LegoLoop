@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/matriz"
-	"legoloop/internal/reputation"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 func skill(ref string, score float64, etapas, naturezas []string) matriz.Entrada {

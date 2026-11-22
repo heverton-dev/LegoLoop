@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/jail"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 func planejarPastaProjeto(op Opcoes) []Alteracao {

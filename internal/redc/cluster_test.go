@@ -3,7 +3,7 @@ package redc_test
 import (
 	"testing"
 
-	"legoloop/internal/redc"
+	"github.com/heverton-dev/LegoLoop/internal/redc"
 )
 
 func TestClusterMethods_Deduplication(t *testing.T) {

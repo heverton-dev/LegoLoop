@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // captura guarda o plano que o motor mostrou e responde sempre a mesma decisão.

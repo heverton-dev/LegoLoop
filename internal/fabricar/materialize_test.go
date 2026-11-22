@@ -3,19 +3,19 @@ package fabricar_test
 import (
 	"context"
 	"errors"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"io/fs"
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/listar"
-	"legoloop/internal/matriz"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/listar"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // failFS delega ao disco real e falha na N-ésima gravação ou renomeação (1-based; 0 = nunca).

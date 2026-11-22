@@ -8,10 +8,10 @@ import (
 	"slices"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/processo"
-	"legoloop/internal/refinar"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/refinar"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func umaEtapa() processo.Processo {

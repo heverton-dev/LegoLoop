@@ -14,10 +14,10 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/interview"
-	"legoloop/internal/processo"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // TipoAlvo classifica o alvo da auditoria universal.

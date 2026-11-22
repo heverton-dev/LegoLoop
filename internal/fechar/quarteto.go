@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/escrita"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/escrita"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func ehDiretorio(caminho string) bool {

@@ -14,11 +14,11 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/processo"
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 var agora = time.Date(2026, 11, 4, 12, 0, 0, 0, time.UTC)

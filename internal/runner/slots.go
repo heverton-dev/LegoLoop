@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"time"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 // executeSlotCommands executa uma lista de comandos (argv) em sequência no workdir.

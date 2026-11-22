@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 func TestDetectPlatform(t *testing.T) {

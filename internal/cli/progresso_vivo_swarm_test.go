@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/progresso"
+	"github.com/heverton-dev/LegoLoop/internal/progresso"
 )
 
 func progressoSwarmDeTeste(t *testing.T, ids ...string) string {

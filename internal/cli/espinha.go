@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"legoloop/internal/espinha"
+	"github.com/heverton-dev/LegoLoop/internal/espinha"
 )
 
 const espinhaUso = `uso: legoloop espinha <verificar> [--raiz DIR] [--json]

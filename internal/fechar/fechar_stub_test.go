@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/fechar"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/fechar"
 )
 
 // semearDocs grava o manual, o livro e a Skill reais mínimos de um processo no repositório de teste.

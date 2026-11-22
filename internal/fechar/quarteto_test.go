@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
-	"legoloop/internal/runner"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // executorVazio executa o nó sem efeitos colaterais além do contrato.

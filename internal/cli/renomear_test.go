@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 func TestRenomearCLI(t *testing.T) {

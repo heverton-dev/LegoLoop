@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 const defaultMCPTimeout = 60 * time.Second

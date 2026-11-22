@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 type mockLLM struct {

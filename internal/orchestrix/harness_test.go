@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // helperHarness imita a saída REAL de cada CLI (formatos capturados em 31/10/2026).

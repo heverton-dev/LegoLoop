@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 // TestToolsViaRouter prova a AC-E09.1: as tools de dois Processos expõem pelo

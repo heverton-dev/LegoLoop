@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // ConfidenceTarget é a confiança da entrevista a partir da qual o INTENT sai de DRAFT.

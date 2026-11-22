@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 const gb = uint64(1) << 30

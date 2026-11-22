@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/roteamento"
-	"legoloop/internal/roteamento/homologacao"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento/homologacao"
 )
 
 type harnessContador struct {

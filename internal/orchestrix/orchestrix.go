@@ -15,12 +15,12 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/combo"
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
-	"legoloop/internal/roteamento"
-	"legoloop/internal/runner"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/combo"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 // AntibodyStore persiste e consulta lições de falhas anteriores sem acoplamento circular.

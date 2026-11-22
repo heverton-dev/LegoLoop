@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 const confiancaAltaSemEspelho = "HIPÓTESE: entendi tudo.\nCONFIANÇA: 98%\nPERGUNTA: Qual o formato do erro?"

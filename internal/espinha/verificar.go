@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // Violacao representa um desvio estrutural detectado na verificacao da espinha dorsal.

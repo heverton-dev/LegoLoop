@@ -3,7 +3,7 @@ package videomotion_test
 import (
 	"testing"
 
-	"legoloop/internal/videomotion"
+	"github.com/heverton-dev/LegoLoop/internal/videomotion"
 )
 
 func TestDetectPunchWords(t *testing.T) {

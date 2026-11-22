@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // maxInputBytes limita cada artefato de entrada injetado no prompt (contexto 2k–8k tokens).

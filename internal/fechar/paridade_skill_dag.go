@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 // ErrParidadeSkillDAG sinaliza Nó do DAG não citado na Skill do Processo.

@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 type TaxonomyFileViolation struct {

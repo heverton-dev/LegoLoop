@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 // AskFunc entrega a pergunta (e o palpite) ao usuário e devolve a resposta. A CLI e o Studio a fornecem.

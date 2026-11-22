@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/legopress"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/legopress"
 )
 
 func TestLegoPressCLI_Help(t *testing.T) {

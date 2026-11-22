@@ -6,7 +6,7 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
 )
 
 func renderPlan(m planMeta, nodes []routeNode) string {

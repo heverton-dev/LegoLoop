@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/plangen"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 const (

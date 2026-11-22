@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 // dagParidadeStudio é o DAG mínimo da prova de paridade: dois nós na ordem a, b.

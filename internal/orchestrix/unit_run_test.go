@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 // helperClaudeUnit é o claude falso do UT-04: grava em cwd os arquivos de LEGOLOOP_UNIT_WRITE

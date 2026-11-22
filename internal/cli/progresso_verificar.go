@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"legoloop/internal/progresso"
+	"github.com/heverton-dev/LegoLoop/internal/progresso"
 )
 
 // opcoesVerificarCLI reúne as flags de `progresso verificar`.

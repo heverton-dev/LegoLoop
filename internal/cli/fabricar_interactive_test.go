@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 const (

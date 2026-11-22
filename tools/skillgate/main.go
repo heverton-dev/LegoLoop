@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"legoloop/internal/fechar"
+	"github.com/heverton-dev/LegoLoop/internal/fechar"
 )
 
 func main() {

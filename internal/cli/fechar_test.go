@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/cli"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // semearRepoFechar monta um repositório de teste com o manual, o livro, a Skill e o DAG reais mínimos.

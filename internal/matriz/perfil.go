@@ -3,7 +3,7 @@ package matriz
 import (
 	"errors"
 
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 // ErrRespostaInvalida: o cérebro respondeu algo que não é o JSON de perfil esperado.

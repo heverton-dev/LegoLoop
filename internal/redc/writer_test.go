@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/redc"
+	"github.com/heverton-dev/LegoLoop/internal/redc"
 )
 
 func TestWriteREPC_Success(t *testing.T) {

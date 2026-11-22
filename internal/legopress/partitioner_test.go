@@ -3,7 +3,7 @@ package legopress_test
 import (
 	"testing"
 
-	"legoloop/internal/legopress"
+	"github.com/heverton-dev/LegoLoop/internal/legopress"
 )
 
 func TestPartitionHierarchy_Valid(t *testing.T) {

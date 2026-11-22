@@ -2,7 +2,7 @@ package studio
 
 import (
 	"encoding/json"
-	"legoloop/internal/combo"
+	"github.com/heverton-dev/LegoLoop/internal/combo"
 	"net/http"
 	"strings"
 	"testing"

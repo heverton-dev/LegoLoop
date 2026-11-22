@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 func TestPieceActions_FavoriteAndUpgrade(t *testing.T) {

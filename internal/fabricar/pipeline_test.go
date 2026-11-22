@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 func validRequest() fabricar.Request {

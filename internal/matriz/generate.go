@@ -15,9 +15,9 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/processo"
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 // maxLeitura limita quanto de cada arquivo de peça é lido (a nota e o catálogo só precisam do começo).

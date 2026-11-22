@@ -1,12 +1,12 @@
 package redc_test
 
 import (
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/redc"
+	"github.com/heverton-dev/LegoLoop/internal/redc"
 )
 
 func TestGenerateMethodProcessos_Success(t *testing.T) {

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // canonizar move o DAG e o Studio de um processo para o layout do fabricar: uma pasta por processo no cofre.

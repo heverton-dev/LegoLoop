@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/cli"
-	"legoloop/internal/gate"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // excecoes5Por5 isenta processos do nascimento 5/5, com dono e motivo (AC-E02.3).

@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // As rotas /api/interview, /api/spec e /api/plan montavam o cliente do 9Router sem a chave, e um router

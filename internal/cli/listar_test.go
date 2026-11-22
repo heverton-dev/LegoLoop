@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // cofreListar monta o cofre do AC-E03.1: legoloop-a vinculado a claude e codex, legoloop-b que compõe a, e

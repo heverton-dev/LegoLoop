@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 // ResultadoMigracao resume a movimentação para o arquivo morto.

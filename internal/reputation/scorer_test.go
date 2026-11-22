@@ -3,7 +3,7 @@ package reputation_test
 import (
 	"testing"
 
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 func TestScorePiece_EliteSkill(t *testing.T) {

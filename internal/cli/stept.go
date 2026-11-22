@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func resolveHome(d Deps, flagHome string) string {

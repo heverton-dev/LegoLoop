@@ -3,8 +3,8 @@ package studio
 import (
 	"context"
 	"encoding/json"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"io"
-	"legoloop/internal/caminhos"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -12,9 +12,9 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/graph"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 const host = "127.0.0.1:7878"

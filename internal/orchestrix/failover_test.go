@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // O motivo devolvido pelo claude no JSON aparece no erro (achado no e2e real).

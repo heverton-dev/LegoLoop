@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/board"
 )
 
 // Regex para detectar referências a arquivos com extensões comuns ou caminhos de diretório.

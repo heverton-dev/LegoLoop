@@ -96,13 +96,13 @@ func TestExecutarArquivoInexistenteRetornaExit2(t *testing.T) {
 }
 
 func TestExtrairCoberturas(t *testing.T) {
-	saida := "ok  \tlegoloop/internal/board\t1.2s\tcoverage: 65.5% of statements\n" +
-		"?   \tlegoloop/internal/vazio\t[no test files]\n"
+	saida := "ok  \tgithub.com/heverton-dev/LegoLoop/internal/board\t1.2s\tcoverage: 65.5% of statements\n" +
+		"?   \tgithub.com/heverton-dev/LegoLoop/internal/vazio\t[no test files]\n"
 	got := extrairCoberturas(saida)
-	if got["legoloop/internal/board"] != 65.5 {
-		t.Fatalf("esperava 65.5, obtive %v", got["legoloop/internal/board"])
+	if got["github.com/heverton-dev/LegoLoop/internal/board"] != 65.5 {
+		t.Fatalf("esperava 65.5, obtive %v", got["github.com/heverton-dev/LegoLoop/internal/board"])
 	}
-	if v, ok := got["legoloop/internal/vazio"]; !ok || v != 0 {
+	if v, ok := got["github.com/heverton-dev/LegoLoop/internal/vazio"]; !ok || v != 0 {
 		t.Fatalf("esperava 0 para vazio, obtive %v (%v)", v, ok)
 	}
 }

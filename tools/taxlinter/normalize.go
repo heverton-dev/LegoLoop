@@ -5,7 +5,7 @@ import (
 	"strings"
 	"unicode"
 
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 // brandRe casa a marca LegoLoop em qualquer caixa. A marca é exceção ao dicionário.

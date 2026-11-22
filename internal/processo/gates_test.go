@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/gate"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func comPromessa(tipo, caminho, g string) processo.Processo {

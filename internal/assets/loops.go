@@ -3,13 +3,13 @@ package assets
 import (
 	"context"
 	"encoding/json"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 const sufixoAntigo = caminhos.SufixoLoop

@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // fakeExec grava o artefato do nó e mede a concorrência real observada.

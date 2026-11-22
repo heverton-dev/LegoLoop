@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 // espelhoFechaNegritoDepoisDosDoisPontos reproduz o formato que o claude emite:

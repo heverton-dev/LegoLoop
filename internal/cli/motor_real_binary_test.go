@@ -10,7 +10,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"legoloop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
 )
 
 // cerebroPorPapel é um 9Router falso que responde conforme o papel pedido no prompt do sistema:

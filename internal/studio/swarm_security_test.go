@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/board"
 )
 
 func TestSwarmUIUnifiedNoXSSAndRealKill(t *testing.T) {

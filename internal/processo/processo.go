@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 var (

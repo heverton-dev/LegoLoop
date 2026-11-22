@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"legoloop/internal/plangen"
-	"legoloop/internal/progresso"
-	"legoloop/internal/upstream"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/progresso"
+	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
 
 const planoUso = "uso: legoloop plano --spec SPEC --tickets tickets.json [--raiz DIR] [--nivel epic] [--data AAAA-MM-DD] [--estrito] [--json]"

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 type Store struct {

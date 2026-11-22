@@ -2,10 +2,10 @@ package processo
 
 import (
 	"fmt"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"strings"
 
-	"legoloop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
 )
 
 // projetarSpec gera a SPEC do processo no contrato do TEMPLATE_SPEC: as seis seções, um critério binário por

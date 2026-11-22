@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/graph"
-	"legoloop/internal/interview"
-	"legoloop/internal/specgen"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/specgen"
 )
 
 type mockSpecLLM struct {

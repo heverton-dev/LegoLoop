@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"legoloop/internal/escrita"
+	"github.com/heverton-dev/LegoLoop/internal/escrita"
 )
 
 // AntibodiesDBFile é o nome do arquivo persistido por processo (schema anticorpos.v1).

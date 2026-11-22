@@ -10,8 +10,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func runTriagem(ctx context.Context, args []string, stdout, stderr io.Writer) int {

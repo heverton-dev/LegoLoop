@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
 )
 
 func criarSkillDeclarada(t *testing.T, projDir, nome, etapa, caso string) string {

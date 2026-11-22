@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/board"
 )
 
 func TestSwarmSpawnToolRealProcess(t *testing.T) {

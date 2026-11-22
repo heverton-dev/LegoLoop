@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 var blockIDRe = regexp.MustCompile(`^[a-z0-9][a-z0-9_-]{0,63}$`)

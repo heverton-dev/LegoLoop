@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // TestLacunaRelatorioEtapaComposta: etapa que compõe outro processo não é lacuna, mesmo sem peça; só a etapa sem

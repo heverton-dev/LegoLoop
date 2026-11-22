@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
 )
 
 func TestCascadeHooksAndMCPsAcrossDiscoveredProjects(t *testing.T) {

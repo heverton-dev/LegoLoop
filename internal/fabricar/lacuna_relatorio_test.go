@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/matriz"
-	"legoloop/internal/reputation"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // matrizComLacuna tem alfa, apta a construir (tdd), e uma skill sem perfil de Score 0.95. Nenhuma peça é apta a

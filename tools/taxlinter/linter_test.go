@@ -1,7 +1,7 @@
 package main
 
 import (
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"testing"

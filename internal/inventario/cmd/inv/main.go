@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/inventario"
+	"github.com/heverton-dev/LegoLoop/internal/inventario"
 )
 
 func main() {

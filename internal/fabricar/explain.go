@@ -7,9 +7,9 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // maxExplicacao é o tamanho máximo, em caracteres, da explicação de cada decisão.

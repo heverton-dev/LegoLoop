@@ -7,10 +7,10 @@ import (
 	"io"
 	"strings"
 
-	"legoloop/internal/compor"
-	"legoloop/internal/jail"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/compor"
+	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func init() {

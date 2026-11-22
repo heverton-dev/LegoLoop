@@ -3,8 +3,8 @@ package orchestrix
 import (
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 func fixtureProcessoV2() *studiodoc.Processo {

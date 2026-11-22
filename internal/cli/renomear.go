@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	"legoloop/internal/jail"
-	"legoloop/internal/renomear"
+	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/renomear"
 )
 
 const renomearUsage = `Uso: legoloop renomear <antigo> <novo> [--dry-run] [--vault DIR] [--docs DIR] [--raiz DIR] [--yes] [--json]

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/espinha"
+	"github.com/heverton-dev/LegoLoop/internal/espinha"
 )
 
 func TestCmdEspinhaVerificarRepositorioReal(t *testing.T) {

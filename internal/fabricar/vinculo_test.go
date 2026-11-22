@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // comHarnesses cria as pastas dos harnesses no HOME do rig e os entrega ao motor como detectados.

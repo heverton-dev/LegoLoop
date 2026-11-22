@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/plangen"
-	"legoloop/internal/upstream"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
 
 // cadeiaDeTeste grava INTENT, SPEC e PLAN no disco e devolve a ROUTE que assina os três.

@@ -10,7 +10,7 @@ import (
 	"os/exec"
 	"time"
 
-	"legoloop/internal/descoberta"
+	"github.com/heverton-dev/LegoLoop/internal/descoberta"
 )
 
 // Kind é a categoria de um ativo.

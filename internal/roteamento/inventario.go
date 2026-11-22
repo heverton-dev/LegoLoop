@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 type Via string

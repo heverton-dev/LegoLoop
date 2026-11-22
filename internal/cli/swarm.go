@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/board"
 )
 
 // defaultBoardDir prioriza o quadro herdado do worker (LEGOLOOP_SWARM_BOARD) e cai no diretorio atual.

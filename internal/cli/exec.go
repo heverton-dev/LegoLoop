@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/jail"
-	"legoloop/internal/renomear"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/renomear"
 )
 
 const execUsage = `uso: legoloop exec <slug> [--processos-dir DIR] [--workdir DIR] [--json]

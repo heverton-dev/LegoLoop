@@ -5,10 +5,10 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/matriz"
-	"legoloop/internal/reputation"
-	"legoloop/internal/ste"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 // MergeByFit é a Camada 3 pela aptidão ao caso de uso: para cada etapa pedida escolhe a peça mais apta da matriz

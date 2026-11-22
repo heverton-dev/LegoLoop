@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/board"
-	"legoloop/internal/caminhos"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 type simNodeInput struct {

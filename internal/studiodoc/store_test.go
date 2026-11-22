@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 func sampleValidProcesso(id, name string) *studiodoc.Processo {

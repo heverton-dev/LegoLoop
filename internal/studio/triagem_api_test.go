@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func TestHandleTriagemDeterministico(t *testing.T) {

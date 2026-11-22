@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // semearContrato grava o manifesto contrato.json de uma peça no cofre de teste.

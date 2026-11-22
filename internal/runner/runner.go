@@ -14,8 +14,8 @@ import (
 	"sync"
 	"time"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 // TokenUsage é a telemetria de tokens reportada pelo executor.

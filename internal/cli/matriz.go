@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/brain"
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func init() {

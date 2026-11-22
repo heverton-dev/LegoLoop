@@ -3,7 +3,7 @@ package orchestrix
 import (
 	"sync"
 
-	"legoloop/internal/roteamento/homologacao"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento/homologacao"
 )
 
 type RegistroReprovados struct {

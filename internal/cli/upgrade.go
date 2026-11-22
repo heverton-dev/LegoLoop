@@ -9,8 +9,8 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 // goldScore é a nota mínima do Padrão Ouro.

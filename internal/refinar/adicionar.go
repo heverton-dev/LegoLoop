@@ -5,8 +5,8 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // reIDNomeado aceita o id da etapa: minúsculas, números, _ ou -, começando com letra. Vale e04 e renderizar_video.

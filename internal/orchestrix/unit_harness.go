@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 const estadoHomologado = "homologado"

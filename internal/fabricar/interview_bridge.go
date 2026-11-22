@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 // FabricarFromInterview consome a sessão e a INTENT (UNDER_REVIEW, confiança >= 95%)

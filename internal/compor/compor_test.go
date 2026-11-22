@@ -6,8 +6,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"io/fs"
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -15,10 +15,10 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/compor"
-	"legoloop/internal/dag"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/compor"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 var inicio = time.Date(2026, 11, 5, 10, 0, 0, 0, time.UTC)

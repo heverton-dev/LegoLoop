@@ -20,7 +20,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // ErrArtefatoRepetido indica dois nós da projeção com o mesmo output.artifact.

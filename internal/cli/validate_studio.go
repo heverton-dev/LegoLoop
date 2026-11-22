@@ -8,10 +8,10 @@ import (
 	"slices"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/escrita"
-	"legoloop/internal/processo"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/escrita"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 // flagRegenerarStudio faz o validate regravar o documento do Studio a partir do DAG.

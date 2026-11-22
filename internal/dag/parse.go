@@ -11,8 +11,8 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/gate"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 // MaxDAGBytes limita o tamanho do contrato aceito (proteção contra payload abusivo).

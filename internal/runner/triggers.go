@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // NextCronTime calcula o próximo momento exato (minuto cheio) em que a expressão cron dispara

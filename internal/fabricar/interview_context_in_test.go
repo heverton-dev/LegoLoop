@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
 )
 
 func TestFabricarFromInterview_ConectaIntentComoContextIn(t *testing.T) {

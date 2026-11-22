@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 const maxGateOutputBytes = 20000

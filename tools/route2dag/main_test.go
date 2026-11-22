@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // TestProjecaoValidaNoParser (AC-E01.6): a projeção da ROUTE desta demanda passa no parser,

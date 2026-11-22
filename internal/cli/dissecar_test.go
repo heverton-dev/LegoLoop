@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/dissecar"
+	"github.com/heverton-dev/LegoLoop/internal/dissecar"
 )
 
 func TestDissecarCommand_Run(t *testing.T) {

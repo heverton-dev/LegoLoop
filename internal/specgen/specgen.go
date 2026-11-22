@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/docs/templates"
-	"legoloop/internal/graph"
-	"legoloop/internal/interview"
-	"legoloop/internal/upstream"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
 
 // Generator orquestra a criação determinística de especificações técnicas formais.

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/processo"
-	"legoloop/skills"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/skills"
 )
 
 func TestInstalarSkills(t *testing.T) {

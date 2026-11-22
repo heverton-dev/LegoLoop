@@ -3,7 +3,7 @@ package combo_test
 import (
 	"testing"
 
-	"legoloop/internal/combo"
+	"github.com/heverton-dev/LegoLoop/internal/combo"
 )
 
 func TestCatalogoHonesto_SeisCombos(t *testing.T) {

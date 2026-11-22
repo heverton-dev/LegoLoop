@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/legopress"
+	"github.com/heverton-dev/LegoLoop/internal/legopress"
 )
 
 func TestTransmuterAndSync(t *testing.T) {

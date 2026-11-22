@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // templateFileName é o nome do gabarito do processo em docs/templates.

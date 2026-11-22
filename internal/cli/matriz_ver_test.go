@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
 )
 
 type verJSON struct {

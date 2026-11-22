@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/processo"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func TestRequestValidate_PecaTipos(t *testing.T) {

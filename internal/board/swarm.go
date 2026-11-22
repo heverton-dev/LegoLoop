@@ -14,7 +14,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 type WorkspaceMode string

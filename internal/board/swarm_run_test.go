@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 func TestHelperProcessRunLevels(t *testing.T) {

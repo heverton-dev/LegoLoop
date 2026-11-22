@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/board"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 // TestHelperSwarmRunWorker e o corpo dos workers do E2E: um processo real, sem harness externo.

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // naturezaDoProcesso lê a natureza do processo no cofre. Arquivo ausente ou ilegível

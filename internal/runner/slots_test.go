@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 type slotTrackerExec struct {

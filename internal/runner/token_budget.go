@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // novaSessaoID gera o identificador único da sessão (32 hex de crypto/rand).

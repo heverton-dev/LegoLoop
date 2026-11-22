@@ -2,7 +2,7 @@
 // e a validação estrutural (IDs, dependências, ciclos, handoffs e gates).
 package dag
 
-import "legoloop/internal/gate"
+import "github.com/heverton-dev/LegoLoop/internal/gate"
 
 // Mode é a modalidade de roteamento do nó (SPEC_ROTEAMENTO_CANONIZACAO §1).
 type Mode string

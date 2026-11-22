@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 // ErrDriftStudio: o documento do Studio não é a projeção fiel do DAG — os nós divergem.

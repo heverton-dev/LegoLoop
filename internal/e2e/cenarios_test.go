@@ -15,16 +15,16 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/dag"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/gate"
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/processo"
-	"legoloop/internal/provider"
-	"legoloop/internal/reputation"
-	"legoloop/internal/studio"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/studio"
 )
 
 var e2eNow = time.Date(2026, 11, 4, 12, 0, 0, 0, time.UTC)

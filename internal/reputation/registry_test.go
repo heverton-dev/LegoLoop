@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 func TestRegistryMatrixLoadAndLookup(t *testing.T) {

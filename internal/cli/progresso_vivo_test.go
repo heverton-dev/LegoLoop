@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/progresso"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/progresso"
 )
 
 const dagComTicket = `{"name":"p","progresso":"docs/progress/x/progresso.json","nodes":[

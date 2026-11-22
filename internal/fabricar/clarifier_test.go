@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 const turn70 = "HIPÓTESE: extrator\nCONFIANÇA: 70%\nPERGUNTA: Qual o formato?\nPALPITE: mp3"

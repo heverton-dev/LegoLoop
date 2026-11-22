@@ -3,7 +3,7 @@ package cli
 import (
 	"context"
 	"encoding/json"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // compRouter é um 9Router local que lista sonnet e code-fast. Assim os nós de skill (modelo sonnet)

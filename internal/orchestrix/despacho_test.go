@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
-	"legoloop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
 )
 
 // orchestrixDegrada declara o harness omp via oficial como reprovado e o omp via 9router como homologado.

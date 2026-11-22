@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 func invOllama() provider.Inventory { return provider.Inventory{Ollama: []string{"qwen2.5"}} }

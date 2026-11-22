@@ -9,9 +9,9 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/processo"
-	nativas "legoloop/skills"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	nativas "github.com/heverton-dev/LegoLoop/skills"
 )
 
 // Opcao descreve a instalação de skills.

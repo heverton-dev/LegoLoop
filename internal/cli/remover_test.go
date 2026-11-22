@@ -5,14 +5,14 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"io/fs"
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // fotoRemover guarda caminho e hash de tudo sob root: duas fotos iguais provam que nada mudou.

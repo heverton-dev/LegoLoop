@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // composta devolve quatro() com a etapa e03 executando outro processo, que grava out/e03.md dentro dele.

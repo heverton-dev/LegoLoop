@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // seedContext copia para a worktree os arquivos de context_in que existem no repositório

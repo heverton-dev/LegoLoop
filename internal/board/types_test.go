@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/board"
 )
 
 func TestTicketSerialization(t *testing.T) {

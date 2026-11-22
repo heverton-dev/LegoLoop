@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/escrita"
+	"github.com/heverton-dev/LegoLoop/internal/escrita"
 )
 
 // AntibodiesMarkdownFile é o nome do espelho executivo para leitura rápida de agentes.

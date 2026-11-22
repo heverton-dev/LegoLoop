@@ -12,11 +12,11 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/cli"
-	"legoloop/internal/graph"
-	"legoloop/internal/provider"
-	"legoloop/internal/studio"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/studio"
 )
 
 const dagParidade = `{"name":"paridade","nodes":[

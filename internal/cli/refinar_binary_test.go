@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 const refinNome = "legoloop-x"

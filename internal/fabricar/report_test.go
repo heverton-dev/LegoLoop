@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
 )
 
 func TestReportUnico(t *testing.T) {

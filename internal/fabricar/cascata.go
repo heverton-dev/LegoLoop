@@ -2,7 +2,7 @@ package fabricar
 
 import (
 	"fmt"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 	"slices"
 )
 

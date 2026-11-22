@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 // fakeBrain é o dublê da borda (LLM): registra as chamadas e devolve a resposta combinada.

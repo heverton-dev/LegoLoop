@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func TestCmdSessoesAtivasListaDuas(t *testing.T) {

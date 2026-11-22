@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 // sysLLM guarda o prompt do sistema da primeira chamada da entrevista.

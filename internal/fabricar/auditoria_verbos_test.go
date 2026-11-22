@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
 )
 
 // stubPorVerbo devolve o critério binário simulado com exit fixo por verbo.

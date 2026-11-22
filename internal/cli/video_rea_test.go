@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // fakeYtdlp substitui o yt-dlp: devolve metadados fixos e grava o áudio no destino pedido.

@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 type triagemRequest struct {

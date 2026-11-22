@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/skills"
+	"github.com/heverton-dev/LegoLoop/internal/skills"
 )
 
 func skillCusto(t *testing.T, base, nome string) {

@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 const dagTresScriptsDeterminismo = `{

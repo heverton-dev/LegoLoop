@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/roteamento"
-	"legoloop/internal/roteamento/homologacao"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento/homologacao"
 )
 
 // ligarRoteamento liga ao motor o estado de homologação e os candidatos elegíveis do perfil.

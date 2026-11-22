@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/processo"
-	"legoloop/internal/refinar"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/refinar"
 )
 
 // noRota e noDag imitam os nós curados à mão: roteamento 9router, timeout e gate com '&&' sem escape HTML.

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"legoloop/internal/mcp"
+	"github.com/heverton-dev/LegoLoop/internal/mcp"
 )
 
 const legoloopTOML = "[mcp_servers.legoloop]\ncommand = \"legoloop\"\nargs = [\"mcp-router\"]\n"

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 func TestCheckForbidden(t *testing.T) {

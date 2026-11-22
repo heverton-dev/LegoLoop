@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/redc"
+	"github.com/heverton-dev/LegoLoop/internal/redc"
 )
 
 func cmdCanal(ctx context.Context, args []string, d Deps) int {

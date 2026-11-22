@@ -1,6 +1,6 @@
 package fabricar
 
-import "legoloop/internal/matriz"
+import "github.com/heverton-dev/LegoLoop/internal/matriz"
 
 // Step é um passo escolhido pela Fusão: a skill que executa a etapa.
 type Step struct {

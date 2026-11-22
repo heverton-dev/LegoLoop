@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // TestMutationsCoverage é o alvo BDD do plano cobrindo as 4 mutações críticas M1 a M4.

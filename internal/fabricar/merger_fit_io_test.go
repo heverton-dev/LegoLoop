@@ -6,8 +6,8 @@ import (
 	"slices"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
 )
 
 // TestMergeByFitPorIO cobre a AC-E05.1 no caminho real: MergeByFit carrega o contrato.json ao lado

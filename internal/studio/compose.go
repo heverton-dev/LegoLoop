@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"legoloop/internal/combo"
-	"legoloop/internal/dag"
-	"legoloop/internal/graph"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/combo"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // maxCanvasNodes limita o tamanho de um Processo vindo do canvas.

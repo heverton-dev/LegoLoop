@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // ErrExists: já existe um processo com o mesmo nome canônico e Force=false.

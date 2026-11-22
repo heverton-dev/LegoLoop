@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // fakeRouter é um 9Router mínimo: registra o cabeçalho Authorization e devolve a SPEC no formato OpenAI.

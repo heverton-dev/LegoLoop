@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // homeCom cria um HOME descartável com as pastas dos harnesses pedidos.

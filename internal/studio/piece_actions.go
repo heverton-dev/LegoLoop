@@ -11,7 +11,7 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 // handlePieceFavorite alterna o status de favorito/SSOT de uma peça.

@@ -7,11 +7,11 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/interview"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func init() {

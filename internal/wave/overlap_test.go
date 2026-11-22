@@ -5,8 +5,8 @@ import (
 	"sort"
 	"testing"
 
-	"legoloop/internal/board"
-	"legoloop/internal/wave"
+	"github.com/heverton-dev/LegoLoop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/wave"
 )
 
 func TestExtractAffectedFiles(t *testing.T) {

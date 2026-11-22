@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/provider"
-	"legoloop/internal/runner"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 func TestRunSubloopSuccess(t *testing.T) {

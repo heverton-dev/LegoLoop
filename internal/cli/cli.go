@@ -8,16 +8,16 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"io"
-	"legoloop/internal/caminhos"
 	"os"
 	"slices"
 	"strings"
 	"text/tabwriter"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 // Version é a versão do binário.

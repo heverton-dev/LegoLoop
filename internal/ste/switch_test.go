@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func TestConfigPerfil_Validate(t *testing.T) {

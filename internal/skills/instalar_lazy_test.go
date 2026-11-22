@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 func rodarInstalarArgs(t *testing.T, home, vault, dirProcessos string, extra ...string) int {

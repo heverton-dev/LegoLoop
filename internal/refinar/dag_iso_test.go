@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/refinar"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/refinar"
 )
 
 func TestRefinar_AcompanhaODagEspelhoQueAProjetoJaTem(t *testing.T) {

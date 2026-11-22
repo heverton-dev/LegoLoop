@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"legoloop/internal/videomotion"
+	"github.com/heverton-dev/LegoLoop/internal/videomotion"
 )
 
 func TestBridgeGenerationAndFallback(t *testing.T) {

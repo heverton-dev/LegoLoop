@@ -12,9 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/jail"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 var (

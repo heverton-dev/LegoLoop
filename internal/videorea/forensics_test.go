@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/interview"
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 func TestExtractForensicsPrompts(t *testing.T) {

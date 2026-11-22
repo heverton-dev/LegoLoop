@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 // maxArgPromptBytes: o agy só recebe o prompt como argumento, e o Windows limita a

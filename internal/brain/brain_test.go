@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/interview"
-	"legoloop/internal/provider"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func cli(name string) provider.CLI { return provider.CLI{Name: name, Path: "/bin/" + name} }

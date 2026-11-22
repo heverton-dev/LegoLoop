@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/mcp"
+	"github.com/heverton-dev/LegoLoop/internal/mcp"
 )
 
 func rodarSync(t *testing.T, home string, args ...string) string {

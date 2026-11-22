@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 // majorVersion lê o número maior de version; vazio equivale a 1 (contrato legado).

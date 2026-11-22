@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"legoloop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
 )
 
 // nomeRelatorioVerbos é o relatório de auditoria universal dos seis verbos.

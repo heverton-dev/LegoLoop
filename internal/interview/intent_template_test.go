@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/docs/templates"
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 const mirrorResp = `HIPÓTESE: Processo Go automatizado.

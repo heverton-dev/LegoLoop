@@ -6,8 +6,8 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func init() {

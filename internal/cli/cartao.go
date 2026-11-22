@@ -5,8 +5,8 @@ import (
 	"io"
 	"strings"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // aprovar mostra o cartão do plano único e conduz as três decisões. Enter vazio cancela. "Personalizar" abre os

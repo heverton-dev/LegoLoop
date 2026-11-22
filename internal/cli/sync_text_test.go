@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/mcp"
+	"github.com/heverton-dev/LegoLoop/internal/mcp"
 )
 
 const codexFixture = `model = "gpt-5"

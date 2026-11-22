@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // prepareIsolation provisiona um ambiente hermético e efêmero para execução do nó:

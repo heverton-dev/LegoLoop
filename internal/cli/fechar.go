@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/fechar"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/fechar"
 )
 
 const fecharUsage = `Uso: legoloop fechar <slug> [opções]

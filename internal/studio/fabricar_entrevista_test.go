@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 type mockStudioEntrevistaLLM struct {

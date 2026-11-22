@@ -14,7 +14,7 @@ import (
 	"regexp"
 	"slices"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 //go:embed vocab.default.json

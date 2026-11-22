@@ -5,7 +5,7 @@ import (
 	"context"
 	"testing"
 
-	"legoloop/internal/commit"
+	"github.com/heverton-dev/LegoLoop/internal/commit"
 )
 
 func TestExecutar_ForaDeRepoGit(t *testing.T) {

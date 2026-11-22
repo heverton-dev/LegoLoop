@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func TestPreExecNodeGravaEtapaNaMemoria(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	"legoloop/internal/commit"
+	"github.com/heverton-dev/LegoLoop/internal/commit"
 )
 
 func cmdCommit(ctx context.Context, args []string, d Deps) int {

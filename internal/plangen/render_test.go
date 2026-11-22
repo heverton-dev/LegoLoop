@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/docs/templates"
-	"legoloop/internal/gate"
-	"legoloop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
 )
 
 var fixedNow = time.Date(2026, 11, 3, 10, 0, 0, 0, time.UTC)

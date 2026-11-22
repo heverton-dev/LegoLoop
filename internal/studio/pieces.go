@@ -2,14 +2,14 @@ package studio
 
 import (
 	"fmt"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
-	"legoloop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
 )
 
 // maxArtifactLen limita o nome do artefato de saída de uma peça genérica.

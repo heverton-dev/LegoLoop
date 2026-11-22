@@ -5,15 +5,15 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"io/fs"
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 	"testing"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 var errInjected = errors.New("falha injetada")

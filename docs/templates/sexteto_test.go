@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
 )
 
 func TestInterviewEHandoffEmbutidos(t *testing.T) {

@@ -12,9 +12,9 @@ import (
 	"strconv"
 	"strings"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // ROUTE e DAGs em schema v2 (nós TICK-NN.M) são curados à mão: roteamento, stop-gate, timeouts e assinatura do ROUTE.

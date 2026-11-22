@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func TestTextoManual(t *testing.T) {

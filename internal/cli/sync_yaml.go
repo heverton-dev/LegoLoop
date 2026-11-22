@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"legoloop/internal/mcp"
+	"github.com/heverton-dev/LegoLoop/internal/mcp"
 )
 
 var legoloopYAML = []string{"  legoloop:", "    command: legoloop", "    args:", "      - mcp-router"}

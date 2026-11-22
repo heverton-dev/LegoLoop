@@ -4,18 +4,18 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/provider"
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 var fabCLINow = time.Date(2026, 11, 3, 10, 0, 0, 0, time.UTC)

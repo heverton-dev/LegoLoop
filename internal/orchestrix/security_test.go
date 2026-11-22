@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // SEC-01: nós script só rodam com consentimento explícito.

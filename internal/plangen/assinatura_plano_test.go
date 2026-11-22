@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
 )
 
 // TestRoute_AssinaOPlanJaGravadoNaPrimeiraGeracao: a ROUTE assina o PLAN. Na primeira geração o PLAN

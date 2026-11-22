@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 func setupPromptTestEnv(t *testing.T) (*Orchestrix, *os.Root) {

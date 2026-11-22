@@ -10,13 +10,13 @@ import (
 	"path/filepath"
 	"time"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/canon"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
-	"legoloop/internal/jail"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/canon"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // FabricarDeps injeta o que o `fabricar` não deve buscar sozinho; o valor zero usa o ambiente real.

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/roteamento"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 func TestRelatorioFactual(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/artefato"
+	"github.com/heverton-dev/LegoLoop/internal/artefato"
 )
 
 func expandTrace(root string, alvos []string) ([]string, error) {

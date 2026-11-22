@@ -3,9 +3,9 @@ package studiodoc_test
 import (
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/graph"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 func TestDerivePortsClassicProcesso(t *testing.T) {

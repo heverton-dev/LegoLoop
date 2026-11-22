@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 // ErrContratoInvalido: o manifesto contrato.json da peça não satisfaz o contrato de I/O.

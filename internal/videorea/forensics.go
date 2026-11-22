@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"legoloop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
 )
 
 var (

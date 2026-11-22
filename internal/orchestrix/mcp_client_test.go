@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 func TestHelperMCPServerProcess(t *testing.T) {

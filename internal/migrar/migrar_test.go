@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func TestMigrarLoops_DryRunNaoAlteraDisco(t *testing.T) {

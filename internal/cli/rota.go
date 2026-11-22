@@ -12,10 +12,10 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/escrita"
-	"legoloop/internal/processo"
-	"legoloop/internal/roteamento"
-	"legoloop/internal/roteamento/homologacao"
+	"github.com/heverton-dev/LegoLoop/internal/escrita"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento/homologacao"
 )
 
 const rotaTipoNo = "unit_task"

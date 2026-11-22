@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 var update = flag.Bool("update", false, "regrava testdata/golden.json")

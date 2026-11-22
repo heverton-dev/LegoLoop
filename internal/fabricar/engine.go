@@ -5,18 +5,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/descoberta"
 	"io"
-	"legoloop/internal/assets"
-	"legoloop/internal/caminhos"
-	"legoloop/internal/descoberta"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // Deps reúne tudo que o motor recebe de fora, para ser hermético e determinístico.

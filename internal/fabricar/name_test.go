@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 var canonicalRe = regexp.MustCompile(`^legoloop-[a-z0-9]+(-[a-z0-9]+)*$`)

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 type interviewStartReq struct {

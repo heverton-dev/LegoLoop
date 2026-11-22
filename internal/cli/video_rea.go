@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 const videoReaUsage = `Uso: legoloop video-rea <subcomando> [opções]

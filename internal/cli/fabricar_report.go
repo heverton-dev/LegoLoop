@@ -7,7 +7,7 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
 )
 
 // reportLacuna é a saída do dry-run com lacuna: os avisos, depois o cartão e o resumo por camada (ou o JSON).

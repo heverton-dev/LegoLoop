@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
 )
 
 func porNome(r *matriz.Registro, nome string) matriz.Entrada {

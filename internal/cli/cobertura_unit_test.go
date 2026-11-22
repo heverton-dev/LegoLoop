@@ -10,15 +10,15 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/board"
-	"legoloop/internal/brain"
-	"legoloop/internal/canon"
-	"legoloop/internal/compor"
-	"legoloop/internal/interview"
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/refinar"
-	"legoloop/internal/runner"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/canon"
+	"github.com/heverton-dev/LegoLoop/internal/compor"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/refinar"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func TestVerbos(t *testing.T) {

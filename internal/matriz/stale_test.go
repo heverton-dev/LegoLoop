@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/matriz"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func staleDe(t *testing.T, c *cofre, reg *matriz.Registro) matriz.Stale {

@@ -3,7 +3,7 @@ package plangen_test
 import (
 	"testing"
 
-	"legoloop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
 )
 
 func TestConcurrencyStrategy_Validation(t *testing.T) {

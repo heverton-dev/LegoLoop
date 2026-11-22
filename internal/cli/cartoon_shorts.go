@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 const cartoonShortsUsage = `Uso: legoloop cartoon-shorts --theme "<tema>" [opções]

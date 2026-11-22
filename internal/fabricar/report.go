@@ -3,10 +3,10 @@ package fabricar
 import (
 	"time"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // Report é o único objeto de relatório. A CLI o imprime, o Chat o repassa e o Studio o desenha.

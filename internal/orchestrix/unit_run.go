@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
-	"legoloop/internal/provider"
-	"legoloop/internal/roteamento"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 // prefixoModeloNo precede o modelo no runner.Result de um nó de código.

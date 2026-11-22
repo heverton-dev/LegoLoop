@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // PecaProcesso é a peça invocável de um Processo no Studio (arrastável na interface).

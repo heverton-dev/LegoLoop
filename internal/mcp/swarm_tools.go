@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/board"
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 func strArg(args map[string]any, key, def string) string {

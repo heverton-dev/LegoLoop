@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/skills"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/skills"
 )
 
 // gruposSkillsCusto devolve, por harness, as pastas que ele escaneia.

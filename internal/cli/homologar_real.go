@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/roteamento/homologacao"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento/homologacao"
 )
 
 // harnessReal liga a bateria ao motor: cada chamada passa pelo mesmo caminho dos nós de código.

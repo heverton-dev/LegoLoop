@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/canon"
+	"github.com/heverton-dev/LegoLoop/internal/canon"
 )
 
 func TestParseGitHubURL(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 func TestCronNextTick(t *testing.T) {

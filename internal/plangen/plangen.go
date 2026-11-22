@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/upstream"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
 
 // SupervisionLevel define o nível de intervenção humana.

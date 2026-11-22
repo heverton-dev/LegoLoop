@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // allowedWrites devolve os caminhos que um unit_task pode alterar:

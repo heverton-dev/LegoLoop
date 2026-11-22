@@ -6,8 +6,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"io/fs"
-	"legoloop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
@@ -15,9 +15,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/refinar"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/refinar"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 var (

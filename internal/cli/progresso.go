@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/progresso"
+	"github.com/heverton-dev/LegoLoop/internal/progresso"
 )
 
 const progressoUso = `uso: legoloop progresso <gerar|iniciar|validar|status|verificar> [opções]

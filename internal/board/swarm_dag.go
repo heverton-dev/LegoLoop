@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"time"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 var reNomeInvalido = regexp.MustCompile(`[^a-zA-Z0-9_-]`)

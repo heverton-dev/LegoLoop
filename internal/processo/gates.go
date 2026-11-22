@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/gate"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // PalavrasMinimas é o mínimo de palavras que o gate da biblioteca exige de um artefato Markdown.

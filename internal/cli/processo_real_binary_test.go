@@ -1,15 +1,15 @@
 package cli
 
 import (
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // fabricarReal roda o binário de verdade (sem --dry-run) num HOME, cofre e projeto descartáveis.

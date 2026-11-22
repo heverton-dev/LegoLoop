@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 const scratchRel = "docs/videorea/x/scratch"

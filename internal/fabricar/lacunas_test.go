@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/matriz"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 var precisaConstruirEVerificar = matriz.Needs{Natureza: "software", Etapas: []string{"construir", "verificar"}}

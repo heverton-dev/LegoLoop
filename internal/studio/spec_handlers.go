@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/provider"
-	"legoloop/internal/specgen"
-	"legoloop/internal/upstream"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/specgen"
+	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
 
 type specGenerateReq struct {

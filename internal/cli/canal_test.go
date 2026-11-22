@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 func TestCanalCLI_RedcAndGerar(t *testing.T) {

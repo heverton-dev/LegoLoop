@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // Plano é tudo que a gravação vai fazer, mostrado ao usuário numa vez só, antes de qualquer efeito.

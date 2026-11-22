@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // limpo deixa o texto livre numa linha só e sem crase: título não abre seção no documento.

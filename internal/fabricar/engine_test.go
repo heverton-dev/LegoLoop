@@ -12,17 +12,17 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/docs/templates"
-	"legoloop/internal/assets"
-	"legoloop/internal/caminhos"
-	"legoloop/internal/cli"
-	"legoloop/internal/dag"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/gate"
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/reputation"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 var fabNow = time.Date(2026, 11, 3, 10, 0, 0, 0, time.UTC)

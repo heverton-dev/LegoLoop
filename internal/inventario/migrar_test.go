@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 // montarArvore cria arquivos a partir de um mapa caminho-conteúdo sob uma raiz.

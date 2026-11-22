@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/board"
 )
 
 // buildLegoloopBin compila o binario real; o E2E nao usa Run() em processo.

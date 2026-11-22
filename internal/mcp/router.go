@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 var (

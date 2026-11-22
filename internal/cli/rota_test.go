@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
 )
 
 const planoRota = `# PLAN

@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
 )
 
 // relatorioReal imita o relatório da matriz real: muitas peças fora e uma lacuna.

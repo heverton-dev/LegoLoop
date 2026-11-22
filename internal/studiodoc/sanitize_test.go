@@ -3,7 +3,7 @@ package studiodoc
 import (
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 func TestToKebabCase(t *testing.T) {

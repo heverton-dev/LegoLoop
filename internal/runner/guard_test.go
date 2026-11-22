@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 func guardDAG(t *testing.T, extra string) *dag.DAG {

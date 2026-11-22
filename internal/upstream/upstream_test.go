@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/upstream"
+	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
 
 func escrever(t *testing.T, base, rel, texto string) string {

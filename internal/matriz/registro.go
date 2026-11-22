@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 // VersaoMatriz é a versão do formato do registro. A 1.0.0 tinha só as notas de qualidade (`ratings`).

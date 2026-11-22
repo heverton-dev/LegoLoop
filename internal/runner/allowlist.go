@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // ValidateToolAllowlist verifica se a ferramenta solicitada consta na allowlist do nó.

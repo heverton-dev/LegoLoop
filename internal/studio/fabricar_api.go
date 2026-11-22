@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
 )
 
 // fabricarTimeout é o teto de uma fabricação (varredura, LLM e gravação).

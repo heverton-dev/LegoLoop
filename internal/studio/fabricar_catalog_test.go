@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
 )
 
 // catalogServer: HOME, projeto e cofre isolados, com o cofre dentro do HOME para o assets.Scanner enxergá-lo.

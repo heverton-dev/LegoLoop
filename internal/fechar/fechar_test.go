@@ -3,16 +3,16 @@ package fechar_test
 import (
 	"context"
 	"encoding/json"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
-	"legoloop/internal/fechar"
-	"legoloop/internal/processo"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/fechar"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // dirDialetoAntigo é a pasta de Processos do dialeto antigo; os testes de fechamento a usam por este nome.

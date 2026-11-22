@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 func TestScanAggregatesSortsAndCounts(t *testing.T) {

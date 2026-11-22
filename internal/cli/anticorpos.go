@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 const anticorposUso = `uso: legoloop anticorpos <sync|status|registrar> [slug] [--raiz DIR] [--json]

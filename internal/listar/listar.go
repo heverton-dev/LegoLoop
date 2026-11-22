@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"os"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func init() {

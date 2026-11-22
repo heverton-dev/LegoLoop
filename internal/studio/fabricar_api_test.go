@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 var studioNow = time.Date(2026, 11, 3, 10, 0, 0, 0, time.UTC)

@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 // newAssetsServer liga o Studio a um inventário isolado (HOME, projeto e cofre temporários).

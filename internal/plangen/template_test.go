@@ -9,10 +9,10 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/docs/templates"
-	"legoloop/internal/gate"
-	"legoloop/internal/interview"
-	"legoloop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
 )
 
 const specBody = `# 📋 SPEC: Serviço de Exemplo

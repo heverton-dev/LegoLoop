@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 func TestCofreProcessos(t *testing.T) {

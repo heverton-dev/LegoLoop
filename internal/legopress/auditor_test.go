@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/legopress"
+	"github.com/heverton-dev/LegoLoop/internal/legopress"
 )
 
 func TestAuditorGeometry_RealPDF(t *testing.T) {

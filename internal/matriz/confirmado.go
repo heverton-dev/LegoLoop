@@ -11,7 +11,7 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // confirmadoFile guarda os perfis que o usuário confirmou ou definiu, por hash do conteúdo. Fica fora da matriz

@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/caminhos"
-	"legoloop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
 )
 
 type assetInspectResponse struct {

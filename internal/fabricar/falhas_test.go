@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // slowLLM simula um cérebro que expira ao dar as necessidades (Camada 3). A Camada 4 não usa o cérebro.

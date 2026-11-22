@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // TestProcessoRealGravaOProcessoEOTemplateContaAMesmaHistoria: o processo.json gravado é o mesmo Processo de

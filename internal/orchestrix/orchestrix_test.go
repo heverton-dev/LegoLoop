@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // TestMain transforma o binário de teste num harness real quando LEGOLOOP_HELPER está definido.

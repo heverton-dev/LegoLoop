@@ -10,9 +10,9 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/matriz"
-	"legoloop/internal/reputation"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 var (

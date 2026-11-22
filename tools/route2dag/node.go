@@ -5,7 +5,7 @@ import (
 	"maps"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // projetarNo converte um nó da ROUTE em nó de DAG.

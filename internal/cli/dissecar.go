@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 
-	"legoloop/internal/dissecar"
+	"github.com/heverton-dev/LegoLoop/internal/dissecar"
 )
 
 type DissecarCommand struct {

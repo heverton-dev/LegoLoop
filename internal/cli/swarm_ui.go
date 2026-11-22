@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"legoloop/internal/graph"
-	"legoloop/internal/studio"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/studio"
 )
 
 func resolveSwarmProjectDir(root, dir string) string {

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // TestDetectaTodosOsHarnessesDoUsuario prova que todo harness com pasta de skills própria é

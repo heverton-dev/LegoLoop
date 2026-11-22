@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 type recChat struct{ first []interview.Message }

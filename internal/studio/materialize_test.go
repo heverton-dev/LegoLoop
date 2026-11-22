@@ -1,15 +1,15 @@
 package studio
 
 import (
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 func TestMaterializeCreatesDAGAndOrchestratorSkillAndRegistersInProcessoStore(t *testing.T) {

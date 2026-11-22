@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/canon"
-	"legoloop/internal/listar"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/canon"
+	"github.com/heverton-dev/LegoLoop/internal/listar"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // cmdListar mostra os processos do cofre. Sem --vault, um cofre padrão que ainda não existe conta como vazio.

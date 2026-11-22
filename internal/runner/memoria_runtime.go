@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // proximosDe devolve os IDs dos nós que dependem de id, pela ordem do DAG.

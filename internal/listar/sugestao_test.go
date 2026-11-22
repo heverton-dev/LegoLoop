@@ -7,9 +7,9 @@ import (
 	"slices"
 	"testing"
 
-	"legoloop/internal/listar"
-	"legoloop/internal/matriz"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/listar"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // comLacuna é um processo com a etapa coletar em lacuna (casos dados) e a etapa construir com peça.

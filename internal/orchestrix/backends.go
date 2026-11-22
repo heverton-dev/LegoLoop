@@ -15,8 +15,8 @@ import (
 	"sync"
 	"time"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 const (

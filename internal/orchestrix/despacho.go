@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/roteamento"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 // harnessDireto é a chamada HTTP ao 9Router sem harness (SPEC 4.1).

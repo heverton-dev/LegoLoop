@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 // unitTools é a lista fechada de ferramentas de um unit_task. Não contém Bash (o `command`

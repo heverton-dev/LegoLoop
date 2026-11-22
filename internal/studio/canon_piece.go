@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"legoloop/internal/canon"
+	"github.com/heverton-dev/LegoLoop/internal/canon"
 )
 
 type canonPieceRequest struct {

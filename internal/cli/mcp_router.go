@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/mcp"
+	"github.com/heverton-dev/LegoLoop/internal/mcp"
 )
 
 func cmdMcpRouter(_ context.Context, args []string, d Deps) int {

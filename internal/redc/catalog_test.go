@@ -3,7 +3,7 @@ package redc_test
 import (
 	"testing"
 
-	"legoloop/internal/redc"
+	"github.com/heverton-dev/LegoLoop/internal/redc"
 )
 
 func TestCatalogVideos_SuccessAndRanking(t *testing.T) {

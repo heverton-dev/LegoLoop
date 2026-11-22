@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
 )
 
 // written conta os arquivos gravados nas raízes do rig.

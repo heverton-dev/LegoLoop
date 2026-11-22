@@ -7,7 +7,7 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // extensoesPorSO dá as extensões de peça executável compatíveis com cada SO.

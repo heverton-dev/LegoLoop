@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // pesoPadraoMB é o peso assumido de um nó quando o escalonador não recebe a medição.

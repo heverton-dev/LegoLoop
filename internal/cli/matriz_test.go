@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/provider"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 type brainFake struct {

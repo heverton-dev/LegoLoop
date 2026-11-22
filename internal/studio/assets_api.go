@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"io/fs"
-	"legoloop/internal/caminhos"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -16,12 +16,12 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/canon"
-	"legoloop/internal/graph"
-	"legoloop/internal/reputation"
-	"legoloop/internal/studiodoc"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/canon"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 // maxListItems limita cada resposta de lista; o total real vai em "total".

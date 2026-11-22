@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 // A skill gerada manda validar o DAG espelho em docs/dags, que existe e não usa o termo proibido da Lei #15.

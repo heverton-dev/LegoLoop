@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/jail"
 )
 
 func dataFixa() time.Time {

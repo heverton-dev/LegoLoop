@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/legopress"
+	"github.com/heverton-dev/LegoLoop/internal/legopress"
 )
 
 const legoPressUsage = `Uso: legoloop legopress <subcomando> [opções]

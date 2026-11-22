@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
 )
 
 func TestHashNormalized_EquivalenceCRLF(t *testing.T) {

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 func parseBudgetDAG(t *testing.T, node dag.Node) *dag.DAG {

@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/combo"
-	"legoloop/internal/dag"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/combo"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
 )
 
 func TestFabricarErrSemMatrizAndComposeTrigger(t *testing.T) {

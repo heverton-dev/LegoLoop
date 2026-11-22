@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 const ideiaLonga = "Iniciativa 4 do macroprojeto: corrigir a espinha dorsal. DECISÕES DO USUÁRIO: escopo das 14 lacunas, registro da espinha, descoberta por hash, vocabulário amarrado, CI nos três SOs, mutação em duas camadas e outras decisões longas que não cabem num título de documento."

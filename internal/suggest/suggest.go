@@ -10,10 +10,10 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/dag"
-	"legoloop/internal/graph"
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 const (

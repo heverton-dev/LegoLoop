@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 func entrada(ref string, score float64, p *PerfilDeUso) Entrada {

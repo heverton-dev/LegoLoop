@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // viaRouter é o valor de routing.via que manda o filho do claude pelo 9Router.

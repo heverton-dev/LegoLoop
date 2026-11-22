@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/fechar"
+	"github.com/heverton-dev/LegoLoop/internal/fechar"
 )
 
 func TestFecharSemStubsETelemetriaReal(t *testing.T) {

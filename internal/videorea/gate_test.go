@@ -3,7 +3,7 @@ package videorea_test
 import (
 	"testing"
 
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 func TestStopGateCuration(t *testing.T) {

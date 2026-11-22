@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/matriz"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // comContratos completa cada peça com o recorte de I/O do manifesto contrato.json ao lado do

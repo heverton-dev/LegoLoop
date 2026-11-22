@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"reflect"
 
-	"legoloop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
 )
 
 const processoDirField = 8

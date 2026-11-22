@@ -9,7 +9,7 @@ import (
 	"sort"
 	"time"
 
-	"legoloop/internal/escrita"
+	"github.com/heverton-dev/LegoLoop/internal/escrita"
 )
 
 // ErrStopGateNaoAprovado indica tentativa de limpeza antes do Stop-Gate final.

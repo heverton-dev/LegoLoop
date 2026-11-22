@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"legoloop/internal/combo"
+	"github.com/heverton-dev/LegoLoop/internal/combo"
 )
 
 func TestValidarRequisicaoCombo(t *testing.T) {

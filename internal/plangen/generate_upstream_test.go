@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/plangen"
-	"legoloop/internal/upstream"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
 
 // gravarIntencaoAprovada grava a INTENT que a SPEC de teste referencia, com o cabeçalho do Stop-Gate 01.

@@ -10,7 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path"
 	"path/filepath"
@@ -20,9 +20,9 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 var (

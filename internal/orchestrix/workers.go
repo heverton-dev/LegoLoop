@@ -1,7 +1,7 @@
 package orchestrix
 
 import (
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // pesoPadraoMB é o peso assumido de um harness sem peso_mb homologado (SPEC 4.11).

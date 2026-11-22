@@ -2,7 +2,7 @@ package cli
 
 import (
 	"encoding/json"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -12,7 +12,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // artefatoReal é a resposta do router falso aos nós de skill: passa no gate markdown da biblioteca (30 palavras).

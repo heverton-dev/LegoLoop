@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/combo"
-	"legoloop/internal/dag"
-	"legoloop/internal/graph"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/combo"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 func TestSchemaV2AndTriggerParity(t *testing.T) {

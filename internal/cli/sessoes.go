@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/jail"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 const sessoesUsage = `uso: legoloop sessoes <slug> [--json] [--processos-dir DIR]

@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
 )
 
 // TestCaminhoDoRefNoFormatoDaMatriz: os ref da matriz real são "~/caminho" e "arquivo#nome"; o caminho

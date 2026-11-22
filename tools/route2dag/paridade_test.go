@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 func carregarRota(t *testing.T) route {

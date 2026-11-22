@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/processo"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 // dirDeProcesso cria processos/<slug> num cofre temporário e devolve a pasta.

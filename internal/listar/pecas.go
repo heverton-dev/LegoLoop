@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // ResumoContrato é o contrato da peça em tipos de artefato: o que entra, o que sai e os efeitos.

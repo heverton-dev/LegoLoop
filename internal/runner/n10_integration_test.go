@@ -12,14 +12,14 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/combo"
-	"legoloop/internal/dag"
-	"legoloop/internal/interview"
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/provider"
-	"legoloop/internal/runner"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/combo"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 func TestN10EnginesConnectedInProduction(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 const dagPecaUmNo = `{"name":"p","version":"2.0.0","trigger":{"type":"manual"},"nodes":[

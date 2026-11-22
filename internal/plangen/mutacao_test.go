@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 func TestMutacao_GateSafeEReadAndHash(t *testing.T) {

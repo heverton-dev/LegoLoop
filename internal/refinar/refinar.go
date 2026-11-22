@@ -15,11 +15,11 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/matriz"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 var (

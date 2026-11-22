@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/fechar"
+	"github.com/heverton-dev/LegoLoop/internal/fechar"
 )
 
 // TestNosNaoCitados_CitaPorIdOuNome prova o critério do Gate de paridade:

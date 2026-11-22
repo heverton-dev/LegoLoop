@@ -24,7 +24,7 @@ func buildBinary(t *testing.T) string {
 		name += ".exe"
 	}
 	bin := filepath.Join(t.TempDir(), name)
-	out, err := exec.Command("go", "build", "-o", bin, "legoloop/cmd/legoloop").CombinedOutput()
+	out, err := exec.Command("go", "build", "-o", bin, "github.com/heverton-dev/LegoLoop/cmd/legoloop").CombinedOutput()
 	if err != nil {
 		t.Fatalf("go build falhou: %v\n%s", err, out)
 	}

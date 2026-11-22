@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"legoloop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
 )
 
 // dadosAnticorpo reúne as opções do subcomando registrar.

@@ -3,7 +3,7 @@ package cli
 import (
 	"sort"
 
-	"legoloop/internal/mcp"
+	"github.com/heverton-dev/LegoLoop/internal/mcp"
 )
 
 // serverKeys lista as chaves onde cada formato de harness guarda seus MCPs.

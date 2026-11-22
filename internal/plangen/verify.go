@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 // shellMeta são os caracteres que só têm sentido para um shell. Os comandos do ROUTE são argv, sem shell.

@@ -5,8 +5,8 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"io/fs"
-	"legoloop/internal/caminhos"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -16,9 +16,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/remover"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/remover"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 const (

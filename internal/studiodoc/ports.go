@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
 )
 
 type Ports struct {

@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/gate"
-	"legoloop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
 )
 
 func index(t *testing.T) *graph.Index {

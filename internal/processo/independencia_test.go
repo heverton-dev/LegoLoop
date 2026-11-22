@@ -12,11 +12,11 @@ import (
 )
 
 var fatiasCanonicas = []string{
-	"legoloop/internal/fabricar",
-	"legoloop/internal/listar",
-	"legoloop/internal/refinar",
-	"legoloop/internal/remover",
-	"legoloop/internal/compor",
+	"github.com/heverton-dev/LegoLoop/internal/fabricar",
+	"github.com/heverton-dev/LegoLoop/internal/listar",
+	"github.com/heverton-dev/LegoLoop/internal/refinar",
+	"github.com/heverton-dev/LegoLoop/internal/remover",
+	"github.com/heverton-dev/LegoLoop/internal/compor",
 }
 
 func acharRaizModulo(t *testing.T) string {
@@ -77,11 +77,11 @@ func TestFatiasIndependentes(t *testing.T) {
 
 func TestFatiasCanonicasDefinidas(t *testing.T) {
 	esperadas := []string{
-		"legoloop/internal/fabricar",
-		"legoloop/internal/listar",
-		"legoloop/internal/refinar",
-		"legoloop/internal/remover",
-		"legoloop/internal/compor",
+		"github.com/heverton-dev/LegoLoop/internal/fabricar",
+		"github.com/heverton-dev/LegoLoop/internal/listar",
+		"github.com/heverton-dev/LegoLoop/internal/refinar",
+		"github.com/heverton-dev/LegoLoop/internal/remover",
+		"github.com/heverton-dev/LegoLoop/internal/compor",
 	}
 	if len(fatiasCanonicas) != 5 {
 		t.Fatalf("esperava 5 fatias canônicas, tem %d", len(fatiasCanonicas))

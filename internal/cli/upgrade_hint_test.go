@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
 )
 
 func TestCLI_Upgrade_RecommendsTheTemplateOfThePieceType(t *testing.T) {

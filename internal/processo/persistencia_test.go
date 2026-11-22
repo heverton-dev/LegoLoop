@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 func TestPersistenciaIdaEVolta(t *testing.T) {

@@ -6,9 +6,9 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/matriz"
-	"legoloop/internal/processo"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // MaxComandosTexto limita os comandos por sugestão na saída em texto; o --json traz todos.

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 func etapa(id string, deps ...string) processo.Etapa {

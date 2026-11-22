@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // planLinks monta a prévia dos vínculos: com --eager, todos os harnesses detectados; sem ele, nenhum (a skill fica no Cofre). --no-link zera. Com --link-harness a

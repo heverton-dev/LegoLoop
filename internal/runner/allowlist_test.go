@@ -3,7 +3,7 @@ package runner
 import (
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 func TestValidateToolAllowlist_BloqueiaNaoPermitida(t *testing.T) {

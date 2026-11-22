@@ -3,7 +3,7 @@ package videorea
 import (
 	"encoding/json"
 	"fmt"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"time"

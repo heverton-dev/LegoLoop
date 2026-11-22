@@ -9,8 +9,8 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 const fabricarSkillName = "legoloop-fabricar"

@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/escrita"
-	"legoloop/internal/mcp"
+	"github.com/heverton-dev/LegoLoop/internal/escrita"
+	"github.com/heverton-dev/LegoLoop/internal/mcp"
 )
 
 type syncTargetResult struct {

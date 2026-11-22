@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
 )
 
 type mockStudioPlanLLM struct {

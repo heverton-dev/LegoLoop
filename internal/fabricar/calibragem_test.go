@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
 )
 
 // pecaComCasos é uma skill com ref no formato real da matriz ("~/caminho/SKILL.md").

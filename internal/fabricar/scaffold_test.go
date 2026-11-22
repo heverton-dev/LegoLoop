@@ -7,12 +7,12 @@ import (
 	"runtime"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/gate"
-	"legoloop/internal/processo"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // TestGovernancaDocsSoNaRaiz prova a regra de governança: a escrita canônica do Sexteto

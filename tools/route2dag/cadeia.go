@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"legoloop/internal/plangen"
-	"legoloop/internal/upstream"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
 
 // VerificarCadeia aplica a trava da cadeia antes de projetar o DAG: a ROUTE assina a INTENT, a SPEC e o PLAN,

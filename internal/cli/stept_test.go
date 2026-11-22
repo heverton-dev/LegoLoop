@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
 )
 
 func TestCLIStept(t *testing.T) {

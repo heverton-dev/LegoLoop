@@ -1,6 +1,6 @@
 package fabricar
 
-import "legoloop/internal/reputation"
+import "github.com/heverton-dev/LegoLoop/internal/reputation"
 
 // PieceKind é o tipo da peça descoberta.
 type PieceKind string

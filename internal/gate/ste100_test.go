@@ -3,7 +3,7 @@ package gate_test
 import (
 	"testing"
 
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 func TestSTE100Linter(t *testing.T) {

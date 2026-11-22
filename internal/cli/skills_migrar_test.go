@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/skills"
+	"github.com/heverton-dev/LegoLoop/internal/skills"
 )
 
 // TestSkillsMigrarCLI prova o comando: sem flag recusa; --dry-run só conta; --apply move ao Cofre e

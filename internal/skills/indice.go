@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // conteudoIndice é a skill-índice do modo lazy (~150 tokens).

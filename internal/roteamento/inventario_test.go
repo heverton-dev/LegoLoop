@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"legoloop/internal/processo"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 func TestInventarioUnificado(t *testing.T) {

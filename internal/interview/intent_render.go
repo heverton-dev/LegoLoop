@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
 )
 
 // IntentView reúne tudo que o TEMPLATE_INTENT precisa para ser preenchido a partir da entrevista.

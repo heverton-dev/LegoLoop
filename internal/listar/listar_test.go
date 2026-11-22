@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/listar"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/listar"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 func etapa(id string, depende ...string) processo.Etapa {

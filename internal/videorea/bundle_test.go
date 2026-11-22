@@ -2,13 +2,13 @@ package videorea_test
 
 import (
 	"encoding/json"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 func TestTargetBundlePaths(t *testing.T) {

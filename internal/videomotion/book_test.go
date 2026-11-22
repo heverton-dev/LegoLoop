@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/videomotion"
+	"github.com/heverton-dev/LegoLoop/internal/videomotion"
 )
 
 func TestGenerateDidacticBook(t *testing.T) {

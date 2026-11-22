@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/descoberta"
-	"legoloop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/descoberta"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
 )
 
 type provedorTeste struct {

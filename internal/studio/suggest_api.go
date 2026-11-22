@@ -3,9 +3,9 @@ package studio
 import (
 	"net/http"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/caminhos"
-	"legoloop/internal/suggest"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/suggest"
 )
 
 var suggestKinds = map[string]bool{"skill": true, "script": true, "mcp": true, "subprocesso": true, caminhos.TipoSubprocessoAntigo: true}

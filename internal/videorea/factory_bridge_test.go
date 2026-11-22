@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 func TestFase3SubEtapas(t *testing.T) {

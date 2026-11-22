@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 func doisNos(t *testing.T, arquivoA, arquivoB string) *dag.DAG {

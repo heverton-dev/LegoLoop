@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 func initTestGitRepo(t *testing.T) string {

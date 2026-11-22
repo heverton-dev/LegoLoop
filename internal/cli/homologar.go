@@ -11,10 +11,10 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/provider"
-	"legoloop/internal/roteamento"
-	"legoloop/internal/roteamento/homologacao"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento/homologacao"
 )
 
 const (

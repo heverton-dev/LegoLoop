@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 // TestMcpRouterConflitoSaidaNaoZero prova a AC-E09.2 no CLI real: conflito de

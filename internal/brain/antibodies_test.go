@@ -12,9 +12,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // TestAnticorposPersistencia prova AC-E02.1: persistência em anticorpos.json do Processo.

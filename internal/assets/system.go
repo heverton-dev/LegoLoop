@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 type harnessDef struct {

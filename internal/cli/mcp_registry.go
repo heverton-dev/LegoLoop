@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/mcp"
+	"github.com/heverton-dev/LegoLoop/internal/mcp"
 )
 
 const usoMcpRegistry = "Uso: legoloop mcp-registry (list|refresh)"

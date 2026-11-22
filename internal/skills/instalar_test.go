@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/cli"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 const dagUmNo = `{"name":"p","nodes":[

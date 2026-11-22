@@ -11,11 +11,11 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/cli"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/gate"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // dataFixa dá nomes ISO estáveis aos artefatos do scaffold.

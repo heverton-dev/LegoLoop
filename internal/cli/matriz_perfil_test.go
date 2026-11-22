@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/matriz"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 // geradaComDuasPecas gera a matriz de alfa e beta (sem declaração) com um cérebro que as infere.

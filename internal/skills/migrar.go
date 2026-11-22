@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // limiteCopiaSkill é o tamanho acima do qual só o SKILL.md vai ao Cofre (as skills enormes

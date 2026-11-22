@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
 )
 
 // O ROUTE e o PLAN gerados declaram o runtime do motor (legoloop), nunca um shell de um só sistema operacional.

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"legoloop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/board"
 )
 
 // swarmRunOpts consolida as opcoes da linha de comando do swarm run.

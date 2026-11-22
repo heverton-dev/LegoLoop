@@ -11,12 +11,12 @@ import (
 	"path/filepath"
 	"time"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/gate"
-	"legoloop/internal/studiodoc"
-	"legoloop/internal/taxonomy"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 var agora = time.Now().UTC()

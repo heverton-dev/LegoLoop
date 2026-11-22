@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/artefato"
+	"github.com/heverton-dev/LegoLoop/internal/artefato"
 )
 
 func interviewStep(root string, alvos []string) step {

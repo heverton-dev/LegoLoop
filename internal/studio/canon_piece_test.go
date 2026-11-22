@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"legoloop/internal/canon"
+	"github.com/heverton-dev/LegoLoop/internal/canon"
 )
 
 func TestFilterPlanBySHA(t *testing.T) {

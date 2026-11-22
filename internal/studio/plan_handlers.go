@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/plangen"
-	"legoloop/internal/provider"
-	"legoloop/internal/upstream"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/plangen"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
 
 type planGenerateReq struct {

@@ -9,8 +9,8 @@ import (
 	"reflect"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 var artefatosTresScripts = []string{"n1.txt", "n2.txt", "n3.txt"}

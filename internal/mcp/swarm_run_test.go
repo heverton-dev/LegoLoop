@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/board"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 func writeDAG(t *testing.T, withCommand bool) string {

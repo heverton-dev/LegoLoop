@@ -7,7 +7,7 @@ import (
 	"sort"
 	"testing"
 
-	"legoloop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
 )
 
 func TestDiscoverProjects(t *testing.T) {

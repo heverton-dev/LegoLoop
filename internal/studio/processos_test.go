@@ -2,13 +2,13 @@ package studio
 
 import (
 	"encoding/json"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 func TestStudioProcessos(t *testing.T) {

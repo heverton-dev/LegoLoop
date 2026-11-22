@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/videorea"
+	"github.com/heverton-dev/LegoLoop/internal/videorea"
 )
 
 func TestCurateAgainstMatrix(t *testing.T) {

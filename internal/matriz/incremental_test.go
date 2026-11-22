@@ -11,10 +11,10 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/interview"
-	"legoloop/internal/matriz"
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 // alterar muda o conteúdo de uma skill no disco e o sha256 que a varredura informa.

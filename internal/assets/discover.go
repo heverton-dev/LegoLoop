@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	"legoloop/internal/descoberta"
+	"github.com/heverton-dev/LegoLoop/internal/descoberta"
 )
 
 var ignoredDirNames = map[string]bool{

@@ -6,7 +6,7 @@ import (
 	"slices"
 	"testing"
 
-	"legoloop/internal/refinar"
+	"github.com/heverton-dev/LegoLoop/internal/refinar"
 )
 
 func adicionar(m refinar.Mudanca) refinar.Request {

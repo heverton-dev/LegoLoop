@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/triagem"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
 // Relatorio resume o saneamento e a geração de triagem.json em processos/.

@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"strings"
 
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 var (

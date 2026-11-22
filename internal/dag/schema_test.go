@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
 // Validador mínimo de JSON Schema Draft-07. Implementa só as palavras-chave

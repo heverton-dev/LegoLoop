@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/progresso"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/progresso"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 // arquivoProgresso resolve e confere o campo `progresso` do DAG; vazio desliga o progresso vivo.

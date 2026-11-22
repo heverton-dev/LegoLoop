@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/reputation"
+	"github.com/heverton-dev/LegoLoop/internal/reputation"
 )
 
 // Needs é o que o espelho da entrevista pede, em termos do vocabulário. Consome são os tipos de

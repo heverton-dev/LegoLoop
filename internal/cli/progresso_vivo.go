@@ -6,12 +6,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"legoloop/internal/board"
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/progresso"
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/progresso"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 // caminhoProgressoVivo escolhe o arquivo de progresso: a flag vence o campo `progresso` do DAG.

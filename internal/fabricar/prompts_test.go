@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 // marcasDosPrompts identificam os dois prompts do sistema que o fabricar escreve.

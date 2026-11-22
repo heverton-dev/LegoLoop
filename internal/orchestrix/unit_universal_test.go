@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
-	"legoloop/internal/provider"
-	"legoloop/internal/roteamento"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
 )
 
 // semClaude monta um motor sem o claude CLI no inventário e com o omp homologado como candidato da classe.

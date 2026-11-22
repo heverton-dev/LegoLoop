@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
 )
 
 const (

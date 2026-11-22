@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // MaxNodeRetries define o teto do Poka-Yoke de runtime: no máximo 2 tentativas.

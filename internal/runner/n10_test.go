@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 func TestRedTeamBlueTeamIsolation(t *testing.T) {

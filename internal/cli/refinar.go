@@ -9,10 +9,10 @@ import (
 	"slices"
 	"strings"
 
-	"legoloop/internal/jail"
-	"legoloop/internal/processo"
-	"legoloop/internal/refinar"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/refinar"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func init() {

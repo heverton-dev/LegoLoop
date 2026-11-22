@@ -5,8 +5,8 @@ import (
 	"context"
 	"testing"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 func TestVideoMotionCLI_Help(t *testing.T) {

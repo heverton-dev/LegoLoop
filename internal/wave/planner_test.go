@@ -3,8 +3,8 @@ package wave_test
 import (
 	"testing"
 
-	"legoloop/internal/board"
-	"legoloop/internal/wave"
+	"github.com/heverton-dev/LegoLoop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/wave"
 )
 
 func TestPlanWaves_DisjointTicketsRunInSameWave(t *testing.T) {

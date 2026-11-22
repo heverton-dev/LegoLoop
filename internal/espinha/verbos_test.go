@@ -5,8 +5,8 @@ import (
 	"slices"
 	"testing"
 
-	"legoloop/internal/cli"
-	"legoloop/internal/espinha"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/espinha"
 )
 
 func TestTodoVerboEstaNoRegistro(t *testing.T) {

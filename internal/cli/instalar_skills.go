@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"legoloop/internal/skills"
+	"github.com/heverton-dev/LegoLoop/internal/skills"
 )
 
 type instalarSkillsResult = skills.Relatorio

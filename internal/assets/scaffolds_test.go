@@ -2,12 +2,12 @@ package assets_test
 
 import (
 	"context"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
 )
 
 func TestScaffoldsLayer(t *testing.T) {

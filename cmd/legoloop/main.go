@@ -6,8 +6,8 @@ import (
 	"os"
 	"os/signal"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
 )
 
 func main() {

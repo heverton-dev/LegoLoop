@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 const espelhoSemPremonicao = `HIPÓTESE: o escopo está claro.

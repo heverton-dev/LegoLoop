@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 const rotaLei15 = "../../docs/archive/quinteto/routes/2026-11-10_ROUTE_NORMALIZACAO_TAXONOMICA_LEI15.json"

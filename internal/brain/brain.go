@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/interview"
-	"legoloop/internal/orchestrix"
-	"legoloop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/orchestrix"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
 )
 
 // DefaultTimeout cobre a geração de documentos longos (a SPEC); é configurável com WithTimeout.

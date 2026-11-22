@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/board"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 func (s *Server) registerSwarmRoutes(mux *http.ServeMux) {

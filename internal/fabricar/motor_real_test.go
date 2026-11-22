@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
 )
 
 // TestMotorRealSemMatrizNaoGastaOCerebro: sem matriz o fabricar para antes da entrevista, sem nenhuma chamada.

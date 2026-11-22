@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/migrar"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/migrar"
 )
 
 func runMigrarProcessos(subcmd string, args []string, stdout, stderr io.Writer) int {

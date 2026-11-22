@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"legoloop/internal/runner"
+	"github.com/heverton-dev/LegoLoop/internal/runner"
 )
 
 // notaSubstituicao é o prefixo das notas que o despacho grava quando troca de candidato.

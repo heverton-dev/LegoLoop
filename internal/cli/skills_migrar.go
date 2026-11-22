@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"legoloop/internal/skills"
+	"github.com/heverton-dev/LegoLoop/internal/skills"
 )
 
 func cmdSkillsMigrar(_ context.Context, args []string, d Deps) int {

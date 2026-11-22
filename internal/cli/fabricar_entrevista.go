@@ -8,10 +8,10 @@ import (
 	"io"
 	"path/filepath"
 
-	"legoloop/internal/brain"
-	"legoloop/internal/fabricar"
-	"legoloop/internal/interview"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/brain"
+	"github.com/heverton-dev/LegoLoop/internal/fabricar"
+	"github.com/heverton-dev/LegoLoop/internal/interview"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func init() {

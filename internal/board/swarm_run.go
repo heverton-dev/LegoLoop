@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
 )
 
 // RunNode descreve um worker de um nivel: o no do DAG ja resolvido (nome, papel, modelo e comando).

@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"legoloop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 )
 
 // tipoNoDAG resolve o tipo de nó da ROUTE para o NodeType do DAG usando a tabela única.

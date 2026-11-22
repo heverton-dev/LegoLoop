@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
-	"legoloop/internal/roteamento"
-	studio "legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/roteamento"
+	studio "github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 const (

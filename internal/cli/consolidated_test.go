@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/cli"
+	"github.com/heverton-dev/LegoLoop/internal/cli"
 )
 
 func TestCLICommandsConsolidated(t *testing.T) {

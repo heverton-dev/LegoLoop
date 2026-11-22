@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/videomotion"
+	"github.com/heverton-dev/LegoLoop/internal/videomotion"
 )
 
 func TestParseAndValidateWords(t *testing.T) {

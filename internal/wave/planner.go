@@ -1,7 +1,7 @@
 package wave
 
 import (
-	"legoloop/internal/board"
+	"github.com/heverton-dev/LegoLoop/internal/board"
 )
 
 type waveSlot struct {

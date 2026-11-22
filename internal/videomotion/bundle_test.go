@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"legoloop/internal/videomotion"
+	"github.com/heverton-dev/LegoLoop/internal/videomotion"
 )
 
 func TestGenerateBroadcastBundle(t *testing.T) {

@@ -10,13 +10,13 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/docs/templates"
-	"legoloop/internal/assets"
-	"legoloop/internal/caminhos"
-	"legoloop/internal/dag"
-	"legoloop/internal/gate"
-	studio "legoloop/internal/studiodoc"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/docs/templates"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	studio "github.com/heverton-dev/LegoLoop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 // Nomes reais em disco da Peça de Processo. Ficam em um só lugar.

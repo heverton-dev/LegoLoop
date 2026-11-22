@@ -5,11 +5,11 @@ import (
 	"errors"
 	"net/http"
 
-	"legoloop/internal/compor"
-	"legoloop/internal/listar"
-	"legoloop/internal/processo"
-	"legoloop/internal/refinar"
-	"legoloop/internal/remover"
+	"github.com/heverton-dev/LegoLoop/internal/compor"
+	"github.com/heverton-dev/LegoLoop/internal/listar"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/refinar"
+	"github.com/heverton-dev/LegoLoop/internal/remover"
 )
 
 func (s *Server) processoStore() (processo.Store, error) {

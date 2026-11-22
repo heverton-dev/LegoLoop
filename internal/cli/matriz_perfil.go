@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"legoloop/internal/matriz"
-	"legoloop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/matriz"
+	"github.com/heverton-dev/LegoLoop/internal/ste"
 )
 
 func init() {

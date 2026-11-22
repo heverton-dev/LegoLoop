@@ -3,7 +3,7 @@ package processo
 import (
 	"encoding/json"
 	"errors"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"os"
 	"path/filepath"
 	"slices"

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/refinar"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/refinar"
 )
 
 // canonizar move o DAG e o documento do Studio para o layout que o fabricar grava: pastaCofre/<nome>/.

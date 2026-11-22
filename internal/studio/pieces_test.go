@@ -4,17 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/dag"
-	"legoloop/internal/graph"
-	"legoloop/internal/studiodoc"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/dag"
+	"github.com/heverton-dev/LegoLoop/internal/graph"
+	"github.com/heverton-dev/LegoLoop/internal/studiodoc"
 )
 
 // piecesFixture monta HOME e projeto com uma skill, um script, dois hooks (um com credencial) e um MCP.

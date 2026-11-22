@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"legoloop/internal/caminhos"
-	"legoloop/internal/processo"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/processo"
 )
 
 // TiposPeca são os tipos que o Fabricar cria como peça única (nó solto).

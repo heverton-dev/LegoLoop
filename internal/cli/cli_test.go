@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"legoloop/internal/caminhos"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"legoloop/internal/assets"
-	"legoloop/internal/gate"
-	"legoloop/internal/provider"
-	"legoloop/internal/taxonomy"
+	"github.com/heverton-dev/LegoLoop/internal/assets"
+	"github.com/heverton-dev/LegoLoop/internal/gate"
+	"github.com/heverton-dev/LegoLoop/internal/provider"
+	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 func deps(t *testing.T) (Deps, *bytes.Buffer, *bytes.Buffer) {
