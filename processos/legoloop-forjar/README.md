@@ -7,7 +7,7 @@
 
 ## Objetivo
 
-Preparar e verificar o ambiente do usuário em qualquer sistema operacional de forma determinística, reversível e idempotente. A Forja configura os harnesses detectados no `HOME`, aplica o perfil de contexto escolhido (`minimo`, `padrao` ou `gateway`), preserva conteúdo próprio com blocos gerenciados ligados ao `AGENTS.md`, grava cópia de segurança com `MANIFESTO.tsv` e emite o par `RELATORIO.md` e `RELATORIO.json`.
+Preparar e verificar o ambiente do usuário em qualquer sistema operacional de forma determinística, reversível e idempotente. A Forja configura os harnesses detectados no `HOME`, aplica o perfil de contexto escolhido (`minimo`, `padrao` ou `gateway`), preserva conteúdo próprio com Peças gerenciadas ligadas ao `AGENTS.md`, grava cópia de segurança com `MANIFESTO.tsv` e emite o par `RELATORIO.md` e `RELATORIO.json`.
 
 ## Quatro Gatilhos, Um Motor
 
@@ -18,7 +18,7 @@ Todos os gatilhos convergem para `forja.Executar`:
 3. **Agente / MCP:** `call_mcp_tool` invocando a ferramenta de instalação/forja
 4. **Skill:** `/legoloop-forjar` (`skills/legoloop-forjar/SKILL.md`)
 
-## Etapas do DAG (`pipeline.dag.json`)
+## Etapas do DAG (`processo.dag.json`)
 
 | Nó | Nome | Papel |
 | :--- | :--- | :--- |
@@ -30,7 +30,7 @@ Todos os gatilhos convergem para `forja.Executar`:
 
 ## Artefatos do Processo
 
-- `processos/legoloop-forjar/pipeline.dag.json`
+- `processos/legoloop-forjar/processo.dag.json`
 - `processos/legoloop-forjar/README.md`
 - `processos/legoloop-forjar/triagem.json`
 - `processos/legoloop-forjar/ANTICORPOS.md`
