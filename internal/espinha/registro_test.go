@@ -36,8 +36,8 @@ func TestRegistroValida(t *testing.T) {
 		if err := reg.Validar(); err != nil {
 			t.Fatalf("registro real invalido: %v", err)
 		}
-		if len(reg.Processos) != 32 {
-			t.Fatalf("esperado 32 processos, obtido %d", len(reg.Processos))
+		if len(reg.Processos) != 33 {
+			t.Fatalf("esperado 33 processos, obtido %d", len(reg.Processos))
 		}
 		for _, p := range reg.Processos {
 			if !strings.HasPrefix(p.Slug, "legoloop-") {

@@ -27,6 +27,39 @@ function Validar-Url {
     throw "Download exige HTTPS (ou loopback para testes): $Url"
 }
 
+function Obter-HashSha256 {
+    param([string]$Caminho)
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    $stream = [System.IO.File]::OpenRead($Caminho)
+    try {
+        $bytes = $sha.ComputeHash($stream)
+    } finally {
+        $stream.Dispose()
+        $sha.Dispose()
+    }
+    return ([System.BitConverter]::ToString($bytes) -replace '-', '').ToLowerInvariant()
+}
+
+function Extrair-Pacote {
+    param(
+        [string]$Zip,
+        [string]$Destino
+    )
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $arquivoZip = [System.IO.Compression.ZipFile]::OpenRead($Zip)
+    try {
+        foreach ($entrada in $arquivoZip.Entries) {
+            if ([string]::IsNullOrEmpty($entrada.Name)) {
+                continue
+            }
+            $alvo = Join-Path $Destino $entrada.Name
+            [System.IO.Compression.ZipFileExtensions]::ExtractToFile($entrada, $alvo, $true)
+        }
+    } finally {
+        $arquivoZip.Dispose()
+    }
+}
+
 function Extrair-HashEsperado {
     param(
         [string]$SumsPath,
@@ -90,7 +123,7 @@ try {
         exit 1
     }
 
-    $atual = (Get-FileHash -Path $pkgPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    $atual = Obter-HashSha256 -Caminho $pkgPath
     if ($atual -ne $esperado) {
         Write-Error "SHA-256 divergente para $arquivo (esperado $esperado, obtido $atual)"
         exit 1
@@ -102,7 +135,7 @@ try {
     }
 
     New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
-    Expand-Archive -Path $pkgPath -DestinationPath $InstallDir -Force
+    Extrair-Pacote -Zip $pkgPath -Destino $InstallDir
 
     $binDest = Join-Path $InstallDir "legoloop.exe"
     if (-not (Test-Path -Path $binDest)) {

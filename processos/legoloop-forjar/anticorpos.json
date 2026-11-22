@@ -1,0 +1,64 @@
+{
+    "dominio":  [
+                    {
+                        "antidoto":  "Verificação: len(harnesses) \u003e= 1",
+                        "assinatura":  "sha256:dd9632004f2490b37986c2b700caaa43f307efb06ad232570cd974a06c68f4df",
+                        "erro":  "Detectar os harnesses instalados no HOME antes de planejar a Forja",
+                        "id":  "AC-E01.1",
+                        "no":  "e01",
+                        "recorrencias":  0,
+                        "severidade":  "critica",
+                        "tipo":  "precondicao",
+                        "verificacao":  "len(harnesses) \u003e= 1"
+                    },
+                    {
+                        "antidoto":  "Verificação: hash(home) antes == hash(home) depois",
+                        "assinatura":  "sha256:d6e03889d79bfb16d3de15f87e00afb5862c3a5931d4d4b9c6fdfcc12f3fce5a",
+                        "erro":  "Simular a Forja sem gravar nada e listar as Etapas como pendente",
+                        "id":  "AC-E02.1",
+                        "no":  "e02",
+                        "recorrencias":  0,
+                        "severidade":  "alta",
+                        "tipo":  "validacao",
+                        "verificacao":  "hash(home) antes == hash(home) depois"
+                    },
+                    {
+                        "antidoto":  "Verificação: alterados do segundo run == 0",
+                        "assinatura":  "sha256:96f6998e77efc5b8571a3313780ea05986aabe95e6f87c3598a424f1ae4b34ec",
+                        "erro":  "Aplicar a Forja com backup MANIFESTO.tsv e idempotencia no segundo run",
+                        "id":  "AC-E03.1",
+                        "no":  "e03",
+                        "recorrencias":  0,
+                        "severidade":  "critica",
+                        "tipo":  "gate",
+                        "verificacao":  "alterados do segundo run == 0"
+                    },
+                    {
+                        "antidoto":  "Verificação: exit_code == 1 quando o teto estoura",
+                        "assinatura":  "sha256:b031eb6243cefc58f44b5d768c76fdd8fefc1c279fe7e95cd3945bcbc697e830",
+                        "erro":  "Reprovar o harness cujo custo medido excede o teto do orcamento de tokens",
+                        "id":  "AC-E04.1",
+                        "no":  "e04",
+                        "recorrencias":  0,
+                        "severidade":  "alta",
+                        "tipo":  "gate",
+                        "verificacao":  "exit_code == 1 quando o teto estoura"
+                    },
+                    {
+                        "antidoto":  "Verificação: RELATORIO.json sem segredos e veredito == OK",
+                        "assinatura":  "sha256:254117416f7120e187ced2dc773369916b61d64de8b3478eb574800b07030f45",
+                        "erro":  "Emitir RELATORIO.json sem valores de segredos e com veredito OK",
+                        "id":  "AC-E05.1",
+                        "no":  "e05",
+                        "recorrencias":  0,
+                        "severidade":  "media",
+                        "tipo":  "poscondicao",
+                        "verificacao":  "RELATORIO.json sem segredos e veredito == OK"
+                    }
+                ],
+    "globais":  [
+
+                ],
+    "processo":  "legoloop-forjar",
+    "schema_version":  "anticorpos.v1"
+}
