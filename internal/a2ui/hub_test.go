@@ -27,7 +27,7 @@ func TestHubCreatePublishSubscribeEAction(t *testing.T) {
 		SurfaceID:   "proc:concepcao",
 		ProtocolVer: "v0.9",
 		MessageType: "createSurface",
-		Components:  []ComponentRef{{ID: "c1", Kind: "Card"}},
+		Components:  []ComponentRef{{ID: "c1", Kind: "Panel"}},
 	}
 	if err := hub.Publish(env); err != nil {
 		t.Fatalf("Publish falhou: %v", err)
@@ -100,8 +100,8 @@ func TestHubRejeitaSessaoInexistenteEHostil(t *testing.T) {
 		MessageType: "updateComponents",
 		Components:  []ComponentRef{{ID: "b1", Kind: "RawHTML"}},
 	})
-	if !errors.Is(err, ErrComponenteProibido) {
-		t.Fatalf("esperava ErrComponenteProibido, obteve %v", err)
+	if !errors.Is(err, ErrItemProibido) {
+		t.Fatalf("esperava ErrItemProibido, obteve %v", err)
 	}
 }
 

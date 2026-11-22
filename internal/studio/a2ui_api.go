@@ -33,6 +33,7 @@ func (s *Server) A2UIHub() *a2ui.Hub {
 }
 
 func (s *Server) registerA2UIRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("GET /concepcao", s.handleA2UIConcepcaoPage)
 	mux.HandleFunc("POST /api/sessao", s.handleA2UISessaoCriar)
 	mux.HandleFunc("GET /api/sessao/{id}/stream", s.handleA2UISessaoStream)
 	mux.HandleFunc("POST /api/sessao/{id}/action", s.handleA2UISessaoAction)
@@ -54,7 +55,9 @@ func (s *Server) handleA2UISessaoCriar(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(resp)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		return
+	}
 }
 
 func (s *Server) handleA2UISessaoStream(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +81,9 @@ func (s *Server) handleA2UISessaoStream(w http.ResponseWriter, r *http.Request) 
 		if mErr != nil {
 			continue
 		}
-		_, _ = fmt.Fprintf(w, "event: a2ui\ndata: %s\n\n", data)
+		if _, wErr := fmt.Fprintf(w, "event: a2ui\ndata: %s\n\n", data); wErr != nil {
+			return
+		}
 		flusher.Flush()
 	}
 }
@@ -101,9 +106,15 @@ func (s *Server) handleA2UISessaoAction(w http.ResponseWriter, r *http.Request) 
 		writeError(w, status, err.Error())
 		return
 	}
+	if err := s.dispatchConcepcaoAction(r.Context(), act); err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusAccepted)
-	_, _ = w.Write([]byte(`{"ok":true}`))
+	if _, err := w.Write([]byte(`{"ok":true}`)); err != nil {
+		return
+	}
 }
 
 func (s *Server) handleA2UISessaoArtefato(w http.ResponseWriter, r *http.Request) {
@@ -123,5 +134,7 @@ func (s *Server) handleA2UISessaoArtefato(w http.ResponseWriter, r *http.Request
 	}
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(data)
+	if _, err := w.Write(data); err != nil {
+		return
+	}
 }

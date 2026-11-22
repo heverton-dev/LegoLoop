@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func TestConcepcaoEvolucaoCompletaEComponentes(t *testing.T) {
+func TestConcepcaoEvolucaoCompletaEitems(t *testing.T) {
 	hub := NewHub(DefaultCatalog())
 	sess := hub.CreateSession("legoloop-concepcao")
 
@@ -70,13 +70,13 @@ func TestConcepcaoEvolucaoCompletaEComponentes(t *testing.T) {
 		"LegoProgressMeter",
 		"TextField",
 		"Button",
-		"Card",
-		"LegoStopGateCard",
+		"Panel",
+		"LegoStopGatePanel",
 		"LegoArtifactViewer",
 	}
 	for _, k := range esperados {
 		if !kinds[k] {
-			t.Errorf("componente esperado ausente: %s", k)
+			t.Errorf("item esperado ausente: %s", k)
 		}
 	}
 
@@ -110,13 +110,13 @@ func TestConcepcaoStopGateOpcoes(t *testing.T) {
 	var stopComp *ComponentRef
 	for i := range envs {
 		for j := range envs[i].Components {
-			if envs[i].Components[j].Kind == "LegoStopGateCard" {
+			if envs[i].Components[j].Kind == "LegoStopGatePanel" {
 				stopComp = &envs[i].Components[j]
 			}
 		}
 	}
 	if stopComp == nil {
-		t.Fatal("LegoStopGateCard não encontrado")
+		t.Fatal("LegoStopGatePanel não encontrado")
 	}
 	opcoes, ok := stopComp.Props["options"].([]string)
 	if !ok || len(opcoes) != 3 {

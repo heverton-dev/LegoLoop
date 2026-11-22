@@ -11,7 +11,7 @@ var (
 	ErrSessaoInvalida      = errors.New("a2ui: session_id inválido")
 	ErrSurfaceIDInvalido   = errors.New("a2ui: surface_id inválido")
 	ErrMensagemInvalida    = errors.New("a2ui: message_type inválido")
-	ErrComponenteProibido  = errors.New("a2ui: componente fora do catálogo confiável")
+	ErrItemProibido        = errors.New("a2ui: item fora do catálogo confiável")
 	ErrPayloadHostil       = errors.New("a2ui: conteúdo executável ou HTML bruto proibido")
 	ErrAcaoInvalida        = errors.New("a2ui: ação de usuário inválida")
 )
@@ -19,13 +19,16 @@ var (
 var (
 	surfaceIDPattern = regexp.MustCompile(`^[a-zA-Z0-9._:/-]{1,128}$`)
 	hostilPattern    = regexp.MustCompile(`(?i)(<\s*script|<\s*iframe|<\s*svg|<\s*img|javascript\s*:|data\s*:\s*text/html|on[a-z]+\s*=)`)
-	mensagensValidas = map[string]bool{
-		"createSurface":    true,
-		"updateComponents": true,
-		"updateDataModel":  true,
-		"deleteSurface":    true,
-	}
 )
+
+func mensagemValida(t string) bool {
+	switch t {
+	case "createSurface", "updateComponents", "updateDataModel", "deleteSurface":
+		return true
+	default:
+		return false
+	}
+}
 
 // Envelope encapsula uma mensagem do protocolo A2UI vinculada a uma superfície isolada.
 type Envelope struct {
@@ -40,7 +43,7 @@ type Envelope struct {
 	RequiresAttention bool           `json:"requires_attention,omitempty"`
 }
 
-// ComponentRef referencia um componente declarado no catálogo confiável.
+// ComponentRef referencia um item declarado no catálogo confiável.
 type ComponentRef struct {
 	ID    string         `json:"id"`
 	Kind  string         `json:"kind"`
@@ -64,12 +67,12 @@ func (e Envelope) Validate(cat Catalog) error {
 	if !validSurfaceID(e.SurfaceID) || (e.ParentID != "" && !validSurfaceID(e.ParentID)) {
 		return ErrSurfaceIDInvalido
 	}
-	if !mensagensValidas[e.MessageType] {
+	if !mensagemValida(e.MessageType) {
 		return ErrMensagemInvalida
 	}
 	for _, c := range e.Components {
 		if !cat.Allows(c.Kind) {
-			return ErrComponenteProibido
+			return ErrItemProibido
 		}
 		if contemHostil(c.Props) {
 			return ErrPayloadHostil

@@ -40,7 +40,7 @@ func TestA2UISessaoCriarStreamEAction(t *testing.T) {
 		SurfaceID:   "proc:concepcao",
 		ProtocolVer: "v0.9",
 		MessageType: "createSurface",
-		Components:  []a2ui.ComponentRef{{ID: "c1", Kind: "Card", Props: map[string]any{"title": "Oi"}}},
+		Components:  []a2ui.ComponentRef{{ID: "c1", Kind: "Panel", Props: map[string]any{"title": "Oi"}}},
 	}
 	if err := s.A2UIHub().Publish(env); err != nil {
 		t.Fatalf("Publish: %v", err)

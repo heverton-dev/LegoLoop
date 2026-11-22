@@ -8,10 +8,12 @@ import (
 	"io"
 	"path/filepath"
 
+	"github.com/heverton-dev/LegoLoop/internal/a2ui"
 	"github.com/heverton-dev/LegoLoop/internal/brain"
 	"github.com/heverton-dev/LegoLoop/internal/fabricar"
 	"github.com/heverton-dev/LegoLoop/internal/interview"
 	"github.com/heverton-dev/LegoLoop/internal/ste"
+	"github.com/heverton-dev/LegoLoop/internal/studio"
 )
 
 func init() {
@@ -90,8 +92,31 @@ func cmdEntrevista(ctx context.Context, args []string, d Deps) int {
 		return runResponder(ctx, rest[0], interview.MsgConcluir, o, d)
 	case verb == "intent" && len(rest) == 1:
 		return runIntent(rest[0], o, d)
+	case verb == "ui" && len(rest) == 0:
+		return runEntrevistaUI(ctx, o, d)
 	}
 	return usoEntrevista(d, nil)
+}
+
+func runEntrevistaUI(ctx context.Context, o entrevistaOpts, d Deps) int {
+	dir := o.docs
+	if dir == "" {
+		dir = "."
+	}
+	hub := a2ui.NewHub(a2ui.DefaultCatalog())
+	baseURL, stop, err := studio.StartEmbedded(dir, hub)
+	if err != nil {
+		fmt.Fprintf(d.Stderr, "erro ao iniciar interface A2UI: %v\n", err)
+		return 1
+	}
+	defer func() {
+		if cErr := stop(); cErr != nil {
+			fmt.Fprintf(d.Stderr, "erro ao encerrar interface A2UI: %v\n", cErr)
+		}
+	}()
+	fmt.Fprintf(d.Stdout, "Interface interativa A2UI ativa: %s/concepcao\n", baseURL)
+	<-ctx.Done()
+	return 0
 }
 
 func usoEntrevista(d Deps, err error) int {

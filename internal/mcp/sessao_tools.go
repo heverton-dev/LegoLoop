@@ -162,7 +162,7 @@ func defSessaoPublicar() map[string]any {
 				"surface_id":       map[string]any{"type": "string", "description": "ID hierarquico da superficie"},
 				"protocol_version": map[string]any{"type": "string", "description": "Versao do protocolo A2UI"},
 				"message_type":     map[string]any{"type": "string", "description": "Tipo de mensagem A2UI"},
-				"components":       map[string]any{"type": "array", "description": "Lista de componentes do catalogo"},
+				"components":       map[string]any{"type": "array", "description": "Lista de items do catalogo"},
 				"data_model":       map[string]any{"type": "object", "description": "Estado de dados da superficie"},
 				"fallback_text":    map[string]any{"type": "string", "description": "Texto de fallback"},
 			},

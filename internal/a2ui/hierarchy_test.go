@@ -15,7 +15,7 @@ func TestHierarchyIsolamentoDataModel(t *testing.T) {
 		SurfaceID:   "proc:fabricar",
 		ProtocolVer: "v0.9",
 		MessageType: "createSurface",
-		DataModel:   map[string]any{"etapa": "macro", "status": "ativo"},
+		DataModel:   map[string]any{"etapa": "pai", "status": "ativo"},
 	}
 	filho := Envelope{
 		SessionID:   sess.ID,
@@ -52,7 +52,7 @@ func TestHierarchyIsolamentoDataModel(t *testing.T) {
 		t.Fatalf("superfície filho não encontrada")
 	}
 
-	if envPai.DataModel["etapa"] != "macro" || envPai.DataModel["status"] != "ativo" {
+	if envPai.DataModel["etapa"] != "pai" || envPai.DataModel["status"] != "ativo" {
 		t.Fatalf("DataModel do pai foi contaminado: %+v", envPai.DataModel)
 	}
 	if _, vazou := envPai.DataModel["confianca"]; vazou {
@@ -161,7 +161,7 @@ func TestHierarchyStopGateFocoAutomatico(t *testing.T) {
 		ProtocolVer: "v0.9",
 		MessageType: "createSurface",
 		Components: []ComponentRef{
-			{ID: "sg-01", Kind: "LegoStopGateCard", Props: map[string]any{"titulo": "Stop-Gate 01"}},
+			{ID: "sg-01", Kind: "LegoStopGatePanel", Props: map[string]any{"titulo": "Stop-Gate 01"}},
 		},
 	}
 	if err := hub.Publish(stopGate); err != nil {

@@ -169,15 +169,24 @@ func TestUILegoLoopCatalogRegistered(t *testing.T) {
 		t.Fatalf("sessao.html ausente no staticFS: %v", err)
 	}
 	cat, css, html := string(catBytes), string(cssBytes), string(htmlBytes)
-	comps := []string{"LegoDagGraph", "LegoProgressMeter", "LegoStopGateCard", "LegoArtifactViewer", "LegoLogStream", "LegoSwarmBoard"}
+	comps := []string{"LegoDagGraph", "LegoProgressMeter", "LegoStopGatePanel", "LegoArtifactViewer", "LegoLogStream", "LegoSwarmBoard"}
 	for _, c := range comps {
 		if !strings.Contains(cat, `registerComponent("`+c+`"`) {
-			t.Errorf("componente %s nao registrado em legoloop-catalog.js", c)
+			t.Errorf("item %s nao registrado em legoloop-catalog.js", c)
 		}
 	}
-	for _, ref := range []string{"/components/sessao.css", "/components/legoloop-catalog.js", "/components/a2ui-bundle.js"} {
+	for _, ref := range []string{"/components/sessao.css", "/components/sessao-app.js"} {
 		if !strings.Contains(html, ref) {
 			t.Errorf("sessao.html nao referencia %s", ref)
+		}
+	}
+	appBytes, err := staticFS.ReadFile("static/components/sessao-app.js")
+	if err != nil {
+		t.Fatalf("sessao-app.js ausente no staticFS: %v", err)
+	}
+	for _, ref := range []string{"/components/legoloop-catalog.js", "/components/a2ui-bundle.js"} {
+		if !strings.Contains(string(appBytes), ref) {
+			t.Errorf("sessao-app.js nao referencia %s", ref)
 		}
 	}
 	for _, tok := range []string{"var(--surface)", "var(--border)", "var(--accent)", "var(--ok)", "var(--fail)", "var(--font-mono)"} {

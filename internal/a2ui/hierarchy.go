@@ -1,6 +1,6 @@
 package a2ui
 
-const stopGateComponentKind = "LegoStopGateCard"
+const stopGateComponentKind = "LegoStopGatePanel"
 
 // SurfaceNode representa um nó na árvore hierárquica de superfícies de uma sessão.
 type SurfaceNode struct {

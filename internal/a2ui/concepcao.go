@@ -91,7 +91,7 @@ func buildConcepcaoComponents(st ConcepcaoState, meta int) []ComponentRef {
 		},
 	}
 	comps = append(comps, buildPerguntaComponents(st)...)
-	comps = append(comps, buildEspelhoCards(st.Espelho)...)
+	comps = append(comps, buildEspelhopainels(st.Espelho)...)
 	if st.AguardandoStopGate {
 		comps = append(comps, buildStopGateComponent())
 	}
@@ -133,7 +133,7 @@ func buildPerguntaComponents(st ConcepcaoState) []ComponentRef {
 	}
 }
 
-func buildEspelhoCards(espelho map[string]string) []ComponentRef {
+func buildEspelhopainels(espelho map[string]string) []ComponentRef {
 	if len(espelho) == 0 {
 		return nil
 	}
@@ -143,24 +143,24 @@ func buildEspelhoCards(espelho map[string]string) []ComponentRef {
 	}
 	sort.Strings(chaves)
 
-	cards := make([]ComponentRef, 0, len(chaves))
+	painels := make([]ComponentRef, 0, len(chaves))
 	for _, k := range chaves {
-		cards = append(cards, ComponentRef{
+		painels = append(painels, ComponentRef{
 			ID:   "concepcao-espelho-" + k,
-			Kind: "Card",
+			Kind: "Panel",
 			Props: map[string]any{
 				"title": k,
 				"body":  espelho[k],
 			},
 		})
 	}
-	return cards
+	return painels
 }
 
 func buildStopGateComponent() ComponentRef {
 	return ComponentRef{
 		ID:   "concepcao-stop-gate-01",
-		Kind: "LegoStopGateCard",
+		Kind: "LegoStopGatePanel",
 		Props: map[string]any{
 			"title":   "Stop-Gate 01 — Aprovação da INTENT",
 			"action":  "stop_gate_decision",

@@ -2,7 +2,7 @@
 schema: progresso.v1
 iniciativa: "A2UI"
 plano: "docs/plans/2026-11-22_PLAN_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md"
-atualizado_em: "2026-11-22T00:00:00Z"
+atualizado_em: "2026-11-22T23:02:23Z"
 ---
 
 # Progresso Vivo: A2UI
@@ -13,13 +13,13 @@ atualizado_em: "2026-11-22T00:00:00Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 13 | 0 | 0 | 0 | 0 | 13 |
+| 13 | 12 | 1 | 0 | 0 | 0 |
 
 ## Ponto de Retomada (Em Andamento)
 
 | Ticket | Épico | Responsável | Último registro |
 |---|---|---|---|
-| nenhum | - | - | - |
+| `TICK-A2UI-06.3` | E06 | claude | - |
 
 ## Reprovados ou Bloqueados
 
@@ -31,22 +31,21 @@ atualizado_em: "2026-11-22T00:00:00Z"
 
 | Ticket | Épico | Título | Critérios |
 |---|---|---|---|
-| `TICK-A2UI-01.1` | E01 | Criar contratos, validador de catálogo confiável e bloqueio de payload hostil em internal/a2ui | AC-E01.2, AC-E03.3 |
-| `TICK-A2UI-01.2` | E01 | Implementar Hub de sessões interativas com SSE, snapshot de reconexão e entrega de Action sem vazamento | AC-E01.1, AC-E01.3, AC-NF.3 |
-| `TICK-A2UI-01.3` | E01 | Expor rotas HTTP /api/sessao, /stream, /action e /artefato protegidas por s.secure e internal/jail no Studio | AC-E01.1, AC-E02.3, AC-NF.1 |
-| `TICK-A2UI-02.1` | E02 | Empacotar bundle offline de @a2ui/lit e @a2ui/web_core em internal/studio/static/components via go:embed | AC-E02.1 |
-| `TICK-A2UI-02.2` | E02 | Implementar catálogo de domínio LegoLoop sobre @a2ui/lit com Design System do Studio | AC-E02.2 |
-| `TICK-A2UI-03.1` | E03 | Implementar hierarquia de macroprocessos isolados por surfaceId com árvore, breadcrumb e foco automático em Stop-Gate | AC-E03.1, AC-E03.2 |
-| `TICK-A2UI-04.1` | E04 | Implementar AwaitAction (corrida stdin vs navegador) e integração da Via 1 (Terminal CLI) | AC-E04.1 |
-| `TICK-A2UI-04.2` | E04 | Adicionar ferramentas MCP sessao_criar, sessao_publicar e sessao_aguardar no legoloop mcp-router (Via 2) | AC-E04.2 |
-| `TICK-A2UI-04.3` | E04 | Conectar botão Executar do Studio Canvas à rota de sessão interativa A2UI preservando POST /api/run (Via 3) | AC-E04.3 |
-| `TICK-A2UI-05.1` | E05 | Implementar adaptador A2UI do piloto legoloop-concepcao (confiança, perguntas, Espelho, Stop-Gate 01 e INTENT.md) | AC-E05.1, AC-E05.2 |
-| `TICK-A2UI-06.1` | E06 | Fase 2: Implementar superfície LegoSwarmBoard alimentada por swarm_api.go com paridade funcional e segurança | AC-E06.1 |
-| `TICK-A2UI-06.2` | E06 | Fase 2: Remover UI web antiga do Swarm após paridade provada, mantendo motor/backend e redirecionamento | AC-E06.2 |
-| `TICK-A2UI-06.3` | E06 | Portão final global: race, vet, funclen, gofmt, taxlinter, espinha verificar e recompilação fresca | AC-NF.2, AC-NF.3 |
+| nenhum | - | - | - |
 
 ## Aprovados com Prova
 
 | Ticket | Épico | Exit | Prova | Atualizado em |
 |---|---|---:|---|---|
-| nenhum | - | - | - | - |
+| `TICK-A2UI-01.1` | E01 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/a2ui	0.022s / | 2026-11-22T22:49:28Z |
+| `TICK-A2UI-01.2` | E01 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/a2ui	1.052s / | 2026-11-22T22:58:13Z |
+| `TICK-A2UI-01.3` | E01 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/studio	0.204s / | 2026-11-22T22:53:20Z |
+| `TICK-A2UI-02.1` | E02 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/studio	0.158s / ok  	github.com/heverton-dev/LegoLoop/internal/studio	0.037s / | 2026-11-22T22:53:22Z |
+| `TICK-A2UI-02.2` | E02 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/studio	0.039s / | 2026-11-22T22:53:24Z |
+| `TICK-A2UI-03.1` | E03 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/a2ui	1.080s / ok  	github.com/heverton-dev/LegoLoop/internal/runner	6.361s / | 2026-11-22T22:58:18Z |
+| `TICK-A2UI-04.1` | E04 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/a2ui	1.036s / ok  	github.com/heverton-dev/LegoLoop/internal/cli	57.458s / | 2026-11-22T22:58:36Z |
+| `TICK-A2UI-04.2` | E04 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/mcp	9.319s / | 2026-11-22T22:59:40Z |
+| `TICK-A2UI-04.3` | E04 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/studio	0.408s / ok  	github.com/heverton-dev/LegoLoop/internal/studio	0.032s / | 2026-11-22T22:53:25Z |
+| `TICK-A2UI-05.1` | E05 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/a2ui	1.057s / ok  	github.com/heverton-dev/LegoLoop/internal/interview	1.177s / ok  	github.com/heverton-dev/LegoLoop/internal/cli	58.780s / | 2026-11-22T22:59:52Z |
+| `TICK-A2UI-06.1` | E06 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/a2ui	0.019s / ok  	github.com/heverton-dev/LegoLoop/internal/studio	0.036s / | 2026-11-22T22:53:28Z |
+| `TICK-A2UI-06.2` | E06 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/studio	2.503s / | 2026-11-22T22:49:34Z |

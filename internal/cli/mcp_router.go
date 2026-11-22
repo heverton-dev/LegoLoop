@@ -5,10 +5,13 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
+	"github.com/heverton-dev/LegoLoop/internal/a2ui"
 	"github.com/heverton-dev/LegoLoop/internal/mcp"
+	"github.com/heverton-dev/LegoLoop/internal/studio"
 )
 
 func cmdMcpRouter(_ context.Context, args []string, d Deps) int {
@@ -29,6 +32,7 @@ func cmdMcpRouter(_ context.Context, args []string, d Deps) int {
 	home, vault := resolveMcpRouterPaths(d.Home, *vaultFlag)
 	router := mcp.NewConfiguredRouter(home, vault, *projectFlag)
 	defer router.Close()
+	defer attachEmbeddedA2UI(router, *projectFlag, d.Stderr)()
 	if *gatewayFlag {
 		router.EnableGateway()
 	}
@@ -41,6 +45,20 @@ func cmdMcpRouter(_ context.Context, args []string, d Deps) int {
 		return 1
 	}
 	return 0
+}
+
+func attachEmbeddedA2UI(router *mcp.Router, projectDir string, stderr io.Writer) func() {
+	hub := a2ui.NewHub(a2ui.DefaultCatalog())
+	baseURL, stopUI, err := studio.StartEmbedded(projectDir, hub)
+	if err != nil {
+		return func() {}
+	}
+	router.SetSessaoHub(hub, baseURL)
+	return func() {
+		if cErr := stopUI(); cErr != nil && stderr != nil {
+			fmt.Fprintf(stderr, "mcp-router ui close: %v\n", cErr)
+		}
+	}
 }
 
 func resolveMcpRouterPaths(home, vault string) (string, string) {

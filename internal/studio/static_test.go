@@ -867,10 +867,22 @@ func TestA2UIBundleOfflineERotaSessao(t *testing.T) {
 	if r := do(t, h, "GET", "/components/a2ui-bundle.js", ""); r.Code != 200 {
 		t.Fatalf("GET /components/a2ui-bundle.js = %d, quer 200", r.Code)
 	}
+	if r := do(t, h, "GET", "/components/sessao-app.js", ""); r.Code != 200 {
+		t.Fatalf("GET /components/sessao-app.js = %d, quer 200", r.Code)
+	}
 	html := readStatic(t, "sessao.html")
-	for _, want := range []string{"/style.css", "/components/a2ui-bundle.js", "/api/sessao/", "/stream", "/action"} {
+	for _, want := range []string{"/style.css", "/components/sessao.css", "/components/sessao-app.js"} {
 		if !strings.Contains(html, want) {
 			t.Errorf("sessao.html sem referência obrigatória %q", want)
+		}
+	}
+	if strings.Contains(html, "<script type=\"module\">") {
+		t.Error("sessao.html não pode ter <script> inline (bloqueado pelo CSP script-src 'self')")
+	}
+	appJS := readStatic(t, "components/sessao-app.js")
+	for _, want := range []string{"/components/a2ui-bundle.js", "/api/sessao/", "/stream", "/action", `addEventListener("a2ui"`} {
+		if !strings.Contains(appJS, want) {
+			t.Errorf("sessao-app.js sem referência obrigatória %q", want)
 		}
 	}
 	bundle := readStatic(t, "components/a2ui-bundle.js")
@@ -879,7 +891,7 @@ func TestA2UIBundleOfflineERotaSessao(t *testing.T) {
 			t.Errorf("a2ui-bundle.js sem símbolo A2UI %q", sym)
 		}
 	}
-	assertA2UISegurancaOffline(t, map[string]string{"sessao.html": html, "components/a2ui-bundle.js": bundle})
+	assertA2UISegurancaOffline(t, map[string]string{"sessao.html": html, "components/sessao-app.js": appJS, "components/a2ui-bundle.js": bundle})
 }
 
 func assertA2UISegurancaOffline(t *testing.T, arquivos map[string]string) {

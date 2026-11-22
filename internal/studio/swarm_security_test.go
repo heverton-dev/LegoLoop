@@ -38,12 +38,18 @@ func TestSwarmUIUnifiedNoXSSAndRealKill(t *testing.T) {
 			}
 		}
 		html := readStatic(t, "sessao.html")
-		for _, want := range []string{"/components/a2ui-bundle.js", "/components/legoloop-catalog.js", "/components/sessao.css"} {
+		for _, want := range []string{"/components/sessao-app.js", "/components/sessao.css"} {
 			if !strings.Contains(html, want) {
 				t.Fatalf("sessao.html deve carregar %s", want)
 			}
 		}
-		for _, jsFile := range []string{"components/legoloop-catalog.js", "components/a2ui-bundle.js"} {
+		appJS := readStatic(t, "components/sessao-app.js")
+		for _, want := range []string{"/components/a2ui-bundle.js", "/components/legoloop-catalog.js"} {
+			if !strings.Contains(appJS, want) {
+				t.Fatalf("sessao-app.js deve carregar %s", want)
+			}
+		}
+		for _, jsFile := range []string{"components/sessao-app.js", "components/legoloop-catalog.js", "components/a2ui-bundle.js"} {
 			js := readStatic(t, jsFile)
 			for i, line := range strings.Split(js, "\n") {
 				trimmed := strings.TrimSpace(line)

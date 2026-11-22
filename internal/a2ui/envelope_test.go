@@ -13,9 +13,9 @@ func TestEnvelopeValidateAceitaCatalogoConfiavel(t *testing.T) {
 		ProtocolVer: "v0.9",
 		MessageType: "createSurface",
 		Components: []ComponentRef{
-			{ID: "c1", Kind: "Card", Props: map[string]any{"title": "Pergunta 1"}},
+			{ID: "c1", Kind: "Panel", Props: map[string]any{"title": "Pergunta 1"}},
 			{ID: "c2", Kind: "LegoProgressMeter", Props: map[string]any{"value": 85, "target": 95}},
-			{ID: "c3", Kind: "LegoStopGateCard", Props: map[string]any{"label": "Stop-Gate 01"}},
+			{ID: "c3", Kind: "LegoStopGatePanel", Props: map[string]any{"label": "Stop-Gate 01"}},
 		},
 		FallbackTxt: "Pergunta 1",
 	}
@@ -24,7 +24,7 @@ func TestEnvelopeValidateAceitaCatalogoConfiavel(t *testing.T) {
 	}
 }
 
-func TestEnvelopeValidateRejeitaComponenteForaDoCatalogo(t *testing.T) {
+func TestEnvelopeValidateRejeitaitemForaDoCatalogo(t *testing.T) {
 	cat := DefaultCatalog()
 	env := Envelope{
 		SessionID:   "sess_1",
@@ -36,8 +36,8 @@ func TestEnvelopeValidateRejeitaComponenteForaDoCatalogo(t *testing.T) {
 		},
 	}
 	err := env.Validate(cat)
-	if !errors.Is(err, ErrComponenteProibido) {
-		t.Fatalf("esperava ErrComponenteProibido, obteve: %v", err)
+	if !errors.Is(err, ErrItemProibido) {
+		t.Fatalf("esperava ErrItemProibido, obteve: %v", err)
 	}
 }
 

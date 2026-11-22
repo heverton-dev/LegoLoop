@@ -82,8 +82,10 @@ type Server struct {
 	RevealLauncher func(path string, isDir bool) error
 
 	// A2UI é o barramento de sessões declarativas; nil inicializa sob demanda.
-	A2UI     *a2ui.Hub
-	a2uiOnce sync.Once
+	A2UI         *a2ui.Hub
+	a2uiOnce     sync.Once
+	concepcaoMu  sync.Mutex
+	concepcaoMap map[string]string
 
 	matrixOnce sync.Once
 	matrixReg  *reputation.RegistryMatrix

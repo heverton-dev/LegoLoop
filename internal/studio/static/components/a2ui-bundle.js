@@ -8,7 +8,7 @@ export const DEFAULT_CATALOG = Object.freeze([
   "Text",
   "Heading",
   "Button",
-  "Card",
+  "Panel",
   "Column",
   "Row",
   "List",
@@ -20,7 +20,7 @@ export const DEFAULT_CATALOG = Object.freeze([
   "Form",
   "LegoDagGraph",
   "LegoProgressMeter",
-  "LegoStopGateCard",
+  "LegoStopGatePanel",
   "LegoArtifactViewer",
   "LegoLogStream",
   "LegoSwarmBoard"
@@ -30,7 +30,7 @@ const customRenderers = new Map();
 
 export function registerComponent(kind, renderer) {
   if (typeof kind !== "string" || !kind.trim() || typeof renderer !== "function") {
-    throw new Error("a2ui: registro de componente invalido");
+    throw new Error("a2ui: registro de item invalido");
   }
   customRenderers.set(kind, renderer);
 }
@@ -84,7 +84,7 @@ export class MessageProcessor {
     for (const comp of components) {
       const kind = comp && comp.kind ? comp.kind : "";
       if (!this.allowed.has(kind) && !customRenderers.has(kind)) {
-        throw new Error("a2ui: componente fora do catalogo: " + kind);
+        throw new Error("a2ui: item fora do catalogo: " + kind);
       }
       if (!isSafeValue(comp.props || {})) {
         throw new Error("a2ui: payload hostil detectado");
@@ -139,7 +139,7 @@ export class MessageProcessor {
 
     existing.requiresAttention = Boolean(
       envelope.requires_attention ||
-      existing.components.some((c) => c && c.kind === "LegoStopGateCard")
+      existing.components.some((c) => c && c.kind === "LegoStopGatePanel")
     );
     existing.updatedAt = Date.now();
     this.surfaces.set(surfaceId, existing);
@@ -246,12 +246,13 @@ export class A2UISurfaceRenderer {
       case "Button":
         return this._renderButton(surface, comp, props);
       case "Input":
+      case "TextField":
       case "Textarea":
       case "Form":
         return this._renderFormControl(surface, comp, props);
       case "List":
         return this._renderList(props);
-      case "LegoStopGateCard":
+      case "LegoStopGatePanel":
         return this._renderStopGate(surface, comp, props);
       case "LegoProgressMeter":
         return this._renderProgress(props);
@@ -261,25 +262,36 @@ export class A2UISurfaceRenderer {
         return this._renderLogStream(props);
       case "LegoDagGraph":
       case "LegoSwarmBoard":
-      case "Card":
+      case "Panel":
       case "Column":
       case "Row":
       default:
-        return this._renderCard(comp, props);
+        return this._renderpainel(comp, props);
     }
   }
 
   _renderButton(surface, comp, props) {
-    const btn = el("button", "btn a2ui-btn", props.label || props.text || comp.id);
+    const btn = el("button", "btn btn--primary a2ui-btn", props.label || props.text || comp.id);
     btn.type = "button";
     btn.addEventListener("click", () => {
-      this._emit(surface, props.action || comp.id || "click", props.payload || { id: comp.id });
+      const actionName = props.action || comp.id || "click";
+      const payload = Object.assign({}, props.payload || { id: comp.id });
+      if (actionName === "submit_answer") {
+        const field = this.container.querySelector(".a2ui-textarea, .a2ui-input");
+        if (field) {
+          payload.answer = field.value;
+          payload.text = field.value;
+        }
+      }
+      this._emit(surface, actionName, payload);
     });
     return btn;
   }
 
   _renderFormControl(surface, comp, props) {
-    const form = el("form", "a2ui-form");
+    const hasSubmitBtn = Array.isArray(surface.components) &&
+      surface.components.some((c) => c && c.kind === "Button" && c.props && c.props.action === "submit_answer");
+    const form = el("form", "a2ui-painel a2ui-form");
     const label = el("label", "a2ui-label", props.label || props.question || comp.id);
     const fieldName = props.name || comp.id || "answer";
     const field = comp.kind === "Input" ? el("input", "a2ui-input") : el("textarea", "a2ui-textarea");
@@ -290,12 +302,15 @@ export class A2UISurfaceRenderer {
     if (props.value !== undefined) {
       field.value = String(props.value);
     }
-    const submit = el("button", "btn btn--primary a2ui-submit", props.submitLabel || "Enviar");
-    submit.type = "submit";
-    form.append(label, field, submit);
+    form.append(label, field);
+    if (!hasSubmitBtn) {
+      const submit = el("button", "btn btn--primary a2ui-submit", props.submitLabel || "Enviar");
+      submit.type = "submit";
+      form.append(submit);
+    }
     form.addEventListener("submit", (ev) => {
       ev.preventDefault();
-      this._emit(surface, props.action || "submit_answer", { [fieldName]: field.value });
+      this._emit(surface, props.action || "submit_answer", { [fieldName]: field.value, answer: field.value });
     });
     return form;
   }
@@ -310,10 +325,10 @@ export class A2UISurfaceRenderer {
   }
 
   _renderStopGate(surface, comp, props) {
-    const card = el("div", "a2ui-card a2ui-stop-gate");
-    card.appendChild(el("h3", "a2ui-card__title", props.title || "Stop-Gate"));
+    const painel = el("div", "a2ui-painel a2ui-stop-gate");
+    painel.appendChild(el("h3", "a2ui-painel__title", props.title || "Stop-Gate"));
     if (props.summary) {
-      card.appendChild(el("p", "a2ui-text", props.summary));
+      painel.appendChild(el("p", "a2ui-text", props.summary));
     }
     const actions = el("div", "a2ui-actions");
     const choices = [
@@ -333,12 +348,12 @@ export class A2UISurfaceRenderer {
       });
       actions.appendChild(btn);
     }
-    card.appendChild(actions);
-    return card;
+    painel.appendChild(actions);
+    return painel;
   }
 
   _renderProgress(props) {
-    const box = el("div", "a2ui-card a2ui-progress");
+    const box = el("div", "a2ui-painel a2ui-progress");
     const pct = Number(props.percent ?? props.confidence ?? 0);
     box.appendChild(el("div", "a2ui-progress__label", (props.label || "Progresso") + ": " + pct + "%"));
     const bar = el("progress", "a2ui-progress__bar");
@@ -349,26 +364,27 @@ export class A2UISurfaceRenderer {
   }
 
   _renderArtifact(props) {
-    const box = el("div", "a2ui-card a2ui-artifact");
-    box.appendChild(el("h4", "a2ui-card__title", props.path || props.title || "Artefato"));
+    const box = el("div", "a2ui-painel a2ui-artifact");
+    box.appendChild(el("h4", "a2ui-painel__title", props.path || props.title || "Artefato"));
     box.appendChild(el("pre", "a2ui-code", props.content || ""));
     return box;
   }
 
   _renderLogStream(props) {
-    const box = el("div", "a2ui-card a2ui-logs");
+    const box = el("div", "a2ui-painel a2ui-logs");
     const lines = Array.isArray(props.lines) ? props.lines : [];
     box.appendChild(el("pre", "a2ui-code", lines.join("\n")));
     return box;
   }
 
-  _renderCard(comp, props) {
-    const card = el("div", "a2ui-card");
-    card.setAttribute("data-kind", comp.kind);
-    card.appendChild(el("h4", "a2ui-card__title", props.title || comp.kind));
-    if (props.description || props.text) {
-      card.appendChild(el("p", "a2ui-text", props.description || props.text));
+  _renderpainel(comp, props) {
+    const painel = el("div", "a2ui-painel");
+    painel.setAttribute("data-kind", comp.kind);
+    painel.appendChild(el("h4", "a2ui-painel__title", props.title || comp.kind));
+    const bodyText = props.body || props.description || props.text;
+    if (bodyText) {
+      painel.appendChild(el("p", "a2ui-text", bodyText));
     }
-    return card;
+    return painel;
   }
 }

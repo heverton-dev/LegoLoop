@@ -60,16 +60,20 @@ func (s *Server) publishSwarmSession(sessID string) {
 		st := buildSwarmStateFromBoard(sessID, name, surfaceID, sb)
 		if err := a2ui.PublishSwarm(s.A2UIHub(), st); err != nil {
 			st.Messages = nil
-			_ = a2ui.PublishSwarm(s.A2UIHub(), st)
+			if pErr := a2ui.PublishSwarm(s.A2UIHub(), st); pErr != nil {
+				continue
+			}
 		}
 		published++
 	}
 	if published == 0 {
-		_ = a2ui.PublishSwarm(s.A2UIHub(), a2ui.SwarmState{
+		if err := a2ui.PublishSwarm(s.A2UIHub(), a2ui.SwarmState{
 			SessionID: sessID,
 			SurfaceID: a2ui.DefaultSwarmSurfaceID,
 			Title:     "LegoLoop Swarm",
-		})
+		}); err != nil {
+			return
+		}
 	}
 }
 

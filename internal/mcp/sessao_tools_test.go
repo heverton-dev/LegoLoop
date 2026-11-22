@@ -112,7 +112,7 @@ func TestSessaoTools_CriarListaEPublicar(t *testing.T) {
 	}
 }
 
-func TestSessaoTools_PublicarRejeitaComponenteProibido(t *testing.T) {
+func TestSessaoTools_PublicarRejeitaitemProibido(t *testing.T) {
 	r, _ := novoRouterSessaoTeste()
 	sessID, _ := criarSessaoTeste(t, r)
 	txt, isErr := chamarToolJSONRPC(t, r, "sessao_publicar", map[string]any{
@@ -123,7 +123,7 @@ func TestSessaoTools_PublicarRejeitaComponenteProibido(t *testing.T) {
 		"components":       []map[string]any{{"id": "x1", "kind": "RawHTML"}},
 	})
 	if !isErr {
-		t.Fatalf("esperava erro para componente proibido, obteve: %s", txt)
+		t.Fatalf("esperava erro para item proibido, obteve: %s", txt)
 	}
 }
 

@@ -29,18 +29,18 @@ function statusClass(status) {
 }
 
 function renderDagGraph({ component, props, emitAction }) {
-  const card = el("article", "a2ui-card lego-dag");
-  card.setAttribute("data-kind", "LegoDagGraph");
+  const painel = el("article", "a2ui-painel lego-dag");
+  painel.setAttribute("data-kind", "LegoDagGraph");
 
-  const header = el("header", "lego-card__header");
-  header.appendChild(el("h3", "a2ui-card__title", props.title || "Grafo do Processo"));
+  const header = el("header", "lego-painel__header");
+  header.appendChild(el("h3", "a2ui-painel__title", props.title || "Grafo do Processo"));
   const nodes = Array.isArray(props.nodes) ? props.nodes : [];
   header.appendChild(el("span", "pill", nodes.length + " nos"));
-  card.appendChild(header);
+  painel.appendChild(header);
 
   if (nodes.length === 0) {
-    card.appendChild(el("p", "a2ui-text", "Nenhum no publicado nesta superficie."));
-    return card;
+    painel.appendChild(el("p", "a2ui-text", "Nenhum no publicado nesta superficie."));
+    return painel;
   }
 
   const list = el("ul", "lego-dag__nodes");
@@ -64,29 +64,29 @@ function renderDagGraph({ component, props, emitAction }) {
     }
     list.appendChild(li);
   }
-  card.appendChild(list);
-  return card;
+  painel.appendChild(list);
+  return painel;
 }
 
 function renderProgressMeter({ props }) {
-  const card = el("article", "a2ui-card lego-progress");
-  card.setAttribute("data-kind", "LegoProgressMeter");
+  const painel = el("article", "a2ui-painel lego-progress");
+  painel.setAttribute("data-kind", "LegoProgressMeter");
 
   const raw = Number(props.percent ?? props.confidence ?? 0);
   const pct = Number.isFinite(raw) ? Math.max(0, Math.min(100, Math.round(raw))) : 0;
 
-  const header = el("header", "lego-card__header");
-  header.appendChild(el("h3", "a2ui-card__title", props.label || "Progresso"));
+  const header = el("header", "lego-painel__header");
+  header.appendChild(el("h3", "a2ui-painel__title", props.label || "Progresso"));
   header.appendChild(el("span", "pill lego-progress__value", pct + "%"));
-  card.appendChild(header);
+  painel.appendChild(header);
 
   const bar = el("progress", "lego-progress__bar");
   bar.max = 100;
   bar.value = pct;
-  card.appendChild(bar);
+  painel.appendChild(bar);
 
   if (props.detail || props.summary) {
-    card.appendChild(el("p", "a2ui-text", props.detail || props.summary));
+    painel.appendChild(el("p", "a2ui-text", props.detail || props.summary));
   }
 
   const gaps = Array.isArray(props.gaps) ? props.gaps : [];
@@ -98,23 +98,23 @@ function renderProgressMeter({ props }) {
       ul.appendChild(el("li", "a2ui-list__item", typeof gap === "string" ? gap : JSON.stringify(gap)));
     }
     gapBox.appendChild(ul);
-    card.appendChild(gapBox);
+    painel.appendChild(gapBox);
   }
 
-  return card;
+  return painel;
 }
 
-function renderStopGateCard({ component, props, emitAction }) {
-  const card = el("article", "a2ui-card lego-stop-gate");
-  card.setAttribute("data-kind", "LegoStopGateCard");
+function renderStopGatepainel({ component, props, emitAction }) {
+  const painel = el("article", "a2ui-painel lego-stop-gate");
+  painel.setAttribute("data-kind", "LegoStopGatePanel");
 
-  const header = el("header", "lego-card__header");
-  header.appendChild(el("h3", "a2ui-card__title", props.title || "Stop-Gate de Auditoria"));
+  const header = el("header", "lego-painel__header");
+  header.appendChild(el("h3", "a2ui-painel__title", props.title || "Stop-Gate de Auditoria"));
   header.appendChild(el("span", "pill a2ui-badge--attention", "Decisao humana"));
-  card.appendChild(header);
+  painel.appendChild(header);
 
   if (props.summary) {
-    card.appendChild(el("p", "a2ui-text", props.summary));
+    painel.appendChild(el("p", "a2ui-text", props.summary));
   }
 
   const items = Array.isArray(props.items) ? props.items : [];
@@ -123,14 +123,14 @@ function renderStopGateCard({ component, props, emitAction }) {
     for (const it of items) {
       ul.appendChild(el("li", "a2ui-list__item", typeof it === "string" ? it : JSON.stringify(it)));
     }
-    card.appendChild(ul);
+    painel.appendChild(ul);
   }
 
   const noteLabel = el("label", "a2ui-label", "Observacao ou ajuste (opcional)");
   const noteInput = el("textarea", "a2ui-textarea lego-stop-gate__note");
   noteInput.rows = 2;
   noteInput.setAttribute("placeholder", "Descreva ajustes se escolher personalizar...");
-  card.append(noteLabel, noteInput);
+  painel.append(noteLabel, noteInput);
 
   const actions = el("div", "a2ui-actions lego-stop-gate__actions");
   const choices = [
@@ -153,17 +153,17 @@ function renderStopGateCard({ component, props, emitAction }) {
     actions.appendChild(btn);
   }
 
-  card.appendChild(actions);
-  return card;
+  painel.appendChild(actions);
+  return painel;
 }
 
 function renderArtifactViewer({ surface, props }) {
-  const card = el("article", "a2ui-card lego-artifact");
-  card.setAttribute("data-kind", "LegoArtifactViewer");
+  const painel = el("article", "a2ui-painel lego-artifact");
+  painel.setAttribute("data-kind", "LegoArtifactViewer");
 
-  const header = el("header", "lego-card__header");
+  const header = el("header", "lego-painel__header");
   const titleText = props.title || props.path || "Artefato";
-  header.appendChild(el("h3", "a2ui-card__title", titleText));
+  header.appendChild(el("h3", "a2ui-painel__title", titleText));
 
   const pre = el("pre", "lego-code", props.content || "");
   const status = el("span", "pill", props.path ? props.path : "memoria");
@@ -193,27 +193,27 @@ function renderArtifactViewer({ surface, props }) {
     }
   }
 
-  card.append(header, pre);
-  return card;
+  painel.append(header, pre);
+  return painel;
 }
 
 function renderLogStream({ props }) {
-  const card = el("article", "a2ui-card lego-logs");
-  card.setAttribute("data-kind", "LegoLogStream");
+  const painel = el("article", "a2ui-painel lego-logs");
+  painel.setAttribute("data-kind", "LegoLogStream");
 
   const lines = Array.isArray(props.lines) ? props.lines.map((l) => String(l)) : [];
-  const header = el("header", "lego-card__header");
-  header.appendChild(el("h3", "a2ui-card__title", props.title || "Fluxo de Logs"));
+  const header = el("header", "lego-painel__header");
+  header.appendChild(el("h3", "a2ui-painel__title", props.title || "Fluxo de Logs"));
   const counter = el("span", "pill", lines.length + " linhas");
   header.appendChild(counter);
-  card.appendChild(header);
+  painel.appendChild(header);
 
   const filterBar = el("div", "lego-logs__toolbar");
   const filterInput = el("input", "a2ui-input lego-logs__filter");
   filterInput.type = "search";
   filterInput.setAttribute("placeholder", "Filtrar linhas de log...");
   filterBar.appendChild(filterInput);
-  card.appendChild(filterBar);
+  painel.appendChild(filterBar);
 
   const pre = el("pre", "lego-code lego-logs__output", lines.join("\n"));
   filterInput.addEventListener("input", () => {
@@ -223,8 +223,8 @@ function renderLogStream({ props }) {
     counter.textContent = filtered.length + " linhas";
   });
 
-  card.appendChild(pre);
-  return card;
+  painel.appendChild(pre);
+  return painel;
 }
 
 const swarmDrafts = new Map();
@@ -236,16 +236,16 @@ function swarmDraftKey(surface, component) {
 }
 
 function renderSwarmBoard({ surface, component, props, emitAction }) {
-  const card = el("article", "a2ui-card lego-swarm");
-  card.setAttribute("data-kind", "LegoSwarmBoard");
+  const painel = el("article", "a2ui-painel lego-swarm");
+  painel.setAttribute("data-kind", "LegoSwarmBoard");
 
   const workers = Array.isArray(props.workers) ? props.workers : [];
   const messages = Array.isArray(props.messages) ? props.messages : [];
 
-  const header = el("header", "lego-card__header");
-  header.appendChild(el("h3", "a2ui-card__title", props.title || "Quadro do Swarm"));
+  const header = el("header", "lego-painel__header");
+  header.appendChild(el("h3", "a2ui-painel__title", props.title || "Quadro do Swarm"));
   header.appendChild(el("span", "pill", workers.length + " workers"));
-  card.appendChild(header);
+  painel.appendChild(header);
 
   if (props.progress !== undefined && props.progress !== null) {
     const raw = Number(props.progress);
@@ -253,7 +253,7 @@ function renderSwarmBoard({ surface, component, props, emitAction }) {
     const bar = el("progress", "lego-progress__bar");
     bar.max = 100;
     bar.value = pct;
-    card.appendChild(bar);
+    painel.appendChild(bar);
   }
 
   const workersSec = el("section", "lego-swarm__section");
@@ -266,7 +266,7 @@ function renderSwarmBoard({ surface, component, props, emitAction }) {
       const name = w && (w.name || w.id) ? String(w.name || w.id) : "worker";
       const state = w && (w.state || w.status) ? String(w.state || w.status) : "waiting";
       const li = el("li", "lego-swarm__worker " + statusClass(state));
-      const top = el("div", "lego-card__header");
+      const top = el("div", "lego-painel__header");
       top.appendChild(el("span", "lego-swarm__worker-name", name));
       top.appendChild(el("span", "pill", state));
       li.appendChild(top);
@@ -277,7 +277,7 @@ function renderSwarmBoard({ surface, component, props, emitAction }) {
     }
     workersSec.appendChild(wList);
   }
-  card.appendChild(workersSec);
+  painel.appendChild(workersSec);
 
   const msgSec = el("section", "lego-swarm__section");
   msgSec.appendChild(el("span", "lego-section-label", "Mensagens (" + messages.length + ")"));
@@ -296,7 +296,7 @@ function renderSwarmBoard({ surface, component, props, emitAction }) {
     }
     msgSec.appendChild(mList);
   }
-  card.appendChild(msgSec);
+  painel.appendChild(msgSec);
 
   const draftKey = swarmDraftKey(surface, component);
   const form = el("form", "a2ui-form lego-swarm__composer");
@@ -331,8 +331,8 @@ function renderSwarmBoard({ surface, component, props, emitAction }) {
     });
   });
 
-  card.appendChild(form);
-  return card;
+  painel.appendChild(form);
+  return painel;
 }
 
 let catalogRegistered = false;
@@ -343,7 +343,7 @@ export function registerLegoLoopCatalog() {
   }
   registerComponent("LegoDagGraph", renderDagGraph);
   registerComponent("LegoProgressMeter", renderProgressMeter);
-  registerComponent("LegoStopGateCard", renderStopGateCard);
+  registerComponent("LegoStopGatePanel", renderStopGatepainel);
   registerComponent("LegoArtifactViewer", renderArtifactViewer);
   registerComponent("LegoLogStream", renderLogStream);
   registerComponent("LegoSwarmBoard", renderSwarmBoard);
