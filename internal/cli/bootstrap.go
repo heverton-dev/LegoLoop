@@ -73,13 +73,19 @@ func checkBootstrapEnv(d Deps, vault string, dry bool) bool {
 	return home != ""
 }
 
+const avisoBootstrapSubstituido = "Aviso: o comando bootstrap foi substituído por instalar; use \"legoloop instalar\".\n"
+
 func reportBootstrap(d Deps, res *bootstrapResult, asJSON bool) int {
 	if asJSON {
+		if d.Stderr != nil {
+			fmt.Fprint(d.Stderr, avisoBootstrapSubstituido)
+		}
 		enc := json.NewEncoder(d.Stdout)
 		enc.SetIndent("", "  ")
 		_ = enc.Encode(res)
 		return 0
 	}
+	fmt.Fprint(d.Stdout, avisoBootstrapSubstituido)
 	fmt.Fprintf(d.Stdout, "Bootstrap %s: %d skills, %d harnesses, mcp-router=%v, env=%v\n",
 		res.Status, len(res.Skills), len(res.Harnesses), res.HarnessesSynced, res.EnvReady)
 	return 0

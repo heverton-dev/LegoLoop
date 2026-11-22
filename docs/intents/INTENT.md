@@ -1,109 +1,108 @@
 ---
-id: INTENT-intv_1795277863681062100
+id: INTENT-intv_1795370552989667600
 status: APPROVED
-date: 2026-11-21
+date: 2026-11-22
 schema_version: 2
-upstream: [INTERVIEW-intv_1795277863681062100]
+upstream: [INTERVIEW-intv_1795370552989667600]
 covers: [Q1]
 ---
 
-# 🎯 INTENT: Iniciativa 4 (I04) — Espinha dorsal previsível, universal e determinística
+# 🎯 INTENT: Motor Único de Interface Declarativa A2UI nas 3 Vias do LegoLoop
 
 > **Status:** APPROVED  
-> **Data:** 2026-11-21  
+> **Data:** 2026-11-22  
 > **Autor:** Antigravity AI + Usuário (via Entrevista Socrática Addy Osmani)  
-> **Alvo:** `internal/espinha` (novo), `internal/descoberta` (novo), `internal/dag`, `internal/runner`, `internal/fabricar`, `internal/matriz`, `internal/caminhos`, `internal/paths`, `tools/mutar` (novo), `.github/workflows`  
-> **Sessão:** intv_1795277863681062100  
-> **Confiança da Entrevista:** 96% reportada pelo motor com o modelo `sonnet`, depois de o motor com `code-fast` parar em 85%. As decisões foram tomadas pelo usuário uma a uma ("ACEITO", "[1]"); o Espelho abaixo foi conferido contra elas.  
-> **Insumo:** `docs/reports/2026-11-21_REPORT_AUDITORIA_ESPINHA_DORSAL.md` (14 lacunas).  
-> **Macroprojeto:** Distribuição e Forja do LegoLoop. As INTENTs da I01, da I02 e da I03 não são alteradas; as mudanças entram por Emenda (`docs/intents/2026-11-21_EMENDA_2_MACROPLANO.md`).  
+> **Alvo:** `internal/studio`, `internal/runner`, `internal/interview`, `internal/mcp`, `cmd/legoloop`  
+> **Sessão:** intv_1795370552989667600  
+> **Confiança da Entrevista:** 98% (mínimo de 95% para sair de DRAFT; Espelho Canônico reconciliado em `docs/intents/ESPELHO_CANONICO.md`)  
 > **Template:** TEMPLATE_INTENT.md v2.2.0  
 
 ---
 
 ## 1. Contexto e Motivação
-* **O Problema Real:** a espinha dorsal do LegoLoop (verbos, Processos, motores e requisitos) nasceu sem arquitetura prévia e acumulou dívida. A auditoria de 2026-11-21 achou 14 lacunas. As duas críticas: a Matriz de peças está defasada e nada a atualiza (505 novas, 2 alteradas, 6.146 removidas), e o `fabricar` não varre drives, embora a premissa do produto seja usar as peças do SO e dos discos do usuário. As altas: `isolation.executor` é decorativo, o vocabulário de tipo de nó está duplicado (`unit_no` e `unit_task`) e existem duas fachadas de caminhos (`caminhos` e `paths`).
-* **Quem Sofre:** quem mantém e evolui o LegoLoop, o usuário nos três SOs e as iniciativas I01, I02 e I03, que se apoiam na espinha.
-* **O Porquê (por que agora):** a I01, a I02 e a I03 constroem sobre vocabulário, fachadas e descoberta que a auditoria mostrou falhos. Corrigir depois obrigaria a refazer o que a outra sessão acabou de construir. Por isso a I04 executa primeiro e as três ficam congeladas.
+* **O Problema Real:** Hoje o LegoLoop exige interações em texto linear na via Terminal (CLI) e na via Agente de IA / Slash Command, enquanto o botão Executar do Studio (`#btn-run` -> `POST /api/run`) abre apenas um modal de log SSE textual e o Swarm mantém uma interface web separada de monitoramento.
+* **Quem Sofre:** O usuário e operadores do LegoLoop em Windows, Linux e macOS, usando qualquer harness (Antigravity, Claude Code, OpenCode, MimoCode ou CLI pura).
+* **O Porquê:** Construir um motor único de interface declarativa baseado no protocolo aberto A2UI (`@a2ui/lit` embutido no binário Go via `go:embed`) faz com que todos os Processos do LegoLoop herdem automaticamente uma interface gráfica rica nas 3 vias, unificando interação e monitoramento e eliminando a UI separada do Swarm na Fase 2.
 * **Estado Atual vs. Estado Desejado:**
-  * **Hoje:** a leitura e a geração são determinísticas e medidas (6 verbos de leitura com hashes idênticos em duas execuções; 33 de 33 Processos validam), mas a descoberta de peças é manual e defasada, o vocabulário não é amarrado, e a universalidade só foi compilada para Linux e macOS, nunca executada.
-  * **Amanhã:** um Registro da Espinha conferido por gate mecânico, descoberta automática por hash de conteúdo, vocabulário amarrado por uma tabela única, CI verde nos três SOs e mutação cobrindo as regras e o código da espinha.
+  * **Hoje:** Três experiências fragmentadas — texto linear em CLI/Chat, Canvas + modal de log SSE no Studio, e UI separada de monitoramento do Swarm.
+  * **Amanhã:** Apenas duas interfaces complementares — **Studio Canvas** (construção de Processos/DAGs) e **Interface Interativa A2UI** (execução, interação e monitoramento) acessível por uma URL única de sessão nas 3 vias, com Design System do LegoLoop, suporte a macroprocessos via `surfaceId` e fallback textual garantido.
 
 ---
 
 ## 2. Escopo Inegociável
 
 ### O que ESTÁ no Escopo (Objetivos Primários):
-* [ ] Objetivo 1: **Registro da Espinha.** Arquivo único e versionado com quatro listas: verbos (camada espinha ou domínio, motor e contrato), motores (pacote, interface e se é determinístico), Processos (nascimento 5 de 5) e requisitos (cada lei do `AGENTS.md` ligada ao verificador mecânico). Comando `legoloop espinha verificar`, que roda no CI e no `legoloop fechar`.
-* [ ] Objetivo 2: **Descoberta de peças.** Motor determinístico e somente leitura que procura no Cofre, no HOME e nas unidades fixas do SO (Windows pelo tipo de unidade, Linux em `/mnt`, macOS em `/Volumes`). Unidade removível só com `TrustRemovable`. O `TargetDrives` passa a valer. A Matriz se atualiza por hash de conteúdo, não por relógio, antes de o `fabricar` montar o Processo.
-* [ ] Objetivo 3: **Vocabulário amarrado.** O executor é derivado do tipo do nó e validado (`stop_gate` é `local_process`; `script`, `skill`, `unit_no`, `mcp` e `subprocesso` são `orchestrix_hermetic`; `native_swarm` só explícito). Uma tabela única liga `unit_task` da ROUTE a `unit_no` do DAG. Saem o alias `TypeSubloop` e o literal `dag.NodeType("unit_no")` do `runner`. Os DAGs com rótulo errado ou ausente são corrigidos.
-* [ ] Objetivo 4: **Fachada única de caminhos.** `paths` é absorvido por `caminhos` (35 importadores contra 15), e o pacote duplicado sai.
-* [ ] Objetivo 5: **Universalidade provada.** CI em Windows, Linux e macOS, trazido da I01 (Épico 02), rodando `go test ./...`, `go vet`, `funclen` e `legoloop espinha verificar`. Correções que o CI exigir: caminho de fontes por SO, `python3` onde o SO só o tem, escolha entre `powershell` e `cmd` por SO.
-* [ ] Objetivo 6: **Mutação em duas camadas.** (a) Cada regra do Registro tem um mutante que cria o defeito numa cópia temporária, e o gate exige 100% de mutantes mortos, cada um com exit 2. (b) Mutador de código `tools/mutar`, só com `go/ast`, que troca operadores, inverte condições e remove `return err` nos pacotes da espinha (`dag`, `runner`, `gate`, `plangen`, `triagem`, `upstream`, `interview`); mutante sobrevivente reprova o gate, salvo justificativa registrada como anticorpo.
-* [ ] Objetivo 7: **As 14 lacunas e a medição que faltou.** Cada lacuna tem teste Red e anticorpo. A rodada de medição inclui `go test -race` e a execução de ponta a ponta (`run` e `exec` com DAG só de scripts) duas vezes, com relatório idêntico.
-* [ ] Objetivo 8: **Revisão das iniciativas congeladas.** A Emenda 2 revisa a I01 (sai o Épico 02, que o CI da I04 entrega; entram G01, G02 e G05 como pré-requisito), a I02 (vocabulário) e a I03 (a validação passa a ser coerência com o tipo).
+* [ ] Objetivo 1 (Fase 1 — Motor Único A2UI nas 3 Vias): Criar sessão interativa centralizada no servidor local do LegoLoop com SSE de saída (`GET /api/sessao/{id}/stream`), entrada de ações (`POST /api/sessao/{id}/action`), corrida `stdin` vs. navegador na CLI, espera estruturada via MCP no Chat/Slash Command e abertura direta pelo botão Executar no Studio.
+* [ ] Objetivo 2 (Fase 1 — Catálogo LegoLoop, Design System e Macroprocessos): Integrar `@a2ui/lit` embutido via `go:embed` com Design System próprio do LegoLoop, combinando catálogo básico A2UI e componentes de domínio (DAG, progresso/confiança, cartão Stop-Gate, visualizador de artefatos e logs), com isolamento de macroprocessos por `surfaceId` (árvore lateral + breadcrumb + foco automático em Stop-Gate).
+* [ ] Objetivo 3 (Fase 1 — Projeto Piloto `legoloop-concepcao`): Validar o motor ponta a ponta no Processo `legoloop-concepcao` nas 3 vias (perguntas dinâmicas, barra de confiança, Espelho Canônico editável, Stop-Gate 01 clicável e preview de `INTENT.md`) com fallback textual íntegro.
+* [ ] Objetivo 4 (Fase 2 — Unificação e Remoção da UI Antiga do Swarm): Plugar o monitoramento do Swarm (`native_swarm` / `swarm_api.go`) como superfície A2UI na mesma interface interativa, provar paridade funcional por testes e remover a UI web antiga e separada do Swarm (preservando o motor/backend do Swarm).
 
 ### O que NÃO ESTÁ no Escopo (Não-Objetivos / Out-of-Scope):
-* ⛔ Refatorar os verbos de domínio (`video-motion`, `video-rea`, `canal`, `cartoon-shorts`, `web-qa`, `legopress`) além de classificá-los no Registro.
-* ⛔ Mudar o formato do DAG.
-* ⛔ Alterar as INTENTs da I01, da I02 e da I03.
-* ⛔ Tornar determinístico o texto que o modelo de linguagem devolve. O determinismo vale para as decisões da espinha (validar, rotear, planejar, despachar), não para a saída do modelo.
-* ⛔ Dependências externas novas além das já autorizadas.
+* ⛔ Não faremos refatorações oportunistas fora das Peças declaradas em `Alvo`.
+* ⛔ Não alteraremos contratos públicos de API/JSON ou o formato do DAG sem spec formal prévia e retrocompatibilidade.
+* ⛔ Não criaremos protocolo proprietário de UI fora do padrão aberto A2UI.
+* ⛔ Não reescreveremos o Studio Canvas inteiro em React, Angular ou Flutter.
+* ⛔ Não removeremos o motor/backend do Swarm (`legoloop swarm`, quadro de mensagens, workers), apenas sua UI web antiga após paridade provada na Fase 2.
+* ⛔ Não integraremos dashboards externos fora do LegoLoop.
 
 ---
 
 ## 3. Mapeamento Preliminar de Peças
+Identificação das Skills que o futuro Processo precisará acionar. Tipos permitidos: os tipos de nó do DAG e do ROUTE, descritos no README, seção 6.
 
 | Identificador | Tipo da Peça | Especialidade / Skill | Papel no Processo |
 | :--- | :--- | :--- | :--- |
-| `PECA-01` | `unit_task` | `internal/espinha` e `legoloop espinha verificar` | Registro e gate da espinha. |
-| `PECA-02` | `unit_task` | `internal/descoberta`, `internal/fabricar`, `internal/matriz` | Descoberta e Matriz por hash. |
-| `PECA-03` | `unit_task` | `internal/dag`, `internal/runner`, `tools/route2dag` | Vocabulário e executor derivado do tipo. |
-| `PECA-04` | `unit_task` | `internal/caminhos`, `internal/paths` | Fachada única de caminhos. |
-| `PECA-05` | `unit_task` | `tools/mutar` | Mutador de código com `go/ast`. |
-| `PECA-06` | `script` | `.github/workflows` | CI nos três SOs. |
-| `PECA-07` | `script` | `go test ./...` | Regressão mecânica e medição. |
-| `PECA-08` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5). |
+| `PECA-01` | `skill` | `a2ui` (Cofre canônico) | Referência oficial do protocolo A2UI e renderizador `@a2ui/lit`. |
+| `PECA-02` | `skill` | `skills/aidd-spec` | Elaborar a especificação formal com critérios BDD (Fase 1 e Fase 2). |
+| `PECA-03` | `unit_no` | `internal/studio`, `internal/runner`, `internal/interview`, `internal/mcp` | Sessão interativa SSE + `POST /action`, corrida `stdin`/UI, MCP wait, catálogo LegoLoop e piloto `legoloop-concepcao`. |
+| `PECA-04` | `unit_no` | `internal/studio/static/` (`@a2ui/lit` + `go:embed`) | Cockpit A2UI, Design System LegoLoop, árvore/breadcrumb de macroprocessos e superfície Swarm (Fase 2). |
+| `PECA-05` | `script` | `go test -count=1 ./...` | Regressão mecânica, hardening de segurança e paridade antes da remoção da UI antiga do Swarm. |
+| `PECA-06` | `stop_gate` | `go build -o bin/legoloop.exe ./cmd/legoloop` | Recompilação fresca obrigatória (AGENTS.md, regra 5). |
 
 ---
 
 ## 4. Governança Operacional e Restrições Inegociáveis
-* **Gatilho Operacional de Disparo (Trigger):** `manual`
-* **Nível de Risco & Blast Radius:** alto. Mexe no `dag`, no `runner`, em dois pacotes de caminhos usados por 50 arquivos e na descoberta que lê discos. A I04 executa antes da I01, da I02 e da I03.
-* **Política de Privacidade & Orçamento Cognitivo:** a descoberta é somente leitura, não executa o que encontra e relata o que leu e o que recusou. Nenhum LLM na decisão da espinha. Nenhum segredo é lido nem gravado.
-* **Contrato de Evidência Factual (Definition of Done):** as cinco provas da seção 5 e o portão completo (`go test ./...`, `go vet ./...`, `gofmt -l` vazio, `funclen`, `taxlinter`, `go.mod` intacto).
+* **Gatilho Operacional de Disparo (Trigger):** `manual` (qualquer invocação de Processo nas 3 vias).
+* **Nível de Risco & Blast Radius:** `Médio` (altera Studio, runner de sessão, entrevista e MCP; exige hardening contra injeção e preservação integral do fallback textual).
+* **Política de Privacidade & Orçamento Cognitivo:** `Local` (servidor em `127.0.0.1`, assets `@a2ui/lit` embutidos via `go:embed` sem dependência de CDN/internet em runtime; nenhum segredo trafega em payloads A2UI).
+* **Contrato de Evidência Factual (Definition of Done Visual/Real):**
+  * Piloto `legoloop-concepcao` executado de ponta a ponta nas 3 vias com interação real no navegador e fallback textual comprovado.
+  * Macroprocesso com `subprocesso` navegável por árvore/breadcrumb e isolado por `surfaceId`.
+  * Na Fase 2, paridade de monitoramento do Swarm provada por testes antes da remoção da UI antiga.
 * **Restrições Inegociáveis:**
-  * TDD com Red primeiro, e fixture com defeito sai com exit 2 (a mesma convenção da trava `upstream_ok`).
-  * A descoberta é determinística e somente leitura.
-  * A Matriz se atualiza por hash de conteúdo, nunca por relógio.
-  * O executor é derivado do tipo do nó, e `native_swarm` só entra de forma explícita.
-  * Existe uma única tabela de ligação `unit_task` e `unit_no`, e uma única fachada de caminhos.
-  * A verificação da espinha roda no CI e no `fechar`.
-  * INTENTs aprovadas da I01, da I02 e da I03 intactas.
-  * Zero débito: todo achado se corrige na execução e vira anticorpo.
-* **Premissas Assumidas (a confirmar no Stop-Gate 01):** o GitHub Actions está disponível para o repositório (a I01 já o assumia); o mutador sobre os sete pacotes termina em tempo aceitável no CI quando roda só nos pacotes alterados.
-* **Riscos e Perguntas em Aberto:** como tratar os Processos fora do prefixo `legoloop-` (10 de 33) no Registro; custo de tempo do mutador completo; como a descoberta se comporta em unidades de rede (a SPEC define).
+  * 1. Zero HTML ou JavaScript executável vindo de agentes (somente JSON A2UI validado sobre catálogo confiável).
+  * 2. Fallback textual garantido nas 3 vias (terminal e chat continuam funcionando sem abrir navegador).
+  * 3. Isolamento por bloco e por `surfaceId` em macroprocessos (Lei 4, contexto estéril).
+  * 4. Design System próprio do LegoLoop no host (`@a2ui/lit` + `go:embed`, sem React).
+  * 5. TDD estrito (Red-Green-Refactor) e governança viva (Leis 5, 8, 12, 16 e 18).
+* **Premissas Assumidas (confirmadas no Espelho Canônico):**
+  * Piloto obrigatório em `legoloop-concepcao` antes de generalizar para a Fase 2.
+  * Unificação das interfaces do LegoLoop para 2 superfícies (Studio Canvas + Interface Interativa A2UI), removendo a UI antiga do Swarm somente na Fase 2 após paridade provada.
+* **Riscos e Perguntas em Aberto:**
+  * Empacotamento offline do bundle `@a2ui/lit` + `@a2ui/web_core` dentro do `go:embed` (a detalhar na SPEC).
+  * Precedência de execução frente às iniciativas I01, I02 e I03 (já liberadas pós-I04).
 
 ---
 
 ## 5. Critérios de Sucesso de Alto Nível
+Cada critério precisa ter uma forma mecânica de prova.
 
 | # | Critério | Como se prova | Comando / Evidência |
 | :--- | :--- | :--- | :--- |
-| 1 | A espinha se confere sozinha: sai com 0 no repositório e com exit 2 em fixtures com defeito (verbo sem registro, lei sem verificador, dois pacotes para a mesma função, Processo incompleto, executor incoerente, tipo de nó fora da tabela). | Testes de mutação das regras, 100% dos mutantes mortos | `legoloop espinha verificar` e `go test ./internal/espinha/...` |
-| 2 | A descoberta acha uma peça nova sem `matriz gerar`; `matriz status` mostra zero diferença depois do `fabricar`; `TargetDrives` restringe a busca. | Teste com raiz de teste e peça colocada nela | `go test ./internal/descoberta/... ./internal/fabricar/...` |
-| 3 | O executor é derivado do tipo; os 33 Processos e os DAGs de `docs/dags` validam; nenhum `stop_gate` com rótulo errado. | Testes do `dag` e `legoloop validate` em todos os DAGs | `go test ./internal/dag/...` |
-| 4 | O CI fica verde em Windows, Linux e macOS. | Execução do workflow | `gh run list --workflow ci.yml --limit 1 --json conclusion` |
-| 5 | As 14 lacunas têm teste Red e anticorpo; `go test -race` passa; a execução de ponta a ponta duas vezes gera relatório idêntico; nenhum mutante de código sobrevive sem justificativa. | Relatório de fechamento da I04 | `go test -race ./...`, `tools/mutar`, `legoloop anticorpos status` |
+| 1 | Todas as invariantes do Processo passam com zero stubs e zero mocks provisórios. | Suíte verde e busca por stubs vazia | `go test -count=1 ./...` com exit code 0 |
+| 2 | Cobertura de testes mantida ou expandida (TDD Red-Green). | Testes novos falhando antes do código | Relatório de testes e `tools/cobertura` |
+| 3 | Zero HTML/JS executável aceito em payloads A2UI. | Testes de hardening rejeitando payload malicioso | `go test -count=1 -run Security ./internal/studio/...` |
+| 4 | Piloto `legoloop-concepcao` funciona nas 3 vias com corrida `stdin`/UI e fallback textual. | Teste E2E automatizado + execução real | `go test -count=1 ./internal/studio/... ./internal/interview/...` |
+| 5 | Fase 2: paridade do Swarm em A2UI comprovada antes da remoção da UI antiga. | Testes de contrato SSE e ações do Swarm verdes | `go test -count=1 -run Swarm ./internal/studio/...` |
 
 ---
 
 ## 6. Handoff de Governança
-* **Próximo Documento Mandatório:** [`docs/specs/2026-11-21_SPEC_INICIATIVA_4_I04_DO_MACROPROJE.md`](../specs/2026-11-21_SPEC_INICIATIVA_4_I04_DO_MACROPROJE.md)
-* **Gate de Transição:** Este Intent só é considerado aprovado após a validação humana explícita (*Gate Humano*) no chat, antes de qualquer linha de especificação ser redigida. A trava `upstream_ok` exige `status: APPROVED` no cabeçalho.
+* **Próximo Documento Mandatório:** [`docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md`](../specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md)
+* **Gate de Transição:** Esta INTENT só é considerada aprovada após a validação humana explícita (*Stop-Gate 01*) no chat, mudando `status: UNDER_REVIEW` para `status: APPROVED` e gravando `docs/intents/INTENT_APROVADA.md`, antes de qualquer linha de especificação ser redigida.
 
 ---
 
 🛑 **STOP-GATE 01 DE AUDITORIA HUMANA:**  
-*A intenção consolidada atende à sua expectativa?*  
-*Somente após a aprovação explícita do usuário, deve-se gerar a SPEC (`TEMPLATE_SPEC.md`).*
+*A intenção consolidada com 98% de certeza factual atende à sua expectativa?*  
+*Somente após a aprovação explícita do usuário, deve-se mudar para `APPROVED` e gerar a SPEC (`TEMPLATE_SPEC.md`).*

@@ -84,6 +84,8 @@ Comandos:
   remover    <nome> [--vault DIR] [--dry-run] [--force] [--yes] [--json]  apaga um processo do cofre e os vínculos dele
   renomear   <antigo> <novo> [--dry-run] [--vault DIR] [--docs DIR] [--yes] [--json]  renomeia um processo com backup e registro
   compor     <nome> <legoloop-x@versão> [--depende ID]... [--yes]  liga um processo como etapa de outro (recusa ciclo)
+  forjar          [--dry-run|--apply|--desfazer DATA|--verificar --orcamento ARQ] [--perfil P] [--sem H] [--home DIR] [--json]  executa a Forja ou verifica o orçamento de tokens por harness
+  instalar        [--dry-run|--apply] [--perfil P] [--home DIR] [--json]  executa a Forja, grava os relatórios e configura o atalho do grafo
   instalar-skills [--vault DIR] [--dry-run] [--json]  instala e vincula as skills nativas universais
   skills-custo    [--json]  mede os tokens de frontmatter que cada harness carrega por turno
   skills-migrar (--dry-run|--apply) [--vault DIR]  tira as skills eager de todos os harnesses (backup) e deixa só o índice lazy
@@ -113,7 +115,7 @@ func mapaComandos() map[string]func(context.Context, []string, Deps) int {
 		"run": cmdRun, "exec": cmdExec, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
 		"import": cmdImport, "upgrade": cmdUpgrade, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
 		"dissecar": cmdDissecar,
-		"refinar":  cmdRefinar, "remover": cmdRemover, "renomear": cmdRenomear, "compor": cmdCompor, "instalar-skills": cmdInstalarSkills, "skills-custo": cmdSkillsCusto, "skills-migrar": cmdSkillsMigrar,
+		"refinar":  cmdRefinar, "remover": cmdRemover, "renomear": cmdRenomear, "compor": cmdCompor, "forjar": cmdForjar, "instalar": cmdInstalar, "instalar-skills": cmdInstalarSkills, "skills-custo": cmdSkillsCusto, "skills-migrar": cmdSkillsMigrar,
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
@@ -236,52 +238,6 @@ type listFlag []string
 
 func (l *listFlag) String() string     { return strings.Join(*l, ",") }
 func (l *listFlag) Set(v string) error { *l = append(*l, v); return nil }
-
-func cmdDoctor(ctx context.Context, args []string, d Deps) int {
-	fs := newFlags("doctor", d)
-	asJSON := fs.Bool("json", false, "saída JSON")
-	if err := fs.Parse(args); err != nil {
-		return 2
-	}
-	inv := d.discover(ctx)
-	if *asJSON {
-		return printJSON(d, map[string]any{"inventory": inv, "models": inv.Models()})
-	}
-	w := table(d.Stdout)
-	fmt.Fprintln(w, "MODELO\tEXECUTOR")
-	for _, m := range inv.Models() {
-		fmt.Fprintf(w, "%s\t%s\n", m.ID, m.Source)
-	}
-	if err := w.Flush(); err != nil {
-		return fail(d, err)
-	}
-	router := "offline"
-	if inv.RouterURL != "" {
-		router = "online em " + inv.RouterURL
-	}
-	fmt.Fprintf(d.Stdout, "\n9Router: %s\n", router)
-	fmt.Fprintf(d.Stdout, "Harnesses no PATH: %s\n", joinOrNone(cliNames(inv.CLIs)))
-	fmt.Fprintf(d.Stdout, "Chaves de API detectadas: %s\n", joinOrNone(inv.APIKeys))
-	for _, e := range inv.Errors {
-		fmt.Fprintf(d.Stdout, "aviso: %s\n", e)
-	}
-	return 0
-}
-
-func cliNames(cs []provider.CLI) []string {
-	var out []string
-	for _, c := range cs {
-		out = append(out, c.Name)
-	}
-	return out
-}
-
-func joinOrNone(xs []string) string {
-	if len(xs) == 0 {
-		return "nenhum"
-	}
-	return strings.Join(xs, ", ")
-}
 
 func humanBytes(n int64) string {
 	units := []string{"KiB", "MiB", "GiB", "TiB"}

@@ -2,6 +2,8 @@ package studio
 
 import (
 	"encoding/json"
+	"io/fs"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -149,5 +151,96 @@ func TestSlotsPureLogic(t *testing.T) {
 	}
 	if post := hooks["post"].([]any)[0].(map[string]any); post["ref"] != "r2" || post["command"] != nil {
 		t.Errorf("pós (ref) = %v", post)
+	}
+}
+
+// AC-E02.2: catalogo de dominio LegoLoop registrado com tokens do Studio em /components/.
+func TestUILegoLoopCatalogRegistered(t *testing.T) {
+	catBytes, err := fs.ReadFile(staticFS, "static/components/legoloop-catalog.js")
+	if err != nil {
+		t.Fatalf("legoloop-catalog.js ausente no staticFS: %v", err)
+	}
+	cssBytes, err := fs.ReadFile(staticFS, "static/components/sessao.css")
+	if err != nil {
+		t.Fatalf("sessao.css ausente no staticFS: %v", err)
+	}
+	htmlBytes, err := fs.ReadFile(staticFS, "static/sessao.html")
+	if err != nil {
+		t.Fatalf("sessao.html ausente no staticFS: %v", err)
+	}
+	cat, css, html := string(catBytes), string(cssBytes), string(htmlBytes)
+	comps := []string{"LegoDagGraph", "LegoProgressMeter", "LegoStopGateCard", "LegoArtifactViewer", "LegoLogStream", "LegoSwarmBoard"}
+	for _, c := range comps {
+		if !strings.Contains(cat, `registerComponent("`+c+`"`) {
+			t.Errorf("componente %s nao registrado em legoloop-catalog.js", c)
+		}
+	}
+	for _, ref := range []string{"/components/sessao.css", "/components/legoloop-catalog.js", "/components/a2ui-bundle.js"} {
+		if !strings.Contains(html, ref) {
+			t.Errorf("sessao.html nao referencia %s", ref)
+		}
+	}
+	for _, tok := range []string{"var(--surface)", "var(--border)", "var(--accent)", "var(--ok)", "var(--fail)", "var(--font-mono)"} {
+		if !strings.Contains(css, tok) {
+			t.Errorf("sessao.css nao herda token %s do Studio", tok)
+		}
+	}
+}
+
+// AC-E02.2: zero innerHTML, alert/confirm, inline style ou emojis no catalogo e sessao.
+func TestUILegoLoopCatalogSafeDOM(t *testing.T) {
+	files := []string{
+		"static/components/legoloop-catalog.js",
+		"static/components/sessao.css",
+		"static/sessao.html",
+	}
+	forbidden := regexp.MustCompile(`(?i)\b(innerHTML|outerHTML|insertAdjacentHTML|alert|confirm|prompt)\b|\bstyle\s*=|\.style\.`)
+	for _, path := range files {
+		raw, err := fs.ReadFile(staticFS, path)
+		if err != nil {
+			t.Fatalf("falha ao ler %s: %v", path, err)
+		}
+		text := string(raw)
+		if m := forbidden.FindString(text); m != "" {
+			t.Errorf("%s contem padrao proibido: %q", path, m)
+		}
+		for _, r := range text {
+			if (r >= 0x1F300 && r <= 0x1FAFF) || (r >= 0x2600 && r <= 0x27BF) {
+				t.Errorf("%s contem emoji proibido: U+%X", path, r)
+				break
+			}
+		}
+	}
+}
+
+// AC-E06.1: LegoSwarmBoard registrado com swarm_post, rascunho preservado e DOM seguro.
+func TestUILegoSwarmBoardContract(t *testing.T) {
+	catBytes, err := fs.ReadFile(staticFS, "static/components/legoloop-catalog.js")
+	if err != nil {
+		t.Fatalf("legoloop-catalog.js ausente: %v", err)
+	}
+	cssBytes, err := fs.ReadFile(staticFS, "static/components/sessao.css")
+	if err != nil {
+		t.Fatalf("sessao.css ausente: %v", err)
+	}
+	cat, css := string(catBytes), string(cssBytes)
+	reqJS := []string{
+		`registerComponent("LegoSwarmBoard"`,
+		`"swarm_post"`,
+		`"swarm-draft-in"`,
+		`swarmDrafts`,
+		`data-kind", "LegoSwarmBoard"`,
+	}
+	for _, want := range reqJS {
+		if !strings.Contains(cat, want) {
+			t.Errorf("legoloop-catalog.js sem %s para LegoSwarmBoard", want)
+		}
+	}
+	if !strings.Contains(css, ".lego-swarm") || !strings.Contains(css, ".lego-swarm__draft") {
+		t.Errorf("sessao.css sem estilos .lego-swarm e .lego-swarm__draft")
+	}
+	forbidden := regexp.MustCompile(`(?i)\b(innerHTML|outerHTML|insertAdjacentHTML|alert|confirm|prompt)\b|\bstyle\s*=|\.style\.`)
+	if m := forbidden.FindString(cat + "\n" + css); m != "" {
+		t.Errorf("padrao proibido encontrado: %q", m)
 	}
 }

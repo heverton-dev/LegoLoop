@@ -278,6 +278,21 @@ var allowedExceptions = map[string]map[string]bool{
 		"componente": true,
 		"estágio":    true,
 	},
+	"internal/ste/bloco.go": {
+		"bloco": true,
+	},
+	"internal/ste/bloco_test.go": {
+		"bloco": true,
+	},
+	"internal/forja/ssot.go": {
+		"bloco": true,
+	},
+	"internal/forja/settings_claude.go": {
+		"task": true,
+	},
+	"internal/forja/settings_claude_test.go": {
+		"task": true,
+	},
 	"internal/ste/prompt_prova.go": {
 		"bloco": true,
 	},

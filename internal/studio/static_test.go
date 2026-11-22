@@ -535,14 +535,14 @@ func TestLayoutModaisNavegacaoETema(t *testing.T) {
 	css := readStatic(t, "style.css")
 	indexHTML := readStatic(t, "index.html")
 	invHTML := readStatic(t, "inventario.html")
-	swarmHTML := readStatic(t, "swarm.html")
-	assertLayoutResponsivoEPorts(t, css, readStatic(t, "swarm.css"))
+	sessaoHTML := readStatic(t, "sessao.html")
+	assertLayoutResponsivoEPorts(t, css, readStatic(t, "components/sessao.css"))
 	assertModaisEInspetorIndex(t, indexHTML)
-	assertNavegacaoETemaRotas(t, indexHTML, invHTML, swarmHTML)
+	assertNavegacaoETemaRotas(t, indexHTML, invHTML, sessaoHTML)
 	assertTemaJS(t)
 }
 
-func assertLayoutResponsivoEPorts(t *testing.T, css, swarmCSS string) {
+func assertLayoutResponsivoEPorts(t *testing.T, css, sessaoCSS string) {
 	t.Helper()
 	if strings.Contains(css, "- 56px)") {
 		t.Error("style.css não deve usar altura fixa calc(... - 56px)")
@@ -552,8 +552,8 @@ func assertLayoutResponsivoEPorts(t *testing.T, css, swarmCSS string) {
 			t.Errorf("style.css sem regra responsiva/porta %q", want)
 		}
 	}
-	if !strings.Contains(swarmCSS, "@media (max-width:768px)") && !strings.Contains(swarmCSS, "@media (max-width: 768px)") {
-		t.Error("swarm.css sem media query de 768px")
+	if !strings.Contains(sessaoCSS, "@media (max-width: 820px)") && !strings.Contains(sessaoCSS, "@media (max-width: 768px)") {
+		t.Error("components/sessao.css sem media query responsiva")
 	}
 }
 
@@ -571,17 +571,17 @@ func assertModaisEInspetorIndex(t *testing.T, indexHTML string) {
 	}
 }
 
-func assertNavegacaoETemaRotas(t *testing.T, indexHTML, invHTML, swarmHTML string) {
+func assertNavegacaoETemaRotas(t *testing.T, indexHTML, invHTML, sessaoHTML string) {
 	t.Helper()
 	if !strings.Contains(invHTML, `href="/swarm"`) {
 		t.Error("inventario.html sem link para /swarm")
 	}
 	for _, href := range []string{`href="/"`, `href="/inventario"`, `href="/swarm"`} {
-		if !strings.Contains(swarmHTML, href) {
-			t.Errorf("swarm.html sem link de navegação %s", href)
+		if !strings.Contains(sessaoHTML, href) {
+			t.Errorf("sessao.html sem link de navegação %s", href)
 		}
 	}
-	for nome, html := range map[string]string{"index.html": indexHTML, "inventario.html": invHTML, "swarm.html": swarmHTML} {
+	for nome, html := range map[string]string{"index.html": indexHTML, "inventario.html": invHTML, "sessao.html": sessaoHTML} {
 		if !strings.Contains(html, `id="btn-theme-toggle"`) {
 			t.Errorf("%s sem seletor de tema #btn-theme-toggle", nome)
 		}
@@ -749,7 +749,7 @@ func assertAriaETeclado(t *testing.T) {
 		"app.js":       {`aria-expanded`},
 		"palette.js":   {`role", "group"`, `aria-label`},
 		"inventory.js": {`ArrowDown`, `ArrowUp`, `aria-labelledby`},
-		"swarm.js":     {`role", "tab"`, `aria-selected`},
+		"sessao.html":  {`aria-label`, `aria-live`},
 	}
 	for file, wants := range checks {
 		txt := readStatic(t, file)
@@ -854,5 +854,49 @@ func TestContratoInspetorModalPaletaESubgrafoZoom(t *testing.T) {
 	app := readStatic(t, "app.js")
 	if !strings.Contains(app, `autoLayout({ fit: false`) || !strings.Contains(app, `focusViewportStart(`) {
 		t.Error("app.js não deve forçar fitToScreen em sub-grafos bloqueando leitura e zoom")
+	}
+}
+
+// AC-E02.1: bundle offline A2UI e rota GET /sessao/{id} sem CDN externa, emojis ou HTML inseguro.
+func TestA2UIBundleOfflineERotaSessao(t *testing.T) {
+	s, _ := newServer(t)
+	h := s.Handler()
+	if r := do(t, h, "GET", "/sessao/sess_teste", ""); r.Code != 200 {
+		t.Fatalf("GET /sessao/sess_teste = %d, quer 200", r.Code)
+	}
+	if r := do(t, h, "GET", "/components/a2ui-bundle.js", ""); r.Code != 200 {
+		t.Fatalf("GET /components/a2ui-bundle.js = %d, quer 200", r.Code)
+	}
+	html := readStatic(t, "sessao.html")
+	for _, want := range []string{"/style.css", "/components/a2ui-bundle.js", "/api/sessao/", "/stream", "/action"} {
+		if !strings.Contains(html, want) {
+			t.Errorf("sessao.html sem referência obrigatória %q", want)
+		}
+	}
+	bundle := readStatic(t, "components/a2ui-bundle.js")
+	for _, sym := range []string{"MessageProcessor", "createSurface", "updateComponents", "updateDataModel", "deleteSurface"} {
+		if !strings.Contains(bundle, sym) {
+			t.Errorf("a2ui-bundle.js sem símbolo A2UI %q", sym)
+		}
+	}
+	assertA2UISegurancaOffline(t, map[string]string{"sessao.html": html, "components/a2ui-bundle.js": bundle})
+}
+
+func assertA2UISegurancaOffline(t *testing.T, arquivos map[string]string) {
+	t.Helper()
+	proibidos := []string{"https://cdn", "unpkg", "jsdelivr", "innerHTML", "insertAdjacentHTML", "alert(", "confirm("}
+	for nome, conteudo := range arquivos {
+		baixo := strings.ToLower(conteudo)
+		for _, p := range proibidos {
+			if strings.Contains(baixo, strings.ToLower(p)) {
+				t.Errorf("%s contém padrão proibido %q", nome, p)
+			}
+		}
+		for _, r := range conteudo {
+			if (r >= 0x1F300 && r <= 0x1FAFF) || (r >= 0x2600 && r <= 0x27BF) || (r >= 0x23F0 && r <= 0x23FA) || r == 0xFE0F {
+				t.Errorf("%s contém emoji proibido (%U)", nome, r)
+				break
+			}
+		}
 	}
 }

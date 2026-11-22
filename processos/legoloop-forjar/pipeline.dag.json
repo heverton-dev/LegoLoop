@@ -1,0 +1,334 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "date": "2026-11-22",
+  "description": "Processo canônico da Forja (legoloop-forjar): prepara o ambiente do usuário com backup, perfis de contexto, SSOT, orçamento de tokens e relatório determinístico.",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 1,
+      "mode": "sequential"
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 1,
+    "rollback_on_failure": "abort_processo",
+    "supervision_level": "micro",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-forjar",
+  "nodes": [
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "legoloop",
+        "forjar",
+        "--dry-run",
+        "--json"
+      ],
+      "context_in": [],
+      "context_out": [
+        "forja/deteccao.json"
+      ],
+      "id": "e01",
+      "inputs": {
+        "orcamento": "docs/governanca/orcamento_tokens.json"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 60,
+        "max_prompt_tokens": 8000
+      },
+      "name": "detectar-harnesses",
+      "nature": "micro",
+      "output": {
+        "artifact": "forja/deteccao.json",
+        "gate": "exit_code == 0"
+      },
+      "ref": "skills/legoloop-forjar",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "timeout_sec": 60,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "legoloop",
+        "forjar",
+        "--dry-run",
+        "--perfil",
+        "padrao",
+        "--json"
+      ],
+      "context_in": [
+        "forja/deteccao.json"
+      ],
+      "context_out": [
+        "forja/simulacao.json"
+      ],
+      "depends_on": [
+        "e01"
+      ],
+      "id": "e02",
+      "inputs": {
+        "deteccao": "file('forja/deteccao.json')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 60,
+        "max_prompt_tokens": 8000
+      },
+      "name": "simular-forja",
+      "nature": "micro",
+      "output": {
+        "artifact": "forja/simulacao.json",
+        "gate": "exit_code == 0"
+      },
+      "ref": "skills/legoloop-forjar",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "timeout_sec": 60,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "cognitive_complexity": "media",
+      "command": [
+        "legoloop",
+        "forjar",
+        "--apply",
+        "--perfil",
+        "padrao",
+        "--json"
+      ],
+      "context_in": [
+        "forja/simulacao.json"
+      ],
+      "context_out": [
+        "forja/aplicacao.json"
+      ],
+      "depends_on": [
+        "e02"
+      ],
+      "id": "e03",
+      "inputs": {
+        "simulacao": "file('forja/simulacao.json')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 3000,
+        "max_duration_sec": 120,
+        "max_prompt_tokens": 10000
+      },
+      "name": "aplicar-forja",
+      "nature": "micro",
+      "output": {
+        "artifact": "forja/aplicacao.json",
+        "gate": "exit_code == 0"
+      },
+      "ref": "skills/legoloop-forjar",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "medium",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "sonnet",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E04.2",
+      "status": "PENDING",
+      "timeout_sec": 120,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "legoloop",
+        "forjar",
+        "--verificar",
+        "--orcamento",
+        "docs/governanca/orcamento_tokens.json",
+        "--json"
+      ],
+      "context_in": [
+        "forja/aplicacao.json"
+      ],
+      "context_out": [
+        "forja/orcamento.json"
+      ],
+      "depends_on": [
+        "e03"
+      ],
+      "id": "e04",
+      "inputs": {
+        "aplicacao": "file('forja/aplicacao.json')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 60,
+        "max_prompt_tokens": 8000
+      },
+      "name": "verificar-orcamento",
+      "nature": "micro",
+      "output": {
+        "artifact": "forja/orcamento.json",
+        "gate": "exit_code == 0"
+      },
+      "ref": "skills/legoloop-forjar",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E06.2",
+      "status": "PENDING",
+      "timeout_sec": 60,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "cognitive_complexity": "simples",
+      "command": [
+        "legoloop",
+        "forjar",
+        "--dry-run",
+        "--json"
+      ],
+      "context_in": [
+        "forja/aplicacao.json",
+        "forja/orcamento.json"
+      ],
+      "context_out": [
+        "forja/RELATORIO.json"
+      ],
+      "depends_on": [
+        "e04"
+      ],
+      "id": "e05",
+      "inputs": {
+        "aplicacao": "file('forja/aplicacao.json')",
+        "orcamento": "file('forja/orcamento.json')"
+      },
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 2000,
+        "max_duration_sec": 60,
+        "max_prompt_tokens": 8000
+      },
+      "name": "emitir-relatorio",
+      "nature": "micro",
+      "output": {
+        "artifact": "forja/RELATORIO.json",
+        "gate": "exit_code == 0"
+      },
+      "ref": "skills/legoloop-forjar",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "low",
+        "fallback": "code-fast",
+        "harness": "claude",
+        "mode": "suggested",
+        "model": "haiku",
+        "via": "oficial"
+      },
+      "spec_ref": "AC-E07.3",
+      "status": "PENDING",
+      "timeout_sec": 60,
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "type": "skill",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    }
+  ],
+  "schema_version": 2,
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "docs/intents/2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md",
+    "plan": "docs/plans/2026-11-21_PLAN_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md",
+    "route": "docs/routes/2026-11-21_ROUTE_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.json",
+    "spec": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md"
+  },
+  "version": "1.0.0"
+}

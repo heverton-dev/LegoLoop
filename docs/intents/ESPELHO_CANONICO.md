@@ -1,13 +1,45 @@
-# ESPELHO CANÔNICO — Iniciativa 4 (I04)
+---
+id: ESPELHO-intv_1795370552989667600
+date: 2026-11-22
+sessao: intv_1795370552989667600
+confianca: 98
+status: RECONCILIADO
+---
 
-Sessão: `intv_1795277863681062100`. Data: 2026-11-21. Decisões tomadas pelo usuário uma a uma ("ACEITO", "[1]").
-O motor concluiu com o modelo `sonnet` (96%) depois de parar em 85% com `code-fast`. Este registro é a versão consolidada e conferida contra as decisões.
+# Espelho Canônico — Motor Único de Interface Declarativa A2UI no LegoLoop
 
-1. **resultado_esperado:** espinha dorsal previsível, universal e determinística: Registro da Espinha conferido por `legoloop espinha verificar`; descoberta determinística de peças com Matriz atualizada por hash; executor derivado do tipo do nó e tabela única `unit_task` e `unit_no`; fachada única de caminhos; CI nos três SOs; mutação em duas camadas.
-2. **quem_se_beneficia:** quem mantém o LegoLoop, o usuário nos três SOs e as iniciativas I01, I02 e I03.
-3. **por_que_agora:** a auditoria achou 14 lacunas e as três iniciativas planejadas se apoiam em vocabulário, fachadas e descoberta que estão falhos.
-4. **criterio_de_sucesso:** espinha verificar com 0 no repositório e exit 2 em fixtures com defeito; descoberta acha peça nova sem `matriz gerar`; DAGs validam com executor coerente; CI verde nos três SOs; 14 lacunas com Red e anticorpo; `-race` e ponta a ponta duas vezes idênticos; mutantes das regras 100% mortos e mutantes de código sem sobrevivente injustificado.
-5. **restricoes_inegociaveis:** TDD com Red e exit 2 em defeito; descoberta determinística e somente leitura; Matriz por hash; executor pelo tipo; uma tabela e uma fachada; verificação no CI e no `fechar`; INTENTs da I01 a I03 intactas; zero débito.
-6. **fora_de_escopo:** refatorar verbos de domínio além de classificá-los; mudar o formato do DAG; alterar as INTENTs da I01 a I03; determinismo do texto do modelo.
+> **Sessão:** `intv_1795370552989667600`  
+> **Confiança da Entrevista:** 98% (meta: 95%, 3 turnos + reconciliação arquitetural com o usuário)  
+> **Data:** 2026-11-22  
 
-Decisões do usuário: (1) escopo das 14 lacunas mais a medição, execução antes da I01 a I03; (2) Registro da Espinha com gate; (3) descoberta por hash de conteúdo; (4) executor derivado do tipo e tabela única; (5) CI de três SOs trazido da I01; (6) provas de pronto e limites; (7) mutação em duas camadas e exit 2.
+## 1. resultado_esperado
+Construir um **motor único de interface declarativa A2UI** (`@a2ui/lit` embutido no binário Go via `go:embed`) que dê a toda execução de Processo do LegoLoop uma **URL de sessão interativa** compartilhada pelas **3 vias** (Terminal CLI, Agente de IA / Slash Command via MCP `legoloop`, e botão Executar do Studio), com SSE de saída (`GET /api/sessao/{id}/stream`), entrada de ações (`POST /api/sessao/{id}/action`), Design System próprio do LegoLoop, catálogo básico A2UI + componentes de domínio (DAG, progresso/confiança, Stop-Gate, visualizador de artefatos, logs) e suporte a macroprocessos via `surfaceId` (árvore lateral + breadcrumb). A entrega ocorre em duas fases: **Fase 1 (Piloto)** no Processo `legoloop-concepcao` nas 3 vias; **Fase 2 (Unificação)** trazendo o monitoramento do Swarm como superfície A2UI e eliminando a UI web antiga e separada do Swarm, deixando o LegoLoop com apenas duas interfaces: Studio Canvas (construção) e Interface Interativa A2UI (execução, interação e monitoramento).
+
+## 2. quem_se_beneficia
+O usuário e operadores do LegoLoop em qualquer sistema operacional (Windows, Linux, macOS) e qualquer harness (Antigravity, Claude Code, OpenCode, MimoCode, CLI pura), que passam a interagir visualmente com Processos, Stop-Gates, artefatos e enxames mantendo fallback textual completo.
+
+## 3. por_que_agora
+Hoje, a via Terminal e a via Chat/Slash Command ficam restritas a texto linear, o botão Executar do Studio abre apenas um modal de log SSE textual, e o monitoramento do Swarm exige uma UI web paralela separada. Um motor único A2UI unifica interação e monitoramento para todos os Processos atuais e futuros com um único renderizador seguro.
+
+## 4. criterio_de_sucesso
+- Piloto `legoloop-concepcao` rodando de ponta a ponta nas 3 vias (perguntas dinâmicas, barra de confiança, Espelho Canônico editável, Stop-Gate 01 clicável e preview do `INTENT.md`).
+- Corrida entre entrada textual (`stdin` / chat) e interface (`POST /api/sessao/{id}/action`) funcionando sem travamento e com fallback textual preservado.
+- Zero HTML ou JavaScript executável aceito de agentes (validação estrita sobre catálogo confiável A2UI).
+- Macroprocessos isolados por `surfaceId` com navegação por árvore e breadcrumb e foco automático em Stop-Gates.
+- Na Fase 2, paridade funcional do monitoramento do Swarm como superfície A2UI comprovada por testes antes da remoção da UI antiga do Swarm.
+- Todos os testes e gates do LegoLoop verdes (`go test -count=1 ./...`, `go vet ./...`, `funclen`, `gofmt`, `taxlinter`).
+
+## 5. restricoes_inegociaveis
+1. Zero HTML ou script executável enviado por agentes (apenas JSON declarativo A2UI validado por esquema sobre catálogo confiável).
+2. Fallback textual garantido nas 3 vias (quem operar só no terminal/chat segue funcionando sem abrir navegador).
+3. Isolamento por bloco e por `surfaceId` em macroprocessos (Lei 4, contexto estéril).
+4. Design System do próprio LegoLoop no host (`@a2ui/lit` + `go:embed`, sem exigir internet em runtime e sem migrar o Studio para React).
+5. O motor/backend do Swarm permanece intacto; apenas a UI antiga duplicada é removida na Fase 2 após paridade provada.
+6. TDD estrito (Red-Green-Refactor) e respeito à governança viva (Leis 5, 8, 12, 16 e 18).
+
+## 6. fora_de_escopo
+- Criar um formato proprietário de UI fora do protocolo aberto A2UI.
+- Reescrever o Studio Canvas inteiro em React, Angular ou Flutter.
+- Quebrar o formato atual do DAG ou os endpoints SSE já existentes antes da paridade provada.
+- Remover o motor/backend do Swarm (`legoloop swarm`, quadro de mensagens, workers).
+- Integrar dashboards externos fora do LegoLoop.

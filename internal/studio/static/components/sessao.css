@@ -1,0 +1,428 @@
+/* Estilos da Sessao Interativa A2UI herdando os tokens CSS de style.css do Studio. */
+
+.a2ui-page {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  display: flex;
+  flex-direction: column;
+}
+
+.a2ui-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.a2ui-sidebar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  padding: var(--space-3);
+  box-shadow: var(--shadow);
+  align-self: start;
+}
+
+.a2ui-sidebar__title {
+  margin: 0 0 var(--space-3) 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.a2ui-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.a2ui-tree .btn {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.a2ui-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.a2ui-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  font-size: 0.85rem;
+}
+
+.a2ui-surface {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.a2ui-surface__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.a2ui-surface__title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+.a2ui-surface__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.a2ui-empty {
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-m);
+  color: var(--muted);
+  text-align: center;
+}
+
+.a2ui-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  padding: var(--space-4);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.a2ui-card__title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.lego-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.a2ui-text {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.a2ui-badge--attention {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  font-weight: 600;
+}
+
+.a2ui-list {
+  margin: 0;
+  padding-left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.a2ui-list__item {
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.a2ui-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.a2ui-label,
+.lego-section-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.a2ui-input,
+.a2ui-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-s);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+}
+
+.a2ui-input:focus,
+.a2ui-textarea:focus {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+.a2ui-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Stop-Gate Card */
+.lego-stop-gate {
+  border-left: 4px solid var(--accent);
+}
+
+.lego-btn--approve {
+  background: var(--ok);
+  color: var(--ok-ink);
+  border-color: var(--ok);
+}
+
+.lego-btn--customize {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.lego-btn--cancel {
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+  border-color: var(--fail);
+}
+
+/* Progress Meter */
+.lego-progress__bar {
+  width: 100%;
+  height: 12px;
+  border-radius: var(--radius-s);
+  accent-color: var(--accent);
+}
+
+.lego-progress__gaps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border);
+}
+
+/* DAG Graph */
+.lego-dag__nodes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: var(--space-2);
+}
+
+.lego-dag__node {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  background: var(--surface-2);
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.lego-dag__node-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.lego-dag__deps {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.lego-status--ok {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+}
+
+.lego-status--running {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.lego-status--fail {
+  border-color: var(--fail);
+  background: var(--fail-soft);
+}
+
+.lego-status--idle {
+  border-color: var(--border);
+  background: var(--idle-soft);
+}
+
+/* Artifact Viewer e Log Stream */
+.lego-code,
+.a2ui-code,
+.a2ui-fallback {
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-s);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  max-height: 420px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.lego-logs__toolbar {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Swarm Board */
+.lego-swarm__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.lego-swarm__workers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-2);
+}
+
+.lego-swarm__worker {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  background: var(--surface-2);
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.lego-swarm__worker-name {
+  font-weight: 600;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.lego-swarm__worker-task {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.lego-swarm__messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.lego-swarm__message {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  background: var(--surface-2);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.lego-swarm__msg-meta {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.lego-swarm__msg-text {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.lego-swarm__composer {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border);
+}
+
+.lego-swarm__composer-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.lego-swarm__draft {
+  flex: 1;
+}
+
+.lego-swarm__send {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+@media (max-width: 820px) {
+  .a2ui-layout {
+    grid-template-columns: 1fr;
+  }
+}

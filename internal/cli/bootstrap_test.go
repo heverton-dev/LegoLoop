@@ -34,6 +34,31 @@ func TestBootstrapDryRunJSON(t *testing.T) {
 	if _, err := os.Stat(vault); !os.IsNotExist(err) {
 		t.Fatalf("dry-run não deveria criar vault %s", vault)
 	}
+	if !strings.Contains(errOut.String(), "substituído") || !strings.Contains(errOut.String(), "instalar") {
+		t.Fatalf("esperava aviso de substituição por instalar em stderr, veio: %q", errOut.String())
+	}
+}
+
+func TestBootstrapDryRunTextoEmiteAvisoSubstituido(t *testing.T) {
+	home := t.TempDir()
+	vault := filepath.Join(t.TempDir(), "canonical")
+	var out, errOut bytes.Buffer
+	d := Deps{Stdout: &out, Stderr: &errOut, Home: home}
+
+	code := Run(context.Background(), []string{"bootstrap", "--vault", vault, "--dry-run"}, d)
+	if code != 0 {
+		t.Fatalf("esperado exit 0, veio %d; stderr=%s", code, errOut.String())
+	}
+	got := out.String()
+	if !strings.Contains(got, "substituído") || !strings.Contains(got, "instalar") {
+		t.Fatalf("esperava aviso de substituição por instalar em stdout, veio: %q", got)
+	}
+	if !strings.Contains(got, "Bootstrap ok:") {
+		t.Fatalf("esperava resumo do bootstrap em stdout, veio: %q", got)
+	}
+	if _, err := os.Stat(vault); !os.IsNotExist(err) {
+		t.Fatalf("dry-run não deveria criar vault %s", vault)
+	}
 }
 
 func TestBootstrapApplyExecutaOrquestracao(t *testing.T) {

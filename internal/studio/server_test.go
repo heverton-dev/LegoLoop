@@ -120,7 +120,7 @@ func TestFaviconServedAndLinkedInPages(t *testing.T) {
 		t.Errorf("GET /favicon.ico sem payload SVG: %s", recFav.Body.String())
 	}
 
-	for _, page := range []string{"/", "/inventario", "/swarm"} {
+	for _, page := range []string{"/", "/inventario", "/sessao/sess_favicon"} {
 		rec := do(t, h, "GET", page, "")
 		if rec.Code != http.StatusOK {
 			t.Fatalf("GET %s: status %d", page, rec.Code)

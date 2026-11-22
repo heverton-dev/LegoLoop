@@ -110,6 +110,18 @@
       "contrato": "Composicao de um Processo como Etapa de outro sem ciclos"
     },
     {
+      "nome": "forjar",
+      "camada": "espinha",
+      "motor": "internal/forja",
+      "contrato": "Execucao da Forja e verificacao do orcamento de tokens por harness"
+    },
+    {
+      "nome": "instalar",
+      "camada": "espinha",
+      "motor": "internal/instalar",
+      "contrato": "Instalacao do LegoLoop encadeando a Forja, relatorios e atalho do grafo"
+    },
+    {
       "nome": "instalar-skills",
       "camada": "espinha",
       "motor": "internal/skills",
@@ -542,6 +554,7 @@
     { "slug": "legoloop-fabricar" },
     { "slug": "legoloop-fabricar-peca-unica" },
     { "slug": "legoloop-fechar" },
+    { "slug": "legoloop-forjar" },
     { "slug": "legoloop-fronteira-ai-driven" },
     { "slug": "legoloop-homologacao" },
     { "slug": "legoloop-impeccable-design" },

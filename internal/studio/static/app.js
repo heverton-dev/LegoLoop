@@ -2471,6 +2471,46 @@ function initVaultModal() {
   });
 }
 
+async function criarEAbrirSessaoA2UI(processo, containerEl) {
+  const nomeProcesso = String(processo || "novo-dag").trim() || "novo-dag";
+  try {
+    const resp = await fetch("/api/sessao", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ processo: nomeProcesso }),
+    });
+    if (!resp.ok) return null;
+    const dados = await resp.json().catch(() => null);
+    const sessionId = dados && typeof dados.session_id === "string" ? dados.session_id.trim() : "";
+    const url = (dados && typeof dados.url === "string" && dados.url.startsWith("/sessao/"))
+      ? dados.url
+      : (sessionId ? `/sessao/${encodeURIComponent(sessionId)}` : "");
+    if (!url) return null;
+
+    if (containerEl) {
+      const box = document.createElement("div");
+      box.className = "run-node-row run-sessao-a2ui";
+      const label = document.createElement("strong");
+      label.textContent = "Sessão A2UI";
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = sessionId ? `Abrir ${sessionId}` : "Abrir sessão interativa";
+      box.appendChild(label);
+      box.appendChild(link);
+      containerEl.appendChild(box);
+    }
+
+    if (typeof window !== "undefined" && typeof window.open === "function") {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+    return { sessionId, url };
+  } catch (_) {
+    return null;
+  }
+}
+
 function initRunModal() {
   const btnRun = $("btn-run");
   const modal = $("modal-run");
@@ -2545,6 +2585,11 @@ function initRunModal() {
     };
 
     appendLog(`[${new Date().toLocaleTimeString()}] Conectando ao motor de execução LegoLoop...`);
+
+    const sessaoA2UI = await criarEAbrirSessaoA2UI(dag.name || "novo-dag", timelineEl);
+    if (sessaoA2UI && sessaoA2UI.url) {
+      appendLog(`[${new Date().toLocaleTimeString()}] Sessão interativa A2UI criada: ${sessaoA2UI.url}`);
+    }
 
     cancelRun();
     runAbortController = new AbortController();

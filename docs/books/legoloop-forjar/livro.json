@@ -1,0 +1,44 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-forjar",
+      "titulo": "Detectar harnesses e validar contrato"
+    },
+    {
+      "id": "e02",
+      "peca": "legoloop-forjar",
+      "titulo": "Simular a Forja sem alterar o disco"
+    },
+    {
+      "id": "e03",
+      "peca": "legoloop-forjar",
+      "titulo": "Aplicar perfis com backup e MANIFESTO.tsv"
+    },
+    {
+      "id": "e04",
+      "peca": "legoloop-forjar",
+      "titulo": "Verificar orçamento de tokens por harness"
+    },
+    {
+      "id": "e05",
+      "peca": "legoloop-forjar",
+      "titulo": "Emitir relatório determinístico sem segredos"
+    }
+  ],
+  "descricao": "Livro didático do Processo legoloop-forjar: preparação determinística, segura e reversível do ambiente do LegoLoop.",
+  "slug": "legoloop-forjar",
+  "titulo": "Manual Didático: legoloop-forjar",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-22_PROCESSO_LEGOLOOP_FORJAR",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-forjar-v1",
+  "ultima_compilacao": "2026-11-22"
+}

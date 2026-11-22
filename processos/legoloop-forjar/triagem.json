@@ -1,0 +1,85 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-forjar",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-forjar",
+      "comandos_cli": [
+        "legoloop forjar",
+        "legoloop instalar",
+        "/legoloop-forjar"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação de Etapas para o Processo legoloop-forjar",
+    "etapas": [
+      "e01",
+      "e02",
+      "e03",
+      "e04",
+      "e05"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "e01",
+      "palavras_chave": [
+        "e01",
+        "detectar",
+        "harnesses"
+      ],
+      "slash_command": "/forjar-e01",
+      "flag_cli": "--etapa e01"
+    },
+    {
+      "id": "e02",
+      "palavras_chave": [
+        "e02",
+        "simular",
+        "dry-run"
+      ],
+      "slash_command": "/forjar-e02",
+      "flag_cli": "--etapa e02"
+    },
+    {
+      "id": "e03",
+      "palavras_chave": [
+        "e03",
+        "aplicar",
+        "apply",
+        "backup"
+      ],
+      "slash_command": "/forjar-e03",
+      "flag_cli": "--etapa e03"
+    },
+    {
+      "id": "e04",
+      "palavras_chave": [
+        "e04",
+        "verificar",
+        "orcamento",
+        "tokens"
+      ],
+      "slash_command": "/forjar-e04",
+      "flag_cli": "--etapa e04"
+    },
+    {
+      "id": "e05",
+      "palavras_chave": [
+        "e05",
+        "relatorio"
+      ],
+      "slash_command": "/forjar-e05",
+      "flag_cli": "--etapa e05"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio",
+    "mcp"
+  ]
+}

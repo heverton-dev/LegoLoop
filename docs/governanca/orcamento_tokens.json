@@ -1,0 +1,32 @@
+{
+  "versao": "1.0.0",
+  "origem": "docs/reports/2026-11-21_BASELINE_FORJA.json",
+  "unidade": "tokens_frontmatter_por_turno",
+  "descricao": "Tetos maximos de tokens de frontmatter por harness medidos por legoloop skills-custo.",
+  "tetos": {
+    "agents": 120,
+    "agy-cli": 120,
+    "agy-ide": 120,
+    "augment": 120,
+    "claude": 120,
+    "cline": 120,
+    "codex": 120,
+    "continue": 120,
+    "copilot": 120,
+    "crush": 120,
+    "cursor": 120,
+    "devin": 120,
+    "goose": 120,
+    "grok": 120,
+    "hermes": 120,
+    "junie": 120,
+    "kiro": 120,
+    "mimocode": 120,
+    "opencode": 120,
+    "pi": 120,
+    "qwen": 120,
+    "roo": 120,
+    "trae": 120,
+    "windsurf": 120
+  }
+}

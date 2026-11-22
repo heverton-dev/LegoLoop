@@ -19,6 +19,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/heverton-dev/LegoLoop/internal/a2ui"
 	"github.com/heverton-dev/LegoLoop/internal/assets"
 	"github.com/heverton-dev/LegoLoop/internal/brain"
 	"github.com/heverton-dev/LegoLoop/internal/dag"
@@ -80,6 +81,10 @@ type Server struct {
 	// RevealLauncher substitui a abertura do explorador do SO (usado em testes).
 	RevealLauncher func(path string, isDir bool) error
 
+	// A2UI é o barramento de sessões declarativas; nil inicializa sob demanda.
+	A2UI     *a2ui.Hub
+	a2uiOnce sync.Once
+
 	matrixOnce sync.Once
 	matrixReg  *reputation.RegistryMatrix
 
@@ -115,6 +120,7 @@ func (s *Server) Handler() http.Handler {
 	s.registerAPIRoutes(mux)
 	s.registerProcessoRoutes(mux)
 	s.registerSwarmRoutes(mux)
+	s.registerA2UIRoutes(mux)
 	return s.secure(mux)
 }
 
@@ -129,11 +135,12 @@ func handleFavicon(w http.ResponseWriter, _ *http.Request) {
 func (s *Server) registerStaticRoutes(mux *http.ServeMux) {
 	static, _ := fs.Sub(staticFS, "static")
 	files := http.FileServerFS(static)
-	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /processos.js", "GET /swarm.js", "GET /swarm.css", "GET /style.css", "GET /components/"} {
+	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /processos.js", "GET /style.css", "GET /components/"} {
 		mux.Handle(p, files)
 	}
 	mux.HandleFunc("GET /favicon.ico", handleFavicon)
 	mux.HandleFunc("GET /inventario", handlePage("inventario.html"))
+	mux.HandleFunc("GET /sessao/{id}", handlePage("sessao.html"))
 }
 
 func (s *Server) registerAPIRoutes(mux *http.ServeMux) {

@@ -3,6 +3,7 @@ package studio
 import (
 	"context"
 	"encoding/json"
+	"io/fs"
 	"net/http"
 	"os"
 	"os/exec"
@@ -31,18 +32,27 @@ func TestSwarmUIUnifiedNoXSSAndRealKill(t *testing.T) {
 	})
 
 	t.Run("StaticFilesAndZeroInnerHTML", func(t *testing.T) {
-		html := readStatic(t, "swarm.html")
-		if !strings.Contains(html, "/swarm.js") {
-			t.Fatalf("swarm.html deve carregar /swarm.js")
-		}
-		js := readStatic(t, "swarm.js")
-		for i, line := range strings.Split(js, "\n") {
-			trimmed := strings.TrimSpace(line)
-			if strings.HasPrefix(trimmed, "//") {
-				continue
+		for _, legacy := range []string{"static/swarm.html", "static/swarm.js", "static/swarm.css"} {
+			if _, err := fs.Stat(staticFS, legacy); err == nil {
+				t.Fatalf("arquivo legado %s deveria ter sido removido do staticFS", legacy)
 			}
-			if strings.Contains(line, "innerHTML") || strings.Contains(line, "insertAdjacentHTML") {
-				t.Fatalf("swarm.js:%d usa HTML dinamico proibido: %s", i+1, trimmed)
+		}
+		html := readStatic(t, "sessao.html")
+		for _, want := range []string{"/components/a2ui-bundle.js", "/components/legoloop-catalog.js", "/components/sessao.css"} {
+			if !strings.Contains(html, want) {
+				t.Fatalf("sessao.html deve carregar %s", want)
+			}
+		}
+		for _, jsFile := range []string{"components/legoloop-catalog.js", "components/a2ui-bundle.js"} {
+			js := readStatic(t, jsFile)
+			for i, line := range strings.Split(js, "\n") {
+				trimmed := strings.TrimSpace(line)
+				if strings.HasPrefix(trimmed, "//") {
+					continue
+				}
+				if strings.Contains(line, "innerHTML") || strings.Contains(line, "insertAdjacentHTML") {
+					t.Fatalf("%s:%d usa HTML dinamico proibido: %s", jsFile, i+1, trimmed)
+				}
 			}
 		}
 	})
@@ -57,10 +67,25 @@ func TestSwarmUIUnifiedNoXSSAndRealKill(t *testing.T) {
 		s.ProjectDir = proj
 		h := s.Handler()
 
-		// 1. GET /swarm serve swarm.html
+		// 1. GET /swarm cria sessao A2UI e redireciona 303 para /sessao/{id}
 		recPage := do(t, h, http.MethodGet, "/swarm", "")
-		if recPage.Code != http.StatusOK || !strings.Contains(recPage.Body.String(), "LegoLoop Swarm") {
-			t.Fatalf("GET /swarm status=%d body=%s", recPage.Code, recPage.Body.String())
+		loc := recPage.Header().Get("Location")
+		if recPage.Code != http.StatusSeeOther || !strings.HasPrefix(loc, "/sessao/") {
+			t.Fatalf("GET /swarm status=%d location=%q body=%s", recPage.Code, loc, recPage.Body.String())
+		}
+		sessID := strings.TrimPrefix(loc, "/sessao/")
+		sess, err := s.A2UIHub().GetSession(sessID)
+		if err != nil || sess == nil {
+			t.Fatalf("sessao A2UI %q nao encontrada no hub: %v", sessID, err)
+		}
+		recSess := do(t, h, http.MethodGet, loc, "")
+		if recSess.Code != http.StatusOK || !strings.Contains(recSess.Body.String(), "LegoLoop A2UI") {
+			t.Fatalf("GET %s status=%d body=%s", loc, recSess.Code, recSess.Body.String())
+		}
+		for _, removed := range []string{"/swarm.js", "/swarm.css"} {
+			if recOld := do(t, h, http.MethodGet, removed, ""); recOld.Code != http.StatusNotFound {
+				t.Fatalf("GET %s deveria retornar 404 apos remocao, obteve %d", removed, recOld.Code)
+			}
 		}
 
 		// 2. CSRF bloqueado pelo middleware secure()
@@ -163,19 +188,18 @@ func verifySwarmJSDOMAndState(t *testing.T) {
 		t.Skip("node ausente no PATH")
 	}
 	script := `
-const vm = require("vm"), fs = require("fs");
-const code = fs.readFileSync("static/swarm.js", "utf8");
+const fs = require("fs"), vm = require("vm");
 function makeEl(tag, id="") {
   return {
     tagName: tag.toUpperCase(), id, className: "", textContent: "", value: "", disabled: false, hidden: false,
-    dataset: {}, attributes: {}, children: [], style: {},
-    setAttribute(k, v) { this.attributes[k] = String(v); if (k.startsWith("data-")) { const camel = k.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase()); this.dataset[camel] = String(v); } },
+    type: "", max: 0, htmlFor: "", listeners: {}, dataset: {}, attributes: {}, children: [], style: {},
+    setAttribute(k, v) { this.attributes[k] = String(v); },
     getAttribute(k) { return this.attributes[k] || null; },
     append(...nodes) { for (const n of nodes) if (n) this.children.push(typeof n === "string" ? { tagName: "#TEXT", textContent: n, children: [] } : n); },
     appendChild(n) { if (n) this.children.push(n); return n; },
     replaceChildren(...nodes) { this.children = []; this.append(...nodes); },
-    addEventListener() {},
-    querySelector(sel) { return findIn(this, sel); }
+    addEventListener(ev, fn) { (this.listeners[ev] ||= []).push(fn); },
+    dispatch(ev, payload={}) { for (const fn of (this.listeners[ev] || [])) fn(payload); }
   };
 }
 function findById(root, id) {
@@ -183,8 +207,9 @@ function findById(root, id) {
   for (const c of (root.children || [])) { const f = findById(c, id); if (f) return f; }
   return null;
 }
-function findIn(root, sel) {
-  if (sel.startsWith("#")) return findById(root, sel.slice(1));
+function findByTag(root, tag) {
+  if (root.tagName === tag) return root;
+  for (const c of (root.children || [])) { const f = findByTag(c, tag); if (f) return f; }
   return null;
 }
 function collectTags(root, out=[]) {
@@ -192,107 +217,70 @@ function collectTags(root, out=[]) {
   for (const c of (root.children || [])) collectTags(c, out);
   return out;
 }
-function collectText(root) {
-  let s = root.textContent || "";
-  for (const c of (root.children || [])) s += " " + collectText(c);
-  return s;
-}
-const roots = {};
-for (const id of ["crumb","summary","tabs","counts","workers","filter","ficha","msgs","pager","swarm-error","add-worker-panel"]) {
-  roots[id] = makeEl("div", id);
-}
-let docClick = null;
+const bundleCode = fs.readFileSync("static/components/a2ui-bundle.js", "utf8").replace(/\bexport\s+/g, "");
+const catalogCode = fs.readFileSync("static/components/legoloop-catalog.js", "utf8")
+  .replace(/^\s*import\s+[^\n]+;\s*$/gm, "")
+  .replace(/\bexport\s+/g, "");
 const doc = {
-  getElementById(id) {
-    if (roots[id]) return roots[id];
-    for (const r of Object.values(roots)) { const f = findById(r, id); if (f) return f; }
-    return null;
-  },
   createElement(tag) { return makeEl(tag); },
-  createElementNS(_, tag) { return makeEl(tag); },
-  createTextNode(txt) { return { tagName: "#TEXT", textContent: String(txt), children: [] }; },
-  addEventListener(ev, fn) { if (ev === "click") docClick = fn; }
+  createTextNode(txt) { return { tagName: "#TEXT", textContent: String(txt), children: [] }; }
 };
-const win = {};
 const ctx = {
-  window: win, document: doc, console, Date, Math, Number, String, Boolean, Array, Object, JSON,
-  EventSource: function() { return {}; },
-  fetch: async () => ({ ok: true, status: 200, json: async () => ({}), text: async () => "" })
+  document: doc, console, Date, Math, Number, String, Boolean, Array, Object, JSON, Map, Set, RegExp, Error,
+  fetch: async () => ({ ok: true, status: 200, text: async () => "" })
 };
 vm.createContext(ctx);
-vm.runInContext(code, ctx);
-const payload = {
-  order: ["procA", "procB"],
-  processes: {
-    procA: {
-      workers: [{ name: "w1", role: "engenheiro-backend", model: "m1", workspace_mode: "share", status: "working" }],
-      messages: [{ seq: 1, from: "w1", to: "@all", body: "<img src=x onerror='window.__xssProbe=1'>" }]
-    },
-    procB: {
-      workers: [{ name: "w2", role: "auditor-qualidade", model: "m2", workspace_mode: "inherit", status: "waiting" }],
-      messages: []
+vm.runInContext(bundleCode + "\n" + catalogCode + "\nthis.MessageProcessor = MessageProcessor; this.A2UISurfaceRenderer = A2UISurfaceRenderer;", ctx);
+
+const processor = new ctx.MessageProcessor();
+let xssRejected = false;
+try {
+  processor.process({
+    session_id: "sess_1", surface_id: "proc:swarm", message_type: "createSurface",
+    components: [{ id: "swarm-board", kind: "LegoSwarmBoard", props: { messages: [{ seq: 1, agent: "w1", text: "<img src=x onerror='window.__xssProbe=1'>" }] } }]
+  });
+} catch (_e) { xssRejected = true; }
+if (!xssRejected) throw new Error("payload XSS nao foi rejeitado pelo MessageProcessor");
+
+const env = {
+  session_id: "sess_1", surface_id: "proc:swarm", message_type: "createSurface",
+  components: [{
+    id: "swarm-board", kind: "LegoSwarmBoard",
+    props: {
+      title: "LegoLoop Swarm", progress: 50, action: "swarm_post",
+      workers: [{ name: "w1", role: "engenheiro-backend", state: "done" }],
+      messages: [{ seq: 1, from: "w1", text: "<img src=x>" }]
     }
-  }
+  }]
 };
-ctx.render(payload);
-// Selecionar w1 em procA
-docClick({ target: { closest: () => ({ dataset: { act: "sel", val: "w1" } }) }, stopPropagation(){} });
-const cmdIn1 = doc.getElementById("cmd-in");
-if (!cmdIn1) throw new Error("#cmd-in nao encontrado ao selecionar w1");
-cmdIn1.value = "rascunho em andamento";
-// Re-render SSE deve preservar #cmd-in.value
-ctx.render(payload);
-const cmdInAfterSSE = doc.getElementById("cmd-in");
-if (!cmdInAfterSSE || cmdInAfterSSE.value !== "rascunho em andamento") {
-  throw new Error("SSE destruiu #cmd-in: " + (cmdInAfterSSE && cmdInAfterSSE.value));
-}
-// Trocar para procB nao deve vazar selectedAgent w1 de procA
-docClick({ target: { closest: () => ({ dataset: { act: "proc", val: "procB" } }) }, stopPropagation(){} });
-if (doc.getElementById("cmd-in") !== null) {
-  throw new Error("selectedAgent vazou para procB");
-}
-// Voltar para procA restaura selectedAgent w1 e rascunho
-docClick({ target: { closest: () => ({ dataset: { act: "proc", val: "procA" } }) }, stopPropagation(){} });
-const cmdInRestored = doc.getElementById("cmd-in");
-if (!cmdInRestored || cmdInRestored.value !== "rascunho em andamento") {
-  throw new Error("estado da aba procA nao foi restaurado");
-}
-// Fechar procB e reabrir
-docClick({ target: { closest: () => ({ dataset: { act: "close", val: "procB" } }) }, stopPropagation(){} });
-docClick({ target: { closest: () => ({ dataset: { act: "reopen", val: "procB" } }) }, stopPropagation(){} });
-const tabText = collectText(roots.tabs);
-if (!tabText.includes("procB")) throw new Error("aba fechada procB nao reabriu: " + tabText);
-// Verificar zero tag IMG criada no DOM de mensagens
-const msgTags = collectTags(roots.msgs);
-if (msgTags.includes("IMG") || win.__xssProbe) throw new Error("XSS executou ou gerou IMG");
+processor.process(env);
+const actions = [];
+const root = makeEl("div", "a2ui-root");
+const renderer = new ctx.A2UISurfaceRenderer(root, (act) => actions.push(act));
+renderer.render(processor.getSurface("proc:swarm"));
 
-// Abrir formulario Novo Worker e validar 20 papeis, selects de modelo/workspace/tipo, chips multi-peca e ticket inferido
-docClick({ target: { closest: () => ({ dataset: { act: "toggle-add", val: "" } }) }, stopPropagation(){} });
-const selRole = doc.getElementById("add-worker-role");
-const selModel = doc.getElementById("add-worker-model");
-const selKind = doc.getElementById("add-worker-piece-kind");
-const ticketIn = doc.getElementById("add-worker-ticket");
-if (!selRole || selRole.tagName !== "SELECT") throw new Error("add-worker-role deve ser SELECT");
-if (!selModel || selModel.tagName !== "SELECT") throw new Error("add-worker-model deve ser SELECT");
-if (!selKind || selKind.tagName !== "SELECT") throw new Error("add-worker-piece-kind deve ser SELECT");
-if (!ticketIn || !ticketIn.value.includes("engenheiro-backend")) throw new Error("ticket nao foi auto-inferido: " + (ticketIn && ticketIn.value));
+if (collectTags(root).includes("IMG")) throw new Error("tag IMG injetada no DOM do LegoSwarmBoard");
+const draftIn = findById(root, "swarm-draft-in");
+if (!draftIn) throw new Error("#swarm-draft-in nao encontrado");
+draftIn.value = "rascunho em andamento";
+draftIn.dispatch("input");
 
-// Worker concluido (status: done) deixa coordenador e item como done (sem pulsar)
-ctx.render({
-  order: ["procDone"],
-  processes: {
-    procDone: {
-      workers: [{ name: "w-done", role: "engenheiro-backend", model: "m1", workspace_mode: "inherit", status: "done", pieces: [{ kind: "skill", name: "aidd-tdd" }, { kind: "mcp", name: "ctx" }] }],
-      messages: []
-    }
-  }
-});
-const workersText = collectText(roots.workers);
-if (!workersText.includes("aidd-tdd") || !workersText.includes("ctx")) throw new Error("multiplas pecas nao renderizadas");
-if (!JSON.stringify(roots.workers).includes("done")) throw new Error("status done nao propagado para coordenador");
-if (JSON.stringify(roots.workers).includes('"w worker working') || JSON.stringify(roots.workers).includes('"bot working"')) {
-  throw new Error("coordenador continuou pulsando (working) apos fim do processo");
+// Re-render SSE deve preservar o rascunho digitado
+processor.process(env);
+renderer.render(processor.getSurface("proc:swarm"));
+const draftAfter = findById(root, "swarm-draft-in");
+if (!draftAfter || draftAfter.value !== "rascunho em andamento") {
+  throw new Error("SSE destruiu rascunho em #swarm-draft-in: " + (draftAfter && draftAfter.value));
 }
+
+// Submissao envia acao swarm_post e limpa rascunho
+const form = findByTag(root, "FORM");
+if (!form) throw new Error("formulario do LegoSwarmBoard nao encontrado");
+form.dispatch("submit", { preventDefault() {} });
+if (actions.length !== 1 || actions[0].name !== "swarm_post" || actions[0].payload.text !== "rascunho em andamento") {
+  throw new Error("acao swarm_post inesperada: " + JSON.stringify(actions));
+}
+if (draftAfter.value !== "") throw new Error("rascunho nao foi limpo apos envio");
 console.log(JSON.stringify({ ok: true }));
 `
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

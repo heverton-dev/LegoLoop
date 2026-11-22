@@ -12,12 +12,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/heverton-dev/LegoLoop/internal/a2ui"
 	"github.com/heverton-dev/LegoLoop/internal/board"
 	"github.com/heverton-dev/LegoLoop/internal/taxonomy"
 )
 
 func (s *Server) registerSwarmRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("GET /swarm", handlePage("swarm.html"))
+	mux.HandleFunc("GET /swarm", s.handleSwarmPage)
 	mux.HandleFunc("GET /api/swarm/meta", s.handleSwarmMeta)
 	mux.HandleFunc("GET /api/swarm/events", s.handleSwarmEvents)
 	mux.HandleFunc("GET /api/events", s.handleSwarmEvents)
@@ -31,6 +32,93 @@ func (s *Server) registerSwarmRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/post", s.handleSwarmPost)
 	mux.HandleFunc("POST /api/swarm/kill", s.handleSwarmKill)
 	mux.HandleFunc("POST /api/kill", s.handleSwarmKill)
+}
+
+func (s *Server) handleSwarmPage(w http.ResponseWriter, r *http.Request) {
+	sess := s.A2UIHub().CreateSession("swarm")
+	s.publishSwarmSession(sess.ID)
+	http.Redirect(w, r, "/sessao/"+sess.ID, http.StatusSeeOther)
+}
+
+func (s *Server) publishSwarmSession(sessID string) {
+	boards := s.discoverSwarmBoards()
+	names := make([]string, 0, len(boards))
+	for name := range boards {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	published := 0
+	for _, name := range names {
+		sb, err := board.OpenSwarmBoard(boards[name])
+		if err != nil {
+			continue
+		}
+		surfaceID := a2ui.DefaultSwarmSurfaceID
+		if len(names) > 1 {
+			surfaceID = a2ui.DefaultSwarmSurfaceID + ":" + name
+		}
+		st := buildSwarmStateFromBoard(sessID, name, surfaceID, sb)
+		if err := a2ui.PublishSwarm(s.A2UIHub(), st); err != nil {
+			st.Messages = nil
+			_ = a2ui.PublishSwarm(s.A2UIHub(), st)
+		}
+		published++
+	}
+	if published == 0 {
+		_ = a2ui.PublishSwarm(s.A2UIHub(), a2ui.SwarmState{
+			SessionID: sessID,
+			SurfaceID: a2ui.DefaultSwarmSurfaceID,
+			Title:     "LegoLoop Swarm",
+		})
+	}
+}
+
+func buildSwarmStateFromBoard(sessID, procName, surfaceID string, sb *board.SwarmBoard) a2ui.SwarmState {
+	st, _ := sb.Status()
+	msgs, _ := sb.ReadMessages(0, nil)
+	workers := make([]a2ui.SwarmWorker, 0, len(st.Workers))
+	for _, w := range st.Workers {
+		workers = append(workers, a2ui.SwarmWorker{
+			Name:  w.Name,
+			Role:  w.Role,
+			State: string(w.Status),
+			Model: w.Model,
+		})
+	}
+	outMsgs := make([]a2ui.SwarmMessage, 0, len(msgs))
+	for _, m := range msgs {
+		outMsgs = append(outMsgs, a2ui.SwarmMessage{
+			Seq:   int(m.Seq),
+			Agent: m.From,
+			Text:  m.Body,
+			Time:  m.CreatedAt.Format(time.RFC3339),
+		})
+	}
+	title := "LegoLoop Swarm"
+	if strings.TrimSpace(procName) != "" {
+		title = "Swarm: " + procName
+	}
+	return a2ui.SwarmState{
+		SessionID: sessID,
+		SurfaceID: surfaceID,
+		Title:     title,
+		Workers:   workers,
+		Messages:  outMsgs,
+		Progress:  swarmProgressPercent(st.Workers),
+	}
+}
+
+func swarmProgressPercent(workers []board.Worker) int {
+	if len(workers) == 0 {
+		return 0
+	}
+	done := 0
+	for _, w := range workers {
+		if w.Status == board.WorkerDone || w.Status == board.WorkerKilled {
+			done++
+		}
+	}
+	return (done * 100) / len(workers)
 }
 
 func (s *Server) swarmRoot() string {

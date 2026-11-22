@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/heverton-dev/LegoLoop/internal/a2ui"
 	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 )
 
@@ -83,6 +84,8 @@ type Router struct {
 	gateway       bool
 	proxy         *Proxy
 	toolsProcesso map[string]toolRegistrada
+	sessaoHub     *a2ui.Hub
+	sessaoBaseURL string
 }
 
 // idleMcp e o tempo sem uso apos o qual um MCP externo e encerrado.
@@ -251,6 +254,9 @@ func (r *Router) handleToolCall(req JSONRPCRequest) JSONRPCResponse {
 		if _, ok := r.toolsProcesso[params.Name]; ok {
 			return r.chamarToolProcesso(req.ID, params.Name, params.Arguments)
 		}
+		if resp, ok := r.handleSessaoTool(req.ID, params.Name, params.Arguments); ok {
+			return resp
+		}
 		if resp, ok := r.handleSwarmTool(req.ID, params.Name, params.Arguments); ok {
 			return resp
 		}
@@ -342,6 +348,9 @@ func (r *Router) toolsInternas() []map[string]any {
 	tools := r.baseTools()
 	if r.skills != nil {
 		tools = append(tools, skillToolDefs()...)
+	}
+	if r.sessaoHub != nil {
+		tools = append(tools, sessaoToolDefs()...)
 	}
 	if !r.gateway && (r.swarm || r.vault != nil || r.runner != nil) {
 		tools = append(tools, swarmToolDefs()...)

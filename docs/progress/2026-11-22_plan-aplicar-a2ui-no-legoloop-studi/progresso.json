@@ -1,0 +1,273 @@
+{
+  "schema": "progresso.v1",
+  "iniciativa": "A2UI",
+  "plano": "docs/plans/2026-11-22_PLAN_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md",
+  "atualizado_em": "2026-11-22T00:00:00Z",
+  "resumo": {
+    "total": 13,
+    "aprovados": 0,
+    "em_andamento": 0,
+    "reprovados": 0,
+    "bloqueados": 0,
+    "pendentes": 13
+  },
+  "tickets": [
+    {
+      "id": "TICK-A2UI-01.1",
+      "epico": "E01",
+      "titulo": "Criar contratos, validador de catálogo confiável e bloqueio de payload hostil em internal/a2ui",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/a2ui/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/a2ui/envelope.go",
+        "internal/a2ui/catalog.go",
+        "internal/a2ui/envelope_test.go"
+      ],
+      "criterios": [
+        "AC-E01.2",
+        "AC-E03.3"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-01.2",
+      "epico": "E01",
+      "titulo": "Implementar Hub de sessões interativas com SSE, snapshot de reconexão e entrega de Action sem vazamento",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 -race ./internal/a2ui/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/a2ui/hub.go",
+        "internal/a2ui/hub_test.go"
+      ],
+      "criterios": [
+        "AC-E01.1",
+        "AC-E01.3",
+        "AC-NF.3"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-01.3",
+      "epico": "E01",
+      "titulo": "Expor rotas HTTP /api/sessao, /stream, /action e /artefato protegidas por s.secure e internal/jail no Studio",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/studio/... -run 'TestA2UI|TestSecurity'",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/studio/a2ui_api.go",
+        "internal/studio/a2ui_api_test.go",
+        "internal/studio/server.go"
+      ],
+      "criterios": [
+        "AC-E01.1",
+        "AC-E02.3",
+        "AC-NF.1"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-02.1",
+      "epico": "E02",
+      "titulo": "Empacotar bundle offline de @a2ui/lit e @a2ui/web_core em internal/studio/static/components via go:embed",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/studio/... -run 'TestStatic|TestEmojis'",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/studio/static/sessao.html",
+        "internal/studio/static/components/a2ui-bundle.js",
+        "internal/studio/server.go",
+        "internal/studio/static_test.go"
+      ],
+      "criterios": [
+        "AC-E02.1"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-02.2",
+      "epico": "E02",
+      "titulo": "Implementar catálogo de domínio LegoLoop sobre @a2ui/lit com Design System do Studio",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/studio/... -run 'TestUI|TestStatic'",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/studio/static/components/legoloop-catalog.js",
+        "internal/studio/static/sessao.css",
+        "internal/studio/ui_logic_test.go"
+      ],
+      "criterios": [
+        "AC-E02.2"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-03.1",
+      "epico": "E03",
+      "titulo": "Implementar hierarquia de macroprocessos isolados por surfaceId com árvore, breadcrumb e foco automático em Stop-Gate",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 -race ./internal/a2ui/... ./internal/runner/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/a2ui/hierarchy.go",
+        "internal/a2ui/hierarchy_test.go",
+        "internal/runner/subprocesso.go"
+      ],
+      "criterios": [
+        "AC-E03.1",
+        "AC-E03.2"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-04.1",
+      "epico": "E04",
+      "titulo": "Implementar AwaitAction (corrida stdin vs navegador) e integração da Via 1 (Terminal CLI)",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 -race ./internal/a2ui/... ./internal/cli/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/a2ui/await.go",
+        "internal/a2ui/await_test.go",
+        "internal/cli/exec.go"
+      ],
+      "criterios": [
+        "AC-E04.1"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-04.2",
+      "epico": "E04",
+      "titulo": "Adicionar ferramentas MCP sessao_criar, sessao_publicar e sessao_aguardar no legoloop mcp-router (Via 2)",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 -race ./internal/mcp/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/mcp/sessao_tools.go",
+        "internal/mcp/sessao_tools_test.go",
+        "internal/mcp/router.go"
+      ],
+      "criterios": [
+        "AC-E04.2"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-04.3",
+      "epico": "E04",
+      "titulo": "Conectar botão Executar do Studio Canvas à rota de sessão interativa A2UI preservando POST /api/run (Via 3)",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/studio/... -run 'TestRun|TestStatic'",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/studio/static/app.js",
+        "internal/studio/run_api.go",
+        "internal/studio/run_api_test.go"
+      ],
+      "criterios": [
+        "AC-E04.3"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-05.1",
+      "epico": "E05",
+      "titulo": "Implementar adaptador A2UI do piloto legoloop-concepcao (confiança, perguntas, Espelho, Stop-Gate 01 e INTENT.md)",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 -race ./internal/a2ui/... ./internal/interview/... ./internal/cli/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/a2ui/concepcao.go",
+        "internal/a2ui/concepcao_test.go",
+        "internal/cli/fabricar_entrevista.go"
+      ],
+      "criterios": [
+        "AC-E05.1",
+        "AC-E05.2"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-06.1",
+      "epico": "E06",
+      "titulo": "Fase 2: Implementar superfície LegoSwarmBoard alimentada por swarm_api.go com paridade funcional e segurança",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/studio/... ./internal/a2ui/... -run 'TestSwarm|TestA2UI'",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/a2ui/swarm_surface.go",
+        "internal/a2ui/swarm_surface_test.go",
+        "internal/studio/static/components/legoloop-catalog.js",
+        "internal/studio/swarm_api.go"
+      ],
+      "criterios": [
+        "AC-E06.1"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-06.2",
+      "epico": "E06",
+      "titulo": "Fase 2: Remover UI web antiga do Swarm após paridade provada, mantendo motor/backend e redirecionamento",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/studio/... -run TestSwarm",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/studio/server.go",
+        "internal/studio/swarm_api.go",
+        "internal/studio/swarm_crud_sim_test.go",
+        "internal/studio/swarm_security_test.go"
+      ],
+      "criterios": [
+        "AC-E06.2"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    },
+    {
+      "id": "TICK-A2UI-06.3",
+      "epico": "E06",
+      "titulo": "Portão final global: race, vet, funclen, gofmt, taxlinter, espinha verificar e recompilação fresca",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 -race ./... \u0026\u0026 go vet ./... \u0026\u0026 go run ./tools/funclen internal \u0026\u0026 go run ./tools/taxlinter internal cmd loops skills docs/templates \u0026\u0026 go build -o bin/legoloop.exe ./cmd/legoloop \u0026\u0026 ./bin/legoloop.exe espinha verificar",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "AGENTS.md",
+        "README.md",
+        "MEMORY.md"
+      ],
+      "criterios": [
+        "AC-NF.2",
+        "AC-NF.3"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    }
+  ]
+}

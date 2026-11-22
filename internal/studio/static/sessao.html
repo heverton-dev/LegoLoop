@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LegoLoop — Sessao Interativa A2UI</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/components/sessao.css">
+</head>
+<body class="a2ui-page">
+  <header class="stage-topbar" role="banner">
+    <div class="stage-topbar__left">
+      <strong class="brand">LegoLoop A2UI</strong>
+      <nav aria-label="Navegacao principal">
+        <a class="btn" href="/">Canvas</a>
+        <a class="btn" href="/inventario">Inventario</a>
+        <a class="btn" href="/swarm">Swarm</a>
+      </nav>
+    </div>
+    <div class="stage-topbar__right">
+      <span id="a2ui-session-id" class="pill">sessao</span>
+      <span id="a2ui-conn-status" class="pill" aria-live="polite">Conectando</span>
+      <button id="btn-theme-toggle" class="btn" type="button" aria-label="Alternar tema">Tema</button>
+    </div>
+  </header>
+
+  <main class="a2ui-layout">
+    <aside class="a2ui-sidebar" aria-label="Arvore de superficies">
+      <h1 class="a2ui-sidebar__title">Superficies</h1>
+      <ul id="a2ui-tree" class="a2ui-tree"></ul>
+    </aside>
+
+    <section class="a2ui-main" aria-label="Superficie ativa">
+      <nav id="a2ui-breadcrumb" class="a2ui-breadcrumb" aria-label="Caminho da superficie"></nav>
+      <div id="a2ui-root" class="a2ui-root"></div>
+    </section>
+  </main>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <dialog id="dialog"></dialog>
+
+  <script src="/ui.js"></script>
+  <script type="module">
+    import { MessageProcessor, A2UISurfaceRenderer } from "/components/a2ui-bundle.js";
+    import { registerLegoLoopCatalog } from "/components/legoloop-catalog.js";
+
+    registerLegoLoopCatalog();
+
+    const parts = window.location.pathname.split("/").filter(Boolean);
+    const sessionId = decodeURIComponent(parts[parts.length - 1] || "");
+    const statusEl = document.getElementById("a2ui-conn-status");
+    const sessionEl = document.getElementById("a2ui-session-id");
+    const treeEl = document.getElementById("a2ui-tree");
+    const breadcrumbEl = document.getElementById("a2ui-breadcrumb");
+    const rootEl = document.getElementById("a2ui-root");
+
+    sessionEl.textContent = sessionId || "sem-sessao";
+
+    const processor = new MessageProcessor();
+    let activeSurfaceId = "";
+
+    async function sendAction(action) {
+      if (!sessionId) {
+        return;
+      }
+      const url = "/api/sessao/" + encodeURIComponent(sessionId) + "/action";
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(action)
+        });
+        if (!res.ok && typeof window.toast === "function") {
+          window.toast("Falha ao enviar acao (" + res.status + ")", "error");
+        }
+      } catch (_err) {
+        if (typeof window.toast === "function") {
+          window.toast("Sem conexao com o servidor da sessao.", "error");
+        }
+      }
+    }
+
+    const renderer = new A2UISurfaceRenderer(rootEl, sendAction);
+
+    function renderNavigation() {
+      treeEl.replaceChildren();
+      const surfaces = processor.listSurfaces();
+      for (const s of surfaces) {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = s.surfaceId === activeSurfaceId ? "btn btn--primary" : "btn";
+        btn.textContent = s.requiresAttention ? s.surfaceId + " [Stop-Gate]" : s.surfaceId;
+        btn.addEventListener("click", () => {
+          activeSurfaceId = s.surfaceId;
+          renderAll();
+        });
+        li.appendChild(btn);
+        treeEl.appendChild(li);
+      }
+
+      breadcrumbEl.replaceChildren();
+      const trail = activeSurfaceId ? processor.getBreadcrumb(activeSurfaceId) : [];
+      trail.forEach((sid, idx) => {
+        if (idx > 0) {
+          const sep = document.createElement("span");
+          sep.textContent = " / ";
+          breadcrumbEl.appendChild(sep);
+        }
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "btn";
+        item.textContent = sid;
+        item.addEventListener("click", () => {
+          activeSurfaceId = sid;
+          renderAll();
+        });
+        breadcrumbEl.appendChild(item);
+      });
+    }
+
+    function renderAll() {
+      const surfaces = processor.listSurfaces();
+      if (!activeSurfaceId || !processor.getSurface(activeSurfaceId)) {
+        const attention = surfaces.find((s) => s.requiresAttention);
+        activeSurfaceId = attention ? attention.surfaceId : (surfaces[0] ? surfaces[0].surfaceId : "");
+      }
+      renderNavigation();
+      renderer.render(activeSurfaceId ? processor.getSurface(activeSurfaceId) : null);
+    }
+
+    processor.subscribe(({ surfaceId }) => {
+      const target = processor.getSurface(surfaceId);
+      if (target && target.requiresAttention) {
+        activeSurfaceId = surfaceId;
+      }
+      renderAll();
+    });
+
+    function connectStream() {
+      if (!sessionId) {
+        statusEl.textContent = "Sessao ausente";
+        renderAll();
+        return;
+      }
+      const streamUrl = "/api/sessao/" + encodeURIComponent(sessionId) + "/stream";
+      const source = new EventSource(streamUrl);
+      source.onopen = () => {
+        statusEl.textContent = "Conectado";
+      };
+      source.onerror = () => {
+        statusEl.textContent = "Reconectando";
+      };
+      source.onmessage = (ev) => {
+        try {
+          const env = JSON.parse(ev.data);
+          processor.process(env);
+        } catch (_err) {
+          statusEl.textContent = "Envelope ignorado";
+        }
+      };
+    }
+
+    renderAll();
+    connectStream();
+  </script>
+</body>
+</html>

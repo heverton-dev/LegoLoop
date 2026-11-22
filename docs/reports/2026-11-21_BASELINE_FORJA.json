@@ -1,0 +1,424 @@
+{
+  "harnesses": [
+    {
+      "harness": "agy-cli",
+      "skills": 1,
+      "tokens": 59,
+      "invalidas": 0,
+      "duplicadas": 1,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.gemini\\antigravity-cli\\skills",
+          "skills": 0,
+          "invalidas": 0,
+          "tokens": 0
+        },
+        {
+          "pasta": "C:\\Users\\trcnologia\\.gemini\\config\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 59
+        },
+        {
+          "pasta": "C:\\Users\\trcnologia\\.gemini\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "agy-ide",
+      "skills": 1,
+      "tokens": 61,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.gemini\\antigravity-ide\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 61
+        }
+      ]
+    },
+    {
+      "harness": "agents",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.agents\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "claude",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.claude\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "codex",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.codex\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "opencode",
+      "skills": 1,
+      "tokens": 59,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.config\\opencode\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 59
+        }
+      ]
+    },
+    {
+      "harness": "cursor",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.cursor\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "kiro",
+      "skills": 1,
+      "tokens": 56,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.kiro\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 56
+        }
+      ]
+    },
+    {
+      "harness": "windsurf",
+      "skills": 1,
+      "tokens": 59,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.codeium\\windsurf\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 59
+        }
+      ]
+    },
+    {
+      "harness": "copilot",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.copilot\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "trae",
+      "skills": 1,
+      "tokens": 56,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.trae\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 56
+        }
+      ]
+    },
+    {
+      "harness": "roo",
+      "skills": 1,
+      "tokens": 56,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.roo\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 56
+        }
+      ]
+    },
+    {
+      "harness": "continue",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.continue\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "qwen",
+      "skills": 1,
+      "tokens": 56,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.qwen\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 56
+        }
+      ]
+    },
+    {
+      "harness": "cline",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.cline\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "hermes",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.hermes\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "mimocode",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.mimocode\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "augment",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.augment\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "junie",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.junie\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    },
+    {
+      "harness": "grok",
+      "skills": 1,
+      "tokens": 56,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.grok\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 56
+        }
+      ]
+    },
+    {
+      "harness": "crush",
+      "skills": 1,
+      "tokens": 58,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.config\\crush\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 58
+        }
+      ]
+    },
+    {
+      "harness": "devin",
+      "skills": 1,
+      "tokens": 58,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.config\\devin\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 58
+        }
+      ]
+    },
+    {
+      "harness": "goose",
+      "skills": 1,
+      "tokens": 58,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.config\\goose\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 58
+        }
+      ]
+    },
+    {
+      "harness": "pi",
+      "skills": 1,
+      "tokens": 57,
+      "invalidas": 0,
+      "duplicadas": 0,
+      "disabled": 0,
+      "tokens_disabled": 0,
+      "pastas": [
+        {
+          "pasta": "C:\\Users\\trcnologia\\.pi\\agent\\skills",
+          "skills": 1,
+          "invalidas": 0,
+          "tokens": 57
+        }
+      ]
+    }
+  ]
+}

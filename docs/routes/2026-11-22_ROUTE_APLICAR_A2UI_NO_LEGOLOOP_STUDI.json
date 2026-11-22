@@ -1,0 +1,1406 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "2026-11-22_ROUTE_APLICAR_A2UI_NO_LEGOLOOP_STUDI",
+  "version": "1.0.0",
+  "date": "2026-11-22",
+  "session_id": null,
+  "intent_ref": "docs/intents/2026-11-22_INTENT_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md",
+  "spec_ref": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md",
+  "plan_ref": "docs/plans/2026-11-22_PLAN_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md",
+  "initiative_ref": "Interface Interativa A2UI do LegoLoop (Fase 1: Piloto `legoloop-concepcao` · Fase 2: Unificação do Swarm)",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-22_INTENT_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md",
+      "sha256": "1dab1725dd2daebf5640b981954fc9fe0d608e1757997b1febdb60a427184425"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md",
+      "sha256": "df208a0af792ccb78fc701d60d9297aae3fd61edae7a7180dc279678dcac148f"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-22_PLAN_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md",
+      "sha256": "743ed5ce0412e9f9cac7bb5ededf8aa2b2c5c5f9fb9f66567f80d45980dec3a1"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "write_boundary": "strict"
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "A2UI",
+      "epic_id": "E01",
+      "label": "Criar contratos, validador de catálogo confiável e bloqueio de payload hostil em internal/a2ui",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/a2ui/envelope.go",
+          "internal/a2ui/catalog.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2, AC-E03.3",
+      "test_target": "internal/a2ui/envelope_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/a2ui/envelope.go",
+          "internal/a2ui/catalog.go",
+          "internal/a2ui/envelope_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/a2ui/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/a2ui/envelope.go') \u0026\u0026 file_exists('internal/a2ui/catalog.go') \u0026\u0026 file_exists('internal/a2ui/envelope_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "A2UI",
+      "epic_id": "E01",
+      "label": "Implementar Hub de sessões interativas com SSE, snapshot de reconexão e entrega de Action sem vazamento",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/a2ui/hub.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1, AC-E01.3, AC-NF.3",
+      "test_target": "internal/a2ui/hub_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/a2ui/hub.go",
+          "internal/a2ui/hub_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-race",
+            "./internal/a2ui/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/a2ui/hub.go') \u0026\u0026 file_exists('internal/a2ui/hub_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.3",
+      "initiative_id": "A2UI",
+      "epic_id": "E01",
+      "label": "Expor rotas HTTP /api/sessao, /stream, /action e /artefato protegidas por s.secure e internal/jail no Studio",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/a2ui_api.go",
+          "internal/studio/server.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1, AC-E02.3, AC-NF.1",
+      "test_target": "internal/studio/a2ui_api_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/a2ui_api.go",
+          "internal/studio/a2ui_api_test.go",
+          "internal/studio/server.go"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: go test -count=1 ./internal/studio/... -run \"TestA2UI|TestSecurity\"')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano: SG-E01",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "A2UI",
+      "epic_id": "E02",
+      "label": "Empacotar bundle offline de @a2ui/lit e @a2ui/web_core em internal/studio/static/components via go:embed",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.3",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/static/sessao.html",
+          "internal/studio/static/components/a2ui-bundle.js",
+          "internal/studio/server.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/studio/static_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/static/sessao.html",
+          "internal/studio/static/components/a2ui-bundle.js",
+          "internal/studio/server.go",
+          "internal/studio/static_test.go"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: go test -count=1 ./internal/studio/... -run \"TestStatic|TestEmojis\"')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "A2UI",
+      "epic_id": "E02",
+      "label": "Implementar catálogo de domínio LegoLoop sobre @a2ui/lit com Design System do Studio",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/static/components/legoloop-catalog.js",
+          "internal/studio/static/sessao.css"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": "internal/studio/ui_logic_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/static/components/legoloop-catalog.js",
+          "internal/studio/static/sessao.css",
+          "internal/studio/ui_logic_test.go"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: go test -count=1 ./internal/studio/... -run \"TestUI|TestStatic\"')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano: SG-E02",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "A2UI",
+      "epic_id": "E03",
+      "label": "Implementar hierarquia de macroprocessos isolados por surfaceId com árvore, breadcrumb e foco automático em Stop-Gate",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/a2ui/hierarchy.go",
+          "internal/runner/subprocesso.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1, AC-E03.2",
+      "test_target": "internal/a2ui/hierarchy_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/a2ui/hierarchy.go",
+          "internal/a2ui/hierarchy_test.go",
+          "internal/runner/subprocesso.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-race",
+            "./internal/a2ui/...",
+            "./internal/runner/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/a2ui/hierarchy.go') \u0026\u0026 file_exists('internal/a2ui/hierarchy_test.go') \u0026\u0026 file_exists('internal/runner/subprocesso.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano: SG-E03",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": "A2UI",
+      "epic_id": "E04",
+      "label": "Implementar AwaitAction (corrida stdin vs navegador) e integração da Via 1 (Terminal CLI)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.3",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/a2ui/await.go",
+          "internal/cli/exec.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.1",
+      "test_target": "internal/a2ui/await_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/a2ui/await.go",
+          "internal/a2ui/await_test.go",
+          "internal/cli/exec.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-race",
+            "./internal/a2ui/...",
+            "./internal/cli/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/a2ui/await.go') \u0026\u0026 file_exists('internal/a2ui/await_test.go') \u0026\u0026 file_exists('internal/cli/exec.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.2",
+      "initiative_id": "A2UI",
+      "epic_id": "E04",
+      "label": "Adicionar ferramentas MCP sessao_criar, sessao_publicar e sessao_aguardar no legoloop mcp-router (Via 2)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.3",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/mcp/sessao_tools.go",
+          "internal/mcp/router.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E04.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.2",
+      "test_target": "internal/mcp/sessao_tools_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/mcp/sessao_tools.go",
+          "internal/mcp/sessao_tools_test.go",
+          "internal/mcp/router.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-race",
+            "./internal/mcp/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/mcp/sessao_tools.go') \u0026\u0026 file_exists('internal/mcp/sessao_tools_test.go') \u0026\u0026 file_exists('internal/mcp/router.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.3",
+      "initiative_id": "A2UI",
+      "epic_id": "E04",
+      "label": "Conectar botão Executar do Studio Canvas à rota de sessão interativa A2UI preservando POST /api/run (Via 3)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.2",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/static/app.js",
+          "internal/studio/run_api.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E04.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.3",
+      "test_target": "internal/studio/run_api_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/static/app.js",
+          "internal/studio/run_api.go",
+          "internal/studio/run_api_test.go"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: go test -count=1 ./internal/studio/... -run \"TestRun|TestStatic\"')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E04",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Stop-Gate Humano: SG-E04",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-04.2",
+        "TICK-04.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 04 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.1",
+      "initiative_id": "A2UI",
+      "epic_id": "E05",
+      "label": "Implementar adaptador A2UI do piloto legoloop-concepcao (confiança, perguntas, Espelho, Stop-Gate 01 e INTENT.md)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-04.1",
+        "TICK-04.2",
+        "TICK-04.3",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/a2ui/concepcao.go",
+          "internal/cli/fabricar_entrevista.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E05.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.1, AC-E05.2",
+      "test_target": "internal/a2ui/concepcao_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/a2ui/concepcao.go",
+          "internal/a2ui/concepcao_test.go",
+          "internal/cli/fabricar_entrevista.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "-race",
+            "./internal/a2ui/...",
+            "./internal/interview/...",
+            "./internal/cli/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/a2ui/concepcao.go') \u0026\u0026 file_exists('internal/a2ui/concepcao_test.go') \u0026\u0026 file_exists('internal/cli/fabricar_entrevista.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E05",
+      "initiative_id": null,
+      "epic_id": "E05",
+      "label": "Stop-Gate Humano: SG-E05",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-05.1"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 05 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-06.1",
+      "initiative_id": "A2UI",
+      "epic_id": "E06",
+      "label": "Fase 2: Implementar superfície LegoSwarmBoard alimentada por swarm_api.go com paridade funcional e segurança",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-05.1",
+        "SG-E05"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/a2ui/swarm_surface.go",
+          "internal/studio/static/components/legoloop-catalog.js",
+          "internal/studio/swarm_api.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E06.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E06.1",
+      "test_target": "internal/a2ui/swarm_surface_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/a2ui/swarm_surface.go",
+          "internal/a2ui/swarm_surface_test.go",
+          "internal/studio/static/components/legoloop-catalog.js",
+          "internal/studio/swarm_api.go"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: go test -count=1 ./internal/studio/... ./internal/a2ui/... -run \"TestSwarm|TestA2UI\"')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-06.2",
+      "initiative_id": "A2UI",
+      "epic_id": "E06",
+      "label": "Fase 2: Remover UI web antiga do Swarm após paridade provada, mantendo motor/backend e redirecionamento",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-06.1",
+        "SG-E05"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/studio/server.go",
+          "internal/studio/swarm_api.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-E06.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E06.2",
+      "test_target": "internal/studio/swarm_crud_sim_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/studio/server.go",
+          "internal/studio/swarm_api.go",
+          "internal/studio/swarm_crud_sim_test.go",
+          "internal/studio/swarm_security_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/studio/...",
+            "-run",
+            "TestSwarm"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/studio/server.go') \u0026\u0026 file_exists('internal/studio/swarm_api.go') \u0026\u0026 file_exists('internal/studio/swarm_crud_sim_test.go') \u0026\u0026 file_exists('internal/studio/swarm_security_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-06.3",
+      "initiative_id": "A2UI",
+      "epic_id": "E06",
+      "label": "Portão final global: race, vet, funclen, gofmt, taxlinter, espinha verificar e recompilação fresca",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-06.2",
+        "SG-E05"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "AGENTS.md",
+          "README.md",
+          "MEMORY.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-22_SPEC_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md#AC-NF.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-NF.2, AC-NF.3",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "AGENTS.md",
+          "README.md",
+          "MEMORY.md"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: go test -count=1 -race ./... \u0026\u0026 go vet ./... \u0026\u0026 go run ./tools/funclen internal \u0026\u0026 go run ./tools/taxlinter internal cmd loops skills docs/templates \u0026\u0026 go build -o bin/legoloop.exe ./cmd/legoloop \u0026\u0026 ./bin/legoloop.exe espinha verificar')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": null,
+      "epic_id": null,
+      "label": "Homologação Final (Regressão Global \u0026 Recompilação Fresca)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-06.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./..."
+          ],
+          [
+            "go",
+            "vet",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    }
+  ]
+}
