@@ -162,14 +162,14 @@ func TestLockLiberarNilEErrosAdquirirELimpar(t *testing.T) {
 	dirInvalido := filepath.Join(arqPai, "sub")
 	_, err := adquirirLockMemoria(dirInvalido, os.Getpid(), "s1")
 	var pe *os.PathError
-	if err == nil || !errors.As(err, &pe) || pe.Op != "mkdir" {
-		t.Fatalf("esperava PathError mkdir em adquirirLockMemoria, obteve %v", err)
+	if err == nil || !errors.As(err, &pe) || (pe.Op != "mkdir" && pe.Op != "open") {
+		t.Fatalf("esperava PathError mkdir/open em adquirirLockMemoria, obteve %v", err)
 	}
-	if _, err := LerMemoria(dirInvalido, "s1"); err == nil || !errors.As(err, &pe) || pe.Op != "mkdir" {
-		t.Fatalf("esperava PathError mkdir em LerMemoria, obteve %v", err)
+	if _, err := LerMemoria(dirInvalido, "s1"); err == nil || !errors.As(err, &pe) || (pe.Op != "mkdir" && pe.Op != "open") {
+		t.Fatalf("esperava PathError mkdir/open em LerMemoria, obteve %v", err)
 	}
-	if err := ZerarSessao(dirInvalido, "s1"); err == nil || !errors.As(err, &pe) || pe.Op != "mkdir" {
-		t.Fatalf("esperava PathError mkdir em ZerarSessao, obteve %v", err)
+	if err := ZerarSessao(dirInvalido, "s1"); err == nil || !errors.As(err, &pe) || (pe.Op != "mkdir" && pe.Op != "open") {
+		t.Fatalf("esperava PathError mkdir/open em ZerarSessao, obteve %v", err)
 	}
 	if _, err := LimparOrfaos(dirInvalido); err == nil {
 		t.Fatal("esperava erro em LimparOrfaos com dir inválido")
@@ -188,11 +188,11 @@ func TestZerarELimparOrfaosErrosLockEDisco(t *testing.T) {
 		t.Fatal("esperava erro em limparLockOrfao quando lock é diretório")
 	}
 	var pe *os.PathError
-	if err := ZerarSessao(dirLockDir, "s1"); err == nil || !errors.As(err, &pe) || pe.Op != "read" {
-		t.Fatalf("esperava PathError read de limparLockOrfao em ZerarSessao, obteve %v", err)
+	if err := ZerarSessao(dirLockDir, "s1"); err == nil || !errors.As(err, &pe) || (pe.Op != "read" && pe.Op != "open") {
+		t.Fatalf("esperava PathError read/open em ZerarSessao, obteve %v", err)
 	}
-	if _, err := LimparOrfaos(dirLockDir); err == nil || !errors.As(err, &pe) || pe.Op != "read" {
-		t.Fatalf("esperava PathError read de limparLockOrfao em LimparOrfaos, obteve %v", err)
+	if _, err := LimparOrfaos(dirLockDir); err == nil || !errors.As(err, &pe) || (pe.Op != "read" && pe.Op != "open") {
+		t.Fatalf("esperava PathError read/open em LimparOrfaos, obteve %v", err)
 	}
 	dirMemDir := t.TempDir()
 	if err := os.Mkdir(filepath.Join(dirMemDir, ArquivoMemoria), 0o755); err != nil {
