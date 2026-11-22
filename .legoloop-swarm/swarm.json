@@ -1,5 +1,64 @@
 {
-  "workers": [],
+  "workers": [
+    {
+      "name": "mut-upstream",
+      "role": "engenheiro-tdd",
+      "workspace_mode": "inherit",
+      "repo_dir": "C:\\Users\\trcnologia\\Desktop\\LegoLoop",
+      "status": "killed",
+      "exit_code": 1,
+      "created_at": "2026-11-22T16:31:47.214336Z",
+      "last_active_at": "2026-11-22T16:33:11.7461625Z"
+    },
+    {
+      "name": "mut-triagem",
+      "role": "engenheiro-tdd",
+      "workspace_mode": "inherit",
+      "repo_dir": "C:\\Users\\trcnologia\\Desktop\\LegoLoop",
+      "status": "killed",
+      "exit_code": 1,
+      "created_at": "2026-11-22T16:31:48.9967545Z",
+      "last_active_at": "2026-11-22T16:37:23.822117Z"
+    },
+    {
+      "name": "mut-interview",
+      "role": "engenheiro-tdd",
+      "workspace_mode": "inherit",
+      "repo_dir": "C:\\Users\\trcnologia\\Desktop\\LegoLoop",
+      "status": "killed",
+      "exit_code": 1,
+      "created_at": "2026-11-22T16:33:13.8860819Z",
+      "last_active_at": "2026-11-22T16:37:25.1548107Z"
+    },
+    {
+      "name": "mut-plangen",
+      "role": "engenheiro-tdd",
+      "workspace_mode": "inherit",
+      "repo_dir": "C:\\Users\\trcnologia\\Desktop\\LegoLoop",
+      "status": "killed",
+      "exit_code": 1,
+      "created_at": "2026-11-22T16:37:26.8988614Z",
+      "last_active_at": "2026-11-22T16:42:07.4592619Z"
+    },
+    {
+      "name": "mut-runner",
+      "role": "engenheiro-tdd",
+      "workspace_mode": "inherit",
+      "repo_dir": "C:\\Users\\trcnologia\\Desktop\\LegoLoop",
+      "status": "killed",
+      "created_at": "2026-11-22T16:37:28.7526895Z",
+      "last_active_at": "2026-11-22T16:43:50.8755137Z"
+    },
+    {
+      "name": "mut-gate",
+      "role": "engenheiro-tdd",
+      "workspace_mode": "inherit",
+      "repo_dir": "C:\\Users\\trcnologia\\Desktop\\LegoLoop",
+      "status": "killed",
+      "created_at": "2026-11-22T16:42:09.6320168Z",
+      "last_active_at": "2026-11-22T16:43:52.6100957Z"
+    }
+  ],
   "messages": null,
   "next_seq": 1
 }

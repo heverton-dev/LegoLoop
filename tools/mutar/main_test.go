@@ -219,3 +219,22 @@ func TestExecutar_CodigosDeSaida(t *testing.T) {
 		t.Fatalf("sobrevivente esperava exit 2, obtido %d", code)
 	}
 }
+
+func TestListarArquivosGo_RespeitaBuildTags(t *testing.T) {
+	dir := t.TempDir()
+	ativo := filepath.Join(dir, "comum.go")
+	outroSO := filepath.Join(dir, "incompativel.go")
+	if err := os.WriteFile(ativo, []byte("package p\nfunc F() int { return 1 }\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(outroSO, []byte("//go:build ignore\n\npackage p\nfunc G() int { return 2 }\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	arqs, err := listarArquivosGo(dir)
+	if err != nil {
+		t.Fatalf("listarArquivosGo falhou: %v", err)
+	}
+	if len(arqs) != 1 || filepath.Base(arqs[0]) != "comum.go" {
+		t.Fatalf("esperava apenas [comum.go], obtido %v", arqs)
+	}
+}

@@ -1,0 +1,3580 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "2026-11-21_ROUTE_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO",
+  "version": "1.0.0",
+  "date": "2026-11-22",
+  "session_id": null,
+  "intent_ref": "docs/intents/2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md",
+  "spec_ref": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md",
+  "plan_ref": "docs/plans/2026-11-21_PLAN_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md",
+  "initiative_ref": "I01 — Distribuição e Forja",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md",
+      "sha256": "fa22f2b38874a033c4bccc09d4b4faa297edabff1a7a0dc2be0e0284d4a666d8"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md",
+      "sha256": "b103f9de4184920dbbb09d94b25cfcb12e8c5f432f889e5cd1673a1ee9f24905"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-21_PLAN_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md",
+      "sha256": "be503658a27311af72313c5356e2add99fe675dafe7e52bd353fd17c7d6e816f"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "write_boundary": "strict"
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "I01",
+      "epic_id": "E01",
+      "label": "Conferir a SPEC revisada aprovada contra os Gates de lacuna e de aceite",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/gate/",
+            "-run",
+            "TestAceiteReconheceOTituloCanonicoDoTemplate"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "I01",
+      "epic_id": "E01",
+      "label": "Renomear o módulo para github.com/heverton-dev/LegoLoop (pré-requisitos I04: G01 Matriz por hash, G02 descoberta de peças, G05 fachada única de caminhos)",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "go.mod",
+          "cmd",
+          "internal",
+          "tools"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "go.mod",
+          "cmd",
+          "internal",
+          "tools"
+        ],
+        "verify": [
+          [
+            "go",
+            "build",
+            "./..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('go.mod') \u0026\u0026 file_exists('cmd') \u0026\u0026 file_exists('internal') \u0026\u0026 file_exists('tools')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.3",
+      "initiative_id": "I01",
+      "epic_id": "E01",
+      "label": "Gravar a linha de base de contexto por harness",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/reports/2026-11-21_BASELINE_FORJA.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/reports/2026-11-21_BASELINE_FORJA.json"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "skills-custo",
+            "--json"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/reports/2026-11-21_BASELINE_FORJA.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano: SG-E01",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "I01",
+      "epic_id": "E03",
+      "label": "Criar ste.AplicarBloco idempotente para o bloco gerenciado",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/ste/bloco.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/ste/bloco_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/ste/bloco.go",
+          "internal/ste/bloco_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/ste/",
+            "-run",
+            "TestAplicarBloco"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/ste/bloco.go') \u0026\u0026 file_exists('internal/ste/bloco_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "I01",
+      "epic_id": "E03",
+      "label": "Provar a paridade com o script Python e remover o script",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/ste/testdata/gemini_golden.md",
+          "tools/steptsync/gemini_md.py"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2",
+      "test_target": "internal/ste/bloco_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/ste/testdata/gemini_golden.md",
+          "internal/ste/bloco_test.go",
+          "tools/steptsync/gemini_md.py"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/ste/",
+            "-run",
+            "TestBlocoIgualAoGolden"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/ste/testdata/gemini_golden.md') \u0026\u0026 file_exists('internal/ste/bloco_test.go') \u0026\u0026 file_exists('tools/steptsync/gemini_md.py')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.3",
+      "initiative_id": "I01",
+      "epic_id": "E03",
+      "label": "Provar que o caminho de instalação não usa Python e listar Python como opcional no doctor",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-03.2",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/doc.go",
+          "internal/cli/doctor.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E03.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.3",
+      "test_target": "internal/forja/sempython_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/doc.go",
+          "internal/forja/sempython_test.go",
+          "internal/cli/doctor.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestCaminhoSemPython"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/doc.go') \u0026\u0026 file_exists('internal/forja/sempython_test.go') \u0026\u0026 file_exists('internal/cli/doctor.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano: SG-E03",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2",
+        "TICK-03.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Criar os contratos da Forja e a validação das opções",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/contrato.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E04.6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.6",
+      "test_target": "internal/forja/contrato_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/contrato.go",
+          "internal/forja/contrato_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestContrato"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/contrato.go') \u0026\u0026 file_exists('internal/forja/contrato_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.2",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Implementar a simulação --dry-run que não grava nada",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.1",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/forja.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.1",
+      "test_target": "internal/forja/forja_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/forja.go",
+          "internal/forja/forja_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestSimulacaoNaoGrava"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/forja.go') \u0026\u0026 file_exists('internal/forja/forja_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.3",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Implementar o aplicar com backup, MANIFESTO e idempotência",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.2",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/aplicar.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E04.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.2",
+      "test_target": "internal/forja/aplicar_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/aplicar.go",
+          "internal/forja/aplicar_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestAplicar"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/aplicar.go') \u0026\u0026 file_exists('internal/forja/aplicar_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.4",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Implementar o --desfazer que restaura byte a byte",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.3",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/desfazer.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E04.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.3",
+      "test_target": "internal/forja/desfazer_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/desfazer.go",
+          "internal/forja/desfazer_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestDesfazer"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/desfazer.go') \u0026\u0026 file_exists('internal/forja/desfazer_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.5",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Gravar o bloco gerenciado que aponta para o AGENTS.md no GEMINI.md e no CLAUDE.md",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.3",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/ssot.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E04.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.4",
+      "test_target": "internal/forja/ssot_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/ssot.go",
+          "internal/forja/ssot_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestSSOT"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/ssot.go') \u0026\u0026 file_exists('internal/forja/ssot_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.6",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Mesclar o settings.json do Claude preservando as chaves desconhecidas",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.3",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/settings_claude.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E04.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.5",
+      "test_target": "internal/forja/settings_claude_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/settings_claude.go",
+          "internal/forja/settings_claude_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestSettingsClaude"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/settings_claude.go') \u0026\u0026 file_exists('internal/forja/settings_claude_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.7",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Implementar --sem e recusar perfil inválido",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.3",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/opcoes.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E04.6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.6",
+      "test_target": "internal/forja/opcoes_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/opcoes.go",
+          "internal/forja/opcoes_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestSemEPerfil"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/opcoes.go') \u0026\u0026 file_exists('internal/forja/opcoes_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.8",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Gerar os lançadores por SO sem PATH fixo",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.3",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/lancadores.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E04.7",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.7",
+      "test_target": "internal/forja/lancadores_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/lancadores.go",
+          "internal/forja/lancadores_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestLancadores"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/lancadores.go') \u0026\u0026 file_exists('internal/forja/lancadores_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.9",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Garantir que segredos não entram no relatório nem na saída",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.3",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/relatorio.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-NF.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-NF.1",
+      "test_target": "internal/forja/relatorio_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/relatorio.go",
+          "internal/forja/relatorio_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestSegredos"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/relatorio.go') \u0026\u0026 file_exists('internal/forja/relatorio_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.10",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Aplicar path jail na resolução da pasta do harness",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.2",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/jail.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-NF.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-NF.2",
+      "test_target": "internal/forja/jail_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/jail.go",
+          "internal/forja/jail_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestPathJail"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/jail.go') \u0026\u0026 file_exists('internal/forja/jail_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.11",
+      "initiative_id": "I01",
+      "epic_id": "E04",
+      "label": "Medir o desempenho do dry-run com 24 harnesses",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.2",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/desempenho_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-NF.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-NF.3",
+      "test_target": "internal/forja/desempenho_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/desempenho_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestDesempenhoDryRun"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/desempenho_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E04",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Stop-Gate Humano: SG-E04",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-04.2",
+        "TICK-04.3",
+        "TICK-04.4",
+        "TICK-04.5",
+        "TICK-04.6",
+        "TICK-04.7",
+        "TICK-04.8",
+        "TICK-04.9",
+        "TICK-04.10",
+        "TICK-04.11"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 04 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.1",
+      "initiative_id": "I01",
+      "epic_id": "E05",
+      "label": "Criar legoloop instalar encadeando a Forja e entregando o relatório",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/instalar/instalar.go",
+          "internal/cli/instalar.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E05.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.1",
+      "test_target": "internal/instalar/instalar_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/instalar/instalar.go",
+          "internal/instalar/instalar_test.go",
+          "internal/cli/instalar.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/instalar/",
+            "-run",
+            "TestInstalarEntregaRelatorio"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/instalar/instalar.go') \u0026\u0026 file_exists('internal/instalar/instalar_test.go') \u0026\u0026 file_exists('internal/cli/instalar.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.2",
+      "initiative_id": "I01",
+      "epic_id": "E05",
+      "label": "Criar o atalho do grafo semântico no PATH, com dry-run",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-05.1",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/instalar/path.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E05.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.2",
+      "test_target": "internal/instalar/path_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/instalar/path.go",
+          "internal/instalar/path_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/instalar/",
+            "-run",
+            "TestAtalhoDoGrafo"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/instalar/path.go') \u0026\u0026 file_exists('internal/instalar/path_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.3",
+      "initiative_id": "I01",
+      "epic_id": "E05",
+      "label": "Marcar o bootstrap como substituído pelo instalar",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-05.1",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/bootstrap.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E05.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.3",
+      "test_target": "internal/cli/bootstrap_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/bootstrap.go",
+          "internal/cli/bootstrap_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestBootstrap"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/bootstrap.go') \u0026\u0026 file_exists('internal/cli/bootstrap_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E05",
+      "initiative_id": null,
+      "epic_id": "E05",
+      "label": "Stop-Gate Humano: SG-E05",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-05.1",
+        "TICK-05.2",
+        "TICK-05.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 05 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-06.1",
+      "initiative_id": "I01",
+      "epic_id": "E06",
+      "label": "Implementar forjar --verificar --orcamento com reprovação por teto estourado",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E05"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/orcamento.go",
+          "docs/governanca/orcamento_tokens.json"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E06.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E06.1",
+      "test_target": "internal/forja/orcamento_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/orcamento.go",
+          "internal/forja/orcamento_test.go",
+          "docs/governanca/orcamento_tokens.json"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestOrcamentoEstourado"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/orcamento.go') \u0026\u0026 file_exists('internal/forja/orcamento_test.go') \u0026\u0026 file_exists('docs/governanca/orcamento_tokens.json')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-06.2",
+      "initiative_id": "I01",
+      "epic_id": "E06",
+      "label": "Aprovar quando o custo respeita o teto",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-06.1",
+        "SG-E05"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/orcamento_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E06.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E06.2",
+      "test_target": "internal/forja/orcamento_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/orcamento_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestOrcamentoRespeitado"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/orcamento_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E06",
+      "initiative_id": null,
+      "epic_id": "E06",
+      "label": "Stop-Gate Humano: SG-E06",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-06.1",
+        "TICK-06.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 06 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-07.1",
+      "initiative_id": "I01",
+      "epic_id": "E07",
+      "label": "Criar o Processo legoloop-forjar: DAG, skill e slash command",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E06"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "processos/legoloop-forjar",
+          "skills/legoloop-forjar/SKILL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E07.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E07.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "processos/legoloop-forjar",
+          "skills/legoloop-forjar/SKILL.md"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "validate",
+            "processos/legoloop-forjar/pipeline.dag.json"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('processos/legoloop-forjar') \u0026\u0026 file_exists('skills/legoloop-forjar/SKILL.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-07.2",
+      "initiative_id": "I01",
+      "epic_id": "E07",
+      "label": "Provar que os quatro gatilhos geram o mesmo RELATORIO.json",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-07.1",
+        "SG-E06"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/gatilhos_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E07.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E07.3",
+      "test_target": "internal/forja/gatilhos_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/gatilhos_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestQuatroGatilhosMesmoRelatorio"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/gatilhos_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-07.3",
+      "initiative_id": "I01",
+      "epic_id": "E07",
+      "label": "Fechar o Processo com legoloop fechar",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-07.2",
+        "SG-E06"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/manuals",
+          "docs/books/legoloop-forjar",
+          "docs/reports"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E07.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E07.1",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/manuals",
+          "docs/books/legoloop-forjar",
+          "docs/reports"
+        ],
+        "verify": [
+          [
+            "legoloop",
+            "fechar",
+            "legoloop-forjar",
+            "--json"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/manuals') \u0026\u0026 file_exists('docs/books/legoloop-forjar') \u0026\u0026 file_exists('docs/reports')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E07",
+      "initiative_id": null,
+      "epic_id": "E07",
+      "label": "Stop-Gate Humano: SG-E07",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-07.1",
+        "TICK-07.2",
+        "TICK-07.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 07 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-08.1",
+      "initiative_id": "I01",
+      "epic_id": "E08",
+      "label": "Criar tools/release com build reproduzível",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E07"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "tools/release/release.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E08.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E08.1",
+      "test_target": "tools/release/release_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "tools/release/release.go",
+          "tools/release/release_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./tools/release/",
+            "-run",
+            "TestBuildReproduzivel"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('tools/release/release.go') \u0026\u0026 file_exists('tools/release/release_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-08.2",
+      "initiative_id": "I01",
+      "epic_id": "E08",
+      "label": "Gerar pacotes por SO e arquitetura, SHA256SUMS e SBOM",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-08.1",
+        "SG-E07"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "tools/release/pacotes.go",
+          "tools/release/sbom.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E08.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E08.2",
+      "test_target": "tools/release/pacotes_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "tools/release/pacotes.go",
+          "tools/release/sbom.go",
+          "tools/release/pacotes_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./tools/release/",
+            "-run",
+            "TestPacotesSumsESBOM"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('tools/release/pacotes.go') \u0026\u0026 file_exists('tools/release/sbom.go') \u0026\u0026 file_exists('tools/release/pacotes_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-08.3",
+      "initiative_id": "I01",
+      "epic_id": "E08",
+      "label": "Declarar a assinatura no relatório do release e assinar com cosign no CI",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-08.2",
+        "SG-E07"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "tools/release/assinatura.go",
+          ".github/workflows/release.yml"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E08.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E08.3",
+      "test_target": "tools/release/assinatura_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "tools/release/assinatura.go",
+          "tools/release/assinatura_test.go",
+          ".github/workflows/release.yml"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./tools/release/",
+            "-run",
+            "TestAssinaturaDeclarada"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('tools/release/assinatura.go') \u0026\u0026 file_exists('tools/release/assinatura_test.go') \u0026\u0026 file_exists('.github/workflows/release.yml')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E08",
+      "initiative_id": null,
+      "epic_id": "E08",
+      "label": "Stop-Gate Humano: SG-E08",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-08.1",
+        "TICK-08.2",
+        "TICK-08.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 08 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-09.1",
+      "initiative_id": "I01",
+      "epic_id": "E09",
+      "label": "Criar install.sh e install.ps1 que conferem o SHA-256 e abortam se divergir",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E08"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "install.sh",
+          "install.ps1"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E09.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E09.1",
+      "test_target": "tools/release/install_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "install.sh",
+          "install.ps1",
+          "tools/release/install_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./tools/release/",
+            "-run",
+            "TestScriptAbortaComShaErrado"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('install.sh') \u0026\u0026 file_exists('install.ps1') \u0026\u0026 file_exists('tools/release/install_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-09.2",
+      "initiative_id": "I01",
+      "epic_id": "E09",
+      "label": "Fazer os scripts instalarem o binário e dispararem a Forja",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-09.1",
+        "SG-E08"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "install.sh",
+          "install.ps1"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E09.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E09.2",
+      "test_target": "tools/release/install_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "install.sh",
+          "install.ps1",
+          "tools/release/install_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./tools/release/",
+            "-run",
+            "TestScriptInstalaEDisparaForja"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('install.sh') \u0026\u0026 file_exists('install.ps1') \u0026\u0026 file_exists('tools/release/install_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-09.3",
+      "initiative_id": "I01",
+      "epic_id": "E09",
+      "label": "Gerar os manifestos de winget, scoop e brew",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-09.1",
+        "SG-E08"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "tools/release/manifestos.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E09.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E09.3",
+      "test_target": "tools/release/manifestos_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "tools/release/manifestos.go",
+          "tools/release/manifestos_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./tools/release/",
+            "-run",
+            "TestManifestos"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('tools/release/manifestos.go') \u0026\u0026 file_exists('tools/release/manifestos_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-09.4",
+      "initiative_id": "I01",
+      "epic_id": "E09",
+      "label": "Criar a definição WiX do MSI por usuário, sem administrador",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-09.3",
+        "SG-E08"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "tools/release/wix/legoloop.wxs"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E09.6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E09.6",
+      "test_target": "tools/release/msi_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "tools/release/wix/legoloop.wxs",
+          "tools/release/msi_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./tools/release/",
+            "-run",
+            "TestMSIPorUsuario"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('tools/release/wix/legoloop.wxs') \u0026\u0026 file_exists('tools/release/msi_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-09.5",
+      "initiative_id": "I01",
+      "epic_id": "E09",
+      "label": "Provar git clone e go install remoto",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-09.2",
+        "SG-E08"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/manuals"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E09.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E09.4",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/manuals"
+        ],
+        "verify": [
+          [
+            "go",
+            "install",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/manuals')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-09.6",
+      "initiative_id": "I01",
+      "epic_id": "E09",
+      "label": "Expor o instalar como skill, slash command e ferramenta do MCP",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-09.2",
+        "SG-E08"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "skills/legoloop-instalar/SKILL.md",
+          "internal/mcp/instalar_tool.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E09.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E09.5",
+      "test_target": "internal/mcp/instalar_tool_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "skills/legoloop-instalar/SKILL.md",
+          "internal/mcp/instalar_tool.go",
+          "internal/mcp/instalar_tool_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/mcp/",
+            "-run",
+            "TestInstalarViaMCP"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('skills/legoloop-instalar/SKILL.md') \u0026\u0026 file_exists('internal/mcp/instalar_tool.go') \u0026\u0026 file_exists('internal/mcp/instalar_tool_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E09",
+      "initiative_id": null,
+      "epic_id": "E09",
+      "label": "Stop-Gate Humano: SG-E09",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-09.1",
+        "TICK-09.2",
+        "TICK-09.3",
+        "TICK-09.4",
+        "TICK-09.5",
+        "TICK-09.6"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 09 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-10.1",
+      "initiative_id": "I01",
+      "epic_id": "E10",
+      "label": "Implementar forjar --verificar com detecção de deriva",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E09"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/deriva.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E10.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E10.1",
+      "test_target": "internal/forja/deriva_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/deriva.go",
+          "internal/forja/deriva_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestDerivaReprova"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/deriva.go') \u0026\u0026 file_exists('internal/forja/deriva_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-10.2",
+      "initiative_id": "I01",
+      "epic_id": "E10",
+      "label": "Implementar --corrigir que devolve a skill ao Cofre com backup",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-10.1",
+        "SG-E09"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/forja/corrigir.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E10.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E10.2",
+      "test_target": "internal/forja/corrigir_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/forja/corrigir.go",
+          "internal/forja/corrigir_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/forja/",
+            "-run",
+            "TestCorrigirDeriva"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/forja/corrigir.go') \u0026\u0026 file_exists('internal/forja/corrigir_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E10",
+      "initiative_id": null,
+      "epic_id": "E10",
+      "label": "Stop-Gate Humano: SG-E10",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-10.1",
+        "TICK-10.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 10 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-11.1",
+      "initiative_id": "I01",
+      "epic_id": "E11",
+      "label": "Criar legoloop atualizar que aborta com SHA-256 divergente",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "SG-E10"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/atualizar/atualizar.go",
+          "internal/cli/atualizar.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E11.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E11.1",
+      "test_target": "internal/atualizar/atualizar_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/atualizar/atualizar.go",
+          "internal/atualizar/atualizar_test.go",
+          "internal/cli/atualizar.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/atualizar/",
+            "-run",
+            "TestShaDivergenteMantemBinario"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/atualizar/atualizar.go') \u0026\u0026 file_exists('internal/atualizar/atualizar_test.go') \u0026\u0026 file_exists('internal/cli/atualizar.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-11.2",
+      "initiative_id": "I01",
+      "epic_id": "E11",
+      "label": "Guardar o binário anterior e revalidar a Forja depois de atualizar",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-11.1",
+        "SG-E10"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/atualizar/prev.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_DISTRIBUICAO_FORJA_LEGOLOOP_REVISAO.md#AC-E11.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E11.2",
+      "test_target": "internal/atualizar/prev_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/atualizar/prev.go",
+          "internal/atualizar/prev_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/atualizar/",
+            "-run",
+            "TestGuardaPrevERevalida"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/atualizar/prev.go') \u0026\u0026 file_exists('internal/atualizar/prev_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": null,
+      "epic_id": null,
+      "label": "Homologação Final (Regressão Global \u0026 Recompilação Fresca)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-11.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./..."
+          ],
+          [
+            "go",
+            "vet",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    }
+  ]
+}

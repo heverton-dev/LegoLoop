@@ -1,0 +1,362 @@
+[
+  {
+    "id": "internal\\upstream:upstream.go:42:lt_leq:1",
+    "pacote": "internal\\upstream",
+    "arquivo": "upstream.go",
+    "linha": 42,
+    "operador": "lt_leq",
+    "anticorpo": "ANT-MUT-UPSTREAM-001",
+    "justificativa": "Mutante equivalente: quando fim == 0, o cabecalho texto[4:4] eh vazio e statusRe nunca casa, retornando string vazia."
+  },
+  {
+    "id": "internal\\interview:client.go:63:rm_return_err:2",
+    "pacote": "internal\\interview",
+    "arquivo": "client.go",
+    "linha": 63,
+    "operador": "rm_return_err",
+    "anticorpo": "ANT-MUT-INTERVIEW-001",
+    "justificativa": "Guarda inatingivel: json.Marshal sobre mapa com string, []Message, float64 fixo e bool nao pode falhar."
+  },
+  {
+    "id": "internal\\interview:engine.go:259:gt_geq:4",
+    "pacote": "internal\\interview",
+    "arquivo": "engine.go",
+    "linha": 259,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-INTERVIEW-002",
+    "justificativa": "Mutante equivalente: quando len(s) == 30, s[:30] devolve a mesma string s."
+  },
+  {
+    "id": "internal\\interview:intent_texto.go:15:gt_geq:1",
+    "pacote": "internal\\interview",
+    "arquivo": "intent_texto.go",
+    "linha": 15,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-INTERVIEW-003",
+    "justificativa": "Mutante equivalente: t passa por strings.TrimSpace antes, logo nunca inicia com CR/LF e o indice nunca eh 0."
+  },
+  {
+    "id": "internal\\interview:intent_texto.go:26:gt_geq:3",
+    "pacote": "internal\\interview",
+    "arquivo": "intent_texto.go",
+    "linha": 26,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-INTERVIEW-004",
+    "justificativa": "Mutante equivalente: corte deriva de t sem espacos iniciais, logo LastIndex de espaco nunca retorna 0."
+  },
+  {
+    "id": "internal\\interview:sessions.go:47:rm_return_err:4",
+    "pacote": "internal\\interview",
+    "arquivo": "sessions.go",
+    "linha": 47,
+    "operador": "rm_return_err",
+    "anticorpo": "ANT-MUT-INTERVIEW-005",
+    "justificativa": "Guarda defensiva de I/O: os.CreateTemp logo apos os.MkdirAll so falha em erro transitório do SO."
+  },
+  {
+    "id": "internal\\interview:sessions.go:53:rm_return_err:5",
+    "pacote": "internal\\interview",
+    "arquivo": "sessions.go",
+    "linha": 53,
+    "operador": "rm_return_err",
+    "anticorpo": "ANT-MUT-INTERVIEW-006",
+    "justificativa": "Guarda defensiva de I/O: falha de Write/Close em arquivo temporario recem-criado exige disco cheio ou erro de kernel."
+  },
+  {
+    "id": "internal\\triagem:lock_windows.go:25:lt_leq:1",
+    "pacote": "internal\\triagem",
+    "arquivo": "lock_windows.go",
+    "linha": 25,
+    "operador": "lt_leq",
+    "anticorpo": "ANT-MUT-TRIAGEM-001",
+    "justificativa": "Mutante equivalente em retry defensivo: 25 vs 26 tentativas de os.Remove nao altera o comportamento observavel."
+  },
+  {
+    "id": "internal\\triagem:lock_windows.go:27:eq_neq:3",
+    "pacote": "internal\\triagem",
+    "arquivo": "lock_windows.go",
+    "linha": 27,
+    "operador": "eq_neq",
+    "anticorpo": "ANT-MUT-TRIAGEM-002",
+    "justificativa": "Retry defensivo de os.Remove no Windows: mesmo sem retorno antecipado na primeira iteracao, o arquivo ja foi removido."
+  },
+  {
+    "id": "internal\\triagem:lock_windows.go:27:and_or:2",
+    "pacote": "internal\\triagem",
+    "arquivo": "lock_windows.go",
+    "linha": 27,
+    "operador": "and_or",
+    "anticorpo": "ANT-MUT-TRIAGEM-003",
+    "justificativa": "Retry defensivo de os.Remove no Windows: mutar || para && apenas esgota o laco apos o arquivo ja estar removido."
+  },
+  {
+    "id": "internal\\triagem:lock_windows.go:55:rm_return_err:2",
+    "pacote": "internal\\triagem",
+    "arquivo": "lock_windows.go",
+    "linha": 55,
+    "operador": "rm_return_err",
+    "anticorpo": "ANT-MUT-TRIAGEM-004",
+    "justificativa": "Guarda defensiva de SO: OpenFile apos MkdirAll com erro diferente de ErrExist/ErrPermission so ocorre em falha de kernel."
+  },
+  {
+    "id": "internal\\triagem:memoria.go:220:gt_geq:2",
+    "pacote": "internal\\triagem",
+    "arquivo": "memoria.go",
+    "linha": 220,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-TRIAGEM-005",
+    "justificativa": "Mutante equivalente: pidVivo(0) ja devolve false, logo mem.PID >= 0 && pidVivo(mem.PID) produz o mesmo resultado."
+  },
+  {
+    "id": "internal\\triagem:memoria.go:224:lt_leq:2",
+    "pacote": "internal\\triagem",
+    "arquivo": "memoria.go",
+    "linha": 224,
+    "operador": "lt_leq",
+    "anticorpo": "ANT-MUT-TRIAGEM-006",
+    "justificativa": "Mutante equivalente: chaves SessaoID vem de um map e sao unicas, logo < e <= produzem a mesma ordenacao."
+  },
+  {
+    "id": "internal\\triagem:pidvivo_windows.go:10:lt_leq:1",
+    "pacote": "internal\\triagem",
+    "arquivo": "pidvivo_windows.go",
+    "linha": 10,
+    "operador": "lt_leq",
+    "anticorpo": "ANT-MUT-TRIAGEM-007",
+    "justificativa": "Mutante equivalente no Windows: os.FindProcess(0) retorna erro de parametro invalido, logo pidVivo(0) devolve false mesmo com pid < 0."
+  },
+  {
+    "id": "internal\\plangen:concurrency.go:38:lt_leq:2",
+    "pacote": "internal\\plangen",
+    "arquivo": "concurrency.go",
+    "linha": 38,
+    "operador": "lt_leq",
+    "anticorpo": "ANT-MUT-PLANGEN-001",
+    "justificativa": "Mutante equivalente: quando MaxParallelSubagents == 1, retornar 1 ou cair no return c.MaxParallelSubagents produz 1."
+  },
+  {
+    "id": "internal\\plangen:concurrency.go:41:gt_geq:2",
+    "pacote": "internal\\plangen",
+    "arquivo": "concurrency.go",
+    "linha": 41,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-PLANGEN-002",
+    "justificativa": "Mutante equivalente: quando MaxParallelSubagents == 8, retornar 8 ou cair no return c.MaxParallelSubagents produz 8."
+  },
+  {
+    "id": "internal\\plangen:meta.go:70:gt_geq:1",
+    "pacote": "internal\\plangen",
+    "arquivo": "meta.go",
+    "linha": 70,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-PLANGEN-003",
+    "justificativa": "Mutante equivalente: specThemeRe tem 1 grupo de captura, logo FindStringSubmatch retorna len 0 ou 2, nunca 1."
+  },
+  {
+    "id": "internal\\plangen:plangen.go:254:gt_geq:1",
+    "pacote": "internal\\plangen",
+    "arquivo": "plangen.go",
+    "linha": 254,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-PLANGEN-004",
+    "justificativa": "Mutante equivalente: ticketHeaderRe tem 2 grupos de captura, logo FindStringSubmatch retorna len 0 ou 3, nunca 2."
+  },
+  {
+    "id": "internal\\plangen:plangen.go:274:gt_geq:2",
+    "pacote": "internal\\plangen",
+    "arquivo": "plangen.go",
+    "linha": 274,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-PLANGEN-005",
+    "justificativa": "Mutante equivalente: regex de blockField tem 1 grupo de captura, logo FindStringSubmatch retorna len 0 ou 2, nunca 1."
+  },
+  {
+    "id": "internal\\plangen:verify.go:25:gt_geq:1",
+    "pacote": "internal\\plangen",
+    "arquivo": "verify.go",
+    "linha": 25,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-PLANGEN-006",
+    "justificativa": "Mutante equivalente: a linha 21 ja retorna nil, false quando qualquer parte eh vazia, logo linha 25 sempre tem len(argv) >= 1."
+  },
+  {
+    "id": "internal\\dag:cron.go:49:and_or:1",
+    "pacote": "internal\\dag",
+    "arquivo": "cron.go",
+    "linha": 49,
+    "operador": "and_or",
+    "anticorpo": "ANT-MUT-DAG-001",
+    "justificativa": "Mutante equivalente: cronNumber(step, 1, bound[1]) retorna n == 0 em todo erro e n >= 1 em todo sucesso, logo err != nil || n < 1 e err != nil && n < 1 tem o mesmo valor verdade."
+  },
+  {
+    "id": "internal\\gate:catalog.go:34:lt_leq:1",
+    "pacote": "internal\\gate",
+    "arquivo": "catalog.go",
+    "linha": 34,
+    "operador": "lt_leq",
+    "anticorpo": "ANT-MUT-GATE-001",
+    "justificativa": "Mutante equivalente: out e montado a partir das chaves unicas do mapa docs, logo out[i].Name nunca iguala out[j].Name para i != j e < equivale a <= na ordenacao."
+  },
+  {
+    "id": "internal\\gate:cites.go:115:gt_geq:2",
+    "pacote": "internal\\gate",
+    "arquivo": "cites.go",
+    "linha": 115,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-GATE-002",
+    "justificativa": "Mutante equivalente: citeIdentRe exige que tok comece por letra ou sublinhado, logo strings.LastIndex(tok, \".\") nunca retorna 0 (so -1 ou >= 1) e i >= 0 equivale a i > 0."
+  },
+  {
+    "id": "internal\\plangen:verify.go:31:and_or:5",
+    "pacote": "internal\\plangen",
+    "arquivo": "verify.go",
+    "linha": 31,
+    "operador": "and_or",
+    "anticorpo": "ANT-MUT-PLANGEN-007",
+    "justificativa": "Mutante equivalente: filepath.IsLocal ja rejeita string vazia e caminhos absolutos, logo trocar && por || em p != \"\" && !path.IsAbs(p) nao muda o retorno de gateSafe."
+  },
+  {
+    "id": "internal\\runner:isolated.go:235:bool_flip:15",
+    "pacote": "internal\\runner",
+    "arquivo": "isolated.go",
+    "linha": 235,
+    "operador": "bool_flip",
+    "anticorpo": "ANT-MUT-RUNNER-001",
+    "justificativa": "Mutante equivalente: se o arquivo de context_in nao existir, checkNoLinks(..., false) retorna nil, mas copyPath na linha 241 chama os.Lstat e rejeita a inexistencia com os.ErrNotExist igualmente."
+  },
+  {
+    "id": "internal\\runner:isolated.go:122:rm_return_err:7",
+    "pacote": "internal\\runner",
+    "arquivo": "isolated.go",
+    "linha": 122,
+    "operador": "rm_return_err",
+    "anticorpo": "ANT-MUT-RUNNER-002",
+    "justificativa": "Guarda de I/O inatingivel deterministicamente: erro de os.Lstat imediatamente apos filepath.WalkDir exige condicao de corrida TOCTOU externa."
+  },
+  {
+    "id": "internal\\runner:lifecycle.go:20:gt_geq:1",
+    "pacote": "internal\\runner",
+    "arquivo": "lifecycle.go",
+    "linha": 20,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-RUNNER-003",
+    "justificativa": "Mutante equivalente: slug ja passou por strings.Trim(slug, \"-\") na linha 19; quando len(slug) == 40, slug[:40] e strings.TrimRight devolvem a mesma string."
+  },
+  {
+    "id": "internal\\runner:mutation.go:78:rm_return_err:2",
+    "pacote": "internal\\runner",
+    "arquivo": "mutation.go",
+    "linha": 78,
+    "operador": "rm_return_err",
+    "anticorpo": "ANT-MUT-RUNNER-004",
+    "justificativa": "Guarda de I/O inatingivel em teste hermetico: filepath.Abs so falha se os.Getwd() falhar para caminho relativo."
+  },
+  {
+    "id": "internal\\runner:runner.go:171:and_or:3",
+    "pacote": "internal\\runner",
+    "arquivo": "runner.go",
+    "linha": 171,
+    "operador": "and_or",
+    "anticorpo": "ANT-MUT-RUNNER-005",
+    "justificativa": "Mutante equivalente: o campo PipelineName de FlightRecord e sempre valido e setavel via reflect, logo f.IsValid() && f.CanSet() equivale a f.IsValid() || f.CanSet()."
+  },
+  {
+    "id": "internal\\runner:runner.go:349:gt_geq:5",
+    "pacote": "internal\\runner",
+    "arquivo": "runner.go",
+    "linha": 349,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-RUNNER-006",
+    "justificativa": "Mutante equivalente: quando len(n.Slots.Hooks.Pre) == 0, executeSlotCommands nao executa comandos e retorna nil, logo > 0 equivale a >= 0."
+  },
+  {
+    "id": "internal\\runner:runner.go:413:and_or:13",
+    "pacote": "internal\\runner",
+    "arquivo": "runner.go",
+    "linha": 413,
+    "operador": "and_or",
+    "anticorpo": "ANT-MUT-RUNNER-007",
+    "justificativa": "Mutante equivalente: quando apenas um entre baseSrc ou incSrc falha na leitura (slice nil), MergeAST falha no parser.ParseFile e nunca grava em nodeRoot."
+  },
+  {
+    "id": "internal\\runner:runner.go:437:gt_geq:6",
+    "pacote": "internal\\runner",
+    "arquivo": "runner.go",
+    "linha": 437,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-RUNNER-008",
+    "justificativa": "Mutante equivalente: quando len(n.Slots.Scripts) == 0, executeSlotCommands nao executa comandos e retorna nil, logo > 0 equivale a >= 0."
+  },
+  {
+    "id": "internal\\runner:runner.go:442:gt_geq:7",
+    "pacote": "internal\\runner",
+    "arquivo": "runner.go",
+    "linha": 442,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-RUNNER-009",
+    "justificativa": "Mutante equivalente: quando len(n.Slots.Hooks.Post) == 0, executeSlotCommands nao executa comandos e retorna nil, logo > 0 equivale a >= 0."
+  },
+  {
+    "id": "internal\\runner:runner.go:470:gt_geq:8",
+    "pacote": "internal\\runner",
+    "arquivo": "runner.go",
+    "linha": 470,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-RUNNER-010",
+    "justificativa": "Mutante equivalente: quando len(n.Slots.Gates) == 0, evalSlotGates retorna true, \"\", nil sem alterar nr.Status nem nr.Error, logo > 0 equivale a >= 0."
+  },
+  {
+    "id": "internal\\runner:runner.go:497:and_or:21",
+    "pacote": "internal\\runner",
+    "arquivo": "runner.go",
+    "linha": 497,
+    "operador": "and_or",
+    "anticorpo": "ANT-MUT-RUNNER-011",
+    "justificativa": "Mutante equivalente: filepath.Clean nunca retorna string vazia, e para rel == \".\" ou !filepath.IsLocal(rel), nodeRoot.ReadFile na linha 500 falha e retorna true, \"\" na linha 502 igualmente."
+  },
+  {
+    "id": "internal\\runner:token_budget.go:82:gt_geq:1",
+    "pacote": "internal\\runner",
+    "arquivo": "token_budget.go",
+    "linha": 82,
+    "operador": "gt_geq",
+    "anticorpo": "ANT-MUT-RUNNER-012",
+    "justificativa": "Mutante equivalente: quando len(v) == limit, v[:limit] devolve a mesma string v."
+  },
+  {
+    "id": "internal\\runner:triggers.go:170:eq_neq:14",
+    "pacote": "internal\\runner",
+    "arquivo": "triggers.go",
+    "linha": 170,
+    "operador": "eq_neq",
+    "anticorpo": "ANT-MUT-RUNNER-013",
+    "justificativa": "Guarda inatingivel em teste hermetico: listenCron usa time.Now() e NextCronTime avanca ao proximo minuto cheio (ate 60s), excedendo o timeout de 15s por mutante."
+  },
+  {
+    "id": "internal\\runner:triggers.go:171:rm_return_err:2",
+    "pacote": "internal\\runner",
+    "arquivo": "triggers.go",
+    "linha": 171,
+    "operador": "rm_return_err",
+    "anticorpo": "ANT-MUT-RUNNER-014",
+    "justificativa": "Guarda inatingivel em teste hermetico: mesmo ramo case <-timer.C de listenCron que exige espera real de ate 60s ate o proximo minuto cheio."
+  },
+  {
+    "id": "internal\\runner:isolated.go:283:rm_return_err:17",
+    "pacote": "internal\\runner",
+    "arquivo": "isolated.go",
+    "linha": 283,
+    "operador": "rm_return_err",
+    "anticorpo": "ANT-MUT-RUNNER-015",
+    "justificativa": "Mutante equivalente: quando os.MkdirAll(filepath.Dir(dst)) falha, os.Create(dst) na linha 285 falha imediatamente sem criar arquivo."
+  },
+  {
+    "id": "internal\\runner:isolated.go:342:rm_return_err:21",
+    "pacote": "internal\\runner",
+    "arquivo": "isolated.go",
+    "linha": 342,
+    "operador": "rm_return_err",
+    "anticorpo": "ANT-MUT-RUNNER-016",
+    "justificativa": "Mutante equivalente: quando dstRoot.MkdirAll(parent) falha, dstRoot.Create(cleanRel) na linha 350 falha imediatamente sem criar arquivo."
+  }
+]

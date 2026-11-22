@@ -50,7 +50,7 @@ func (s *Server) ligarProgresso(ctx context.Context, d *dag.DAG, opts *runner.Op
 	return obs
 }
 
-// avisarErrosProgresso transmite as falhas de gravação do progresso no fluxo SSE.
+// avisarErrosProgresso transmite as falhas de gravação do progresso no canal SSE.
 func (s *Server) avisarErrosProgresso(obs *progresso.Observador, send sseSender) {
 	if obs == nil {
 		return

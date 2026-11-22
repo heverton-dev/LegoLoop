@@ -10,6 +10,7 @@ import (
 	"flag"
 	"fmt"
 	"go/ast"
+	"go/build"
 	"go/parser"
 	"go/printer"
 	"go/token"
@@ -258,6 +259,10 @@ func listarArquivosGo(dirPacote string) ([]string, error) {
 	for _, e := range entradas {
 		nome := e.Name()
 		if e.IsDir() || !strings.HasSuffix(nome, ".go") || strings.HasSuffix(nome, "_test.go") {
+			continue
+		}
+		casa, err := build.Default.MatchFile(dirPacote, nome)
+		if err != nil || !casa {
 			continue
 		}
 		arquivos = append(arquivos, filepath.Join(dirPacote, nome))

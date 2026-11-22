@@ -60,7 +60,12 @@ LegoLoop/
 │   ├── e2e/                 # Testes E2E herméticos dos cenários de referência (tag e2e)
 │   ├── redc/                # MEGA-PIPELINE REDC: engenharia reversa de canais, DNA, ganchos e Brand Swap
 │   ├── mcp/                 # Meta-MCP Router STDIO: bootstrap mínimo (2 tools), busca Lazy e catálogo de skills
+│   ├── espinha/             # Verificador determinístico da espinha dorsal (`legoloop espinha verificar`)
+│   ├── renomear/            # Renomeação segura de Processos com backup MANIFESTO.tsv e histórico
+│   ├── jail/                # Path Jail único e validação canônica de caminhos e nomes de Processo
+│   ├── descoberta/          # Descoberta de unidades e volumes por SO (Windows, Linux, Darwin)
 │   └── cli/                 # Comandos da CLI, alternador STE-PT e sincronização de harnesses
+├── espinha/                 # Estado global da espinha (`registro.json`, `renomeados.json`, `cobertura.json`, `mutantes_justificados.json`)
 ├── skills/                  # Skills canônicas embutidas no binário (//go:embed via skills/embed.go)
 │   ├── legoloop-fabricar/   # Criação de processos (/legoloop-fabricar)
 │   ├── legoloop-matriz/     # Consulta à matriz de peças (/legoloop-matriz)
@@ -77,7 +82,10 @@ LegoLoop/
 │   ├── reports/ · references/ · sessions/ · archive/
 │   └── reports/img/         # Evidências visuais de homologação
 ├── processos/                   # Processos de exemplo (addy-osmani, impeccable-design, matt-pocock, mega-pipeline)
-├── tools/funclen/           # Gate de qualidade: nenhuma função de produção com mais de 35 linhas
+├── tools/
+│   ├── funclen/             # Gate de qualidade: nenhuma função de produção com mais de 35 linhas
+│   ├── cobertura/           # Gate de cobertura mínima por pacote (`espinha/cobertura.json`)
+│   └── mutar/               # Motor de mutação AST (build tags, timeout, GOMEMLIMIT, árvore de processos, `espinha/mutantes_justificados.json`)
 └── AGENTS.md · MEMORY.md (diário de implementação) · README.md
 ```
 
@@ -112,7 +120,9 @@ legoloop anticorpos registrar <slug> --pacote P --erro E --causa C --antidoto A 
 # Demanda em curso: Distribuição e Forja do LegoLoop (SPEC aprovada, PLAN de 40 Tickets, ROUTE e DAG em docs/specs, docs/plans, docs/routes e docs/dags) (INTENT aprovada em docs/intents/2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md)
 # Demanda seguinte: I02, Processos de especificação e de planejamento (INTENT e SPEC aprovadas, PLAN de 21 Tickets, ROUTE e DAG em docs/plans, docs/routes e docs/dags); o código só começa depois do TICK-01.2 da I01
 # Demanda depois da I02: I03, despachante de executores no runner (INTENT e SPEC aprovadas, PLAN de 20 Tickets, ROUTE e DAG em docs/plans, docs/routes e docs/dags; valor do Swarm: native_swarm)
-# Demanda anterior às três: I04, espinha dorsal previsível, universal e determinística (SPEC aprovada, PLAN de 56 Tickets, ROUTE e DAG gerados); executa ANTES de I01, I02 e I03, que estão congeladas (Emenda 2)
+# Demanda em operação (I04): espinha dorsal previsível, universal e determinística (espinha verificar, cobertura, mutar, renomear, jail, descoberta); I01, I02 e I03 seguem congeladas até aprovação do Stop-Gate final da I04 (Emenda 2)
+legoloop espinha verificar [--raiz DIR] [--json]            # auditoria determinística da espinha dorsal
+legoloop renomear <antigo> <novo> [--dry-run] [--yes]       # renomeia Processo com backup MANIFESTO.tsv e histórico em espinha/renomeados.json
 claude-conectores                                  # abre o Claude Code com os conectores claude.ai ligados (padrão: desligados, -3,5k tokens por turno)
 claude-completo                                    # abre o Claude Code com todas as ferramentas e conectores (padrão enxuto: ferramentas pesadas negadas, -12k tokens por turno)
 claude-gateway [--sem-memoria]                     # perfil gateway: 1 ferramenta (call_mcp_tool) com shell, arquivos, skills e swarm sob demanda; ~1,5k tokens por turno
@@ -296,6 +306,9 @@ go test -count=1 ./...                         # 55 pacotes; lógica JS pura do 
 go test -count=1 -tags e2e ./internal/e2e/...  # suíte hermética E2E (3 cenários de referência e 2 cérebros)
 go vet ./...                                   # verificação estática (Windows, Linux e Darwin)
 go run ./tools/funclen internal                # nenhuma função > 35 linhas
+go run ./tools/cobertura                       # cobertura mínima por pacote (espinha/cobertura.json)
+go run ./tools/mutar ./internal/jail           # mutação AST (build tags, timeout, GOMEMLIMIT, árvore de processos; espinha/mutantes_justificados.json)
+legoloop espinha verificar                     # verificação determinística da espinha dorsal
 gofmt -l .                                     # deve sair vazio (o exit code é 0 mesmo listando: confira a saída)
 git diff --exit-code -- go.mod                 # só biblioteca padrão (sem go.sum)
 ```

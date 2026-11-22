@@ -1,0 +1,386 @@
+{
+  "schema": "progresso.v1",
+  "iniciativa": "I03",
+  "plano": "docs/plans/2026-11-21_PLAN_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md",
+  "atualizado_em": "2026-11-21T00:00:00Z",
+  "resumo": {
+    "total": 20,
+    "aprovados": 0,
+    "em_andamento": 0,
+    "reprovados": 0,
+    "bloqueados": 0,
+    "pendentes": 20
+  },
+  "tickets": [
+    {
+      "id": "TICK-I3-01.1",
+      "epico": "E01",
+      "titulo": "Consolidar testes de coerência executor-tipo, derivação de ausente no dag.Parse e listagem completa via ErrExecutorIncoerente",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/dag/ -run \"TestExecutorCoerenteEDerivado|TestValidarExecutoresListaTodos\"",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/dag/executor.go",
+        "internal/dag/executor_test.go"
+      ],
+      "criterios": [
+        "AC-E01.1",
+        "AC-E01.2"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-01.2",
+      "epico": "E01",
+      "titulo": "Recusar subagents_allowed ephemeral fora do native_swarm com ErrExecutorIncoerente",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/dag/ -run TestSubagentesEfemerosSoNoSwarm",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/dag/executor.go",
+        "internal/dag/executor_test.go"
+      ],
+      "criterios": [
+        "AC-E01.3"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-01.3",
+      "epico": "E01",
+      "titulo": "Exigir papel e command e recusar stop_gate no native_swarm com ErrExecutorIncoerente",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/dag/ -run TestNativeSwarmExigePapelECommand",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/dag/executor.go",
+        "internal/dag/executor_test.go"
+      ],
+      "criterios": [
+        "AC-E01.4"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-01.4",
+      "epico": "E01",
+      "titulo": "Provar que dag.Parse e legoloop validate recusam executor incoerente ou desconhecido",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/dag/... ./internal/cli/ -run TestValidateRecusaExecutor",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/dag/parse.go",
+        "internal/dag/executor_test.go",
+        "internal/cli/validate_executor_test.go"
+      ],
+      "criterios": [
+        "AC-E01.5"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-02.1",
+      "epico": "E02",
+      "titulo": "Criar o campo executor do Ticket coerente com o tipo e gravá-lo na ROUTE",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/plangen/ -run TestTicketExecutor",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/plangen/plangen.go",
+        "internal/plangen/route.go",
+        "internal/plangen/ticket_executor_test.go"
+      ],
+      "criterios": [
+        "AC-E02.1"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-02.2",
+      "epico": "E02",
+      "titulo": "Recusar Ticket com executor incoerente ou desconhecido sem gravar PLAN nem ROUTE",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/plangen/ -run TestTicketExecutorIncoerente",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/plangen/plangen.go",
+        "internal/plangen/ticket_executor_test.go"
+      ],
+      "criterios": [
+        "AC-E02.2"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-02.3",
+      "epico": "E02",
+      "titulo": "Provar que a projeção do DAG preserva native_swarm e recusa executor incoerente",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/routedag/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/routedag/routedag.go",
+        "internal/routedag/executor_test.go"
+      ],
+      "criterios": [
+        "AC-E02.3"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-03.1",
+      "epico": "E03",
+      "titulo": "Criar Options.Swarm e a validação de executores antes do nível 0 em runner.Run",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/runner/ -run TestRunRecusaAntesDoNivelZero",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "criterios": [
+        "AC-E03.1"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-03.2",
+      "epico": "E03",
+      "titulo": "Despachar por nível: native_swarm ao SwarmRunner e os demais ao Executor",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/runner/ -run TestDespachoPorNivel",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "criterios": [
+        "AC-E03.2",
+        "AC-NF.1"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-03.3",
+      "epico": "E03",
+      "titulo": "Rodar o nível misto em paralelo e terminar só quando os dois lados terminam",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/runner/ -run TestNivelMistoEsperaOsDoisLados",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "criterios": [
+        "AC-E03.3"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-03.4",
+      "epico": "E03",
+      "titulo": "Converter o resultado do Swarm em NodeReport e marcar os níveis seguintes como skipped",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/runner/ -run TestFalhaNoSwarmMarcaSkipped",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "criterios": [
+        "AC-E03.4"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-03.5",
+      "epico": "E03",
+      "titulo": "Garantir que DAG sem native_swarm não toca no Swarm",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/runner/ -run TestSemNativeSwarmNaoUsaSwarm",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/runner/runner.go",
+        "internal/runner/swarm.go",
+        "internal/runner/swarm_test.go"
+      ],
+      "criterios": [
+        "AC-E03.5"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-03.6",
+      "epico": "E03",
+      "titulo": "Provar que legoloop run recusa executor inválido com exit 1 e sem criar worktree",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/cli/ -run TestRunRecusaExecutorSemWorktree",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/cli/commands.go",
+        "internal/cli/run_executor_test.go"
+      ],
+      "criterios": [
+        "AC-E03.6"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-04.1",
+      "epico": "E04",
+      "titulo": "Extrair board.RunNodeOf de LevelsFromDAG preservando cobertura do board \u003e= 80%",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -cover ./internal/board/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/board/swarm_dag.go",
+        "internal/board/swarm_dag_test.go"
+      ],
+      "criterios": [
+        "AC-E04.1"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-04.2",
+      "epico": "E04",
+      "titulo": "Ligar legoloop run ao SwarmBoard real quando houver nó native_swarm",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/cli/ -run TestRunNativeSwarmBinario",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/cli/commands.go",
+        "internal/runner/swarm.go",
+        "internal/cli/run_swarm_test.go"
+      ],
+      "criterios": [
+        "AC-E04.2"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-04.3",
+      "epico": "E04",
+      "titulo": "Provar que sem native_swarm o diretório do Swarm não é criado",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/cli/ -run TestRunSemNativeSwarmNaoCriaDiretorio",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/cli/run_swarm_test.go"
+      ],
+      "criterios": [
+        "AC-E04.3"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-05.1",
+      "epico": "E05",
+      "titulo": "Provar que todos os DAGs do repositório continuam válidos",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/dag/ -run TestDAGsDoRepositorioValidam",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/dag/executor_repo_test.go"
+      ],
+      "criterios": [
+        "AC-E05.1"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-05.2",
+      "epico": "E05",
+      "titulo": "Provar com golden que o relatório de DAG sem native_swarm não mudou",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/runner/ -run TestParidadeDoRelatorio",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/runner/paridade_test.go"
+      ],
+      "criterios": [
+        "AC-E05.2"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-05.3",
+      "epico": "E05",
+      "titulo": "Atualizar AGENTS, README e MEMORY com o despachante e o native_swarm",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "grep -c \"native_swarm\" AGENTS.md README.md MEMORY.md",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "AGENTS.md",
+        "docs/governanca/AGENTS_COMPLETO.md",
+        "README.md",
+        "MEMORY.md"
+      ],
+      "criterios": [
+        "AC-E05.3"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    },
+    {
+      "id": "TICK-I3-05.4",
+      "epico": "E05",
+      "titulo": "Registrar os anticorpos, atualizar emendas, prompt da I03 e rodar o portão completo",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "docs/intents/2026-11-21_EMENDA_2_MACROPLANO.md",
+        "docs/prompts"
+      ],
+      "criterios": [
+        "AC-E05.4",
+        "AC-NF.2"
+      ],
+      "atualizado_em": "2026-11-21T00:00:00Z"
+    }
+  ]
+}

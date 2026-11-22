@@ -1,5 +1,3 @@
-> **EXECUÇÃO CONGELADA (2026-11-21):** o usuário abriu uma auditoria da espinha dorsal do LegoLoop (I04). Não execute nenhum Ticket deste plano até o usuário liberar. O relatório da auditoria pode mudar o plano.
-
 # Prompt de ativação: execução da I03, Despachante de executores no runner
 
 Cole o texto abaixo na primeira mensagem do agente que vai executar o plano, em uma sessão nova, na raiz do repositório.

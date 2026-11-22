@@ -1,0 +1,1895 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "2026-11-21_ROUTE_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO",
+  "version": "1.0.0",
+  "date": "2026-11-21",
+  "session_id": null,
+  "intent_ref": "docs/intents/2026-11-21_INTENT_INICIATIVA_3_I03_DO_MACROPROJE.md",
+  "spec_ref": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md",
+  "plan_ref": "docs/plans/2026-11-21_PLAN_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md",
+  "initiative_ref": "I03 — Despachante de executores no runner",
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-21_INTENT_INICIATIVA_3_I03_DO_MACROPROJE.md",
+      "sha256": "dbccba0e731776734217ca5d83c54e11aceddb302f7e72aaf5bb81f10c3c2778"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md",
+      "sha256": "081c3f9b427c89f2e6a83d74b78d29d81aa7f626522b6da411a0ea135063ebe2"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-21_PLAN_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md",
+      "sha256": "8f598c5b1fc09fdea27357863e9ceb56000f99b417b3d1b8f48e5b1262f9d555"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "write_boundary": "strict"
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "I03",
+      "epic_id": "E01",
+      "label": "Consolidar testes de coerência executor-tipo, derivação de ausente no dag.Parse e listagem completa via ErrExecutorIncoerente",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/dag/executor.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1, AC-E01.2",
+      "test_target": "internal/dag/executor_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/dag/executor.go",
+          "internal/dag/executor_test.go"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: go test ./internal/dag/ -run \"TestExecutorCoerenteEDerivado|TestValidarExecutoresListaTodos\"')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "I03",
+      "epic_id": "E01",
+      "label": "Recusar subagents_allowed ephemeral fora do native_swarm com ErrExecutorIncoerente",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/dag/executor.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E01.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.3",
+      "test_target": "internal/dag/executor_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/dag/executor.go",
+          "internal/dag/executor_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/dag/",
+            "-run",
+            "TestSubagentesEfemerosSoNoSwarm"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/executor.go') \u0026\u0026 file_exists('internal/dag/executor_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.3",
+      "initiative_id": "I03",
+      "epic_id": "E01",
+      "label": "Exigir papel e command e recusar stop_gate no native_swarm com ErrExecutorIncoerente",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/dag/executor.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E01.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.4",
+      "test_target": "internal/dag/executor_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/dag/executor.go",
+          "internal/dag/executor_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/dag/",
+            "-run",
+            "TestNativeSwarmExigePapelECommand"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/executor.go') \u0026\u0026 file_exists('internal/dag/executor_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.4",
+      "initiative_id": "I03",
+      "epic_id": "E01",
+      "label": "Provar que dag.Parse e legoloop validate recusam executor incoerente ou desconhecido",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.3"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/dag/parse.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E01.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.5",
+      "test_target": "internal/dag/executor_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/dag/parse.go",
+          "internal/dag/executor_test.go",
+          "internal/cli/validate_executor_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/dag/...",
+            "./internal/cli/",
+            "-run",
+            "TestValidateRecusaExecutor"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/parse.go') \u0026\u0026 file_exists('internal/dag/executor_test.go') \u0026\u0026 file_exists('internal/cli/validate_executor_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano: SG-E01",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3",
+        "TICK-01.4"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "I03",
+      "epic_id": "E02",
+      "label": "Criar o campo executor do Ticket coerente com o tipo e gravá-lo na ROUTE",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.4",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/plangen/plangen.go",
+          "internal/plangen/route.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/plangen/ticket_executor_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/plangen/plangen.go",
+          "internal/plangen/route.go",
+          "internal/plangen/ticket_executor_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/plangen/",
+            "-run",
+            "TestTicketExecutor"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/plangen/plangen.go') \u0026\u0026 file_exists('internal/plangen/route.go') \u0026\u0026 file_exists('internal/plangen/ticket_executor_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "I03",
+      "epic_id": "E02",
+      "label": "Recusar Ticket com executor incoerente ou desconhecido sem gravar PLAN nem ROUTE",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/plangen/plangen.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2",
+      "test_target": "internal/plangen/ticket_executor_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/plangen/plangen.go",
+          "internal/plangen/ticket_executor_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/plangen/",
+            "-run",
+            "TestTicketExecutorIncoerente"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/plangen/plangen.go') \u0026\u0026 file_exists('internal/plangen/ticket_executor_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.3",
+      "initiative_id": "I03",
+      "epic_id": "E02",
+      "label": "Provar que a projeção do DAG preserva native_swarm e recusa executor incoerente",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.2",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/routedag/routedag.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E02.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.3",
+      "test_target": "internal/routedag/executor_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/routedag/routedag.go",
+          "internal/routedag/executor_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/routedag/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/routedag/routedag.go') \u0026\u0026 file_exists('internal/routedag/executor_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano: SG-E02",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-02.2",
+        "TICK-02.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "I03",
+      "epic_id": "E03",
+      "label": "Criar Options.Swarm e a validação de executores antes do nível 0 em runner.Run",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.3",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/runner/swarm_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go",
+          "internal/runner/swarm_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/runner/",
+            "-run",
+            "TestRunRecusaAntesDoNivelZero"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "I03",
+      "epic_id": "E03",
+      "label": "Despachar por nível: native_swarm ao SwarmRunner e os demais ao Executor",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2, AC-NF.1",
+      "test_target": "internal/runner/swarm_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go",
+          "internal/runner/swarm_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/runner/",
+            "-run",
+            "TestDespachoPorNivel"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.3",
+      "initiative_id": "I03",
+      "epic_id": "E03",
+      "label": "Rodar o nível misto em paralelo e terminar só quando os dois lados terminam",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.2",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E03.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.3",
+      "test_target": "internal/runner/swarm_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go",
+          "internal/runner/swarm_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/runner/",
+            "-run",
+            "TestNivelMistoEsperaOsDoisLados"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.4",
+      "initiative_id": "I03",
+      "epic_id": "E03",
+      "label": "Converter o resultado do Swarm em NodeReport e marcar os níveis seguintes como skipped",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.3",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E03.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.4",
+      "test_target": "internal/runner/swarm_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go",
+          "internal/runner/swarm_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/runner/",
+            "-run",
+            "TestFalhaNoSwarmMarcaSkipped"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.5",
+      "initiative_id": "I03",
+      "epic_id": "E03",
+      "label": "Garantir que DAG sem native_swarm não toca no Swarm",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.4",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E03.5",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.5",
+      "test_target": "internal/runner/swarm_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/runner/runner.go",
+          "internal/runner/swarm.go",
+          "internal/runner/swarm_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/runner/",
+            "-run",
+            "TestSemNativeSwarmNaoUsaSwarm"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/runner.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/runner/swarm_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.6",
+      "initiative_id": "I03",
+      "epic_id": "E03",
+      "label": "Provar que legoloop run recusa executor inválido com exit 1 e sem criar worktree",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.5",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/commands.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E03.6",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.6",
+      "test_target": "internal/cli/run_executor_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/commands.go",
+          "internal/cli/run_executor_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestRunRecusaExecutorSemWorktree"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/commands.go') \u0026\u0026 file_exists('internal/cli/run_executor_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano: SG-E03",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2",
+        "TICK-03.3",
+        "TICK-03.4",
+        "TICK-03.5",
+        "TICK-03.6"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": "I03",
+      "epic_id": "E04",
+      "label": "Extrair board.RunNodeOf de LevelsFromDAG preservando cobertura do board \u003e= 80%",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.6",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/board/swarm_dag.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.1",
+      "test_target": "internal/board/swarm_dag_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/board/swarm_dag.go",
+          "internal/board/swarm_dag_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-cover",
+            "./internal/board/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/board/swarm_dag.go') \u0026\u0026 file_exists('internal/board/swarm_dag_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.2",
+      "initiative_id": "I03",
+      "epic_id": "E04",
+      "label": "Ligar legoloop run ao SwarmBoard real quando houver nó native_swarm",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-04.1",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/commands.go",
+          "internal/runner/swarm.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E04.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.2",
+      "test_target": "internal/cli/run_swarm_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/commands.go",
+          "internal/runner/swarm.go",
+          "internal/cli/run_swarm_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestRunNativeSwarmBinario"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/commands.go') \u0026\u0026 file_exists('internal/runner/swarm.go') \u0026\u0026 file_exists('internal/cli/run_swarm_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.3",
+      "initiative_id": "I03",
+      "epic_id": "E04",
+      "label": "Provar que sem native_swarm o diretório do Swarm não é criado",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.2",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/run_swarm_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E04.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.3",
+      "test_target": "internal/cli/run_swarm_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/run_swarm_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/cli/",
+            "-run",
+            "TestRunSemNativeSwarmNaoCriaDiretorio"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/run_swarm_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E04",
+      "initiative_id": null,
+      "epic_id": "E04",
+      "label": "Stop-Gate Humano: SG-E04",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-04.2",
+        "TICK-04.3"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 04 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.1",
+      "initiative_id": "I03",
+      "epic_id": "E05",
+      "label": "Provar que todos os DAGs do repositório continuam válidos",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-04.3",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/dag/executor_repo_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E05.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.1",
+      "test_target": "internal/dag/executor_repo_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/dag/executor_repo_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/dag/",
+            "-run",
+            "TestDAGsDoRepositorioValidam"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/dag/executor_repo_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.2",
+      "initiative_id": "I03",
+      "epic_id": "E05",
+      "label": "Provar com golden que o relatório de DAG sem native_swarm não mudou",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-05.1",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/runner/paridade_test.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E05.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.2",
+      "test_target": "internal/runner/paridade_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/runner/paridade_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./internal/runner/",
+            "-run",
+            "TestParidadeDoRelatorio"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/runner/paridade_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.3",
+      "initiative_id": "I03",
+      "epic_id": "E05",
+      "label": "Atualizar AGENTS, README e MEMORY com o despachante e o native_swarm",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-05.2",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "AGENTS.md",
+          "docs/governanca/AGENTS_COMPLETO.md",
+          "README.md",
+          "MEMORY.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E05.3",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.3",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "AGENTS.md",
+          "docs/governanca/AGENTS_COMPLETO.md",
+          "README.md",
+          "MEMORY.md"
+        ],
+        "verify": [],
+        "gate": "prompt('Execute manualmente e confirme exit code 0: grep -c \"native_swarm\" AGENTS.md README.md MEMORY.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-05.4",
+      "initiative_id": "I03",
+      "epic_id": "E05",
+      "label": "Registrar os anticorpos, atualizar emendas, prompt da I03 e rodar o portão completo",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "nature=nano",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 8000,
+        "max_output_tokens": 300
+      },
+      "depends_on": [
+        "TICK-05.3",
+        "SG-E04"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-fast",
+        "effort": "low",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "docs/intents/2026-11-21_EMENDA_2_MACROPLANO.md",
+          "docs/prompts"
+        ],
+        "spec_anchor": "docs/specs/2026-11-21_SPEC_INICIATIVA_3_I03_DO_MACROPROJE_REVISAO.md#AC-E05.4",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E05.4, AC-NF.2",
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "docs/intents/2026-11-21_EMENDA_2_MACROPLANO.md",
+          "docs/prompts"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/intents/2026-11-21_EMENDA_2_MACROPLANO.md') \u0026\u0026 file_exists('docs/prompts')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": null,
+      "epic_id": null,
+      "label": "Homologação Final (Regressão Global \u0026 Recompilação Fresca)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-05.4"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./..."
+          ],
+          [
+            "go",
+            "vet",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    }
+  ]
+}
