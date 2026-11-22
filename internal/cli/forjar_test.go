@@ -95,3 +95,45 @@ func TestCmdForjarDryRunApplyEPerfilInvalido(t *testing.T) {
 		t.Fatalf("esperava exit 2 para perfil invalido, obteve %d (%s)", code, errBuf.String())
 	}
 }
+
+func TestCmdForjarVerificarDerivaReprovaECorrige(t *testing.T) {
+	home := t.TempDir()
+	cofre := filepath.Join(t.TempDir(), "cofre")
+	criarSkillTeste(t, filepath.Join(home, ".claude", "skills", "legoloop-skills"), "legoloop-skills", "indice lazy")
+	pastaEager := filepath.Join(home, ".claude", "skills", "extra-eager")
+	criarSkillTeste(t, pastaEager, "extra-eager", "skill extra")
+
+	var out, errBuf bytes.Buffer
+	d := Deps{Stdout: &out, Stderr: &errBuf, Home: home}
+	code := Run(context.Background(), []string{"forjar", "--verificar", "--home", home}, d)
+	if code != 1 {
+		t.Fatalf("esperava exit 1 para deriva, obteve %d (stdout=%q stderr=%q)", code, out.String(), errBuf.String())
+	}
+	combinado := out.String() + errBuf.String()
+	if !strings.Contains(combinado, "claude") || !strings.Contains(combinado, filepath.ToSlash(pastaEager)) {
+		t.Fatalf("saida deve citar harness e pasta, obteve: %s", combinado)
+	}
+	verificarCorrecaoDerivaCLI(t, home, cofre, pastaEager)
+}
+
+func verificarCorrecaoDerivaCLI(t *testing.T, home, cofre, pastaEager string) {
+	t.Helper()
+	var out, errBuf bytes.Buffer
+	d := Deps{Stdout: &out, Stderr: &errBuf, Home: home}
+	code := Run(context.Background(), []string{"forjar", "--verificar", "--corrigir", "--home", home, "--cofre", cofre}, d)
+	if code != 0 {
+		t.Fatalf("esperava exit 0 ao corrigir deriva, obteve %d (stderr=%q)", code, errBuf.String())
+	}
+	if _, err := os.Stat(filepath.Join(cofre, "extra-eager", "SKILL.md")); err != nil {
+		t.Fatalf("skill nao movida ao cofre: %v", err)
+	}
+	if _, err := os.Stat(pastaEager); !os.IsNotExist(err) {
+		t.Fatalf("pasta eager ainda existe: %s", pastaEager)
+	}
+	out.Reset()
+	errBuf.Reset()
+	code = Run(context.Background(), []string{"forjar", "--verificar", "--home", home}, d)
+	if code != 0 {
+		t.Fatalf("esperava exit 0 apos corrigir deriva, obteve %d (stderr=%q)", code, errBuf.String())
+	}
+}

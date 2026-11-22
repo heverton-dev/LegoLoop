@@ -250,6 +250,8 @@ func (r *Router) handleToolCall(req JSONRPCRequest) JSONRPCResponse {
 		return r.callSkillSearch(req.ID, params.Arguments)
 	case "call_skill":
 		return r.callSkill(req.ID, params.Arguments)
+	case "instalar":
+		return r.callInstalar(req.ID, params.Arguments)
 	default:
 		if _, ok := r.toolsProcesso[params.Name]; ok {
 			return r.chamarToolProcesso(req.ID, params.Name, params.Arguments)
@@ -353,6 +355,7 @@ func (r *Router) toolsInternas() []map[string]any {
 		tools = append(tools, sessaoToolDefs()...)
 	}
 	if !r.gateway && (r.swarm || r.vault != nil || r.runner != nil) {
+		tools = append(tools, instalarToolDef())
 		tools = append(tools, swarmToolDefs()...)
 	}
 	return tools

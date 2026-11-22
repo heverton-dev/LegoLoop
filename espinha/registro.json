@@ -122,6 +122,12 @@
       "contrato": "Instalacao do LegoLoop encadeando a Forja, relatorios e atalho do grafo"
     },
     {
+      "nome": "atualizar",
+      "camada": "espinha",
+      "motor": "internal/atualizar",
+      "contrato": "Atualizacao segura do binario por canal com verificacao SHA-256, copia .prev e revalidacao da Forja"
+    },
+    {
       "nome": "instalar-skills",
       "camada": "espinha",
       "motor": "internal/skills",
@@ -281,6 +287,11 @@
     {
       "pacote": "internal/assets",
       "interface": "ArgvFor",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/atualizar",
+      "interface": "Executar",
       "deterministico": true
     },
     {

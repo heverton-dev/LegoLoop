@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Instalar cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Montar pacotes, SHA256SUMS, SBOM e relatorio
+        env:
+          VERSAO: ${{ github.ref_name }}
+        run: go run ./tools/release --all --out dist --versao "$VERSAO" --cosign
+
+      - name: Verificar SHA256SUMS
+        run: cd dist && sha256sum -c SHA256SUMS
+
+      - name: Assinar SHA256SUMS com cosign
+        run: |
+          cosign sign-blob --yes \
+            --output-signature dist/SHA256SUMS.sig \
+            --output-certificate dist/SHA256SUMS.pem \
+            dist/SHA256SUMS
+
+      - name: Publicar GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" dist/* --title "$TAG" --generate-notes

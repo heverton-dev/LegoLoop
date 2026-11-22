@@ -18,6 +18,8 @@ type opcoesCmdForjar struct {
 	sem       listFlag
 	home      string
 	verificar bool
+	corrigir  bool
+	cofre     string
 	orcamento string
 	asJSON    bool
 }
@@ -46,7 +48,9 @@ func parseFlagsForjar(args []string, d Deps) (opcoesCmdForjar, int) {
 	fs.StringVar(&op.perfil, "perfil", "padrao", "perfil de contexto: minimo, padrao ou gateway")
 	fs.Var(&op.sem, "sem", "harness excluido (pode repetir)")
 	fs.StringVar(&op.home, "home", "", "diretorio HOME alvo")
-	fs.BoolVar(&op.verificar, "verificar", false, "verifica o orcamento de tokens dos harnesses")
+	fs.BoolVar(&op.verificar, "verificar", false, "verifica deriva ou orcamento de tokens dos harnesses")
+	fs.BoolVar(&op.corrigir, "corrigir", false, "corrige derivas movendo skills eager ao cofre com backup")
+	fs.StringVar(&op.cofre, "cofre", "", "pasta de destino das skills no cofre")
 	fs.StringVar(&op.orcamento, "orcamento", "", "caminho do JSON de orcamento de tokens")
 	fs.BoolVar(&op.asJSON, "json", false, "emite o resultado em JSON")
 	if err := fs.Parse(args); err != nil {
@@ -60,10 +64,54 @@ func parseFlagsForjar(args []string, d Deps) (opcoesCmdForjar, int) {
 }
 
 func executarVerificacaoForjar(d Deps, home string, op opcoesCmdForjar) int {
-	arq := strings.TrimSpace(op.orcamento)
-	if arq == "" {
-		arq = filepath.Join("docs", "governanca", "orcamento_tokens.json")
+	if strings.TrimSpace(op.orcamento) != "" {
+		return executarVerificacaoOrcamento(d, home, op)
 	}
+	if op.corrigir {
+		return executarCorrecaoDeriva(d, home, op)
+	}
+	return executarDeteccaoDeriva(d, home, op)
+}
+
+func executarDeteccaoDeriva(d Deps, home string, op opcoesCmdForjar) int {
+	derivas, err := forja.DetectarDeriva(home)
+	if err != nil {
+		return fail(d, err)
+	}
+	res := forja.ResultadoDeriva{Aprovado: len(derivas) == 0, Derivas: derivas}
+	if op.asJSON {
+		if code := printJSON(d, res); code != 0 {
+			return code
+		}
+		if !res.Aprovado {
+			return 1
+		}
+		return 0
+	}
+	if !res.Aprovado {
+		fmt.Fprintln(d.Stderr, "deriva reprovada:")
+		fmt.Fprintln(d.Stderr, forja.FormatarDerivas(derivas))
+		return 1
+	}
+	fmt.Fprintln(d.Stdout, forja.FormatarDerivas(derivas))
+	return 0
+}
+
+func executarCorrecaoDeriva(d Deps, home string, op opcoesCmdForjar) int {
+	res, err := forja.CorrigirDeriva(home, op.cofre, "")
+	if err != nil {
+		return fail(d, err)
+	}
+	if op.asJSON {
+		return printJSON(d, res)
+	}
+	fmt.Fprintf(d.Stdout, "deriva corrigida: %d skill(s) movida(s) ao cofre (backup=%s)\n",
+		len(res.Corrigidos), filepath.ToSlash(res.BackupRaiz))
+	return 0
+}
+
+func executarVerificacaoOrcamento(d Deps, home string, op opcoesCmdForjar) int {
+	arq := strings.TrimSpace(op.orcamento)
 	orc, err := forja.CarregarOrcamento(arq)
 	if err != nil {
 		return fail(d, err)

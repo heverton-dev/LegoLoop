@@ -22,7 +22,7 @@ const (
 )
 
 // descricaoGateway anuncia os servidores embutidos em poucos bytes: é a única descrição que o modelo recebe.
-const descricaoGateway = "ws: bash, read_file, write_file, edit_file. legoloop: skill_search, call_skill, mcp_search, swarm_*. Erro mostra o uso."
+const descricaoGateway = "ws: bash, read_file, write_file, edit_file. legoloop: skill_search, call_skill, mcp_search, instalar, swarm_*. Erro mostra o uso."
 
 // gatewayToolDefs é a única ferramenta exposta em modo gateway (piso de contexto).
 func gatewayToolDefs() []map[string]any {
@@ -64,6 +64,8 @@ func (r *Router) runLegoloop(id any, tool string, args map[string]any) (JSONRPCR
 		return r.callSkill(id, args), true
 	case "mcp_search":
 		return r.callMcpSearch(id, args), true
+	case "instalar":
+		return r.callInstalar(id, args), true
 	}
 	if _, ok := r.toolsProcesso[tool]; ok {
 		return r.chamarToolProcesso(id, tool, args), true

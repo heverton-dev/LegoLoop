@@ -320,6 +320,12 @@ func (v *localVault) searchExternal(q string) []ToolMatch {
 func (v *localVault) Search(query string) []ToolMatch {
 	q := strings.ToLower(strings.TrimSpace(query))
 	out := v.searchExternal(q)
+	inst := instalarToolDef()
+	instName, _ := inst["name"].(string)
+	instDesc, _ := inst["description"].(string)
+	if matchQuery(q, servidorLegoloop, instName, instDesc) {
+		out = append(out, ToolMatch{Server: servidorLegoloop, Name: instName, Description: instDesc})
+	}
 	for _, td := range swarmToolDefs() {
 		name, _ := td["name"].(string)
 		desc, _ := td["description"].(string)

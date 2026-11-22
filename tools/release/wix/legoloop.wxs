@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Name="LegoLoop"
+    Manufacturer="heverton-dev"
+    Version="$(var.Version)"
+    UpgradeCode="8B7C2D14-4F9A-4E6B-9A3C-5E1D7F2A6B80"
+    Scope="perUser"
+    InstallPrivileges="limited"
+    InstallerVersion="500">
+
+    <MajorUpgrade DowngradeErrorMessage="Uma versao mais recente do LegoLoop ja esta instalada." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="INSTALLFOLDER" Name="LegoLoop">
+        <Component Id="LegoloopBin" Guid="4A2E9C71-7D3B-4A8F-B1E2-9C6D5F4A3B21">
+          <File Id="LegoloopExe" Name="legoloop.exe" Source="$(var.BinPath)" KeyPath="yes" />
+          <Environment
+            Id="LegoloopUserPath"
+            Name="PATH"
+            Value="[INSTALLFOLDER]"
+            Permanent="no"
+            Part="last"
+            Action="set"
+            System="no" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="Main" Title="LegoLoop" Level="1">
+      <ComponentRef Id="LegoloopBin" />
+    </Feature>
+  </Package>
+</Wix>

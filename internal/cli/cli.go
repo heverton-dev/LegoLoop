@@ -86,6 +86,7 @@ Comandos:
   compor     <nome> <legoloop-x@versão> [--depende ID]... [--yes]  liga um processo como etapa de outro (recusa ciclo)
   forjar          [--dry-run|--apply|--desfazer DATA|--verificar --orcamento ARQ] [--perfil P] [--sem H] [--home DIR] [--json]  executa a Forja ou verifica o orçamento de tokens por harness
   instalar        [--dry-run|--apply] [--perfil P] [--home DIR] [--json]  executa a Forja, grava os relatórios e configura o atalho do grafo
+  atualizar       [--canal estavel|beta] [--base-url URL] [--binario PATH] [--home DIR] [--json]  atualiza o binário com verificação SHA-256, cópia .prev e revalidação da Forja
   instalar-skills [--vault DIR] [--dry-run] [--json]  instala e vincula as skills nativas universais
   skills-custo    [--json]  mede os tokens de frontmatter que cada harness carrega por turno
   skills-migrar (--dry-run|--apply) [--vault DIR]  tira as skills eager de todos os harnesses (backup) e deixa só o índice lazy
@@ -115,7 +116,7 @@ func mapaComandos() map[string]func(context.Context, []string, Deps) int {
 		"run": cmdRun, "exec": cmdExec, "route": cmdRoute, "studio": cmdStudio, "forge": cmdForge,
 		"import": cmdImport, "upgrade": cmdUpgrade, "fabricar": cmdFabricar, "matriz": cmdMatriz, "listar": cmdListar,
 		"dissecar": cmdDissecar,
-		"refinar":  cmdRefinar, "remover": cmdRemover, "renomear": cmdRenomear, "compor": cmdCompor, "forjar": cmdForjar, "instalar": cmdInstalar, "instalar-skills": cmdInstalarSkills, "skills-custo": cmdSkillsCusto, "skills-migrar": cmdSkillsMigrar,
+		"refinar":  cmdRefinar, "remover": cmdRemover, "renomear": cmdRenomear, "compor": cmdCompor, "forjar": cmdForjar, "instalar": cmdInstalar, "atualizar": cmdAtualizar, "instalar-skills": cmdInstalarSkills, "skills-custo": cmdSkillsCusto, "skills-migrar": cmdSkillsMigrar,
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
