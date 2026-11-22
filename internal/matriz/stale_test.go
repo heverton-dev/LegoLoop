@@ -178,20 +178,20 @@ func TestStaleness_DesempenhoCom1600Pecas(t *testing.T) {
 	if _, err := matriz.Generate(context.Background(), matriz.Options{Vault: c.vault}, d); err != nil {
 		t.Fatal(err)
 	}
-	if dt := time.Since(t1); dt > 10*time.Second {
-		t.Errorf("primeira geração de 1.600 peças levou %v (guarda: 10 s); inferência ou nota lenta demais", dt)
+	if dt := time.Since(t1); dt > fatorRace*10*time.Second {
+		t.Errorf("primeira geração de 1.600 peças levou %v (guarda: %v); inferência ou nota lenta demais", dt, fatorRace*10*time.Second)
 	}
 	reg := lerRegistro(t, c.vault)
 
 	t0 := time.Now()
 	s, err := matriz.Staleness(context.Background(), reg, c.items, d)
-	if dt := time.Since(t0); err != nil || dt > 2*time.Second || s.Defasada() {
-		t.Errorf("defasagem de 1.600 peças: %v (limite 2 s), stale=%+v, err=%v", dt, s, err)
+	if dt := time.Since(t0); err != nil || dt > fatorRace*2*time.Second || s.Defasada() {
+		t.Errorf("defasagem de 1.600 peças: %v (limite %v), stale=%+v, err=%v", dt, fatorRace*2*time.Second, s, err)
 	}
 	t0 = time.Now()
 	sum, err := matriz.Generate(context.Background(), matriz.Options{Vault: c.vault}, d)
-	if dt := time.Since(t0); err != nil || dt > 5*time.Second || sum.Reprocessadas != 0 {
-		t.Errorf("geração sem mudança com 1.600 peças: %v (limite 5 s), reprocessadas=%d, err=%v", dt, sum.Reprocessadas, err)
+	if dt := time.Since(t0); err != nil || dt > fatorRace*5*time.Second || sum.Reprocessadas != 0 {
+		t.Errorf("geração sem mudança com 1.600 peças: %v (limite %v), reprocessadas=%d, err=%v", dt, fatorRace*5*time.Second, sum.Reprocessadas, err)
 	}
 }
 
