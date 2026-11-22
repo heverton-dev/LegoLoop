@@ -44,7 +44,7 @@ func TestMutarAssembleResolveDepsEUncovered(t *testing.T) {
 	}
 }
 
-func TestMutarConcurrencyLimitesECapacidade(t *testing.T) {
+func TestMutarConcurrencyLimitesESkill(t *testing.T) {
 	validos := []ConcurrencyStrategy{
 		{Mode: "serial", MaxParallelSubagents: 1, HarnessCapability: ""},
 		{Mode: "parallel_clean", MaxParallelSubagents: 8, HarnessCapability: "subagent_native"},

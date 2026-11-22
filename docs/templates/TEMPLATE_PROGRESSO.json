@@ -1,0 +1,33 @@
+{
+  "schema": "progresso.v1",
+  "iniciativa": "I00",
+  "plano": "docs/plans/YYYY-MM-DD_PLAN_EXEMPLO.md",
+  "atualizado_em": "2026-11-22T00:00:00Z",
+  "resumo": {
+    "total": 1,
+    "aprovados": 0,
+    "em_andamento": 0,
+    "reprovados": 0,
+    "bloqueados": 0,
+    "pendentes": 1
+  },
+  "tickets": [
+    {
+      "id": "TICK-01.1",
+      "epico": "E01",
+      "titulo": "Exemplo de Ticket rastreado por Gate",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test ./internal/progresso/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/progresso/progresso.go"
+      ],
+      "criterios": [
+        "AC-E01.1"
+      ],
+      "atualizado_em": "2026-11-22T00:00:00Z"
+    }
+  ]
+}

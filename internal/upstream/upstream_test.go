@@ -76,3 +76,14 @@ func TestRecusaReconheceAsTresRecusasEIgnoraOutrosErros(t *testing.T) {
 		t.Error("erro comum e nil não são recusa da trava")
 	}
 }
+
+func TestVerificarSpecPropagaErroDeLeituraDaSpec(t *testing.T) {
+	base := t.TempDir()
+	err := upstream.VerificarSpec(base, filepath.Join(base, "inexistente.md"))
+	if !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("err = %v, quer os.ErrNotExist", err)
+	}
+	if upstream.Recusa(err) {
+		t.Fatalf("erro de leitura não pode ser tratado como recusa: %v", err)
+	}
+}

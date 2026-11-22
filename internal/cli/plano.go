@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"legoloop/internal/plangen"
+	"legoloop/internal/progresso"
 	"legoloop/internal/upstream"
 )
 
@@ -64,6 +65,9 @@ func renderizarPlano(o opcoesPlano, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
+	if err := gerarProgressoDoPlano(o.tickets, res.PlanMarkdownPath, quando); err != nil {
+		return fail(d, err)
+	}
 	for _, w := range res.Warnings {
 		fmt.Fprintln(d.Stderr, "aviso:", w)
 	}
@@ -98,4 +102,14 @@ func dataDoPlano(s string) (time.Time, error) {
 		return time.Time{}, fmt.Errorf("--data deve ser AAAA-MM-DD: %w", err)
 	}
 	return t, nil
+}
+
+func gerarProgressoDoPlano(ticketsArq, planMarkdownPath string, quando time.Time) error {
+	entradas, err := progresso.CarregarEntradasTickets(ticketsArq)
+	if err != nil {
+		return err
+	}
+	progJSON := derivarCaminhoProgressoPlano(planMarkdownPath)
+	p := progresso.NovoDeTickets("", planMarkdownPath, entradas, quando.UTC().Format(time.RFC3339))
+	return progresso.Salvar(progJSON, progresso.CaminhoEspelhoMD(progJSON), p)
 }

@@ -103,6 +103,7 @@ Comandos:
   sessoes    <slug> [--json] [--processos-dir DIR]  lista as sessões ativas do processo (memória de execução)
   anticorpos <sync|status> [slug] [--raiz DIR]   sincroniza ou inspeciona o espelho executivo ANTICORPOS.md
   espinha    verificar [--raiz DIR] [--json]     verifica a integridade deterministica da espinha dorsal
+  progresso  <gerar|iniciar|validar|status> [opções]  acompanhamento vivo de Tickets validado por Gate
   version
 `
 
@@ -116,7 +117,7 @@ func mapaComandos() map[string]func(context.Context, []string, Deps) int {
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
-		"plano": cmdPlano, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos, "espinha": cmdEspinha,
+		"plano": cmdPlano, "progresso": cmdProgresso, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos, "espinha": cmdEspinha,
 	}
 }
 

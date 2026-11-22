@@ -252,6 +252,12 @@
       "camada": "espinha",
       "motor": "internal/espinha",
       "contrato": "Verificacao e auditoria da espinha dorsal do LegoLoop"
+    },
+    {
+      "nome": "progresso",
+      "camada": "espinha",
+      "motor": "internal/progresso",
+      "contrato": "Acompanhamento vivo de Tickets validado por Gate mecanico"
     }
   ],
   "motores": [
@@ -408,6 +414,11 @@
     {
       "pacote": "internal/processo",
       "interface": "FS",
+      "deterministico": true
+    },
+    {
+      "pacote": "internal/progresso",
+      "interface": "ValidarTicket",
       "deterministico": true
     },
     {

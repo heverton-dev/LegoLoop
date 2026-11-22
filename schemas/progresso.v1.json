@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "id": "progresso.v1",
+  "description": "Estado vivo de progresso de uma iniciativa por Ticket, promovido para PASSED apenas por Gate mecânico com exit 0.",
+  "type": "object",
+  "required": ["schema", "iniciativa", "plano", "atualizado_em", "resumo", "tickets"],
+  "properties": {
+    "schema": { "const": "progresso.v1" },
+    "iniciativa": { "type": "string", "minLength": 1 },
+    "plano": { "type": "string" },
+    "atualizado_em": { "type": "string", "minLength": 1 },
+    "resumo": {
+      "type": "object",
+      "required": ["total", "aprovados", "em_andamento", "reprovados", "bloqueados", "pendentes"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "aprovados": { "type": "integer", "minimum": 0 },
+        "em_andamento": { "type": "integer", "minimum": 0 },
+        "reprovados": { "type": "integer", "minimum": 0 },
+        "bloqueados": { "type": "integer", "minimum": 0 },
+        "pendentes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "tickets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "epico", "titulo", "estado", "comando"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "epico": { "type": "string", "minLength": 1 },
+          "titulo": { "type": "string", "minLength": 1 },
+          "estado": { "enum": ["PENDING", "IN_PROGRESS", "PASSED", "FAILED", "BLOCKED"] },
+          "responsavel": { "type": "string" },
+          "comando": { "type": "string" },
+          "exit_code": { "type": "integer" },
+          "prova": { "type": "string" },
+          "alvos": { "type": "array", "items": { "type": "string" } },
+          "criterios": { "type": "array", "items": { "type": "string" } },
+          "atualizado_em": { "type": "string" }
+        }
+      }
+    }
+  }
+}
