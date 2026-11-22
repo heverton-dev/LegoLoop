@@ -9,9 +9,18 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
+)
+
+const (
+	workersPadrao            = 1
+	goMaxProcsSubteste       = "2"
+	goMemLimitSubteste       = "512MiB"
+	timeoutMutantePadrao     = 15 * time.Second
+	margemCancelamentoArvore = 5 * time.Second
 )
 
 // ExecutorTestes abstrai a execução dos testes de um pacote.
@@ -78,21 +87,75 @@ func gravarOverlay(tmpDir string, m Mutante) (string, error) {
 }
 
 func rodarGoTest(ctx context.Context, dirPacote, overlayPath string) (bool, string, error) {
-	args := []string{"test", "-count=1", "-failfast"}
-	if overlayPath != "" {
-		args = append(args, "-overlay", overlayPath)
-	}
-	args = append(args, ".")
-	cmd := exec.CommandContext(ctx, "go", args...)
+	timeoutMut := resolverTimeoutMutante()
+	ctxMut, cancelar := context.WithTimeout(ctx, timeoutMut+margemCancelamentoArvore)
+	defer cancelar()
+
+	args := argsGoTest(overlayPath, timeoutMut)
+	cmd := exec.CommandContext(ctxMut, "go", args...)
 	cmd.Dir = dirPacote
+	cmd.Env = ambienteSubteste(os.Environ())
+	configurarCancelamentoArvore(cmd)
 	out, err := cmd.CombinedOutput()
 	if ctx.Err() != nil {
 		return false, string(out), ctx.Err()
+	}
+	if ctxMut.Err() != nil {
+		return false, string(out), nil
 	}
 	if err != nil {
 		return false, string(out), nil
 	}
 	return true, string(out), nil
+}
+
+func argsGoTest(overlayPath string, timeoutMutante time.Duration) []string {
+	args := []string{"test", "-p", "1", "-count=1", "-failfast", "-timeout", timeoutMutante.String()}
+	if overlayPath != "" {
+		args = append(args, "-overlay", overlayPath)
+	}
+	return append(args, ".")
+}
+
+func resolverTimeoutMutante() time.Duration {
+	bruto := strings.TrimSpace(os.Getenv("MUTAR_TIMEOUT_MUTANTE"))
+	if bruto == "" {
+		return timeoutMutantePadrao
+	}
+	dur, err := time.ParseDuration(bruto)
+	if err != nil || dur <= 0 {
+		return timeoutMutantePadrao
+	}
+	return dur
+}
+
+func ambienteSubteste(base []string) []string {
+	env := append([]string(nil), base...)
+	env = garantirEnv(env, "GOMAXPROCS", goMaxProcsSubteste)
+	env = garantirEnv(env, "GOMEMLIMIT", goMemLimitSubteste)
+	return env
+}
+
+func garantirEnv(env []string, chave, valor string) []string {
+	prefixo := strings.ToUpper(chave) + "="
+	for _, kv := range env {
+		if strings.HasPrefix(strings.ToUpper(kv), prefixo) {
+			return env
+		}
+	}
+	return append(env, chave+"="+valor)
+}
+
+func resolverWorkers() int {
+	bruto := strings.TrimSpace(os.Getenv("MUTAR_WORKERS"))
+	if bruto == "" {
+		return workersPadrao
+	}
+	n, err := strconv.Atoi(bruto)
+	if err != nil || n < 1 {
+		return workersPadrao
+	}
+	return n
 }
 
 func executarCLI(args []string, stdout, stderr io.Writer) int {
@@ -131,8 +194,9 @@ func Rodar(ctx context.Context, mutantes []Mutante, justificados []Justificado, 
 		defer cancelar()
 	}
 	rel := Relatorio{Total: len(mutantes), Resultados: make([]Resultado, 0, len(mutantes))}
-	if _, paralelo := execTestes.(ExecutorGoTest); paralelo && len(mutantes) > 1 {
-		resultados := rodarEmParalelo(ctx, mutantes, justificados, execTestes, 6)
+	workers := resolverWorkers()
+	if _, paralelo := execTestes.(ExecutorGoTest); paralelo && len(mutantes) > 1 && workers > 1 {
+		resultados := rodarEmParalelo(ctx, mutantes, justificados, execTestes, workers)
 		for _, res := range resultados {
 			acumularResultado(&rel, res)
 		}

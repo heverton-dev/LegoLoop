@@ -73,6 +73,7 @@ LegoLoop/
 │   ├── templates/           # Templates canônicos v2 (INTENT, SPEC, PLAN, ROUTE e peças) + conformidade em Go
 │   ├── manuals/             # Manuais operacionais dos 6 comandos principais
 │   ├── intents/ · specs/ · plans/ · routes/   # Cascata de governança (prefixo ISO de data)
+│   ├── progress/            # Progresso por PLAN: <data>_plan-<nome>/{progresso.json,progresso.md}
 │   ├── reports/ · references/ · sessions/ · archive/
 │   └── reports/img/         # Evidências visuais de homologação
 ├── processos/                   # Processos de exemplo (addy-osmani, impeccable-design, matt-pocock, mega-pipeline)

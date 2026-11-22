@@ -128,14 +128,18 @@ func cmdProgressoStatus(args []string, d Deps) int {
 	return 0
 }
 
-func derivarCaminhoProgressoPlano(planPath string) string {
-	dir := filepath.Dir(planPath)
-	base := filepath.Base(planPath)
-	nome := strings.Replace(base, "_PLAN_", "_PROGRESSO_", 1)
-	if nome == base {
-		nome = strings.TrimSuffix(base, filepath.Ext(base)) + "_PROGRESSO"
-	} else {
-		nome = strings.TrimSuffix(nome, filepath.Ext(nome))
+// derivarCaminhoProgressoPlano devolve docs/progress/<data>_plan-<nome>/progresso.json.
+// A data e o nome vêm do arquivo do PLAN, então o caminho não muda entre execuções.
+func derivarCaminhoProgressoPlano(raiz, planPath string) string {
+	base := strings.TrimSuffix(filepath.Base(planPath), filepath.Ext(planPath))
+	data, nome := "", base
+	if i := strings.Index(base, "_PLAN_"); i >= 0 {
+		data, nome = base[:i], base[i+len("_PLAN_"):]
 	}
-	return filepath.Join(dir, nome+".json")
+	nome = strings.ToLower(strings.ReplaceAll(nome, "_", "-"))
+	pasta := "plan-" + nome
+	if data != "" {
+		pasta = data + "_" + pasta
+	}
+	return filepath.Join(raiz, "docs", "progress", pasta, "progresso.json")
 }

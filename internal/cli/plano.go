@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 
 	"legoloop/internal/plangen"
@@ -65,7 +66,7 @@ func renderizarPlano(o opcoesPlano, d Deps) int {
 	if err != nil {
 		return fail(d, err)
 	}
-	if err := gerarProgressoDoPlano(o.tickets, res.PlanMarkdownPath, quando); err != nil {
+	if err := gerarProgressoDoPlano(o.raiz, o.tickets, res.PlanMarkdownPath, quando); err != nil {
 		return fail(d, err)
 	}
 	for _, w := range res.Warnings {
@@ -104,12 +105,19 @@ func dataDoPlano(s string) (time.Time, error) {
 	return t, nil
 }
 
-func gerarProgressoDoPlano(ticketsArq, planMarkdownPath string, quando time.Time) error {
+func gerarProgressoDoPlano(raiz, ticketsArq, planMarkdownPath string, quando time.Time) error {
 	entradas, err := progresso.CarregarEntradasTickets(ticketsArq)
 	if err != nil {
 		return err
 	}
-	progJSON := derivarCaminhoProgressoPlano(planMarkdownPath)
-	p := progresso.NovoDeTickets("", planMarkdownPath, entradas, quando.UTC().Format(time.RFC3339))
+	iniciativa := ""
+	if len(entradas) > 0 {
+		iniciativa = entradas[0].InitiativeID
+	}
+	if iniciativa == "" {
+		iniciativa = filepath.Base(planMarkdownPath)
+	}
+	progJSON := derivarCaminhoProgressoPlano(raiz, planMarkdownPath)
+	p := progresso.NovoDeTickets(iniciativa, planMarkdownPath, entradas, quando.UTC().Format(time.RFC3339))
 	return progresso.Salvar(progJSON, progresso.CaminhoEspelhoMD(progJSON), p)
 }

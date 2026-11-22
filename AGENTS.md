@@ -38,6 +38,7 @@ Path Jail, Schema Validation, Exit-Code Gate, Sterile Context e Test Mutation va
 
 ## 3. Comandos e rotas
 
+* **Progresso:** cada PLAN grava `docs/progress/<data>_plan-<nome>/progresso.json` e `progresso.md` (`legoloop plano`); `espinha/` guarda só o estado global (registro, renomeados, cobertura).
 * **Testes:** `go test -count=1 ./...` e `go test -count=1 -tags e2e ./internal/e2e/...`.
 * **Processos:** `legoloop fabricar|matriz|listar|refinar|remover|compor|fechar` (Chat: `/legoloop-<verbo>`); não confunda `fabricar` com `canonize`.
 * **Skills lazy (regra permanente: todo harness do SO é lazy):** `legoloop instalar-skills` (só `legoloop-skills` vai às pastas dos harnesses; o resto vem de `skill_search`/`call_skill`), `legoloop skills-custo` (custo por harness) e `legoloop skills-migrar (--dry-run|--apply)` (tira skills eager; rode após instalar plugin de terceiros). `sync-harnesses` cobre pi e OMP.

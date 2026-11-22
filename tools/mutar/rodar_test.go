@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 )
 
 const fixtureCalcCodigo = `package calc
@@ -202,4 +204,94 @@ func verificarFonteIntacto(t *testing.T, caminho, esperado string) {
 	if string(atual) != esperado {
 		t.Fatalf("arquivo fonte %s foi alterado apos mutacao", caminho)
 	}
+}
+
+func TestAmbienteSubteste_IncluiGoMemLimitEGoMaxProcs(t *testing.T) {
+	env := ambienteSubteste([]string{"PATH=/usr/bin"})
+	if !contemEnv(env, "GOMAXPROCS=2") {
+		t.Fatalf("esperava GOMAXPROCS=2 no ambiente: %v", env)
+	}
+	if !contemEnv(env, "GOMEMLIMIT=512MiB") {
+		t.Fatalf("esperava GOMEMLIMIT=512MiB no ambiente: %v", env)
+	}
+
+	envCustom := ambienteSubteste([]string{"GOMAXPROCS=4", "GOMEMLIMIT=256MiB"})
+	if !contemEnv(envCustom, "GOMAXPROCS=4") || contemEnv(envCustom, "GOMAXPROCS=2") {
+		t.Fatalf("deveria respeitar GOMAXPROCS existente: %v", envCustom)
+	}
+	if !contemEnv(envCustom, "GOMEMLIMIT=256MiB") || contemEnv(envCustom, "GOMEMLIMIT=512MiB") {
+		t.Fatalf("deveria respeitar GOMEMLIMIT existente: %v", envCustom)
+	}
+}
+
+func TestArgsGoTest_IncluiTimeoutPorMutante(t *testing.T) {
+	args := argsGoTest("/tmp/overlay.json", 15*time.Second)
+	junto := strings.Join(args, " ")
+	for _, esperado := range []string{"-p 1", "-count=1", "-failfast", "-timeout 15s", "-overlay /tmp/overlay.json"} {
+		if !strings.Contains(junto, esperado) {
+			t.Fatalf("argsGoTest nao contem %q: %v", esperado, args)
+		}
+	}
+}
+
+func TestResolverTimeoutMutante(t *testing.T) {
+	t.Setenv("MUTAR_TIMEOUT_MUTANTE", "")
+	if got := resolverTimeoutMutante(); got != timeoutMutantePadrao {
+		t.Fatalf("padrao esperado %v, obtido %v", timeoutMutantePadrao, got)
+	}
+	t.Setenv("MUTAR_TIMEOUT_MUTANTE", "7s")
+	if got := resolverTimeoutMutante(); got != 7*time.Second {
+		t.Fatalf("esperado 7s, obtido %v", got)
+	}
+	t.Setenv("MUTAR_TIMEOUT_MUTANTE", "invalido")
+	if got := resolverTimeoutMutante(); got != timeoutMutantePadrao {
+		t.Fatalf("esperado fallback %v para valor invalido, obtido %v", timeoutMutantePadrao, got)
+	}
+}
+
+func TestRodarGoTest_MataMutanteEmLoopInfinito(t *testing.T) {
+	t.Setenv("MUTAR_TIMEOUT_MUTANTE", "2s")
+	dir := t.TempDir()
+	goMod := "module exemplo.local/loop\n\ngo 1.22\n"
+	loopTest := `package loop
+
+import "testing"
+
+func TestLoopInfinito(t *testing.T) {
+	var lixo [][]byte
+	for {
+		lixo = append(lixo, make([]byte, 1<<20))
+		if len(lixo) > 200 {
+			lixo = lixo[:0]
+		}
+	}
+}
+`
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte(goMod), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "loop_test.go"), []byte(loopTest), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	inicio := time.Now()
+	passou, _, err := rodarGoTest(context.Background(), dir, "")
+	duracao := time.Since(inicio)
+	if err != nil {
+		t.Fatalf("erro inesperado (esperava mutante morto por timeout): %v", err)
+	}
+	if passou {
+		t.Fatal("esperava passou=false para teste em loop infinito")
+	}
+	if duracao > 15*time.Second {
+		t.Fatalf("rodarGoTest demorou demais (%v) para encerrar loop infinito", duracao)
+	}
+}
+
+func contemEnv(env []string, alvo string) bool {
+	for _, kv := range env {
+		if kv == alvo {
+			return true
+		}
+	}
+	return false
 }

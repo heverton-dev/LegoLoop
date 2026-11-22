@@ -39,3 +39,11 @@ func TestCLIProgressoCicloCompleto(t *testing.T) {
 		t.Fatalf("status inesperado: %s", out.String())
 	}
 }
+
+func TestDerivarCaminhoProgressoPlano(t *testing.T) {
+	got := derivarCaminhoProgressoPlano("raiz", filepath.Join("docs", "plans", "2026-11-21_PLAN_INICIATIVA_4_I04_DO_MACROPROJE.md"))
+	want := filepath.Join("raiz", "docs", "progress", "2026-11-21_plan-iniciativa-4-i04-do-macroproje", "progresso.json")
+	if got != want {
+		t.Fatalf("got %q, want %q", got, want)
+	}
+}

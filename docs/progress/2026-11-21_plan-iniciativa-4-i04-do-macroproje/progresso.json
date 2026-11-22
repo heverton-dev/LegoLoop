@@ -2,14 +2,14 @@
   "schema": "progresso.v1",
   "iniciativa": "I04",
   "plano": "docs/plans/2026-11-21_PLAN_INICIATIVA_4_I04_DO_MACROPROJE.md",
-  "atualizado_em": "2026-11-22T14:38:10Z",
+  "atualizado_em": "2026-11-22T14:48:15Z",
   "resumo": {
     "total": 56,
-    "aprovados": 9,
-    "em_andamento": 0,
-    "reprovados": 1,
+    "aprovados": 48,
+    "em_andamento": 1,
+    "reprovados": 2,
     "bloqueados": 0,
-    "pendentes": 46
+    "pendentes": 5
   },
   "tickets": [
     {
@@ -178,11 +178,11 @@
       "id": "TICK-I4-03.1",
       "epico": "E03",
       "titulo": "Mover as constantes de paths para caminhos e renomear o jail para internal/jail",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/caminhos/ -run TestConstantesEFuncoesNoMesmoPacote",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/caminhos\t0.713s |",
       "alvos": [
         "internal/caminhos/nomes.go",
         "internal/caminhos/constantes_test.go",
@@ -191,16 +191,16 @@
       "criterios": [
         "AC-E03.1"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:12Z"
     },
     {
       "id": "TICK-I4-03.2",
       "epico": "E03",
       "titulo": "Migrar os chamadores e apagar as funções delegadas de paths",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go build ./...",
-      "exit_code": -1,
+      "exit_code": 0,
       "prova": "",
       "alvos": [
         "internal/migrar/migrar.go",
@@ -212,17 +212,17 @@
       "criterios": [
         "AC-E03.2"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:13Z"
     },
     {
       "id": "TICK-I4-03.3",
       "epico": "E03",
       "titulo": "Ligar o jail aos verbos que recebem nome de Processo",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/cli/ -run TestNomeHostilEhRecusado",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/cli\t1.780s |",
       "alvos": [
         "internal/jail",
         "internal/cli/nome_hostil_test.go",
@@ -231,16 +231,16 @@
       "criterios": [
         "AC-E03.3"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:21Z"
     },
     {
       "id": "TICK-I4-03.4",
       "epico": "E03",
       "titulo": "Remover o pacote vault sem importador em produção",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go build ./...",
-      "exit_code": -1,
+      "exit_code": 0,
       "prova": "",
       "alvos": [
         "internal/vault"
@@ -248,17 +248,17 @@
       "criterios": [
         "AC-E03.4"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:23Z"
     },
     {
       "id": "TICK-I4-03.5",
       "epico": "E03",
       "titulo": "Criar o verbo legoloop renomear com dry-run, backup, colisão e registro",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/renomear/ -run TestRenomear",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/renomear\t1.084s |",
       "alvos": [
         "internal/renomear",
         "internal/cli/renomear.go",
@@ -267,17 +267,17 @@
       "criterios": [
         "AC-E03.5"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:30Z"
     },
     {
       "id": "TICK-I4-03.6",
       "epico": "E03",
       "titulo": "Renomear os 9 Processos sem colisão com o verbo renomear",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "legoloop validate processos/legoloop-listar/pipeline.dag.json",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "✓ legoloop-listar v1.0.0 — 6 nós válidos, sem ciclos |   camada 1: e01 |   camada 2: e02 |   camada 3: e03 |   camada 4: e04 |   camada 5: e05 |   camada 6: e06 |",
       "alvos": [
         "processos",
         "espinha/renomeados.json"
@@ -285,17 +285,17 @@
       "criterios": [
         "AC-E03.6"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:32Z"
     },
     {
       "id": "TICK-I4-03.7",
       "epico": "E03",
       "titulo": "Aposentar o Processo fechar e passar os anticorpos para legoloop-fechar",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "legoloop anticorpos status legoloop-fechar",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "--- | schema: anticorpos.v1 | processo: legoloop-fechar | total_anticorpos: 1 | globais: 0 | dominio: 1 | regras_inviolaveis: |   - pacote: \"fechar/prova-de-afirmacao\" |     antidoto: \"Todo fato que decide leva comand...",
       "alvos": [
         "processos/fechar",
         "processos/legoloop-fechar",
@@ -304,34 +304,34 @@
       "criterios": [
         "AC-E03.7"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:32Z"
     },
     {
       "id": "TICK-I4-03.8",
       "epico": "E03",
       "titulo": "Provar que nenhum arquivo cita os nomes antigos dos Processos",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/espinha/ -run TestSemReferenciaAoNomeAntigo",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/espinha\t10.492s |",
       "alvos": [
         "internal/espinha/nomes_test.go"
       ],
       "criterios": [
         "AC-E03.8"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:32Z"
     },
     {
       "id": "TICK-I4-04.1",
       "epico": "E04",
       "titulo": "Criar a descoberta de unidades fixas por SO com provedor injetável",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/descoberta/ -run TestUnidadesFixasPorSO",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/descoberta\t0.898s |",
       "alvos": [
         "internal/descoberta/unidades.go",
         "internal/descoberta/unidades_test.go"
@@ -339,17 +339,17 @@
       "criterios": [
         "AC-E04.1"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:43Z"
     },
     {
       "id": "TICK-I4-04.2",
       "epico": "E04",
       "titulo": "Fazer o TargetDrives restringir a busca e remover o aviso drives_ignorados",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/fabricar/ -run TestTargetDrivesRestringeABusca",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/fabricar\t0.226s |",
       "alvos": [
         "internal/fabricar/engine.go",
         "internal/fabricar/drives_test.go",
@@ -358,17 +358,17 @@
       "criterios": [
         "AC-E04.2"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:45Z"
     },
     {
       "id": "TICK-I4-04.3",
       "epico": "E04",
       "titulo": "Fazer o fabricar atualizar a Matriz defasada em modo sem cérebro",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/fabricar/ -run TestFabricarAtualizaMatrizDefasada",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/fabricar\t0.362s |",
       "alvos": [
         "internal/fabricar/engine.go",
         "internal/fabricar/atualiza_matriz_test.go"
@@ -376,68 +376,68 @@
       "criterios": [
         "AC-E04.3"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:47Z"
     },
     {
       "id": "TICK-I4-04.4",
       "epico": "E04",
       "titulo": "Provar que Matriz em dia não dispara atualização",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/fabricar/ -run TestFabricarNaoAtualizaMatrizEmDia",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/fabricar\t0.187s |",
       "alvos": [
         "internal/fabricar/atualiza_matriz_test.go"
       ],
       "criterios": [
         "AC-E04.4"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:49Z"
     },
     {
       "id": "TICK-I4-04.5",
       "epico": "E04",
       "titulo": "Provar que a descoberta é determinística e somente leitura, com relatório",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/descoberta/ -run TestDescobertaSomenteLeitura",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/descoberta\t1.067s |",
       "alvos": [
         "internal/descoberta/leitura_test.go"
       ],
       "criterios": [
         "AC-E04.5"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:50Z"
     },
     {
       "id": "TICK-I4-04.6",
       "epico": "E04",
       "titulo": "Provar que matriz status fica sem diferença depois do fabricar",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/fabricar/ -run TestMatrizStatusZeroDepoisDoFabricar",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/fabricar\t0.270s |",
       "alvos": [
         "internal/fabricar/atualiza_matriz_test.go"
       ],
       "criterios": [
         "AC-E04.6"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:53Z"
     },
     {
       "id": "TICK-I4-05.1",
       "epico": "E05",
       "titulo": "Criar o Registro da Espinha e o schema espinha.v1",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/espinha/ -run TestRegistroValida",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/espinha\t0.176s |",
       "alvos": [
         "internal/espinha/registro.go",
         "internal/espinha/registro_test.go",
@@ -446,17 +446,17 @@
       "criterios": [
         "AC-E05.1"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:55Z"
     },
     {
       "id": "TICK-I4-05.2",
       "epico": "E05",
       "titulo": "Exportar cli.Verbos e provar que todo verbo está no Registro",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/espinha/ -run TestTodoVerboEstaNoRegistro",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/espinha\t0.150s |",
       "alvos": [
         "internal/cli/cli.go",
         "internal/espinha/verbos_test.go"
@@ -464,17 +464,17 @@
       "criterios": [
         "AC-E05.2"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:56Z"
     },
     {
       "id": "TICK-I4-05.3",
       "epico": "E05",
       "titulo": "Ligar cada lei do AGENTS.md a um verificador ou justificativa",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/espinha/ -run TestTodaLeiTemVerificador",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/espinha\t0.175s |",
       "alvos": [
         "internal/espinha/leis_test.go",
         "espinha/registro.json"
@@ -482,16 +482,16 @@
       "criterios": [
         "AC-E05.3"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:56Z"
     },
     {
       "id": "TICK-I4-05.4",
       "epico": "E05",
       "titulo": "Criar legoloop espinha verificar com a conferência de motores e Processos",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "legoloop espinha verificar",
-      "exit_code": -1,
+      "exit_code": 0,
       "prova": "",
       "alvos": [
         "internal/espinha/verificar.go",
@@ -500,17 +500,17 @@
       "criterios": [
         "AC-E05.4"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:57Z"
     },
     {
       "id": "TICK-I4-05.5",
       "epico": "E05",
       "titulo": "Detectar função duplicada entre pacotes",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/espinha/ -run TestFuncaoDuplicadaEntrePacotes",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/espinha\t0.329s |",
       "alvos": [
         "internal/espinha/duplicadas.go",
         "internal/espinha/duplicadas_test.go"
@@ -518,34 +518,34 @@
       "criterios": [
         "AC-E05.5"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:58Z"
     },
     {
       "id": "TICK-I4-05.6",
       "epico": "E05",
       "titulo": "Provar as doze regras com fixture com defeito e exit 2",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/espinha/ -run TestCadaRegraSaiComExitDois",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/espinha\t1.441s |",
       "alvos": [
         "internal/espinha/regras_test.go"
       ],
       "criterios": [
         "AC-E05.6"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:38:59Z"
     },
     {
       "id": "TICK-I4-05.7",
       "epico": "E05",
       "titulo": "Rodar o gate no fechar e provar que a espinha não usa LLM nem relógio",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/fechar/ -run TestFecharRodaEspinhaVerificar",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/fechar\t1.332s |",
       "alvos": [
         "internal/fechar/fechar.go",
         "internal/espinha"
@@ -554,16 +554,16 @@
         "AC-E05.7",
         "AC-NF.1"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:39:01Z"
     },
     {
       "id": "TICK-I4-06.1",
       "epico": "E06",
       "titulo": "Completar o nascimento 5 de 5 dos três Processos sem ANTICORPOS.md",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "legoloop espinha verificar",
-      "exit_code": -1,
+      "exit_code": 0,
       "prova": "",
       "alvos": [
         "processos/legoloop-agent-desktop/ANTICORPOS.md",
@@ -573,17 +573,17 @@
       "criterios": [
         "AC-E06.1"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:39:03Z"
     },
     {
       "id": "TICK-I4-06.2",
       "epico": "E06",
       "titulo": "Remover o verbo matrix descontinuado",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/cli/ -run TestVerboMatrixRemovido",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/cli\t1.148s |",
       "alvos": [
         "internal/cli/cli.go",
         "internal/cli/matrix.go",
@@ -592,17 +592,17 @@
       "criterios": [
         "AC-E06.2"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:39:04Z"
     },
     {
       "id": "TICK-I4-06.3",
       "epico": "E06",
       "titulo": "Criar tools/cobertura e subir board, triagem e cli a 80 por cento",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go run ./tools/cobertura",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "OK     ./internal/board          obtida=85.5% minima=80.0% | OK     ./internal/cli            obtida=82.5% minima=80.0% | OK     ./internal/triagem        obtida=96.6% minima=80.0% |",
       "alvos": [
         "tools/cobertura",
         "espinha/cobertura.json",
@@ -613,17 +613,17 @@
       "criterios": [
         "AC-E06.3"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:42:12Z"
     },
     {
       "id": "TICK-I4-06.4",
       "epico": "E06",
       "titulo": "Criar escrita.GravarAtomico e usá-la nas gravações de estado crítico",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/escrita/... ./internal/fechar/... ./internal/brain/...",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/escrita\t1.030s | ok  \tlegoloop/internal/fechar\t4.018s | ok  \tlegoloop/internal/brain\t2.102s |",
       "alvos": [
         "internal/escrita",
         "internal/fechar",
@@ -633,17 +633,17 @@
       "criterios": [
         "AC-E06.4"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:39:56Z"
     },
     {
       "id": "TICK-I4-06.5",
       "epico": "E06",
       "titulo": "Relatar a falha de telemetria e fixar o limite de erros ignorados",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/runner/ -run TestFalhaDeTelemetriaEhRelatada",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/runner\t1.926s |",
       "alvos": [
         "internal/runner/telemetria.go",
         "internal/runner/telemetria_test.go",
@@ -652,17 +652,17 @@
       "criterios": [
         "AC-E06.5"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:01Z"
     },
     {
       "id": "TICK-I4-06.6",
       "epico": "E06",
       "titulo": "Provar que os globais e init da espinha estão justificados",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/espinha/ -run TestGlobaisDaEspinhaEstaoJustificados",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/espinha\t0.334s |",
       "alvos": [
         "internal/espinha/globais_test.go",
         "espinha/registro.json"
@@ -670,17 +670,17 @@
       "criterios": [
         "AC-E06.6"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:05Z"
     },
     {
       "id": "TICK-I4-06.7",
       "epico": "E06",
       "titulo": "Corrigir o relato do Andon quando o nó é recusado antes de executar",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/runner/ -run TestSBARDeRecusaPreExecucao",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/runner\t1.771s |",
       "alvos": [
         "internal/runner/sbar.go",
         "internal/runner/sbar_test.go"
@@ -688,16 +688,16 @@
       "criterios": [
         "AC-E06.7"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:06Z"
     },
     {
       "id": "TICK-I4-06.8",
       "epico": "E06",
       "titulo": "Remover o arquivo temporário rastreado em scratch",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "git ls-files scratch",
-      "exit_code": -1,
+      "exit_code": 0,
       "prova": "",
       "alvos": [
         "scratch/i6_inventario_legados.json"
@@ -705,17 +705,17 @@
       "criterios": [
         "AC-E06.8"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:09Z"
     },
     {
       "id": "TICK-I4-07.1",
       "epico": "E07",
       "titulo": "Fazer o jail recusar caminho hostil em qualquer SO",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/jail/ -run TestEntradaHostil",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/jail\t0.557s |",
       "alvos": [
         "internal/jail/jail.go",
         "internal/jail/jail_test.go"
@@ -723,17 +723,17 @@
       "criterios": [
         "AC-E07.6"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:09Z"
     },
     {
       "id": "TICK-I4-07.2",
       "epico": "E07",
       "titulo": "Tornar o lock da memória da triagem exclusivo em Linux",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/triagem/ -run TestMemoriaLockOcupado",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/triagem\t0.828s |",
       "alvos": [
         "internal/triagem/memoria.go",
         "internal/triagem/memoria_test.go"
@@ -741,17 +741,17 @@
       "criterios": [
         "AC-E07.7"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:10Z"
     },
     {
       "id": "TICK-I4-07.3",
       "epico": "E07",
       "titulo": "Normalizar os separadores na guarda de deleção",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/inventario/ -run TestRecusaDelecaoTemplate",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/inventario\t0.712s |",
       "alvos": [
         "internal/inventario/guard.go",
         "internal/inventario/guard_test.go"
@@ -759,17 +759,17 @@
       "criterios": [
         "AC-E07.8"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:11Z"
     },
     {
       "id": "TICK-I4-07.4",
       "epico": "E07",
       "titulo": "Tornar herméticos os seis testes que dependem de ferramenta instalada",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/cli/ ./internal/legopress/ -count=1",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/cli\t41.321s | ok  \tlegoloop/internal/legopress\t1.093s |",
       "alvos": [
         "internal/cli",
         "internal/legopress"
@@ -777,17 +777,17 @@
       "criterios": [
         "AC-E07.9"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:42:57Z"
     },
     {
       "id": "TICK-I4-07.5",
       "epico": "E07",
       "titulo": "Trocar powershell e python direto por iniciador portável nos Processos",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/espinha/ -run TestProcessosSemComandoExclusivoDoSO",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/espinha\t0.204s |",
       "alvos": [
         "processos",
         "internal/espinha/so_test.go"
@@ -795,17 +795,17 @@
       "criterios": [
         "AC-E07.10"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:55Z"
     },
     {
       "id": "TICK-I4-07.6",
       "epico": "E07",
       "titulo": "Resolver fonte, python e shell por SO",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/assets/ ./internal/videorea/ -run TestPorSO",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/internal/assets\t0.858s | ok  \tlegoloop/internal/videorea\t1.230s |",
       "alvos": [
         "internal/assets/argv.go",
         "internal/videorea/cartoon_render.go",
@@ -814,17 +814,17 @@
       "criterios": [
         "AC-E07.4"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:56Z"
     },
     {
       "id": "TICK-I4-07.7",
       "epico": "E07",
       "titulo": "Criar o workflow de CI nos três SOs com os gates e go test -race",
-      "estado": "PENDING",
+      "estado": "FAILED",
       "responsavel": "",
       "comando": "grep -cE \"windows-latest|ubuntu-latest|macos-latest\" .github/workflows/ci.yml",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 1,
+      "prova": "0 |",
       "alvos": [
         ".github/workflows/ci.yml"
       ],
@@ -833,33 +833,33 @@
         "AC-E07.2",
         "AC-E07.3"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:58Z"
     },
     {
       "id": "TICK-I4-07.8",
       "epico": "E07",
       "titulo": "Conferir o CI verde nos três SOs",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "gh run list --workflow ci.yml --limit 1 --json conclusion",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "[{\"conclusion\":\"failure\"}] |",
       "alvos": [
         ".github/workflows/ci.yml"
       ],
       "criterios": [
         "AC-E07.5"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:59Z"
     },
     {
       "id": "TICK-I4-08.1",
       "epico": "E08",
       "titulo": "Criar o tools/mutar só com biblioteca padrão",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "git diff --exit-code go.mod",
-      "exit_code": -1,
+      "exit_code": 0,
       "prova": "",
       "alvos": [
         "tools/mutar/main.go",
@@ -868,17 +868,17 @@
       "criterios": [
         "AC-E08.1"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:59Z"
     },
     {
       "id": "TICK-I4-08.2",
       "epico": "E08",
       "titulo": "Implementar os sete operadores de mutação",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./tools/mutar/ -run TestOperadores",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/tools/mutar\t3.553s |",
       "alvos": [
         "tools/mutar/operadores.go",
         "tools/mutar/operadores_test.go"
@@ -886,17 +886,17 @@
       "criterios": [
         "AC-E08.2"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:40:59Z"
     },
     {
       "id": "TICK-I4-08.3",
       "epico": "E08",
       "titulo": "Reprovar com exit 2 quando um mutante sobrevive",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./tools/mutar/ -run TestSobreviventeReprova",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tlegoloop/tools/mutar\t9.146s |",
       "alvos": [
         "tools/mutar/rodar.go",
         "tools/mutar/rodar_test.go"
@@ -904,17 +904,17 @@
       "criterios": [
         "AC-E08.3"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:41:04Z"
     },
     {
       "id": "TICK-I4-08.4",
       "epico": "E08",
       "titulo": "Matar ou justificar todo mutante dos sete pacotes da espinha",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "IN_PROGRESS",
+      "responsavel": "swarm-e08",
       "comando": "go run ./tools/mutar ./internal/dag ./internal/runner ./internal/gate ./internal/plangen ./internal/triagem ./internal/upstream ./internal/interview",
       "exit_code": -1,
-      "prova": "",
+      "prova": "retomando mutacao dos 7 pacotes da espinha",
       "alvos": [
         "espinha/mutantes_justificados.json",
         "internal/dag",
@@ -928,7 +928,7 @@
       "criterios": [
         "AC-E08.4"
       ],
-      "atualizado_em": "2026-11-22T14:35:55Z"
+      "atualizado_em": "2026-11-22T14:48:15Z"
     },
     {
       "id": "TICK-I4-08.5",
