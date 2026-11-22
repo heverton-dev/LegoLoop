@@ -2,7 +2,7 @@
 schema: progresso.v1
 iniciativa: "A2UI"
 plano: "docs/plans/2026-11-22_PLAN_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md"
-atualizado_em: "2026-11-22T23:02:23Z"
+atualizado_em: "2026-11-22T23:23:16Z"
 ---
 
 # Progresso Vivo: A2UI
@@ -13,13 +13,13 @@ atualizado_em: "2026-11-22T23:02:23Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 13 | 12 | 1 | 0 | 0 | 0 |
+| 13 | 13 | 0 | 0 | 0 | 0 |
 
 ## Ponto de Retomada (Em Andamento)
 
 | Ticket | Épico | Responsável | Último registro |
 |---|---|---|---|
-| `TICK-A2UI-06.3` | E06 | claude | - |
+| nenhum | - | - | - |
 
 ## Reprovados ou Bloqueados
 
@@ -49,3 +49,4 @@ atualizado_em: "2026-11-22T23:02:23Z"
 | `TICK-A2UI-05.1` | E05 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/a2ui	1.057s / ok  	github.com/heverton-dev/LegoLoop/internal/interview	1.177s / ok  	github.com/heverton-dev/LegoLoop/internal/cli	58.780s / | 2026-11-22T22:59:52Z |
 | `TICK-A2UI-06.1` | E06 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/a2ui	0.019s / ok  	github.com/heverton-dev/LegoLoop/internal/studio	0.036s / | 2026-11-22T22:53:28Z |
 | `TICK-A2UI-06.2` | E06 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/studio	2.503s / | 2026-11-22T22:49:34Z |
+| `TICK-A2UI-06.3` | E06 | 0 | go test -race ./... ok (0 races) / go vet ./... ok / funclen ok / taxlinter zero violacoes / build ok / espinha verificar ok | 2026-11-22T23:23:16Z |
