@@ -22,7 +22,7 @@ type runDAGRequest struct {
 // Requer consentimento prévio para execução de scripts (R-RUN-2).
 func (s *Server) handleRunDAG(w http.ResponseWriter, r *http.Request) {
 	req, d, ok := parseRunPayload(w, r)
-	if !ok || !validateRunContext(w, d, req.AllowScripts) {
+	if !ok || !validateRunContext(w, d, req.AllowScripts) || !s.validarProgresso(w, d) {
 		return
 	}
 	flusher, ok := w.(http.Flusher)
@@ -155,7 +155,10 @@ func (s *Server) dispatchRunExecution(r *http.Request, d *dag.DAG, allowScripts 
 		LoopStore:    s.Processos,
 	}
 	start := time.Now()
-	rep, err := runner.Run(r.Context(), d, s.runOptions(exec, send))
+	opts := s.runOptions(exec, send)
+	obs := s.ligarProgresso(r.Context(), d, &opts)
+	rep, err := runner.Run(r.Context(), d, opts)
+	s.avisarErrosProgresso(obs, send)
 	elapsed := time.Since(start)
 	s.markDAGFinish(rep, err, elapsed)
 	if err != nil {

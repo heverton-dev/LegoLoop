@@ -26,7 +26,7 @@
 11. **Fechamento (nada pela metade):** manual em `docs/manuals/`, livro em `docs/books/<slug>/`, skill em `skills/<nome>/SKILL.md`, DAG em `processos/<slug>/`, build e install frescos, governança viva, reindexação do grafo, gates verdes, commit/push e relatório em `docs/reports/`. Execute com `legoloop fechar "<slug>"`.
 12. **Taxonomia ASD-STE100 (Lei #15):** um termo, um significado. Termos canônicos: Processo, DAG, Peça, Skill, Nó, Ticket, Etapa, Cofre, Matriz, Inventário, Gate, Stop-Gate, Fabricar, Canonizar, Fechar. SSOT: `docs/vocab/2026-11-10_ASD_STE100_CANONICAL_DICTIONARY.json`; gate: `go run ./tools/taxlinter internal cmd loops skills docs/templates`. Exceção de marca: o nome do projeto "LegoLoop" fica mantido.
 13. **Migração, legado e lexicais (Leis 10 e 15):** detalhes em `docs/governanca/AGENTS_COMPLETO.md` (itens 13 a 15).
-16. **Achado corrigido no ato e governança viva (lei inegociável):** todo achado se corrige na execução, com teste Red antes, e se registra como anticorpo (`legoloop anticorpos registrar <slug> --pacote P --erro E --causa C --antidoto A`). Toda implementação atualiza `AGENTS.md`, `README.md`, `MEMORY.md` e o grafo no mesmo ciclo. `routing` declara preferência, nunca exigência.
+16. **Lacuna zero e governança viva (lei inegociável, vale em qualquer harness e ambiente):** todo achado se corrige na execução em que aparece, com teste Red antes e portão verde depois. É proibido adiar: nada de "pendência", "próxima etapa" ou comentário `TODO:`/`LACUNA:` (a espinha reprova com a regra `debito-marcado`). Só se para quando a correção exige ação destrutiva, irreversível ou decisão do usuário: pergunte com sugestão e corrija assim que ele responder. Registre o achado como anticorpo (`legoloop anticorpos registrar <slug> --pacote P --erro E --causa C --antidoto A`). Toda implementação atualiza `AGENTS.md`, `README.md`, `MEMORY.md` e o grafo no mesmo ciclo. `routing` declara preferência, nunca exigência.
 
 17. **Pergunta com sugestão (lei inegociável):** toda pergunta ao usuário traz a melhor sugestão técnica e o motivo.
 
@@ -38,7 +38,7 @@ Path Jail, Schema Validation, Exit-Code Gate, Sterile Context e Test Mutation va
 
 ## 3. Comandos e rotas
 
-* **Progresso:** cada PLAN grava `docs/progress/<data>_plan-<nome>/progresso.json` e `progresso.md` (`legoloop plano`); `espinha/` guarda só o estado global (registro, renomeados, cobertura).
+* **Progresso:** cada PLAN grava `docs/progress/<data>_plan-<nome>/progresso.json` e `progresso.md` (`legoloop plano`); `espinha/` guarda só o estado global (registro, renomeados, cobertura). O progresso é vivo: `legoloop run`/`swarm run` o atualizam a cada nó (campo `progresso` do DAG ou `--progresso`; nó `TICK-01.1` casa com Ticket `TICK-I4-01.1`); `legoloop progresso verificar [--sondar] [--reconciliar]` aponta divergência e órfão; `go test` reprova progresso incoerente.
 * **Testes:** `go test -count=1 ./...` e `go test -count=1 -tags e2e ./internal/e2e/...`.
 * **Processos:** `legoloop fabricar|matriz|listar|refinar|remover|compor|fechar` (Chat: `/legoloop-<verbo>`); não confunda `fabricar` com `canonize`.
 * **Skills lazy (regra permanente: todo harness do SO é lazy):** `legoloop instalar-skills` (só `legoloop-skills` vai às pastas dos harnesses; o resto vem de `skill_search`/`call_skill`), `legoloop skills-custo` (custo por harness) e `legoloop skills-migrar (--dry-run|--apply)` (tira skills eager; rode após instalar plugin de terceiros). `sync-harnesses` cobre pi e OMP.

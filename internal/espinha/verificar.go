@@ -66,6 +66,7 @@ func Verificar(raiz string) []Violacao {
 	vs = append(vs, verificarErrosIgnorados(raiz, reg.LimitesErroIgnorado)...)
 	vs = append(vs, verificarGlobaisMutaveis(raiz, reg.GlobaisJustificadas)...)
 	vs = append(vs, verificarInits(raiz, reg.InitsJustificados)...)
+	vs = append(vs, verificarDebitoMarcado(raiz)...)
 	ordenarViolacoes(vs)
 	return vs
 }

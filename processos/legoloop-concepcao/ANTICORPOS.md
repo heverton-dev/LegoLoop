@@ -1,9 +1,9 @@
 ---
 schema: anticorpos.v1
 processo: legoloop-concepcao
-total_anticorpos: 24
+total_anticorpos: 25
 globais: 0
-dominio: 24
+dominio: 25
 regras_inviolaveis:
   - pacote: "internal/interview"
     antidoto: "internal/interview/espelho_campos.go lê o realce antes ou depois dos dois-pontos e as linhas seguintes; testes espelh..."
@@ -53,13 +53,15 @@ regras_inviolaveis:
     antidoto: "Verbo legoloop fabricar entrevista concluir envia MsgConcluir; passo documentado no SKILL.md; testes entrevista_concl..."
   - pacote: "internal/interview"
     antidoto: "tituloDoTema corta na primeira frase (100 caracteres), Hoje referencia O Problema Real, criteriosDe gera um subitem p..."
+  - pacote: "internal/progresso"
+    antidoto: "progresso.Observador no runner, swarm e Studio; progresso.Atualizar com trava; progresso verificar e TestProgressoDoR..."
 ---
 
 # 🛡️ Banco de Anticorpos — legoloop-concepcao
 
 > Espelho executivo para leitura de agentes. O banco estruturado vive em `anticorpos.json`.
 
-## Regras de Domínio (24)
+## Regras de Domínio (25)
 
 ### `internal/interview`
 - **Antídoto:** internal/interview/espelho_campos.go lê o realce antes ou depois dos dois-pontos e as linhas seguintes; testes espelho_formato_test.go com Red provado.
@@ -204,6 +206,12 @@ regras_inviolaveis:
 - **Erro Evitado:** INTENT materializada com o titulo igual a mensagem inteira da ideia, a ideia repetida tres vezes e criterios colados por ponto e virgula
 - **Causa Raiz:** RenderIntent usava o Theme inteiro no titulo e em Hoje, e escrevia Success como uma unica linha
 - **Assinatura:** `sha256:a66544f142d8cd2e14c7a8eedd6c1f0118957bd2fd4896412f126b7ce82eb8e8`
+
+### `internal/progresso`
+- **Antídoto:** progresso.Observador no runner, swarm e Studio; progresso.Atualizar com trava; progresso verificar e TestProgressoDoRepositorioEstaCoerente; regra debito-marcado na espinha; Lei 16 lacuna zero
+- **Erro Evitado:** Progresso gerado pelo plano nunca era atualizado por runner, swarm ou Studio; lacuna ficava como pendencia
+- **Causa Raiz:** Nenhum motor ligado ao arquivo de progresso e nenhuma trava contra adiar correcao
+- **Assinatura:** `sha256:e1dcedb24db46c208ac81689ca063c4ea4e9792364add26d17d1d56b498e7e71`
 
 ## Regras Globais (0)
 

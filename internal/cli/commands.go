@@ -197,6 +197,8 @@ type runFlags struct {
 	nonInteractive  bool
 	// relatorio é o arquivo da tabela factual (harness, via, modelo e Substituicao por nó); vazio = não grava.
 	relatorio string
+	// progresso é o progresso.json do PLAN; vazio usa o campo `progresso` do DAG (e desliga se não houver).
+	progresso string
 }
 
 func parseRunFlags(nome string, args []string, d Deps) (runFlags, error) {
@@ -210,6 +212,7 @@ func parseRunFlags(nome string, args []string, d Deps) (runFlags, error) {
 	fs.Var(&f.vars, "var", "variável chave=valor (repetível)")
 	fs.BoolVar(&f.asJSON, "json", false, "saída JSON")
 	fs.StringVar(&f.relatorio, "report", "", "grava a tabela factual do REPORT (harness, via e modelo reais) neste arquivo")
+	fs.StringVar(&f.progresso, "progresso", "", "progresso.json do PLAN, atualizado a cada nó (padrão: campo progresso do DAG)")
 	fs.BoolVar(&f.allowScripts, "allow-scripts", false, "permite nós script (executam comandos locais)")
 	fs.BoolVar(&f.allowUnitNo, "allow-unit-no", false, "permite nós unit_no (modelo com ferramentas de arquivo em worktree git)")
 	fs.BoolVar(&f.allowUnitNo, "allow-unit-tasks", false, "alias legado de --allow-unit-no (compatibilidade com scripts existentes)")
@@ -278,7 +281,7 @@ func rodarDAG(ctx context.Context, d Deps, p *dag.DAG, f runFlags) int {
 	ox.DefaultTimeout = f.timeout
 	ox.AutoApprove = f.autoApprove
 	ox.NonInteractive = f.nonInteractive
-	rep, err := runner.Run(ctx, p, f.runnerOptions(ox, f.prompter(d)))
+	rep, obs, err := runVivo(ctx, p, f, ox, f.prompter(d))
 	if err != nil {
 		return fail(d, err)
 	}
@@ -288,7 +291,7 @@ func rodarDAG(ctx context.Context, d Deps, p *dag.DAG, f runFlags) int {
 			return fail(d, err)
 		}
 	}
-	return reportRun(d, rep, f.asJSON)
+	return codigoComProgresso(d, obs, reportRun(d, rep, f.asJSON))
 }
 
 // prompter devolve o prompt de aprovação no terminal; nil quando a aprovação é automática ou não interativa.

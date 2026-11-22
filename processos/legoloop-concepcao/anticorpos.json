@@ -218,6 +218,15 @@
       "pacote": "internal/interview",
       "causa_raiz": "RenderIntent usava o Theme inteiro no titulo e em Hoje, e escrevia Success como uma unica linha",
       "timestamp": "2026-11-21T16:26:04Z"
+    },
+    {
+      "assinatura": "sha256:e1dcedb24db46c208ac81689ca063c4ea4e9792364add26d17d1d56b498e7e71",
+      "erro": "Progresso gerado pelo plano nunca era atualizado por runner, swarm ou Studio; lacuna ficava como pendencia",
+      "antidoto": "progresso.Observador no runner, swarm e Studio; progresso.Atualizar com trava; progresso verificar e TestProgressoDoRepositorioEstaCoerente; regra debito-marcado na espinha; Lei 16 lacuna zero",
+      "recorrencias": 1,
+      "pacote": "internal/progresso",
+      "causa_raiz": "Nenhum motor ligado ao arquivo de progresso e nenhuma trava contra adiar correcao",
+      "timestamp": "2026-11-22T17:02:25Z"
     }
   ]
 }

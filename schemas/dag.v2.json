@@ -12,6 +12,7 @@
     "version": { "type": "string" },
     "schema_version": { "type": "integer", "enum": [2] },
     "date": { "type": "string" },
+    "progresso": { "type": "string", "description": "Arquivo de progresso vivo do PLAN (docs/progress/<data>_plan-<nome>/progresso.json), relativo ao workdir; o runner o atualiza a cada nó." },
     "upstream_signatures": { "type": "object" },
     "execution_strategy": {
       "type": "object",

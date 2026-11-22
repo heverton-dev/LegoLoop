@@ -10,11 +10,12 @@ import (
 	"legoloop/internal/progresso"
 )
 
-const progressoUso = `uso: legoloop progresso <gerar|iniciar|validar|status> [opções]
+const progressoUso = `uso: legoloop progresso <gerar|iniciar|validar|status|verificar> [opções]
   gerar   --tickets T.json --out ARQ.json [--plano P] [--iniciativa I]
   iniciar --arquivo ARQ.json --ticket ID --responsavel R [--nota N]
   validar --arquivo ARQ.json --ticket ID [--raiz DIR]
-  status  --arquivo ARQ.json [--json]`
+  status  --arquivo ARQ.json [--json]
+  verificar --arquivo ARQ.json [--max-idade 24h] [--sondar] [--reconciliar] [--raiz DIR] [--json]`
 
 func cmdProgresso(ctx context.Context, args []string, d Deps) int {
 	if len(args) == 0 {
@@ -30,6 +31,8 @@ func cmdProgresso(ctx context.Context, args []string, d Deps) int {
 		return cmdProgressoValidar(ctx, args[1:], d)
 	case "status":
 		return cmdProgressoStatus(args[1:], d)
+	case "verificar":
+		return cmdProgressoVerificar(ctx, args[1:], d)
 	default:
 		fmt.Fprintf(d.Stderr, "subcomando desconhecido %q\n%s\n", args[0], progressoUso)
 		return 2

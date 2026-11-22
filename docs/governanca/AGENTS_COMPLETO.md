@@ -99,6 +99,7 @@
 16. **Achado Corrigido no Ato, Universalidade e Governança Viva:**
    * Todo achado de análise ou varredura é corrigido na execução, com teste Red antes, e registrado como anticorpo (`legoloop anticorpos registrar`). Toda pergunta ao usuário traz a melhor sugestão técnica e o motivo (leis inegociáveis). Decisão técnica sem consenso para antes da correção e sobe ao humano com recomendação.
    * `routing` declara preferência, nunca exigência: nós `nano` e `micro` degradam para o próximo candidato homologado. `tooling.runtime` vale `legoloop`. Nenhum `command` fixa shell de um só SO.
+   * **Lacuna zero (endurecida em 22/11/2026):** a regra não depende de harness. Fica no texto compartilhado (`AGENTS.md`) e nos portões que rodam no `go test` e no CI: `debito-marcado` (comentário que adia correção), `progresso verificar` e `TestProgressoDoRepositorioEstaCoerente` (progresso incoerente ou órfão). Relatório de entrega não lista lacuna aberta: ou a lacuna foi corrigida na execução, ou há pausa [1]/[2]/[0] com a decisão do usuário.
    * Toda implementação nova ou concluída atualiza `AGENTS.md`, `README.md`, `MEMORY.md` e o grafo (`index_repository`) no mesmo ciclo.
 
 18. **Cadeia amarrada (trava `upstream_ok`):** SPEC, PLAN, ROUTE e DAG só nascem de uma INTENT aprovada (`status: APPROVED` no cabeçalho), e a INTENT só nasce da concepção. `internal/upstream` aplica a trava em `legoloop plano`, `specgen`, `plangen.Generate`, `route2dag` e no Studio (exit 2 na CLI, HTTP 422). Sem escape.

@@ -12,6 +12,7 @@ import (
 
 // RunNode descreve um worker de um nivel: o no do DAG ja resolvido (nome, papel, modelo e comando).
 type RunNode struct {
+	NodeID  string // ID do nó no DAG; liga o worker ao Ticket do progresso
 	Name    string
 	Role    string
 	Model   string
@@ -30,6 +31,9 @@ type RunOptions struct {
 	// CheckGates avalia o gate de cada no depois que o worker sai com codigo 0. A raiz do gate e o worktree do
 	// worker (ou o repositorio, no modo inherit): os caminhos do gate sao relativos a ela.
 	CheckGates bool
+	// OnNodeStart avisa que o nó vai subir; OnNodeEnd avisa o desfecho (passou = exit 0 e gate não reprovado).
+	OnNodeStart func(nodeID string)
+	OnNodeEnd   func(nodeID string, passou bool, exitCode int, detalhe string)
 }
 
 // RunWorkerResult e o desfecho de um worker do nivel.
@@ -71,7 +75,7 @@ func (sb *SwarmBoard) RunLevels(ctx context.Context, levels [][]RunNode, opt Run
 		}
 	}
 	for li, lvl := range levels {
-		res, names, err := sb.runLevel(ctx, li, lvl, opt)
+		res, names, err := sb.runLevelNotificado(ctx, li, lvl, opt)
 		created = append(created, names...)
 		if res != nil {
 			results = append(results, *res)

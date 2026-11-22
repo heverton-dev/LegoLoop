@@ -201,6 +201,7 @@ type DAG struct {
 	Version            string         `json:"version,omitempty"`
 	SchemaVersion      int            `json:"schema_version,omitempty"`
 	Date               string         `json:"date,omitempty"`
+	Progresso          string         `json:"progresso,omitempty"` // arquivo de progresso vivo do PLAN, relativo ao workdir
 	UpstreamSignatures map[string]any `json:"upstream_signatures,omitempty"`
 	ExecutionStrategy  map[string]any `json:"execution_strategy,omitempty"`
 	Trigger            *Trigger       `json:"trigger,omitempty"`

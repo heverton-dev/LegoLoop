@@ -58,7 +58,7 @@ func LevelsFromDAG(p *dag.DAG, global []string) ([][]RunNode, []string, error) {
 				return nil, nil, fmt.Errorf("no %s sem comando: informe o comando global ou command no no", id)
 			}
 			lvl = append(lvl, RunNode{
-				Name: WorkerNameFromNode(id, usados), Role: role, Model: n.Routing.Model,
+				NodeID: id, Name: WorkerNameFromNode(id, usados), Role: role, Model: n.Routing.Model,
 				Command: cmd, Timeout: time.Duration(n.TimeoutSec) * time.Second, Gate: n.Output.Gate,
 			})
 		}

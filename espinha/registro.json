@@ -629,7 +629,7 @@
     },
     {
       "lei": "Lei 16",
-      "verificador": "internal/brain",
+      "verificador": "internal/brain; internal/espinha (debito-marcado); internal/progresso",
       "mecanico": true
     },
     {
