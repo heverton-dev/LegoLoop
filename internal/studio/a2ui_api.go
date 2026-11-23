@@ -34,6 +34,7 @@ func (s *Server) A2UIHub() *a2ui.Hub {
 
 func (s *Server) registerA2UIRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /concepcao", s.handleA2UIConcepcaoPage)
+	mux.HandleFunc("GET /fabricar", s.handleA2UIFabricarPage)
 	mux.HandleFunc("POST /api/sessao", s.handleA2UISessaoCriar)
 	mux.HandleFunc("GET /api/sessao/{id}/stream", s.handleA2UISessaoStream)
 	mux.HandleFunc("POST /api/sessao/{id}/action", s.handleA2UISessaoAction)
