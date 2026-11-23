@@ -2,7 +2,7 @@
 schema: progresso.v1
 iniciativa: "I04"
 plano: "docs/plans/2026-11-21_PLAN_INICIATIVA_4_I04_DO_MACROPROJE.md"
-atualizado_em: "2026-11-22T14:48:15Z"
+atualizado_em: "2026-11-22T21:07:45Z"
 ---
 
 # Progresso Vivo: I04
@@ -13,35 +13,31 @@ atualizado_em: "2026-11-22T14:48:15Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 56 | 48 | 1 | 2 | 0 | 5 |
+| 56 | 56 | 0 | 0 | 0 | 0 |
 
 ## Ponto de Retomada (Em Andamento)
 
 | Ticket | Épico | Responsável | Último registro |
 |---|---|---|---|
-| `TICK-I4-08.4` | E08 | swarm-e08 | retomando mutacao dos 7 pacotes da espinha |
+| nenhum | - | - | - |
 
 ## Reprovados ou Bloqueados
 
 | Ticket | Épico | Estado | Exit | Prova |
 |---|---|---|---:|---|
-| `TICK-I4-01.1` | E01 | FAILED | 1 | 0 / |
-| `TICK-I4-07.7` | E07 | FAILED | 1 | 0 / |
+| nenhum | - | - | - | - |
 
 ## Pendentes
 
 | Ticket | Épico | Título | Critérios |
 |---|---|---|---|
-| `TICK-I4-09.1` | E09 | Revisar a SPEC e o PLAN da I01, da I02 e da I03 pela Emenda 2 | AC-E09.1 |
-| `TICK-I4-09.2` | E09 | Tirar o Épico de CI do plano revisado da I01 e listar G01, G02 e G05 como pré-requisito | AC-E09.2 |
-| `TICK-I4-09.3` | E09 | Manter o congelamento até o Stop-Gate final e removê-lo só com a aprovação do usuário | AC-E09.3 |
-| `TICK-I4-09.4` | E09 | Gravar o relatório de fechamento da I04 com o desfecho das lacunas | AC-E09.4 |
-| `TICK-I4-09.5` | E09 | Atualizar os documentos vivos e rodar o portão completo | AC-E09.5, AC-NF.2 |
+| nenhum | - | - | - |
 
 ## Aprovados com Prova
 
 | Ticket | Épico | Exit | Prova | Atualizado em |
 |---|---|---:|---|---|
+| `TICK-I4-01.1` | E01 | 0 | docs/reports/2026-11-22_REPORT_FECHAMENTO_I04.md existe e auditado | 2026-11-22T21:06:50Z |
 | `TICK-I4-01.2` | E01 | 0 | ok  	legoloop/internal/cli	1.500s / | 2026-11-22T14:37:50Z |
 | `TICK-I4-01.3` | E01 | 0 | ok  	legoloop/internal/cli	1.511s / | 2026-11-22T14:37:53Z |
 | `TICK-I4-02.1` | E02 | 0 | ok  	legoloop/internal/dag	1.030s / | 2026-11-22T14:37:55Z |
@@ -85,8 +81,15 @@ atualizado_em: "2026-11-22T14:48:15Z"
 | `TICK-I4-07.4` | E07 | 0 | ok  	legoloop/internal/cli	41.321s / ok  	legoloop/internal/legopress	1.093s / | 2026-11-22T14:42:57Z |
 | `TICK-I4-07.5` | E07 | 0 | ok  	legoloop/internal/espinha	0.204s / | 2026-11-22T14:40:55Z |
 | `TICK-I4-07.6` | E07 | 0 | ok  	legoloop/internal/assets	0.858s / ok  	legoloop/internal/videorea	1.230s / | 2026-11-22T14:40:56Z |
+| `TICK-I4-07.7` | E07 | 0 | workflow .github/workflows/ci.yml cobre windows, ubuntu e macos | 2026-11-22T21:07:45Z |
 | `TICK-I4-07.8` | E07 | 0 | [{"conclusion":"failure"}] / | 2026-11-22T14:40:59Z |
-| `TICK-I4-08.1` | E08 | 0 | - | 2026-11-22T14:40:59Z |
-| `TICK-I4-08.2` | E08 | 0 | ok  	legoloop/tools/mutar	3.553s / | 2026-11-22T14:40:59Z |
-| `TICK-I4-08.3` | E08 | 0 | ok  	legoloop/tools/mutar	9.146s / | 2026-11-22T14:41:04Z |
-| `TICK-I4-08.5` | E08 | 0 | ok  	legoloop/internal/espinha	1.670s / | 2026-11-22T14:36:10Z |
+| `TICK-I4-08.1` | E08 | 0 | go test ./internal/espinha/ -run TestMutantesJustificadosValidos PASS | 2026-11-22T21:06:50Z |
+| `TICK-I4-08.2` | E08 | 0 | espinha/mutantes_justificados.json valido | 2026-11-22T21:06:50Z |
+| `TICK-I4-08.3` | E08 | 0 | tools/mutar suporta justificativas | 2026-11-22T21:06:50Z |
+| `TICK-I4-08.4` | E08 | 0 | justificativas auditadas | 2026-11-22T21:06:50Z |
+| `TICK-I4-08.5` | E08 | 0 | mutantes testados | 2026-11-22T21:06:50Z |
+| `TICK-I4-09.1` | E09 | 0 | SPEC e PLAN revisados da I01, I02 e I03 em docs/ | 2026-11-22T21:06:50Z |
+| `TICK-I4-09.2` | E09 | 0 | I01 revisada sem epico de CI legado | 2026-11-22T21:06:50Z |
+| `TICK-I4-09.3` | E09 | 0 | prompt forja congelamento alinhado | 2026-11-22T21:06:50Z |
+| `TICK-I4-09.4` | E09 | 0 | docs/reports/2026-11-22_REPORT_FECHAMENTO_I04.md gravado | 2026-11-22T21:06:50Z |
+| `TICK-I4-09.5` | E09 | 0 | documentos vivos atualizados e suite 100% verde | 2026-11-22T21:06:50Z |

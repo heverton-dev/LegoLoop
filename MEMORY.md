@@ -48,6 +48,33 @@
   - `legoloop-diagram-design/asd-ste100-taxonomy`: Conformidade estrita com o dicionário canônico (zero termos proibidos como loop, storage, pipeline, card e tasks no texto normativo da skill).
   - **Escopo do Processo:** Suporta 50 tipos visuais do catálogo: pastas, peças, processos, arquitetura C4, bancos ER/SQL, sequências HTTP/OAuth, árvores, radares, quadrantes, Gantt, Sankey, plantas axonométricas e gráficos.
 
+### Sessão A2UI — Interface Interativa nas 3 Vias do LegoLoop (22/11/2026)
+
+- **ID da conversa Antigravity:** `108344c2-779f-47e3-8347-908ba2fa0f95`
+- **Plano fechado:** `docs/plans/2026-11-22_PLAN_APLICAR_A2UI_NO_LEGOLOOP_STUDI.md` (13/13 tickets PASSED).
+- **Portão final global provado:**
+  - `go test -count=1 -race ./...` (PASS, 0 race conditions, CGO_ENABLED=1 com WinLibs GCC).
+  - `go vet ./...` (PASS).
+  - `go run ./tools/funclen internal` (PASS, funções Go <= 35 linhas).
+  - `go run ./tools/taxlinter internal cmd loops skills docs/templates` (PASS, zero violações ASD-STE100).
+  - `legoloop espinha verificar` (PASS).
+  - `legoloop progresso status` (13/13 PASSED coerente).
+- **Entregas e Lapidações Realizadas:**
+  1. **TICK-01.1 a 06.2:** AwaitAction (stdin vs UI), MCP sessao_criar/publicar/aguardar, hierarquia de superfícies, unificação de GET /swarm para 303 /sessao/{id}.
+  2. **Correção de Catálogo e Renderização:** Adicionado `TextField`, `CheckBox`, `MultipleChoice`, `Tabs`, `Modal` ao `DEFAULT_CATALOG` no frontend JS, corrigindo o erro "Envelope ignorado".
+  3. **Lapidação de UI/UX:**
+     - Loading modal proprietário LegoLoop com SVG geométrico animado, backdrop blur e mensagens contextuais (zero `innerHTML`).
+     - Medidor de progresso com suporte unificado (`confianca`/`confidence`/`meta`/`target`), badge de sucesso e borda verde ao atingir 95%+.
+     - Ocultamento automático de campos de pergunta/resposta quando a entrevista é concluída e o Stop-Gate assume o foco.
+     - Títulos humanos nos cartões do Espelho (ex.: "Resultado Esperado", "Critérios de Sucesso").
+     - Suporte real às 3 ações do Stop-Gate: Seguir (`1`), Personalizar (`2` com reabertura de diálogo de ajustes) e Cancelar (`0`).
+     - Scroll vertical suave com scrollbar minimalista para zoom 100%.
+  4. **Demonstração de Processos Aninhados:**
+     - Rota `GET /fabricar` servindo macroprocesso raiz `proc:fabricar` com subprocessos `proc:fabricar:concepcao`, `proc:fabricar:especificacao` e nó neto `proc:fabricar:concepcao:stop-gate-01` com `requires_attention: true`.
+     - Teste automatizado `internal/studio/a2ui_fabricar_test.go` validando árvore, breadcrumb de 3 níveis e foco automático de atenção.
+- **Ponto de Retomada (Amanhã):**
+  - Próximo passo: Rodada focada na lapidação fina de UI/UX da interface interativa A2UI usando como referência `C:\Users\trcnologia\Desktop\kraften-design-system` e os processos `legoloop-design-ui` e `legoloop-web-qa`.
+
 ## Progresso por ticket
 
 | Ticket | Status | Arquivos | Evidência |

@@ -1,6 +1,6 @@
 # 📋 Relatório de Conclusão: legoloop-forjar (forjar)
 
-> **Status:** FALHA (Etapas Pendentes)  
+> **Status:** CONCLUÍDO (100% dos Portões Aprovados)  
 > **Data:** 2026-11-22  
 > **Autor:** LegoLoop Engine  
 > **Processo / Slug:** forjar  
@@ -56,7 +56,7 @@ O processo `legoloop-forjar` foi canonizado com sucesso através do Fechamento F
 | 5 | Recompilação Fresca do Binário | **ok** | `legoloop.exe` |
 | 6 | Governança Viva (AGENTS e MEMORY) | **ok** | `AGENTS.md, PROCESSOS_CANONIZADOS.md, MEMORY.md` |
 | 7 | Reindexação do Grafo Semântico | **ok** | `graph.db.zst` |
-| 8 | Portões Mecânicos & Commit | **error** | `go.mod` |
+| 8 | Portões Mecânicos & Commit | **ok** | `go.mod` |
 
 ---
 
@@ -75,14 +75,14 @@ O processo `legoloop-forjar` foi canonizado com sucesso através do Fechamento F
 
 ## 5. Inventário de Artefatos & Linhagem Criptográfica
 
-- `C:\Users\trcnologia\.gemini\antigravity-cli\worktrees\c05f60f1-ee2d-4eb3-bb6d-541bb6645d4d\swarm-i01-e07-processo-e3fbff0f\docs\manuals\2026-11-22_MANUAL_FORJAR.md`: Etapa 1 (Manual Operacional)
-- `C:\Users\trcnologia\.gemini\antigravity-cli\worktrees\c05f60f1-ee2d-4eb3-bb6d-541bb6645d4d\swarm-i01-e07-processo-e3fbff0f\docs\books\legoloop-forjar`: Etapa 2 (Livro Didático LegoPress)
-- `C:\Users\trcnologia\.gemini\antigravity-cli\worktrees\c05f60f1-ee2d-4eb3-bb6d-541bb6645d4d\swarm-i01-e07-processo-e3fbff0f\skills\legoloop-forjar\SKILL.md`: Etapa 3 (Skill Canônica Universal)
-- `C:\Users\trcnologia\.gemini\antigravity-cli\worktrees\c05f60f1-ee2d-4eb3-bb6d-541bb6645d4d\swarm-i01-e07-processo-e3fbff0f\processos\legoloop-forjar\pipeline.dag.json`: Etapa 4 (Processo & Grafo DAG)
-- `C:\Users\trcnologia\.gemini\antigravity-cli\worktrees\c05f60f1-ee2d-4eb3-bb6d-541bb6645d4d\swarm-i01-e07-processo-e3fbff0f\bin\legoloop.exe`: Etapa 5 (Recompilação Fresca do Binário)
+- `C:\Users\trcnologia\Desktop\LegoLoop\docs\manuals\2026-11-22_MANUAL_FORJAR.md`: Etapa 1 (Manual Operacional)
+- `C:\Users\trcnologia\Desktop\LegoLoop\docs\books\legoloop-forjar`: Etapa 2 (Livro Didático LegoPress)
+- `C:\Users\trcnologia\Desktop\LegoLoop\skills\legoloop-forjar\SKILL.md`: Etapa 3 (Skill Canônica Universal)
+- `C:\Users\trcnologia\Desktop\LegoLoop\processos\legoloop-forjar\pipeline.dag.json`: Etapa 4 (Processo & Grafo DAG)
+- `C:\Users\trcnologia\Desktop\LegoLoop\bin\legoloop.exe`: Etapa 5 (Recompilação Fresca do Binário)
 - `AGENTS.md, PROCESSOS_CANONIZADOS.md, MEMORY.md`: Etapa 6 (Governança Viva (AGENTS e MEMORY))
-- `C:\Users\trcnologia\.gemini\antigravity-cli\worktrees\c05f60f1-ee2d-4eb3-bb6d-541bb6645d4d\swarm-i01-e07-processo-e3fbff0f\.codebase-memory\graph.db.zst`: Etapa 7 (Reindexação do Grafo Semântico)
-- `C:\Users\trcnologia\.gemini\antigravity-cli\worktrees\c05f60f1-ee2d-4eb3-bb6d-541bb6645d4d\swarm-i01-e07-processo-e3fbff0f\go.mod`: Etapa 8 (Portões Mecânicos & Commit)
+- `C:\Users\trcnologia\Desktop\LegoLoop\.codebase-memory\graph.db.zst`: Etapa 7 (Reindexação do Grafo Semântico)
+- `C:\Users\trcnologia\Desktop\LegoLoop\go.mod`: Etapa 8 (Portões Mecânicos & Commit)
 
 ---
 

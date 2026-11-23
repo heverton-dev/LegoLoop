@@ -2,7 +2,7 @@
 schema: progresso.v1
 iniciativa: "I02"
 plano: "docs/plans/2026-11-21_PLAN_INICIATIVA_2_DO_MACROPROJETO_D_REVISAO.md"
-atualizado_em: "2026-11-21T00:00:00Z"
+atualizado_em: "2026-11-22T22:04:10Z"
 ---
 
 # Progresso Vivo: I02
@@ -13,13 +13,13 @@ atualizado_em: "2026-11-21T00:00:00Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 22 | 0 | 0 | 0 | 0 | 22 |
+| 22 | 4 | 1 | 0 | 0 | 17 |
 
 ## Ponto de Retomada (Em Andamento)
 
 | Ticket | Épico | Responsável | Último registro |
 |---|---|---|---|
-| nenhum | - | - | - |
+| `TICK-I2-02.1` | E02 | i02-e02-fabricar-plano | - |
 
 ## Reprovados ou Bloqueados
 
@@ -31,11 +31,6 @@ atualizado_em: "2026-11-21T00:00:00Z"
 
 | Ticket | Épico | Título | Critérios |
 |---|---|---|---|
-| `TICK-I2-01.1` | E01 | Criar internal/routedag com Projetar, Converter e VerificarCadeia e migrar os testes do route2dag | AC-E01.1 |
-| `TICK-I2-01.2` | E01 | Criar routedag.Executar e reduzir tools/route2dag/main.go a uma chamada | AC-E01.2 |
-| `TICK-I2-01.3` | E01 | Provar que o DAG da Forja sai idêntico depois da mudança | AC-E01.3 |
-| `TICK-I2-01.4` | E01 | Usar a tabela única unit_task e unit_no (dag.DoRoute e dag.DoDAG) em internal/routedag sem mapa paralelo | AC-E01.4 |
-| `TICK-I2-02.1` | E02 | Criar fabricar plano que grava PLAN, ROUTE e DAG em um comando | AC-E02.1, AC-NF.1 |
 | `TICK-I2-02.2` | E02 | Recusar sem INTENT aprovada com exit 2 e sem gravar nada | AC-E02.2 |
 | `TICK-I2-02.3` | E02 | Tornar o modo estrito o padrão e criar o flag --permissivo | AC-E02.3 |
 | `TICK-I2-02.4` | E02 | Gravar PLAN, ROUTE e DAG de forma atômica: falha em qualquer etapa não deixa arquivo | AC-E02.4 |
@@ -58,4 +53,7 @@ atualizado_em: "2026-11-21T00:00:00Z"
 
 | Ticket | Épico | Exit | Prova | Atualizado em |
 |---|---|---:|---|---|
-| nenhum | - | - | - | - |
+| `TICK-I2-01.1` | E01 | 0 | ok github.com/heverton-dev/LegoLoop/internal/routedag 0.072s (18 testes) | 2026-11-22T20:43:25Z |
+| `TICK-I2-01.2` | E01 | 0 | ok internal/routedag e tools/route2dag e main.go 11 linhas | 2026-11-22T21:00:00Z |
+| `TICK-I2-01.3` | E01 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/routedag	0.025s / | 2026-11-23T00:23:58Z |
+| `TICK-I2-01.4` | E01 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/routedag	0.014s / | 2026-11-23T00:43:05Z |
