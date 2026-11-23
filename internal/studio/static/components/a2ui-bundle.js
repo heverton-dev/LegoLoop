@@ -362,11 +362,13 @@ export class A2UISurfaceRenderer {
 
   _renderProgress(props) {
     const box = el("div", "a2ui-painel a2ui-progress");
-    const pct = Number(props.percent ?? props.confidence ?? 0);
-    box.appendChild(el("div", "a2ui-progress__label", (props.label || "Progresso") + ": " + pct + "%"));
+    const raw = Number(props.percent ?? props.confidence ?? props.confianca ?? 0);
+    const pct = Number.isFinite(raw) ? Math.max(0, Math.min(100, Math.round(raw))) : 0;
+    const meta = Number(props.target ?? props.meta ?? 95);
+    box.appendChild(el("div", "a2ui-progress__label", (props.label || ("Confianca (" + pct + "% de " + meta + "%)"))));
     const bar = el("progress", "a2ui-progress__bar");
     bar.max = 100;
-    bar.value = Number.isFinite(pct) ? Math.max(0, Math.min(100, pct)) : 0;
+    bar.value = pct;
     box.appendChild(bar);
     return box;
   }

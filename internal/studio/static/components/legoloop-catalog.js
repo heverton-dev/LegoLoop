@@ -72,11 +72,12 @@ function renderProgressMeter({ props }) {
   const painel = el("article", "a2ui-painel lego-progress");
   painel.setAttribute("data-kind", "LegoProgressMeter");
 
-  const raw = Number(props.percent ?? props.confidence ?? 0);
+  const raw = Number(props.percent ?? props.confidence ?? props.confianca ?? 0);
   const pct = Number.isFinite(raw) ? Math.max(0, Math.min(100, Math.round(raw))) : 0;
+  const meta = Number(props.target ?? props.meta ?? 95);
 
   const header = el("header", "lego-painel__header");
-  header.appendChild(el("h3", "a2ui-painel__title", props.label || "Progresso"));
+  header.appendChild(el("h3", "a2ui-painel__title", props.label || ("Confianca (" + pct + "% de " + meta + "%)")));
   header.appendChild(el("span", "pill lego-progress__value", pct + "%"));
   painel.appendChild(header);
 
@@ -89,7 +90,7 @@ function renderProgressMeter({ props }) {
     painel.appendChild(el("p", "a2ui-text", props.detail || props.summary));
   }
 
-  const gaps = Array.isArray(props.gaps) ? props.gaps : [];
+  const gaps = Array.isArray(props.gaps) ? props.gaps : (Array.isArray(props.lacunas) ? props.lacunas : []);
   if (gaps.length > 0) {
     const gapBox = el("div", "lego-progress__gaps");
     gapBox.appendChild(el("span", "lego-section-label", "Lacunas abertas (" + gaps.length + ")"));
