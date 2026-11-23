@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/heverton-dev/LegoLoop/internal/board"
 	"github.com/heverton-dev/LegoLoop/internal/dag"
@@ -37,9 +38,35 @@ func novoObservador(ctx context.Context, arquivo, dir, responsavel string) (*pro
 	return progresso.NovoObservador(ctx, arquivo, dir, responsavel), nil
 }
 
+func dagTemNativeSwarm(p *dag.DAG) bool {
+	if p == nil {
+		return false
+	}
+	for _, n := range p.Nodes {
+		if n.Isolation == nil {
+			continue
+		}
+		if exec, ok := n.Isolation["executor"].(string); ok && strings.TrimSpace(exec) == dag.ExecutorNativeSwarm {
+			return true
+		}
+	}
+	return false
+}
+
 // runVivo roda o DAG no runner e mantém o progresso vivo a cada nó.
 func runVivo(ctx context.Context, p *dag.DAG, f runFlags, ox *orchestrix.Orchestrix, pr gate.Prompter) (runner.Report, *progresso.Observador, error) {
 	opts := f.runnerOptions(ox, pr)
+	if dagTemNativeSwarm(p) {
+		wdir := f.workdir
+		if wdir == "" {
+			wdir = "."
+		}
+		sb, err := board.OpenSwarmBoard(wdir)
+		if err != nil {
+			return runner.Report{}, nil, err
+		}
+		opts.Swarm = sb
+	}
 	arq, err := caminhoProgressoVivo(f.workdir, f.progresso, p.Progresso)
 	if err != nil {
 		return runner.Report{}, nil, err

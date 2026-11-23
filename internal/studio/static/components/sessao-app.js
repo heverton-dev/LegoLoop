@@ -18,9 +18,15 @@ function renderAndonControls(state) {
   andonContainer.replaceChildren();
 
   if (state === "paused") {
+    const box = document.createElement("div");
+    box.className = "a2ui-andon-paused-box";
+
     const pill = document.createElement("span");
     pill.className = "pill pill--andon-paused";
     pill.textContent = "Pausado (Andon)";
+
+    const row = document.createElement("div");
+    row.className = "a2ui-andon-actions-row";
 
     const btnResume = document.createElement("button");
     btnResume.type = "button";
@@ -38,18 +44,24 @@ function renderAndonControls(state) {
       sendAction({ name: "andon_cord_cancel" });
     });
 
-    andonContainer.append(pill, btnResume, btnCancel);
+    row.append(btnResume, btnCancel);
+    box.append(pill, row);
+    andonContainer.appendChild(box);
   } else if (state === "cancelled") {
     const pill = document.createElement("span");
     pill.className = "pill pill--andon-paused";
+    pill.style.background = "#ef4444";
+    pill.style.borderColor = "#dc2626";
+    pill.style.color = "#ffffff";
+    pill.style.fontWeight = "700";
     pill.textContent = "Processo Cancelado";
     andonContainer.appendChild(pill);
   } else {
     const btnAndon = document.createElement("button");
     btnAndon.type = "button";
-    btnAndon.className = "btn btn--andon";
-    btnAndon.textContent = "Andon Cord";
-    btnAndon.title = "Andon Cord: Parada Emergencial da Esteira";
+    btnAndon.className = "btn btn--andon btn--andon-sidebar";
+    btnAndon.textContent = "Parar";
+    btnAndon.title = "Parar execução da esteira (Andon Cord)";
     btnAndon.addEventListener("click", () => {
       sendAction({ name: "andon_cord_pause" });
     });
@@ -307,7 +319,7 @@ const renderer = new A2UISurfaceRenderer(rootEl, sendAction);
 
 function renderNavigation() {
   treeEl.replaceChildren();
-  const surfaces = processor.listSurfaces();
+  const surfaces = processor.listSurfaces().filter((s) => !String(s.surfaceId || "").startsWith("andon:"));
   surfaces.forEach((s, idx) => {
     const li = document.createElement("li");
     const btn = document.createElement("button");
@@ -347,8 +359,8 @@ function renderNavigation() {
 }
 
 function renderAll() {
-  const surfaces = processor.listSurfaces();
-  if (!activeSurfaceId || !processor.getSurface(activeSurfaceId)) {
+  const surfaces = processor.listSurfaces().filter((s) => !String(s.surfaceId || "").startsWith("andon:"));
+  if (!activeSurfaceId || !processor.getSurface(activeSurfaceId) || activeSurfaceId.startsWith("andon:")) {
     const attention = surfaces.find((s) => s.requiresAttention);
     activeSurfaceId = attention ? attention.surfaceId : (surfaces[0] ? surfaces[0].surfaceId : "");
   }
@@ -401,9 +413,11 @@ window.addEventListener("keydown", (ev) => {
 
 processor.subscribe(({ surfaceId }) => {
   hideLoading();
-  const target = processor.getSurface(surfaceId);
-  if (target && target.requiresAttention) {
-    activeSurfaceId = surfaceId;
+  if (surfaceId && !surfaceId.startsWith("andon:")) {
+    const target = processor.getSurface(surfaceId);
+    if (target && target.requiresAttention) {
+      activeSurfaceId = surfaceId;
+    }
   }
   renderAll();
 });
@@ -417,6 +431,8 @@ function handleEnvelopeEvent(ev) {
     }
     if (env && env.data_model && env.data_model.andon_state) {
       renderAndonControls(env.data_model.andon_state);
+    } else if (env && env.surfaceId && env.surfaceId.startsWith("andon:") && env.data_model && env.data_model.state) {
+      renderAndonControls(env.data_model.state);
     }
     processor.process(env);
   } catch (err) {
@@ -425,22 +441,53 @@ function handleEnvelopeEvent(ev) {
   }
 }
 
+let reconnectDelayMs = 1000;
+let reconnectTimer = null;
+let currentSource = null;
+
 function connectStream() {
   if (!sessionId) {
     statusEl.textContent = "Sessao ausente";
     renderAll();
     return;
   }
+  if (currentSource) {
+    currentSource.close();
+  }
   const streamUrl = "/api/sessao/" + encodeURIComponent(sessionId) + "/stream";
-  const source = new EventSource(streamUrl);
-  source.onopen = () => {
+  currentSource = new EventSource(streamUrl);
+  currentSource.onopen = () => {
+    reconnectDelayMs = 1000;
     statusEl.textContent = "Conectado";
   };
-  source.onerror = () => {
-    statusEl.textContent = "Reconectando";
+  currentSource.onerror = () => {
+    if (currentSource) currentSource.close();
+    const segs = Math.max(1, Math.round(reconnectDelayMs / 1000));
+    statusEl.textContent = `Reconectando (${segs}s)...`;
+    clearTimeout(reconnectTimer);
+    reconnectTimer = setTimeout(() => {
+      reconnectDelayMs = Math.min(Math.round(reconnectDelayMs * 1.5), 15000);
+      connectStream();
+    }, reconnectDelayMs);
   };
-  source.addEventListener("a2ui", handleEnvelopeEvent);
-  source.onmessage = handleEnvelopeEvent;
+  currentSource.addEventListener("a2ui", handleEnvelopeEvent);
+  currentSource.onmessage = handleEnvelopeEvent;
 }
+
+window.addEventListener("keydown", (e) => {
+  if (e.altKey && (e.key === "p" || e.key === "P")) {
+    e.preventDefault();
+    if (!andonContainer) return;
+    const btnResume = andonContainer.querySelector(".btn--andon-resume");
+    if (btnResume) {
+      btnResume.click();
+      return;
+    }
+    const btnPause = andonContainer.querySelector(".btn--andon");
+    if (btnPause) {
+      btnPause.click();
+    }
+  }
+});
 
 connectStream();

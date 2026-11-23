@@ -366,7 +366,7 @@ function createPalette(els, handlers) {
 
       if (q && filtered.length === 0) continue;
 
-      const groupEl = paletteEl("div", "treeview-group");
+      const groupEl = paletteEl("div", `treeview-group treeview-group--${cat}`);
       groupEl.setAttribute("role", "group");
       groupEl.setAttribute("aria-label", CAT_LABELS[cat] || cat);
       const isClosed = false;
@@ -395,7 +395,7 @@ function createPalette(els, handlers) {
           const limit = st.expandedLimits?.[cat] || 40;
           const visibleSlice = filtered.slice(0, limit);
           for (const item of visibleSlice) {
-            const row = paletteEl("div", "treeview-item");
+            const row = paletteEl("div", `treeview-item treeview-item--${cat}`);
             row.draggable = true;
             row.tabIndex = 0;
             row.setAttribute("role", "listitem");

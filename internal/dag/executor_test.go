@@ -55,6 +55,8 @@ const dagDerivaExecutorFixture = `{
 		{
 			"id": "n-swarm",
 			"type": "unit_no",
+			"role": "engenheiro-tdd",
+			"command": ["echo", "swarm"],
 			"isolation": {"executor": "native_swarm", "write_boundary": "strict"},
 			"routing": {"mode": "auto", "combo": "padrao"},
 			"output": {"artifact": "out/swarm.md", "gate": "file_exists('out/swarm.md')"}
@@ -62,6 +64,7 @@ const dagDerivaExecutorFixture = `{
 		{
 			"id": "n-preservado",
 			"type": "script",
+			"role": "engenheiro-tdd",
 			"command": ["echo", "swarm"],
 			"isolation": {"executor": "native_swarm"},
 			"routing": {"mode": "auto", "combo": "padrao"},
@@ -122,6 +125,8 @@ const dagExecutorIncoerenteFixture = `{
 		{
 			"id": "n-skill-ok",
 			"type": "skill",
+			"role": "engenheiro-tdd",
+			"command": ["echo", "skill"],
 			"ref": "legoloop-especificar",
 			"isolation": {"executor": "native_swarm"},
 			"routing": {"mode": "auto", "combo": "padrao"},
@@ -167,9 +172,9 @@ func TestValidarExecutoresCoerentesEDesconhecido(t *testing.T) {
 		Nodes: []Node{
 			{ID: "sg", Type: TypeStopGate, Isolation: map[string]any{"executor": ExecutorLocalProcess}},
 			{ID: "sc", Type: TypeScript, Isolation: map[string]any{"executor": ExecutorOrchestrixHermetic}},
-			{ID: "sk", Type: TypeSkill, Isolation: map[string]any{"executor": ExecutorNativeSwarm}},
+			{ID: "sk", Type: TypeSkill, Role: "engenheiro-tdd", Command: []string{"echo", "sk"}, Isolation: map[string]any{"executor": ExecutorNativeSwarm}},
 			{ID: "un", Type: TypeUnitNo, Isolation: map[string]any{"executor": ExecutorOrchestrixHermetic}},
-			{ID: "mc", Type: TypeMCP, Isolation: map[string]any{"executor": ExecutorNativeSwarm}},
+			{ID: "mc", Type: TypeMCP, Role: "engenheiro-tdd", Command: []string{"echo", "mc"}, Isolation: map[string]any{"executor": ExecutorNativeSwarm}},
 			{ID: "sb", Type: TypeSubprocesso, Isolation: map[string]any{"executor": ExecutorOrchestrixHermetic}},
 		},
 	}
@@ -209,7 +214,7 @@ func testExecutorDerivacaoEValidos(t *testing.T) {
 			{"id": "n-sub-ausente", "type": "subprocesso", "ref": "legoloop-sub", "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/sub1.md", "gate": "file_exists('out/sub1.md')"}},
 			{"id": "n-stop-coerente", "type": "stop_gate", "isolation": {"executor": "local_process"}, "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/stop2.md", "gate": "file_exists('out/stop2.md')"}},
 			{"id": "n-script-hermetic", "type": "script", "command": ["echo", "2"], "isolation": {"executor": "orchestrix_hermetic"}, "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/sc2.txt", "gate": "file_exists('out/sc2.txt')"}},
-			{"id": "n-unit-swarm", "type": "unit_no", "isolation": {"executor": "native_swarm", "write_boundary": "strict"}, "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/un2.md", "gate": "file_exists('out/un2.md')"}}
+			{"id": "n-unit-swarm", "type": "unit_no", "role": "engenheiro-tdd", "command": ["echo", "unit"], "isolation": {"executor": "native_swarm", "write_boundary": "strict"}, "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/un2.md", "gate": "file_exists('out/un2.md')"}}
 		]
 	}`
 	d, err := Parse([]byte(fixture))
@@ -303,6 +308,8 @@ func TestValidarExecutoresListaTodos(t *testing.T) {
 			{
 				"id": "n-ok-nivel3",
 				"type": "skill",
+				"role": "engenheiro-tdd",
+				"command": ["echo", "skill"],
 				"ref": "legoloop-especificar",
 				"depends_on": ["n-un-desconhecido"],
 				"isolation": {"executor": "native_swarm"},
@@ -349,5 +356,219 @@ func validarLinhasErroIncoerente(t *testing.T, err error) {
 func conferirCamposLinha(t *testing.T, linha, tipo, recebido, aceitos string) {
 	if !strings.Contains(linha, tipo) || !strings.Contains(linha, recebido) || !strings.Contains(linha, aceitos) {
 		t.Errorf("linha não contém campos esperados (tipo=%s, rec=%s, aceitos=%s): %s", tipo, recebido, aceitos, linha)
+	}
+}
+
+func TestSubagentesEfemerosSoNoSwarm(t *testing.T) {
+	t.Run("ephemeral no native_swarm passa", func(t *testing.T) {
+		fixture := `{
+			"name": "dag-swarm-ephemeral",
+			"trigger": {"type": "manual"},
+			"nodes": [
+				{
+					"id": "n-swarm",
+					"type": "unit_no",
+					"role": "engenheiro-tdd",
+					"command": ["echo", "swarm"],
+					"isolation": {"executor": "native_swarm", "subagents_allowed": "ephemeral"},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/sw.md", "gate": "file_exists('out/sw.md')"}
+				}
+			]
+		}`
+		if _, err := Parse([]byte(fixture)); err != nil {
+			t.Fatalf("esperava sucesso para ephemeral com native_swarm, recebeu: %v", err)
+		}
+	})
+
+	t.Run("ephemeral no orchestrix e no local_process é recusado", func(t *testing.T) {
+		fixture := `{
+			"name": "dag-ephemeral-invalido",
+			"trigger": {"type": "manual"},
+			"nodes": [
+				{
+					"id": "n-orch",
+					"type": "unit_no",
+					"isolation": {"executor": "orchestrix_hermetic", "subagents_allowed": "ephemeral"},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/o.md", "gate": "file_exists('out/o.md')"}
+				},
+				{
+					"id": "n-stop",
+					"type": "stop_gate",
+					"isolation": {"executor": "local_process", "subagents_allowed": "ephemeral"},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/s.md", "gate": "file_exists('out/s.md')"}
+				}
+			]
+		}`
+		_, err := Parse([]byte(fixture))
+		if err == nil {
+			t.Fatal("esperava erro ao usar ephemeral fora do native_swarm")
+		}
+		if !errors.Is(err, ErrExecutorIncoerente) {
+			t.Fatalf("esperava errors.Is(err, ErrExecutorIncoerente), recebeu: %v", err)
+		}
+		errMsg := err.Error()
+		if !strings.Contains(errMsg, "n-orch") || !strings.Contains(errMsg, "n-stop") {
+			t.Fatalf("esperava erro listando ambos os nós inválidos, recebeu:\n%s", errMsg)
+		}
+	})
+
+	t.Run("subagents_allowed false passa em todos os executores", func(t *testing.T) {
+		fixture := `{
+			"name": "dag-false-todos",
+			"trigger": {"type": "manual"},
+			"nodes": [
+				{
+					"id": "n-orch",
+					"type": "unit_no",
+					"isolation": {"executor": "orchestrix_hermetic", "subagents_allowed": false},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/o.md", "gate": "file_exists('out/o.md')"}
+				},
+				{
+					"id": "n-stop",
+					"type": "stop_gate",
+					"isolation": {"executor": "local_process", "subagents_allowed": false},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/s.md", "gate": "file_exists('out/s.md')"}
+				},
+				{
+					"id": "n-swarm",
+					"type": "unit_no",
+					"role": "engenheiro-tdd",
+					"command": ["echo", "swarm"],
+					"isolation": {"executor": "native_swarm", "subagents_allowed": false},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/sw.md", "gate": "file_exists('out/sw.md')"}
+				}
+			]
+		}`
+		if _, err := Parse([]byte(fixture)); err != nil {
+			t.Fatalf("esperava sucesso para subagents_allowed false em todos os executores, recebeu: %v", err)
+		}
+	})
+}
+
+func TestNativeSwarmExigePapelECommand(t *testing.T) {
+	t.Run("stop_gate com native_swarm é recusado", func(t *testing.T) {
+		fixture := `{
+			"name": "dag-swarm-sg",
+			"trigger": {"type": "manual"},
+			"nodes": [
+				{
+					"id": "n-stop",
+					"type": "stop_gate",
+					"role": "engenheiro-tdd",
+					"command": ["echo", "stop"],
+					"isolation": {"executor": "native_swarm"},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/s.md", "gate": "file_exists('out/s.md')"}
+				}
+			]
+		}`
+		_, err := Parse([]byte(fixture))
+		if err == nil {
+			t.Fatal("esperava erro para stop_gate no native_swarm")
+		}
+		if !errors.Is(err, ErrExecutorIncoerente) {
+			t.Fatalf("esperava errors.Is(err, ErrExecutorIncoerente), recebeu: %v", err)
+		}
+	})
+
+	t.Run("sem papel é recusado", func(t *testing.T) {
+		fixture := `{
+			"name": "dag-swarm-sem-papel",
+			"trigger": {"type": "manual"},
+			"nodes": [
+				{
+					"id": "n-no-role",
+					"type": "unit_no",
+					"command": ["echo", "ok"],
+					"isolation": {"executor": "native_swarm"},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/u.md", "gate": "file_exists('out/u.md')"}
+				}
+			]
+		}`
+		_, err := Parse([]byte(fixture))
+		if err == nil {
+			t.Fatal("esperava erro para nó native_swarm sem papel")
+		}
+		if !errors.Is(err, ErrExecutorIncoerente) {
+			t.Fatalf("esperava errors.Is(err, ErrExecutorIncoerente), recebeu: %v", err)
+		}
+	})
+
+	t.Run("sem command é recusado", func(t *testing.T) {
+		fixture := `{
+			"name": "dag-swarm-sem-cmd",
+			"trigger": {"type": "manual"},
+			"nodes": [
+				{
+					"id": "n-no-cmd",
+					"type": "unit_no",
+					"role": "engenheiro-tdd",
+					"isolation": {"executor": "native_swarm"},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/u.md", "gate": "file_exists('out/u.md')"}
+				}
+			]
+		}`
+		_, err := Parse([]byte(fixture))
+		if err == nil {
+			t.Fatal("esperava erro para nó native_swarm sem command")
+		}
+		if !errors.Is(err, ErrExecutorIncoerente) {
+			t.Fatalf("esperava errors.Is(err, ErrExecutorIncoerente), recebeu: %v", err)
+		}
+	})
+
+	t.Run("com papel e command passa", func(t *testing.T) {
+		fixture := `{
+			"name": "dag-swarm-ok",
+			"trigger": {"type": "manual"},
+			"nodes": [
+				{
+					"id": "n-swarm-ok",
+					"type": "unit_no",
+					"role": "engenheiro-tdd",
+					"command": ["go", "test"],
+					"isolation": {"executor": "native_swarm"},
+					"routing": {"mode": "auto", "combo": "padrao"},
+					"output": {"artifact": "out/u.md", "gate": "file_exists('out/u.md')"}
+				}
+			]
+		}`
+		if _, err := Parse([]byte(fixture)); err != nil {
+			t.Fatalf("esperava sucesso para nó native_swarm com papel e command, recebeu: %v", err)
+		}
+	})
+}
+
+func TestValidateRecusaExecutor(t *testing.T) {
+	fixture := `{
+		"name": "dag-teste-xyz",
+		"trigger": {"type": "manual"},
+		"nodes": [
+			{
+				"id": "no-xyz",
+				"type": "unit_no",
+				"isolation": {"executor": "xyz"},
+				"routing": {"mode": "auto", "combo": "padrao"},
+				"output": {"artifact": "out/xyz.md", "gate": "file_exists('out/xyz.md')"}
+			}
+		]
+	}`
+	_, err := Parse([]byte(fixture))
+	if err == nil {
+		t.Fatal("esperava erro em Parse para executor xyz")
+	}
+	if !errors.Is(err, ErrExecutorIncoerente) {
+		t.Fatalf("esperava errors.Is(err, ErrExecutorIncoerente), recebeu: %v", err)
+	}
+	if !strings.Contains(err.Error(), "no-xyz") || !strings.Contains(err.Error(), "xyz") {
+		t.Fatalf("esperava menção ao nó e executor no erro, recebeu: %v", err)
 	}
 }

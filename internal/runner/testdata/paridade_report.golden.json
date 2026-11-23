@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "nodes": [
+    {
+      "id": "gate-aprovacao",
+      "status": "passed",
+      "duration_ns": 0,
+      "exit_code": 0,
+      "tokens": {
+        "input": 100,
+        "output": 50
+      },
+      "model": "modelo-fixo",
+      "notes": [
+        "executado gate-aprovacao"
+      ]
+    },
+    {
+      "id": "tarefa-hermetic",
+      "status": "passed",
+      "duration_ns": 0,
+      "exit_code": 0,
+      "tokens": {
+        "input": 100,
+        "output": 50
+      },
+      "model": "modelo-fixo",
+      "notes": [
+        "executado tarefa-hermetic"
+      ]
+    }
+  ],
+  "tokens": {
+    "input": 200,
+    "output": 100
+  }
+}

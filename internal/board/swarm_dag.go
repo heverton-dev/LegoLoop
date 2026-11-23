@@ -32,6 +32,37 @@ func isAlnum(b byte) bool {
 	return (b >= 'a' && b <= 'z') || (b >= 'A' && b <= 'Z') || (b >= '0' && b <= '9')
 }
 
+// RunNodeOf converte um nó do DAG em RunNode para o swarm. Nó sem papel ou stop_gate volta ok=false.
+// O comando do nó tem precedência sobre o comando global.
+func RunNodeOf(n *dag.Node, global []string, usados map[string]bool) (RunNode, bool, error) {
+	if n == nil {
+		return RunNode{}, false, nil
+	}
+	role := n.Role
+	if role == "" {
+		role = n.Papel
+	}
+	if n.Type == dag.TypeStopGate || role == "" {
+		return RunNode{}, false, nil
+	}
+	cmd := n.Command
+	if len(cmd) == 0 {
+		cmd = global
+	}
+	if len(cmd) == 0 {
+		return RunNode{}, false, fmt.Errorf("no %s sem comando: informe o comando global ou command no no", n.ID)
+	}
+	return RunNode{
+		NodeID:  n.ID,
+		Name:    WorkerNameFromNode(n.ID, usados),
+		Role:    role,
+		Model:   n.Routing.Model,
+		Command: cmd,
+		Timeout: time.Duration(n.TimeoutSec) * time.Second,
+		Gate:    n.Output.Gate,
+	}, true, nil
+}
+
 // LevelsFromDAG monta os niveis a partir das camadas topologicas. No sem papel e stop_gate nao viram worker
 // (o stop-gate e humano) e voltam em skipped. O comando do no vale antes do comando global.
 func LevelsFromDAG(p *dag.DAG, global []string) ([][]RunNode, []string, error) {
@@ -41,26 +72,15 @@ func LevelsFromDAG(p *dag.DAG, global []string) ([][]RunNode, []string, error) {
 	for _, layer := range p.Layers() {
 		var lvl []RunNode
 		for _, id := range layer {
-			n := p.Node(id)
-			role := n.Role
-			if role == "" {
-				role = n.Papel
+			rn, ok, err := RunNodeOf(p.Node(id), global, usados)
+			if err != nil {
+				return nil, nil, err
 			}
-			if n.Type == dag.TypeStopGate || role == "" {
+			if !ok {
 				skipped = append(skipped, id)
 				continue
 			}
-			cmd := n.Command
-			if len(cmd) == 0 {
-				cmd = global
-			}
-			if len(cmd) == 0 {
-				return nil, nil, fmt.Errorf("no %s sem comando: informe o comando global ou command no no", id)
-			}
-			lvl = append(lvl, RunNode{
-				NodeID: id, Name: WorkerNameFromNode(id, usados), Role: role, Model: n.Routing.Model,
-				Command: cmd, Timeout: time.Duration(n.TimeoutSec) * time.Second, Gate: n.Output.Gate,
-			})
+			lvl = append(lvl, rn)
 		}
 		if len(lvl) > 0 {
 			levels = append(levels, lvl)

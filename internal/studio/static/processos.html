@@ -8,33 +8,53 @@
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/components/sessao.css">
 </head>
-<body class="a2ui-page">
-  <header class="stage-topbar" role="banner">
-    <div class="stage-topbar__left">
-      <strong class="brand">LegoLoop Studio</strong>
-      <nav aria-label="Navegacao principal">
-        <a class="btn" href="/">Canvas</a>
-        <a class="btn active" href="/processos" aria-current="page">Processos</a>
-        <a class="btn" href="/inventario">Inventario</a>
-        <a class="btn" href="/swarm">Swarm</a>
+<body class="a2ui-page page-processos">
+  <header class="topbar" role="banner">
+    <div class="topbar__left">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__name">LegoLoop</span>
+      </div>
+      <span class="topbar__divider" aria-hidden="true"></span>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__link" href="/">Canvas</a>
+        <a class="topnav__link is-current" href="/processos" aria-current="page">Processos</a>
+        <a class="topnav__link" href="/inventario">Inventário</a>
       </nav>
     </div>
-    <div class="stage-topbar__right">
+    <div class="topbar__actions">
       <span id="processos-count" class="pill">0 processos ativos</span>
-      <button id="btn-refresh" class="btn" type="button">Atualizar</button>
+      <button id="btn-refresh" class="btn btn--sm" type="button">Atualizar</button>
+      <span class="topbar__divider" aria-hidden="true"></span>
       <button id="btn-theme-toggle" class="btn btn--sm btn--icon-ctrl" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false" title="Alternar tema"></button>
     </div>
   </header>
 
-  <main class="a2ui-main" style="max-width: 1040px; margin: 0 auto; width: 100%; padding: 24px 20px;">
-    <div style="margin-bottom: 24px;">
-      <h2 style="margin: 0 0 6px 0; font-size: 18px; font-weight: 700; color: var(--kf-text-primary);">Gestao de Processos em Execucao</h2>
-      <p style="margin: 0; font-size: 13px; color: var(--kf-text-secondary);">Monitoramento em tempo real de macroprocessos, etapas concorrentes e parada emergencial Andon Cord.</p>
-    </div>
+  <main class="a2ui-layout">
+    <aside class="a2ui-sidebar" aria-label="Processos ativos">
+      <h1 class="a2ui-sidebar__title">Processos Ativos</h1>
+      <ul id="processos-sidebar-tree" class="a2ui-tree"></ul>
+    </aside>
 
-    <div id="processos-feedback" class="a2ui-feedback a2ui-feedback--info" hidden></div>
+    <section class="a2ui-main" aria-label="Gestao de processos em execucao">
+      <header class="processos-header">
+        <div class="processos-header__top">
+          <h1 class="processos-title">Gestão de Processos em Execução</h1>
+          <span class="processos-shortcut-hint" title="Atalho global para Parar/Retomar">Atalho: <code>Alt+P</code></span>
+        </div>
+        <p class="processos-subtitle">Monitoramento em tempo real de macroprocessos, etapas concorrentes e parada emergencial Andon Cord.</p>
+        <div class="processos-filtros" role="tablist" aria-label="Filtrar por modo de execução">
+          <button id="filtro-todos" class="btn--filtro active" type="button" data-filtro="todos">Todos <span class="badge" id="count-todos">0</span></button>
+          <button id="filtro-sync" class="btn--filtro" type="button" data-filtro="sync">Síncronos <span class="badge" id="count-sync">0</span></button>
+          <button id="filtro-async" class="btn--filtro" type="button" data-filtro="async">Assíncronos <span class="badge" id="count-async">0</span></button>
+        </div>
+      </header>
 
-    <div id="processos-lista" style="display: flex; flex-direction: column; gap: 12px;"></div>
+      <div id="processos-feedback" class="a2ui-feedback a2ui-feedback--info" hidden></div>
+
+      <div id="processos-lista" class="processos-lista"></div>
+      <footer id="processos-paginacao" class="processos-paginacao"></footer>
+    </section>
   </main>
 
   <div id="toasts" class="toasts" aria-live="polite"></div>

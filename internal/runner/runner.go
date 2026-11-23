@@ -92,6 +92,7 @@ type Options struct {
 	Parallelism    int
 	DefaultTimeout time.Duration
 	Executor       Executor
+	Swarm          SwarmRunner
 	AllowScripts   bool
 	AutoApprove    bool              // --yes: aprova automaticamente gates interativos
 	NonInteractive bool              // --non-interactive: rejeita se não houver TTY
@@ -111,6 +112,9 @@ type Options struct {
 func Run(ctx context.Context, d *dag.DAG, opts Options) (Report, error) {
 	if d == nil || opts.Executor == nil {
 		return Report{}, errors.New("runner: dag e executor são obrigatórios")
+	}
+	if err := d.ValidarExecutores(); err != nil {
+		return Report{}, err
 	}
 	if err := unsupported(d); err != nil {
 		return Report{}, err
@@ -247,20 +251,67 @@ type run struct {
 }
 
 func (r *run) layer(ctx context.Context, ids []string) []NodeReport {
-	out := make([]NodeReport, len(ids))
+	execIDs, swarmIDs := r.separarCamada(ids)
+	reports := make(map[string]NodeReport, len(ids))
+	var mu sync.Mutex
 	var wg sync.WaitGroup
-	for i, id := range ids {
+
+	if len(execIDs) > 0 {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			r.executarNivelExecutor(ctx, execIDs, &mu, reports)
+		}()
+	}
+	if len(swarmIDs) > 0 {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			r.executarNivelSwarm(ctx, swarmIDs, &mu, reports)
+		}()
+	}
+	wg.Wait()
+	return ordenarReports(ids, reports)
+}
+
+func (r *run) separarCamada(ids []string) (execIDs, swarmIDs []string) {
+	for _, id := range ids {
+		n := r.d.Node(id)
+		if n != nil && isNativeSwarm(*n) {
+			swarmIDs = append(swarmIDs, id)
+		} else {
+			execIDs = append(execIDs, id)
+		}
+	}
+	return execIDs, swarmIDs
+}
+
+func (r *run) executarNivelExecutor(ctx context.Context, ids []string, mu *sync.Mutex, reports map[string]NodeReport) {
+	var wg sync.WaitGroup
+	for _, id := range ids {
 		wg.Go(func() {
 			n := *r.d.Node(id)
 			if err := r.agenda.entrar(ctx, id, arquivosDe(n), r.pesoMB(n)); err != nil {
-				out[i] = NodeReport{ID: id, Status: StatusError, Error: "cancelado antes de iniciar: " + err.Error()}
+				mu.Lock()
+				reports[id] = NodeReport{ID: id, Status: StatusError, Error: "cancelado antes de iniciar: " + err.Error()}
+				mu.Unlock()
 				return
 			}
 			defer r.agenda.sair(id)
-			out[i] = r.node(ctx, id)
+			nr := r.node(ctx, id)
+			mu.Lock()
+			reports[id] = nr
+			mu.Unlock()
 		})
 	}
 	wg.Wait()
+}
+
+func ordenarReports(ids []string, reports map[string]NodeReport) []NodeReport {
+	out := make([]NodeReport, len(ids))
+	for i, id := range ids {
+		out[i] = reports[id]
+	}
 	return out
 }
 

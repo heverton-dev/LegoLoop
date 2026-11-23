@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/heverton-dev/LegoLoop/internal/dag"
 	"github.com/heverton-dev/LegoLoop/internal/interview"
 	"github.com/heverton-dev/LegoLoop/internal/upstream"
 )
@@ -32,6 +33,7 @@ type Ticket struct {
 	InitiativeID   string   `json:"initiative_id,omitempty"` // I01 (opcional)
 	Nature         string   `json:"nature"`                  // nano | micro
 	ExecutionMode  string   `json:"execution_mode"`          // tdd_red_green | sequential | parallel
+	Executor       string   `json:"executor,omitempty"`      // executor opcional (ex: native_swarm)
 	DependsOn      []string `json:"depends_on"`              // IDs predecessores
 	TargetFiles    []string `json:"target_files"`            // Arquivos tocados
 	SpecCriteria   []string `json:"spec_criteria"`           // AC-E01.1
@@ -148,6 +150,9 @@ func normalizeTickets(in []Ticket, level SupervisionLevel) ([]Ticket, error) {
 	if len(in) == 0 {
 		return nil, errors.New("nenhum ticket informado")
 	}
+	if err := validateTicketExecutors(in); err != nil {
+		return nil, err
+	}
 	seen := map[string]bool{}
 	out := make([]Ticket, len(in))
 	for i, t := range in {
@@ -159,6 +164,18 @@ func normalizeTickets(in []Ticket, level SupervisionLevel) ([]Ticket, error) {
 		out[i] = completeTicket(t, level)
 	}
 	return out, nil
+}
+
+func validateTicketExecutors(tickets []Ticket) error {
+	for _, t := range tickets {
+		if t.Executor == "" {
+			continue
+		}
+		if t.Executor != dag.ExecutorOrchestrixHermetic && t.Executor != dag.ExecutorNativeSwarm {
+			return fmt.Errorf("%w: ticket %s com executor %q incoerente", dag.ErrExecutorIncoerente, t.ID, t.Executor)
+		}
+	}
+	return nil
 }
 
 func completeTicket(t Ticket, level SupervisionLevel) Ticket {
@@ -195,6 +212,9 @@ Decomponha todos os critérios AC-XX em tickets verticais sequenciados logicamen
 
 // materialize monta a rota e o plano a partir da mesma lista de nós e grava os dois arquivos.
 func materialize(baseDir, specPath, specText string, level SupervisionLevel, tickets []Ticket, now time.Time) (*PlanResult, error) {
+	if err := validateTicketExecutors(tickets); err != nil {
+		return nil, err
+	}
 	ps, err := newPathSet(baseDir, specPath)
 	if err != nil {
 		return nil, err

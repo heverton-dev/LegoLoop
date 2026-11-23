@@ -50,6 +50,9 @@ type routeNode struct {
 	Status     string         `json:"status"`
 	DependsOn  []string       `json:"depends_on"`
 	Isolation  map[string]any `json:"isolation"`
+	Role       string         `json:"role,omitempty"`
+	Papel      string         `json:"papel,omitempty"`
+	Command    []string       `json:"command,omitempty"`
 	Tooling    map[string]any `json:"tooling"`
 	TimeoutSec int            `json:"timeout_sec"`
 	Budget     struct {
@@ -61,6 +64,7 @@ type routeNode struct {
 		Harness  string  `json:"harness"`
 		Via      string  `json:"via,omitempty"`
 		Model    string  `json:"model"`
+		Combo    string  `json:"combo,omitempty"`
 		Effort   *string `json:"effort"`
 		Fallback *struct {
 			Model string `json:"model"`

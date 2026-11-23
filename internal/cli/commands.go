@@ -260,6 +260,10 @@ func cmdRun(ctx context.Context, args []string, d Deps) int {
 	}
 	p, err := loadDAG(path)
 	if err != nil {
+		if errors.Is(err, dag.ErrExecutorIncoerente) {
+			fmt.Fprintln(d.Stderr, "erro:", err)
+			return 1
+		}
 		return failDAG(d, err)
 	}
 	return rodarDAG(ctx, d, p, f)

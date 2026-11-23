@@ -254,10 +254,14 @@ func ticketNode(t Ticket, m planMeta) routeNode {
 	if t.Gate != "" {
 		g = t.Gate
 	}
+	exec := t.Executor
+	if exec == "" {
+		exec = "orchestrix_hermetic"
+	}
 	return routeNode{
 		ID: t.ID, InitiativeID: resolveInitiative(t, m), EpicID: str(t.EpicID), Label: t.Title, Nature: t.Nature,
 		ClassRule: "nature=" + t.Nature, Type: tipoUnidade, Status: "PENDING", ExecutionMode: t.ExecutionMode,
-		Isolation:   localIsolation("orchestrix_hermetic", "strict"),
+		Isolation:   localIsolation(exec, "strict"),
 		TimeoutSec:  defaultTimeout,
 		RetryPolicy: defaultRetryPolicy(false),
 		TokenBudget: budget,

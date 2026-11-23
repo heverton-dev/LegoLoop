@@ -2,12 +2,14 @@ package studio
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/heverton-dev/LegoLoop/internal/a2ui"
+	"github.com/heverton-dev/LegoLoop/internal/caminhos"
 	"github.com/heverton-dev/LegoLoop/internal/triagem"
 )
 
@@ -26,93 +28,126 @@ func (s *Server) dispatchAndonAction(ctx context.Context, act a2ui.Action) error
 
 func (s *Server) executarAndonPause(sessID string) error {
 	sess, err := s.A2UIHub().GetSession(sessID)
-	if err != nil {
-		return err
+	if err == nil {
+		sess.SetState(a2ui.SessionPaused)
+		if errMem := s.persistirMemoriaAndon(sess.Processo, sessID, "pausado_andon_cord"); errMem != nil {
+			return errMem
+		}
+		return s.publicarAndonState(sessID, "paused")
 	}
-	sess.SetState(a2ui.SessionPaused)
-	s.persistirMemoriaAndon(sess.Processo, sessID, "pausado_andon_cord")
-	return s.A2UIHub().Publish(a2ui.Envelope{
-		SessionID:   sessID,
-		SurfaceID:   "andon:status",
-		ProtocolVer: "v0.9",
-		MessageType: "updateDataModel",
-		DataModel: map[string]any{
-			"andon_state":  "paused",
-			"timestamp_ms": time.Now().UnixMilli(),
-		},
-	})
+	proc, errDisco := s.buscarProcessoPorSessao(sessID)
+	if errDisco != nil {
+		return fmt.Errorf("sessão %s não encontrada: %w", sessID, err)
+	}
+	return s.persistirMemoriaAndon(proc, sessID, "pausado_andon_cord")
 }
 
 func (s *Server) executarAndonResume(sessID string) error {
 	sess, err := s.A2UIHub().GetSession(sessID)
-	if err != nil {
-		return err
+	if err == nil {
+		sess.SetState(a2ui.SessionRunning)
+		if errMem := s.persistirMemoriaAndon(sess.Processo, sessID, "executando"); errMem != nil {
+			return errMem
+		}
+		return s.publicarAndonState(sessID, "running")
 	}
-	sess.SetState(a2ui.SessionRunning)
-	s.persistirMemoriaAndon(sess.Processo, sessID, "executando")
-	return s.A2UIHub().Publish(a2ui.Envelope{
-		SessionID:   sessID,
-		SurfaceID:   "andon:status",
-		ProtocolVer: "v0.9",
-		MessageType: "updateDataModel",
-		DataModel: map[string]any{
-			"andon_state":  "running",
-			"timestamp_ms": time.Now().UnixMilli(),
-		},
-	})
+	proc, errDisco := s.buscarProcessoPorSessao(sessID)
+	if errDisco != nil {
+		return fmt.Errorf("sessão %s não encontrada: %w", sessID, err)
+	}
+	return s.persistirMemoriaAndon(proc, sessID, "executando")
 }
 
 func (s *Server) executarAndonCancel(sessID string) error {
 	sess, err := s.A2UIHub().GetSession(sessID)
-	if err != nil {
-		return err
+	if err == nil {
+		sess.SetState(a2ui.SessionCancelled)
+		if errMem := s.limparMemoriaAndon(sess.Processo, sessID); errMem != nil {
+			return errMem
+		}
+		return s.publicarAndonState(sessID, "cancelled")
 	}
-	sess.SetState(a2ui.SessionCancelled)
-	s.limparMemoriaAndon(sess.Processo, sessID)
+	proc, errDisco := s.buscarProcessoPorSessao(sessID)
+	if errDisco != nil {
+		return fmt.Errorf("sessão %s não encontrada: %w", sessID, err)
+	}
+	return s.limparMemoriaAndon(proc, sessID)
+}
+
+func (s *Server) publicarAndonState(sessID, state string) error {
 	return s.A2UIHub().Publish(a2ui.Envelope{
 		SessionID:   sessID,
 		SurfaceID:   "andon:status",
 		ProtocolVer: "v0.9",
 		MessageType: "updateDataModel",
 		DataModel: map[string]any{
-			"andon_state":  "cancelled",
+			"andon_state":  state,
 			"timestamp_ms": time.Now().UnixMilli(),
 		},
 	})
 }
 
-func (s *Server) persistirMemoriaAndon(proc, sessID, etapa string) {
-	if proc == "" {
-		return
+func (s *Server) buscarProcessoPorSessao(sessID string) (string, error) {
+	if sessID == "" {
+		return "", fmt.Errorf("sessão vazia")
 	}
-	slug := strings.TrimPrefix(proc, "proc:")
-	dir := filepath.Join(s.ProjectDir, "processos", slug)
-	if fi, err := os.Stat(dir); err != nil || !fi.IsDir() {
-		return
+	dirProc := caminhos.DirProcessosEm(s.ProjectDir)
+	entries, err := os.ReadDir(dirProc)
+	if err != nil {
+		return "", err
 	}
-	mem := triagem.MemoriaExecucao{
-		Processo:     slug,
-		SessaoID:     sessID,
-		PID:          os.Getpid(),
-		EtapaAtual:   etapa,
-		ProximoPasso: "verificar_operador",
-		AtualizadoEm: time.Now().UTC(),
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		slug := entry.Name()
+		arq := filepath.Join(dirProc, slug, triagem.ArquivoMemoria)
+		mems := extrairMemoriasDeArquivo(arq, slug)
+		for _, m := range mems {
+			if m.SessaoID == sessID {
+				return slug, nil
+			}
+		}
 	}
-	if err := triagem.SalvarMemoria(dir, mem); err != nil {
-		return
-	}
+	return "", fmt.Errorf("sessão %q não encontrada em disco", sessID)
 }
 
-func (s *Server) limparMemoriaAndon(proc, sessID string) {
+func (s *Server) persistirMemoriaAndon(proc, sessID, etapa string) error {
 	if proc == "" {
-		return
+		return nil
 	}
 	slug := strings.TrimPrefix(proc, "proc:")
-	dir := filepath.Join(s.ProjectDir, "processos", slug)
+	dir := filepath.Join(caminhos.DirProcessosEm(s.ProjectDir), slug)
 	if fi, err := os.Stat(dir); err != nil || !fi.IsDir() {
-		return
+		return nil
 	}
-	if err := triagem.ZerarSessao(dir, sessID); err != nil {
-		return
+	mem, err := triagem.LerMemoria(dir, sessID)
+	if err != nil {
+		mem = triagem.MemoriaExecucao{
+			Processo:     slug,
+			SessaoID:     sessID,
+			PID:          os.Getpid(),
+			ProximoPasso: "verificar_operador",
+		}
 	}
+	mem.Processo = slug
+	mem.SessaoID = sessID
+	mem.EtapaAtual = etapa
+	if mem.PID <= 0 {
+		mem.PID = os.Getpid()
+	}
+	mem.AtualizadoEm = time.Now().UTC()
+	return triagem.SalvarMemoria(dir, mem)
+}
+
+func (s *Server) limparMemoriaAndon(proc, sessID string) error {
+	if proc == "" {
+		return nil
+	}
+	slug := strings.TrimPrefix(proc, "proc:")
+	dir := filepath.Join(caminhos.DirProcessosEm(s.ProjectDir), slug)
+	if fi, err := os.Stat(dir); err != nil || !fi.IsDir() {
+		return nil
+	}
+	return triagem.ZerarSessao(dir, sessID)
 }

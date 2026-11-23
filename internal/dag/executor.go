@@ -82,10 +82,41 @@ func validarExecutorNo(n Node) string {
 		return fmt.Sprintf("nó %q (tipo %s): executor %v incoerente (aceitos: %s)", n.ID, n.Type, raw, executoresAceitos(n.Type))
 	}
 	exec = strings.TrimSpace(exec)
-	if executorCoerente(n.Type, exec) {
+	if !executorCoerente(n.Type, exec) {
+		return fmt.Sprintf("nó %q (tipo %s): executor %q incoerente (aceitos: %s)", n.ID, n.Type, exec, executoresAceitos(n.Type))
+	}
+	if msg := validarRegrasIsolation(n, exec); msg != "" {
+		return msg
+	}
+	if exec == ExecutorNativeSwarm {
+		return validarPrecondicoesNativeSwarm(n)
+	}
+	return ""
+}
+
+func validarPrecondicoesNativeSwarm(n Node) string {
+	temPapel := strings.TrimSpace(n.Role) != "" || strings.TrimSpace(n.Papel) != ""
+	temCmd := len(n.Command) > 0 && strings.TrimSpace(n.Command[0]) != ""
+	if !temPapel || !temCmd {
+		return fmt.Sprintf("nó %q (tipo %s): native_swarm exige papel e command", n.ID, n.Type)
+	}
+	return ""
+}
+
+func validarRegrasIsolation(n Node, exec string) string {
+	if n.Isolation == nil {
 		return ""
 	}
-	return fmt.Sprintf("nó %q (tipo %s): executor %q incoerente (aceitos: %s)", n.ID, n.Type, exec, executoresAceitos(n.Type))
+	rawSub, ok := n.Isolation["subagents_allowed"]
+	if !ok || rawSub == nil {
+		return ""
+	}
+	if s, ok := rawSub.(string); ok && strings.TrimSpace(s) == "ephemeral" {
+		if exec != ExecutorNativeSwarm {
+			return fmt.Sprintf("nó %q (tipo %s): subagents_allowed \"ephemeral\" só é permitido com executor %s (recebeu %s)", n.ID, n.Type, ExecutorNativeSwarm, exec)
+		}
+	}
+	return ""
 }
 
 func executorCoerente(tipo NodeType, exec string) bool {

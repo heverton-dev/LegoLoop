@@ -72,8 +72,15 @@
   4. **Demonstração de Processos Aninhados:**
      - Rota `GET /fabricar` servindo macroprocesso raiz `proc:fabricar` com subprocessos `proc:fabricar:concepcao`, `proc:fabricar:especificacao` e nó neto `proc:fabricar:concepcao:stop-gate-01` com `requires_attention: true`.
      - Teste automatizado `internal/studio/a2ui_fabricar_test.go` validando árvore, breadcrumb de 3 níveis e foco automático de atenção.
-- **Ponto de Retomada (Amanhã):**
-  - Próximo passo: Rodada focada na lapidação fina de UI/UX da interface interativa A2UI usando como referência `C:\Users\trcnologia\Desktop\kraften-design-system` e os processos `legoloop-design-ui` e `legoloop-web-qa`.
+   5. **Refinamento Andon Cord & Gestão de Processos (23/11/2026):**
+      - Mapeamento de modo: Síncrono (Interativo) vs Assíncrono (Autônomo) nos cards e sidebar com badges WCAG AAA.
+      - Botões simplificados para uma palavra ("Parar", "Retomar", "Cancelar", "Abrir") com cores sólidas Stop-Gate (#ef4444/#10b981) e proporção elegante (5px 14px).
+      - Anatomia do card respirável Kraften: header alinhado com dot + nome + sessão + modo + status pill, corpo com telemetria sutil, e footer com ações à direita.
+      - Cartão de processo sem borda lateral de 4px, padronizado com borda uniforme (0.8px).
+      - Paginação limpa com teto de 3 cards por página no painel de processos e exclusão de sessões legadas vazias.
+      - Temporizador contínuo de duração ativa (uptime), filtros rápidos por modo (Todos/Síncronos/Assíncronos), atalho Alt+P e reconexão SSE com recuo exponencial.
+- **Ponto de Retomada:**
+  - Validação interativa em execução nas rotas `/processos`, `/concepcao` e `/fabricar`.
 
 ## Progresso por ticket
 
@@ -706,6 +713,7 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
 - I02 (Processos de especificação e de planejamento): INTENT e SPEC aprovadas, PLAN de 21 Tickets, ROUTE e DAG gerados; prompt em docs/prompts/2026-11-21_PROMPT_EXECUCAO_I02.md; código só depois do TICK-01.2 da I01. Achado corrigido: nome do DAG repetia data e ROUTE (route2dag nomeLimpo, 3 anticorpos hoje).
 - I03 (despachante de executores no runner): INTENT aprovada (Stop-Gate 01); decisão chave: valor novo swarm_worker, orchestrix_hermetic não é Swarm. Achado corrigido: o motor da entrevista concluía sem Espelho (completeTurn exige Espelho; 21 anticorpos em legoloop-concepcao).
 - I03: SPEC aprovada, PLAN de 20 Tickets, ROUTE e DAG gerados; prompt em docs/prompts/2026-11-21_PROMPT_EXECUCAO_I03.md. Fato conferido: o valor do Swarm é native_swarm (já existia), não swarm_worker; há um só executor (Orchestrix.Execute despacha pelo tipo do nó).
+- I03 (23/11/2026) — ENTREGUE: 20/20 tickets PASSED. Despacho por nível de native_swarm ao SwarmRunner; validação antes do nível zero; execução de nível misto; isolamento de falhas (skipped); abertura do SwarmBoard no legoloop run; paridade de relatório provada por golden. Macroprojeto D 100% concluído (I01, I04, I02, I03).
 - Auditoria da espinha dorsal (I04, 2026-11-21): relatório em docs/reports/2026-11-21_REPORT_AUDITORIA_ESPINHA_DORSAL.md; 14 lacunas (2 críticas: Matriz defasada com 6146 removidas e fabricar que não varre drives; 3 altas: executor decorativo, vocabulário unit_no/unit_task, caminhos/paths duplicados). Execução de I01 a I03 CONGELADA até o usuário liberar (aviso no topo dos três prompts).
 - I04 (espinha dorsal): INTENT materializada e em análise (Stop-Gate 01); Emenda 2 reordena (I04 primeiro) e congela I01 a I03. Achado: o motor da entrevista com code-fast para em 85%; com --model sonnet conclui (96%).
 - Motor da entrevista (I04): verbo concluir (MsgConcluir) fecha sessão estacionada; INTENT com título curto, ideia só em O Problema Real e critérios em subitens; 23 anticorpos em legoloop-concepcao. INTENT da I04 APROVADA (Stop-Gate 01), Emenda 2 aprovada; I01 a I03 congeladas.

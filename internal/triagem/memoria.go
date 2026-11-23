@@ -63,6 +63,7 @@ type EstadoMemoria struct {
 	SchemaVersion string                     `json:"schema_version"`
 	Processo      string                     `json:"processo"`
 	Sessoes       map[string]MemoriaExecucao `json:"sessoes"`
+	AtualizadoEm  time.Time                  `json:"atualizado_em"`
 }
 
 // Validate verifica a chave de sessão: exige ID não vazio e PID positivo.
@@ -147,6 +148,7 @@ func persistirEstado(dir string, est EstadoMemoria) error {
 	if est.Processo == "" {
 		est.Processo = filepath.Base(dir)
 	}
+	est.AtualizadoEm = time.Now().UTC()
 	dados, err := json.MarshalIndent(est, "", "  ")
 	if err != nil {
 		return err

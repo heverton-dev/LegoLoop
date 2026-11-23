@@ -5,10 +5,10 @@ Motivo: a auditoria da espinha dorsal (`docs/reports/2026-11-21_REPORT_AUDITORIA
 
 | Ordem | Iniciativa | INTENT | Situação |
 | :--- | :--- | :--- | :--- |
-| 1 | I04 — Espinha dorsal | `2026-11-21_INTENT_INICIATIVA_4_I04_DO_MACROPROJE.md` | a executar primeiro |
-| 2 | I01 — Distribuição e Forja | `2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md` | congelada; revisão abaixo |
-| 3 | I02 — Especificação e planejamento | `2026-11-21_INTENT_INICIATIVA_2_DO_MACROPROJETO_D.md` | congelada; revisão abaixo |
-| 4 | I03 — Despachante de executores | `2026-11-21_INTENT_INICIATIVA_3_I03_DO_MACROPROJE.md` | congelada; revisão abaixo |
+| 1 | I04 — Espinha dorsal | `2026-11-21_INTENT_INICIATIVA_4_I04_DO_MACROPROJE.md` | ENTREGUE (`docs/reports/2026-11-22_REPORT_FECHAMENTO_I04.md`) |
+| 2 | I01 — Distribuição e Forja | `2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md` | ENTREGUE (38/38 tickets) |
+| 3 | I02 — Especificação e planejamento | `2026-11-21_INTENT_INICIATIVA_2_DO_MACROPROJETO_D.md` | ENTREGUE (22/22 tickets) |
+| 4 | I03 — Despachante de executores | `2026-11-21_INTENT_INICIATIVA_3_I03_DO_MACROPROJE.md` | ENTREGUE (20/20 tickets; `docs/reports/2026-11-23_REPORT_FECHAMENTO_I03.md`) |
 
 Revisões que as SPEC e os PLAN congelados devem receber depois da I04:
 - **I01:** o Épico 02 (CI nos três SOs) sai, porque a I04 o entrega. A Forja passa a depender de G01 (Matriz por hash), G02 (descoberta de peças) e G05 (fachada única de caminhos) resolvidos antes do TICK-01.2 (renomear o módulo).

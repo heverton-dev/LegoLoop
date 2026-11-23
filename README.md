@@ -122,8 +122,9 @@ legoloop fabricar spec --intent docs/intents/YYYY-MM-DD_INTENT.md  # gera SPEC a
 legoloop fabricar plano --spec docs/specs/SPEC.md --tickets T.json # grava PLAN, ROUTE e DAG em um comando só (estrito por padrão)
 legoloop anticorpos registrar <slug> --pacote P --erro E --causa C --antidoto A   # registra um achado como anticorpo e regenera o ANTICORPOS.md
 # Demanda em curso: Distribuição e Forja do LegoLoop (SPEC aprovada, PLAN de 40 Tickets, ROUTE e DAG em docs/specs, docs/plans, docs/routes e docs/dags) (INTENT aprovada em docs/intents/2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md)
-# Demanda concluída: I02 — Processos de especificação, de planejamento e de ciclo (legoloop-especificacao, legoloop-planejamento e legoloop-ciclo entregues e testados)
-# Demanda seguinte: I03, despachante de executores no runner (INTENT e SPEC aprovadas, PLAN de 20 Tickets, ROUTE e DAG em docs/plans, docs/routes e docs/dags; valor do Swarm: native_swarm)
+# Demanda concluída: I03 — Despachante de executores no runner (isolation.executor, native_swarm despachado via SwarmRunner, validação pré-nível zero e paridade provada)
+# Macroprojeto D — Concluído: I01 (Distribuição e Forja), I04 (Espinha Dorsal), I02 (Processos de Ciclo) e I03 (Despachante de Executores) entregues e verificadas
+
 # Demanda em operação (I04): espinha dorsal previsível, universal e determinística (espinha verificar, cobertura, mutar, renomear, jail, descoberta)
 legoloop espinha verificar [--raiz DIR] [--json]            # auditoria determinística da espinha dorsal
 legoloop renomear <antigo> <novo> [--dry-run] [--yes]       # renomeia Processo com backup MANIFESTO.tsv e histórico em espinha/renomeados.json

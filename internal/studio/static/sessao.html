@@ -8,24 +8,25 @@
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/components/sessao.css">
 </head>
-<body class="a2ui-page">
-  <header class="stage-topbar" role="banner">
-    <div class="stage-topbar__left">
-      <strong class="brand">LegoLoop A2UI</strong>
-      <nav aria-label="Navegacao principal">
-        <a class="btn" href="/">Canvas</a>
-        <a class="btn" href="/processos">Processos</a>
-        <a class="btn" href="/inventario">Inventario</a>
-        <a class="btn" href="/swarm">Swarm</a>
+<body class="a2ui-page sessao-interativa">
+  <header class="topbar" role="banner">
+    <div class="topbar__left">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__name">LegoLoop A2UI</span>
+      </div>
+      <span class="topbar__divider" aria-hidden="true"></span>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a class="topnav__link" href="/">Canvas</a>
+        <a class="topnav__link" href="/processos">Processos</a>
+        <a class="topnav__link" href="/inventario">Inventário</a>
       </nav>
     </div>
-    <div class="stage-topbar__right">
-      <div id="a2ui-andon-group" class="a2ui-andon-group">
-        <button id="btn-andon-cord" class="btn btn--andon" type="button" title="Andon Cord: Parada Emergencial da Esteira">Andon Cord</button>
-      </div>
+    <div class="topbar__actions">
       <span id="a2ui-process-id" class="pill pill--process">processo</span>
       <span id="a2ui-session-id" class="pill">sessao</span>
       <span id="a2ui-conn-status" class="pill" aria-live="polite">Conectando</span>
+      <span class="topbar__divider" aria-hidden="true"></span>
       <button id="btn-theme-toggle" class="btn btn--sm btn--icon-ctrl" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false" title="Alternar tema"></button>
     </div>
   </header>
@@ -33,6 +34,7 @@
   <main class="a2ui-layout">
     <aside class="a2ui-sidebar" aria-label="Arvore de superficies">
       <h1 class="a2ui-sidebar__title">Superficies</h1>
+      <div id="a2ui-andon-group" class="a2ui-andon-sidebar"></div>
       <ul id="a2ui-tree" class="a2ui-tree"></ul>
     </aside>
 

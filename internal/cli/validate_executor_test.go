@@ -94,20 +94,50 @@ func TestValidateERunRecusamIncoerenteComExit2(t *testing.T) {
 	nosEsperados := []string{"no-stop-errado", "no-script-errado"}
 
 	casos := []struct {
-		nome string
-		args []string
+		nome           string
+		args           []string
+		codigoEsperado int
 	}{
-		{nome: "validate", args: []string{"validate", dagPath}},
-		{nome: "run", args: []string{"run", dagPath, "--allow-scripts", "--workdir", t.TempDir()}},
+		{nome: "validate", args: []string{"validate", dagPath}, codigoEsperado: 2},
+		{nome: "run", args: []string{"run", dagPath, "--allow-scripts", "--workdir", t.TempDir()}, codigoEsperado: 1},
 	}
 
 	for _, tc := range casos {
 		t.Run(tc.nome, func(t *testing.T) {
 			code, saida := executarBinario(bin, tc.args...)
-			if code != 2 {
-				t.Errorf("%s: esperado exit code 2, obteve %d\nsaída:\n%s", tc.nome, code, saida)
+			if code != tc.codigoEsperado {
+				t.Errorf("%s: esperado exit code %d, obteve %d\nsaída:\n%s", tc.nome, tc.codigoEsperado, code, saida)
 			}
 			verificarLinhasIncoerentes(t, tc.nome, saida, nosEsperados)
 		})
+	}
+}
+
+func TestValidateRecusaExecutor(t *testing.T) {
+	bin := buildBinarioTeste(t)
+	dir := t.TempDir()
+	dagXYZ := filepath.Join(dir, "xyz.dag.json")
+	conteudo := `{
+  "name": "dag-executor-xyz",
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "no-xyz",
+      "type": "unit_no",
+      "isolation": {"executor": "xyz"},
+      "routing": {"mode": "manual", "model": "m1"},
+      "output": {"artifact": "saida.md", "gate": "file_exists('saida.md')"}
+    }
+  ]
+}`
+	if err := os.WriteFile(dagXYZ, []byte(conteudo), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	code, saida := executarBinario(bin, "validate", dagXYZ)
+	if code == 0 {
+		t.Fatalf("validate deveria sair com código != 0 para executor xyz, obteve %d", code)
+	}
+	if !strings.Contains(saida, "no-xyz") || !strings.Contains(saida, "xyz") {
+		t.Fatalf("saída deve imprimir a linha do nó inválido: %s", saida)
 	}
 }

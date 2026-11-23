@@ -31,6 +31,7 @@ func projetarNo(n routeNode) (map[string]any, error) {
 		"output":     map[string]any{"artifact": "scratch/gates/" + n.ID + ".json", "gate": n.Output.Gate},
 		"status":     n.Status,
 	}
+	preencherPapeis(nd, nt, n)
 	if n.Type == "stop_gate" {
 		nd["routing"] = map[string]any{"mode": "manual", "model": "human/operator"}
 		if n.SpecRef != nil {
@@ -46,10 +47,39 @@ func projetarNo(n routeNode) (map[string]any, error) {
 	return nd, nil
 }
 
+func preencherPapeis(nd map[string]any, nt dag.NodeType, n routeNode) {
+	if strings.TrimSpace(n.Role) != "" {
+		nd["role"] = strings.TrimSpace(n.Role)
+	}
+	if strings.TrimSpace(n.Papel) != "" {
+		nd["papel"] = strings.TrimSpace(n.Papel)
+	}
+	if nt == dag.TypeUnitNo && usaNativeSwarm(n.Isolation) {
+		if strings.TrimSpace(n.Role) == "" && strings.TrimSpace(n.Papel) == "" {
+			nd["role"] = "engenheiro-tdd"
+		}
+	}
+}
+
+func usaNativeSwarm(iso map[string]any) bool {
+	if iso == nil {
+		return false
+	}
+	v, ok := iso["executor"]
+	if !ok || v == nil {
+		return false
+	}
+	s, ok := v.(string)
+	return ok && strings.TrimSpace(s) == dag.ExecutorNativeSwarm
+}
+
 func roteamento(n routeNode) map[string]any {
 	rt := map[string]any{"mode": n.Routing.Mode, "model": n.Routing.Model}
 	if n.Routing.Via != "" {
 		rt["via"] = n.Routing.Via
+	}
+	if n.Routing.Combo != "" {
+		rt["combo"] = n.Routing.Combo
 	}
 	if n.Routing.Effort != nil {
 		rt["effort"] = *n.Routing.Effort
@@ -78,6 +108,9 @@ func unidade(nd map[string]any, n routeNode) {
 	if len(n.Output.Verify) > 0 {
 		nd["command"] = n.Output.Verify[0]
 		nd["verification"] = map[string]any{"test_command": strings.Join(n.Output.Verify[0], " "), "exit_code": 0}
+	}
+	if len(n.Command) > 0 {
+		nd["command"] = n.Command
 	}
 	if n.TestTarget != nil {
 		file, sig, _ := strings.Cut(*n.TestTarget, ":")

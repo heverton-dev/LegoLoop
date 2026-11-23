@@ -573,13 +573,19 @@ func assertModaisEInspetorIndex(t *testing.T, indexHTML string) {
 
 func assertNavegacaoETemaRotas(t *testing.T, indexHTML, invHTML, sessaoHTML string) {
 	t.Helper()
-	if !strings.Contains(invHTML, `href="/swarm"`) {
-		t.Error("inventario.html sem link para /swarm")
+	if !strings.Contains(invHTML, `href="/processos"`) {
+		t.Error("inventario.html sem link para /processos")
 	}
-	for _, href := range []string{`href="/"`, `href="/inventario"`, `href="/swarm"`} {
+	if strings.Contains(invHTML, `href="/swarm"`) {
+		t.Error("inventario.html não deve ter aba Swarm no menu")
+	}
+	for _, href := range []string{`href="/"`, `href="/processos"`, `href="/inventario"`} {
 		if !strings.Contains(sessaoHTML, href) {
 			t.Errorf("sessao.html sem link de navegação %s", href)
 		}
+	}
+	if strings.Contains(sessaoHTML, `href="/swarm"`) {
+		t.Error("sessao.html não deve ter aba Swarm no menu de navegação")
 	}
 	for nome, html := range map[string]string{"index.html": indexHTML, "inventario.html": invHTML, "sessao.html": sessaoHTML} {
 		if !strings.Contains(html, `id="btn-theme-toggle"`) {
