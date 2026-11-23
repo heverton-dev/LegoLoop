@@ -1,5 +1,25 @@
 /* Estilos da Sessao Interativa A2UI herdando os tokens CSS de style.css do Studio. */
 
+html, body {
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border, #3a3a4c);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted, #666);
+}
+
 .a2ui-page {
   margin: 0;
   min-height: 100vh;
@@ -449,4 +469,92 @@
   .a2ui-layout {
     grid-template-columns: 1fr;
   }
+}
+
+/* Modal de Carregamento Estilizado LegoLoop */
+.a2ui-loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 15, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.a2ui-loading-overlay--active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.a2ui-loading-card {
+  background: var(--surface, #1e1e24);
+  border: 1px solid var(--border-strong, #3a3a4c);
+  border-radius: var(--radius-l, 16px);
+  padding: var(--space-5, 24px) var(--space-6, 32px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3, 16px);
+  max-width: 440px;
+  width: 90%;
+  animation: a2ui-scale-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes a2ui-scale-in {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.a2ui-loading-spinner {
+  width: 56px;
+  height: 56px;
+}
+
+.a2ui-loading-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text, #fff);
+  letter-spacing: -0.01em;
+}
+
+.a2ui-loading-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted, #a0a0b0);
+  line-height: 1.5;
+}
+
+/* Indicador de Sucesso ao Atingir a Meta (95%+) */
+.lego-progress--complete {
+  border-color: #10b981;
+  background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), transparent);
+}
+
+.pill--success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-weight: 600;
+}
+
+.lego-progress__bar--complete::-webkit-progress-value {
+  background: #10b981;
+}
+.lego-progress__bar--complete::-moz-progress-bar {
+  background: #10b981;
 }

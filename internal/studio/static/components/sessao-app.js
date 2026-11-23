@@ -29,6 +29,78 @@ function showFeedback(msg, kind) {
   box.hidden = !msg;
 }
 
+function createLoadingCard() {
+  const card = document.createElement("div");
+  card.className = "a2ui-loading-card";
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("class", "a2ui-loading-spinner");
+  svg.setAttribute("viewBox", "0 0 50 50");
+  svg.setAttribute("fill", "none");
+
+  const rects = [
+    { x: "5", y: "5", fill: "var(--primary, #3b82f6)", begin: "0s" },
+    { x: "27", y: "5", fill: "var(--accent, #10b981)", begin: "0.2s" },
+    { x: "27", y: "27", fill: "var(--primary, #3b82f6)", begin: "0.4s" },
+    { x: "5", y: "27", fill: "var(--accent, #10b981)", begin: "0.6s" }
+  ];
+  for (const r of rects) {
+    const rect = document.createElementNS(svgNS, "rect");
+    rect.setAttribute("x", r.x);
+    rect.setAttribute("y", r.y);
+    rect.setAttribute("width", "18");
+    rect.setAttribute("height", "18");
+    rect.setAttribute("rx", "4");
+    rect.setAttribute("fill", r.fill);
+    const anim = document.createElementNS(svgNS, "animate");
+    anim.setAttribute("attributeName", "opacity");
+    anim.setAttribute("values", "1;0.2;1");
+    anim.setAttribute("dur", "1s");
+    anim.setAttribute("repeatCount", "indefinite");
+    anim.setAttribute("begin", r.begin);
+    rect.appendChild(anim);
+    svg.appendChild(rect);
+  }
+  card.appendChild(svg);
+
+  const title = document.createElement("h4");
+  title.className = "a2ui-loading-title";
+  title.textContent = "LegoLoop em Processamento";
+  card.appendChild(title);
+
+  const text = document.createElement("p");
+  text.id = "a2ui-loading-text";
+  text.className = "a2ui-loading-text";
+  text.textContent = "O motor esta avaliando as respostas e atualizando o modelo mental...";
+  card.appendChild(text);
+
+  return card;
+}
+
+function showLoading(msg) {
+  let overlay = document.getElementById("a2ui-loading-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "a2ui-loading-overlay";
+    overlay.className = "a2ui-loading-overlay";
+    overlay.appendChild(createLoadingCard());
+    document.body.appendChild(overlay);
+  }
+  const textEl = document.getElementById("a2ui-loading-text");
+  if (textEl && msg) {
+    textEl.textContent = msg;
+  }
+  overlay.classList.add("a2ui-loading-overlay--active");
+}
+
+function hideLoading() {
+  const overlay = document.getElementById("a2ui-loading-overlay");
+  if (overlay) {
+    overlay.classList.remove("a2ui-loading-overlay--active");
+  }
+}
+
 async function sendAction(action) {
   if (!sessionId) {
     return;
@@ -37,6 +109,10 @@ async function sendAction(action) {
   const btns = rootEl.querySelectorAll("button");
   btns.forEach((b) => { b.disabled = true; });
   statusEl.textContent = "Processando...";
+  const msgLoading = action && action.name === "stop_gate_decision"
+    ? "Aplicando decisão do Stop-Gate e estruturando o processo..."
+    : "O motor de IA está analisando sua resposta e calibrando a confiança...";
+  showLoading(msgLoading);
   showFeedback("Enviando resposta e aguardando o motor...", "info");
   try {
     const res = await fetch(url, {
@@ -48,6 +124,7 @@ async function sendAction(action) {
       const errText = await res.text();
       showFeedback("Erro (" + res.status + "): " + errText, "error");
       statusEl.textContent = "Erro";
+      hideLoading();
     } else {
       showFeedback("", "info");
       statusEl.textContent = "Conectado";
@@ -55,6 +132,7 @@ async function sendAction(action) {
   } catch (_err) {
     showFeedback("Sem conexao com o servidor da sessao.", "error");
     statusEl.textContent = "Desconectado";
+    hideLoading();
   } finally {
     btns.forEach((b) => { b.disabled = false; });
   }
@@ -110,6 +188,7 @@ function renderAll() {
 }
 
 processor.subscribe(({ surfaceId }) => {
+  hideLoading();
   const target = processor.getSurface(surfaceId);
   if (target && target.requiresAttention) {
     activeSurfaceId = surfaceId;

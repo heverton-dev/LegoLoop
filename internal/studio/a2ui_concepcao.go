@@ -72,9 +72,52 @@ func (s *Server) stopGateConcepcaoA2UI(ctx context.Context, act a2ui.Action) err
 	choice, _ := act.Payload["choice"].(string)
 	d := strings.TrimSpace(dec)
 	c := strings.TrimSpace(choice)
-	if d != "1" && d != "aprovar" && c != "1" {
+
+	if c == "0" || d == "cancelar" {
+		return s.cancelarConcepcaoA2UI(act)
+	}
+	if c == "2" || d == "personalizar" {
+		return s.personalizarConcepcaoA2UI(ctx, act)
+	}
+	if c == "1" || d == "aprovar" || d == "1" {
+		return s.aprovarConcepcaoA2UI(ctx, act)
+	}
+	return nil
+}
+
+func (s *Server) cancelarConcepcaoA2UI(act a2ui.Action) error {
+	s.setConcepcaoInterviewID(act.SessionID, "")
+	st := a2ui.ConcepcaoState{
+		SessionID:          act.SessionID,
+		SurfaceID:          a2ui.DefaultConcepcaoSurfaceID,
+		Confianca:          0,
+		Meta:               95,
+		Pergunta:           "Processo de concepção cancelado pelo usuário.",
+		Palpite:            "Inicie uma nova demanda quando desejar.",
+		AguardandoStopGate: false,
+	}
+	return a2ui.PublishConcepcao(s.A2UIHub(), st)
+}
+
+func (s *Server) personalizarConcepcaoA2UI(ctx context.Context, act a2ui.Action) error {
+	intvID := s.getConcepcaoInterviewID(act.SessionID)
+	if intvID == "" {
 		return nil
 	}
+	note, _ := act.Payload["note"].(string)
+	msg := strings.TrimSpace(note)
+	if msg == "" {
+		msg = "Desejo personalizar e ajustar os requisitos do espelho."
+	}
+	engine := s.getInterviewEngine(ctx)
+	turn, err := engine.Step(ctx, intvID, msg)
+	if err != nil {
+		return err
+	}
+	return a2ui.PublishConcepcao(s.A2UIHub(), turnToConcepcaoState(act.SessionID, turn, ""))
+}
+
+func (s *Server) aprovarConcepcaoA2UI(ctx context.Context, act a2ui.Action) error {
 	intvID := s.getConcepcaoInterviewID(act.SessionID)
 	if intvID == "" {
 		return nil
@@ -89,11 +132,12 @@ func (s *Server) stopGateConcepcaoA2UI(ctx context.Context, act a2ui.Action) err
 		rel = filepath.ToSlash(r)
 	}
 	st := a2ui.ConcepcaoState{
-		SessionID:  act.SessionID,
-		SurfaceID:  a2ui.DefaultConcepcaoSurfaceID,
-		Confianca:  100,
-		Meta:       95,
-		IntentPath: rel,
+		SessionID:          act.SessionID,
+		SurfaceID:          a2ui.DefaultConcepcaoSurfaceID,
+		Confianca:          100,
+		Meta:               95,
+		IntentPath:         rel,
+		AguardandoStopGate: false,
 	}
 	return a2ui.PublishConcepcao(s.A2UIHub(), st)
 }
@@ -117,6 +161,10 @@ func turnToConcepcaoState(sessID string, turn *interview.TurnResult, intentPath 
 		Palpite:            turn.Guess,
 		IntentPath:         intentPath,
 		AguardandoStopGate: turn.Status == interview.StatusCompleted,
+	}
+	if turn.Status == interview.StatusCompleted {
+		st.Pergunta = ""
+		st.Palpite = ""
 	}
 	if turn.Mirror != nil {
 		st.Espelho = map[string]string{

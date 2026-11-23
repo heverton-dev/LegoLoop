@@ -90,6 +90,7 @@ func buildConcepcaoComponents(st ConcepcaoState, meta int) []ComponentRef {
 				"target":     meta,
 				"turno":      st.Turno,
 				"turn":       st.Turno,
+				"concluido":  st.Confianca >= meta,
 				"lacunas":    append([]string(nil), st.Lacunas...),
 				"gaps":       append([]string(nil), st.Lacunas...),
 			},
@@ -154,12 +155,27 @@ func buildEspelhopainels(espelho map[string]string) []ComponentRef {
 			ID:   "concepcao-espelho-" + k,
 			Kind: "Panel",
 			Props: map[string]any{
-				"title": k,
+				"title": rotuloHumano(k),
 				"body":  espelho[k],
 			},
 		})
 	}
 	return painels
+}
+
+func rotuloHumano(k string) string {
+	rotulos := map[string]string{
+		"resultado_esperado":      "Resultado Esperado",
+		"quem_se_beneficia":       "Público Beneficiado",
+		"por_que_agora":           "Motivação (Por que agora?)",
+		"criterio_de_sucesso":     "Critérios de Sucesso",
+		"restricoes_inegociaveis": "Restrições Inegociáveis",
+		"fora_de_escopo":          "Fora de Escopo",
+	}
+	if r, ok := rotulos[k]; ok {
+		return r
+	}
+	return strings.Title(strings.ReplaceAll(k, "_", " "))
 }
 
 func buildStopGateComponent() ComponentRef {

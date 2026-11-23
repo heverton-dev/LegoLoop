@@ -75,13 +75,18 @@ function renderProgressMeter({ props }) {
   const raw = Number(props.percent ?? props.confidence ?? props.confianca ?? 0);
   const pct = Number.isFinite(raw) ? Math.max(0, Math.min(100, Math.round(raw))) : 0;
   const meta = Number(props.target ?? props.meta ?? 95);
+  const isConcluido = Boolean(props.concluido || (Number.isFinite(pct) && pct >= meta));
+
+  if (isConcluido) {
+    painel.classList.add("lego-progress--complete");
+  }
 
   const header = el("header", "lego-painel__header");
-  header.appendChild(el("h3", "a2ui-painel__title", props.label || ("Confianca (" + pct + "% de " + meta + "%)")));
-  header.appendChild(el("span", "pill lego-progress__value", pct + "%"));
+  header.appendChild(el("h3", "a2ui-painel__title", props.label || (isConcluido ? "Meta de Confianca Atingida (95%+)" : ("Confianca (" + pct + "% de " + meta + "%)"))));
+  header.appendChild(el("span", "pill lego-progress__value" + (isConcluido ? " pill--success" : ""), (isConcluido ? "OK " : "") + pct + "%"));
   painel.appendChild(header);
 
-  const bar = el("progress", "lego-progress__bar");
+  const bar = el("progress", "lego-progress__bar" + (isConcluido ? " lego-progress__bar--complete" : ""));
   bar.max = 100;
   bar.value = pct;
   painel.appendChild(bar);
