@@ -1,0 +1,54 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-planejamento",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-planejamento",
+      "comandos_cli": [
+        "legoloop fabricar plano",
+        "/legoloop-planejamento"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-planejamento",
+    "etapas": [
+      "gerar_plano",
+      "stop_gate_03"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "gerar_plano",
+      "palavras_chave": [
+        "gerar plano",
+        "gerar o plano",
+        "gerar o plano, a rota e o dag",
+        "gerar-plano",
+        "fabricar plano",
+        "gerar plan",
+        "gerar route",
+        "gerar dag",
+        "planejamento"
+      ],
+      "slash_command": "/legoloop-planejamento-gerar-plano",
+      "flag_cli": "--etapa gerar_plano"
+    },
+    {
+      "id": "stop_gate_03",
+      "palavras_chave": [
+        "stop gate 03",
+        "stop-gate-03"
+      ],
+      "slash_command": "/legoloop-planejamento-stop-gate-03",
+      "flag_cli": "--etapa stop_gate_03"
+    }
+  ],
+  "pontos_entrada": [
+    "cli:legoloop fabricar plano",
+    "chat:/legoloop-planejamento",
+    "studio:Planejamento"
+  ]
+}

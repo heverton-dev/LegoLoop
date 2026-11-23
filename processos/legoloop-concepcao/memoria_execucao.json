@@ -1,6 +1,14 @@
 {
   "schema_version": "memoria_execucao.v1",
   "processo": "legoloop-concepcao",
-  "sessoes": {},
-  "atualizado_em": "2026-11-18T20:00:00Z"
+  "sessoes": {
+    "sess_1": {
+      "processo": "legoloop-concepcao",
+      "sessao_id": "sess_1",
+      "pid": 27912,
+      "etapa_atual": "executando",
+      "proximo_passo": "verificar_operador",
+      "atualizado_em": "2026-11-23T14:39:30.1223277Z"
+    }
+  }
 }

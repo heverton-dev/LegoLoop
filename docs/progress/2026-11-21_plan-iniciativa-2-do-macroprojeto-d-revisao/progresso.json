@@ -2,14 +2,14 @@
   "schema": "progresso.v1",
   "iniciativa": "I02",
   "plano": "docs/plans/2026-11-21_PLAN_INICIATIVA_2_DO_MACROPROJETO_D_REVISAO.md",
-  "atualizado_em": "2026-11-22T22:04:10Z",
+  "atualizado_em": "2026-11-23T14:11:00Z",
   "resumo": {
     "total": 22,
-    "aprovados": 4,
-    "em_andamento": 1,
+    "aprovados": 22,
+    "em_andamento": 0,
     "reprovados": 0,
     "bloqueados": 0,
-    "pendentes": 17
+    "pendentes": 0
   },
   "tickets": [
     {
@@ -91,11 +91,11 @@
       "id": "TICK-I2-02.1",
       "epico": "E02",
       "titulo": "Criar fabricar plano que grava PLAN, ROUTE e DAG em um comando",
-      "estado": "IN_PROGRESS",
-      "responsavel": "i02-e02-fabricar-plano",
+      "estado": "PASSED",
+      "responsavel": "i02-e02-tick01",
       "comando": "go test ./internal/cli/ -run TestFabricarPlano",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/cli\t0.048s |",
       "alvos": [
         "internal/cli/fabricar_plano.go",
         "internal/cli/fabricar_plano_test.go",
@@ -105,17 +105,17 @@
         "AC-E02.1",
         "AC-NF.1"
       ],
-      "atualizado_em": "2026-11-22T22:04:10Z"
+      "atualizado_em": "2026-11-23T09:26:11Z"
     },
     {
       "id": "TICK-I2-02.2",
       "epico": "E02",
       "titulo": "Recusar sem INTENT aprovada com exit 2 e sem gravar nada",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "i02-e02-tick02",
       "comando": "go test ./internal/cli/ -run TestFabricarPlanoRecusa",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/cli\t0.024s |",
       "alvos": [
         "internal/cli/fabricar_plano.go",
         "internal/cli/fabricar_plano_test.go"
@@ -123,17 +123,17 @@
       "criterios": [
         "AC-E02.2"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T09:41:26Z"
     },
     {
       "id": "TICK-I2-02.3",
       "epico": "E02",
       "titulo": "Tornar o modo estrito o padrão e criar o flag --permissivo",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "i02-e02-tick03",
       "comando": "go test ./internal/cli/ -run TestFabricarPlanoEstrito",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/cli\t0.041s",
       "alvos": [
         "internal/cli/fabricar_plano.go",
         "internal/cli/fabricar_plano_test.go"
@@ -141,36 +141,35 @@
       "criterios": [
         "AC-E02.3"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T09:55:00Z"
     },
     {
       "id": "TICK-I2-02.4",
       "epico": "E02",
       "titulo": "Gravar PLAN, ROUTE e DAG de forma atômica: falha em qualquer etapa não deixa arquivo",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "i02-e02-tick04",
       "comando": "go test ./internal/cli/ -run TestFabricarPlanoAtomico",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/cli\t0.039s",
       "alvos": [
         "internal/cli/fabricar_plano.go",
-        "internal/cli/fabricar_plano_atomico.go",
         "internal/cli/fabricar_plano_test.go"
       ],
       "criterios": [
         "AC-E02.4"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T10:10:00Z"
     },
     {
       "id": "TICK-I2-02.5",
       "epico": "E02",
       "titulo": "Remover legoloop plano e trocar toda referência por fabricar plano",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "i02-e02-tick05",
       "comando": "go test ./internal/cli/...",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/cli\t37.452s |",
       "alvos": [
         "internal/cli/plano.go",
         "internal/cli/plano_test.go",
@@ -182,17 +181,17 @@
       "criterios": [
         "AC-E02.5"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T10:25:43Z"
     },
     {
       "id": "TICK-I2-03.1",
       "epico": "E03",
       "titulo": "Criar fabricar spec que grava a SPEC a partir de uma INTENT aprovada",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "i02-e03-tick01",
       "comando": "go test ./internal/cli/ -run TestFabricarSpec",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok github.com/heverton-dev/LegoLoop/internal/cli (TestFabricarSpec)",
       "alvos": [
         "internal/cli/fabricar_spec.go",
         "internal/cli/fabricar_spec_test.go"
@@ -200,17 +199,17 @@
       "criterios": [
         "AC-E03.1"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T10:48:30Z"
     },
     {
       "id": "TICK-I2-03.2",
       "epico": "E03",
       "titulo": "Recusar INTENT não aprovada com exit 2 sem chamar o LLM",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/cli/ -run TestFabricarSpecRecusa",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/cli\t0.025s |",
       "alvos": [
         "internal/cli/fabricar_spec.go",
         "internal/cli/fabricar_spec_test.go"
@@ -218,17 +217,17 @@
       "criterios": [
         "AC-E03.2"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T11:01:41Z"
     },
     {
       "id": "TICK-I2-03.3",
       "epico": "E03",
       "titulo": "Criar o Processo legoloop-especificacao com contrato, nascimento 5 de 5 e Registro da Espinha",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "i02-e03-tick03",
       "comando": "legoloop validate processos/legoloop-especificacao/pipeline.dag.json \u0026\u0026 legoloop espinha verificar",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "legoloop validate processos/legoloop-especificacao/pipeline.dag.json (exit 0) \u0026\u0026 legoloop espinha verificar (exit 0)",
       "alvos": [
         "processos/legoloop-especificacao/pipeline.dag.json",
         "processos/legoloop-especificacao/triagem.json",
@@ -241,17 +240,17 @@
         "AC-E03.3",
         "AC-E03.4"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T11:22:00Z"
     },
     {
       "id": "TICK-I2-04.1",
       "epico": "E04",
       "titulo": "Criar o Processo legoloop-planejamento com contrato, nascimento 5 de 5 e Registro da Espinha",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "legoloop validate processos/legoloop-planejamento/pipeline.dag.json \u0026\u0026 legoloop espinha verificar",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "✓ legoloop-planejamento v1.0.0 — 2 nós válidos, sem ciclos |   camada 1: gerar_plano |   camada 2: stop_gate_03 |",
       "alvos": [
         "processos/legoloop-planejamento/pipeline.dag.json",
         "processos/legoloop-planejamento/triagem.json",
@@ -264,34 +263,34 @@
         "AC-E04.1",
         "AC-E04.2"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T11:37:26Z"
     },
     {
       "id": "TICK-I2-04.2",
       "epico": "E04",
       "titulo": "Fazer o DAG do planejamento chamar fabricar plano em vez de duplicar a lógica",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "grep -c \"legoloop fabricar plano\" processos/legoloop-planejamento/pipeline.dag.json",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "2 |",
       "alvos": [
         "processos/legoloop-planejamento/pipeline.dag.json"
       ],
       "criterios": [
         "AC-E04.3"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T11:47:24Z"
     },
     {
       "id": "TICK-I2-05.1",
       "epico": "E05",
       "titulo": "Rotear gerar a SPEC para legoloop-especificacao sem LLM",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/triagem/ -run TestTriagemRoteiaEspecificacao",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/triagem\t0.015s |",
       "alvos": [
         "internal/triagem/especificacao_test.go",
         "processos/legoloop-especificacao/triagem.json"
@@ -299,17 +298,17 @@
       "criterios": [
         "AC-E05.1"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T12:37:17Z"
     },
     {
       "id": "TICK-I2-05.2",
       "epico": "E05",
       "titulo": "Rotear gerar o PLAN, a ROUTE e o DAG para legoloop-planejamento sem LLM",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/triagem/ -run TestTriagemRoteiaPlanejamento",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/triagem\t0.010s |",
       "alvos": [
         "internal/triagem/planejamento_test.go",
         "processos/legoloop-planejamento/triagem.json"
@@ -317,34 +316,34 @@
       "criterios": [
         "AC-E05.2"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T12:44:00Z"
     },
     {
       "id": "TICK-I2-05.3",
       "epico": "E05",
       "titulo": "Provar que a triagem não roubou entradas dos Processos existentes",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/triagem/...",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/triagem\t0.288s |",
       "alvos": [
         "internal/triagem/triagem_test.go"
       ],
       "criterios": [
         "AC-E05.3"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T12:55:43Z"
     },
     {
       "id": "TICK-I2-06.1",
       "epico": "E06",
       "titulo": "Criar legoloop-ciclo 5 de 5, registrar na Espinha e compor concepção, especificação e planejamento",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "legoloop validate processos/legoloop-ciclo/pipeline.dag.json \u0026\u0026 legoloop espinha verificar",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "✓ legoloop-ciclo v1.0.0 — 3 nós válidos, sem ciclos |   camada 1: concepcao |   camada 2: especificacao |   camada 3: planejamento |",
       "alvos": [
         "processos/legoloop-ciclo/pipeline.dag.json",
         "processos/legoloop-ciclo/triagem.json",
@@ -356,34 +355,34 @@
       "criterios": [
         "AC-E06.1"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T13:25:40Z"
     },
     {
       "id": "TICK-I2-06.2",
       "epico": "E06",
       "titulo": "Provar que o produces de cada subprocesso casa com o consumes do seguinte",
-      "estado": "PENDING",
+      "estado": "PASSED",
       "responsavel": "",
       "comando": "go test ./internal/cli/ -run TestCicloContratoEncadeia",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/cli\t0.022s |",
       "alvos": [
         "internal/cli/ciclo_contrato_test.go"
       ],
       "criterios": [
         "AC-E06.2"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T13:38:17Z"
     },
     {
       "id": "TICK-I2-07.1",
       "epico": "E07",
       "titulo": "Atualizar AGENTS, README e MEMORY com os Processos novos",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "i02-e07-tick01",
       "comando": "grep -c \"fabricar plano\" AGENTS.md README.md MEMORY.md",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "AGENTS.md, AGENTS_COMPLETO.md, README.md e MEMORY.md atualizados; grep fabricar plano \u003e 0; espinha verificar exit 0",
       "alvos": [
         "AGENTS.md",
         "docs/governanca/AGENTS_COMPLETO.md",
@@ -393,17 +392,17 @@
       "criterios": [
         "AC-E07.1"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T13:54:48Z"
     },
     {
       "id": "TICK-I2-07.2",
       "epico": "E07",
       "titulo": "Registrar os anticorpos da I02 nos Processos novos",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "i02-e07-tick02",
       "comando": "legoloop anticorpos status legoloop-especificacao",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "anticorpos.json e ANTICORPOS.md validados com upstream_ok e specgen; status exit 0",
       "alvos": [
         "processos/legoloop-especificacao/anticorpos.json",
         "processos/legoloop-especificacao/ANTICORPOS.md"
@@ -411,26 +410,26 @@
       "criterios": [
         "AC-E07.2"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T14:03:00Z"
     },
     {
       "id": "TICK-I2-07.3",
       "epico": "E07",
       "titulo": "Atualizar emendas, prompt de execução da I02 e rodar o portão completo",
-      "estado": "PENDING",
-      "responsavel": "",
-      "comando": "go test -count=1 ./...",
-      "exit_code": -1,
-      "prova": "",
+      "estado": "PASSED",
+      "responsavel": "i02-e07-tick03",
+      "comando": "go test -count=1 ./... && legoloop espinha verificar && go run ./tools/funclen internal",
+      "exit_code": 0,
+      "prova": "go test -count=1 ./... exit 0; legoloop espinha verificar exit 0; funclen internal exit 0",
       "alvos": [
         "docs/intents/2026-11-21_EMENDA_2_MACROPLANO.md",
-        "docs/prompts"
+        "docs/prompts/2026-11-21_PROMPT_EXECUCAO_I02.md"
       ],
       "criterios": [
         "AC-E07.3",
         "AC-NF.2"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T14:11:00Z"
     }
   ]
 }

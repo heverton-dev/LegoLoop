@@ -1,0 +1,190 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "id": "legoloop-ciclo",
+  "name": "legoloop-ciclo",
+  "version": "1.0.0",
+  "schema_version": 2,
+  "date": "2026-11-23",
+  "description": "Processo composto que encadeia concepção, especificação e planejamento.",
+  "upstream_signatures": {
+    "ideia": "entrada em linguagem natural do usuário",
+    "template_plan": "docs/templates/TEMPLATE_PLAN.md"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 1800,
+    "rollback_on_failure": "abort_and_pause",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "none",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "concepcao",
+      "name": "Subprocesso de Concepção e Alinhamento de Intenção",
+      "nature": "micro",
+      "type": "subprocesso",
+      "ref": "legoloop-concepcao",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "opus",
+        "harness": "claude",
+        "via": "9router"
+      },
+      "timeout_sec": 1800,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [],
+      "context_out": [
+        "docs/intents/INTENT.md"
+      ],
+      "output": {
+        "artifact": "docs/intents/INTENT.md",
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      },
+      "spec_ref": "AC-E06.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 1800
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "file_exists('docs/intents/INTENT.md')"
+      },
+      "depends_on": []
+    },
+    {
+      "id": "especificacao",
+      "name": "Subprocesso de Especificação Técnica e Critérios de Aceite",
+      "nature": "micro",
+      "type": "subprocesso",
+      "ref": "legoloop-especificacao",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "opus",
+        "harness": "claude",
+        "via": "9router"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "docs/intents/INTENT.md"
+      ],
+      "context_out": [
+        "docs/specs/SPEC.md"
+      ],
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      },
+      "spec_ref": "AC-E06.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "file_exists('docs/specs/SPEC.md')"
+      },
+      "depends_on": [
+        "concepcao"
+      ]
+    },
+    {
+      "id": "planejamento",
+      "name": "Subprocesso de Planejamento Formal de Tickets e DAG",
+      "nature": "micro",
+      "type": "subprocesso",
+      "ref": "legoloop-planejamento",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "opus",
+        "harness": "claude",
+        "via": "9router"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/plans/PLAN.md"
+      ],
+      "output": {
+        "artifact": "docs/plans/PLAN.md",
+        "gate": "file_exists('docs/plans/PLAN.md')"
+      },
+      "spec_ref": "AC-E06.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "file_exists('docs/plans/PLAN.md')"
+      },
+      "depends_on": [
+        "especificacao"
+      ]
+    }
+  ]
+}

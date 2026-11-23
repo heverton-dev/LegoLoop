@@ -186,3 +186,168 @@ func TestValidarExecutoresCoerentesEDesconhecido(t *testing.T) {
 		t.Fatalf("esperava ErrExecutorIncoerente para executor desconhecido, recebeu: %v", err)
 	}
 }
+
+func TestExecutorCoerenteEDerivado(t *testing.T) {
+	t.Run("DerivacaoEValidos", func(t *testing.T) {
+		testExecutorDerivacaoEValidos(t)
+	})
+	t.Run("RecusaIncoerentes", func(t *testing.T) {
+		testExecutorRecusaIncoerentes(t)
+	})
+}
+
+func testExecutorDerivacaoEValidos(t *testing.T) {
+	fixture := `{
+		"name": "dag-deriva-coerente",
+		"trigger": {"type": "manual"},
+		"nodes": [
+			{"id": "n-stop-ausente", "type": "stop_gate", "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/stop1.md", "gate": "file_exists('out/stop1.md')"}},
+			{"id": "n-script-ausente", "type": "script", "command": ["echo", "1"], "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/sc1.txt", "gate": "file_exists('out/sc1.txt')"}},
+			{"id": "n-skill-ausente", "type": "skill", "ref": "legoloop-especificar", "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/sk1.md", "gate": "file_exists('out/sk1.md')"}},
+			{"id": "n-unit-ausente", "type": "unit_no", "isolation": {"write_boundary": "strict"}, "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/un1.md", "gate": "file_exists('out/un1.md')"}},
+			{"id": "n-mcp-ausente", "type": "mcp", "ref": "codebase-memory-mcp", "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/mcp1.json", "gate": "file_exists('out/mcp1.json')"}},
+			{"id": "n-sub-ausente", "type": "subprocesso", "ref": "legoloop-sub", "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/sub1.md", "gate": "file_exists('out/sub1.md')"}},
+			{"id": "n-stop-coerente", "type": "stop_gate", "isolation": {"executor": "local_process"}, "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/stop2.md", "gate": "file_exists('out/stop2.md')"}},
+			{"id": "n-script-hermetic", "type": "script", "command": ["echo", "2"], "isolation": {"executor": "orchestrix_hermetic"}, "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/sc2.txt", "gate": "file_exists('out/sc2.txt')"}},
+			{"id": "n-unit-swarm", "type": "unit_no", "isolation": {"executor": "native_swarm", "write_boundary": "strict"}, "routing": {"mode": "auto", "combo": "padrao"}, "output": {"artifact": "out/un2.md", "gate": "file_exists('out/un2.md')"}}
+		]
+	}`
+	d, err := Parse([]byte(fixture))
+	if err != nil {
+		t.Fatalf("Parse falhou: %v", err)
+	}
+	esperados := map[string]string{
+		"n-stop-ausente":    ExecutorLocalProcess,
+		"n-script-ausente":  ExecutorOrchestrixHermetic,
+		"n-skill-ausente":   ExecutorOrchestrixHermetic,
+		"n-unit-ausente":    ExecutorOrchestrixHermetic,
+		"n-mcp-ausente":     ExecutorOrchestrixHermetic,
+		"n-sub-ausente":     ExecutorOrchestrixHermetic,
+		"n-stop-coerente":   ExecutorLocalProcess,
+		"n-script-hermetic": ExecutorOrchestrixHermetic,
+		"n-unit-swarm":      ExecutorNativeSwarm,
+	}
+	for id, want := range esperados {
+		n := d.Node(id)
+		if n == nil {
+			t.Fatalf("nó %q não encontrado", id)
+		}
+		got, _ := n.Isolation["executor"].(string)
+		if got != want {
+			t.Errorf("nó %q: executor = %q, want %q", id, got, want)
+		}
+	}
+}
+
+func testExecutorRecusaIncoerentes(t *testing.T) {
+	casos := []struct {
+		nome     string
+		tipo     NodeType
+		executor string
+	}{
+		{"stop_gate com orchestrix_hermetic", TypeStopGate, ExecutorOrchestrixHermetic},
+		{"script com local_process", TypeScript, ExecutorLocalProcess},
+		{"unit_no com xyz", TypeUnitNo, "xyz"},
+		{"script com human_in_the_loop", TypeScript, "human_in_the_loop"},
+	}
+	for _, tc := range casos {
+		d := &DAG{
+			Name: "dag-invalido",
+			Nodes: []Node{
+				{
+					ID:        "n-teste",
+					Type:      tc.tipo,
+					Isolation: map[string]any{"executor": tc.executor},
+				},
+			},
+		}
+		err := d.ValidarExecutores()
+		if err == nil {
+			t.Fatalf("esperava erro para %s", tc.nome)
+		}
+		if !errors.Is(err, ErrExecutorIncoerente) {
+			t.Fatalf("esperava ErrExecutorIncoerente para %s, recebeu %v", tc.nome, err)
+		}
+	}
+}
+
+func TestValidarExecutoresListaTodos(t *testing.T) {
+	fixture := `{
+		"name": "dag-tres-incoerentes",
+		"trigger": {"type": "manual"},
+		"nodes": [
+			{
+				"id": "n-sg-invalido",
+				"type": "stop_gate",
+				"isolation": {"executor": "orchestrix_hermetic"},
+				"routing": {"mode": "auto", "combo": "padrao"},
+				"output": {"artifact": "out/sg.md", "gate": "file_exists('out/sg.md')"}
+			},
+			{
+				"id": "n-sc-invalido",
+				"type": "script",
+				"command": ["echo", "1"],
+				"depends_on": ["n-sg-invalido"],
+				"isolation": {"executor": "local_process"},
+				"routing": {"mode": "auto", "combo": "padrao"},
+				"output": {"artifact": "out/sc.txt", "gate": "file_exists('out/sc.txt')"}
+			},
+			{
+				"id": "n-un-desconhecido",
+				"type": "unit_no",
+				"depends_on": ["n-sc-invalido"],
+				"isolation": {"executor": "xyz", "write_boundary": "strict"},
+				"routing": {"mode": "auto", "combo": "padrao"},
+				"output": {"artifact": "out/un.md", "gate": "file_exists('out/un.md')"}
+			},
+			{
+				"id": "n-ok-nivel3",
+				"type": "skill",
+				"ref": "legoloop-especificar",
+				"depends_on": ["n-un-desconhecido"],
+				"isolation": {"executor": "native_swarm"},
+				"routing": {"mode": "auto", "combo": "padrao"},
+				"output": {"artifact": "out/sk.md", "gate": "file_exists('out/sk.md')"}
+			}
+		]
+	}`
+	_, err := Parse([]byte(fixture))
+	if err == nil {
+		t.Fatal("esperava erro em Parse com nós incoerentes, recebeu nil")
+	}
+	if !errors.Is(err, ErrExecutorIncoerente) {
+		t.Fatalf("esperava errors.Is(err, ErrExecutorIncoerente), recebeu: %v", err)
+	}
+	validarLinhasErroIncoerente(t, err)
+}
+
+func validarLinhasErroIncoerente(t *testing.T, err error) {
+	linhas := strings.Split(strings.TrimSpace(err.Error()), "\n")
+	var achouSG, achouSC, achouUN bool
+	for _, l := range linhas {
+		if strings.Contains(l, "n-ok-nivel3") {
+			t.Errorf("nó válido n-ok-nivel3 não deve aparecer no erro: %s", l)
+		}
+		if strings.Contains(l, "n-sg-invalido") {
+			achouSG = true
+			conferirCamposLinha(t, l, "stop_gate", "orchestrix_hermetic", "local_process")
+		}
+		if strings.Contains(l, "n-sc-invalido") {
+			achouSC = true
+			conferirCamposLinha(t, l, "script", "local_process", "orchestrix_hermetic, native_swarm")
+		}
+		if strings.Contains(l, "n-un-desconhecido") {
+			achouUN = true
+			conferirCamposLinha(t, l, "unit_no", "xyz", "orchestrix_hermetic, native_swarm")
+		}
+	}
+	if !achouSG || !achouSC || !achouUN {
+		t.Fatalf("esperava 3 nós inválidos listados, achou SG=%v SC=%v UN=%v no erro:\n%s", achouSG, achouSC, achouUN, err.Error())
+	}
+}
+
+func conferirCamposLinha(t *testing.T, linha, tipo, recebido, aceitos string) {
+	if !strings.Contains(linha, tipo) || !strings.Contains(linha, recebido) || !strings.Contains(linha, aceitos) {
+		t.Errorf("linha não contém campos esperados (tipo=%s, rec=%s, aceitos=%s): %s", tipo, recebido, aceitos, linha)
+	}
+}

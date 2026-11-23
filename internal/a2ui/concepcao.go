@@ -183,7 +183,7 @@ func buildStopGateComponent() ComponentRef {
 		ID:   "concepcao-stop-gate-01",
 		Kind: "LegoStopGatePanel",
 		Props: map[string]any{
-			"title":   "Stop-Gate 01 — Aprovação da INTENT",
+			"title":   "Stop-Gate 01 • Aprovação da INTENT",
 			"action":  "stop_gate_decision",
 			"options": []string{"[1] seguir", "[2] personalizar", "[0] cancelar"},
 		},

@@ -25,7 +25,7 @@ Você vai executar o plano **I02, Processos de especificação e de planejamento
 - Todo achado é corrigido na execução, com teste Red, e registrado como anticorpo: `legoloop anticorpos registrar <slug> --pacote P --erro E --causa C --antidoto A`.
 - Commit e push só quando o usuário pedir. Nunca imprima nem grave segredos. Responda em PT-BR com acentuação correta.
 
-**Decisões já tomadas (Stop-Gate 02):** as skills `aidd-*` do Cofre global não são editadas (os Processos novos declaram os contratos); `fabricar spec` e `fabricar plano` são subcomandos de `fabricar`; `legoloop plano` é removido sem alias; `--estrito` é o padrão, com `--permissivo`.
+**Decisões já tomadas (Stop-Gate 02):** as skills `aidd-*` do Cofre global não são editadas (os Processos novos declaram os contratos); `fabricar spec` e `fabricar plano` são subcomandos de `fabricar`; `legoloop fabricar plano` substitui o comando antigo sem alias; `--estrito` é o padrão, com `--permissivo`.
 
 **Fatos que você deve conferir, não supor:**
 - O `legoloop compor <nome> <ref>` acrescenta o subprocesso a um Processo que já existe: crie o `legoloop-ciclo` com `legoloop fabricar ciclo` antes.

@@ -11,20 +11,31 @@ import (
 )
 
 func (s *Server) handleA2UIConcepcaoPage(w http.ResponseWriter, r *http.Request) {
-	sess := s.A2UIHub().CreateSession("legoloop-concepcao")
+	if err := s.garantirConcepcaoSessao("sess_1"); err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	http.Redirect(w, r, "/sessao/sess_1", http.StatusSeeOther)
+}
+
+func (s *Server) garantirConcepcaoSessao(sessID string) error {
+	hub := s.A2UIHub()
+	if _, err := hub.GetSession(sessID); err == nil {
+		return nil
+	}
+	hub.EnsureSession(sessID, "legoloop-concepcao")
 	initState := a2ui.ConcepcaoState{
-		SessionID: sess.ID,
+		SessionID: sessID,
 		SurfaceID: a2ui.DefaultConcepcaoSurfaceID,
 		Meta:      95,
 		Pergunta:  "Qual ideia ou demanda você deseja conceber no LegoLoop?",
 		Palpite:   "Descreva o problema, quem se beneficia e o resultado esperado.",
 	}
-	if err := a2ui.PublishConcepcao(s.A2UIHub(), initState); err != nil {
-		writeError(w, http.StatusInternalServerError, err.Error())
-		return
+	if err := a2ui.PublishConcepcao(hub, initState); err != nil {
+		return err
 	}
-	s.setConcepcaoInterviewID(sess.ID, "")
-	http.Redirect(w, r, "/sessao/"+sess.ID, http.StatusSeeOther)
+	s.setConcepcaoInterviewID(sessID, "")
+	return nil
 }
 
 func (s *Server) dispatchConcepcaoAction(ctx context.Context, act a2ui.Action) error {

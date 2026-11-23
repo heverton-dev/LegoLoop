@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LegoLoop • Gestao de Processos</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/components/sessao.css">
+</head>
+<body class="a2ui-page">
+  <header class="stage-topbar" role="banner">
+    <div class="stage-topbar__left">
+      <strong class="brand">LegoLoop Studio</strong>
+      <nav aria-label="Navegacao principal">
+        <a class="btn" href="/">Canvas</a>
+        <a class="btn active" href="/processos" aria-current="page">Processos</a>
+        <a class="btn" href="/inventario">Inventario</a>
+        <a class="btn" href="/swarm">Swarm</a>
+      </nav>
+    </div>
+    <div class="stage-topbar__right">
+      <span id="processos-count" class="pill">0 processos ativos</span>
+      <button id="btn-refresh" class="btn" type="button">Atualizar</button>
+      <button id="btn-theme-toggle" class="btn btn--sm btn--icon-ctrl" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false" title="Alternar tema"></button>
+    </div>
+  </header>
+
+  <main class="a2ui-main" style="max-width: 1040px; margin: 0 auto; width: 100%; padding: 24px 20px;">
+    <div style="margin-bottom: 24px;">
+      <h2 style="margin: 0 0 6px 0; font-size: 18px; font-weight: 700; color: var(--kf-text-primary);">Gestao de Processos em Execucao</h2>
+      <p style="margin: 0; font-size: 13px; color: var(--kf-text-secondary);">Monitoramento em tempo real de macroprocessos, etapas concorrentes e parada emergencial Andon Cord.</p>
+    </div>
+
+    <div id="processos-feedback" class="a2ui-feedback a2ui-feedback--info" hidden></div>
+
+    <div id="processos-lista" style="display: flex; flex-direction: column; gap: 12px;"></div>
+  </main>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <dialog id="dialog"></dialog>
+
+  <script src="/ui.js"></script>
+  <script type="module" src="/processos-vivos.js"></script>
+</body>
+</html>

@@ -87,6 +87,12 @@ func cmdFabricar(ctx context.Context, args []string, d Deps) int {
 	if len(args) > 0 && args[0] == "entrevista" {
 		return cmdEntrevista(ctx, args[1:], d)
 	}
+	if len(args) > 0 && args[0] == "plano" {
+		return cmdFabricarPlano(ctx, args[1:], d)
+	}
+	if len(args) > 0 && args[0] == "spec" {
+		return cmdFabricarSpec(ctx, args[1:], d)
+	}
 	var o fabricarOpts
 	fs := newFabricarFlags(&o)
 	name, rest := splitPositional(args)

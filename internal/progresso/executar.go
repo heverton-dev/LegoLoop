@@ -90,6 +90,9 @@ func ExecutorPadrao(ctx context.Context, dir, comando string) (int, string, erro
 
 func construirComando(ctx context.Context, comando string) *exec.Cmd {
 	if runtime.GOOS == "windows" {
+		if sh, err := exec.LookPath("sh"); err == nil {
+			return exec.CommandContext(ctx, sh, "-c", comando)
+		}
 		return exec.CommandContext(ctx, "cmd", "/c", comando)
 	}
 	return exec.CommandContext(ctx, "sh", "-c", comando)

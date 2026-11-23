@@ -13,7 +13,7 @@ atualizado_em: "2026-11-21T00:00:00Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 20 | 0 | 0 | 0 | 0 | 20 |
+| 20 | 1 | 0 | 0 | 0 | 19 |
 
 ## Ponto de Retomada (Em Andamento)
 
@@ -31,7 +31,6 @@ atualizado_em: "2026-11-21T00:00:00Z"
 
 | Ticket | Épico | Título | Critérios |
 |---|---|---|---|
-| `TICK-I3-01.1` | E01 | Consolidar testes de coerência executor-tipo, derivação de ausente no dag.Parse e listagem completa via ErrExecutorIncoerente | AC-E01.1, AC-E01.2 |
 | `TICK-I3-01.2` | E01 | Recusar subagents_allowed ephemeral fora do native_swarm com ErrExecutorIncoerente | AC-E01.3 |
 | `TICK-I3-01.3` | E01 | Exigir papel e command e recusar stop_gate no native_swarm com ErrExecutorIncoerente | AC-E01.4 |
 | `TICK-I3-01.4` | E01 | Provar que dag.Parse e legoloop validate recusam executor incoerente ou desconhecido | AC-E01.5 |
@@ -56,4 +55,4 @@ atualizado_em: "2026-11-21T00:00:00Z"
 
 | Ticket | Épico | Exit | Prova | Atualizado em |
 |---|---|---:|---|---|
-| nenhum | - | - | - | - |
+| `TICK-I3-01.1` | E01 | 0 | go test ./internal/dag/ -run "TestExecutorCoerenteEDerivado/TestValidarExecutoresListaTodos" (exit 0) | 2026-11-23T14:21:00Z |

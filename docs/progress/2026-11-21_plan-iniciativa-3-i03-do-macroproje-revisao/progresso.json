@@ -5,22 +5,22 @@
   "atualizado_em": "2026-11-21T00:00:00Z",
   "resumo": {
     "total": 20,
-    "aprovados": 0,
+    "aprovados": 1,
     "em_andamento": 0,
     "reprovados": 0,
     "bloqueados": 0,
-    "pendentes": 20
+    "pendentes": 19
   },
   "tickets": [
     {
       "id": "TICK-I3-01.1",
       "epico": "E01",
       "titulo": "Consolidar testes de coerência executor-tipo, derivação de ausente no dag.Parse e listagem completa via ErrExecutorIncoerente",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "i03-e01-tick01",
       "comando": "go test ./internal/dag/ -run \"TestExecutorCoerenteEDerivado|TestValidarExecutoresListaTodos\"",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "go test ./internal/dag/ -run \"TestExecutorCoerenteEDerivado|TestValidarExecutoresListaTodos\" (exit 0)",
       "alvos": [
         "internal/dag/executor.go",
         "internal/dag/executor_test.go"
@@ -29,7 +29,7 @@
         "AC-E01.1",
         "AC-E01.2"
       ],
-      "atualizado_em": "2026-11-21T00:00:00Z"
+      "atualizado_em": "2026-11-23T14:21:00Z"
     },
     {
       "id": "TICK-I3-01.2",

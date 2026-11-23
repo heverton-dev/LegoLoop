@@ -1,6 +1,22 @@
 {
+  "schema_version": "memoria_execucao.v1",
   "processo": "legoloop-fabricar",
-  "etapa_atual": "",
-  "proximo_passo": "",
-  "atualizado_em": "2026-11-20T11:57:00.0000000Z"
+  "sessoes": {
+    "legado": {
+      "processo": "legoloop-fabricar",
+      "sessao_id": "",
+      "pid": 0,
+      "etapa_atual": "",
+      "proximo_passo": "",
+      "atualizado_em": "2026-11-20T11:57:00Z"
+    },
+    "sess_2": {
+      "processo": "legoloop-fabricar",
+      "sessao_id": "sess_2",
+      "pid": 27912,
+      "etapa_atual": "executando",
+      "proximo_passo": "verificar_operador",
+      "atualizado_em": "2026-11-23T14:34:32.0984072Z"
+    }
+  }
 }

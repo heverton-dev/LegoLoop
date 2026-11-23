@@ -7,12 +7,20 @@ import (
 )
 
 func (s *Server) handleA2UIFabricarPage(w http.ResponseWriter, r *http.Request) {
-	sess := s.A2UIHub().CreateSession("legoloop-fabricar")
-	if err := s.publicarHierarquiaFabricar(sess.ID); err != nil {
+	if err := s.garantirFabricarSessao("sess_2"); err != nil {
 		writeError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	http.Redirect(w, r, "/sessao/"+sess.ID, http.StatusSeeOther)
+	http.Redirect(w, r, "/sessao/sess_2", http.StatusSeeOther)
+}
+
+func (s *Server) garantirFabricarSessao(sessID string) error {
+	hub := s.A2UIHub()
+	if _, err := hub.GetSession(sessID); err == nil {
+		return nil
+	}
+	hub.EnsureSession(sessID, "legoloop-fabricar")
+	return s.publicarHierarquiaFabricar(sessID)
 }
 
 func (s *Server) publicarHierarquiaFabricar(sessID string) error {
@@ -150,7 +158,7 @@ func envelopeFabricarStopGate(sessID string) a2ui.Envelope {
 				ID:   "gate-01-panel",
 				Kind: "LegoStopGatePanel",
 				Props: map[string]any{
-					"title":   "Stop-Gate 01 — Aprovação da INTENT do Fabricar",
+					"title":   "Stop-Gate 01 • Aprovação da INTENT do Fabricar",
 					"summary": "A concepção atingiu 95% de assertividade. Autoriza a transição para a Especificação do macroprocesso?",
 				},
 			},

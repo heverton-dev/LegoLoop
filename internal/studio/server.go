@@ -137,12 +137,16 @@ func handleFavicon(w http.ResponseWriter, _ *http.Request) {
 func (s *Server) registerStaticRoutes(mux *http.ServeMux) {
 	static, _ := fs.Sub(staticFS, "static")
 	files := http.FileServerFS(static)
-	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /processos.js", "GET /style.css", "GET /components/"} {
+	for _, p := range []string{"GET /{$}", "GET /app.js", "GET /ui.js", "GET /icons.js", "GET /inventory.js", "GET /search.js", "GET /virtual.js", "GET /palette.js", "GET /slots.js", "GET /inspector.js", "GET /fabricar.js", "GET /processos.js", "GET /processos-vivos.js", "GET /style.css", "GET /components/"} {
 		mux.Handle(p, files)
 	}
 	mux.HandleFunc("GET /favicon.ico", handleFavicon)
+	mux.HandleFunc("GET /processos", handlePage("processos.html"))
 	mux.HandleFunc("GET /inventario", handlePage("inventario.html"))
-	mux.HandleFunc("GET /sessao/{id}", handlePage("sessao.html"))
+	mux.HandleFunc("GET /sessao/{id}", func(w http.ResponseWriter, r *http.Request) {
+		s.garantirSessaoLaboratorio(r.PathValue("id"))
+		handlePage("sessao.html")(w, r)
+	})
 }
 
 func (s *Server) registerAPIRoutes(mux *http.ServeMux) {
@@ -193,6 +197,10 @@ func (s *Server) registerProcessoRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/processos/compor", s.handleProcessosCompor)
 	mux.HandleFunc("GET /api/dag", s.handleDAGStatus)
 	mux.HandleFunc("GET /api/dag/{id}", s.handleDAGGet)
+	mux.HandleFunc("GET /api/processos/ativos", s.handleProcessosAtivos)
+	mux.HandleFunc("POST /api/processos/{id}/andon", s.handleProcessoAndonPause)
+	mux.HandleFunc("POST /api/processos/{id}/resume", s.handleProcessoAndonResume)
+	mux.HandleFunc("POST /api/processos/{id}/cancel", s.handleProcessoAndonCancel)
 	mux.HandleFunc("GET /api/pecas", s.handlePecasListar)
 	mux.HandleFunc("POST /api/pecas/{id}/exec", s.handlePecasExec)
 }

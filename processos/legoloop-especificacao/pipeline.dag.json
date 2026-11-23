@@ -1,0 +1,146 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "id": "legoloop-especificacao",
+  "name": "legoloop-especificacao",
+  "version": "1.0.0",
+  "schema_version": 2,
+  "date": "2026-11-23",
+  "description": "Processo canônico de Especificação (legoloop-especificacao): gera formalmente a SPEC a partir de uma INTENT aprovada com trava de integridade upstream e validação mecânica de critérios de aceite.",
+  "upstream_signatures": {
+    "intent": "docs/intents/INTENT.md",
+    "template_spec": "docs/templates/TEMPLATE_SPEC.md"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_and_pause",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "none",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "gerar_spec",
+      "name": "Geração da SPEC formal pelo comando legoloop fabricar spec a partir da INTENT aprovada",
+      "nature": "micro",
+      "type": "script",
+      "command": [
+        "legoloop",
+        "fabricar",
+        "spec",
+        "--intent",
+        "docs/intents/INTENT.md"
+      ],
+      "ref": "legoloop fabricar spec",
+      "routing": {
+        "mode": "suggested",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "opus",
+        "harness": "claude",
+        "via": "9router"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "docs/intents/INTENT.md"
+      ],
+      "context_out": [
+        "docs/specs/SPEC.md"
+      ],
+      "output": {
+        "artifact": "docs/specs/SPEC.md",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "stop_gate_02",
+      "name": "Stop-Gate 02 humano de validação e aprovação da SPEC",
+      "nature": "nano",
+      "type": "stop_gate",
+      "depends_on": [
+        "gerar_spec"
+      ],
+      "routing": {
+        "mode": "manual",
+        "model": "haiku",
+        "effort": "low",
+        "fallback": "sonnet",
+        "harness": "claude",
+        "via": "9router"
+      },
+      "timeout_sec": 3600,
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "docs/specs/SPEC_APROVADA.md"
+      ],
+      "output": {
+        "artifact": "docs/specs/SPEC_APROVADA.md",
+        "gate": "prompt('Aprovar a SPEC gerada em docs/specs/SPEC.md?')"
+      },
+      "spec_ref": "AC-E03.3",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 3,
+        "timeout_seconds": 3600
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "prompt('Aprovar a SPEC gerada em docs/specs/SPEC.md?')"
+      }
+    }
+  ]
+}

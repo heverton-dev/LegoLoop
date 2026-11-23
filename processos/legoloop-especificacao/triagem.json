@@ -1,0 +1,49 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-especificacao",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-especificacao",
+      "comandos_cli": [
+        "legoloop fabricar spec",
+        "/legoloop-especificacao"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-especificacao",
+    "etapas": [
+      "gerar_spec",
+      "stop_gate_02"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "gerar_spec",
+      "palavras_chave": [
+        "gerar spec",
+        "gerar a spec",
+        "gerar-spec",
+        "fabricar spec"
+      ],
+      "slash_command": "/legoloop-especificacao-gerar-spec",
+      "flag_cli": "--etapa gerar_spec"
+    },
+    {
+      "id": "stop_gate_02",
+      "palavras_chave": [
+        "stop gate 02",
+        "stop-gate-02"
+      ],
+      "slash_command": "/legoloop-especificacao-stop-gate-02",
+      "flag_cli": "--etapa stop_gate_02"
+    }
+  ],
+  "pontos_entrada": [
+    "cli:legoloop fabricar spec",
+    "chat:/legoloop-especificacao",
+    "studio:Especificação"
+  ]
+}

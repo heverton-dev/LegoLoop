@@ -68,6 +68,9 @@ LegoLoop/
 ├── espinha/                 # Estado global da espinha (`registro.json`, `renomeados.json`, `cobertura.json`, `mutantes_justificados.json`)
 ├── skills/                  # Skills canônicas embutidas no binário (//go:embed via skills/embed.go)
 │   ├── legoloop-fabricar/   # Criação de processos (/legoloop-fabricar)
+│   ├── legoloop-especificacao/ # Geração de SPEC a partir de INTENT (/legoloop-especificacao)
+│   ├── legoloop-planejamento/  # Geração de PLAN, ROUTE e DAG (/legoloop-planejamento)
+│   ├── legoloop-ciclo/      # Encadeamento do ciclo concepção -> especificação -> planejamento
 │   ├── legoloop-matriz/     # Consulta à matriz de peças (/legoloop-matriz)
 │   ├── legoloop-listar/     # Inspeção de processos e vínculos (/legoloop-listar)
 │   ├── legoloop-refinar/    # Refinamento de passos (/legoloop-refinar)
@@ -81,7 +84,7 @@ LegoLoop/
 │   ├── progress/            # Progresso por PLAN: <data>_plan-<nome>/{progresso.json,progresso.md}
 │   ├── reports/ · references/ · sessions/ · archive/
 │   └── reports/img/         # Evidências visuais de homologação
-├── processos/                   # Processos de exemplo (addy-osmani, impeccable-design, matt-pocock, mega-pipeline)
+├── processos/                   # Processos canônicos (especificacao, planejamento, ciclo, concepcao, forja, etc.)
 ├── tools/
 │   ├── funclen/             # Gate de qualidade: nenhuma função de produção com mais de 35 linhas
 │   ├── cobertura/           # Gate de cobertura mínima por pacote (`espinha/cobertura.json`)
@@ -114,13 +117,14 @@ legoloop instalar-skills                          # skills nativas no cofre; nos
 legoloop skills-custo                              # tokens de frontmatter que cada harness carrega por turno
 legoloop skills-migrar (--dry-run|--apply)          # tira as skills eager de todos os harnesses (com backup) e deixa só o índice lazy
 # AGENTS.md é a versão enxuta (lazy, ~5,6 KB); o texto integral das leis está em docs/governanca/AGENTS_COMPLETO.md
-# Cadeia amarrada: plano, specgen, route2dag e Studio recusam sem INTENT aprovada (internal/upstream)
-legoloop plano --spec S --tickets T.json [--estrito]        # renderiza PLAN e ROUTE a partir dos Tickets, sem LLM (a ROUTE assina o PLAN gravado)
+# Cadeia amarrada: spec, plano, route2dag e Studio recusam sem INTENT aprovada (internal/upstream)
+legoloop fabricar spec --intent docs/intents/YYYY-MM-DD_INTENT.md  # gera SPEC a partir de INTENT aprovada com conferência upstream
+legoloop fabricar plano --spec docs/specs/SPEC.md --tickets T.json # grava PLAN, ROUTE e DAG em um comando só (estrito por padrão)
 legoloop anticorpos registrar <slug> --pacote P --erro E --causa C --antidoto A   # registra um achado como anticorpo e regenera o ANTICORPOS.md
 # Demanda em curso: Distribuição e Forja do LegoLoop (SPEC aprovada, PLAN de 40 Tickets, ROUTE e DAG em docs/specs, docs/plans, docs/routes e docs/dags) (INTENT aprovada em docs/intents/2026-11-21_INTENT_DISTRIBUI_O_E_FORJA_DO_LEGOLOO.md)
-# Demanda seguinte: I02, Processos de especificação e de planejamento (INTENT e SPEC aprovadas, PLAN de 21 Tickets, ROUTE e DAG em docs/plans, docs/routes e docs/dags); o código só começa depois do TICK-01.2 da I01
-# Demanda depois da I02: I03, despachante de executores no runner (INTENT e SPEC aprovadas, PLAN de 20 Tickets, ROUTE e DAG em docs/plans, docs/routes e docs/dags; valor do Swarm: native_swarm)
-# Demanda em operação (I04): espinha dorsal previsível, universal e determinística (espinha verificar, cobertura, mutar, renomear, jail, descoberta); I01, I02 e I03 seguem congeladas até aprovação do Stop-Gate final da I04 (Emenda 2)
+# Demanda concluída: I02 — Processos de especificação, de planejamento e de ciclo (legoloop-especificacao, legoloop-planejamento e legoloop-ciclo entregues e testados)
+# Demanda seguinte: I03, despachante de executores no runner (INTENT e SPEC aprovadas, PLAN de 20 Tickets, ROUTE e DAG em docs/plans, docs/routes e docs/dags; valor do Swarm: native_swarm)
+# Demanda em operação (I04): espinha dorsal previsível, universal e determinística (espinha verificar, cobertura, mutar, renomear, jail, descoberta)
 legoloop espinha verificar [--raiz DIR] [--json]            # auditoria determinística da espinha dorsal
 legoloop renomear <antigo> <novo> [--dry-run] [--yes]       # renomeia Processo com backup MANIFESTO.tsv e histórico em espinha/renomeados.json
 claude-conectores                                  # abre o Claude Code com os conectores claude.ai ligados (padrão: desligados, -3,5k tokens por turno)

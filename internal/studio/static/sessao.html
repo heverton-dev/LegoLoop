@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LegoLoop — Sessao Interativa A2UI</title>
+  <title>LegoLoop • Sessao Interativa A2UI</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/components/sessao.css">
@@ -14,14 +14,19 @@
       <strong class="brand">LegoLoop A2UI</strong>
       <nav aria-label="Navegacao principal">
         <a class="btn" href="/">Canvas</a>
+        <a class="btn" href="/processos">Processos</a>
         <a class="btn" href="/inventario">Inventario</a>
         <a class="btn" href="/swarm">Swarm</a>
       </nav>
     </div>
     <div class="stage-topbar__right">
+      <div id="a2ui-andon-group" class="a2ui-andon-group">
+        <button id="btn-andon-cord" class="btn btn--andon" type="button" title="Andon Cord: Parada Emergencial da Esteira">Andon Cord</button>
+      </div>
+      <span id="a2ui-process-id" class="pill pill--process">processo</span>
       <span id="a2ui-session-id" class="pill">sessao</span>
       <span id="a2ui-conn-status" class="pill" aria-live="polite">Conectando</span>
-      <button id="btn-theme-toggle" class="btn" type="button" aria-label="Alternar tema">Tema</button>
+      <button id="btn-theme-toggle" class="btn btn--sm btn--icon-ctrl" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false" title="Alternar tema"></button>
     </div>
   </header>
 

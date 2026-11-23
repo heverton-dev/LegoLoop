@@ -236,12 +236,6 @@
       "contrato": "Alias canonico do Processo de Cartoon Shorts 1080x1920"
     },
     {
-      "nome": "plano",
-      "camada": "espinha",
-      "motor": "internal/plangen",
-      "contrato": "Renderizacao deterministica de PLAN e ROUTE a partir de Tickets"
-    },
-    {
       "nome": "swarm",
       "camada": "espinha",
       "motor": "internal/board",
@@ -558,10 +552,12 @@
     { "slug": "legoloop-canal-redc" },
     { "slug": "legoloop-canonizar" },
     { "slug": "legoloop-cartoon-shorts" },
+    { "slug": "legoloop-ciclo" },
     { "slug": "legoloop-concepcao" },
     { "slug": "legoloop-design-ui" },
     { "slug": "legoloop-diagram-design" },
     { "slug": "legoloop-dissecar" },
+    { "slug": "legoloop-especificacao" },
     { "slug": "legoloop-fabricar" },
     { "slug": "legoloop-fabricar-peca-unica" },
     { "slug": "legoloop-fechar" },
@@ -575,6 +571,7 @@
     { "slug": "legoloop-matt-pocock" },
     { "slug": "legoloop-mega-pipeline" },
     { "slug": "legoloop-n10-foundry" },
+    { "slug": "legoloop-planejamento" },
     { "slug": "legoloop-swarm" },
     { "slug": "legoloop-triagem" },
     { "slug": "legoloop-video-edition" },

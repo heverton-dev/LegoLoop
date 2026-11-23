@@ -33,12 +33,27 @@ func (s *Server) A2UIHub() *a2ui.Hub {
 }
 
 func (s *Server) registerA2UIRoutes(mux *http.ServeMux) {
+	s.garantirSessaoLaboratorio("sess_1")
+	s.garantirSessaoLaboratorio("sess_2")
 	mux.HandleFunc("GET /concepcao", s.handleA2UIConcepcaoPage)
 	mux.HandleFunc("GET /fabricar", s.handleA2UIFabricarPage)
 	mux.HandleFunc("POST /api/sessao", s.handleA2UISessaoCriar)
 	mux.HandleFunc("GET /api/sessao/{id}/stream", s.handleA2UISessaoStream)
 	mux.HandleFunc("POST /api/sessao/{id}/action", s.handleA2UISessaoAction)
 	mux.HandleFunc("GET /api/sessao/{id}/artefato", s.handleA2UISessaoArtefato)
+}
+
+func (s *Server) garantirSessaoLaboratorio(id string) {
+	switch id {
+	case "sess_1":
+		if err := s.garantirConcepcaoSessao(id); err != nil {
+			return
+		}
+	case "sess_2":
+		if err := s.garantirFabricarSessao(id); err != nil {
+			return
+		}
+	}
 }
 
 func (s *Server) handleA2UISessaoCriar(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +82,9 @@ func (s *Server) handleA2UISessaoStream(w http.ResponseWriter, r *http.Request) 
 		writeError(w, http.StatusInternalServerError, "SSE não suportado")
 		return
 	}
-	ch, err := s.A2UIHub().Subscribe(r.Context(), r.PathValue("id"))
+	id := r.PathValue("id")
+	s.garantirSessaoLaboratorio(id)
+	ch, err := s.A2UIHub().Subscribe(r.Context(), id)
 	if err != nil {
 		writeError(w, http.StatusNotFound, err.Error())
 		return
@@ -105,6 +122,10 @@ func (s *Server) handleA2UISessaoAction(w http.ResponseWriter, r *http.Request) 
 			status = http.StatusNotFound
 		}
 		writeError(w, status, err.Error())
+		return
+	}
+	if err := s.dispatchAndonAction(r.Context(), act); err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	if err := s.dispatchConcepcaoAction(r.Context(), act); err != nil {

@@ -79,7 +79,7 @@ func validarExecutorNo(n Node) string {
 	raw := n.Isolation["executor"]
 	exec, ok := raw.(string)
 	if !ok {
-		return fmt.Sprintf("nó %q (tipo %s): executor inválido %v", n.ID, n.Type, raw)
+		return fmt.Sprintf("nó %q (tipo %s): executor %v incoerente (aceitos: %s)", n.ID, n.Type, raw, executoresAceitos(n.Type))
 	}
 	exec = strings.TrimSpace(exec)
 	if executorCoerente(n.Type, exec) {

@@ -1,0 +1,65 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-ciclo",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-ciclo",
+      "comandos_cli": [
+        "legoloop ciclo",
+        "/legoloop-ciclo"
+      ],
+      "artefatos_ativos": null,
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-ciclo",
+    "etapas": [
+      "concepcao",
+      "especificacao",
+      "planejamento"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "concepcao",
+      "palavras_chave": [
+        "concepcao",
+        "concepção",
+        "ideacao",
+        "ideação",
+        "entrevista",
+        "alinhar intencao"
+      ],
+      "slash_command": "/legoloop-ciclo-concepcao",
+      "flag_cli": "--etapa concepcao"
+    },
+    {
+      "id": "especificacao",
+      "palavras_chave": [
+        "especificacao",
+        "especificação",
+        "gerar spec",
+        "spec"
+      ],
+      "slash_command": "/legoloop-ciclo-especificacao",
+      "flag_cli": "--etapa especificacao"
+    },
+    {
+      "id": "planejamento",
+      "palavras_chave": [
+        "planejamento",
+        "gerar plano",
+        "plan",
+        "dag"
+      ],
+      "slash_command": "/legoloop-ciclo-planejamento",
+      "flag_cli": "--etapa planejamento"
+    }
+  ],
+  "pontos_entrada": [
+    "cli:legoloop ciclo",
+    "chat:/legoloop-ciclo",
+    "studio:+ Novo Ciclo"
+  ]
+}

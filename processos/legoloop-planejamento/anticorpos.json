@@ -1,0 +1,25 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-planejamento",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:d8a9b71e3c5409e51cbb22f8721389efb6a7d903f5681691a0bbdf8009230551",
+      "erro": "Plano gerado sem SPEC aprovada quebrando a cadeia de valor upstream",
+      "antidoto": "Pacote internal/upstream aplica a trava VerificarSpec: recusa com exit code 2 se a SPEC ou sua INTENT upstream não estiverem APPROVED",
+      "recorrencias": 1,
+      "pacote": "internal/upstream",
+      "causa_raiz": "Geradores antigos de plano não validavam a cadeia completa de aprovação upstream",
+      "timestamp": "2026-11-23T11:00:00Z"
+    },
+    {
+      "assinatura": "sha256:29b5a1c7f9d85429a1b9c7e09849b2f3478950d81c15f62e8484a8c3d9a10271",
+      "erro": "Discrepância entre os tipos de nós na ROUTE e no DAG gerados",
+      "antidoto": "Pacote internal/routedag usa tabela única dag.TabelaTipos via dag.DoRoute e rejeita tipos desconhecidos",
+      "recorrencias": 1,
+      "pacote": "internal/routedag",
+      "causa_raiz": "Conversão legada utilizava mapas paralelos ou divergentes de tipos de nó",
+      "timestamp": "2026-11-23T11:00:00Z"
+    }
+  ]
+}

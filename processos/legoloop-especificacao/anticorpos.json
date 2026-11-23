@@ -1,0 +1,25 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-especificacao",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:2ec34291e87fa1b8a1e2eff3a004e37b8803dc894c7a5d23bd1b199ff2e1db62",
+      "erro": "SPEC gerada sem INTENT aprovada quebrando a cadeia de valor",
+      "antidoto": "Pacote internal/upstream aplica a trava upstream_ok: recusa com exit code 2 se a INTENT não estiver APPROVED",
+      "recorrencias": 1,
+      "pacote": "internal/upstream",
+      "causa_raiz": "Geradores antigos de SPEC não validavam o cabeçalho da INTENT upstream",
+      "timestamp": "2026-11-23T11:00:00Z"
+    },
+    {
+      "assinatura": "sha256:2ce32da32c24a211b6fabf6b53659c1a7532f95cc9de0a55f90995018b6cc764",
+      "erro": "SPEC reprovada por ausência de critérios binários de aceite",
+      "antidoto": "specgen.Generate valida a presença de Critérios Binários de Aceite com padrões EARS e ASD-STE100",
+      "recorrencias": 1,
+      "pacote": "internal/specgen",
+      "causa_raiz": "Critérios de aceite vagos ou sem formato binário inviabilizavam os gates de teste mecânico",
+      "timestamp": "2026-11-23T11:00:00Z"
+    }
+  ]
+}

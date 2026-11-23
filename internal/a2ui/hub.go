@@ -3,6 +3,7 @@ package a2ui
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"sync/atomic"
 )
@@ -12,10 +13,29 @@ const (
 	actionBufferSize = 16
 )
 
+// SessionState define o estado do ciclo de vida da sessão.
+type SessionState string
+
+const (
+	SessionRunning   SessionState = "running"
+	SessionPaused    SessionState = "paused"
+	SessionCancelled SessionState = "cancelled"
+)
+
+// SessionSummary resume o estado operacional da sessão para a gestão de processos.
+type SessionSummary struct {
+	ID          string       `json:"id"`
+	Processo    string       `json:"processo"`
+	State       SessionState `json:"state"`
+	Surfaces    int          `json:"surfaces"`
+	Subscribers int          `json:"subscribers"`
+}
+
 // Session guarda o estado das superfícies, assinantes SSE e canal de ações de uma execução.
 type Session struct {
 	ID       string
 	Processo string
+	State    SessionState
 
 	mu          sync.RWMutex
 	surfaces    map[string]Envelope
@@ -27,6 +47,23 @@ type Session struct {
 // Actions devolve o canal de leitura para receber ações do usuário.
 func (s *Session) Actions() <-chan Action {
 	return s.actions
+}
+
+// GetState devolve o estado atual da sessão sob lock de leitura.
+func (s *Session) GetState() SessionState {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if s.State == "" {
+		return SessionRunning
+	}
+	return s.State
+}
+
+// SetState atualiza o estado operacional da sessão.
+func (s *Session) SetState(st SessionState) {
+	s.mu.Lock()
+	s.State = st
+	s.mu.Unlock()
 }
 
 // Hub gerencia o ciclo de vida das sessões A2UI em memória.
@@ -45,12 +82,36 @@ func NewHub(cat Catalog) *Hub {
 	}
 }
 
+// ListSessions devolve a lista de resumos de todas as sessões registradas.
+func (h *Hub) ListSessions() []SessionSummary {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+	res := make([]SessionSummary, 0, len(h.sessions))
+	for _, s := range h.sessions {
+		s.mu.RLock()
+		st := s.State
+		if st == "" {
+			st = SessionRunning
+		}
+		res = append(res, SessionSummary{
+			ID:          s.ID,
+			Processo:    s.Processo,
+			State:       st,
+			Surfaces:    len(s.surfaces),
+			Subscribers: len(s.subscribers),
+		})
+		s.mu.RUnlock()
+	}
+	return res
+}
+
 // CreateSession registra uma nova sessão interativa e devolve seu ponteiro.
 func (h *Hub) CreateSession(processo string) *Session {
 	id := fmt.Sprintf("sess_%d", h.seq.Add(1))
 	s := &Session{
 		ID:          id,
 		Processo:    processo,
+		State:       SessionRunning,
 		surfaces:    make(map[string]Envelope),
 		subscribers: make(map[chan Envelope]struct{}),
 		actions:     make(chan Action, actionBufferSize),
@@ -58,6 +119,36 @@ func (h *Hub) CreateSession(processo string) *Session {
 	h.mu.Lock()
 	h.sessions[id] = s
 	h.mu.Unlock()
+	return s
+}
+
+// EnsureSession devolve a sessão com o ID especificado ou a cria se ainda não existir.
+func (h *Hub) EnsureSession(id, processo string) *Session {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	if s, ok := h.sessions[id]; ok {
+		return s
+	}
+	s := &Session{
+		ID:          id,
+		Processo:    processo,
+		State:       SessionRunning,
+		surfaces:    make(map[string]Envelope),
+		subscribers: make(map[chan Envelope]struct{}),
+		actions:     make(chan Action, actionBufferSize),
+	}
+	h.sessions[id] = s
+	if strings.HasPrefix(id, "sess_") {
+		var n uint64
+		if _, err := fmt.Sscanf(id, "sess_%d", &n); err == nil {
+			for {
+				cur := h.seq.Load()
+				if n <= cur || h.seq.CompareAndSwap(cur, n) {
+					break
+				}
+			}
+		}
+	}
 	return s
 }
 

@@ -341,6 +341,44 @@ function renderSwarmBoard({ surface, component, props, emitAction }) {
   return painel;
 }
 
+function renderLegoTextField({ component, props, emitAction }) {
+  const painel = el("article", "a2ui-painel a2ui-form");
+  painel.setAttribute("data-kind", "TextField");
+
+  const header = el("header", "lego-painel__header");
+  header.appendChild(el("label", "a2ui-label", props.label || props.question || "Resposta"));
+  const counter = el("span", "lego-char-counter", "0 caracteres");
+  header.appendChild(counter);
+  painel.appendChild(header);
+
+  const field = el("textarea", "a2ui-textarea");
+  field.name = props.name || component.id || "answer";
+  field.rows = 3;
+  if (props.placeholder) {
+    field.setAttribute("placeholder", String(props.placeholder));
+  }
+  if (props.value !== undefined) {
+    field.value = String(props.value);
+  }
+
+  const updateCount = () => {
+    const len = field.value.length;
+    counter.textContent = len === 1 ? "1 caractere" : len + " caracteres";
+  };
+  field.addEventListener("input", updateCount);
+  updateCount();
+
+  field.addEventListener("keydown", (ev) => {
+    if ((ev.ctrlKey || ev.metaKey) && ev.key === "Enter") {
+      ev.preventDefault();
+      emitAction(props.action || "submit_answer", { answer: field.value, text: field.value });
+    }
+  });
+
+  painel.appendChild(field);
+  return painel;
+}
+
 let catalogRegistered = false;
 
 export function registerLegoLoopCatalog() {
@@ -353,6 +391,7 @@ export function registerLegoLoopCatalog() {
   registerComponent("LegoArtifactViewer", renderArtifactViewer);
   registerComponent("LegoLogStream", renderLogStream);
   registerComponent("LegoSwarmBoard", renderSwarmBoard);
+  registerComponent("TextField", renderLegoTextField);
   catalogRegistered = true;
 }
 

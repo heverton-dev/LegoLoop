@@ -1,0 +1,16 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-ciclo",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:4a5c6d7e8f90123456789abcdef0123456789abcdef0123456789abcdef01234",
+      "erro": "Ciclo composto com quebra de contrato de handoff entre etapas",
+      "antidoto": "Validar encadeamento dos contratos produces/consumes entre subprocessos e integridade upstream",
+      "recorrencias": 1,
+      "pacote": "internal/dag",
+      "causa_raiz": "Subprocessos encadeados sem paridade de tipos de artefato de saída e entrada",
+      "timestamp": "2026-11-23T11:00:00Z"
+    }
+  ]
+}

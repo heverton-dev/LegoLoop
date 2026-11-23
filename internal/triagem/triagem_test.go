@@ -225,3 +225,65 @@ func TestMemoriaExecucaoCicloCompleto(t *testing.T) {
 		t.Errorf("limpar memória inexistente não deveria falhar: %v", err)
 	}
 }
+
+func carregarSpecsTriagem(t *testing.T, nomes ...string) []TriagemSpec {
+	t.Helper()
+	var catalogo []TriagemSpec
+	for _, nome := range nomes {
+		caminho := filepath.Join("..", "..", "processos", nome, "triagem.json")
+		spec, ok, err := LerSpec(caminho)
+		if err != nil {
+			t.Fatalf("erro ao ler %s: %v", caminho, err)
+		}
+		if !ok {
+			t.Fatalf("arquivo %s não encontrado", caminho)
+		}
+		catalogo = append(catalogo, spec)
+	}
+	return catalogo
+}
+
+func TestTriagemNaoRoubaEntradasExistentes(t *testing.T) {
+	catalogo := carregarSpecsTriagem(t,
+		"legoloop-especificacao",
+		"legoloop-concepcao",
+		"legoloop-planejamento",
+	)
+	llm := &resolvedorFalso{
+		resposta: Decisao{
+			Processo:     "legoloop-concepcao",
+			EtapaInicial: "entrevista_socratica",
+			Confianca:    0.95,
+		},
+	}
+	entrada := Entrada{Texto: "iniciar uma concepção"}
+	dec, err := Decidir(context.Background(), entrada, catalogo, llm)
+	if err != nil {
+		t.Fatalf("erro inesperado na triagem: %v", err)
+	}
+	if dec.Processo != "legoloop-concepcao" {
+		t.Errorf("esperava legoloop-concepcao, obteve %q", dec.Processo)
+	}
+	if !llm.chamado {
+		t.Errorf("esperava que resolvedor fosse chamado sem falso positivo determinístico")
+	}
+}
+
+func TestTriagemConcepcaoDeterministicoSemConflito(t *testing.T) {
+	catalogo := carregarSpecsTriagem(t,
+		"legoloop-especificacao",
+		"legoloop-concepcao",
+		"legoloop-planejamento",
+	)
+	llm := &resolvedorFalso{}
+	dec, err := Decidir(context.Background(), Entrada{Texto: "legoloop concepcao"}, catalogo, llm)
+	if err != nil {
+		t.Fatalf("erro inesperado: %v", err)
+	}
+	if dec.Processo != "legoloop-concepcao" || dec.Camada != "deterministica" {
+		t.Errorf("esperava legoloop-concepcao deterministico, obteve %+v", dec)
+	}
+	if llm.chamado {
+		t.Errorf("LLM não deveria ser chamado para comando determinístico")
+	}
+}

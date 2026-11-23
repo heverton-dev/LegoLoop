@@ -74,7 +74,6 @@ Comandos:
   import     <github-url> [--name N] [--json]         importa e canoniza skill do GitHub
   upgrade    <arquivo> [--diagnose|--apply] [--json]  diagnóstica ou valida elevação para Padrão Ouro
   fabricar   "<nome>" [--yes] [--goal T] [--model M] [--dry-run] [--json]  cria um processo novo (skill, DAG e documentos)
-  plano      --spec S --tickets T.json [--raiz D] [--nivel epic] [--data AAAA-MM-DD] [--estrito] [--json]  renderiza PLAN e ROUTE a partir dos Tickets, sem LLM
   rota       --plan P --out ROUTE [--perfil F] [--json]  gera a ROUTE com harness, via, modelo e esforço resolvidos
   homologar  [--pares H|V,...] [--yes] [--non-interactive] [--teto DUR] [--provider] [--corrigir-provider] [--json]  mede a conformidade de cada harness e via
   matriz     gerar|status|vocab|perfil|ver  gera e consulta a matriz de peças (qualidade e perfil de uso)
@@ -120,7 +119,7 @@ func mapaComandos() map[string]func(context.Context, []string, Deps) int {
 		"stept": cmdStept, "sync-harnesses": cmdSyncHarnesses, "mcp-router": cmdMcpRouter, "mcp-registry": cmdMcpRegistry, "bootstrap": cmdBootstrap,
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
-		"plano": cmdPlano, "progresso": cmdProgresso, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos, "espinha": cmdEspinha,
+		"progresso": cmdProgresso, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos, "espinha": cmdEspinha,
 	}
 }
 
