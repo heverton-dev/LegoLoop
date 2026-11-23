@@ -12,9 +12,14 @@ export const DEFAULT_CATALOG = Object.freeze([
   "Column",
   "Row",
   "List",
+  "Tabs",
+  "Modal",
   "Input",
+  "TextField",
   "Textarea",
   "Select",
+  "CheckBox",
+  "MultipleChoice",
   "Badge",
   "Divider",
   "Form",
@@ -133,6 +138,9 @@ export class MessageProcessor {
       existing.components = Array.isArray(envelope.components) ? envelope.components.slice() : existing.components;
     } else if (msgType === "updateDataModel") {
       existing.dataModel = Object.assign({}, existing.dataModel, envelope.data_model || {});
+      if (Array.isArray(envelope.components) && envelope.components.length > 0) {
+        existing.components = envelope.components.slice();
+      }
     } else {
       throw new Error("a2ui: tipo de mensagem nao suportado: " + msgType);
     }

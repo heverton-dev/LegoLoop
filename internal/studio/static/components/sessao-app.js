@@ -121,7 +121,8 @@ function handleEnvelopeEvent(ev) {
   try {
     const env = JSON.parse(ev.data);
     processor.process(env);
-  } catch (_err) {
+  } catch (err) {
+    console.error("a2ui envelope rejeitado:", err);
     statusEl.textContent = "Envelope ignorado";
   }
 }
