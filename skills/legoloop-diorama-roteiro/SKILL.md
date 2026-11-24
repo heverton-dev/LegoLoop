@@ -44,17 +44,18 @@ suggested_model: sonnet
 
 ## 2. Procedimento Determinístico e Nós do DAG
 
+0. **Escolha da superfície interativa (obrigatória ao iniciar por linguagem natural, slash ou CLI):** ofereça sempre ao usuário escolher entre **Interface A2UI** (Agente/Chat: ferramentas MCP `sessao_criar`, `sessao_publicar` e `sessao_aguardar`; Studio: painel `Diorama Roteiro`) ou **Chat textual / CLI direto**. Só avance no modo escolhido.
+1. **Etapa 0 — Configuração guiada (`n01_validar_config`):** se `projeto.json` ou `marca.json` não existirem, colete com o usuário (na superfície escolhida) o nicho, `perfis_fonte`, formato (`16:9`, `9:16`, `1:1`), duração-alvo, `politica_gates` (`humano`, `hibrido` ou `mecanico`) e pasta de trabalho. Grave `projeto.json` e `marca.json` e rode `legoloop diorama-roteiro validar-config --projeto <DIR> --json` (bloqueia schema inválido, perfil desconhecido ou inconsistência entre `projeto.json` e `marca.json`).
+2. **Pré-voo modular (`n02_prevoo_modular`):** rode `legoloop diorama-roteiro prevoo --projeto <DIR> --json` (bloqueia apenas nos 5 casos `FALTA` do Processo 1; Chrome Flow `9333`, FFmpeg, Chromium, `edge-tts` e `gitleaks` emitem apenas `AVISO`).
+3. **Etapa 1 — Coleta de pautas (`n03_coletar_pautas`):** rode `legoloop diorama-roteiro coletar --projeto <DIR> --json` (filtra conectores gratuitos por `perfis_fonte`, descarta temas em `acervo/temas.json` e apresenta as pautas na superfície escolhida para escolha do usuário quando `politica_gates` exigir).
+4. **Etapa 2 — Roteiro e Gate epistêmico (`n04_validar_roteiro`):** gere `script.json` (com `lines[].text`, `natureza`, `sources[]`) e `plano.md` a partir da pauta escolhida, e rode `legoloop diorama-roteiro validar-roteiro --projeto <DIR> --json` (exige 1 fonte A ou 2 fontes B distintas em `fato_consolidado`; escopo/preprint/amostra em `evidencia_preliminar`; atribuição em `alegacao_terceiro`; bloqueia nível C como prova; no máximo 2 correções automáticas).
+
 | Nó ID | Subcomando | Papel |
 | :--- | :--- | :--- |
 | `n01_validar_config` | `legoloop diorama-roteiro validar-config` | Validação estrita de `projeto.json` e `marca.json` |
 | `n02_prevoo_modular` | `legoloop diorama-roteiro prevoo` | Pré-voo modular determinístico (5 bloqueantes `FALTA`, demais `AVISO`) |
 | `n03_coletar_pautas` | `legoloop diorama-roteiro coletar` | Descoberta gratuita por `perfis_fonte` e filtro em `acervo/temas.json` |
 | `n04_validar_roteiro` | `legoloop diorama-roteiro validar-roteiro` | Validação epistêmica universal de `script.json` e `plano.md` |
-
-1. **Validar configuração:** `legoloop diorama-roteiro validar-config --projeto <DIR> --json` (bloqueia schema inválido, perfil desconhecido ou inconsistência entre `projeto.json` e `marca.json`).
-2. **Executar pré-voo modular:** `legoloop diorama-roteiro prevoo --projeto <DIR> --json` (bloqueia apenas nos 5 casos `FALTA` do Processo 1; Chrome Flow `9333`, FFmpeg, Chromium, `edge-tts` e `gitleaks` emitem apenas `AVISO`).
-3. **Coletar pautas gratuitas por nicho:** `legoloop diorama-roteiro coletar --projeto <DIR> --json` (filtra conectores por `perfis_fonte`, descarta temas em `acervo/temas.json` e respeita `politica_gates`).
-4. **Validar roteiro:** `legoloop diorama-roteiro validar-roteiro --projeto <DIR> --json` (exige 1 fonte A ou 2 fontes B distintas em `fato_consolidado`; escopo/preprint/amostra em `evidencia_preliminar`; atribuição em `alegacao_terceiro`; bloqueia nível C como prova; no máximo 2 correções automáticas).
 
 ---
 

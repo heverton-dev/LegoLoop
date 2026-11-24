@@ -18,7 +18,7 @@ import (
 
 func init() {
 	for id, msg := range map[string]string{
-		"entrevista.uso":           "Uso: legoloop fabricar entrevista iniciar \"<ideia>\", responder <sessao> \"<texto>\", concluir <sessao> ou intent <sessao>.",
+		"entrevista.uso":           "Uso: legoloop fabricar entrevista iniciar \"<ideia>\", responder <sessao> \"<texto>\", concluir <sessao>, intent <sessao> ou ui.",
 		"entrevista.opcao_palpite": "Aceitar o palpite: %s",
 		"entrevista.opcao_livre":   "Responder com as suas palavras",
 	} {

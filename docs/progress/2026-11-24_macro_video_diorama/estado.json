@@ -1,0 +1,88 @@
+{
+  "schema_version": "macro_progresso.v1",
+  "macroprocesso": "legoloop-video-diorama",
+  "atualizado_em": "2026-11-24",
+  "mapa_macro": "docs/intents/2026-11-24_MAPA_MACRO_VIDEO_DIORAMA.md",
+  "superficie_padrao": "a2ui_opcional_nas_3_vias",
+  "contratos_compartilhados": {
+    "config_video": "projeto.json",
+    "config_canal": "marca.json",
+    "roteiro": "script.json",
+    "plano_humano": "plano.md",
+    "spec_cenas": "cenas.json",
+    "timeline": "timeline.json",
+    "acervo_temas": "acervo/temas.json",
+    "acervo_agenda": "acervo/acervo.json",
+    "aprendizado": "acervo/aprendizado.md"
+  },
+  "arquivos_merge_sequencial": [
+    "internal/cli/cli.go",
+    "internal/cli/instalar_skills_test.go",
+    "espinha/registro.json",
+    "AGENTS.md",
+    "MEMORY.md",
+    "README.md",
+    "docs/PROCESSOS_CANONIZADOS.md"
+  ],
+  "ciclos": [
+    {
+      "ordem": 1,
+      "slug": "legoloop-diorama-roteiro",
+      "status": "DONE",
+      "etapas_cobertas": ["passo_0", "etapa_0", "etapa_1", "etapa_2"],
+      "pacote_go": "internal/diorama/roteiro",
+      "cobertura_pct": 95.7,
+      "artefatos": {
+        "intent": "docs/intents/2026-11-24_INTENT_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+        "spec": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+        "plan": "docs/plans/2026-11-24_PLAN_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+        "dag": "processos/legoloop-diorama-roteiro/processo.dag.json",
+        "skill": "skills/legoloop-diorama-roteiro/SKILL.md",
+        "manual": "docs/manuals/2026-11-24_MANUAL_DIORAMA_ROTEIRO.md",
+        "livro": "docs/books/legoloop-diorama-roteiro/livro.json",
+        "relatorio": "docs/reports/2026-11-24_REPORT_DIORAMA_ROTEIRO.md"
+      }
+    },
+    {
+      "ordem": 2,
+      "slug": "legoloop-diorama-ativos",
+      "status": "PENDING",
+      "etapas_cobertas": ["etapa_3", "etapa_4", "etapa_5"],
+      "pacote_go": "internal/diorama/ativos",
+      "paralelizavel_em_worktree": true,
+      "depende_de": ["legoloop-diorama-roteiro"]
+    },
+    {
+      "ordem": 3,
+      "slug": "legoloop-diorama-render",
+      "status": "PENDING",
+      "etapas_cobertas": ["etapa_6", "etapa_7", "etapa_8", "etapa_8b"],
+      "pacote_go": "internal/diorama/render",
+      "paralelizavel_em_worktree": true,
+      "depende_de": ["legoloop-diorama-roteiro"]
+    },
+    {
+      "ordem": 4,
+      "slug": "legoloop-diorama-distribuicao",
+      "status": "PENDING",
+      "etapas_cobertas": ["etapa_9", "etapa_10", "etapa_11", "etapa_11b", "etapa_12", "etapa_13"],
+      "pacote_go": "internal/diorama/distribuicao",
+      "paralelizavel_em_worktree": true,
+      "depende_de": ["legoloop-diorama-roteiro"]
+    },
+    {
+      "ordem": 5,
+      "slug": "legoloop-video-diorama",
+      "status": "PENDING",
+      "etapas_cobertas": ["composicao_p1_p2_p3_p4"],
+      "pacote_go": "processos/legoloop-video-diorama",
+      "paralelizavel_em_worktree": false,
+      "depende_de": [
+        "legoloop-diorama-roteiro",
+        "legoloop-diorama-ativos",
+        "legoloop-diorama-render",
+        "legoloop-diorama-distribuicao"
+      ]
+    }
+  ]
+}

@@ -32,6 +32,7 @@ suggested_model: sonnet
 
 ## 2. Procedimento (passos determinísticos)
 
+0. **Escolha da superfície interativa (obrigatória antes do turno 1):** ofereça sempre ao usuário a escolha entre **Interface A2UI** (CLI: `legoloop fabricar entrevista ui` abrindo `/concepcao`; Agente/Chat: ferramentas MCP `sessao_criar`, `sessao_publicar` e `sessao_aguardar`) ou **Chat textual** (fallback abaixo). Só avance no modo escolhido pelo usuário.
 1. **Iniciar:** `legoloop fabricar entrevista iniciar "<ideia>"`. O motor cria a sessão `intv_*`, lê o contexto do projeto e devolve o primeiro passo em JSON (`sessao`, `pergunta`, `palpite`, `opcoes`, `confianca`, `meta`, `turnos`, `espelho`, `lacunas`).
 2. **Conduzir uma pergunta por turno.** Cada turno: `legoloop fabricar entrevista responder <sessao> "<resposta>"`. Apresente ao usuário uma única pergunta por vez, em prosa, oferecendo o palpite do motor (aceitar ou responder com as próprias palavras).
 3. **Marcadores obrigatórios em cada turno da entrevista:** `HIPÓTESE`, `CONFIANÇA`, `PERGUNTA`, `PALPITE`. Use-os para expor o raciocínio do motor ao usuário.
