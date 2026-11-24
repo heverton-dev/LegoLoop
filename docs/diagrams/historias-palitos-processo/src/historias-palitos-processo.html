@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Processo Histórias Palitos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f5f5f5;
+    --paper-2: #ffffff;
+    --ink: #2d3142;
+    --muted: #6b7080;
+    --soft: #9a9eab;
+    --rule: #d9dbe2;
+    --accent: #bf4520;
+    --accent-tint: #f6e3dc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1b1d24;
+      --paper-2: #23262f;
+      --ink: #eceef3;
+      --muted: #a4a9b6;
+      --soft: #7b8090;
+      --rule: #3a3e4a;
+      --accent: #e0643c;
+      --accent-tint: #3a2620;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1b1d24;
+    --paper-2: #23262f;
+    --ink: #eceef3;
+    --muted: #a4a9b6;
+    --soft: #7b8090;
+    --rule: #3a3e4a;
+    --accent: #e0643c;
+    --accent-tint: #3a2620;
+  }
+  html, body { background: var(--paper); margin: 0; }
+  body { color: var(--ink); font-family: "Geist", system-ui, sans-serif; padding: 16px; }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  .eyebrow { font-family: "Geist Mono", monospace; font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+  h1 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 40px; margin: 6px 0 4px; }
+  .lede { color: var(--muted); font-size: 15px; margin: 0 0 12px; }
+  .scroll { overflow-x: auto; }
+  svg { display: block; min-width: 1200px; height: auto; }
+  .legend { font-family: "Geist Mono", monospace; font-size: 12px; color: var(--muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Diagrama de processo · Histórias Palitos</div>
+  <h1>Do tema ao YouTube em nove blocos</h1>
+  <p class="lede">Visão geral das etapas do processo, com os dois portões de qualidade destacados.</p>
+  <div class="scroll">
+  <svg viewBox="0 0 1200 700" role="img" aria-labelledby="historias-palitos-processo-title historias-palitos-processo-desc" xmlns="http://www.w3.org/2000/svg">
+    <title id="historias-palitos-processo-title">Processo Histórias Palitos</title>
+    <desc id="historias-palitos-processo-desc">Nove blocos em sequência, do roteiro à publicação. O render e a revisão estão destacados.</desc>
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+      </marker>
+      <marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+      </marker>
+    </defs>
+
+    <!-- conectores (atrás dos nós) -->
+    <g fill="none" stroke="var(--muted)" stroke-width="1.5">
+      <line x1="360" y1="150" x2="450" y2="150" marker-end="url(#arrow)"/>
+      <line x1="750" y1="150" x2="840" y2="150" marker-end="url(#arrow)"/>
+      <line x1="990" y1="210" x2="990" y2="290" marker-end="url(#arrow)"/>
+      <line x1="840" y1="350" x2="750" y2="350" marker-end="url(#arrow)"/>
+      <line x1="450" y1="350" x2="360" y2="350" marker-end="url(#arrow)"/>
+      <line x1="210" y1="410" x2="210" y2="490" marker-end="url(#arrow)"/>
+      <line x1="360" y1="550" x2="450" y2="550" marker-end="url(#arrow)"/>
+      <line x1="750" y1="550" x2="840" y2="550" marker-end="url(#arrow)"/>
+    </g>
+
+    <!-- linha 1: pauta, roteiro, elenco -->
+    <g>
+      <rect x="60" y="90" width="300" height="120" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5" rx="6"/>
+      <text x="80" y="118" font-family="Geist Mono, monospace" font-size="11" fill="var(--muted)">ETAPAS 0 A 2</text>
+      <text x="80" y="144" font-family="Geist, sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Pauta e roteiro</text>
+      <text x="80" y="170" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">fontes A ou B · batidas</text>
+      <text x="80" y="192" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">portão: aprovação do roteiro</text>
+    </g>
+    <g>
+      <rect x="450" y="90" width="300" height="120" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5" rx="6"/>
+      <text x="470" y="118" font-family="Geist Mono, monospace" font-size="11" fill="var(--muted)">ETAPAS 3 A 5</text>
+      <text x="470" y="144" font-family="Geist, sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Elenco e cenários</text>
+      <text x="470" y="170" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">fichas e quadros no Flow</text>
+      <text x="470" y="192" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">portão: storyboard</text>
+    </g>
+    <g>
+      <rect x="840" y="90" width="300" height="120" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5" rx="6"/>
+      <text x="860" y="118" font-family="Geist Mono, monospace" font-size="11" fill="var(--muted)">ETAPAS 6 A 7</text>
+      <text x="860" y="144" font-family="Geist, sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Voz e animação</text>
+      <text x="860" y="170" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">edge-tts · motor ou Flow</text>
+      <text x="860" y="192" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">portão: cena teste</text>
+    </g>
+
+    <!-- linha 2: montagem, render, revisão (sentido inverso) -->
+    <g>
+      <rect x="840" y="290" width="300" height="120" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5" rx="6"/>
+      <text x="860" y="318" font-family="Geist Mono, monospace" font-size="11" fill="var(--muted)">ETAPA 8</text>
+      <text x="860" y="344" font-family="Geist, sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Montagem</text>
+      <text x="860" y="370" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">timeline · marca · legendas</text>
+      <text x="860" y="392" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">voz e trilha em -14 LUFS</text>
+    </g>
+    <g>
+      <rect x="450" y="290" width="300" height="120" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="2" rx="6"/>
+      <text x="470" y="318" font-family="Geist Mono, monospace" font-size="11" fill="var(--accent)">RENDER</text>
+      <text x="470" y="344" font-family="Geist, sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Render do vídeo</text>
+      <text x="470" y="370" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">Chromium desenha cada cena</text>
+      <text x="470" y="392" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">FFmpeg junta e gera o MP4</text>
+    </g>
+    <g>
+      <rect x="60" y="290" width="300" height="120" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5" rx="6"/>
+      <text x="80" y="318" font-family="Geist Mono, monospace" font-size="11" fill="var(--muted)">ETAPA 9</text>
+      <text x="80" y="344" font-family="Geist, sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Revisão</text>
+      <text x="80" y="370" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">folhas de contato · revisor</text>
+      <text x="80" y="392" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">portão: "enviar"</text>
+    </g>
+
+    <!-- linha 3: vitrine e publicação -->
+    <g>
+      <rect x="60" y="490" width="300" height="120" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5" rx="6"/>
+      <text x="80" y="518" font-family="Geist Mono, monospace" font-size="11" fill="var(--muted)">ETAPA 10</text>
+      <text x="80" y="544" font-family="Geist, sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Vitrine</text>
+      <text x="80" y="570" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">títulos · capas · descrição</text>
+      <text x="80" y="592" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">portão: pacote aprovado</text>
+    </g>
+    <g>
+      <rect x="450" y="490" width="300" height="120" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5" rx="6"/>
+      <text x="470" y="518" font-family="Geist Mono, monospace" font-size="11" fill="var(--muted)">ETAPA 11</text>
+      <text x="470" y="544" font-family="Geist, sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Publicação</text>
+      <text x="470" y="570" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">Postiz · agenda · acervo</text>
+      <text x="470" y="592" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">portão: autorizada na vitrine</text>
+    </g>
+    <g>
+      <rect x="840" y="490" width="300" height="120" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.5" rx="6"/>
+      <text x="860" y="518" font-family="Geist Mono, monospace" font-size="11" fill="var(--muted)">ETAPAS 12 E 13</text>
+      <text x="860" y="544" font-family="Geist, sans-serif" font-size="18" font-weight="600" fill="var(--ink)">Comentários</text>
+      <text x="860" y="570" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">rascunhos de resposta</text>
+      <text x="860" y="592" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">aprendizado semanal</text>
+    </g>
+
+    <!-- legenda -->
+    <g font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">
+      <rect x="60" y="640" width="14" height="14" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="2" rx="2"/>
+      <text x="84" y="652">render: etapa que gera o arquivo de vídeo</text>
+      <text x="540" y="652">setas: ordem de execução; cada etapa exige o portão anterior</text>
+    </g>
+  </svg>
+  </div>
+  <p class="legend">Fonte: processo/PROCESSO.md, seção "Portões de aprovação". Sem emojis e sem dados fictícios.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "versao_manifesto": "1.0",
+  "titulo": "Histórias Palitos: o processo de produção de vídeo animado",
+  "nome_base": "HISTORIAS-PALITOS-PROCESSO-DE-PRODUCAO",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-visao-geral.md",
+    "02-entradas.md",
+    "03-etapas.md",
+    "04-processamento.md",
+    "05-render.md",
+    "06-saidas.md",
+    "07-pecas.md",
+    "08-verificacao-e-limites.md",
+    "09-glossario.md"
+  ],
+  "revisoes": [],
+  "hash_fonte": "",
+  "ultima_compilacao": ""
+}
