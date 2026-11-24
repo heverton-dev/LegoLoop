@@ -48,6 +48,15 @@
   - `legoloop-diagram-design/asd-ste100-taxonomy`: Conformidade estrita com o dicionário canônico (zero termos proibidos como loop, storage, pipeline, card e tasks no texto normativo da skill).
   - **Escopo do Processo:** Suporta 50 tipos visuais do catálogo: pastas, peças, processos, arquitetura C4, bancos ER/SQL, sequências HTTP/OAuth, árvores, radares, quadrantes, Gantt, Sankey, plantas axonométricas e gráficos.
 
+### Sessão Ciclo 1 — `legoloop-diorama-roteiro` (24/11/2026)
+
+- **ID da conversa Antigravity:** `87e41e4a-a9ae-4ca6-9756-8263f74b3736`
+- **Mapa Macro:** `docs/intents/2026-11-24_MAPA_MACRO_VIDEO_DIORAMA.md` (4 Processos + 1 Macroprocesso composto `legoloop-video-diorama`).
+- **Tríade aprovada:** INTENT (`intv_1795520712665396700`, 96% confiança), SPEC v1.1.0 (11 critérios binários), PLAN/ROUTE/DAG (7 Tickets TDD).
+- **Entregas:** `internal/diorama/roteiro` (95,7% cobertura), `internal/cli/diorama_roteiro.go`, `processos/legoloop-diorama-roteiro/` (5 de 5), `skills/legoloop-diorama-roteiro/SKILL.md`, `docs/manuals/2026-11-24_MANUAL_DIORAMA_ROTEIRO.md` e `docs/books/legoloop-diorama-roteiro/`.
+
+---
+
 ### Sessão A2UI — Interface Interativa nas 3 Vias do LegoLoop (22/11/2026)
 
 - **ID da conversa Antigravity:** `108344c2-779f-47e3-8347-908ba2fa0f95`

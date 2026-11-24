@@ -1,0 +1,130 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "id": "legoloop-diorama-roteiro",
+  "name": "legoloop-diorama-roteiro",
+  "version": "1.0.0",
+  "schema_version": 2,
+  "date": "2026-11-24",
+  "description": "Processo canonizado Ciclo 1 do Macroprocesso legoloop-video-diorama: validacao de projeto.json e marca.json, pre-voo modular, descoberta gratuita por nicho com bloqueio de temas repetidos e validacao epistemica universal de script.json e plano.md.",
+  "upstream_signatures": {
+    "intent": "docs/intents/2026-11-24_INTENT_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+    "spec": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+    "plan": "docs/plans/2026-11-24_PLAN_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+    "route": "docs/routes/2026-11-24_ROUTE_CRIAR_O_PROCESSO_CANONIZADO_LE.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_and_pause",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "none",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_validar_config",
+      "name": "Validacao estrita de projeto.json e marca.json",
+      "nature": "micro",
+      "type": "script",
+      "command": ["legoloop", "diorama-roteiro", "validar-config", "--projeto", ".", "--json"],
+      "ref": "legoloop diorama-roteiro validar-config",
+      "routing": { "mode": "suggested", "harness": "claude", "via": "9router", "model": "sonnet", "effort": "low", "fallback": "haiku" },
+      "timeout_sec": 60,
+      "isolation": { "executor": "orchestrix_hermetic", "subagents_allowed": false, "workspace": "local", "write_boundary": "strict" },
+      "tooling": { "runtime": "legoloop" },
+      "context_in": ["projeto.json", "marca.json"],
+      "context_out": ["projeto.json"],
+      "output": { "artifact": "projeto.json", "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.1",
+      "status": "pending",
+      "execution": { "mode": "isolated" },
+      "limits": { "max_attempts": 1, "timeout_seconds": 60 },
+      "rollback_strategy": "abort_and_pause",
+      "verification": { "gate": "exit_code == 0" }
+    },
+    {
+      "id": "n02_prevoo_modular",
+      "name": "Pre-voo modular deterministico do Processo 1",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": ["n01_validar_config"],
+      "command": ["legoloop", "diorama-roteiro", "prevoo", "--projeto", ".", "--json"],
+      "ref": "legoloop diorama-roteiro prevoo",
+      "routing": { "mode": "suggested", "harness": "claude", "via": "9router", "model": "sonnet", "effort": "low", "fallback": "haiku" },
+      "timeout_sec": 60,
+      "isolation": { "executor": "orchestrix_hermetic", "subagents_allowed": false, "workspace": "local", "write_boundary": "strict" },
+      "tooling": { "runtime": "legoloop" },
+      "context_in": ["projeto.json"],
+      "context_out": ["prevoo.json"],
+      "output": { "artifact": "prevoo.json", "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.2",
+      "status": "pending",
+      "execution": { "mode": "isolated" },
+      "limits": { "max_attempts": 1, "timeout_seconds": 60 },
+      "rollback_strategy": "abort_and_pause",
+      "verification": { "gate": "exit_code == 0" }
+    },
+    {
+      "id": "n03_coletar_pautas",
+      "name": "Descoberta gratuita por perfis_fonte e filtro contra acervo/temas.json",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": ["n02_prevoo_modular"],
+      "command": ["legoloop", "diorama-roteiro", "coletar", "--projeto", ".", "--json"],
+      "ref": "legoloop diorama-roteiro coletar",
+      "routing": { "mode": "suggested", "harness": "claude", "via": "9router", "model": "sonnet", "effort": "medium", "fallback": "haiku" },
+      "timeout_sec": 120,
+      "isolation": { "executor": "orchestrix_hermetic", "subagents_allowed": false, "workspace": "local", "write_boundary": "strict" },
+      "tooling": { "runtime": "legoloop" },
+      "context_in": ["projeto.json", "acervo/temas.json"],
+      "context_out": ["pautas.json"],
+      "output": { "artifact": "pautas.json", "gate": "exit_code == 0" },
+      "spec_ref": "AC-E02.2",
+      "status": "pending",
+      "execution": { "mode": "isolated" },
+      "limits": { "max_attempts": 2, "timeout_seconds": 120 },
+      "rollback_strategy": "abort_and_pause",
+      "verification": { "gate": "exit_code == 0" }
+    },
+    {
+      "id": "n04_validar_roteiro",
+      "name": "Validacao epistemica universal de script.json e plano.md",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": ["n03_coletar_pautas"],
+      "command": ["legoloop", "diorama-roteiro", "validar-roteiro", "--projeto", ".", "--json"],
+      "ref": "legoloop diorama-roteiro validar-roteiro",
+      "routing": { "mode": "suggested", "harness": "claude", "via": "9router", "model": "sonnet", "effort": "high", "fallback": "opus" },
+      "timeout_sec": 120,
+      "isolation": { "executor": "orchestrix_hermetic", "subagents_allowed": false, "workspace": "local", "write_boundary": "strict" },
+      "tooling": { "runtime": "legoloop" },
+      "context_in": ["projeto.json", "script.json", "plano.md"],
+      "context_out": ["script.json", "acervo/temas.json"],
+      "output": { "artifact": "script.json", "gate": "exit_code == 0" },
+      "spec_ref": "AC-E03.1",
+      "status": "pending",
+      "execution": { "mode": "isolated" },
+      "limits": { "max_attempts": 3, "timeout_seconds": 120 },
+      "rollback_strategy": "abort_and_pause",
+      "verification": { "gate": "exit_code == 0" }
+    }
+  ]
+}

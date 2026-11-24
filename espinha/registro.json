@@ -8,6 +8,12 @@
       "contrato": "Inventario de harnesses, modelos e chaves do Cofre"
     },
     {
+      "nome": "diorama-roteiro",
+      "camada": "dominio",
+      "motor": "internal/diorama/roteiro",
+      "contrato": "Pre-voo modular, descoberta por nicho e validacao epistemica de script.json"
+    },
+    {
       "nome": "canonize",
       "camada": "espinha",
       "motor": "internal/canon",
@@ -556,6 +562,7 @@
     { "slug": "legoloop-concepcao" },
     { "slug": "legoloop-design-ui" },
     { "slug": "legoloop-diagram-design" },
+    { "slug": "legoloop-diorama-roteiro" },
     { "slug": "legoloop-dissecar" },
     { "slug": "legoloop-especificacao" },
     { "slug": "legoloop-fabricar" },

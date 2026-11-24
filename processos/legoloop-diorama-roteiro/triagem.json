@@ -1,0 +1,72 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-diorama-roteiro",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-diorama-roteiro",
+      "comandos_cli": [
+        "legoloop diorama-roteiro",
+        "/legoloop-diorama-roteiro"
+      ],
+      "artefatos_ativos": [
+        "projeto.json",
+        "script.json"
+      ],
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificacao para o Processo legoloop-diorama-roteiro",
+    "etapas": [
+      "n01_validar_config",
+      "n02_prevoo_modular",
+      "n03_coletar_pautas",
+      "n04_validar_roteiro"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_validar_config",
+      "palavras_chave": [
+        "validar config",
+        "projeto.json",
+        "marca.json"
+      ],
+      "slash_command": "/legoloop-diorama-roteiro-validar-config",
+      "flag_cli": "--etapa n01_validar_config"
+    },
+    {
+      "id": "n02_prevoo_modular",
+      "palavras_chave": [
+        "prevoo",
+        "pre-voo diorama"
+      ],
+      "slash_command": "/legoloop-diorama-roteiro-prevoo",
+      "flag_cli": "--etapa n02_prevoo_modular"
+    },
+    {
+      "id": "n03_coletar_pautas",
+      "palavras_chave": [
+        "coletar pautas",
+        "descoberta de pautas"
+      ],
+      "slash_command": "/legoloop-diorama-roteiro-coletar",
+      "flag_cli": "--etapa n03_coletar_pautas"
+    },
+    {
+      "id": "n04_validar_roteiro",
+      "palavras_chave": [
+        "validar roteiro",
+        "script.json",
+        "fontes nivel a"
+      ],
+      "slash_command": "/legoloop-diorama-roteiro-validar-roteiro",
+      "flag_cli": "--etapa n04_validar_roteiro"
+    }
+  ],
+  "pontos_entrada": [
+    "cli:legoloop diorama-roteiro",
+    "chat:/legoloop-diorama-roteiro",
+    "studio:Diorama Roteiro"
+  ]
+}

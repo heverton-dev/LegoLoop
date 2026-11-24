@@ -57,6 +57,7 @@ LegoLoop/
 │   ├── vault/               # Cofre de credenciais (AES-256-GCM, mascaramento)
 │   ├── board/ · wave/       # Integração com GitHub Projects e planejador de ondas sem sobreposição
 │   ├── studio/              # Looping Studio (canvas + API REST + modais Novo Processo e Processos)
+│   ├── diorama/roteiro/     # Processo legoloop-diorama-roteiro: pré-voo, descoberta por nicho e validação epistêmica
 │   ├── e2e/                 # Testes E2E herméticos dos cenários de referência (tag e2e)
 │   ├── redc/                # MEGA-PIPELINE REDC: engenharia reversa de canais, DNA, ganchos e Brand Swap
 │   ├── mcp/                 # Meta-MCP Router STDIO: bootstrap mínimo (2 tools), busca Lazy e catálogo de skills

@@ -1,0 +1,858 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "2026-11-24_ROUTE_CRIAR_O_PROCESSO_CANONIZADO_LE",
+  "version": "1.0.0",
+  "date": "2026-11-24",
+  "session_id": null,
+  "intent_ref": "docs/intents/2026-11-24_INTENT_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+  "spec_ref": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+  "plan_ref": "docs/plans/2026-11-24_PLAN_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-24_INTENT_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+      "sha256": "9345c2800cb125eb7682dcbadcbd68ec9d8667215b880348dba22939249dd2d8"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+      "sha256": "1e8bb8bbba1ced85c5bac370b02ded80c14d0f710dd6317efa53fbf8ebd5866d"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-24_PLAN_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
+      "sha256": "19ab836301d83d22d3b5a75686e95230604f67e92e2e9d494d3444b3600d7ab2"
+    }
+  },
+  "execution_strategy": {
+    "supervision_level": "epic",
+    "concurrency": {
+      "mode": "hybrid",
+      "max_parallel_subagents": 2,
+      "harness_capability": "subagent_cli_isolated",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "write_boundary": "strict"
+    },
+    "max_parallel_workers": 2,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-01.1",
+      "initiative_id": "D01",
+      "epic_id": "E01",
+      "label": "Criar contratos e validacao estrita de Projeto, Marca e consistencia cruzada",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/diorama/roteiro/schemas.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md#AC-E01.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.1",
+      "test_target": "internal/diorama/roteiro/schemas_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/diorama/roteiro/schemas.go",
+          "internal/diorama/roteiro/schemas_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/diorama/roteiro/",
+            "-run",
+            "TestValidarConfiguracao"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/schemas.go') \u0026\u0026 file_exists('internal/diorama/roteiro/schemas_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-01.2",
+      "initiative_id": "D01",
+      "epic_id": "E01",
+      "label": "Implementar pre-voo modular com 5 bloqueantes FALTA e itens de P2 e P3 como AVISO",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/diorama/roteiro/prevoo.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md#AC-E01.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E01.2, AC-E01.3",
+      "test_target": "internal/diorama/roteiro/prevoo_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/diorama/roteiro/prevoo.go",
+          "internal/diorama/roteiro/prevoo_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/diorama/roteiro/",
+            "-run",
+            "TestPreVoo"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/prevoo.go') \u0026\u0026 file_exists('internal/diorama/roteiro/prevoo_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E01",
+      "initiative_id": null,
+      "epic_id": "E01",
+      "label": "Stop-Gate Humano: SG-E01",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.1",
+      "initiative_id": "D01",
+      "epic_id": "E02",
+      "label": "Criar catalogo declarativo por nicho e classificacao fail-closed por dominio A, B, preprint e C",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.1",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/diorama/roteiro/catalogo.go",
+          "internal/diorama/roteiro/catalogo_padrao.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md#AC-E02.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.1",
+      "test_target": "internal/diorama/roteiro/catalogo_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/diorama/roteiro/catalogo.go",
+          "internal/diorama/roteiro/catalogo_padrao.go",
+          "internal/diorama/roteiro/catalogo_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/diorama/roteiro/",
+            "-run",
+            "TestClassificarFonte"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/catalogo.go') \u0026\u0026 file_exists('internal/diorama/roteiro/catalogo_padrao.go') \u0026\u0026 file_exists('internal/diorama/roteiro/catalogo_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-02.2",
+      "initiative_id": "D01",
+      "epic_id": "E02",
+      "label": "Implementar coletor HTTP gratuito por perfis_fonte, filtro em acervo/temas.json e politica_gates",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "SG-E01"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/diorama/roteiro/coletor.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md#AC-E02.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E02.2, AC-NF.1",
+      "test_target": "internal/diorama/roteiro/coletor_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/diorama/roteiro/coletor.go",
+          "internal/diorama/roteiro/coletor_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/diorama/roteiro/",
+            "-run",
+            "TestColetarPautas"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/coletor.go') \u0026\u0026 file_exists('internal/diorama/roteiro/coletor_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E02",
+      "initiative_id": null,
+      "epic_id": "E02",
+      "label": "Stop-Gate Humano: SG-E02",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-02.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.1",
+      "initiative_id": "D01",
+      "epic_id": "E03",
+      "label": "Implementar validador epistemico universal para as 4 naturezas e bloqueio de nivel C",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-02.1",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/diorama/roteiro/validador.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md#AC-E03.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.1",
+      "test_target": "internal/diorama/roteiro/validador_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/diorama/roteiro/validador.go",
+          "internal/diorama/roteiro/validador_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/diorama/roteiro/",
+            "-run",
+            "TestValidarRoteiro"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/validador.go') \u0026\u0026 file_exists('internal/diorama/roteiro/validador_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-03.2",
+      "initiative_id": "D01",
+      "epic_id": "E03",
+      "label": "Implementar pipeline com limite de 2 correcoes automaticas e gravacao pos-Gate em acervo/temas.json",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-01.2",
+        "TICK-02.2",
+        "TICK-03.1",
+        "SG-E02"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/diorama/roteiro/acervo.go",
+          "internal/diorama/roteiro/pipeline.go"
+        ],
+        "spec_anchor": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md#AC-E03.2",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E03.2, AC-E03.3, AC-NF.2",
+      "test_target": "internal/diorama/roteiro/pipeline_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/diorama/roteiro/acervo.go",
+          "internal/diorama/roteiro/pipeline.go",
+          "internal/diorama/roteiro/pipeline_test.go"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/diorama/roteiro/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/acervo.go') \u0026\u0026 file_exists('internal/diorama/roteiro/pipeline.go') \u0026\u0026 file_exists('internal/diorama/roteiro/pipeline_test.go')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-E03",
+      "initiative_id": null,
+      "epic_id": "E03",
+      "label": "Stop-Gate Humano: SG-E03",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "none"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "human/operator",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [],
+        "verify": [],
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "TICK-04.1",
+      "initiative_id": "D01",
+      "epic_id": "E04",
+      "label": "Expor comando CLI legoloop diorama-roteiro, DAG v2, Skill e registro 5 de 5 na Espinha",
+      "nature": "micro",
+      "extreme": false,
+      "class_rule": "nature=micro",
+      "type": "unit_no",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_ms": 1000,
+        "fallback_model_on_retry": true
+      },
+      "token_budget": {
+        "max_input_tokens": 16000,
+        "max_output_tokens": 600
+      },
+      "depends_on": [
+        "TICK-03.2",
+        "SG-E03"
+      ],
+      "routing": {
+        "mode": "suggested",
+        "harness": "9router",
+        "model": "code-pro",
+        "effort": "high",
+        "fallback": {
+          "harness": "antigravity",
+          "model": "flash"
+        }
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "internal/cli/diorama_roteiro.go",
+          "cmd/legoloop/main.go",
+          "processos/legoloop-diorama-roteiro/pipeline.dag.json",
+          "skills/legoloop-diorama-roteiro/SKILL.md"
+        ],
+        "spec_anchor": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md#AC-E04.1",
+        "context_artifacts": []
+      },
+      "spec_ref": "AC-E04.1",
+      "test_target": "internal/cli/diorama_roteiro_test.go",
+      "defects": [],
+      "rollback_strategy": "stash_changes",
+      "output": {
+        "artifacts": [
+          "internal/cli/diorama_roteiro.go",
+          "internal/cli/diorama_roteiro_test.go",
+          "cmd/legoloop/main.go",
+          "processos/legoloop-diorama-roteiro/pipeline.dag.json",
+          "skills/legoloop-diorama-roteiro/SKILL.md"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "-count=1",
+            "./internal/diorama/roteiro/...",
+            "./internal/cli/..."
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/diorama_roteiro.go') \u0026\u0026 file_exists('internal/cli/diorama_roteiro_test.go') \u0026\u0026 file_exists('cmd/legoloop/main.go') \u0026\u0026 file_exists('processos/legoloop-diorama-roteiro/pipeline.dag.json') \u0026\u0026 file_exists('skills/legoloop-diorama-roteiro/SKILL.md')"
+      },
+      "telemetry": null
+    },
+    {
+      "id": "SG-FINAL",
+      "initiative_id": null,
+      "epic_id": null,
+      "label": "Homologação Final (Regressão Global \u0026 Recompilação Fresca)",
+      "nature": "nano",
+      "extreme": false,
+      "class_rule": "stop_gate",
+      "type": "stop_gate",
+      "ref": null,
+      "status": "PENDING",
+      "execution_mode": "sequential",
+      "isolation": {
+        "workspace": "local",
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "timeout_sec": 180,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_ms": 0,
+        "fallback_model_on_retry": false
+      },
+      "token_budget": {
+        "max_input_tokens": 0,
+        "max_output_tokens": 0
+      },
+      "depends_on": [
+        "TICK-04.1"
+      ],
+      "routing": {
+        "mode": "manual",
+        "harness": "local",
+        "model": "script/local",
+        "effort": null,
+        "fallback": null
+      },
+      "tooling": {
+        "runtime": "legoloop",
+        "mcps_required": false,
+        "mcps_allowed": []
+      },
+      "inputs": {
+        "source_files": [
+          "cmd/legoloop/main.go"
+        ],
+        "spec_anchor": null,
+        "context_artifacts": []
+      },
+      "spec_ref": null,
+      "test_target": null,
+      "defects": [],
+      "rollback_strategy": "abort_processo",
+      "output": {
+        "artifacts": [
+          "bin/legoloop.exe"
+        ],
+        "verify": [
+          [
+            "go",
+            "test",
+            "./..."
+          ],
+          [
+            "go",
+            "vet",
+            "./..."
+          ],
+          [
+            "go",
+            "build",
+            "-o",
+            "bin/legoloop.exe",
+            "./cmd/legoloop"
+          ]
+        ],
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "telemetry": null
+    }
+  ]
+}

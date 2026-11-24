@@ -1,0 +1,39 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-diorama-roteiro",
+      "titulo": "Validacao estrita de projeto.json e marca.json"
+    },
+    {
+      "id": "e02",
+      "peca": "legoloop-diorama-roteiro",
+      "titulo": "Pre-voo modular com 5 bloqueantes e avisos"
+    },
+    {
+      "id": "e03",
+      "peca": "legoloop-diorama-roteiro",
+      "titulo": "Catalogo por nicho, classificacao fail-closed e descoberta sem repeticao"
+    },
+    {
+      "id": "e04",
+      "peca": "legoloop-diorama-roteiro",
+      "titulo": "Validacao epistemica universal, limite de 2 correcoes e gravacao pos-Gate"
+    }
+  ],
+  "descricao": "Livro didatico do Processo legoloop-diorama-roteiro: configuracao validada, pre-voo modular, descoberta gratuita por nicho e roteiro auditavel no LegoLoop.",
+  "slug": "legoloop-diorama-roteiro",
+  "titulo": "Manual Didatico: legoloop-diorama-roteiro",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-24_PROCESSO_LEGOLOOP_DIORAMA_ROTEIRO",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-diorama-roteiro-v1",
+  "ultima_compilacao": "2026-11-24"
+}

@@ -1,0 +1,151 @@
+[
+  {
+    "id": "TICK-DR-01.1",
+    "title": "Criar contratos e validacao estrita de Projeto, Marca e consistencia cruzada",
+    "epic_id": "E01",
+    "initiative_id": "D01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [],
+    "target_files": [
+      "internal/diorama/roteiro/schemas.go",
+      "internal/diorama/roteiro/schemas_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E01.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/roteiro/ -run TestValidarConfiguracao",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-01.2",
+    "title": "Implementar pre-voo modular com 5 bloqueantes FALTA e itens de P2 e P3 como AVISO",
+    "epic_id": "E01",
+    "initiative_id": "D01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-01.1"
+    ],
+    "target_files": [
+      "internal/diorama/roteiro/prevoo.go",
+      "internal/diorama/roteiro/prevoo_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E01.2",
+      "AC-E01.3"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/roteiro/ -run TestPreVoo",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-02.1",
+    "title": "Criar catalogo declarativo por nicho e classificacao fail-closed por dominio A, B, preprint e C",
+    "epic_id": "E02",
+    "initiative_id": "D01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-01.1"
+    ],
+    "target_files": [
+      "internal/diorama/roteiro/catalogo.go",
+      "internal/diorama/roteiro/catalogo_padrao.go",
+      "internal/diorama/roteiro/catalogo_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E02.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/roteiro/ -run TestClassificarFonte",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-02.2",
+    "title": "Implementar coletor HTTP gratuito por perfis_fonte, filtro em acervo/temas.json e politica_gates",
+    "epic_id": "E02",
+    "initiative_id": "D01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-02.1"
+    ],
+    "target_files": [
+      "internal/diorama/roteiro/coletor.go",
+      "internal/diorama/roteiro/coletor_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E02.2",
+      "AC-NF.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/roteiro/ -run TestColetarPautas",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-03.1",
+    "title": "Implementar validador epistemico universal para as 4 naturezas e bloqueio de nivel C",
+    "epic_id": "E03",
+    "initiative_id": "D01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-02.1"
+    ],
+    "target_files": [
+      "internal/diorama/roteiro/validador.go",
+      "internal/diorama/roteiro/validador_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E03.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/roteiro/ -run TestValidarRoteiro",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-03.2",
+    "title": "Implementar pipeline com limite de 2 correcoes automaticas e gravacao pos-Gate em acervo/temas.json",
+    "epic_id": "E03",
+    "initiative_id": "D01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-01.2",
+      "TICK-DR-02.2",
+      "TICK-DR-03.1"
+    ],
+    "target_files": [
+      "internal/diorama/roteiro/acervo.go",
+      "internal/diorama/roteiro/pipeline.go",
+      "internal/diorama/roteiro/pipeline_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E03.2",
+      "AC-E03.3",
+      "AC-NF.2"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/roteiro/...",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-04.1",
+    "title": "Expor comando CLI legoloop diorama-roteiro, DAG v2, Skill e registro 5 de 5 na Espinha",
+    "epic_id": "E04",
+    "initiative_id": "D01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-03.2"
+    ],
+    "target_files": [
+      "internal/cli/diorama_roteiro.go",
+      "internal/cli/diorama_roteiro_test.go",
+      "cmd/legoloop/main.go",
+      "processos/legoloop-diorama-roteiro/pipeline.dag.json",
+      "skills/legoloop-diorama-roteiro/SKILL.md"
+    ],
+    "spec_criteria": [
+      "AC-E04.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/roteiro/... ./internal/cli/...",
+    "human_gate_after": true
+  }
+]

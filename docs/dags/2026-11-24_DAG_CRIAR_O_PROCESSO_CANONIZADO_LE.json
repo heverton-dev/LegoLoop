@@ -1,0 +1,600 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-24",
+  "description": "Espelho executável da ROUTE 2026-11-24_ROUTE_CRIAR_O_PROCESSO_CANONIZADO_LE",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local",
+      "write_boundary": "strict"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-criar-o-processo-canonizado-le",
+  "nodes": [
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/roteiro/",
+        "-run",
+        "TestValidarConfiguracao"
+      ],
+      "context_in": [
+        "internal/diorama/roteiro/schemas.go",
+        "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md"
+      ],
+      "context_out": [
+        "internal/diorama/roteiro/schemas.go",
+        "internal/diorama/roteiro/schemas_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-01.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/schemas.go') \u0026\u0026 file_exists('internal/diorama/roteiro/schemas_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/roteiro/schemas_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/roteiro/ -run TestValidarConfiguracao"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/roteiro/",
+        "-run",
+        "TestPreVoo"
+      ],
+      "context_in": [
+        "internal/diorama/roteiro/prevoo.go",
+        "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md"
+      ],
+      "context_out": [
+        "internal/diorama/roteiro/prevoo.go",
+        "internal/diorama/roteiro/prevoo_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "id": "TICK-01.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/prevoo.go') \u0026\u0026 file_exists('internal/diorama/roteiro/prevoo_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.2, AC-E01.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/roteiro/prevoo_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/roteiro/ -run TestPreVoo"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2"
+      ],
+      "id": "SG-E01",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e01",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E01.json",
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/roteiro/",
+        "-run",
+        "TestClassificarFonte"
+      ],
+      "context_in": [
+        "internal/diorama/roteiro/catalogo.go",
+        "internal/diorama/roteiro/catalogo_padrao.go",
+        "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md"
+      ],
+      "context_out": [
+        "internal/diorama/roteiro/catalogo.go",
+        "internal/diorama/roteiro/catalogo_padrao.go",
+        "internal/diorama/roteiro/catalogo_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1",
+        "SG-E01"
+      ],
+      "id": "TICK-02.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/catalogo.go') \u0026\u0026 file_exists('internal/diorama/roteiro/catalogo_padrao.go') \u0026\u0026 file_exists('internal/diorama/roteiro/catalogo_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/roteiro/catalogo_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/roteiro/ -run TestClassificarFonte"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/roteiro/",
+        "-run",
+        "TestColetarPautas"
+      ],
+      "context_in": [
+        "internal/diorama/roteiro/coletor.go",
+        "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md"
+      ],
+      "context_out": [
+        "internal/diorama/roteiro/coletor.go",
+        "internal/diorama/roteiro/coletor_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.1",
+        "SG-E01"
+      ],
+      "id": "TICK-02.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/coletor.go') \u0026\u0026 file_exists('internal/diorama/roteiro/coletor_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.2, AC-NF.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/roteiro/coletor_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/roteiro/ -run TestColetarPautas"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-02.2"
+      ],
+      "id": "SG-E02",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e02",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E02.json",
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/roteiro/",
+        "-run",
+        "TestValidarRoteiro"
+      ],
+      "context_in": [
+        "internal/diorama/roteiro/validador.go",
+        "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md"
+      ],
+      "context_out": [
+        "internal/diorama/roteiro/validador.go",
+        "internal/diorama/roteiro/validador_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.1",
+        "SG-E02"
+      ],
+      "id": "TICK-03.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/validador.go') \u0026\u0026 file_exists('internal/diorama/roteiro/validador_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/roteiro/validador_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/roteiro/ -run TestValidarRoteiro"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/roteiro/..."
+      ],
+      "context_in": [
+        "internal/diorama/roteiro/acervo.go",
+        "internal/diorama/roteiro/pipeline.go",
+        "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md"
+      ],
+      "context_out": [
+        "internal/diorama/roteiro/acervo.go",
+        "internal/diorama/roteiro/pipeline.go",
+        "internal/diorama/roteiro/pipeline_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.2",
+        "TICK-02.2",
+        "TICK-03.1",
+        "SG-E02"
+      ],
+      "id": "TICK-03.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/roteiro/acervo.go') \u0026\u0026 file_exists('internal/diorama/roteiro/pipeline.go') \u0026\u0026 file_exists('internal/diorama/roteiro/pipeline_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.2, AC-E03.3, AC-NF.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/roteiro/pipeline_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/roteiro/..."
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2"
+      ],
+      "id": "SG-E03",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e03",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E03.json",
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/roteiro/...",
+        "./internal/cli/..."
+      ],
+      "context_in": [
+        "internal/cli/diorama_roteiro.go",
+        "cmd/legoloop/main.go",
+        "processos/legoloop-diorama-roteiro/pipeline.dag.json",
+        "skills/legoloop-diorama-roteiro/SKILL.md",
+        "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md"
+      ],
+      "context_out": [
+        "internal/cli/diorama_roteiro.go",
+        "internal/cli/diorama_roteiro_test.go",
+        "cmd/legoloop/main.go",
+        "processos/legoloop-diorama-roteiro/pipeline.dag.json",
+        "skills/legoloop-diorama-roteiro/SKILL.md"
+      ],
+      "depends_on": [
+        "TICK-03.2",
+        "SG-E03"
+      ],
+      "id": "TICK-04.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/diorama_roteiro.go') \u0026\u0026 file_exists('internal/cli/diorama_roteiro_test.go') \u0026\u0026 file_exists('cmd/legoloop/main.go') \u0026\u0026 file_exists('processos/legoloop-diorama-roteiro/pipeline.dag.json') \u0026\u0026 file_exists('skills/legoloop-diorama-roteiro/SKILL.md')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E04.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/cli/diorama_roteiro_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/roteiro/... ./internal/cli/..."
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-04.1"
+      ],
+      "id": "SG-FINAL",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "name": "sg_final",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-FINAL.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    }
+  ],
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "9345c2800cb125eb7682dcbadcbd68ec9d8667215b880348dba22939249dd2d8",
+    "plan": "19ab836301d83d22d3b5a75686e95230604f67e92e2e9d494d3444b3600d7ab2",
+    "spec": "1e8bb8bbba1ced85c5bac370b02ded80c14d0f710dd6317efa53fbf8ebd5866d"
+  },
+  "version": "1.0.0"
+}
