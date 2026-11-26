@@ -216,3 +216,8 @@
 - Achado meu: primeira mutacao na checagem de partes_suportadas quebrou o build (forma nao usada) e meu grep '--- FAIL' contou 0, lendo como sobrevivencia falsa; corrigido mantendo forma usada (if forma && false) e a mutacao real mata 2 testes (TestElencoCastBloqueios ja cobria hair/hat fora de partes_suportadas).
 - Prova: go test ./internal/diorama/ativos/... ok; mutacao do personagem_id fora do elenco mata 1 teste; mutacao de partes_suportadas mata 2; go test ./... 73 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
 - Progresso: 8 aprovados.
+
+## Camada 9 - TICK-V01-04.1 etapa 3 vetorial monta elenco do inventario (2026-11-26)
+- Entrega: ExecutarEtapa3Vetorial, lacunasDoCast (item ausente vira lacuna, nao erro), gravarItemNovo (grava com Aprovado=false).
+- Prova: go test ./internal/diorama/ativos/... ok; mutacao que ignora item ausente mata 1 teste; mutacao que grava item ja aprovado mata 1 teste; go test ./... 73 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
+- Progresso: 9 aprovados.

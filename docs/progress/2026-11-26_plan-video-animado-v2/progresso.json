@@ -2,14 +2,14 @@
   "schema": "progresso.v1",
   "iniciativa": "V01",
   "plano": "docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md",
-  "atualizado_em": "2026-11-26T19:41:59Z",
+  "atualizado_em": "2026-11-26T19:48:39Z",
   "resumo": {
     "total": 25,
-    "aprovados": 8,
+    "aprovados": 9,
     "em_andamento": 0,
     "reprovados": 0,
     "bloqueados": 0,
-    "pendentes": 17
+    "pendentes": 16
   },
   "tickets": [
     {
@@ -175,11 +175,11 @@
       "id": "TICK-V01-04.1",
       "epico": "E09",
       "titulo": "Etapa 3 vetorial: montar elenco.json com cast a partir do inventario, sem Flow, e gravar itens novos como nao aprovados",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "swarm",
       "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestElencoVetorial",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/diorama/ativos\t0.057s |",
       "alvos": [
         "internal/diorama/ativos/elenco.go",
         "internal/diorama/ativos/elenco_test.go"
@@ -188,7 +188,7 @@
         "AC-E09.1",
         "AC-E09.2"
       ],
-      "atualizado_em": "2026-11-26T00:00:00Z"
+      "atualizado_em": "2026-11-26T19:48:39Z"
     },
     {
       "id": "TICK-V01-04.2",

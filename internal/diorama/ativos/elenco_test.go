@@ -2,10 +2,13 @@ package ativos
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
 )
 
 type recortadorFake struct {
@@ -148,6 +151,112 @@ func TestElencoEtapa3Bloqueios(t *testing.T) {
 			if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(sp.ArquivoPNG))); err != nil {
 				t.Fatalf("arquivo PNG real ausente %s: %v", sp.ArquivoPNG, err)
 			}
+		}
+	})
+}
+
+// inventarioVetorialFixture cria o estilo molde-pilula com pele, traje e penteado aprovados.
+func inventarioVetorialFixture(t *testing.T, status string) inventario.Store {
+	t.Helper()
+	s := inventario.Store{Raiz: t.TempDir()}
+	base := filepath.Join(s.Raiz, "inventario", "video", "estilos", "molde-pilula")
+	itens := map[string]string{"pele": "pele-clara", "traje": "terno-azul", "penteado": "coque"}
+	for tipo := range itens {
+		if err := os.MkdirAll(filepath.Join(base, "itens", tipo), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	gravarJSONTeste(t, filepath.Join(base, "estilo.json"), inventario.Estilo{ID: "molde-pilula", Status: status, Versao: "1.0.0", PartesSuportadas: []string{"coque"}})
+	for tipo, id := range itens {
+		gravarJSONTeste(t, filepath.Join(base, "itens", tipo, id+".json"), inventario.Item{ID: id, Tipo: tipo, Estilo: "molde-pilula", Aprovado: true})
+	}
+	return s
+}
+
+func pedidoAnaFixture() []PedidoPersonagem {
+	return []PedidoPersonagem{{
+		ID: "ana", Nome: "Ana", Tags: []string{"pre-historia"},
+		Cast: map[string]string{"skin": "pele-clara", "suit": "terno-azul", "hair": "coque", "hair_col": "#333333", "tie": "colar-de-osso"},
+	}}
+}
+
+func TestElencoVetorialMontaCastSemFlow(t *testing.T) {
+	s := inventarioVetorialFixture(t, "validado")
+	proj := t.TempDir()
+	rel, err := ExecutarEtapa3Vetorial(proj, s, "molde-pilula", pedidoAnaFixture(), "demo-2026-11-26")
+	if err != nil {
+		t.Fatalf("etapa 3 vetorial: %v", err)
+	}
+	if rel.Creditos != 0 || rel.FlowChamado {
+		t.Fatalf("esperado 0 credito e Flow nao chamado, obtido %+v", rel)
+	}
+	var el Elenco
+	b, err := os.ReadFile(filepath.Join(proj, "elenco.json"))
+	if err != nil {
+		t.Fatalf("elenco.json nao gravado: %v", err)
+	}
+	if err := json.Unmarshal(b, &el); err != nil {
+		t.Fatalf("elenco.json invalido: %v", err)
+	}
+	if el.Estilo != "molde-pilula" || len(el.Personagens) != 1 || el.Personagens[0].Cast["hair"] != "coque" || len(el.Personagens[0].Cast) != 5 {
+		t.Fatalf("elenco inesperado: %+v", el)
+	}
+	if _, err := os.Stat(filepath.Join(proj, "flow")); !os.IsNotExist(err) {
+		t.Fatalf("caminho vetorial nao pode escrever em flow/: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(proj, "elenco_relatorio.json")); err != nil {
+		t.Fatalf("elenco_relatorio.json nao gravado: %v", err)
+	}
+}
+
+func TestElencoVetorialItemNovoNaoAprovado(t *testing.T) {
+	s := inventarioVetorialFixture(t, "validado")
+	rel, err := ExecutarEtapa3Vetorial(t.TempDir(), s, "molde-pilula", pedidoAnaFixture(), "demo-2026-11-26")
+	if err != nil {
+		t.Fatalf("etapa 3 vetorial: %v", err)
+	}
+	if len(rel.Lacunas) != 1 || rel.Lacunas[0].Item != "colar-de-osso" || rel.Lacunas[0].Tipo != "adorno" {
+		t.Fatalf("esperada 1 lacuna adorno colar-de-osso, obtido %+v", rel.Lacunas)
+	}
+	var it inventario.Item
+	caminho := filepath.Join(s.Raiz, "inventario", "video", "estilos", "molde-pilula", "itens", "adorno", "colar-de-osso.json")
+	b, err := os.ReadFile(caminho)
+	if err != nil {
+		t.Fatalf("item novo nao gravado: %v", err)
+	}
+	if err := json.Unmarshal(b, &it); err != nil {
+		t.Fatalf("item novo invalido: %v", err)
+	}
+	if it.Aprovado || it.Origem != "demo-2026-11-26" || it.EstiloVersao != "1.0.0" || len(it.Tags) != 1 {
+		t.Fatalf("item novo deve entrar nao aprovado com origem, versao e tags: %+v", it)
+	}
+	achados, err := s.Buscar("molde-pilula", "adorno", nil)
+	if err != nil || len(achados) != 0 {
+		t.Fatalf("item nao aprovado nao pode aparecer na busca: %+v err=%v", achados, err)
+	}
+}
+
+func TestElencoVetorialBloqueios(t *testing.T) {
+	t.Run("estilo rascunho", func(t *testing.T) {
+		s := inventarioVetorialFixture(t, "rascunho")
+		if _, err := ExecutarEtapa3Vetorial(t.TempDir(), s, "molde-pilula", pedidoAnaFixture(), "o"); !errors.Is(err, ErrEstiloNaoValidado) {
+			t.Fatalf("esperado ErrEstiloNaoValidado, obtido %v", err)
+		}
+	})
+	t.Run("estilo inexistente", func(t *testing.T) {
+		s := inventarioVetorialFixture(t, "validado")
+		if _, err := ExecutarEtapa3Vetorial(t.TempDir(), s, "aquarela", pedidoAnaFixture(), "o"); !errors.Is(err, ErrEstiloInexistente) {
+			t.Fatalf("esperado ErrEstiloInexistente, obtido %v", err)
+		}
+	})
+	t.Run("campo desconhecido e personagem sem id", func(t *testing.T) {
+		s := inventarioVetorialFixture(t, "validado")
+		ruim := []PedidoPersonagem{{ID: "ana", Cast: map[string]string{"asa": "x"}}}
+		if _, err := ExecutarEtapa3Vetorial(t.TempDir(), s, "molde-pilula", ruim, "o"); !errors.Is(err, ErrParteNaoSuportada) {
+			t.Fatalf("esperado ErrParteNaoSuportada, obtido %v", err)
+		}
+		if _, err := ExecutarEtapa3Vetorial(t.TempDir(), s, "molde-pilula", []PedidoPersonagem{{}}, "o"); !errors.Is(err, ErrElencoInvalido) {
+			t.Fatalf("esperado ErrElencoInvalido, obtido %v", err)
 		}
 	})
 }

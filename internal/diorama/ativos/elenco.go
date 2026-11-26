@@ -3,13 +3,136 @@ package ativos
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
 	"image/png"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
+
+	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
 )
+
+// PedidoPersonagem e o personagem pedido pelo roteiro: tags do tema e o cast desejado.
+type PedidoPersonagem struct {
+	ID   string            `json:"id"`
+	Nome string            `json:"nome"`
+	Tags []string          `json:"tags"`
+	Cast map[string]string `json:"cast"`
+}
+
+// LacunaElenco e uma parte pedida que o inventario do estilo ainda nao tem aprovada.
+type LacunaElenco struct {
+	PersonagemID string `json:"personagem_id"`
+	Campo        string `json:"campo"`
+	Tipo         string `json:"tipo"`
+	Item         string `json:"item"`
+}
+
+// RelatorioElencoVetorial registra custo, uso do Flow e lacunas da Etapa 3 vetorial.
+type RelatorioElencoVetorial struct {
+	Estilo      string         `json:"estilo"`
+	Creditos    int            `json:"creditos"`
+	FlowChamado bool           `json:"flow_chamado"`
+	Lacunas     []LacunaElenco `json:"lacunas"`
+}
+
+// ExecutarEtapa3Vetorial monta elenco.json so com o inventario, sem Flow e com 0 credito.
+// Parte ausente vira item novo com aprovado false; o Stop-Gate humano aprova depois.
+func ExecutarEtapa3Vetorial(projDir string, s inventario.Store, estilo string, pedidos []PedidoPersonagem, origem string) (RelatorioElencoVetorial, error) {
+	e, inv, err := carregarEstiloVetorial(s, estilo)
+	if err != nil {
+		return RelatorioElencoVetorial{}, err
+	}
+	rel := RelatorioElencoVetorial{Estilo: estilo, Lacunas: []LacunaElenco{}}
+	el := Elenco{SchemaVersion: 2, Estilo: estilo, Personagens: []PersonagemElenco{}}
+	for i, p := range pedidos {
+		if strings.TrimSpace(p.ID) == "" {
+			return RelatorioElencoVetorial{}, fmt.Errorf("%w: personagem %d sem id", ErrElencoInvalido, i)
+		}
+		lacunas, err := lacunasDoCast(p, inv)
+		if err != nil {
+			return RelatorioElencoVetorial{}, err
+		}
+		for _, l := range lacunas {
+			if err := gravarItemNovo(s, e, p.Tags, l, origem); err != nil {
+				return RelatorioElencoVetorial{}, err
+			}
+		}
+		rel.Lacunas = append(rel.Lacunas, lacunas...)
+		el.Personagens = append(el.Personagens, PersonagemElenco{ID: p.ID, Nome: p.Nome, Cast: p.Cast})
+	}
+	if err := gravarJSONSeguro(projDir, "elenco.json", el); err != nil {
+		return RelatorioElencoVetorial{}, err
+	}
+	return rel, gravarJSONSeguro(projDir, "elenco_relatorio.json", rel)
+}
+
+// carregarEstiloVetorial exige estilo existente e validado e devolve o inventario aprovado.
+func carregarEstiloVetorial(s inventario.Store, estilo string) (inventario.Estilo, InventarioEstilo, error) {
+	e, err := s.LerEstilo(estilo)
+	if errors.Is(err, inventario.ErrEstiloInexistente) {
+		return e, InventarioEstilo{}, fmt.Errorf("%w: %w", ErrEstiloInexistente, err)
+	}
+	if err != nil {
+		return e, InventarioEstilo{}, err
+	}
+	if e.Status != "validado" {
+		return e, InventarioEstilo{}, fmt.Errorf("%w: estilo %q status %q", ErrEstiloNaoValidado, e.ID, e.Status)
+	}
+	inv, err := CarregarInventarioEstilo(s, estilo)
+	return e, inv, err
+}
+
+// lacunasDoCast confere cada campo do cast e devolve as partes ausentes do inventario.
+func lacunasDoCast(p PedidoPersonagem, inv InventarioEstilo) ([]LacunaElenco, error) {
+	campos := make([]string, 0, len(p.Cast))
+	for c := range p.Cast {
+		campos = append(campos, c)
+	}
+	sort.Strings(campos)
+	var lacunas []LacunaElenco
+	for _, c := range campos {
+		valor := p.Cast[c]
+		if campoCor(c) {
+			continue
+		}
+		tipo, forma, ok := tipoCampoCast(c)
+		if !ok || strings.TrimSpace(valor) == "" {
+			return nil, fmt.Errorf("%w: personagem %q campo %q valor %q", ErrParteNaoSuportada, p.ID, c, valor)
+		}
+		if !inv.Tem(tipo, valor) {
+			lacunas = append(lacunas, LacunaElenco{PersonagemID: p.ID, Campo: c, Tipo: tipo, Item: valor})
+			continue
+		}
+		if forma && !inv.Suporta(valor) {
+			return nil, fmt.Errorf("%w: personagem %q campo %q parte %q fora de partes_suportadas", ErrParteNaoSuportada, p.ID, c, valor)
+		}
+	}
+	return lacunas, nil
+}
+
+// gravarItemNovo registra a parte ausente no inventario com aprovado false.
+func gravarItemNovo(s inventario.Store, e inventario.Estilo, tags []string, l LacunaElenco, origem string) error {
+	it := inventario.Item{
+		SchemaVersion: 1,
+		ID:            l.Item,
+		Tipo:          l.Tipo,
+		Estilo:        e.ID,
+		EstiloVersao:  e.Versao,
+		Tags:          tags,
+		Parametros:    map[string]any{"campo_cast": l.Campo},
+		Origem:        origem,
+		Aprovado:      false,
+	}
+	if err := s.GravarItem(it); err != nil {
+		return fmt.Errorf("%w: item novo %q: %w", ErrElencoInvalido, l.Item, err)
+	}
+	return nil
+}
 
 // RecortadorSprite abstrai recorte com rembg + despill verde e fatiamento em sprites.
 type RecortadorSprite interface {
