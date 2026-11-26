@@ -280,3 +280,8 @@
 - Achado de ambiente, nao corrigido por mim (fora do meu ticket): um processo externo concorrente editou internal/cli/kraften_deploy.go e internal/cli/cli.go varias vezes durante a verificacao (termo proibido "esteira", verbo sem registro, simbolos indefinidos tlsHandshake/emJSON), quebrando o build do repo inteiro por instantes repetidas vezes; esperei a estabilizar (3 checagens de go build limpo em sequencia) antes do portao final.
 - Prova final: grep por 'internal/diorama' em *.go so acha 1 string de mensagem de teste (internal/a2ui/timer_status_test.go, nao e import); go test ./... 75 pacotes ok, 0 falhas; vet, funclen, gofmt e espinha limpos; go.mod intacto.
 - Progresso: ticket nao rastreado no progresso.json nativo porque foi executado fora do swarm; marcarei manualmente.
+
+## Camada 19 - TICK-V01-07.2 video-roteiro/ativos/render com alias diorama-* (2026-11-26)
+- Entrega: video-roteiro e video-ativos reaproveitam cmdDioramaRoteiro/cmdDioramaAtivos (mesmo codigo); video-render novo com subcomandos timeline e executar, ligados a render.ExecutarTimeline/ExecutarRender (motor legado ja existente); diorama-roteiro e diorama-ativos viram aliasDepreciado (aviso em stderr, mesmo exit code do comando novo).
+- Prova: go test ./internal/cli/ -run VideoAlias ok (3 testes); mutacao que tira o aviso de stderr mata 1 teste; mutacao no subcomando timeline mata 1 teste; aviso real confirmado rodando bin/legoloop.exe diorama-ativos prevoo --help.
+- go test ./... 75 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos. Progresso: 19 aprovados (atualizado pelo swarm).

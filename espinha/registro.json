@@ -20,6 +20,24 @@
       "contrato": "Elenco, sprites rembg/despill, cenarios SVG/Flow e storyboard cenas.json"
     },
     {
+      "nome": "video-roteiro",
+      "camada": "dominio",
+      "motor": "internal/video/roteiro",
+      "contrato": "Pre-voo modular, descoberta por nicho e validacao epistemica de script.json"
+    },
+    {
+      "nome": "video-ativos",
+      "camada": "dominio",
+      "motor": "internal/video/ativos",
+      "contrato": "Elenco, sprites rembg/despill, cenarios SVG/Flow e storyboard cenas.json"
+    },
+    {
+      "nome": "video-render",
+      "camada": "dominio",
+      "motor": "internal/video/render",
+      "contrato": "Composicao da timeline e render master do video animado"
+    },
+    {
       "nome": "video-inventario",
       "camada": "dominio",
       "motor": "internal/video/inventario",

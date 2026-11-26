@@ -106,8 +106,11 @@ Comandos:
   anticorpos <sync|status> [slug] [--raiz DIR]   sincroniza ou inspeciona o espelho executivo ANTICORPOS.md
   espinha    verificar [--raiz DIR] [--json]     verifica a integridade deterministica da espinha dorsal
   progresso  <gerar|iniciar|validar|status> [opções]  acompanhamento vivo de Tickets validado por Gate
-  diorama-roteiro <prevoo|validar-config|coletar|validar-roteiro> [opções]  pré-voo, descoberta e validação epistêmica de roteiro diorama
-  diorama-ativos  <prevoo|executar|validar-storyboard> [opções]             elenco, sprites, cenários SVG/Flow e storyboard cenas.json
+  video-roteiro <prevoo|validar-config|coletar|validar-roteiro> [opções]    pré-voo, descoberta e validação epistêmica de roteiro de vídeo animado
+  video-ativos  <prevoo|executar|validar-storyboard> [opções]               elenco, sprites, cenários SVG/Flow e storyboard cenas.json
+  video-render  <timeline|executar> --projeto DIR                           timeline e render master do vídeo animado
+  diorama-roteiro [opções]  alias depreciado de video-roteiro (aviso em stderr)
+  diorama-ativos  [opções]  alias depreciado de video-ativos (aviso em stderr)
   video-inventario <validar|verificar> --estilo ID [opções]                 validação humana de estilo e conferência por hash do inventário
   kraften-deploy --zip PACOTE.zip --app ID --subdominio SUB --alvo HOST [opções]  Processo determinístico de deploy (5 nós, zero LLM)
   version
@@ -124,8 +127,10 @@ func mapaComandos() map[string]func(context.Context, []string, Deps) int {
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
 		"progresso": cmdProgresso, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos, "espinha": cmdEspinha,
-		"diorama-roteiro": cmdDioramaRoteiro, "diorama-ativos": cmdDioramaAtivos, "video-inventario": cmdVideoInventario,
-		"kraften-deploy": cmdKraftenDeploy,
+		"video-roteiro": cmdDioramaRoteiro, "video-ativos": cmdDioramaAtivos, "video-render": cmdVideoRender, "video-inventario": cmdVideoInventario,
+		"diorama-roteiro": aliasDepreciado("diorama-roteiro", "video-roteiro", cmdDioramaRoteiro),
+		"diorama-ativos":  aliasDepreciado("diorama-ativos", "video-ativos", cmdDioramaAtivos),
+		"kraften-deploy":  cmdKraftenDeploy,
 	}
 }
 
