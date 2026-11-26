@@ -7,6 +7,9 @@ upstream: [INTERVIEW-a2ui-sess_3-20261125]
 covers: [Q1]
 ---
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-render` foi renomeado para `internal/video/render (ligado ao render Go existente, AC-E10.4)`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 # 🎯 INTENT: Criar o Processo canonizado legoloop-diorama-render (Ciclo 3 — Etapas 6, 7, 8 e 8b)
 
 > **Status:** APPROVED  

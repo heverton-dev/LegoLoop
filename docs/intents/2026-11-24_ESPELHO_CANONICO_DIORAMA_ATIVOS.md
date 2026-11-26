@@ -1,5 +1,8 @@
 # Espelho Canônico — `legoloop-diorama-ativos` (Ciclo 2)
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-ativos` foi renomeado para `legoloop-video-ativos`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 > **Data:** 2026-11-24
 > **Sessão da Entrevista:** `intv_1795554379812376300`
 > **Sessão A2UI:** `sess_3`

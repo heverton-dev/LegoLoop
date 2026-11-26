@@ -7,6 +7,9 @@ upstream: [INTENT-intv_1795554379812376300]
 covers: [R1, R2, R3, R4, R5]
 ---
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-ativos` foi renomeado para `legoloop-video-ativos`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 # 📋 SPEC: Processo Canonizado `legoloop-diorama-ativos` (Ciclo 2 — Etapas 3, 4 e 5)
 
 > **Status:** APPROVED (Stop-Gate 02 aprovado em 2026-11-24)  

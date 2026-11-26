@@ -7,6 +7,9 @@ upstream: [INTENT-a2ui_sess_3_20261125_render]
 covers: [R1, R2, R3, R4, R5, R6]
 ---
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-render` foi renomeado para `internal/video/render (ligado ao render Go existente, AC-E10.4)`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 # 📋 SPEC: Processo Canonizado `legoloop-diorama-render` (Ciclo 3 — Etapas 6, 7, 8 e 8b)
 
 > **Status:** APPROVED (Stop-Gate 02 aprovado em 2026-11-25)  

@@ -1,5 +1,8 @@
 # Espelho Canônico — `legoloop-diorama-roteiro` (Ciclo 1)
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-roteiro` foi renomeado para `legoloop-video-roteiro`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 Sessão da entrevista: `intv_1795520712665396700` (9 turnos; cérebro final: `claude/sonnet`; confiança: 96% / meta 95%; status: `COMPLETED`).
 Data: 2026-11-24.
 

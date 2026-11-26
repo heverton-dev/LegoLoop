@@ -1,5 +1,8 @@
 # Espelho Canônico — `legoloop-diorama-render` (Ciclo 3)
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-render` foi renomeado para `internal/video/render (ligado ao render Go existente, AC-E10.4)`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 > **Data:** 2026-11-25
 > **Sessão A2UI:** `sess_3` (entrevista conduzida via MCP `sessao_*`, 6 turnos)
 > **Confiança:** 95% (meta: 95%)

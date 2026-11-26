@@ -1,5 +1,8 @@
 # Stop-Gate 01 — Aprovação da INTENT (`legoloop-diorama-render`)
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-render` foi renomeado para `internal/video/render (ligado ao render Go existente, AC-E10.4)`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 - **Data:** 2026-11-25
 - **Decisão:** APROVADA (`[1] seguir`)
 - **Origem:** Interface A2UI (`sess_3`, `stop_gate_decision`, gate `concepcao-stop-gate-01`)

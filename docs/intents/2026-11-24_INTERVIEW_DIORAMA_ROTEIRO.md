@@ -1,5 +1,8 @@
 # INTERVIEW — `legoloop-diorama-roteiro`
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-roteiro` foi renomeado para `legoloop-video-roteiro`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 - Sessão: `intv_1795520712665396700`
 - Status: `COMPLETED`
 - Turnos: `9`

@@ -1,5 +1,8 @@
 # 📋 Relatório de Conclusão: legoloop-diorama-ativos (diorama-ativos)
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-ativos` foi renomeado para `legoloop-video-ativos`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 > **Status:** CONCLUÍDO (100% dos Portões Aprovados)  
 > **Data:** 2026-11-24  
 > **Autor:** LegoLoop Engine  

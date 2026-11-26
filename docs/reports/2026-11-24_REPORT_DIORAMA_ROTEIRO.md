@@ -1,5 +1,8 @@
 # 📋 Relatório de Conclusão: legoloop-diorama-roteiro (diorama-roteiro)
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-roteiro` foi renomeado para `legoloop-video-roteiro`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 > **Status:** CONCLUÍDO (100% dos Portões Aprovados)  
 > **Data:** 2026-11-24  
 > **Autor:** LegoLoop Engine  

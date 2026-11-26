@@ -7,6 +7,9 @@ upstream: [INTERVIEW-intv_1795554379812376300]
 covers: [Q1]
 ---
 
+> **Nota de redirecionamento (2026-11-26, AC-E11.4):** o processo `legoloop-diorama-ativos` foi renomeado para `legoloop-video-ativos`. Este documento e historico e mantido sem alteracao de conteudo.
+
+
 # 🎯 INTENT: Criar o Processo canonizado legoloop-diorama-ativos (Ciclo 2 — Etapas 3, 4 e 5)
 
 > **Status:** APPROVED  
