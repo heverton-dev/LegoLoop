@@ -237,3 +237,9 @@
 - Entrega: motor-local/LICENCA.json (status pendente, plano B de reescrita de puppet.js/sets.js), motor-local/ ignorado em .gitignore:56, licenca_test.go (TestLicencaDecisaoPorStatus, TestLicencaMotorLocalGovernanca que roda git check-ignore de verdade).
 - Prova: go test ./internal/video/motor/... ok; mutacao no case "pendente" mata 2 testes; go test ./... 74 pacotes ok (novo pacote motor); vet, funclen, gofmt, go.mod e espinha limpos.
 - Progresso: 12 aprovados.
+
+## Camada 13 - TICK-V01-05.2 pre-voo do motor (2026-11-26)
+- Entrega: PreVoo checa motor-local, python, playwright, chromium (script real via Playwright), ffmpeg, nessa ordem; ErrMotorAusente com instrucao de instalacao por item.
+- Achado meu: duas tentativas de mutacao quebraram o build (err nao declarado, import os nao usado) e meu metodo de contagem leu isso como sobrevivencia; corrigido mantendo o build valido, e a mutacao real mata o teste (1 funcao com 5 casos via t.Errorf, confirmado tambem isolando so o caso motor-local).
+- Prova: go test ./internal/video/motor/... ok; go test ./... 74 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
+- Progresso: 13 aprovados.
