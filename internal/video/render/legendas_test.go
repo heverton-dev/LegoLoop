@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 func pt(txt string, ini, fim float64) PalavraTempo {

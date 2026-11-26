@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
 	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 func TestFichas4FaixasValidacaoEExtracao(t *testing.T) {

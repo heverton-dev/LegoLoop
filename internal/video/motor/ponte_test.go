@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
-	"github.com/heverton-dev/LegoLoop/internal/diorama/render"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
 	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
+	"github.com/heverton-dev/LegoLoop/internal/video/render"
 )
 
 // entradaDemo monta a cena 1 do demo: 2 linhas, 1 adulto, 1 criança e 2 fundos do inventário.

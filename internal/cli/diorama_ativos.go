@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/heverton-dev/LegoLoop/internal/browser"
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
 )
 
 const usoDioramaAtivos = `Uso: legoloop diorama-ativos <subcomando> [opções]

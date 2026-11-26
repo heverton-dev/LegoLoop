@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
 	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 // ExecutarEtapa5Storyboard compila cenas.json cobrindo 100% das linhas com metafora visual e >= 4 elementos moveis.

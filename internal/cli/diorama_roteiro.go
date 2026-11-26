@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 const usoDioramaRoteiro = `Uso: legoloop diorama-roteiro <subcomando> [opções]

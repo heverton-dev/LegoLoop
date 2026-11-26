@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 var fmtTeste = formatoWAV{Canais: 1, Taxa: 24000, Bits: 16}

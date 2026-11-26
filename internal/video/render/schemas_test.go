@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
 )
 
 func timingsValido() Timings {

@@ -28,7 +28,7 @@ func (c *CloudflareClient) EnsureCNAME(nome, alvo string) error {
 	if strings.TrimSpace(nome) == "" || strings.TrimSpace(alvo) == "" {
 		return ErrInvalidDeployInput
 	}
-	quantos, err := c.contarCNAME(nome)
+	quantos, err := c.ContarCNAME(nome)
 	if err != nil {
 		return err
 	}
@@ -38,8 +38,8 @@ func (c *CloudflareClient) EnsureCNAME(nome, alvo string) error {
 	return c.criarCNAME(nome, alvo)
 }
 
-// contarCNAME consulta GET /zones/{zoneId}/dns_records?name={fqdn}.
-func (c *CloudflareClient) contarCNAME(nome string) (int, error) {
+// ContarCNAME consulta GET /zones/{zoneId}/dns_records?name={fqdn}.
+func (c *CloudflareClient) ContarCNAME(nome string) (int, error) {
 	url := fmt.Sprintf("%s/zones/%s/dns_records?name=%s", c.base, c.zoneID, nome)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {

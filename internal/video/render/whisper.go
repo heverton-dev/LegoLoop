@@ -13,7 +13,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 // PalavraTranscrita e uma palavra ouvida no audio, com tempos relativos ao inicio do trecho.

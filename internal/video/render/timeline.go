@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
 )
 
 // Quadro base da composicao: a timeline e sempre 16:9; os cortes 9:16 reusam as caixas.

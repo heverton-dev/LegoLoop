@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
 	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 type ItemPreVoo struct {

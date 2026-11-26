@@ -1,4 +1,4 @@
-// Package kraften implementa a esteira determinística de deploy do Studio
+// Package kraften implementa o Processo determinístico de deploy do Studio
 // Launcher (zero LLM): preflight de pacote, sincronização de metadados e DNS,
 // deploy com stream, gates binários e recibo JSON auditável.
 package kraften
@@ -19,7 +19,7 @@ type DeployConfig struct {
 	TargetHost string `json:"target_host"`
 }
 
-// DeployReceipt é o artefato de prova emitido ao fim da esteira.
+// DeployReceipt é o artefato de prova emitido ao fim do Processo.
 type DeployReceipt struct {
 	AppID     string `json:"app_id"`
 	Status    string `json:"status"` // "done" ou "failed"
@@ -28,7 +28,7 @@ type DeployReceipt struct {
 	HTTPCode  int    `json:"http_code"`
 }
 
-// Validate aplica as regras estritas de entrada da esteira.
+// Validate aplica as regras estritas de entrada do Processo.
 func (c DeployConfig) Validate() error {
 	if strings.TrimSpace(c.AppID) == "" || strings.TrimSpace(c.ZipPath) == "" {
 		return ErrInvalidDeployInput

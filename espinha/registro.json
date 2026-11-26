@@ -10,13 +10,13 @@
     {
       "nome": "diorama-roteiro",
       "camada": "dominio",
-      "motor": "internal/diorama/roteiro",
+      "motor": "internal/video/roteiro",
       "contrato": "Pre-voo modular, descoberta por nicho e validacao epistemica de script.json"
     },
     {
       "nome": "diorama-ativos",
       "camada": "dominio",
-      "motor": "internal/diorama/ativos",
+      "motor": "internal/video/ativos",
       "contrato": "Elenco, sprites rembg/despill, cenarios SVG/Flow e storyboard cenas.json"
     },
     {
@@ -288,6 +288,12 @@
       "camada": "espinha",
       "motor": "internal/progresso",
       "contrato": "Acompanhamento vivo de Tickets validado por Gate mecanico"
+    },
+    {
+      "nome": "kraften-deploy",
+      "camada": "dominio",
+      "motor": "internal/kraften",
+      "contrato": "Esteira deterministica de deploy do Studio Launcher: preflight, sync de metadados e DNS, deploy-job, gates binarios e recibo JSON"
     }
   ],
   "motores": [
@@ -563,44 +569,120 @@
     }
   ],
   "processos": [
-    { "slug": "legoloop-addy-osmani" },
-    { "slug": "legoloop-agent-desktop" },
-    { "slug": "legoloop-ai-motion-graphics" },
-    { "slug": "legoloop-auditoria-atomica" },
-    { "slug": "legoloop-canal-redc" },
-    { "slug": "legoloop-canonizar" },
-    { "slug": "legoloop-cartoon-shorts" },
-    { "slug": "legoloop-ciclo" },
-    { "slug": "legoloop-concepcao" },
-    { "slug": "legoloop-design-ui" },
-    { "slug": "legoloop-diagram-design" },
-    { "slug": "legoloop-diorama-ativos" },
-    { "slug": "legoloop-diorama-roteiro" },
-    { "slug": "legoloop-dissecar" },
-    { "slug": "legoloop-especificacao" },
-    { "slug": "legoloop-fabricar" },
-    { "slug": "legoloop-fabricar-peca-unica" },
-    { "slug": "legoloop-fechar" },
-    { "slug": "legoloop-forjar" },
-    { "slug": "legoloop-fronteira-ai-driven" },
-    { "slug": "legoloop-homologacao" },
-    { "slug": "legoloop-impeccable-design" },
-    { "slug": "legoloop-lauren-tan" },
-    { "slug": "legoloop-listar" },
-    { "slug": "legoloop-matriz" },
-    { "slug": "legoloop-matt-pocock" },
-    { "slug": "legoloop-mega-pipeline" },
-    { "slug": "legoloop-n10-foundry" },
-    { "slug": "legoloop-planejamento" },
-    { "slug": "legoloop-swarm" },
-    { "slug": "legoloop-triagem" },
-    { "slug": "legoloop-video-edition" },
-    { "slug": "legoloop-video-master" },
-    { "slug": "legoloop-video-motion" },
-    { "slug": "legoloop-video-rea" },
-    { "slug": "legoloop-video-rea-relatorio" },
-    { "slug": "legoloop-video-rea-transcrever" },
-    { "slug": "legoloop-web-qa" }
+    {
+      "slug": "legoloop-addy-osmani"
+    },
+    {
+      "slug": "legoloop-agent-desktop"
+    },
+    {
+      "slug": "legoloop-ai-motion-graphics"
+    },
+    {
+      "slug": "legoloop-auditoria-atomica"
+    },
+    {
+      "slug": "legoloop-canal-redc"
+    },
+    {
+      "slug": "legoloop-canonizar"
+    },
+    {
+      "slug": "legoloop-cartoon-shorts"
+    },
+    {
+      "slug": "legoloop-ciclo"
+    },
+    {
+      "slug": "legoloop-concepcao"
+    },
+    {
+      "slug": "legoloop-design-ui"
+    },
+    {
+      "slug": "legoloop-diagram-design"
+    },
+    {
+      "slug": "legoloop-diorama-ativos"
+    },
+    {
+      "slug": "legoloop-diorama-roteiro"
+    },
+    {
+      "slug": "legoloop-dissecar"
+    },
+    {
+      "slug": "legoloop-especificacao"
+    },
+    {
+      "slug": "legoloop-fabricar"
+    },
+    {
+      "slug": "legoloop-fabricar-peca-unica"
+    },
+    {
+      "slug": "legoloop-fechar"
+    },
+    {
+      "slug": "legoloop-forjar"
+    },
+    {
+      "slug": "legoloop-fronteira-ai-driven"
+    },
+    {
+      "slug": "legoloop-homologacao"
+    },
+    {
+      "slug": "legoloop-impeccable-design"
+    },
+    {
+      "slug": "legoloop-lauren-tan"
+    },
+    {
+      "slug": "legoloop-listar"
+    },
+    {
+      "slug": "legoloop-matriz"
+    },
+    {
+      "slug": "legoloop-matt-pocock"
+    },
+    {
+      "slug": "legoloop-mega-pipeline"
+    },
+    {
+      "slug": "legoloop-n10-foundry"
+    },
+    {
+      "slug": "legoloop-planejamento"
+    },
+    {
+      "slug": "legoloop-swarm"
+    },
+    {
+      "slug": "legoloop-triagem"
+    },
+    {
+      "slug": "legoloop-video-edition"
+    },
+    {
+      "slug": "legoloop-video-master"
+    },
+    {
+      "slug": "legoloop-video-motion"
+    },
+    {
+      "slug": "legoloop-video-rea"
+    },
+    {
+      "slug": "legoloop-video-rea-relatorio"
+    },
+    {
+      "slug": "legoloop-video-rea-transcrever"
+    },
+    {
+      "slug": "legoloop-web-qa"
+    }
   ],
   "requisitos": [
     {
@@ -707,8 +789,8 @@
     "internal/videorea": 6
   },
   "globais_justificadas": [
-    "internal/diorama/ativos.scriptFlowDriver",
-    "internal/diorama/ativos.scriptSpriteDespill",
+    "internal/video/ativos.scriptFlowDriver",
+    "internal/video/ativos.scriptSpriteDespill",
     "internal/artefato.camposObrigatorios",
     "internal/artefato.resultadosValidos",
     "internal/assets.ignoredDirNames",

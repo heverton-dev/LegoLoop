@@ -272,3 +272,11 @@
 ## Atualizacao do achado kraften: resolvido por conta propria (2026-11-26)
 - Entre a verificacao (build falhando) e o commit, um processo externo (nao este, nao o swarm desta sessao) completou internal/kraften/sync.go; go build e go vet ./internal/kraften/... agora limpos, go test ./... com 75 pacotes ok, 0 falhas.
 - O commit 9d2d5e4 acabou incluindo os arquivos de kraften porque algo volta a dar 'git add -A' fora do meu controle (historico mostra commits antigos 'chore: sincronizar N arquivos do repositorio'); meu 'git restore --staged' foi desfeito antes do commit. Nao e um erro de codigo meu, mas registro para o usuario saber que ha sincronizacao automatica paralela mexendo no index.
+
+## Camada 18 - TICK-V01-07.1 move internal/diorama para internal/video (2026-11-26)
+- Acao destrutiva pausada e autorizada pelo usuario ([1] seguir). Executada por mim direto (nao pelo swarm), com git mv (preserva historico): internal/diorama/{ativos,render,roteiro} -> internal/video/{ativos,render,roteiro}.
+- Imports Go atualizados em 29 arquivos (sed no caminho do modulo); nomes de pacote (ativos, render, roteiro) nao mudaram.
+- Corrigido: espinha/registro.json apontava motor em internal/diorama/ativos e internal/diorama/roteiro, e globais_justificadas citava internal/diorama/ativos.scriptFlowDriver/scriptSpriteDespill; atualizados para internal/video/*. Nomes/slugs "diorama-*" mantidos de proposito para o proximo ticket (AC-E11.3) fazer o alias.
+- Achado de ambiente, nao corrigido por mim (fora do meu ticket): um processo externo concorrente editou internal/cli/kraften_deploy.go e internal/cli/cli.go varias vezes durante a verificacao (termo proibido "esteira", verbo sem registro, simbolos indefinidos tlsHandshake/emJSON), quebrando o build do repo inteiro por instantes repetidas vezes; esperei a estabilizar (3 checagens de go build limpo em sequencia) antes do portao final.
+- Prova final: grep por 'internal/diorama' em *.go so acha 1 string de mensagem de teste (internal/a2ui/timer_status_test.go, nao e import); go test ./... 75 pacotes ok, 0 falhas; vet, funclen, gofmt e espinha limpos; go.mod intacto.
+- Progresso: ticket nao rastreado no progresso.json nativo porque foi executado fora do swarm; marcarei manualmente.

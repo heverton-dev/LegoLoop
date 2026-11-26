@@ -5,7 +5,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 // LarguraSRT e o maximo de caracteres por linha de legenda no arquivo .srt.

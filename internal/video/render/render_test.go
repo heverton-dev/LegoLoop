@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
 )
 
 // tlRender: duas batidas de 1 s (pan e zoom), cenario e sprite com arquivo, legenda so na primeira.

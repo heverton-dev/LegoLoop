@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
 )
 
 // linhaContigua cria n palavras coladas, cada uma com a duracao passo.

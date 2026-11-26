@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
-	"github.com/heverton-dev/LegoLoop/internal/diorama/render"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
 	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
+	"github.com/heverton-dev/LegoLoop/internal/video/render"
 )
 
 // Erros tipados da ponte cenas.json para timeline.json (AC-E10.3, AC-E10.6, AC-E10.8).

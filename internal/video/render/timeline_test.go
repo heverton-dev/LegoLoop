@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 func cenaTeste(i int, cenario string) ativos.Cena {

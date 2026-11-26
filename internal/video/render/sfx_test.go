@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
 )
 
 // batidaObj e uma batida com camada de aderecos (objeto em destaque) quando comObjeto.

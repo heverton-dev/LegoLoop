@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/heverton-dev/LegoLoop/internal/browser"
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
 	"github.com/heverton-dev/LegoLoop/internal/jail"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 // AvisoEstiloVisualLegado nomeia o aviso do pre-voo quando projeto.json ainda usa estilo_visual.

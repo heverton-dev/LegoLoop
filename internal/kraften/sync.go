@@ -5,14 +5,16 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 )
 
 // LauncherClient fala com a API administrativa do Studio Launcher.
 type LauncherClient struct {
-	base string
-	user string
-	pass string
-	hc   *http.Client
+	base         string
+	user         string
+	pass         string
+	hc           *http.Client
+	PollInterval time.Duration
 }
 
 // NovoLauncherClient cria o cliente da API do Launcher com autenticação básica.
@@ -57,14 +59,14 @@ func SyncMetadata(cfg DeployConfig, l *LauncherClient, cf *CloudflareClient) err
 	if err := cfg.Validate(); err != nil {
 		return err
 	}
-	if err := cf.EnsureCNAME(fqdnDe(cfg.Subdomain, cfg.TargetHost), cfg.TargetHost); err != nil {
+	if err := cf.EnsureCNAME(FqdnDe(cfg.Subdomain, cfg.TargetHost), cfg.TargetHost); err != nil {
 		return err
 	}
 	return l.RegistrarApp(cfg)
 }
 
-// fqdnDe monta o FQDN do subdomínio sobre o domínio base do host alvo.
-func fqdnDe(subdomain, targetHost string) string {
+// FqdnDe monta o FQDN do subdomínio sobre o domínio base do host alvo.
+func FqdnDe(subdomain, targetHost string) string {
 	if strings.Contains(subdomain, ".") {
 		return subdomain
 	}

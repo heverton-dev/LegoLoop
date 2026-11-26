@@ -8,7 +8,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 const VozPadrao = "pt-BR-ThalitaMultilingualNeural"

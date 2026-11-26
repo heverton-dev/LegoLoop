@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
 	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
+	"github.com/heverton-dev/LegoLoop/internal/video/roteiro"
 )
 
 // ErrRenderizadorNaoRecorte indica estilo cujo renderizador nao usa fichas e rembg (AC-E09.3).

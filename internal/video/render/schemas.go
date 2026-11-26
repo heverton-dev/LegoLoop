@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/heverton-dev/LegoLoop/internal/diorama/ativos"
+	"github.com/heverton-dev/LegoLoop/internal/video/ativos"
 )
 
 const (
