@@ -285,3 +285,11 @@
 - Entrega: video-roteiro e video-ativos reaproveitam cmdDioramaRoteiro/cmdDioramaAtivos (mesmo codigo); video-render novo com subcomandos timeline e executar, ligados a render.ExecutarTimeline/ExecutarRender (motor legado ja existente); diorama-roteiro e diorama-ativos viram aliasDepreciado (aviso em stderr, mesmo exit code do comando novo).
 - Prova: go test ./internal/cli/ -run VideoAlias ok (3 testes); mutacao que tira o aviso de stderr mata 1 teste; mutacao no subcomando timeline mata 1 teste; aviso real confirmado rodando bin/legoloop.exe diorama-ativos prevoo --help.
 - go test ./... 75 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos. Progresso: 19 aprovados (atualizado pelo swarm).
+
+## Camada 20 - TICK-V01-07.3 migra skills, processos e espinha para legoloop-video-* (2026-11-26)
+- Executado direto (fora do swarm), acao em registro canonico. git mv processos/legoloop-diorama-{ativos,roteiro} para legoloop-video-* (preserva historico); mesmo para skills/.
+- Achado: espinha exige *.dag.json e ANTICORPOS.md completos em toda pasta de processos/; criar uma pasta-stub so de redirecionamento la teria falhado em 'processo-incompleto'. Corrigido removendo a pasta-stub de processos/ e deixando so o slug novo no registro; o redirecionamento fica no alias de CLI (ja feito no TICK-07.2) e no SKILL.md.
+- Achado: TestInstalarSkills exigia exatamente 48 skills nativas (contagem literal) e 'secao estruturada de regras' (precisa de um '## '); corrigido elevando para 50 e acrescentando secoes ## Redirecionamento/## Regras aos 2 stubs.
+- Corrigido: espinha/registro.json (slug dos 2 processos; motor dos 2 verbos ja tinha sido corrigido no TICK-07.1); docs/PROCESSOS_CANONIZADOS.md com nota de renomeacao e data.
+- Pendente cosmetico, nao bloqueante: o campo interno 'name' dos pipeline.dag.json dos 2 processos ainda diz 'legoloop-diorama-ativos/roteiro' (legoloop validate confirma 3 e 4 nos validos mesmo assim); fora do escopo deste ticket, fica para quem tocar o DAG de novo.
+- Prova: go test ./... 75 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos; legoloop validate dos 2 pipeline.dag.json novos ok.
