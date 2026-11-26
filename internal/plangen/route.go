@@ -92,6 +92,7 @@ type routeNode struct {
 	Status           string           `json:"status"`
 	ExecutionMode    string           `json:"execution_mode"`
 	Isolation        routeIsolation   `json:"isolation"`
+	Command          []string         `json:"command,omitempty"` // executor do worker do swarm (A13); omitido por padrão
 	TimeoutSec       int              `json:"timeout_sec"`
 	RetryPolicy      routeRetryPolicy `json:"retry_policy"`
 	TokenBudget      tokenBudget      `json:"token_budget"`
@@ -262,6 +263,7 @@ func ticketNode(t Ticket, m planMeta) routeNode {
 		ID: t.ID, InitiativeID: resolveInitiative(t, m), EpicID: str(t.EpicID), Label: t.Title, Nature: t.Nature,
 		ClassRule: "nature=" + t.Nature, Type: tipoUnidade, Status: "PENDING", ExecutionMode: t.ExecutionMode,
 		Isolation:   localIsolation(exec, "strict"),
+		Command:     t.Command,
 		TimeoutSec:  defaultTimeout,
 		RetryPolicy: defaultRetryPolicy(false),
 		TokenBudget: budget,

@@ -1,54 +1,47 @@
-# Espelho Canônico — `legoloop-diorama-roteiro` (Ciclo 1)
+# Espelho Canônico — `legoloop-diorama-render` (Ciclo 3)
 
-Sessão da entrevista: `intv_1795520712665396700` (9 turnos; cérebro final: `claude/sonnet`; confiança: 96% / meta 95%; status: `COMPLETED`).
-Data: 2026-11-24.
+> **Data:** 2026-11-25
+> **Sessão A2UI:** `sess_3` (entrevista conduzida via MCP `sessao_*`, 6 turnos)
+> **Confiança:** 95% (meta: 95%)
+> **Status:** CONFIRMADO PELO USUÁRIO NA INTERFACE A2UI (turno 6, opção A)
+> **Emenda 2 (2026-11-25, TICK-DR-02.2):** WER passa de `<= 5%` por linha para `<= 15%` por linha e `<= 5%` global, com parada em áudio regravado idêntico (provas reais A1 e A2).  
+> **Emenda 1 (2026-11-25, Stop-Gate 02):** 4K opt-in passa de `projeto.json` para `render.json`; correção do True Peak em `videomotion` autorizada.
 
-## resultado_esperado
+## 1. Resultado Esperado
+Processo canonizado `legoloop-diorama-render` (Peça 3 do macroprocesso `legoloop-video-diorama`) que consome `cenas.json` e `script.json` e entrega, em ordem de dependência:
+1. **Etapa 6 — Voz neural e conferência Whisper:** síntese por provedor plugável (padrão `edge-tts` com `pt-BR-ThalitaMultilingualNeural`; Gemini TTS, ElevenLabs, Fish Audio ou qualquer outro via adaptador); `faster-whisper` sobre o áudio final gera `timings.json` por palavra (fonte única de alinhamento) e o WER (limite `<= 15%` por linha e `<= 5%` global, até 3 regravações só das linhas reprovadas, com parada se a regravação devolver áudio idêntico); fonemas/visemas para sincronia labial simples.
+2. **Etapa 8 (do pedido) — Timeline em camadas:** leitura estrita de `cenas.json` e `script.json`; composição 2.5D (cenário, adereços em profundidade, sprites com troca de expressão/pose, câmera com zoom, shake e pan); legendas karaokê palavra a palavra; `timeline.json` validado por `check_timeline` (12–21 cortes/min, mediana 2,5–4 s).
+3. **Etapa 7 (do pedido) — Mixagem e SFX:** BGM com ducking dinâmico sob a narração; SFX nos eventos da timeline; normalização `-14 LUFS ± 0,5` integrado e `-1,5 dBTP`.
+4. **Etapa 8b — Render e cortes:** master 16:9 em 720p, 1080p (padrão) e 4K (opt-in em `render.json`) via ffmpeg com detecção automática de NVENC/QSV/AMF e fallback `libx264`; cortes 9:16 re-renderizados a partir da timeline, centrados no narrador e no elemento de ação, legenda fora da caixa do narrador, 15–59 s e área segura vertical.
 
-Processo canonizado `legoloop-diorama-roteiro` que executa, em ordem:
-1. Etapa 0, configuração guiada: fabrica o `projeto.json` por vídeo, com validação de schema. Campos: `nicho` (texto livre), `perfis_fonte` (`geral` como fallback), `fontes_extras` e `fontes_excluidas` opcionais, `politica_gates` (`humano`, `mecanico` ou `hibrido`, com `gates_humanos`) e `video_referencia` opcional. O `marca.json` é herdado do canal ou criado de template canônico (`legoloop-canal-redc`).
-2. Pré-voo determinístico modular, com bloqueio nestes casos: `legoloop version` não retorna exit 0; catálogo declarativo de fontes por nicho ausente ou JSON inválido; pasta do projeto ou `acervo/` sem leitura e escrita reais; nenhum conector compatível com `perfis_fonte` responde na sonda HTTP (timeout <= 8s, status 200); `video_referencia` preenchido e `legoloop-video-rea` ausente do Cofre.
-3. Validação estrita: schema inválido, campo obrigatório ausente ou inconsistência entre `projeto.json` e `marca.json` bloqueiam.
-4. Descoberta de pautas: catálogo declarativo e extensível de conectores gratuitos, filtrado por `perfis_fonte` e ajustado por `fontes_extras` e `fontes_excluidas`. Temas já presentes em `acervo/temas.json` são bloqueados.
-5. Escolha da pauta, conforme `politica_gates`.
-6. Geração de `script.json` e `plano.md`: cada linha tem natureza epistêmica (`fato_consolidado`, `evidencia_preliminar`, `alegacao_terceiro` ou `narrativa_transicao`).
-7. Gate final da Etapa 2: se reprovar, o Processo tenta corrigir até 2 vezes usando só o relatório estruturado do validador (linha, natureza epistêmica e regra violada). Se a falha persistir, ele para, mesmo no modo `mecanico`, e entrega o relatório completo para decisão humana.
+Ordem de execução por dependência (voz, timeline, mix com SFX nos eventos da timeline, render, cortes), mantendo a numeração do pedido nos títulos (7 = mixagem, 8 = timeline).
 
-## quem_se_beneficia
+## 2. Quem se Beneficia
+O operador do canal (vídeo diorama pronto sem edição manual) e o Processo 4 (`legoloop-diorama-distribuicao`), que consome renders MP4, `legenda.srt` e shorts como contrato imutável.
 
-O operador do canal, que recebe roteiros auditáveis sem checar fontes manualmente. Os Processos 2 e 3 do Macroprocesso consomem `script.json` e `plano.md` já validados. O próprio Macroprocesso ganha um acervo de temas sem repetição.
+## 3. Por que Agora
+O Ciclo 2 (`legoloop-diorama-ativos`) já entrega `cenas.json` e sprites. Sem o Ciclo 3 não existe vídeo, e o Macroprocesso ponta a ponta (Ciclo 5) fica bloqueado.
 
-## por_que_agora
+## 4. Critérios de Sucesso
+1. Em `projetos/video-diorama/diorama-demo`, todos os gates mecânicos passam: WER `<= 5%` global e `<= 15%` por linha, LUFS em `-14 ± 0,5`, TP `<= -1,5 dBTP`, duração áudio == vídeo, zero frames em branco.
+2. `timeline.json` aprovado por `check_timeline`.
+3. Cortes 9:16 entre 15 s e 59 s com área segura respeitada e legenda fora da caixa do narrador.
+4. Troca de provedor de voz sem alterar `timings.json` nem os gates a jusante.
+5. Cobertura `>= 95%` nos pacotes novos, zero stubs, Espinha Dorsal verde e `legoloop fechar` 5 de 5.
 
-O Ciclo 1 destrava os Ciclos seguintes, porque sem roteiro validado não há vídeo. Hoje não há bloqueio mecânico contra temas repetidos, nem separação rastreável entre fato, evidência preliminar e alegação de terceiro.
+## 5. Restrições Inegociáveis
+1. Provedor de voz plugável por interface; padrão `edge-tts` Thalita; chamada paga só após gate de créditos.
+2. Alinhamento por palavra sempre pelo `faster-whisper` sobre o áudio final; timestamps nativos do provedor são ignorados.
+3. Motor autoral, sem código do `RobbiSkill/`.
+4. Fallback `libx264` obrigatório; encoder usado registrado no relatório.
+5. 9:16 sem visão computacional: determinístico a partir das caixas da timeline.
+6. Testes 100% herméticos (ffmpeg, Whisper e provedores injetáveis), zero stubs, TDD Red-Green.
+7. Contratos de entrada dos Ciclos 1 e 2 imutáveis; a configuração do Ciclo 3 vive em `render.json` opcional.
+8. O teto de True Peak `-1,5 dBTP` tem fonte única em `videomotion.ValidateLoudnessConformity`, corrigida com TDD (autorizado no Stop-Gate 02).
 
-## criterio_de_sucesso
-
-- Um vídeo com `projeto.json` e `marca.json` válidos percorre o Processo e gera `script.json` e `plano.md` aprovados no Gate final.
-- Cada linha de `script.json` cumpre a regra da sua natureza:
-  - `fato_consolidado`: 1 fonte A ou 2 fontes B.
-  - `evidencia_preliminar`: escopo, preprint ou amostra declarados.
-  - `alegacao_terceiro`: atribuição a quem afirmou.
-  - `narrativa_transicao`: gancho ou pergunta.
-- O tema só é gravado em `acervo/temas.json` após a aprovação do Gate final.
-- Os três erros bloqueantes e os cinco itens do pré-voo interrompem o Processo antes de qualquer consulta externa. Os itens só de AVISO não interrompem.
-
-## restricoes_inegociaveis
-
-- Nível A: `.gov.br`, `.gov`, `bcb.gov.br`, `cvm.gov.br`, `sec.gov`, `pubmed`, `doi.org`, `who.int`, `ibge.gov.br`, e releases oficiais de `github.com` no nicho software/open source.
-- Nível B: imprensa de referência declarada (Reuters, AP, BBC, Bloomberg, CNBC, Folha, Estadão, G1, Valor).
-- Preprints: `arxiv`, `medrxiv` e `biorxiv` exigem a natureza `evidencia_preliminar`.
-- Nível C: regra fail-closed. Qualquer domínio fora do catálogo e fora de `fontes_extras` é nível C e fica bloqueado como prova. Blogs, Wikipedia e agregadores servem só para descoberta.
-- Classificação: declarada no catálogo, por domínio e sufixo institucional, além do nível padrão em conectores primários diretos.
-- Fontes: apenas conectores gratuitos.
-- Validação: universal para qualquer nicho, sem viés jurídico.
-- Gate final: o Processo faz no máximo 2 correções automáticas e para mesmo no modo `mecanico`.
-- Tema em `acervo/temas.json`: nunca é gravado antes da aprovação do Gate final, em nenhum modo.
-
-## fora_de_escopo
-
-- Maquete física de diorama.
-- Tudo que pertence aos Processos 2 e 3: Chrome do Flow na porta 9333, FFmpeg, Chromium, edge-tts e gitleaks. Esses itens geram só AVISO no pré-voo.
-- Uso do `legoloop-concepcao` para preencher cada vídeo. Ele só concebe o Processo.
-- Fontes pagas.
-- Uso de fonte nível C como prova.
+## 6. Fora de Escopo
+1. Geração de ativos e storyboard (Ciclo 2) e roteiro (Ciclo 1).
+2. Revisão estéril, vitrine, Postiz, comentários e aprendizado (Ciclo 4).
+3. Composição ponta a ponta `P1->P4` (Ciclo 5).
+4. Visão computacional ou crop por saliency no 9:16.
+5. Painel web paralelo fora do Looping Studio.

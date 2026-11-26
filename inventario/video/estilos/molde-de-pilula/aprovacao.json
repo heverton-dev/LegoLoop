@@ -1,0 +1,10 @@
+{
+  "estilo": "molde-de-pilula",
+  "aprovado_por": "Heverton",
+  "data": "2026-11-26",
+  "personagens_teste": [
+    "narrador-teste", "executivo-teste", "analista-teste", "mulher-teste", "idoso-teste",
+    "crianca-teste", "menina-teste", "adolescente-teste", "adolescente-feminina-teste", "idosa-teste"
+  ],
+  "nota": "Aprovado apos folha-final.png: 10 personagens (2 generos x 4 faixas ativas, 2 adultos extras), vestuario revisado (camiseta careca/golaV, terno gravata normal/borboleta, vestido/vestidinho), cabelo cacheado em 1 homem e 1 mulher."
+}

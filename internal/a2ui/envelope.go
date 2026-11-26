@@ -18,7 +18,7 @@ var (
 
 var (
 	surfaceIDPattern = regexp.MustCompile(`^[a-zA-Z0-9._:/-]{1,128}$`)
-	hostilPattern    = regexp.MustCompile(`(?i)(<\s*script|<\s*iframe|<\s*svg|<\s*img|javascript\s*:|data\s*:\s*text/html|on[a-z]+\s*=)`)
+	hostilPattern    = regexp.MustCompile(`(?i)(<\s*script|<\s*iframe|<\s*svg|<\s*img|javascript\s*:|data\s*:\s*text/html|\bon[a-z]+\s*=)`)
 )
 
 func mensagemValida(t string) bool {

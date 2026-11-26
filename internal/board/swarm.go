@@ -253,6 +253,23 @@ func validateWorkerName(raw string) (string, error) {
 	return name, nil
 }
 
+// semWorkerEncerrado remove do quadro o worker killed com o nome pedido, para o no do DAG rodar de novo.
+// Worker vivo permanece e continua recusando nome duplicado.
+func semWorkerEncerrado(workers []Worker, nome string) []Worker {
+	nome = strings.TrimSpace(nome)
+	if nome == "" {
+		return workers
+	}
+	out := make([]Worker, 0, len(workers))
+	for _, w := range workers {
+		if w.Name == nome && w.Status == WorkerKilled {
+			continue
+		}
+		out = append(out, w)
+	}
+	return out
+}
+
 func workerExists(existing []Worker, name string) bool {
 	for _, w := range existing {
 		if w.Name == name {
@@ -365,6 +382,7 @@ func (sb *SwarmBoard) addWorkerLocked(req AddWorkerRequest, mode WorkspaceMode, 
 	if err != nil {
 		return err
 	}
+	st.Workers = semWorkerEncerrado(st.Workers, req.Name)
 	name, err := resolveWorkerName(req, st.Workers)
 	if err != nil {
 		return err

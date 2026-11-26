@@ -1828,3 +1828,148 @@ button[type="submit"]:active {
     overflow-y: auto;
   }
 }
+
+/* Timer regressivo configuravel + Painel Vivo de Etapas */
+.a2ui-timer-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.a2ui-timer-select {
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid var(--kf-border-subtle);
+  border-radius: var(--radius-s);
+  background: var(--kf-surface-card);
+  color: var(--kf-text-primary);
+  font-size: 12px;
+}
+.a2ui-timer-display {
+  font-family: var(--kf-font-mono);
+  font-weight: 700;
+  min-width: 54px;
+  text-align: center;
+}
+.a2ui-timer-display--paused {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: var(--kf-status-warn);
+  color: var(--kf-text-primary);
+}
+.a2ui-timer-display--expired {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: var(--kf-status-crit);
+  color: var(--kf-status-crit);
+}
+.a2ui-timer-btn {
+  padding: 2px 8px;
+  font-size: 12px;
+}
+.a2ui-loading-elapsed {
+  margin: 6px 0 0;
+  font-family: var(--kf-font-mono);
+  font-size: 12px;
+  color: var(--kf-text-faint);
+}
+.a2ui-live-progress {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--kf-border-subtle);
+  border-radius: var(--radius-m);
+  background: var(--kf-surface-card);
+}
+.a2ui-live-progress__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.a2ui-live-progress__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+.a2ui-live-progress__msg {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--kf-text-secondary);
+}
+.a2ui-live-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.a2ui-live-step {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  padding: 4px 6px;
+  border-radius: var(--radius-s);
+}
+.a2ui-live-step--done { color: var(--kf-status-ok); }
+.a2ui-live-step--running { background: var(--kf-process-color-soft); font-weight: 600; }
+.a2ui-live-step--error { color: var(--kf-status-crit); font-weight: 600; }
+.a2ui-live-step--pending { color: var(--kf-text-faint); }
+
+/* ==========================================================================
+   Tipografia estruturada (Rich Text seguro via DOM puro)
+   ========================================================================== */
+.a2ui-rich {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  line-height: 1.62;
+  color: var(--kf-text-primary);
+  font-size: 13.5px;
+}
+.a2ui-rich-p {
+  margin: 0;
+  line-height: 1.62;
+}
+.a2ui-rich-heading {
+  margin: 6px 0 2px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--kf-text-primary);
+  letter-spacing: 0.01em;
+}
+.a2ui-rich-list {
+  margin: 2px 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.a2ui-rich-list--ordered {
+  list-style-type: decimal;
+}
+.a2ui-rich-list__item {
+  line-height: 1.55;
+  color: var(--kf-text-secondary);
+}
+.a2ui-rich-strong {
+  font-weight: 700;
+  color: var(--kf-text-primary);
+}
+.a2ui-rich-code {
+  font-family: var(--kf-font-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(148, 163, 184, 0.16);
+  color: var(--kf-text-primary);
+}
+.a2ui-loading-steps {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  text-align: left;
+  max-height: 220px;
+  overflow-y: auto;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}

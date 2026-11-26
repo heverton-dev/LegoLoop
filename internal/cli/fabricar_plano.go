@@ -84,7 +84,7 @@ func executarFabricarPlano(o opcoesFabricarPlano, d Deps) int {
 		limparArtefatosPlano(o.raiz, o.spec, res, "")
 		return fail(d, err)
 	}
-	caminhoDAG, err := projetarEGravasDAG(o.raiz, res.RouteJSONPath)
+	caminhoDAG, err := projetarEGravasDAG(o.raiz, res.RouteJSONPath, derivarCaminhoProgressoPlano(o.raiz, res.PlanMarkdownPath))
 	if err != nil {
 		limparArtefatosPlano(o.raiz, o.spec, res, caminhoDAG)
 		return fail(d, err)
@@ -152,7 +152,7 @@ func removerArquivoSeExistir(caminho string) {
 	}
 }
 
-func projetarEGravasDAG(raiz, caminhoRoute string) (string, error) {
+func projetarEGravasDAG(raiz, caminhoRoute, progJSON string) (string, error) {
 	rawRoute, err := os.ReadFile(caminhoRoute)
 	if err != nil {
 		return "", err
@@ -162,6 +162,9 @@ func projetarEGravasDAG(raiz, caminhoRoute string) (string, error) {
 	}
 	dagBytes, nomeDAG, err := routedag.Converter(rawRoute)
 	if err != nil {
+		return "", err
+	}
+	if dagBytes, err = apontarProgressoNoDAG(dagBytes, raiz, progJSON); err != nil {
 		return "", err
 	}
 	if _, err := dag.Parse(dagBytes); err != nil {
@@ -232,5 +235,6 @@ func gerarProgressoDoPlano(raiz, ticketsArq, planMarkdownPath string, quando tim
 	}
 	progJSON := derivarCaminhoProgressoPlano(raiz, planMarkdownPath)
 	p := progresso.NovoDeTickets(iniciativa, planMarkdownPath, entradas, quando.UTC().Format(time.RFC3339))
+	preservarEstadoAnterior(progJSON, &p)
 	return progresso.Salvar(progJSON, progresso.CaminhoEspelhoMD(progJSON), p)
 }

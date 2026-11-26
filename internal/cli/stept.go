@@ -97,12 +97,18 @@ func salvarESincronizar(cfg *ste.Config, cfgPath, home string, asJSON bool, d De
 	return 0
 }
 
-type opcoesStept struct{ harness, modo, pausa string }
+type opcoesStept struct {
+	harness, modo, pausa string
+	hook                 bool
+}
 
 func despacharSubcomandoStept(sub string, op opcoesStept, d Deps, home, cfgPath string, asJSON bool) int {
 	if sub == "manual" || sub == "help" || sub == "-h" || sub == "--help" {
 		fmt.Fprint(d.Stdout, ste.TextoManual())
 		return 0
+	}
+	if sub == "lint" {
+		return executarSteptLint(d, asJSON, op.hook)
 	}
 	cfg, err := ste.CarregarConfig(cfgPath)
 	if err != nil {
@@ -175,13 +181,14 @@ func cmdStept(_ context.Context, args []string, d Deps) int {
 	harness := fs.String("harness", "", "identificador do harness")
 	modoStr := fs.String("modo", "", "modo de governança")
 	pausaStr := fs.String("pausa", "", "política de pausa")
+	hook := fs.Bool("hook", false, "stept lint: lê o payload JSON do gancho de parada e sai com 2 quando há evasão")
 	if !ehAjuda(sub) && fs.Parse(restArgs) != nil {
 		return 2
 	}
 
 	home := resolveHome(d, *homeFlag)
 	cfgPath := resolveConfigPath(home, *cfgFlag)
-	op := opcoesStept{harness: *harness, modo: *modoStr, pausa: *pausaStr}
+	op := opcoesStept{harness: *harness, modo: *modoStr, pausa: *pausaStr, hook: *hook}
 	return despacharSubcomandoStept(sub, op, d, home, cfgPath, *asJSON)
 }
 

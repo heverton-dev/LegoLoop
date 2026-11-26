@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "estilo": "molde-de-pilula",
+  "estilo_versao": "1.0.0",
+  "_leia": "Personagens de teste para a validação humana (AC-E07.8). O bloco cast segue o puppet.js: skin, suit, shirt, tie, hair, hair_col e adornos. Cada personagem declara genero (masculino, feminino ou neutro) e faixa_etaria (crianca, adulto ou idoso) (AC-E07.9). Aprovar exige o arquivo de aprovação com estes ids em personagens_teste.",
+  "personagens": [
+    {
+      "id": "narrador-teste",
+      "nome": "Narrador",
+      "papel": "narrador",
+      "genero": "masculino",
+      "faixa_etaria": "adulto",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "idle",
+        "gesture",
+        "point"
+      ],
+      "humor_teste": [
+        "neutral",
+        "happy",
+        "smug"
+      ],
+      "cast": {
+        "skin": "#E6BE8E",
+        "suit": "#3B4660",
+        "shirt": "#F4EFE2",
+        "tie": "#A8232B",
+        "hair": "short",
+        "hair_col": "#1C1B22"
+      }
+    },
+    {
+      "id": "executivo-teste",
+      "nome": "Executivo",
+      "papel": "antagonista",
+      "genero": "masculino",
+      "faixa_etaria": "adulto",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "hip",
+        "shrug",
+        "facepalm"
+      ],
+      "humor_teste": [
+        "smug",
+        "worry",
+        "panic"
+      ],
+      "cast": {
+        "skin": "#E8B98F",
+        "suit": "#6B4A30",
+        "shirt": "#F4EFE2",
+        "hair": "bald",
+        "hair_col": "#2A1D14",
+        "glasses": true,
+        "bowtie": "#B3283A"
+      }
+    },
+    {
+      "id": "analista-teste",
+      "nome": "Analista",
+      "papel": "coadjuvante",
+      "genero": "feminino",
+      "faixa_etaria": "adulto",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "think",
+        "present",
+        "cheer"
+      ],
+      "humor_teste": [
+        "think",
+        "shock",
+        "grin"
+      ],
+      "cast": {
+        "skin": "#C68E5F",
+        "shirt": "#F4EFE2",
+        "hair": "curly",
+        "hair_col": "#2A1D14",
+        "dress": "#2B3A67",
+        "decote": "golaV"
+      }
+    },
+    {
+      "id": "mulher-teste",
+      "nome": "Mulher",
+      "papel": "coadjuvante",
+      "genero": "feminino",
+      "faixa_etaria": "adulto",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "idle",
+        "present",
+        "cheer"
+      ],
+      "humor_teste": [
+        "neutral",
+        "happy",
+        "shock"
+      ],
+      "cast": {
+        "skin": "#F0C9A0",
+        "dress": "#8E3B5A",
+        "shirt": "#F4EFE2",
+        "hair": "long",
+        "hair_col": "#5A3420",
+        "saia": "curto"
+      }
+    },
+    {
+      "id": "idoso-teste",
+      "nome": "Idoso",
+      "papel": "coadjuvante",
+      "genero": "masculino",
+      "faixa_etaria": "idoso",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "idle",
+        "think",
+        "shrug"
+      ],
+      "humor_teste": [
+        "neutral",
+        "worry",
+        "grin"
+      ],
+      "cast": {
+        "skin": "#E2B48C",
+        "suit": "#4F5A4A",
+        "shirt": "#F4EFE2",
+        "tie": "#3B4660",
+        "hair": "grey",
+        "hair_col": "#B9B9B4",
+        "glasses": true,
+        "moustache": "#B9B9B4"
+      }
+    },
+    {
+      "id": "crianca-teste",
+      "nome": "Criança",
+      "papel": "coadjuvante",
+      "genero": "masculino",
+      "faixa_etaria": "crianca",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "idle",
+        "point",
+        "cheer"
+      ],
+      "humor_teste": [
+        "happy",
+        "shock",
+        "grin"
+      ],
+      "cast": {
+        "skin": "#EBC39A",
+        "shirt": "#F4EFE2",
+        "hair": "short",
+        "hair_col": "#3A2416",
+        "proporcao": {
+          "cabeca": 1.3,
+          "corpo": 0.62
+        },
+        "dress": "#2F7A9A",
+        "decote": "careca"
+      }
+    },
+    {
+      "id": "menina-teste",
+      "nome": "Menina",
+      "papel": "coadjuvante",
+      "genero": "feminino",
+      "faixa_etaria": "crianca",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "idle",
+        "cheer",
+        "clap"
+      ],
+      "humor_teste": [
+        "happy",
+        "grin",
+        "laugh"
+      ],
+      "cast": {
+        "skin": "#E8B98F",
+        "dress": "#D9527A",
+        "hair": "bob",
+        "hair_col": "#6B3A1A",
+        "proporcao": {
+          "cabeca": 1.3,
+          "corpo": 0.62
+        },
+        "decote": "careca"
+      }
+    },
+    {
+      "id": "adolescente-teste",
+      "nome": "Adolescente",
+      "papel": "coadjuvante",
+      "genero": "masculino",
+      "faixa_etaria": "adolescente",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "hip",
+        "shrug",
+        "point"
+      ],
+      "humor_teste": [
+        "smug",
+        "neutral",
+        "grin"
+      ],
+      "cast": {
+        "skin": "#D9A57A",
+        "shirt": "#F4EFE2",
+        "hair": "curly",
+        "hair_col": "#1C1B22",
+        "proporcao": {
+          "cabeca": 1.1,
+          "corpo": 0.85
+        },
+        "dress": "#2E7D5B",
+        "decote": "golaV"
+      }
+    },
+    {
+      "id": "adolescente-feminina-teste",
+      "nome": "Adolescente",
+      "papel": "coadjuvante",
+      "genero": "feminino",
+      "faixa_etaria": "adolescente",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "wave",
+        "think",
+        "gesture"
+      ],
+      "humor_teste": [
+        "happy",
+        "think",
+        "smug"
+      ],
+      "cast": {
+        "skin": "#C68E5F",
+        "dress": "#6A4C93",
+        "hair": "long",
+        "hair_col": "#2A1D14",
+        "proporcao": {
+          "cabeca": 1.1,
+          "corpo": 0.85
+        },
+        "decote": "golaV"
+      }
+    },
+    {
+      "id": "idosa-teste",
+      "nome": "Idosa",
+      "papel": "coadjuvante",
+      "genero": "feminino",
+      "faixa_etaria": "idoso",
+      "teste": true,
+      "aprovado": false,
+      "pose_teste": [
+        "hold",
+        "idle",
+        "wave"
+      ],
+      "humor_teste": [
+        "happy",
+        "neutral",
+        "smug"
+      ],
+      "cast": {
+        "skin": "#E6BE8E",
+        "dress": "#5B2E52",
+        "hair": "bun",
+        "hair_col": "#B9BCC6",
+        "glasses": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,1866 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-26",
+  "description": "Espelho executável da ROUTE 2026-11-26_ROUTE_VIDEO_ANIMADO_V2",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local",
+      "write_boundary": "strict"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-video-animado-v2",
+  "nodes": [
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-01.1: Criar contratos do pacote inventario: Estilo, Item, Referencia, erros tipados e validacao de tipo. Criterios AC-E07.2, AC-E07.6 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/video/inventario/schemas.go, internal/video/inventario/schemas_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/inventario/ -run TestSchemas ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/video/inventario/schemas.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/inventario/schemas.go",
+        "internal/video/inventario/schemas_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-01.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/video/inventario/schemas.go') \u0026\u0026 file_exists('internal/video/inventario/schemas_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E07.2, AC-E07.6",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/inventario/schemas_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/inventario/ -run TestSchemas"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-01.2: Implementar NovoEstilo e GravarItem com gravacao atomica e regra de estilo em rascunho. Criterios AC-E07.1, AC-E07.3 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/video/inventario/store.go, internal/video/inventario/store_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/inventario/ -run TestStore ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/video/inventario/store.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/inventario/store.go",
+        "internal/video/inventario/store_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "id": "TICK-01.2",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/video/inventario/store.go') \u0026\u0026 file_exists('internal/video/inventario/store_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E07.1, AC-E07.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/inventario/store_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/inventario/ -run TestStore"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-01.3: Implementar Buscar por estilo, tipo e tags, heranca de estilos e Verificar por hash SHA-256. Criterios AC-E07.4, AC-E07.5, AC-E07.7 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/video/inventario/busca.go, internal/video/inventario/busca_test.go, internal/video/inventario/hash.go, internal/video/inventario/hash_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/inventario/ -run \"TestBusca|TestHash|TestHeranca\" ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/video/inventario/busca.go",
+        "internal/video/inventario/hash.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/inventario/busca.go",
+        "internal/video/inventario/busca_test.go",
+        "internal/video/inventario/hash.go",
+        "internal/video/inventario/hash_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "id": "TICK-01.3",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/video/inventario/busca.go') \u0026\u0026 file_exists('internal/video/inventario/busca_test.go') \u0026\u0026 file_exists('internal/video/inventario/hash.go') \u0026\u0026 file_exists('internal/video/inventario/hash_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E07.4, AC-E07.5, AC-E07.7",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/inventario/busca_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/inventario/ -run TestBusca|TestHash|TestHeranca"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-01.4: Implementar ValidarEstilo com arquivo de aprovacao humana e o comando video-inventario. Criterios AC-E07.8 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/video/inventario/validar.go, internal/video/inventario/validar_test.go, internal/cli/video_inventario.go, internal/cli/video_inventario_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/inventario/ ./internal/cli/ -run \"TestValidarEstilo|TestVideoInventario\" ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/video/inventario/validar.go",
+        "internal/cli/video_inventario.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/inventario/validar.go",
+        "internal/video/inventario/validar_test.go",
+        "internal/cli/video_inventario.go",
+        "internal/cli/video_inventario_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.3"
+      ],
+      "id": "TICK-01.4",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/video/inventario/validar.go') \u0026\u0026 file_exists('internal/video/inventario/validar_test.go') \u0026\u0026 file_exists('internal/cli/video_inventario.go') \u0026\u0026 file_exists('internal/cli/video_inventario_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E07.8",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/inventario/validar_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/inventario/ ./internal/cli/ -run TestValidarEstilo|TestVideoInventario"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-02.1: Criar o estilo molde-de-pilula com referencias, paleta, luz e personagens de teste para validacao do usuario. Criterios AC-E07.8 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: inventario/video/estilos/molde-de-pilula/estilo.json, inventario/video/estilos/molde-de-pilula/personagens.json. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop video-inventario verificar --estilo molde-de-pilula ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "inventario/video/estilos/molde-de-pilula/estilo.json",
+        "inventario/video/estilos/molde-de-pilula/personagens.json",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "inventario/video/estilos/molde-de-pilula/estilo.json",
+        "inventario/video/estilos/molde-de-pilula/personagens.json"
+      ],
+      "depends_on": [
+        "TICK-01.4"
+      ],
+      "id": "TICK-02.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('inventario/video/estilos/molde-de-pilula/estilo.json') \u0026\u0026 file_exists('inventario/video/estilos/molde-de-pilula/personagens.json')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E07.8",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./cmd/legoloop video-inventario verificar --estilo molde-de-pilula"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-02.2: adicionar genero e faixa etaria ao Item do inventario e tres personagens de teste novos ao estilo molde-de-pilula. Criterio AC-E07.9 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/video/inventario/schemas.go, internal/video/inventario/genero.go, internal/video/inventario/genero_test.go, inventario/video/estilos/molde-de-pilula/personagens.json. Contrato: Item ganha os campos genero (masculino, feminino ou neutro) e faixa_etaria (crianca, adulto ou idoso), ambos com omitempty, sem quebrar item antigo. Crie ValidarGenero e ValidarFaixa com erros tipados ErrGeneroInvalido e ErrFaixaInvalida (switch, sem variavel global). Item do tipo personagem exige os dois campos. Crie BuscarPersonagens(estilo, genero, faixa string) em Store, que reaproveita Buscar com tipo personagem e trata filtro vazio como qualquer valor. No personagens.json acrescente genero e faixa_etaria aos tres personagens atuais (narrador masculino adulto, executivo masculino adulto, analista feminino adulto) e crie mulher-teste (feminino, adulto, cast com dress e hair long), idoso-teste (masculino, idoso, cast com hair grey, glasses e moustache) e crianca-teste (masculino, crianca, cast com proporcao cabeca 1.3 e corpo 0.62), cada um com aprovado false, pose_teste e humor_teste de 3 itens. Nao altere o status do estilo.json: continua rascunho. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/inventario/ -run \"TestGenero|TestBuscarPersonagens\" ate passar; depois rode go run ./cmd/legoloop video-inventario verificar --estilo molde-de-pilula. Prove com mutacao que cada regra do teste falha quando quebrada. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/video/inventario/schemas.go",
+        "internal/video/inventario/genero.go",
+        "inventario/video/estilos/molde-de-pilula/personagens.json",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/inventario/schemas.go",
+        "internal/video/inventario/genero.go",
+        "internal/video/inventario/genero_test.go",
+        "inventario/video/estilos/molde-de-pilula/personagens.json"
+      ],
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "id": "TICK-02.2",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/video/inventario/schemas.go') \u0026\u0026 file_exists('internal/video/inventario/genero.go') \u0026\u0026 file_exists('internal/video/inventario/genero_test.go') \u0026\u0026 file_exists('inventario/video/estilos/molde-de-pilula/personagens.json')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E07.9",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/inventario/genero_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/inventario/ -run TestGenero|TestBuscarPersonagens"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3",
+        "TICK-01.4",
+        "TICK-02.1",
+        "TICK-02.2"
+      ],
+      "id": "SG-E07",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e07",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E07.json",
+        "gate": "prompt('Evidências do Épico 07 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-03.1: Ler modo_producao e estilo no projeto.json v2 e bloquear estilo nao validado no pre-voo. Criterios AC-E08.1 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/diorama/ativos/cenarios.go, internal/diorama/ativos/cenarios_test.go, internal/diorama/ativos/prevoo.go, internal/diorama/ativos/prevoo_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/diorama/ativos/ -run TestPreVoo ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/cenarios.go",
+        "internal/diorama/ativos/prevoo.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/cenarios.go",
+        "internal/diorama/ativos/cenarios_test.go",
+        "internal/diorama/ativos/prevoo.go",
+        "internal/diorama/ativos/prevoo_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.2",
+        "SG-E07"
+      ],
+      "id": "TICK-03.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/cenarios.go') \u0026\u0026 file_exists('internal/diorama/ativos/cenarios_test.go') \u0026\u0026 file_exists('internal/diorama/ativos/prevoo.go') \u0026\u0026 file_exists('internal/diorama/ativos/prevoo_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E08.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/cenarios_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestPreVoo"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-03.2: Validar cenas.json v2 e elenco.json contra o inventario e as partes suportadas do renderizador. Criterios AC-E08.2, AC-E08.3 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/diorama/ativos/schemas.go, internal/diorama/ativos/schemas_test.go, internal/diorama/ativos/storyboard.go, internal/diorama/ativos/storyboard_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/diorama/ativos/ -run \"TestStoryboard|TestElencoCast\" ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/schemas.go",
+        "internal/diorama/ativos/storyboard.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/schemas.go",
+        "internal/diorama/ativos/schemas_test.go",
+        "internal/diorama/ativos/storyboard.go",
+        "internal/diorama/ativos/storyboard_test.go"
+      ],
+      "depends_on": [
+        "TICK-03.1",
+        "SG-E07"
+      ],
+      "id": "TICK-03.2",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/schemas.go') \u0026\u0026 file_exists('internal/diorama/ativos/schemas_test.go') \u0026\u0026 file_exists('internal/diorama/ativos/storyboard.go') \u0026\u0026 file_exists('internal/diorama/ativos/storyboard_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E08.2, AC-E08.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/schemas_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestStoryboard|TestElencoCast"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-03.1",
+        "TICK-03.2"
+      ],
+      "id": "SG-E08",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e08",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E08.json",
+        "gate": "prompt('Evidências do Épico 08 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-04.1: Etapa 3 vetorial: montar elenco.json com cast a partir do inventario, sem Flow, e gravar itens novos como nao aprovados. Criterios AC-E09.1, AC-E09.2 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/diorama/ativos/elenco.go, internal/diorama/ativos/elenco_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/diorama/ativos/ -run TestElencoVetorial ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/elenco.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/elenco.go",
+        "internal/diorama/ativos/elenco_test.go"
+      ],
+      "depends_on": [
+        "TICK-03.2",
+        "SG-E08"
+      ],
+      "id": "TICK-04.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/elenco.go') \u0026\u0026 file_exists('internal/diorama/ativos/elenco_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E09.1, AC-E09.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/elenco_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestElencoVetorial"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-04.2: Manter o caminho de fichas e rembg para estilos de recorte sem regressao. Criterios AC-E09.3 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/diorama/ativos/fichas.go, internal/diorama/ativos/drivers.go, internal/diorama/ativos/fichas_test.go, internal/diorama/ativos/drivers_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/diorama/ativos/ -run \"TestFichas|TestDrivers|TestElenco\" ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/fichas.go",
+        "internal/diorama/ativos/drivers.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/fichas.go",
+        "internal/diorama/ativos/drivers.go",
+        "internal/diorama/ativos/fichas_test.go",
+        "internal/diorama/ativos/drivers_test.go"
+      ],
+      "depends_on": [
+        "TICK-04.1",
+        "SG-E08"
+      ],
+      "id": "TICK-04.2",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/fichas.go') \u0026\u0026 file_exists('internal/diorama/ativos/drivers.go') \u0026\u0026 file_exists('internal/diorama/ativos/fichas_test.go') \u0026\u0026 file_exists('internal/diorama/ativos/drivers_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E09.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/fichas_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestFichas|TestDrivers|TestElenco"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-04.3: Etapa 4: consultar o inventario antes de gerar fundos e registrar fundo novo com prompt, tags e hash. Criterios AC-E09.4 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/diorama/ativos/cenarios.go, internal/diorama/ativos/cenarios_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/diorama/ativos/ -run TestCenariosInventario ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/cenarios.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/cenarios.go",
+        "internal/diorama/ativos/cenarios_test.go"
+      ],
+      "depends_on": [
+        "TICK-04.1",
+        "SG-E08"
+      ],
+      "id": "TICK-04.3",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/cenarios.go') \u0026\u0026 file_exists('internal/diorama/ativos/cenarios_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E09.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/cenarios_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestCenariosInventario"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-04.4: Marcar entrega suspeita do Flow (sem confirmacao de renomeacao, hash cruzado, fora do padrao de estilo). Criterios AC-E09.5 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/diorama/ativos/suspeito.go, internal/diorama/ativos/suspeito_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/diorama/ativos/ -run TestSuspeito ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/suspeito.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/suspeito.go",
+        "internal/diorama/ativos/suspeito_test.go"
+      ],
+      "depends_on": [
+        "TICK-04.3",
+        "SG-E08"
+      ],
+      "id": "TICK-04.4",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/suspeito.go') \u0026\u0026 file_exists('internal/diorama/ativos/suspeito_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E09.5",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/suspeito_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestSuspeito"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-04.2",
+        "TICK-04.3",
+        "TICK-04.4"
+      ],
+      "id": "SG-E09",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e09",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E09.json",
+        "gate": "prompt('Evidências do Épico 09 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-05.1: Criar motor-local com LICENCA.json, ignorar no git e teste de governanca da licenca. Criterios AC-E10.1 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: .gitignore, motor-local/LICENCA.json, internal/video/motor/licenca_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/motor/ -run TestLicenca ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        ".gitignore",
+        "motor-local/LICENCA.json",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        ".gitignore",
+        "motor-local/LICENCA.json",
+        "internal/video/motor/licenca_test.go"
+      ],
+      "depends_on": [
+        "TICK-03.2",
+        "SG-E09"
+      ],
+      "id": "TICK-05.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_05_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('.gitignore') \u0026\u0026 file_exists('motor-local/LICENCA.json') \u0026\u0026 file_exists('internal/video/motor/licenca_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E10.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/motor/licenca_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/motor/ -run TestLicenca"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-05.2: Implementar o pre-voo do motor: python, Playwright, Chromium, ffmpeg e motor-local, com ErrMotorAusente. Criterios AC-E10.2 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/video/motor/prevoo.go, internal/video/motor/prevoo_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/motor/ -run TestPreVoo ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/video/motor/prevoo.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/motor/prevoo.go",
+        "internal/video/motor/prevoo_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.1",
+        "SG-E09"
+      ],
+      "id": "TICK-05.2",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_05_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/video/motor/prevoo.go') \u0026\u0026 file_exists('internal/video/motor/prevoo_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E10.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/motor/prevoo_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/motor/ -run TestPreVoo"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-05.3: Implementar a ponte cenas.json v2 + elenco + timings + inventario para timeline.json, com luz de contorno do estilo. Criterios AC-E10.3, AC-E10.6, AC-E10.8 (proporcao de crianca) da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/video/motor/ponte.go, internal/video/motor/ponte_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/motor/ -run TestPonte ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/video/motor/ponte.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/motor/ponte.go",
+        "internal/video/motor/ponte_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.2",
+        "TICK-04.1",
+        "SG-E09"
+      ],
+      "id": "TICK-05.3",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_05_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/video/motor/ponte.go') \u0026\u0026 file_exists('internal/video/motor/ponte_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E10.3, AC-E10.6, AC-E10.8",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/motor/ponte_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/motor/ -run TestPonte"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-05.4: Renderizar a cena de referencia pelo motor: 9:16, voz, determinismo e boca acompanhando a fala. Criterios AC-E10.4, AC-E10.5, AC-E10.7 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/video/motor/render.go, internal/video/motor/render_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/motor/ -run TestRender ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/video/motor/render.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/motor/render.go",
+        "internal/video/motor/render_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.3",
+        "SG-E09"
+      ],
+      "id": "TICK-05.4",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_05_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/video/motor/render.go') \u0026\u0026 file_exists('internal/video/motor/render_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E10.4, AC-E10.5, AC-E10.7",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/motor/render_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/motor/ -run TestRender"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-06.1: Ligar o render Go ao motor e reconfirmar voz, mix, SFX e cortes da SPEC v1.4.0 sobre a nova timeline. Criterios AC-E10.4 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/diorama/render/render.go, internal/diorama/render/render_exec.go, internal/diorama/render/timeline.go, internal/diorama/render/render_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/diorama/render/... ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/diorama/render/render.go",
+        "internal/diorama/render/render_exec.go",
+        "internal/diorama/render/timeline.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/diorama/render/render.go",
+        "internal/diorama/render/render_exec.go",
+        "internal/diorama/render/timeline.go",
+        "internal/diorama/render/render_test.go"
+      ],
+      "depends_on": [
+        "TICK-05.4",
+        "SG-E09"
+      ],
+      "id": "TICK-06.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_06_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-06.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/render/render.go') \u0026\u0026 file_exists('internal/diorama/render/render_exec.go') \u0026\u0026 file_exists('internal/diorama/render/timeline.go') \u0026\u0026 file_exists('internal/diorama/render/render_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E10.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/render/render_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/render/..."
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-05.1",
+        "TICK-05.2",
+        "TICK-05.3",
+        "TICK-05.4",
+        "TICK-06.1"
+      ],
+      "id": "SG-E10",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e10",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E10.json",
+        "gate": "prompt('Evidências do Épico 10 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-07.1: Mover internal/diorama para internal/video e atualizar imports sem regressao. Criterios AC-E11.2 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/video/roteiro/, internal/video/ativos/, internal/video/render/. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go build ./... \u0026\u0026 go vet ./... \u0026\u0026 go test -count=1 ./... ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/video/roteiro/",
+        "internal/video/ativos/",
+        "internal/video/render/",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/roteiro/",
+        "internal/video/ativos/",
+        "internal/video/render/"
+      ],
+      "depends_on": [
+        "TICK-06.1",
+        "SG-E10"
+      ],
+      "id": "TICK-07.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_07_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-07.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/video/roteiro/') \u0026\u0026 file_exists('internal/video/ativos/') \u0026\u0026 file_exists('internal/video/render/')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E11.2",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go build ./..."
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-07.2: Registrar os comandos video-roteiro, video-ativos e video-render com alias diorama-* e aviso de depreciacao. Criterios AC-E11.1 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/cli/cli.go, internal/cli/video_alias.go, internal/cli/video_alias_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/cli/ -run TestVideoAlias ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/cli/cli.go",
+        "internal/cli/video_alias.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/cli/cli.go",
+        "internal/cli/video_alias.go",
+        "internal/cli/video_alias_test.go"
+      ],
+      "depends_on": [
+        "TICK-07.1",
+        "SG-E10"
+      ],
+      "id": "TICK-07.2",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_07_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-07.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/cli.go') \u0026\u0026 file_exists('internal/cli/video_alias.go') \u0026\u0026 file_exists('internal/cli/video_alias_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E11.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/cli/video_alias_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/cli/ -run TestVideoAlias"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-07.3: Migrar skills, processos, espinha e PROCESSOS_CANONIZADOS para os nomes legoloop-video-* com redirecionamento. Criterios AC-E11.3 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: skills/legoloop-video-roteiro/SKILL.md, skills/legoloop-video-ativos/SKILL.md, espinha/registro.json, docs/PROCESSOS_CANONIZADOS.md. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop espinha verificar ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "skills/legoloop-video-roteiro/SKILL.md",
+        "skills/legoloop-video-ativos/SKILL.md",
+        "espinha/registro.json",
+        "docs/PROCESSOS_CANONIZADOS.md",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "skills/legoloop-video-roteiro/SKILL.md",
+        "skills/legoloop-video-ativos/SKILL.md",
+        "espinha/registro.json",
+        "docs/PROCESSOS_CANONIZADOS.md"
+      ],
+      "depends_on": [
+        "TICK-07.2",
+        "SG-E10"
+      ],
+      "id": "TICK-07.3",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_07_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-07.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('skills/legoloop-video-roteiro/SKILL.md') \u0026\u0026 file_exists('skills/legoloop-video-ativos/SKILL.md') \u0026\u0026 file_exists('espinha/registro.json') \u0026\u0026 file_exists('docs/PROCESSOS_CANONIZADOS.md')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E11.3",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./cmd/legoloop espinha verificar"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-07.4: Aplicar a nota de redirecionamento nos documentos arquivados sem alterar o conteudo. Criterios AC-E11.4 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: docs/intents/, docs/specs/, docs/reports/. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode git diff --stat -- docs/intents docs/specs docs/reports ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "docs/intents/",
+        "docs/specs/",
+        "docs/reports/",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "docs/intents/",
+        "docs/specs/",
+        "docs/reports/"
+      ],
+      "depends_on": [
+        "TICK-07.3",
+        "SG-E10"
+      ],
+      "id": "TICK-07.4",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_07_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-07.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/intents/') \u0026\u0026 file_exists('docs/specs/') \u0026\u0026 file_exists('docs/reports/')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E11.4",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "git diff --stat -- docs/intents docs/specs docs/reports"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-07.1",
+        "TICK-07.2",
+        "TICK-07.3",
+        "TICK-07.4"
+      ],
+      "id": "SG-E11",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e11",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E11.json",
+        "gate": "prompt('Evidências do Épico 11 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-08.1: Renderizar a cena 1 do diorama-demo pelo processo e colher a aprovacao visual do usuario. Criterios AC-E12.1 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: projetos/video-diorama/diorama-demo/renders/. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop video-render executar --projeto projetos/video-diorama/diorama-demo --cena 1 ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "projetos/video-diorama/diorama-demo/renders/",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "projetos/video-diorama/diorama-demo/renders/"
+      ],
+      "depends_on": [
+        "TICK-07.3",
+        "SG-E11"
+      ],
+      "id": "TICK-08.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_08_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-08.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('projetos/video-diorama/diorama-demo/renders/')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E12.1",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./cmd/legoloop video-render executar --projeto projetos/video-diorama/diorama-demo --cena 1"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-08.2: Criar o estilo palito herdando do molde-de-pilula e validar com o usuario. Criterios AC-E12.3 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: inventario/video/estilos/palito/estilo.json. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/video/inventario/ -run TestHeranca ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "inventario/video/estilos/palito/estilo.json",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "inventario/video/estilos/palito/estilo.json"
+      ],
+      "depends_on": [
+        "TICK-08.1",
+        "SG-E11"
+      ],
+      "id": "TICK-08.2",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_08_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-08.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('inventario/video/estilos/palito/estilo.json')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E12.3",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/inventario/ -run TestHeranca"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-08.3: Reproduzir o First Brands pelo processo: timeline completa com CHECK OK e ritmo no alvo. Criterios AC-E12.2 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: projetos/video-diorama/first-brands/timeline.json. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop video-render timeline --projeto projetos/video-diorama/first-brands ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "projetos/video-diorama/first-brands/timeline.json",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "projetos/video-diorama/first-brands/timeline.json"
+      ],
+      "depends_on": [
+        "TICK-08.1",
+        "SG-E11"
+      ],
+      "id": "TICK-08.3",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_08_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-08.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('projetos/video-diorama/first-brands/timeline.json')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E12.2",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./cmd/legoloop video-render timeline --projeto projetos/video-diorama/first-brands"
+      }
+    },
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-09.1: Fechamento: cobertura, dependencias, portabilidade, espinha e legoloop fechar 5 de 5. Criterios AC-NF.1, AC-NF.2, AC-NF.3 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: docs/reports/. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop fechar legoloop-video-animado ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "docs/reports/",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "docs/reports/"
+      ],
+      "depends_on": [
+        "TICK-08.2",
+        "TICK-08.3",
+        "SG-E11"
+      ],
+      "id": "TICK-09.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_09_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-09.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('docs/reports/')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-NF.1, AC-NF.2, AC-NF.3",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./cmd/legoloop fechar legoloop-video-animado"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-09.1"
+      ],
+      "id": "SG-FINAL",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "name": "sg_final",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-FINAL.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    }
+  ],
+  "progresso": "docs/progress/2026-11-26_plan-video-animado-v2/progresso.json",
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "e0a507437f0dcfad9c70f13d44d2e04d748ef7bb46bf3be9f968e05659a79c0f",
+    "plan": "1181a346f10f87404fddf215a47c817fadf2da5dd60b1538f8a6d144e6a0278a",
+    "spec": "0d07fbabda5ded726741b557a0cd9f5e0e0274a321de8d6cec4765ef666cb67f"
+  },
+  "version": "1.0.0"
+}

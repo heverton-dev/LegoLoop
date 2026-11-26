@@ -24,10 +24,13 @@ type LoudnessMetrics struct {
 	OutputLRA            float64
 }
 
+// TruePeakTetoDBTP é o teto de True Peak (EBU R128) do filtro e da validação: fonte única.
+const TruePeakTetoDBTP = -1.5
+
 // BuildLoudnormFilter gera a expressão para o filtro ffmpeg loudnorm.
 func BuildLoudnormFilter(targetLUFS float64) string {
 	iVal := int(math.Round(targetLUFS))
-	return fmt.Sprintf("loudnorm=I=%d:TP=-1.5:LRA=11", iVal)
+	return fmt.Sprintf("loudnorm=I=%d:TP=%.1f:LRA=11", iVal, TruePeakTetoDBTP)
 }
 
 // ValidateLoudnessConformity checa se a saída integrada está dentro da tolerância do alvo.
@@ -36,8 +39,8 @@ func ValidateLoudnessConformity(m LoudnessMetrics, target, tolerance float64) er
 	if diff > tolerance {
 		return fmt.Errorf("%w: medido %0.1f LUFS, alvo %0.1f (+/-%0.1f)", ErrLoudnessConformityFailed, m.OutputIntegratedLUFS, target, tolerance)
 	}
-	if m.OutputTruePeakDBFS > -1.0 {
-		return fmt.Errorf("%w: True Peak %0.1f dBFS excede o teto de -1.0 dBFS", ErrLoudnessConformityFailed, m.OutputTruePeakDBFS)
+	if m.OutputTruePeakDBFS > TruePeakTetoDBTP {
+		return fmt.Errorf("%w: True Peak %0.1f dBTP excede o teto de %0.1f dBTP", ErrLoudnessConformityFailed, m.OutputTruePeakDBFS, TruePeakTetoDBTP)
 	}
 	return nil
 }

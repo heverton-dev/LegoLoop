@@ -107,6 +107,8 @@ Comandos:
   espinha    verificar [--raiz DIR] [--json]     verifica a integridade deterministica da espinha dorsal
   progresso  <gerar|iniciar|validar|status> [opções]  acompanhamento vivo de Tickets validado por Gate
   diorama-roteiro <prevoo|validar-config|coletar|validar-roteiro> [opções]  pré-voo, descoberta e validação epistêmica de roteiro diorama
+  diorama-ativos  <prevoo|executar|validar-storyboard> [opções]             elenco, sprites, cenários SVG/Flow e storyboard cenas.json
+  video-inventario <validar|verificar> --estilo ID [opções]                 validação humana de estilo e conferência por hash do inventário
   version
 `
 
@@ -121,7 +123,7 @@ func mapaComandos() map[string]func(context.Context, []string, Deps) int {
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
 		"progresso": cmdProgresso, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos, "espinha": cmdEspinha,
-		"diorama-roteiro": cmdDioramaRoteiro,
+		"diorama-roteiro": cmdDioramaRoteiro, "diorama-ativos": cmdDioramaAtivos, "video-inventario": cmdVideoInventario,
 	}
 }
 

@@ -1,6 +1,7 @@
 package mcp
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -11,7 +12,7 @@ import (
 
 const (
 	sessaoBaseURLPadrao = "http://127.0.0.1:4242"
-	sessaoTimeoutPadrao = 30 * time.Second
+	sessaoTimeoutPadrao = 5 * time.Minute
 )
 
 // SetSessaoHub conecta um barramento de sessoes A2UI e sua URL base ao Router.
@@ -24,6 +25,11 @@ func (r *Router) SetSessaoHub(hub *a2ui.Hub, baseURL string) {
 	r.sessaoBaseURL = base
 }
 
+// SetSessaoAbridor configura a funcao usada por sessao_criar para abrir a URL no navegador.
+func (r *Router) SetSessaoAbridor(fn func(string) error) {
+	r.sessaoAbridor = fn
+}
+
 func (r *Router) handleSessaoTool(id any, nome string, args map[string]any) (JSONRPCResponse, bool) {
 	switch nome {
 	case "sessao_criar":
@@ -32,6 +38,8 @@ func (r *Router) handleSessaoTool(id any, nome string, args map[string]any) (JSO
 		return r.callSessaoPublicar(id, args), true
 	case "sessao_aguardar":
 		return r.callSessaoAguardar(id, args), true
+	case "sessao_status":
+		return r.callSessaoStatus(id, args), true
 	default:
 		return JSONRPCResponse{}, false
 	}
@@ -42,17 +50,41 @@ func (r *Router) callSessaoCriar(id any, args map[string]any) JSONRPCResponse {
 		return r.toolCallError(id, "hub de sessao A2UI nao configurado")
 	}
 	processo, _ := args["processo"].(string)
+	if processo == "" {
+		if s, ok := args["slug"].(string); ok && s != "" {
+			processo = s
+		} else if m, ok := args["modulo"].(string); ok && m != "" {
+			processo = m
+		}
+	}
 	sessao := r.sessaoHub.CreateSession(strings.TrimSpace(processo))
+	if override := duracaoTimeoutOpcional(args); override > 0 {
+		sessao.ConfigureTimer(override)
+	}
 	base := r.sessaoBaseURL
 	if base == "" {
 		base = sessaoBaseURLPadrao
 	}
+	sessURL := fmt.Sprintf("%s/sessao/%s", base, sessao.ID)
+	aberto := r.abrirSessaoSeHabilitado(sessURL, args)
 	return r.responderJSONSessao(id, map[string]any{
-		"session_id": sessao.ID,
-		"url":        fmt.Sprintf("%s/sessao/%s", base, sessao.ID),
-		"stream_url": fmt.Sprintf("%s/api/sessao/%s/stream", base, sessao.ID),
-		"action_url": fmt.Sprintf("%s/api/sessao/%s/action", base, sessao.ID),
+		"session_id":       sessao.ID,
+		"url":              sessURL,
+		"stream_url":       fmt.Sprintf("%s/api/sessao/%s/stream", base, sessao.ID),
+		"action_url":       fmt.Sprintf("%s/api/sessao/%s/action", base, sessao.ID),
+		"navegador_aberto": aberto,
+		"timeout_ms":       sessao.Timer().Snapshot().TimeoutMs,
 	})
+}
+
+func (r *Router) abrirSessaoSeHabilitado(url string, args map[string]any) bool {
+	if r.sessaoAbridor == nil {
+		return false
+	}
+	if v, ok := args["abrir_navegador"].(bool); ok && !v {
+		return false
+	}
+	return r.sessaoAbridor(url) == nil
 }
 
 func (r *Router) callSessaoPublicar(id any, args map[string]any) JSONRPCResponse {
@@ -82,18 +114,33 @@ func (r *Router) callSessaoAguardar(id any, args map[string]any) JSONRPCResponse
 	if err != nil {
 		return r.toolCallError(id, err.Error())
 	}
-	timer := time.NewTimer(duracaoTimeoutSessao(args))
-	defer timer.Stop()
-	select {
-	case act := <-sessao.Actions():
+	if act, ok := sessao.WaitAction(context.Background(), duracaoTimeoutOpcional(args)); ok {
 		return r.responderJSONSessao(id, act)
-	case <-timer.C:
-		return r.responderJSONSessao(id, map[string]any{
-			"fallback_textual": true,
-			"session_id":       sessao.ID,
-			"motivo":           "timeout",
-		})
 	}
+	return r.responderJSONSessao(id, map[string]any{
+		"fallback_textual": true,
+		"session_id":       sessao.ID,
+		"motivo":           "timeout",
+	})
+}
+
+func (r *Router) callSessaoStatus(id any, args map[string]any) JSONRPCResponse {
+	if r.sessaoHub == nil {
+		return r.toolCallError(id, "hub de sessao A2UI nao configurado")
+	}
+	sessionID, _ := args["session_id"].(string)
+	bruto, err := json.Marshal(args)
+	if err != nil {
+		return r.toolCallError(id, err.Error())
+	}
+	var st a2ui.SessionStatus
+	if err := json.Unmarshal(bruto, &st); err != nil {
+		return r.toolCallError(id, err.Error())
+	}
+	if err := r.sessaoHub.PublishStatus(strings.TrimSpace(sessionID), st); err != nil {
+		return r.toolCallError(id, err.Error())
+	}
+	return r.responderJSONSessao(id, map[string]any{"ok": true, "session_id": sessionID, "etapas": len(st.Etapas)})
 }
 
 func decodificarEnvelopeSessao(args map[string]any) (a2ui.Envelope, error) {
@@ -112,12 +159,19 @@ func decodificarEnvelopeSessao(args map[string]any) (a2ui.Envelope, error) {
 	return env, nil
 }
 
-func duracaoTimeoutSessao(args map[string]any) time.Duration {
+func duracaoTimeoutOpcional(args map[string]any) time.Duration {
 	if v, ok := args["timeout_ms"].(float64); ok && v > 0 {
 		return time.Duration(v) * time.Millisecond
 	}
 	if v, ok := args["timeout_ms"].(int); ok && v > 0 {
 		return time.Duration(v) * time.Millisecond
+	}
+	return 0
+}
+
+func duracaoTimeoutSessao(args map[string]any) time.Duration {
+	if d := duracaoTimeoutOpcional(args); d > 0 {
+		return d
 	}
 	return sessaoTimeoutPadrao
 }
@@ -135,17 +189,22 @@ func sessaoToolDefs() []map[string]any {
 		defSessaoCriar(),
 		defSessaoPublicar(),
 		defSessaoAguardar(),
+		defSessaoStatus(),
 	}
 }
 
 func defSessaoCriar() map[string]any {
 	return map[string]any{
 		"name":        "sessao_criar",
-		"description": "Cria uma sessao interativa A2UI e devolve session_id e url.",
+		"description": "Cria uma sessao interativa A2UI, abre automaticamente no navegador (padrao) e devolve session_id e url. Aceita timeout_ms por etapa. Em seguida, chame sessao_publicar e sessao_aguardar no mesmo turno.",
 		"inputSchema": map[string]any{
 			"type": "object",
 			"properties": map[string]any{
-				"processo": map[string]any{"type": "string", "description": "Nome do Processo associado a sessao"},
+				"processo":        map[string]any{"type": "string", "description": "Nome do Processo associado a sessao (ou slug/modulo)"},
+				"slug":            map[string]any{"type": "string", "description": "Alias para processo"},
+				"modulo":          map[string]any{"type": "string", "description": "Alias para processo"},
+				"abrir_navegador": map[string]any{"type": "boolean", "description": "Abre a URL no navegador automaticamente (padrao true)"},
+				"timeout_ms":      map[string]any{"type": "integer", "description": "Tempo limite padrao por etapa em ms (padrao 300000)"},
 			},
 		},
 	}
@@ -154,7 +213,7 @@ func defSessaoCriar() map[string]any {
 func defSessaoPublicar() map[string]any {
 	return map[string]any{
 		"name":        "sessao_publicar",
-		"description": "Valida e publica um envelope A2UI na sessao interativa.",
+		"description": "Valida e publica um envelope A2UI na sessao interativa. Quando esperar resposta do usuario, chame sessao_aguardar imediatamente no mesmo turno sem encerrar o turno pedindo aviso no chat.",
 		"inputSchema": map[string]any{
 			"type": "object",
 			"properties": map[string]any{
@@ -174,12 +233,29 @@ func defSessaoPublicar() map[string]any {
 func defSessaoAguardar() map[string]any {
 	return map[string]any{
 		"name":        "sessao_aguardar",
-		"description": "Aguarda uma Action do usuario na sessao A2UI ou devolve fallback_textual no timeout.",
+		"description": "Aguarda uma Action do usuario na sessao A2UI respeitando pausa/retomada do cronometro sem exigir mensagem no chat; devolve fallback_textual apenas no timeout.",
 		"inputSchema": map[string]any{
 			"type": "object",
 			"properties": map[string]any{
 				"session_id": map[string]any{"type": "string", "description": "ID da sessao A2UI"},
-				"timeout_ms": map[string]any{"type": "integer", "description": "Tempo limite em milissegundos"},
+				"timeout_ms": map[string]any{"type": "integer", "description": "Tempo limite em ms (opcional; usa o configurado na sessao)"},
+			},
+			"required": []string{"session_id"},
+		},
+	}
+}
+
+func defSessaoStatus() map[string]any {
+	return map[string]any{
+		"name":        "sessao_status",
+		"description": "Publica status ao vivo e arvore de etapas na sessao A2UI sem bloquear (use durante processamento e apos Stop-Gates para o usuario acompanhar no navegador).",
+		"inputSchema": map[string]any{
+			"type": "object",
+			"properties": map[string]any{
+				"session_id": map[string]any{"type": "string", "description": "ID da sessao A2UI"},
+				"etapa":      map[string]any{"type": "string", "description": "Etapa atual (ex: concepcao, execucao, validacao)"},
+				"mensagem":   map[string]any{"type": "string", "description": "Atividade em andamento exibida ao usuario"},
+				"etapas":     map[string]any{"type": "array", "description": "Lista de etapas {id, titulo, status: pending|running|done|error, detalhe}"},
 			},
 			"required": []string{"session_id"},
 		},

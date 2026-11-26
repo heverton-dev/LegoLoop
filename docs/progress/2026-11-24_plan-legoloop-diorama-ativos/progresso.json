@@ -1,0 +1,153 @@
+{
+  "schema": "progresso.v1",
+  "iniciativa": "D02",
+  "plano": "docs/plans/2026-11-24_PLAN_LEGOLOOP_DIORAMA_ATIVOS.md",
+  "atualizado_em": "2026-11-24T21:15:13Z",
+  "resumo": {
+    "total": 7,
+    "aprovados": 0,
+    "em_andamento": 0,
+    "reprovados": 0,
+    "bloqueados": 0,
+    "pendentes": 7
+  },
+  "tickets": [
+    {
+      "id": "TICK-DA-01.1",
+      "epico": "E01",
+      "titulo": "Criar contratos estritos de Elenco, Sprites, Cenarios e Storyboard",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestSchemas",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/schemas.go",
+        "internal/diorama/ativos/schemas_test.go"
+      ],
+      "criterios": [
+        "AC-E01.1"
+      ],
+      "atualizado_em": "2026-11-24T21:15:13Z"
+    },
+    {
+      "id": "TICK-DA-01.2",
+      "epico": "E01",
+      "titulo": "Implementar pre-voo do Ciclo 2 com Path Jail, contratos do Ciclo 1 e trava flow_projeto",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestPreVoo",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/prevoo.go",
+        "internal/diorama/ativos/prevoo_test.go"
+      ],
+      "criterios": [
+        "AC-E01.1",
+        "AC-E01.2",
+        "AC-NF.2"
+      ],
+      "atualizado_em": "2026-11-24T21:15:13Z"
+    },
+    {
+      "id": "TICK-DA-02.1",
+      "epico": "E02",
+      "titulo": "Implementar Etapa 3: 3 fichas por personagem, recorte rembg+despill e sprites/*.json sem sobreposicao",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestElenco",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/elenco.go",
+        "internal/diorama/ativos/elenco_test.go"
+      ],
+      "criterios": [
+        "AC-E02.1",
+        "AC-E02.2"
+      ],
+      "atualizado_em": "2026-11-24T21:15:13Z"
+    },
+    {
+      "id": "TICK-DA-03.1",
+      "epico": "E03",
+      "titulo": "Implementar Etapa 4: cenarios SVG autorais (codigo), fila Flow resiliente com backoff/--ref/trava e idempotencia por hash",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestCenarios",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/cenarios.go",
+        "internal/diorama/ativos/cenarios_test.go"
+      ],
+      "criterios": [
+        "AC-E03.1",
+        "AC-E03.2",
+        "AC-E03.3"
+      ],
+      "atualizado_em": "2026-11-24T21:15:13Z"
+    },
+    {
+      "id": "TICK-DA-04.1",
+      "epico": "E04",
+      "titulo": "Implementar Etapa 5: compilador e validador de cenas.json (100% linhas, metafora visual e \u003e= 4 elementos moveis)",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestStoryboard",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/storyboard.go",
+        "internal/diorama/ativos/storyboard_test.go"
+      ],
+      "criterios": [
+        "AC-E04.1",
+        "AC-E04.2"
+      ],
+      "atualizado_em": "2026-11-24T21:15:13Z"
+    },
+    {
+      "id": "TICK-DA-04.2",
+      "epico": "E04",
+      "titulo": "Orquestrar Processo completo com politica_gates (humano/mecanico/hibrido) e cobertura \u003e= 95%",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 -cover ./internal/diorama/ativos/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/processo.go",
+        "internal/diorama/ativos/processo_test.go"
+      ],
+      "criterios": [
+        "AC-E04.3",
+        "AC-NF.1",
+        "AC-NF.2"
+      ],
+      "atualizado_em": "2026-11-24T21:15:13Z"
+    },
+    {
+      "id": "TICK-DA-05.1",
+      "epico": "E05",
+      "titulo": "Integrar CLI legoloop diorama-ativos, DAG v2, Skill e fechamento 5 de 5 via legoloop fechar",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/... ./internal/cli/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/cli/diorama_ativos.go",
+        "internal/cli/diorama_ativos_test.go",
+        "internal/cli/cli.go",
+        "processos/legoloop-diorama-ativos/pipeline.dag.json",
+        "skills/legoloop-diorama-ativos/SKILL.md"
+      ],
+      "criterios": [
+        "AC-E05.1"
+      ],
+      "atualizado_em": "2026-11-24T21:15:13Z"
+    }
+  ]
+}

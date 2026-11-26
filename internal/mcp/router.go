@@ -86,6 +86,7 @@ type Router struct {
 	toolsProcesso map[string]toolRegistrada
 	sessaoHub     *a2ui.Hub
 	sessaoBaseURL string
+	sessaoAbridor func(string) error
 }
 
 // idleMcp e o tempo sem uso apos o qual um MCP externo e encerrado.
@@ -122,6 +123,7 @@ func NewConfiguredRouter(home, vault, projectDir string) *Router {
 	lv := &localVault{home: home, vault: vault, projectDir: projectDir, skills: engine, specs: specs, catalog: catalog}
 	r := &Router{vault: lv, skills: engine, skillRoot: skillRoot, swarm: true}
 	r.proxy = NewProxy(specs, idleMcp)
+	r.proxy.recarregar = func() (map[string]ServerSpec, error) { return LoadRegistry(RegistryPath(home)) }
 	r.runner = &localRunner{router: r}
 	return r
 }

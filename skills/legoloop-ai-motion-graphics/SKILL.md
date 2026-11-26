@@ -8,3 +8,8 @@ description: Executa o Processo legoloop-ai-motion-graphics pelo comando legoloo
 Execute o Processo legoloop-ai-motion-graphics com o comando:
 
     legoloop exec legoloop-ai-motion-graphics
+
+## Regras de Operação
+
+- **Zero Stubs:** todo código gerado é funcional e testado.
+- **Portões:** respeite a saída de exit code binário.

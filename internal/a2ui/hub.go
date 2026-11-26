@@ -41,7 +41,10 @@ type Session struct {
 	surfaces    map[string]Envelope
 	order       []string
 	subscribers map[chan Envelope]struct{}
+	controlSubs map[chan ControlEvent]struct{}
 	actions     chan Action
+	timer       *SessionTimer
+	status      SessionStatus
 }
 
 // Actions devolve o canal de leitura para receber ações do usuário.
@@ -114,7 +117,9 @@ func (h *Hub) CreateSession(processo string) *Session {
 		State:       SessionRunning,
 		surfaces:    make(map[string]Envelope),
 		subscribers: make(map[chan Envelope]struct{}),
+		controlSubs: make(map[chan ControlEvent]struct{}),
 		actions:     make(chan Action, actionBufferSize),
+		timer:       NewSessionTimer(defaultSessionTimeout),
 	}
 	h.mu.Lock()
 	h.sessions[id] = s
@@ -135,7 +140,9 @@ func (h *Hub) EnsureSession(id, processo string) *Session {
 		State:       SessionRunning,
 		surfaces:    make(map[string]Envelope),
 		subscribers: make(map[chan Envelope]struct{}),
+		controlSubs: make(map[chan ControlEvent]struct{}),
 		actions:     make(chan Action, actionBufferSize),
+		timer:       NewSessionTimer(defaultSessionTimeout),
 	}
 	h.sessions[id] = s
 	if strings.HasPrefix(id, "sess_") {
@@ -176,6 +183,14 @@ func (h *Hub) Publish(env Envelope) error {
 		env.RequiresAttention = true
 	}
 	s.applyAndBroadcast(env)
+	if !strings.HasPrefix(env.SurfaceID, "andon:") {
+		s.mu.RLock()
+		estavaAguardando := s.status.AguardandoResposta
+		s.mu.RUnlock()
+		if estavaAguardando {
+			return h.PublishStatus(env.SessionID, SessionStatus{Etapa: "interacao", AguardandoResposta: false})
+		}
+	}
 	return nil
 }
 
@@ -206,6 +221,13 @@ func (h *Hub) SubmitAction(act Action) error {
 	select {
 	case s.actions <- act:
 		s.clearAttention(act.SurfaceID)
+		if !strings.HasPrefix(act.Name, "andon_cord_") {
+			return h.PublishStatus(act.SessionID, SessionStatus{
+				Etapa:              "processando",
+				Mensagem:           "Resposta enviada (" + act.Name + "). Processo em execução, aguarde a próxima etapa...",
+				AguardandoResposta: true,
+			})
+		}
 		return nil
 	default:
 		return ErrAcaoInvalida

@@ -23,6 +23,17 @@
       </nav>
     </div>
     <div class="topbar__actions">
+      <div id="a2ui-timer-bar" class="a2ui-timer-bar" aria-label="Temporizador da etapa">
+        <select id="a2ui-timer-select" class="a2ui-timer-select" title="Tempo limite por etapa">
+          <option value="300000" selected>5 min</option>
+          <option value="600000">10 min</option>
+          <option value="900000">15 min</option>
+          <option value="1800000">30 min</option>
+        </select>
+        <span id="a2ui-timer-display" class="pill a2ui-timer-display" aria-live="off">05:00</span>
+        <button id="a2ui-timer-pause" class="btn btn--sm a2ui-timer-btn" type="button" title="Pausar contagem sem encerrar a sessao">Pausar</button>
+        <button id="a2ui-timer-extend" class="btn btn--sm a2ui-timer-btn" type="button" title="Adicionar 5 minutos">+5m</button>
+      </div>
       <span id="a2ui-process-id" class="pill pill--process">processo</span>
       <span id="a2ui-session-id" class="pill">sessao</span>
       <span id="a2ui-conn-status" class="pill" aria-live="polite">Conectando</span>
@@ -40,6 +51,7 @@
 
     <section class="a2ui-main" aria-label="Superficie ativa">
       <nav id="a2ui-breadcrumb" class="a2ui-breadcrumb" aria-label="Caminho da superficie"></nav>
+      <div id="a2ui-live-progress" class="a2ui-live-progress" hidden></div>
       <div id="a2ui-root" class="a2ui-root"></div>
     </section>
   </main>

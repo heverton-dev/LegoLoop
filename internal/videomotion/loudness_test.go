@@ -1,6 +1,9 @@
 package videomotion_test
 
 import (
+	"errors"
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/heverton-dev/LegoLoop/internal/videomotion"
@@ -55,5 +58,53 @@ func TestBuildLoudnormFilter(t *testing.T) {
 	expected := "loudnorm=I=-14:TP=-1.5:LRA=11"
 	if filter != expected {
 		t.Errorf("filtro esperado '%s', obteve '%s'", expected, filter)
+	}
+}
+
+func TestValidateLoudnessConformity_TetoDeTruePeak(t *testing.T) {
+	casos := []struct {
+		nome       string
+		pico       float64
+		esperaErro bool
+	}{
+		{"-1.0 excede o teto", -1.0, true},
+		{"-1.2 excede o teto", -1.2, true},
+		{"-1.4 excede o teto", -1.4, true},
+		{"-1.5 esta no teto", -1.5, false},
+		{"-1.6 abaixo do teto", -1.6, false},
+		{"-3.0 abaixo do teto", -3.0, false},
+	}
+	for _, c := range casos {
+		t.Run(c.nome, func(t *testing.T) {
+			m := videomotion.LoudnessMetrics{OutputIntegratedLUFS: -14.0, OutputTruePeakDBFS: c.pico}
+			err := videomotion.ValidateLoudnessConformity(m, -14.0, 0.5)
+			if c.esperaErro {
+				if !errors.Is(err, videomotion.ErrLoudnessConformityFailed) || !strings.Contains(err.Error(), "-1.5") {
+					t.Fatalf("esperava ErrLoudnessConformityFailed citando o teto -1.5: %v", err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("nao deveria reprovar: %v", err)
+			}
+		})
+	}
+}
+
+func TestTruePeakTetoTemFonteUnica(t *testing.T) {
+	if videomotion.TruePeakTetoDBTP != -1.5 {
+		t.Fatalf("teto de True Peak deve ser -1.5 dBTP: %v", videomotion.TruePeakTetoDBTP)
+	}
+	filtro := videomotion.BuildLoudnormFilter(-14.0)
+	quer := "TP=" + strconv.FormatFloat(videomotion.TruePeakTetoDBTP, 'f', 1, 64)
+	if !strings.Contains(filtro, quer) {
+		t.Fatalf("o filtro (%s) e a validacao devem usar o mesmo teto (%s)", filtro, quer)
+	}
+}
+
+func TestValidateLoudnessConformity_LUFSContinuaValendo(t *testing.T) {
+	m := videomotion.LoudnessMetrics{OutputIntegratedLUFS: -14.6, OutputTruePeakDBFS: -2.0}
+	if err := videomotion.ValidateLoudnessConformity(m, -14.0, 0.5); !errors.Is(err, videomotion.ErrLoudnessConformityFailed) {
+		t.Fatalf("LUFS fora de -14 +- 0,5 deve reprovar mesmo com pico bom: %v", err)
 	}
 }

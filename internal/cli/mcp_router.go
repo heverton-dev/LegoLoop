@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 
 	"github.com/heverton-dev/LegoLoop/internal/a2ui"
 	"github.com/heverton-dev/LegoLoop/internal/mcp"
@@ -54,10 +56,22 @@ func attachEmbeddedA2UI(router *mcp.Router, projectDir string, stderr io.Writer)
 		return func() {}
 	}
 	router.SetSessaoHub(hub, baseURL)
+	router.SetSessaoAbridor(abrirURLSistema)
 	return func() {
 		if cErr := stopUI(); cErr != nil && stderr != nil {
 			fmt.Fprintf(stderr, "mcp-router ui close: %v\n", cErr)
 		}
+	}
+}
+
+func abrirURLSistema(url string) error {
+	switch runtime.GOOS {
+	case "windows":
+		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		return exec.Command("open", url).Start()
+	default:
+		return exec.Command("xdg-open", url).Start()
 	}
 }
 

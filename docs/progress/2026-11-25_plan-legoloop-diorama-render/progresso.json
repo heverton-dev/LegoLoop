@@ -1,0 +1,309 @@
+{
+  "schema": "progresso.v1",
+  "iniciativa": "D03",
+  "plano": "docs/plans/2026-11-25_PLAN_LEGOLOOP_DIORAMA_RENDER.md",
+  "atualizado_em": "2026-11-25T00:00:00Z",
+  "resumo": {
+    "total": 15,
+    "aprovados": 0,
+    "em_andamento": 0,
+    "reprovados": 0,
+    "bloqueados": 0,
+    "pendentes": 15
+  },
+  "tickets": [
+    {
+      "id": "TICK-DR-01.1",
+      "epico": "E01",
+      "titulo": "Criar contratos estritos de ConfigRender, Timings, Timeline, Batida, EventoSFX e RelatorioRender",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestSchemas",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/schemas.go",
+        "internal/diorama/render/schemas_test.go"
+      ],
+      "criterios": [
+        "AC-E01.1"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-01.2",
+      "epico": "E01",
+      "titulo": "Implementar pre-voo do Ciclo 3: cobertura de cenas, sprites, provedor registrado, ferramentas e render.json",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestPreVoo",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/prevoo.go",
+        "internal/diorama/render/prevoo_test.go"
+      ],
+      "criterios": [
+        "AC-E01.1",
+        "AC-E01.2",
+        "AC-NF.2"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-02.1",
+      "epico": "E02",
+      "titulo": "Implementar Etapa 6 (voz): interface Sintetizador, registro de provedores, adaptador edge-tts e gate de creditos",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestVoz",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/voz.go",
+        "internal/diorama/render/voz_test.go"
+      ],
+      "criterios": [
+        "AC-E02.1",
+        "AC-E02.5"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-02.2",
+      "epico": "E02",
+      "titulo": "Implementar Etapa 6 (Whisper): Transcritor, WER por linha (15%) e global (5%), timings.json e regravacao seletiva com parada em audio identico",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestWhisper",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/whisper.go",
+        "internal/diorama/render/whisper_test.go"
+      ],
+      "criterios": [
+        "AC-E02.2",
+        "AC-E02.3",
+        "AC-E02.4",
+        "AC-E02.7"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-02.3",
+      "epico": "E02",
+      "titulo": "Implementar mapeamento deterministico de fonemas PT-BR para visemas",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestVisemas",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/visemas.go",
+        "internal/diorama/render/visemas_test.go"
+      ],
+      "criterios": [
+        "AC-E02.6"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-03.1",
+      "epico": "E03",
+      "titulo": "Implementar Etapa 8: leitura estrita, camadas 2.5D por profundidade, camera e troca de pose/expressao",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestTimeline",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/timeline.go",
+        "internal/diorama/render/timeline_test.go"
+      ],
+      "criterios": [
+        "AC-E03.1",
+        "AC-E03.2",
+        "AC-E03.3"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-03.2",
+      "epico": "E03",
+      "titulo": "Implementar segmentacao em batidas e gate check_timeline (12-21 cortes/min, mediana 2,5-4 s)",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestRitmo",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/ritmo.go",
+        "internal/diorama/render/ritmo_test.go"
+      ],
+      "criterios": [
+        "AC-E03.4"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-03.3",
+      "epico": "E03",
+      "titulo": "Implementar legendas karaoke palavra a palavra e legenda.srt",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestLegendas",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/legendas.go",
+        "internal/diorama/render/legendas_test.go"
+      ],
+      "criterios": [
+        "AC-E03.5"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-04.1",
+      "epico": "E04",
+      "titulo": "Corrigir teto de True Peak para -1,5 dBTP em videomotion.ValidateLoudnessConformity (achado F2)",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/videomotion/ -run TestValidateLoudnessConformity",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/videomotion/loudness.go",
+        "internal/videomotion/loudness_test.go"
+      ],
+      "criterios": [
+        "AC-E04.4"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-04.2",
+      "epico": "E04",
+      "titulo": "Implementar Etapa 7: eventos de SFX, BGM com ducking, normalizacao em duas passadas com margem de pico e verificacao independente",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestMix",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/sfx.go",
+        "internal/diorama/render/sfx_test.go",
+        "internal/diorama/render/ativos_sonoros.go",
+        "internal/diorama/render/ativos_sonoros_test.go",
+        "internal/diorama/render/mix.go",
+        "internal/diorama/render/mix_test.go"
+      ],
+      "criterios": [
+        "AC-E04.1",
+        "AC-E04.2",
+        "AC-E04.3",
+        "AC-E04.5"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-05.1",
+      "epico": "E05",
+      "titulo": "Implementar sonda e escolha de encoder NVENC/QSV/AMF com fallback libx264",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestEncoder",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/encoder.go",
+        "internal/diorama/render/encoder_test.go"
+      ],
+      "criterios": [
+        "AC-E05.1"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-05.2",
+      "epico": "E05",
+      "titulo": "Implementar render master 16:9 em 720p/1080p/4K, versoes numeradas e gate de integridade",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestRender",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/render.go",
+        "internal/diorama/render/render_test.go"
+      ],
+      "criterios": [
+        "AC-E05.2",
+        "AC-E05.3"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-05.3",
+      "epico": "E05",
+      "titulo": "Implementar cortes 9:16 por re-render da timeline com area segura e legenda fora do narrador",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/ -run TestVertical",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/vertical.go",
+        "internal/diorama/render/vertical_test.go"
+      ],
+      "criterios": [
+        "AC-E05.4",
+        "AC-E05.5"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-06.1",
+      "epico": "E06",
+      "titulo": "Orquestrar Processo completo, E2E hermetico no diorama-demo, determinismo e cobertura \u003e= 95%",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 -cover ./internal/diorama/render/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/processo.go",
+        "internal/diorama/render/processo_test.go"
+      ],
+      "criterios": [
+        "AC-E06.2",
+        "AC-NF.1",
+        "AC-NF.2",
+        "AC-NF.3"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    },
+    {
+      "id": "TICK-DR-06.2",
+      "epico": "E06",
+      "titulo": "Integrar CLI legoloop diorama-render, DAG v2, Skill e fechamento 5 de 5 via legoloop fechar",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/... ./internal/cli/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/cli/diorama_render.go",
+        "internal/cli/diorama_render_test.go",
+        "internal/cli/cli.go",
+        "processos/legoloop-diorama-render/processo.dag.json",
+        "skills/legoloop-diorama-render/SKILL.md"
+      ],
+      "criterios": [
+        "AC-E06.1"
+      ],
+      "atualizado_em": "2026-11-25T00:00:00Z"
+    }
+  ]
+}

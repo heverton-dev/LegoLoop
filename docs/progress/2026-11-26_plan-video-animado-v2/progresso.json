@@ -1,0 +1,494 @@
+{
+  "schema": "progresso.v1",
+  "iniciativa": "V01",
+  "plano": "docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md",
+  "atualizado_em": "2026-11-26T19:35:39Z",
+  "resumo": {
+    "total": 25,
+    "aprovados": 7,
+    "em_andamento": 0,
+    "reprovados": 0,
+    "bloqueados": 0,
+    "pendentes": 18
+  },
+  "tickets": [
+    {
+      "id": "TICK-V01-01.1",
+      "epico": "E07",
+      "titulo": "Criar contratos do pacote inventario: Estilo, Item, Referencia, erros tipados e validacao de tipo",
+      "estado": "PASSED",
+      "responsavel": "swarm",
+      "comando": "go test -count=1 ./internal/video/inventario/ -run TestSchemas",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/video/inventario\t0.016s |",
+      "alvos": [
+        "internal/video/inventario/schemas.go",
+        "internal/video/inventario/schemas_test.go"
+      ],
+      "criterios": [
+        "AC-E07.2",
+        "AC-E07.6"
+      ],
+      "atualizado_em": "2026-11-26T15:07:04Z"
+    },
+    {
+      "id": "TICK-V01-01.2",
+      "epico": "E07",
+      "titulo": "Implementar NovoEstilo e GravarItem com gravacao atomica e regra de estilo em rascunho",
+      "estado": "PASSED",
+      "responsavel": "swarm",
+      "comando": "go test -count=1 ./internal/video/inventario/ -run TestStore",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/video/inventario\t0.113s |",
+      "alvos": [
+        "internal/video/inventario/store.go",
+        "internal/video/inventario/store_test.go"
+      ],
+      "criterios": [
+        "AC-E07.1",
+        "AC-E07.3"
+      ],
+      "atualizado_em": "2026-11-26T15:19:05Z"
+    },
+    {
+      "id": "TICK-V01-01.3",
+      "epico": "E07",
+      "titulo": "Implementar Buscar por estilo, tipo e tags, heranca de estilos e Verificar por hash SHA-256",
+      "estado": "PASSED",
+      "responsavel": "swarm",
+      "comando": "go test -count=1 ./internal/video/inventario/ -run \"TestBusca|TestHash|TestHeranca\"",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/video/inventario\t0.140s |",
+      "alvos": [
+        "internal/video/inventario/busca.go",
+        "internal/video/inventario/busca_test.go",
+        "internal/video/inventario/hash.go",
+        "internal/video/inventario/hash_test.go"
+      ],
+      "criterios": [
+        "AC-E07.4",
+        "AC-E07.5",
+        "AC-E07.7"
+      ],
+      "atualizado_em": "2026-11-26T16:30:01Z"
+    },
+    {
+      "id": "TICK-V01-01.4",
+      "epico": "E07",
+      "titulo": "Implementar ValidarEstilo com arquivo de aprovacao humana e o comando video-inventario",
+      "estado": "PASSED",
+      "responsavel": "swarm",
+      "comando": "go test -count=1 ./internal/video/inventario/ ./internal/cli/ -run \"TestValidarEstilo|TestVideoInventario\"",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/video/inventario\t0.087s | ok  \tgithub.com/heverton-dev/LegoLoop/internal/cli\t0.097s |",
+      "alvos": [
+        "internal/video/inventario/validar.go",
+        "internal/video/inventario/validar_test.go",
+        "internal/cli/video_inventario.go",
+        "internal/cli/video_inventario_test.go"
+      ],
+      "criterios": [
+        "AC-E07.8"
+      ],
+      "atualizado_em": "2026-11-26T16:43:14Z"
+    },
+    {
+      "id": "TICK-V01-02.1",
+      "epico": "E07",
+      "titulo": "Criar o estilo molde-de-pilula com referencias, paleta, luz e personagens de teste para validacao do usuario",
+      "estado": "PASSED",
+      "responsavel": "swarm",
+      "comando": "go run ./cmd/legoloop video-inventario verificar --estilo molde-de-pilula",
+      "exit_code": 0,
+      "prova": "map[estilo:molde-de-pilula ok:true] |",
+      "alvos": [
+        "inventario/video/estilos/molde-de-pilula/estilo.json",
+        "inventario/video/estilos/molde-de-pilula/personagens.json"
+      ],
+      "criterios": [
+        "AC-E07.8"
+      ],
+      "atualizado_em": "2026-11-26T16:52:55Z"
+    },
+    {
+      "id": "TICK-V01-02.2",
+      "epico": "E07",
+      "titulo": "Adicionar genero e faixa etaria ao Item, BuscarPersonagens e tres personagens de teste (mulher, idoso, crianca)",
+      "estado": "PASSED",
+      "responsavel": "swarm",
+      "comando": "go test -count=1 ./internal/video/inventario/ -run \"TestGenero|TestBuscarPersonagens\" \u0026\u0026 go run ./cmd/legoloop video-inventario verificar --estilo molde-de-pilula",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/video/inventario\t0.077s | map[estilo:molde-de-pilula ok:true] |",
+      "alvos": [
+        "internal/video/inventario/schemas.go",
+        "internal/video/inventario/genero.go",
+        "internal/video/inventario/genero_test.go",
+        "inventario/video/estilos/molde-de-pilula/personagens.json"
+      ],
+      "criterios": [
+        "AC-E07.9"
+      ],
+      "atualizado_em": "2026-11-26T17:39:52Z"
+    },
+    {
+      "id": "TICK-V01-03.1",
+      "epico": "E08",
+      "titulo": "Ler modo_producao e estilo no projeto.json v2 e bloquear estilo nao validado no pre-voo",
+      "estado": "PASSED",
+      "responsavel": "swarm",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestPreVoo",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/diorama/ativos\t0.132s |",
+      "alvos": [
+        "internal/diorama/ativos/cenarios.go",
+        "internal/diorama/ativos/cenarios_test.go",
+        "internal/diorama/ativos/prevoo.go",
+        "internal/diorama/ativos/prevoo_test.go"
+      ],
+      "criterios": [
+        "AC-E08.1"
+      ],
+      "atualizado_em": "2026-11-26T19:35:39Z"
+    },
+    {
+      "id": "TICK-V01-03.2",
+      "epico": "E08",
+      "titulo": "Validar cenas.json v2 e elenco.json contra o inventario e as partes suportadas do renderizador",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run \"TestStoryboard|TestElencoCast\"",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/schemas.go",
+        "internal/diorama/ativos/schemas_test.go",
+        "internal/diorama/ativos/storyboard.go",
+        "internal/diorama/ativos/storyboard_test.go"
+      ],
+      "criterios": [
+        "AC-E08.2",
+        "AC-E08.3"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-04.1",
+      "epico": "E09",
+      "titulo": "Etapa 3 vetorial: montar elenco.json com cast a partir do inventario, sem Flow, e gravar itens novos como nao aprovados",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestElencoVetorial",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/elenco.go",
+        "internal/diorama/ativos/elenco_test.go"
+      ],
+      "criterios": [
+        "AC-E09.1",
+        "AC-E09.2"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-04.2",
+      "epico": "E09",
+      "titulo": "Manter o caminho de fichas e rembg para estilos de recorte sem regressao",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run \"TestFichas|TestDrivers|TestElenco\"",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/fichas.go",
+        "internal/diorama/ativos/drivers.go",
+        "internal/diorama/ativos/fichas_test.go",
+        "internal/diorama/ativos/drivers_test.go"
+      ],
+      "criterios": [
+        "AC-E09.3"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-04.3",
+      "epico": "E09",
+      "titulo": "Etapa 4: consultar o inventario antes de gerar fundos e registrar fundo novo com prompt, tags e hash",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestCenariosInventario",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/cenarios.go",
+        "internal/diorama/ativos/cenarios_test.go"
+      ],
+      "criterios": [
+        "AC-E09.4"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-04.4",
+      "epico": "E09",
+      "titulo": "Marcar entrega suspeita do Flow (sem confirmacao de renomeacao, hash cruzado, fora do padrao de estilo)",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestSuspeito",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/ativos/suspeito.go",
+        "internal/diorama/ativos/suspeito_test.go"
+      ],
+      "criterios": [
+        "AC-E09.5"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-05.1",
+      "epico": "E10",
+      "titulo": "Criar motor-local com LICENCA.json, ignorar no git e teste de governanca da licenca",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/video/motor/ -run TestLicenca",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        ".gitignore",
+        "motor-local/LICENCA.json",
+        "internal/video/motor/licenca_test.go"
+      ],
+      "criterios": [
+        "AC-E10.1"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-05.2",
+      "epico": "E10",
+      "titulo": "Implementar o pre-voo do motor: python, Playwright, Chromium, ffmpeg e motor-local, com ErrMotorAusente",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/video/motor/ -run TestPreVoo",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/video/motor/prevoo.go",
+        "internal/video/motor/prevoo_test.go"
+      ],
+      "criterios": [
+        "AC-E10.2"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-05.3",
+      "epico": "E10",
+      "titulo": "Implementar a ponte cenas.json v2 + elenco + timings + inventario para timeline.json, com luz de contorno do estilo",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/video/motor/ -run TestPonte",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/video/motor/ponte.go",
+        "internal/video/motor/ponte_test.go"
+      ],
+      "criterios": [
+        "AC-E10.3",
+        "AC-E10.6",
+        "AC-E10.8"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-05.4",
+      "epico": "E10",
+      "titulo": "Renderizar a cena de referencia pelo motor: 9:16, voz, determinismo e boca acompanhando a fala",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/video/motor/ -run TestRender",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/video/motor/render.go",
+        "internal/video/motor/render_test.go"
+      ],
+      "criterios": [
+        "AC-E10.4",
+        "AC-E10.5",
+        "AC-E10.7"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-06.1",
+      "epico": "E10",
+      "titulo": "Ligar o render Go ao motor e reconfirmar voz, mix, SFX e cortes da SPEC v1.4.0 sobre a nova timeline",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/diorama/render/...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/diorama/render/render.go",
+        "internal/diorama/render/render_exec.go",
+        "internal/diorama/render/timeline.go",
+        "internal/diorama/render/render_test.go"
+      ],
+      "criterios": [
+        "AC-E10.4"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-07.1",
+      "epico": "E11",
+      "titulo": "Mover internal/diorama para internal/video e atualizar imports sem regressao",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go build ./... \u0026\u0026 go vet ./... \u0026\u0026 go test -count=1 ./...",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/video/roteiro/",
+        "internal/video/ativos/",
+        "internal/video/render/"
+      ],
+      "criterios": [
+        "AC-E11.2"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-07.2",
+      "epico": "E11",
+      "titulo": "Registrar os comandos video-roteiro, video-ativos e video-render com alias diorama-* e aviso de depreciacao",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/cli/ -run TestVideoAlias",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "internal/cli/cli.go",
+        "internal/cli/video_alias.go",
+        "internal/cli/video_alias_test.go"
+      ],
+      "criterios": [
+        "AC-E11.1"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-07.3",
+      "epico": "E11",
+      "titulo": "Migrar skills, processos, espinha e PROCESSOS_CANONIZADOS para os nomes legoloop-video-* com redirecionamento",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go run ./cmd/legoloop espinha verificar",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "skills/legoloop-video-roteiro/SKILL.md",
+        "skills/legoloop-video-ativos/SKILL.md",
+        "espinha/registro.json",
+        "docs/PROCESSOS_CANONIZADOS.md"
+      ],
+      "criterios": [
+        "AC-E11.3"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-07.4",
+      "epico": "E11",
+      "titulo": "Aplicar a nota de redirecionamento nos documentos arquivados sem alterar o conteudo",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "git diff --stat -- docs/intents docs/specs docs/reports",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "docs/intents/",
+        "docs/specs/",
+        "docs/reports/"
+      ],
+      "criterios": [
+        "AC-E11.4"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-08.1",
+      "epico": "E12",
+      "titulo": "Renderizar a cena 1 do diorama-demo pelo processo e colher a aprovacao visual do usuario",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go run ./cmd/legoloop video-render executar --projeto projetos/video-diorama/diorama-demo --cena 1",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "projetos/video-diorama/diorama-demo/renders/"
+      ],
+      "criterios": [
+        "AC-E12.1"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-08.2",
+      "epico": "E12",
+      "titulo": "Criar o estilo palito herdando do molde-de-pilula e validar com o usuario",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go test -count=1 ./internal/video/inventario/ -run TestHeranca",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "inventario/video/estilos/palito/estilo.json"
+      ],
+      "criterios": [
+        "AC-E12.3"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-08.3",
+      "epico": "E12",
+      "titulo": "Reproduzir o First Brands pelo processo: timeline completa com CHECK OK e ritmo no alvo",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go run ./cmd/legoloop video-render timeline --projeto projetos/video-diorama/first-brands",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "projetos/video-diorama/first-brands/timeline.json"
+      ],
+      "criterios": [
+        "AC-E12.2"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    },
+    {
+      "id": "TICK-V01-09.1",
+      "epico": "E12",
+      "titulo": "Fechamento: cobertura, dependencias, portabilidade, espinha e legoloop fechar 5 de 5",
+      "estado": "PENDING",
+      "responsavel": "",
+      "comando": "go run ./cmd/legoloop fechar legoloop-video-animado",
+      "exit_code": -1,
+      "prova": "",
+      "alvos": [
+        "docs/reports/"
+      ],
+      "criterios": [
+        "AC-NF.1",
+        "AC-NF.2",
+        "AC-NF.3"
+      ],
+      "atualizado_em": "2026-11-26T00:00:00Z"
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-26",
+  "description": "Espelho executável da ROUTE 2026-11-26_ROUTE_VIDEO_ANIMADO_V2",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local",
+      "write_boundary": "strict"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "camada5_video_animado",
+  "nodes": [
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-02.1: Criar o estilo molde-de-pilula com referencias, paleta, luz e personagens de teste para validacao do usuario. Criterios AC-E07.8 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: inventario/video/estilos/molde-de-pilula/estilo.json, inventario/video/estilos/molde-de-pilula/personagens.json. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop video-inventario verificar --estilo molde-de-pilula ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "inventario/video/estilos/molde-de-pilula/estilo.json",
+        "inventario/video/estilos/molde-de-pilula/personagens.json",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "inventario/video/estilos/molde-de-pilula/estilo.json",
+        "inventario/video/estilos/molde-de-pilula/personagens.json"
+      ],
+      "depends_on": [],
+      "id": "TICK-02.1",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.1.json",
+        "gate": "exit_code == 0 && file_exists('inventario/video/estilos/molde-de-pilula/estilo.json') && file_exists('inventario/video/estilos/molde-de-pilula/personagens.json')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E07.8",
+      "status": "PENDING",
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go run ./cmd/legoloop video-inventario verificar --estilo molde-de-pilula"
+      },
+      "timeout_sec": 900
+    }
+  ],
+  "progresso": "docs/progress/2026-11-26_plan-video-animado-v2/progresso.json",
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "e0a507437f0dcfad9c70f13d44d2e04d748ef7bb46bf3be9f968e05659a79c0f",
+    "plan": "6c325acd051ae1bbacdadcc19a121f9c492c907e1acad2bc198b17b02c60904d",
+    "spec": "28124abfc328fefcd38cc0de0467995e2aa7b1a04c235417c6d95d9aba2f8bcd"
+  },
+  "version": "1.0.0"
+}

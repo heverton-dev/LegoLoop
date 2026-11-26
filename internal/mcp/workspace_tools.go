@@ -70,6 +70,9 @@ func (r *Router) runLegoloop(id any, tool string, args map[string]any) (JSONRPCR
 	if _, ok := r.toolsProcesso[tool]; ok {
 		return r.chamarToolProcesso(id, tool, args), true
 	}
+	if resp, ok := r.handleSessaoTool(id, tool, args); ok {
+		return resp, true
+	}
 	return r.handleSwarmTool(id, tool, args)
 }
 

@@ -60,11 +60,30 @@ func (p *Processo) Executar(ctx context.Context, opts OpcoesExecucao) (*Resultad
 	if err != nil {
 		return nil, err
 	}
-	pauta, err := p.selecionarPauta(opts.Projeto, pautas)
+	candidatas, err := p.atualizarECombinarFilaPerene(opts.AcervoPath, pautas, acervo)
+	if err != nil {
+		return nil, err
+	}
+	pauta, err := p.selecionarPauta(opts.Projeto, candidatas)
 	if err != nil {
 		return nil, err
 	}
 	return p.gerarEValidar(ctx, opts, pre, acervo, pauta)
+}
+
+func (p *Processo) atualizarECombinarFilaPerene(acervoPath string, coletadas []PautaCandidata, acervo AcervoTemas) ([]PautaCandidata, error) {
+	filaPath := CaminhoFilaPerene(acervoPath)
+	fila, err := CarregarFilaPerene(filaPath)
+	if err != nil {
+		return nil, err
+	}
+	fila = MesclarFilaPerene(fila, coletadas, acervo)
+	if len(fila.Pautas) > 0 {
+		if err := SalvarFilaPerene(filaPath, fila); err != nil {
+			return nil, err
+		}
+	}
+	return CombinarPautasComFila(coletadas, fila, acervo), nil
 }
 
 func (p *Processo) selecionarPauta(proj Projeto, pautas []PautaCandidata) (PautaCandidata, error) {
@@ -126,10 +145,25 @@ func (p *Processo) persistirAprovado(opts OpcoesExecucao, pre RelatorioPreVoo, a
 	if err := SalvarAcervoTemas(opts.AcervoPath, acervo); err != nil {
 		return nil, err
 	}
+	if err := baixarTemaDaFilaPerene(opts.AcervoPath, pauta.Slug); err != nil {
+		return nil, err
+	}
 	return &ResultadoExecucao{
 		PreVoo: pre, PautaEscolhida: pauta, Validacao: rel, CorrecoesUsadas: correcoes,
 		ScriptPath: scriptPath, PlanoPath: planoPath, TemaRegistrado: true,
 	}, nil
+}
+
+func baixarTemaDaFilaPerene(acervoPath, slug string) error {
+	filaPath := CaminhoFilaPerene(acervoPath)
+	if _, err := os.Stat(filaPath); os.IsNotExist(err) {
+		return nil
+	}
+	fila, err := CarregarFilaPerene(filaPath)
+	if err != nil {
+		return err
+	}
+	return SalvarFilaPerene(filaPath, RemoverDaFilaPerene(fila, slug))
 }
 
 func gravarSaidas(scriptPath, planoPath string, sc Script, plano string) error {

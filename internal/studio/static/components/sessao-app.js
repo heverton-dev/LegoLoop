@@ -252,7 +252,46 @@ function createLoadingCard() {
   text.textContent = "O motor esta avaliando as respostas e atualizando o modelo mental...";
   card.appendChild(text);
 
+  const elapsed = document.createElement("p");
+  elapsed.id = "a2ui-loading-elapsed";
+  elapsed.className = "a2ui-loading-elapsed";
+  elapsed.textContent = "Tempo decorrido: 00:00";
+  card.appendChild(elapsed);
+
+  const stepsUl = document.createElement("ul");
+  stepsUl.id = "a2ui-loading-steps";
+  stepsUl.className = "a2ui-live-steps a2ui-loading-steps";
+  stepsUl.hidden = true;
+  card.appendChild(stepsUl);
+
   return card;
+}
+
+let loadingWarnTimer = null;
+let loadingTimeoutTimer = null;
+let loadingElapsedInterval = null;
+let loadingStartedAt = 0;
+
+function formatMMSS(ms) {
+  const totalSec = Math.max(0, Math.ceil(Number(ms || 0) / 1000));
+  const m = String(Math.floor(totalSec / 60)).padStart(2, "0");
+  const s = String(totalSec % 60).padStart(2, "0");
+  return m + ":" + s;
+}
+
+function clearLoadingTimers() {
+  if (loadingWarnTimer) {
+    clearTimeout(loadingWarnTimer);
+    loadingWarnTimer = null;
+  }
+  if (loadingTimeoutTimer) {
+    clearTimeout(loadingTimeoutTimer);
+    loadingTimeoutTimer = null;
+  }
+  if (loadingElapsedInterval) {
+    clearInterval(loadingElapsedInterval);
+    loadingElapsedInterval = null;
+  }
 }
 
 function showLoading(msg) {
@@ -269,9 +308,33 @@ function showLoading(msg) {
     textEl.textContent = msg;
   }
   overlay.classList.add("a2ui-loading-overlay--active");
+  clearLoadingTimers();
+  loadingStartedAt = Date.now();
+  const elapsedEl = document.getElementById("a2ui-loading-elapsed");
+  if (elapsedEl) {
+    elapsedEl.textContent = "Tempo decorrido: 00:00";
+  }
+  loadingElapsedInterval = setInterval(() => {
+    const el = document.getElementById("a2ui-loading-elapsed");
+    if (el) {
+      el.textContent = "Tempo decorrido: " + formatMMSS(Date.now() - loadingStartedAt);
+    }
+  }, 1000);
+  loadingWarnTimer = setTimeout(() => {
+    const t = document.getElementById("a2ui-loading-text");
+    if (t && !lastLiveStatusMsg) {
+      t.textContent = "Resposta recebida pelo servidor. Aguardando o agente publicar a proxima tela...";
+    }
+  }, 25000);
+  loadingTimeoutTimer = setTimeout(() => {
+    hideLoading();
+    showFeedback("Resposta enviada, mas o agente ainda nao publicou a proxima tela. Verifique a sessao do agente ou tente novamente.", "error");
+    statusEl.textContent = "Aguardando agente";
+  }, 180000);
 }
 
 function hideLoading() {
+  clearLoadingTimers();
   const overlay = document.getElementById("a2ui-loading-overlay");
   if (overlay) {
     overlay.classList.remove("a2ui-loading-overlay--active");
@@ -367,6 +430,9 @@ function renderAll() {
   renderNavigation();
   const currentSurface = activeSurfaceId ? processor.getSurface(activeSurfaceId) : null;
   renderer.render(currentSurface);
+  if (awaitingResponse) {
+    setSurfaceDisabled(true);
+  }
 
   if (currentSurface && currentSurface.requiresAttention) {
     setTimeout(() => {
@@ -437,7 +503,8 @@ function handleEnvelopeEvent(ev) {
     processor.process(env);
   } catch (err) {
     console.error("a2ui envelope rejeitado:", err);
-    statusEl.textContent = "Envelope ignorado";
+    const motivo = err && err.message ? err.message : "erro";
+    statusEl.textContent = "Envelope ignorado: " + motivo;
   }
 }
 
@@ -471,8 +538,204 @@ function connectStream() {
     }, reconnectDelayMs);
   };
   currentSource.addEventListener("a2ui", handleEnvelopeEvent);
+  currentSource.addEventListener("timer", handleTimerEvent);
+  currentSource.addEventListener("status", handleStatusEvent);
   currentSource.onmessage = handleEnvelopeEvent;
 }
+
+const timerSelectEl = document.getElementById("a2ui-timer-select");
+const timerDisplayEl = document.getElementById("a2ui-timer-display");
+const timerPauseBtn = document.getElementById("a2ui-timer-pause");
+const timerExtendBtn = document.getElementById("a2ui-timer-extend");
+const liveProgressEl = document.getElementById("a2ui-live-progress");
+
+let timerState = { timeout_ms: 300000, remaining_ms: 300000, paused: false, active: false, expired: false };
+let timerTickAt = Date.now();
+let lastLiveStatusMsg = "";
+
+async function postTimerAction(acao, timeoutMs) {
+  if (!sessionId) return;
+  const payload = timeoutMs ? { acao, timeout_ms: timeoutMs } : { acao };
+  try {
+    const res = await fetch("/api/sessao/" + encodeURIComponent(sessionId) + "/timer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      applyTimerSnapshot(await res.json());
+    }
+  } catch (_err) {
+    // Mantem resiliencia caso servidor reinicie
+  }
+}
+
+function applyTimerSnapshot(snap) {
+  if (!snap) return;
+  timerState = { ...timerState, ...snap };
+  timerTickAt = Date.now();
+  if (timerSelectEl && snap.timeout_ms) {
+    const val = String(snap.timeout_ms);
+    if ([...timerSelectEl.options].some((o) => o.value === val)) {
+      timerSelectEl.value = val;
+    }
+  }
+  renderTimerUI();
+  if (timerState.expired) {
+    hideLoading();
+    showFeedback("Tempo limite da etapa atingido. Retome o processo pela via original (Chat, CLI ou Studio).", "error");
+    statusEl.textContent = "Tempo esgotado";
+    rootEl.querySelectorAll("button, input, textarea, select").forEach((el) => { el.disabled = true; });
+  }
+}
+
+function renderTimerUI() {
+  if (!timerDisplayEl) return;
+  let rem = Number(timerState.remaining_ms || 0);
+  if (timerState.active && !timerState.paused && !timerState.expired) {
+    rem = Math.max(0, rem - (Date.now() - timerTickAt));
+  }
+  timerDisplayEl.classList.remove("a2ui-timer-display--paused", "a2ui-timer-display--expired");
+  if (timerState.expired) {
+    timerDisplayEl.textContent = "00:00";
+    timerDisplayEl.classList.add("a2ui-timer-display--expired");
+  } else if (timerState.paused) {
+    timerDisplayEl.textContent = "PAUSA " + formatMMSS(rem);
+    timerDisplayEl.classList.add("a2ui-timer-display--paused");
+  } else {
+    timerDisplayEl.textContent = formatMMSS(rem);
+  }
+  if (timerPauseBtn) {
+    timerPauseBtn.textContent = timerState.paused ? "Retomar" : "Pausar";
+    timerPauseBtn.disabled = !timerState.active || timerState.expired;
+  }
+  if (timerExtendBtn) {
+    timerExtendBtn.disabled = timerState.expired;
+  }
+}
+
+function handleTimerEvent(ev) {
+  try {
+    applyTimerSnapshot(JSON.parse(ev.data));
+  } catch (_err) {}
+}
+
+let awaitingResponse = false;
+
+function setSurfaceDisabled(disabled) {
+  if (!rootEl) return;
+  rootEl.querySelectorAll("button, input, textarea, select").forEach((el) => {
+    el.disabled = Boolean(disabled);
+  });
+}
+
+function renderLiveProgress(st) {
+  if (!liveProgressEl || !st) return;
+  const etapas = Array.isArray(st.etapas) ? st.etapas : [];
+  awaitingResponse = Boolean(st.aguardando_resposta);
+  if (awaitingResponse) {
+    setSurfaceDisabled(true);
+    if (typeof showLoading === "function") {
+      showLoading(st.mensagem || "Resposta já enviada. Processo em execução...");
+    }
+  } else {
+    setSurfaceDisabled(false);
+    if (st.etapa === "interacao" && !st.mensagem && etapas.length === 0 && typeof hideLoading === "function") {
+      hideLoading();
+    }
+  }
+  if (st.mensagem) {
+    lastLiveStatusMsg = st.mensagem;
+    const t = document.getElementById("a2ui-loading-text");
+    if (t) {
+      t.textContent = st.mensagem;
+    }
+  }
+  if (etapas.length === 0 && !st.mensagem) {
+    liveProgressEl.hidden = true;
+    return;
+  }
+  liveProgressEl.hidden = false;
+  liveProgressEl.replaceChildren();
+
+  const header = document.createElement("div");
+  header.className = "a2ui-live-progress__header";
+  const title = document.createElement("h3");
+  title.className = "a2ui-live-progress__title";
+  const concluidas = etapas.filter((e) => e.status === "done").length;
+  title.textContent = etapas.length > 0
+    ? "Execucao ao vivo (" + concluidas + "/" + etapas.length + " etapas)"
+    : "Atividade em andamento";
+  header.appendChild(title);
+  if (st.etapa) {
+    const pill = document.createElement("span");
+    pill.className = "pill";
+    pill.textContent = st.etapa;
+    header.appendChild(pill);
+  }
+  liveProgressEl.appendChild(header);
+
+  if (st.mensagem) {
+    const p = document.createElement("p");
+    p.className = "a2ui-live-progress__msg";
+    p.textContent = st.mensagem;
+    liveProgressEl.appendChild(p);
+  }
+  if (etapas.length > 0) {
+    if (!awaitingResponse && typeof hideLoading === "function") {
+      hideLoading();
+    }
+    const ul = document.createElement("ul");
+    ul.className = "a2ui-live-steps";
+    const loadingStepsEl = document.getElementById("a2ui-loading-steps");
+    if (loadingStepsEl) {
+      loadingStepsEl.replaceChildren();
+      loadingStepsEl.hidden = false;
+    }
+    etapas.forEach((et) => {
+      const li = document.createElement("li");
+      const kind = et.status || "pending";
+      li.className = "a2ui-live-step a2ui-live-step--" + kind;
+      const icon = kind === "done" ? "[OK]" : (kind === "running" ? "[...]" : (kind === "error" ? "[ERRO]" : "[ ]"));
+      li.textContent = icon + " " + (et.titulo || et.id || "") + (et.detalhe ? " — " + et.detalhe : "");
+      ul.appendChild(li);
+      if (loadingStepsEl) {
+        loadingStepsEl.appendChild(li.cloneNode(true));
+      }
+    });
+    liveProgressEl.appendChild(ul);
+  } else {
+    const loadingStepsEl = document.getElementById("a2ui-loading-steps");
+    if (loadingStepsEl) {
+      loadingStepsEl.replaceChildren();
+      loadingStepsEl.hidden = true;
+    }
+  }
+}
+
+function handleStatusEvent(ev) {
+  try {
+    renderLiveProgress(JSON.parse(ev.data));
+  } catch (_err) {}
+}
+
+if (timerSelectEl) {
+  timerSelectEl.addEventListener("change", () => {
+    const ms = parseInt(timerSelectEl.value, 10);
+    if (ms > 0) postTimerAction("configurar", ms);
+  });
+}
+if (timerPauseBtn) {
+  timerPauseBtn.addEventListener("click", () => {
+    postTimerAction(timerState.paused ? "retomar" : "pausar");
+  });
+}
+if (timerExtendBtn) {
+  timerExtendBtn.addEventListener("click", () => {
+    postTimerAction("estender", 300000);
+  });
+}
+setInterval(renderTimerUI, 1000);
 
 window.addEventListener("keydown", (e) => {
   if (e.altKey && (e.key === "p" || e.key === "P")) {

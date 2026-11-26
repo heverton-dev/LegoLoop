@@ -70,14 +70,23 @@ type LinhaRoteiro struct {
 	Amostra    string   `json:"amostra,omitempty"`
 }
 
+type AtivoPrevisto struct {
+	ID                string   `json:"id"`
+	Categoria         string   `json:"categoria"` // "personagem" | "objeto" | "motion"
+	Nome              string   `json:"nome"`
+	DescricaoImutavel string   `json:"descricao_imutavel"`
+	BuildNotes        []string `json:"build_notes,omitempty"`
+}
+
 type Script struct {
-	SchemaVersion int            `json:"schema_version"`
-	Title         string         `json:"title"`
-	Idioma        string         `json:"idioma"`
-	Estrutura     string         `json:"estrutura"`
-	TipoPauta     string         `json:"tipo_pauta"`
-	Sources       []Fonte        `json:"sources"`
-	Lines         []LinhaRoteiro `json:"lines"`
+	SchemaVersion int             `json:"schema_version"`
+	Title         string          `json:"title"`
+	Idioma        string          `json:"idioma"`
+	Estrutura     string          `json:"estrutura"`
+	TipoPauta     string          `json:"tipo_pauta"`
+	Sources       []Fonte         `json:"sources"`
+	Lines         []LinhaRoteiro  `json:"lines"`
+	Ativos        []AtivoPrevisto `json:"ativos,omitempty"`
 }
 
 // ValidarConfiguracao valida Projeto, Marca, perfis no catalogo e consistencia cruzada.

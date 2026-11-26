@@ -1,7 +1,7 @@
 // Catalogo de dominio LegoLoop sobre o renderizador A2UI.
 // Apenas DOM seguro (createElement/textContent): sem HTML bruto, sem estilo inline, sem emojis.
 
-import { registerComponent } from "./a2ui-bundle.js";
+import { registerComponent, renderFormattedText } from "./a2ui-bundle.js";
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -120,14 +120,16 @@ function renderStopGatepainel({ component, props, emitAction }) {
   painel.appendChild(header);
 
   if (props.summary) {
-    painel.appendChild(el("p", "a2ui-text", props.summary));
+    painel.appendChild(renderFormattedText(props.summary));
   }
 
   const items = Array.isArray(props.items) ? props.items : [];
   if (items.length > 0) {
-    const ul = el("ul", "a2ui-list");
+    const ul = el("ul", "a2ui-list a2ui-rich-list");
     for (const it of items) {
-      ul.appendChild(el("li", "a2ui-list__item", typeof it === "string" ? it : JSON.stringify(it)));
+      const li = el("li", "a2ui-list__item");
+      li.appendChild(renderFormattedText(typeof it === "string" ? it : JSON.stringify(it)));
+      ul.appendChild(li);
     }
     painel.appendChild(ul);
   }

@@ -44,7 +44,7 @@
    * **Segredos:** a chave do 9Router só vai para a URL confiável (`provider.TrustedRouterKey`), nunca em log, saída ou resposta de API. Respostas do Studio nunca trazem caminho absoluto (`~` e `<projeto>`).
    * **Stop-gates (`SG-*`) são humanos:** nunca marque um gate como aprovado sem autorização explícita do usuário. Commit e push também só quando pedidos.
    * **Processos:** nunca `taskkill /IM legoloop.exe` (mata o Studio do usuário). Encerre só o PID ou a porta que você mesmo abriu.
-   * **Declare o que não foi provado.** Relatórios dizem o que ficou aberto (ex.: `-race`, fluxo com LLM real) em vez de arredondar para "pronto".
+   * **Lei da prova.** Fato sem prova se verifica antes de afirmar e achado se corrige na mesma resposta. São proibidos "Não verificado", pendência, falta e próxima etapa; `legoloop stept lint --hook` bloqueia a resposta (exit 2) quando o texto traz evasão. Se a correção exige decisão do usuário, pergunte com sugestão.
 9. **Diagramação Visual Impecável (Zero Quebras em Mermaid e Tabelas):**
    * **Proibido HTML em Mermaid:** NUNCA use `<br>`, `<br/>`, `<b>` ou qualquer tag HTML em nós ou arestas. Isso quebra o renderizador do chat e expõe o código cru.
    * **Aspas Obrigatórias:** Todo rótulo de nó deve estar entre aspas duplas: `["Label"]`, `{"Decisão"}`.
@@ -52,7 +52,7 @@
    * **Tabelas Enxutas:** Alinhamento estrito (`:---`, `:---:`) e colunas concisas para evitar rolagem horizontal na janela do chat.
 10. **Comunicação Canônica STE-PT (modo `prova`):**
    * Fonte única: `internal/ste` (`legoloop stept manual`). Este item resume o contrato e não o substitui.
-   * Estrutura fixa da resposta técnica: **Resultado** (1 frase), **Fatos comprovados** (`fato | prova: arquivo:linha ou comando e resultado`; sem prova, escrever "Não verificado"), **Solução passo a passo**, **Sugestão técnica**, **Stop-Gate Humano** (`[1] seguir | [2] personalizar | [0] cancelar`).
+   * Estrutura fixa da resposta técnica: **Resultado** (1 frase), **Fatos comprovados** (`fato | prova: arquivo:linha ou comando e resultado`; sem prova, rodar o comando e provar antes de afirmar), **Solução passo a passo**, **Sugestão técnica**, **Stop-Gate Humano** (`[1] seguir | [2] personalizar | [0] cancelar`).
    * Stop-Gate conforme a pausa ativa: `destrutivo` (padrão), `sempre` ou `nunca`.
    * A Tríade `[S][T][E]` vale só se o modo ativo for `hibrido` ou `stept`.
    * Proibido preâmbulos, saudações ou re-resumos de arquivos no chat.

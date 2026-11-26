@@ -4,7 +4,7 @@
 - **Versão:** 1.0.0
 - **Motor CLI:** `legoloop diorama-roteiro`
 - **Pacote Go:** `internal/diorama/roteiro` + `internal/cli/diorama_roteiro.go`
-- **DAG Canônico:** `processos/legoloop-diorama-roteiro/processo.dag.json`
+- **DAG Canônico:** `processos/legoloop-diorama-roteiro/pipeline.dag.json`
 - **Skill Universal:** `skills/legoloop-diorama-roteiro/SKILL.md`
 
 ---
@@ -33,6 +33,6 @@ O Processo `legoloop-diorama-roteiro` corresponde ao Ciclo 1 do Macroprocesso `l
 
 ```bash
 go test -count=1 -cover ./internal/diorama/roteiro/...
-legoloop validate processos/legoloop-diorama-roteiro/processo.dag.json
+legoloop validate processos/legoloop-diorama-roteiro/pipeline.dag.json
 legoloop diorama-roteiro --help
 ```

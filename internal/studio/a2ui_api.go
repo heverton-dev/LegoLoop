@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/heverton-dev/LegoLoop/internal/a2ui"
 	"github.com/heverton-dev/LegoLoop/internal/jail"
@@ -40,6 +41,8 @@ func (s *Server) registerA2UIRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/sessao", s.handleA2UISessaoCriar)
 	mux.HandleFunc("GET /api/sessao/{id}/stream", s.handleA2UISessaoStream)
 	mux.HandleFunc("POST /api/sessao/{id}/action", s.handleA2UISessaoAction)
+	mux.HandleFunc("GET /api/sessao/{id}/timer", s.handleA2UISessaoTimerGet)
+	mux.HandleFunc("POST /api/sessao/{id}/timer", s.handleA2UISessaoTimerPost)
 	mux.HandleFunc("GET /api/sessao/{id}/artefato", s.handleA2UISessaoArtefato)
 }
 
@@ -89,20 +92,122 @@ func (s *Server) handleA2UISessaoStream(w http.ResponseWriter, r *http.Request) 
 		writeError(w, http.StatusNotFound, err.Error())
 		return
 	}
+	ctrlCh, err := s.A2UIHub().SubscribeControl(r.Context(), id)
+	if err != nil {
+		writeError(w, http.StatusNotFound, err.Error())
+		return
+	}
 	w.Header().Set("Content-Type", "text/event-stream; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
 	w.WriteHeader(http.StatusOK)
 	flusher.Flush()
-	for env := range ch {
-		data, mErr := json.Marshal(env)
-		if mErr != nil {
-			continue
+	bombarStreamA2UI(w, flusher, ch, ctrlCh)
+}
+
+func bombarStreamA2UI(w http.ResponseWriter, flusher http.Flusher, ch <-chan a2ui.Envelope, ctrlCh <-chan a2ui.ControlEvent) {
+	for ch != nil || ctrlCh != nil {
+		select {
+		case env, ok := <-ch:
+			if !ok {
+				ch = nil
+				continue
+			}
+			if !emitirEventoSSE(w, flusher, "a2ui", env) {
+				return
+			}
+		case ev, ok := <-ctrlCh:
+			if !ok {
+				ctrlCh = nil
+				continue
+			}
+			if !emitirEventoControleSSE(w, flusher, ev) {
+				return
+			}
 		}
-		if _, wErr := fmt.Fprintf(w, "event: a2ui\ndata: %s\n\n", data); wErr != nil {
-			return
+	}
+}
+
+func emitirEventoControleSSE(w http.ResponseWriter, flusher http.Flusher, ev a2ui.ControlEvent) bool {
+	if ev.Kind == "timer" && ev.Timer != nil {
+		return emitirEventoSSE(w, flusher, "timer", ev.Timer)
+	}
+	if ev.Kind == "status" && ev.Status != nil {
+		return emitirEventoSSE(w, flusher, "status", ev.Status)
+	}
+	return true
+}
+
+func emitirEventoSSE(w http.ResponseWriter, flusher http.Flusher, nome string, payload any) bool {
+	data, err := json.Marshal(payload)
+	if err != nil {
+		return true
+	}
+	if _, err := fmt.Fprintf(w, "event: %s\ndata: %s\n\n", nome, data); err != nil {
+		return false
+	}
+	flusher.Flush()
+	return true
+}
+
+type sessaoTimerReq struct {
+	Acao      string `json:"acao"`
+	TimeoutMs int64  `json:"timeout_ms,omitempty"`
+}
+
+func (s *Server) handleA2UISessaoTimerGet(w http.ResponseWriter, r *http.Request) {
+	sess, err := s.A2UIHub().GetSession(r.PathValue("id"))
+	if err != nil {
+		writeError(w, http.StatusNotFound, err.Error())
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(sess.Timer().Snapshot()); err != nil {
+		return
+	}
+}
+
+func (s *Server) handleA2UISessaoTimerPost(w http.ResponseWriter, r *http.Request) {
+	sess, err := s.A2UIHub().GetSession(r.PathValue("id"))
+	if err != nil {
+		writeError(w, http.StatusNotFound, err.Error())
+		return
+	}
+	var req sessaoTimerReq
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "JSON inválido: "+err.Error())
+		return
+	}
+	snap, ok := aplicarAcaoTimerSessao(sess, req)
+	if !ok {
+		writeError(w, http.StatusBadRequest, "ação de timer inválida")
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(snap); err != nil {
+		return
+	}
+}
+
+func aplicarAcaoTimerSessao(sess *a2ui.Session, req sessaoTimerReq) (a2ui.TimerSnapshot, bool) {
+	switch req.Acao {
+	case "pausar":
+		return sess.PauseTimer(), true
+	case "retomar":
+		return sess.ResumeTimer(), true
+	case "configurar":
+		if req.TimeoutMs <= 0 {
+			return a2ui.TimerSnapshot{}, false
 		}
-		flusher.Flush()
+		return sess.ConfigureTimer(time.Duration(req.TimeoutMs) * time.Millisecond), true
+	case "estender":
+		ms := req.TimeoutMs
+		if ms <= 0 {
+			ms = 300000
+		}
+		return sess.ExtendTimer(time.Duration(ms) * time.Millisecond), true
+	default:
+		return a2ui.TimerSnapshot{}, false
 	}
 }
 

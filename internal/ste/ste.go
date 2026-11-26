@@ -18,7 +18,7 @@ var glossarioJSON []byte
 // Violation é uma regra do perfil que a mensagem não cumpre.
 type Violation struct {
 	Msg   string `json:"msg"`
-	Regra string `json:"regra"` // frase-longa | ambigua | termo | sem-aviso | sem-desfazer
+	Regra string `json:"regra"` // frase-longa | ambigua | termo | sem-aviso | sem-desfazer | evasao-de-prova
 }
 
 type glossario struct {
@@ -159,7 +159,7 @@ func lintVozPassiva(msg string) []Violation {
 
 // Lint aplica o perfil STE-PT a uma mensagem e devolve as violações, na ordem em que aparecem.
 func Lint(msg string) []Violation {
-	return append(lintFrases(msg), lintTermos(msg)...)
+	return append(append(lintFrases(msg), lintTermos(msg)...), LintEvasao(msg)...)
 }
 
 // LintStrict aplica o perfil completo ASD-STE100 (80%), incluindo checagem de voz ativa.

@@ -2,5 +2,15 @@
   "schema_version": "anticorpos.v1",
   "processo": "legoloop-swarm",
   "globais": [],
-  "dominio": []
+  "dominio": [
+    {
+      "assinatura": "sha256:413e46701cabb7bdb397199365d1469f8d63b45c1d4130d80c58e39bba4155e9",
+      "erro": "swarm run recusa reexecutar no com worker killed",
+      "antidoto": "semWorkerEncerrado em AddWorker",
+      "recorrencias": 1,
+      "pacote": "internal/board",
+      "causa_raiz": "nome de worker encerrado continuava ocupado",
+      "timestamp": "2026-11-26T15:07:27Z"
+    }
+  ]
 }

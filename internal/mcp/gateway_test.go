@@ -8,6 +8,8 @@ import (
 	"sort"
 	"strings"
 	"testing"
+
+	"github.com/heverton-dev/LegoLoop/internal/a2ui"
 )
 
 // gwServe envia requisições JSON-RPC ao Serve e devolve as respostas já decodificadas.
@@ -194,5 +196,21 @@ func TestGatewayBuscaESkillsViaLegoloop(t *testing.T) {
 	}
 	if _, erro := textoDe(t, gwServe(t, r, chamadaTool(3, "legoloop", "mcp_search", map[string]any{"query": "qualquer"}))[0]); erro {
 		t.Fatal("mcp_search via legoloop falhou")
+	}
+}
+
+// TestGatewaySessaoCriarViaLegoloop prova que sessao_* (A2UI) é despachado via call_mcp_tool no modo gateway.
+func TestGatewaySessaoCriarViaLegoloop(t *testing.T) {
+	r := gatewayRouter(t)
+	hub := a2ui.NewHub(a2ui.DefaultCatalog())
+	r.SetSessaoHub(hub, "http://127.0.0.1:7878")
+	r.SetSessaoAbridor(func(string) error { return nil })
+
+	txt, erro := textoDe(t, gwServe(t, r, chamadaTool(1, "legoloop", "sessao_criar", map[string]any{"processo": "legoloop-diorama-render", "abrir_navegador": false}))[0])
+	if erro {
+		t.Fatalf("sessao_criar via legoloop retornou erro: %s", txt)
+	}
+	if !strings.Contains(txt, "id") || !strings.Contains(txt, "http://127.0.0.1:7878/sessao/") {
+		t.Fatalf("resposta inesperada de sessao_criar: %s", txt)
 	}
 }

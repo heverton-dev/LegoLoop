@@ -208,3 +208,88 @@ func TestSessaoTools_ToolsListIncluiFerramentasSessao(t *testing.T) {
 		}
 	}
 }
+
+func TestSessaoTools_CriarAbreNavegadorAutomaticamente(t *testing.T) {
+	r, _ := novoRouterSessaoTeste()
+	var abertas []string
+	r.SetSessaoAbridor(func(u string) error {
+		abertas = append(abertas, u)
+		return nil
+	})
+	txt, isErr := chamarToolJSONRPC(t, r, "sessao_criar", map[string]any{"processo": "legoloop-diorama-roteiro"})
+	if isErr {
+		t.Fatalf("sessao_criar retornou erro: %s", txt)
+	}
+	var out struct {
+		URL             string `json:"url"`
+		NavegadorAberto bool   `json:"navegador_aberto"`
+	}
+	if err := json.Unmarshal([]byte(txt), &out); err != nil {
+		t.Fatalf("JSON invalido: %v", err)
+	}
+	if !out.NavegadorAberto || len(abertas) != 1 || abertas[0] != out.URL {
+		t.Fatalf("esperava abrir %q, obteve aberto=%v lista=%v", out.URL, out.NavegadorAberto, abertas)
+	}
+	txt2, _ := chamarToolJSONRPC(t, r, "sessao_criar", map[string]any{"processo": "teste", "abrir_navegador": false})
+	if len(abertas) != 1 {
+		t.Fatalf("abrir_navegador=false nao deveria abrir navegador: %v (%s)", abertas, txt2)
+	}
+}
+
+func TestSessaoTools_TimeoutPadraoLongoEDescricao(t *testing.T) {
+	if got := duracaoTimeoutSessao(nil); got < 3*time.Minute {
+		t.Fatalf("timeout padrao muito curto para formulario humano: %v", got)
+	}
+	desc, _ := defSessaoPublicar()["description"].(string)
+	if !bytes.Contains([]byte(desc), []byte("sessao_aguardar")) {
+		t.Fatalf("descricao de sessao_publicar deve instruir chamar sessao_aguardar no mesmo turno: %q", desc)
+	}
+}
+
+func TestSessaoTools_CriarComTimeoutESessaoStatus(t *testing.T) {
+	r, hub := novoRouterSessaoTeste()
+	txt, isErr := chamarToolJSONRPC(t, r, "sessao_criar", map[string]any{
+		"processo":   "legoloop-diorama-ativos",
+		"timeout_ms": 600000,
+	})
+	if isErr {
+		t.Fatalf("sessao_criar retornou erro: %s", txt)
+	}
+	var out struct {
+		SessionID string `json:"session_id"`
+		TimeoutMs int64  `json:"timeout_ms"`
+	}
+	if err := json.Unmarshal([]byte(txt), &out); err != nil || out.TimeoutMs != 600000 {
+		t.Fatalf("esperava timeout_ms=600000, obteve %+v err=%v", out, err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrlCh, err := hub.SubscribeControl(ctx, out.SessionID)
+	if err != nil {
+		t.Fatalf("SubscribeControl falhou: %v", err)
+	}
+	stTxt, stErr := chamarToolJSONRPC(t, r, "sessao_status", map[string]any{
+		"session_id": out.SessionID,
+		"etapa":      "execucao",
+		"mensagem":   "Rodando testes TDD",
+		"etapas": []map[string]any{
+			{"id": "e1", "titulo": "Aprovar INTENT", "status": "done"},
+			{"id": "e2", "titulo": "Rodar TDD", "status": "running"},
+		},
+	})
+	if stErr {
+		t.Fatalf("sessao_status retornou erro: %s", stTxt)
+	}
+	prazo := time.After(time.Second)
+	for {
+		select {
+		case ev := <-ctrlCh:
+			if ev.Kind == "status" && ev.Status != nil && ev.Status.Mensagem == "Rodando testes TDD" && len(ev.Status.Etapas) == 2 {
+				return
+			}
+		case <-prazo:
+			t.Fatal("evento de sessao_status nao chegou via SubscribeControl")
+		}
+	}
+}

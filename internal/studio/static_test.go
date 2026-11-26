@@ -900,6 +900,19 @@ func TestA2UIBundleOfflineERotaSessao(t *testing.T) {
 	assertA2UISegurancaOffline(t, map[string]string{"sessao.html": html, "components/sessao-app.js": appJS, "components/a2ui-bundle.js": bundle})
 }
 
+func TestA2UIMultiFieldFormESelect(t *testing.T) {
+	bundle := readStatic(t, "components/a2ui-bundle.js")
+	for _, want := range []string{
+		`case "MultipleChoice":`,
+		`querySelectorAll(".a2ui-textarea, .a2ui-input, .a2ui-select")`,
+		`_renderSelectControl(`,
+	} {
+		if !strings.Contains(bundle, want) {
+			t.Errorf("a2ui-bundle.js sem suporte obrigatório %q", want)
+		}
+	}
+}
+
 func assertA2UISegurancaOffline(t *testing.T, arquivos map[string]string) {
 	t.Helper()
 	proibidos := []string{"https://cdn", "unpkg", "jsdelivr", "innerHTML", "insertAdjacentHTML", "alert(", "confirm("}

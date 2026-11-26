@@ -1,0 +1,153 @@
+[
+  {
+    "id": "TICK-DA-01.1",
+    "title": "Criar contratos estritos de Elenco, Sprites, Cenarios e Storyboard",
+    "epic_id": "E01",
+    "initiative_id": "D02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [],
+    "target_files": [
+      "internal/diorama/ativos/schemas.go",
+      "internal/diorama/ativos/schemas_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E01.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/ativos/ -run TestSchemas",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DA-01.2",
+    "title": "Implementar pre-voo do Ciclo 2 com Path Jail, contratos do Ciclo 1 e trava flow_projeto",
+    "epic_id": "E01",
+    "initiative_id": "D02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DA-01.1"
+    ],
+    "target_files": [
+      "internal/diorama/ativos/prevoo.go",
+      "internal/diorama/ativos/prevoo_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E01.1",
+      "AC-E01.2",
+      "AC-NF.2"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/ativos/ -run TestPreVoo",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DA-02.1",
+    "title": "Implementar Etapa 3: 3 fichas por personagem, recorte rembg+despill e sprites/*.json sem sobreposicao",
+    "epic_id": "E02",
+    "initiative_id": "D02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DA-01.1"
+    ],
+    "target_files": [
+      "internal/diorama/ativos/elenco.go",
+      "internal/diorama/ativos/elenco_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E02.1",
+      "AC-E02.2"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/ativos/ -run TestElenco",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DA-03.1",
+    "title": "Implementar Etapa 4: cenarios SVG autorais (codigo), fila Flow resiliente com backoff/--ref/trava e idempotencia por hash",
+    "epic_id": "E03",
+    "initiative_id": "D02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DA-01.1"
+    ],
+    "target_files": [
+      "internal/diorama/ativos/cenarios.go",
+      "internal/diorama/ativos/cenarios_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E03.1",
+      "AC-E03.2",
+      "AC-E03.3"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/ativos/ -run TestCenarios",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DA-04.1",
+    "title": "Implementar Etapa 5: compilador e validador de cenas.json (100% linhas, metafora visual e >= 4 elementos moveis)",
+    "epic_id": "E04",
+    "initiative_id": "D02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DA-02.1",
+      "TICK-DA-03.1"
+    ],
+    "target_files": [
+      "internal/diorama/ativos/storyboard.go",
+      "internal/diorama/ativos/storyboard_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E04.1",
+      "AC-E04.2"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/ativos/ -run TestStoryboard",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DA-04.2",
+    "title": "Orquestrar Processo completo com politica_gates (humano/mecanico/hibrido) e cobertura >= 95%",
+    "epic_id": "E04",
+    "initiative_id": "D02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DA-01.2",
+      "TICK-DA-04.1"
+    ],
+    "target_files": [
+      "internal/diorama/ativos/processo.go",
+      "internal/diorama/ativos/processo_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E04.3",
+      "AC-NF.1",
+      "AC-NF.2"
+    ],
+    "validation_cmd": "go test -count=1 -cover ./internal/diorama/ativos/...",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DA-05.1",
+    "title": "Integrar CLI legoloop diorama-ativos, DAG v2, Skill e fechamento 5 de 5 via legoloop fechar",
+    "epic_id": "E05",
+    "initiative_id": "D02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DA-04.2"
+    ],
+    "target_files": [
+      "internal/cli/diorama_ativos.go",
+      "internal/cli/diorama_ativos_test.go",
+      "internal/cli/cli.go",
+      "processos/legoloop-diorama-ativos/pipeline.dag.json",
+      "skills/legoloop-diorama-ativos/SKILL.md"
+    ],
+    "spec_criteria": [
+      "AC-E05.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/ativos/... ./internal/cli/...",
+    "human_gate_after": true
+  }
+]

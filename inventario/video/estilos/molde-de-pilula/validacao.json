@@ -1,0 +1,19 @@
+{
+  "estilo": "molde-de-pilula",
+  "versao": "1.0.0",
+  "validado_em": "2026-11-26T19:16:02Z",
+  "arquivo_aprovacao": "inventario/video/estilos/molde-de-pilula/aprovacao.json",
+  "aprovado_por": "Heverton",
+  "personagens_teste": [
+    "narrador-teste",
+    "executivo-teste",
+    "analista-teste",
+    "mulher-teste",
+    "idoso-teste",
+    "crianca-teste",
+    "menina-teste",
+    "adolescente-teste",
+    "adolescente-feminina-teste",
+    "idosa-teste"
+  ]
+}

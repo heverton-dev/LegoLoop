@@ -2,5 +2,15 @@
   "schema_version": "anticorpos.v1",
   "processo": "legoloop-homologacao",
   "globais": [],
-  "dominio": []
+  "dominio": [
+    {
+      "assinatura": "sha256:a241a5eda884ff50095ef4ed3e8b819a3e4b0ee2d5c30ebd86f02c0efecd4893",
+      "erro": "resposta com Nao verificado ou pendencia",
+      "antidoto": "LintEvasao, stept lint --hook e gancho Stop",
+      "recorrencias": 1,
+      "pacote": "internal/ste",
+      "causa_raiz": "regra mandava escrever Nao verificado",
+      "timestamp": "2026-11-26T14:47:26Z"
+    }
+  ]
 }

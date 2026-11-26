@@ -1,0 +1,176 @@
+package ativos
+
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
+
+const (
+	DimensaoMinimaSprite = 64
+	MinElementosMoveis   = 4
+)
+
+var (
+	ErrPreVooBloqueado    = errors.New("diorama-ativos: pre-voo bloqueado")
+	ErrFichaInvalida      = errors.New("diorama-ativos: ficha de elenco invalida")
+	ErrSpriteInvalido     = errors.New("diorama-ativos: descritor de sprite invalido")
+	ErrSobreposicaoSprite = errors.New("diorama-ativos: sobreposicao de bounding_box detectada")
+	ErrFlowTravaAusente   = errors.New("diorama-ativos: trava flow_projeto obrigatoria")
+	ErrDensidadeCenarios  = errors.New("diorama-ativos: densidade insuficiente de cenarios")
+	ErrStoryboardInvalido = errors.New("diorama-ativos: gate de storyboard reprovado")
+)
+
+func fichasObrigatorias() []string {
+	return []string{"turnaround", "expressoes_3x2", "poses_6x"}
+}
+
+type BoundingBox struct {
+	X int `json:"x"`
+	Y int `json:"y"`
+	W int `json:"w"`
+	H int `json:"h"`
+}
+
+// Sobrepoe indica se ha intersecao de area positiva entre duas caixas delimitadoras.
+func (b BoundingBox) Sobrepoe(outro BoundingBox) bool {
+	if b.W <= 0 || b.H <= 0 || outro.W <= 0 || outro.H <= 0 {
+		return false
+	}
+	return b.X < outro.X+outro.W && b.X+b.W > outro.X &&
+		b.Y < outro.Y+outro.H && b.Y+b.H > outro.Y
+}
+
+type FichaPersonagem struct {
+	ID                string            `json:"id"`
+	Nome              string            `json:"nome"`
+	DescricaoImutavel string            `json:"descricao_imutavel"`
+	Fichas            map[string]string `json:"fichas"`
+}
+
+// Validar verifica atributos obrigatorios e as 3 fichas do personagem.
+func (f FichaPersonagem) Validar() error {
+	if strings.TrimSpace(f.ID) == "" || strings.TrimSpace(f.Nome) == "" {
+		return fmt.Errorf("%w: id e nome obrigatorios", ErrFichaInvalida)
+	}
+	if strings.TrimSpace(f.DescricaoImutavel) == "" {
+		return fmt.Errorf("%w: descricao_imutavel obrigatoria para %q", ErrFichaInvalida, f.ID)
+	}
+	for _, chave := range fichasObrigatorias() {
+		if strings.TrimSpace(f.Fichas[chave]) == "" {
+			return fmt.Errorf("%w: ficha %q ausente em %q", ErrFichaInvalida, chave, f.ID)
+		}
+	}
+	return nil
+}
+
+type DescritorSprite struct {
+	ID           string      `json:"id"`
+	PersonagemID string      `json:"personagem_id"`
+	Tipo         string      `json:"tipo"`
+	ArquivoPNG   string      `json:"arquivo_png"`
+	Largura      int         `json:"largura"`
+	Altura       int         `json:"altura"`
+	AlfaValido   bool        `json:"alfa_valido"`
+	DespillVerde bool        `json:"despill_verde"`
+	BoundingBox  BoundingBox `json:"bounding_box"`
+}
+
+// Validar garante canal alfa, despill verde, dimensoes minimas e caixa valida.
+func (d DescritorSprite) Validar() error {
+	if strings.TrimSpace(d.ID) == "" || strings.TrimSpace(d.PersonagemID) == "" {
+		return fmt.Errorf("%w: id e personagem_id obrigatorios", ErrSpriteInvalido)
+	}
+	if !tipoSpriteValido(d.Tipo) || strings.TrimSpace(d.ArquivoPNG) == "" {
+		return fmt.Errorf("%w: tipo ou arquivo_png invalido em %q", ErrSpriteInvalido, d.ID)
+	}
+	if !d.AlfaValido || !d.DespillVerde {
+		return fmt.Errorf("%w: alfa_valido e despill_verde obrigatorios em %q", ErrSpriteInvalido, d.ID)
+	}
+	if d.Largura < DimensaoMinimaSprite || d.Altura < DimensaoMinimaSprite {
+		return fmt.Errorf("%w: dimensao minima %dpx violada em %q", ErrSpriteInvalido, DimensaoMinimaSprite, d.ID)
+	}
+	if d.BoundingBox.X < 0 || d.BoundingBox.Y < 0 || d.BoundingBox.W <= 0 || d.BoundingBox.H <= 0 {
+		return fmt.Errorf("%w: bounding_box invalida em %q", ErrSpriteInvalido, d.ID)
+	}
+	return nil
+}
+
+func tipoSpriteValido(tipo string) bool {
+	return tipo == "pose" || tipo == "expressao" || tipo == "objeto"
+}
+
+type Cenario struct {
+	ID          string   `json:"id"`
+	Nome        string   `json:"nome"`
+	Modo        string   `json:"modo"`
+	Arquivo     string   `json:"arquivo"`
+	HashEntrada string   `json:"hash_entrada"`
+	Referencias []string `json:"referencias,omitempty"`
+	FlowProjeto string   `json:"flow_projeto,omitempty"`
+}
+
+type ElementoMovel struct {
+	ID       string `json:"id"`
+	Tipo     string `json:"tipo"`
+	SpriteID string `json:"sprite_id,omitempty"`
+	Acao     string `json:"acao"`
+}
+
+type Cena struct {
+	IndiceLinha     int             `json:"indice_linha"`
+	Texto           string          `json:"texto"`
+	CenarioID       string          `json:"cenario_id"`
+	MetaforaVisual  string          `json:"metafora_visual"`
+	ElementosMoveis []ElementoMovel `json:"elementos_moveis"`
+}
+
+type Storyboard struct {
+	SchemaVersion int    `json:"schema_version"`
+	ProjetoSlug   string `json:"projeto_slug"`
+	TotalLinhas   int    `json:"total_linhas"`
+	Cenas         []Cena `json:"cenas"`
+}
+
+type BuildNotes struct {
+	CorpoMaterial     string `json:"corpo_material"`
+	OlhosDetalhes     string `json:"olhos_detalhes"`
+	AcessoriosEfeitos string `json:"acessorios_efeitos"`
+	Regras            string `json:"regras"`
+}
+
+type FichaAtivo struct {
+	ID                string     `json:"id"`
+	Categoria         string     `json:"categoria"` // "personagem" | "objeto" | "motion"
+	Nome              string     `json:"nome"`
+	DescricaoImutavel string     `json:"descricao_imutavel"`
+	Turnaround        []string   `json:"turnaround"`
+	Expressoes        []string   `json:"expressoes"`
+	Poses             []string   `json:"poses"`
+	BuildNotes        BuildNotes `json:"build_notes"`
+	FolhaMestrePNG    string     `json:"folha_mestre_png,omitempty"`
+	PromptFlow        string     `json:"prompt_flow,omitempty"`
+	HashEntrada       string     `json:"hash_entrada,omitempty"`
+}
+
+// Validar verifica as 4 faixas obrigatorias (turnaround, expressoes, poses e build_notes).
+func (f FichaAtivo) Validar() error {
+	if strings.TrimSpace(f.ID) == "" || strings.TrimSpace(f.Nome) == "" || strings.TrimSpace(f.DescricaoImutavel) == "" {
+		return fmt.Errorf("%w: id, nome e descricao_imutavel obrigatorios", ErrFichaInvalida)
+	}
+	if f.Categoria != "personagem" && f.Categoria != "objeto" && f.Categoria != "motion" {
+		return fmt.Errorf("%w: categoria invalida %q", ErrFichaInvalida, f.Categoria)
+	}
+	if len(f.Turnaround) < 3 || len(f.Expressoes) < 3 || len(f.Poses) < 3 {
+		return fmt.Errorf("%w: turnaround, expressoes e poses exigem >= 3 itens em %q", ErrFichaInvalida, f.ID)
+	}
+	if strings.TrimSpace(f.BuildNotes.CorpoMaterial) == "" || strings.TrimSpace(f.BuildNotes.Regras) == "" {
+		return fmt.Errorf("%w: build_notes (corpo_material e regras) obrigatorios em %q", ErrFichaInvalida, f.ID)
+	}
+	return nil
+}
+
+// ModoVisualValido verifica se o estilo_visual esta entre os modos suportados.
+func ModoVisualValido(modo string) bool {
+	return modo == "codigo" || modo == "flow" || modo == "hibrido"
+}

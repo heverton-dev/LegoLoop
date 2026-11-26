@@ -1,0 +1,43 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-diorama-ativos",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:d69dd96697fe333a20bd356494890cd401e98078ce0a94a5972805b5a3dbf213",
+      "erro": "Envelope ignorado no frontend A2UI por falso positivo de HOSTILE_RE",
+      "antidoto": "Alinhar Go e JS com \\bon[a-z]+\\s*= e exibir err.message no badge de status do sessao-app.js",
+      "recorrencias": 1,
+      "pacote": "internal/a2ui,internal/studio",
+      "causa_raiz": "Regex on\\w+= sem fronteira de palavra rejeitava textos benignos como session_id= no JS apos passar no Go",
+      "timestamp": "2026-11-24T22:22:30Z"
+    },
+    {
+      "assinatura": "sha256:52759fccf0bdb86ef91331e8d9be793121c030e481889eedac03b1305b3ecdcc",
+      "erro": "Texto markdown cru exibido no Panel e LegoStopGatePanel sem formatacao e prova visual pendente",
+      "antidoto": "Aplicar renderFormattedText em a2ui-bundle.js e legoloop-catalog.js e comprovar com preview HTTP 200 real",
+      "recorrencias": 1,
+      "pacote": "internal/studio",
+      "causa_raiz": "Panel e renderStopGatepainel injetavam textContent puro sem parse estruturado via DOM e preview local falhava sem Host explicito",
+      "timestamp": "2026-11-24T22:49:26Z"
+    },
+    {
+      "assinatura": "sha256:67fcc468a1867769a8013d63b973529110ecd47a2a3a15262062697a7dfb16e5",
+      "erro": "F5/reload na A2UI reexibia etapa anterior ativa durante processamento",
+      "antidoto": "Persistir aguardando_resposta=true no SubmitAction, limpar no proximo Publish e desabilitar controles no reload em sessao-app.js",
+      "recorrencias": 1,
+      "pacote": "internal/a2ui,internal/studio",
+      "causa_raiz": "SubmitAction nao persistia aguardando_resposta em SessionStatus para replay no SSE",
+      "timestamp": "2026-11-25T00:51:31Z"
+    },
+    {
+      "assinatura": "sha256:d443bfc14ff89cef97d16258c26e7d2a13aea293d29e369ca65dee388bb15726",
+      "erro": "sprite_despill falhava buscando poses_6x inexistente ao inves da folha mestre gerada",
+      "antidoto": "resolverEntradaSprite com fallback resiliente para folha mestre e resolverElencoPadrao alimentado por fichasGeradas",
+      "recorrencias": 1,
+      "pacote": "internal/diorama/ativos",
+      "causa_raiz": "resolverElencoPadrao e RecortadorRembgDespill exigiam flow/narrador_poses.png ao inves de flow/fichas/\u003cid\u003e_sheet.png gerada no Flow",
+      "timestamp": "2026-11-25T00:58:59Z"
+    }
+  ]
+}

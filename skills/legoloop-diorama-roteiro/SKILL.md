@@ -30,7 +30,8 @@ suggested_model: sonnet
 * **Produces (Saídas Mecânicas):**
   - `script.json`: roteiro retrocompatível com `lines[].text`, `natureza`, `sources[]` e lastro verificado.
   - `plano.md`: tabela humana de batidas e dispositivos visuais.
-  - `acervo/temas.json`: atualizado de forma atômica somente após aprovação no Gate final da Etapa 2.
+  - `acervo/temas.json`: atualizado de forma atômica somente após aprovação no Gate final da Etapa 2 (temas já produzidos).
+  - `acervo/fila_perene.json`: estoque automático apenas de pautas `perene` coletadas para futuras produções (pautas `quente` nunca entram na fila; tema aprovado sai da fila e vai para `acervo/temas.json`).
 
 ```json
 {
@@ -44,7 +45,8 @@ suggested_model: sonnet
 
 ## 2. Procedimento Determinístico e Nós do DAG
 
-0. **Escolha da superfície interativa (obrigatória ao iniciar por linguagem natural, slash ou CLI):** ofereça sempre ao usuário escolher entre **Interface A2UI** (Agente/Chat: ferramentas MCP `sessao_criar`, `sessao_publicar` e `sessao_aguardar`; Studio: painel `Diorama Roteiro`) ou **Chat textual / CLI direto**. Só avance no modo escolhido.
+0. **Escolha da superfície interativa (obrigatória ao iniciar por linguagem natural, slash ou CLI):** ofereça sempre ao usuário escolher entre **Interface A2UI** (Agente/Chat: ferramentas MCP `sessao_criar`, `sessao_publicar`, `sessao_status` e `sessao_aguardar`; Studio: painel `Diorama Roteiro`) ou **Chat textual / CLI direto**, permitindo definir o tempo limite por etapa (`timeout_ms`, padrão 5 min; ajustável e pausável na barra da A2UI). Só avance no modo escolhido.
+   - **Ciclo contínuo obrigatório no modo A2UI (MCP):** chame `sessao_criar` (abre o navegador automaticamente) -> `sessao_publicar` -> `sessao_aguardar` **no mesmo turno**, mantendo toda a interação dentro da interface até concluir o Processo. **NUNCA** encerre o turno pedindo ao usuário "clique lá e me avise aqui no chat". Durante execuções e validações, chame `sessao_status` com `mensagem` e `etapas[]` para mostrar o avanço ao vivo no navegador.
 1. **Etapa 0 — Configuração guiada (`n01_validar_config`):** se `projeto.json` ou `marca.json` não existirem, colete com o usuário (na superfície escolhida) o nicho, `perfis_fonte`, formato (`16:9`, `9:16`, `1:1`), duração-alvo, `politica_gates` (`humano`, `hibrido` ou `mecanico`) e pasta de trabalho. Grave `projeto.json` e `marca.json` e rode `legoloop diorama-roteiro validar-config --projeto <DIR> --json` (bloqueia schema inválido, perfil desconhecido ou inconsistência entre `projeto.json` e `marca.json`).
 2. **Pré-voo modular (`n02_prevoo_modular`):** rode `legoloop diorama-roteiro prevoo --projeto <DIR> --json` (bloqueia apenas nos 5 casos `FALTA` do Processo 1; Chrome Flow `9333`, FFmpeg, Chromium, `edge-tts` e `gitleaks` emitem apenas `AVISO`).
 3. **Etapa 1 — Coleta de pautas (`n03_coletar_pautas`):** rode `legoloop diorama-roteiro coletar --projeto <DIR> --json` (filtra conectores gratuitos por `perfis_fonte`, descarta temas em `acervo/temas.json` e apresenta as pautas na superfície escolhida para escolha do usuário quando `politica_gates` exigir).
@@ -75,7 +77,7 @@ suggested_model: sonnet
 
 ```bash
 legoloop diorama-roteiro --help
-legoloop validate processos/legoloop-diorama-roteiro/processo.dag.json
+legoloop validate processos/legoloop-diorama-roteiro/*.dag.json
 go test -count=1 ./internal/diorama/roteiro/... ./internal/cli/ -run TestDioramaRoteiroCLI
 ```
 

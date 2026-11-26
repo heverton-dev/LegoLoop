@@ -21,3 +21,5 @@ Registro gravado pelo `legoloop fechar` (etapa 6). Cada Processo tem `skills/<no
 * **Processo Canonizado `legoloop-forjar` (2026-11-22):** `skills/legoloop-forjar/SKILL.md` · `docs/reports/`
 
 * **Processo Canonizado `legoloop-diorama-roteiro` (2026-11-24):** `skills/legoloop-diorama-roteiro/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-diorama-ativos` (2026-11-24):** `skills/legoloop-diorama-ativos/SKILL.md` · `docs/reports/`

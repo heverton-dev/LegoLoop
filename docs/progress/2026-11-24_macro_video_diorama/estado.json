@@ -36,7 +36,7 @@
         "intent": "docs/intents/2026-11-24_INTENT_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
         "spec": "docs/specs/2026-11-24_SPEC_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
         "plan": "docs/plans/2026-11-24_PLAN_CRIAR_O_PROCESSO_CANONIZADO_LE.md",
-        "dag": "processos/legoloop-diorama-roteiro/processo.dag.json",
+        "dag": "processos/legoloop-diorama-roteiro/pipeline.dag.json",
         "skill": "skills/legoloop-diorama-roteiro/SKILL.md",
         "manual": "docs/manuals/2026-11-24_MANUAL_DIORAMA_ROTEIRO.md",
         "livro": "docs/books/legoloop-diorama-roteiro/livro.json",
@@ -46,11 +46,22 @@
     {
       "ordem": 2,
       "slug": "legoloop-diorama-ativos",
-      "status": "PENDING",
+      "status": "DONE",
       "etapas_cobertas": ["etapa_3", "etapa_4", "etapa_5"],
       "pacote_go": "internal/diorama/ativos",
+      "cobertura_pct": 95.1,
       "paralelizavel_em_worktree": true,
-      "depende_de": ["legoloop-diorama-roteiro"]
+      "depende_de": ["legoloop-diorama-roteiro"],
+      "artefatos": {
+        "intent": "docs/intents/2026-11-24_INTENT_LEGOLOOP_DIORAMA_ATIVOS.md",
+        "spec": "docs/specs/2026-11-24_SPEC_LEGOLOOP_DIORAMA_ATIVOS.md",
+        "plan": "docs/plans/2026-11-24_PLAN_LEGOLOOP_DIORAMA_ATIVOS.md",
+        "dag": "processos/legoloop-diorama-ativos/pipeline.dag.json",
+        "skill": "skills/legoloop-diorama-ativos/SKILL.md",
+        "manual": "docs/manuals/2026-11-24_MANUAL_DIORAMA_ATIVOS.md",
+        "livro": "docs/books/legoloop-diorama-ativos/livro.json",
+        "relatorio": "docs/reports/2026-11-24_REPORT_DIORAMA_ATIVOS.md"
+      }
     },
     {
       "ordem": 3,

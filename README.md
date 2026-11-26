@@ -58,6 +58,8 @@ LegoLoop/
 │   ├── board/ · wave/       # Integração com GitHub Projects e planejador de ondas sem sobreposição
 │   ├── studio/              # Looping Studio (canvas + API REST + modais Novo Processo e Processos)
 │   ├── diorama/roteiro/     # Processo legoloop-diorama-roteiro: pré-voo, descoberta por nicho e validação epistêmica
+│   ├── diorama/ativos/      # Processo legoloop-diorama-ativos: elenco, sprites, cenários SVG/Flow e storyboard cenas.json
+│   ├── browser/             # Navegador persistente via CDP (9222/9333) com perfil isolado e cadência conservadora
 │   ├── e2e/                 # Testes E2E herméticos dos cenários de referência (tag e2e)
 │   ├── redc/                # MEGA-PIPELINE REDC: engenharia reversa de canais, DNA, ganchos e Brand Swap
 │   ├── mcp/                 # Meta-MCP Router STDIO: bootstrap mínimo (2 tools), busca Lazy e catálogo de skills
@@ -239,7 +241,7 @@ O LegoLoop inclui governança determinística e alternador universal de regras p
 * **Gerenciamento Unificado:** `legoloop stept [status|set|on|off|scan|manual]`
 * **Modos Suportados:** `prova` (padrão), `puro`, `hibrido` (legado, com a Tríade), `stept` (alias de `hibrido`), `caveman`, `off`. A fonte única do texto das regras é `internal/ste/prompt.go` e `internal/ste/prompt_prova.go`.
 * **Políticas de Pausa:** `destrutivo` (pausa em deleções/resets), `sempre` (pausa em toda alteração com efeito), `nunca` (informativo).
-* **Contrato do modo `prova` (padrão):** Resultado, Fatos comprovados (cada fato com `arquivo:linha` ou comando; sem prova vale "Não verificado"), Solução passo a passo, Sugestão técnica e Stop-Gate Humano.
+* **Contrato do modo `prova` (padrão):** Resultado, Fatos comprovados (cada fato com `arquivo:linha` ou comando; sem prova, rode o comando e prove antes de afirmar; a lei da prova proíbe "Não verificado", pendência e próxima etapa, e `legoloop stept lint [--hook]` reprova o texto com evasão), Solução passo a passo, Sugestão técnica e Stop-Gate Humano.
 * **Contrato Legado da Tríade STE-PT (só nos modos `hibrido` e `stept`):**
   * **Pré-Ação (antes de alterar arquivos):**
     ```markdown

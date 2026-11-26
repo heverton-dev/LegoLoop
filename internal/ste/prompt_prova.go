@@ -44,7 +44,7 @@ func promptProva(pausa Pausa) string {
 		"Pensamento: telegráfico, no máximo 5 linhas. Não carregue logs inteiros.\n" +
 		"Escrita: PT-BR, voz ativa, uma ideia por frase, no máximo 20 palavras. Sem hedging. Um termo por entidade. Mantenha os artigos.\n" +
 		"Formato: uma frase por linha, sem linha em branco entre as frases. Nunca junte frases em parágrafo. Sem cabeçalho, tabela, separador ou lista numerada. Vale também para mensagens intermediárias.\n" +
-		"Fato que decide leva a prova entre parênteses: (arquivo:linha ou comando e resultado). Sem comando rodado nesta resposta, escreva \"Não verificado\". Citar documento não é prova.\n" +
+		"Fato que decide leva a prova entre parênteses: (arquivo:linha ou comando e resultado). Fato sem prova: rode o comando e prove antes de afirmar. Proibido escrever \"Não verificado\", pendência, falta ou próxima etapa: verifique ou corrija na mesma resposta. Se a correção exigir decisão do usuário, pergunte com sugestão. Citar documento não é prova.\n" +
 		"Última linha: \"Recomendação:\" com uma ação, separada das frases por uma linha em branco.\n" +
 		pausaProva(pausa) + "\n" +
 		"Tetos: 15 linhas e 130 palavras. Detalhe longo só se o usuário escrever \"detalhe\"; ele vai para arquivo.\n" +

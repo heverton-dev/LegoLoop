@@ -32,7 +32,9 @@ suggested_model: sonnet
 
 ## 2. Procedimento (passos determinísticos)
 
-0. **Escolha da superfície interativa (obrigatória antes do turno 1):** ofereça sempre ao usuário a escolha entre **Interface A2UI** (CLI: `legoloop fabricar entrevista ui` abrindo `/concepcao`; Agente/Chat: ferramentas MCP `sessao_criar`, `sessao_publicar` e `sessao_aguardar`) ou **Chat textual** (fallback abaixo). Só avance no modo escolhido pelo usuário.
+0. **Escolha da superfície interativa (obrigatória antes do turno 1):** ofereça sempre ao usuário a escolha entre **Interface A2UI** (CLI: `legoloop fabricar entrevista ui` abrindo `/concepcao`; Agente/Chat: ferramentas MCP `sessao_criar`, `sessao_publicar`, `sessao_status` e `sessao_aguardar`) ou **Chat textual** (fallback abaixo), permitindo configurar o tempo limite por etapa (`timeout_ms`, padrão 5 min; ajustável e pausável na própria barra da A2UI). Só avance no modo escolhido pelo usuário.
+   - **Ciclo contínuo obrigatório no modo A2UI (MCP):** chame `sessao_criar` (abre o navegador automaticamente) -> `sessao_publicar` -> `sessao_aguardar` **no mesmo turno**. **NUNCA** encerre o turno pedindo ao usuário "clique lá e avise aqui no chat".
+   - **Progresso ao vivo na A2UI:** durante qualquer processamento longo e após a aprovação dos Stop-Gates, chame `sessao_status` com `etapa`, `mensagem` e `etapas[]` (`pending`, `running`, `done`, `error`) para que o usuário acompanhe a execução ao vivo na própria interface.
 1. **Iniciar:** `legoloop fabricar entrevista iniciar "<ideia>"`. O motor cria a sessão `intv_*`, lê o contexto do projeto e devolve o primeiro passo em JSON (`sessao`, `pergunta`, `palpite`, `opcoes`, `confianca`, `meta`, `turnos`, `espelho`, `lacunas`).
 2. **Conduzir uma pergunta por turno.** Cada turno: `legoloop fabricar entrevista responder <sessao> "<resposta>"`. Apresente ao usuário uma única pergunta por vez, em prosa, oferecendo o palpite do motor (aceitar ou responder com as próprias palavras).
 3. **Marcadores obrigatórios em cada turno da entrevista:** `HIPÓTESE`, `CONFIANÇA`, `PERGUNTA`, `PALPITE`. Use-os para expor o raciocínio do motor ao usuário.

@@ -98,7 +98,32 @@ func cmdDioramaColetar(ctx context.Context, args []string, d Deps) int {
 	if err != nil {
 		return responderDiorama(d, emJSON, map[string]any{"erro": err.Error()}, 1)
 	}
-	return responderDiorama(d, emJSON, map[string]any{"total": len(pautas), "pautas": pautas}, 0)
+	fila, filaPath, err := sincronizarFilaPerene(acervoPath, pautas, acervo)
+	if err != nil {
+		return responderDiorama(d, emJSON, map[string]any{"erro": err.Error()}, 1)
+	}
+	combinadas := roteiro.CombinarPautasComFila(pautas, fila, acervo)
+	return responderDiorama(d, emJSON, map[string]any{
+		"total":             len(combinadas),
+		"pautas":            combinadas,
+		"fila_perene_total": len(fila.Pautas),
+		"fila_perene_path":  filaPath,
+	}, 0)
+}
+
+func sincronizarFilaPerene(acervoPath string, pautas []roteiro.PautaCandidata, acervo roteiro.AcervoTemas) (roteiro.FilaPerene, string, error) {
+	filaPath := roteiro.CaminhoFilaPerene(acervoPath)
+	fila, err := roteiro.CarregarFilaPerene(filaPath)
+	if err != nil {
+		return fila, filaPath, err
+	}
+	fila = roteiro.MesclarFilaPerene(fila, pautas, acervo)
+	if len(fila.Pautas) > 0 {
+		if err := roteiro.SalvarFilaPerene(filaPath, fila); err != nil {
+			return fila, filaPath, err
+		}
+	}
+	return fila, filaPath, nil
 }
 
 func cmdDioramaValidarRoteiro(args []string, d Deps) int {

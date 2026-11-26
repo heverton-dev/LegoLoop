@@ -1,0 +1,64 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-diorama-ativos",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-diorama-ativos",
+      "comandos_cli": [
+        "legoloop diorama-ativos",
+        "/legoloop-diorama-ativos"
+      ],
+      "artefatos_ativos": [
+        "flow/elenco.json",
+        "flow/cenarios.json",
+        "cenas.json"
+      ],
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificacao para o Processo legoloop-diorama-ativos",
+    "etapas": [
+      "n01_prevoo_ciclo2",
+      "n02_executar_etapas_3_4_5",
+      "n03_validar_storyboard"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_prevoo_ciclo2",
+      "palavras_chave": [
+        "prevoo ciclo 2",
+        "trava flow_projeto",
+        "contratos ciclo 1"
+      ],
+      "slash_command": "/legoloop-diorama-ativos-prevoo",
+      "flag_cli": "--etapa n01_prevoo_ciclo2"
+    },
+    {
+      "id": "n02_executar_etapas_3_4_5",
+      "palavras_chave": [
+        "elenco sprites",
+        "cenarios flow svg",
+        "storyboard cenas.json"
+      ],
+      "slash_command": "/legoloop-diorama-ativos-executar",
+      "flag_cli": "--etapa n02_executar_etapas_3_4_5"
+    },
+    {
+      "id": "n03_validar_storyboard",
+      "palavras_chave": [
+        "validar storyboard",
+        "cenas.json",
+        "elementos moveis"
+      ],
+      "slash_command": "/legoloop-diorama-ativos-validar-storyboard",
+      "flag_cli": "--etapa n03_validar_storyboard"
+    }
+  ],
+  "pontos_entrada": [
+    "cli:legoloop diorama-ativos",
+    "chat:/legoloop-diorama-ativos",
+    "studio:Diorama Ativos"
+  ]
+}

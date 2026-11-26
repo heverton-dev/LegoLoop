@@ -45,3 +45,11 @@ Desktop.ini
 # Backups locais do refinar/canon/renomear (o git guarda o histórico)
 *.legoloop-bak
 .backups/
+
+# Projetos gerados em execução (mídia e artefatos voláteis)
+projetos/
+
+# Cofre local de ativos multimídia reutilizáveis
+cofre/
+
+

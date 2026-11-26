@@ -15,6 +15,19 @@ type Proxy struct {
 	clients map[string]*stdioClient
 	timers  map[string]*time.Timer
 	idle    time.Duration
+	// recarregar relê o registro antes de subir um servidor; sem ele vale o mapa inicial.
+	recarregar func() (map[string]ServerSpec, error)
+}
+
+// spec devolve a configuração atual do servidor; registro ilegível mantém a última boa.
+func (p *Proxy) spec(name string) (ServerSpec, bool) {
+	if p.recarregar != nil {
+		if atual, err := p.recarregar(); err == nil {
+			p.specs = atual
+		}
+	}
+	spec, ok := p.specs[name]
+	return spec, ok
 }
 
 // NewProxy cria o proxy; idle <= 0 desliga o encerramento por ociosidade.
@@ -35,7 +48,7 @@ func (p *Proxy) client(name string) (*stdioClient, error) {
 	if c, ok := p.clients[name]; ok {
 		return c, nil
 	}
-	spec, ok := p.specs[name]
+	spec, ok := p.spec(name)
 	if !ok {
 		return nil, fmt.Errorf("servidor MCP %q nao esta no registro", name)
 	}

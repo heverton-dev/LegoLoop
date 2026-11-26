@@ -1,6 +1,7 @@
 package espinha
 
 import (
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -36,8 +37,18 @@ func TestRegistroValida(t *testing.T) {
 		if err := reg.Validar(); err != nil {
 			t.Fatalf("registro real invalido: %v", err)
 		}
-		if len(reg.Processos) != 36 {
-			t.Fatalf("esperado 36 processos, obtido %d", len(reg.Processos))
+		entradas, err := os.ReadDir(filepath.Join("..", "..", "processos"))
+		if err != nil {
+			t.Fatalf("listar processos: %v", err)
+		}
+		pastas := 0
+		for _, e := range entradas {
+			if e.IsDir() && strings.HasPrefix(e.Name(), "legoloop-") {
+				pastas++
+			}
+		}
+		if len(reg.Processos) != pastas {
+			t.Fatalf("registro tem %d processos e processos/ tem %d pastas", len(reg.Processos), pastas)
 		}
 		for _, p := range reg.Processos {
 			if !strings.HasPrefix(p.Slug, "legoloop-") {

@@ -2,7 +2,7 @@
 // Zero dependencias externas, zero HTML bruto e zero estilos inline.
 
 const SURFACE_ID_RE = /^[a-zA-Z0-9._:/-]{1,128}$/;
-const HOSTILE_RE = /<\s*script\b|javascript:|on\w+\s*=|<\s*iframe\b/i;
+const HOSTILE_RE = /<\s*script\b|javascript:|\bon[a-z]+\s*=|<\s*iframe\b/i;
 
 export const DEFAULT_CATALOG = Object.freeze([
   "Text",
@@ -246,7 +246,7 @@ export class A2UISurfaceRenderer {
       case "Heading":
         return el("h3", "a2ui-heading", props.text || props.title || comp.id);
       case "Text":
-        return el("p", "a2ui-text", props.text || props.value || "");
+        return renderFormattedText(props.text || props.value || "");
       case "Badge":
         return el("span", "pill a2ui-badge", props.label || props.text || "");
       case "Divider":
@@ -258,6 +258,9 @@ export class A2UISurfaceRenderer {
       case "Textarea":
       case "Form":
         return this._renderFormControl(surface, comp, props);
+      case "Select":
+      case "MultipleChoice":
+        return this._renderSelectControl(surface, comp, props);
       case "List":
         return this._renderList(props);
       case "LegoStopGatePanel":
@@ -284,13 +287,16 @@ export class A2UISurfaceRenderer {
     btn.addEventListener("click", () => {
       const actionName = props.action || comp.id || "click";
       const payload = Object.assign({}, props.payload || { id: comp.id });
-      if (actionName === "submit_answer") {
-        const field = this.container.querySelector(".a2ui-textarea, .a2ui-input");
-        if (field) {
+      const fields = this.container.querySelectorAll(".a2ui-textarea, .a2ui-input, .a2ui-select");
+      fields.forEach((field, idx) => {
+        if (field.name) {
+          payload[field.name] = field.value;
+        }
+        if (idx === 0) {
           payload.answer = field.value;
           payload.text = field.value;
         }
-      }
+      });
       this._emit(surface, actionName, payload);
     });
     return btn;
@@ -298,7 +304,7 @@ export class A2UISurfaceRenderer {
 
   _renderFormControl(surface, comp, props) {
     const hasSubmitBtn = Array.isArray(surface.components) &&
-      surface.components.some((c) => c && c.kind === "Button" && c.props && c.props.action === "submit_answer");
+      surface.components.some((c) => c && c.kind === "Button");
     const form = el("form", "a2ui-painel a2ui-form");
     const label = el("label", "a2ui-label", props.label || props.question || comp.id);
     const fieldName = props.name || comp.id || "answer";
@@ -323,11 +329,34 @@ export class A2UISurfaceRenderer {
     return form;
   }
 
+  _renderSelectControl(surface, comp, props) {
+    const form = el("form", "a2ui-painel a2ui-form");
+    const label = el("label", "a2ui-label", props.label || props.question || comp.id);
+    const fieldName = props.name || comp.id || "choice";
+    const select = el("select", "a2ui-select");
+    select.name = fieldName;
+    const options = Array.isArray(props.options) ? props.options : [];
+    for (const opt of options) {
+      const val = typeof opt === "string" ? opt : String(opt.value ?? opt.label ?? "");
+      const txt = typeof opt === "string" ? opt : String(opt.label ?? opt.value ?? "");
+      const optionEl = el("option", "", txt);
+      optionEl.value = val;
+      if (props.value !== undefined && String(props.value) === val) {
+        optionEl.selected = true;
+      }
+      select.appendChild(optionEl);
+    }
+    form.append(label, select);
+    return form;
+  }
+
   _renderList(props) {
-    const ul = el("ul", "a2ui-list");
+    const ul = el("ul", "a2ui-list a2ui-rich-list");
     const items = Array.isArray(props.items) ? props.items : [];
     for (const item of items) {
-      ul.appendChild(el("li", "a2ui-list__item", typeof item === "string" ? item : JSON.stringify(item)));
+      const li = el("li", "a2ui-list__item");
+      appendInlineFormatted(li, typeof item === "string" ? item : JSON.stringify(item));
+      ul.appendChild(li);
     }
     return ul;
   }
@@ -336,7 +365,7 @@ export class A2UISurfaceRenderer {
     const painel = el("div", "a2ui-painel a2ui-stop-gate");
     painel.appendChild(el("h3", "a2ui-painel__title", props.title || "Stop-Gate"));
     if (props.summary) {
-      painel.appendChild(el("p", "a2ui-text", props.summary));
+      painel.appendChild(renderFormattedText(props.summary));
     }
     const actions = el("div", "a2ui-actions");
     const choices = [
@@ -393,8 +422,88 @@ export class A2UISurfaceRenderer {
     painel.appendChild(el("h4", "a2ui-painel__title", props.title || comp.kind));
     const bodyText = props.body || props.description || props.text;
     if (bodyText) {
-      painel.appendChild(el("p", "a2ui-text", bodyText));
+      painel.appendChild(renderFormattedText(bodyText));
     }
     return painel;
   }
+}
+
+function appendInlineFormatted(parent, line) {
+  const str = String(line || "");
+  const tokenRe = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+  let last = 0;
+  let m;
+  while ((m = tokenRe.exec(str)) !== null) {
+    if (m.index > last) {
+      parent.appendChild(document.createTextNode(str.slice(last, m.index)));
+    }
+    const tok = m[0];
+    if (tok.startsWith("**") && tok.endsWith("**")) {
+      parent.appendChild(el("strong", "a2ui-rich-strong", tok.slice(2, -2)));
+    } else if (tok.startsWith("`") && tok.endsWith("`")) {
+      parent.appendChild(el("code", "a2ui-rich-code", tok.slice(1, -1)));
+    }
+    last = m.index + tok.length;
+  }
+  if (last < str.length) {
+    parent.appendChild(document.createTextNode(str.slice(last)));
+  }
+}
+
+export function renderFormattedText(rawText) {
+  const wrap = el("div", "a2ui-rich");
+  const lines = String(rawText || "").replace(/\r\n/g, "\n").split("\n");
+  let listEl = null;
+  let listKind = "";
+
+  const flushList = () => {
+    if (listEl) {
+      wrap.appendChild(listEl);
+      listEl = null;
+      listKind = "";
+    }
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) {
+      flushList();
+      continue;
+    }
+    const bulletMatch = line.match(/^[-*•]\s+(.*)$/);
+    const numMatch = line.match(/^\d+[.)]\s+(.*)$/);
+    const headMatch = line.match(/^#{1,4}\s+(.*)$/);
+
+    if (bulletMatch) {
+      if (listKind !== "ul") {
+        flushList();
+        listEl = el("ul", "a2ui-rich-list");
+        listKind = "ul";
+      }
+      const li = el("li", "a2ui-rich-list__item");
+      appendInlineFormatted(li, bulletMatch[1]);
+      listEl.appendChild(li);
+    } else if (numMatch) {
+      if (listKind !== "ol") {
+        flushList();
+        listEl = el("ol", "a2ui-rich-list a2ui-rich-list--ordered");
+        listKind = "ol";
+      }
+      const li = el("li", "a2ui-rich-list__item");
+      appendInlineFormatted(li, numMatch[1]);
+      listEl.appendChild(li);
+    } else if (headMatch) {
+      flushList();
+      const h = el("h5", "a2ui-rich-heading");
+      appendInlineFormatted(h, headMatch[1]);
+      wrap.appendChild(h);
+    } else {
+      flushList();
+      const p = el("p", "a2ui-text a2ui-rich-p");
+      appendInlineFormatted(p, line);
+      wrap.appendChild(p);
+    }
+  }
+  flushList();
+  return wrap;
 }

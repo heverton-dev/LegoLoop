@@ -34,6 +34,7 @@ type Ticket struct {
 	Nature         string   `json:"nature"`                  // nano | micro
 	ExecutionMode  string   `json:"execution_mode"`          // tdd_red_green | sequential | parallel
 	Executor       string   `json:"executor,omitempty"`      // executor opcional (ex: native_swarm)
+	Command        []string `json:"command,omitempty"`       // comando do worker do swarm (agente); vazio mantém o comando de verificação
 	DependsOn      []string `json:"depends_on"`              // IDs predecessores
 	TargetFiles    []string `json:"target_files"`            // Arquivos tocados
 	SpecCriteria   []string `json:"spec_criteria"`           // AC-E01.1

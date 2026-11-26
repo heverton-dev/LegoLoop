@@ -14,6 +14,18 @@
       "contrato": "Pre-voo modular, descoberta por nicho e validacao epistemica de script.json"
     },
     {
+      "nome": "diorama-ativos",
+      "camada": "dominio",
+      "motor": "internal/diorama/ativos",
+      "contrato": "Elenco, sprites rembg/despill, cenarios SVG/Flow e storyboard cenas.json"
+    },
+    {
+      "nome": "video-inventario",
+      "camada": "dominio",
+      "motor": "internal/video/inventario",
+      "contrato": "Validacao humana de estilo por arquivo de aprovacao e conferencia por hash dos itens"
+    },
+    {
       "nome": "canonize",
       "camada": "espinha",
       "motor": "internal/canon",
@@ -562,6 +574,7 @@
     { "slug": "legoloop-concepcao" },
     { "slug": "legoloop-design-ui" },
     { "slug": "legoloop-diagram-design" },
+    { "slug": "legoloop-diorama-ativos" },
     { "slug": "legoloop-diorama-roteiro" },
     { "slug": "legoloop-dissecar" },
     { "slug": "legoloop-especificacao" },
@@ -694,6 +707,8 @@
     "internal/videorea": 6
   },
   "globais_justificadas": [
+    "internal/diorama/ativos.scriptFlowDriver",
+    "internal/diorama/ativos.scriptSpriteDespill",
     "internal/artefato.camposObrigatorios",
     "internal/artefato.resultadosValidos",
     "internal/assets.ignoredDirNames",

@@ -1,0 +1,620 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-24",
+  "description": "Espelho executável da ROUTE 2026-11-24_ROUTE_LEGOLOOP_DIORAMA_ATIVOS",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local",
+      "write_boundary": "strict"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-legoloop-diorama-ativos",
+  "nodes": [
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/ativos/",
+        "-run",
+        "TestSchemas"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/schemas.go",
+        "docs/specs/2026-11-24_SPEC_LEGOLOOP_DIORAMA_ATIVOS.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/schemas.go",
+        "internal/diorama/ativos/schemas_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-01.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/schemas.go') \u0026\u0026 file_exists('internal/diorama/ativos/schemas_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/schemas_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestSchemas"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/ativos/",
+        "-run",
+        "TestPreVoo"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/prevoo.go",
+        "docs/specs/2026-11-24_SPEC_LEGOLOOP_DIORAMA_ATIVOS.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/prevoo.go",
+        "internal/diorama/ativos/prevoo_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "id": "TICK-01.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/prevoo.go') \u0026\u0026 file_exists('internal/diorama/ativos/prevoo_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.1, AC-E01.2, AC-NF.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/prevoo_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestPreVoo"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2"
+      ],
+      "id": "SG-E01",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e01",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E01.json",
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/ativos/",
+        "-run",
+        "TestElenco"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/elenco.go",
+        "docs/specs/2026-11-24_SPEC_LEGOLOOP_DIORAMA_ATIVOS.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/elenco.go",
+        "internal/diorama/ativos/elenco_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1",
+        "SG-E01"
+      ],
+      "id": "TICK-02.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/elenco.go') \u0026\u0026 file_exists('internal/diorama/ativos/elenco_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.1, AC-E02.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/elenco_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestElenco"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-02.1"
+      ],
+      "id": "SG-E02",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e02",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E02.json",
+        "gate": "prompt('Evidências do Épico 02 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/ativos/",
+        "-run",
+        "TestCenarios"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/cenarios.go",
+        "docs/specs/2026-11-24_SPEC_LEGOLOOP_DIORAMA_ATIVOS.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/cenarios.go",
+        "internal/diorama/ativos/cenarios_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1",
+        "SG-E02"
+      ],
+      "id": "TICK-03.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/cenarios.go') \u0026\u0026 file_exists('internal/diorama/ativos/cenarios_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E03.1, AC-E03.2, AC-E03.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/cenarios_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestCenarios"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-03.1"
+      ],
+      "id": "SG-E03",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e03",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E03.json",
+        "gate": "prompt('Evidências do Épico 03 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/ativos/",
+        "-run",
+        "TestStoryboard"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/storyboard.go",
+        "docs/specs/2026-11-24_SPEC_LEGOLOOP_DIORAMA_ATIVOS.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/storyboard.go",
+        "internal/diorama/ativos/storyboard_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.1",
+        "TICK-03.1",
+        "SG-E03"
+      ],
+      "id": "TICK-04.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/storyboard.go') \u0026\u0026 file_exists('internal/diorama/ativos/storyboard_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E04.1, AC-E04.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/storyboard_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestStoryboard"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-cover",
+        "./internal/diorama/ativos/..."
+      ],
+      "context_in": [
+        "internal/diorama/ativos/processo.go",
+        "docs/specs/2026-11-24_SPEC_LEGOLOOP_DIORAMA_ATIVOS.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/processo.go",
+        "internal/diorama/ativos/processo_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.2",
+        "TICK-04.1",
+        "SG-E03"
+      ],
+      "id": "TICK-04.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_04_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-04.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/diorama/ativos/processo.go') \u0026\u0026 file_exists('internal/diorama/ativos/processo_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E04.3, AC-NF.1, AC-NF.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/processo_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 -cover ./internal/diorama/ativos/..."
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-04.1",
+        "TICK-04.2"
+      ],
+      "id": "SG-E04",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e04",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E04.json",
+        "gate": "prompt('Evidências do Épico 04 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/diorama/ativos/...",
+        "./internal/cli/..."
+      ],
+      "context_in": [
+        "internal/cli/diorama_ativos.go",
+        "internal/cli/cli.go",
+        "processos/legoloop-diorama-ativos/pipeline.dag.json",
+        "skills/legoloop-diorama-ativos/SKILL.md",
+        "docs/specs/2026-11-24_SPEC_LEGOLOOP_DIORAMA_ATIVOS.md"
+      ],
+      "context_out": [
+        "internal/cli/diorama_ativos.go",
+        "internal/cli/diorama_ativos_test.go",
+        "internal/cli/cli.go",
+        "processos/legoloop-diorama-ativos/pipeline.dag.json",
+        "skills/legoloop-diorama-ativos/SKILL.md"
+      ],
+      "depends_on": [
+        "TICK-04.2",
+        "SG-E04"
+      ],
+      "id": "TICK-05.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_05_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-05.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/cli/diorama_ativos.go') \u0026\u0026 file_exists('internal/cli/diorama_ativos_test.go') \u0026\u0026 file_exists('internal/cli/cli.go') \u0026\u0026 file_exists('processos/legoloop-diorama-ativos/pipeline.dag.json') \u0026\u0026 file_exists('skills/legoloop-diorama-ativos/SKILL.md')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E05.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/cli/diorama_ativos_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/... ./internal/cli/..."
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-05.1"
+      ],
+      "id": "SG-FINAL",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "name": "sg_final",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-FINAL.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    }
+  ],
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "65ef391452203fed93994ce8abe04a21c20ac08e72bc4e7a4e567dc37d0d5528",
+    "plan": "247d037488f55f627f27e50f181a910c20e7445bc1a4de331f1fc741ed89633e",
+    "spec": "ab01c3dd23a7b30fa82709e610f2da012a5cc6b40ba7fb921883e86d2d49dfa5"
+  },
+  "version": "1.0.0"
+}

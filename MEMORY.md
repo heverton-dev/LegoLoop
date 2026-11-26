@@ -55,6 +55,13 @@
 - **Tríade aprovada:** INTENT (`intv_1795520712665396700`, 96% confiança), SPEC v1.1.0 (11 critérios binários), PLAN/ROUTE/DAG (7 Tickets TDD).
 - **Entregas:** `internal/diorama/roteiro` (95,7% cobertura), `internal/cli/diorama_roteiro.go`, `processos/legoloop-diorama-roteiro/` (5 de 5), `skills/legoloop-diorama-roteiro/SKILL.md`, `docs/manuals/2026-11-24_MANUAL_DIORAMA_ROTEIRO.md` e `docs/books/legoloop-diorama-roteiro/`.
 
+### Sessão Ciclo 2 — `legoloop-diorama-ativos` (24/11/2026)
+
+- **Concepção A2UI:** Entrevista socrática contínua via MCP (`sess_3`, `intv_1795554379812376300`, 98% confiança) com aprovação formal dos Stop-Gates 01 (INTENT), 02 (SPEC v1.1.0, 5 Épicos, 13 critérios binários) e 03 (PLAN/ROUTE/DAG, 7 Tickets TDD).
+- **Entregas:** `internal/diorama/ativos` (95,1% cobertura), `internal/cli/diorama_ativos.go`, `processos/legoloop-diorama-ativos/` (5 de 5), `skills/legoloop-diorama-ativos/SKILL.md`, `docs/manuals/2026-11-24_MANUAL_DIORAMA_ATIVOS.md`, `docs/books/legoloop-diorama-ativos/` e `docs/reports/2026-11-24_REPORT_DIORAMA_ATIVOS.md`.
+- **Hardening A2UI (24/11/2026):** `a2ui-bundle.js` (`HOSTILE_RE` alinhada com `\bon[a-z]+\s*=`, `renderFormattedText` via DOM puro), `legoloop-catalog.js` (`renderStopGatepainel` com formatação estruturada) e `sessao.css` (tipografia estruturada), validados visualmente com preview real HTTP 200 e timer ativo.
+- **Drivers Reais & Pré-voo Bloqueante (24/11/2026):** `prevoo.go` agora exige Chrome CDP `9222`/`9333` (`internal/browser`) e módulos Python (`playwright`, `PIL`, `numpy`, `rembg`) nos modos `flow`/`hibrido`; `drivers.go` embute `scripts/flow_driver.py` e `scripts/sprite_despill.py` via `//go:embed`; `elenco.go` gera PNGs RGBA reais no modo `codigo`; CLI inclui `legoloop diorama-ativos abrir-flow`.
+
 ---
 
 ### Sessão A2UI — Interface Interativa nas 3 Vias do LegoLoop (22/11/2026)
@@ -741,3 +748,5 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Comandos Canônicos:** legoloop fabricar spec --intent INTENT (conferência upstream, geração da SPEC) e legoloop fabricar plano --spec SPEC --tickets tickets.json [--permissivo] (gravação atômica de PLAN, ROUTE e DAG com modo estrito por padrão, conferência de ACs e assinatura criptográfica da ROUTE sobre o PLAN gravado).
   - **Projeção DAG (internal/routedag):** unificação de tipos em unit_task e unit_no sem mapas paralelos, com verificação de cadeia e projeção determinística.
   - **Governança Viva:** AGENTS.md (<= 24000 bytes), docs/governanca/AGENTS_COMPLETO.md, README.md e MEMORY.md atualizados citando explicitamente abricar plano.
+
+- **26/11/2026** — ⚖️ **Lei da prova e correções A13–A15:** fato sem prova se verifica antes de afirmar, achado se corrige na mesma resposta; "Não verificado", pendência, falta e próxima etapa são proibidos. Aplicação: `ste.LintEvasao`, `legoloop stept lint [--hook]` e gancho Stop do Claude Code (prova: sessão headless bloqueada com frase evasiva, `error_max_turns`, 5 turnos; controle com prova, `success`, 1 turno). Motor: `Ticket.Command` em `internal/plangen` (A13, aditivo) permite DAG de `native_swarm` que o `swarm run` sobe. Espinha limpa em `internal/diorama/render` (globais viraram funções, erros ignorados tratados) e Processos `legoloop-diorama-*` com `pipeline.dag.json`.

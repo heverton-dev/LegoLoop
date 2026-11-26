@@ -1,0 +1,108 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "id": "legoloop-diorama-ativos",
+  "name": "legoloop-diorama-ativos",
+  "version": "1.0.0",
+  "schema_version": 2,
+  "date": "2026-11-24",
+  "description": "Processo canonizado Ciclo 2 do Macroprocesso legoloop-video-diorama (Etapas 3, 4 e 5): fichas de elenco e recorte de sprites (rembg + despill), cenarios nos modos codigo (SVG 100% autoral), flow (fila resiliente com backoff, --ref, trava flow_projeto e idempotencia por hash) e hibrido, e compilacao deterministica de cenas.json.",
+  "upstream_signatures": {
+    "intent": "docs/intents/2026-11-24_INTENT_LEGOLOOP_DIORAMA_ATIVOS.md",
+    "spec": "docs/specs/2026-11-24_SPEC_LEGOLOOP_DIORAMA_ATIVOS.md",
+    "plan": "docs/plans/2026-11-24_PLAN_LEGOLOOP_DIORAMA_ATIVOS.md",
+    "route": "docs/routes/2026-11-24_ROUTE_LEGOLOOP_DIORAMA_ATIVOS.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 180,
+    "rollback_on_failure": "abort_and_pause",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "none",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_prevoo_ciclo2",
+      "name": "Pre-voo do Ciclo 2 e validacao dos contratos do Ciclo 1",
+      "nature": "micro",
+      "type": "script",
+      "command": ["legoloop", "diorama-ativos", "prevoo", "--projeto", ".", "--json"],
+      "ref": "legoloop diorama-ativos prevoo",
+      "routing": { "mode": "suggested", "harness": "claude", "via": "9router", "model": "sonnet", "effort": "low", "fallback": "haiku" },
+      "timeout_sec": 60,
+      "isolation": { "executor": "orchestrix_hermetic", "subagents_allowed": false, "workspace": "local", "write_boundary": "strict" },
+      "tooling": { "runtime": "legoloop" },
+      "context_in": ["projeto.json", "marca.json", "script.json", "plano.md"],
+      "context_out": ["prevoo_ativos.json"],
+      "output": { "artifact": "prevoo_ativos.json", "gate": "exit_code == 0" },
+      "spec_ref": "AC-E01.1",
+      "status": "pending",
+      "execution": { "mode": "isolated" },
+      "limits": { "max_attempts": 1, "timeout_seconds": 60 },
+      "rollback_strategy": "abort_and_pause",
+      "verification": { "gate": "exit_code == 0" }
+    },
+    {
+      "id": "n02_executar_etapas_3_4_5",
+      "name": "Execucao das Etapas 3 (Elenco/Sprites), 4 (Cenarios SVG/Flow) e 5 (Storyboard)",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": ["n01_prevoo_ciclo2"],
+      "command": ["legoloop", "diorama-ativos", "executar", "--projeto", ".", "--json"],
+      "ref": "legoloop diorama-ativos executar",
+      "routing": { "mode": "suggested", "harness": "claude", "via": "9router", "model": "sonnet", "effort": "medium", "fallback": "haiku" },
+      "timeout_sec": 180,
+      "isolation": { "executor": "orchestrix_hermetic", "subagents_allowed": false, "workspace": "local", "write_boundary": "strict" },
+      "tooling": { "runtime": "legoloop" },
+      "context_in": ["projeto.json", "script.json", "plano.md"],
+      "context_out": ["flow/elenco.json", "flow/cenarios.json", "cenas.json"],
+      "output": { "artifact": "cenas.json", "gate": "exit_code == 0" },
+      "spec_ref": "AC-E02.1",
+      "status": "pending",
+      "execution": { "mode": "isolated" },
+      "limits": { "max_attempts": 1, "timeout_seconds": 180 },
+      "rollback_strategy": "abort_and_pause",
+      "verification": { "gate": "exit_code == 0" }
+    },
+    {
+      "id": "n03_validar_storyboard",
+      "name": "Gate final da Etapa 5: validacao estrita de cenas.json",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": ["n02_executar_etapas_3_4_5"],
+      "command": ["legoloop", "diorama-ativos", "validar-storyboard", "--projeto", ".", "--json"],
+      "ref": "legoloop diorama-ativos validar-storyboard",
+      "routing": { "mode": "suggested", "harness": "claude", "via": "9router", "model": "sonnet", "effort": "low", "fallback": "haiku" },
+      "timeout_sec": 60,
+      "isolation": { "executor": "orchestrix_hermetic", "subagents_allowed": false, "workspace": "local", "write_boundary": "strict" },
+      "tooling": { "runtime": "legoloop" },
+      "context_in": ["script.json", "flow/cenarios.json", "cenas.json"],
+      "context_out": ["validacao_storyboard.json"],
+      "output": { "artifact": "validacao_storyboard.json", "gate": "exit_code == 0" },
+      "spec_ref": "AC-E04.1",
+      "status": "pending",
+      "execution": { "mode": "isolated" },
+      "limits": { "max_attempts": 1, "timeout_seconds": 60 },
+      "rollback_strategy": "abort_and_pause",
+      "verification": { "gate": "exit_code == 0" }
+    }
+  ]
+}

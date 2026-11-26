@@ -1,0 +1,330 @@
+[
+  {
+    "id": "TICK-DR-01.1",
+    "title": "Criar contratos estritos de ConfigRender, Timings, Timeline, Batida, EventoSFX e RelatorioRender",
+    "epic_id": "E01",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [],
+    "target_files": [
+      "internal/diorama/render/schemas.go",
+      "internal/diorama/render/schemas_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E01.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestSchemas",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-01.2",
+    "title": "Implementar pre-voo do Ciclo 3: cobertura de cenas, sprites, provedor registrado, ferramentas e render.json",
+    "epic_id": "E01",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-01.1"
+    ],
+    "target_files": [
+      "internal/diorama/render/prevoo.go",
+      "internal/diorama/render/prevoo_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E01.1",
+      "AC-E01.2",
+      "AC-NF.2"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestPreVoo",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-02.1",
+    "title": "Implementar Etapa 6 (voz): interface Sintetizador, registro de provedores, adaptador edge-tts e gate de creditos",
+    "epic_id": "E02",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-01.1"
+    ],
+    "target_files": [
+      "internal/diorama/render/voz.go",
+      "internal/diorama/render/voz_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E02.1",
+      "AC-E02.5"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestVoz",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-02.2",
+    "title": "Implementar Etapa 6 (Whisper): Transcritor, WER por linha (15%) e global (5%), timings.json e regravacao seletiva com parada em audio identico",
+    "epic_id": "E02",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-02.1"
+    ],
+    "target_files": [
+      "internal/diorama/render/whisper.go",
+      "internal/diorama/render/whisper_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E02.2",
+      "AC-E02.3",
+      "AC-E02.4",
+      "AC-E02.7"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestWhisper",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-02.3",
+    "title": "Implementar mapeamento deterministico de fonemas PT-BR para visemas",
+    "epic_id": "E02",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-02.2"
+    ],
+    "target_files": [
+      "internal/diorama/render/visemas.go",
+      "internal/diorama/render/visemas_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E02.6"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestVisemas",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-03.1",
+    "title": "Implementar Etapa 8: leitura estrita, camadas 2.5D por profundidade, camera e troca de pose/expressao",
+    "epic_id": "E03",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-01.1",
+      "TICK-DR-02.3"
+    ],
+    "target_files": [
+      "internal/diorama/render/timeline.go",
+      "internal/diorama/render/timeline_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E03.1",
+      "AC-E03.2",
+      "AC-E03.3"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestTimeline",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-03.2",
+    "title": "Implementar segmentacao em batidas e gate check_timeline (12-21 cortes/min, mediana 2,5-4 s)",
+    "epic_id": "E03",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-03.1"
+    ],
+    "target_files": [
+      "internal/diorama/render/ritmo.go",
+      "internal/diorama/render/ritmo_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E03.4"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestRitmo",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-03.3",
+    "title": "Implementar legendas karaoke palavra a palavra e legenda.srt",
+    "epic_id": "E03",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-02.2"
+    ],
+    "target_files": [
+      "internal/diorama/render/legendas.go",
+      "internal/diorama/render/legendas_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E03.5"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestLegendas",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-04.1",
+    "title": "Corrigir teto de True Peak para -1,5 dBTP em videomotion.ValidateLoudnessConformity (achado F2)",
+    "epic_id": "E04",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [],
+    "target_files": [
+      "internal/videomotion/loudness.go",
+      "internal/videomotion/loudness_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E04.4"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/videomotion/ -run TestValidateLoudnessConformity",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-04.2",
+    "title": "Implementar Etapa 7: eventos de SFX, BGM com ducking, normalizacao em duas passadas com margem de pico e verificacao independente",
+    "epic_id": "E04",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-03.2",
+      "TICK-DR-04.1"
+    ],
+    "target_files": [
+      "internal/diorama/render/sfx.go",
+      "internal/diorama/render/sfx_test.go",
+      "internal/diorama/render/ativos_sonoros.go",
+      "internal/diorama/render/ativos_sonoros_test.go",
+      "internal/diorama/render/mix.go",
+      "internal/diorama/render/mix_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E04.1",
+      "AC-E04.2",
+      "AC-E04.3",
+      "AC-E04.5"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestMix",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-05.1",
+    "title": "Implementar sonda e escolha de encoder NVENC/QSV/AMF com fallback libx264",
+    "epic_id": "E05",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-01.1"
+    ],
+    "target_files": [
+      "internal/diorama/render/encoder.go",
+      "internal/diorama/render/encoder_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E05.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestEncoder",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-05.2",
+    "title": "Implementar render master 16:9 em 720p/1080p/4K, versoes numeradas e gate de integridade",
+    "epic_id": "E05",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-05.1",
+      "TICK-DR-04.2",
+      "TICK-DR-03.3"
+    ],
+    "target_files": [
+      "internal/diorama/render/render.go",
+      "internal/diorama/render/render_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E05.2",
+      "AC-E05.3"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestRender",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-05.3",
+    "title": "Implementar cortes 9:16 por re-render da timeline com area segura e legenda fora do narrador",
+    "epic_id": "E05",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-05.2",
+      "TICK-DR-03.1"
+    ],
+    "target_files": [
+      "internal/diorama/render/vertical.go",
+      "internal/diorama/render/vertical_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E05.4",
+      "AC-E05.5"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/ -run TestVertical",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-06.1",
+    "title": "Orquestrar Processo completo, E2E hermetico no diorama-demo, determinismo e cobertura >= 95%",
+    "epic_id": "E06",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-01.2",
+      "TICK-DR-03.2",
+      "TICK-DR-03.3",
+      "TICK-DR-04.2",
+      "TICK-DR-05.3"
+    ],
+    "target_files": [
+      "internal/diorama/render/processo.go",
+      "internal/diorama/render/processo_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E06.2",
+      "AC-NF.1",
+      "AC-NF.2",
+      "AC-NF.3"
+    ],
+    "validation_cmd": "go test -count=1 -cover ./internal/diorama/render/...",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-DR-06.2",
+    "title": "Integrar CLI legoloop diorama-render, DAG v2, Skill e fechamento 5 de 5 via legoloop fechar",
+    "epic_id": "E06",
+    "initiative_id": "D03",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-DR-06.1"
+    ],
+    "target_files": [
+      "internal/cli/diorama_render.go",
+      "internal/cli/diorama_render_test.go",
+      "internal/cli/cli.go",
+      "processos/legoloop-diorama-render/processo.dag.json",
+      "skills/legoloop-diorama-render/SKILL.md"
+    ],
+    "spec_criteria": [
+      "AC-E06.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/diorama/render/... ./internal/cli/...",
+    "human_gate_after": true
+  }
+]

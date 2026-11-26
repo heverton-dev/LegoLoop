@@ -98,3 +98,25 @@ func TestEnvelopeValidateRejeitaMessageTypeESessionInvalidos(t *testing.T) {
 		t.Fatalf("esperava ErrMensagemInvalida, obteve: %v", envTipoRuim.Validate(cat))
 	}
 }
+
+func TestEnvelopeValidateNaoBloqueiaTextoBenignoComIgual(t *testing.T) {
+	cat := DefaultCatalog()
+	textos := []string{
+		"sessionid=sess_3",
+		"jsonoutput=true",
+		"actionurl=http://127.0.0.1",
+		"estilo_visual=codigo",
+	}
+	for _, txt := range textos {
+		env := Envelope{
+			SessionID:   "sess_1",
+			SurfaceID:   "proc:e2e",
+			ProtocolVer: "v0.9",
+			MessageType: "createSurface",
+			Components:  []ComponentRef{{ID: "c1", Kind: "Text", Props: map[string]any{"text": txt}}},
+		}
+		if err := env.Validate(cat); err != nil {
+			t.Fatalf("texto benigno %q nao deveria ser rejeitado: %v", txt, err)
+		}
+	}
+}

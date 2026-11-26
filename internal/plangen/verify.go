@@ -13,16 +13,48 @@ import (
 const shellMeta = "|;<>$`\"'(){}*?&\\"
 
 // splitVerify converte "cmd a b && cmd2 c" em argv. Devolve ok=false quando o comando depende de shell
-// (pipe, redirecionamento, aspas, glob) ou não é um executável aceito pelo contrato do DAG.
+// (pipe, redirecionamento, aspas simples, glob) ou não é um executável aceito pelo contrato do DAG.
+// Argumento entre aspas duplas com regex simples (go test -run "A|B") é um argv único.
 func splitVerify(cmd string) (argv [][]string, ok bool) {
 	for part := range strings.SplitSeq(cmd, "&&") {
-		fields := strings.Fields(strings.Trim(strings.TrimSpace(part), "`"))
-		if len(fields) == 0 || strings.ContainsAny(strings.Join(fields, ""), shellMeta) || dag.ValidateCommand(fields) != nil {
+		fields, okF := fieldsComAspas(strings.Trim(strings.TrimSpace(part), "`"))
+		if !okF || len(fields) == 0 || dag.ValidateCommand(fields) != nil {
 			return nil, false
 		}
 		argv = append(argv, fields)
 	}
 	return argv, len(argv) > 0
+}
+
+// fieldsComAspas separa por espaço e agrupa aspas duplas. Fora das aspas vale shellMeta;
+// dentro, só letras, dígitos e _ | . ^ / -. Aspas sem fechar reprovam.
+func fieldsComAspas(s string) ([]string, bool) {
+	var out []string
+	for s = strings.TrimSpace(s); s != ""; s = strings.TrimSpace(s) {
+		if s[0] == '"' {
+			fim := strings.IndexByte(s[1:], '"')
+			if fim < 0 || !regexSeguro(s[1:1+fim]) || (len(s) > fim+2 && s[fim+2] != 32) {
+				return nil, false
+			}
+			out, s = append(out, s[1:1+fim]), s[fim+2:]
+			continue
+		}
+		tok, resto, _ := strings.Cut(s, " ")
+		if strings.ContainsAny(tok, shellMeta) {
+			return nil, false
+		}
+		out, s = append(out, tok), resto
+	}
+	return out, true
+}
+
+func regexSeguro(s string) bool {
+	for _, r := range s {
+		if !strings.ContainsRune("_|.^/-", r) && (r < '0' || r > '9') && (r < 'A' || r > 'Z') && (r < 'a' || r > 'z') {
+			return false
+		}
+	}
+	return s != ""
 }
 
 // gateSafe diz se o caminho pode ir como literal em file_exists(...).

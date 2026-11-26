@@ -1,5 +1,25 @@
 {
   "schema_version": "anticorpos.v1",
   "processo": "legoloop-diorama-roteiro",
-  "itens": []
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:af3c0c135c34088f4ddc89985d257084d971e50bc133e31887f3e692a459fd20",
+      "erro": "Botao A2UI ignorava multiplos campos, MultipleChoice caia em painel generico e agente nao chamava sessao_aguardar apos sessao_publicar",
+      "antidoto": "Coletar todos os campos com querySelectorAll em _renderButton, renderizar MultipleChoice em _renderSelectControl e chamar sessao_aguardar logo apos sessao_publicar",
+      "recorrencias": 1,
+      "pacote": "internal/studio",
+      "causa_raiz": "a2ui-bundle.js lia apenas querySelector unico em submit_answer e omitia case MultipleChoice",
+      "timestamp": "2026-11-24T18:07:42Z"
+    },
+    {
+      "assinatura": "sha256:d4d298fd98a4ee56cd2629d0e92be4659700f46de67852d3bd18f9187c28c25d",
+      "erro": "Overlay A2UI travava apos Enviar sem sessao_aguardar",
+      "antidoto": "Abrir navegador em sessao_criar, timeout 5min, watchdog em sessao-app.js e sessao_aguardar no mesmo turno",
+      "recorrencias": 1,
+      "pacote": "internal/mcp",
+      "causa_raiz": "sessao_criar nao abria navegador, timeout era 30s e agente encerrava turno apos sessao_publicar",
+      "timestamp": "2026-11-24T18:44:48Z"
+    }
+  ]
 }

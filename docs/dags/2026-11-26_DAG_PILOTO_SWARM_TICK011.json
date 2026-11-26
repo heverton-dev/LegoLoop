@@ -1,0 +1,106 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-26",
+  "description": "Espelho executável da ROUTE 2026-11-26_ROUTE_VIDEO_ANIMADO_V2",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local",
+      "write_boundary": "strict"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "piloto_swarm_tick_01_1",
+  "nodes": [
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-01.1 (ACs AC-E07.2 e AC-E07.6) da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md (secao de schemas Go: Estilo, Item, Referencia e erros tipados). Ciclo TDD: 1) escreva internal/video/inventario/schemas_test.go com TestSchemas e rode para ver falhar; 2) escreva internal/video/inventario/schemas.go e rode go test -count=1 ./internal/video/inventario/ -run TestSchemas ate passar. Regras: nao faca commit nem push; nao crie subagentes; nao toque em outros pacotes; nao imprima nem grave segredos. Ao final responda em PT-BR, uma frase por linha, com a saida do go test.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(gofmt:*)"
+      ],
+      "context_in": [
+        "internal/video/inventario/schemas.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/video/inventario/schemas.go",
+        "internal/video/inventario/schemas_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-01.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.1.json",
+        "gate": "exit_code == 0 && file_exists('internal/video/inventario/schemas.go') && file_exists('internal/video/inventario/schemas_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E07.2, AC-E07.6",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/video/inventario/schemas_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/video/inventario/ -run TestSchemas"
+      },
+      "role": "engenheiro-tdd",
+      "timeout_sec": 900
+    }
+  ],
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "e0a507437f0dcfad9c70f13d44d2e04d748ef7bb46bf3be9f968e05659a79c0f",
+    "plan": "30195222c12b77330f1a805fff53725626f1e7b660dbab881c020d2a4e3dd448",
+    "spec": "28124abfc328fefcd38cc0de0467995e2aa7b1a04c235417c6d95d9aba2f8bcd"
+  },
+  "version": "1.0.0"
+}

@@ -2,5 +2,40 @@
   "schema_version": "anticorpos.v1",
   "processo": "legoloop-fabricar",
   "globais": [],
-  "dominio": []
+  "dominio": [
+    {
+      "assinatura": "sha256:6bed35942086d3512a482b696df4459f0b5acaf25f3583796fffa792954e3de1",
+      "erro": "DAG do fabricar plano nao sobe no swarm",
+      "antidoto": "Ticket.Command e executor native_swarm no ticket",
+      "recorrencias": 1,
+      "pacote": "internal/plangen",
+      "causa_raiz": "no sem role nem command do executor",
+      "timestamp": "2026-11-26T14:47:26Z"
+    },
+    {
+      "assinatura": "sha256:c7340fe0b5b00d181016c9d61b02907943f572dab01bf769132711c7a796a803",
+      "erro": "DAG gerado sem ponteiro de progresso e ID de ticket fora da convencao",
+      "antidoto": "apontarProgressoNoDAG e IDs TICK-\u003ciniciativa letras+digitos\u003e-NN.N",
+      "recorrencias": 1,
+      "pacote": "internal/cli",
+      "causa_raiz": "fabricar plano nao gravava progresso no DAG; TICK-VA nao casa com o observador",
+      "timestamp": "2026-11-26T15:07:27Z"
+    },
+    {
+      "assinatura": "sha256:38ab666e5976380b2c4d0e6b98bf7d90f46e5a6be6d15b39bd0b1a948a9c298d",
+      "erro": "validation_cmd com aspas de argumento virava gate prompt e travava o swarm; regerar plano zera progresso",
+      "antidoto": "",
+      "recorrencias": 1,
+      "pacote": "internal/plangen",
+      "timestamp": "2026-11-26T16:30:33Z"
+    },
+    {
+      "assinatura": "sha256:fcf903ed54d755f2eb9546ecf7566107bc11ed4fcea9770190fd7e3560a9ebf7",
+      "erro": "vocabulario de faixa etaria limitado a 3 valores; ampliado para 5 (bebe, crianca, adolescente, adulto, idoso)",
+      "antidoto": "",
+      "recorrencias": 1,
+      "pacote": "internal/video/inventario",
+      "timestamp": "2026-11-26T18:23:48Z"
+    }
+  ]
 }
