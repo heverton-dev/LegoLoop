@@ -4,12 +4,44 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"path/filepath"
 	"strings"
 
 	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
 )
+
+// ErrRenderizadorNaoRecorte indica estilo cujo renderizador nao usa fichas e rembg (AC-E09.3).
+var ErrRenderizadorNaoRecorte = errors.New("diorama-ativos: renderizador do estilo nao e de recorte")
+
+// RenderizadorDeRecorte indica renderizador "recorte" ou "recorte-<variante>", que segue fichas e rembg.
+func RenderizadorDeRecorte(renderizador string) bool {
+	r := strings.ToLower(strings.TrimSpace(renderizador))
+	return r == "recorte" || strings.HasPrefix(r, "recorte-")
+}
+
+// EntradaEtapa3Recorte reune o estilo, as fichas 4 faixas e o elenco da Etapa 3 de recorte.
+type EntradaEtapa3Recorte struct {
+	Projeto    roteiro.Projeto
+	Estilo     inventario.Estilo
+	Fichas     []FichaAtivo
+	Elenco     []FichaPersonagem
+	Deps       DepsCenarios
+	Recortador RecortadorSprite
+}
+
+// ExecutarEtapa3Recorte mantem o caminho legado: gera as fichas e depois recorta com rembg (AC-E09.3).
+func ExecutarEtapa3Recorte(ctx context.Context, projDir string, in EntradaEtapa3Recorte) ([]DescritorSprite, error) {
+	if !RenderizadorDeRecorte(in.Estilo.Renderizador) {
+		return nil, fmt.Errorf("%w: estilo %q renderizador %q", ErrRenderizadorNaoRecorte, in.Estilo.ID, in.Estilo.Renderizador)
+	}
+	if _, err := ExecutarGeracaoFichas4Faixas(ctx, projDir, in.Projeto, in.Fichas, in.Deps); err != nil {
+		return nil, err
+	}
+	return ExecutarEtapa3Elenco(ctx, projDir, in.Elenco, in.Recortador)
+}
 
 // CompilarPromptFicha4Faixas monta o prompt deterministico no padrao 4 faixas (Turnaround, Expressions, Poses, Build Notes).
 func CompilarPromptFicha4Faixas(f FichaAtivo) string {

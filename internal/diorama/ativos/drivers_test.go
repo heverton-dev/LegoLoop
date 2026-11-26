@@ -35,7 +35,9 @@ func TestDriversClienteFlowCDPComExecutorInjetado(t *testing.T) {
 			argsCapturados = args
 			for i := 0; i < len(args)-1; i++ {
 				if args[i] == "--saida-arquivo" {
-					_ = os.WriteFile(args[i+1], []byte("PNG_REAL_SIMULADO"), 0o644)
+					if err := os.WriteFile(args[i+1], []byte("PNG_REAL_SIMULADO"), 0o644); err != nil {
+						return nil, err
+					}
 				}
 			}
 			return []byte(`{"ok":true}`), nil
@@ -95,6 +97,19 @@ func TestDriversRecortadorRembgDespillComExecutorInjetado(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(dir, "flow", ".legoloop_sprite_despill.py")); err != nil {
 		t.Fatalf("script sprite_despill.py nao materializado no projDir: %v", err)
+	}
+}
+
+func TestDriversRecortadorDoEstilo(t *testing.T) {
+	rec, err := RecortadorDoEstilo("recorte-rembg")
+	if err != nil {
+		t.Fatalf("estilo de recorte deve usar rembg: %v", err)
+	}
+	if _, ok := rec.(*RecortadorRembgDespill); !ok {
+		t.Fatalf("esperado *RecortadorRembgDespill, obtido %T", rec)
+	}
+	if _, err := RecortadorDoEstilo("molde-pilula"); !errors.Is(err, ErrRenderizadorNaoRecorte) {
+		t.Fatalf("esperado ErrRenderizadorNaoRecorte para vetorial, obtido: %v", err)
 	}
 }
 
@@ -177,7 +192,9 @@ func TestDriversErrosEBordas(t *testing.T) {
 			t.Fatalf("esperado erro quando script python real nao tem Chrome 9333")
 		}
 		dirArqFlow := t.TempDir()
-		_ = os.WriteFile(filepath.Join(dirArqFlow, "flow"), []byte("arquivo"), 0o644)
+		if err := os.WriteFile(filepath.Join(dirArqFlow, "flow"), []byte("arquivo"), 0o644); err != nil {
+			t.Fatal(err)
+		}
 		if _, err := materializarScript(dirArqFlow, "x.py", []byte("ok")); err == nil {
 			t.Fatalf("esperado erro quando flow nao e diretorio")
 		}
@@ -199,7 +216,10 @@ func TestDriversErrosEBordas(t *testing.T) {
 			t.Fatalf("esperado erro de URL invalida no CDP")
 		}
 		dirFlow := criarFixtureCiclo1(t, "flow", "uuid-png-1")
-		contratos, _ := CarregarContratosEntrada(dirFlow)
+		contratos, err := CarregarContratosEntrada(dirFlow)
+		if err != nil {
+			t.Fatal(err)
+		}
 		cliPNG := &clienteFlowPNGFake{}
 		cenarios, err := ExecutarEtapa4Cenarios(context.Background(), dirFlow, contratos.Projeto, contratos.Script, DepsCenarios{
 			Flow: cliPNG,
@@ -253,8 +273,12 @@ func TestDriversErrosEBordas(t *testing.T) {
 	t.Run("RecortadorRembgDespill faz fallback para folha mestre quando poses_6x ausente", func(t *testing.T) {
 		dir := t.TempDir()
 		folha := filepath.Join(dir, "flow", "fichas", "heroi_sheet.png")
-		_ = os.MkdirAll(filepath.Dir(folha), 0o755)
-		_ = os.WriteFile(folha, []byte("SIMULADO"), 0o644)
+		if err := os.MkdirAll(filepath.Dir(folha), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(folha, []byte("SIMULADO"), 0o644); err != nil {
+			t.Fatal(err)
+		}
 
 		var entradaCapturada string
 		rec := &RecortadorRembgDespill{

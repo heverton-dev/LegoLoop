@@ -2,14 +2,14 @@
   "schema": "progresso.v1",
   "iniciativa": "V01",
   "plano": "docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md",
-  "atualizado_em": "2026-11-26T19:48:39Z",
+  "atualizado_em": "2026-11-26T19:56:20Z",
   "resumo": {
     "total": 25,
-    "aprovados": 9,
+    "aprovados": 10,
     "em_andamento": 0,
     "reprovados": 0,
     "bloqueados": 0,
-    "pendentes": 16
+    "pendentes": 15
   },
   "tickets": [
     {
@@ -194,11 +194,11 @@
       "id": "TICK-V01-04.2",
       "epico": "E09",
       "titulo": "Manter o caminho de fichas e rembg para estilos de recorte sem regressao",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "swarm",
       "comando": "go test -count=1 ./internal/diorama/ativos/ -run \"TestFichas|TestDrivers|TestElenco\"",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/diorama/ativos\t0.677s |",
       "alvos": [
         "internal/diorama/ativos/fichas.go",
         "internal/diorama/ativos/drivers.go",
@@ -208,7 +208,7 @@
       "criterios": [
         "AC-E09.3"
       ],
-      "atualizado_em": "2026-11-26T00:00:00Z"
+      "atualizado_em": "2026-11-26T19:56:20Z"
     },
     {
       "id": "TICK-V01-04.3",

@@ -2,7 +2,7 @@
 schema: progresso.v1
 iniciativa: "V01"
 plano: "docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md"
-atualizado_em: "2026-11-26T19:48:39Z"
+atualizado_em: "2026-11-26T19:56:20Z"
 ---
 
 # Progresso Vivo: V01
@@ -13,7 +13,7 @@ atualizado_em: "2026-11-26T19:48:39Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 25 | 9 | 0 | 0 | 0 | 16 |
+| 25 | 10 | 0 | 0 | 0 | 15 |
 
 ## Ponto de Retomada (Em Andamento)
 
@@ -31,7 +31,6 @@ atualizado_em: "2026-11-26T19:48:39Z"
 
 | Ticket | Épico | Título | Critérios |
 |---|---|---|---|
-| `TICK-V01-04.2` | E09 | Manter o caminho de fichas e rembg para estilos de recorte sem regressao | AC-E09.3 |
 | `TICK-V01-04.3` | E09 | Etapa 4: consultar o inventario antes de gerar fundos e registrar fundo novo com prompt, tags e hash | AC-E09.4 |
 | `TICK-V01-04.4` | E09 | Marcar entrega suspeita do Flow (sem confirmacao de renomeacao, hash cruzado, fora do padrao de estilo) | AC-E09.5 |
 | `TICK-V01-05.1` | E10 | Criar motor-local com LICENCA.json, ignorar no git e teste de governanca da licenca | AC-E10.1 |
@@ -61,3 +60,4 @@ atualizado_em: "2026-11-26T19:48:39Z"
 | `TICK-V01-03.1` | E08 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/diorama/ativos	0.132s / | 2026-11-26T19:35:39Z |
 | `TICK-V01-03.2` | E08 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/diorama/ativos	0.033s / | 2026-11-26T19:41:59Z |
 | `TICK-V01-04.1` | E09 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/diorama/ativos	0.057s / | 2026-11-26T19:48:39Z |
+| `TICK-V01-04.2` | E09 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/diorama/ativos	0.677s / | 2026-11-26T19:56:20Z |

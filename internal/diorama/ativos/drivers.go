@@ -98,6 +98,14 @@ func (r *RecortadorRembgDespill) RecortarEFatiar(ctx context.Context, projDir st
 	return sprites, nil
 }
 
+// RecortadorDoEstilo devolve o recortador rembg + despill para renderizador de recorte (AC-E09.3).
+func RecortadorDoEstilo(renderizador string) (RecortadorSprite, error) {
+	if !RenderizadorDeRecorte(renderizador) {
+		return nil, fmt.Errorf("%w: renderizador %q", ErrRenderizadorNaoRecorte, renderizador)
+	}
+	return NovoRecortadorRembgDespill(), nil
+}
+
 func resolverEntradaSprite(projDir string, ficha FichaPersonagem) (string, error) {
 	caminho := ficha.Fichas["poses_6x"]
 	if _, err := os.Stat(filepath.Join(projDir, caminho)); os.IsNotExist(err) {

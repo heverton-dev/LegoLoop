@@ -221,3 +221,8 @@
 - Entrega: ExecutarEtapa3Vetorial, lacunasDoCast (item ausente vira lacuna, nao erro), gravarItemNovo (grava com Aprovado=false).
 - Prova: go test ./internal/diorama/ativos/... ok; mutacao que ignora item ausente mata 1 teste; mutacao que grava item ja aprovado mata 1 teste; go test ./... 73 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
 - Progresso: 9 aprovados.
+
+## Camada 10 - TICK-V01-04.2 mantem caminho de recorte sem regressao (2026-11-26)
+- Entrega: RenderizadorDeRecorte (recorte ou recorte-<variante>), RecortadorDoEstilo, ExecutarEtapa3Recorte (caminho legado: fichas 4 faixas + rembg), ErrRenderizadorNaoRecorte para estilo vetorial.
+- Prova: go test ./internal/diorama/ativos/... ok; mutacao que ignora o renderizador em fichas.go mata 1 teste; mutacao equivalente em drivers.go mata 1 teste; go test ./... 73 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
+- Progresso: 10 aprovados.
