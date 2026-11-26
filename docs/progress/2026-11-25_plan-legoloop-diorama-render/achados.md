@@ -291,5 +291,4 @@
 - Achado: espinha exige *.dag.json e ANTICORPOS.md completos em toda pasta de processos/; criar uma pasta-stub so de redirecionamento la teria falhado em 'processo-incompleto'. Corrigido removendo a pasta-stub de processos/ e deixando so o slug novo no registro; o redirecionamento fica no alias de CLI (ja feito no TICK-07.2) e no SKILL.md.
 - Achado: TestInstalarSkills exigia exatamente 48 skills nativas (contagem literal) e 'secao estruturada de regras' (precisa de um '## '); corrigido elevando para 50 e acrescentando secoes ## Redirecionamento/## Regras aos 2 stubs.
 - Corrigido: espinha/registro.json (slug dos 2 processos; motor dos 2 verbos ja tinha sido corrigido no TICK-07.1); docs/PROCESSOS_CANONIZADOS.md com nota de renomeacao e data.
-- Pendente cosmetico, nao bloqueante: o campo interno 'name' dos pipeline.dag.json dos 2 processos ainda diz 'legoloop-diorama-ativos/roteiro' (legoloop validate confirma 3 e 4 nos validos mesmo assim); fora do escopo deste ticket, fica para quem tocar o DAG de novo.
-- Prova: go test ./... 75 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos; legoloop validate dos 2 pipeline.dag.json novos ok.
+- Corrigido: o campo interno 'name' dos pipeline.dag.json dos 2 processos agora diz legoloop-video-ativos/legoloop-video-roteiro; legoloop validate confirma os 2 validos; go test ./internal/espinha/... ok.
