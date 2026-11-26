@@ -268,3 +268,7 @@
 - Prova: go test ./internal/diorama/ativos/... ok; mutacao em cada um dos 3 motivos mata 1 teste; sem erro de build desta vez.
 - Achado de governanca, nao corrigido por mim (fora do meu ticket): internal/kraften/{artefatos,cloudflare,preflight}.go e sync_test.go estao no disco, nao commitados, com sync_test.go referenciando NovoCloudflareClient que so existe em cloudflare.go (nao commitado); go build ./internal/kraften/... falha isolado. Esses arquivos ja tinham sido arrastados para o commit 23c7eec por 'git add -A'; desta vez eu os tirei do stage (git restore --staged internal/kraften) antes de commitar, para nao empacotar trabalho alheio inacabado.
 - go test -count=1 $(go list ./... | grep -v internal/kraften): 74 pacotes ok, 0 falhas. vet, funclen e gofmt limpos em internal/diorama. Progresso: 17 aprovados.
+
+## Atualizacao do achado kraften: resolvido por conta propria (2026-11-26)
+- Entre a verificacao (build falhando) e o commit, um processo externo (nao este, nao o swarm desta sessao) completou internal/kraften/sync.go; go build e go vet ./internal/kraften/... agora limpos, go test ./... com 75 pacotes ok, 0 falhas.
+- O commit 9d2d5e4 acabou incluindo os arquivos de kraften porque algo volta a dar 'git add -A' fora do meu controle (historico mostra commits antigos 'chore: sincronizar N arquivos do repositorio'); meu 'git restore --staged' foi desfeito antes do commit. Nao e um erro de codigo meu, mas registro para o usuario saber que ha sincronizacao automatica paralela mexendo no index.
