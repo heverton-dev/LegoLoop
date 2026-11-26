@@ -2,14 +2,14 @@
   "schema": "progresso.v1",
   "iniciativa": "V01",
   "plano": "docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md",
-  "atualizado_em": "2026-11-26T19:56:20Z",
+  "atualizado_em": "2026-11-26T20:04:19Z",
   "resumo": {
     "total": 25,
-    "aprovados": 10,
+    "aprovados": 11,
     "em_andamento": 0,
     "reprovados": 0,
     "bloqueados": 0,
-    "pendentes": 15
+    "pendentes": 14
   },
   "tickets": [
     {
@@ -214,11 +214,11 @@
       "id": "TICK-V01-04.3",
       "epico": "E09",
       "titulo": "Etapa 4: consultar o inventario antes de gerar fundos e registrar fundo novo com prompt, tags e hash",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "swarm",
       "comando": "go test -count=1 ./internal/diorama/ativos/ -run TestCenariosInventario",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/diorama/ativos\t0.056s |",
       "alvos": [
         "internal/diorama/ativos/cenarios.go",
         "internal/diorama/ativos/cenarios_test.go"
@@ -226,7 +226,7 @@
       "criterios": [
         "AC-E09.4"
       ],
-      "atualizado_em": "2026-11-26T00:00:00Z"
+      "atualizado_em": "2026-11-26T20:04:19Z"
     },
     {
       "id": "TICK-V01-04.4",

@@ -226,3 +226,9 @@
 - Entrega: RenderizadorDeRecorte (recorte ou recorte-<variante>), RecortadorDoEstilo, ExecutarEtapa3Recorte (caminho legado: fichas 4 faixas + rembg), ErrRenderizadorNaoRecorte para estilo vetorial.
 - Prova: go test ./internal/diorama/ativos/... ok; mutacao que ignora o renderizador em fichas.go mata 1 teste; mutacao equivalente em drivers.go mata 1 teste; go test ./... 73 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
 - Progresso: 10 aprovados.
+
+## Camada 11 - TICK-V01-04.3 etapa 4 consulta inventario antes de gerar fundo (2026-11-26)
+- Entrega: ObterFundoInventario (busca por estilo+tags antes do Flow), reutilizarFundo (confere hash na origem e na copia), gerarFundoNovo/registrarFundoNovo (prompt_mestre do estilo + prompt da cena, hash, item sem aprovacao).
+- Prova: go test ./internal/diorama/ativos/... ok; mutacao que pula a busca no inventario (gera sempre) mata 2 testes.
+- Achado sem correcao de codigo: a segunda checagem de hash (da copia recem-escrita no projeto) sobreviveu a mutacao (0 falhas); e defensiva contra falha de IO entre escrever e reler o mesmo arquivo, cenario que um teste de unidade normal nao reproduz sem injetar falha de disco; documentado aqui em vez de simulado.
+- go test ./... 73 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos. Progresso: 11 aprovados.

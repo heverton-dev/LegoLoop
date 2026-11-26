@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
 )
 
 type RequisicaoFlow struct {
@@ -212,6 +213,112 @@ func carregarCacheCenarios(projDir string) map[string]Cenario {
 		out[c.ID] = c
 	}
 	return out
+}
+
+// PedidoFundo descreve o fundo que a Etapa 4 precisa: id kebab-case, tags de busca e prompt da cena.
+type PedidoFundo struct {
+	ID     string
+	Tags   []string
+	Prompt string
+}
+
+// ResultadoFundo informa o item usado, a copia no projeto e se veio do inventario.
+type ResultadoFundo struct {
+	Item        inventario.Item
+	Arquivo     string
+	Reutilizado bool
+}
+
+// ObterFundoInventario consulta o inventario antes de gerar: item aprovado com as tags e reutilizado
+// com hash conferido; ausente, gera no Flow e registra o item com prompt, tags e hash.
+func ObterFundoInventario(ctx context.Context, projDir string, s inventario.Store, estilo string, p PedidoFundo, deps DepsCenarios, origem string) (ResultadoFundo, error) {
+	itens, err := s.Buscar(estilo, "cenario", p.Tags)
+	if err != nil {
+		return ResultadoFundo{}, err
+	}
+	if len(itens) > 0 {
+		return reutilizarFundo(projDir, s, itens[0])
+	}
+	it, err := gerarFundoNovo(ctx, s, estilo, p, normalizarDepsCenarios(deps), origem)
+	if err != nil {
+		return ResultadoFundo{}, err
+	}
+	res, err := reutilizarFundo(projDir, s, it)
+	res.Reutilizado = false
+	return res, err
+}
+
+// reutilizarFundo confere o hash na origem, copia ao projeto e confere o hash da copia.
+func reutilizarFundo(projDir string, s inventario.Store, it inventario.Item) (ResultadoFundo, error) {
+	if err := s.Verificar(it); err != nil {
+		return ResultadoFundo{}, err
+	}
+	dados, err := os.ReadFile(filepath.Join(s.Raiz, it.Arquivo))
+	if err != nil {
+		return ResultadoFundo{}, err
+	}
+	rel := filepath.ToSlash(filepath.Join("flow", it.ID+filepath.Ext(it.Arquivo)))
+	if err := gravarBytesSeguro(projDir, rel, dados); err != nil {
+		return ResultadoFundo{}, err
+	}
+	copia, err := ResolverCaminhoSeguro(projDir, rel)
+	if err != nil {
+		return ResultadoFundo{}, err
+	}
+	h, err := inventario.HashArquivo(copia)
+	if err != nil {
+		return ResultadoFundo{}, err
+	}
+	if h != it.Hash {
+		return ResultadoFundo{}, fmt.Errorf("%w: copia de %q: esperado %s, obtido %s", inventario.ErrHashDivergente, it.ID, it.Hash, h)
+	}
+	return ResultadoFundo{Item: it, Arquivo: rel, Reutilizado: true}, nil
+}
+
+// gerarFundoNovo gera no Flow com o prompt_mestre do estilo e grava arquivo e item sem aprovacao.
+func gerarFundoNovo(ctx context.Context, s inventario.Store, estilo string, p PedidoFundo, deps DepsCenarios, origem string) (inventario.Item, error) {
+	e, err := s.LerEstilo(estilo)
+	if err != nil {
+		return inventario.Item{}, err
+	}
+	if deps.Flow == nil {
+		return inventario.Item{}, fmt.Errorf("%w: cliente Flow ausente para %s", ErrPreVooBloqueado, p.ID)
+	}
+	prompt := strings.TrimSpace(e.PromptMestre + " " + p.Prompt)
+	dados, err := executarComBackoff(ctx, RequisicaoFlow{CenarioID: p.ID, Prompt: prompt}, deps)
+	if err != nil {
+		return inventario.Item{}, err
+	}
+	ext := ".png"
+	if strings.Contains(string(dados), "<svg") {
+		ext = ".svg"
+	}
+	rel := filepath.ToSlash(filepath.Join("inventario", "video", "estilos", e.ID, "arquivos", "cenario", p.ID+ext))
+	if err := gravarBytesSeguro(s.Raiz, rel, dados); err != nil {
+		return inventario.Item{}, err
+	}
+	return registrarFundoNovo(s, e, p, prompt, rel, origem)
+}
+
+// registrarFundoNovo calcula o hash do arquivo e grava o item com prompt e tags.
+func registrarFundoNovo(s inventario.Store, e inventario.Estilo, p PedidoFundo, prompt, rel, origem string) (inventario.Item, error) {
+	h, err := inventario.HashArquivo(filepath.Join(s.Raiz, rel))
+	if err != nil {
+		return inventario.Item{}, err
+	}
+	it := inventario.Item{
+		SchemaVersion: 1,
+		ID:            p.ID,
+		Tipo:          "cenario",
+		Estilo:        e.ID,
+		EstiloVersao:  e.Versao,
+		Tags:          append([]string(nil), p.Tags...),
+		Parametros:    map[string]any{"prompt": prompt},
+		Arquivo:       rel,
+		Hash:          h,
+		Origem:        origem,
+	}
+	return it, s.GravarItem(it)
 }
 
 func arquivoExisteSeguro(projDir, rel string) bool {
