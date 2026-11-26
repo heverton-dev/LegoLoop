@@ -52,4 +52,7 @@ projetos/
 # Cofre local de ativos multimídia reutilizáveis
 cofre/
 
+# Motor de vídeo portado: fora do git enquanto LICENCA.json estiver pendente (AC-E10.1)
+motor-local/
+
 

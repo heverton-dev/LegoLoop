@@ -178,6 +178,17 @@
       "exit_code": 0,
       "created_at": "2026-11-26T20:02:31.614446Z",
       "last_active_at": "2026-11-26T20:04:19.7140333Z"
+    },
+    {
+      "name": "TICK-05-1",
+      "role": "engenheiro-tdd",
+      "model": "code-pro",
+      "workspace_mode": "inherit",
+      "repo_dir": "C:\\Users\\trcnologia\\Desktop\\LegoLoop",
+      "status": "killed",
+      "exit_code": 0,
+      "created_at": "2026-11-26T20:09:36.0856544Z",
+      "last_active_at": "2026-11-26T20:10:32.5738036Z"
     }
   ],
   "messages": null,

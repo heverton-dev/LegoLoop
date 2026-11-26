@@ -232,3 +232,8 @@
 - Prova: go test ./internal/diorama/ativos/... ok; mutacao que pula a busca no inventario (gera sempre) mata 2 testes.
 - Achado sem correcao de codigo: a segunda checagem de hash (da copia recem-escrita no projeto) sobreviveu a mutacao (0 falhas); e defensiva contra falha de IO entre escrever e reler o mesmo arquivo, cenario que um teste de unidade normal nao reproduz sem injetar falha de disco; documentado aqui em vez de simulado.
 - go test ./... 73 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos. Progresso: 11 aprovados.
+
+## Camada 12 - TICK-V01-05.1 motor-local com licenca pendente (2026-11-26)
+- Entrega: motor-local/LICENCA.json (status pendente, plano B de reescrita de puppet.js/sets.js), motor-local/ ignorado em .gitignore:56, licenca_test.go (TestLicencaDecisaoPorStatus, TestLicencaMotorLocalGovernanca que roda git check-ignore de verdade).
+- Prova: go test ./internal/video/motor/... ok; mutacao no case "pendente" mata 2 testes; go test ./... 74 pacotes ok (novo pacote motor); vet, funclen, gofmt, go.mod e espinha limpos.
+- Progresso: 12 aprovados.
