@@ -2,7 +2,7 @@
 schema: progresso.v1
 iniciativa: "V01"
 plano: "docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md"
-atualizado_em: "2026-11-26T20:30:04Z"
+atualizado_em: "2026-11-26T20:49:45Z"
 ---
 
 # Progresso Vivo: V01
@@ -13,7 +13,7 @@ atualizado_em: "2026-11-26T20:30:04Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 25 | 13 | 0 | 0 | 0 | 12 |
+| 25 | 14 | 0 | 0 | 0 | 11 |
 
 ## Ponto de Retomada (Em Andamento)
 
@@ -32,7 +32,6 @@ atualizado_em: "2026-11-26T20:30:04Z"
 | Ticket | Épico | Título | Critérios |
 |---|---|---|---|
 | `TICK-V01-04.4` | E09 | Marcar entrega suspeita do Flow (sem confirmacao de renomeacao, hash cruzado, fora do padrao de estilo) | AC-E09.5 |
-| `TICK-V01-05.3` | E10 | Implementar a ponte cenas.json v2 + elenco + timings + inventario para timeline.json, com luz de contorno do estilo | AC-E10.3, AC-E10.6, AC-E10.8 |
 | `TICK-V01-05.4` | E10 | Renderizar a cena de referencia pelo motor: 9:16, voz, determinismo e boca acompanhando a fala | AC-E10.4, AC-E10.5, AC-E10.7 |
 | `TICK-V01-06.1` | E10 | Ligar o render Go ao motor e reconfirmar voz, mix, SFX e cortes da SPEC v1.4.0 sobre a nova timeline | AC-E10.4 |
 | `TICK-V01-07.1` | E11 | Mover internal/diorama para internal/video e atualizar imports sem regressao | AC-E11.2 |
@@ -61,3 +60,4 @@ atualizado_em: "2026-11-26T20:30:04Z"
 | `TICK-V01-04.3` | E09 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/diorama/ativos	0.056s / | 2026-11-26T20:04:19Z |
 | `TICK-V01-05.1` | E10 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/video/motor	0.032s / | 2026-11-26T20:10:32Z |
 | `TICK-V01-05.2` | E10 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/video/motor	0.051s / | 2026-11-26T20:30:04Z |
+| `TICK-V01-05.3` | E10 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/video/motor	0.087s / | 2026-11-26T20:49:45Z |

@@ -243,3 +243,9 @@
 - Achado meu: duas tentativas de mutacao quebraram o build (err nao declarado, import os nao usado) e meu metodo de contagem leu isso como sobrevivencia; corrigido mantendo o build valido, e a mutacao real mata o teste (1 funcao com 5 casos via t.Errorf, confirmado tambem isolando so o caso motor-local).
 - Prova: go test ./internal/video/motor/... ok; go test ./... 74 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
 - Progresso: 13 aprovados.
+
+## Camada 14 - TICK-V01-05.3 ponte cenas+elenco+timings+inventario para timeline.json (2026-11-26)
+- Entrega: Montar/Gerar (timeline.json + check_timeline via Checador injetavel), luzDoEstilo (AC-E10.6: light.rim so com estilo.Luz.Rim), validarProporcao (AC-E10.8: cabeca>1, 0<corpo<1), finsEmQuadros (duracao da ultima cena bate com a voz).
+- Prova: go test ./internal/video/motor/... ok; mutacao na luz do estilo mata 1 teste; mutacao na proporcao mata 1 (isolada por build valido, as duas primeiras tentativas quebraram o build e foram descartadas); mutacao no CHECK OK mata 1.
+- Achado sem correcao (fora do escopo deste ticket): TestAtualizarConcorrenteNaoPerdeEscrita (internal/progresso) falhou uma vez isolado com 'Access is denied' no .lock do Windows; rodado 5x isolado e a suite completa de novo, sempre ok. Teste instavel por concorrencia de arquivo no Windows, nao causado por este ticket.
+- go test ./... 74 pacotes ok (2a rodada); vet, funclen, gofmt, go.mod e espinha limpos. Progresso: 14 aprovados.

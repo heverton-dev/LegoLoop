@@ -1,47 +1,35 @@
-# Espelho Canônico — `legoloop-diorama-render` (Ciclo 3)
+# Espelho Canônico — legoloop-kraften-deploy
 
-> **Data:** 2026-11-25
-> **Sessão A2UI:** `sess_3` (entrevista conduzida via MCP `sessao_*`, 6 turnos)
-> **Confiança:** 95% (meta: 95%)
-> **Status:** CONFIRMADO PELO USUÁRIO NA INTERFACE A2UI (turno 6, opção A)
-> **Emenda 2 (2026-11-25, TICK-DR-02.2):** WER passa de `<= 5%` por linha para `<= 15%` por linha e `<= 5%` global, com parada em áudio regravado idêntico (provas reais A1 e A2).  
-> **Emenda 1 (2026-11-25, Stop-Gate 02):** 4K opt-in passa de `projeto.json` para `render.json`; correção do True Peak em `videomotion` autorizada.
+> **Sessão:** `intv_1795723484496401600` (INTERVIEW gravada no cofre de sessões)
+> **Data:** 2026-11-26
+> **Reconciliação humana:** divergências do motor corrigidas e confirmadas pelo usuário.
 
-## 1. Resultado Esperado
-Processo canonizado `legoloop-diorama-render` (Peça 3 do macroprocesso `legoloop-video-diorama`) que consome `cenas.json` e `script.json` e entrega, em ordem de dependência:
-1. **Etapa 6 — Voz neural e conferência Whisper:** síntese por provedor plugável (padrão `edge-tts` com `pt-BR-ThalitaMultilingualNeural`; Gemini TTS, ElevenLabs, Fish Audio ou qualquer outro via adaptador); `faster-whisper` sobre o áudio final gera `timings.json` por palavra (fonte única de alinhamento) e o WER (limite `<= 15%` por linha e `<= 5%` global, até 3 regravações só das linhas reprovadas, com parada se a regravação devolver áudio idêntico); fonemas/visemas para sincronia labial simples.
-2. **Etapa 8 (do pedido) — Timeline em camadas:** leitura estrita de `cenas.json` e `script.json`; composição 2.5D (cenário, adereços em profundidade, sprites com troca de expressão/pose, câmera com zoom, shake e pan); legendas karaokê palavra a palavra; `timeline.json` validado por `check_timeline` (12–21 cortes/min, mediana 2,5–4 s).
-3. **Etapa 7 (do pedido) — Mixagem e SFX:** BGM com ducking dinâmico sob a narração; SFX nos eventos da timeline; normalização `-14 LUFS ± 0,5` integrado e `-1,5 dBTP`.
-4. **Etapa 8b — Render e cortes:** master 16:9 em 720p, 1080p (padrão) e 4K (opt-in em `render.json`) via ffmpeg com detecção automática de NVENC/QSV/AMF e fallback `libx264`; cortes 9:16 re-renderizados a partir da timeline, centrados no narrador e no elemento de ação, legenda fora da caixa do narrador, 15–59 s e área segura vertical.
+## Os 6 Campos Consolidados
 
-Ordem de execução por dependência (voz, timeline, mix com SFX nos eventos da timeline, render, cortes), mantendo a numeração do pedido nos títulos (7 = mixagem, 8 = timeline).
+### 1. resultado_esperado
+Esteira LegoLoop `legoloop-kraften-deploy` funcional com 5 nós determinísticos (`n01_preflight_zip`, `n02_sync_metadata`, `n03_deploy_stream`, `n04_verify_gates`, `n05_receipt`), zero LLM, publicando aplicações de qualquer stack (Go, Node, Python, Rust, PHP, estático) com subdomínio e TLS automáticos na VPS.
 
-## 2. Quem se Beneficia
-O operador do canal (vídeo diorama pronto sem edição manual) e o Processo 4 (`legoloop-diorama-distribuicao`), que consome renders MP4, `legenda.srt` e shorts como contrato imutável.
+### 2. quem_se_beneficia
+Desenvolvedores e operadores do ecossistema LegoLoop/Studio Launcher.
 
-## 3. Por que Agora
-O Ciclo 2 (`legoloop-diorama-ativos`) já entrega `cenas.json` e sprites. Sem o Ciclo 3 não existe vídeo, e o Macroprocesso ponta a ponta (Ciclo 5) fica bloqueado.
+### 3. por_que_agora
+Migrar o deploy manual/legado do Studio Launcher para um processo padronizado, auditável e 100% determinístico no LegoLoop.
 
-## 4. Critérios de Sucesso
-1. Em `projetos/video-diorama/diorama-demo`, todos os gates mecânicos passam: WER `<= 5%` global e `<= 15%` por linha, LUFS em `-14 ± 0,5`, TP `<= -1,5 dBTP`, duração áudio == vídeo, zero frames em branco.
-2. `timeline.json` aprovado por `check_timeline`.
-3. Cortes 9:16 entre 15 s e 59 s com área segura respeitada e legenda fora da caixa do narrador.
-4. Troca de provedor de voz sem alterar `timings.json` nem os gates a jusante.
-5. Cobertura `>= 95%` nos pacotes novos, zero stubs, Espinha Dorsal verde e `legoloop fechar` 5 de 5.
+### 4. criterio_de_sucesso
+Execução completa dos 5 nós em sequência, gerando build, DNS Cloudflare, Docker Swarm deploy, verificação de gates binários e recibo JSON sem falhas.
 
-## 5. Restrições Inegociáveis
-1. Provedor de voz plugável por interface; padrão `edge-tts` Thalita; chamada paga só após gate de créditos.
-2. Alinhamento por palavra sempre pelo `faster-whisper` sobre o áudio final; timestamps nativos do provedor são ignorados.
-3. Motor autoral, sem código do `RobbiSkill/`.
-4. Fallback `libx264` obrigatório; encoder usado registrado no relatório.
-5. 9:16 sem visão computacional: determinístico a partir das caixas da timeline.
-6. Testes 100% herméticos (ffmpeg, Whisper e provedores injetáveis), zero stubs, TDD Red-Green.
-7. Contratos de entrada dos Ciclos 1 e 2 imutáveis; a configuração do Ciclo 3 vive em `render.json` opcional.
-8. O teto de True Peak `-1,5 dBTP` tem fonte única em `videomotion.ValidateLoudnessConformity`, corrigida com TDD (autorizado no Stop-Gate 02).
+### 5. restricoes_inegociaveis
+- Zero LLM (nenhum agente intermediário nos nós).
+- Implementação da esteira em Go nativo (motor em `internal/kraften/`, comando em `cmd/legoloop` — padrão real do repo, como `internal/diorama/roteiro` + `legoloop diorama-roteiro`).
+- Chamadas Docker/Cloudflare CLI e REST API v4.
+- Respeito rigoroso à especificação de `PROCESSO_DEPLOY_DETERMINISTICO_LEGOLOOP.md` sem alterações estruturais.
 
-## 6. Fora de Escopo
-1. Geração de ativos e storyboard (Ciclo 2) e roteiro (Ciclo 1).
-2. Revisão estéril, vitrine, Postiz, comentários e aprendizado (Ciclo 4).
-3. Composição ponta a ponta `P1->P4` (Ciclo 5).
-4. Visão computacional ou crop por saliency no 9:16.
-5. Painel web paralelo fora do Looping Studio.
+### 6. fora_de_escopo
+- Edição do `Dockerfile` da aplicação (nunca mutado pelo Launcher).
+- Agentes de IA/LLM intermediários nos nós.
+- Stacks sem `Dockerfile`/`docker-stack.yml` (fronteira universal do `.zip`).
+- Suporte a redes diferentes de `network_conexao`.
+
+## Notas de Reconciliação
+1. **Correção sobre stacks suportadas:** o motor sugeriu excluir Node e Python do escopo; incorreto — a esteira atende QUALQUER stack com `Dockerfile` e `docker-stack.yml` (seção 4 do documento de referência). Go nativo é a implementação da esteira, não restrição das aplicações.
+2. **Correção sobre estrutura de diretórios:** o motor sugeriu `pkg/fabrica/`; este caminho não existe no repo. Padrão canônico real: motor em `internal/kraften/`, comando CLI em `cmd/legoloop`.
