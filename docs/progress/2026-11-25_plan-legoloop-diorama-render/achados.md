@@ -210,3 +210,9 @@
 - Entrega: ContratoProducao (modo_producao, estilo), ModoEfetivo/Legado, validarEstiloPreVoo (statusEstilo le inventario/video/estilos/<id>/estilo.json), AvisoEstiloVisualLegado.
 - Prova: go test ./internal/diorama/ativos/... ok; mutacao na checagem de status!=validado falha 1 teste; mutacao em ModoVisualValido falha 2 testes; go test ./... 73 pacotes ok; vet, funclen, gofmt, espinha e go.mod limpos.
 - Progresso: 7 aprovados.
+
+## Camada 8 - TICK-V01-03.2 storyboard v2 valida elenco e inventario (2026-11-26)
+- Entrega: ValidarStoryboardV2, ValidarElenco/validarCampoCast (tipo + partes_suportadas), CarregarInventarioEstilo.
+- Achado meu: primeira mutacao na checagem de partes_suportadas quebrou o build (forma nao usada) e meu grep '--- FAIL' contou 0, lendo como sobrevivencia falsa; corrigido mantendo forma usada (if forma && false) e a mutacao real mata 2 testes (TestElencoCastBloqueios ja cobria hair/hat fora de partes_suportadas).
+- Prova: go test ./internal/diorama/ativos/... ok; mutacao do personagem_id fora do elenco mata 1 teste; mutacao de partes_suportadas mata 2; go test ./... 73 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
+- Progresso: 8 aprovados.

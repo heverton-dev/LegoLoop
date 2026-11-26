@@ -2,7 +2,7 @@
 schema: progresso.v1
 iniciativa: "V01"
 plano: "docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md"
-atualizado_em: "2026-11-26T19:35:39Z"
+atualizado_em: "2026-11-26T19:41:59Z"
 ---
 
 # Progresso Vivo: V01
@@ -13,7 +13,7 @@ atualizado_em: "2026-11-26T19:35:39Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 25 | 7 | 0 | 0 | 0 | 18 |
+| 25 | 8 | 0 | 0 | 0 | 17 |
 
 ## Ponto de Retomada (Em Andamento)
 
@@ -31,7 +31,6 @@ atualizado_em: "2026-11-26T19:35:39Z"
 
 | Ticket | Épico | Título | Critérios |
 |---|---|---|---|
-| `TICK-V01-03.2` | E08 | Validar cenas.json v2 e elenco.json contra o inventario e as partes suportadas do renderizador | AC-E08.2, AC-E08.3 |
 | `TICK-V01-04.1` | E09 | Etapa 3 vetorial: montar elenco.json com cast a partir do inventario, sem Flow, e gravar itens novos como nao aprovados | AC-E09.1, AC-E09.2 |
 | `TICK-V01-04.2` | E09 | Manter o caminho de fichas e rembg para estilos de recorte sem regressao | AC-E09.3 |
 | `TICK-V01-04.3` | E09 | Etapa 4: consultar o inventario antes de gerar fundos e registrar fundo novo com prompt, tags e hash | AC-E09.4 |
@@ -61,3 +60,4 @@ atualizado_em: "2026-11-26T19:35:39Z"
 | `TICK-V01-02.1` | E07 | 0 | map[estilo:molde-de-pilula ok:true] / | 2026-11-26T16:52:55Z |
 | `TICK-V01-02.2` | E07 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/video/inventario	0.077s / map[estilo:molde-de-pilula ok:true] / | 2026-11-26T17:39:52Z |
 | `TICK-V01-03.1` | E08 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/diorama/ativos	0.132s / | 2026-11-26T19:35:39Z |
+| `TICK-V01-03.2` | E08 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/diorama/ativos	0.033s / | 2026-11-26T19:41:59Z |

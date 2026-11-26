@@ -4,7 +4,10 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+
+	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
 )
 
 func TestStoryboardCompilarEValidarSucesso(t *testing.T) {
@@ -36,7 +39,10 @@ func TestStoryboardCompilarEValidarSucesso(t *testing.T) {
 
 func TestStoryboardBloqueios(t *testing.T) {
 	dir := criarFixtureCiclo1(t, "codigo", "")
-	contratos, _ := CarregarContratosEntrada(dir)
+	contratos, err := CarregarContratosEntrada(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
 	cenarios := []Cenario{{ID: "cen_01"}, {ID: "cen_02"}}
 	elems4 := []ElementoMovel{
 		{ID: "e1", Tipo: "personagem", Acao: "entra"},
@@ -93,6 +99,84 @@ func TestStoryboardBloqueios(t *testing.T) {
 			t.Fatalf("esperado ErrStoryboardInvalido sem cenarios, obtido: %v", err)
 		}
 	})
+}
+
+func storyboardV2Fixture() Storyboard {
+	personagem := ElementoMovel{ID: "l0_ana", Tipo: "personagem", Acao: "fala", PersonagemID: "ana", Pose: "apontar", Humor: "feliz", Olhar: "camera", Fala: true}
+	outros := []ElementoMovel{
+		{ID: "l0_obj", Tipo: "objeto", Acao: "destaca"},
+		{ID: "l0_cam", Tipo: "camera", Acao: "zoom_in"},
+		{ID: "l0_fx", Tipo: "efeito", Acao: "particulas"},
+	}
+	return Storyboard{SchemaVersion: 2, TotalLinhas: 1, Cenas: []Cena{{
+		IndiceLinha: 0, CenarioID: "cen_01", MetaforaVisual: "m",
+		ElementosMoveis: append([]ElementoMovel{personagem}, outros...),
+	}}}
+}
+
+func TestStoryboardV2Valido(t *testing.T) {
+	if err := ValidarStoryboardV2(storyboardV2Fixture(), elencoFixture(), inventarioFixture()); err != nil {
+		t.Fatalf("storyboard v2 valido reprovado: %v", err)
+	}
+}
+
+func TestStoryboardV2Bloqueios(t *testing.T) {
+	casos := []struct {
+		nome  string
+		mudar func(*ElementoMovel)
+		alvo  error
+	}{
+		{"personagem fora do elenco", func(e *ElementoMovel) { e.PersonagemID = "bob" }, ErrPersonagemForaDoElenco},
+		{"personagem sem personagem_id", func(e *ElementoMovel) { e.PersonagemID = "" }, ErrPersonagemForaDoElenco},
+		{"pose inexistente no estilo", func(e *ElementoMovel) { e.Pose = "voar" }, ErrItemForaDoInventario},
+		{"humor inexistente no estilo", func(e *ElementoMovel) { e.Humor = "sonolento" }, ErrItemForaDoInventario},
+	}
+	for _, c := range casos {
+		t.Run(c.nome, func(t *testing.T) {
+			sb := storyboardV2Fixture()
+			c.mudar(&sb.Cenas[0].ElementosMoveis[0])
+			err := ValidarStoryboardV2(sb, elencoFixture(), inventarioFixture())
+			if !errors.Is(err, c.alvo) || !errors.Is(err, ErrStoryboardInvalido) || !strings.Contains(err.Error(), "l0_ana") {
+				t.Fatalf("esperado %v no elemento l0_ana, obtido %v", c.alvo, err)
+			}
+		})
+	}
+}
+
+func TestStoryboardV2ErroPorElemento(t *testing.T) {
+	sb := storyboardV2Fixture()
+	segundo := sb.Cenas[0].ElementosMoveis[0]
+	segundo.ID = "l0_bia"
+	segundo.Humor = "sonolento"
+	sb.Cenas[0].ElementosMoveis[0].Pose = "voar"
+	sb.Cenas[0].ElementosMoveis = append(sb.Cenas[0].ElementosMoveis, segundo)
+	err := ValidarStoryboardV2(sb, elencoFixture(), inventarioFixture())
+	if err == nil || !strings.Contains(err.Error(), "l0_ana") || !strings.Contains(err.Error(), "l0_bia") {
+		t.Fatalf("esperado um erro por elemento (l0_ana e l0_bia), obtido %v", err)
+	}
+}
+
+func TestStoryboardCarregarInventarioEstilo(t *testing.T) {
+	raiz := t.TempDir()
+	base := filepath.Join(raiz, "inventario", "video", "estilos", "molde-pilula")
+	for _, sub := range []string{"pose", "humor"} {
+		if err := os.MkdirAll(filepath.Join(base, "itens", sub), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	gravarJSONTeste(t, filepath.Join(base, "estilo.json"), inventario.Estilo{ID: "molde-pilula", Status: "validado", PartesSuportadas: []string{"coque"}})
+	gravarJSONTeste(t, filepath.Join(base, "itens", "pose", "apontar.json"), inventario.Item{ID: "apontar", Tipo: "pose", Estilo: "molde-pilula", Aprovado: true})
+	gravarJSONTeste(t, filepath.Join(base, "itens", "humor", "bravo.json"), inventario.Item{ID: "bravo", Tipo: "humor", Estilo: "molde-pilula", Aprovado: false})
+	inv, err := CarregarInventarioEstilo(inventario.Store{Raiz: raiz}, "molde-pilula")
+	if err != nil {
+		t.Fatalf("carregar inventario: %v", err)
+	}
+	if !inv.Tem("pose", "apontar") || inv.Tem("humor", "bravo") || len(inv.PartesSuportadas) != 1 {
+		t.Fatalf("inventario carregado inesperado: %+v", inv)
+	}
+	if _, err := CarregarInventarioEstilo(inventario.Store{Raiz: raiz}, "aquarela"); !errors.Is(err, ErrEstiloInexistente) {
+		t.Fatalf("estilo ausente: esperado ErrEstiloInexistente, obtido %v", err)
+	}
 }
 
 func TestExtrairDispositivosPlanoMD(t *testing.T) {

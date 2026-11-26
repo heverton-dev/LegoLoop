@@ -2,6 +2,7 @@ package ativos
 
 import (
 	"errors"
+	"strings"
 	"testing"
 )
 
@@ -151,5 +152,75 @@ func TestSchemasModoVisualValido(t *testing.T) {
 	}
 	if ModoVisualValido("invalido") || ModoVisualValido("") {
 		t.Fatalf("modo invalido nao deveria ser aceito")
+	}
+}
+
+func inventarioFixture() InventarioEstilo {
+	return InventarioEstilo{
+		Estilo:           "molde-pilula",
+		PartesSuportadas: []string{"coque", "careca", "chapeu-coco", "oculos-redondo"},
+		Itens: map[string][]string{
+			"pele":     {"pele-clara"},
+			"traje":    {"terno-azul", "camisa-branca"},
+			"penteado": {"coque", "careca", "moicano"},
+			"adorno":   {"chapeu-coco", "cartola", "gravata-vermelha", "oculos-redondo"},
+			"pose":     {"apontar", "bracos-cruzados"},
+			"humor":    {"feliz", "bravo"},
+		},
+	}
+}
+
+func elencoFixture() Elenco {
+	return Elenco{SchemaVersion: 2, Estilo: "molde-pilula", Personagens: []PersonagemElenco{{
+		ID: "ana", Nome: "Ana",
+		Cast: map[string]string{"skin": "pele-clara", "suit": "terno-azul", "shirt": "camisa-branca", "tie": "gravata-vermelha", "hair": "coque", "hair_col": "#3a2a1a", "hat": "chapeu-coco", "glasses": "oculos-redondo"},
+	}}}
+}
+
+func TestElencoCastValido(t *testing.T) {
+	if err := ValidarElenco(elencoFixture(), inventarioFixture()); err != nil {
+		t.Fatalf("elenco valido reprovado: %v", err)
+	}
+}
+
+func TestElencoCastBloqueios(t *testing.T) {
+	casos := []struct {
+		nome, campo, valor string
+		alvo               error
+	}{
+		{"hair fora das partes suportadas", "hair", "moicano", ErrParteNaoSuportada},
+		{"hat fora das partes suportadas", "hat", "cartola", ErrParteNaoSuportada},
+		{"item inexistente no estilo", "suit", "terno-fantasma", ErrEstiloInexistente},
+		{"campo desconhecido no cast", "asa", "asa-anjo", ErrParteNaoSuportada},
+	}
+	for _, c := range casos {
+		t.Run(c.nome, func(t *testing.T) {
+			el := elencoFixture()
+			el.Personagens[0].Cast[c.campo] = c.valor
+			err := ValidarElenco(el, inventarioFixture())
+			if !errors.Is(err, c.alvo) || !strings.Contains(err.Error(), c.campo) {
+				t.Fatalf("esperado %v listando %q, obtido %v", c.alvo, c.campo, err)
+			}
+		})
+	}
+}
+
+func TestElencoCastEstiloEListagem(t *testing.T) {
+	el := elencoFixture()
+	el.Estilo = "aquarela"
+	if err := ValidarElenco(el, inventarioFixture()); !errors.Is(err, ErrEstiloInexistente) {
+		t.Fatalf("estilo divergente: esperado ErrEstiloInexistente, obtido %v", err)
+	}
+	el = elencoFixture()
+	el.Personagens[0].Cast["hair"] = "moicano"
+	el.Personagens[0].Cast["hat"] = "cartola"
+	err := ValidarElenco(el, inventarioFixture())
+	if err == nil || !strings.Contains(err.Error(), `"hair"`) || !strings.Contains(err.Error(), `"hat"`) {
+		t.Fatalf("esperado erro listando hair e hat, obtido %v", err)
+	}
+	el = elencoFixture()
+	el.Personagens[0].ID = ""
+	if err := ValidarElenco(el, inventarioFixture()); !errors.Is(err, ErrElencoInvalido) {
+		t.Fatalf("personagem sem id: esperado ErrElencoInvalido, obtido %v", err)
 	}
 }

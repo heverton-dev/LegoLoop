@@ -1,10 +1,13 @@
 package ativos
 
 import (
+	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/heverton-dev/LegoLoop/internal/diorama/roteiro"
+	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
 )
 
 // ExecutarEtapa5Storyboard compila cenas.json cobrindo 100% das linhas com metafora visual e >= 4 elementos moveis.
@@ -67,6 +70,110 @@ func validarCenaIndividual(indiceEsperado int, cena Cena, cenIDs map[string]stru
 		return fmt.Errorf("%w: linha %d com %d elementos moveis (minimo %d)", ErrStoryboardInvalido, indiceEsperado, len(cena.ElementosMoveis), MinElementosMoveis)
 	}
 	return nil
+}
+
+// ValidarElenco exige estilo igual ao inventario e cast so com itens do estilo e partes suportadas.
+func ValidarElenco(el Elenco, inv InventarioEstilo) error {
+	if strings.TrimSpace(el.Estilo) == "" || el.Estilo != inv.Estilo {
+		return fmt.Errorf("%w: elenco usa estilo %q, inventario %q", ErrEstiloInexistente, el.Estilo, inv.Estilo)
+	}
+	var erros []error
+	for i, p := range el.Personagens {
+		if strings.TrimSpace(p.ID) == "" {
+			erros = append(erros, fmt.Errorf("%w: personagem %d sem id", ErrElencoInvalido, i))
+			continue
+		}
+		erros = append(erros, validarCast(p, inv)...)
+	}
+	return errors.Join(erros...)
+}
+
+// validarCast devolve um erro por campo do cast, em ordem alfabetica de campo.
+func validarCast(p PersonagemElenco, inv InventarioEstilo) []error {
+	campos := make([]string, 0, len(p.Cast))
+	for c := range p.Cast {
+		campos = append(campos, c)
+	}
+	sort.Strings(campos)
+	var erros []error
+	for _, c := range campos {
+		if err := validarCampoCast(p.ID, c, p.Cast[c], inv); err != nil {
+			erros = append(erros, err)
+		}
+	}
+	return erros
+}
+
+func validarCampoCast(id, campo, valor string, inv InventarioEstilo) error {
+	if campoCor(campo) {
+		return nil
+	}
+	tipo, forma, ok := tipoCampoCast(campo)
+	if !ok {
+		return fmt.Errorf("%w: personagem %q campo %q desconhecido", ErrParteNaoSuportada, id, campo)
+	}
+	if !inv.Tem(tipo, valor) {
+		return fmt.Errorf("%w: personagem %q campo %q item %q inexistente no estilo %q", ErrEstiloInexistente, id, campo, valor, inv.Estilo)
+	}
+	if forma && !inv.Suporta(valor) {
+		return fmt.Errorf("%w: personagem %q campo %q parte %q fora de partes_suportadas", ErrParteNaoSuportada, id, campo, valor)
+	}
+	return nil
+}
+
+// ValidarStoryboardV2 exige personagem do elenco e pose e humor do inventario; um erro por elemento.
+func ValidarStoryboardV2(sb Storyboard, el Elenco, inv InventarioEstilo) error {
+	ids := make(map[string]struct{}, len(el.Personagens))
+	for _, p := range el.Personagens {
+		ids[p.ID] = struct{}{}
+	}
+	var erros []error
+	for _, cena := range sb.Cenas {
+		for _, em := range cena.ElementosMoveis {
+			if em.Tipo != "personagem" {
+				continue
+			}
+			if err := validarElementoV2(cena.IndiceLinha, em, ids, inv); err != nil {
+				erros = append(erros, err)
+			}
+		}
+	}
+	return errors.Join(erros...)
+}
+
+func validarElementoV2(linha int, em ElementoMovel, ids map[string]struct{}, inv InventarioEstilo) error {
+	if _, ok := ids[em.PersonagemID]; !ok {
+		return fmt.Errorf("%w: %w: linha %d elemento %q personagem_id %q", ErrStoryboardInvalido, ErrPersonagemForaDoElenco, linha, em.ID, em.PersonagemID)
+	}
+	if !inv.Tem("pose", em.Pose) {
+		return fmt.Errorf("%w: %w: linha %d elemento %q pose %q", ErrStoryboardInvalido, ErrItemForaDoInventario, linha, em.ID, em.Pose)
+	}
+	if !inv.Tem("humor", em.Humor) {
+		return fmt.Errorf("%w: %w: linha %d elemento %q humor %q", ErrStoryboardInvalido, ErrItemForaDoInventario, linha, em.ID, em.Humor)
+	}
+	return nil
+}
+
+// CarregarInventarioEstilo le estilo.json e os itens aprovados dos tipos usados por cast e cenas.
+func CarregarInventarioEstilo(s inventario.Store, estilo string) (InventarioEstilo, error) {
+	e, err := s.LerEstilo(estilo)
+	if errors.Is(err, inventario.ErrEstiloInexistente) {
+		return InventarioEstilo{}, fmt.Errorf("%w: %w", ErrEstiloInexistente, err)
+	}
+	if err != nil {
+		return InventarioEstilo{}, err
+	}
+	inv := InventarioEstilo{Estilo: e.ID, PartesSuportadas: e.PartesSuportadas, Itens: map[string][]string{}}
+	for _, tipo := range []string{"pele", "traje", "penteado", "adorno", "aderecos", "pose", "humor"} {
+		itens, err := s.Buscar(estilo, tipo, nil)
+		if err != nil {
+			return InventarioEstilo{}, err
+		}
+		for _, it := range itens {
+			inv.Itens[tipo] = append(inv.Itens[tipo], it.ID)
+		}
+	}
+	return inv, nil
 }
 
 func indexarCenarios(cenarios []Cenario) map[string]struct{} {

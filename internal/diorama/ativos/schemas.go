@@ -3,7 +3,10 @@ package ativos
 import (
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
+
+	"github.com/heverton-dev/LegoLoop/internal/video/inventario"
 )
 
 const (
@@ -19,7 +22,67 @@ var (
 	ErrFlowTravaAusente   = errors.New("diorama-ativos: trava flow_projeto obrigatoria")
 	ErrDensidadeCenarios  = errors.New("diorama-ativos: densidade insuficiente de cenarios")
 	ErrStoryboardInvalido = errors.New("diorama-ativos: gate de storyboard reprovado")
+
+	ErrElencoInvalido         = errors.New("diorama-ativos: elenco.json invalido")
+	ErrParteNaoSuportada      = fmt.Errorf("diorama-ativos: %w", inventario.ErrParteNaoSuportada)
+	ErrPersonagemForaDoElenco = errors.New("diorama-ativos: personagem_id ausente do elenco.json")
+	ErrItemForaDoInventario   = errors.New("diorama-ativos: item ausente do inventario do estilo")
 )
+
+// Elenco e o contrato de elenco.json v2: cada personagem traz um bloco cast do inventario do estilo.
+type Elenco struct {
+	SchemaVersion int                `json:"schema_version"`
+	Estilo        string             `json:"estilo"`
+	Personagens   []PersonagemElenco `json:"personagens"`
+}
+
+// PersonagemElenco liga um id de personagem ao bloco cast (skin, suit, hair, hat...).
+type PersonagemElenco struct {
+	ID   string            `json:"id"`
+	Nome string            `json:"nome"`
+	Cast map[string]string `json:"cast"`
+}
+
+// InventarioEstilo resume o estilo: partes que o renderizador desenha e ids aprovados por tipo.
+type InventarioEstilo struct {
+	Estilo           string              `json:"estilo"`
+	PartesSuportadas []string            `json:"partes_suportadas"`
+	Itens            map[string][]string `json:"itens"`
+}
+
+// Tem indica se o inventario do estilo guarda o item id do tipo informado.
+func (i InventarioEstilo) Tem(tipo, id string) bool {
+	return slices.Contains(i.Itens[tipo], id)
+}
+
+// Suporta indica se o renderizador do estilo desenha a parte informada.
+func (i InventarioEstilo) Suporta(parte string) bool {
+	return slices.Contains(i.PartesSuportadas, parte)
+}
+
+// tipoCampoCast mapeia o campo do cast ao tipo do inventario; forma exige partes_suportadas.
+func tipoCampoCast(campo string) (tipo string, forma bool, ok bool) {
+	switch campo {
+	case "skin":
+		return "pele", false, true
+	case "suit", "shirt":
+		return "traje", false, true
+	case "tie":
+		return "adorno", false, true
+	case "hair":
+		return "penteado", true, true
+	case "hat", "glasses":
+		return "adorno", true, true
+	case "prop":
+		return "aderecos", true, true
+	}
+	return "", false, false
+}
+
+// campoCor indica campo de cor do cast (hair_col, suit_col...), livre de inventario.
+func campoCor(campo string) bool {
+	return strings.HasSuffix(campo, "_col")
+}
 
 func fichasObrigatorias() []string {
 	return []string{"turnaround", "expressoes_3x2", "poses_6x"}
@@ -110,11 +173,17 @@ type Cenario struct {
 	FlowProjeto string   `json:"flow_projeto,omitempty"`
 }
 
+// ElementoMovel v2: personagem usa personagem_id, pose, humor, olhar e fala; sprite_id fica para estilos de sprite.
 type ElementoMovel struct {
-	ID       string `json:"id"`
-	Tipo     string `json:"tipo"`
-	SpriteID string `json:"sprite_id,omitempty"`
-	Acao     string `json:"acao"`
+	ID           string `json:"id"`
+	Tipo         string `json:"tipo"`
+	SpriteID     string `json:"sprite_id,omitempty"`
+	Acao         string `json:"acao"`
+	PersonagemID string `json:"personagem_id,omitempty"`
+	Pose         string `json:"pose,omitempty"`
+	Humor        string `json:"humor,omitempty"`
+	Olhar        string `json:"olhar,omitempty"`
+	Fala         bool   `json:"fala,omitempty"`
 }
 
 type Cena struct {

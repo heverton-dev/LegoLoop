@@ -1,0 +1,110 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-26",
+  "description": "Espelho executável da ROUTE 2026-11-26_ROUTE_VIDEO_ANIMADO_V2",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local",
+      "write_boundary": "strict"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "camada8_video_animado",
+  "nodes": [
+    {
+      "command": [
+        "claude",
+        "-p",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-03.2: Validar cenas.json v2 e elenco.json contra o inventario e as partes suportadas do renderizador. Criterios AC-E08.2, AC-E08.3 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: internal/diorama/ativos/schemas.go, internal/diorama/ativos/schemas_test.go, internal/diorama/ativos/storyboard.go, internal/diorama/ativos/storyboard_test.go. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go test -count=1 ./internal/diorama/ativos/ -run \"TestStoryboard|TestElencoCast\" ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "--permission-mode",
+        "acceptEdits",
+        "--allowedTools",
+        "Read,Write,Edit,Glob,Grep,Bash(go test:*),Bash(go build:*),Bash(go vet:*),Bash(go run:*),Bash(gofmt:*),Bash(bin/legoloop.exe:*)"
+      ],
+      "context_in": [
+        "internal/diorama/ativos/schemas.go",
+        "internal/diorama/ativos/storyboard.go",
+        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
+      ],
+      "context_out": [
+        "internal/diorama/ativos/schemas.go",
+        "internal/diorama/ativos/schemas_test.go",
+        "internal/diorama/ativos/storyboard.go",
+        "internal/diorama/ativos/storyboard_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-03.2",
+      "isolation": {
+        "executor": "native_swarm",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_03_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-03.2.json",
+        "gate": "exit_code == 0 && file_exists('internal/diorama/ativos/schemas.go') && file_exists('internal/diorama/ativos/schemas_test.go') && file_exists('internal/diorama/ativos/storyboard.go') && file_exists('internal/diorama/ativos/storyboard_test.go')"
+      },
+      "role": "engenheiro-tdd",
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E08.2, AC-E08.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/diorama/ativos/schemas_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/diorama/ativos/ -run TestStoryboard|TestElencoCast"
+      },
+      "timeout_sec": 900
+    }
+  ],
+  "progresso": "docs/progress/2026-11-26_plan-video-animado-v2/progresso.json",
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "e0a507437f0dcfad9c70f13d44d2e04d748ef7bb46bf3be9f968e05659a79c0f",
+    "plan": "1181a346f10f87404fddf215a47c817fadf2da5dd60b1538f8a6d144e6a0278a",
+    "spec": "0d07fbabda5ded726741b557a0cd9f5e0e0274a321de8d6cec4765ef666cb67f"
+  },
+  "version": "1.0.0"
+}
