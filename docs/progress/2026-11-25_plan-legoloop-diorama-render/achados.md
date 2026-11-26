@@ -261,3 +261,10 @@
 - Achado meu: 1 das 5 mutacoes quebrou o build (err nao declarado); refeita mantendo o build valido.
 - Prova: go test ./internal/diorama/render/... ok; mutacao na soma de duracoes, no fundo ausente, nos eventos de SFX no mix e na chamada do motor mata 1 teste cada.
 - go test ./... 75 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos. Progresso: 16 aprovados.
+
+## Camada 17 - TICK-V01-04.4 marca entrega suspeita do Flow (2026-11-26)
+- Corrigido antes: pulei o TICK-V01-04.4 ao recomendar a camada seguinte (chamei de 06.2, que nao existe no plano); confirmado por progresso.json com PENDING e corrigido executando o ticket real agora.
+- Entrega: AvaliarEntregaFlow (3 motivos: sem confirmacao, hash cruzado com item de outro tipo, fora do padrao de cor/dimensao do estilo), ConfirmarSuspeito (exige folha de contato e aprovador humano).
+- Prova: go test ./internal/diorama/ativos/... ok; mutacao em cada um dos 3 motivos mata 1 teste; sem erro de build desta vez.
+- Achado de governanca, nao corrigido por mim (fora do meu ticket): internal/kraften/{artefatos,cloudflare,preflight}.go e sync_test.go estao no disco, nao commitados, com sync_test.go referenciando NovoCloudflareClient que so existe em cloudflare.go (nao commitado); go build ./internal/kraften/... falha isolado. Esses arquivos ja tinham sido arrastados para o commit 23c7eec por 'git add -A'; desta vez eu os tirei do stage (git restore --staged internal/kraften) antes de commitar, para nao empacotar trabalho alheio inacabado.
+- go test -count=1 $(go list ./... | grep -v internal/kraften): 74 pacotes ok, 0 falhas. vet, funclen e gofmt limpos em internal/diorama. Progresso: 17 aprovados.
