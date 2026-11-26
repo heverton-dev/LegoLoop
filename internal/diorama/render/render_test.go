@@ -380,3 +380,97 @@ func TestRenderComFFmpegReal(t *testing.T) {
 		t.Fatalf("sem mp4: %+v", rel)
 	}
 }
+
+// ---- render pelo motor portado (AC-E10.4) ----
+
+type motorFalso struct {
+	chamadas int
+	dir      string
+	vozS     float64
+	fps      int
+	err      error
+}
+
+func (m *motorFalso) Renderizar(_ context.Context, dir string, vozS float64, fps int) error {
+	m.chamadas++
+	m.dir, m.vozS, m.fps = dir, vozS, fps
+	return m.err
+}
+
+const jTimelineMotor = `{"fps":30,"audio":"audio/soundtrack.wav","cast":{},"shots":[` +
+	`{"id":"l000","type":"scene","bg":"flow/cen_01.png","duration":1},` +
+	`{"id":"l001","type":"scene","bg":"flow/cen_02.png","duration":1}]}`
+
+const jMixMotor = `{"schema_version":1,"duracao_s":%s,"eventos_sfx":%d,"lufs":%s,"true_peak_dbtp":%s,"tentativas":[]}`
+
+func projetoMotor(t *testing.T, extra map[string]string) string {
+	t.Helper()
+	voz := montarWAV(formatoWAV{Canais: 1, Taxa: 48000, Bits: 16}, make([]byte, 96000*2))
+	arqs := map[string]string{
+		"timeline.json": jTimelineMotor, "audio/voice.wav": string(voz), "audio/soundtrack.wav": "wav",
+		"flow/cen_01.png": "png", "flow/cen_02.png": "png", "audio/sfx/troca_cena.wav": "wav",
+		"data/mix.json":     fmt.Sprintf(jMixMotor, "2", 2, "-14", "-2"),
+		"data/timings.json": `{"schema_version":1,"provedor":"edge-tts","voz":"pt-BR-AntonioNeural","linhas":[]}`,
+	}
+	for k, v := range extra {
+		arqs[k] = v
+	}
+	return projetoFixture(t, arqs)
+}
+
+func TestRenderMotorLigaVozMixSFXECortes(t *testing.T) {
+	dir := projetoMotor(t, nil)
+	m := &motorFalso{}
+	rel, err := ExecutarRenderMotor(context.Background(), dir, m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if m.chamadas != 1 || m.dir != dir || m.fps != FPS || m.vozS < 1.999 || m.vozS > 2.001 {
+		t.Fatalf("motor chamado errado: %+v", m)
+	}
+	if rel.Cortes != 2 || rel.EventosSFX != 2 || rel.ProvedorVoz != "edge-tts" || rel.LUFS != -14 || rel.TruePeakDBTP != -2 {
+		t.Fatalf("relatorio: %+v", rel)
+	}
+}
+
+func TestRenderMotorBloqueiaAntesDoMotor(t *testing.T) {
+	curta := strings.Replace(jTimelineMotor, `"duration":1}]`, `"duration":0.5}]`, 1)
+	casos := map[string]map[string]string{
+		"timeline antiga":        {"timeline.json": `{"schema_version":1,"duracao_s":2,"batidas":[]}`},
+		"fps diferente":          {"timeline.json": strings.Replace(jTimelineMotor, `"fps":30`, `"fps":25`, 1)},
+		"corte sem fundo":        {"timeline.json": strings.Replace(jTimelineMotor, "cen_02.png", "cen_09.png", 1)},
+		"cortes menores que voz": {"timeline.json": curta},
+		"mix fora do alvo":       {"data/mix.json": fmt.Sprintf(jMixMotor, "2", 2, "-20", "-2")},
+		"pico acima do teto":     {"data/mix.json": fmt.Sprintf(jMixMotor, "2", 2, "-14", "-1")},
+		"mix de outra duracao":   {"data/mix.json": fmt.Sprintf(jMixMotor, "3", 2, "-14", "-2")},
+		"sfx de outra timeline":  {"data/mix.json": fmt.Sprintf(jMixMotor, "2", 5, "-14", "-2")},
+	}
+	for nome, extra := range casos {
+		m := &motorFalso{}
+		if _, err := ExecutarRenderMotor(context.Background(), projetoMotor(t, extra), m); err == nil || m.chamadas != 0 {
+			t.Errorf("%s: deve bloquear antes do motor: %v", nome, err)
+		}
+	}
+	for _, falta := range []string{"audio/voice.wav", "audio/soundtrack.wav", "audio/sfx/troca_cena.wav", "data/mix.json", "data/timings.json"} {
+		dir := projetoMotor(t, nil)
+		if err := os.Remove(filepath.Join(dir, filepath.FromSlash(falta))); err != nil {
+			t.Fatal(err)
+		}
+		m := &motorFalso{}
+		if _, err := ExecutarRenderMotor(context.Background(), dir, m); err == nil || m.chamadas != 0 {
+			t.Errorf("sem %s deve bloquear antes do motor: %v", falta, err)
+		}
+	}
+}
+
+func TestRenderMotorFalhaReprovaRender(t *testing.T) {
+	m := &motorFalso{err: errors.New("chromium caiu")}
+	if _, err := ExecutarRenderMotor(context.Background(), projetoMotor(t, nil), m); !errors.Is(err, ErrRenderInvalido) {
+		t.Fatalf("falha do motor deve virar ErrRenderInvalido: %v", err)
+	}
+	ctx, cancela := context.WithCancel(context.Background())
+	cancela()
+	if _, err := ExecutarRenderMotor(ctx, projetoMotor(t, nil), &motorFalso{}); !errors.Is(err, context.Canceled) {
+		t.Fatalf("esperava cancelamento: %v", err)
+	}
+}

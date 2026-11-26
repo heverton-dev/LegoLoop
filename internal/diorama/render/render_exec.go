@@ -124,6 +124,52 @@ func (p preparoRender) executar(ctx context.Context) (RelatorioRender, error) {
 	return rel, p.publicar(saidas, assParcial, pendentes)
 }
 
+// ExecutarRenderMotor liga o render Go ao motor portado: reconfirma voz, mix, SFX e cortes
+// sobre a nova timeline e so entao chama o motor. Falha do motor reprova o render.
+func ExecutarRenderMotor(ctx context.Context, projDir string, m MotorRender) (RelatorioMotor, error) {
+	if err := ctx.Err(); err != nil {
+		return RelatorioMotor{}, err
+	}
+	rel, err := reconfirmarMotor(projDir)
+	if err != nil {
+		return rel, err
+	}
+	if err := m.Renderizar(ctx, projDir, rel.DuracaoVozS, FPS); err != nil {
+		return rel, renderReprovado("motor: %v", err)
+	}
+	return rel, nil
+}
+
+func reconfirmarMotor(projDir string) (RelatorioMotor, error) {
+	var rel RelatorioMotor
+	tl, err := lerTimelineMotor(projDir)
+	if err != nil {
+		return rel, err
+	}
+	if rel.DuracaoVozS, err = duracaoDaVoz(projDir); err != nil {
+		return rel, err
+	}
+	if err := tl.conferirCortes(projDir, rel.DuracaoVozS); err != nil {
+		return rel, err
+	}
+	if rel.EventosSFX, err = reconfirmarSFX(projDir, tl); err != nil {
+		return rel, err
+	}
+	mx, err := reconfirmarMix(projDir, rel.DuracaoVozS, rel.EventosSFX)
+	if err != nil {
+		return rel, err
+	}
+	resumo, err := lerResumo(projDir)
+	if err != nil {
+		return rel, err
+	}
+	if _, err := existeArquivo(projDir, "audio/soundtrack.wav"); err != nil {
+		return rel, err
+	}
+	rel.ProvedorVoz, rel.LUFS, rel.TruePeakDBTP, rel.Cortes = resumo.provedor, mx.LUFS, mx.TruePeakDBTP, len(tl.Shots)
+	return rel, nil
+}
+
 // publicar renomeia os parciais aprovados para os nomes finais.
 func (p preparoRender) publicar(saidas []saidaRender, assParcial string, pendentes []string) error {
 	for _, s := range saidas {

@@ -266,6 +266,62 @@ func gravarSaidasTimeline(projDir string, tl Timeline, srt string) error {
 	})
 }
 
+// CorteMotor e o que o render Go confere de cada shot do timeline.json do motor.
+type CorteMotor struct {
+	ID       string  `json:"id"`
+	BG       string  `json:"bg"`
+	Duration float64 `json:"duration"`
+}
+
+// TimelineMotor e a nova timeline, gerada pela ponte do motor portado (AC-E10.3).
+type TimelineMotor struct {
+	FPS   int          `json:"fps"`
+	Audio string       `json:"audio"`
+	Shots []CorteMotor `json:"shots"`
+}
+
+// lerTimelineMotor exige timeline.json no formato do motor, a 30 quadros por segundo.
+func lerTimelineMotor(projDir string) (TimelineMotor, error) {
+	var tl TimelineMotor
+	if err := lerJSON(projDir, "timeline.json", &tl, false); err != nil {
+		return tl, bloqueio("timeline.json", err)
+	}
+	if len(tl.Shots) == 0 {
+		return tl, entradaInvalida("timeline.json sem shots do motor")
+	}
+	if tl.FPS != FPS {
+		return tl, entradaInvalida("timeline.json a %d fps; o motor exige %d", tl.FPS, FPS)
+	}
+	return tl, nil
+}
+
+// conferirCortes exige fundo existente em cada corte e soma das duracoes igual a voz (+- 1 quadro).
+func (tl TimelineMotor) conferirCortes(projDir string, vozS float64) error {
+	soma := 0.0
+	for _, s := range tl.Shots {
+		if _, err := existeArquivo(projDir, s.BG); err != nil {
+			return entradaInvalida("corte %q sem fundo: %v", s.ID, err)
+		}
+		soma += s.Duration
+	}
+	if math.Abs(soma-vozS) > ToleranciaFrame+1e-6 {
+		return entradaInvalida("cortes somam %.3f s e a voz %.3f s", soma, vozS)
+	}
+	return nil
+}
+
+// eventosTrocaCena conta um troca_cena no primeiro corte e a cada troca de fundo (regra do AC-E04.2).
+func (tl TimelineMotor) eventosTrocaCena() int {
+	n, anterior := 0, ""
+	for i, s := range tl.Shots {
+		if i == 0 || s.BG != anterior {
+			n++
+		}
+		anterior = s.BG
+	}
+	return n
+}
+
 // ExecutarTimeline so grava timeline.json e renders/legenda.srt se a composicao inteira for
 // valida e passar no gate de ritmo.
 func ExecutarTimeline(ctx context.Context, projDir string) (Timeline, error) {

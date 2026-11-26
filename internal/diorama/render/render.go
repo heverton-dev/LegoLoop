@@ -323,6 +323,70 @@ func imagensAbsolutas(projDir string, rel []string) ([]string, error) {
 	return abs, nil
 }
 
+// ---- render pelo motor portado (AC-E10.4) ----
+
+// MotorRender roda o motor portado sobre timeline.json e confere o MP4 9:16 contra a voz.
+type MotorRender interface {
+	Renderizar(ctx context.Context, projDir string, vozS float64, fps int) error
+}
+
+// RelatorioMotor resume o que o render Go reconfirmou antes de chamar o motor.
+type RelatorioMotor struct {
+	ProvedorVoz  string
+	DuracaoVozS  float64
+	LUFS         float64
+	TruePeakDBTP float64
+	EventosSFX   int
+	Cortes       int
+}
+
+func duracaoDaVoz(projDir string) (float64, error) {
+	b, err := lerBytes(projDir, "audio/voice.wav")
+	if err != nil {
+		return 0, bloqueio("audio/voice.wav", err)
+	}
+	f, dados, err := lerWAV(b)
+	if err != nil {
+		return 0, err
+	}
+	return duracaoWAV(f, len(dados)), nil
+}
+
+// reconfirmarSFX exige o arquivo de troca_cena do catalogo quando a nova timeline tem cortes.
+func reconfirmarSFX(projDir string, tl TimelineMotor) (int, error) {
+	var c ContratosRender
+	if err := carregarConfig(projDir, &c); err != nil {
+		return 0, err
+	}
+	cat, err := CarregarCatalogo(projDir, c.Config)
+	if err != nil {
+		return 0, err
+	}
+	n := tl.eventosTrocaCena()
+	if _, err := resolverSFX(projDir, cat, "troca_cena"); n > 0 && err != nil {
+		return 0, err
+	}
+	return n, nil
+}
+
+// reconfirmarMix exige data/mix.json da mesma voz, no alvo de loudness e com os SFX da nova timeline.
+func reconfirmarMix(projDir string, vozS float64, eventos int) (RelatorioMix, error) {
+	var mx RelatorioMix
+	if err := lerJSON(projDir, "data/mix.json", &mx, false); err != nil {
+		return mx, bloqueio("data/mix.json", err)
+	}
+	if math.Abs(mx.DuracaoS-vozS) > ToleranciaFrame+1e-6 {
+		return mx, renderReprovado("mix dura %.3f s e a voz %.3f s", mx.DuracaoS, vozS)
+	}
+	if err := conforme(Medicao{LUFS: mx.LUFS, TruePeakDBTP: mx.TruePeakDBTP}); err != nil {
+		return mx, renderReprovado("mix fora do alvo: %v", err)
+	}
+	if mx.Eventos != eventos {
+		return mx, renderReprovado("mix tem %d eventos de SFX e a nova timeline %d", mx.Eventos, eventos)
+	}
+	return mx, nil
+}
+
 func nomeDaSaida(n int, res string, primaria bool) string {
 	if primaria {
 		return fmt.Sprintf("v%d.mp4", n)

@@ -1,6 +1,6 @@
 ---
 id: PLAN-ROUTE
-status: DRAFT
+status: APPROVED
 date: 2026-11-26
 schema_version: 2
 upstream: [SPEC]
@@ -9,7 +9,7 @@ covers: [AC-E01.1, AC-E01.2, AC-E01.3, AC-E01.4, AC-E02.1, AC-E02.2, AC-NF.1]
 
 # 🗺️ PLAN: Transformar pipeline de deploy determinístico do Studio Launcher (`legoloop-kraften-deploy`)
 
-> **Status:** Em Planejamento  
+> **Status:** APPROVED (Stop-Gate 03)  
 > **Data:** 2026-11-26  
 > **Versão:** 1.0.0  
 > **Autor:** Antigravity AI + Usuário  

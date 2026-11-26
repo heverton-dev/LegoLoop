@@ -2,7 +2,7 @@
 schema: progresso.v1
 iniciativa: "V01"
 plano: "docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md"
-atualizado_em: "2026-11-26T20:56:46Z"
+atualizado_em: "2026-11-26T21:06:00Z"
 ---
 
 # Progresso Vivo: V01
@@ -13,7 +13,7 @@ atualizado_em: "2026-11-26T20:56:46Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 25 | 15 | 0 | 0 | 0 | 10 |
+| 25 | 16 | 0 | 0 | 0 | 9 |
 
 ## Ponto de Retomada (Em Andamento)
 
@@ -32,7 +32,6 @@ atualizado_em: "2026-11-26T20:56:46Z"
 | Ticket | Épico | Título | Critérios |
 |---|---|---|---|
 | `TICK-V01-04.4` | E09 | Marcar entrega suspeita do Flow (sem confirmacao de renomeacao, hash cruzado, fora do padrao de estilo) | AC-E09.5 |
-| `TICK-V01-06.1` | E10 | Ligar o render Go ao motor e reconfirmar voz, mix, SFX e cortes da SPEC v1.4.0 sobre a nova timeline | AC-E10.4 |
 | `TICK-V01-07.1` | E11 | Mover internal/diorama para internal/video e atualizar imports sem regressao | AC-E11.2 |
 | `TICK-V01-07.2` | E11 | Registrar os comandos video-roteiro, video-ativos e video-render com alias diorama-* e aviso de depreciacao | AC-E11.1 |
 | `TICK-V01-07.3` | E11 | Migrar skills, processos, espinha e PROCESSOS_CANONIZADOS para os nomes legoloop-video-* com redirecionamento | AC-E11.3 |
@@ -61,3 +60,4 @@ atualizado_em: "2026-11-26T20:56:46Z"
 | `TICK-V01-05.2` | E10 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/video/motor	0.051s / | 2026-11-26T20:30:04Z |
 | `TICK-V01-05.3` | E10 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/video/motor	0.087s / | 2026-11-26T20:49:45Z |
 | `TICK-V01-05.4` | E10 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/video/motor	1.299s / | 2026-11-26T20:56:46Z |
+| `TICK-V01-06.1` | E10 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/diorama/render	4.595s / | 2026-11-26T21:06:00Z |

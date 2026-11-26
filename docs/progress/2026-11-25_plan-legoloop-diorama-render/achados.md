@@ -255,3 +255,9 @@
 - Achado meu: 2 das 4 mutacoes quebraram o build (hash e n nao usados) e foram descartadas; refeitas mantendo o build valido.
 - Prova: go test ./internal/video/motor/... ok; mutacao no formato, na duracao, no CompararCaches e no ValidarBoca mata 1 teste cada; go test ./... 74 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
 - Progresso: 15 aprovados. Epico E10 completo (AC-E10.1 a AC-E10.8).
+
+## Camada 16 - TICK-V01-06.1 render Go ligado ao motor (2026-11-26)
+- Entrega: ExecutarRenderMotor/reconfirmarMotor (le timeline.json do motor, reconfirma voz, mix no alvo, SFX e cortes da SPEC v1.4.0), TimelineMotor.conferirCortes (fundo existe, soma das duracoes bate com a voz +-1 quadro), eventosTrocaCena, MotorRender interface injetavel.
+- Achado meu: 1 das 5 mutacoes quebrou o build (err nao declarado); refeita mantendo o build valido.
+- Prova: go test ./internal/diorama/render/... ok; mutacao na soma de duracoes, no fundo ausente, nos eventos de SFX no mix e na chamada do motor mata 1 teste cada.
+- go test ./... 75 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos. Progresso: 16 aprovados.

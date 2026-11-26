@@ -2,14 +2,14 @@
   "schema": "progresso.v1",
   "iniciativa": "V01",
   "plano": "docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md",
-  "atualizado_em": "2026-11-26T20:56:46Z",
+  "atualizado_em": "2026-11-26T21:06:00Z",
   "resumo": {
     "total": 25,
-    "aprovados": 15,
+    "aprovados": 16,
     "em_andamento": 0,
     "reprovados": 0,
     "bloqueados": 0,
-    "pendentes": 10
+    "pendentes": 9
   },
   "tickets": [
     {
@@ -327,11 +327,11 @@
       "id": "TICK-V01-06.1",
       "epico": "E10",
       "titulo": "Ligar o render Go ao motor e reconfirmar voz, mix, SFX e cortes da SPEC v1.4.0 sobre a nova timeline",
-      "estado": "PENDING",
-      "responsavel": "",
+      "estado": "PASSED",
+      "responsavel": "swarm",
       "comando": "go test -count=1 ./internal/diorama/render/...",
-      "exit_code": -1,
-      "prova": "",
+      "exit_code": 0,
+      "prova": "ok  \tgithub.com/heverton-dev/LegoLoop/internal/diorama/render\t4.595s |",
       "alvos": [
         "internal/diorama/render/render.go",
         "internal/diorama/render/render_exec.go",
@@ -341,7 +341,7 @@
       "criterios": [
         "AC-E10.4"
       ],
-      "atualizado_em": "2026-11-26T00:00:00Z"
+      "atualizado_em": "2026-11-26T21:06:00Z"
     },
     {
       "id": "TICK-V01-07.1",
