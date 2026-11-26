@@ -1,6 +1,6 @@
 ---
 id: SPEC-intv_1795723484496401600
-status: DRAFT
+status: APPROVED
 date: 2026-11-26
 schema_version: 2
 upstream: [INTENT-intv_1795723484496401600]
@@ -9,7 +9,7 @@ covers: [Q1]
 
 # 📋 SPEC: Transformar pipeline de deploy determinístico do Studio Launcher (`legoloop-kraften-deploy`)
 
-> **Status:** Proposta para Revisão  
+> **Status:** APPROVED (Stop-Gate 02)  
 > **Data:** 2026-11-26  
 > **Versão:** 1.0.0  
 > **Autor:** Usuário + Agente (motor `legoloop fabricar spec`)  

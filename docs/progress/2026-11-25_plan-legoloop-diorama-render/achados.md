@@ -249,3 +249,9 @@
 - Prova: go test ./internal/video/motor/... ok; mutacao na luz do estilo mata 1 teste; mutacao na proporcao mata 1 (isolada por build valido, as duas primeiras tentativas quebraram o build e foram descartadas); mutacao no CHECK OK mata 1.
 - Achado sem correcao (fora do escopo deste ticket): TestAtualizarConcorrenteNaoPerdeEscrita (internal/progresso) falhou uma vez isolado com 'Access is denied' no .lock do Windows; rodado 5x isolado e a suite completa de novo, sempre ok. Teste instavel por concorrencia de arquivo no Windows, nao causado por este ticket.
 - go test ./... 74 pacotes ok (2a rodada); vet, funclen, gofmt, go.mod e espinha limpos. Progresso: 14 aprovados.
+
+## Camada 15 - TICK-V01-05.4 render de referencia (2026-11-26)
+- Entrega: Renderizar (Executor+Sonda injetaveis), ValidarMidia (1080x1920, fps, audio, duracao da voz +-1 quadro, zero brancos), HashesCache/CompararCaches/ConferirDeterminismo (AC-E10.5), EstadosBoca/ValidarBoca por diferenca de imagem na regiao da boca (AC-E10.7), SondaFFmpeg real via ffprobe/ffmpeg (nao usada nos testes).
+- Achado meu: 2 das 4 mutacoes quebraram o build (hash e n nao usados) e foram descartadas; refeitas mantendo o build valido.
+- Prova: go test ./internal/video/motor/... ok; mutacao no formato, na duracao, no CompararCaches e no ValidarBoca mata 1 teste cada; go test ./... 74 pacotes ok; vet, funclen, gofmt, go.mod e espinha limpos.
+- Progresso: 15 aprovados. Epico E10 completo (AC-E10.1 a AC-E10.8).

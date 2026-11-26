@@ -1,0 +1,547 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v1.json",
+  "date": "2026-11-26",
+  "description": "Espelho executável da ROUTE ROUTE",
+  "execution_strategy": {
+    "concurrency": {
+      "harness_capability": "subagent_cli_isolated",
+      "max_parallel_subagents": 2,
+      "mode": "hybrid",
+      "rate_limit_throttle_ms": 500
+    },
+    "default_isolation": {
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false,
+      "workspace": "local",
+      "write_boundary": "strict"
+    },
+    "default_timeout_sec": 180,
+    "max_parallel_workers": 2,
+    "rollback_on_failure": "abort_processo",
+    "rollback_policy": {
+      "action": "abort_and_clean",
+      "git_strategy": "discard_uncommitted",
+      "preserve_artifacts": true
+    },
+    "supervision_level": "epic",
+    "tdd_enforced": true
+  },
+  "name": "legoloop-route",
+  "nodes": [
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/kraften/",
+        "-run",
+        "TestDeployConfig"
+      ],
+      "context_in": [
+        "internal/kraften/schemas.go",
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "internal/kraften/schemas.go",
+        "internal/kraften/schemas_test.go"
+      ],
+      "depends_on": [],
+      "id": "TICK-01.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/kraften/schemas.go') \u0026\u0026 file_exists('internal/kraften/schemas_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/kraften/schemas_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/kraften/ -run TestDeployConfig"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/kraften/",
+        "-run",
+        "TestPreflightZip"
+      ],
+      "context_in": [
+        "internal/kraften/preflight.go",
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "internal/kraften/preflight.go",
+        "internal/kraften/preflight_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.1"
+      ],
+      "id": "TICK-01.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/kraften/preflight.go') \u0026\u0026 file_exists('internal/kraften/preflight_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.1, AC-E01.2, AC-E01.3",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/kraften/preflight_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/kraften/ -run TestPreflightZip"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/kraften/",
+        "-run",
+        "TestSyncMetadata"
+      ],
+      "context_in": [
+        "internal/kraften/cloudflare.go",
+        "internal/kraften/sync.go",
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "internal/kraften/cloudflare.go",
+        "internal/kraften/cloudflare_test.go",
+        "internal/kraften/sync.go",
+        "internal/kraften/sync_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.2"
+      ],
+      "id": "TICK-01.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_01_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-01.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/kraften/cloudflare.go') \u0026\u0026 file_exists('internal/kraften/cloudflare_test.go') \u0026\u0026 file_exists('internal/kraften/sync.go') \u0026\u0026 file_exists('internal/kraften/sync_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E01.4",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/kraften/cloudflare_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/kraften/ -run TestSyncMetadata"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-01.1",
+        "TICK-01.2",
+        "TICK-01.3"
+      ],
+      "id": "SG-E01",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "none"
+      },
+      "name": "sg_e01",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-E01.json",
+        "gate": "prompt('Evidências do Épico 01 aprovadas? Autoriza iniciar o próximo épico?')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/kraften/",
+        "-run",
+        "TestDeployStream"
+      ],
+      "context_in": [
+        "internal/kraften/deploy.go",
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "internal/kraften/deploy.go",
+        "internal/kraften/deploy_test.go"
+      ],
+      "depends_on": [
+        "TICK-01.3",
+        "SG-E01"
+      ],
+      "id": "TICK-02.1",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_1",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.1.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/kraften/deploy.go') \u0026\u0026 file_exists('internal/kraften/deploy_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/kraften/deploy_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/kraften/ -run TestDeployStream"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/kraften/",
+        "-run",
+        "TestVerifyGates"
+      ],
+      "context_in": [
+        "internal/kraften/gates.go",
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "internal/kraften/gates.go",
+        "internal/kraften/gates_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.1",
+        "SG-E01"
+      ],
+      "id": "TICK-02.2",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_2",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.2.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/kraften/gates.go') \u0026\u0026 file_exists('internal/kraften/gates_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.1, AC-E02.2",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/kraften/gates_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/kraften/ -run TestVerifyGates"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/kraften/",
+        "-run",
+        "TestReceipt"
+      ],
+      "context_in": [
+        "internal/kraften/receipt.go",
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "internal/kraften/receipt.go",
+        "internal/kraften/receipt_test.go"
+      ],
+      "depends_on": [
+        "TICK-02.2",
+        "SG-E01"
+      ],
+      "id": "TICK-02.3",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_3",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.3.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/kraften/receipt.go') \u0026\u0026 file_exists('internal/kraften/receipt_test.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-NF.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/kraften/receipt_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/kraften/ -run TestReceipt"
+      }
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./internal/kraften/",
+        "-run",
+        "TestExecutePipeline"
+      ],
+      "context_in": [
+        "internal/kraften/pipeline.go",
+        "internal/cli/kraften_deploy.go",
+        "docs/specs/SPEC.md"
+      ],
+      "context_out": [
+        "internal/kraften/pipeline.go",
+        "internal/kraften/pipeline_test.go",
+        "internal/cli/kraften_deploy.go"
+      ],
+      "depends_on": [
+        "TICK-02.3",
+        "SG-E01"
+      ],
+      "id": "TICK-02.4",
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "limits": {
+        "max_completion_tokens": 600,
+        "max_duration_sec": 180,
+        "max_prompt_tokens": 16000
+      },
+      "name": "tick_02_4",
+      "nature": "micro",
+      "output": {
+        "artifact": "scratch/gates/TICK-02.4.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('internal/kraften/pipeline.go') \u0026\u0026 file_exists('internal/kraften/pipeline_test.go') \u0026\u0026 file_exists('internal/cli/kraften_deploy.go')"
+      },
+      "rollback_strategy": "stash_changes",
+      "routing": {
+        "effort": "high",
+        "fallback": "flash",
+        "mode": "suggested",
+        "model": "code-pro"
+      },
+      "spec_ref": "AC-E02.1, AC-NF.1",
+      "status": "PENDING",
+      "test_seam": {
+        "file": "internal/kraften/pipeline_test.go",
+        "signature": "",
+        "type": "highest_seam"
+      },
+      "tooling": {
+        "harness": "9router",
+        "mcps_allowed": [],
+        "mcps_required": false,
+        "runtime": "legoloop"
+      },
+      "type": "unit_no",
+      "verification": {
+        "exit_code": 0,
+        "test_command": "go test -count=1 ./internal/kraften/ -run TestExecutePipeline"
+      }
+    },
+    {
+      "depends_on": [
+        "TICK-02.4"
+      ],
+      "id": "SG-FINAL",
+      "isolation": {
+        "executor": "local_process",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "name": "sg_final",
+      "nature": "nano",
+      "output": {
+        "artifact": "scratch/gates/SG-FINAL.json",
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('bin/legoloop.exe')"
+      },
+      "routing": {
+        "mode": "manual",
+        "model": "human/operator"
+      },
+      "status": "PENDING",
+      "type": "stop_gate"
+    }
+  ],
+  "progresso": "docs/progress/plan-plan/progresso.json",
+  "trigger": {
+    "type": "manual"
+  },
+  "upstream_signatures": {
+    "intent": "47bda2822b7cbc4f9158ed028c1b7f60e87a62892e80785affefd1230af1b59e",
+    "plan": "4e720078720a99e120e26ccc0591f0d0e9c491fb09f476540a0445a836417fd6",
+    "spec": "009a4057733ac4310166c9a29d63b77779c47333d60c0fa663b9fcbbc100e9c5"
+  },
+  "version": "1.0.0"
+}

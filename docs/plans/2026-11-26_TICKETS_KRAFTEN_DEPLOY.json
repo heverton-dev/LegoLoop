@@ -1,0 +1,140 @@
+[
+  {
+    "id": "TICK-KD-01.1",
+    "title": "Criar contratos estritos de DeployConfig e DeployReceipt com validacao sentinela ErrInvalidDeployInput",
+    "epic_id": "E01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [],
+    "target_files": [
+      "internal/kraften/schemas.go",
+      "internal/kraften/schemas_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E01.3"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/kraften/ -run TestDeployConfig",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-KD-01.2",
+    "title": "Implementar n01_preflight_zip: extracao anti-zip-slip e validacao dos 3 artefatos universais (Dockerfile, docker-stack.yml em network_conexao, HEALTHCHECK, ADMIN_USER/ADMIN_PASS)",
+    "epic_id": "E01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-KD-01.1"
+    ],
+    "target_files": [
+      "internal/kraften/preflight.go",
+      "internal/kraften/preflight_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E01.1",
+      "AC-E01.2",
+      "AC-E01.3"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/kraften/ -run TestPreflightZip",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-KD-01.3",
+    "title": "Implementar n02_sync_metadata: cliente Cloudflare REST v4 idempotente (cfEnsureCNAME) e registro de metadados no Studio Launcher com CNAME criado antes de qualquer consulta DNS",
+    "epic_id": "E01",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-KD-01.2"
+    ],
+    "target_files": [
+      "internal/kraften/cloudflare.go",
+      "internal/kraften/cloudflare_test.go",
+      "internal/kraften/sync.go",
+      "internal/kraften/sync_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E01.4"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/kraften/ -run TestSyncMetadata",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-KD-02.1",
+    "title": "Implementar n03_deploy_stream: envio do .zip para o Studio Launcher e acompanhamento do deploy-job ate status done",
+    "epic_id": "E02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-KD-01.3"
+    ],
+    "target_files": [
+      "internal/kraften/deploy.go",
+      "internal/kraften/deploy_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E02.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/kraften/ -run TestDeployStream",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-KD-02.2",
+    "title": "Implementar n04_verify_gates: gates binarios CF_OLD=0, CF_NEW=1, TLS=0, HTTP=200 com aborto sem recibo de sucesso em HTTP 500",
+    "epic_id": "E02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-KD-02.1"
+    ],
+    "target_files": [
+      "internal/kraften/gates.go",
+      "internal/kraften/gates_test.go"
+    ],
+    "spec_criteria": [
+      "AC-E02.1",
+      "AC-E02.2"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/kraften/ -run TestVerifyGates",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-KD-02.3",
+    "title": "Implementar n05_receipt: gravacao do DEPLOY_RECEIPT.json integro na raiz do projeto",
+    "epic_id": "E02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-KD-02.2"
+    ],
+    "target_files": [
+      "internal/kraften/receipt.go",
+      "internal/kraften/receipt_test.go"
+    ],
+    "spec_criteria": [
+      "AC-NF.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/kraften/ -run TestReceipt",
+    "human_gate_after": false
+  },
+  {
+    "id": "TICK-KD-02.4",
+    "title": "Implementar costura ExecutePipeline dos 5 nos e comando CLI legoloop kraften-deploy em cmd/legoloop",
+    "epic_id": "E02",
+    "nature": "micro",
+    "execution_mode": "tdd_red_green",
+    "depends_on": [
+      "TICK-KD-02.3"
+    ],
+    "target_files": [
+      "internal/kraften/pipeline.go",
+      "internal/kraften/pipeline_test.go",
+      "internal/cli/kraften_deploy.go"
+    ],
+    "spec_criteria": [
+      "AC-E02.1",
+      "AC-NF.1"
+    ],
+    "validation_cmd": "go test -count=1 ./internal/kraften/ -run TestExecutePipeline",
+    "human_gate_after": true
+  }
+]
