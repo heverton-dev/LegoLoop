@@ -92,11 +92,19 @@ func TestPreflightZipRejeitaSemHealthcheck(t *testing.T) {
 	}
 }
 
-func TestPreflightZipRejeitaStackSemRede(t *testing.T) {
+func TestPreflightZipRejeitaStackSemBlocoNetworks(t *testing.T) {
 	entradas := entradasSaudaveis()
-	entradas["app/docker-stack.yml"] = "services:\n  web:\n    networks:\n      - rede_errada\n"
+	entradas["app/docker-stack.yml"] = "services:\n  web:\n    image: app:latest\n"
 	if err := Preflight(criarZip(t, entradas), t.TempDir()); !errors.Is(err, ErrInvalidDeployInput) {
-		t.Fatalf("esperava ErrInvalidDeployInput sem network_conexao, obteve %v", err)
+		t.Fatalf("esperava ErrInvalidDeployInput sem bloco networks, obteve %v", err)
+	}
+}
+
+func TestPreflightZipAceitaRedeDeNomeDiferente(t *testing.T) {
+	entradas := entradasSaudaveis()
+	entradas["app/docker-stack.yml"] = "services:\n  web:\n    networks:\n      - rede_qualquer\n"
+	if err := Preflight(criarZip(t, entradas), t.TempDir()); err != nil {
+		t.Fatalf("rede de nome diferente deve passar (nome é configuração): %v", err)
 	}
 }
 

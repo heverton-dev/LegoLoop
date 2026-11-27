@@ -23,3 +23,5 @@ Registro gravado pelo `legoloop fechar` (etapa 6). Cada Processo tem `skills/<no
 * **Processo Canonizado `legoloop-diorama-roteiro` (2026-11-24), renomeado para `legoloop-video-roteiro` (2026-11-26):** `skills/legoloop-video-roteiro/SKILL.md` · `docs/reports/` · redirecionamento em `skills/legoloop-diorama-roteiro/SKILL.md` e alias de CLI `diorama-roteiro`
 
 * **Processo Canonizado `legoloop-diorama-ativos` (2026-11-24), renomeado para `legoloop-video-ativos` (2026-11-26):** `skills/legoloop-video-ativos/SKILL.md` · `docs/reports/` · redirecionamento em `skills/legoloop-diorama-ativos/SKILL.md` e alias de CLI `diorama-ativos`
+
+* **Processo Canonizado `legoloop-kraften-deploy` (2026-11-26):** `skills/legoloop-kraften-deploy/SKILL.md` · `docs/reports/`

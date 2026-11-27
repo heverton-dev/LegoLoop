@@ -182,6 +182,7 @@
 - 3 tipos de camiseta cobertos: careca (crianca-teste, menina-teste), golaV (adolescente-teste, adolescente-feminina-teste), cavada (analista-teste), via overlay desenhado sobre o torso liso do motor (campo dress), sem mudar puppet.js.
 - Cabelo cacheado (ja existente no motor, case 'curly' em ppHair) aplicado a adolescente-teste (menino) e analista-teste (mulher), confirmando 1 de cada genero.
 - Prova: go test ./internal/video/inventario/ ok; video-inventario verificar ok=true; folha em projetos/video-diorama/molde-de-pilula-preview/folha-vestuario-cabelo.png; contagem de pixel confirma as 7 cores de roupa e os 5 overlays de decote nas posicoes certas (2 careca, 2 golaV, 1 cavada).
+- Prova visual gerada agora (nao reaproveitada): projetos/video-diorama/palito-preview/validacao-estilo-palito.png, 3 personagens com as cores reais do estilo.json; confirmado por pixel.
 
 ## Correcao: decote vazado (pele) e saia com comprimento (2026-11-26)
 - Achado confirmado por pixel: a v1 do decote (overlay) era so uma linha de tinta por cima do tecido, sem pele visivel (amostra de pixel na gola mostrou cor do tecido, nao da pele); vestidinho nao existia (saia nunca tinha comprimento, so o torso).
@@ -311,3 +312,17 @@
 - Prova: go test ./internal/video/... 5 pacotes ok; go test ./internal/cli/... (video-alias, diorama, video-inventario) ok; vet, funclen, gofmt limpos nesses pacotes.
 - Achado de ambiente, nao corrigido por mim (fora do meu ticket, ja registrado antes): internal/kraften (kraften-deploy) continua instavel entre edicoes externas (termo proibido, global sem justificativa, endpoint de health inexistente); escopo isolado e commitado separado dele de novo.
 - Progresso: 22 aprovados.
+
+## Camada 23 - TICK-V01-08.2 estilo palito herda molde-de-pilula (2026-11-26)
+- Entrega: inventario/video/estilos/palito/estilo.json, rascunho, campo herda=molde-de-pilula, renderizador palito (ainda sem motor Go proprio), referencia ao prototipo ja aprovado pelo usuario (skins_preenchidas.png) e link de heranca ao molde-de-pilula.
+- Achado, nao corrigido aqui (fora do escopo deste ticket, cujo target_files e so estilo.json): os 9 fundos do molde-de-pilula nao tem herdavel=true, entao Buscar com heranca para palito hoje nao reaproveita nenhum deles; registrado para quando um ticket mexer de novo nesses itens (AC-E12.3, provavelmente TICK-08.3).
+- Prova: go test ./internal/video/inventario/... ok; video-inventario verificar --estilo palito ok=true; vet, funclen, gofmt e espinha limpos.
+- Prova visual gerada agora (nao reaproveitada): projetos/video-diorama/palito-preview/validacao-estilo-palito.png, 3 personagens com as cores reais do estilo.json; confirmado por pixel.
+
+## Camada 24 - TICK-V01-08.3 First Brands reproduzido pelo processo (2026-11-26)
+- Montado do zero: roteiro novo (10 frases curtas a partir dos 5 ganchos reais de proj--historias-palitos/cortes/first-brands.json), voz sintetizada local e gratis (edge-tts, pt-BR-AntonioNeural), 10 cortes ciclando os 9 fundos aprovados do molde-de-pilula (8 codigo-desenhado + 1 Flow reaproveitado como codigo-desenhado para nao depender de copia local).
+- Achado + decisao de conteudo (nao de codigo): a primeira tentativa (1 corte por gancho original, 5 cortes, 33.1s) deu CHECK OK mas cuts/min 9.1 e median 6.6s, fora do alvo do AC-E12.2 (12-21 e 2.5-4); a ponte so suporta 1 corte por linha de timing (nao divide uma linha em varios cortes), entao dividi o TEXTO em frases mais curtas (10 linhas) em vez de mudar codigo; segunda tentativa bateu os dois alvos.
+- Prova: check_timeline.py real (nao mock) - CHECK OK; 10 shots, 39.8s; cuts/min 15.1 (alvo 12-21); median shot 3.9s (alvo 2.5-4).
+- go test ./internal/video/... 5 pacotes ok; funclen e gofmt limpos (nenhum codigo Go mudou neste ticket, so conteudo/dados do projeto).
+- Artefato: projetos/video-diorama/first-brands/{audio,timeline.json} (projetos/ e ignorado pelo git, path informado).
+- Progresso: 23 aprovados.

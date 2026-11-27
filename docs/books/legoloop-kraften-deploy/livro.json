@@ -1,0 +1,39 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-kraften-deploy",
+      "titulo": "Preflight anti-zip-slip e validação dos 3 artefatos universais"
+    },
+    {
+      "id": "e02",
+      "peca": "legoloop-kraften-deploy",
+      "titulo": "Sincronização de metadados e CNAME Cloudflare idempotente"
+    },
+    {
+      "id": "e03",
+      "peca": "legoloop-kraften-deploy",
+      "titulo": "Deploy com stream do deploy-job até status done"
+    },
+    {
+      "id": "e04",
+      "peca": "legoloop-kraften-deploy",
+      "titulo": "Gates binários e recibo DEPLOY_RECEIPT.json auditável"
+    }
+  ],
+  "descricao": "Livro didático do Processo legoloop-kraften-deploy: deploy determinístico zero LLM do Studio Launcher com preflight seguro, DNS transacional, gates binários e recibo de prova.",
+  "slug": "legoloop-kraften-deploy",
+  "titulo": "Manual Didático: legoloop-kraften-deploy",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-26_PROCESSO_LEGOLOOP_KRAFTEN_DEPLOY",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-kraften-deploy-v1",
+  "ultima_compilacao": "2026-11-26"
+}

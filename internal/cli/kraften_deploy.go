@@ -9,6 +9,8 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/heverton-dev/LegoLoop/internal/kraften"
@@ -30,6 +32,8 @@ opções:
 // flagsKraften agrupa as opções do comando kraften-deploy.
 type flagsKraften struct {
 	zip, app, sub, alvo, launcher, user, pass, cf, zone, token, health, dest, hostAntigo string
+	hostNovo, acao, baseDomain                                                           string
+	rede, servico                                                                        string
 	emJSON                                                                               bool
 }
 
@@ -50,8 +54,13 @@ func parseKraften(args []string) (flagsKraften, bool) {
 	fs.StringVar(&o.health, "health", "", "URL do healthcheck")
 	fs.StringVar(&o.dest, "dest", ".", "diretório raiz de trabalho")
 	fs.StringVar(&o.hostAntigo, "host-antigo", "", "FQDN do CNAME antigo (vazio = primeiro deploy)")
+	fs.StringVar(&o.hostNovo, "host-novo", "", "FQDN do CNAME novo")
+	fs.StringVar(&o.acao, "acao", "", "ação do envio do zip (update-zip ou install-zip)")
+	fs.StringVar(&o.baseDomain, "dominio-base", "", "domínio mestre do ecossistema (configuração variável)")
+	fs.StringVar(&o.rede, "rede", "", "nome da rede compartilhada do ecossistema")
+	fs.StringVar(&o.servico, "servico", "", "nome do serviço no Docker Swarm")
 	fs.BoolVar(&o.emJSON, "json", false, "emite o recibo em JSON")
-	if err := fs.Parse(args); err != nil || o.zip == "" || o.app == "" || o.sub == "" || o.alvo == "" {
+	if err := fs.Parse(args); err != nil {
 		return o, false
 	}
 	return o, true
@@ -59,22 +68,28 @@ func parseKraften(args []string) (flagsKraften, bool) {
 
 // cmdKraftenDeploy executa o Processo determinístico de deploy de 5 nós sem LLM.
 func cmdKraftenDeploy(ctx context.Context, args []string, d Deps) int {
+	if len(args) > 0 && ehEtapaKraften(args[0]) {
+		if code, ok := etapaKraften(args[0], args[1:], d); ok {
+			return code
+		}
+	}
 	o, ok := parseKraften(args)
-	if !ok {
+	if !ok || o.zip == "" || o.app == "" || o.sub == "" || o.alvo == "" {
 		fmt.Fprint(d.Stderr, usoKraftenDeploy)
 		return 2
 	}
 	cfg := kraften.DeployConfig{AppID: o.app, ZipPath: o.zip, Subdomain: o.sub, TargetHost: o.alvo}
 	clienteCF := kraften.NovoCloudflareClient(o.cf, o.zone, o.token, http.DefaultClient)
 	deps := kraften.PipelineDeps{
-		Launcher:   kraften.NovoLauncherClient(o.launcher, o.user, o.pass, http.DefaultClient),
-		Cloudflare: clienteCF,
-		Dest:       o.dest,
-		HealthURL:  o.health,
-		HostAntigo: o.hostAntigo,
-		Contagens:  contagemCNAME(clienteCF),
-		TLSVerify:  verificarTLS,
-		HTTPCheck:  checarHTTP,
+		Launcher:    kraften.NovoLauncherClient(o.launcher, o.user, o.pass, http.DefaultClient),
+		Cloudflare:  clienteCF,
+		Dest:        o.dest,
+		HealthURL:   o.health,
+		HostAntigo:  o.hostAntigo,
+		Contagens:   contagemCNAME(clienteCF),
+		TLSVerify:   verificarTLS,
+		HTTPCheck:   checarHTTP,
+		RedeAnexada: func() int { return redeAnexadaKraften(o.rede, o.servico) },
 	}
 	recibo, err := kraften.ExecutePipeline(cfg, deps)
 	if err != nil {
@@ -118,6 +133,28 @@ func checarHTTP(url string) (int, error) {
 	}
 	defer resp.Body.Close()
 	return resp.StatusCode, nil
+}
+
+// redeAnexadaNoSwarm prova a anexação: consulta `docker network inspect` e
+// conta os serviços anexados à rede configurada. Devolve 1 quando o serviço
+// informado está anexado, 0 quando não está e -1 em erro de consulta.
+func redeAnexadaNoSwarm(rede, servico string) int {
+	saida, err := exec.Command("docker", "network", "inspect", rede,
+		"--format", "{{range .Services}}{{.Name}} {{end}}").Output()
+	if err != nil {
+		return -1
+	}
+	for _, nome := range strings.Fields(string(saida)) {
+		if nome == servico {
+			return 1
+		}
+	}
+	return 0
+}
+
+// agoraISO devolve o instante atual em formato RFC3339 UTC.
+func agoraISO() string {
+	return time.Now().UTC().Format(time.RFC3339)
 }
 
 func emitirReciboKraften(r kraften.DeployReceipt, emJSON bool, d Deps) int {

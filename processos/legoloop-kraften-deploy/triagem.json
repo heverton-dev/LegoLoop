@@ -1,0 +1,91 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-kraften-deploy",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-kraften-deploy",
+      "comandos_cli": [
+        "legoloop kraften-deploy",
+        "/legoloop-kraften-deploy"
+      ],
+      "artefatos_ativos": [],
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificação para o processo legoloop-kraften-deploy",
+    "etapas": [
+      "n01_preflight_zip",
+      "n02_sync_metadata",
+      "n03_deploy_stream",
+      "n04_verify_gates",
+      "n05_receipt"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_preflight_zip",
+      "palavras_chave": [
+        "preflight",
+        "zip",
+        "anti-zip-slip",
+        "artefatos universais"
+      ],
+      "slash_command": "/legoloop-kraften-deploy-preflight",
+      "flag_cli": "--etapa n01_preflight_zip"
+    },
+    {
+      "id": "n02_sync_metadata",
+      "palavras_chave": [
+        "metadata",
+        "cname",
+        "cloudflare",
+        "subdominio",
+        "dns"
+      ],
+      "slash_command": "/legoloop-kraften-deploy-sync",
+      "flag_cli": "--etapa n02_sync_metadata"
+    },
+    {
+      "id": "n03_deploy_stream",
+      "palavras_chave": [
+        "deploy",
+        "stream",
+        "update-zip",
+        "install-zip",
+        "swarm"
+      ],
+      "slash_command": "/legoloop-kraften-deploy-deploy",
+      "flag_cli": "--etapa n03_deploy_stream"
+    },
+    {
+      "id": "n04_verify_gates",
+      "palavras_chave": [
+        "gates",
+        "verificacao",
+        "tls",
+        "http",
+        "cf_old",
+        "cf_new"
+      ],
+      "slash_command": "/legoloop-kraften-deploy-gates",
+      "flag_cli": "--etapa n04_verify_gates"
+    },
+    {
+      "id": "n05_receipt",
+      "palavras_chave": [
+        "receipt",
+        "recibo",
+        "deploy_receipt",
+        "prova"
+      ],
+      "slash_command": "/legoloop-kraften-deploy-receipt",
+      "flag_cli": "--etapa n05_receipt"
+    }
+  ],
+  "pontos_entrada": [
+    "cli",
+    "chat",
+    "studio"
+  ]
+}

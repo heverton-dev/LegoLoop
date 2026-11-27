@@ -21,6 +21,7 @@ func TestVerifyGatesPassaComProvasBinarias(t *testing.T) {
 		CFNew:      1,
 		TLSVerdict: 0,
 		HTTPCode:   http.StatusOK,
+		RedeCount:  1,
 	}
 	if err := VerifyGates(gates); err != nil {
 		t.Fatalf("gates válidos reprovados: %v", err)
@@ -55,6 +56,20 @@ func TestVerifyGatesReprovaTLS(t *testing.T) {
 	}
 }
 
+func TestVerifyGatesReprovaRedeSemAnexo(t *testing.T) {
+	gates := Gates{CFOld: 0, CFNew: 1, TLSVerdict: 0, HTTPCode: 200, RedeCount: 0}
+	if err := VerifyGates(gates); err == nil {
+		t.Fatal("REDE=0 deve reprovar os gates")
+	}
+}
+
+func TestVerifyGatesPassaComRedeAnexada(t *testing.T) {
+	gates := Gates{CFOld: 0, CFNew: 1, TLSVerdict: 0, HTTPCode: 200, RedeCount: 1}
+	if err := VerifyGates(gates); err != nil {
+		t.Fatalf("REDE=1 deve aprovar os gates: %v", err)
+	}
+}
+
 func TestColetarGatesLeContagensTLSHTTP(t *testing.T) {
 	srv := novoServidorGates(t, http.StatusOK)
 	defer srv.Close()
@@ -73,7 +88,7 @@ func TestColetarGatesLeContagensTLSHTTP(t *testing.T) {
 		defer resp.Body.Close()
 		return resp.StatusCode, nil
 	}
-	gates, err := ColetarGates(contagens, tlsVerify, httpCheck, srv.URL+"/health", "antigo", "novo")
+	gates, err := ColetarGates(contagens, tlsVerify, httpCheck, func() int { return 1 }, srv.URL+"/health", "antigo", "novo")
 	if err != nil {
 		t.Fatalf("ColetarGates: %v", err)
 	}
@@ -86,7 +101,7 @@ func TestColetarGatesPropagaFalhaDeHTTP(t *testing.T) {
 	contagens := func(string) int { return 0 }
 	tlsVerify := func(string) int { return 0 }
 	httpCheck := func(string) (int, error) { return 0, errors.New("sem rota") }
-	if _, err := ColetarGates(contagens, tlsVerify, httpCheck, "https://x/health", "antigo", "novo"); err == nil {
+	if _, err := ColetarGates(contagens, tlsVerify, httpCheck, func() int { return 1 }, "https://x/health", "antigo", "novo"); err == nil {
 		t.Fatal("falha de HTTP deve propagar erro")
 	}
 }

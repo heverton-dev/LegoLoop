@@ -621,12 +621,6 @@
       "slug": "legoloop-diagram-design"
     },
     {
-      "slug": "legoloop-video-ativos"
-    },
-    {
-      "slug": "legoloop-video-roteiro"
-    },
-    {
       "slug": "legoloop-dissecar"
     },
     {
@@ -652,6 +646,9 @@
     },
     {
       "slug": "legoloop-impeccable-design"
+    },
+    {
+      "slug": "legoloop-kraften-deploy"
     },
     {
       "slug": "legoloop-lauren-tan"
@@ -681,6 +678,9 @@
       "slug": "legoloop-triagem"
     },
     {
+      "slug": "legoloop-video-ativos"
+    },
+    {
       "slug": "legoloop-video-edition"
     },
     {
@@ -697,6 +697,9 @@
     },
     {
       "slug": "legoloop-video-rea-transcrever"
+    },
+    {
+      "slug": "legoloop-video-roteiro"
     },
     {
       "slug": "legoloop-web-qa"

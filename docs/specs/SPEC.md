@@ -140,7 +140,7 @@ func (c DeployConfig) Validate() error {
   * **Quando:** O nó `n01_preflight_zip` processa o arquivo
   * **Então:** Retorna o erro sentinela `ErrInvalidDeployInput` e aborta a extração
 * [ ] `AC-E01.3`: **Rejeição de pacote sem os 3 artefatos universais (Caminho de Falha)**
-  * **Dado que:** Um arquivo `.zip` sem `Dockerfile`, sem `docker-stack.yml` na rede `network_conexao`, sem `HEALTHCHECK` ou sem as variáveis padronizadas (`ADMIN_USER`/`ADMIN_PASS`)
+  * **Dado que:** Um arquivo `.zip` sem `Dockerfile`, sem `docker-stack.yml` com bloco `networks` declarado (o nome da rede é configuração do ambiente, não regra do Processo), sem `HEALTHCHECK` ou sem as variáveis padronizadas (`ADMIN_USER`/`ADMIN_PASS`)
   * **Quando:** O nó `n01_preflight_zip` executa a validação
   * **Então:** Retorna o erro sentinela `ErrInvalidDeployInput` e aborta antes de qualquer chamada de rede
 * [ ] `AC-E01.4`: **Criação de CNAME Cloudflare (Caminho Feliz)**
@@ -154,6 +154,10 @@ func (c DeployConfig) Validate() error {
   * **Dado que:** O `.zip` validado e metadados sincronizados
   * **Quando:** Os nós `n03_deploy_stream` e `n04_verify_gates` rodam em sequência
   * **Então:** O job retorna `status == "done"`, `CF_OLD=0`, `CF_NEW=1`, `TLS=0`, `HTTP=200`
+* [ ] `AC-E02.3`: **Prova da rede compartilhada anexada no Swarm (Caminho Feliz)**
+  * **Dado que:** O deploy terminou com `status == "done"` e a rede compartilhada do ecossistema é informada como parâmetro de configuração
+  * **Quando:** O nó `n04_verify_gates` consulta o serviço no Swarm
+  * **Então:** O serviço tem a rede compartilhada anexada (`REDE=1`) e o gate falha com exit 1 caso contrário
 * [ ] `AC-E02.2`: **Falha de HTTP Gate (Caminho de Falha)**
   * **Dado que:** O serviço implantado responde com HTTP 500
   * **Quando:** O nó `n04_verify_gates` valida o endpoint
@@ -165,9 +169,11 @@ func (c DeployConfig) Validate() error {
 
 ### Rastreabilidade Requisito para Critério
 
+> Emenda 2026-11-26: rede parametrizada, domínio mestre variável e coleta interativa nas 3 vias (`2026-11-26_EMENDA_INTENT_KRAFTEN_DEPLOY.md`).
+
 | R | Requisito | AC |
 | :--- | :--- | :--- |
-| `Q1` | Pipeline determinístico de 5 nós sem LLM | `AC-E01.1`, `AC-E01.2`, `AC-E01.3`, `AC-E01.4`, `AC-E02.1`, `AC-E02.2`, `AC-NF.1` |
+| `Q1` | Pipeline determinístico de 5 nós sem LLM | `AC-E01.1`, `AC-E01.2`, `AC-E01.3`, `AC-E01.4`, `AC-E02.1`, `AC-E02.2`, `AC-E02.3`, `AC-NF.1` |
 
 ---
 

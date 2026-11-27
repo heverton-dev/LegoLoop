@@ -29,16 +29,27 @@ func validarDockerfile(raiz string) error {
 	return nil
 }
 
-// validarStack exige docker-stack.yml conectado à rede network_conexao.
+// validarStack exige docker-stack.yml com bloco networks declarado. O nome da
+// rede é configuração do ambiente (parâmetro), não regra do Processo.
 func validarStack(raiz string) error {
 	corpo, err := os.ReadFile(filepath.Join(raiz, "docker-stack.yml"))
 	if err != nil {
 		return ErrInvalidDeployInput
 	}
-	if !strings.Contains(string(corpo), "network_conexao") {
+	if !temBlocoNetworks(string(corpo)) {
 		return ErrInvalidDeployInput
 	}
 	return nil
+}
+
+// temBlocoNetworks detecta a declaração de redes no docker-stack.yml.
+func temBlocoNetworks(texto string) bool {
+	for _, linha := range strings.Split(texto, "\n") {
+		if strings.HasPrefix(strings.TrimSpace(linha), "networks:") {
+			return true
+		}
+	}
+	return false
 }
 
 // validarVarsPadrao exige .env.example declarando ADMIN_USER e ADMIN_PASS.

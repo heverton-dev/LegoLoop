@@ -1,0 +1,34 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-kraften-deploy",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:fcb2d1413efc1710100837aaa56d112bac4100c2369dda715d128690e64b7400",
+      "erro": "gates.json sem tags JSON no struct",
+      "antidoto": "tags JSON adicionadas ao struct Gates com teste de round-trip",
+      "recorrencias": 1,
+      "pacote": "internal/kraften",
+      "causa_raiz": "struct Gates sem tags cf_old/cf_new/tls_verdict/http_code quebrava o round-trip do receipt",
+      "timestamp": "2026-11-26T23:23:34Z"
+    },
+    {
+      "assinatura": "sha256:c7af0a687218d3c961975d73fd7476545ca58a2eb4cb331d325d9612b9676eef",
+      "erro": "termo proibido esteira na ajuda",
+      "antidoto": "termo normalizado para Processo no uso, comentário e documentação",
+      "recorrencias": 1,
+      "pacote": "internal/cli",
+      "causa_raiz": "texto de uso escapou da taxonomia ASD-STE100 (Lei 15)",
+      "timestamp": "2026-11-26T23:23:34Z"
+    },
+    {
+      "assinatura": "sha256:7c63eb44750922d61b66cb2ba738dfd7c0e42e4211bd0fb08fc958dac2845a47",
+      "erro": "global mutavel etapasKraften reprova espinha",
+      "antidoto": "substituído por função ehEtapaKraften (switch) sem estado",
+      "recorrencias": 1,
+      "pacote": "internal/cli",
+      "causa_raiz": "mapa de subcomandos declarado como var global mutável sem justificativa",
+      "timestamp": "2026-11-26T23:23:40Z"
+    }
+  ]
+}

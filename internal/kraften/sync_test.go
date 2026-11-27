@@ -38,6 +38,15 @@ func novoServidorCFArmazena(t *testing.T, registros map[string]int, chamadas *[]
 	}))
 }
 
+func TestFqdnDeComDominioBaseExplicito(t *testing.T) {
+	if got := FqdnDe("sub01", "vpsconexao.org"); got != "sub01.vpsconexao.org" {
+		t.Fatalf("fqdn inesperado: %s", got)
+	}
+	if got := FqdnDe("sub01.outro.com", "ignorado.org"); got != "sub01.outro.com" {
+		t.Fatalf("fqdn completo deve passar direto: %s", got)
+	}
+}
+
 func TestSyncCloudflareCriaCNAME(t *testing.T) {
 	var chamadas []string
 	srv := novoServidorCFArmazena(t, nil, &chamadas)
@@ -95,7 +104,7 @@ func TestSyncMetadataRegistraESincronizaDNS(t *testing.T) {
 	defer srv.Close()
 	cf := NovoCloudflareClient(srvCF.URL, "zid", "token", srv.Client())
 	l := NovoLauncherClient(srv.URL, "user", "pass", srv.Client())
-	cfg := DeployConfig{AppID: "app01", ZipPath: "pacote.zip", Subdomain: "sub01", TargetHost: "server.vpsconexao.org"}
+	cfg := DeployConfig{AppID: "app01", ZipPath: "pacote.zip", Subdomain: "sub01", TargetHost: "server.vpsconexao.org", BaseDomain: "vpsconexao.org"}
 	if err := SyncMetadata(cfg, l, cf); err != nil {
 		t.Fatalf("SyncMetadata: %v", err)
 	}

@@ -14,6 +14,7 @@ type PipelineDeps struct {
 	Contagens    func(nome string) int
 	TLSVerify    func(host string) int
 	HTTPCheck    func(url string) (int, error)
+	RedeAnexada  func() int
 	PollInterval time.Duration
 }
 
@@ -31,7 +32,7 @@ func ExecutePipeline(cfg DeployConfig, deps PipelineDeps) (DeployReceipt, error)
 	if err := etapaDeploy(cfg, deps); err != nil {
 		return DeployReceipt{}, err
 	}
-	gates, err := ColetarGates(deps.Contagens, deps.TLSVerify, deps.HTTPCheck, deps.HealthURL, deps.HostAntigo, FqdnDe(cfg.Subdomain, cfg.TargetHost))
+	gates, err := ColetarGates(deps.Contagens, deps.TLSVerify, deps.HTTPCheck, deps.RedeAnexada, deps.HealthURL, deps.HostAntigo, FqdnDe(cfg.Subdomain, cfg.BaseDomain))
 	if err != nil {
 		return DeployReceipt{}, err
 	}

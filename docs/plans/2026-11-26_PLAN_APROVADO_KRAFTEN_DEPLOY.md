@@ -4,7 +4,7 @@
 > **Stop-Gate 03:** APROVADO pelo usuário no chat (sessão `ses_ffe5de6a05040ffelVrsrUnDoh`).
 > **PLAN:** `docs/plans/2026-11-26_PLAN_KRAFTEN_DEPLOY.md` (alias `docs/plans/PLAN.md`, `status: APPROVED`).
 > **ROUTE:** `docs/routes/2026-11-26_ROUTE_KRAFTEN_DEPLOY.json`
-> **DAG:** `docs/dags/2026-11-26_DAG_KRAFTEN_DEPLOY.json` (válido: 9 nós, sem ciclos).
+> **DAG:** `docs/dags/2026-11-26_DAG_LEGOLOOP_KRAFTEN_DEPLOY.json` (válido: 9 nós, sem ciclos).
 > **Upstream:** `SPEC-intv_1795723484496401600` aprovada no Stop-Gate 02.
 
 ## Decisão

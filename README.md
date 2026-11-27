@@ -59,6 +59,7 @@ LegoLoop/
 │   ├── studio/              # Looping Studio (canvas + API REST + modais Novo Processo e Processos)
 │   ├── diorama/roteiro/     # Processo legoloop-diorama-roteiro: pré-voo, descoberta por nicho e validação epistêmica
 │   ├── diorama/ativos/      # Processo legoloop-diorama-ativos: elenco, sprites, cenários SVG/Flow e storyboard cenas.json
+│   ├── kraften/             # Processo legoloop-kraften-deploy: deploy determinístico zero-LLM com gates binários e recibo
 │   ├── browser/             # Navegador persistente via CDP (9222/9333) com perfil isolado e cadência conservadora
 │   ├── e2e/                 # Testes E2E herméticos dos cenários de referência (tag e2e)
 │   ├── redc/                # MEGA-PIPELINE REDC: engenharia reversa de canais, DNA, ganchos e Brand Swap

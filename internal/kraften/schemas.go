@@ -17,6 +17,8 @@ type DeployConfig struct {
 	ZipPath    string `json:"zip_path"`
 	Subdomain  string `json:"subdomain"`
 	TargetHost string `json:"target_host"`
+	// BaseDomain é o domínio mestre do ecossistema (configuração variável).
+	BaseDomain string `json:"base_domain"`
 }
 
 // DeployReceipt é o artefato de prova emitido ao fim do Processo.

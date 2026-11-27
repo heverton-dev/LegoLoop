@@ -65,6 +65,7 @@ func TestExecutePipeline5NosEmSequencia(t *testing.T) {
 		Contagens:    contagensDeTeste(),
 		TLSVerify:    func(string) int { return 0 },
 		HTTPCheck:    checkHTTP(studio.Client()),
+		RedeAnexada:  func() int { return 1 },
 		PollInterval: time.Millisecond,
 	})
 	if err != nil {
@@ -92,6 +93,7 @@ func TestExecutePipelineSemReciboQuandoGatesFalham(t *testing.T) {
 		Contagens:    contagensDeTeste(),
 		TLSVerify:    func(string) int { return 0 },
 		HTTPCheck:    checkHTTP(studio.Client()),
+		RedeAnexada:  func() int { return 1 },
 		PollInterval: time.Millisecond,
 	})
 	if err == nil {

@@ -750,3 +750,5 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
   - **Governança Viva:** AGENTS.md (<= 24000 bytes), docs/governanca/AGENTS_COMPLETO.md, README.md e MEMORY.md atualizados citando explicitamente abricar plano.
 
 - **26/11/2026** — ⚖️ **Lei da prova e correções A13–A15:** fato sem prova se verifica antes de afirmar, achado se corrige na mesma resposta; "Não verificado", pendência, falta e próxima etapa são proibidos. Aplicação: `ste.LintEvasao`, `legoloop stept lint [--hook]` e gancho Stop do Claude Code (prova: sessão headless bloqueada com frase evasiva, `error_max_turns`, 5 turnos; controle com prova, `success`, 1 turno). Motor: `Ticket.Command` em `internal/plangen` (A13, aditivo) permite DAG de `native_swarm` que o `swarm run` sobe. Espinha limpa em `internal/diorama/render` (globais viraram funções, erros ignorados tratados) e Processos `legoloop-diorama-*` com `pipeline.dag.json`.
+
+* **Processo Canonizado `legoloop-kraften-deploy` (2026-11-26):** `skills/legoloop-kraften-deploy/SKILL.md` · `docs/reports/`

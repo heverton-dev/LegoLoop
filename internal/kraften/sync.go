@@ -59,20 +59,17 @@ func SyncMetadata(cfg DeployConfig, l *LauncherClient, cf *CloudflareClient) err
 	if err := cfg.Validate(); err != nil {
 		return err
 	}
-	if err := cf.EnsureCNAME(FqdnDe(cfg.Subdomain, cfg.TargetHost), cfg.TargetHost); err != nil {
+	if err := cf.EnsureCNAME(FqdnDe(cfg.Subdomain, cfg.BaseDomain), cfg.TargetHost); err != nil {
 		return err
 	}
 	return l.RegistrarApp(cfg)
 }
 
-// FqdnDe monta o FQDN do subdomínio sobre o domínio base do host alvo.
-func FqdnDe(subdomain, targetHost string) string {
+// FqdnDe monta o FQDN sobre o domínio base configurado (variável por ambiente).
+// O subdomínio já completo (com ponto) passa direto.
+func FqdnDe(subdomain, baseDomain string) string {
 	if strings.Contains(subdomain, ".") {
 		return subdomain
 	}
-	base := targetHost
-	if i := strings.Index(base, "."); i >= 0 {
-		base = base[i+1:]
-	}
-	return subdomain + "." + base
+	return subdomain + "." + baseDomain
 }

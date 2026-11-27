@@ -5,11 +5,11 @@
   "atualizado_em": "2026-11-26T22:40:41Z",
   "resumo": {
     "total": 25,
-    "aprovados": 22,
+    "aprovados": 23,
     "em_andamento": 0,
     "reprovados": 0,
     "bloqueados": 0,
-    "pendentes": 3
+    "pendentes": 2
   },
   "tickets": [
     {
@@ -458,18 +458,18 @@
       "id": "TICK-V01-08.3",
       "epico": "E12",
       "titulo": "Reproduzir o First Brands pelo processo: timeline completa com CHECK OK e ritmo no alvo",
-      "estado": "PENDING",
-      "responsavel": "",
-      "comando": "go run ./cmd/legoloop video-render timeline --projeto projetos/video-diorama/first-brands",
-      "exit_code": -1,
-      "prova": "",
+      "estado": "PASSED",
+      "responsavel": "arquiteto (direto, fora do swarm, conteudo First Brands montado)",
+      "comando": "motor.Gerar + python motor-local/check_timeline.py projetos/video-diorama/first-brands",
+      "exit_code": 0,
+      "prova": "CHECK OK; 10 shots, 39.8s; cuts/min 15.1 (alvo 12-21); median shot 3.9s (alvo 2.5-4)",
       "alvos": [
         "projetos/video-diorama/first-brands/timeline.json"
       ],
       "criterios": [
         "AC-E12.2"
       ],
-      "atualizado_em": "2026-11-26T00:00:00Z"
+      "atualizado_em": "2026-11-27T00:47:05Z"
     },
     {
       "id": "TICK-V01-09.1",
