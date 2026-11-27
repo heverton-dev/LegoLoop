@@ -1,0 +1,25 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-video-animado",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "A21-gate-aspas-argumento",
+      "erro": "validation_cmd com aspas de argumento (-run \"A|B\") virava gate manual e travava o swarm",
+      "antidoto": "fieldsComAspas em internal/plangen/verify.go trata aspas duplas como um argv unico",
+      "recorrencias": 1
+    },
+    {
+      "assinatura": "A18-worker-killed-reuso",
+      "erro": "swarm run falhava com worker ja existe mesmo apos swarm_kill",
+      "antidoto": "semWorkerEncerrado remove worker killed de mesmo nome antes do addWorkerLocked",
+      "recorrencias": 1
+    },
+    {
+      "assinatura": "palette-overflow-set-office",
+      "erro": "data do calendario do set office (sets.js) estourava o cartao com valores de 4 digitos",
+      "antidoto": "fonte do numero encolhe quando o texto tem mais de 2 caracteres",
+      "recorrencias": 1
+    }
+  ]
+}

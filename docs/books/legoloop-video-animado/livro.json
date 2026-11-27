@@ -1,0 +1,25 @@
+{
+  "capitulos": [
+    {"id": "e07", "peca": "legoloop-video-animado", "titulo": "Inventario global por estilo: NovoEstilo, GravarItem, heranca e validacao humana"},
+    {"id": "e08", "peca": "legoloop-video-animado", "titulo": "Contratos v2: modo_producao, estilo validado e storyboard contra o inventario"},
+    {"id": "e09", "peca": "legoloop-video-animado", "titulo": "Peca 2: elenco vetorial sem Flow, caminho de recorte preservado, entrega suspeita"},
+    {"id": "e10", "peca": "legoloop-video-animado", "titulo": "Motor portado (licenca MIT): ponte, render 9:16 deterministico, boca sincronizada"},
+    {"id": "e11", "peca": "legoloop-video-animado", "titulo": "Renomeacao diorama para video com alias depreciado e historico preservado"},
+    {"id": "e12", "peca": "legoloop-video-animado", "titulo": "Prova de reproducao: cena 1 aprovada pelo usuario e First Brands no ritmo"}
+  ],
+  "descricao": "Livro didatico do Macroprocesso legoloop-video-animado: inventario por estilo, contratos novos, Peca 2 vetorial, motor portado e prova de reproducao (SPEC v2, Epicos E07 a E12).",
+  "slug": "legoloop-video-animado",
+  "titulo": "Manual Didatico: legoloop-video-animado",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-26_PROCESSO_LEGOLOOP_VIDEO_ANIMADO",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-video-animado-v1",
+  "ultima_compilacao": "2026-11-26"
+}

@@ -326,3 +326,11 @@
 - go test ./internal/video/... 5 pacotes ok; funclen e gofmt limpos (nenhum codigo Go mudou neste ticket, so conteudo/dados do projeto).
 - Artefato: projetos/video-diorama/first-brands/{audio,timeline.json} (projetos/ e ignorado pelo git, path informado).
 - Progresso: 23 aprovados.
+
+## Camada 25 - TICK-V01-09.1 fechamento do macroprojeto legoloop-video-animado (2026-11-26)
+- Elevei a cobertura dos pacotes novos para o alvo AC-NF.1 (>=95%) com testes reais de ramos de erro (nao enchimento): inventario 86.4%->95.8%, motor 87.7%->95.3%, ativos ficou em 94.1% (ramos de IO defensivos em codigo legado, dificeis de forcar sem mock de filesystem).
+- Criados os 4 artefatos de canonizacao que faltavam: docs/manuals/2026-11-26_MANUAL_VIDEO_ANIMADO.md, docs/books/legoloop-video-animado/ (livro.json + 4 partes), skills/legoloop-video-animado/SKILL.md (paridade com os 6 nos do DAG confirmada por script), processos/legoloop-video-animado/ (pipeline.dag.json de 6 nos + triagem.json + anticorpos.json + ANTICORPOS.md + memoria_execucao.json).
+- Achado corrigido: espinha/registro.json nao tinha o slug legoloop-video-animado na lista de processos; adicionado.
+- Achado de ambiente, nao corrigido (fora do meu controle): 4 processos MCP-gateway (legoloop mcp-router --gateway) travam C:\Users\trcnologia\go\bin\legoloop.exe; a etapa 5 (go install) do fechar falha por isso. Rodei com --skip-build para confirmar as outras 8 etapas reais (9 de 9 ok); o bin/legoloop.exe local (usado em todos os comandos desta sessao) ja esta atualizado.
+- Prova: legoloop fechar legoloop-video-animado --skip-build --json: sucesso=true, 9/9 etapas ok, portao mecanico (etapa 8) aprovado de verdade (go test, vet, funclen, gofmt, espinha).
+- Progresso: 24 aprovados, 1 adiado para o backlog (TICK-V01-08.2, estilo palito).

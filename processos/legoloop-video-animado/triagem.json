@@ -1,0 +1,89 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-video-animado",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-video-animado",
+      "comandos_cli": [
+        "legoloop video-inventario",
+        "legoloop video-ativos",
+        "legoloop video-render",
+        "/legoloop-video-animado"
+      ],
+      "artefatos_ativos": [
+        "inventario/video/estilos/*/estilo.json",
+        "cenas.json",
+        "timeline.json"
+      ],
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificacao para o macroprocesso legoloop-video-animado",
+    "etapas": [
+      "n01_inventario_por_estilo",
+      "n02_contratos_v2",
+      "n03_peca2_vetorial",
+      "n04_motor_portado",
+      "n05_renomeacao_video",
+      "n06_prova_de_reproducao"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_inventario_por_estilo",
+      "palavras_chave": [
+        "Inventario global por estilo: NovoEstilo"
+      ],
+      "slash_command": "/legoloop-video-animado-n01_inventario_por_estilo",
+      "flag_cli": "--etapa n01_inventario_por_estilo"
+    },
+    {
+      "id": "n02_contratos_v2",
+      "palavras_chave": [
+        "Contratos v2: pre-voo le modo_producao e"
+      ],
+      "slash_command": "/legoloop-video-animado-n02_contratos_v2",
+      "flag_cli": "--etapa n02_contratos_v2"
+    },
+    {
+      "id": "n03_peca2_vetorial",
+      "palavras_chave": [
+        "Peca 2: elenco vetorial do inventario se"
+      ],
+      "slash_command": "/legoloop-video-animado-n03_peca2_vetorial",
+      "flag_cli": "--etapa n03_peca2_vetorial"
+    },
+    {
+      "id": "n04_motor_portado",
+      "palavras_chave": [
+        "Motor portado (motor-local, licenca MIT)"
+      ],
+      "slash_command": "/legoloop-video-animado-n04_motor_portado",
+      "flag_cli": "--etapa n04_motor_portado"
+    },
+    {
+      "id": "n05_renomeacao_video",
+      "palavras_chave": [
+        "Renomeacao diorama-\u003evideo com alias depr"
+      ],
+      "slash_command": "/legoloop-video-animado-n05_renomeacao_video",
+      "flag_cli": "--etapa n05_renomeacao_video"
+    },
+    {
+      "id": "n06_prova_de_reproducao",
+      "palavras_chave": [
+        "Prova de reproducao: cena 1 renderizada "
+      ],
+      "slash_command": "/legoloop-video-animado-n06_prova_de_reproducao",
+      "flag_cli": "--etapa n06_prova_de_reproducao"
+    }
+  ],
+  "pontos_entrada": [
+    "cli:legoloop video-inventario",
+    "cli:legoloop video-ativos",
+    "cli:legoloop video-render",
+    "chat:/legoloop-video-animado",
+    "studio:Video Animado"
+  ]
+}
