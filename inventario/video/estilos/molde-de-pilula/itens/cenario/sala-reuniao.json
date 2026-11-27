@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "sala-reuniao",
+  "tipo": "cenario",
+  "estilo": "molde-de-pilula",
+  "estilo_versao": "1.0.0",
+  "tags": [
+    "boardroom",
+    "day"
+  ],
+  "parametros": {
+    "kind": "boardroom",
+    "time": "day"
+  },
+  "origem": "codigo-desenhado (sets.js), motor liberado MIT 2026-11-26",
+  "aprovado": true
+}

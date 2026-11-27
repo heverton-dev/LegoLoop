@@ -13,7 +13,7 @@ atualizado_em: "2026-11-26T22:40:41Z"
 
 | Total | Aprovados (PASSED) | Em andamento (IN_PROGRESS) | Reprovados (FAILED) | Bloqueados (BLOCKED) | Pendentes (PENDING) |
 |---:|---:|---:|---:|---:|---:|
-| 25 | 21 | 0 | 0 | 0 | 4 |
+| 25 | 22 | 0 | 0 | 0 | 3 |
 
 ## Ponto de Retomada (Em Andamento)
 
@@ -31,7 +31,6 @@ atualizado_em: "2026-11-26T22:40:41Z"
 
 | Ticket | Épico | Título | Critérios |
 |---|---|---|---|
-| `TICK-V01-08.1` | E12 | Renderizar a cena 1 do diorama-demo pelo processo e colher a aprovacao visual do usuario | AC-E12.1 |
 | `TICK-V01-08.2` | E12 | Criar o estilo palito herdando do molde-de-pilula e validar com o usuario | AC-E12.3 |
 | `TICK-V01-08.3` | E12 | Reproduzir o First Brands pelo processo: timeline completa com CHECK OK e ritmo no alvo | AC-E12.2 |
 | `TICK-V01-09.1` | E12 | Fechamento: cobertura, dependencias, portabilidade, espinha e legoloop fechar 5 de 5 | AC-NF.1, AC-NF.2, AC-NF.3 |
@@ -61,3 +60,4 @@ atualizado_em: "2026-11-26T22:40:41Z"
 | `TICK-V01-07.2` | E11 | 0 | ok  	github.com/heverton-dev/LegoLoop/internal/cli	0.026s / | 2026-11-26T22:40:41Z |
 | `TICK-V01-07.3` | E11 | 0 | git mv processos e skills diorama-> video-*; stub de redirecionamento em skills; registro.json e PROCESSOS_CANONIZADOS.md atualizados; go test ./... 75 pacotes ok | 2026-11-26T22:54:35Z |
 | `TICK-V01-07.4` | E11 | 0 | 16 arquivos com nota de redirecionamento inserida logo apos o frontmatter/titulo; 48 linhas inseridas, 0 removidas | 2026-11-26T23:23:52Z |
+| `TICK-V01-08.1` | E12 | 0 | projetos/video-diorama/diorama-demo-pilula/renders/cena1.mp4 1080x1920 30fps com voz; aprovacao_cena1.json gravado | 2026-11-27T00:26:55Z |

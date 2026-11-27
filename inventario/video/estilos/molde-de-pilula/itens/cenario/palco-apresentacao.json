@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "palco-apresentacao",
+  "tipo": "cenario",
+  "estilo": "molde-de-pilula",
+  "estilo_versao": "1.0.0",
+  "tags": [
+    "stage",
+    "night"
+  ],
+  "parametros": {
+    "kind": "stage",
+    "time": "night"
+  },
+  "origem": "codigo-desenhado (sets.js), motor liberado MIT 2026-11-26",
+  "aprovado": true
+}

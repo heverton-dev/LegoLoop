@@ -295,3 +295,23 @@ const (
 {"indice_linha":0,"texto":"a","cenario_id":"cen_01","metafora_visual":"m","elementos_moveis":[]},
 {"indice_linha":0,"texto":"b","cenario_id":"cen_01","metafora_visual":"m","elementos_moveis":[]}]}`
 )
+
+// TestConferirCortesAceitaSetCodigoSemArquivo cobre o cenario codigo-desenhado (sem Arquivo no
+// inventario): o corte carrega Set em vez de BG, e conferirCortes nao exige arquivo em disco.
+func TestConferirCortesAceitaSetCodigoSemArquivo(t *testing.T) {
+	dir := t.TempDir()
+	tl := TimelineMotor{FPS: FPS, Shots: []CorteMotor{
+		{ID: "l000", Set: map[string]any{"kind": "office", "time": "night"}, Duration: 2.5},
+	}}
+	if err := tl.conferirCortes(dir, 2.5); err != nil {
+		t.Fatalf("set sem arquivo deveria passar: %v", err)
+	}
+}
+
+func TestConferirCortesExigeBgOuSet(t *testing.T) {
+	dir := t.TempDir()
+	tl := TimelineMotor{FPS: FPS, Shots: []CorteMotor{{ID: "l000", Duration: 2.5}}}
+	if err := tl.conferirCortes(dir, 2.5); !errors.Is(err, ErrEntradaTimeline) {
+		t.Fatalf("corte sem bg e sem set deveria reprovar, veio %v", err)
+	}
+}

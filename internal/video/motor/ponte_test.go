@@ -197,3 +197,23 @@ func TestPonteCheckTimelineReal(t *testing.T) {
 		t.Fatalf("check_timeline real: %v", err)
 	}
 }
+
+// TestPonteFundoCodigoSemArquivo cobre o cenario codigo-desenhado (sets.js): item do inventario
+// sem Arquivo, com Parametros kind/time, vira Set no corte, sem exigir arquivo em disco.
+func TestPonteFundoCodigoSemArquivo(t *testing.T) {
+	e, dir := entradaDemo(t)
+	e.Fundos = []inventario.Item{
+		{ID: "banco", Tipo: "cenario", Parametros: map[string]any{"kind": "office", "time": "night"}},
+		{ID: "rua", Tipo: "cenario", Parametros: map[string]any{"kind": "street", "time": "day"}},
+	}
+	tl, err := Montar(e, dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if tl.Shots[0].BG != "" || tl.Shots[0].Set["kind"] != "office" {
+		t.Fatalf("corte 0 deveria ter set codigo office, veio bg=%q set=%v", tl.Shots[0].BG, tl.Shots[0].Set)
+	}
+	if tl.Shots[1].Set["kind"] != "street" {
+		t.Fatalf("corte 1 deveria ter set codigo street, veio %v", tl.Shots[1].Set)
+	}
+}

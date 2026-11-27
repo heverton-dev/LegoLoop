@@ -5,11 +5,11 @@
   "atualizado_em": "2026-11-26T22:40:41Z",
   "resumo": {
     "total": 25,
-    "aprovados": 21,
+    "aprovados": 22,
     "em_andamento": 0,
     "reprovados": 0,
     "bloqueados": 0,
-    "pendentes": 4
+    "pendentes": 3
   },
   "tickets": [
     {
@@ -424,18 +424,18 @@
       "id": "TICK-V01-08.1",
       "epico": "E12",
       "titulo": "Renderizar a cena 1 do diorama-demo pelo processo e colher a aprovacao visual do usuario",
-      "estado": "PENDING",
-      "responsavel": "",
-      "comando": "go run ./cmd/legoloop video-render executar --projeto projetos/video-diorama/diorama-demo --cena 1",
-      "exit_code": -1,
-      "prova": "",
+      "estado": "PASSED",
+      "responsavel": "arquiteto (direto, fora do swarm, licenca desbloqueada e Stop-Gate humano)",
+      "comando": "motor.Renderizar + motor.ConferirDeterminismo + aprovacao do usuario",
+      "exit_code": 0,
+      "prova": "projetos/video-diorama/diorama-demo-pilula/renders/cena1.mp4 1080x1920 30fps com voz; aprovacao_cena1.json gravado",
       "alvos": [
         "projetos/video-diorama/diorama-demo/renders/"
       ],
       "criterios": [
         "AC-E12.1"
       ],
-      "atualizado_em": "2026-11-26T00:00:00Z"
+      "atualizado_em": "2026-11-27T00:26:55Z"
     },
     {
       "id": "TICK-V01-08.2",

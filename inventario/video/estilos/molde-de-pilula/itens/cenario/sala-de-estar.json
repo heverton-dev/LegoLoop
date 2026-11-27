@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "sala-de-estar",
+  "tipo": "cenario",
+  "estilo": "molde-de-pilula",
+  "estilo_versao": "1.0.0",
+  "tags": [
+    "living",
+    "night"
+  ],
+  "parametros": {
+    "kind": "living",
+    "time": "night"
+  },
+  "origem": "codigo-desenhado (sets.js), motor liberado MIT 2026-11-26",
+  "aprovado": true
+}

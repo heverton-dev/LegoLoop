@@ -267,10 +267,12 @@ func gravarSaidasTimeline(projDir string, tl Timeline, srt string) error {
 }
 
 // CorteMotor e o que o render Go confere de cada shot do timeline.json do motor.
+// BG e um fundo-imagem (Flow); Set e um fundo codigo-desenhado (sets.js); exatamente um dos dois.
 type CorteMotor struct {
-	ID       string  `json:"id"`
-	BG       string  `json:"bg"`
-	Duration float64 `json:"duration"`
+	ID       string         `json:"id"`
+	BG       string         `json:"bg,omitempty"`
+	Set      map[string]any `json:"set,omitempty"`
+	Duration float64        `json:"duration"`
 }
 
 // TimelineMotor e a nova timeline, gerada pela ponte do motor portado (AC-E10.3).
@@ -295,17 +297,29 @@ func lerTimelineMotor(projDir string) (TimelineMotor, error) {
 	return tl, nil
 }
 
-// conferirCortes exige fundo existente em cada corte e soma das duracoes igual a voz (+- 1 quadro).
+// conferirCortes exige fundo (bg existente ou set codigo-desenhado) em cada corte e soma das
+// duracoes igual a voz (+- 1 quadro).
 func (tl TimelineMotor) conferirCortes(projDir string, vozS float64) error {
 	soma := 0.0
 	for _, s := range tl.Shots {
-		if _, err := existeArquivo(projDir, s.BG); err != nil {
-			return entradaInvalida("corte %q sem fundo: %v", s.ID, err)
+		if err := conferirFundoCorte(projDir, s); err != nil {
+			return err
 		}
 		soma += s.Duration
 	}
 	if math.Abs(soma-vozS) > ToleranciaFrame+1e-6 {
 		return entradaInvalida("cortes somam %.3f s e a voz %.3f s", soma, vozS)
+	}
+	return nil
+}
+
+// conferirFundoCorte exige exatamente um fundo: bg existente em disco ou set nao vazio.
+func conferirFundoCorte(projDir string, s CorteMotor) error {
+	if len(s.Set) > 0 {
+		return nil
+	}
+	if _, err := existeArquivo(projDir, s.BG); err != nil {
+		return entradaInvalida("corte %q sem fundo: %v", s.ID, err)
 	}
 	return nil
 }

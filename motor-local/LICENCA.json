@@ -1,0 +1,10 @@
+{
+  "motor": "RobbiSkill",
+  "status": "liberada",
+  "licenca": "MIT",
+  "declarado_por": "usuario (autor original), 2026-11-26",
+  "valores_aceitos": ["pendente", "liberada", "reescrito"],
+  "regra": "Com status pendente, motor-local fica ignorado pelo git. Com liberada ou reescrito, o motor pode migrar para internal/video/motor/.",
+  "plano_b": "Reescrita limpa de puppet.js e sets.js (SPEC F14) - nao mais necessario, licenca MIT liberada em 2026-11-26.",
+  "spec_ref": "AC-E10.1"
+}

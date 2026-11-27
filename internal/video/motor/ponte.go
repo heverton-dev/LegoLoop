@@ -72,13 +72,14 @@ type Boneco struct {
 
 // Corte é um shot do timeline.json do motor.
 type Corte struct {
-	ID       string   `json:"id"`
-	Type     string   `json:"type"`
-	Lines    [2]int   `json:"lines"`
-	BG       string   `json:"bg"`
-	Duration float64  `json:"duration"`
-	Chars    []Boneco `json:"chars"`
-	Light    *Luz     `json:"light,omitempty"`
+	ID       string         `json:"id"`
+	Type     string         `json:"type"`
+	Lines    [2]int         `json:"lines"`
+	BG       string         `json:"bg,omitempty"`
+	Set      map[string]any `json:"set,omitempty"`
+	Duration float64        `json:"duration"`
+	Chars    []Boneco       `json:"chars"`
+	Light    *Luz           `json:"light,omitempty"`
 }
 
 // Timeline é o contrato timeline.json lido pelo motor e pelo check_timeline.py.
@@ -209,7 +210,7 @@ func finsEmQuadros(e Entrada) ([]int, error) {
 
 // montarCorte resolve o fundo, os bonecos e a luz de contorno de uma cena.
 func montarCorte(e Entrada, dir string, c ativos.Cena, cast map[string]map[string]any) (Corte, error) {
-	bg, err := resolverFundo(e.Fundos, dir, c.CenarioID)
+	bg, set, err := resolverFundo(e.Fundos, dir, c.CenarioID)
 	if err != nil {
 		return Corte{}, err
 	}
@@ -222,27 +223,32 @@ func montarCorte(e Entrada, dir string, c ativos.Cena, cast map[string]map[strin
 		Type:  "scene",
 		Lines: [2]int{c.IndiceLinha, c.IndiceLinha},
 		BG:    bg,
+		Set:   set,
 		Chars: bonecos,
 		Light: luzDoEstilo(e.Estilo),
 	}, nil
 }
 
-// resolverFundo acha o cenário no inventário e confere o arquivo em disco.
-func resolverFundo(fundos []inventario.Item, dir, id string) (string, error) {
+// resolverFundo acha o cenario no inventario: item com Arquivo vira bg-imagem (confere o arquivo
+// em disco); item sem Arquivo (codigo-desenhado, sets.js) vira set a partir de Parametros.
+func resolverFundo(fundos []inventario.Item, dir, id string) (string, map[string]any, error) {
 	for _, f := range fundos {
-		if f.ID != id || f.Tipo != "cenario" || f.Arquivo == "" {
+		if f.ID != id || f.Tipo != "cenario" {
 			continue
+		}
+		if f.Arquivo == "" {
+			return "", f.Parametros, nil
 		}
 		caminho := f.Arquivo
 		if !filepath.IsAbs(caminho) {
 			caminho = filepath.Join(dir, caminho)
 		}
 		if _, err := os.Stat(caminho); err != nil {
-			return "", fmt.Errorf("%w: %q (%v)", ErrFundoAusente, id, err)
+			return "", nil, fmt.Errorf("%w: %q (%v)", ErrFundoAusente, id, err)
 		}
-		return filepath.ToSlash(f.Arquivo), nil
+		return filepath.ToSlash(f.Arquivo), nil, nil
 	}
-	return "", fmt.Errorf("%w: cenario %q fora do inventario", ErrFundoAusente, id)
+	return "", nil, fmt.Errorf("%w: cenario %q fora do inventario", ErrFundoAusente, id)
 }
 
 // montarBonecos posiciona os personagens da cena em faixas iguais sobre o piso.

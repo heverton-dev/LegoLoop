@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "escritorio-noite",
+  "tipo": "cenario",
+  "estilo": "molde-de-pilula",
+  "estilo_versao": "1.0.0",
+  "tags": [
+    "office",
+    "night",
+    "flow"
+  ],
+  "parametros": {
+    "prompt": "office at night, 2D flat ink outline, rim light"
+  },
+  "arquivo": "inventario/video/estilos/molde-de-pilula/arquivos/cenario/escritorio-noite-flow.jpeg",
+  "hash": "3c52d640cfa1e8ec411bb3226d2226e268242f981a11e10abe73cc2948da3d8b",
+  "origem": "Flow (Nano Banana 2.1), 0 credito, 2026-11-26, aprovado pelo usuario",
+  "aprovado": true
+}

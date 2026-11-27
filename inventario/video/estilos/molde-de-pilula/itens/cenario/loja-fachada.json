@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "loja-fachada",
+  "tipo": "cenario",
+  "estilo": "molde-de-pilula",
+  "estilo_versao": "1.0.0",
+  "tags": [
+    "shop",
+    "day"
+  ],
+  "parametros": {
+    "kind": "shop",
+    "time": "day"
+  },
+  "origem": "codigo-desenhado (sets.js), motor liberado MIT 2026-11-26",
+  "aprovado": true
+}
