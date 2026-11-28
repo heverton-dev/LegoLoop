@@ -108,7 +108,8 @@ Comandos:
   progresso  <gerar|iniciar|validar|status> [opções]  acompanhamento vivo de Tickets validado por Gate
   video-roteiro <prevoo|validar-config|coletar|validar-roteiro> [opções]    pré-voo, descoberta e validação epistêmica de roteiro de vídeo animado
   video-ativos  <prevoo|executar|validar-storyboard> [opções]               elenco, sprites, cenários SVG/Flow e storyboard cenas.json
-  video-render  <timeline|executar> --projeto DIR                           timeline e render master do vídeo animado
+  video-render  <prevoo|voz|mix|timeline|motor|executar> --projeto DIR       etapas de render do vídeo animado (motor é o canônico)
+  video-distribuicao <prevoo|revisao|vitrine|capa|acervo|agenda|publicar|comentarios|aprendizado> --projeto DIR   revisão, vitrine, acervo, agenda, publicação, comentários e aprendizado
   diorama-roteiro [opções]  alias depreciado de video-roteiro (aviso em stderr)
   diorama-ativos  [opções]  alias depreciado de video-ativos (aviso em stderr)
   video-inventario <validar|verificar> --estilo ID [opções]                 validação humana de estilo e conferência por hash do inventário
@@ -127,7 +128,7 @@ func mapaComandos() map[string]func(context.Context, []string, Deps) int {
 		"legopress": cmdLegoPress, "video-motion": cmdVideoMotion, "video-rea": cmdVideoRea, "fechar": cmdFechar, "commit": cmdCommit,
 		"rota": cmdRota, "homologar": cmdHomologar, "canal": cmdCanal, "cartoon-shorts": cmdCartoonShorts, "legoloop-cartoon-shorts": cmdCartoonShorts,
 		"progresso": cmdProgresso, "swarm": cmdSwarm, "web-qa": cmdWebQA, "sessoes": cmdSessoes, "anticorpos": cmdAnticorpos, "espinha": cmdEspinha,
-		"video-roteiro": cmdDioramaRoteiro, "video-ativos": cmdDioramaAtivos, "video-render": cmdVideoRender, "video-inventario": cmdVideoInventario,
+		"video-roteiro": cmdDioramaRoteiro, "video-ativos": cmdDioramaAtivos, "video-render": cmdVideoRender, "video-distribuicao": cmdVideoDistribuicao, "video-inventario": cmdVideoInventario,
 		"diorama-roteiro": aliasDepreciado("diorama-roteiro", "video-roteiro", cmdDioramaRoteiro),
 		"diorama-ativos":  aliasDepreciado("diorama-ativos", "video-ativos", cmdDioramaAtivos),
 		"kraften-deploy":  cmdKraftenDeploy,

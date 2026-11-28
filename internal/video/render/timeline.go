@@ -19,7 +19,7 @@ const (
 	AlturaBase  = 1080
 )
 
-var ErrEntradaTimeline = errors.New("diorama-render: entrada da timeline invalida")
+var ErrEntradaTimeline = errors.New("video-render: entrada da timeline invalida")
 
 // Posicao horizontal (fracao da largura) de cada personagem; o primeiro, o narrador, fica a direita.
 func slotsPersonagem() []float64 { return []float64{0.65, 0.35, 0.5, 0.8, 0.2} }
@@ -270,6 +270,7 @@ func gravarSaidasTimeline(projDir string, tl Timeline, srt string) error {
 // BG e um fundo-imagem (Flow); Set e um fundo codigo-desenhado (sets.js); exatamente um dos dois.
 type CorteMotor struct {
 	ID       string         `json:"id"`
+	Type     string         `json:"type,omitempty"`
 	BG       string         `json:"bg,omitempty"`
 	Set      map[string]any `json:"set,omitempty"`
 	Duration float64        `json:"duration"`
@@ -313,9 +314,9 @@ func (tl TimelineMotor) conferirCortes(projDir string, vozS float64) error {
 	return nil
 }
 
-// conferirFundoCorte exige exatamente um fundo: bg existente em disco ou set nao vazio.
+// conferirFundoCorte exige fundo (bg existente ou set nao vazio) em cenas; cartoes digitados sao isentos.
 func conferirFundoCorte(projDir string, s CorteMotor) error {
-	if len(s.Set) > 0 {
+	if s.Type == "card" || len(s.Set) > 0 {
 		return nil
 	}
 	if _, err := existeArquivo(projDir, s.BG); err != nil {
@@ -324,14 +325,29 @@ func conferirFundoCorte(projDir string, s CorteMotor) error {
 	return nil
 }
 
+func (s CorteMotor) fundoID() string {
+	if s.Type == "card" {
+		return "card:" + s.ID
+	}
+	if s.BG != "" {
+		return s.BG
+	}
+	if len(s.Set) > 0 {
+		b, _ := json.Marshal(s.Set)
+		return string(b)
+	}
+	return ""
+}
+
 // eventosTrocaCena conta um troca_cena no primeiro corte e a cada troca de fundo (regra do AC-E04.2).
 func (tl TimelineMotor) eventosTrocaCena() int {
 	n, anterior := 0, ""
 	for i, s := range tl.Shots {
-		if i == 0 || s.BG != anterior {
+		fundo := s.fundoID()
+		if i == 0 || fundo != anterior {
 			n++
 		}
-		anterior = s.BG
+		anterior = fundo
 	}
 	return n
 }

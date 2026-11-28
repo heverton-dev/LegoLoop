@@ -27,3 +27,5 @@ Registro gravado pelo `legoloop fechar` (etapa 6). Cada Processo tem `skills/<no
 * **Processo Canonizado `legoloop-kraften-deploy` (2026-11-26):** `skills/legoloop-kraften-deploy/SKILL.md` · `docs/reports/`
 
 * **Processo Canonizado `legoloop-video-animado` (2026-11-26):** `skills/legoloop-video-animado/SKILL.md` · `docs/reports/`
+* **Processo Canonizado `legoloop-video-render` (2026-11-27), P3 do processo composto `legoloop-video-animado`:** `skills/legoloop-video-render/SKILL.md` · `processos/legoloop-video-render/pipeline.dag.json` · `docs/manuals/2026-11-27_MANUAL_VIDEO_RENDER.md` · `docs/books/legoloop-video-render/`
+* **Processo Canonizado `legoloop-video-distribuicao` (2026-11-27), P4 do processo composto `legoloop-video-animado`:** `skills/legoloop-video-distribuicao/SKILL.md` · `processos/legoloop-video-distribuicao/pipeline.dag.json` · `docs/manuals/2026-11-27_MANUAL_VIDEO_DISTRIBUICAO.md` · `docs/books/legoloop-video-distribuicao/`

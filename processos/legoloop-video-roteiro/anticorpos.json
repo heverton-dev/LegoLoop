@@ -1,6 +1,6 @@
 {
   "schema_version": "anticorpos.v1",
-  "processo": "legoloop-diorama-roteiro",
+  "processo": "legoloop-video-roteiro",
   "globais": [],
   "dominio": [
     {

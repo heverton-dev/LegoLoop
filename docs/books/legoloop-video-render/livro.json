@@ -1,0 +1,44 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-video-render",
+      "titulo": "Pre-voo: contratos, voz, ferramentas, pastas e motor local"
+    },
+    {
+      "id": "e02",
+      "peca": "legoloop-video-render",
+      "titulo": "Voz neural, conferencia Whisper e timings por linha"
+    },
+    {
+      "id": "e03",
+      "peca": "legoloop-video-render",
+      "titulo": "Timeline em camadas e gate de ritmo"
+    },
+    {
+      "id": "e04",
+      "peca": "legoloop-video-render",
+      "titulo": "Mix com ducking, SFX e loudness medido"
+    },
+    {
+      "id": "e05",
+      "peca": "legoloop-video-render",
+      "titulo": "Timeline do motor com CHECK OK e render 9:16 com voz"
+    }
+  ],
+  "descricao": "Livro didatico do Processo legoloop-video-render: voz conferida, timeline com gate de ritmo, mix medido e render 9:16 com voz pelo motor portado.",
+  "slug": "legoloop-video-render",
+  "titulo": "Manual Didatico: legoloop-video-render",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-27_PROCESSO_LEGOLOOP_VIDEO_RENDER",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-fundacao.md",
+    "02-arquitetura.md",
+    "03-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-video-render-v1",
+  "ultima_compilacao": "2026-11-27"
+}

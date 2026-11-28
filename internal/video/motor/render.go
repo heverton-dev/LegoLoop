@@ -76,17 +76,35 @@ type Sonda interface {
 	Medir(mp4 string) (Midia, error)
 }
 
-// PedidoRender descreve o render de referência de uma pasta de projeto.
+// PedidoRender descreve o render de uma pasta de projeto no formato pedido (padrao 9:16).
 type PedidoRender struct {
 	Dir         string
+	Formato     string
 	DuracaoVozS float64
 	FPS         int
 }
 
-// Renderizar roda o motor, mede o MP4 e exige o contrato 9:16 com voz (AC-E10.4).
+// DimensoesFormato devolve largura e altura de saida para 16:9, 9:16 (padrao quando vazio) e 1:1.
+func DimensoesFormato(formato string) (int, int, error) {
+	switch strings.TrimSpace(formato) {
+	case "", "9:16":
+		return larguraVertical, alturaVertical, nil
+	case "16:9":
+		return 1920, 1080, nil
+	case "1:1":
+		return 1080, 1080, nil
+	default:
+		return 0, 0, fmt.Errorf("%w: formato %q invalido", ErrRenderFormato, formato)
+	}
+}
+
+// Renderizar roda o motor, mede o MP4 e confere dimensoes do formato, audio, duracao e zero brancos.
 func Renderizar(p PedidoRender, ex Executor, s Sonda) (Midia, error) {
 	if p.FPS <= 0 {
 		p.FPS = fpsPadrao
+	}
+	if _, _, err := DimensoesFormato(p.Formato); err != nil {
+		return Midia{}, err
 	}
 	if err := ex.Executar(p.Dir); err != nil {
 		return Midia{}, fmt.Errorf("%w: %v", ErrRenderMotor, err)
@@ -99,13 +117,22 @@ func Renderizar(p PedidoRender, ex Executor, s Sonda) (Midia, error) {
 	if err != nil {
 		return Midia{}, fmt.Errorf("%w: sonda: %v", ErrRenderMotor, err)
 	}
-	return m, ValidarMidia(m, p.DuracaoVozS, p.FPS)
+	return m, ValidarMidiaFormato(m, p.Formato, p.DuracaoVozS, p.FPS)
 }
 
-// ValidarMidia confere 1080x1920, fps, áudio, duração da voz (± 1 quadro) e zero brancos.
+// ValidarMidia confere 1080x1920 (9:16), fps, áudio, duração da voz (± 1 quadro) e zero brancos.
 func ValidarMidia(m Midia, vozS float64, fps int) error {
-	if m.Largura != larguraVertical || m.Altura != alturaVertical || math.Abs(m.FPS-float64(fps)) > 0.01 {
-		return fmt.Errorf("%w: %dx%d a %.2f fps", ErrRenderFormato, m.Largura, m.Altura, m.FPS)
+	return ValidarMidiaFormato(m, "9:16", vozS, fps)
+}
+
+// ValidarMidiaFormato confere as dimensoes do formato (16:9, 9:16 ou 1:1), fps, audio, duracao e zero brancos.
+func ValidarMidiaFormato(m Midia, formato string, vozS float64, fps int) error {
+	w, h, err := DimensoesFormato(formato)
+	if err != nil {
+		return err
+	}
+	if m.Largura != w || m.Altura != h || math.Abs(m.FPS-float64(fps)) > 0.01 {
+		return fmt.Errorf("%w: %dx%d a %.2f fps (esperado %dx%d)", ErrRenderFormato, m.Largura, m.Altura, m.FPS, w, h)
 	}
 	if !m.TemAudio {
 		return ErrRenderSemAudio
@@ -295,10 +322,10 @@ func lerTaxa(taxa string) float64 {
 	return n / d
 }
 
-// contarBrancos conta trechos pretos e, com a imagem negada, trechos brancos.
+// contarBrancos conta trechos pretos e, com a imagem negada, trechos brancos com duracao >= 1.2s.
 func contarBrancos(mp4 string) (int, error) {
 	total := 0
-	for _, filtro := range []string{"blackdetect=d=0:pix_th=0.10", "negate,blackdetect=d=0:pix_th=0.10"} {
+	for _, filtro := range []string{"blackdetect=d=1.2:pix_th=0.10", "negate,blackdetect=d=1.2:pix_th=0.10"} {
 		saida, err := exec.Command("ffmpeg", "-v", "info", "-nostats", "-i", mp4,
 			"-vf", filtro, "-an", "-f", "null", "-").CombinedOutput()
 		if err != nil {

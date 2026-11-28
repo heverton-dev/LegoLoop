@@ -1,0 +1,594 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "id": "legoloop-video-distribuicao",
+  "name": "legoloop-video-distribuicao",
+  "version": "1.0.0",
+  "schema_version": 2,
+  "date": "2026-11-27",
+  "description": "Processo canonizado P4 do processo composto legoloop-video-animado: revisao com parecer, vitrine, acervo com agenda quente e perene, publicacao pelo Postiz (privada por padrao), comentarios com aprovacao e aprendizado semanal.",
+  "upstream_signatures": {
+    "intent": "docs/intents/2026-11-27_INTENT_VIDEO_DISTRIBUICAO.md",
+    "spec": "docs/specs/2026-11-27_SPEC_VIDEO_DISTRIBUICAO.md",
+    "plan": "docs/plans/2026-11-27_PLAN_VIDEO_DISTRIBUICAO.md",
+    "route": "docs/routes/2026-11-27_ROUTE_VIDEO_DISTRIBUICAO.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_and_pause",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "none",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_prevoo",
+      "name": "Pre-voo: pasta acervo, ffmpeg, Pillow e variaveis do Postiz",
+      "nature": "micro",
+      "type": "script",
+      "command": [
+        "legoloop",
+        "video-distribuicao",
+        "prevoo",
+        "--projeto",
+        "."
+      ],
+      "ref": "legoloop video-distribuicao prevoo",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 60,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "projeto.json"
+      ],
+      "context_out": [
+        "acervo/"
+      ],
+      "output": {
+        "artifact": "acervo/",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E07.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 60
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n02_folhas_revisao",
+      "name": "Folhas de contato e pacote do revisor sem contexto",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n01_prevoo"
+      ],
+      "command": [
+        "legoloop",
+        "video-distribuicao",
+        "revisao",
+        "folhas",
+        "--projeto",
+        ".",
+        "--video",
+        "renders/v1.mp4",
+        "--versao",
+        "1"
+      ],
+      "ref": "legoloop video-distribuicao revisao folhas",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "renders/v1.mp4",
+        "script.json"
+      ],
+      "context_out": [
+        "review/sheet_01.jpg",
+        "review/v1_pacote.json"
+      ],
+      "output": {
+        "artifact": "review/v1_pacote.json",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E03.3",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n03_parecer",
+      "name": "Parecer do revisor sem contexto (ENVIAR ou NAO ENVIAR)",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n02_folhas_revisao"
+      ],
+      "command": [
+        "legoloop",
+        "video-distribuicao",
+        "revisao",
+        "parecer",
+        "--projeto",
+        ".",
+        "--arquivo",
+        "review/v1_parecer_entrada.json"
+      ],
+      "ref": "legoloop video-distribuicao revisao parecer",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 60,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "review/v1_pacote.json"
+      ],
+      "context_out": [
+        "review/v1_parecer.json"
+      ],
+      "output": {
+        "artifact": "review/v1_parecer.json",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 60
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n04_liberar",
+      "name": "Liberar a vitrine somente com ENVIAR",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n03_parecer"
+      ],
+      "command": [
+        "legoloop",
+        "video-distribuicao",
+        "revisao",
+        "liberar",
+        "--projeto",
+        ".",
+        "--versao",
+        "1"
+      ],
+      "ref": "legoloop video-distribuicao revisao liberar",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 30,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "review/v1_parecer.json"
+      ],
+      "context_out": [
+        "review/v1_liberada.json"
+      ],
+      "output": {
+        "artifact": "review/v1_liberada.json",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E03.2",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 30
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n05_vitrine",
+      "name": "Vitrine: titulos com nota, capas, descricao e rotulo de IA",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n04_liberar"
+      ],
+      "command": [
+        "legoloop",
+        "video-distribuicao",
+        "vitrine",
+        "gravar",
+        "--projeto",
+        ".",
+        "--arquivo",
+        "vitrine.json",
+        "--titulo",
+        "0"
+      ],
+      "ref": "legoloop video-distribuicao vitrine gravar",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "timeout_sec": 120,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "vitrine.json",
+        "renders/v1.mp4"
+      ],
+      "context_out": [
+        "publicacao.md"
+      ],
+      "output": {
+        "artifact": "publicacao.md",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E04.2",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 120
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n06_agenda",
+      "name": "Agenda quente e perene, estoque e reels",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n05_vitrine"
+      ],
+      "command": [
+        "legoloop",
+        "video-distribuicao",
+        "agenda",
+        "--projeto",
+        ".",
+        "--aplicar"
+      ],
+      "ref": "legoloop video-distribuicao agenda",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 60,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "acervo/acervo.json"
+      ],
+      "context_out": [
+        "acervo/acervo.json"
+      ],
+      "output": {
+        "artifact": "acervo/acervo.json",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 60
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n07_publicar",
+      "name": "Publicacao pelo Postiz (dry-run por padrao; --executar envia)",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n06_agenda"
+      ],
+      "command": [
+        "legoloop",
+        "video-distribuicao",
+        "publicar",
+        "enviar",
+        "--projeto",
+        ".",
+        "--id",
+        "item-1",
+        "--arquivo",
+        "pedido_envio.json"
+      ],
+      "ref": "legoloop video-distribuicao publicar enviar",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "timeout_sec": 900,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "acervo/acervo.json",
+        "pedido_envio.json"
+      ],
+      "context_out": [
+        "acervo/acervo.json",
+        "acervo/envios.json"
+      ],
+      "output": {
+        "artifact": "acervo/envios.json",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E05.2",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 900
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n08_comentarios",
+      "name": "Comentarios pendentes e rascunhos aprovados pelo usuario",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n07_publicar"
+      ],
+      "command": [
+        "legoloop",
+        "video-distribuicao",
+        "comentarios",
+        "listar",
+        "--projeto",
+        ".",
+        "--entrada",
+        "comentarios.json"
+      ],
+      "ref": "legoloop video-distribuicao comentarios listar",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 60,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "comentarios.json"
+      ],
+      "context_out": [
+        "acervo/respostas.json"
+      ],
+      "output": {
+        "artifact": "acervo/respostas.json",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E06.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 60
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n09_aprendizado",
+      "name": "Aprendizado semanal que volta para a descoberta de pautas",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n08_comentarios"
+      ],
+      "command": [
+        "legoloop",
+        "video-distribuicao",
+        "aprendizado",
+        "--projeto",
+        ".",
+        "--metricas",
+        "metricas.json"
+      ],
+      "ref": "legoloop video-distribuicao aprendizado",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 60,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "metricas.json"
+      ],
+      "context_out": [
+        "acervo/aprendizado.md"
+      ],
+      "output": {
+        "artifact": "acervo/aprendizado.md",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E06.2",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 60
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    }
+  ]
+}

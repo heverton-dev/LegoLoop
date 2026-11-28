@@ -175,30 +175,54 @@ type Cenario struct {
 
 // ElementoMovel v2: personagem usa personagem_id, pose, humor, olhar e fala; sprite_id fica para estilos de sprite.
 type ElementoMovel struct {
-	ID           string `json:"id"`
-	Tipo         string `json:"tipo"`
-	SpriteID     string `json:"sprite_id,omitempty"`
-	Acao         string `json:"acao"`
-	PersonagemID string `json:"personagem_id,omitempty"`
-	Pose         string `json:"pose,omitempty"`
-	Humor        string `json:"humor,omitempty"`
-	Olhar        string `json:"olhar,omitempty"`
-	Fala         bool   `json:"fala,omitempty"`
+	ID           string  `json:"id"`
+	Tipo         string  `json:"tipo"`
+	SpriteID     string  `json:"sprite_id,omitempty"`
+	Acao         string  `json:"acao,omitempty"`
+	PersonagemID string  `json:"personagem_id,omitempty"`
+	Pose         string  `json:"pose,omitempty"`
+	Humor        string  `json:"humor,omitempty"`
+	Olhar        string  `json:"olhar,omitempty"`
+	Fala         bool    `json:"fala,omitempty"`
+	X            float64 `json:"x,omitempty"`
+	Y            float64 `json:"y,omitempty"`
+	Escala       float64 `json:"escala,omitempty"`
+	Entrada      string  `json:"entrada,omitempty"`
 }
 
 type Cena struct {
-	IndiceLinha     int             `json:"indice_linha"`
-	Texto           string          `json:"texto"`
-	CenarioID       string          `json:"cenario_id"`
-	MetaforaVisual  string          `json:"metafora_visual"`
-	ElementosMoveis []ElementoMovel `json:"elementos_moveis"`
+	IndiceLinha       int              `json:"indice_linha"`
+	Texto             string           `json:"texto"`
+	CenarioID         string           `json:"cenario_id"`
+	CenarioID2        string           `json:"cenario_id_2,omitempty"`
+	ParametrosCenario map[string]any   `json:"parametros_cenario,omitempty"`
+	MetaforaVisual    string           `json:"metafora_visual"`
+	Cartao            bool             `json:"cartao,omitempty"`
+	TextoCartao       string           `json:"texto_cartao,omitempty"`
+	TextoTela         string           `json:"texto_tela,omitempty"`
+	CorTexto          string           `json:"cor_texto,omitempty"`
+	TextoTelaX        float64          `json:"texto_tela_x,omitempty"`
+	TextoTelaY        float64          `json:"texto_tela_y,omitempty"`
+	TextoTela2        string           `json:"texto_tela_2,omitempty"`
+	CorTexto2         string           `json:"cor_texto_2,omitempty"`
+	Camera            string           `json:"camera,omitempty"`
+	FX                []string         `json:"fx,omitempty"`
+	Shake             []map[string]any `json:"shake,omitempty"`
+	Grade             any              `json:"grade,omitempty"`
+	TransicaoEntrada  string           `json:"tin,omitempty"`
+	TransicaoSaida    string           `json:"tout,omitempty"`
+	Camadas           []map[string]any `json:"camadas,omitempty"`
+	Camadas2          []map[string]any `json:"camadas_2,omitempty"`
+	ElementosMoveis   []ElementoMovel  `json:"elementos_moveis"`
 }
 
 type Storyboard struct {
-	SchemaVersion int    `json:"schema_version"`
-	ProjetoSlug   string `json:"projeto_slug"`
-	TotalLinhas   int    `json:"total_linhas"`
-	Cenas         []Cena `json:"cenas"`
+	SchemaVersion int     `json:"schema_version"`
+	ProjetoSlug   string  `json:"projeto_slug"`
+	TotalLinhas   int     `json:"total_linhas"`
+	AlvoCorteS    float64 `json:"alvo_corte_s,omitempty"`
+	Musica        string  `json:"musica,omitempty"`
+	Cenas         []Cena  `json:"cenas"`
 }
 
 type BuildNotes struct {

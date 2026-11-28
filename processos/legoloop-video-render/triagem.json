@@ -1,0 +1,81 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-video-render",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-video-render",
+      "comandos_cli": [
+        "legoloop video-render",
+        "/legoloop-video-render"
+      ],
+      "artefatos_ativos": [
+        "timeline.json",
+        "audio/voice.wav",
+        "render.mp4"
+      ],
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificacao para o Processo legoloop-video-render",
+    "etapas": [
+      "n01_prevoo",
+      "n02_voz",
+      "n03_timeline",
+      "n04_mix",
+      "n05_motor"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_prevoo",
+      "palavras_chave": [
+        "prevoo",
+        "pre-voo"
+      ],
+      "slash_command": "/legoloop-video-render-prevoo",
+      "flag_cli": "--etapa n01_prevoo"
+    },
+    {
+      "id": "n02_voz",
+      "palavras_chave": [
+        "voz",
+        "voz neural, conferencia whisper e timings por linha"
+      ],
+      "slash_command": "/legoloop-video-render-voz",
+      "flag_cli": "--etapa n02_voz"
+    },
+    {
+      "id": "n03_timeline",
+      "palavras_chave": [
+        "timeline",
+        "timeline em camadas e gate de ritmo"
+      ],
+      "slash_command": "/legoloop-video-render-timeline",
+      "flag_cli": "--etapa n03_timeline"
+    },
+    {
+      "id": "n04_mix",
+      "palavras_chave": [
+        "mix",
+        "mix com ducking, sfx e loudness medido"
+      ],
+      "slash_command": "/legoloop-video-render-mix",
+      "flag_cli": "--etapa n04_mix"
+    },
+    {
+      "id": "n05_motor",
+      "palavras_chave": [
+        "motor",
+        "timeline do motor com check ok e render 9"
+      ],
+      "slash_command": "/legoloop-video-render-motor",
+      "flag_cli": "--etapa n05_motor"
+    }
+  ],
+  "pontos_entrada": [
+    "cli:legoloop video-render",
+    "chat:/legoloop-video-render",
+    "studio:Video Render"
+  ]
+}

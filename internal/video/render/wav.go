@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-var ErrAudioInvalido = errors.New("diorama-render: audio WAV invalido")
+var ErrAudioInvalido = errors.New("video-render: audio WAV invalido")
 
 // formatoWAV descreve PCM de 16 bits, o unico formato aceito entre provedores.
 type formatoWAV struct {

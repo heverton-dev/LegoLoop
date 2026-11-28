@@ -15,23 +15,14 @@ func ExecutarEtapa5Storyboard(projDir string, proj roteiro.Projeto, script rotei
 	if len(script.Lines) == 0 || len(cenarios) == 0 {
 		return Storyboard{}, fmt.Errorf("%w: script ou cenarios vazios", ErrStoryboardInvalido)
 	}
+	spriteID := primeiroSpriteID(sprites)
+	cenas := CompilarCenasAutorais(script.Lines, cenarios, spriteID, nil)
 	sb := Storyboard{
-		SchemaVersion: 1,
+		SchemaVersion: 2,
 		ProjetoSlug:   proj.Slug,
 		TotalLinhas:   len(script.Lines),
-		Cenas:         make([]Cena, 0, len(script.Lines)),
-	}
-	spriteID := primeiroSpriteID(sprites)
-	for i, linha := range script.Lines {
-		cen := cenarios[(i/2)%len(cenarios)]
-		cena := Cena{
-			IndiceLinha:     i,
-			Texto:           linha.Text,
-			CenarioID:       cen.ID,
-			MetaforaVisual:  derivarMetaforaVisual(linha),
-			ElementosMoveis: comporElementosMoveis(i, spriteID),
-		}
-		sb.Cenas = append(sb.Cenas, cena)
+		AlvoCorteS:    3.2,
+		Cenas:         cenas,
 	}
 	if err := ValidarStoryboard(sb, script, cenarios); err != nil {
 		return Storyboard{}, err
@@ -223,14 +214,5 @@ func derivarMetaforaVisual(linha roteiro.LinhaRoteiro) string {
 		return "balao_citacao_palco"
 	default:
 		return "transicao_ponte_narrativa"
-	}
-}
-
-func comporElementosMoveis(idx int, spriteID string) []ElementoMovel {
-	return []ElementoMovel{
-		{ID: fmt.Sprintf("l%d_personagem", idx), Tipo: "personagem", SpriteID: spriteID, Acao: "gesto_enfatiza"},
-		{ID: fmt.Sprintf("l%d_objeto", idx), Tipo: "objeto", Acao: "destaque_foco"},
-		{ID: fmt.Sprintf("l%d_camera", idx), Tipo: "camera", Acao: "travelling_suave"},
-		{ID: fmt.Sprintf("l%d_efeito", idx), Tipo: "efeito", Acao: "particulas_profundidade"},
 	}
 }

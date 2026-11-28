@@ -8,7 +8,7 @@ import (
 
 // Metas do gate check_timeline (Mapa Macro, Etapa 7): 12 a 21 cortes por minuto, mediana de 2,5 a 4 s.
 const (
-	AlvoBatidaS     = 3.25
+	AlvoBatidaS     = 3.2
 	MinCortesPorMin = 12.0
 	MaxCortesPorMin = 21.0
 	MedianaMinS     = 2.5

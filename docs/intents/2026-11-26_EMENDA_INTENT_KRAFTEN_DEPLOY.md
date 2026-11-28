@@ -40,5 +40,13 @@ upstream: [ANALISE_BDD_REDE_DOMINIO_VIAS]
 ### Restrições inegociáveis (mantidas)
 - Zero LLM nos nós; `Dockerfile` da app nunca mutado; recibo só com gates verdes.
 
-## 3. Handoff
+## 3. Execução da mutação aditiva (Launcher, 2026-11-27)
+
+A mutação aditiva de rede está implementada em `studio-launcher-go`:
+- `rede_compartilhada.go`: `adicionarRedeCompartilhada` — anexa a rede compartilhada configurada (`TRAEFIK_NETWORK` do `master.env`) em cada serviço do `docker-stack.yml`, preserva redes privadas, é idempotente e declara a rede como `external: true` no nível raiz.
+- `syncEnvAndStackHost` (etapa 3): chama a mutação no fluxo do Launcher. Quarto ponto de mutação controlada (`.env`, `Host(...)`, `networks`, DNS).
+- Testes: 5 casos (sem redes, preserva privadas, idempotência, declaração externa, fluxo). Prova de mutação aplicada. Gates: build, vet, gofmt verdes.
+- Falha pré-existente fora do escopo: `TestTryGenerateKraftenMSI` (reprova no baseline sem as mudanças; exige ferramenta de build MSI).
+
+## 4. Handoff
 Autoriza a atualização da SPEC (`AC-E01.3`, novo `AC-E02.3` de rede), do PLAN (tickets de coleta interativa e da mutação aditiva) e da implementação em `internal/kraften` + Launcher.

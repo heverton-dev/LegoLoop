@@ -32,10 +32,13 @@ type Projeto struct {
 	Formatos           []string      `json:"formatos"`
 	DuracaoAlvoS       int           `json:"duracao_alvo_s"`
 	Voz                string        `json:"voz"`
-	EstiloVisual       string        `json:"estilo_visual"`
+	EstiloVisual       string        `json:"estilo_visual,omitempty"`
+	ModoProducao       string        `json:"modo_producao,omitempty"`
+	Estilo             string        `json:"estilo,omitempty"`
 	Animacao           string        `json:"animacao"`
 	PoliticaGates      PoliticaGates `json:"politica_gates"`
 	VideoReferencia    string        `json:"video_referencia,omitempty"`
+	CanalReferenciaDNA string        `json:"canal_referencia_dna,omitempty"`
 	FlowProjeto        string        `json:"flow_projeto,omitempty"`
 }
 
@@ -45,11 +48,68 @@ type VozMarca struct {
 	Velocidade string `json:"velocidade"`
 }
 
+type FonteMarca struct {
+	Familia string `json:"familia"`
+	URL     string `json:"url,omitempty"`
+	Peso    int    `json:"peso,omitempty"`
+}
+
+type FontesMarca struct {
+	Titulo     FonteMarca `json:"titulo,omitempty"`
+	Corpo      FonteMarca `json:"corpo,omitempty"`
+	Numeros    FonteMarca `json:"numeros,omitempty"`
+	Manuscrita FonteMarca `json:"manuscrita,omitempty"`
+}
+
+type CoresMarca struct {
+	Foco        string `json:"foco,omitempty"`
+	Foco2       string `json:"foco_2,omitempty"`
+	Alerta      string `json:"alerta,omitempty"`
+	Texto       string `json:"texto,omitempty"`
+	Contorno    string `json:"contorno,omitempty"`
+	FundoCartao string `json:"fundo_cartao,omitempty"`
+}
+
+type LogoMarca struct {
+	Arquivo    string  `json:"arquivo,omitempty"`
+	Posicao    string  `json:"posicao,omitempty"`
+	Opacidade  float64 `json:"opacidade,omitempty"`
+	LarguraPct int     `json:"largura_pct,omitempty"`
+}
+
+type VinhetaCfg struct {
+	Ativo    bool    `json:"ativo"`
+	DuracaoS float64 `json:"duracao_s"`
+	Texto    string  `json:"texto"`
+}
+
+type VinhetasMarca struct {
+	Abertura   VinhetaCfg `json:"abertura,omitempty"`
+	Fechamento VinhetaCfg `json:"fechamento,omitempty"`
+}
+
+type LegendasMarca struct {
+	AtivoEm          []string `json:"ativo_em"`
+	Fonte            string   `json:"fonte,omitempty"`
+	Cor              string   `json:"cor,omitempty"`
+	Destaque         string   `json:"destaque,omitempty"`
+	PalavrasPorBloco int      `json:"palavras_por_bloco,omitempty"`
+	PosicaoYPct      int      `json:"posicao_y_pct,omitempty"`
+	ArquivoSRT       bool     `json:"arquivo_srt,omitempty"`
+}
+
 type Marca struct {
-	SchemaVersion int      `json:"schema_version"`
-	Nome          string   `json:"nome"`
-	Formatos      []string `json:"formatos"`
-	Voz           VozMarca `json:"voz"`
+	SchemaVersion      int            `json:"schema_version"`
+	Nome               string         `json:"nome"`
+	Formatos           []string       `json:"formatos"`
+	Voz                VozMarca       `json:"voz"`
+	Fontes             FontesMarca    `json:"fontes,omitempty"`
+	Cores              CoresMarca     `json:"cores,omitempty"`
+	Logo               LogoMarca      `json:"logo,omitempty"`
+	Vinhetas           VinhetasMarca  `json:"vinhetas,omitempty"`
+	Legendas           *LegendasMarca `json:"legendas,omitempty"`
+	EstiloVisualMestre string         `json:"estilo_visual_mestre,omitempty"`
+	CanalReferencia    string         `json:"canal_referencia,omitempty"`
 }
 
 type Fonte struct {

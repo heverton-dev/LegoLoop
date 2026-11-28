@@ -82,6 +82,8 @@ func TestDioramaAtivosCLI(t *testing.T) {
 		t.Fatalf("esperado exit 1 para validar-storyboard em pasta vazia, obtido %d", code)
 	}
 
+	// Hermetico: aponta o driver para uma porta morta; sem isso o teste abre abas do Flow no Chrome real da 9222.
+	t.Setenv("LEGOLOOP_FLOW_CDP_URL", "http://127.0.0.1:1")
 	dirHibrido := criarProjetoAtivosCLI(t, "hibrido")
 	rawProj, _ := os.ReadFile(filepath.Join(dirHibrido, "projeto.json"))
 	var pj roteiro.Projeto

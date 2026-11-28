@@ -35,6 +35,29 @@ func TestKraftenColetaInterativa(t *testing.T) {
 	}
 }
 
+// TestKraftenModoCompletoUsaDominioBase prova que o modo completo envia o
+// domínio base configurado e coleta parâmetros ausentes.
+func TestKraftenModoCompletoUsaDominioBase(t *testing.T) {
+	dest := t.TempDir()
+	entradas := strings.Join([]string{
+		zipSaudavelKraften(t),
+		"app01",
+		"sub01",
+		"server.exemplo.org",
+		"exemplo.org",
+		"srv-url",
+		"http://x/health",
+		"rede-x",
+		"svc-x",
+	}, "\n")
+	var stderr bytes.Buffer
+	deps := Deps{Stdin: strings.NewReader(entradas), Stdout: &bytes.Buffer{}, Stderr: &stderr}
+	code := cmdKraftenDeploy(context.Background(), []string{"--dest", dest}, deps)
+	if code == 2 {
+		t.Fatalf("modo completo deve coletar parâmetros, não cair no uso: %s", stderr.String())
+	}
+}
+
 // escreverArquivo grava um artefato de etapa no diretório de destino.
 func escreverArquivo(t *testing.T, dir, nome, corpo string) {
 	t.Helper()

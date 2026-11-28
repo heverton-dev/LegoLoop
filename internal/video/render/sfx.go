@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var ErrSFXSemArquivo = errors.New("diorama-render: evento de SFX sem arquivo no catalogo")
+var ErrSFXSemArquivo = errors.New("video-render: evento de SFX sem arquivo no catalogo")
 
 // AtrasoObjetoS e o intervalo entre o inicio da fala e o destaque do objeto.
 const AtrasoObjetoS = 0.25

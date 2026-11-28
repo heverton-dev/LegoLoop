@@ -29,6 +29,15 @@
       "pacote": "internal/cli",
       "causa_raiz": "mapa de subcomandos declarado como var global mutável sem justificativa",
       "timestamp": "2026-11-26T23:23:40Z"
+    },
+    {
+      "assinatura": "sha256:676ea33f036df22563281a5a2d392848d93d9de80b490a34e5324c74f3e7cbb4",
+      "erro": "rede e dominio mestre fixos no Processo",
+      "antidoto": "Emenda 2026-11-26: campo networks generico, BaseDomain/rede/servico parametrizados, completarKraften interativo e 3 vias de entrada",
+      "recorrencias": 1,
+      "pacote": "internal/kraften",
+      "causa_raiz": "network_conexao e server.vpsconexao.org copiados do documento de referencia viraram regra de codigo; sem coleta interativa e sem via Studio",
+      "timestamp": "2026-11-27T00:33:31Z"
     }
   ]
 }

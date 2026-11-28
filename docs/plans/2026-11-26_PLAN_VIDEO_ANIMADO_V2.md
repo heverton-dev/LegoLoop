@@ -402,11 +402,11 @@ covers: [AC-E07.1, AC-E07.2, AC-E07.3, AC-E07.4, AC-E07.5, AC-E07.6, AC-E07.7, A
 * **Roteamento:** Harness `9router` · Modelo `code-pro` · Effort `high` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `legoloop` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
-* **Inputs:** Source Files `projetos/video-diorama/diorama-demo/renders/` · Spec Anchor `docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md#AC-E12.1` · Context Artifacts `[]`
+* **Inputs:** Source Files `projetos/video-animado/diorama-demo/renders/` · Spec Anchor `docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md#AC-E12.1` · Context Artifacts `[]`
 * **Alvo de Teste TDD:** `nenhum`
-* **Outputs:** Artifacts `projetos/video-diorama/diorama-demo/renders/`
-* **Verificação (argv, sem shell):** `go run ./cmd/legoloop video-render executar --projeto projetos/video-diorama/diorama-demo --cena 1`
-* **Gate (DSL):** `exit_code == 0 && file_exists('projetos/video-diorama/diorama-demo/renders/')`
+* **Outputs:** Artifacts `projetos/video-animado/diorama-demo/renders/`
+* **Verificação (argv, sem shell):** `go run ./cmd/legoloop video-render executar --projeto projetos/video-animado/diorama-demo --cena 1`
+* **Gate (DSL):** `exit_code == 0 && file_exists('projetos/video-animado/diorama-demo/renders/')`
 * **Spec Ref:** `AC-E12.1`
 
 #### Ticket `TICK-08.2` — Criar o estilo palito herdando do molde-de-pilula e validar com o usuario
@@ -430,11 +430,11 @@ covers: [AC-E07.1, AC-E07.2, AC-E07.3, AC-E07.4, AC-E07.5, AC-E07.6, AC-E07.7, A
 * **Roteamento:** Harness `9router` · Modelo `code-pro` · Effort `high` · Fallback Harness `antigravity` · Modelo `flash`
 * **Tooling:** Runtime `legoloop` · MCPs Requeridos `false` · Allowlist `[]`
 * **Limites & Resiliência:** Timeout `180s` · Retries `1` · Entrada `16000` tokens · Teto de saída `600` tokens · Rollback `stash_changes`
-* **Inputs:** Source Files `projetos/video-diorama/first-brands/timeline.json` · Spec Anchor `docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md#AC-E12.2` · Context Artifacts `[]`
+* **Inputs:** Source Files `projetos/video-animado/first-brands/timeline.json` · Spec Anchor `docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md#AC-E12.2` · Context Artifacts `[]`
 * **Alvo de Teste TDD:** `nenhum`
-* **Outputs:** Artifacts `projetos/video-diorama/first-brands/timeline.json`
-* **Verificação (argv, sem shell):** `go run ./cmd/legoloop video-render timeline --projeto projetos/video-diorama/first-brands`
-* **Gate (DSL):** `exit_code == 0 && file_exists('projetos/video-diorama/first-brands/timeline.json')`
+* **Outputs:** Artifacts `projetos/video-animado/first-brands/timeline.json`
+* **Verificação (argv, sem shell):** `go run ./cmd/legoloop video-render timeline --projeto projetos/video-animado/first-brands`
+* **Gate (DSL):** `exit_code == 0 && file_exists('projetos/video-animado/first-brands/timeline.json')`
 * **Spec Ref:** `AC-E12.2`
 
 #### Ticket `TICK-09.1` — Fechamento: cobertura, dependencias, portabilidade, espinha e legoloop fechar 5 de 5

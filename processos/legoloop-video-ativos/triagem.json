@@ -1,12 +1,12 @@
 {
   "schema_version": "triagem.v1",
-  "processo": "legoloop-diorama-ativos",
+  "processo": "legoloop-video-ativos",
   "regras_deterministicas": [
     {
-      "padrao_slug": "legoloop-diorama-ativos",
+      "padrao_slug": "legoloop-video-ativos",
       "comandos_cli": [
-        "legoloop diorama-ativos",
-        "/legoloop-diorama-ativos"
+        "legoloop video-ativos",
+        "/legoloop-video-ativos"
       ],
       "artefatos_ativos": [
         "flow/elenco.json",
@@ -17,7 +17,7 @@
     }
   ],
   "criterio_ambiguidade": {
-    "descricao": "Classificacao para o Processo legoloop-diorama-ativos",
+    "descricao": "Classificacao para o Processo legoloop-video-ativos",
     "etapas": [
       "n01_prevoo_ciclo2",
       "n02_executar_etapas_3_4_5",
@@ -32,7 +32,7 @@
         "trava flow_projeto",
         "contratos ciclo 1"
       ],
-      "slash_command": "/legoloop-diorama-ativos-prevoo",
+      "slash_command": "/legoloop-video-ativos-prevoo",
       "flag_cli": "--etapa n01_prevoo_ciclo2"
     },
     {
@@ -42,7 +42,7 @@
         "cenarios flow svg",
         "storyboard cenas.json"
       ],
-      "slash_command": "/legoloop-diorama-ativos-executar",
+      "slash_command": "/legoloop-video-ativos-executar",
       "flag_cli": "--etapa n02_executar_etapas_3_4_5"
     },
     {
@@ -52,13 +52,13 @@
         "cenas.json",
         "elementos moveis"
       ],
-      "slash_command": "/legoloop-diorama-ativos-validar-storyboard",
+      "slash_command": "/legoloop-video-ativos-validar-storyboard",
       "flag_cli": "--etapa n03_validar_storyboard"
     }
   ],
   "pontos_entrada": [
-    "cli:legoloop diorama-ativos",
-    "chat:/legoloop-diorama-ativos",
-    "studio:Diorama Ativos"
+    "cli:legoloop video-ativos",
+    "chat:/legoloop-video-ativos",
+    "studio:Video Ativos"
   ]
 }

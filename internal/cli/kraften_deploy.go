@@ -74,13 +74,34 @@ func cmdKraftenDeploy(ctx context.Context, args []string, d Deps) int {
 		}
 	}
 	o, ok := parseKraften(args)
-	if !ok || o.zip == "" || o.app == "" || o.sub == "" || o.alvo == "" {
+	if !ok {
 		fmt.Fprint(d.Stderr, usoKraftenDeploy)
 		return 2
 	}
-	cfg := kraften.DeployConfig{AppID: o.app, ZipPath: o.zip, Subdomain: o.sub, TargetHost: o.alvo}
+	exigidos := append(exigidosDeEtapa("preflight"), exigidosDeEtapa("sync")...)
+	exigidos = append(exigidos, exigidosDeEtapa("deploy")...)
+	exigidos = append(exigidos, exigidosDeEtapa("gates")...)
+	if err := completarKraften(&o, exigidos, d); err != nil {
+		fmt.Fprintf(d.Stderr, "kraften-deploy: %v\n", err)
+		return 1
+	}
+	if semValor(&o, exigidos) {
+		fmt.Fprint(d.Stderr, usoKraftenDeploy)
+		return 2
+	}
+	cfg := configDeKraften(&o, o.zip)
+	recibo, err := kraften.ExecutePipeline(cfg, depsDeKraften(&o))
+	if err != nil {
+		fmt.Fprintf(d.Stderr, "kraften-deploy: %v\n", err)
+		return 1
+	}
+	return emitirReciboKraften(recibo, o.emJSON, d)
+}
+
+// depsDeKraften monta as fronteiras injetáveis do modo completo.
+func depsDeKraften(o *flagsKraften) kraften.PipelineDeps {
 	clienteCF := kraften.NovoCloudflareClient(o.cf, o.zone, o.token, http.DefaultClient)
-	deps := kraften.PipelineDeps{
+	return kraften.PipelineDeps{
 		Launcher:    kraften.NovoLauncherClient(o.launcher, o.user, o.pass, http.DefaultClient),
 		Cloudflare:  clienteCF,
 		Dest:        o.dest,
@@ -91,12 +112,6 @@ func cmdKraftenDeploy(ctx context.Context, args []string, d Deps) int {
 		HTTPCheck:   checarHTTP,
 		RedeAnexada: func() int { return redeAnexadaKraften(o.rede, o.servico) },
 	}
-	recibo, err := kraften.ExecutePipeline(cfg, deps)
-	if err != nil {
-		fmt.Fprintf(d.Stderr, "kraften-deploy: %v\n", err)
-		return 1
-	}
-	return emitirReciboKraften(recibo, o.emJSON, d)
 }
 
 // contagemCNAME mede quantos registros CNAME existem para o nome informado.

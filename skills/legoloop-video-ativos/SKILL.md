@@ -1,9 +1,9 @@
 ---
 name: legoloop-video-ativos
 author: LegoLoop
-description: Use quando precisar executar o Processo legoloop-video-ativos (antigo legoloop-diorama-ativos) (Ciclo 2 do Macroprocesso legoloop-video-diorama, Etapas 3, 4 e 5): fichas de elenco e recorte de sprites (rembg + despill verde), cenários nos modos codigo (SVG 100% autoral), flow (fila resiliente com backoff, --ref, trava flow_projeto e idempotência por hash) e hibrido, e compilação determinística de cenas.json. NÃO use para roteiro/pautas (Ciclo 1), renderização (Ciclo 3) ou publicação (Ciclo 4).
+description: Use quando precisar executar o Processo legoloop-video-ativos (antigo legoloop-video-ativos) (Ciclo 2 do processo composto legoloop-video-animado, Etapas 3, 4 e 5): fichas de elenco e recorte de sprites (rembg + despill verde), cenários nos modos codigo (SVG 100% autoral), flow (fila resiliente com backoff, --ref, trava flow_projeto e idempotência por hash) e hibrido, e compilação determinística de cenas.json. NÃO use para roteiro/pautas (Ciclo 1), renderização (Ciclo 3) ou publicação (Ciclo 4).
 consumes: Artifact:ValidatedScript
-produces: Artifact:DioramaAssets
+produces: Artifact:VideoAssets
 artifact: cenas.json
 gate: exit_code == 0
 suggested_model: sonnet

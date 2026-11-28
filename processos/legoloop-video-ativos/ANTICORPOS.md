@@ -1,6 +1,6 @@
 ---
 schema: anticorpos.v1
-processo: legoloop-diorama-ativos
+processo: legoloop-video-ativos
 total_anticorpos: 4
 globais: 0
 dominio: 4
@@ -11,11 +11,11 @@ regras_inviolaveis:
     antidoto: "Aplicar renderFormattedText em a2ui-bundle.js e legoloop-catalog.js e comprovar com preview HTTP 200 real"
   - pacote: "internal/a2ui,internal/studio"
     antidoto: "Persistir aguardando_resposta=true no SubmitAction, limpar no proximo Publish e desabilitar controles no reload em se..."
-  - pacote: "internal/diorama/ativos"
+  - pacote: "internal/video/ativos"
     antidoto: "resolverEntradaSprite com fallback resiliente para folha mestre e resolverElencoPadrao alimentado por fichasGeradas"
 ---
 
-# 🛡️ Banco de Anticorpos — legoloop-diorama-ativos
+# 🛡️ Banco de Anticorpos — legoloop-video-ativos
 
 > Espelho executivo para leitura de agentes. O banco estruturado vive em `anticorpos.json`.
 
@@ -39,7 +39,7 @@ regras_inviolaveis:
 - **Causa Raiz:** SubmitAction nao persistia aguardando_resposta em SessionStatus para replay no SSE
 - **Assinatura:** `sha256:67fcc468a1867769a8013d63b973529110ecd47a2a3a15262062697a7dfb16e5`
 
-### `internal/diorama/ativos`
+### `internal/video/ativos`
 - **Antídoto:** resolverEntradaSprite com fallback resiliente para folha mestre e resolverElencoPadrao alimentado por fichasGeradas
 - **Erro Evitado:** sprite_despill falhava buscando poses_6x inexistente ao inves da folha mestre gerada
 - **Causa Raiz:** resolverElencoPadrao e RecortadorRembgDespill exigiam flow/narrador_poses.png ao inves de flow/fichas/<id>_sheet.png gerada no Flow

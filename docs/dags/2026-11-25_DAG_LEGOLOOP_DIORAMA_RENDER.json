@@ -26,7 +26,7 @@
     "supervision_level": "epic",
     "tdd_enforced": true
   },
-  "name": "legoloop-legoloop-diorama-render",
+  "name": "legoloop-video-render-tickets",
   "nodes": [
     {
       "command": [

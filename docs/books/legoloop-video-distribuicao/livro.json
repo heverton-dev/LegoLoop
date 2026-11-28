@@ -1,0 +1,49 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-video-distribuicao",
+      "titulo": "Acervo e regra de originalidade"
+    },
+    {
+      "id": "e02",
+      "peca": "legoloop-video-distribuicao",
+      "titulo": "Agenda quente e perene"
+    },
+    {
+      "id": "e03",
+      "peca": "legoloop-video-distribuicao",
+      "titulo": "Revisao com parecer"
+    },
+    {
+      "id": "e04",
+      "peca": "legoloop-video-distribuicao",
+      "titulo": "Vitrine e capa"
+    },
+    {
+      "id": "e05",
+      "peca": "legoloop-video-distribuicao",
+      "titulo": "Publicacao pelo Postiz"
+    },
+    {
+      "id": "e06",
+      "peca": "legoloop-video-distribuicao",
+      "titulo": "Comentarios e aprendizado"
+    }
+  ],
+  "descricao": "Livro didatico do Processo legoloop-video-distribuicao: revisao, vitrine, agenda, publicacao segura pelo Postiz, comentarios e aprendizado.",
+  "slug": "legoloop-video-distribuicao",
+  "titulo": "Manual Didatico: legoloop-video-distribuicao",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-27_PROCESSO_LEGOLOOP_VIDEO_DISTRIBUICAO",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-fundacao.md",
+    "02-arquitetura.md",
+    "03-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-video-distribuicao-v1",
+  "ultima_compilacao": "2026-11-27"
+}

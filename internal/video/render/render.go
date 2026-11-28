@@ -340,6 +340,9 @@ type RelatorioMotor struct {
 	Cortes       int
 }
 
+// DuracaoVoz le a duracao de audio/voice.wav do projeto.
+func DuracaoVoz(projDir string) (float64, error) { return duracaoDaVoz(projDir) }
+
 func duracaoDaVoz(projDir string) (float64, error) {
 	b, err := lerBytes(projDir, "audio/voice.wav")
 	if err != nil {

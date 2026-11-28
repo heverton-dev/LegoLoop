@@ -60,32 +60,53 @@ type Luz struct {
 
 // Boneco é um personagem dentro do corte do motor.
 type Boneco struct {
-	Puppet string  `json:"puppet"`
-	X      float64 `json:"x"`
-	Y      float64 `json:"y"`
-	S      float64 `json:"s"`
-	Mood   string  `json:"mood,omitempty"`
-	Pose   string  `json:"pose"`
-	Face   int     `json:"face"`
-	Talk   bool    `json:"talk,omitempty"`
+	Puppet  string      `json:"puppet"`
+	X       float64     `json:"x"`
+	Y       float64     `json:"y"`
+	S       float64     `json:"s"`
+	Mood    string      `json:"mood,omitempty"`
+	Pose    string      `json:"pose"`
+	Face    int         `json:"face"`
+	Talk    bool        `json:"talk,omitempty"`
+	Enter   string      `json:"enter,omitempty"`
+	SpeakAt *[2]float64 `json:"speakAt,omitempty"`
 }
 
-// Corte é um shot do timeline.json do motor.
+// QuadroCamera define um quadro-chave da câmera do motor (t, x, y, z).
+type QuadroCamera struct {
+	T float64 `json:"t"`
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	Z float64 `json:"z"`
+}
+
+// Corte é um shot do timeline.json do motor (scene ou card, com layers, cam, fx e shake).
 type Corte struct {
-	ID       string         `json:"id"`
-	Type     string         `json:"type"`
-	Lines    [2]int         `json:"lines"`
-	BG       string         `json:"bg,omitempty"`
-	Set      map[string]any `json:"set,omitempty"`
-	Duration float64        `json:"duration"`
-	Chars    []Boneco       `json:"chars"`
-	Light    *Luz           `json:"light,omitempty"`
+	ID       string           `json:"id"`
+	Type     string           `json:"type"`
+	Lines    [2]int           `json:"lines"`
+	Text     string           `json:"text,omitempty"`
+	CPS      float64          `json:"cps,omitempty"`
+	BG       string           `json:"bg,omitempty"`
+	BGFilter string           `json:"bgFilter,omitempty"`
+	Set      map[string]any   `json:"set,omitempty"`
+	Duration float64          `json:"duration"`
+	Chars    []Boneco         `json:"chars"`
+	Layers   []map[string]any `json:"layers,omitempty"`
+	Cam      []QuadroCamera   `json:"cam,omitempty"`
+	FX       []string         `json:"fx,omitempty"`
+	Shake    []map[string]any `json:"shake,omitempty"`
+	Grade    any              `json:"grade,omitempty"`
+	Tin      string           `json:"tin,omitempty"`
+	Tout     string           `json:"tout,omitempty"`
+	Light    *Luz             `json:"light,omitempty"`
 }
 
 // Timeline é o contrato timeline.json lido pelo motor e pelo check_timeline.py.
 type Timeline struct {
 	FPS   int                       `json:"fps"`
 	Audio string                    `json:"audio,omitempty"`
+	Music string                    `json:"music,omitempty"`
 	Cast  map[string]map[string]any `json:"cast"`
 	Shots []Corte                   `json:"shots"`
 }
@@ -119,16 +140,15 @@ func Montar(e Entrada, dir string) (Timeline, error) {
 	if err != nil {
 		return Timeline{}, err
 	}
-	tl := Timeline{FPS: e.FPS, Audio: e.Audio, Cast: cast}
+	tl := Timeline{FPS: e.FPS, Audio: e.Audio, Music: e.Cenas.Musica, Cast: cast}
 	inicio := 0
 	for i, c := range e.Cenas.Cenas {
-		corte, err := montarCorte(e, dir, c, cast)
+		cortes, err := montarCortesDaCena(e, dir, c, cast, fins[i]-inicio)
 		if err != nil {
 			return Timeline{}, err
 		}
-		corte.Duration = float64(fins[i]-inicio) / float64(e.FPS)
 		inicio = fins[i]
-		tl.Shots = append(tl.Shots, corte)
+		tl.Shots = append(tl.Shots, cortes...)
 	}
 	return tl, nil
 }
@@ -208,27 +228,6 @@ func finsEmQuadros(e Entrada) ([]int, error) {
 	return fins, nil
 }
 
-// montarCorte resolve o fundo, os bonecos e a luz de contorno de uma cena.
-func montarCorte(e Entrada, dir string, c ativos.Cena, cast map[string]map[string]any) (Corte, error) {
-	bg, set, err := resolverFundo(e.Fundos, dir, c.CenarioID)
-	if err != nil {
-		return Corte{}, err
-	}
-	bonecos, err := montarBonecos(c.ElementosMoveis, cast)
-	if err != nil {
-		return Corte{}, err
-	}
-	return Corte{
-		ID:    fmt.Sprintf("l%03d", c.IndiceLinha),
-		Type:  "scene",
-		Lines: [2]int{c.IndiceLinha, c.IndiceLinha},
-		BG:    bg,
-		Set:   set,
-		Chars: bonecos,
-		Light: luzDoEstilo(e.Estilo),
-	}, nil
-}
-
 // resolverFundo acha o cenario no inventario: item com Arquivo vira bg-imagem (confere o arquivo
 // em disco); item sem Arquivo (codigo-desenhado, sets.js) vira set a partir de Parametros.
 func resolverFundo(fundos []inventario.Item, dir, id string) (string, map[string]any, error) {
@@ -251,7 +250,7 @@ func resolverFundo(fundos []inventario.Item, dir, id string) (string, map[string
 	return "", nil, fmt.Errorf("%w: cenario %q fora do inventario", ErrFundoAusente, id)
 }
 
-// montarBonecos posiciona os personagens da cena em faixas iguais sobre o piso.
+// montarBonecos posiciona os personagens da cena usando X/Y/Escala explicitos ou faixas iguais.
 func montarBonecos(elementos []ativos.ElementoMovel, cast map[string]map[string]any) ([]Boneco, error) {
 	var ids []ativos.ElementoMovel
 	for _, el := range elementos {
@@ -264,13 +263,30 @@ func montarBonecos(elementos []ativos.ElementoMovel, cast map[string]map[string]
 		if _, ok := cast[el.PersonagemID]; !ok {
 			return nil, fmt.Errorf("%w: %q", ErrPersonagemSemElenco, el.PersonagemID)
 		}
-		x := 1920 * float64(k+1) / float64(len(ids)+1)
+		x, y, s := posicaoBoneco(el, k, len(ids))
 		bonecos = append(bonecos, Boneco{
-			Puppet: el.PersonagemID, X: x, Y: 1000, S: 1,
-			Mood: el.Humor, Pose: poseOuIdle(el.Pose), Face: direcao(el.Olhar, x), Talk: el.Fala,
+			Puppet: el.PersonagemID, X: x, Y: y, S: s,
+			Mood: el.Humor, Pose: poseOuIdle(el.Pose), Face: direcao(el.Olhar, x),
+			Talk: el.Fala, Enter: el.Entrada,
 		})
 	}
 	return bonecos, nil
+}
+
+func posicaoBoneco(el ativos.ElementoMovel, k, total int) (float64, float64, float64) {
+	x := el.X
+	if x <= 0 {
+		x = 1920 * float64(k+1) / float64(total+1)
+	}
+	y := el.Y
+	if y <= 0 {
+		y = 1000
+	}
+	s := el.Escala
+	if s <= 0 {
+		s = 1
+	}
+	return x, y, s
 }
 
 // poseOuIdle usa idle quando a cena não define pose.

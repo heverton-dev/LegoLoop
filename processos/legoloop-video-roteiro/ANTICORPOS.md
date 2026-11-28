@@ -1,6 +1,6 @@
 ---
 schema: anticorpos.v1
-processo: legoloop-diorama-roteiro
+processo: legoloop-video-roteiro
 total_anticorpos: 2
 globais: 0
 dominio: 2
@@ -11,7 +11,7 @@ regras_inviolaveis:
     antidoto: "Abrir navegador em sessao_criar, timeout 5min, watchdog em sessao-app.js e sessao_aguardar no mesmo turno"
 ---
 
-# 🛡️ Banco de Anticorpos — legoloop-diorama-roteiro
+# 🛡️ Banco de Anticorpos — legoloop-video-roteiro
 
 > Espelho executivo para leitura de agentes. O banco estruturado vive em `anticorpos.json`.
 

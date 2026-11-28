@@ -752,3 +752,13 @@ Documentos: `docs/{intents,specs,plans,routes}/2026-11-03_*_LEGOLOOP_FABRICAR.*`
 - **26/11/2026** — ⚖️ **Lei da prova e correções A13–A15:** fato sem prova se verifica antes de afirmar, achado se corrige na mesma resposta; "Não verificado", pendência, falta e próxima etapa são proibidos. Aplicação: `ste.LintEvasao`, `legoloop stept lint [--hook]` e gancho Stop do Claude Code (prova: sessão headless bloqueada com frase evasiva, `error_max_turns`, 5 turnos; controle com prova, `success`, 1 turno). Motor: `Ticket.Command` em `internal/plangen` (A13, aditivo) permite DAG de `native_swarm` que o `swarm run` sobe. Espinha limpa em `internal/diorama/render` (globais viraram funções, erros ignorados tratados) e Processos `legoloop-diorama-*` com `pipeline.dag.json`.
 
 * **Processo Canonizado `legoloop-kraften-deploy` (2026-11-26):** `skills/legoloop-kraften-deploy/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-video-animado` (2026-11-26):** `skills/legoloop-video-animado/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-video-render` (2026-11-27):** `skills/legoloop-video-render/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-video-roteiro` (2026-11-27):** `skills/legoloop-video-roteiro/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-video-ativos` (2026-11-27):** `skills/legoloop-video-ativos/SKILL.md` · `docs/reports/`
+
+* **Processo Canonizado `legoloop-video-distribuicao` (2026-11-27):** `skills/legoloop-video-distribuicao/SKILL.md` · `docs/reports/`

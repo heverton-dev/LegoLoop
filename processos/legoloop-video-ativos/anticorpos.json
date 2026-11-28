@@ -1,6 +1,6 @@
 {
   "schema_version": "anticorpos.v1",
-  "processo": "legoloop-diorama-ativos",
+  "processo": "legoloop-video-ativos",
   "globais": [],
   "dominio": [
     {
@@ -35,7 +35,7 @@
       "erro": "sprite_despill falhava buscando poses_6x inexistente ao inves da folha mestre gerada",
       "antidoto": "resolverEntradaSprite com fallback resiliente para folha mestre e resolverElencoPadrao alimentado por fichasGeradas",
       "recorrencias": 1,
-      "pacote": "internal/diorama/ativos",
+      "pacote": "internal/video/ativos",
       "causa_raiz": "resolverElencoPadrao e RecortadorRembgDespill exigiam flow/narrador_poses.png ao inves de flow/fichas/\u003cid\u003e_sheet.png gerada no Flow",
       "timestamp": "2026-11-25T00:58:59Z"
     }

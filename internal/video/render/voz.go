@@ -146,10 +146,10 @@ func sintetizarLinhas(ctx context.Context, s Sintetizador, script roteiro.Script
 		}
 		b, err := s.Sintetizar(ctx, AplicarPronuncia(linha.Text, pron), op)
 		if err != nil {
-			return nil, fmt.Errorf("diorama-render: linha %d: %w", i, err)
+			return nil, fmt.Errorf("video-render: linha %d: %w", i, err)
 		}
 		if _, _, err := lerWAV(b); err != nil {
-			return nil, fmt.Errorf("diorama-render: linha %d: %w", i, err)
+			return nil, fmt.Errorf("video-render: linha %d: %w", i, err)
 		}
 		trechos = append(trechos, b)
 	}

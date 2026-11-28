@@ -1,0 +1,43 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-video-render",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:2071705f4702e506ac96e12972dfe3166c8e033b282c65d0750bceeb6ae8b39a",
+      "erro": "Render do motor saiu em 16:9 e o gate 1080x1920 reprovou",
+      "antidoto": "Passar --formato 9:16 ao run_render.py; o comando video-render motor ja faz isso",
+      "recorrencias": 1,
+      "pacote": "internal/cli",
+      "causa_raiz": "a ponte nao grava formato na timeline e o motor assume 16:9",
+      "timestamp": "2026-11-27T10:00:00Z"
+    },
+    {
+      "assinatura": "sha256:309d1365d7d2aae61f08b9cb9e82a6543c7e3a07614fff73ac3e57a18830d846",
+      "erro": "timeline.json sobrescrita por dois produtores",
+      "antidoto": "Rodar na ordem prevoo, voz, timeline, mix, motor; o motor grava por ultimo",
+      "recorrencias": 1,
+      "pacote": "internal/video/motor",
+      "causa_raiz": "video-render timeline e motor.Gerar gravam o mesmo arquivo com formatos diferentes",
+      "timestamp": "2026-11-27T10:05:00Z"
+    },
+    {
+      "assinatura": "sha256:c20f5cea9b199930e42f779312999cbb1ce9528d03d48ff4f81904be7b70e261",
+      "erro": "Data do calendario do set office estourava o cartao",
+      "antidoto": "motor-local/sets.js reduz a fonte para texto com mais de 2 caracteres",
+      "recorrencias": 1,
+      "pacote": "motor-local",
+      "causa_raiz": "o valor padrao 1925 era maior que o cartao",
+      "timestamp": "2026-11-26T21:00:00Z"
+    },
+    {
+      "assinatura": "sha256:c21acb947e403a8c1f05a870d804d6fa7f52de4237f2f9b364a5a48f026d3c8a",
+      "erro": "flow_generate saiu como video e gastou 12 creditos",
+      "antidoto": "Passar model Nano Banana e type image explicitamente em todo flow_generate de fundo",
+      "recorrencias": 1,
+      "pacote": "internal/video/ativos",
+      "causa_raiz": "o composer do projeto Flow estava em modo video",
+      "timestamp": "2026-11-26T21:10:00Z"
+    }
+  ]
+}

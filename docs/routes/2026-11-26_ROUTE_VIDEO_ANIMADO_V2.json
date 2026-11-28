@@ -2236,7 +2236,7 @@
       "command": [
         "claude",
         "-p",
-        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-08.1: Renderizar a cena 1 do diorama-demo pelo processo e colher a aprovacao visual do usuario. Criterios AC-E12.1 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: projetos/video-diorama/diorama-demo/renders/. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop video-render executar --projeto projetos/video-diorama/diorama-demo --cena 1 ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-08.1: Renderizar a cena 1 do diorama-demo pelo processo e colher a aprovacao visual do usuario. Criterios AC-E12.1 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: projetos/video-animado/diorama-demo/renders/. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop video-render executar --projeto projetos/video-animado/diorama-demo --cena 1 ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
         "--permission-mode",
         "acceptEdits",
         "--allowedTools",
@@ -2273,7 +2273,7 @@
       },
       "inputs": {
         "source_files": [
-          "projetos/video-diorama/diorama-demo/renders/"
+          "projetos/video-animado/diorama-demo/renders/"
         ],
         "spec_anchor": "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md#AC-E12.1",
         "context_artifacts": []
@@ -2284,7 +2284,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "projetos/video-diorama/diorama-demo/renders/"
+          "projetos/video-animado/diorama-demo/renders/"
         ],
         "verify": [
           [
@@ -2294,12 +2294,12 @@
             "video-render",
             "executar",
             "--projeto",
-            "projetos/video-diorama/diorama-demo",
+            "projetos/video-animado/diorama-demo",
             "--cena",
             "1"
           ]
         ],
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('projetos/video-diorama/diorama-demo/renders/')"
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('projetos/video-animado/diorama-demo/renders/')"
       },
       "telemetry": null
     },
@@ -2409,7 +2409,7 @@
       "command": [
         "claude",
         "-p",
-        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-08.3: Reproduzir o First Brands pelo processo: timeline completa com CHECK OK e ritmo no alvo. Criterios AC-E12.2 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: projetos/video-diorama/first-brands/timeline.json. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop video-render timeline --projeto projetos/video-diorama/first-brands ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
+        "Voce e o engenheiro-tdd do LegoLoop. Execute SOMENTE o ticket TICK-V01-08.3: Reproduzir o First Brands pelo processo: timeline completa com CHECK OK e ritmo no alvo. Criterios AC-E12.2 da SPEC docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md; plano em docs/plans/2026-11-26_PLAN_VIDEO_ANIMADO_V2.md. Arquivos do ticket: projetos/video-animado/first-brands/timeline.json. Ciclo TDD: escreva o teste e rode para ver falhar; implemente; rode go run ./cmd/legoloop video-render timeline --projeto projetos/video-animado/first-brands ate passar. Se os arquivos ja existirem, confira contra a SPEC e complete so o que faltar, sem reescrever o que ja passa. Regras: siga o AGENTS.md; sem commit nem push; sem subagentes; sem segredos; gofmt e go vet limpos; funcao com no maximo 35 linhas; sem variavel global mutavel e sem atribuicao de erro a _ ; a palavra pipeline nao entra em SKILL.md. Lei da prova: toda afirmacao leva comando e resultado; sao proibidos Nao verificado, pendencia, falta e proxima etapa; verifique ou corrija na mesma resposta. Responda em PT-BR, uma frase por linha, com a saida do comando de validacao.",
         "--permission-mode",
         "acceptEdits",
         "--allowedTools",
@@ -2446,7 +2446,7 @@
       },
       "inputs": {
         "source_files": [
-          "projetos/video-diorama/first-brands/timeline.json"
+          "projetos/video-animado/first-brands/timeline.json"
         ],
         "spec_anchor": "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md#AC-E12.2",
         "context_artifacts": []
@@ -2457,7 +2457,7 @@
       "rollback_strategy": "stash_changes",
       "output": {
         "artifacts": [
-          "projetos/video-diorama/first-brands/timeline.json"
+          "projetos/video-animado/first-brands/timeline.json"
         ],
         "verify": [
           [
@@ -2467,10 +2467,10 @@
             "video-render",
             "timeline",
             "--projeto",
-            "projetos/video-diorama/first-brands"
+            "projetos/video-animado/first-brands"
           ]
         ],
-        "gate": "exit_code == 0 \u0026\u0026 file_exists('projetos/video-diorama/first-brands/timeline.json')"
+        "gate": "exit_code == 0 \u0026\u0026 file_exists('projetos/video-animado/first-brands/timeline.json')"
       },
       "telemetry": null
     },

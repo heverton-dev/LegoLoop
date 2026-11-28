@@ -93,7 +93,7 @@ var (
 func numeroDe(re *regexp.Regexp, texto, nome string) (float64, error) {
 	m := re.FindStringSubmatch(texto)
 	if m == nil {
-		return 0, fmt.Errorf("diorama-render: %s nao encontrado na saida do ebur128", nome)
+		return 0, fmt.Errorf("video-render: %s nao encontrado na saida do ebur128", nome)
 	}
 	return strconv.ParseFloat(m[1], 64)
 }
@@ -102,7 +102,7 @@ func numeroDe(re *regexp.Regexp, texto, nome string) (float64, error) {
 func parseEBUR128(saida string) (Medicao, error) {
 	i := strings.LastIndex(saida, "Summary:")
 	if i < 0 {
-		return Medicao{}, fmt.Errorf("diorama-render: saida do ebur128 sem Summary")
+		return Medicao{}, fmt.Errorf("video-render: saida do ebur128 sem Summary")
 	}
 	resumo := saida[i:]
 	lufs, err := numeroDe(reLUFS, resumo, "LUFS integrado")
@@ -117,7 +117,7 @@ func parseEBUR128(saida string) (Medicao, error) {
 func parseLoudnormJSON(saida string) (MedidasLoudnorm, error) {
 	i, j := strings.LastIndex(saida, "{"), strings.LastIndex(saida, "}")
 	if i < 0 || j < i {
-		return MedidasLoudnorm{}, fmt.Errorf("diorama-render: saida do loudnorm sem JSON")
+		return MedidasLoudnorm{}, fmt.Errorf("video-render: saida do loudnorm sem JSON")
 	}
 	var b struct {
 		I      string `json:"input_i"`
@@ -127,12 +127,12 @@ func parseLoudnormJSON(saida string) (MedidasLoudnorm, error) {
 		Offset string `json:"target_offset"`
 	}
 	if err := json.Unmarshal([]byte(saida[i:j+1]), &b); err != nil {
-		return MedidasLoudnorm{}, fmt.Errorf("diorama-render: JSON do loudnorm invalido: %w", err)
+		return MedidasLoudnorm{}, fmt.Errorf("video-render: JSON do loudnorm invalido: %w", err)
 	}
 	m := MedidasLoudnorm{InputI: b.I, InputTP: b.TP, InputLRA: b.LRA, InputThresh: b.Thresh, TargetOffset: b.Offset}
 	for _, v := range []string{m.InputI, m.InputTP, m.InputLRA, m.InputThresh, m.TargetOffset} {
 		if _, err := strconv.ParseFloat(v, 64); err != nil {
-			return MedidasLoudnorm{}, fmt.Errorf("diorama-render: medida %q do loudnorm invalida", v)
+			return MedidasLoudnorm{}, fmt.Errorf("video-render: medida %q do loudnorm invalida", v)
 		}
 	}
 	return m, nil

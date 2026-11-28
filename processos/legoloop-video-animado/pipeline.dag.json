@@ -4,8 +4,8 @@
   "name": "legoloop-video-animado",
   "version": "1.0.0",
   "schema_version": 2,
-  "date": "2026-11-26",
-  "description": "Macroprocesso legoloop-video-animado: inventario global por estilo, contratos novos, Peca 2 vetorial, motor portado com licenca MIT, renomeacao diorama->video e prova de reproducao (SPEC v2, Epicos E07 a E12).",
+  "date": "2026-11-27",
+  "description": "Macroprocesso composto legoloop-video-animado: encadeia P1 (roteiro), P2 (ativos/storyboard), P3 (render 9:16 com motor local) e P4 (distribuicao e publicacao), com gate final de prova e ritmo no alvo (12 a 21 cortes/min).",
   "upstream_signatures": {
     "intent": "docs/intents/2026-11-26_EMENDA_INTENT_APROVADA_VIDEO_ANIMADO.md",
     "spec": "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md",
@@ -26,7 +26,7 @@
     },
     "max_parallel_workers": 1,
     "tdd_enforced": true,
-    "default_timeout_sec": 180,
+    "default_timeout_sec": 600,
     "rollback_on_failure": "abort_and_pause",
     "rollback_policy": {
       "action": "abort_and_pause",
@@ -35,21 +35,16 @@
       "commit_on_node_pass": false
     }
   },
+  "trigger": {
+    "type": "manual"
+  },
   "nodes": [
     {
-      "id": "n01_inventario_por_estilo",
-      "name": "Inventario global por estilo: NovoEstilo, GravarItem, heranca e validacao humana (Epico E07)",
-      "nature": "macro",
-      "type": "script",
-      "command": [
-        "legoloop",
-        "video-inventario",
-        "verificar",
-        "--estilo",
-        "molde-de-pilula",
-        "--json"
-      ],
-      "ref": "legoloop video-inventario verificar",
+      "id": "n01_video_roteiro",
+      "name": "P1: Subprocesso legoloop-video-roteiro (Configuracao, Pautas e Roteiro)",
+      "nature": "micro",
+      "type": "subprocesso",
+      "ref": "legoloop-video-roteiro",
       "routing": {
         "mode": "suggested",
         "harness": "claude",
@@ -58,64 +53,7 @@
         "effort": "medium",
         "fallback": "haiku"
       },
-      "timeout_sec": 300,
-      "isolation": {
-        "executor": "orchestrix_hermetic",
-        "subagents_allowed": false,
-        "workspace": "local",
-        "write_boundary": "strict"
-      },
-      "tooling": {
-        "runtime": "legoloop"
-      },
-      "context_in": [
-        "docs/specs/2026-11-26_SPEC_VIDEO_ANIMADO_V2.md"
-      ],
-      "context_out": [
-        "inventario/video/estilos/*/estilo.json"
-      ],
-      "output": {
-        "artifact": "inventario/video/estilos/molde-de-pilula/estilo.json",
-        "gate": "exit_code == 0"
-      },
-      "spec_ref": "AC-E07.1..AC-E07.9",
-      "status": "done",
-      "execution": {
-        "mode": "isolated"
-      },
-      "limits": {
-        "max_attempts": 1,
-        "timeout_seconds": 300
-      },
-      "rollback_strategy": "abort_and_pause",
-      "verification": {
-        "gate": "exit_code == 0"
-      },
-      "depends_on": []
-    },
-    {
-      "id": "n02_contratos_v2",
-      "name": "Contratos v2: pre-voo le modo_producao e estilo validado, storyboard confere elenco e inventario (Epico E08)",
-      "nature": "macro",
-      "type": "script",
-      "command": [
-        "legoloop",
-        "video-ativos",
-        "prevoo",
-        "--projeto",
-        ".",
-        "--json"
-      ],
-      "ref": "legoloop video-ativos prevoo",
-      "routing": {
-        "mode": "suggested",
-        "harness": "claude",
-        "via": "9router",
-        "model": "sonnet",
-        "effort": "medium",
-        "fallback": "haiku"
-      },
-      "timeout_sec": 300,
+      "timeout_sec": 600,
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -129,43 +67,36 @@
         "projeto.json"
       ],
       "context_out": [
-        "prevoo_ativos.json"
+        "projeto.json",
+        "marca.json",
+        "script.json",
+        "plano.md"
       ],
       "output": {
-        "artifact": "prevoo_ativos.json",
-        "gate": "exit_code == 0"
+        "artifact": "script.json",
+        "gate": "file_exists('script.json')"
       },
-      "spec_ref": "AC-E08.1..AC-E08.3",
-      "status": "done",
+      "spec_ref": "AC-E06.1",
+      "status": "pending",
       "execution": {
         "mode": "isolated"
       },
       "limits": {
-        "max_attempts": 1,
-        "timeout_seconds": 300
+        "max_attempts": 3,
+        "timeout_seconds": 600
       },
       "rollback_strategy": "abort_and_pause",
       "verification": {
-        "gate": "exit_code == 0"
+        "gate": "file_exists('script.json')"
       },
-      "depends_on": [
-        "n01_inventario_por_estilo"
-      ]
+      "depends_on": []
     },
     {
-      "id": "n03_peca2_vetorial",
-      "name": "Peca 2: elenco vetorial do inventario sem Flow, caminho de recorte preservado, entrega suspeita marcada (Epico E09)",
-      "nature": "macro",
-      "type": "script",
-      "command": [
-        "legoloop",
-        "video-ativos",
-        "executar",
-        "--projeto",
-        ".",
-        "--json"
-      ],
-      "ref": "legoloop video-ativos executar",
+      "id": "n02_video_ativos",
+      "name": "P2: Subprocesso legoloop-video-ativos (Inventario, Elenco Vetorial, Cenarios e Storyboard)",
+      "nature": "micro",
+      "type": "subprocesso",
+      "ref": "legoloop-video-ativos",
       "routing": {
         "mode": "suggested",
         "harness": "claude",
@@ -174,7 +105,7 @@
         "effort": "medium",
         "fallback": "haiku"
       },
-      "timeout_sec": 300,
+      "timeout_sec": 600,
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -185,46 +116,40 @@
         "runtime": "legoloop"
       },
       "context_in": [
+        "projeto.json",
         "script.json",
-        "inventario/video/estilos/*/itens/**"
+        "inventario/video/estilos/*/estilo.json"
       ],
       "context_out": [
         "cenas.json"
       ],
       "output": {
         "artifact": "cenas.json",
-        "gate": "exit_code == 0"
+        "gate": "file_exists('cenas.json')"
       },
-      "spec_ref": "AC-E09.1..AC-E09.5",
-      "status": "done",
+      "spec_ref": "AC-E07.1..AC-E09.5",
+      "status": "pending",
       "execution": {
         "mode": "isolated"
       },
       "limits": {
-        "max_attempts": 1,
-        "timeout_seconds": 300
+        "max_attempts": 3,
+        "timeout_seconds": 600
       },
       "rollback_strategy": "abort_and_pause",
       "verification": {
-        "gate": "exit_code == 0"
+        "gate": "file_exists('cenas.json')"
       },
       "depends_on": [
-        "n02_contratos_v2"
+        "n01_video_roteiro"
       ]
     },
     {
-      "id": "n04_motor_portado",
-      "name": "Motor portado (motor-local, licenca MIT): ponte cenas->timeline, render 9:16 determinstico, boca sincronizada (Epico E10)",
-      "nature": "macro",
-      "type": "script",
-      "command": [
-        "legoloop",
-        "video-render",
-        "timeline",
-        "--projeto",
-        "projetos/video-diorama/first-brands"
-      ],
-      "ref": "legoloop video-render timeline",
+      "id": "n03_video_render",
+      "name": "P3: Subprocesso legoloop-video-render (Voz, Whisper, Timeline, Mix e Render 9:16)",
+      "nature": "micro",
+      "type": "subprocesso",
+      "ref": "legoloop-video-render",
       "routing": {
         "mode": "suggested",
         "harness": "claude",
@@ -233,7 +158,7 @@
         "effort": "medium",
         "fallback": "haiku"
       },
-      "timeout_sec": 300,
+      "timeout_sec": 600,
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -244,44 +169,41 @@
         "runtime": "legoloop"
       },
       "context_in": [
-        "inventario/video/estilos/*/*"
+        "projeto.json",
+        "script.json",
+        "cenas.json"
       ],
       "context_out": [
+        "render.mp4",
         "timeline.json"
       ],
       "output": {
-        "artifact": "projetos/video-diorama/first-brands/timeline.json",
-        "gate": "exit_code == 0"
+        "artifact": "render.mp4",
+        "gate": "file_exists('render.mp4')"
       },
       "spec_ref": "AC-E10.1..AC-E10.8",
-      "status": "done",
+      "status": "pending",
       "execution": {
         "mode": "isolated"
       },
       "limits": {
-        "max_attempts": 1,
-        "timeout_seconds": 300
+        "max_attempts": 3,
+        "timeout_seconds": 600
       },
       "rollback_strategy": "abort_and_pause",
       "verification": {
-        "gate": "exit_code == 0"
+        "gate": "file_exists('render.mp4')"
       },
       "depends_on": [
-        "n03_peca2_vetorial"
+        "n02_video_ativos"
       ]
     },
     {
-      "id": "n05_renomeacao_video",
-      "name": "Renomeacao diorama->video com alias depreciado, skills/processos/espinha migrados, historico preservado (Epico E11)",
-      "nature": "macro",
-      "type": "script",
-      "command": [
-        "legoloop",
-        "espinha",
-        "verificar",
-        "--json"
-      ],
-      "ref": "legoloop espinha verificar",
+      "id": "n04_video_distribuicao",
+      "name": "P4: Subprocesso legoloop-video-distribuicao (Revisao sem Contexto, Vitrine, Agenda e Publicacao)",
+      "nature": "micro",
+      "type": "subprocesso",
+      "ref": "legoloop-video-distribuicao",
       "routing": {
         "mode": "suggested",
         "harness": "claude",
@@ -290,7 +212,7 @@
         "effort": "medium",
         "fallback": "haiku"
       },
-      "timeout_sec": 300,
+      "timeout_sec": 600,
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -301,35 +223,36 @@
         "runtime": "legoloop"
       },
       "context_in": [
-        "internal/video/*"
+        "render.mp4",
+        "script.json"
       ],
       "context_out": [
-        "espinha/registro.json"
+        "acervo/aprendizado.md"
       ],
       "output": {
-        "artifact": "espinha/registro.json",
-        "gate": "exit_code == 0"
+        "artifact": "acervo/aprendizado.md",
+        "gate": "file_exists('acervo/aprendizado.md')"
       },
       "spec_ref": "AC-E11.1..AC-E11.4",
-      "status": "done",
+      "status": "pending",
       "execution": {
         "mode": "isolated"
       },
       "limits": {
-        "max_attempts": 1,
-        "timeout_seconds": 300
+        "max_attempts": 3,
+        "timeout_seconds": 600
       },
       "rollback_strategy": "abort_and_pause",
       "verification": {
-        "gate": "exit_code == 0"
+        "gate": "file_exists('acervo/aprendizado.md')"
       },
       "depends_on": [
-        "n04_motor_portado"
+        "n03_video_render"
       ]
     },
     {
-      "id": "n06_prova_de_reproducao",
-      "name": "Prova de reproducao: cena 1 renderizada e aprovada pelo usuario, First Brands reproduzido com ritmo no alvo (Epico E12)",
+      "id": "n05_prova_reproducao",
+      "name": "Gate final de prova e reproducao em video real com ritmo no alvo (12 a 21 cortes/min)",
       "nature": "macro",
       "type": "script",
       "command": [
@@ -337,7 +260,7 @@
         "video-render",
         "executar",
         "--projeto",
-        "projetos/video-diorama/diorama-demo-pilula"
+        "."
       ],
       "ref": "legoloop video-render executar",
       "routing": {
@@ -348,7 +271,7 @@
         "effort": "medium",
         "fallback": "haiku"
       },
-      "timeout_sec": 300,
+      "timeout_sec": 600,
       "isolation": {
         "executor": "orchestrix_hermetic",
         "subagents_allowed": false,
@@ -359,30 +282,31 @@
         "runtime": "legoloop"
       },
       "context_in": [
-        "timeline.json"
+        "timeline.json",
+        "renders/cena1.mp4"
       ],
       "context_out": [
         "renders/cena1.mp4"
       ],
       "output": {
-        "artifact": "projetos/video-diorama/diorama-demo-pilula/renders/cena1.mp4",
+        "artifact": "renders/cena1.mp4",
         "gate": "exit_code == 0"
       },
       "spec_ref": "AC-E12.1..AC-E12.3",
-      "status": "done",
+      "status": "pending",
       "execution": {
         "mode": "isolated"
       },
       "limits": {
-        "max_attempts": 1,
-        "timeout_seconds": 300
+        "max_attempts": 3,
+        "timeout_seconds": 600
       },
       "rollback_strategy": "abort_and_pause",
       "verification": {
         "gate": "exit_code == 0"
       },
       "depends_on": [
-        "n05_renomeacao_video"
+        "n04_video_distribuicao"
       ]
     }
   ]

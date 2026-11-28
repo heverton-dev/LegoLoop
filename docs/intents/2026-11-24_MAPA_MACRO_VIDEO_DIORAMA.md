@@ -1,6 +1,7 @@
-# Mapa Macro — Elevação e Canonização do Processo `legoloop-video-diorama`
+# Mapa Macro — Elevação e Canonização do Processo `legoloop-video-animado`
 
 Data: 2026-11-24. Status: DRAFT (Visão Macro para guiar os ciclos `legoloop-ciclo`).
+> **Renome (2026-11-27):** o macro `legoloop-video-diorama` passa a se chamar `legoloop-video-animado` (serve a qualquer estilo; diorama e so um estilo). Os 4 processos seguem o prefixo `video-`. Todos os processos do macro precisam ser canonizados (elementos completos).
 Origem analisada: `C:\Users\trcnologia\Desktop\proj--historias-palitos`.
 
 ---
@@ -9,31 +10,31 @@ Origem analisada: `C:\Users\trcnologia\Desktop\proj--historias-palitos`.
 
 Para evitar a fragmentação de 14 ciclos isolados e eliminar quebras de contrato entre etapas, as 14 Etapas originais (mais o Passo Zero) são consolidadas em **4 Processos autônomos e testáveis**, unidos ao final em **1 Macroprocesso composto** via `legoloop compor`:
 
-1. **`legoloop-diorama-roteiro`** — Pré-voo, Configuração, Descoberta de Pauta e Roteiro Verificado (Passo 0 + Etapas 0, 1 e 2).
-2. **`legoloop-diorama-ativos`** — Elenco, Estilo Mestre, Cenários, Sprites e Storyboard (Etapas 3, 4 e 5).
-3. **`legoloop-diorama-render`** — Voz Neural Auditada, Alinhamento, Motor Diorama Autoral, Mixagem, Marca e Cortes Verticais (Etapas 6, 7, 8 e 8b).
-4. **`legoloop-diorama-distribuicao`** — Revisão Cega Estéril, Vitrine, Fila Quente e Perene, Publicação Postiz, Comentários e Aprendizado (Etapas 9, 10, 11, 11b, 12 e 13).
-5. **`legoloop-video-diorama` (Composto)** — Orquestração ponta a ponta (`P1 -> P2 -> P3 -> P4`) integrada ao Looping Studio e registrada 5 de 5 na Espinha Dorsal.
+1. **`legoloop-video-roteiro`** — Pré-voo, Configuração, Descoberta de Pauta e Roteiro Verificado (Passo 0 + Etapas 0, 1 e 2).
+2. **`legoloop-video-ativos`** — Elenco, Estilo Mestre, Cenários, Sprites e Storyboard (Etapas 3, 4 e 5).
+3. **`legoloop-video-render`** — Voz Neural Auditada, Alinhamento, Motor Diorama Autoral, Mixagem, Marca e Cortes Verticais (Etapas 6, 7, 8 e 8b).
+4. **`legoloop-video-distribuicao`** — Revisão Cega Estéril, Vitrine, Fila Quente e Perene, Publicação Postiz, Comentários e Aprendizado (Etapas 9, 10, 11, 11b, 12 e 13).
+5. **`legoloop-video-animado` (Composto)** — Orquestração ponta a ponta (`P1 -> P2 -> P3 -> P4`) integrada ao Looping Studio e registrada 5 de 5 na Espinha Dorsal.
 
 ```mermaid
 flowchart TD
-    subgraph P1["Processo 1: legoloop-diorama-roteiro"]
+    subgraph P1["Processo 1: legoloop-video-roteiro"]
         E0["Passo 0 e Etapa 0: Ambiente e Configuracao"] --> E1["Etapa 1: Descoberta de Pautas e Demanda"]
         E1 --> E2["Etapa 2: Pesquisa Nivel A ou B e Roteiro"]
     end
 
-    subgraph P2["Processo 2: legoloop-diorama-ativos"]
+    subgraph P2["Processo 2: legoloop-video-ativos"]
         E3["Etapa 3: Fichas de Elenco e Sprites"] --> E4["Etapa 4: Cenarios, Objetos e Estilo Mestre"]
         E4 --> E5["Etapa 5: Storyboard e Spec por Linha"]
     end
 
-    subgraph P3["Processo 3: legoloop-diorama-render"]
+    subgraph P3["Processo 3: legoloop-video-render"]
         E6["Etapa 6: Voz Neural e Conferencia Whisper"] --> E7["Etapa 7: Montagem de Timeline e Gate de Ritmo"]
         E7 --> E8["Etapa 8: Mix LUFS, Render Multiformato, Marca e SRT"]
         E8 --> E8B["Etapa 8b: Cortes Verticais 9x16"]
     end
 
-    subgraph P4["Processo 4: legoloop-diorama-distribuicao"]
+    subgraph P4["Processo 4: legoloop-video-distribuicao"]
         E9["Etapa 9: Folhas de Contato e Revisor Esteril"] --> E10["Etapa 10: Vitrine, Capas e Kit de Canal"]
         E10 --> E11["Etapa 11: Fila Quente ou Perene e Postiz"]
         E11 --> E12["Etapas 12 e 13: Comentarios e Aprendizado"]
@@ -70,7 +71,7 @@ Todas as divergências detectadas no projeto original são resolvidas por um con
 
 ## 3. Refinamento Item a Item das 14 Etapas
 
-### Processo 1 — `legoloop-diorama-roteiro`
+### Processo 1 — `legoloop-video-roteiro`
 
 | Etapa Original | Refinamento para Padrão Ouro no LegoLoop | Reuso do Cofre e Gates |
 | :--- | :--- | :--- |
@@ -79,7 +80,7 @@ Todas as divergências detectadas no projeto original são resolvidas por um con
 | **Etapa 1** (Descoberta) | Coleta de sinais de tendência e cálculo de vídeos fora da curva, cruzando obrigatoriamente com `acervo/temas.json` e `acervo/aprendizado.md` | Gate: descarte mecânico de temas repetidos ou sem lastro A/B; Stop-Gate de escolha |
 | **Etapa 2** (Roteiro) | Geração em batidas causais ("mas"/"portanto"), gancho cronometrado (3 s curto, 20 s longo), validação mecânica de schema em `script.json` exigindo nível `A` (>=1) ou `B` (>=2) por afirmação numérica e marcador de alegação | Gate de schema + verificador lexical de alegações; Stop-Gate do roteiro |
 
-### Processo 2 — `legoloop-diorama-ativos`
+### Processo 2 — `legoloop-video-ativos`
 
 | Etapa Original | Refinamento para Padrão Ouro no LegoLoop | Reuso do Cofre e Gates |
 | :--- | :--- | :--- |
@@ -87,7 +88,7 @@ Todas as divergências detectadas no projeto original são resolvidas por um con
 | **Etapa 4** (Cenários e Objetos) | Suporte limpo ao caminho Código (cenários SVG 100% autorais, livres de código sem licença de `RobbiSkill`) e ao caminho Flow (`--ref`, fila resiliente com backoff e trava de `flow_projeto`) | Gate: mínimo de 1 cenário distinto a cada 2 linhas; Stop-Gate de quadros-teste |
 | **Etapa 5** (Storyboard) | Composição dos quadros de cena e compilação assistida da especificação `cenas.json` (garantindo metáfora visual e >= 4 elementos móveis por linha) | Gate: cobertura de 100% das linhas de `script.json`; Stop-Gate de storyboard |
 
-### Processo 3 — `legoloop-diorama-render`
+### Processo 3 — `legoloop-video-render`
 
 | Etapa Original | Refinamento para Padrão Ouro no LegoLoop | Reuso do Cofre e Gates |
 | :--- | :--- | :--- |
@@ -96,7 +97,7 @@ Todas as divergências detectadas no projeto original são resolvidas por um con
 | **Etapa 8** (Montagem e Marca) | Mixagem com ducking + catálogo de SFX por evento + normalização `-14 LUFS` / `-1,5 dB TP`, renderização multiformato (`16:9`, `9:16`, `1:1`) com cache por hash, vinhetas `marca.py` e `.srt` externo | Gate: duração áudio == vídeo, LUFS dentro de `-14 ± 0.5`, zero frames em branco |
 | **Etapa 8b** (Cortes Curtos) | Seleção pontuada (0–10) de 3 a 8 trechos independentes, remontagem nativa em `9:16` com legenda queimada inteligente (posicionada fora da caixa do personagem) e cartão final | Gate: duração entre 15 s e 59 s e área segura vertical respeitada; Stop-Gate de cortes |
 
-### Processo 4 — `legoloop-diorama-distribuicao`
+### Processo 4 — `legoloop-video-distribuicao`
 
 | Etapa Original | Refinamento para Padrão Ouro no LegoLoop | Reuso do Cofre e Gates |
 | :--- | :--- | :--- |
@@ -119,8 +120,8 @@ Todas as divergências detectadas no projeto original são resolvidas por um con
 
 | Ordem | Alvo | Ciclo de Engenharia | Entrega Canônica |
 | :--- | :--- | :--- | :--- |
-| **Ciclo 1** | `legoloop-diorama-roteiro` | `legoloop-ciclo` (INTENT -> SPEC -> PLAN/ROUTE/DAG) -> TDD -> `upgrade` -> `fechar` | Processo 1 canonizado (5 de 5) + contratos `projeto.json` e `script.json` |
-| **Ciclo 2** | `legoloop-diorama-ativos` | `legoloop-ciclo` -> TDD -> `upgrade` -> `fechar` | Processo 2 canonizado (5 de 5) + driver Flow resiliente, `rembg` e `cenas.json` |
-| **Ciclo 3** | `legoloop-diorama-render` | `legoloop-ciclo` -> TDD -> `upgrade` -> `fechar` | Processo 3 canonizado (5 de 5) + motor diorama autoral, Whisper, mix e Shorts |
-| **Ciclo 4** | `legoloop-diorama-distribuicao` | `legoloop-ciclo` -> TDD -> `upgrade` -> `fechar` | Processo 4 canonizado (5 de 5) + revisor estéril, vitrine, agendador e Postiz |
-| **Ciclo 5** | `legoloop-video-diorama` | `legoloop compor` encadeando Ciclos 1 a 4 + teste E2E completo + `fechar` | Macroprocesso composto homologado ponta a ponta com manual, livro e relatório |
+| **Ciclo 1** | `legoloop-video-roteiro` | `legoloop-ciclo` (INTENT -> SPEC -> PLAN/ROUTE/DAG) -> TDD -> `upgrade` -> `fechar` | Processo 1 canonizado (5 de 5) + contratos `projeto.json` e `script.json` |
+| **Ciclo 2** | `legoloop-video-ativos` | `legoloop-ciclo` -> TDD -> `upgrade` -> `fechar` | Processo 2 canonizado (5 de 5) + driver Flow resiliente, `rembg` e `cenas.json` |
+| **Ciclo 3** | `legoloop-video-render` | `legoloop-ciclo` -> TDD -> `upgrade` -> `fechar` | Processo 3 canonizado (5 de 5) + motor diorama autoral, Whisper, mix e Shorts |
+| **Ciclo 4** | `legoloop-video-distribuicao` | `legoloop-ciclo` -> TDD -> `upgrade` -> `fechar` | Processo 4 canonizado (5 de 5) + revisor estéril, vitrine, agendador e Postiz |
+| **Ciclo 5** | `legoloop-video-animado` | `legoloop compor` encadeando Ciclos 1 a 4 + teste E2E completo + `fechar` | Macroprocesso composto homologado ponta a ponta com manual, livro e relatório |

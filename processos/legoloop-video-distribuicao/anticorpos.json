@@ -1,0 +1,43 @@
+{
+  "schema_version": "anticorpos.v1",
+  "processo": "legoloop-video-distribuicao",
+  "globais": [],
+  "dominio": [
+    {
+      "assinatura": "sha256:b314e1f0c8cc0dc6fc3d702677c2e81ae1d29aa406419e4c530296748fc76097",
+      "erro": "Video publicado como publico sem querer",
+      "antidoto": "Visibilidade private por padrao; publico exige --confirmo-publico e autorizacao gravada; publicar enviar e dry-run sem --executar",
+      "recorrencias": 1,
+      "pacote": "internal/video/distribuicao",
+      "causa_raiz": "o original aceitava --visibilidade public com uma flag so",
+      "timestamp": "2026-11-27T12:00:00Z"
+    },
+    {
+      "assinatura": "sha256:a133cb843e72ff5039fcb1ce8ec1d50a19efd619bf718ba182e4e9f05181e317",
+      "erro": "Chave do Postiz vazou em mensagem de erro",
+      "antidoto": "Toda resposta de erro passa por ocultar(); a chave vira ***",
+      "recorrencias": 1,
+      "pacote": "internal/video/distribuicao",
+      "causa_raiz": "corpo de erro do servidor pode ecoar o cabecalho",
+      "timestamp": "2026-11-27T12:05:00Z"
+    },
+    {
+      "assinatura": "sha256:09ca966cfa4bc8d82e72350a11482dce1786dae04c098d845e000385f0bed6fe",
+      "erro": "Video enviado sem rotulo de conteudo gerado por IA",
+      "antidoto": "RotuloIA obrigatorio no pedido e na vitrine; o corpo leva containsSyntheticMedia true",
+      "recorrencias": 1,
+      "pacote": "internal/video/distribuicao",
+      "causa_raiz": "o rotulo era opcional no original",
+      "timestamp": "2026-11-27T12:10:00Z"
+    },
+    {
+      "assinatura": "sha256:29a51c60df1d13cfd284d7286164af7d4fac63424868815be36a6e334bee00b1",
+      "erro": "Tema repetido ou quase igual entrou no acervo",
+      "antidoto": "Adicionar compara os temas por palavras (80% ou mais) e recusa com ErrTemaRepetido",
+      "recorrencias": 1,
+      "pacote": "internal/video/distribuicao",
+      "causa_raiz": "a regra de originalidade so existia como texto",
+      "timestamp": "2026-11-27T12:15:00Z"
+    }
+  ]
+}

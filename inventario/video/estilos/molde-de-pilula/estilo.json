@@ -43,7 +43,7 @@
     },
     {
       "tipo": "video",
-      "origem": "projetos/video-diorama/motor-original/renders/fb_s010_s013_16x9.mp4",
+      "origem": "projetos/video-animado/motor-original/renders/fb_s010_s013_16x9.mp4",
       "nota": "render de referência do motor original, cenas 10 a 13 em 16:9"
     },
     {

@@ -334,3 +334,66 @@
 - Achado de ambiente, nao corrigido (fora do meu controle): 4 processos MCP-gateway (legoloop mcp-router --gateway) travam C:\Users\trcnologia\go\bin\legoloop.exe; a etapa 5 (go install) do fechar falha por isso. Rodei com --skip-build para confirmar as outras 8 etapas reais (9 de 9 ok); o bin/legoloop.exe local (usado em todos os comandos desta sessao) ja esta atualizado.
 - Prova: legoloop fechar legoloop-video-animado --skip-build --json: sucesso=true, 9/9 etapas ok, portao mecanico (etapa 8) aprovado de verdade (go test, vet, funclen, gofmt, espinha).
 - Progresso: 24 aprovados, 1 adiado para o backlog (TICK-V01-08.2, estilo palito).
+
+## Achado 2026-11-27: nome do macro e do P4
+- Macro `legoloop-video-diorama` estava defasado: diorama e estilo; nome correto `legoloop-video-animado` (corrigido no mapa e no AGENTS.md).
+- P4 `legoloop-diorama-distribuicao` renomeado para `legoloop-video-distribuicao` (so no mapa; processo ainda nao existe).
+- P3 `legoloop-video-render` e P4 nao estao canonizados; regra do usuario: todos os processos do macro devem ser canonizados com elementos completos (tickets 2 a 4).
+
+## Achado 2026-11-27: pasta de projetos
+- Caminho `projetos/video-diorama/<projeto>/` estava errado: diorama e estilo. Correto: `projetos/video-animado/<projeto>/` (corrigido em DAG, skill, estilo.json, plano, tickets, rota e backlog da v2; `first-brands` movido).
+- Restam 5 docs historicos do render (intent, espelho, spec, 2 prompts); serao refatorados no ticket 2 (canonizar video-render).
+
+## Ticket 2a 2026-11-27: CLI do render (motor canonico)
+- Decisao do usuario: o motor Python (motor-local) e o caminho canonico do render; o master 16:9 em ffmpeg (`video-render executar`) vira fallback declarado.
+- Achado: motor.Gerar/ExecutarRenderMotor so existiam na biblioteca; nenhum codigo fora dos testes os chamava e a cena 1 e o First Brands vieram de montagem manual. Corrigido: `internal/video/motor/executar.go` (CarregarEntrada, Executar, RenderMotor) e subcomandos `video-render prevoo|voz|mix|motor` em `internal/cli/video_render_etapas.go`.
+- Achado: timeline.json e gravado por dois produtores (Go: timeline; motor: Gerar). Ordem obrigatoria: voz, timeline, mix, motor (o motor sobrescreve por ultimo).
+- Achado: a ponte nao define `formato`; o motor cai em 16:9. O CLI passa `--formato 9:16` ao run_render.py para cumprir o contrato 1080x1920.
+- Achado, nao corrigido aqui: taxlinter acusa 74 violacoes (maioria em internal/kraften, externo); em internal/video ha ~30 de "bloco"/"loop"/"macro" em comentarios e testes antigos e 6 em processos/legoloop-video-animado/pipeline.dag.json. Nenhuma esta nos arquivos novos. Entra no ticket de higiene.
+- Prova: go test internal/video/... ok (motor 95,2
+## Ticket 2a 2026-11-27: CLI do render (motor canonico)
+- Decisao do usuario: o motor Python (motor-local) e o caminho canonico do render; o master 16:9 em ffmpeg (video-render executar) vira fallback declarado.
+- Achado: motor.Gerar e ExecutarRenderMotor so existiam na biblioteca; nenhum codigo fora dos testes os chamava, e a cena 1 e o First Brands vieram de montagem manual. Corrigido: internal/video/motor/executar.go (CarregarEntrada, Executar, RenderMotor) e subcomandos video-render prevoo, voz, mix e motor em internal/cli/video_render_etapas.go.
+- Achado: timeline.json e gravado por dois produtores (Go: timeline; motor: Gerar). Ordem obrigatoria: prevoo, voz, timeline, mix, motor (o motor sobrescreve por ultimo).
+- Achado: a ponte nao define formato; o motor cai em 16:9. O CLI passa --formato 9:16 ao run_render.py para cumprir o contrato 1080x1920.
+- Achado, nao corrigido aqui: taxlinter acusa 74 violacoes (maioria em internal/kraften, externo). Em internal/video ha cerca de 30 de bloco, loop e macro em comentarios e testes antigos, e 6 em processos/legoloop-video-animado/pipeline.dag.json. Nenhuma esta nos arquivos novos. Entra no ticket de higiene.
+- Prova: go test internal/video/... ok (motor 95,2 por cento, render 95,3 por cento); go test ./internal/cli/ ok; funclen e gofmt limpos; espinha verificar vazio.
+
+## Ticket 2b 2026-11-27: legoloop-video-render canonizado
+- Entrega: processos/legoloop-video-render (DAG de 5 nos, anticorpos, triagem, memoria), skills/legoloop-video-render, manual, livro, registro na espinha e em PROCESSOS_CANONIZADOS.md. `legoloop fechar legoloop-video-render --skip-build`: 9 de 9 etapas ok.
+- Corrigido: prefixo de erro antigo `diorama-render:` virou `video-render:` em internal/video; DAG de tickets do render renomeado de legoloop-legoloop-diorama-render para legoloop-video-render-tickets.
+- Adiado com motivo: cortes verticais 9:16 (Etapa 8b, AC-E05.4 e AC-E05.5) registrados como BL-03; o motor ja entrega 9:16.
+- Achado, nao corrigido aqui: o video-roteiro e o video-ativos seguem sem manual e livro com nome video- (fechar --dry-run falha nas etapas 1 e 2), e o interior deles ainda usa o nome diorama (id do DAG, comandos, triagem, anticorpos). Ticket 2c.
+- Achado: o backlog BL-01 e BL-02 citavam previas apagadas na limpeza de 2026-11-27; texto corrigido.
+
+## Ticket 2c 2026-11-27: video-roteiro e video-ativos canonizados de fato
+- Achado: os dois processos tinham o nome video- so por fora. Dentro, o id do DAG, os comandos, a triagem, os anticorpos, o manual e o livro ainda diziam diorama; o manual e o livro com nome video- nao existiam, e o fechar falhava nas etapas 1 e 2.
+- Corrigido: DAG, comandos, triagem, anticorpos e memoria renomeados para video-roteiro e video-ativos; manual e livro movidos para docs/manuals/2026-11-24_MANUAL_VIDEO_*.md e docs/books/legoloop-video-*; arquivo de comando com prefixo duplicado (legoloop-legoloop-video-*) renomeado; tipo Artifact:DioramaAssets virou Artifact:VideoAssets (o render passa a consumir esse tipo).
+- Mantido de proposito: nomes reais de arquivos Go (internal/cli/diorama_*.go), schema diorama-roteiro.v1 e as assinaturas upstream dos documentos historicos de 2026-11-24.
+- Prova: fechar video-roteiro e video-ativos com --skip-build: 9 de 9 cada; espinha verificar vazio; go test de fechar, espinha, processo e internal/video ok.
+
+## Ticket 3 2026-11-27: legoloop-video-distribuicao (P4) criado e canonizado
+- Auditoria bit a bit do original em docs/progress/2026-11-27_p4_video_distribuicao/AUDITORIA_P4_VIDEO_DISTRIBUICAO.md (35 itens).
+- Entrega: internal/video/distribuicao (acervo, agenda quente/perene, revisao com parecer e liberacao, vitrine, capa, publicacao Postiz, comentarios, aprendizado, registro de envios), CLI video-distribuicao, processo de 9 nos, skill, manual, livro, INTENT, SPEC (27 criterios), PLAN, ROUTE e tickets.
+- Achado: o agenda.py do original nunca existiu; o agendador nasce aqui em Go, deterministico (instante injetado).
+- Achado: o original fixava o servidor do usuario como padrao em publicar.py; aqui POSTIZ_URL e obrigatoria, sem padrao no codigo.
+- Achado: o carimbo de tempo da folha de contato dependia de fonte do ffmpeg e foi trocado por passo_s no pacote do revisor (a minutagem sai do indice do quadro).
+- Achado de governanca corrigido na execucao: globais mutaveis viraram funcoes (RegrasRevisor, ChecklistRevisor), scriptCapa foi justificada na espinha, erros ignorados em limpeza e upload agora voltam como erro; DAG com dois nos no mesmo artefato corrigido (liberar grava review/vN_liberada.json; publicar grava acervo/envios.json).
+- Seguranca: publicar enviar e dry-run por padrao; --executar envia; publico exige --confirmo-publico e autorizado no acervo; rotulo de IA obrigatorio; a chave e ocultada em erros. Nenhuma chamada real a Postiz ou redes foi feita nos testes.
+- Adiado com motivo: cortes 9:16 (BL-03), coleta automatica de comentarios e metricas pelas APIs, instalar o Postiz; limites por rede seguem nao verificados em pagina oficial.
+- Prova: go test internal/video/distribuicao 96,8%; funclen e gofmt limpos; espinha verificar vazio; fechar legoloop-video-distribuicao --skip-build: 9 de 9.
+
+## Achado 2026-11-27: abas do Flow abrindo sozinhas na 9222 (causa real)
+- Causa provada: TestDioramaAtivosCLI (internal/cli/diorama_ativos_test.go) executava `diorama-ativos executar` em projeto hibrido com flow_projeto falso `uuid-hibrido-cli`; o driver real achava a 9222 e abria 3 abas do Flow por execucao (404 projeto nao encontrado). Historico do perfil de automacao: 93 visitas a esse id, em rajadas de 3 que coincidem com as rodadas de go test ./internal/cli/.
+- Hipotese descartada: flow-mcp. Nenhum processo node do flow-mcp rodava e o id falso so existe no teste.
+- Corrigido: variavel LEGOLOOP_FLOW_CDP_URL passa a definir o CDP do driver em `diorama-ativos executar`; o teste aponta para a porta morta http://127.0.0.1:1. Prova: visitas ao id passaram de 93 para 93 apos rodar o teste.
+- Observacao: o atalho fixado do Chrome pessoal tem --remote-debugging-port=9222 sem user-data-dir; risco separado, nao causa deste incidente.
+
+## Ticket 4 2026-11-27: legoloop-video-animado composto (P1 a P4)
+- Macroprocesso legoloop-video-animado recomposto como processo composto formal de 5 nos: P1 (legoloop-video-roteiro), P2 (legoloop-video-ativos), P3 (legoloop-video-render), P4 (legoloop-video-distribuicao) e n05 como gate final de prova e reproducao em video real com ritmo no alvo (12 a 21 cortes por minuto).
+- Eliminadas todas as referencias a first-brands e comandos depreciados em DAG, triagem, skill e manuais.
+- Triagem atualizada com os 5 nos e palavras-chave.
+- Skill atualizada com fluxo ponta a ponta e contratos de I/O (Artifact:TopicOrHome -> Artifact:DistributedVideo).
+- Manual operacional atualizado com os comandos dos 4 subprocessos e o gate final.
+- Provas mecânicas: legoloop validate processos/legoloop-video-animado/pipeline.dag.json (5 nos validos, sem ciclos); legoloop fechar legoloop-video-animado --dry-run (9 de 9 etapas aprovadas).
+

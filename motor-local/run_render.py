@@ -23,9 +23,10 @@ def main():
         fmt = extra[extra.index('--formato') + 1]
     timeline = os.path.join(projeto, 'timeline.json')
     saida = os.path.join(projeto, 'render.mp4')
-    # --sem-checagem: o Go (motor.Gerar) ja rodou check_timeline.py com o caminho correto antes de
-    # chamar este wrapper; render.py embutido procura check_timeline.py um nivel acima de engine/,
-    # o que nao bate com o motor-local achatado (sem essa estrutura de pastas).
+    if '--out' in extra:
+        idx = extra.index('--out')
+        saida = os.path.abspath(extra[idx + 1])
+        del extra[idx:idx + 2]
     cmd = [sys.executable, os.path.join(HERE, 'render.py'), timeline, '--out', saida, '--sem-checagem'] + extra
     r = subprocess.run(cmd, cwd=HERE, capture_output=True, text=True)
     sys.stdout.write(r.stdout)

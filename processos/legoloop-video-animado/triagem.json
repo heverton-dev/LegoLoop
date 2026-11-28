@@ -5,84 +5,79 @@
     {
       "padrao_slug": "legoloop-video-animado",
       "comandos_cli": [
-        "legoloop video-inventario",
+        "legoloop video-roteiro",
         "legoloop video-ativos",
         "legoloop video-render",
+        "legoloop video-distribuicao",
         "/legoloop-video-animado"
       ],
       "artefatos_ativos": [
-        "inventario/video/estilos/*/estilo.json",
+        "script.json",
         "cenas.json",
-        "timeline.json"
+        "render.mp4",
+        "acervo/aprendizado.md",
+        "renders/cena1.mp4"
       ],
       "prioridade": 100
     }
   ],
   "criterio_ambiguidade": {
-    "descricao": "Classificacao para o macroprocesso legoloop-video-animado",
+    "descricao": "Classificacao para o macroprocesso composto legoloop-video-animado",
     "etapas": [
-      "n01_inventario_por_estilo",
-      "n02_contratos_v2",
-      "n03_peca2_vetorial",
-      "n04_motor_portado",
-      "n05_renomeacao_video",
-      "n06_prova_de_reproducao"
+      "n01_video_roteiro",
+      "n02_video_ativos",
+      "n03_video_render",
+      "n04_video_distribuicao",
+      "n05_prova_reproducao"
     ]
   },
   "etapas": [
     {
-      "id": "n01_inventario_por_estilo",
+      "id": "n01_video_roteiro",
       "palavras_chave": [
-        "Inventario global por estilo: NovoEstilo"
+        "P1: Subprocesso legoloop-video-roteiro"
       ],
-      "slash_command": "/legoloop-video-animado-n01_inventario_por_estilo",
-      "flag_cli": "--etapa n01_inventario_por_estilo"
+      "slash_command": "/legoloop-video-animado-n01_video_roteiro",
+      "flag_cli": "--etapa n01_video_roteiro"
     },
     {
-      "id": "n02_contratos_v2",
+      "id": "n02_video_ativos",
       "palavras_chave": [
-        "Contratos v2: pre-voo le modo_producao e"
+        "P2: Subprocesso legoloop-video-ativos"
       ],
-      "slash_command": "/legoloop-video-animado-n02_contratos_v2",
-      "flag_cli": "--etapa n02_contratos_v2"
+      "slash_command": "/legoloop-video-animado-n02_video_ativos",
+      "flag_cli": "--etapa n02_video_ativos"
     },
     {
-      "id": "n03_peca2_vetorial",
+      "id": "n03_video_render",
       "palavras_chave": [
-        "Peca 2: elenco vetorial do inventario se"
+        "P3: Subprocesso legoloop-video-render"
       ],
-      "slash_command": "/legoloop-video-animado-n03_peca2_vetorial",
-      "flag_cli": "--etapa n03_peca2_vetorial"
+      "slash_command": "/legoloop-video-animado-n03_video_render",
+      "flag_cli": "--etapa n03_video_render"
     },
     {
-      "id": "n04_motor_portado",
+      "id": "n04_video_distribuicao",
       "palavras_chave": [
-        "Motor portado (motor-local, licenca MIT)"
+        "P4: Subprocesso legoloop-video-distribuicao"
       ],
-      "slash_command": "/legoloop-video-animado-n04_motor_portado",
-      "flag_cli": "--etapa n04_motor_portado"
+      "slash_command": "/legoloop-video-animado-n04_video_distribuicao",
+      "flag_cli": "--etapa n04_video_distribuicao"
     },
     {
-      "id": "n05_renomeacao_video",
+      "id": "n05_prova_reproducao",
       "palavras_chave": [
-        "Renomeacao diorama-\u003evideo com alias depr"
+        "Gate final de prova e reproducao em video real"
       ],
-      "slash_command": "/legoloop-video-animado-n05_renomeacao_video",
-      "flag_cli": "--etapa n05_renomeacao_video"
-    },
-    {
-      "id": "n06_prova_de_reproducao",
-      "palavras_chave": [
-        "Prova de reproducao: cena 1 renderizada "
-      ],
-      "slash_command": "/legoloop-video-animado-n06_prova_de_reproducao",
-      "flag_cli": "--etapa n06_prova_de_reproducao"
+      "slash_command": "/legoloop-video-animado-n05_prova_reproducao",
+      "flag_cli": "--etapa n05_prova_reproducao"
     }
   ],
   "pontos_entrada": [
-    "cli:legoloop video-inventario",
+    "cli:legoloop video-roteiro",
     "cli:legoloop video-ativos",
     "cli:legoloop video-render",
+    "cli:legoloop video-distribuicao",
     "chat:/legoloop-video-animado",
     "studio:Video Animado"
   ]

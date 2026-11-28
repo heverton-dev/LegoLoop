@@ -13,7 +13,13 @@ const usoVideoRender = `Uso: legoloop video-render <subcomando> [opções]
 
 Subcomandos:
   timeline  --projeto DIR   compõe a timeline.json a partir dos contratos do projeto
-  executar  --projeto DIR   renderiza o master 16:9 a partir da timeline salva
+  executar  --projeto DIR   renderiza o master 16:9 em ffmpeg (fallback; o caminho canonico e o motor)
+  prevoo    --projeto DIR   valida contratos, voz, ferramentas, pastas e o motor local
+  voz       --projeto DIR   sintetiza a voz, confere com o Whisper e grava data/timings.json
+  mix       --projeto DIR   mixa voz, SFX e trilha em audio/soundtrack.wav
+  motor     --projeto DIR [--formato FMT] [--raiz DIR] [--motor-dir DIR]   timeline do motor e render MP4
+  marca     --projeto DIR [--versao N] [--forcar]   aplica vinhetas e logo da marca gerando renders/vN.mp4
+  cortes    --projeto DIR [--min S] [--max S]       extrai cortes verticais 9:16 da timeline
 `
 
 // avisoDepreciacao devolve a linha que o alias antigo imprime em stderr antes de executar o comando novo.
@@ -39,6 +45,18 @@ func cmdVideoRender(ctx context.Context, args []string, d Deps) int {
 		return cmdVideoRenderTimeline(ctx, args[1:], d)
 	case "executar":
 		return cmdVideoRenderExecutar(ctx, args[1:], d)
+	case "prevoo":
+		return cmdVideoRenderPrevoo(ctx, args[1:], d)
+	case "voz":
+		return cmdVideoRenderVoz(ctx, args[1:], d)
+	case "mix":
+		return cmdVideoRenderMix(ctx, args[1:], d)
+	case "motor":
+		return cmdVideoRenderMotor(ctx, args[1:], d)
+	case "marca":
+		return cmdVideoRenderMarca(ctx, args[1:], d)
+	case "cortes":
+		return cmdVideoRenderCortes(ctx, args[1:], d)
 	default:
 		fmt.Fprintf(d.Stderr, "subcomando desconhecido %q\n%s", args[0], usoVideoRender)
 		return 2

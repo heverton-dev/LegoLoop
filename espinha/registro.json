@@ -35,7 +35,7 @@
       "nome": "video-render",
       "camada": "dominio",
       "motor": "internal/video/render",
-      "contrato": "Composicao da timeline e render master do video animado"
+      "contrato": "Pre-voo, voz com Whisper, timeline com gate de ritmo, mix medido e render 9:16 com voz pelo motor"
     },
     {
       "nome": "video-inventario",
@@ -312,6 +312,12 @@
       "camada": "dominio",
       "motor": "internal/kraften",
       "contrato": "Esteira deterministica de deploy do Studio Launcher: preflight, sync de metadados e DNS, deploy-job, gates binarios e recibo JSON"
+    },
+    {
+      "nome": "video-distribuicao",
+      "camada": "dominio",
+      "motor": "internal/video/distribuicao",
+      "contrato": "Revisao com parecer, vitrine, acervo e agenda quente/perene, publicacao via Postiz (privada por padrao), comentarios com aprovacao e aprendizado semanal"
     }
   ],
   "motores": [
@@ -706,6 +712,12 @@
     },
     {
       "slug": "legoloop-video-animado"
+    },
+    {
+      "slug": "legoloop-video-render"
+    },
+    {
+      "slug": "legoloop-video-distribuicao"
     }
   ],
   "requisitos": [
@@ -815,6 +827,7 @@
   "globais_justificadas": [
     "internal/video/ativos.scriptFlowDriver",
     "internal/video/ativos.scriptSpriteDespill",
+    "internal/video/distribuicao.scriptCapa",
     "internal/artefato.camposObrigatorios",
     "internal/artefato.resultadosValidos",
     "internal/assets.ignoredDirNames",

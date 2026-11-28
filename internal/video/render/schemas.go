@@ -1,4 +1,4 @@
-// Package render implementa o Ciclo 3 do macroprocesso legoloop-video-diorama:
+// Package render implementa o Ciclo 3 do macroprocesso legoloop-video-animado:
 // voz neural, timeline em camadas, mixagem e renderizacao multiformato.
 package render
 
@@ -18,15 +18,15 @@ const (
 )
 
 var (
-	ErrPreVooBloqueado      = errors.New("diorama-render: pre-voo bloqueado")
-	ErrProvedorDesconhecido = errors.New("diorama-render: provedor de voz nao registrado")
-	ErrCreditosNegados      = errors.New("diorama-render: gate de creditos negou chamada paga")
-	ErrWERAcimaLimite       = errors.New("diorama-render: WER acima do limite")
-	ErrTimelineRitmo        = errors.New("diorama-render: timeline fora do ritmo")
-	ErrLoudnessReprovado    = errors.New("diorama-render: loudness fora do alvo")
-	ErrRenderInvalido       = errors.New("diorama-render: render reprovado")
-	ErrCorteVertical        = errors.New("diorama-render: corte 9:16 reprovado")
-	ErrSchemaInvalido       = errors.New("diorama-render: schema invalido")
+	ErrPreVooBloqueado      = errors.New("video-render: pre-voo bloqueado")
+	ErrProvedorDesconhecido = errors.New("video-render: provedor de voz nao registrado")
+	ErrCreditosNegados      = errors.New("video-render: gate de creditos negou chamada paga")
+	ErrWERAcimaLimite       = errors.New("video-render: WER acima do limite")
+	ErrTimelineRitmo        = errors.New("video-render: timeline fora do ritmo")
+	ErrLoudnessReprovado    = errors.New("video-render: loudness fora do alvo")
+	ErrRenderInvalido       = errors.New("video-render: render reprovado")
+	ErrCorteVertical        = errors.New("video-render: corte 9:16 reprovado")
+	ErrSchemaInvalido       = errors.New("video-render: schema invalido")
 )
 
 func resolucaoValida(n string) bool { return n == "720p" || n == "1080p" || n == "4k" }

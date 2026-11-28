@@ -1,7 +1,7 @@
 ---
 name: legoloop-video-roteiro
 author: LegoLoop
-description: Use quando precisar executar o Processo legoloop-video-roteiro (antigo legoloop-diorama-roteiro) (Ciclo 1 do Macroprocesso legoloop-video-diorama): validação estrita de projeto.json e marca.json, pré-voo modular, descoberta gratuita por nicho com bloqueio em acervo/temas.json e validação epistêmica universal de script.json e plano.md. NÃO use para geração de ativos visuais, renderização ou publicação.
+description: Use quando precisar executar o Processo legoloop-video-roteiro (antigo legoloop-video-roteiro) (Ciclo 1 do processo composto legoloop-video-animado): validação estrita de projeto.json e marca.json, pré-voo modular, descoberta gratuita por nicho com bloqueio em acervo/temas.json e validação epistêmica universal de script.json e plano.md. NÃO use para geração de ativos visuais, renderização ou publicação.
 consumes: Artifact:ProjectConfig
 produces: Artifact:ValidatedScript
 artifact: script.json
@@ -45,7 +45,7 @@ suggested_model: sonnet
 
 ## 2. Procedimento Determinístico e Nós do DAG
 
-0. **Escolha da superfície interativa (obrigatória ao iniciar por linguagem natural, slash ou CLI):** ofereça sempre ao usuário escolher entre **Interface A2UI** (Agente/Chat: ferramentas MCP `sessao_criar`, `sessao_publicar`, `sessao_status` e `sessao_aguardar`; Studio: painel `Diorama Roteiro`) ou **Chat textual / CLI direto**, permitindo definir o tempo limite por etapa (`timeout_ms`, padrão 5 min; ajustável e pausável na barra da A2UI). Só avance no modo escolhido.
+0. **Escolha da superfície interativa (obrigatória ao iniciar por linguagem natural, slash ou CLI):** ofereça sempre ao usuário escolher entre **Interface A2UI** (Agente/Chat: ferramentas MCP `sessao_criar`, `sessao_publicar`, `sessao_status` e `sessao_aguardar`; Studio: painel `Video Roteiro`) ou **Chat textual / CLI direto**, permitindo definir o tempo limite por etapa (`timeout_ms`, padrão 5 min; ajustável e pausável na barra da A2UI). Só avance no modo escolhido.
    - **Ciclo contínuo obrigatório no modo A2UI (MCP):** chame `sessao_criar` (abre o navegador automaticamente) -> `sessao_publicar` -> `sessao_aguardar` **no mesmo turno**, mantendo toda a interação dentro da interface até concluir o Processo. **NUNCA** encerre o turno pedindo ao usuário "clique lá e me avise aqui no chat". Durante execuções e validações, chame `sessao_status` com `mensagem` e `etapas[]` para mostrar o avanço ao vivo no navegador.
 1. **Etapa 0 — Configuração guiada (`n01_validar_config`):** se `projeto.json` ou `marca.json` não existirem, colete com o usuário (na superfície escolhida) o nicho, `perfis_fonte`, formato (`16:9`, `9:16`, `1:1`), duração-alvo, `politica_gates` (`humano`, `hibrido` ou `mecanico`) e pasta de trabalho. Grave `projeto.json` e `marca.json` e rode `legoloop video-roteiro validar-config --projeto <DIR> --json` (bloqueia schema inválido, perfil desconhecido ou inconsistência entre `projeto.json` e `marca.json`).
 2. **Pré-voo modular (`n02_prevoo_modular`):** rode `legoloop video-roteiro prevoo --projeto <DIR> --json` (bloqueia apenas nos 5 casos `FALTA` do Processo 1; Chrome Flow `9333`, FFmpeg, Chromium, `edge-tts` e `gitleaks` emitem apenas `AVISO`).

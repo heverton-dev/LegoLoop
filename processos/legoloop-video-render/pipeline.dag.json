@@ -1,0 +1,341 @@
+{
+  "$schema": "https://legoloop.dev/schemas/dag.v2.json",
+  "id": "legoloop-video-render",
+  "name": "legoloop-video-render",
+  "version": "1.0.0",
+  "schema_version": 2,
+  "date": "2026-11-27",
+  "description": "Processo canonizado P3 do processo composto legoloop-video-animado: voz neural com conferencia Whisper, timeline com gate de ritmo, mix com loudness medido e render 9:16 com voz pelo motor portado (motor-local, licenca MIT). O master 16:9 em ffmpeg (video-render executar) e fallback declarado.",
+  "upstream_signatures": {
+    "intent": "docs/intents/2026-11-25_INTENT_APROVADA_DIORAMA_RENDER.md",
+    "spec": "docs/specs/2026-11-25_SPEC_APROVADA_DIORAMA_RENDER.md",
+    "plan": "docs/plans/2026-11-25_PLAN_APROVADO_DIORAMA_RENDER.md",
+    "route": "docs/routes/2026-11-25_ROUTE_LEGOLOOP_DIORAMA_RENDER.json"
+  },
+  "execution_strategy": {
+    "supervision_level": "micro",
+    "concurrency": {
+      "mode": "sequential",
+      "max_parallel_subagents": 1,
+      "harness_capability": "subagent_cli_isolated"
+    },
+    "default_isolation": {
+      "workspace": "local",
+      "executor": "orchestrix_hermetic",
+      "subagents_allowed": false
+    },
+    "max_parallel_workers": 1,
+    "tdd_enforced": true,
+    "default_timeout_sec": 300,
+    "rollback_on_failure": "abort_and_pause",
+    "rollback_policy": {
+      "action": "abort_and_pause",
+      "git_strategy": "none",
+      "preserve_artifacts": true,
+      "commit_on_node_pass": false
+    }
+  },
+  "trigger": {
+    "type": "manual"
+  },
+  "nodes": [
+    {
+      "id": "n01_prevoo",
+      "name": "Pre-voo: contratos, voz, ferramentas, pastas e motor local",
+      "nature": "micro",
+      "type": "script",
+      "command": [
+        "legoloop",
+        "video-render",
+        "prevoo",
+        "--projeto",
+        "."
+      ],
+      "ref": "legoloop video-render prevoo",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "low",
+        "fallback": "haiku"
+      },
+      "timeout_sec": 120,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "projeto.json",
+        "marca.json",
+        "script.json",
+        "cenas.json"
+      ],
+      "context_out": [
+        "projeto.json"
+      ],
+      "output": {
+        "artifact": "projeto.json",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E01.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 120
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n02_voz",
+      "name": "Voz neural, conferencia Whisper e timings por linha",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n01_prevoo"
+      ],
+      "command": [
+        "legoloop",
+        "video-render",
+        "voz",
+        "--projeto",
+        "."
+      ],
+      "ref": "legoloop video-render voz",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "timeout_sec": 900,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "script.json",
+        "marca.json"
+      ],
+      "context_out": [
+        "audio/voice.wav",
+        "data/timings.json"
+      ],
+      "output": {
+        "artifact": "audio/voice.wav",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E02.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 2,
+        "timeout_seconds": 900
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n03_timeline",
+      "name": "Timeline em camadas e gate de ritmo",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n02_voz"
+      ],
+      "command": [
+        "legoloop",
+        "video-render",
+        "timeline",
+        "--projeto",
+        "."
+      ],
+      "ref": "legoloop video-render timeline",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "timeout_sec": 120,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "cenas.json",
+        "data/timings.json"
+      ],
+      "context_out": [
+        "timeline.json"
+      ],
+      "output": {
+        "artifact": "timeline.json",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E03.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 120
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n04_mix",
+      "name": "Mix com ducking, SFX e loudness medido",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n03_timeline"
+      ],
+      "command": [
+        "legoloop",
+        "video-render",
+        "mix",
+        "--projeto",
+        "."
+      ],
+      "ref": "legoloop video-render mix",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "medium",
+        "fallback": "opus"
+      },
+      "timeout_sec": 300,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "audio/voice.wav",
+        "timeline.json"
+      ],
+      "context_out": [
+        "audio/soundtrack.wav"
+      ],
+      "output": {
+        "artifact": "audio/soundtrack.wav",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E04.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 2,
+        "timeout_seconds": 300
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    },
+    {
+      "id": "n05_motor",
+      "name": "Timeline do motor com CHECK OK e render 9:16 com voz",
+      "nature": "micro",
+      "type": "script",
+      "depends_on": [
+        "n04_mix"
+      ],
+      "command": [
+        "legoloop",
+        "video-render",
+        "motor",
+        "--projeto",
+        "."
+      ],
+      "ref": "legoloop video-render motor",
+      "routing": {
+        "mode": "suggested",
+        "harness": "claude",
+        "via": "9router",
+        "model": "sonnet",
+        "effort": "high",
+        "fallback": "opus"
+      },
+      "timeout_sec": 1800,
+      "isolation": {
+        "executor": "orchestrix_hermetic",
+        "subagents_allowed": false,
+        "workspace": "local",
+        "write_boundary": "strict"
+      },
+      "tooling": {
+        "runtime": "legoloop"
+      },
+      "context_in": [
+        "cenas.json",
+        "elenco.json",
+        "data/timings.json",
+        "audio/soundtrack.wav"
+      ],
+      "context_out": [
+        "timeline.json",
+        "render.mp4"
+      ],
+      "output": {
+        "artifact": "render.mp4",
+        "gate": "exit_code == 0"
+      },
+      "spec_ref": "AC-E05.1",
+      "status": "pending",
+      "execution": {
+        "mode": "isolated"
+      },
+      "limits": {
+        "max_attempts": 1,
+        "timeout_seconds": 1800
+      },
+      "rollback_strategy": "abort_and_pause",
+      "verification": {
+        "gate": "exit_code == 0"
+      }
+    }
+  ]
+}

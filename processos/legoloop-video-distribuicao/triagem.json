@@ -1,0 +1,121 @@
+{
+  "schema_version": "triagem.v1",
+  "processo": "legoloop-video-distribuicao",
+  "regras_deterministicas": [
+    {
+      "padrao_slug": "legoloop-video-distribuicao",
+      "comandos_cli": [
+        "legoloop video-distribuicao",
+        "/legoloop-video-distribuicao"
+      ],
+      "artefatos_ativos": [
+        "acervo/acervo.json",
+        "review/v1_parecer.json",
+        "publicacao.md"
+      ],
+      "prioridade": 100
+    }
+  ],
+  "criterio_ambiguidade": {
+    "descricao": "Classificacao para o Processo legoloop-video-distribuicao",
+    "etapas": [
+      "n01_prevoo",
+      "n02_folhas_revisao",
+      "n03_parecer",
+      "n04_liberar",
+      "n05_vitrine",
+      "n06_agenda",
+      "n07_publicar",
+      "n08_comentarios",
+      "n09_aprendizado"
+    ]
+  },
+  "etapas": [
+    {
+      "id": "n01_prevoo",
+      "palavras_chave": [
+        "prevoo",
+        "pre-voo"
+      ],
+      "slash_command": "/legoloop-video-distribuicao-prevoo",
+      "flag_cli": "--etapa n01_prevoo"
+    },
+    {
+      "id": "n02_folhas_revisao",
+      "palavras_chave": [
+        "revisao",
+        "folhas de contato e pacote do revisor sem contexto"
+      ],
+      "slash_command": "/legoloop-video-distribuicao-revisao-folhas",
+      "flag_cli": "--etapa n02_folhas_revisao"
+    },
+    {
+      "id": "n03_parecer",
+      "palavras_chave": [
+        "revisao",
+        "parecer do revisor sem contexto (enviar ou nao enviar)"
+      ],
+      "slash_command": "/legoloop-video-distribuicao-revisao-parecer",
+      "flag_cli": "--etapa n03_parecer"
+    },
+    {
+      "id": "n04_liberar",
+      "palavras_chave": [
+        "revisao",
+        "liberar a vitrine somente com enviar"
+      ],
+      "slash_command": "/legoloop-video-distribuicao-revisao-liberar",
+      "flag_cli": "--etapa n04_liberar"
+    },
+    {
+      "id": "n05_vitrine",
+      "palavras_chave": [
+        "vitrine",
+        "vitrine"
+      ],
+      "slash_command": "/legoloop-video-distribuicao-vitrine-gravar",
+      "flag_cli": "--etapa n05_vitrine"
+    },
+    {
+      "id": "n06_agenda",
+      "palavras_chave": [
+        "agenda",
+        "agenda quente e perene, estoque e reels"
+      ],
+      "slash_command": "/legoloop-video-distribuicao-agenda",
+      "flag_cli": "--etapa n06_agenda"
+    },
+    {
+      "id": "n07_publicar",
+      "palavras_chave": [
+        "publicar",
+        "publicacao pelo postiz (dry-run por padrao; --executar envia)"
+      ],
+      "slash_command": "/legoloop-video-distribuicao-publicar-enviar",
+      "flag_cli": "--etapa n07_publicar"
+    },
+    {
+      "id": "n08_comentarios",
+      "palavras_chave": [
+        "comentarios",
+        "comentarios pendentes e rascunhos aprovados pelo usuario"
+      ],
+      "slash_command": "/legoloop-video-distribuicao-comentarios-listar",
+      "flag_cli": "--etapa n08_comentarios"
+    },
+    {
+      "id": "n09_aprendizado",
+      "palavras_chave": [
+        "aprendizado",
+        "aprendizado semanal que volta para a descoberta de pautas"
+      ],
+      "slash_command": "/legoloop-video-distribuicao-aprendizado",
+      "flag_cli": "--etapa n09_aprendizado"
+    }
+  ],
+  "pontos_entrada": [
+    "cli:legoloop video-distribuicao",
+    "chat:/legoloop-video-distribuicao",
+    "studio:Video Distribuicao"
+  ]
+}

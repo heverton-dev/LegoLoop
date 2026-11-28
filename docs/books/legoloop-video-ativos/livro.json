@@ -1,0 +1,39 @@
+{
+  "capitulos": [
+    {
+      "id": "e01",
+      "peca": "legoloop-video-ativos",
+      "titulo": "Pre-voo do Ciclo 2, Path Jail e contratos do Ciclo 1"
+    },
+    {
+      "id": "e02",
+      "peca": "legoloop-video-ativos",
+      "titulo": "Etapa 3: fichas de elenco, rembg com despill verde e sprites/*.json"
+    },
+    {
+      "id": "e03",
+      "peca": "legoloop-video-ativos",
+      "titulo": "Etapa 4: cenarios SVG autorais, fila Flow resiliente e idempotencia por hash"
+    },
+    {
+      "id": "e04",
+      "peca": "legoloop-video-ativos",
+      "titulo": "Etapa 5: compilacao de cenas.json, politica_gates e fechamento 5 de 5"
+    }
+  ],
+  "descricao": "Livro didatico do Processo legoloop-video-ativos: elenco, sprites, cenarios SVG/Flow e storyboard cenas.json no LegoLoop.",
+  "slug": "legoloop-video-ativos",
+  "titulo": "Manual Didatico: legoloop-video-ativos",
+  "versao_manifesto": "1.0",
+  "nome_base": "2026-11-24_PROCESSO_LEGOLOOP_VIDEO_ATIVOS",
+  "pasta_partes": "partes",
+  "template": "ativos/livro.typst",
+  "partes": [
+    "00-frontmatter.md",
+    "01-macro-fundacao.md",
+    "02-meso-arquitetura.md",
+    "03-micro-passo-a-passo.md"
+  ],
+  "hash_fonte": "legoloop-video-ativos-v1",
+  "ultima_compilacao": "2026-11-24"
+}

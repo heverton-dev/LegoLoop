@@ -1,12 +1,12 @@
 {
   "schema_version": "triagem.v1",
-  "processo": "legoloop-diorama-roteiro",
+  "processo": "legoloop-video-roteiro",
   "regras_deterministicas": [
     {
-      "padrao_slug": "legoloop-diorama-roteiro",
+      "padrao_slug": "legoloop-video-roteiro",
       "comandos_cli": [
-        "legoloop diorama-roteiro",
-        "/legoloop-diorama-roteiro"
+        "legoloop video-roteiro",
+        "/legoloop-video-roteiro"
       ],
       "artefatos_ativos": [
         "projeto.json",
@@ -16,7 +16,7 @@
     }
   ],
   "criterio_ambiguidade": {
-    "descricao": "Classificacao para o Processo legoloop-diorama-roteiro",
+    "descricao": "Classificacao para o Processo legoloop-video-roteiro",
     "etapas": [
       "n01_validar_config",
       "n02_prevoo_modular",
@@ -32,16 +32,16 @@
         "projeto.json",
         "marca.json"
       ],
-      "slash_command": "/legoloop-diorama-roteiro-validar-config",
+      "slash_command": "/legoloop-video-roteiro-validar-config",
       "flag_cli": "--etapa n01_validar_config"
     },
     {
       "id": "n02_prevoo_modular",
       "palavras_chave": [
         "prevoo",
-        "pre-voo diorama"
+        "pre-voo video"
       ],
-      "slash_command": "/legoloop-diorama-roteiro-prevoo",
+      "slash_command": "/legoloop-video-roteiro-prevoo",
       "flag_cli": "--etapa n02_prevoo_modular"
     },
     {
@@ -50,7 +50,7 @@
         "coletar pautas",
         "descoberta de pautas"
       ],
-      "slash_command": "/legoloop-diorama-roteiro-coletar",
+      "slash_command": "/legoloop-video-roteiro-coletar",
       "flag_cli": "--etapa n03_coletar_pautas"
     },
     {
@@ -60,13 +60,13 @@
         "script.json",
         "fontes nivel a"
       ],
-      "slash_command": "/legoloop-diorama-roteiro-validar-roteiro",
+      "slash_command": "/legoloop-video-roteiro-validar-roteiro",
       "flag_cli": "--etapa n04_validar_roteiro"
     }
   ],
   "pontos_entrada": [
-    "cli:legoloop diorama-roteiro",
-    "chat:/legoloop-diorama-roteiro",
-    "studio:Diorama Roteiro"
+    "cli:legoloop video-roteiro",
+    "chat:/legoloop-video-roteiro",
+    "studio:Video Roteiro"
   ]
 }

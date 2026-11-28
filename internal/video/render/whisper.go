@@ -101,14 +101,14 @@ func (e EtapaVoz) tentar(ctx context.Context, p preparo, idioma string, i int, t
 	}
 	wav, err := p.s.Sintetizar(ctx, texto, p.op)
 	if err != nil {
-		return linhaVoz{}, fmt.Errorf("diorama-render: linha %d: %w", i, err)
+		return linhaVoz{}, fmt.Errorf("video-render: linha %d: %w", i, err)
 	}
 	if _, _, err := lerWAV(wav); err != nil {
-		return linhaVoz{}, fmt.Errorf("diorama-render: linha %d: %w", i, err)
+		return linhaVoz{}, fmt.Errorf("video-render: linha %d: %w", i, err)
 	}
 	palavras, err := e.Transcritor.Transcrever(ctx, wav, idioma)
 	if err != nil {
-		return linhaVoz{}, fmt.Errorf("diorama-render: linha %d: transcricao: %w", i, err)
+		return linhaVoz{}, fmt.Errorf("video-render: linha %d: transcricao: %w", i, err)
 	}
 	erros, total := errosPalavras(texto, textoDe(palavras))
 	return linhaVoz{wav: wav, palavras: palavras, wer: razaoWER(erros, total), erros: erros, total: total}, nil
@@ -291,14 +291,23 @@ func lerPalavrasWhisper(saida []byte) ([]PalavraTranscrita, error) {
 		E float64 `json:"e"`
 	}
 	if err := json.Unmarshal(saida, &brutas); err != nil {
-		return nil, fmt.Errorf("diorama-render: saida do faster-whisper invalida: %w", err)
+		return nil, fmt.Errorf("video-render: saida do faster-whisper invalida: %w", err)
 	}
 	palavras := make([]PalavraTranscrita, 0, len(brutas))
 	for _, b := range brutas {
 		if b.S < 0 || b.E < b.S {
-			return nil, fmt.Errorf("diorama-render: tempo invalido do faster-whisper para %q", b.W)
+			return nil, fmt.Errorf("video-render: tempo invalido do faster-whisper para %q", b.W)
 		}
 		palavras = append(palavras, PalavraTranscrita{Texto: strings.TrimSpace(b.W), InicioS: b.S, FimS: b.E})
 	}
 	return palavras, nil
+}
+
+// EtapaVozSistema monta a Etapa 6 com os provedores gratuitos embutidos e o faster-whisper local.
+func EtapaVozSistema(reprovas int) EtapaVoz {
+	return EtapaVoz{
+		Locutor:     Locutor{Registro: RegistroPadrao(nil)},
+		Transcritor: FasterWhisper{Exec: execSistema{}},
+		ReprovasMax: reprovas,
+	}
 }

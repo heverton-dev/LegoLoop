@@ -71,7 +71,7 @@ func cmdDioramaAtivosExecutar(ctx context.Context, args []string, d Deps) int {
 	if contratos.Projeto.EstiloVisual == "flow" || contratos.Projeto.EstiloVisual == "hibrido" {
 		deps.Recortador = ativos.NovoRecortadorRembgDespill()
 		deps.Cenarios = ativos.DepsCenarios{
-			Flow: ativos.NovoClienteFlowCDP("", projDir),
+			Flow: ativos.NovoClienteFlowCDP(os.Getenv("LEGOLOOP_FLOW_CDP_URL"), projDir),
 		}
 	}
 	proc := ativos.NovoProcesso(deps)

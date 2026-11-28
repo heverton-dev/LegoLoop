@@ -1,0 +1,228 @@
+{
+  "$schema": "https://legoloop.dev/schemas/route.v2.json",
+  "schema_version": 2,
+  "template_version": "2.2.0",
+  "name": "2026-11-27_ROUTE_VIDEO_DISTRIBUICAO",
+  "version": "1.0.0",
+  "date": "2026-11-27",
+  "session_id": null,
+  "intent_ref": "docs/intents/2026-11-27_INTENT_VIDEO_DISTRIBUICAO.md",
+  "spec_ref": "docs/specs/2026-11-27_SPEC_VIDEO_DISTRIBUICAO.md",
+  "plan_ref": "docs/plans/2026-11-27_PLAN_VIDEO_DISTRIBUICAO.md",
+  "initiative_ref": null,
+  "upstream_signatures": {
+    "intent": {
+      "path": "docs/intents/2026-11-27_INTENT_VIDEO_DISTRIBUICAO.md",
+      "sha256": "73f73fb262be1a4316918f399999b6f3241d42edc7cb74972078e7d56da17365"
+    },
+    "spec": {
+      "path": "docs/specs/2026-11-27_SPEC_VIDEO_DISTRIBUICAO.md",
+      "sha256": "61e8cb72b06387f5ebf7d3d21582758a71fa03b886b0db10fb2dd7ea7ba5142f"
+    },
+    "plan": {
+      "path": "docs/plans/2026-11-27_PLAN_VIDEO_DISTRIBUICAO.md",
+      "sha256": "cb3059a016be4da708f4a8889cd073cbd94b7ca0b67d90db9972e2c865c4ab98"
+    }
+  },
+  "nodes": [
+    {
+      "id": "TICK-DIST-01",
+      "initiative_id": "DIST",
+      "epic_id": "E01",
+      "label": "Acervo, originalidade e autorizacao",
+      "nature": "micro",
+      "type": "unit_no",
+      "status": "DONE",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "direct",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "spec_criteria": [
+        "AC-E01.1",
+        "AC-E01.2",
+        "AC-E01.3"
+      ],
+      "target_files": [
+        "internal/video/distribuicao/acervo.go"
+      ]
+    },
+    {
+      "id": "TICK-DIST-02",
+      "initiative_id": "DIST",
+      "epic_id": "E02",
+      "label": "Agenda quente/perene, estoque e reels",
+      "nature": "micro",
+      "type": "unit_no",
+      "status": "DONE",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "direct",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "spec_criteria": [
+        "AC-E02.1",
+        "AC-E02.2",
+        "AC-E02.3",
+        "AC-E02.4",
+        "AC-E02.5"
+      ],
+      "target_files": [
+        "internal/video/distribuicao/agenda.go"
+      ]
+    },
+    {
+      "id": "TICK-DIST-03",
+      "initiative_id": "DIST",
+      "epic_id": "E03",
+      "label": "Revisao: parecer, folhas e pacote do revisor",
+      "nature": "micro",
+      "type": "unit_no",
+      "status": "DONE",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "direct",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "spec_criteria": [
+        "AC-E03.1",
+        "AC-E03.2",
+        "AC-E03.3",
+        "AC-E03.4",
+        "AC-E03.5"
+      ],
+      "target_files": [
+        "internal/video/distribuicao/revisao.go"
+      ]
+    },
+    {
+      "id": "TICK-DIST-04",
+      "initiative_id": "DIST",
+      "epic_id": "E04",
+      "label": "Vitrine e capa",
+      "nature": "micro",
+      "type": "unit_no",
+      "status": "DONE",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "direct",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "spec_criteria": [
+        "AC-E04.1",
+        "AC-E04.2",
+        "AC-E04.3",
+        "AC-E04.4"
+      ],
+      "target_files": [
+        "internal/video/distribuicao/vitrine.go",
+        "internal/video/distribuicao/capa.go",
+        "internal/video/distribuicao/scripts/capa.py"
+      ]
+    },
+    {
+      "id": "TICK-DIST-05",
+      "initiative_id": "DIST",
+      "epic_id": "E05",
+      "label": "Publicacao pelo Postiz com travas",
+      "nature": "micro",
+      "type": "unit_no",
+      "status": "DONE",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "direct",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "spec_criteria": [
+        "AC-E05.1",
+        "AC-E05.2",
+        "AC-E05.3",
+        "AC-E05.4",
+        "AC-E05.5"
+      ],
+      "target_files": [
+        "internal/video/distribuicao/publicar.go"
+      ]
+    },
+    {
+      "id": "TICK-DIST-06",
+      "initiative_id": "DIST",
+      "epic_id": "E06",
+      "label": "Comentarios e aprendizado",
+      "nature": "micro",
+      "type": "unit_no",
+      "status": "DONE",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "direct",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "spec_criteria": [
+        "AC-E06.1",
+        "AC-E06.2"
+      ],
+      "target_files": [
+        "internal/video/distribuicao/comentarios.go",
+        "internal/video/distribuicao/aprendizado.go"
+      ]
+    },
+    {
+      "id": "TICK-DIST-07",
+      "initiative_id": "DIST",
+      "epic_id": "E07",
+      "label": "CLI video-distribuicao e registro na espinha",
+      "nature": "micro",
+      "type": "unit_no",
+      "status": "DONE",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "direct",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "spec_criteria": [
+        "AC-E07.1",
+        "AC-NF.1"
+      ],
+      "target_files": [
+        "internal/cli/video_distribuicao.go"
+      ]
+    },
+    {
+      "id": "TICK-DIST-08",
+      "initiative_id": "DIST",
+      "epic_id": "E07",
+      "label": "Canonizar: processo, skill, manual, livro, fechar 9 de 9",
+      "nature": "micro",
+      "type": "unit_no",
+      "status": "DONE",
+      "execution_mode": "tdd_red_green",
+      "isolation": {
+        "workspace": "local",
+        "executor": "direct",
+        "subagents_allowed": false,
+        "write_boundary": "strict"
+      },
+      "spec_criteria": [
+        "AC-NF.1"
+      ],
+      "target_files": [
+        "processos/legoloop-video-distribuicao/pipeline.dag.json",
+        "skills/legoloop-video-distribuicao/SKILL.md"
+      ]
+    }
+  ]
+}
